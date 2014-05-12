@@ -1,4 +1,4 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1174" measuredH="511" mockupW="1000" mockupH="493">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1174" measuredH="531" mockupW="1000" mockupH="513">
   <controls>
     <control controlID="3" controlTypeID="com.balsamiq.mockups::Canvas" x="174" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
@@ -46,7 +46,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="11" controlTypeID="com.balsamiq.mockups::TabBar" x="174" y="164" w="1000" h="305" measuredW="535" measuredH="100" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::TabBar" x="174" y="164" w="1000" h="327" measuredW="535" measuredH="100" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <color>16777215</color>
         <selectedIndex>0</selectedIndex>
@@ -55,7 +55,7 @@
         <text>AOC%20Alsace%20Lieu-dit%2C%20AOC%20Alsace%20Communale%2C%20AOC%20Alsace%20Grands%20Cru</text>
       </controlProperties>
     </control>
-    <control controlID="57" controlTypeID="com.balsamiq.mockups::PointyButton" x="174" y="484" w="212" h="-1" measuredW="198" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="57" controlTypeID="com.balsamiq.mockups::PointyButton" x="174" y="504" w="212" h="-1" measuredW="198" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <color>6710886</color>
         <direction>left</direction>
@@ -64,7 +64,7 @@
         <text>%C9tape%20pr%E9c%E9dente</text>
       </controlProperties>
     </control>
-    <control controlID="58" controlTypeID="com.balsamiq.mockups::PointyButton" x="962" y="484" w="212" h="-1" measuredW="165" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="58" controlTypeID="com.balsamiq.mockups::PointyButton" x="962" y="504" w="212" h="-1" measuredW="165" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <color>6710886</color>
         <direction>right</direction>
@@ -73,7 +73,7 @@
         <text>%C9tape%20suivante</text>
       </controlProperties>
     </control>
-    <control controlID="59" controlTypeID="com.balsamiq.mockups::PointyButton" x="949" y="420" w="212" h="-1" measuredW="171" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="59" controlTypeID="com.balsamiq.mockups::PointyButton" x="952" y="449" w="212" h="-1" measuredW="171" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>right</direction>
@@ -379,6 +379,13 @@
     <control controlID="61" controlTypeID="com.balsamiq.mockups::Label" x="186" y="208" w="-1" h="-1" measuredW="429" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Veuillez%20indiquer%20le%20nombre%20de%20lots%20par%20lieu-dit%20/%20c%E9page%20%28VT/SGN%20inclus%29</text>
+      </controlProperties>
+    </control>
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::Button" x="185" y="412" w="-1" h="-1" measuredW="147" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>6989903</color>
+        <icon>PlusBigIcon%7Cxsmall</icon>
+        <text>Ajouter%20un%20lieu-dit</text>
       </controlProperties>
     </control>
   </controls>
