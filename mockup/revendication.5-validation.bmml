@@ -1,0 +1,152 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1414" measuredH="1138" mockupW="1000" mockupH="1120">
+  <controls>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Canvas" x="414" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <borderColor>0</borderColor>
+        <color>16777215</color>
+      </controlProperties>
+    </control>
+    <control controlID="89" controlTypeID="__group__" x="414" y="122" w="938" h="27" measuredW="938" measuredH="27" zOrder="1" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="719" y="0" w="219" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="89">
+          <controlProperties>
+            <color>15110456</color>
+            <size>18</size>
+            <text>5.%20Validation</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="530" y="0" w="219" h="-1" measuredW="152" measuredH="27" zOrder="1" locked="false" isInGroup="89">
+          <controlProperties>
+            <color>6989903</color>
+            <size>18</size>
+            <text>4.%20D%E9gustation</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="337" y="0" w="219" h="-1" measuredW="87" measuredH="27" zOrder="2" locked="false" isInGroup="89">
+          <controlProperties>
+            <color>6989903</color>
+            <direction>right</direction>
+            <size>18</size>
+            <text>3.%20Lots</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="151" y="0" w="219" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="89">
+          <controlProperties>
+            <color>6989903</color>
+            <size>18</size>
+            <text>2.%20Revendication</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="173" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="89">
+          <controlProperties>
+            <color>6989903</color>
+            <size>18</size>
+            <text>1.%20Exploitation</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::PointyButton" x="414" y="1111" w="212" h="-1" measuredW="198" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>6710886</color>
+        <direction>left</direction>
+        <menuIcon>false</menuIcon>
+        <size>20</size>
+        <text>%C9tape%20pr%E9c%E9dente</text>
+      </controlProperties>
+    </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::PointyButton" x="1202" y="1111" w="212" h="-1" measuredW="92" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>3700253</color>
+        <direction>right</direction>
+        <menuIcon>false</menuIcon>
+        <size>20</size>
+        <state>up</state>
+        <text>Valider</text>
+      </controlProperties>
+    </control>
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::Canvas" x="414" y="164" w="1000" h="930" measuredW="100" measuredH="70" zOrder="4" locked="false" isInGroup="-1"/>
+    <control controlID="112" controlTypeID="__group__" x="441" y="350" w="944" h="615" measuredW="944" measuredH="615" zOrder="6" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::DataGrid" x="0" y="0" w="944" h="615" measuredW="661" measuredH="615" zOrder="0" locked="false" isInGroup="112">
+          <controlProperties>
+            <alternateRowColor>15658734</alternateRowColor>
+            <borderStyle>square</borderStyle>
+            <hasHeader>true</hasHeader>
+            <hLines>false</hLines>
+            <rowHeight>33</rowHeight>
+            <text>Appellation%20revendiqu%E9e%2C%20Nombre%20de%20lots%2C%20Superficie%20totale%20%28ares%29%2C%20Volume%20revendiqu%E9%20%28hl%29%0A%20%20%20%20%20%20%20%20AOC%20Alsace%20Blanc%2C%205%2C%20130.15%2C%20123.45%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Riesling%2C%203%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Gewurtz.%2C2%0A%20%20%20%20%20%20%20%20AOC%20Alsace%20Lieu-dit%20blanc%2C9%2C180.41%2C200.12%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Westerberg%20-%20Chasselas%2C%203%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Dambach-la-Ville%20-%20Chasselas%2C1%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Dambach-la-Ville%20-%20Riesling%2C2%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Reifenberg%20-%20Gewurtz%2C2%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Reifenberg%20-%20Pinot%20noir%2C1%0A%20%20%20%20%20%20%20%20%20AOC%20Alsace%20Communale%20rouge%2C%204%2C%20112.84%2C%2080.20%0A%20%20%20%20%20%20%20%20%20AOC%20Alsace%20Grands%20Crus%2C%2015%2C%20200.30%2C%20150.74%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Florimont%20-%20Riesling%2C%202%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Florimont%20-%20Muscat%2C%201%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Florimont%20-%20Gewurt.%2C%205%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Engelberg%20-%20Rielsing%2C%203%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Winzenberg%20-%20Pinot%20Gris%20%2C%204%0A%20%20%20%20%20%20%20%20%20AOC%20Alsace%20PN%20rouge%2C%200%2C%2018.63%2C%200%0A%20%20%20%20%20%20%20%20%20AOC%20Alsace%20Cr%E9mant%2C%2C30.47%2C50.69%0A%7B40L%2C20C%2C20C%2C20C%7D</text>
+            <value>89</value>
+            <verticalScrollbar>false</verticalScrollbar>
+            <vLines>true</vLines>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Icon" x="6" y="22" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="1" locked="false" isInGroup="112">
+          <controlProperties>
+            <color>6710886</color>
+            <icon>SquaredMinusIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::Icon" x="6" y="122" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="2" locked="false" isInGroup="112">
+          <controlProperties>
+            <color>6710886</color>
+            <icon>SquaredMinusIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Icon" x="6" y="319" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="3" locked="false" isInGroup="112">
+          <controlProperties>
+            <color>3355443</color>
+            <icon>SquaredPlusIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Icon" x="6" y="353" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="4" locked="false" isInGroup="112">
+          <controlProperties>
+            <color>6710886</color>
+            <icon>SquaredMinusIcon%7Csmall</icon>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="116" controlTypeID="com.balsamiq.mockups::FieldSet" x="440" y="978" w="944" h="93" measuredW="200" measuredH="170" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>11982760</color>
+        <text>Engagements</text>
+      </controlProperties>
+    </control>
+    <control controlID="117" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="451" y="996" w="916" h="68" measuredW="550" measuredH="61" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Je%20m%27engage%20%E0%20%3A%20%0A%5Bx%5D%20Joindre%20une%20copie%20de%20votre%20d%E9claration%20de%20r%E9colte%20%28automatique%29%0A%5B%5D%20Envoyer%20par%20voie%20postale%20le%20carnet%20de%20pr%E9ssoir%20pour%20le%20Cr%E9mant%20d%27Alsace%20avant%2015%20f%E9vrier</text>
+      </controlProperties>
+    </control>
+    <control controlID="124" controlTypeID="com.balsamiq.mockups::Paragraph" x="440" y="263" w="801" h="70" measuredW="275" measuredH="80" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>*%20Le%20volume%20revendiqu%E9%20diff%E8re%20de%20celui%20de%20la%20DR%20%3A%20%5BAOC%20Alsace%20Blanc%20-%20Riesling%5D%0A*%20Le%20volume%20revendiqu%E9%20est%20sup%E9rieur%20au%20volume%20sur%20place%20d%E9clar%E9%20sur%20la%20DR%20%3A%20%5BAOC%20Alsace%20Blanc%20-%20Riesling%5D%0A*%20La%20superficie%20est%20diff%E9rente%20de%20celle%20de%20la%20DR%20%3A%20%5BAOC%20Alsace%20Blanc%20-%20Riesling%5D%0A*%20Aucun%20lot%20saisi%20pour%20le%20c%E9page%20%3A%20%5BAOC%20Alsace%20Communale%20-%20Val%20Saint%20Gr%E9goire%20-%20Pinot%20Blanc%5D</text>
+      </controlProperties>
+    </control>
+    <control controlID="125" controlTypeID="__group__" x="442" y="245" w="944" h="88" measuredW="944" measuredH="88" zOrder="5" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="944" h="88" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="125">
+          <controlProperties>
+            <color>16167531</color>
+            <text>Point%20de%20Vigilance</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="126" controlTypeID="__group__" x="440" y="179" w="948" h="54" measuredW="948" measuredH="54" zOrder="9" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="2" y="0" w="946" h="54" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="126">
+          <controlProperties>
+            <color>15374745</color>
+            <text>Point%20bloquant</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Paragraph" x="0" y="17" w="801" h="37" measuredW="275" measuredH="80" zOrder="1" locked="false" isInGroup="126">
+          <controlProperties>
+            <text>*%20Aucun%20lot%20saisi%20dans%20l%27appellation%20%3A%20%5BAOC%20Alsace%20PN%20rouge%5D%0A*%20Le%20volume%20revendiqu%E9%20n%27a%20pas%20%E9t%E9%20saisi%20%3A%20%5BAOC%20Alsace%20PN%20Rouge%5D</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>

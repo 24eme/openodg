@@ -1,4 +1,4 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1418" measuredH="591" mockupW="1024" mockupH="573">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1394" measuredH="591" mockupW="1000" mockupH="573">
   <controls>
     <control controlID="3" controlTypeID="com.balsamiq.mockups::Canvas" x="394" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
@@ -194,13 +194,7 @@
         <text>Ajouter%20une%20communale</text>
       </controlProperties>
     </control>
-    <control controlID="64" controlTypeID="com.balsamiq.mockups::Tooltip" x="1332" y="321" w="-1" h="-1" measuredW="86" measuredH="33" zOrder="8" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>15.9%20hl</text>
-        <tooltipDirection>SW</tooltipDirection>
-      </controlProperties>
-    </control>
-    <control controlID="65" controlTypeID="com.balsamiq.mockups::PointyButton" x="1090" y="508" w="293" h="-1" measuredW="361" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="65" controlTypeID="com.balsamiq.mockups::PointyButton" x="1090" y="508" w="293" h="-1" measuredW="361" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>right</direction>
@@ -209,7 +203,7 @@
         <text>Valider%20et%20passer%20%E0%20l%27appellation%20suivante</text>
       </controlProperties>
     </control>
-    <control controlID="66" controlTypeID="com.balsamiq.mockups::PointyButton" x="405" y="508" w="343" h="-1" measuredW="332" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="66" controlTypeID="com.balsamiq.mockups::PointyButton" x="405" y="508" w="343" h="-1" measuredW="332" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>left</direction>

@@ -46,11 +46,11 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="11" controlTypeID="com.balsamiq.mockups::TabBar" x="414" y="161" w="1000" h="368" measuredW="486" measuredH="100" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::TabBar" x="414" y="161" w="1000" h="368" measuredW="516" measuredH="100" zOrder="2" locked="false" isInGroup="-1">
       <controlProperties>
         <color>16777215</color>
         <selectedIndex>2</selectedIndex>
-        <size>13</size>
+        <size>14</size>
         <tabVPosition>top</tabVPosition>
         <text>AOC%5CrAlsace%20blanc%2C%20AOC%5CrAlsace%20Lieu-dit%2C%20AOC%5CrAlsace%20Communale%2C%20AOC%5CrAlsace%20Grands%20Cru</text>
       </controlProperties>

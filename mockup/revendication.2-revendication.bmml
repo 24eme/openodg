@@ -27,7 +27,8 @@
           <controlProperties>
             <align>right</align>
             <backgroundAlpha>1</backgroundAlpha>
-            <color>13421772</color>
+            <borderColor>10066329</borderColor>
+            <color>16777215</color>
             <markup>true</markup>
             <text/>
           </controlProperties>
@@ -92,6 +93,7 @@
         </control>
         <control controlID="1" controlTypeID="com.balsamiq.mockups::TextInput" x="0" y="35" w="98" h="-1" measuredW="79" measuredH="26" zOrder="1" locked="false" isInGroup="32">
           <controlProperties>
+            <borderColor>0</borderColor>
             <color>13421772</color>
           </controlProperties>
         </control>
@@ -207,7 +209,7 @@
         </control>
         <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="337" y="0" w="219" h="-1" measuredW="87" measuredH="27" zOrder="2" locked="false" isInGroup="52">
           <controlProperties>
-            <color>15658734</color>
+            <color>14540253</color>
             <direction>right</direction>
             <size>18</size>
             <text>3.%20Lots</text>
