@@ -1,12 +1,11 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1657" measuredH="674" mockupW="1247" mockupH="665">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1657" measuredH="694" mockupW="1247" mockupH="676">
   <controls>
-    <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="410" y="146" w="1000" h="483" measuredW="100" measuredH="70" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="410" y="166" w="1000" h="483" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
-        <color>14540253</color>
+        <color>16777215</color>
       </controlProperties>
     </control>
-    <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="410" y="9" w="1000" h="92" measuredW="100" measuredH="70" zOrder="3" locked="false" isInGroup="-1"/>
-    <control controlID="4" controlTypeID="com.balsamiq.mockups::DataGrid" x="425" y="161" w="970" h="334" measuredW="668" measuredH="334" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::DataGrid" x="425" y="181" w="970" h="334" measuredW="668" measuredH="334" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
         <borderStyle>square</borderStyle>
         <hLines>false</hLines>
@@ -15,7 +14,7 @@
         <vLines>true</vLines>
       </controlProperties>
     </control>
-    <control controlID="31" controlTypeID="__group__" x="863" y="199" w="98" h="290" measuredW="98" measuredH="290" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="31" controlTypeID="__group__" x="863" y="219" w="98" h="290" measuredW="98" measuredH="290" zOrder="2" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="0" y="0" w="98" h="-1" measuredW="54" measuredH="27" zOrder="0" locked="false" isInGroup="31">
           <controlProperties>
@@ -84,7 +83,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="32" controlTypeID="__group__" x="1249" y="200" w="98" h="289" measuredW="98" measuredH="289" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="32" controlTypeID="__group__" x="1249" y="220" w="98" h="289" measuredW="98" measuredH="289" zOrder="3" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="0" y="0" w="98" h="-1" measuredW="50" measuredH="27" zOrder="0" locked="false" isInGroup="32">
           <controlProperties>
@@ -133,32 +132,32 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="34" controlTypeID="com.balsamiq.mockups::StickyNote" x="1449" y="249" w="208" h="123" measuredW="109" measuredH="123" zOrder="7" locked="false" isInGroup="-1">
+    <control controlID="34" controlTypeID="com.balsamiq.mockups::StickyNote" x="1449" y="269" w="208" h="123" measuredW="109" measuredH="123" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Le%20volume%20revendiqu%E9%20sur%20place%20n%27est%20pas%20connu%20depuis%20la%20DR%20car%20les%20usages%20industriels%20n%27ont%20pas%20%E9t%E9%20reparti%20sur%20les%20acheteurs</text>
       </controlProperties>
     </control>
-    <control controlID="36" controlTypeID="com.balsamiq.mockups::Icon" x="1419" y="298" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="36" controlTypeID="com.balsamiq.mockups::Icon" x="1419" y="318" w="-1" h="-1" measuredW="24" measuredH="24" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <icon>AlertIcon%7Csmall</icon>
       </controlProperties>
     </control>
-    <control controlID="37" controlTypeID="com.balsamiq.mockups::StickyNote" x="841" y="489" w="138" h="101" measuredW="109" measuredH="123" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="37" controlTypeID="com.balsamiq.mockups::StickyNote" x="841" y="509" w="138" h="101" measuredW="109" measuredH="123" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Superficie%20totale%20de%20l%27appellation%20repris%20%E0%20partir%20de%20la%20DR</text>
       </controlProperties>
     </control>
-    <control controlID="38" controlTypeID="com.balsamiq.mockups::StickyNote" x="1032" y="489" w="138" h="101" measuredW="109" measuredH="123" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="38" controlTypeID="com.balsamiq.mockups::StickyNote" x="1032" y="509" w="138" h="101" measuredW="109" measuredH="123" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Volume%20sur%20place%20repris%20depuis%20la%20DR%20%28avec%20usages%20industriels%29</text>
       </controlProperties>
     </control>
-    <control controlID="39" controlTypeID="com.balsamiq.mockups::StickyNote" x="1240" y="489" w="138" h="125" measuredW="109" measuredH="123" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="39" controlTypeID="com.balsamiq.mockups::StickyNote" x="1240" y="509" w="138" h="125" measuredW="109" measuredH="123" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Volume%20sur%20place%20revendiqu%E9%20repris%20%E0%20partir%20de%20la%20DR%20quand%20c%27est%20possible</text>
       </controlProperties>
     </control>
-    <control controlID="43" controlTypeID="com.balsamiq.mockups::PointyButton" x="1200" y="647" w="213" h="-1" measuredW="165" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="43" controlTypeID="com.balsamiq.mockups::PointyButton" x="1200" y="667" w="213" h="-1" measuredW="165" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <bold>false</bold>
         <borderStyle>square</borderStyle>
@@ -171,7 +170,7 @@
         <text>%C9tape%20suivante</text>
       </controlProperties>
     </control>
-    <control controlID="45" controlTypeID="com.balsamiq.mockups::PointyButton" x="410" y="647" w="219" h="-1" measuredW="198" measuredH="27" zOrder="13" locked="false" isInGroup="-1">
+    <control controlID="45" controlTypeID="com.balsamiq.mockups::PointyButton" x="410" y="667" w="219" h="-1" measuredW="198" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
       <controlProperties>
         <bold>false</bold>
         <borderStyle>square</borderStyle>
@@ -184,45 +183,51 @@
         <text>%C9tape%20pr%E9c%E9dente</text>
       </controlProperties>
     </control>
-    <control controlID="47" controlTypeID="com.balsamiq.mockups::PointyButton" x="410" y="109" w="176" h="-1" measuredW="128" measuredH="27" zOrder="15" locked="false" isInGroup="-1">
+    <control controlID="51" controlTypeID="com.balsamiq.mockups::Canvas" x="414" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
-        <borderStyle>square</borderStyle>
-        <color>6989903</color>
-        <direction>right</direction>
-        <newLayout>true</newLayout>
-        <size>16</size>
-        <text>1.%20Exploitation</text>
+        <borderColor>0</borderColor>
+        <color>16777215</color>
       </controlProperties>
     </control>
-    <control controlID="48" controlTypeID="com.balsamiq.mockups::PointyButton" x="556" y="109" w="207" h="-1" measuredW="150" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderStyle>square</borderStyle>
-        <color>16750848</color>
-        <direction>right</direction>
-        <newLayout>true</newLayout>
-        <size>16</size>
-        <text>2.%20Revendication</text>
-      </controlProperties>
-    </control>
-    <control controlID="49" controlTypeID="com.balsamiq.mockups::PointyButton" x="736" y="109" w="207" h="-1" measuredW="80" measuredH="27" zOrder="1" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderStyle>square</borderStyle>
-        <color>14540253</color>
-        <direction>right</direction>
-        <newLayout>true</newLayout>
-        <size>16</size>
-        <text>3.%20Lots</text>
-      </controlProperties>
-    </control>
-    <control controlID="50" controlTypeID="com.balsamiq.mockups::PointyButton" x="916" y="109" w="207" h="-1" measuredW="117" measuredH="27" zOrder="0" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderStyle>square</borderStyle>
-        <color>14540253</color>
-        <direction>right</direction>
-        <newLayout>true</newLayout>
-        <size>16</size>
-        <text>4.%20Validation</text>
-      </controlProperties>
+    <control controlID="52" controlTypeID="__group__" x="414" y="122" w="938" h="27" measuredW="938" measuredH="27" zOrder="12" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="719" y="0" w="219" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="52">
+          <controlProperties>
+            <color>14540253</color>
+            <size>18</size>
+            <text>5.%20Validation</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="530" y="0" w="219" h="-1" measuredW="152" measuredH="27" zOrder="1" locked="false" isInGroup="52">
+          <controlProperties>
+            <color>14540253</color>
+            <size>18</size>
+            <text>4.%20D%E9gustation</text>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="337" y="0" w="219" h="-1" measuredW="87" measuredH="27" zOrder="2" locked="false" isInGroup="52">
+          <controlProperties>
+            <color>15658734</color>
+            <direction>right</direction>
+            <size>18</size>
+            <text>3.%20Lots</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="151" y="0" w="219" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="52">
+          <controlProperties>
+            <color>15110456</color>
+            <size>18</size>
+            <text>2.%20Revendication</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="173" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="52">
+          <controlProperties>
+            <color>6989903</color>
+            <size>18</size>
+            <text>1.%20Exploitation</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
     </control>
   </controls>
 </mockup>

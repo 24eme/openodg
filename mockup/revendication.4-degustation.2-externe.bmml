@@ -1,12 +1,12 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1174" measuredH="977" mockupW="1000" mockupH="959">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1449" measuredH="977" mockupW="1000" mockupH="959">
   <controls>
-    <control controlID="3" controlTypeID="com.balsamiq.mockups::Canvas" x="174" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1">
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::Canvas" x="449" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1">
       <controlProperties>
         <borderColor>0</borderColor>
         <color>16777215</color>
       </controlProperties>
     </control>
-    <control controlID="10" controlTypeID="__group__" x="174" y="122" w="938" h="27" measuredW="938" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="10" controlTypeID="__group__" x="449" y="122" w="938" h="27" measuredW="938" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="719" y="0" w="219" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="10">
           <controlProperties>
@@ -30,7 +30,7 @@
             <text>3.%20Lots</text>
           </controlProperties>
         </control>
-        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="153" y="0" w="219" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="10">
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="151" y="0" w="219" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="10">
           <controlProperties>
             <color>6989903</color>
             <size>18</size>
@@ -46,7 +46,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="57" controlTypeID="com.balsamiq.mockups::PointyButton" x="174" y="950" w="212" h="-1" measuredW="198" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
+    <control controlID="57" controlTypeID="com.balsamiq.mockups::PointyButton" x="449" y="950" w="212" h="-1" measuredW="198" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
       <controlProperties>
         <color>6710886</color>
         <direction>left</direction>
@@ -55,7 +55,7 @@
         <text>%C9tape%20pr%E9c%E9dente</text>
       </controlProperties>
     </control>
-    <control controlID="58" controlTypeID="com.balsamiq.mockups::PointyButton" x="962" y="950" w="212" h="-1" measuredW="165" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="58" controlTypeID="com.balsamiq.mockups::PointyButton" x="1237" y="950" w="212" h="-1" measuredW="165" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <color>6710886</color>
         <direction>right</direction>
@@ -64,13 +64,13 @@
         <text>%C9tape%20suivante</text>
       </controlProperties>
     </control>
-    <control controlID="80" controlTypeID="com.balsamiq.mockups::TabBar" x="174" y="164" w="1000" h="770" measuredW="420" measuredH="100" zOrder="0" locked="false" isInGroup="-1">
+    <control controlID="80" controlTypeID="com.balsamiq.mockups::TabBar" x="449" y="164" w="1000" h="770" measuredW="420" measuredH="100" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
         <selectedIndex>1</selectedIndex>
         <text>Conseil%20%28En%20cuve%20ou%20f%FBt%29%2C%20Contr%F4le%20externe%20%28En%20Bouteille%29</text>
       </controlProperties>
     </control>
-    <control controlID="84" controlTypeID="com.balsamiq.mockups::PointyButton" x="933" y="895" w="212" h="-1" measuredW="171" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="84" controlTypeID="com.balsamiq.mockups::PointyButton" x="1208" y="895" w="212" h="-1" measuredW="171" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>right</direction>
@@ -79,7 +79,7 @@
         <text>Valider%20et%20suivant</text>
       </controlProperties>
     </control>
-    <control controlID="88" controlTypeID="__group__" x="190" y="209" w="956" h="181" measuredW="956" measuredH="181" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="88" controlTypeID="__group__" x="465" y="209" w="956" h="181" measuredW="956" measuredH="181" zOrder="6" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="__group__" x="0" y="36" w="956" h="145" measuredW="956" measuredH="145" zOrder="0" locked="false" isInGroup="88">
           <groupChildrenDescriptors>
@@ -142,7 +142,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="89" controlTypeID="__group__" x="190" y="413" w="956" h="181" measuredW="956" measuredH="181" zOrder="7" locked="false" isInGroup="-1">
+    <control controlID="89" controlTypeID="__group__" x="465" y="413" w="956" h="181" measuredW="956" measuredH="181" zOrder="7" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="__group__" x="0" y="36" w="956" h="145" measuredW="956" measuredH="145" zOrder="0" locked="false" isInGroup="89">
           <groupChildrenDescriptors>
@@ -205,7 +205,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="90" controlTypeID="__group__" x="190" y="615" w="956" h="266" measuredW="956" measuredH="266" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="90" controlTypeID="__group__" x="465" y="615" w="956" h="266" measuredW="956" measuredH="266" zOrder="8" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="__group__" x="0" y="36" w="956" h="230" measuredW="956" measuredH="230" zOrder="0" locked="false" isInGroup="90">
           <groupChildrenDescriptors>
@@ -286,7 +286,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="91" controlTypeID="com.balsamiq.mockups::PointyButton" x="190" y="895" w="212" h="-1" measuredW="119" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::PointyButton" x="465" y="895" w="212" h="-1" measuredW="119" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>left</direction>

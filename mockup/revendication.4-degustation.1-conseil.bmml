@@ -1,146 +1,155 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1174" measuredH="550" mockupW="1000" mockupH="532">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1414" measuredH="550" mockupW="1000" mockupH="532">
   <controls>
-    <control controlID="3" controlTypeID="com.balsamiq.mockups::Canvas" x="174" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="-1">
-      <controlProperties>
-        <borderColor>0</borderColor>
-        <color>16777215</color>
-      </controlProperties>
-    </control>
-    <control controlID="10" controlTypeID="__group__" x="174" y="122" w="938" h="27" measuredW="938" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+    <control controlID="86" controlTypeID="__group__" x="414" y="18" w="1000" h="532" measuredW="1000" measuredH="532" zOrder="0" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="719" y="0" w="219" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="10">
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::TabBar" x="0" y="146" w="1000" h="346" measuredW="420" measuredH="100" zOrder="0" locked="false" isInGroup="86">
           <controlProperties>
-            <color>14540253</color>
-            <size>18</size>
-            <text>5.%20Validation</text>
+            <selectedIndex>0</selectedIndex>
+            <text>Conseil%20%28En%20cuve%20ou%20f%FBt%29%2C%20Contr%F4le%20externe%20%28En%20Bouteille%29</text>
           </controlProperties>
         </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="530" y="0" w="219" h="-1" measuredW="152" measuredH="27" zOrder="1" locked="false" isInGroup="10">
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="0" w="1000" h="88" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="86">
+          <controlProperties>
+            <borderColor>0</borderColor>
+            <color>16777215</color>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="__group__" x="0" y="104" w="938" h="27" measuredW="938" measuredH="27" zOrder="2" locked="false" isInGroup="86">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="719" y="0" w="219" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="2">
+              <controlProperties>
+                <color>14540253</color>
+                <size>18</size>
+                <text>5.%20Validation</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="530" y="0" w="219" h="-1" measuredW="152" measuredH="27" zOrder="1" locked="false" isInGroup="2">
+              <controlProperties>
+                <color>15110456</color>
+                <size>18</size>
+                <text>4.%20D%E9gustation</text>
+              </controlProperties>
+            </control>
+            <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="337" y="0" w="219" h="-1" measuredW="87" measuredH="27" zOrder="2" locked="false" isInGroup="2">
+              <controlProperties>
+                <color>6989903</color>
+                <direction>right</direction>
+                <size>18</size>
+                <text>3.%20Lots</text>
+              </controlProperties>
+            </control>
+            <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="151" y="0" w="219" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="2">
+              <controlProperties>
+                <color>6989903</color>
+                <size>18</size>
+                <text>2.%20Revendication</text>
+              </controlProperties>
+            </control>
+            <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="173" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="2">
+              <controlProperties>
+                <color>6989903</color>
+                <size>18</size>
+                <text>1.%20Exploitation</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="505" w="212" h="-1" measuredW="198" measuredH="27" zOrder="3" locked="false" isInGroup="86">
+          <controlProperties>
+            <color>6710886</color>
+            <direction>left</direction>
+            <menuIcon>false</menuIcon>
+            <size>20</size>
+            <text>%C9tape%20pr%E9c%E9dente</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="788" y="505" w="212" h="-1" measuredW="165" measuredH="27" zOrder="4" locked="false" isInGroup="86">
+          <controlProperties>
+            <color>6710886</color>
+            <direction>right</direction>
+            <menuIcon>false</menuIcon>
+            <size>20</size>
+            <text>%C9tape%20suivante</text>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="__group__" x="15" y="274" w="956" h="70" measuredW="956" measuredH="70" zOrder="5" locked="false" isInGroup="86">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="956" h="70" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="5">
+              <controlProperties>
+                <text>Date%20%E0%20partir%20de%20laquelle%20le%20vin%20est%20pr%EAt%20%E0%20%EAtre%20d%E9guster</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::TextInput" x="15" y="25" w="-1" h="-1" measuredW="85" measuredH="27" zOrder="1" locked="false" isInGroup="5">
+              <controlProperties>
+                <text>04/01/2014</text>
+              </controlProperties>
+            </control>
+            <control controlID="2" controlTypeID="com.balsamiq.mockups::Icon" x="110" y="22" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="2" locked="false" isInGroup="5">
+              <controlProperties>
+                <icon>TableIcon%7Cmedium</icon>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="6" controlTypeID="__group__" x="15" y="199" w="955" h="60" measuredW="955" measuredH="60" zOrder="6" locked="false" isInGroup="86">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="955" h="60" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="6">
+              <controlProperties>
+                <text>Lieu%20de%20pr%E9l%E9vement</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="15" y="20" w="-1" h="-1" measuredW="237" measuredH="21" zOrder="1" locked="false" isInGroup="6">
+              <controlProperties>
+                <text>Nom%20du%20responsable%20%3A%20Gwenael%20Chichery</text>
+              </controlProperties>
+            </control>
+            <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="287" y="20" w="-1" h="-1" measuredW="221" measuredH="21" zOrder="2" locked="false" isInGroup="6">
+              <controlProperties>
+                <text>Adresse%20%3A%201%2C%20rue%20Garnier%20Neuilly%2C%2092110</text>
+              </controlProperties>
+            </control>
+            <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="575" y="20" w="-1" h="-1" measuredW="109" measuredH="21" zOrder="3" locked="false" isInGroup="6">
+              <controlProperties>
+                <text>T%E9l%20%3A%200682876892</text>
+              </controlProperties>
+            </control>
+            <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="870" y="17" w="-1" h="-1" measuredW="70" measuredH="27" zOrder="4" locked="false" isInGroup="6">
+              <controlProperties>
+                <color>16750848</color>
+                <text>Modifier</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="7" controlTypeID="__group__" x="15" y="365" w="956" h="100" measuredW="956" measuredH="100" zOrder="7" locked="false" isInGroup="86">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="956" h="71" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="7">
+              <controlProperties>
+                <text>Demande%20de%20pr%E9l%E9vement%20volontaire%20des%20VT/SGN</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::ComboBox" x="11" y="22" w="113" h="-1" measuredW="34" measuredH="78" zOrder="1" locked="false" isInGroup="7">
+              <controlProperties>
+                <text>%20%0AAvril%0AJuin%0AOctobre</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::PointyButton" x="759" y="450" w="212" h="-1" measuredW="171" measuredH="27" zOrder="8" locked="false" isInGroup="86">
           <controlProperties>
             <color>15110456</color>
-            <size>18</size>
-            <text>4.%20D%E9gustation</text>
-          </controlProperties>
-        </control>
-        <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="337" y="0" w="219" h="-1" measuredW="87" measuredH="27" zOrder="2" locked="false" isInGroup="10">
-          <controlProperties>
-            <color>6989903</color>
             <direction>right</direction>
+            <menuIcon>false</menuIcon>
             <size>18</size>
-            <text>3.%20Lots</text>
+            <text>Valider%20et%20suivant</text>
           </controlProperties>
         </control>
-        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="153" y="0" w="219" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="10">
+        <control controlID="9" controlTypeID="com.balsamiq.mockups::CheckBox" x="15" y="344" w="-1" h="-1" measuredW="20" measuredH="21" zOrder="9" locked="false" isInGroup="86">
           <controlProperties>
-            <color>6989903</color>
-            <size>18</size>
-            <text>2.%20Revendication</text>
-          </controlProperties>
-        </control>
-        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="173" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="10">
-          <controlProperties>
-            <color>6989903</color>
-            <size>18</size>
-            <text>1.%20Exploitation</text>
+            <text/>
           </controlProperties>
         </control>
       </groupChildrenDescriptors>
-    </control>
-    <control controlID="57" controlTypeID="com.balsamiq.mockups::PointyButton" x="174" y="523" w="212" h="-1" measuredW="198" measuredH="27" zOrder="3" locked="false" isInGroup="-1">
-      <controlProperties>
-        <color>6710886</color>
-        <direction>left</direction>
-        <menuIcon>false</menuIcon>
-        <size>20</size>
-        <text>%C9tape%20pr%E9c%E9dente</text>
-      </controlProperties>
-    </control>
-    <control controlID="58" controlTypeID="com.balsamiq.mockups::PointyButton" x="962" y="523" w="212" h="-1" measuredW="165" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
-      <controlProperties>
-        <color>6710886</color>
-        <direction>right</direction>
-        <menuIcon>false</menuIcon>
-        <size>20</size>
-        <text>%C9tape%20suivante</text>
-      </controlProperties>
-    </control>
-    <control controlID="76" controlTypeID="__group__" x="189" y="292" w="956" h="70" measuredW="956" measuredH="70" zOrder="5" locked="false" isInGroup="-1">
-      <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="956" h="70" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="76">
-          <controlProperties>
-            <text>Date%20%E0%20partir%20de%20laquelle%20le%20vin%20est%20pr%EAt%20%E0%20%EAtre%20d%E9guster</text>
-          </controlProperties>
-        </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::TextInput" x="15" y="25" w="-1" h="-1" measuredW="85" measuredH="27" zOrder="1" locked="false" isInGroup="76">
-          <controlProperties>
-            <text>04/01/2014</text>
-          </controlProperties>
-        </control>
-        <control controlID="2" controlTypeID="com.balsamiq.mockups::Icon" x="110" y="22" w="-1" h="-1" measuredW="32" measuredH="32" zOrder="2" locked="false" isInGroup="76">
-          <controlProperties>
-            <icon>TableIcon%7Cmedium</icon>
-          </controlProperties>
-        </control>
-      </groupChildrenDescriptors>
-    </control>
-    <control controlID="79" controlTypeID="__group__" x="189" y="217" w="955" h="60" measuredW="955" measuredH="60" zOrder="6" locked="false" isInGroup="-1">
-      <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="955" h="60" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="79">
-          <controlProperties>
-            <text>Lieu%20de%20pr%E9l%E9vement</text>
-          </controlProperties>
-        </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="15" y="20" w="-1" h="-1" measuredW="237" measuredH="21" zOrder="1" locked="false" isInGroup="79">
-          <controlProperties>
-            <text>Nom%20du%20responsable%20%3A%20Gwenael%20Chichery</text>
-          </controlProperties>
-        </control>
-        <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="287" y="20" w="-1" h="-1" measuredW="221" measuredH="21" zOrder="2" locked="false" isInGroup="79">
-          <controlProperties>
-            <text>Adresse%20%3A%201%2C%20rue%20Garnier%20Neuilly%2C%2092110</text>
-          </controlProperties>
-        </control>
-        <control controlID="3" controlTypeID="com.balsamiq.mockups::Label" x="575" y="20" w="-1" h="-1" measuredW="109" measuredH="21" zOrder="3" locked="false" isInGroup="79">
-          <controlProperties>
-            <text>T%E9l%20%3A%200682876892</text>
-          </controlProperties>
-        </control>
-        <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="870" y="17" w="-1" h="-1" measuredW="70" measuredH="27" zOrder="4" locked="false" isInGroup="79">
-          <controlProperties>
-            <color>16750848</color>
-            <text>Modifier</text>
-          </controlProperties>
-        </control>
-      </groupChildrenDescriptors>
-    </control>
-    <control controlID="80" controlTypeID="com.balsamiq.mockups::TabBar" x="174" y="164" w="1000" h="346" measuredW="420" measuredH="100" zOrder="0" locked="false" isInGroup="-1">
-      <controlProperties>
-        <selectedIndex>0</selectedIndex>
-        <text>Conseil%20%28En%20cuve%20ou%20f%FBt%29%2C%20Contr%F4le%20externe%20%28En%20Bouteille%29</text>
-      </controlProperties>
-    </control>
-    <control controlID="83" controlTypeID="__group__" x="189" y="374" w="956" h="100" measuredW="956" measuredH="100" zOrder="7" locked="false" isInGroup="-1">
-      <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="956" h="71" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="83">
-          <controlProperties>
-            <text>Demande%20de%20pr%E9l%E9vement%20volontaire%20des%20VT/SGN</text>
-          </controlProperties>
-        </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::ComboBox" x="11" y="22" w="113" h="-1" measuredW="34" measuredH="78" zOrder="1" locked="false" isInGroup="83">
-          <controlProperties>
-            <text>%20%0AAvril%0AJuin%0AOctobre</text>
-          </controlProperties>
-        </control>
-      </groupChildrenDescriptors>
-    </control>
-    <control controlID="84" controlTypeID="com.balsamiq.mockups::PointyButton" x="933" y="468" w="212" h="-1" measuredW="171" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
-      <controlProperties>
-        <color>15110456</color>
-        <direction>right</direction>
-        <menuIcon>false</menuIcon>
-        <size>18</size>
-        <text>Valider%20et%20suivant</text>
-      </controlProperties>
     </control>
   </controls>
 </mockup>
