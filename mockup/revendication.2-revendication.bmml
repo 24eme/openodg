@@ -27,8 +27,8 @@
           <controlProperties>
             <align>right</align>
             <backgroundAlpha>1</backgroundAlpha>
-            <borderColor>10066329</borderColor>
-            <color>16777215</color>
+            <borderColor>0</borderColor>
+            <color>13421772</color>
             <markup>true</markup>
             <text/>
           </controlProperties>
