@@ -33,12 +33,7 @@
         <text>Valider</text>
       </controlProperties>
     </control>
-    <control controlID="61" controlTypeID="com.balsamiq.mockups::Label" x="426" y="223" w="-1" h="-1" measuredW="271" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Veuillez%20indiquer%20le%20nombre%20de%20lots%20par%20produit</text>
-      </controlProperties>
-    </control>
-    <control controlID="62" controlTypeID="com.balsamiq.mockups::Button" x="426" y="523" w="-1" h="-1" measuredW="148" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::Button" x="426" y="523" w="-1" h="-1" measuredW="148" measuredH="27" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <color>6989903</color>
         <icon>PlusBigIcon%7Cxsmall</icon>
@@ -129,7 +124,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="83" controlTypeID="com.balsamiq.mockups::PointyButton" x="426" y="577" w="445" h="-1" measuredW="429" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::PointyButton" x="426" y="577" w="445" h="-1" measuredW="429" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>left</direction>
@@ -185,19 +180,19 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="94" controlTypeID="com.balsamiq.mockups::HRule" x="1205" y="277" w="197" h="-1" measuredW="100" measuredH="10" zOrder="12" locked="false" isInGroup="-1">
+    <control controlID="94" controlTypeID="com.balsamiq.mockups::HRule" x="1205" y="277" w="197" h="-1" measuredW="100" measuredH="10" zOrder="11" locked="false" isInGroup="-1">
       <controlProperties>
         <backgroundAlpha>1</backgroundAlpha>
         <stroke>solid</stroke>
       </controlProperties>
     </control>
-    <control controlID="95" controlTypeID="com.balsamiq.mockups::Canvas" x="1206" y="267" w="193" h="13" measuredW="100" measuredH="70" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="95" controlTypeID="com.balsamiq.mockups::Canvas" x="1206" y="267" w="193" h="13" measuredW="100" measuredH="70" zOrder="9" locked="false" isInGroup="-1">
       <controlProperties>
         <borderStyle>none</borderStyle>
         <color>13421772</color>
       </controlProperties>
     </control>
-    <control controlID="97" controlTypeID="__group__" x="1202" y="244" w="200" h="267" measuredW="200" measuredH="267" zOrder="11" locked="false" isInGroup="-1">
+    <control controlID="97" controlTypeID="__group__" x="1202" y="244" w="200" h="267" measuredW="200" measuredH="267" zOrder="10" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="1" y="0" w="-1" h="-1" measuredW="197" measuredH="28" zOrder="0" locked="false" isInGroup="97">
           <controlProperties>
@@ -224,6 +219,11 @@
           </controlProperties>
         </control>
       </groupChildrenDescriptors>
+    </control>
+    <control controlID="98" controlTypeID="com.balsamiq.mockups::Label" x="426" y="225" w="-1" h="-1" measuredW="536" measuredH="21" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Veuillez%20indiquer%20le%20nombre%20de%20lots%20susceptibles%20d%27%EAtres%20pr%E9lev%E9%20en%20AOC%20Alsace%20Grand%20Cru</text>
+      </controlProperties>
     </control>
   </controls>
 </mockup>
