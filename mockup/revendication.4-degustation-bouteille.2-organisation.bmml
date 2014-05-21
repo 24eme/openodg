@@ -145,11 +145,11 @@
                 <text>Semaine%20du</text>
               </controlProperties>
             </control>
-            <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="0" y="0" w="157" h="27" measuredW="128" measuredH="27" zOrder="3" locked="false" isInGroup="0">
+            <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="0" y="0" w="357" h="27" measuredW="333" measuredH="27" zOrder="3" locked="false" isInGroup="0">
               <controlProperties>
                 <color>14540253</color>
                 <size>18</size>
-                <text>AOC%20Alsace%20</text>
+                <text>Toutes%20AOC%20Alsace%20%20%28sauf%20Grand%20Cru%29</text>
               </controlProperties>
             </control>
             <control controlID="4" controlTypeID="__group__" x="0" y="157" w="390" h="106" measuredW="390" measuredH="106" zOrder="4" locked="false" isInGroup="0">
