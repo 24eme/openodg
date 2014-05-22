@@ -1,0 +1,10 @@
+bin/config.inc
+config/app.yml
+config/databases.yml
+config/properties.ini
+apps/civa/config/factories.yml
+web/declaration_dev.php
+data/*.lck
+data/[^.]*
+cache/[^.]*
+log/[^.]*
