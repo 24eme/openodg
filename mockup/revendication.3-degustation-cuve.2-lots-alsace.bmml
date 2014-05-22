@@ -218,7 +218,7 @@
             </control>
           </groupChildrenDescriptors>
         </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="1" y="38" w="197" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="88">
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="1" y="37" w="197" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="88">
           <controlProperties>
             <backgroundAlpha>1</backgroundAlpha>
             <stroke>solid</stroke>
