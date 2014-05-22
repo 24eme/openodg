@@ -2,9 +2,8 @@
 # http://www.symfony-project.org/reference/1_4/en/07-Databases
 
 all:
-  doctrine:
-    class: sfDoctrineDatabase
+  default:
+    class: acCouchdbDatabase
     param:
-      dsn:      mysql:host=localhost;dbname=ava
-      username: root
-      password: 
+      dsn: http://localhost:5984/
+      dbname: ava
