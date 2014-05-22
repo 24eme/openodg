@@ -38,28 +38,28 @@
         <text>Veuillez%20indiquer%20le%20nombre%20de%20lots%20susceptibles%20d%27%EAtres%20pr%E9lev%E9%20en%20AOC%20Alsace%20%28AOC%20Alsace%20Communale%20et%20Lieu-dit%20inclus%29</text>
       </controlProperties>
     </control>
-    <control controlID="62" controlTypeID="com.balsamiq.mockups::Button" x="426" y="547" w="-1" h="-1" measuredW="148" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::Button" x="426" y="561" w="-1" h="-1" measuredW="148" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <color>6989903</color>
         <icon>PlusBigIcon%7Cxsmall</icon>
         <text>Ajouter%20un%20produit</text>
       </controlProperties>
     </control>
-    <control controlID="82" controlTypeID="__group__" x="426" y="273" w="770" h="266" measuredW="770" measuredH="266" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="82" controlTypeID="__group__" x="426" y="272" w="770" h="282" measuredW="770" measuredH="282" zOrder="5" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="__group__" x="0" y="0" w="770" h="266" measuredW="770" measuredH="266" zOrder="0" locked="false" isInGroup="82">
+        <control controlID="0" controlTypeID="__group__" x="0" y="0" w="770" h="282" measuredW="770" measuredH="282" zOrder="0" locked="false" isInGroup="82">
           <groupChildrenDescriptors>
-            <control controlID="0" controlTypeID="com.balsamiq.mockups::DataGrid" x="0" y="0" w="770" h="266" measuredW="317" measuredH="266" zOrder="0" locked="false" isInGroup="0">
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::DataGrid" x="0" y="0" w="770" h="282" measuredW="317" measuredH="282" zOrder="0" locked="false" isInGroup="0">
               <controlProperties>
                 <borderStyle>square</borderStyle>
                 <rowHeight>35</rowHeight>
-                <text>%2C%20Non%20VT%20/%20SGN%2C%20VT%20/%20SGN%2C%20Total%0AAssemblage%2C%2C%2C1%0AChasselas%2C%2C%0ASylvaner%2C%2C%2C3%0ARiesling%2C%2C%0AGewurtz%2C%2C%0APinot%20noir%20ros%E9%2C%2C%0APinot%20noir%20rouge%2C%2C%0A%7B50L%2C20C%2C20C%2C10C%7D</text>
+                <text>%2C%20Lots%5CrNon%20VT%20/%20SGN%2C%20Lots%5CrVT%20/%20SGN%2C%20Total%0AAssemblage%2C%2C%2C1%0AChasselas%2C%2C%0ASylvaner%2C%2C%2C3%0ARiesling%2C%2C%0AGewurtz%2C%2C%0APinot%20noir%20ros%E9%2C%2C%0APinot%20noir%20rouge%2C%2C%0A%7B50L%2C20C%2C20C%2C10C%7D</text>
                 <vLines>true</vLines>
               </controlProperties>
             </control>
           </groupChildrenDescriptors>
         </control>
-        <control controlID="7" controlTypeID="__group__" x="427" y="21" w="220" h="238" measuredW="220" measuredH="238" zOrder="1" locked="false" isInGroup="82">
+        <control controlID="7" controlTypeID="__group__" x="427" y="38" w="220" h="238" measuredW="220" measuredH="238" zOrder="1" locked="false" isInGroup="82">
           <groupChildrenDescriptors>
             <control controlID="0" controlTypeID="__group__" x="0" y="0" w="220" h="238" measuredW="220" measuredH="238" zOrder="0" locked="false" isInGroup="7">
               <groupChildrenDescriptors>
@@ -188,7 +188,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="88" controlTypeID="__group__" x="1202" y="235" w="200" h="304" measuredW="200" measuredH="304" zOrder="10" locked="false" isInGroup="-1">
+    <control controlID="88" controlTypeID="__group__" x="1202" y="251" w="200" h="304" measuredW="200" measuredH="304" zOrder="10" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
         <control controlID="0" controlTypeID="__group__" x="0" y="0" w="200" h="304" measuredW="200" measuredH="304" zOrder="0" locked="false" isInGroup="88">
           <groupChildrenDescriptors>
@@ -218,7 +218,7 @@
             </control>
           </groupChildrenDescriptors>
         </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="1" y="39" w="197" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="88">
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="1" y="38" w="197" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="88">
           <controlProperties>
             <backgroundAlpha>1</backgroundAlpha>
             <stroke>solid</stroke>
