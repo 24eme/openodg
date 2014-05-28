@@ -1,4 +1,4 @@
-<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1414" measuredH="615" mockupW="1004" mockupH="597">
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1414" measuredH="615" mockupW="1004" mockupH="612">
   <controls>
     <control controlID="0" controlTypeID="com.balsamiq.mockups::Canvas" x="410" y="166" w="1000" h="411" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
       <controlProperties>
@@ -54,7 +54,7 @@
                 <borderStyle>square</borderStyle>
                 <hLines>false</hLines>
                 <rowHeight>33</rowHeight>
-                <text>Appellation%20revendiqu%E9e%5Cr%2C%20Superficie%20totale%20%28ares%29%5Cr%2C%20Volume%20revendiqu%E9%20%28hl%29%5Cr%0AAOC%20Alsace%20Blanc%2C%2C%0AAOC%20Alsace%20Lieu-dit%20rouge%2C%2C%0AAOC%20Alsace%20Lieu-dit%20blanc%20%28VT/SGN%20inclus%29%2C%2C%0AAOC%20Alsace%20Communale%20rouge%2C%2C%0AAOC%20Alsace%20Communale%20blanc%20%28VT/SGN%20inclus%29%2C%2C%0AAOC%20Alsace%20Grands%20Crus%20%28VT/SGN%20inclus%29%2C%2C%0AAOC%20Alsace%20Pinot%20noir%2C%2C%0AAOC%20Alsace%20PN%20rouge%2C%2C%0AAOC%20Alsace%20Cr%E9mant%2C%2C%0A%7B50L%2C%2025C%2C%2025C%7D</text>
+                <text>Appellation%20revendiqu%E9e%5Cr%2C%20Superficie%20totale%20%28ares%29%5Cr%2C%20Volume%20revendiqu%E9%20%28hl%29%5Cr%0AAOC%20Alsace%20Blanc%20%28VT/SGN%20inclus%29%2C%2C%0AAOC%20Alsace%20Pinot%20noir%20ros%E9%2C%2C%0AAOC%20Alsace%20Pinot%20noir%20rouge%2C%2C%0AAOC%20Alsace%20Communale%20blanc%20%28VT/SGN%20inclus%29%2C%2C%0AAOC%20Alsace%20Communale%20rouge%2C%2C%0AAOC%20Alsace%20Lieu-dit%20blanc%20%28VT/SGN%20inclus%29%2C%2C%0AAOC%20Alsace%20Lieu-dit%20rouge%2C%2C%0AAOC%20Alsace%20Grands%20Crus%20%28VT/SGN%20inclus%29%2C%2C%0AAOC%20Alsace%20Cr%E9mant%2C%2C%0A%7B50L%2C%2025C%2C%2025C%7D</text>
                 <vLines>true</vLines>
               </controlProperties>
             </control>
@@ -204,38 +204,38 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="62" controlTypeID="__group__" x="414" y="122" w="999" h="27" measuredW="999" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="63" controlTypeID="__group__" x="414" y="122" w="999" h="27" measuredW="999" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="801" y="0" w="198" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="62">
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="801" y="0" w="198" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="63">
           <controlProperties>
             <color>14540253</color>
             <size>18</size>
             <text>5.%20Validation</text>
           </controlProperties>
         </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="567" y="0" w="273" h="-1" measuredW="225" measuredH="27" zOrder="1" locked="false" isInGroup="62">
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="567" y="0" w="273" h="-1" measuredW="192" measuredH="27" zOrder="1" locked="false" isInGroup="63">
           <controlProperties>
             <color>14540253</color>
             <size>18</size>
-            <text>4.%20D%E9gustation%20bouteille</text>
+            <text>4.%20Contr%F4le%20Externe</text>
           </controlProperties>
         </control>
-        <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="325" y="0" w="264" h="-1" measuredW="196" measuredH="27" zOrder="2" locked="false" isInGroup="62">
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="325" y="0" w="264" h="-1" measuredW="217" measuredH="27" zOrder="2" locked="false" isInGroup="63">
           <controlProperties>
             <color>14540253</color>
             <direction>right</direction>
             <size>18</size>
-            <text>3.%20D%E9gustation%20cuve</text>
+            <text>3.%20D%E9gustation%20Conseil</text>
           </controlProperties>
         </control>
-        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="136" y="0" w="212" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="62">
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="136" y="0" w="212" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="63">
           <controlProperties>
             <color>15110456</color>
             <size>18</size>
             <text>2.%20Revendication</text>
           </controlProperties>
         </control>
-        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="162" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="62">
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="162" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="63">
           <controlProperties>
             <color>6989903</color>
             <size>18</size>
@@ -243,6 +243,11 @@
           </controlProperties>
         </control>
       </groupChildrenDescriptors>
+    </control>
+    <control controlID="64" controlTypeID="com.balsamiq.mockups::StickyNote" x="840" y="3" w="141" h="103" measuredW="109" measuredH="123" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Revendication%20pour%20r%E9coltants%20avec%20reprise%20DR</text>
+      </controlProperties>
     </control>
   </controls>
 </mockup>

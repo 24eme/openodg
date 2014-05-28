@@ -24,7 +24,7 @@
         <text>%C9tape%20suivante</text>
       </controlProperties>
     </control>
-    <control controlID="59" controlTypeID="com.balsamiq.mockups::PointyButton" x="1078" y="608" w="326" h="-1" measuredW="305" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+    <control controlID="59" controlTypeID="com.balsamiq.mockups::PointyButton" x="1078" y="608" w="326" h="-1" measuredW="305" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>right</direction>
@@ -33,35 +33,35 @@
         <text>Valider%20et%20r%E9partir%20les%20lots%20suivant</text>
       </controlProperties>
     </control>
-    <control controlID="61" controlTypeID="com.balsamiq.mockups::Label" x="426" y="220" w="-1" h="-1" measuredW="731" measuredH="21" zOrder="7" locked="false" isInGroup="-1">
+    <control controlID="61" controlTypeID="com.balsamiq.mockups::Label" x="426" y="220" w="-1" h="-1" measuredW="731" measuredH="21" zOrder="6" locked="false" isInGroup="-1">
       <controlProperties>
-        <text>Veuillez%20indiquer%20le%20nombre%20de%20lots%20susceptibles%20d%27%EAtres%20pr%E9lev%E9%20en%20AOC%20Alsace%20%28AOC%20Alsace%20Communale%20et%20Lieu-dit%20inclus%29</text>
+        <text>Veuillez%20indiquer%20le%20nombre%20de%20lots%20susceptibles%20d%27%EAtre%20pr%E9lev%E9s%20en%20AOC%20Alsace%20%28AOC%20Alsace%20Communale%20et%20Lieu-dit%20inclus%29</text>
       </controlProperties>
     </control>
-    <control controlID="62" controlTypeID="com.balsamiq.mockups::Button" x="426" y="561" w="-1" h="-1" measuredW="148" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
+    <control controlID="62" controlTypeID="com.balsamiq.mockups::Button" x="426" y="561" w="-1" h="-1" measuredW="148" measuredH="27" zOrder="7" locked="false" isInGroup="-1">
       <controlProperties>
         <color>6989903</color>
         <icon>PlusBigIcon%7Cxsmall</icon>
         <text>Ajouter%20un%20produit</text>
       </controlProperties>
     </control>
-    <control controlID="82" controlTypeID="__group__" x="426" y="272" w="770" h="282" measuredW="770" measuredH="282" zOrder="5" locked="false" isInGroup="-1">
+    <control controlID="82" controlTypeID="__group__" x="426" y="272" w="547" h="282" measuredW="547" measuredH="282" zOrder="4" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="__group__" x="0" y="0" w="770" h="282" measuredW="770" measuredH="282" zOrder="0" locked="false" isInGroup="82">
+        <control controlID="0" controlTypeID="__group__" x="0" y="0" w="547" h="282" measuredW="547" measuredH="282" zOrder="0" locked="false" isInGroup="82">
           <groupChildrenDescriptors>
-            <control controlID="0" controlTypeID="com.balsamiq.mockups::DataGrid" x="0" y="0" w="770" h="282" measuredW="317" measuredH="282" zOrder="0" locked="false" isInGroup="0">
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::DataGrid" x="0" y="0" w="547" h="282" measuredW="209" measuredH="282" zOrder="0" locked="false" isInGroup="0">
               <controlProperties>
                 <borderStyle>square</borderStyle>
                 <rowHeight>35</rowHeight>
-                <text>%2C%20Lots%5CrNon%20VT%20/%20SGN%2C%20Lots%5CrVT%20/%20SGN%2C%20Total%0AAssemblage%2C%2C%2C1%0AChasselas%2C%2C%0ASylvaner%2C%2C%2C3%0ARiesling%2C%2C%0AGewurtz%2C%2C%0APinot%20noir%20ros%E9%2C%2C%0APinot%20noir%20rouge%2C%2C%0A%7B50L%2C20C%2C20C%2C10C%7D</text>
+                <text>%2C%20Lots%5CrHors%20VT%20/%20SGN%0AAssemblage%2C%0AChasselas%2C%0ASylvaner%2C%0ARiesling%2C%0AGewurtz%2C%0APinot%20noir%20ros%E9%2C%0APinot%20noir%20rouge%2C%0A%7B70L%2C%2030C%7D</text>
                 <vLines>true</vLines>
               </controlProperties>
             </control>
           </groupChildrenDescriptors>
         </control>
-        <control controlID="7" controlTypeID="__group__" x="427" y="38" w="220" h="238" measuredW="220" measuredH="238" zOrder="1" locked="false" isInGroup="82">
+        <control controlID="7" controlTypeID="__group__" x="427" y="38" w="62" h="238" measuredW="62" measuredH="238" zOrder="1" locked="false" isInGroup="82">
           <groupChildrenDescriptors>
-            <control controlID="0" controlTypeID="__group__" x="0" y="0" w="220" h="238" measuredW="220" measuredH="238" zOrder="0" locked="false" isInGroup="7">
+            <control controlID="0" controlTypeID="__group__" x="0" y="0" w="62" h="238" measuredW="62" measuredH="238" zOrder="0" locked="false" isInGroup="7">
               <groupChildrenDescriptors>
                 <control controlID="0" controlTypeID="__group__" x="0" y="0" w="62" h="27" measuredW="62" measuredH="27" zOrder="0" locked="false" isInGroup="0">
                   <groupChildrenDescriptors>
@@ -92,7 +92,7 @@
                     </control>
                   </groupChildrenDescriptors>
                 </control>
-                <control controlID="5" controlTypeID="__group__" x="0" y="176" w="62" h="26" measuredW="62" measuredH="26" zOrder="6" locked="false" isInGroup="0">
+                <control controlID="5" controlTypeID="__group__" x="0" y="176" w="62" h="26" measuredW="62" measuredH="26" zOrder="5" locked="false" isInGroup="0">
                   <groupChildrenDescriptors>
                     <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="0" y="0" w="62" h="-1" measuredW="79" measuredH="26" zOrder="0" locked="false" isInGroup="5">
                       <controlProperties>
@@ -112,12 +112,7 @@
                     <text/>
                   </controlProperties>
                 </control>
-                <control controlID="9" controlTypeID="com.balsamiq.mockups::TextInput" x="158" y="176" w="62" h="-1" measuredW="79" measuredH="26" zOrder="5" locked="false" isInGroup="0">
-                  <controlProperties>
-                    <text/>
-                  </controlProperties>
-                </control>
-                <control controlID="10" controlTypeID="__group__" x="0" y="212" w="62" h="26" measuredW="62" measuredH="26" zOrder="7" locked="false" isInGroup="0">
+                <control controlID="10" controlTypeID="__group__" x="0" y="212" w="62" h="26" measuredW="62" measuredH="26" zOrder="6" locked="false" isInGroup="0">
                   <groupChildrenDescriptors>
                     <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="0" y="0" w="62" h="-1" measuredW="79" measuredH="26" zOrder="0" locked="false" isInGroup="10">
                       <controlProperties>
@@ -132,7 +127,7 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="83" controlTypeID="com.balsamiq.mockups::PointyButton" x="426" y="608" w="349" h="-1" measuredW="240" measuredH="27" zOrder="9" locked="false" isInGroup="-1">
+    <control controlID="83" controlTypeID="com.balsamiq.mockups::PointyButton" x="426" y="608" w="349" h="-1" measuredW="240" measuredH="27" zOrder="8" locked="false" isInGroup="-1">
       <controlProperties>
         <color>15110456</color>
         <direction>left</direction>
@@ -148,38 +143,43 @@
         <text>Contr%F4le%20interne%5CrEn%20cuve%20ou%20f%FBt%2C%20Lots%5CrAOC%20Alsace%2C%20Lots%5CrAOC%20Alsace%20Grand%20Cru</text>
       </controlProperties>
     </control>
-    <control controlID="85" controlTypeID="__group__" x="414" y="120" w="999" h="27" measuredW="999" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="89" controlTypeID="com.balsamiq.mockups::Label" x="426" y="244" w="-1" h="-1" measuredW="462" measuredH="21" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Un%20lot%20doit%20correspondre%20au%20maximum%20%E0%204%20r%E9cipients%20et%20au%20maximum%20%E0%202000%20hl</text>
+      </controlProperties>
+    </control>
+    <control controlID="90" controlTypeID="__group__" x="414" y="122" w="999" h="27" measuredW="999" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
       <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="801" y="0" w="198" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="85">
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="801" y="0" w="198" h="-1" measuredW="126" measuredH="27" zOrder="0" locked="false" isInGroup="90">
           <controlProperties>
             <color>14540253</color>
             <size>18</size>
             <text>5.%20Validation</text>
           </controlProperties>
         </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="567" y="0" w="273" h="-1" measuredW="225" measuredH="27" zOrder="1" locked="false" isInGroup="85">
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::PointyButton" x="567" y="0" w="273" h="-1" measuredW="192" measuredH="27" zOrder="1" locked="false" isInGroup="90">
           <controlProperties>
             <color>14540253</color>
             <size>18</size>
-            <text>4.%20D%E9gustation%20bouteille</text>
+            <text>4.%20Contr%F4le%20Externe</text>
           </controlProperties>
         </control>
-        <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="325" y="0" w="264" h="-1" measuredW="196" measuredH="27" zOrder="2" locked="false" isInGroup="85">
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::PointyButton" x="325" y="0" w="264" h="-1" measuredW="217" measuredH="27" zOrder="2" locked="false" isInGroup="90">
           <controlProperties>
             <color>15110456</color>
             <direction>right</direction>
             <size>18</size>
-            <text>3.%20D%E9gustation%20cuve</text>
+            <text>3.%20D%E9gustation%20Conseil</text>
           </controlProperties>
         </control>
-        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="136" y="0" w="212" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="85">
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="136" y="0" w="212" h="-1" measuredW="165" measuredH="27" zOrder="3" locked="false" isInGroup="90">
           <controlProperties>
             <color>6989903</color>
             <size>18</size>
             <text>2.%20Revendication</text>
           </controlProperties>
         </control>
-        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="162" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="85">
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="162" h="-1" measuredW="140" measuredH="27" zOrder="4" locked="false" isInGroup="90">
           <controlProperties>
             <color>6989903</color>
             <size>18</size>
@@ -187,49 +187,6 @@
           </controlProperties>
         </control>
       </groupChildrenDescriptors>
-    </control>
-    <control controlID="88" controlTypeID="__group__" x="1202" y="251" w="200" h="304" measuredW="200" measuredH="304" zOrder="10" locked="false" isInGroup="-1">
-      <groupChildrenDescriptors>
-        <control controlID="0" controlTypeID="__group__" x="0" y="0" w="200" h="304" measuredW="200" measuredH="304" zOrder="0" locked="false" isInGroup="88">
-          <groupChildrenDescriptors>
-            <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="1" y="0" w="197" h="-1" measuredW="197" measuredH="28" zOrder="0" locked="false" isInGroup="0">
-              <controlProperties>
-                <borderColor>0</borderColor>
-                <color>6989903</color>
-                <size>14</size>
-                <text>Informations%20issues%20de%20la%20DR</text>
-              </controlProperties>
-            </control>
-            <control controlID="1" controlTypeID="com.balsamiq.mockups::DataGrid" x="0" y="23" w="200" h="281" measuredW="170" measuredH="247" zOrder="1" locked="false" isInGroup="0">
-              <controlProperties>
-                <alternateRowColor>15134199</alternateRowColor>
-                <borderStyle>square</borderStyle>
-                <color>16777215</color>
-                <rowHeight>35</rowHeight>
-                <text>%5CrNon%20VT%20/%20SGN%2C%20%5CrVT%20/%20SGN%0A150.50%2C%0A80.12%0A125.10%20%0A9.30%0A323.10%2C%2063.10%0A100.00%2C%20%0A%7B50C%2C%2050C%7D</text>
-              </controlProperties>
-            </control>
-            <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="43" y="22" w="122" h="-1" measuredW="122" measuredH="20" zOrder="2" locked="false" isInGroup="0">
-              <controlProperties>
-                <align>center</align>
-                <size>12</size>
-                <text>Volume%20sur%20place%20total</text>
-              </controlProperties>
-            </control>
-          </groupChildrenDescriptors>
-        </control>
-        <control controlID="1" controlTypeID="com.balsamiq.mockups::HRule" x="1" y="37" w="197" h="-1" measuredW="100" measuredH="10" zOrder="1" locked="false" isInGroup="88">
-          <controlProperties>
-            <backgroundAlpha>1</backgroundAlpha>
-            <stroke>solid</stroke>
-          </controlProperties>
-        </control>
-      </groupChildrenDescriptors>
-    </control>
-    <control controlID="89" controlTypeID="com.balsamiq.mockups::Label" x="426" y="244" w="-1" h="-1" measuredW="451" measuredH="21" zOrder="11" locked="false" isInGroup="-1">
-      <controlProperties>
-        <text>Un%20lot%20doit%20correspondre%20au%20maximum%204%20r%E9cipients%20et%20au%20maximum%20%E0%202000%20hl</text>
-      </controlProperties>
     </control>
   </controls>
 </mockup>
