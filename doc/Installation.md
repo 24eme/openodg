@@ -25,12 +25,15 @@ Lancer le script d'installation :
  > bash bin/install.sh
 
 Test avec un serveur web PHP :
+
  > cd web
+
  > php -S localhost:9000
 
 Droit d'écriture apache sur les des dossiers cache et log
 
  > sudo chown www-data:your_user cache log
+
  > sudo chmod g+w cache log
 
 Apache Virtual host:
