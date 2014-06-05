@@ -1,41 +1,62 @@
 <?php
-/**
- * Model for ConfigurationAppellation
- *
- */
 
 class ConfigurationAppellation extends BaseConfigurationAppellation {
-	
-	  const TYPE_NOEUD = 'appellation';
+
+    public function getMentions() {
+        return $this->filter('^mention');
+    }
+
+    public function getLieux() {
+
+        return $this->getChildrenNodeDeep();
+    }
 
     public function getChildrenNode() {
 
-      return $this->mentions;
+        return $this->getMentions();
     }
 
-    public function getGenre() {
+    public function hasManyLieu() {
 
-      return $this->getParentNode();
+        return $this->getChildrenNodeDeep()->hasManyNoeuds();
     }
 
-    public function getCertification() {
-
-        return $this->getGenre()->getCertification();
+    public function hasLieuEditable() {
+        if ($this->exist('detail_lieu_editable') && $this->get('detail_lieu_editable'))
+            return true;
+        return false;
     }
 
-    public function setDonneesCsv($datas) {
-      parent::setDonneesCsv($datas);
-    	$this->getGenre()->setDonneesCsv($datas);
-    	$this->libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_DENOMINATION_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_DENOMINATION_LIBELLE] : null;
-    	$this->code = ($datas[ProduitCsvFile::CSV_PRODUIT_DENOMINATION_CODE])? $datas[ProduitCsvFile::CSV_PRODUIT_DENOMINATION_CODE] : null;
-      $this->densite = ($datas[ProduitCsvFile::CSV_PRODUIT_DENSITE])? $datas[ProduitCsvFile::CSV_PRODUIT_DENSITE] : Configuration::DEFAULT_DENSITE;
-    	
-    	$this->setDroitDouaneCsv($datas, ProduitCsvFile::CSV_PRODUIT_DENOMINATION_CODE_APPLICATIF_DROIT);
-    	$this->setDroitCvoCsv($datas, ProduitCsvFile::CSV_PRODUIT_DENOMINATION_CODE_APPLICATIF_DROIT); 
-        
+    public function getNbMention() {
+        return count($this->getMentions());
+    }
+
+    public function hasManyMention(){
+        return ($this->filter('^mention')->count() > 1);
     }
     
-  	public function getTypeNoeud() {
-  		return self::TYPE_NOEUD;
-  	}
+    public function hasCepageRB() {
+        foreach($this->getLieux() as $lieu) {
+            if($lieu->hasCepageRB()) {
+                return true;
+            }
+        }
+       
+        return false;
+    }
+
+    public function getDistinctLieux()
+    {
+        $arrLieux = array();
+        foreach($this->getMentions() as $mention){
+            foreach( $mention->getLieux() as $key =>  $lieu){
+                if(!array_key_exists($key, $arrLieux)){
+                    $arrLieux[$key] = $lieu;
+                }
+            }
+        break;
+        }
+    return $arrLieux;
+    }
+
 }

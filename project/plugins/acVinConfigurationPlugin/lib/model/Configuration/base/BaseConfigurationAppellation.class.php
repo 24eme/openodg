@@ -4,37 +4,43 @@
  * 
  * Base model for ConfigurationAppellation
 
+ * @property string $appellation
  * @property string $libelle
- * @property string $code
- * @property string $code_produit
- * @property string $code_comptable
- * @property string $code_douane
- * @property string $densite
- * @property ConfigurationDetail $detail
- * @property acCouchdbJson $interpro
- * @property acCouchdbJson $departements
- * @property acCouchdbJson $mentions
+ * @property string $libelle_long
+ * @property float $rendement
+ * @property float $rendement_appellation
+ * @property integer $mout
+ * @property integer $auto_ds
+ * @property integer $no_total_cepage
+ * @property integer $detail_lieu_editable
+ * @property integer $exclude_total
+ * @property string $no_vtsgn
+ * @property ConfigurationDouane $douane
 
+ * @method string getAppellation()
+ * @method string setAppellation()
  * @method string getLibelle()
  * @method string setLibelle()
- * @method string getCode()
- * @method string setCode()
- * @method string getCodeProduit()
- * @method string setCodeProduit()
- * @method string getCodeComptable()
- * @method string setCodeComptable()
- * @method string getCodeDouane()
- * @method string setCodeDouane()
- * @method string getDensite()
- * @method string setDensite()
- * @method ConfigurationDetail getDetail()
- * @method ConfigurationDetail setDetail()
- * @method acCouchdbJson getInterpro()
- * @method acCouchdbJson setInterpro()
- * @method acCouchdbJson getDepartements()
- * @method acCouchdbJson setDepartements()
- * @method acCouchdbJson getMentions()
- * @method acCouchdbJson setMentions()
+ * @method string getLibelleLong()
+ * @method string setLibelleLong()
+ * @method float getRendement()
+ * @method float setRendement()
+ * @method float getRendementAppellation()
+ * @method float setRendementAppellation()
+ * @method integer getMout()
+ * @method integer setMout()
+ * @method integer getAutoDs()
+ * @method integer setAutoDs()
+ * @method integer getNoTotalCepage()
+ * @method integer setNoTotalCepage()
+ * @method integer getDetailLieuEditable()
+ * @method integer setDetailLieuEditable()
+ * @method integer getExcludeTotal()
+ * @method integer setExcludeTotal()
+ * @method string getNoVtsgn()
+ * @method string setNoVtsgn()
+ * @method ConfigurationDouane getDouane()
+ * @method ConfigurationDouane setDouane()
  
  */
 

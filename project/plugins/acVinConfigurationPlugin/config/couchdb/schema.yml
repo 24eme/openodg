@@ -12,968 +12,197 @@ Configuration:
     fields:
       _id: {  }
       _rev: {  }
-      type: {  }
-      campagne: {  }
-      labels:
+      type: {}
+      campagne: {}
+      virtual : {required: false}
+      dr_non_editable: {required: false}
+      intitule:
+        type: array_collection
+        definition:
+          fields:
+            '*': {  }
+      motif_non_recolte:
         type: collection
         definition:
           fields:
             '*': {  }
-      contenances:
-        type: collection
-        definition:
-          fields:
-            '*': {  }
-      droits:
-        type: collection
-        definition:
-          fields:
-            '*': {  }
-      libelle_detail_ligne:
-        type: collection
-        definition:
-          fields:
-            stocks_debut:
-              type: collection
-              definition:
-                fields:
-                  '*': {  }
-            entrees:
-              type: collection
-              definition:
-                fields:
-                  '*': {  }
-            sorties:
-              type: collection
-              definition:
-                fields:
-                  '*': {  }
-            stocks_fin:
-              type: collection
-              definition:
-                fields:
-                  '*': {  }
-      alias:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: array_collection
-              definition:
-                fields:
-                  '*': {  }
       declaration:
         type: collection
         class: ConfigurationDeclaration
         inheritance: _ConfigurationDeclaration
         definition:
           fields:
-            detail:
-              required: false
-              class: ConfigurationDetail
+            no_usages_industriels: { required: false}
+            no_recapitulatif_couleur: { required: false}
+            douane :
               type: collection
+              class: ConfigurationDouane
               definition:
                 fields:
-                  stocks_debut:
-                    required: false
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          class: ConfigurationDetailLigne
-                          type: collection
-                          definition:
-                            fields:
-                              readable: { type: integer }
-                              writable: { type: integer }
-                              details: { type: integer }
-                              mouvement_coefficient: { type: integer }
-                              vrac: { type: integer }
-                              facturable: { type: integer }
-                  entrees:
-                    required: false
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          class: ConfigurationDetailLigne
-                          type: collection
-                          definition:
-                            fields:
-                              readable: { type: integer }
-                              writable: { type: integer }
-                              details: { type: integer }
-                              mouvement_coefficient: { type: integer }
-                              vrac: { type: integer }
-                              facturable: { type: integer }
-                  sorties:
-                    required: false
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          class: ConfigurationDetailLigne
-                          type: collection
-                          definition:
-                            fields:
-                              readable: { type: integer }
-                              writable: { type: integer }
-                              details: { type: integer }
-                              mouvement_coefficient: { type: integer }
-                              vrac: { type: integer }
-                              facturable: { type: integer }
-                  stocks_fin:
-                    required: false
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          class: ConfigurationDetailLigne
-                          type: collection
-                          definition:
-                            fields:
-                              readable: {  }
-                              writable: {  }
-                              details: {  }
-                              mouvement_coefficient: {  }
-                              vrac: { type: integer }
-                              facturable: {  }
-            certifications:
+                  type_aoc: {required: false}
+                  couleur: {required: false}
+                  appellation_lieu: {required: false}
+                  qualite: {required: false}
+                  qualite_vt: {required: false}
+                  qualite_sgn: {required: false}
+                  qualite_aoc: {required: false}
+                  code_cepage: {required: false}
+            '*':
+              # ------- Certification ---------
               type: collection
+              class: ConfigurationCertification
+              inheritance: _ConfigurationDeclaration
               definition:
                 fields:
+                  rendement: { type: float }
+                  libelle: { }
+                  libelle_long: { required: false }
+                  douane:
+                    type: collection
+                    class: ConfigurationDouane
+                    definition:
+                      fields:
+                        '*': {  }
                   '*':
-                    # CERTIFICATION
-                    class: ConfigurationCertification
-                    inheritance: _ConfigurationDeclaration
+                  # ------- Genre ---------
                     type: collection
+                    class: ConfigurationGenre
+                    inheritance: _ConfigurationDeclaration
                     definition:
                       fields:
-                        libelle: {  }
-                        format_libelle: {  }
-                        code: {  }
-                        code_produit: {  }
-                        code_comptable: {  }
-                        code_douane: {  }
-                        departements:
-                          type: array_collection
+                        rendement: { type: float }
+                        libelle: { }
+                        libelle_long: { required: false }
+                        douane:
+                          type: collection
+                          class: ConfigurationDouane
                           definition:
                             fields:
                               '*': {  }
-                        interpro:
+                        '*':
+                        # ------- APPELLATION ---------
                           type: collection
+                          class: ConfigurationAppellation
+                          inheritance: _ConfigurationDeclaration
                           definition:
                             fields:
-                              '*':
+                              appellation: { }
+                              libelle: {  }
+                              libelle_long: { required: false }
+                              rendement : { type: float }
+                              rendement_appellation: { type: float }
+                              mout: {type: integer}
+                              auto_ds: {type: integer, required: false}
+                              no_total_cepage: {type: integer, required: false}
+                              detail_lieu_editable: {type: integer, required: false}
+                              exclude_total: {type: integer, required: false}
+                              no_vtsgn: {required: false}
+                              douane :
                                 type: collection
+                                class: ConfigurationDouane
                                 definition:
                                   fields:
-                                    labels:
-                                      type: array_collection
-                                      definition:
-                                        fields:
-                                          '*': {  }
-                                    droits:
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          douane:
-                                            class: ConfigurationDroits
-                                            type: array_collection
-                                            definition:
-                                              fields:
-                                                '*':
-                                                  class: ConfigurationDroit
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      date: {  }
-                                                      taux: { type: float }
-                                                      code: {  }
-                                                      libelle: {  }
-                                          cvo:
-                                            class: ConfigurationDroits
-                                            type: array_collection
-                                            definition:
-                                              fields:
-                                                '*':
-                                                  class: ConfigurationDroit
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      date: {  }
-                                                      taux: { type: float }
-                                                      code: {  }
-                                                      libelle: {  }
-                        genres:
-                          type: collection
-                          definition:
-                            fields:
+                                    type_aoc: {required: false}
+                                    couleur: {required: false}
+                                    appellation_lieu: {required: false}
+                                    qualite: {required: false}
+                                    qualite_aoc: {required: false}
+                                    code_cepage: {required: false}
+                                    no_dr: { type: integer, required: false }
+                                    no_ds: { type: integer, required: false }
+                              # ------- MENTION ----------
                               '*':
-                                # GENRE
-                                class: ConfigurationGenre
+                                type : collection
+                                class: ConfigurationMention
                                 inheritance: _ConfigurationDeclaration
-                                type: collection
                                 definition:
                                   fields:
                                     libelle: {  }
-                                    format_libelle: {  }
-                                    code: {  }
-                                    code_produit: {  }
-                                    code_comptable: {  }
-                                    code_douane: {  }
-                                    detail:
-                                      required: false
-                                      class: ConfigurationDetail
+                                    libelle_long: { required: false }
+                                    rendement: { type: float  }
+                                    rendement_mention: { type: float  }
+                                    douane :
                                       type: collection
-                                      definition:
-                                        fields:
-                                          stocks_debut:
-                                            required: false
-                                            type: collection
-                                            definition:
-                                              fields:
-                                                '*':
-                                                  class: ConfigurationDetailLigne
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      readable: { type: integer }
-                                                      writable: { type: integer }
-                                                      details: { type: integer }
-                                                      mouvement_coefficient: { type: integer }
-                                                      vrac: { type: integer }
-                                                      facturable: { type: integer }
-                                          entrees:
-                                            required: false
-                                            type: collection
-                                            definition:
-                                              fields:
-                                                '*':
-                                                  class: ConfigurationDetailLigne
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      readable: { type: integer }
-                                                      writable: { type: integer }
-                                                      details: { type: integer }
-                                                      mouvement_coefficient: { type: integer }
-                                                      vrac: { type: integer }
-                                                      facturable: { type: integer }
-                                          sorties:
-                                            required: false
-                                            type: collection
-                                            definition:
-                                              fields:
-                                                '*':
-                                                  class: ConfigurationDetailLigne
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      readable: { type: integer }
-                                                      writable: { type: integer }
-                                                      details: { type: integer }
-                                                      mouvement_coefficient: { type: integer }
-                                                      vrac: { type: integer }
-                                                      facturable: { type: integer }
-                                          stocks_fin:
-                                            required: false
-                                            type: collection
-                                            definition:
-                                              fields:
-                                                '*':
-                                                  class: ConfigurationDetailLigne
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      readable: { type: integer }
-                                                      writable: { type: integer }
-                                                      details: { type: integer }
-                                                      mouvement_coefficient: { type: integer }
-                                                      vrac: { type: integer }
-                                                      facturable: { type: integer }
-                                    interpro:
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          '*':
-                                            type: collection
-                                            definition:
-                                              fields:
-                                                labels:
-                                                  type: array_collection
-                                                  definition:
-                                                    fields:
-                                                      '*': {  }
-                                                droits:
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      douane:
-                                                        class: ConfigurationDroits
-                                                        type: array_collection
-                                                        definition:
-                                                          fields:
-                                                            '*':
-                                                              class: ConfigurationDroit
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  date: {  }
-                                                                  taux: { type: float }
-                                                                  code: {  }
-                                                                  libelle: {  }
-                                                      cvo:
-                                                        class: ConfigurationDroits
-                                                        type: array_collection
-                                                        definition:
-                                                          fields:
-                                                            '*':
-                                                              class: ConfigurationDroit
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  date: {  }
-                                                                  taux: { type: float }
-                                                                  code: {  }
-                                                                  libelle: {  }
-                                    departements:
-                                      type: array_collection
+                                      class: ConfigurationDouane
                                       definition:
                                         fields:
                                           '*': {  }
-                                    appellations:
+                                    '*':
+                                    # ------------ LIEU --------------
                                       type: collection
+                                      class: ConfigurationLieu
+                                      inheritance: _ConfigurationDeclaration
                                       definition:
                                         fields:
-                                          '*':
-                                            # APPELLATION
-                                            class: ConfigurationAppellation
-                                            inheritance: _ConfigurationDeclaration
+                                          rendement: {type: float}
+                                          rendement_mention: { type: float  }
+                                          rendement_appellation: { type: float }
+                                          libelle: { }
+                                          libelle_long: { required: false }
+                                          douane :
                                             type: collection
+                                            class: ConfigurationDouane
                                             definition:
                                               fields:
-                                                libelle: {  }
-                                                format_libelle: {  }
-                                                code: {  }
-                                                code_produit: {  }
-                                                code_comptable: {  }
-                                                code_douane: {  }
-                                                densite: {  }
-                                                detail:
-                                                  required: false
-                                                  class: ConfigurationDetail
+                                                type_aoc: {required: false}
+                                                couleur: {required: false}
+                                                appellation_lieu: {required: false}
+                                                qualite: {required: false}
+                                                code_cepage: {required: false}
+                                                no_dr: { type: integer, required: false }
+                                                no_ds: { type: integer, required: false }
+                                          # ------------ COULEUR --------------
+                                          '*' :
+                                            type: collection
+                                            class: ConfigurationCouleur
+                                            inheritance: _ConfigurationDeclaration
+                                            definition:
+                                              fields:
+                                                rendement_couleur: { type: float }
+                                                rendement: { type: float }
+                                                libelle: { }
+                                                libelle_long: { required: false }
+                                                douane :
                                                   type: collection
+                                                  class: ConfigurationDouane
                                                   definition:
                                                     fields:
-                                                      stocks_debut:
-                                                        required: false
-                                                        type: collection
-                                                        definition:
-                                                          fields:
-                                                            '*':
-                                                              class: ConfigurationDetailLigne
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  readable: { type: integer }
-                                                                  writable: { type: integer }
-                                                                  details: { type: integer }
-                                                                  mouvement_coefficient: { type: integer }
-                                                                  vrac: { type: integer }
-                                                                  facturable: { type: integer }
-                                                      entrees:
-                                                        required: false
-                                                        type: collection
-                                                        definition:
-                                                          fields:
-                                                            '*':
-                                                              class: ConfigurationDetailLigne
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  readable: { type: integer }
-                                                                  writable: { type: integer }
-                                                                  details: { type: integer }
-                                                                  mouvement_coefficient: { type: integer }
-                                                                  vrac: { type: integer }
-                                                                  facturable: { type: integer }
-                                                      sorties:
-                                                        required: false
-                                                        type: collection
-                                                        definition:
-                                                          fields:
-                                                            '*':
-                                                              class: ConfigurationDetailLigne
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  readable: { type: integer }
-                                                                  writable: { type: integer }
-                                                                  details: { type: integer }
-                                                                  mouvement_coefficient: { type: integer }
-                                                                  vrac: { type: integer }
-                                                                  facturable: { type: integer }
-                                                      stocks_fin:
-                                                        required: false
-                                                        type: collection
-                                                        definition:
-                                                          fields:
-                                                            '*':
-                                                              class: ConfigurationDetailLigne
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  readable: { type: integer }
-                                                                  writable: { type: integer }
-                                                                  details: { type: integer }
-                                                                  mouvement_coefficient: { type: integer }
-                                                                  vrac: { type: integer }
-                                                                  facturable: { type: integer }
-                                                interpro:
+                                                      type_aoc: {required: false}
+                                                      couleur: {required: false}
+                                                      appellation_lieu: {required: false}
+                                                      qualite: {required: false}
+                                                      code_cepage: {required: false}
+                                                      no_dr: { type: integer, required: false }
+                                                      no_ds: { type: integer, required: false }
+                                                '*':
+                                                # ------------ CEPAGE -------------
                                                   type: collection
+                                                  class: ConfigurationCepage
+                                                  inheritance: _ConfigurationDeclaration
                                                   definition:
                                                     fields:
-                                                      '*':
+                                                      no_vtsgn: {required: false}
+                                                      douane :
                                                         type: collection
+                                                        class: ConfigurationDouane
                                                         definition:
                                                           fields:
-                                                            labels:
-                                                              type: array_collection
-                                                              definition:
-                                                                fields:
-                                                                  '*': {  }
-                                                            droits:
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  douane:
-                                                                    class: ConfigurationDroits
-                                                                    type: array_collection
-                                                                    definition:
-                                                                      fields:
-                                                                        '*':
-                                                                          class: ConfigurationDroit
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              date: {  }
-                                                                              taux: { type: float }
-                                                                              code: {  }
-                                                                              libelle: {  }
-                                                                  cvo:
-                                                                    class: ConfigurationDroits
-                                                                    type: array_collection
-                                                                    definition:
-                                                                      fields:
-                                                                        '*':
-                                                                          class: ConfigurationDroit
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              date: {  }
-                                                                              taux: { type: float }
-                                                                              code: {  }
-                                                                              libelle: {  }
-                                                departements:
-                                                  type: array_collection
-                                                  definition:
-                                                    fields:
-                                                      '*': {  }
-                                                mentions:
-                                                  type: collection
-                                                  definition:
-                                                    fields:
-                                                      '*':
-                                                        # MENTION
-                                                        class: ConfigurationMention
-                                                        inheritance: _ConfigurationDeclaration
-                                                        type: collection
-                                                        definition:
-                                                          fields:
-                                                            libelle: {  }
-                                                            format_libelle: {  }
-                                                            code: {  }
-                                                            code_produit: {  }
-                                                            code_comptable: {  }
-                                                            code_douane: {  }
-                                                            interpro:
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  '*':
-                                                                    type: collection
-                                                                    definition:
-                                                                      fields:
-                                                                        labels:
-                                                                          type: array_collection
-                                                                          definition:
-                                                                            fields:
-                                                                              '*': {  }
-                                                                        droits:
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              douane:
-                                                                                class: ConfigurationDroits
-                                                                                type: array_collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    '*':
-                                                                                      class: ConfigurationDroit
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          date: {  }
-                                                                                          taux: { type: float }
-                                                                                          code: {  }
-                                                                                          libelle: {  }
-                                                                              cvo:
-                                                                                class: ConfigurationDroits
-                                                                                type: array_collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    '*':
-                                                                                      class: ConfigurationDroit
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          date: {  }
-                                                                                          taux: { type: float }
-                                                                                          code: {  }
-                                                                                          libelle: {  }            
-                                                            departements:
-                                                              type: array_collection
-                                                              definition:
-                                                                fields:
-                                                                  '*': {  }
-                                                            detail:
-                                                              required: false
-                                                              class: ConfigurationDetail
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  stocks_debut:
-                                                                    required: false
-                                                                    type: collection
-                                                                    definition:
-                                                                      fields:
-                                                                        '*':
-                                                                          class: ConfigurationDetailLigne
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              readable: { type: integer }
-                                                                              writable: { type: integer }
-                                                                              details: { type: integer }
-                                                                              mouvement_coefficient: { type: integer }
-                                                                              vrac: { type: integer }
-                                                                              facturable: { type: integer }
-                                                                  entrees:
-                                                                    required: false
-                                                                    type: collection
-                                                                    definition:
-                                                                      fields:
-                                                                        '*':
-                                                                          class: ConfigurationDetailLigne
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              readable: { type: integer }
-                                                                              writable: { type: integer }
-                                                                              details: { type: integer }
-                                                                              mouvement_coefficient: { type: integer }
-                                                                              vrac: { type: integer }
-                                                                              facturable: { type: integer }
-                                                                  sorties:
-                                                                    required: false
-                                                                    type: collection
-                                                                    definition:
-                                                                      fields:
-                                                                        '*':
-                                                                          class: ConfigurationDetailLigne
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              readable: { type: integer }
-                                                                              writable: { type: integer }
-                                                                              details: { type: integer }
-                                                                              mouvement_coefficient: { type: integer }
-                                                                              vrac: { type: integer }
-                                                                              facturable: { type: integer }
-                                                                  stocks_fin:
-                                                                    required: false
-                                                                    type: collection
-                                                                    definition:
-                                                                      fields:
-                                                                        '*':
-                                                                          class: ConfigurationDetailLigne
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              readable: { type: integer }
-                                                                              writable: { type: integer }
-                                                                              details: { type: integer }
-                                                                              mouvement_coefficient: { type: integer }
-                                                                              vrac: { type: integer }
-                                                                              facturable: { type: integer }
-                                                            lieux:
-                                                              type: collection
-                                                              definition:
-                                                                fields:
-                                                                  '*':
-                                                                    class: ConfigurationLieu
-                                                                    inheritance: _ConfigurationDeclaration
-                                                                    type: collection
-                                                                    definition:
-                                                                      fields:
-                                                                        libelle: {  }
-                                                                        format_libelle: {  }
-                                                                        code: {  }
-                                                                        code_produit: {  }
-                                                                        code_comptable: {  }
-                                                                        code_douane: {  }
-                                                                        interpro:
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              '*':
-                                                                                type: collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    labels:
-                                                                                      type: array_collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          '*': {  }
-                                                                                    droits:
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          douane:
-                                                                                            class: ConfigurationDroits
-                                                                                            type: array_collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                '*':
-                                                                                                  class: ConfigurationDroit
-                                                                                                  type: collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      date: {  }
-                                                                                                      taux: { type: float }
-                                                                                                      code: {  }
-                                                                                                      libelle: {  }
-                                                                                          cvo:
-                                                                                            class: ConfigurationDroits
-                                                                                            type: array_collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                '*':
-                                                                                                  class: ConfigurationDroit
-                                                                                                  type: collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      date: {  }
-                                                                                                      taux: { type: float }
-                                                                                                      code: {  }
-                                                                                                      libelle: {  }            
-                                                                        departements:
-                                                                          type: array_collection
-                                                                          definition:
-                                                                            fields:
-                                                                              '*': {  }
-                                                                        detail:
-                                                                          required: false
-                                                                          class: ConfigurationDetail
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              stocks_debut:
-                                                                                required: false
-                                                                                type: collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    '*':
-                                                                                      class: ConfigurationDetailLigne
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          readable: { type: integer }
-                                                                                          writable: { type: integer }
-                                                                                          details: { type: integer }
-                                                                                          mouvement_coefficient: { type: integer }
-                                                                                          vrac: { type: integer }
-                                                                                          facturable: { type: integer }
-                                                                              entrees:
-                                                                                required: false
-                                                                                type: collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    '*':
-                                                                                      class: ConfigurationDetailLigne
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          readable: { type: integer }
-                                                                                          writable: { type: integer }
-                                                                                          details: { type: integer }
-                                                                                          mouvement_coefficient: { type: integer }
-                                                                                          vrac: { type: integer }
-                                                                                          facturable: { type: integer }
-                                                                              sorties:
-                                                                                required: false
-                                                                                type: collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    '*':
-                                                                                      class: ConfigurationDetailLigne
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          readable: { type: integer }
-                                                                                          writable: { type: integer }
-                                                                                          details: { type: integer }
-                                                                                          mouvement_coefficient: { type: integer }
-                                                                                          vrac: { type: integer }
-                                                                                          facturable: { type: integer }
-                                                                              stocks_fin:
-                                                                                required: false
-                                                                                type: collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    '*':
-                                                                                      class: ConfigurationDetailLigne
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          readable: { type: integer }
-                                                                                          writable: { type: integer }
-                                                                                          details: { type: integer }
-                                                                                          mouvement_coefficient: { type: integer }
-                                                                                          vrac: { type: integer }
-                                                                                          facturable: { type: integer }
-                                                                        couleurs: 
-                                                                          type: collection
-                                                                          definition:
-                                                                            fields:
-                                                                              '*':
-                                                                                # COULEUR
-                                                                                class: ConfigurationCouleur
-                                                                                inheritance: _ConfigurationDeclaration
-                                                                                type: collection
-                                                                                definition:
-                                                                                  fields:
-                                                                                    libelle: {  }
-                                                                                    format_libelle: {  }
-                                                                                    code: {  }
-                                                                                    code_produit: {  }
-                                                                                    code_comptable: {  }
-                                                                                    code_douane: {  }
-                                                                                    interpro:
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          '*':
-                                                                                            type: collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                labels:
-                                                                                                  type: array_collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      '*': {  }
-                                                                                                droits:
-                                                                                                  type: collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      douane:
-                                                                                                        class: ConfigurationDroits
-                                                                                                        type: array_collection
-                                                                                                        definition:
-                                                                                                          fields:
-                                                                                                            '*':
-                                                                                                              class: ConfigurationDroit
-                                                                                                              type: collection
-                                                                                                              definition:
-                                                                                                                fields:
-                                                                                                                  date: {  }
-                                                                                                                  taux: { type: float }
-                                                                                                                  code: {  }
-                                                                                                                  libelle: {  }
-                                                                                                      cvo:
-                                                                                                        class: ConfigurationDroits
-                                                                                                        type: array_collection
-                                                                                                        definition:
-                                                                                                          fields:
-                                                                                                            '*':
-                                                                                                              class: ConfigurationDroit
-                                                                                                              type: collection
-                                                                                                              definition:
-                                                                                                                fields:
-                                                                                                                  date: {  }
-                                                                                                                  taux: { type: float }
-                                                                                                                  code: {  }
-                                                                                                                  libelle: {  }            
-                                                                                    departements:
-                                                                                      type: array_collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          '*': {  }
-                                                                                    detail:
-                                                                                      required: false
-                                                                                      class: ConfigurationDetail
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          stocks_debut:
-                                                                                            required: false
-                                                                                            type: collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                '*':
-                                                                                                  class: ConfigurationDetailLigne
-                                                                                                  type: collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      readable: { type: integer }
-                                                                                                      writable: { type: integer }
-                                                                                                      details: { type: integer }
-                                                                                                      mouvement_coefficient: { type: integer }
-                                                                                                      vrac: { type: integer }
-                                                                                                      facturable: { type: integer }
-                                                                                          entrees:
-                                                                                            required: false
-                                                                                            type: collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                '*':
-                                                                                                  class: ConfigurationDetailLigne
-                                                                                                  type: collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      readable: { type: integer }
-                                                                                                      writable: { type: integer }
-                                                                                                      details: { type: integer }
-                                                                                                      mouvement_coefficient: { type: integer }
-                                                                                                      vrac: { type: integer }
-                                                                                                      facturable: { type: integer }
-                                                                                          sorties:
-                                                                                            required: false
-                                                                                            type: collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                '*':
-                                                                                                  class: ConfigurationDetailLigne
-                                                                                                  type: collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      readable: { type: integer }
-                                                                                                      writable: { type: integer }
-                                                                                                      details: { type: integer }
-                                                                                                      mouvement_coefficient: { type: integer }
-                                                                                                      vrac: { type: integer }
-                                                                                                      facturable: { type: integer }
-                                                                                          stocks_fin:
-                                                                                            required: false
-                                                                                            type: collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                '*':
-                                                                                                  class: ConfigurationDetailLigne
-                                                                                                  type: collection
-                                                                                                  definition:
-                                                                                                    fields:
-                                                                                                      readable: { type: integer }
-                                                                                                      writable: { type: integer }
-                                                                                                      details: { type: integer }
-                                                                                                      mouvement_coefficient: { type: integer }
-                                                                                                      vrac: { type: integer }
-                                                                                                      facturable: { type: integer }
-                                                                                    cepages: 
-                                                                                      type: collection
-                                                                                      definition:
-                                                                                        fields:
-                                                                                          '*':
-                                                                                            # CEPAGE
-                                                                                            class: ConfigurationCepage
-                                                                                            inheritance: _ConfigurationDeclaration
-                                                                                            type: collection
-                                                                                            definition:
-                                                                                              fields:
-                                                                                                libelle: {  }
-                                                                                                format_libelle: {  }
-                                                                                                code: {  }
-                                                                                                code_produit: {  }
-                                                                                                code_comptable: {  }
-                                                                                                code_douane: {  }
-                        detail:
-                          required: false
-                          class: ConfigurationDetail
-                          type: collection
-                          definition:
-                            fields:
-                              stocks_debut:
-                                required: false
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      class: ConfigurationDetailLigne
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          readable: { type: integer }
-                                          writable: { type: integer }
-                                          details: { type: integer }
-                                          mouvement_coefficient: { type: integer }
-                                          vrac: { type: integer }
-                                          facturable: { type: integer }
-                              entrees:
-                                required: false
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      class: ConfigurationDetailLigne
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          readable: { type: integer }
-                                          writable: { type: integer }
-                                          details: { type: integer }
-                                          mouvement_coefficient: { type: integer }
-                                          vrac: { type: integer }
-                                          facturable: { type: integer }
-                              sorties:
-                                required: false
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      class: ConfigurationDetailLigne
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          readable: { type: integer }
-                                          writable: { type: integer }
-                                          details: { type: integer }
-                                          mouvement_coefficient: { type: integer }
-                                          vrac: { type: integer }
-                                          facturable: { type: integer }
-                              stocks_fin:
-                                required: false
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      class: ConfigurationDetailLigne
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          readable: { type: integer }
-                                          writable: { type: integer }
-                                          details: { type: integer }
-                                          mouvement_coefficient: { type: integer }
-                                          vrac: { type: integer }
-                                          facturable: { type: integer }
+                                                            type_aoc: {required: false}
+                                                            couleur: {required: false}
+                                                            appellation_lieu: {required: false}
+                                                            qualite: {required: false}
+                                                            code_cepage: {required: false}
+                                                      libelle: {  }
+                                                      libelle_long: { required: false }
+                                                      rendement: { type: float }
+                                                      min_quantite: {type: float, required: false}
+                                                      max_quantite: {type: float, required: false}
+                                                      exclude_total: {type: integer, required: false}
+                                                      superficie_optionnelle: { type: integer, required: false }
+                                                      no_negociant : { type: integer, required: false }
+                                                      no_cooperative : { type: integer, required: false }
+                                                      no_mout : { type: integer, required: false }
+                                                      no_motif_non_recolte : { type: integer, required: false }
+                                                      no_dr: { type: integer, required: false }
+                                                      no_ds: { type: integer, required: false }
+

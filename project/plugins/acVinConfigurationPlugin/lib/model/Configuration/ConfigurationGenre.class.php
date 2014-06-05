@@ -1,33 +1,26 @@
 <?php
-/**
- * Model for ConfigurationGenre
- *
- */
 
 class ConfigurationGenre extends BaseConfigurationGenre {
-    const TYPE_NOEUD = 'genre';
+
+    public function getAppellations() {
+
+        return $this->filter('^appellation');
+    }
+
+    public function getMentions() {
+
+        return $this->getChildrenNodeDeep();
+    }
 
     public function getChildrenNode() {
 
-        return $this->appellations;
+        return $this->getAppellations();
     }
 
-    public function getCertification() {
+    public function hasManyAppellations() {
 
- 	  return $this->getParentNode();
+        return $this->getChildrenNodeDeep()->hasManyNoeuds();
     }
-  
-    public function setDonneesCsv($datas) {
-        parent::setDonneesCsv($datas);
-      	$this->getCertification()->setDonneesCsv($datas);
-      	$this->libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_GENRE_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_GENRE_LIBELLE] : null;
-      	$this->code = ($datas[ProduitCsvFile::CSV_PRODUIT_GENRE_CODE])? $datas[ProduitCsvFile::CSV_PRODUIT_GENRE_CODE] : null;
-      	
-      	$this->setDroitDouaneCsv($datas, ProduitCsvFile::CSV_PRODUIT_GENRE_CODE_APPLICATIF_DROIT);
-      	$this->setDroitCvoCsv($datas, ProduitCsvFile::CSV_PRODUIT_GENRE_CODE_APPLICATIF_DROIT);
-    }
-  
-	public function getTypeNoeud() {
-		return self::TYPE_NOEUD;
-	}
+
+
 }
