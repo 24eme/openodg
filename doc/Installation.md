@@ -41,17 +41,17 @@ Apache Virtual host:
         #ava.conf
         <VirtualHost *:80>
             ServerName declaration.dev.ava-aoc.fr
-            DocumentRoot "/home/vince/www/ava/project/web"
+            DocumentRoot "/path_to/ava/project/web"
             DirectoryIndex index.php
 
-            <Directory "/home/vince/www/ava/project/web">
+            <Directory "/path_to/ava/project/web">
                 AllowOverride All
                 Require all granted
             </Directory>
 
-            Alias /sf /home/vince/www/ava/project/lib/vendor/symfony/data/web/sf
+            Alias /sf /path_to/ava/project/lib/vendor/symfony/data/web/sf
 
-            <Directory "/home/vince/www/ava/project/lib/vendor/symfony/data/web/sf">
+            <Directory "/path_to/ava/project/lib/vendor/symfony/data/web/sf">
                 AllowOverride All
                 Require all granted
             </Directory>
