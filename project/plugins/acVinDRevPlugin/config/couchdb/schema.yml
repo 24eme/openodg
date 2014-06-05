@@ -1,0 +1,9 @@
+#schema des de la DRev
+DRev:
+  definition:
+    fields:
+      _id:
+      _rev:
+      type:
+      campagne:
+      identifiant:
