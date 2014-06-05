@@ -4,13 +4,16 @@
 default:
   http_metas:
     content-type: text/html
+    X-UA-Compatible: IE=edge
 
   metas:
-    #title:        symfony project
+    title:         "Plateforme de télédéclaration de l'AVA"
+    charset:       "utf-8"
     #description:  symfony project
     #keywords:     symfony, project
     #language:     en
     #robots:       index, follow
+    viewport:      "width=device-width, initial-scale=1"
 
   stylesheets:    [main.css]
 
