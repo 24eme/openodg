@@ -15,9 +15,9 @@ default:
     #robots:       index, follow
     viewport:      "width=device-width, initial-scale=1"
 
-  stylesheets:    [main.css]
+  stylesheets:    [lib/bootstrap/bootstrap.min.css, main.css]
 
-  javascripts:    []
+  javascripts:    [lib/jquery/jquery.min.js, lib/bootstrap/bootstrap.min.js]
 
   has_layout:     true
   layout:         layout

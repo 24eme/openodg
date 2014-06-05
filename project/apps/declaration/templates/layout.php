@@ -15,8 +15,24 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
     </head>
-    <body>
-        <?php echo $sf_content ?>
+    <body role="document">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">AVA</a>
+            </div>
+          </div>
+        </div>
+            
+        <div class="container" role="main">
+            <?php echo $sf_content ?>
+        </div>
 
         <?php include_javascripts() ?>
     </body>
