@@ -15,14 +15,11 @@ Copier le fichier de configuration bin/config.inc
 
 Configurer le fichier bin/config.inc si besoin
 
- <fichier>
- #bin/config.inc
- COUCHDBDOMAIN=your_couchdb_host
- COUCHDBPORT=your_couchdb_port
- COUCHDBBASE=your_database_name
- </fichier>
-
-
+        #bin/config.inc
+        COUCHDBDOMAIN=your_couchdb_host
+        COUCHDBPORT=your_couchdb_port
+        COUCHDBBASE=your_database_name
+ 
 Lancer le script d'installation :
 
  > bash bin/install.sh
@@ -38,24 +35,21 @@ Droit d'écriture apache sur les des dossiers cache et log
 
 Apache Virtual host:
 
- <fichier>
- #ava.conf
- <VirtualHost *:80>
-    ServerName declaration.dev.ava-aoc.fr
-    DocumentRoot "/home/vince/www/ava/project/web"
-    DirectoryIndex index.php
+        #ava.conf
+        <VirtualHost *:80>
+            ServerName declaration.dev.ava-aoc.fr
+            DocumentRoot "/home/vince/www/ava/project/web"
+            DirectoryIndex index.php
 
-    <Directory "/home/vince/www/ava/project/web">
-        AllowOverride All
-        Require all granted
-    </Directory>
+            <Directory "/home/vince/www/ava/project/web">
+                AllowOverride All
+                Require all granted
+            </Directory>
 
-    Alias /sf /home/vince/www/ava/project/lib/vendor/symfony/data/web/sf
-  
-    <Directory "/home/vince/www/ava/project/lib/vendor/symfony/data/web/sf">
-        AllowOverride All
-        Require all granted
-    </Directory>
- </VirtualHost>
- </fichier>
+            Alias /sf /home/vince/www/ava/project/lib/vendor/symfony/data/web/sf
 
+            <Directory "/home/vince/www/ava/project/lib/vendor/symfony/data/web/sf">
+                AllowOverride All
+                Require all granted
+            </Directory>
+        </VirtualHost>
