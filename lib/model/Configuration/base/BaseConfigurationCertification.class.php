@@ -4,34 +4,19 @@
  * 
  * Base model for ConfigurationCertification
 
+ * @property float $rendement
  * @property string $libelle
- * @property string $code
- * @property string $code_produit
- * @property string $code_comptable
- * @property string $code_douane
- * @property acCouchdbJson $departements
- * @property acCouchdbJson $interpro
- * @property acCouchdbJson $genres
- * @property ConfigurationDetail $detail
+ * @property string $libelle_long
+ * @property ConfigurationDouane $douane
 
+ * @method float getRendement()
+ * @method float setRendement()
  * @method string getLibelle()
  * @method string setLibelle()
- * @method string getCode()
- * @method string setCode()
- * @method string getCodeProduit()
- * @method string setCodeProduit()
- * @method string getCodeComptable()
- * @method string setCodeComptable()
- * @method string getCodeDouane()
- * @method string setCodeDouane()
- * @method acCouchdbJson getDepartements()
- * @method acCouchdbJson setDepartements()
- * @method acCouchdbJson getInterpro()
- * @method acCouchdbJson setInterpro()
- * @method acCouchdbJson getGenres()
- * @method acCouchdbJson setGenres()
- * @method ConfigurationDetail getDetail()
- * @method ConfigurationDetail setDetail()
+ * @method string getLibelleLong()
+ * @method string setLibelleLong()
+ * @method ConfigurationDouane getDouane()
+ * @method ConfigurationDouane setDouane()
  
  */
 

@@ -4,25 +4,22 @@
  * 
  * Base model for ConfigurationCouleur
 
+ * @property float $rendement_couleur
+ * @property float $rendement
  * @property string $libelle
- * @property string $code
- * @property string $code_produit
- * @property string $code_comptable
- * @property string $code_douane
- * @property acCouchdbJson $cepages
+ * @property string $libelle_long
+ * @property ConfigurationDouane $douane
 
+ * @method float getRendementCouleur()
+ * @method float setRendementCouleur()
+ * @method float getRendement()
+ * @method float setRendement()
  * @method string getLibelle()
  * @method string setLibelle()
- * @method string getCode()
- * @method string setCode()
- * @method string getCodeProduit()
- * @method string setCodeProduit()
- * @method string getCodeComptable()
- * @method string setCodeComptable()
- * @method string getCodeDouane()
- * @method string setCodeDouane()
- * @method acCouchdbJson getCepages()
- * @method acCouchdbJson setCepages()
+ * @method string getLibelleLong()
+ * @method string setLibelleLong()
+ * @method ConfigurationDouane getDouane()
+ * @method ConfigurationDouane setDouane()
  
  */
 

@@ -1,163 +1,168 @@
 <?php
-/**
- * Model for Configuration
- *
- */
 
 class Configuration extends BaseConfiguration {
 
-    const DEFAULT_KEY = 'DEFAUT';
-    const DEFAULT_DENSITE = "1.3";
-  
-    public function constructId() {
-        $this->set('_id', "CONFIGURATION");
-    }
-
     public function getProduits() {
 
-        return $this->declaration->getProduits();
+        return $this->recolte->getProduits();
     }
 
-    public function formatProduits($date = null, $format = "%format_libelle% (%code_produit%)") {
+    public function getProduitsDetails() {
 
-      return $this->declaration->formatProduits($date,null, null, $format);
-    }
-
-    public function formatProduitsWithoutCVONeg($format = "%format_libelle% (%code_produit%)") {
-
-      return $this->declaration->formatProduitsWithoutCVONeg(null, null, $format);
+        return $this->recolte->getProduitsDetails();
     }
     
-    private static function normalizeLibelle($libelle) {
-      	$libelle = str_ireplace('SAINT-', 'saint ', $libelle);
-      	$libelle = preg_replace('/&nbsp;/', ' ', strtolower($libelle));
-      	if (!preg_match('/&[^;]+;/', $libelle)) {
-			$libelle = html_entity_decode(preg_replace('/&([^;#])[^;]*;/', '\1', htmlentities($libelle, ENT_NOQUOTES, 'UTF-8')));
-     	}
-      	$libelle = str_replace(array('é', 'è', 'ê'), 'e', $libelle);
-      	$libelle = preg_replace('/[^a-z ]/', '', preg_replace('/  */', ' ', preg_replace('/&([a-z])[^;]+;/i', '\1', $libelle)));
-     	$libelle = preg_replace('/^\s+/', '', preg_replace('/\s+$/', '', $libelle));
-
-      	return $libelle;
-    }
-
-    private function getObjectByLibelle($parent, $libelle, $previous_libelles = null) {
-      	$libelle = ($libelle) ? self::normalizeLibelle($libelle) : 'DEFAUT';
-      	$obj_id = 'DEFAUT';
-      	foreach ( $parent as $obj_key => $obj_obj) {
-			if ($libelle == self::normalizeLibelle($obj_obj->getLibelle())) {
-  				$obj_id = $obj_key;
-
-			  	break;
-			}
-      	}
-      	$next_libelles = $libelle;
-      	if ($previous_libelles) {
-			$next_libelles = $previous_libelles.' / '.$libelle;
-      	}
-      	if (!$parent->exist($obj_id)) {
-		  	throw new Exception($next_libelles);
-		}
-
-      	return array('obj' => $obj_obj, 'next_libelles' => $next_libelles);
-    }
-
-    public function identifyNodeProduct($certification, $genre, $appellation, $mention, $lieu = 'DEFAUT', $couleur = 'DEFAUT', $cepage = 'DEFAUT', $millesime = null) {
-      	$hash = $this->identifyProduct($certification, $genre, $appellation, $mention, $lieu, $couleur, $cepage, $millesime);
-      	$rwhash = ' ';
-      	while ($rwhash != $hash && $rwhash) {
-			if ($rwhash != ' ') {
-	  			$hash = $rwhash;
-	  		}
-			$rwhash = preg_replace('/[^\/]*\/DEFAUT\/?$/', '', $hash);
-      	}
-
-      	return $hash;
-    }
-
-    public function identifyProduct($certification, $genre, $appellation, $mention = 'DEFAULT', $lieu = 'DEFAUT', $couleur = 'DEFAUT', $cepage = 'DEFAUT', $millesime = null) {
-      	try {
-		$res = $this->getObjectByLibelle($this->declaration->getCertifications(), $certification);
-		$res = $this->getObjectByLibelle($res['obj']->getGenres(), $genre, $res['next_libelles']);
-		$res = $this->getObjectByLibelle($res['obj']->getAppellations(), $appellation, $res['next_libelles']);
-		$res = $this->getObjectByLibelle($res['obj']->getMentions(), $mention, $res['next_libelles']);
-		$res = $this->getObjectByLibelle($res['obj']->getLieux(), $lieu, $res['next_libelles']);
-		$res = $this->getObjectByLibelle($res['obj']->getCouleurs(), $couleur, $res['next_libelles']);
-		$res = $this->getObjectByLibelle($res['obj']->getCepages(), $cepage, $res['next_libelles']);
-		} catch(Exception $e) {		
-			throw new sfException("Impossible d'indentifier le produit (".$e->getMessage()." [$certification / $genre / $appellation / $mention / $lieu / $couleur / $cepage / $millesime] )");
-		}
-
-		return $res['obj']->getHash();
-    }
-
-    public function identifyLabels($labels, $separateur = '|') {
-      	$label_keys = array();
-      	foreach(explode($separateur, $labels) as $l) {
-			if ($k = $this->identifyLabel($l)) {
-				$label_keys[] = $k;
-			}
-      	}
-      
-      	return $label_keys;
-    }
-
-    public function identifyLabel($label) {
-      	$label = self::normalizeLibelle($label);
-      	foreach ($this->labels as $k => $l) {
-			if ($label == self::normalizeLibelle($l)) {
-	  			
-	  			return $k;
-	  		}
-      	}
-      	
-      	return false;
-    }
-    
-    public function setLabelCsv($datas) {
-    	if ($datas[LabelCsvFile::CSV_LABEL_CODE] && !$this->labels->exist($datas[LabelCsvFile::CSV_LABEL_CODE])) {
-    		$this->labels->add($datas[LabelCsvFile::CSV_LABEL_CODE], $datas[LabelCsvFile::CSV_LABEL_LIBELLE]);
-    	}
-    }
-  
-   public function getMillesimes() {
-        $lastMillesime =  date('Y');
-        $result = array();
-        for($i=$lastMillesime;$i>=1991;$i--) $result[$i] = $i;
-
-        return $result;
-    }
-
-    public function getLabelsLibelles($labels) {
-        $libelles = array(); 
-        foreach($labels as $key) {
-            $libelles[$key] = $this->labels[$key];
+    public function getAppellationsLieuDit()
+    {
+      $result = array();
+      foreach ($this->recolte->getCertifications() as $certification) {
+        foreach ($certification->getAppellations() as $key => $appellation) {
+          if ($appellation->exist('detail_lieu_editable') && $appellation->detail_lieu_editable) {
+            $result[$key] = $appellation->libelle;
+          }
         }
-
-        return $libelles;
+      }
+      return $result;
     }
 
-     public function formatLabelsLibelle($labels, $format = "%la%", $separator = ", ") {
-      $libelles = $this->getLabelsLibelles($labels);
-
-      return ConfigurationClient::getInstance()->formatLabelsLibelle($libelles, $format, $separator);
-    }
-    
-    public function updateAlias($hashProduit,$alias) {
-        $hashProduitKey = str_replace('/', '-', $hashProduit);
-        if(!$this->alias->exist($hashProduitKey))
-            $this->alias->add($hashProduitKey,array());
-        $pos = count($this->alias->get($hashProduitKey));
-        $this->alias->get($hashProduitKey)->add($pos,$alias);
+    public function getArrayAppellationsMout() {
+        $appellations = $this->getRecolte()->getNoeudAppellations();
+        $appellations_array_mouts = array();
+        foreach ($appellations->filter('^appellation') as $appellation_key => $appellation) {
+            if ($appellation->getMout() == 1) {
+                $appellations_array_mouts[$appellation_key] = $appellation;
+            }
+        }
+        return $appellations_array_mouts;
     }
 
-    public function save() {
-        parent::save();
-        ConfigurationClient::getInstance()->cacheResetCurrent();
+    public function getArrayAppellations() {
+        $appellations = $this->getRecolte()->getNoeudAppellations();
+        $appellations_array = array();
+        foreach ($appellations->filter('^appellation') as $appellation_key => $appellation) {
+            $appellations_array[$appellation_key] = $appellation;
+        }
+        return $appellations_array;
     }
 
-    public function prepareCache() {
-      $this->loadAllData();
+    public function isCompteAdminExist($login, $mot_de_passe) {
+        foreach ($this->compte_admin as $item) {
+            if (strlen($item->mot_de_passe) > 6) {
+                if ($login == $item->login) {
+                    $is_mot_de_passe_valid = false;
+                    $cryptage = str_replace(array('{', '}'), array('', ''), substr($item->mot_de_passe, 0, 6));
+                    $mot_de_passe_compte = substr($item->mot_de_passe, 6, strlen($item->mot_de_passe) - 6);
+                    if ($cryptage == 'SSHA') {
+                        $is_mot_de_passe_valid = ($mot_de_passe_compte == sha1($mot_de_passe));
+                    } elseif ($cryptage == 'TEXT') {
+                        $is_mot_de_passe_valid = ($mot_de_passe_compte == $mot_de_passe);
+                    }
+                    if ($is_mot_de_passe_valid) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
-    
+
+    private static function normalizeLibelle($libelle) {
+      $libelle = str_ireplace('Alsace Pinot Noir rouge', 'alsace PN rouge', $libelle);
+      $libelle = preg_replace('/(\w+)s( |$)/i', '$1$2', $libelle);
+      $libelle = str_ireplace('SAINT-', 'saint ', $libelle);
+      $libelle = preg_replace('/&nbsp;/', '', strtolower($libelle));
+      $libelle = str_replace(array('é', 'è', 'ê'), 'e', $libelle);
+      $libelle = preg_replace('/[^a-z ]/', '', preg_replace('/  */', ' ', preg_replace('/&([a-z])[^;]+;/i', '\1', $libelle)));
+      $libelle = preg_replace('/^\s+/', '', preg_replace('/\s+$/', '', $libelle));
+
+      return $libelle;
+    }
+
+    public function identifyProduct($appellation, $lieu, $cepage) {
+      $appid = null;
+      $lieuid = 'lieu';
+      $cepageid = null;
+      $libelle = self::normalizeLibelle($appellation);
+      foreach ($this->getRecolte()->getNoeudAppellations()->getAppellations() as $appellation_key => $appellation_obj) {
+  if ($libelle == self::normalizeLibelle($appellation_obj->getLibelle())) {
+    $appid=$appellation_key;
+    break;
+  }
+      }
+      if (!$appid)
+  return array("error" => $appellation);
+
+      if ($lieu) {
+  $libelle = self::normalizeLibelle($lieu);
+  foreach($appellation_obj->getLieux() as $lieu_key => $lieu_obj) {
+    if ($lieu_key == 'lieu')
+      break;
+    if ($libelle == self::normalizeLibelle($lieu_obj->getLibelle())) {
+      $lieuid=$lieu_key;
+      break;
+    }
+  }
+      }
+      if ($lieuid == 'lieu') {
+  if (!$appellation_obj->getLieux()->exist('lieu'))
+    return array("error" => $appellation.' / '.$lieu);
+      }
+
+      $libelle = self::normalizeLibelle($cepage);
+      $prodhash = '';
+      $evalhash = '';
+      $eval = null;
+      foreach($appellation_obj->getLieux()->get($lieuid)->getCepages() as $cepage_key => $cepage_obj) {
+  $cepage_libelle = self::normalizeLibelle($cepage_obj->getLibelle());
+  if ($libelle == $cepage_libelle) {
+    $cepageid = $cepage_key;
+    $prodhash = $cepage_obj->getHash();
+    break;
+  }
+  //Gestion des cépages tronqués (Gewurzt)
+  if (preg_match('/^'.$cepage_libelle.'/', $libelle)) {
+    if ($eval === null) {
+      $eval = $cepage_key;
+      $evalhash = $cepage_obj->getHash();
+    } else
+      $eval = 0;
+  }
+      }
+      if (!$cepageid) {
+  if ($eval) {
+    $cepageid = $eval;
+    $prodhash = $evalhash;
+  } else
+    return array("error" => $appellation.' / '.$lieu.' / '.$cepage);
+      }
+      return array("ids" => $appid.'/'.$lieuid.'/'.$cepageid, "hash" => $prodhash);
+    }
+
+    public function getProduitsLibellesByCodeDouane() {
+        $produits = array();
+        foreach($this->recolte->certification->genre->getAppellations() as $appellation) {
+          foreach($appellation->getLieux() as $lieu) {
+            foreach($lieu->getCouleurs() as $couleur) {
+              foreach($couleur->getCepages() as $cepage) {
+                $produits[trim($cepage->getDouane()->getFullAppCode(null).$cepage->getDouane()->getCodeCepage())] = preg_replace("/[ ]+/", " ", sprintf('%s %s %s %s', $appellation->getLibelle(), $lieu->getLibelle(), $couleur->getLibelle(), $cepage->getLibelle()));
+                  if ($cepage->hasVtsgn()) {
+                    $produits[trim($cepage->getDouane()->getFullAppCode("VT").$cepage->getDouane()->getCodeCepage())] = preg_replace("/[ ]+/", " ",sprintf('%s %s %s %s %s', $appellation->getLibelle(), $lieu->getLibelle(), $couleur->getLibelle(), $cepage->getLibelle(), "VT"));
+                    $produits[trim($cepage->getDouane()->getFullAppCode("VT").$cepage->getDouane()->getCodeCepage())] = preg_replace("/[ ]+/", " ",sprintf('%s %s %s %s %s', $appellation->getLibelle(), $lieu->getLibelle(), $couleur->getLibelle(), $cepage->getLibelle(), "SGN"));
+                  }
+              }
+              if ($lieu->hasManyCouleur()) {
+                $produits[trim($couleur->getDouane()->getFullAppCode(null))] = preg_replace("/[ ]+/", " ",sprintf('%s %s %s Total', $appellation->getLibelle(), $lieu->getLibelle(), $couleur->getLibelle(), "Total", ""));
+              }
+          }
+          if (!$lieu->hasManyCouleur() && $appellation->hasManyLieu()) {
+              $produits[trim($lieu->getDouane()->getFullAppCode(null))] = preg_replace("/[ ]+/", " ",sprintf('%s %s Total', $appellation->getLibelle(), $lieu->getLibelle()));
+          }
+        }
+        if (!$appellation->hasManyLieu() && !$appellation->getLieux()->lieu->hasManyCouleur()) {
+            $produits[trim($appellation->getDouane()->getFullAppCode(null))] = preg_replace("/[ ]+/", " ",sprintf('%s Total', $appellation->getLibelle()));
+        }
+      }
+
+      return $produits;
+    } 
 }

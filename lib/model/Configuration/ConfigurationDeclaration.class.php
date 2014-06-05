@@ -1,54 +1,63 @@
 <?php
 
-/**
- * Model for ConfigurationDeclaration
- *
- */
 class ConfigurationDeclaration extends BaseConfigurationDeclaration {
-
-    const TYPE_NOEUD = 'declaration';
 
     public function getChildrenNode() {
 
-        return $this->certifications;
+        return $this->getCertifications();
     }
 
-    public function setDonneesCsv($datas) {
-        
+    public function getCertifications() {
+
+        return $this->filter('^certification');
     }
-    
-    public function hasDroits() {
+
+    public function getNoeudAppellations() {
+
+        return $this->getChildrenNodeDeep(2);
+    }
+
+    public function hasNoUsagesIndustriels() {
+        
+        return ($this->exist('no_usages_industriels') && $this->get('no_usages_industriels'));
+    }
+
+    public function hasNoRecapitulatifCouleur() {
+        
+        return ($this->exist('no_recapitulatif_couleur') && $this->get('no_recapitulatif_couleur'));
+    }
+
+    public function getRendementAppellation() {
+
+        return 0;
+    }
+
+    public function getRendementCouleur() {
+
+        return 0;
+    }
+
+    public function getRendement() {
+
+        return 0;
+    }
+
+    public function hasMout() {
 
         return false;
     }
 
-    public function getTypeNoeud() {
+    public function hasTotalCepage() {
 
-        return self::TYPE_NOEUD;
+        return true;
     }
 
-    public function getDensite() {
-        if (!$this->exist('densite') || !$this->_get('densite')) {
+    public function hasVtsgn() {
 
-            return $this->getParentNode()->getDensite();
-        }
-
-        return $this->_get('densite');
+        return true;
     }
-
-    public function getFormatLibelle() {
-       
-       return "%g% %a% %m% %l% %co% %ce%"; 
+    
+   public function isAutoDs() {
+        return false;
     }
-
-    public function getLibelles() {
-
-        return null;
-    }
-
-    public function getCodes() {
-
-        return null;
-    }
-
 }

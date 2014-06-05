@@ -1,430 +1,304 @@
 <?php
-/**
- * Inheritance tree class _ConfigurationDeclaration
- *
- */
 
 abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
-    protected $libelles = null;
-    protected $codes = null;
     protected $produits = null;
-    protected $produits_with_negCVO = null;
-    protected $format_produits = array();
-    protected $format_produits_with_negCVO = array();
-    protected $libelle_format = array();
+    protected $produits_filter = array(self::TYPE_DECLARATION_DR => null, self::TYPE_DECLARATION_DS => null);
 
-	protected function loadAllData() {
-		parent::loadAllData();
-                $this->getProduitsWithCVONeg();
-                $this->getLibelles();
-                $this->getCodes();
-                $this->formatProduitsWithCVONeg();
-                $this->formatProduitsWithCVONeg(null, null, "%format_libelle%");
-                $this->formatProduitsWithCVONeg(null, null, "%format_libelle% %la%");
-  }
+    const TYPE_DECLARATION_DR = 'DR';
+    const TYPE_DECLARATION_DS = 'DS';
 
-  abstract public function getChildrenNode();
-
-  public function getParentNode() {
-		$parent = $this->getParent()->getParent();
-		if (!$parent instanceof _ConfigurationDeclaration) {
-
-			throw new sfException('Noeud racine atteint');
-		} else {
-
-			return $this->getParent()->getParent();
-		}
-	}
-
-  public function getProduitsWithCVONeg($interpro = null, $departement = null) {       
-    if(is_null($this->produits_with_negCVO)) {
-      $this->produits_with_negCVO = array();
-      foreach($this->getChildrenNode() as $key => $item) {
-          $this->produits_with_negCVO = array_merge($this->produits_with_negCVO, $item->getProduitsWithCVONeg());
-      }
+    protected function loadAllData() {
+      parent::loadAllData();
+      $this->getProduits();
+      $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
+      $this->getProduitsFilter(self::TYPE_DECLARATION_DS);
+      $this->getRendementAppellation();
+      $this->getRendementCouleur();
+      $this->getRendementCepage();
+      $this->existRendementAppellation();
+      $this->existRendementCouleur();
+      $this->existRendementCepage();
+      $this->getChildrenFilter(self::TYPE_DECLARATION_DR);
+      $this->getChildrenFilter(self::TYPE_DECLARATION_DS);
     }
-    return $this->produits_with_negCVO;
-  }
-  
-    public function getProduits($date = null, $interpro = null, $departement = null) {
-        if(!$date) {
-            $date = date('Y-m-d');        
+
+    abstract public function getChildrenNode();
+
+    public function getChildrenNodeArray() {
+        $items = array();
+        foreach($this->getChildrenNode() as $item) {
+            $items[$item->getKey()] = $item;
         }
-        if(is_null($this->produits)) {
-            $produits_with_negCVO = $this->getProduitsWithCVONeg($interpro, $departement);
-            foreach($produits_with_negCVO as $hash => $item) {
-                try{
-                    $droit_produit = $item->getDroitCVO($date);
-                    $cvo_produit = $droit_produit->getTaux();
-                } catch (Exception $ex) {
-                    $cvo_produit = 0;
-                }
-             if($cvo_produit > 0){
-                 $this->produits[$hash] = $item;
-             }
-          }
-    }    
-    return $this->produits;
-  }
-  
-  
 
-    public function getLibelles() {
-            if(is_null($this->libelles)) {
-                            $this->libelles = array_merge($this->getParentNode()->getLibelles(), 
-                                                              array($this->libelle));
-            }
-
-            return $this->libelles;
+        return $items;
     }
 
-    public function getCodes() {
-            if(is_null($this->codes)) {
-                            $this->codes = array_merge($this->getParentNode()->getCodes(), 
-                                                              array($this->code));
-            }
-
-            return $this->codes;
+    public function getChildrenFilter($type_declaration = null) {
+      
+      return $this->store('get_children_filter_'.$type_declaration, array($this, 'getChildrenFilterStorable'), array($type_declaration));
     }
-        
-  public function getProduitsHashByCodeDouaneWithCVONeg($interpro) {
-      $produits_with_negCVO = array();
-      foreach($this->getChildrenNode() as $key => $item) {
-          $produits_with_negCVO = array_merge($item->getProduitsHashByCodeDouaneWithCVONeg($interpro),$produits_with_negCVO);
+
+    public function getChildrenFilterStorable($type_declaration = null) {
+      $children = array();
+      foreach($this->getChildrenNode() as $item) {
+        if($type_declaration == self::TYPE_DECLARATION_DR && !$item->isForDR()) {
+          continue;
+        }
+
+        if($type_declaration == self::TYPE_DECLARATION_DS && !$item->isForDS()) {
+          continue;
+        }
+
+        $children[$item->getKey()] = $item;
       }
 
-      return $produits_with_negCVO;
-  }
-  
-  public function getProduitsHashByCodeDouane($date,$interpro) {
-      $produits_with_negCVO = $this->getProduitsHashByCodeDouaneWithCVONeg($interpro);
-      $produitsHashByCodeDouane = array();
-      $produits_hashs = array_keys($this->getProduits($date,$interpro));
-      foreach($produits_with_negCVO as $pos => $hash) {  
-         if(in_array($hash,  $produits_hashs)){
-             $produitsHashByCodeDouane[$pos] = $hash;
-         }
-    }    
-    return $produitsHashByCodeDouane;
-  }
-        
-  public function getCodeDouane() {
-    if (!$this->_get('code_douane')) {
-
-      return $this->getParentNode()->getCodeDouane();
+      return $children;
     }
 
-    return $this->_get('code_douane');
-  }    
+    public function getLibelleLong() {
+      if($this->exist('libelle_long') && $this->_get('libelle_long')) {
 
-  public function getCodeProduit() {
-    if (!$this->_get('code_produit')) {
+        return $this->_get('libelle_long');
+      }
 
-      return $this->getParentNode()->getCodeProduit();
+      return $this->getLibelle();
     }
 
-    return $this->_get('code_produit');
-  }
+    public function getParentNode() {
+      if ($this->getKey() == 'recolte') {
+ 
+        throw new sfException('Noeud racine atteint');
+      }
 
-    public function getCodeComptable() {
-      if (!$this->_get('code_comptable')) {
-
-        return $this->getParentNode()->getCodeComptable();
-      }    
-      
-      return $this->_get('code_comptable');
+      return $this->getParent();
     }
 
-    public function getFormatLibelleCalcule() {
-      if (!$this->getFormatLibelle()) {
-
-        return $this->getParentNode()->getFormatLibelleCalcule();
-      }    
-      
-      return $this->getFormatLibelle();
-    }
-
-    public function getFormatLibelleDefinitionNoeud() {
-      if ($this->getFormatLibelle()) {
-
-        return $this;
-      }    
-      
-      return $this->getParentNode()->getFormatLibelleDefinitionNoeud();
-    }
-  
-  
-    public function getDensite(){
-      if (!$this->exist('densite') || !$this->_get('densite')) {
-        try {
+    public function getChildrenNodeDeep($level = 1) {
+      if($this->hasManyNoeuds()) {
           
-          return $this->getParentNode()->getDensite();
-        } catch (Exception $e) {
-
-          return null;
-        }
-      }    
-    
-      return $this->_get('densite');
-    }
-
-	 public function getLibelleFormat($labels = array(), $format = "%format_libelle%", $label_separator = ", ") {
-      if(!array_key_exists($format, $this->libelle_format)) {
-        $format_libelle = $this->getFormatLibelleCalcule();
-        $format = str_replace("%format_libelle%", $format_libelle, $format);
-      	$libelle = $this->formatProduitLibelle($format);
-      	$libelle = $this->getDocument()->formatLabelsLibelle($labels, $libelle, $label_separator);
-
-      	$this->libelle_format[$format] = trim($libelle);
+          throw new sfException("getChildrenNodeDeep() peut uniquement être appelé d'un noeud qui contient un seul enfant...");
       }
 
-      return $this->libelle_format[$format];
-  	}
-
-    public function formatProduitLibelle($format = "%g% %a% %m% %l% %co% %ce%") {
-        $libelle = ConfigurationClient::getInstance()->formatLibelles($this->getLibelles(), $format);
-
-        $libelle = str_replace(array('%code%', 
-                          '%code_produit%', 
-                          '%code_comptable%'), 
-                    array($this->getCodeFormat(), 
-                          $this->getCodeProduit(), 
-                          $this->getCodeComptable()),
-                    $libelle);
-        $libelle = str_replace("()", "", $libelle);
-        $libelle = preg_replace('/ +/', ' ', $libelle);
-
-
-        return $libelle;
-    }
-
-  	public function getCodeFormat($format = "%g%%a%%m%%l%%co%%ce%") {
-
-  		return ConfigurationClient::getInstance()->formatCodes($this->getCodes(), $format);
-  	}
-
-    public function getDroitCVO($date, $interpro = "INTERPRO-inter-loire") {
+      $node = $this->getChildrenNode()->getFirst();
       
-  	  return $this->getDroits($interpro)->get(ConfigurationDroits::CODE_CVO)->getCurrentDroit($date);
-  	}
-	
-    public function getDroits($interpro) {
-      $droitsable = $this;
-      while (!$droitsable->hasDroits()) {
-	      $droitsable = $droitsable->getParent()->getParent();
+      if($level > 1) {
+        
+        return $node->getChildrenNodeDeep($level - 1);
       }
-      return $droitsable->interpro->getOrAdd($interpro)->droits;
+
+      return $node->getChildrenNode();
     }
 
-	public function setLabelCsv($datas) {
-    	$labels = $this->interpro->getOrAdd('INTERPRO-'.strtolower($datas[LabelCsvFile::CSV_LABEL_INTERPRO]))->labels;
-    	$canInsert = true;
-    	foreach ($labels as $label) {
-    		if ($label == $datas[LabelCsvFile::CSV_LABEL_CODE]) {
-    			$canInsert = false;
-    			break;
-    		}
-    	}
-    	if ($canInsert) {
-	    	$labels->add(null, $datas[LabelCsvFile::CSV_LABEL_CODE]);
-    	}
-    }
-
-    protected function setDepartementCsv($datas) {
-    	if (!array_key_exists(ProduitCsvFile::CSV_PRODUIT_DEPARTEMENTS, $datas) || !$datas[ProduitCsvFile::CSV_PRODUIT_DEPARTEMENTS]) {
-
-    		$this->departements = array();
-
-    		return;
-    	}
-
-    	$this->departements = explode(',', $datas[ProduitCsvFile::CSV_PRODUIT_DEPARTEMENTS]);
-    }
-
-    protected function setDroitDouaneCsv($datas, $code_applicatif) {
-
-    	if (!array_key_exists(ProduitCsvFile::CSV_PRODUIT_DOUANE_NOEUD, $datas) || $code_applicatif != $datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_NOEUD]) {
-
-    		return;
-    	}
-
-    	$droits = $this->getDroits('INTERPRO-'.strtolower($datas[ProduitCsvFile::CSV_PRODUIT_INTERPRO]));
-    	$date = ($datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_DATE])? $datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_DATE] : '1900-01-01';
-    	$taux = ($datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_TAXE])? $this->castFloat($datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_TAXE]) : null;
-    	$code = ($datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_CODE])? $datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_CODE] : null;
-    	$libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_DOUANE_LIBELLE] : null;
-    	$canInsert = true;
-    	foreach ($droits->douane as $droit) {
-    		if ($droit->date == $date && $droit->taux == $taux && $droit->code == $code) {
-    			$canInsert = false;
-    			break;
-    		}
-    	}
-    	if ($canInsert) {
-	    	$droits = $droits->douane->add();
-	    	$droits->date = $date;
-	    	$droits->taux = $taux;
-	    	$droits->code = $code;
-	    	$droits->libelle = $libelle;
-    	}
-    }
-    
-    protected function setDroitCvoCsv($datas, $code_applicatif) {
-
-      if (!isset($datas[ProduitCsvFile::CSV_PRODUIT_CVO_NOEUD]) || !$datas[ProduitCsvFile::CSV_PRODUIT_CVO_TAXE] || $code_applicatif != $datas[ProduitCsvFile::CSV_PRODUIT_CVO_NOEUD]) {
-
-    		return;
-    	}
-
-    	$droits = $this->getDroits('INTERPRO-'.strtolower($datas[ProduitCsvFile::CSV_PRODUIT_INTERPRO]));
-    	$date = ($datas[ProduitCsvFile::CSV_PRODUIT_CVO_DATE])? $datas[ProduitCsvFile::CSV_PRODUIT_CVO_DATE] : '1900-01-01';
-    	$taux = ($datas[ProduitCsvFile::CSV_PRODUIT_CVO_TAXE])? $this->castFloat($datas[ProduitCsvFile::CSV_PRODUIT_CVO_TAXE]) : null;
-    	$code = ConfigurationDroits::CODE_CVO;
-    	$libelle = ConfigurationDroits::LIBELLE_CVO;
-    	$canInsert = true;
-    	foreach ($droits->cvo as $droit) {
-    		if ($droit->date == $date && $droit->code == $code) {
-    			$canInsert = false;
-    			break;
-    		}
-    	}
-    	if ($canInsert) {
-	    	$droits = $droits->cvo->add();
-	    	$droits->date = $date;
-	    	$droits->taux = $taux;
-	    	$droits->code = $code;
-	    	$droits->libelle = $libelle;
-    	}
-    }
-    
-    protected function castFloat($float) {
-    	return floatval(str_replace(',', '.', $float));
-    }
-
-    public function formatProduitsWithCVONeg($interpro = null, $departement = null, $format = "%format_libelle% (%code_produit%)") {
-        if(!array_key_exists($format, $this->format_produits_with_negCVO)) {
-          $produits_with_negCVO = $this->getProduitsWithCVONeg();
-          $this->format_produits_with_negCVO[$format] = array();
-          foreach($produits_with_negCVO as $hash => $produit) {
-            $this->format_produits_with_negCVO[$format][$hash] = $produit->getLibelleFormat(array(), $format);
-          }
+    public function hasManyNoeuds(){
+        if(count($this->getChildrenNode()) > 1){
+            return true;
         }
-
-        return $this->format_produits_with_negCVO[$format];
-    }
-    
-    public function formatProduits($date = null,$interpro = null, $departement = null, $format = "%format_libelle% (%code_produit%)") {
-        if(!$date){
-            $date = date('Y-d-m');
-        }
-        if(!array_key_exists($date, $this->format_produits)){
-            $this->format_produits[$date] = array();
-        }
-        if(!array_key_exists($format, $this->format_produits[$date])) {
-          $produits = $this->getProduits($date,'INTERPRO-inter-loire',$departement);
-          $this->format_produits[$date][$format] = array();
-          foreach($produits as $hash => $produit) {
-            $this->format_produits[$date][$format][$hash] = $produit->getLibelleFormat(array(), $format);
-          }
-        }
-        return $this->format_produits[$date][$format];
-    }
-
-    public function getLabels($interpro) {
-      
-      throw new sfException("The method \"getLabels\" is not defined");
-    }
-
-    public function setDonneesCsv($datas) {
-      if ($datas[ProduitCsvFile::CSV_PRODUIT_CODE_PRODUIT_NOEUD] == $this->getTypeNoeud()) {
-        $this->code_produit = ($datas[ProduitCsvFile::CSV_PRODUIT_CODE_PRODUIT])? $datas[ProduitCsvFile::CSV_PRODUIT_CODE_PRODUIT] : null;
-      }
-
-      if ($datas[ProduitCsvFile::CSV_PRODUIT_CODE_COMPTABLE_NOEUD] == $this->getTypeNoeud()) {
-        $this->code_comptable = ($datas[ProduitCsvFile::CSV_PRODUIT_CODE_COMPTABLE])? $datas[ProduitCsvFile::CSV_PRODUIT_CODE_COMPTABLE] : null;
-      }
-
-      if ($datas[ProduitCsvFile::CSV_PRODUIT_CODE_DOUANE_NOEUD] == $this->getTypeNoeud()) {
-        $this->code_douane = ($datas[ProduitCsvFile::CSV_PRODUIT_CODE_DOUANE])? $datas[ProduitCsvFile::CSV_PRODUIT_CODE_DOUANE] : null;
-      }      
-    }
-
-  	public abstract function getTypeNoeud();
-
-  	public function getDetailConfiguration() {
-  		try {
-			$parent_node = $this->getParentNode();
-		} catch (Exception $e) {
-			return $this->getDetail();;
-		}
-
-  		$details = $this->getParentNode()->getDetailConfiguration();
-  		if ($this->exist('detail')) {
-  			foreach ($this->detail as $type => $detail) {
-  				foreach ($detail as $noeud => $droits) {
-  					if ($droits->readable !== null)
-  						$details->get($type)->get($noeud)->readable = $droits->readable;
-  					if ($droits->writable !== null)
-  						$details->get($type)->get($noeud)->writable = $droits->writable;
-  				}
-  			}
-  		}
-  		return $details;
-  	}
-
-    public function getKeys($noeud) {
-      if($noeud == $this->getTypeNoeud()) {
-
-        return array($this->getKey() => $this);
-      }
-
-      $items = array();
-      foreach($this->getChildrenNode() as $key => $item) {
-          $items = array_merge($items, $item->getKeys($noeud));
-      }
-
-      return $items;
-    }
-
-    public function addInterpro($interpro) 
-    {
-      if ($this->exist('interpro')) {
-        $this->interpro->getOrAdd($interpro);
-      }
-      return $this->getParentNode()->addInterpro($interpro);
-    }
-
-    public function hasDepartements() {
         return false;
     }
 
-    public function hasDroits() {
+    public function getProduits() {
+      if(is_null($this->produits)) {
+        $this->produits = array();
+        foreach($this->getChildrenNode() as $key => $item) {
+            $this->produits = array_merge($this->produits, $item->getProduits());
+        }
+      }
+
+      return $this->produits;
+    }
+
+    public function getProduitsFilter($type_declaration = null) {
+      if(!$type_declaration) {
+
+        return $this->getProduits();
+      }
+      
+      if(is_null($this->produits[$type_declaration])) {
+        $this->produits[$type_declaration] = array();
+        foreach($this->getChildrenFilter($type_declaration) as $key => $item) {
+            $this->produits[$type_declaration] = array_merge($this->produits[$type_declaration], $item->getProduitsFilter($type_declaration));
+        }
+      }
+
+      return $this->produits[$type_declaration];
+    }
+
+    /**** RENDEMENT POUR LA DR ****/
+
+    public function getRendement() {
+
+      return $this->getRendementCepage();
+    }
+
+    public function getRendementNoeud() {
+
+        return -1;
+    }
+
+    public function getRendementAppellation() {
+      
+        return $this->getRendementByKey('rendement_appellation');
+    }
+
+    public function getRendementCouleur() {
+        
+        return $this->getRendementByKey('rendement_couleur');
+    }
+
+    public function getRendementCepage() {
+        
+        return $this->getRendementByKey('rendement');
+    }
+
+    public function hasRendementAppellation() {
+        
+        return $this->hasRendementByKey('rendement_appellation');
+    }
+
+    public function hasRendementCouleur() {
+        
+        return $this->hasRendementByKey('rendement_couleur');
+    }
+
+    public function hasRendementCepage() {
+        
+        return $this->hasRendementByKey('rendement');
+    }
+
+    public function existRendementAppellation() {
+        
+        return $this->existRendementByKey('rendement_appellation');
+    }
+
+    public function existRendementCouleur() {
+        
+        return $this->existRendementByKey('rendement_couleur');
+    }
+
+    public function existRendementCepage() {
+        
+        return $this->existRendementByKey('rendement');
+    }
+
+    public function existRendement() {
+
+        return $this->existRendementCepage() || $this->existRendementCouleur() || $this->existRendementAppellation();
+    }
+
+    public function hasRendementNoeud() {
+        $r = $this->getRendementNoeud();
+
+        return ($r && $r > 0);
+    }
+
+    public function existRendementByKey($key) {
+        
+        return $this->store('exist_rendement_by_key_'.$key, array($this, 'existRendementByKeyStorable'), array($key));
+    }
+
+    protected function existRendementByKeyStorable($key) {
+      if($this->hasRendementByKey($key)) {
+
         return true;
-    }
-
-    public function hasLabels() {
-        return false;
-    }
-
-    public function hasDetails() {
-        return false;
-    }
-
-    public function hasDroit($type) {
-      if(!$this->hasDroits()) {
-
-        return false;
       }
-      
-      if($type == ConfigurationDroits::DROIT_CVO){
-        return true;
+
+      foreach($this->getChildrenNode() as $noeud) {
+        if($noeud->existRendementByKey($key)) {
+
+          return true;
+        }
       }
 
       return false;
     }
 
-    public function hasCodes() {
-        return false;
+    protected function getRendementByKey($key) {
+      
+        return $this->store('rendement_by_key_'.$key, array($this, 'findRendementByKeyStorable'), array($key));
     }
+
+    protected function findRendementByKeyStorable($key) {
+        if ($this->exist($key) && $this->_get($key)) {
+
+            return $this->_get($key);
+        }
+
+        return $this->getParentNode()->get($key);
+    }
+
+    protected function hasRendementByKey($key) {
+        $r = $this->getRendementByKey($key);
+
+        return ($r && $r > 0);
+    }
+
+
+    /**** FIN DU RENDEMENT POUR LA DR ****/
+
+    public function hasMout() {
+        if ($this->exist('mout')) {
+            
+            return ($this->mout == 1);
+        } 
+
+        return $this->getParentNode()->hasMout();
+    }
+    
+    public function excludeTotal() 
+    {
+        return ($this->exist('exclude_total') && $this->get('exclude_total'));
+    }
+
+    public function hasTotalCepage() {
+      
+      return $this->store('has_total_cepage', array($this, 'hasTotalCepageStorable'));
+    }
+
+    protected function hasTotalCepageStorable() {
+
+      if ($this->exist('no_total_cepage')) {
+        
+          return !($this->no_total_cepage == 1);
+      }
+
+      if ($this->exist('min_quantite') && $this->get('min_quantite')) {
+          
+          return false;
+      } 
+
+      return $this->getParentNode()->hasTotalCepage(); 
+    }
+
+    public function hasVtsgn() {
+        if ($this->exist('no_vtsgn')) {
+            return (! $this->get('no_vtsgn'));
+        }
+
+
+        if ($this->exist('min_quantite') && $this->get('min_quantite')) {
+            return false;
+        }
+
+        return $this->getParentNode()->hasVtsgn();
+    }
+
+    public function isForDR() {
+      
+        return !$this->exist('no_dr') || !$this->get('no_dr');
+    }
+
+    public function isForDS() {
+
+        return !$this->exist('no_ds') || !$this->get('no_ds');
+    }
+    
+    public function isAutoDs() {
+        if ($this->exist('auto_ds')) {
+            return $this->get('auto_ds');
+        }
+        
+        return $this->getParentNode()->isAutoDs();
+    }
+
 }
