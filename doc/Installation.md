@@ -16,23 +16,23 @@ Copier le fichier de configuration bin/config.inc
 Configurer le fichier bin/config.inc si besoin
 
  #bin/config.inc
-
  COUCHDBDOMAIN=your_couchdb_host
  COUCHDBPORT=your_couchdb_port
  COUCHDBBASE=your_database_name
+
 
 Lancer le script d'installation :
 
  > bash bin/install.sh
 
-Droit d'écriture apache des dossiers cache et log
+Test avec un serveur web PHP :
+ > cd web
+ > php -S localhost:9000
+
+Droit d'écriture apache sur les des dossiers cache et log
 
  > sudo chown www-data:your_user cache log
  > sudo chmod g+w cache log
-
-PHP HTTP Server :
-
- > php -S localhost:9000
 
 Apache Virtual host:
 
