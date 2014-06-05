@@ -5,24 +5,53 @@ Récupération du projet
 
  > git clone git@gitorious.org:ava/ava.git
 
+Aller dans le dossier ava/project/
 
-Subtree et dépendance
-=====================
+ > cd ava/project
 
-### Ajouter une dépendance par subtree
+Copier le fichier de configuration bin/config.inc
 
- > git remote add <path/to/lib> <url_to_lib_remote> 
- > git subtree add --prefix=<path/to/lib> <path/to/lib> <branch> --squash
+ > cp bin/config.inc{.example,}
 
-Exemple d'ajout du plugin couchdb :
+Configurer le fichier bin/config.inc si besoin
 
- > git remote add project/plugins/acCouchdbPlugin git@gitorious.org:accouchdbplugin/accouchdbplugin.git
- > git subtree add --prefix=project/plugins/acCouchdbPlugin project/plugins/acCouchdbPlugin master --squash
+ #bin/config.inc
 
-### Récupérer les mise à jour d'une dépendance subtree
+ COUCHDBDOMAIN=your_couchdb_host
+ COUCHDBPORT=your_couchdb_port
+ COUCHDBBASE=your_database_name
 
-> git subtree pull --prefix=project/plugins/acVinConfigurationPlugin project/plugins/acVinConfigurationPlugin ava --squash
+Lancer le script d'installation :
 
-### Pousser les mises à jour effectuées
+ > bash bin/install.sh
 
- > git subtree push --prefix=project/plugins/acVinConfigurationPlugin project/plugins/acVinConfigurationPlugin ava
+Droit d'écriture apache des dossiers cache et log
+
+ > sudo chown www-data:your_user cache log
+ > sudo chmod g+w cache log
+
+PHP HTTP Server :
+
+ > php -S localhost:9000
+
+Apache Virtual host:
+
+ #ava.conf
+ <VirtualHost *:80>
+    ServerName declaration.dev.ava-aoc.fr
+    DocumentRoot "/home/vince/www/ava/project/web"
+    DirectoryIndex index.php
+
+    <Directory "/home/vince/www/ava/project/web">
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    Alias /sf /home/vince/www/ava/project/lib/vendor/symfony/data/web/sf
+  
+    <Directory "/home/vince/www/ava/project/lib/vendor/symfony/data/web/sf">
+        AllowOverride All
+        Require all granted
+    </Directory>
+ </VirtualHost>
+
