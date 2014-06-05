@@ -2,9 +2,30 @@
 # http://www.symfony-project.org/reference/1_4/en/10-Routing
 
 # default rules
-homepage:
-  url:   /
-  param: { module: default, action: index }
+
+drev_create:
+  url: /drev/creation
+  param: { module: drev, action: create }
+
+drev_edit:
+  url: /drev/edition/:id
+  param: { module: drev, action: edit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_revendication:
+  url: /drev/revendication/:id
+  param: { module: drev, action: revendication }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
 
 # generic rules
 # please, remove them by adding more specific rules
