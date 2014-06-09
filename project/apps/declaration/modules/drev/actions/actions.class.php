@@ -28,6 +28,7 @@ class drevActions extends sfActions
         $drev = $this->getRoute()->getDRev();
 
         $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if($request->getParameter('force')) {
             $this->document->removeCache();

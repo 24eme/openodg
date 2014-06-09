@@ -14,7 +14,7 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public function create() {
-        $this->printable_document->addPage("");
+        $this->printable_document->addPage($this->getPartial('drev/pdf'));
     }
 
     protected function getTitle() {

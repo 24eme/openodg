@@ -71,8 +71,11 @@ abstract class ExportPDF {
     }
 
     protected function configure() {
-        
         $pdf = $this->printable_document->getPdf();
+        if(!$pdf) {
+            
+            return;
+        }
         $pdf->SetCreator('AVA');
         $pdf->SetAuthor('AVA');
         $pdf->SetTitle($this->getTitle().' de '.preg_replace('/\n/', ', ', $this->getSubtitle()));
