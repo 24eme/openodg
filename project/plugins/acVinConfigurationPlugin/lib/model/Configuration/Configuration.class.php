@@ -4,18 +4,23 @@ class Configuration extends BaseConfiguration {
 
     public function getProduits() {
 
-        return $this->recolte->getProduits();
+        return $this->declaration->getProduits();
+    }
+    
+	public function getDrevProduits() {
+
+        return $this->declaration->getDrevProduits();
     }
 
     public function getProduitsDetails() {
 
-        return $this->recolte->getProduitsDetails();
+        return $this->declaration->getProduitsDetails();
     }
     
     public function getAppellationsLieuDit()
     {
       $result = array();
-      foreach ($this->recolte->getCertifications() as $certification) {
+      foreach ($this->declaration->getCertifications() as $certification) {
         foreach ($certification->getAppellations() as $key => $appellation) {
           if ($appellation->exist('detail_lieu_editable') && $appellation->detail_lieu_editable) {
             $result[$key] = $appellation->libelle;
@@ -140,7 +145,7 @@ class Configuration extends BaseConfiguration {
 
     public function getProduitsLibellesByCodeDouane() {
         $produits = array();
-        foreach($this->recolte->certification->genre->getAppellations() as $appellation) {
+        foreach($this->declaration->certification->genre->getAppellations() as $appellation) {
           foreach($appellation->getLieux() as $lieu) {
             foreach($lieu->getCouleurs() as $couleur) {
               foreach($couleur->getCepages() as $cepage) {

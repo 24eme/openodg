@@ -20,4 +20,12 @@ class DRevClient extends acCouchdbClient {
 
         return $drev;
     }
+    
+    public function createDrev($identifiant, $campagne) 
+    {        
+        $drev = new DRev();
+        $drev->initDrev($identifiant, $campagne);
+        $drev->initProduits();
+        return $drev;
+    } 
 }

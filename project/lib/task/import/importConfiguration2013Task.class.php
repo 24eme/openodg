@@ -47,6 +47,9 @@ EOF;
             acCouchdbManager::getClient()->createDatabase();
         }
         
+        /*
+         * Parsing de la configuration 2013 Civa
+         */
         $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/2013.json');
         
         if (!$configurationJson) {
@@ -57,6 +60,9 @@ EOF;
         $certifications = $configurationJson->declaration->certification;
         unset($configurationJson->declaration->certification);
         
+        /*
+         * Identification des appellations revendiquees
+         */
         $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC = $certifications->genre->appellation_ALSACEBLANC;
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIR = $certifications->genre->appellation_PINOTNOIR;
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE = $certifications->genre->appellation_PINOTNOIRROUGE;
@@ -64,14 +70,43 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_LIEUDIT = $certifications->genre->appellation_LIEUDIT;
         $configurationJson->declaration->certification->genre->appellation_GRDCRU = $certifications->genre->appellation_GRDCRU;
         $configurationJson->declaration->certification->genre->appellation_CREMANT = $certifications->genre->appellation_CREMANT;
-        
         $grdCruCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_GRDCRU);
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur = $grdCruCepages;
-        
         $communaleBlancCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_COMMUNALE, 'couleurBlanc');
         $communaleRougeCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_COMMUNALE, 'couleurRouge');
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc = $communaleBlancCepages;
+        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->libelle = 'Blanc';
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge = $communaleRougeCepages;
+        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->libelle = 'Rouge';
+        
+        /*
+         * Modification des libelles pour le Pinot
+         */
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->libelle = 'AOC Alsace Pinot noir rosé';
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->libelle = 'AOC Alsace Pinot noir rouge';
+        
+        
+        /*
+         * Identification des produits (niveau couleur) de la DRev
+         */
+        $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->vtsgn_inclus = 1;
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->vtsgn_inclus = 0;
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->vtsgn_inclus = 0;
+        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->vtsgn_inclus = 1;
+        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->vtsgn_inclus = 0;
+        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->vtsgn_inclus = 1;
+        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->vtsgn_inclus = 0;
+        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->vtsgn_inclus = 1;
+        $configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->drev = 1;
+        $configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->vtsgn_inclus = 0;
         
     	if ($options['import'] == 'couchdb') {
     		

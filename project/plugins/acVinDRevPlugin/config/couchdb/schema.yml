@@ -2,8 +2,66 @@
 DRev:
   definition:
     fields:
-      _id:
-      _rev:
-      type:
-      campagne:
-      identifiant:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      declaration:
+        type: collection
+        class: DRevDeclaration
+        inheritance: _DRevDeclarationNoeud
+        definition:
+          fields:
+            '*':
+              #------ Certification ------
+              type: collection
+              class: DRevCertification
+              inheritance: _DRevDeclarationNoeud
+              definition:
+                fields:
+                  libelle: { }
+                  '*':
+                  #------ Genre ------
+                    type: collection
+                    class: DRevGenre
+                    inheritance: _DRevDeclarationNoeud
+                    definition:
+                      fields:
+                        libelle: { }
+                        '*':
+                          # ------ Appellation ------
+                          type: collection
+                          class: DRevAppellation
+                          inheritance: _DRevDeclarationNoeud
+                          definition:
+                            fields:
+                              libelle: { }
+                              # ------- MENTION ----------
+                              'mention':
+                                type : collection
+                                class: DRevMention
+                                inheritance: _DRevDeclarationNoeud
+                                definition:
+                                  fields:
+                                    libelle: { }
+                                    # ------- LIEU ----------
+                                    '*':
+                                      type: collection
+                                      class: DRevLieu
+                                      inheritance: _DRevDeclarationNoeud
+                                      definition:
+                                        fields:
+                                          libelle: { }
+                                          # ------ Couleur ------
+                                          '*':
+                                            type: collection
+                                            class: DRevCouleur
+                                            inheritance: _DRevDeclarationNoeud
+                                            definition:
+                                              fields:
+                                                libelle: { }
+                                                vtsgn_inclus: { type:integer }
+                                                actif: { type:integer }
+                                                total_superficie: { type:float }
+                                                volume_revendique: { type: float }
