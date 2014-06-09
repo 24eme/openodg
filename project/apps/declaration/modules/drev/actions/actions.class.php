@@ -23,4 +23,20 @@ class drevActions extends sfActions
     public function executeRevendication(sfWebRequest $request) {
         
     }
+
+    public function executePDF(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
+
+        if($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+        
+        $this->document->generate();
+
+        $this->document->addHeaders($this->getResponse());
+
+        return $this->renderText($this->document->output());
+    }
 }
