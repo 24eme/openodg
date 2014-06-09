@@ -31,7 +31,7 @@ class PageablePDF extends PageableOutput {
         $this->pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         //set auto page breaks
-        $this->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $this->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_FOOTER);
 
         //set image scale factor
         $this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -55,7 +55,7 @@ class PageablePDF extends PageableOutput {
 
         // set font
 
-        $this->pdf->SetFont(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN);
+        $this->pdf->SetFont('dejavusans', '', PDF_FONT_SIZE_MAIN);
     }
 
     public function getPDF() {

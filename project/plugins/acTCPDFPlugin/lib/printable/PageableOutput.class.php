@@ -23,7 +23,8 @@ class PageableOutput {
   }
 
   public function removeCache() {
-    return true;
+      
+      return true;
   }
 
   public function addHeaders($response) {
@@ -32,5 +33,9 @@ class PageableOutput {
   public function generate($no_cache = false) {
   }
 
+  public function getPDF() {
+      
+      return null;
+  }
 }
 
