@@ -151,7 +151,7 @@
 <br />
 <br />
 <br />
-<?php echo h2("Pièce à joindre") ?>
+<?php echo h2("Pièces à joindre") ?>
 <table style="border: 1px solid grey;"><tr><td>
 <table border="0">
   <tr>
