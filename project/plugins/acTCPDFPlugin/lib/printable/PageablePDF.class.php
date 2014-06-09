@@ -6,35 +6,42 @@ class PageablePDF extends PageableOutput {
     protected $pdf_file;
 
     protected function init() {
-        define('K_PATH_IMAGES', sfConfig::get('sf_web_dir').'/images/pdf/');
-        
-        // create new PDF document
-        $this->pdf = new acTCPDF($this->orientation, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $config = $this->config;
+        if(!$config) {
+            $config = new acTCPDFConfig();
+        }
 
-        // set document information
-        $this->pdf->SetCreator(PDF_CREATOR);
-        $this->pdf->SetAuthor('');
-        $this->pdf->SetTitle('');
-        $this->pdf->SetSubject('');
-        $this->pdf->SetKeywords('');
+        if($config->path_images) { 
+            define('K_PATH_IMAGES', $config->path_images);
+        }
+        // create new PDF document
+        $this->pdf = new acTCPDF($config->orientation, $config->unit, $config->page_format, true, 'UTF-8', false);
+
+        $this->pdf->SetCreator($config->creator);
+        $this->pdf->SetAuthor($config->author);
+        $this->pdf->SetTitle($config->title);
+        $this->pdf->SetSubject($config->subject);
+        $this->pdf->SetKeywords($config->keywords);
+
+        $this->pdf->SetHeaderData($config->header_logo, $config->header_logo_width, $config->header_title, $config->header_string);
 
         // set header and footer fonts
-        $this->pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '',  PDF_FONT_SIZE_MAIN));
-        $this->pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $this->pdf->setHeaderFont(Array($config->font_name_main, '',  $config->font_size_main));
+        $this->pdf->setFooterFont(Array($config->font_name_data, '', $config->font_size_data));
 
         // set default monospaced font
-        $this->pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $this->pdf->SetDefaultMonospacedFont($config->font_monospaced);
         //set margins
        
-        $this->pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $this->pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $this->pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+        $this->pdf->SetMargins($config->margin_left, $config->margin_top, $config->margin_right);
+        $this->pdf->SetHeaderMargin($config->margin_header);
+        $this->pdf->SetFooterMargin($config->margin_footer);
 
         //set auto page breaks
-        $this->pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_FOOTER);
+        $this->pdf->SetAutoPageBreak(TRUE, $config->margin_bottom);
 
         //set image scale factor
-        $this->pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $this->pdf->setImageScale($config->image_scale);
 
         //set some language-dependent strings
         $this->pdf->setLanguageArray('fra');
@@ -55,12 +62,7 @@ class PageablePDF extends PageableOutput {
 
         // set font
 
-        $this->pdf->SetFont('dejavusans', '', PDF_FONT_SIZE_MAIN);
-    }
-
-    public function getPDF() {
-
-        return $this->pdf;
+        $this->pdf->SetFont($config->font_name, '', $config->font_size);
     }
 
     public function isCached() {

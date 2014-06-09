@@ -4,12 +4,12 @@ class PageableOutput {
 
   protected $filename;
   protected $file_dir;
-  protected $orientation;
+  protected $config;
 
-  public function __construct($filename = '', $file_dir = null, $orientation = 'P') {
+  public function __construct($filename = '', $file_dir = null, $config = null) {
     $this->filename = $filename;
     $this->file_dir = $file_dir;
-    $this->orientation = $orientation;
+    $this->config = $config;
     $this->init();
   }
 
