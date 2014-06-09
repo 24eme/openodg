@@ -56,6 +56,13 @@ EOF;
         	throw new sfCommandException("Le fichier de configuration 2013 n'est pas existant dans l'arborescence ".sfConfig::get('sf_data_dir') . '/import/configuration/');
         }
         $configurationJson = json_decode($configurationJson);
+
+        unset($configurationJson->_rev);
+
+        if(isset($configurationJson->recolte)) {
+            $configurationJson->declaration = $configurationJson->recolte;
+            unset($configurationJson->recolte);
+        }
         
         $certifications = $configurationJson->declaration->certification;
         unset($configurationJson->declaration->certification);
@@ -63,6 +70,9 @@ EOF;
         /*
          * Identification des appellations revendiquees
          */
+        $configurationJson->declaration->certification = new stdClass();
+        $configurationJson->declaration->certification->genre = new stdClass();
+
         $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC = $certifications->genre->appellation_ALSACEBLANC;
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIR = $certifications->genre->appellation_PINOTNOIR;
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE = $certifications->genre->appellation_PINOTNOIRROUGE;
@@ -71,9 +81,11 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_GRDCRU = $certifications->genre->appellation_GRDCRU;
         $configurationJson->declaration->certification->genre->appellation_CREMANT = $certifications->genre->appellation_CREMANT;
         $grdCruCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_GRDCRU);
+        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu = new stdClass();
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur = $grdCruCepages;
         $communaleBlancCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_COMMUNALE, 'couleurBlanc');
         $communaleRougeCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_COMMUNALE, 'couleurRouge');
+        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu = new stdClass();
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc = $communaleBlancCepages;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->libelle = 'Blanc';
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge = $communaleRougeCepages;
@@ -115,13 +127,12 @@ EOF;
             }
             $doc = acCouchdbManager::getClient()->createDocumentFromData($configurationJson);
         	$doc->save();
+        } else {
+            echo '{"docs":';
+            echo json_encode($configurationJson);
+            echo '}';
+            echo "\n";
         }
-        
-
-        echo '{"docs":';
-        echo json_encode($configurationJson);
-        echo '}';
-        echo "\n";
 
     }
     
