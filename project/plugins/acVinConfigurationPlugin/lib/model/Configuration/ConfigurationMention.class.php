@@ -11,6 +11,11 @@ class ConfigurationMention extends BaseConfigurationMention {
 
         return $this->getLieux();
     }
+    
+	public function getAppellation() {
+
+        return $this->getParentNode();
+    }
 
     public function getLieux(){
         return $this->filter('^lieu');

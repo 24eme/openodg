@@ -3,6 +3,7 @@
 abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     protected $produits = null;
+    protected $drev_produits = null;
     protected $produits_filter = array(self::TYPE_DECLARATION_DR => null, self::TYPE_DECLARATION_DS => null);
 
     const TYPE_DECLARATION_DR = 'DR';
@@ -11,6 +12,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     protected function loadAllData() {
       parent::loadAllData();
       $this->getProduits();
+      $this->getDrevProduits();
       $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DS);
       $this->getRendementAppellation();
@@ -106,6 +108,18 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       }
 
       return $this->produits;
+    }
+    
+	public function getDrevProduits()
+    {
+      if(is_null($this->drev_produits)) {
+        $this->drev_produits = array();
+        foreach($this->getChildrenNode() as $key => $item) {
+            $this->drev_produits = array_merge($this->drev_produits, $item->getDrevProduits());
+        }
+      }
+
+      return $this->drev_produits;
     }
 
     public function getProduitsFilter($type_declaration = null) {
