@@ -18,13 +18,18 @@ class ExportDRevPDF extends ExportPDF {
         $this->printable_document->addPage($this->getPartial('drev/pdfLots'));
     }
 
-    protected function getTitle() {
-        return 'Déclaration de Revendicaton';
+    protected function getHeaderTitle() {
+        return 'Déclaration de Revendicaton 2014';
     }
 
-    protected function getSubtitle() {
+    protected function getHeaderSubtitle() {
 
-        return '';
+        return "Cave d'Actualys\nCommune de déclaration : Colmar\nDéclaration validée le 30/08/2014";
+    }
+
+    protected function getConfig() {
+
+        return new ExportDRevPDFConfig();
     }
 
     public function getFileName($with_rev = false) {
@@ -33,7 +38,7 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public static function buildFileName($drev, $with_rev = false) {
-        $filename = sprintf("DR_%s_%s", '7523700100', '2013-2014');
+        $filename = sprintf("DREV_%s_%s", '7523700100', '2013-2014');
 
         $declarant_nom = strtoupper(KeyInflector::slugify("DECLARANT"));
         $filename .= '_'.$declarant_nom;
