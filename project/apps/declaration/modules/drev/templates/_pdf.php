@@ -1,6 +1,6 @@
 <?php use_helper('TemplatingPDF') ?>
 
-<span style="background-color: grey; color: white; font-weight: bold;">Exploitation</span><br/>
+<span style="background-color: grey; color: white; font-weight: bold;">&nbsp;Exploitation&nbsp;</span><br/>
 <table style="border: 1px solid grey;"><tr><td>
 <table border="0">
   <tr>
@@ -94,7 +94,7 @@
     </tr>
 </table>
 <small>&nbsp;</small>
-<div><span style="background-color: grey; color: white; font-weight: bold;">Lieu de prélévement</span></div>
+<div><span style="background-color: grey; color: white; font-weight: bold;">&nbsp;Lieu de prélévement&nbsp;</span></div>
 <table style="border: 1px solid grey;"><tr><td>
 <table border="0">
   <tr>
@@ -127,7 +127,7 @@
     </tr>
 </table>
 <small>&nbsp;</small>
-<div><span style="background-color: grey; color: white; font-weight: bold;">Lieu de prélévement</span></div>
+<div><span style="background-color: grey; color: white; font-weight: bold;">&nbsp;Lieu de prélévement&nbsp;</span></div>
 <table style="border: 1px solid grey;"><tr><td>
 <table border="0">
   <tr>
@@ -155,7 +155,7 @@
 <table style="border: 1px solid grey;"><tr><td>
 <table border="0">
   <tr>
-    <td>- Une copie de la déclaration de récolte</td>
+    <td>- Une copie de la déclaration de Récolte</td>
   </tr>
   <tr>
     <td>- Une copie de la SV12</td>
