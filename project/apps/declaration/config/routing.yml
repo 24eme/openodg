@@ -25,7 +25,7 @@ drev_revendication:
     model:    DRev
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 drev_degustation_conseil:
   url: /drev/degustation-conseil/:id
@@ -35,7 +35,7 @@ drev_degustation_conseil:
     model:    DRev
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 drev_controle_externe:
   url: /drev/controle-externe/:id
@@ -45,7 +45,7 @@ drev_controle_externe:
     model:    DRev
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 drev_validation:
   url: /drev/validation/:id
@@ -55,7 +55,7 @@ drev_validation:
     model:    DRev
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 drev_export_pdf:
   url: /drev/pdf/:id
