@@ -40,7 +40,6 @@ class DRev extends BaseDRev
         $produit->getLieu()->libelle = $config->getLieu()->libelle;
         $produit->getMention()->libelle = $config->getMention()->libelle;
         $produit->getAppellation()->libelle = $config->getAppellation()->libelle;
-        $produit->vtsgn_inclus = ($config->exist('vtsgn_inclus') && $config->get('vtsgn_inclus'))? 1 : 0;
         $produit->actif = 0;
         return $produit;
     }

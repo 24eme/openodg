@@ -23,6 +23,14 @@ class drevActions extends sfActions
 
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->form = new DRevRevendicationForm($this->drev);
+        if ($request->isMethod(sfWebRequest::POST)) {
+    		$this->form->bind($request->getParameter($this->form->getName()));
+        	if ($this->form->isValid()) {
+        		$this->form->save();
+        		return $this->redirect('drev_degustation_conseil', $this->drev);
+        	}
+        }
     }
 
     public function executeDegustationConseil(sfWebRequest $request) {
