@@ -22,7 +22,19 @@ class drevActions extends sfActions
     }
 
     public function executeRevendication(sfWebRequest $request) {
-        
+        $this->drev = $this->getRoute()->getDRev();
+    }
+
+    public function executeDegustationConseil(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+    }
+
+    public function executeControleExterne(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+    }
+
+    public function executeValidation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
     }
 
     public function executePDF(sfWebRequest $request) {

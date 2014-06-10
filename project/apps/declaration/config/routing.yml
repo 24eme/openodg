@@ -27,6 +27,36 @@ drev_revendication:
   requirements:
     sf_method: [get]
 
+drev_degustation_conseil:
+  url: /drev/degustation-conseil/:id
+  param: { module: drev, action: degustationConseil }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_controle_externe:
+  url: /drev/controle-externe/:id
+  param: { module: drev, action: controleExterne }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_validation:
+  url: /drev/validation/:id
+  param: { module: drev, action: validation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_export_pdf:
   url: /drev/pdf/:id
   param: { module: drev, action: PDF }
