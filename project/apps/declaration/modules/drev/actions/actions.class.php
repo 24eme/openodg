@@ -49,6 +49,24 @@ class drevActions extends sfActions
 
     public function executeControleExterne(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        $this->form = new DRevControleExterneForm($this->drev->prelevements);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('drev_validation', $this->drev);
     }
 
     public function executeValidation(sfWebRequest $request) {

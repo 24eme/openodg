@@ -1,4 +1,5 @@
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
+
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -25,7 +26,7 @@
     </div>
 
     <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
-    <button type="submit" href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
+    <button type="submit" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
 </form>
 
 
