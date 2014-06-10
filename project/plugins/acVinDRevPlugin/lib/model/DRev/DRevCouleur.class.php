@@ -38,10 +38,20 @@ class DRevCouleur extends BaseDRevCouleur
     {
     	return ($this->volume_revendique && $this->actif)? $this->volume_revendique : 0;
     }
-
-    public function hasVtsgnInclus() 
+    
+    public function defineActive()
     {
-        return (bool) $this->vtsgn_inclus;
+    	$this->actif = 0;
+	    if ($this->volume_revendique && $this->total_superficie) {
+	    	$this->actif = 1;
+	    }
+    }
+    
+    public function clear()
+    {
+    	$this->actif = 0;
+    	$this->volume_revendique = null;
+    	$this->total_superficie = null;
     }
     
 }

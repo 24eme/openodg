@@ -102,23 +102,14 @@ EOF;
          * Identification des produits (niveau couleur) de la DRev
          */
         $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->vtsgn_inclus = 1;
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->vtsgn_inclus = 0;
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->vtsgn_inclus = 0;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->vtsgn_inclus = 1;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->vtsgn_inclus = 0;
         $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->vtsgn_inclus = 1;
         $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->vtsgn_inclus = 0;
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->vtsgn_inclus = 1;
         $configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->vtsgn_inclus = 0;
         
     	if ($options['import'] == 'couchdb') {
     		
@@ -127,6 +118,7 @@ EOF;
             }
             $doc = acCouchdbManager::getClient()->createDocumentFromData($configurationJson);
         	$doc->save();
+        	$this->logSection('configuration', 'Configuration importée avec succès');
         } else {
             echo '{"docs":';
             echo json_encode($configurationJson);

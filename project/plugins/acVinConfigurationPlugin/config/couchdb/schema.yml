@@ -163,7 +163,6 @@ Configuration:
                                                 libelle: { }
                                                 libelle_long: { required: false }
                                                 drev: { type: integer, required: false }
-                                                vtsgn_inclus: { type: integer, required: false }
                                                 douane :
                                                   type: collection
                                                   class: ConfigurationDouane
