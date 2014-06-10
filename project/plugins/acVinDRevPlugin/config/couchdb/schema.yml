@@ -7,6 +7,16 @@ DRev:
       type: { }
       campagne: { }
       identifiant: { }
+      prelevements:
+        type: collection
+        class: DRevPrelevements
+        definition:
+          fields:
+            cuve_alsace: { }
+            cuve_vtsgn: { }
+            bouteille_alsace: { }
+            bouteille_alsace_grdcru: { }
+            bouteille_vtsgn: { }
       declaration:
         type: collection
         class: DRevDeclaration
