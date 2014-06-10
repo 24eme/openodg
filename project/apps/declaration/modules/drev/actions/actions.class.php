@@ -27,6 +27,24 @@ class drevActions extends sfActions
 
     public function executeDegustationConseil(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
+        $this->form = new DRevDegustationConseilForm($this->drev->prelevements);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('drev_controle_externe', $this->drev);
     }
 
     public function executeControleExterne(sfWebRequest $request) {
