@@ -74,6 +74,15 @@ DRev:
                                                 actif: { type:integer }
                                                 total_superficie: { type:float }
                                                 volume_revendique: { type: float }
+                                                dr:
+                                                  type: collection
+                                                  definition:
+                                                    fields:
+                                                      superficie_total: { type:float }
+                                                      volume_sur_place: { type:float }
+                                                      volume_sur_place_revendique: { type:float }
+                                                      volume_total: { type:float }
+                                                      usages_industriels_total: { type:float }
       lots:
         type: collection
         definition:
@@ -97,3 +106,4 @@ DRev:
                               nb_hors_vtsgn: {  }
                               libelle: {  }
                               hash: {  }
+

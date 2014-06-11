@@ -41,6 +41,19 @@ class DRevCouleur extends BaseDRevCouleur
     {
     	return ($this->volume_revendique && $this->actif)? $this->volume_revendique : 0;
     }
+
+    public function updateFromDR() {
+        if($this->dr->volume_sur_place_revendique === -1) {
+           $this->dr->volume_sur_place_revendique = null; 
+        }
+        if(!is_null($this->dr->superficie_total)) {
+            $this->total_superficie = $this->dr->superficie_total;
+        }
+
+        if(!is_null($this->dr->volume_sur_place_revendique)) {
+            $this->volume_revendique = $this->dr->volume_sur_place_revendique;
+        }
+    }
     
     public function defineActive()
     {

@@ -91,6 +91,11 @@ class Configuration extends BaseConfiguration {
       return $libelle;
     }
 
+    public function getRecolte() {
+
+      return $this->getDeclaration();
+    }
+
     public function identifyProduct($appellation, $lieu, $cepage) {
       $appid = null;
       $lieuid = 'lieu';
