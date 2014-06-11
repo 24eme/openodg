@@ -52,6 +52,8 @@
 			</table>
 		</div>
 	</div>
-	<a href="" class="btn btn-primary btn-lg pull-left disabled">Étape précedente</a>
-	<button type="submit" class="btn btn-primary btn-lg pull-right">Étape suivante</button>
+	<p class="clearfix">
+		<a href="" class="btn btn-primary btn-lg pull-left disabled">Étape précedente</a>
+		<button type="submit" class="btn btn-primary btn-lg pull-right">Étape suivante</button>
+	</p>
 </form>

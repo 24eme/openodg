@@ -27,12 +27,14 @@
     <?php echo $form['cuve_vtsgn']->render(); ?>
     </div>
 
-	<div class="form-group">
+	<p class="clearfix">
     	<button type="submit" class="btn btn-warning pull-right">Valider et répartir les lots</button>
-    </div>
+    </p>
+    <p class="clearfix">
+        <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
+        <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
+    </p>
 </form>
 
-<a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
-<a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
 
 

@@ -38,15 +38,14 @@
 		</tbody>
 	</table>
 
-
-
-	<div class="form-group">
+	<p class="clearfix">
 		<a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-warning pull-left">Retourner à l'organisation</a>
-    	<button type="submit" class="btn btn-warning pull-right">Valider et répartir les lots suivant</button>
-    </div>
+		<button type="submit" class="btn btn-warning pull-right">Valider et répartir les lots suivant</button>
+	</p>
+	<p class="clearfix">
+		<a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
+		<button type="submit" href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-right">Étape suivante</button>
+		</div>
+	</p>
 </form>
-
-<a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
-<a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
-
 

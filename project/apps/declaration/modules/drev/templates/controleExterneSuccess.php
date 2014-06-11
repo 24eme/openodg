@@ -24,7 +24,9 @@
     <?php echo $form['bouteille_vtsgn']->renderLabel(); ?>
     <?php echo $form['bouteille_vtsgn']->render(); ?>
     </div>
-
-    <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
-    <button type="submit" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
+        
+    <p class="clearfix">
+        <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
+        <button type="submit" class="btn btn-primary btn-lg pull-right">Étape suivante</button>
+    </p>
 </form>
