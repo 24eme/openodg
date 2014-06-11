@@ -23,8 +23,11 @@ class DRevCouleur extends BaseDRevCouleur
     	return $this->getMention()->getAppellation();
     }
 
-    public function getProduits() 
+    public function getProduits($onlyActive = false) 
     {
+    	if ($onlyActive && !$this->actif) {
+    		return array();
+    	}
         return array($this->getHash() => $this);
     }
     

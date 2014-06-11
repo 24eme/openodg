@@ -29,11 +29,11 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
       return $node->getChildrenNode();
     }
 
-    public function getProduits() 
+    public function getProduits($onlyActive = false) 
     {
         $produits = array();
         foreach($this->getChildrenNode() as $key => $item) {
-            $produits = array_merge($produits, $item->getProduits());
+            $produits = array_merge($produits, $item->getProduits($onlyActive));
         }
 
         return $produits;
