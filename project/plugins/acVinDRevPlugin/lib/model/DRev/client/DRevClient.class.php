@@ -26,6 +26,7 @@ class DRevClient extends acCouchdbClient {
         $drev = new DRev();
         $drev->initDrev($identifiant, $campagne);
         $drev->initProduits();
+        $drev->initLots();
         return $drev;
     } 
 }

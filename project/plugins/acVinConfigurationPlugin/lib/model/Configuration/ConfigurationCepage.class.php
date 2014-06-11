@@ -155,4 +155,11 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     return parent::existRendement();
   }
   
+
+    
+    public function getDrevLotProduits()
+    {
+    	return array($this->getHash());
+    }
+  
 }

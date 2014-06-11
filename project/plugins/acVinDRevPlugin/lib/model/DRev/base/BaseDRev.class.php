@@ -11,6 +11,7 @@
  * @property string $identifiant
  * @property DRevPrelevements $prelevements
  * @property DRevDeclaration $declaration
+ * @property acCouchdbJson $lots
 
  * @method string get_id()
  * @method string set_id()
@@ -26,6 +27,8 @@
  * @method DRevPrelevements setPrelevements()
  * @method DRevDeclaration getDeclaration()
  * @method DRevDeclaration setDeclaration()
+ * @method acCouchdbJson getLots()
+ * @method acCouchdbJson setLots()
  
  */
  

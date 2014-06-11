@@ -74,3 +74,26 @@ DRev:
                                                 actif: { type:integer }
                                                 total_superficie: { type:float }
                                                 volume_revendique: { type: float }
+      lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: DRevLot
+              definition:
+                fields:
+                  total: {  }
+                  produits:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          class: DRevLotCepage
+                          definition:
+                            fields:
+                              nb_vtsgn: {   }
+                              nb_hors_vtsgn: {  }
+                              libelle: {  }
+                              hash: {  }

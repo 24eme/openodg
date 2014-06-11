@@ -111,6 +111,14 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->drev = 1;
         $configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->drev = 1;
         
+        /*
+         * On ajoute l'appellation Alsace pour la gestion des lots
+         */
+        $alsaceCepages = $this->getAlsaceCepages($configurationJson->declaration->certification->genre);
+        $configurationJson->declaration->certification->genre->appellation_ALSACE->appellation = 'ALSACE';
+        $configurationJson->declaration->certification->genre->appellation_ALSACE->libelle = 'AOC Alsace';
+        $configurationJson->declaration->certification->genre->appellation_ALSACE->mention->lieu->couleur = $alsaceCepages;
+        
     	if ($options['import'] == 'couchdb') {
     		
     		if ($doc = acCouchdbManager::getClient()->find($configurationJson->_id, acCouchdbClient::HYDRATE_JSON)) {
@@ -126,6 +134,27 @@ EOF;
             echo "\n";
         }
 
+    }
+    
+    protected function getAlsaceCepages($genreNode)
+    {
+    	$cepages = array();
+    	$appellations = array(
+    		'appellation_ALSACEBLANC', 
+    		'appellation_PINOTNOIR', 
+    		'appellation_PINOTNOIRROUGE',
+    		'appellation_COMMUNALE',
+    		'appellation_LIEUDIT'
+    	);
+    	foreach ($appellations as $appellation) {
+    		$appellationCepages = VarManipulator::objectToArray($this->getCepages($genreNode->{$appellation}));
+    		foreach ($appellationCepages as $cep => $appellationCepage) {
+    			if (!isset($cepages[$cep])) {
+    				$cepages[$cep] = $appellationCepage;
+    			}
+    		}
+    	}
+    	return VarManipulator::arrayToObject($cepages);
     }
     
     protected function getCepages($appellation, $noeudCouleur = 'couleur') 
