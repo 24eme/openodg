@@ -39,6 +39,11 @@ class DRev extends BaseDRev
                 continue;
             }
 
+            if(!$this->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $line[DRCsvFile::CSV_HASH_PRODUIT]))) {
+                
+                continue;
+            }
+
             $config = $this->getConfiguration()->get($line[DRCsvFile::CSV_HASH_PRODUIT]);
 
             if($config instanceof ConfigurationCouleur && $config->getAppellation()->mention->lieu->hasManyCouleur()) {
@@ -61,6 +66,8 @@ class DRev extends BaseDRev
             if($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
                 $produit->dr->volume_sur_place_revendique = -1;
             }
+
+
         }
     }
 
