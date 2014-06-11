@@ -36,6 +36,16 @@ drev_degustation_conseil:
     type:     object
   requirements:
     sf_method: [get, post]
+    
+drev_lots_alsace:
+  url: /drev/lots-aoc-alsace/:id
+  param: { module: drev, action: lotsAlsace }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 drev_controle_externe:
   url: /drev/controle-externe/:id

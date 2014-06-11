@@ -52,6 +52,25 @@ class drevActions extends sfActions
 
         $this->form->save();
 
+        return $this->redirect('drev_lots_alsace', $this->drev);
+    }
+
+    public function executeLotsAlsace(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+		$this->form = new DRevLotsForm($this->drev);
+    	if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        
+    	$this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+        
+		$this->form->save();
+		
         return $this->redirect('drev_controle_externe', $this->drev);
     }
 

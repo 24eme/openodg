@@ -6,7 +6,9 @@
 
 class DRev extends BaseDRev 
 {
-
+	const PRODUITS_LOT_ALSACE_CONFIGURATION_KEY = 'ALSACE';
+	const PREFIXE_LOT_KEY = 'cuve_';
+	
     public function constructId() 
     {
         $this->set('_id', 'DREV-' . $this->identifiant . '-' . $this->campagne);
@@ -88,6 +90,20 @@ class DRev extends BaseDRev
         $produit->getAppellation()->libelle = $config->getAppellation()->libelle;
         $produit->actif = 0;
         return $produit;
+    }
+
+    public function initLots() 
+    {
+    	$produits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY);
+    	$lotKey = self::PREFIXE_LOT_KEY.self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY;
+    	$lot = $this->lots->add($lotKey);
+    	$configuration = $this->getConfiguration();
+    	foreach ($produits as $produit) {
+    		$cepage = $lot->produits->add(str_replace('/', '_', $produit));
+    		$cepage->hash = $produit;
+    		$cepage->libelle = $configuration->get($produit)->libelle;
+    	}
+    	return $lot;
     }
 
 }

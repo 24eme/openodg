@@ -1,5 +1,7 @@
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
 
+<?php include_partial('drev/stepDegustationConseil', array('step' => 'prelevement', 'drev' => $drev)) ?>
+
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -25,8 +27,12 @@
     <?php echo $form['cuve_vtsgn']->render(); ?>
     </div>
 
-    <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
-    <button type="submit" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
+	<div class="form-group">
+    	<button type="submit" class="btn btn-warning pull-right">Valider et répartir les lots</button>
+    </div>
 </form>
+
+<a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
+<a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-right">Étape suivante</a>
 
 
