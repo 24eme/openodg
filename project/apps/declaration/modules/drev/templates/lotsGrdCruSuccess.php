@@ -1,10 +1,9 @@
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
 
-<?php include_partial('drev/stepDegustationConseil', array('step' => 'lot_alsace', 'drev' => $drev)) ?>
+<?php include_partial('drev/stepDegustationConseil', array('step' => 'lot_grdcru', 'drev' => $drev)) ?>
 
 
-<p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace (AOC Alsace Communale et Lieu-dit inclus).</p>
-<p>Un lot doit correspondre au maximum à 4 récipients et au maximum à 2000 hl.</p>
+<p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace Grand Cru.</p>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
 <p class="bg-success"><?php echo $sf_user->getFlash('notice') ?></p>
@@ -52,8 +51,8 @@
 	</p>
 	<?php endif; ?>
 	<p class="clearfix">
-		<a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-warning pull-left">Retourner à l'organisation</a>
-		<button type="submit" class="btn btn-warning pull-right">Valider et répartir les lots suivant</button>
+		<a href="<?php echo url_for("drev_lots_alsace", $drev) ?>" class="btn btn-warning pull-left">Retourner à la répartition des lots précédents</a>
+		<button type="submit" class="btn btn-warning pull-right">Valider</button>
 	</p>
 	<p class="clearfix">
 		<a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
@@ -61,4 +60,5 @@
 	</p>
 </form>
 
-<?php include_partial('drev/popupAjoutForm', array('drev' => $drev, 'callBackUrl' => 'drev_lots_alsace_ajout', 'form' => $ajoutForm)); ?>
+<?php include_partial('drev/popupAjoutForm', array('drev' => $drev, 'callBackUrl' => 'drev_lots_grdcru_ajout', 'form' => $ajoutForm)); ?>
+

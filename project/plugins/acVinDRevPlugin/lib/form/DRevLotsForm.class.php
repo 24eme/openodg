@@ -1,9 +1,18 @@
 <?php
 class DRevLotsForm extends acCouchdbObjectForm 
 {    
+	protected $node;
+	
+	public function __construct(acCouchdbJson $object, $node, $options = array(), $CSRFSecret = null) 
+	{
+		$this->node = $node;
+		parent::__construct($object, $options, $CSRFSecret);
+	}
+	
 	public function configure()
     {
-        $this->embedForm('produits', new DRevLotsProduitsForm($this->getObject()->lots->cuve_ALSACE->produits));
+    	$cuve = $this->getObject()->lots->getOrAdd($this->node);
+        $this->embedForm('produits', new DRevLotsProduitsForm($cuve->produits));
         $this->widgetSchema->setNameFormat('drev_lots_produits[%s]');
     }
     

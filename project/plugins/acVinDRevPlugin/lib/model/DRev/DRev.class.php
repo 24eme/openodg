@@ -7,7 +7,10 @@
 class DRev extends BaseDRev 
 {
 	const PRODUITS_LOT_ALSACE_CONFIGURATION_KEY = 'ALSACE';
+	const PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY = 'GRDCRU';
 	const PREFIXE_LOT_KEY = 'cuve_';
+	const NODE_CUVE_ALSACE = 'cuve_ALSACE';
+	const NODE_CUVE_GRDCRU = 'cuve_GRDCRU';
 	
     public function constructId() 
     {
@@ -94,16 +97,31 @@ class DRev extends BaseDRev
 
     public function initLots() 
     {
-    	$produits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY);
-    	$lotKey = self::PREFIXE_LOT_KEY.self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY;
-    	$lot = $this->lots->add($lotKey);
-    	$configuration = $this->getConfiguration();
-    	foreach ($produits as $produit) {
-    		$cepage = $lot->produits->add(str_replace('/', '_', $produit));
-    		$cepage->hash = $produit;
-    		$cepage->libelle = $configuration->get($produit)->libelle;
+    	$alsaceProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY);
+    	$grdCruProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY);
+    	foreach ($alsaceProduits as $alsaceProduit) {
+    		$this->addLotProduit($this->lots->add(self::PREFIXE_LOT_KEY.self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY), $alsaceProduit);
+    	}
+    	foreach ($grdCruProduits as $grdCruProduit) {
+    		if (preg_match('/\/lieu\//', $grdCruProduit)) {
+    			continue;
+    		}
+    		$this->addLotProduit($this->lots->add(self::PREFIXE_LOT_KEY.self::PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY), $grdCruProduit);
     	}
     	return $lot;
+    }
+    
+    public function addLotProduit($lot, $produit)
+    {
+    	$configuration = $this->getConfiguration();
+		$cepage = $lot->produits->add(str_replace('/', '_', $produit));
+    	$cepage->hash = $produit;
+    	$libelle = '';
+    	if ($configuration->get($produit)->getLieu()->libelle) {
+    		$libelle .= $configuration->get($produit)->getLieu()->libelle.' - ';
+    	}
+    	$libelle .= $configuration->get($produit)->libelle;
+    	$cepage->libelle = $libelle;
     }
 
 }

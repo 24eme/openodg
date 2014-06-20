@@ -57,7 +57,28 @@ class drevActions extends sfActions
 
     public function executeLotsAlsace(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-		$this->form = new DRevLotsForm($this->drev);
+		$this->form = new DRevLotsForm($this->drev, DRev::NODE_CUVE_ALSACE);
+		$this->ajoutForm = new DrevLotsAjoutProduitForm($this->drev, DRev::NODE_CUVE_ALSACE);
+    	if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        
+    	$this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+        
+		$this->form->save();
+		
+        return $this->redirect('drev_lots_grdcru', $this->drev);
+    }
+
+    public function executeLotsGrdCru(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+		$this->form = new DRevLotsForm($this->drev, DRev::NODE_CUVE_GRDCRU);
+		$this->ajoutForm = new DrevLotsAjoutProduitForm($this->drev, DRev::NODE_CUVE_GRDCRU);
     	if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -72,6 +93,25 @@ class drevActions extends sfActions
 		$this->form->save();
 		
         return $this->redirect('drev_controle_externe', $this->drev);
+    }
+    
+    public function executeLotsAjoutProduit(sfWebRequest $request) {
+    	$this->forward404Unless($this->cuve = $request->getParameter('cuve'));
+    	$this->drev = $this->getRoute()->getDRev();
+    	$this->ajoutForm = new DrevLotsAjoutProduitForm($this->drev, $this->cuve);
+    	$this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+
+        if($this->ajoutForm->isValid()) {
+            $this->ajoutForm->save();
+            $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
+        } else {
+        	$this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+        }
+        
+        $this->ajoutForm->save();
+        $url = 'drev_lots_'.strtolower(str_replace(DRev::PREFIXE_LOT_KEY, '', $this->cuve));
+        
+        return $this->redirect($url, $this->drev);
     }
 
     public function executeControleExterne(sfWebRequest $request) {

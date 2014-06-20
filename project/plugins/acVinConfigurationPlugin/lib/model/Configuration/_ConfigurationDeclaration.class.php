@@ -14,7 +14,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       parent::loadAllData();
       $this->getProduits();
       $this->getDrevProduits();
-      $this->getDrevLotProduits();
       $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DS);
       $this->getRendementAppellation();
@@ -126,14 +125,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     
 	public function getDrevLotProduits()
     {
-      if(is_null($this->drev_lot_produits)) {
-        $this->drev_lot_produits = array();
+        $drev_lot_produits = array();
         foreach($this->getChildrenNode() as $key => $item) {
-            $this->drev_lot_produits = array_merge($this->drev_lot_produits, $item->getDrevLotProduits());
+            $drev_lot_produits = array_merge($drev_lot_produits, $item->getDrevLotProduits());
         }
-      }
-
-      return $this->drev_lot_produits;
+      	return $drev_lot_produits;
     }
 
     public function getProduitsFilter($type_declaration = null) {

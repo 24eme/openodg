@@ -46,6 +46,36 @@ drev_lots_alsace:
     type:     object
   requirements:
     sf_method: [get, post]
+    
+drev_lots_grdcru:
+  url: /drev/lots-aoc-alsace-grdcru/:id
+  param: { module: drev, action: lotsGrdCru }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
+drev_lots_alsace_ajout:
+  url: /drev/lots-aoc-alsace/:id/ajout-produit
+  param: { module: drev, action: lotsAjoutProduit, cuve: cuve_ALSACE }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [post]
+    
+drev_lots_grdcru_ajout:
+  url: /drev/lots-aoc-alsace-grdcru/:id/ajout-produit
+  param: { module: drev, action: lotsAjoutProduit, cuve: cuve_GRDCRU }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [post]
 
 drev_controle_externe:
   url: /drev/controle-externe/:id
