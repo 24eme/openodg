@@ -146,6 +146,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getParent()->getHashRelation($key)."/".$this->getKeyRelation($key);
     }
 
+    public function getNodeRelation($key) {
+        
+        return $this->getDocument()->get($this->getHashRelation($key));
+    }
+
     public function getProduitsFilter($type_declaration = null) {
       if(!$type_declaration) {
 

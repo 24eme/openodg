@@ -54,13 +54,13 @@ class DRev extends BaseDRev
                 continue;
             }
 
-            $config = $this->getConfiguration()->get($line[DRCsvFile::CSV_HASH_PRODUIT]);
+            $config = $this->getConfiguration()->get($line[DRCsvFile::CSV_HASH_PRODUIT])->getNodeRelation('revendication');
 
-            if($config instanceof ConfigurationCouleur && $config->getAppellation()->mention->lieu->hasManyCouleur()) {
-                $config = $config->getAppellation()->mention->lieu->get($config->getKey());
-            } elseif($config instanceof ConfigurationAppellation && !$config->mention->lieu->hasManyCouleur()) {
+            if($config instanceof ConfigurationAppellation && !$config->mention->lieu->hasManyCouleur()) {
                 $config = $config->mention->lieu->couleur;
-            } else {
+            }
+
+            if(!$config instanceof ConfigurationCouleur) {
                 continue;
             }
 
