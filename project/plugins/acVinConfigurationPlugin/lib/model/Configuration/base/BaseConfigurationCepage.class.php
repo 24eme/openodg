@@ -6,6 +6,7 @@
 
  * @property string $no_vtsgn
  * @property ConfigurationDouane $douane
+ * @property acCouchdbJson $relations
  * @property string $libelle
  * @property string $libelle_long
  * @property float $rendement
@@ -24,6 +25,8 @@
  * @method string setNoVtsgn()
  * @method ConfigurationDouane getDouane()
  * @method ConfigurationDouane setDouane()
+ * @method acCouchdbJson getRelations()
+ * @method acCouchdbJson setRelations()
  * @method string getLibelle()
  * @method string setLibelle()
  * @method string getLibelleLong()

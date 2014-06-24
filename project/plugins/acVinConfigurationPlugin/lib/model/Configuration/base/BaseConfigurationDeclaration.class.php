@@ -7,6 +7,7 @@
  * @property string $no_usages_industriels
  * @property string $no_recapitulatif_couleur
  * @property ConfigurationDouane $douane
+ * @property acCouchdbJson $relations
 
  * @method string getNoUsagesIndustriels()
  * @method string setNoUsagesIndustriels()
@@ -14,6 +15,8 @@
  * @method string setNoRecapitulatifCouleur()
  * @method ConfigurationDouane getDouane()
  * @method ConfigurationDouane setDouane()
+ * @method acCouchdbJson getRelations()
+ * @method acCouchdbJson setRelations()
  
  */
 

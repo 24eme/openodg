@@ -47,6 +47,11 @@ Configuration:
                   qualite_sgn: {required: false}
                   qualite_aoc: {required: false}
                   code_cepage: {required: false}
+            relations:
+              type: collection
+              definition:
+                fields:
+                  '*': {  }
             '*':
               # ------- Certification ---------
               type: collection
@@ -57,6 +62,11 @@ Configuration:
                   rendement: { type: float }
                   libelle: { }
                   libelle_long: { required: false }
+                  relations:
+                    type: collection
+                    definition:
+                      fields:
+                        '*': {  }
                   douane:
                     type: collection
                     class: ConfigurationDouane
@@ -73,6 +83,11 @@ Configuration:
                         rendement: { type: float }
                         libelle: { }
                         libelle_long: { required: false }
+                        relations:
+                          type: collection
+                          definition:
+                            fields:
+                              '*': {  }
                         douane:
                           type: collection
                           class: ConfigurationDouane
@@ -110,6 +125,11 @@ Configuration:
                                     code_cepage: {required: false}
                                     no_dr: { type: integer, required: false }
                                     no_ds: { type: integer, required: false }
+                              relations:
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*': {  }
                               # ------- MENTION ----------
                               '*':
                                 type : collection
@@ -124,6 +144,11 @@ Configuration:
                                     douane :
                                       type: collection
                                       class: ConfigurationDouane
+                                      definition:
+                                        fields:
+                                          '*': {  }
+                                    relations:
+                                      type: collection
                                       definition:
                                         fields:
                                           '*': {  }
@@ -151,6 +176,11 @@ Configuration:
                                                 code_cepage: {required: false}
                                                 no_dr: { type: integer, required: false }
                                                 no_ds: { type: integer, required: false }
+                                          relations:
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                '*': {  }
                                           # ------------ COULEUR --------------
                                           '*' :
                                             type: collection
@@ -175,6 +205,11 @@ Configuration:
                                                       code_cepage: {required: false}
                                                       no_dr: { type: integer, required: false }
                                                       no_ds: { type: integer, required: false }
+                                                relations:
+                                                  type: collection
+                                                  definition:
+                                                    fields:
+                                                      '*': {  }
                                                 '*':
                                                 # ------------ CEPAGE -------------
                                                   type: collection
@@ -193,6 +228,11 @@ Configuration:
                                                             appellation_lieu: {required: false}
                                                             qualite: {required: false}
                                                             code_cepage: {required: false}
+                                                      relations:
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*': {  }
                                                       libelle: {  }
                                                       libelle_long: { required: false }
                                                       rendement: { type: float }

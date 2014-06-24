@@ -9,6 +9,7 @@
  * @property float $rendement
  * @property float $rendement_mention
  * @property ConfigurationDouane $douane
+ * @property acCouchdbJson $relations
 
  * @method string getLibelle()
  * @method string setLibelle()
@@ -20,6 +21,8 @@
  * @method float setRendementMention()
  * @method ConfigurationDouane getDouane()
  * @method ConfigurationDouane setDouane()
+ * @method acCouchdbJson getRelations()
+ * @method acCouchdbJson setRelations()
  
  */
 

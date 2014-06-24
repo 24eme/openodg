@@ -38,6 +38,11 @@ class DRev extends BaseDRev
     }
 
     public function initFromCSV($csv) {
+        $this->initFromCSVRevendication($csv);
+        $this->initFromCSVLots($csv);
+    }
+
+    public function initFromCSVRevendication($csv) {
         foreach($csv as $line) {
             if(!preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) && !preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])) {
 
@@ -71,10 +76,37 @@ class DRev extends BaseDRev
             if($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
                 $produit->dr->volume_sur_place_revendique = -1;
             }
-
-
         }
     }
+
+    public function initFromCSVLots($csv) {
+        foreach($csv as $line) {
+            if(
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_APPELLATION]) ||
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) ||
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])
+               ) {
+
+                continue;
+            }
+
+            $hash = preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT]));
+
+            if(!$this->getConfiguration()->exist($hash)) {
+                
+                continue;
+            }
+
+            $config = $this->getConfiguration()->get($hash);
+
+            if(!$config instanceof ConfigurationCepage) {
+                continue;
+            }
+
+            $this->addLotProduit($hash);
+        }
+    }
+
 
     public function updateFromDR() {
         foreach($this->declaration->getProduits() as $produit) {
@@ -99,29 +131,38 @@ class DRev extends BaseDRev
     {
     	$alsaceProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY);
     	$grdCruProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY);
-    	foreach ($alsaceProduits as $alsaceProduit) {
-    		$this->addLotProduit($this->lots->add(self::PREFIXE_LOT_KEY.self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY), $alsaceProduit);
+    	
+        foreach ($alsaceProduits as $alsaceProduit) {
+    		$this->addLotProduit($alsaceProduit);
     	}
+
     	foreach ($grdCruProduits as $grdCruProduit) {
     		if (preg_match('/\/lieu\//', $grdCruProduit)) {
     			continue;
     		}
-    		$this->addLotProduit($this->lots->add(self::PREFIXE_LOT_KEY.self::PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY), $grdCruProduit);
+    		$this->addLotProduit($grdCruProduit);
     	}
-    	return $lot;
     }
     
-    public function addLotProduit($lot, $produit)
+    public function addLotProduit($hash, $prefix = self::PREFIXE_LOT_KEY)
     {
+        $hash = $this->getConfiguration()->get($hash)->getHashRelation('lots');
+        $key = $prefix.$this->getLotsKeyByHash($hash);
+        $lot = $this->lots->add($key);
     	$configuration = $this->getConfiguration();
-		$cepage = $lot->produits->add(str_replace('/', '_', $produit));
-    	$cepage->hash = $produit;
+		$cepage = $lot->produits->add(str_replace('/', '_', $hash));
+    	$cepage->hash = $hash;
     	$libelle = '';
-    	if ($configuration->get($produit)->getLieu()->libelle) {
-    		$libelle .= $configuration->get($produit)->getLieu()->libelle.' - ';
+    	if ($configuration->get($hash)->getLieu()->libelle) {
+    		$libelle .= $configuration->get($hash)->getLieu()->libelle.' - ';
     	}
-    	$libelle .= $configuration->get($produit)->libelle;
+    	$libelle .= $configuration->get($hash)->libelle;
     	$cepage->libelle = $libelle;
+    }
+
+    public function getLotsKeyByHash($hash) {
+        
+        return str_replace("appellation_", "", $this->getConfiguration()->get($hash)->getAppellation()->getKey());
     }
 
 }

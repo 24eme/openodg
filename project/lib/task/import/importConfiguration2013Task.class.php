@@ -74,22 +74,59 @@ EOF;
         $configurationJson->declaration->certification->genre = new stdClass();
 
         $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC = $certifications->genre->appellation_ALSACEBLANC;
+        @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->relations->lots = "appellation_ALSACE";
+
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIR = $certifications->genre->appellation_PINOTNOIR;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIR->relations->lots = "appellation_ALSACE";
+
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE = $certifications->genre->appellation_PINOTNOIRROUGE;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->relations->lots = "appellation_ALSACE";
+
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE = $certifications->genre->appellation_COMMUNALE;
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->relations->lots = "appellation_ALSACE";
+        foreach($configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention as $key_lieu => $lieu) {
+            if(!preg_match('/^lieu/', $key_lieu)) {
+                continue;
+            }
+            
+            @$lieu->relations->lots = "lieu";
+            @$lieu->relations->revendication = "lieu";
+
+            foreach($lieu as $key_couleur => $couleur) {
+                if(!preg_match('/^couleur/', $key_couleur)) {
+                    continue;
+                }
+                @$couleur->relations->lots = "couleur";
+            }
+        }
+
         $configurationJson->declaration->certification->genre->appellation_LIEUDIT = $certifications->genre->appellation_LIEUDIT;
+        @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->relations->lots = "appellation_ALSACE";
+        @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->relations->lots = "couleur";
+        @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->relations->lots = "couleur";
+
         $configurationJson->declaration->certification->genre->appellation_GRDCRU = $certifications->genre->appellation_GRDCRU;
+
         $configurationJson->declaration->certification->genre->appellation_CREMANT = $certifications->genre->appellation_CREMANT;
         $grdCruCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_GRDCRU);
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu = new stdClass();
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur = $grdCruCepages;
+        foreach($configurationJson->declaration->certification->genre->appellation_GRDCRU->mention as $key_lieu => $lieu) {
+            if(!preg_match('/^lieu/', $key_lieu)) {
+                continue;
+            }
+            @$lieu->relations->revendication = "lieu";
+        }
+
         $communaleBlancCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_COMMUNALE, 'couleurBlanc');
         $communaleRougeCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_COMMUNALE, 'couleurRouge');
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu = new stdClass();
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc = $communaleBlancCepages;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->libelle = 'Blanc';
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->relations->lots = "couleur";
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge = $communaleRougeCepages;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->libelle = 'Rouge';
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->relations->lots = "couleur";
         
         /*
          * Modification des libelles pour le Pinot
@@ -115,9 +152,10 @@ EOF;
          * On ajoute l'appellation Alsace pour la gestion des lots
          */
         $alsaceCepages = $this->getAlsaceCepages($configurationJson->declaration->certification->genre);
+        $configurationJson->declaration->certification->genre->appellation_ALSACE = new stdClass();
         $configurationJson->declaration->certification->genre->appellation_ALSACE->appellation = 'ALSACE';
         $configurationJson->declaration->certification->genre->appellation_ALSACE->libelle = 'AOC Alsace';
-        $configurationJson->declaration->certification->genre->appellation_ALSACE->mention->lieu->couleur = $alsaceCepages;
+        @$configurationJson->declaration->certification->genre->appellation_ALSACE->mention->lieu->couleur = $alsaceCepages;
         
     	if ($options['import'] == 'couchdb') {
     		
