@@ -158,6 +158,12 @@ class DRev extends BaseDRev
     	}
     	$libelle .= $configuration->get($hash)->libelle;
     	$cepage->libelle = $libelle;
+
+        $cepage->remove('no_vtsgn', 1);
+
+        if(!$configuration->get($hash)->hasVtsgn()) {
+            $cepage->add('no_vtsgn', 1);
+        }
     }
 
     public function getLotsKeyByHash($hash) {
