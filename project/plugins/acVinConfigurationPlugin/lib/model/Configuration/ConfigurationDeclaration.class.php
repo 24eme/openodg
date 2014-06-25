@@ -17,6 +17,11 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return $this->getChildrenNodeDeep(2);
     }
 
+    public function getHashRelation($key) {
+        
+        return "/".$this->getKeyRelation($key);
+    }
+
     public function hasNoUsagesIndustriels() {
         
         return ($this->exist('no_usages_industriels') && $this->get('no_usages_industriels'));

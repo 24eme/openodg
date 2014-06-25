@@ -105,4 +105,4 @@ DRev:
                               nb_hors_vtsgn: {  }
                               libelle: {  }
                               hash: {  }
-
+                              no_vtsgn: { type: integer, required: false }

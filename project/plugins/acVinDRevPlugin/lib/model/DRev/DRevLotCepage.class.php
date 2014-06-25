@@ -29,5 +29,11 @@ class DRevLotCepage extends BaseDRevLotCepage
     	}
     	return ($this->hasVtsgn() || $this->hasHorsVtsgn())? true : false;
     }
+    
+    public function hasConfigVtsgn() {
+
+        return !$this->exist('no_vtsgn') || !$this->get('no_vtsgn');
+
+    }
 
 }

@@ -10,6 +10,7 @@
  * @property string $libelle
  * @property string $libelle_long
  * @property ConfigurationDouane $douane
+ * @property acCouchdbJson $relations
 
  * @method float getRendement()
  * @method float setRendement()
@@ -23,6 +24,8 @@
  * @method string setLibelleLong()
  * @method ConfigurationDouane getDouane()
  * @method ConfigurationDouane setDouane()
+ * @method acCouchdbJson getRelations()
+ * @method acCouchdbJson setRelations()
  
  */
 

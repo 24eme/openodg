@@ -16,6 +16,7 @@
  * @property integer $exclude_total
  * @property string $no_vtsgn
  * @property ConfigurationDouane $douane
+ * @property acCouchdbJson $relations
 
  * @method string getAppellation()
  * @method string setAppellation()
@@ -41,6 +42,8 @@
  * @method string setNoVtsgn()
  * @method ConfigurationDouane getDouane()
  * @method ConfigurationDouane setDouane()
+ * @method acCouchdbJson getRelations()
+ * @method acCouchdbJson setRelations()
  
  */
 

@@ -8,7 +8,9 @@
  * @property float $rendement
  * @property string $libelle
  * @property string $libelle_long
+ * @property integer $drev
  * @property ConfigurationDouane $douane
+ * @property acCouchdbJson $relations
 
  * @method float getRendementCouleur()
  * @method float setRendementCouleur()
@@ -18,8 +20,12 @@
  * @method string setLibelle()
  * @method string getLibelleLong()
  * @method string setLibelleLong()
+ * @method integer getDrev()
+ * @method integer setDrev()
  * @method ConfigurationDouane getDouane()
  * @method ConfigurationDouane setDouane()
+ * @method acCouchdbJson getRelations()
+ * @method acCouchdbJson setRelations()
  
  */
 
