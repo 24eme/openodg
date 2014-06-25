@@ -8,5 +8,8 @@ cat config/databases.yml.example | sed "s|dsn: http://localhost:5984/|dsn: http:
 echo "Création du fichier de configuration apps/declaration/config/factories.yml"
 cp apps/declaration/config/factories.yml{.example,}
 
+echo "Création du fichier web/declaration_dev.php "
+cp web/declaration_dev.php{.example,}
+
 echo "Création de la base de données"
 curl -X PUT "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE"
