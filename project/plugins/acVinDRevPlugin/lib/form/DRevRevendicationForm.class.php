@@ -7,7 +7,7 @@ class DRevRevendicationForm extends acCouchdbObjectForm
         $this->widgetSchema->setNameFormat('drev_produits[%s]');
     }
     
-    public function doUpdateObject($values) 
+    protected function doUpdateObject($values) 
     {
         parent::doUpdateObject($values);
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {

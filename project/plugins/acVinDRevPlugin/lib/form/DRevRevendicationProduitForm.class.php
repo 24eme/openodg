@@ -18,11 +18,8 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm
   		$this->widgetSchema->setNameFormat('[%s]');
     }
     
-    public function doUpdateObject($values) {
+	public function doUpdateObject($values) {
         parent::doUpdateObject($values);
-        $this->getObject()->defineActive();
-        if (!$this->getObject()->actif) {
-        	$this->getObject()->clear();
-        }
     }
+    
 }

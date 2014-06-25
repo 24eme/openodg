@@ -25,7 +25,7 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function getProduits($onlyActive = false) 
     {
-    	if ($onlyActive && !$this->actif) {
+    	if ($onlyActive && !$this->isActive()) {
     		return array();
     	}
         return array($this->getHash() => $this);
@@ -34,12 +34,12 @@ class DRevCouleur extends BaseDRevCouleur
     
     public function getTotalTotalSuperficie()
     {
-    	return ($this->total_superficie && $this->actif)? $this->total_superficie : 0;
+    	return ($this->isActive())? $this->total_superficie : 0;
     }
     
     public function getTotalVolumeRevendique()
     {
-    	return ($this->volume_revendique && $this->actif)? $this->volume_revendique : 0;
+    	return ($this->isActive())? $this->volume_revendique : 0;
     }
 
     public function updateFromDR() {
@@ -55,19 +55,9 @@ class DRevCouleur extends BaseDRevCouleur
         }
     }
     
-    public function defineActive()
+    public function isActive()
     {
-    	$this->actif = 0;
-	    if ($this->volume_revendique && $this->total_superficie) {
-	    	$this->actif = 1;
-	    }
-    }
-    
-    public function clear()
-    {
-    	$this->actif = 0;
-    	$this->volume_revendique = null;
-    	$this->total_superficie = null;
+	    return ($this->volume_revendique !== null && $this->total_superficie !== null)? true : false;
     }
     
 }

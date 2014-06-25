@@ -91,7 +91,6 @@ class DRev extends BaseDRev
         $produit->getLieu()->libelle = $config->getLieu()->libelle;
         $produit->getMention()->libelle = $config->getMention()->libelle;
         $produit->getAppellation()->libelle = $config->getAppellation()->libelle;
-        $produit->actif = 0;
         return $produit;
     }
 
@@ -122,6 +121,43 @@ class DRev extends BaseDRev
     	}
     	$libelle .= $configuration->get($produit)->libelle;
     	$cepage->libelle = $libelle;
+    }
+    
+    public function hasRevendicationAlsace()
+    {
+    	return 
+    		$this->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->isActive() &&
+    		$this->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->isActive() &&
+    		$this->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->isActive() &&
+    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->isActive() &&
+    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->isActive() && 
+    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->isActive() &&
+    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->isActive();
+    }
+    
+    public function hasRevendicationGrdCru()
+    {
+    	return $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
+    }
+    
+    public function hasLots($cuve = null, $vtsgn = false, $horsvtsgn = false)
+    {
+    	if ($cuve && $this->lots->exist($cuve)) {
+    		foreach ($this->lots->get($cuve)->produits as $produit) {
+    			if ($produit->hasLots($vtsgn, $horsvtsgn)) {
+    				return true;
+    			}
+    		}
+    	} else {
+    		foreach ($this->lots as $lot) {
+	    		foreach ($lot->produits as $produit) {
+	    			if ($produit->hasLots($vtsgn, $horsvtsgn)) {
+	    				return true;
+	    			}
+	    		}
+    		}
+    	}
+    	return false;
     }
 
 }
