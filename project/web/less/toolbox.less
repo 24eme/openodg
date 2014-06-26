@@ -1,0 +1,261 @@
+/* =================================================================================== 
+ * File : toolbox.less
+ * Description : LESS functions / helpers
+ * Authors : Hamza Iqbal - hiqbal[at]actualys.com
+ *			 Mikaël Guillin - mguillin[at]actualys.com
+ * Copyright: Actualys
+/* =================================================================================== */	
+
+/* ============================================================= */
+/* CSS3 TRANSITION / ANIMATIONS */
+/* ============================================================= */
+.transform-style(@style)
+{
+	-webkit-transform-style: @style; 
+	        transform-style: @style;
+}
+
+.transform-flat()
+{
+	.transform-style(flat);
+}
+
+.transform-3d()
+{
+	.transform-style(preserve-3d);
+}
+
+/* ============================================================= */
+/* BACKGROUND */
+/* ============================================================= */
+.background-clip(@argument: padding-box)
+{
+	-webkit-background-clip: @argument;
+	   -moz-background-clip: @argument;
+	        background-clip: @argument;
+}
+
+.background-size(@type: cover)
+{
+	-webkit-background-size: @type;
+	   -moz-background-size: @type;
+	     -o-background-size: @type;
+	        background-size: @type;
+}
+
+/* ============================================================= */
+/* BLOCK EFFECTS */
+/* ============================================================= */
+.border-radius(@radius: 5px)
+{
+	-webkit-border-radius: @radius;
+	   -moz-border-radius: @radius;
+	        border-radius: @radius;
+	//.background-clip;
+}
+
+.box-shadow(@arguments)
+{
+	-webkit-box-shadow: @arguments;
+	   -moz-box-shadow: @arguments;
+	        box-shadow: @arguments;
+}
+
+.text-shadow(@arguments)
+{
+	-webkit-text-shadow: @arguments;
+	   -moz-text-shadow: @arguments;
+	        text-shadow: @arguments;
+}
+
+/*.opacity(@opacite: 0.5)
+{
+	@opaciteIE: @opacite * 100;
+	
+	-webkit-opacity: @opacite;
+	 -khtml-opacity: @opacite;
+	   -moz-opacity: @opacite;
+	        opacity: @opacite;
+	
+	.ie8 & { -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=@{opaciteIE})"; }		
+	.ielt8 & { filter: ~"alpha(opacity=@{opaciteIE})"; }
+}*/
+
+/* ============================================================= */
+/* BLOCK FORMATTING */
+/* ============================================================= */
+.z1() { zoom: 1; }
+
+.border(@color: #000, @width: 1px, @style: solid) { border: @width @style @color; }
+.border-left(@color: #000, @width: 1px, @style: solid) { border-left: @width @style @color; }
+.border-top(@color: #000, @width: 1px, @style: solid) { border-top: @width @style @color; }
+.border-right(@color: #000, @width: 1px, @style: solid) { border-right: @width @style @color; }
+.border-bottom(@color: #000, @width: 1px, @style: solid) { border-bottom: @width @style @color; }
+
+
+.outline(@color: #000) { outline: 1px solid @color; }
+.outline-ie(@color: #000) { .border(@color); margin:-1px; }
+
+
+.inline-block-ie()
+{
+	display: inline-block;
+	
+	.ielt8 &
+	{	
+		display: inline;
+		.z1;
+	}
+}
+
+.inline-block-spacing(@spacing: -4px)
+{
+	letter-spacing: @spacing;
+    word-spacing: @spacing;
+}
+
+.padding-vertical(@padding)
+{
+	padding-top: @padding;
+	padding-bottom: @padding;
+}
+
+.padding-horizontal(@padding)
+{
+	padding-left: @padding;
+	padding-right: @padding;
+}
+
+
+/* ============================================================= */
+/* TEXTE FORMATTING */
+/* ============================================================= */
+.font-size-em(@cible: 10, @contexte: 10)
+{
+	font-size: (@cible / @contexte) + 0em;
+}
+
+.line-height(@cible: 12, @contexte: 10)
+{
+	line-height: (@cible / @contexte) + 0;
+}
+
+
+
+/* ============================================================= */
+/* POSITIONING */
+/* ============================================================= */
+.pos(@type: absolute, @top: auto, @right: auto, @bottom: auto, @left: auto)
+{
+	position: @type;
+	top: @top;
+	right: @right;
+	bottom: @bottom;
+	left: @left;
+}
+
+.pos-rel(@top: auto, @right: auto, @bottom: auto, @left: auto)
+{
+	.pos(relative, @top, @right, @bottom, @left);
+}
+
+.pos-abs(@top: auto, @right: auto, @bottom: auto, @left: auto)
+{
+	.pos(absolute, @top, @right, @bottom, @left);
+}
+
+.pos-fix(@top: auto, @right: auto, @bottom: auto, @left: auto)
+{
+	.pos(fixed, @top, @right, @bottom, @left);
+}
+
+.icon-center-x(@width: 0)
+{
+	margin-left: -(@width / 2);
+	left: 50%;
+}
+
+.icon-center-y(@height: 0)
+{
+	margin-top: -(@height / 2);
+	top: 50%;
+}
+
+.icon-center(@size: 0)
+{
+	.icon-center-x(@size);
+	.icon-center-y(@size);
+}
+
+
+/* ============================================================= */
+/* IMAGES */
+/* ============================================================= */
+.ir(@width: 1px, @height: 1px)
+{
+	color: rgba(0,0,0,0);
+	height: @height;
+	/*font-size: 0;*/
+	overflow: hidden;
+	/*padding-left: @width;*/
+	white-space: nowrap;
+	width: @width;
+	text-indent: @width * 2;
+}
+
+.img-block() { a, img { display: block; } }
+
+
+/* ============================================================= */
+/* TRIANGLES */
+/* ============================================================= */
+.triangle(@width: 0, @color: #000)
+{
+	.rotate(360deg);
+	.square(0px);
+	border-style: solid;
+	border-width: @width;
+	border-color: @color;
+	content: '';
+	display: inline-block;
+}
+
+.triangle-tl(@width: 0, @height: 0, @color: #000)
+{
+	.triangle(@width @width 0 0, @color transparent transparent);
+}
+
+.triangle-t(@width: 0, @height: 0, @color: #000)
+{
+	.triangle(0 (@width / 2) @height, transparent transparent @color);
+}
+
+.triangle-tr(@width: 0, @height: 0, @color: #000)
+{
+	.triangle(0 @width @width 0, transparent @color transparent transparent);
+}
+
+.triangle-r(@width: 0, @height: 0, @color: #000)
+{
+	.triangle((@width / 2) 0 (@width / 2) @height, transparent transparent transparent @color);
+}
+
+.triangle-br(@width: 0, @height: 0, @color: #000)
+{
+	.triangle(0 0 @width @width, transparent transparent @color);
+}
+
+.triangle-b(@width: 0, @height: 0, @color: #000)
+{
+	.triangle(@height (@width / 2) 0, @color transparent transparent);
+}
+
+.triangle-bl(@width: 0, @height: 0, @color: #000)
+{
+	.triangle(@width 0 0 @width, transparent transparent transparent @color);
+}
+
+.triangle-l(@width: 0, @height: 0, @color: #000)
+{
+	.triangle((@width / 2) @height (@width / 2) 0, transparent @color transparent transparent);
+}

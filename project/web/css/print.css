@@ -1,0 +1,82 @@
+@charset "utf-8";
+
+/* =================================================================================== 
+ * Fichier : print.css
+ * Description : Print styles
+ * Auteur : Hamza Iqbal - hiqbal[at]actualys.com
+ *			Mikaël Guillin - mguillin[at]actualys.com
+ * Copyright: Actualys
+/* =================================================================================== */
+
+@page {size: 21.0cm 29.7cm portrait;}
+
+/* ============================================================= */
+/* ELEMENTS GENERIQUES */
+/* ============================================================= */
+*
+{
+	color: #000 !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+}
+
+abbr[title]:after
+{
+	content: " (" attr(title) ")";
+}
+
+thead { display: table-header-group; }
+
+pre,
+blockquote,
+tr,
+img { page-break-inside: avoid; }
+
+h2,
+h3 { page-break-after: avoid; }
+
+img
+{
+	max-width: 100% !important;
+}
+
+/* ============================================================= */
+/* ELEMENTS CACHES */
+/* ============================================================= */
+#colonne
+{
+	display: none !important;
+}
+
+
+/* ============================================================= */
+/* ELEMENTS AFFICHES */
+/* ============================================================= */
+.bloc_onglets .contenu
+{
+	display: block !important;
+}
+
+#header h1
+{    
+	clip: rect(auto);
+	position: static !important;
+}
+
+
+/* ============================================================= */
+/* STRUCTURE */
+/* ============================================================= */
+.gabarit { width: auto; }
+
+body
+{
+	height: auto;
+	padding: 20px;
+}
+
+
+/* ============================================================= */
+/* FONDS / COULEURS */
+/* ============================================================= */
+body { background: 0 !important; }

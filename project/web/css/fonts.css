@@ -1,0 +1,19 @@
+/* =================================================================================== 
+ * Fichier : fonts.css
+ * Description : Déclaration des fichiers de police
+ * Auteur : Hamza Iqbal - hiqbal[at]actualys.com
+ *			Mikaël Guillin - mguillin[at]actualys.com
+ * Copyright: Actualys
+/* =================================================================================== */
+
+@font-face
+{
+	font-family: 'NomFont';
+	src: url('../fonts/font.eot');
+	src: url('../fonts/font.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/font.woff') format('woff'),
+		 url('../fonts/font.ttf') format('truetype'),
+		 url('../fonts/font.svg#NomFont') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}

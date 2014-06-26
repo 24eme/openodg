@@ -1,0 +1,393 @@
+/* =================================================================================== 
+ * File : global.less
+ * Description : Generic styles
+ * Authors : Hamza Iqbal - hiqbal[at]actualys.com
+ *			 Mikaël Guillin - mguillin[at]actualys.com
+ * Copyright: Actualys
+/* =================================================================================== */	
+
+/* ============================================================= */
+/* GENERIC ELEMENTS */
+/* ============================================================= */
+
+html  { }
+button,
+input,
+select,
+textarea {  }
+
+
+html
+{
+	-webkit-font-smoothing: antialiased;
+}
+
+
+body
+{
+}
+
+a
+{
+}
+
+img { max-width: 100%; }
+
+h1, h2, h3, h4, h5, h6 {  }
+
+p, ul, ol, blockquote
+{
+	margin: 1em 0;
+}
+
+ul, ol, li { zoom: 1; }
+
+blockquote
+{
+
+}
+
+
+audio,
+canvas,
+img,
+video { vertical-align: middle; }
+
+
+fieldset
+{
+}
+
+hr
+{
+	border-width: @hr-border-size;
+	margin: @hr-margin-vertical auto;
+	text-align: center;
+	width: @hr-width;
+
+	/* Tablet */
+	@media (min-width: @screen-sm-min)
+	{
+		margin: @hr-margin-sm-vertical auto;
+	}
+}
+
+ol, ul {  }
+
+
+/* ============================================================= */
+/* IE MESSAGE */
+/* ============================================================= */
+#message_ie
+{
+	background: #feefda;
+	border: solid #f7941d;
+	border-width: 1px 0;
+	z-index: 100;
+	
+	.container
+	{
+		background: url(../images/bg/bg_message_ie.png) 0 center no-repeat;
+		height: 50px;
+		padding: 10px 0 10px 70px;
+	}
+	
+	p
+	{
+		font-size: 12px;
+		strong
+		{
+			font-size: 16px;
+			display: block;
+			margin: 0 0 5px;
+		}
+	}
+}
+
+
+			
+/* ============================================================= */
+/* GENERIC CLASSES */
+/* ============================================================= */
+
+/**
+ * Structuration
+ ******************************************/
+.center-block
+{
+	float: none;
+}
+ 
+.col-xxs-12
+{
+	@media (max-width: @screen-xxs-max)
+	{
+		float: none;
+		width: auto;
+  	}
+}
+
+
+
+/**
+ * Sprites
+ ******************************************/
+.sprite(@sprite, @position: 0 0, @repeat: no-repeat)
+{
+	background: url('../images/sprites/sprite_@{sprite}.png') @position @repeat;
+}
+
+.sprite-global(@position: 0 0)
+{
+	.sprite(global, @position);
+}
+
+
+/**
+ * Pseudo-content
+ ******************************************/
+.struct-pseudo-content
+{
+	content: '';
+	display: inline-block;
+}
+
+.img-pseudo-content(@position: 0 0, @width: 1px, @height: 1px, @sprite: global)
+{
+	.sprite(@sprite, @position);
+	/*.struct-pseudo-content();*/
+	.size(@width, @height);
+}
+
+
+ 
+/**
+ * Text formating
+ ******************************************/
+.uppercase { text-transform: uppercase; }
+.lowercase { text-transform: lowercase; }
+
+.underlined(@hover: none)
+{
+	text-decoration: underline;
+	&:hover, &:focus { text-decoration: @hover; }
+}
+
+.no-underlined(@hover: underline)
+{
+	text-decoration: none;
+	&:hover, &:focus { text-decoration: @hover; }
+}
+
+/**
+ * Fonts
+ ******************************************/
+.helvetica { font-family: @font-family-sans-serif; }
+
+
+/**
+ * Titles 
+ ******************************************/
+
+
+/**
+ * Texts 
+ ******************************************/
+
+
+/**
+ * Lists
+ ******************************************/
+.clear-ul(@margin: 0, @padding: 0)
+{
+	list-style: none;
+	margin: @margin;
+	padding: @padding;
+}
+
+
+
+
+/**
+ * Images
+ ******************************************/
+
+ 
+ 
+/**
+ * Links
+ ******************************************/
+
+/**
+ * Buttons
+ ******************************************/
+
+
+/**
+ * Icons
+ ******************************************/
+
+
+
+/**
+ * Video
+ ******************************************/
+.video-container
+{
+	position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 30px;
+	height: 0;
+	overflow: hidden;
+
+	iframe, object, embed
+	{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+/**
+ * Breadcrumb (BS overrides)
+ ******************************************/
+.breadcrumb
+{
+	
+}
+
+/**
+ * Pagination (BS overrides)
+ ******************************************/
+.pagination-block
+{
+	position: relative;
+	text-align: center;
+}
+
+.pagination
+{
+}
+
+/* ============================================================= */
+/* HEADER */
+/* ============================================================= */
+#header
+{
+	/* Tablet */
+	@media (min-width: @screen-sm-min)
+	{
+	}
+	
+	.container
+	{
+		
+		/* Tablet */
+		@media (min-width: @screen-sm-min)
+		{
+		}
+		
+		/* Desktop */
+		@media (min-width: @screen-md-min)
+		{
+		}
+	}
+	
+}
+
+/**
+ * Logo
+ ******************************************/
+#logo
+{
+	
+}
+
+/**
+ * Collapsible navbar
+ ******************************************/
+.navbar-collapse
+{
+	
+}
+
+
+/**
+ * Main navigation
+ ******************************************/
+#navigation
+{	
+	.nav
+	{		
+		> li
+		{
+			
+			> a
+			{
+			}
+			
+			&.active > a { }
+		}
+		
+		/* Tablet */
+		@media (min-width: @screen-sm-min)
+		{		
+			> li
+			{
+				> a
+				{
+				}
+				
+				&.active > a
+				{
+				}
+			}
+		}
+		
+		/* Desktop */
+		@media (min-width: @screen-md-min)
+		{
+			
+		}
+	}
+}
+
+
+/* ============================================================= */
+/* CONTENT */
+/* ============================================================= */
+#content
+{
+	padding: @content-padding-vertical 0;
+	
+	/* Tablet */
+	@media (min-width: @screen-sm-min)
+	{	
+		padding: @content-padding-sm-vertical 0;
+	}
+
+	/* Desktop */
+	@media (min-width: @screen-md-min)
+	{	
+		padding: @content-padding-md-vertical 0;
+	}
+}
+
+
+
+/* ============================================================= */
+/* FOOTER */
+/* ============================================================= */
+#footer
+{
+	padding: @footer-padding-vertical 0;
+	
+	
+	/* Tablet */
+	@media (min-width: @screen-sm-min)
+	{	
+		padding: @footer-padding-sm-vertical 0;
+	}
+}
