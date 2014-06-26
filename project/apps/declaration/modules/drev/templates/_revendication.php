@@ -1,4 +1,6 @@
 <?php use_helper('Float') ?>
+<h4>Revendication</h4>
+
 <table class="table table-striped table-bordered table-hover">
 	<thead>
 		<tr>

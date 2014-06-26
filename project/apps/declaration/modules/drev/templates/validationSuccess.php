@@ -7,6 +7,7 @@
 ?>
 
 <?php include_partial('drev/revendication', array('drev' => $drev)); ?>
+<?php include_partial('drev/prelevements', array('drev' => $drev)); ?>
 
 <?php include_partial('drev/engagements', array('drev' => $drev)); ?>
 
