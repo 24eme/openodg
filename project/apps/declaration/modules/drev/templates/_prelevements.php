@@ -1,61 +1,51 @@
-<h4>Prélévements</h4>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">Contrôle externe</div>
-            <table class="table table-striped table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th class="col-md-4">Prélévement</th>
-                        <th class="text-center col-md-6">Semaine</th>
-                        <th class="text-center col-md-2">Nb. lots</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AOC Alsace</td>
-                        <td>Semaine du 1er Janvier 2014 <small>(Semaine 1)</small></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>AOC Alsace Grand Cru</td>
-                        <td>Semaine du 1er Janvier 2014 <small>(Semaine 1)</small></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>VT/SGN</td>
-                        <td>Semaine du 1er Janvier 2015 <small>(Semaine 1)</small></td>
-                        <td class="text-center">2</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">Dégustation conseil</div>
-            <table class="table table-striped table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th class="col-md-4">Prélévement</th>
-                        <th class="text-center col-md-6">Semaine</th>
-                        <th class="text-center col-md-2">Nb. lots</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>AOC Alsace</td>
-                        <td>Semaine du 1er Janvier 2014 <small>(Semaine 1)</small></td>
-                        <td class="text-center">4</td>
-                    </tr>
-                    <tr>
-                        <td>VT/SGN</td>
-                        <td>Mois d'avril 2014</td>
-                        <td class="text-center">2</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="panel panel-default">
+    <div class="panel-heading">Prélévements</div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="text-center col-md-3">Prélévement</th>
+                <th class="text-center col-md-1">Type</th>
+                <th class="text-center col-md-3">Produit</th>
+                <th class="text-center col-md-4">Semaine</th>
+                <th class="text-center col-md-1">Lots</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="text-center">1 Janv. 2014</td>
+                <td>Dégust. Conseil</td>
+                <td>Cuve</td>
+                <td>AOC Alsace</td>
+                <td class="text-center">5</td>
+            </tr>
+            <tr>
+                <td class="text-center">Avr. 2014</td>
+                <td>Dégust. Conseil</td>
+                <td>Cuve</td>
+                <td>VT / SGN</td>
+                <td class="text-center">2</td>
+            </tr>
+            <tr>
+                <td class="text-center">2 Juil. 2014</td>
+                <td>Contrôle&nbsp;externe</td>
+                <td>Bouteille</td>
+                <td>AOC Alsace</td>
+                <td class="text-center"></td>
+            </tr>
+            <tr>
+                <td class="text-center">14 Juil. 2014</td>
+                <td>Contrôle&nbsp;externe</td>
+                <td>Bouteille</td>
+                <td>AOC&nbsp;Alsace&nbsp;Grand&nbsp;Cru</td>
+                <td class="text-center"></td>
+            </tr>
+            <tr>
+                <td class="text-center">5 Juin 2015</td>
+                <td>Contrôle&nbsp;externe</td>
+                <td>Bouteille</td>
+                <td>VT / SGN</td>
+                <td class="text-center">2</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
