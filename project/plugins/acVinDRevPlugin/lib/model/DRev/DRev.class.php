@@ -205,23 +205,15 @@ class DRev extends BaseDRev
     	return $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
     }
     
-    public function hasLots($cuve = null, $vtsgn = false, $horsvtsgn = false)
+    public function hasLots($vtsgn = false, $horsvtsgn = false)
     {
-    	if ($cuve && $this->lots->exist($cuve)) {
-    		foreach ($this->lots->get($cuve)->produits as $produit) {
-    			if ($produit->hasLots($vtsgn, $horsvtsgn)) {
-    				return true;
-    			}
-    		}
-    	} else {
-    		foreach ($this->lots as $lot) {
-	    		foreach ($lot->produits as $produit) {
-	    			if ($produit->hasLots($vtsgn, $horsvtsgn)) {
-	    				return true;
-	    			}
-	    		}
-    		}
-    	}
+        foreach($this->prelevements as $prelevement) {
+            if ($prelevement->hasLots($vtsgn, $horsvtsgn)) {
+                
+                return true;
+            }
+        }
+
     	return false;
     }
 

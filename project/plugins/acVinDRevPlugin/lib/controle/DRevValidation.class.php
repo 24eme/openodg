@@ -1,5 +1,5 @@
 <?php
-class DrevValidation extends DocumentValidation
+class DRevValidation extends DocumentValidation
 {
     const TYPE_ERROR = 'erreur';
     const TYPE_WARNING = 'vigilance';
@@ -107,77 +107,77 @@ class DrevValidation extends DocumentValidation
   	
   	protected function controleErrorRevendicationAlsaceSansLotAlsace()
   	{
-  		if ($this->document->hasRevendicationAlsace() && !$this->document->hasLots(DRev::NODE_CUVE_ALSACE)) {
+  		if ($this->document->hasRevendicationAlsace() && !$this->document->addPrelevement(DRev::CUVE_ALSACE)->hasLots()) {
   			$this->addPoint(self::TYPE_ERROR, 'revendication_alsace_sans_lot_alsace', '', $this->generateUrl('drev_lots_alsace', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleErrorLotAlsaceSansRevendicationAlsace()
   	{
-  		if (!$this->document->hasRevendicationAlsace() && $this->document->hasLots(DRev::NODE_CUVE_ALSACE)) {
+  		if (!$this->document->hasRevendicationAlsace() && $this->document->addPrelevement(DRev::CUVE_ALSACE)->hasLots()) {
   			$this->addPoint(self::TYPE_ERROR, 'lot_alsace_sans_revendication_alsace', '', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleErrorRevendicationGrdCruSansLotGrdCru()
   	{
-  		if ($this->document->hasRevendicationGrdCru() && !$this->document->hasLots(DRev::NODE_CUVE_GRDCRU)) {
-  			$this->addPoint(self::TYPE_ERROR, 'revendication_grdcru_sans_lot_grdcru', '', $this->generateUrl('drev_lots_grdcru', array('sf_subject' => $this->document)));
+  		if ($this->document->hasRevendicationGrdCru() && !$this->document->addPrelevement(DRev::CUVE_GRDCRU)->hasLots()) {
+  			$this->addPoint(self::TYPE_ERROR, 'revendication_grdcru_sans_lot_grdcru', '', $this->generateUrl('drev_lots', $this->document->addPrelevement(DRev::CUVE_GRDCRU)));
   		}
   	}
   	
   	protected function controleErrorLotGrdCruSansRevendicationGrdCru()
   	{
-  		if (!$this->document->hasRevendicationGrdCru() && $this->document->hasLots(DRev::NODE_CUVE_GRDCRU)) {
+  		if (!$this->document->hasRevendicationGrdCru() && $this->document->addPrelevement(DRev::CUVE_GRDCRU)->hasLots()) {
   			$this->addPoint(self::TYPE_ERROR, 'lot_grdcru_sans_revendication_grdcru', '', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleErrorPrelevementAlsaceSansRevendicationAlsace()
   	{
-  		if (!$this->document->hasRevendicationAlsace() && $this->document->prelevements->bouteille_alsace) {
+  		if (!$this->document->hasRevendicationAlsace() && $this->document->addPrelevement(DRev::BOUTEILLE_ALSACE)->date) {
   			$this->addPoint(self::TYPE_ERROR, 'prelevement_alsace_sans_revendication_alsace', '', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleErrorRevendicationAlsaceSansPrelevementAlsace()
   	{
-  		if ($this->document->hasRevendicationAlsace() && !$this->document->prelevements->bouteille_alsace) {
+  		if ($this->document->hasRevendicationAlsace() && !$this->document->addPrelevement(DRev::BOUTEILLE_ALSACE)->date) {
   			$this->addPoint(self::TYPE_ERROR, 'revendication_alsace_sans_prelevement_alsace', '', $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleErrorPrelevementGrdCruSansRevendicationGrdCru()
   	{
-  		if (!$this->document->hasRevendicationGrdCru() && $this->document->prelevements->bouteille_alsace_grdcru) {
+  		if (!$this->document->hasRevendicationGrdCru() && $this->document->addPrelevement(DRev::BOUTEILLE_GRDCRU)->date) {
   			$this->addPoint(self::TYPE_ERROR, 'prelevement_grdcru_sans_revendication_grdcru', '', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleErrorRevendicationGrdCruSansPrelevementGrdCru()
   	{
-  		if ($this->document->hasRevendicationGrdCru() && !$this->document->prelevements->bouteille_alsace_grdcru) {
+  		if ($this->document->hasRevendicationGrdCru() && !$this->document->addPrelevement(DRev::BOUTEILLE_GRDCRU)->date) {
   			$this->addPoint(self::TYPE_ERROR, 'revendication_grdcru_sans_prelevement_grdcru', '', $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleWarningPrelevementVtsgnSansLot()
   	{
-  		if ($this->document->prelevements->cuve_vtsgn && !$this->document->hasLots(null, true)) {
-  			$this->addPoint(self::TYPE_WARNING, 'prelevement_vtsgn_sans_lot', '', $this->generateUrl('drev_lots_alsace', array('sf_subject' => $this->document)));
+  		if ($this->document->addPrelevement(DRev::CUVE_VTSGN)  && !$this->document->hasLots(true)) {
+  			$this->addPoint(self::TYPE_WARNING, 'prelevement_vtsgn_sans_lot', '', $this->generateUrl('drev_lots', $this->document->addPrelevement(DRev::CUVE_ALSACE)));
   		}
   	}
   	
   	protected function controleWarningLotVtsgnSansPrelevement()
   	{
-  		if (!$this->document->prelevements->cuve_vtsgn && $this->document->hasLots(null, true)) {
+  		if (!$this->document->addPrelevement(DRev::CUVE_VTSGN) && $this->document->hasLots(true)) {
   			$this->addPoint(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', '', $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleWarningLotVtsgnSansControleExterne()
   	{
-  		if (!$this->document->prelevements->bouteille_vtsgn && $this->document->hasLots(null, true)) {
+  		if (!$this->document->addPrelevement(DRev::BOUTEILLE_VTSGN) && $this->document->hasLots(true)) {
   			$this->addPoint(self::TYPE_WARNING, 'lot_vtsgn_sans_controle_externe', '', $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)));
   		}
   	}
@@ -188,8 +188,8 @@ class DrevValidation extends DocumentValidation
   		foreach ($revendicationProduits as $hash => $revendicationProduit) {
   			$this->controleWarningDrSurface($revendicationProduit);
   			$this->controleWarningDrVolume($revendicationProduit);
-			$this->controleErrorRevendicationIncomplete($revendicationProduit);
-			$this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
+			  $this->controleErrorRevendicationIncomplete($revendicationProduit);
+			  $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
   		}
   		$this->controleErrorPrelevementAlsace();
   		$this->controleErrorRevendicationAlsaceSansLotAlsace();

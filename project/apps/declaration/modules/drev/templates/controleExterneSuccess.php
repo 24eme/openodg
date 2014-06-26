@@ -24,6 +24,11 @@
     <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(); ?>
     <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->render(); ?>
     </div>
+    <div class="form-group">
+    <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?>
+    <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderLabel(); ?>
+    <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->render(); ?>
+    </div>
         
     <p class="clearfix">
         <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>

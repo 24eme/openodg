@@ -27,6 +27,17 @@ class DRevPrelevement extends BaseDRevPrelevement {
         }
     }
 
+    public function hasLots($vtsgn = false, $horsvtsgn = false)
+    {
+        foreach ($this->lots as $lot) {
+            if ($lot->hasLots($vtsgn, $horsvtsgn)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
     public function getPrefix() {
         preg_match("/^(.+_)/", $this->getKey(), $matches);
 
