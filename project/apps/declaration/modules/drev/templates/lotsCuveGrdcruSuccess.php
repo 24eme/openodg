@@ -17,7 +17,7 @@
 	<?php endif; ?>
 
 	<p class="clearfix">
-		<a href="<?php echo url_for("drev_lots_alsace", $drev) ?>" class="btn btn-warning pull-left">Retourner à la répartition des lots précédents</a>
+		<a href="<?php echo url_for("drev_lots", array("sf_subject" => $drev, "cuve" => DRev::NODE_CUVE_ALSACE)) ?>" class="btn btn-warning pull-left">Retourner à la répartition des lots précédents</a>
 		<button type="submit" class="btn btn-warning pull-right">Valider</button>
 	</p>
 	<p class="clearfix">
@@ -26,5 +26,5 @@
 	</p>
 </form>
 
-<?php include_partial('drev/popupAjoutForm', array('drev' => $drev, 'callBackUrl' => 'drev_lots_grdcru_ajout', 'form' => $ajoutForm)); ?>
+<?php include_partial('drev/popupAjoutForm', array('drev' => $drev, 'form' => $ajoutForm)); ?>
 

@@ -54,7 +54,7 @@ class DRevLotsAjoutProduitForm extends acCouchdbObjectForm
     protected function doUpdateObject($values)
     {
     	if (isset($values['hashref']) && !empty($values['hashref'])) {
-    		$this->getObject()->getDocument()->addLotProduit($values['hashref']);
+    		$this->getObject()->addLotProduit($values['hashref']);
     	}
     }
 }

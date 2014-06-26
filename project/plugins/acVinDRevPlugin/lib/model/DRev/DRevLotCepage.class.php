@@ -6,6 +6,23 @@
 
 class DRevLotCepage extends BaseDRevLotCepage
 {
+    public function getConfig() {
+
+        return $this->getDocument()->getConfiguration()->get($this->hash_produit);
+    }
+
+    public function getLibelle() {
+        if(is_null($this->_get('libelle'))) {
+            $libelle = '';
+            if ($this->getConfig()->getLieu()->libelle) {
+                $libelle .= $this->getConfig()->getLieu()->libelle.' - ';
+            }
+            $libelle .= $this->getConfig()->libelle;
+            $this->_set('libelle', $libelle);
+        }
+
+        return $this->_get('libelle');
+    }
 
     public function hasVtsgn()
     {

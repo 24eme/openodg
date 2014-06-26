@@ -6,12 +6,8 @@
 
 class DRev extends BaseDRev 
 {
-	const PRODUITS_LOT_ALSACE_CONFIGURATION_KEY = 'ALSACE';
-	const PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY = 'GRDCRU';
-    const PREFIXE_LOT_KEY = 'cuve_';
     const PREFIXE_LOT_CUVE_KEY = 'cuve_';
     const PREFIXE_LOT_BOUTEILLE_KEY = 'bouteille_';
-    const PREFIXE_LOT_DEFAULT_KEY = 'cuve_';
 	const NODE_CUVE_ALSACE = 'cuve_ALSACE';
 	const NODE_CUVE_GRDCRU = 'cuve_GRDCRU';
 	
@@ -116,7 +112,7 @@ class DRev extends BaseDRev
                 continue;
             }
 
-            $this->addLotProduit($hash);
+            $this->addLotProduit($hash, self::PREFIXE_LOT_CUVE_KEY);
         }
     }
 
@@ -130,41 +126,27 @@ class DRev extends BaseDRev
 	public function addProduit($hash)
 	{
         $config = $this->getConfiguration()->get($hash);
-
         $produit = $this->getOrAdd($config->getHash());
-        $produit->libelle = $config->getLibelle();
-        $produit->getLieu()->libelle = $config->getLieu()->libelle;
-        $produit->getMention()->libelle = $config->getMention()->libelle;
-        $produit->getAppellation()->libelle = $config->getAppellation()->libelle;
+        $produit->getLibelle();
+
         return $produit;
     }
 
     public function initLots() 
     {
-    	$produits = $this->getConfigProduitsLots();
-    	
-        foreach ($produits as $produit) {
-    		$this->addLotProduit($produit);
-    	}
+    	$this->lots->add(self::NODE_CUVE_ALSACE)->getConfigProduitsLots()->initLots();
     }
     
-    public function addLotProduit($hash, $prefix = self::PREFIXE_LOT_DEFAULT_KEY)
+    public function addLotProduit($hash, $prefix)
     {
         $hash = $this->getConfiguration()->get($hash)->getHashRelation('lots');
         $key = $prefix.$this->getLotsKeyByHash($hash);
         $lot = $this->lots->add($key);
     	$configuration = $this->getConfiguration();
 		$cepage = $lot->produits->add(str_replace('/', '_', $hash));
-    	$cepage->hash = $hash;
-    	$libelle = '';
-    	if ($configuration->get($hash)->getLieu()->libelle) {
-    		$libelle .= $configuration->get($hash)->getLieu()->libelle.' - ';
-    	}
-    	$libelle .= $configuration->get($hash)->libelle;
-    	$cepage->libelle = $libelle;
-
+        $cepage->hash_produit = $hash;
+        $cepage->getLibelle();
         $cepage->remove('no_vtsgn', 1);
-
         if(!$configuration->get($hash)->hasVtsgn()) {
             $cepage->add('no_vtsgn', 1);
         }

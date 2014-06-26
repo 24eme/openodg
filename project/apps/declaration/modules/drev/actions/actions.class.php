@@ -52,14 +52,22 @@ class drevActions extends sfActions
 
         $this->form->save();
 
-        return $this->redirect('drev_lots_alsace', $this->drev);
+        return $this->redirect('drev_lots', array("sf_subject" => $this->drev, "cuve" => Drev::NODE_CUVE_ALSACE));
     }
 
-    public function executeLotsAlsace(sfWebRequest $request) {
+    public function executeLots(sfWebRequest $request) {
+        $this->cuve = $request->getParameter('cuve');
+        if(!in_array($this->cuve, array(Drev::NODE_CUVE_ALSACE, Drev::NODE_CUVE_GRDCRU))) {
+            
+            return $this->forward404();
+        }
         $this->drev = $this->getRoute()->getDRev();
-        $this->lot = $this->drev->lots->add(DRev::NODE_CUVE_ALSACE);
+        $this->lot = $this->drev->lots->add($this->cuve);
 		$this->form = new DRevLotsForm($this->lot);
 		$this->ajoutForm = new DrevLotsAjoutProduitForm($this->lot);
+
+        $this->setTemplate(lcfirst(sfInflector::camelize(strtolower(('lots_'.$this->cuve)))));
+
     	if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -72,50 +80,38 @@ class drevActions extends sfActions
         }
         
 		$this->form->save();
-		
-        return $this->redirect('drev_lots_grdcru', $this->drev);
-    }
 
-    public function executeLotsGrdCru(sfWebRequest $request) {
-        $this->drev = $this->getRoute()->getDRev();
-        $this->lot = $this->drev->lots->add(DRev::NODE_CUVE_GRDCRU);
-        $this->form = new DRevLotsForm($this->lot);
-		$this->ajoutForm = new DrevLotsAjoutProduitForm($this->lot);
-    	if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
+        if($this->cuve == Drev::NODE_CUVE_ALSACE) {
+            return $this->redirect('drev_lots', array("sf_subject" => $this->drev, "cuve" => Drev::NODE_CUVE_GRDCRU));
         }
-        
-    	$this->form->bind($request->getParameter($this->form->getName()));
-
-        if(!$this->form->isValid()) {
-            return sfView::SUCCESS;
-        }
-        
-		$this->form->save();
 		
         return $this->redirect('drev_controle_externe', $this->drev);
     }
     
     public function executeLotsAjoutProduit(sfWebRequest $request) {
-    	$this->forward404Unless($this->cuve = $request->getParameter('cuve'));
+    	$this->cuve = $request->getParameter('cuve');
+        if(!in_array($this->cuve, array(Drev::NODE_CUVE_ALSACE, Drev::NODE_CUVE_GRDCRU))) {
+            
+            return $this->forward404();
+        }
+        
     	$this->drev = $this->getRoute()->getDRev();
         $this->lot = $this->drev->lots->add($this->cuve);
     	$this->ajoutForm = new DrevLotsAjoutProduitForm($this->lot);
     	$this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
-        $url = 'drev_lots_'.strtolower(str_replace(DRev::PREFIXE_LOT_KEY, '', $this->cuve));
+        $url = $this->generateUrl('drev_lots', array('sf_subject' => $this->drev, 'cuve' => $this->cuve));
 
         if(!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
             
-            return $this->redirect($url, $this->drev);
+            return $this->redirect($url);
         } 
         
         $this->ajoutForm->save();
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
         
-        return $this->redirect($url, $this->drev);
+        return $this->redirect($url);
     }
 
     public function executeControleExterne(sfWebRequest $request) {
