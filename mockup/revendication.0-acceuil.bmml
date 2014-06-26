@@ -1,0 +1,194 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1254" measuredH="873" mockupW="1000" mockupH="868">
+  <controls>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Canvas" x="254" y="5" w="1000" h="110" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <borderColor>0</borderColor>
+        <color>16777215</color>
+      </controlProperties>
+    </control>
+    <control controlID="139" controlTypeID="com.balsamiq.mockups::TabBar" x="254" y="127" w="998" h="746" measuredW="637" measuredH="100" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>1</selectedIndex>
+        <size>14</size>
+        <text>Accueil%2C%20D%E9claration%20de%20revendication%2C%20D%E9claration%20de%20revendication%20de%20Marc%20de%20Gewurtz.</text>
+      </controlProperties>
+    </control>
+    <control controlID="164" controlTypeID="__group__" x="279" y="176" w="395" h="194" measuredW="395" measuredH="194" zOrder="2" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Button" x="64" y="0" w="252" h="27" measuredW="185" measuredH="27" zOrder="0" locked="false" isInGroup="164">
+          <controlProperties>
+            <size>16</size>
+            <text>D%E9claration%20de%20l%27ann%E9e</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="21" w="395" h="173" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="164"/>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="24" y="66" w="-1" h="-1" measuredW="334" measuredH="61" zOrder="2" locked="false" isInGroup="164">
+          <controlProperties>
+            <text>%28%29%20D%E9marrer%20d%27une%20d%E9claration%20vierge%0A%28o%29%20D%E9marrer%20%E0%20partir%20de%20la%20d%E9claration%20de%20r%E9colte%0A%28%29%20D%E9marrer%20d%27une%20d%E9claration%20d%27une%20ann%E9e%20pr%E9c%E9dente</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="298" y="143" w="-1" h="-1" measuredW="63" measuredH="27" zOrder="3" locked="false" isInGroup="164">
+          <controlProperties>
+            <color>15110456</color>
+            <text>Valider</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="24" y="36" w="-1" h="-1" measuredW="97" measuredH="21" zOrder="4" locked="false" isInGroup="164">
+          <controlProperties>
+            <text>Vous%20souhaitez%20%3A</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="165" controlTypeID="__group__" x="279" y="394" w="395" h="167" measuredW="395" measuredH="167" zOrder="5" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Button" x="64" y="0" w="252" h="27" measuredW="185" measuredH="27" zOrder="0" locked="false" isInGroup="165">
+          <controlProperties>
+            <size>16</size>
+            <text>D%E9claration%20de%20l%27ann%E9e</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="21" w="395" h="146" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="165"/>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::RadioButtonGroup" x="24" y="66" w="-1" h="-1" measuredW="227" measuredH="39" zOrder="2" locked="false" isInGroup="165">
+          <controlProperties>
+            <text>%28o%29%20Continuer%20ma%20d%E9claration%0A%28%29%20Supprimer%20ma%20d%E9claration%20en%20cours</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="299" y="118" w="-1" h="-1" measuredW="63" measuredH="27" zOrder="3" locked="false" isInGroup="165">
+          <controlProperties>
+            <color>15110456</color>
+            <text>Valider</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="24" y="36" w="-1" h="-1" measuredW="97" measuredH="21" zOrder="4" locked="false" isInGroup="165">
+          <controlProperties>
+            <text>Vous%20souhaitez%20%3A</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="166" controlTypeID="__group__" x="279" y="583" w="395" h="135" measuredW="395" measuredH="135" zOrder="6" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Button" x="64" y="0" w="252" h="27" measuredW="185" measuredH="27" zOrder="0" locked="false" isInGroup="166">
+          <controlProperties>
+            <size>16</size>
+            <text>D%E9claration%20de%20l%27ann%E9e</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="21" w="395" h="114" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="166"/>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::Button" x="157" y="85" w="-1" h="-1" measuredW="80" measuredH="27" zOrder="2" locked="false" isInGroup="166">
+          <controlProperties>
+            <color>6989903</color>
+            <text>Visualiser</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="50" y="49" w="-1" h="-1" measuredW="295" measuredH="21" zOrder="3" locked="false" isInGroup="166">
+          <controlProperties>
+            <text>Votre%20d%E9claration%20de%20revendication%202013%20est%20valid%E9</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="167" controlTypeID="__group__" x="279" y="748" w="395" h="104" measuredW="395" measuredH="104" zOrder="7" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Button" x="64" y="0" w="252" h="27" measuredW="185" measuredH="27" zOrder="0" locked="false" isInGroup="167">
+          <controlProperties>
+            <size>16</size>
+            <text>D%E9claration%20de%20l%27ann%E9e</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="21" w="395" h="83" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="167"/>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="38" y="36" w="-1" h="-1" measuredW="319" measuredH="21" zOrder="2" locked="false" isInGroup="167">
+          <controlProperties>
+            <text>Le%20service%20de%20t%E9l%E9d%E9claration%20n%27est%20pas%20encore%20ouvert</text>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="com.balsamiq.mockups::Label" x="104" y="68" w="-1" h="-1" measuredW="181" measuredH="21" zOrder="3" locked="false" isInGroup="167">
+          <controlProperties>
+            <italic>true</italic>
+            <text>Il%20ouvrira%20le%2020%20novembre%202014</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="169" controlTypeID="com.balsamiq.mockups::IconLabel" x="1040" y="13" w="-1" h="-1" measuredW="117" measuredH="24" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <icon>ContactIcon%7Csmall</icon>
+        <labelPosition>right</labelPosition>
+        <size>14</size>
+        <text>Actualys%20Jean</text>
+      </controlProperties>
+    </control>
+    <control controlID="170" controlTypeID="com.balsamiq.mockups::Image" x="269" y="20" w="117" h="79" measuredW="77" measuredH="79" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Logo</text>
+      </controlProperties>
+    </control>
+    <control controlID="171" controlTypeID="com.balsamiq.mockups::VRule" x="1022" y="16" w="-1" h="90" measuredW="10" measuredH="100" zOrder="10" locked="false" isInGroup="-1"/>
+    <control controlID="172" controlTypeID="com.balsamiq.mockups::Link" x="1040" y="42" w="-1" h="-1" measuredW="101" measuredH="19" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Mes%20d%E9clarations</text>
+      </controlProperties>
+    </control>
+    <control controlID="173" controlTypeID="com.balsamiq.mockups::Link" x="1040" y="64" w="-1" h="-1" measuredW="73" measuredH="19" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Mon%20compte</text>
+      </controlProperties>
+    </control>
+    <control controlID="174" controlTypeID="com.balsamiq.mockups::Link" x="1040" y="87" w="-1" h="-1" measuredW="77" measuredH="19" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>D%E9connexion</text>
+      </controlProperties>
+    </control>
+    <control controlID="175" controlTypeID="__group__" x="687" y="178" w="250" h="110" measuredW="250" measuredH="110" zOrder="3" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Button" x="41" y="0" w="169" h="27" measuredW="96" measuredH="27" zOrder="0" locked="false" isInGroup="175">
+          <controlProperties>
+            <size>16</size>
+            <text>Historique</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="20" w="250" h="90" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="175"/>
+        <control controlID="2" controlTypeID="__group__" x="15" y="46" w="116" h="22" measuredW="116" measuredH="22" zOrder="2" locked="false" isInGroup="175">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::Label" x="0" y="0" w="-1" h="-1" measuredW="10" measuredH="21" zOrder="0" locked="false" isInGroup="2">
+              <controlProperties>
+                <text>%3E</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::Link" x="16" y="3" w="-1" h="-1" measuredW="100" measuredH="19" zOrder="1" locked="false" isInGroup="2">
+              <controlProperties>
+                <text>D%E9claration%202013</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="176" controlTypeID="__group__" x="951" y="178" w="281" h="111" measuredW="281" measuredH="111" zOrder="4" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::Button" x="41" y="0" w="193" h="27" measuredW="153" measuredH="27" zOrder="0" locked="false" isInGroup="176">
+          <controlProperties>
+            <size>16</size>
+            <text>Documents%20d%27aide</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="21" w="281" h="90" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="176"/>
+        <control controlID="2" controlTypeID="__group__" x="15" y="46" w="143" h="22" measuredW="143" measuredH="22" zOrder="2" locked="false" isInGroup="176">
+          <groupChildrenDescriptors>
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::Link" x="15" y="3" w="-1" h="-1" measuredW="128" measuredH="19" zOrder="0" locked="false" isInGroup="2">
+              <controlProperties>
+                <text>T%E9l%E9charger%20la%20notice</text>
+              </controlProperties>
+            </control>
+            <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="0" y="0" w="-1" h="-1" measuredW="10" measuredH="21" zOrder="1" locked="false" isInGroup="2">
+              <controlProperties>
+                <text>%3E</text>
+              </controlProperties>
+            </control>
+          </groupChildrenDescriptors>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>
