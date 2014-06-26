@@ -41,6 +41,29 @@ class DRevValidation extends DocumentValidation
     	
     	
   	}
+
+    public function controle()
+    {
+      $revendicationProduits = $this->document->declaration->getProduits();
+      foreach ($revendicationProduits as $hash => $revendicationProduit) {
+        $this->controleWarningDrSurface($revendicationProduit);
+        $this->controleWarningDrVolume($revendicationProduit);
+        $this->controleErrorRevendicationIncomplete($revendicationProduit);
+        $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
+      }
+      $this->controleErrorPrelevementAlsace();
+      $this->controleErrorRevendicationAlsaceSansLotAlsace();
+      $this->controleErrorLotAlsaceSansRevendicationAlsace();
+      $this->controleErrorRevendicationGrdCruSansLotGrdCru();
+      $this->controleErrorLotGrdCruSansRevendicationGrdCru();
+      $this->controleErrorPrelevementAlsaceSansRevendicationAlsace();
+      $this->controleErrorRevendicationAlsaceSansPrelevementAlsace();
+      $this->controleErrorPrelevementGrdCruSansRevendicationGrdCru();
+      $this->controleErrorRevendicationGrdCruSansPrelevementGrdCru();
+      $this->controleWarningPrelevementVtsgnSansLot();
+      $this->controleWarningLotVtsgnSansPrelevement();
+      $this->controleWarningLotVtsgnSansControleExterne();
+    }
   	
   	protected function controleWarningDrSurface($produit)
   	{
@@ -100,7 +123,7 @@ class DRevValidation extends DocumentValidation
   	
   	protected function controleErrorPrelevementAlsace()
   	{
-  		if (!$this->document->prelevements->cuve_alsace) {
+  		if (!$this->document->addPrelevement(DRev::CUVE_ALSACE)->date) {
   			$this->addPoint(self::TYPE_ERROR, 'prelevement_alsace', '', $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
   		}
   	}
@@ -182,26 +205,4 @@ class DRevValidation extends DocumentValidation
   		}
   	}
 
-  	public function controle()
-  	{
-  		$revendicationProduits = $this->document->declaration->getProduits();
-  		foreach ($revendicationProduits as $hash => $revendicationProduit) {
-  			$this->controleWarningDrSurface($revendicationProduit);
-  			$this->controleWarningDrVolume($revendicationProduit);
-			  $this->controleErrorRevendicationIncomplete($revendicationProduit);
-			  $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
-  		}
-  		$this->controleErrorPrelevementAlsace();
-  		$this->controleErrorRevendicationAlsaceSansLotAlsace();
-  		$this->controleErrorLotAlsaceSansRevendicationAlsace();
-  		$this->controleErrorRevendicationGrdCruSansLotGrdCru();
-  		$this->controleErrorLotGrdCruSansRevendicationGrdCru();
-  		$this->controleErrorPrelevementAlsaceSansRevendicationAlsace();
-  		$this->controleErrorRevendicationAlsaceSansPrelevementAlsace();
-  		$this->controleErrorPrelevementGrdCruSansRevendicationGrdCru();
-  		$this->controleErrorRevendicationGrdCruSansPrelevementGrdCru();
-  		$this->controleWarningPrelevementVtsgnSansLot();
-  		$this->controleWarningLotVtsgnSansPrelevement();
-  		$this->controleWarningLotVtsgnSansControleExterne();
-  	}
 }
