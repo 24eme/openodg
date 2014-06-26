@@ -178,7 +178,7 @@ class DRev extends BaseDRev
         $lot->getLibelle();
         $lot->remove('no_vtsgn', 1);
 
-        if(!$prelevement->getConfig()->hasVtsgn()) {
+        if(!$lot->getConfig()->hasVtsgn()) {
             $lot->add('no_vtsgn', 1);
         }
     }
