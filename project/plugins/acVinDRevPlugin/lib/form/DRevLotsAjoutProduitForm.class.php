@@ -31,7 +31,7 @@ class DRevLotsAjoutProduitForm extends acCouchdbObjectForm
     		$produits = $this->getObject()->getConfigProduits();
 	    	foreach ($produits as $produit) {
 	    		$nodeHash = str_replace('/', '_', $produit->getHash());
-	    		if ($this->getObject()->produits->exist($nodeHash)) {
+	    		if ($this->getObject()->lots->exist($nodeHash)) {
                     continue;
                 } 
 

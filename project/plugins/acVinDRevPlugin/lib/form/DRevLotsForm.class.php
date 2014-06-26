@@ -3,8 +3,8 @@ class DRevLotsForm extends acCouchdbObjectForm
 {
 	public function configure()
     {
-        $this->embedForm('produits', new DRevLotsProduitsForm($this->getObject()->produits));
-        $this->widgetSchema->setNameFormat('drev_lots_produits[%s]');
+        $this->embedForm('lots', new DRevLotsProduitsForm($this->getObject()->lots));
+        $this->widgetSchema->setNameFormat('drev_lots[%s]');
     }
     
     public function doUpdateObject($values) 

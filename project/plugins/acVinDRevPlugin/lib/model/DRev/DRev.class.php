@@ -6,10 +6,24 @@
 
 class DRev extends BaseDRev 
 {
-    const PREFIXE_LOT_CUVE_KEY = 'cuve_';
-    const PREFIXE_LOT_BOUTEILLE_KEY = 'bouteille_';
-	const NODE_CUVE_ALSACE = 'cuve_ALSACE';
-	const NODE_CUVE_GRDCRU = 'cuve_GRDCRU';
+    const CUVE = 'cuve_';
+    const BOUTEILLE = 'bouteille_';
+
+	const CUVE_ALSACE = 'cuve_ALSACE';
+    const CUVE_GRDCRU = 'cuve_GRDCRU';
+    const CUVE_VTSGN = 'cuve_vtsgn';
+    const BOUTEILLE_ALSACE = 'bouteille_ALSACE';
+    const BOUTEILLE_GRDCRU = 'bouteille_GRDCRU';
+	const BOUTEILLE_VTSGN = 'bouteille_vtsgn';
+
+    public static $prelevement_keys = array(
+        self::CUVE_ALSACE,
+        self::CUVE_GRDCRU,
+        self::CUVE_VTSGN,
+        self::BOUTEILLE_ALSACE,
+        self::BOUTEILLE_GRDCRU,
+        self::BOUTEILLE_VTSGN,
+    );
 	
     public function constructId() 
     {
@@ -112,7 +126,7 @@ class DRev extends BaseDRev
                 continue;
             }
 
-            $this->addLotProduit($hash, self::PREFIXE_LOT_CUVE_KEY);
+            $this->addLotProduit($hash, self::CUVE);
         }
     }
 
@@ -132,27 +146,44 @@ class DRev extends BaseDRev
         return $produit;
     }
 
+    public function getPrelevementKeys() {
+
+        return self::$prelevement_keys;
+    }
+
     public function initLots() 
     {
-    	$this->lots->add(self::NODE_CUVE_ALSACE)->getConfigProduitsLots()->initLots();
+    	$this->prelevements->add(self::CUVE_ALSACE)->getConfigProduitsLots()->initLots();
+    }
+
+    public function addPrelevement($key)
+    {
+        if(!in_array($key, $this->getPrelevementKeys())) {
+            
+            return null;
+        }
+
+        return $this->prelevements->add($key);
     }
     
     public function addLotProduit($hash, $prefix)
     {
         $hash = $this->getConfiguration()->get($hash)->getHashRelation('lots');
-        $key = $prefix.$this->getLotsKeyByHash($hash);
-        $lot = $this->lots->add($key);
-    	$configuration = $this->getConfiguration();
-		$cepage = $lot->produits->add(str_replace('/', '_', $hash));
-        $cepage->hash_produit = $hash;
-        $cepage->getLibelle();
-        $cepage->remove('no_vtsgn', 1);
-        if(!$configuration->get($hash)->hasVtsgn()) {
-            $cepage->add('no_vtsgn', 1);
+        $key = $prefix.$this->getPrelevementsKeyByHash($hash);
+
+        $prelevement = $this->addPrelevement($key);
+    	
+		$lot = $prelevement->lots->add(str_replace('/', '_', $hash));
+        $lot->hash_produit = $hash;
+        $lot->getLibelle();
+        $lot->remove('no_vtsgn', 1);
+
+        if(!$prelevement->getConfig()->hasVtsgn()) {
+            $lot->add('no_vtsgn', 1);
         }
     }
 
-    public function getLotsKeyByHash($hash) {
+    public function getPrelevementsKeyByHash($hash) {
         
         return str_replace("appellation_", "", $this->getConfiguration()->get($hash)->getAppellation()->getKey());
     }

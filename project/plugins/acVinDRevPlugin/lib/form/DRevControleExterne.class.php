@@ -2,23 +2,23 @@
 
 class DRevControleExterneForm extends acCouchdbObjectForm
 {
+
     public function configure() {
-       $this->setWidgets(array(
-            'bouteille_alsace' => new sfWidgetFormDate(array()),
-            'bouteille_alsace_grdcru' => new sfWidgetFormDate(array()),
-            'bouteille_vtsgn' => new sfWidgetFormDate(array()),
-        ));
+        $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::BOUTEILLE_ALSACE));
+        $form_grdcru = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::BOUTEILLE_GRDCRU));
+        $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::BOUTEILLE_VTSGN));
 
-        $this->setValidators(array(
-            'bouteille_alsace' => new sfValidatorDate(array('required' => false)),
-            'bouteille_alsace_grdcru' => new sfValidatorDate(array('required' => false)),
-            'bouteille_vtsgn' => new sfValidatorDate(array('required' => false)),
-        ));
-
-        $this->widgetSchema['bouteille_alsace']->setLabel('Semaine du');
-        $this->widgetSchema['bouteille_alsace_grdcru']->setLabel('Semaine du');
-        $this->widgetSchema['bouteille_vtsgn']->setLabel('Semaine du');
+        $this->embedForm(Drev::BOUTEILLE_ALSACE, $form_alsace);
+        $this->embedForm(Drev::BOUTEILLE_GRDCRU, $form_grdcru);
+        $this->embedForm(Drev::BOUTEILLE_VTSGN, $form_vtsgn);
 
         $this->widgetSchema->setNameFormat('controle_externe[%s]');
+    }
+
+    public function doUpdateObject($values) 
+    {
+        foreach ($this->getEmbeddedForms() as $key => $embedForm) {
+            $embedForm->doUpdateObject($values[$key]);
+        }
     }
 }

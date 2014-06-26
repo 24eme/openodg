@@ -27,4 +27,4 @@
 	</p>
 </form>
 
-<?php include_partial('drev/popupAjoutForm', array('drev' => $drev, 'form' => $ajoutForm)); ?>
+<?php include_partial('drev/popupAjoutForm', array('prelevement' => $prelevement, 'form' => $ajoutForm)); ?>

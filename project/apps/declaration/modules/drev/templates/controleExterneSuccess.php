@@ -6,23 +6,23 @@
 
     <h3>AOC Alsace</h3>
     <div class="form-group">
-        <?php echo $form['bouteille_alsace']->renderError(); ?>
-        <?php echo $form['bouteille_alsace']->renderLabel(); ?>
-        <?php echo $form['bouteille_alsace']->render(); ?>
+        <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderError(); ?>
+        <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderLabel(); ?>
+        <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->render(); ?>
     </div>
 
     <h3>AOC Alsace Grands Crus</h3>
     <div class="form-group">
-        <?php echo $form['bouteille_alsace_grdcru']->renderError(); ?>
-        <?php echo $form['bouteille_alsace_grdcru']->renderLabel(); ?>
-        <?php echo $form['bouteille_alsace_grdcru']->render(); ?>
+        <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderError(); ?>
+        <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderLabel(); ?>
+        <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->render(); ?>
     </div>
     
     <h3>VT / SGN</h3>
     <div class="form-group">
-    <?php echo $form['bouteille_vtsgn']->renderError(); ?>
-    <?php echo $form['bouteille_vtsgn']->renderLabel(); ?>
-    <?php echo $form['bouteille_vtsgn']->render(); ?>
+    <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderError(); ?>
+    <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(); ?>
+    <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->render(); ?>
     </div>
         
     <p class="clearfix">

@@ -9,9 +9,8 @@
  * @property string $type
  * @property string $campagne
  * @property string $identifiant
- * @property DRevPrelevements $prelevements
  * @property DRevDeclaration $declaration
- * @property acCouchdbJson $lots
+ * @property acCouchdbJson $prelevements
 
  * @method string get_id()
  * @method string set_id()
@@ -23,12 +22,10 @@
  * @method string setCampagne()
  * @method string getIdentifiant()
  * @method string setIdentifiant()
- * @method DRevPrelevements getPrelevements()
- * @method DRevPrelevements setPrelevements()
  * @method DRevDeclaration getDeclaration()
  * @method DRevDeclaration setDeclaration()
- * @method acCouchdbJson getLots()
- * @method acCouchdbJson setLots()
+ * @method acCouchdbJson getPrelevements()
+ * @method acCouchdbJson setPrelevements()
  
  */
  

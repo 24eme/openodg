@@ -18,8 +18,8 @@
     </thead>
     <tbody>
         <?php 
-            foreach ($form['produits'] as $key => $embedForm) : 
-                $produit = $form->getObject()->produits->get($key);
+            foreach ($form['lots'] as $key => $embedForm) : 
+                $produit = $form->getObject()->lots->get($key);
         ?>
             <tr>
                 <td><?php echo $produit->getLibelle() ?></td>

@@ -38,21 +38,21 @@ drev_degustation_conseil:
     sf_method: [get, post]
 
 drev_lots:
-  url: /drev/lots/:id/:cuve
+  url: /drev/lots/:id/:prelevement
   param: { module: drev, action: lots }
-  class: DRevRoute
+  class: DRevPrelevementRoute
   options:
-    model:    DRev
+    model:    DRevPrelevement
     type:     object
   requirements:
     sf_method: [get, post]
 
 drev_lots_ajout:
-  url: /drev/lots/:id/:cuve/ajout
+  url: /drev/lots/:id/:prelevement/ajout
   param: { module: drev, action: lotsAjoutProduit }
-  class: DRevRoute
+  class: DRevPrelevementRoute
   options:
-    model:    DRev
+    model:    DRevPrelevement
     type:     object
   requirements:
     sf_method: [post]
