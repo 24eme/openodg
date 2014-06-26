@@ -71,7 +71,6 @@ DRev:
                                             definition:
                                               fields:
                                                 libelle: { }
-                                                actif: { type:integer }
                                                 total_superficie: { type:float }
                                                 volume_revendique: { type: float }
                                                 dr:

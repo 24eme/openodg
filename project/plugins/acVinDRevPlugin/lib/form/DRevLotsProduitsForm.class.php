@@ -8,7 +8,7 @@ class DRevLotsProduitsForm extends acCouchdbObjectForm
     	}
     }
 
-    public function doUpdateObject($values) 
+    protected function doUpdateObject($values) 
     {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
         	$embedForm->doUpdateObject($values[$key]);

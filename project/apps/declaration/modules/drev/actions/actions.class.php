@@ -142,6 +142,7 @@ class drevActions extends sfActions
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->validation = new DrevValidation($this->drev);
     }
 
     public function executePDF(sfWebRequest $request) {
