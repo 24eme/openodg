@@ -7,24 +7,6 @@ class Configuration extends BaseConfiguration {
         return $this->declaration->getProduits();
     }
     
-	public function getDrevProduits() {
-
-        return $this->declaration->getDrevProduits();
-    }
-    
-	public function getDrevLotProduits($appellation) {
-		$appellation = 'appellation_'.strtoupper($appellation);
-		if (!$this->declaration->certification->genre->exist($appellation)) {
-			throw new sfException('L\'appellation '.$appellation.' n\'existe pas dans la configuration.');
-		}
-        return $this->declaration->certification->genre->{$appellation}->getDrevLotProduits();
-    }
-
-    public function getProduitsDetails() {
-
-        return $this->declaration->getProduitsDetails();
-    }
-    
     public function getAppellationsLieuDit()
     {
       $result = array();

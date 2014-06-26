@@ -8,7 +8,10 @@ class DRev extends BaseDRev
 {
 	const PRODUITS_LOT_ALSACE_CONFIGURATION_KEY = 'ALSACE';
 	const PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY = 'GRDCRU';
-	const PREFIXE_LOT_KEY = 'cuve_';
+    const PREFIXE_LOT_KEY = 'cuve_';
+    const PREFIXE_LOT_CUVE_KEY = 'cuve_';
+    const PREFIXE_LOT_BOUTEILLE_KEY = 'bouteille_';
+    const PREFIXE_LOT_DEFAULT_KEY = 'cuve_';
 	const NODE_CUVE_ALSACE = 'cuve_ALSACE';
 	const NODE_CUVE_GRDCRU = 'cuve_GRDCRU';
 	
@@ -19,9 +22,19 @@ class DRev extends BaseDRev
     
 	public function getConfiguration() 
 	{     
-        $conf_2013 = acCouchdbManager::getClient('Configuration')->retrieveConfiguration('2013');
-        return $conf_2013;
+
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration('2013');
 	}
+
+    public function getConfigProduits() {
+
+        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationCouleur");
+    }
+
+    public function getConfigProduitsLots() {
+
+        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+    }
 	
 	public function initDrev($identifiant, $campagne)
 	{
@@ -31,9 +44,9 @@ class DRev extends BaseDRev
 
     public function initProduits() 
     {
-    	$produits = $this->getConfiguration()->getDrevProduits();
+    	$produits = $this->getConfigProduits();
     	foreach ($produits as $produit) {
-    		$this->addProduit($produit);
+    		$this->addProduit($produit->getHash());
     	}
     }
 
@@ -129,22 +142,14 @@ class DRev extends BaseDRev
 
     public function initLots() 
     {
-    	$alsaceProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY);
-    	$grdCruProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY);
+    	$produits = $this->getConfigProduitsLots();
     	
-        foreach ($alsaceProduits as $alsaceProduit) {
-    		$this->addLotProduit($alsaceProduit);
-    	}
-
-    	foreach ($grdCruProduits as $grdCruProduit) {
-    		if (preg_match('/\/lieu\//', $grdCruProduit)) {
-    			continue;
-    		}
-    		$this->addLotProduit($grdCruProduit);
+        foreach ($produits as $produit) {
+    		$this->addLotProduit($produit);
     	}
     }
     
-    public function addLotProduit($hash, $prefix = self::PREFIXE_LOT_KEY)
+    public function addLotProduit($hash, $prefix = self::PREFIXE_LOT_DEFAULT_KEY)
     {
         $hash = $this->getConfiguration()->get($hash)->getHashRelation('lots');
         $key = $prefix.$this->getLotsKeyByHash($hash);

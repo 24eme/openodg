@@ -9,7 +9,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         ));
 
         $this->setValidators(array(
-            'cuve_alsace' => new sfValidatorDate(array('required' => true)),
+            'cuve_alsace' => new sfValidatorDate(array('required' => false)),
             'cuve_vtsgn' => new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))),
         ));
 

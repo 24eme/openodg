@@ -34,6 +34,18 @@ Configuration:
           fields:
             no_usages_industriels: { required: false}
             no_recapitulatif_couleur: { required: false}
+            relations:
+              required: false
+              type: collection
+              definition:
+                fields:
+                  '*': {  }
+            no_acces:
+              required: false
+              type: collection
+              definition:
+                fields:
+                  '*': { type: integer }
             douane :
               type: collection
               class: ConfigurationDouane
@@ -47,11 +59,6 @@ Configuration:
                   qualite_sgn: {required: false}
                   qualite_aoc: {required: false}
                   code_cepage: {required: false}
-            relations:
-              type: collection
-              definition:
-                fields:
-                  '*': {  }
             '*':
               # ------- Certification ---------
               type: collection
@@ -63,10 +70,17 @@ Configuration:
                   libelle: { }
                   libelle_long: { required: false }
                   relations:
+                    required: false
                     type: collection
                     definition:
                       fields:
                         '*': {  }
+                  no_acces:
+                    required: false
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: integer }
                   douane:
                     type: collection
                     class: ConfigurationDouane
@@ -84,10 +98,17 @@ Configuration:
                         libelle: { }
                         libelle_long: { required: false }
                         relations:
+                          required: false
                           type: collection
                           definition:
                             fields:
                               '*': {  }
+                        no_acces:
+                          required: false
+                          type: collection
+                          definition:
+                            fields:
+                              '*': { type: integer }
                         douane:
                           type: collection
                           class: ConfigurationDouane
@@ -112,6 +133,18 @@ Configuration:
                               detail_lieu_editable: {type: integer, required: false}
                               exclude_total: {type: integer, required: false}
                               no_vtsgn: {required: false}
+                              relations:
+                                required: false
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*': {  }
+                              no_acces:
+                                required: false
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*': { type: integer }
                               douane :
                                 type: collection
                                 class: ConfigurationDouane
@@ -125,11 +158,6 @@ Configuration:
                                     code_cepage: {required: false}
                                     no_dr: { type: integer, required: false }
                                     no_ds: { type: integer, required: false }
-                              relations:
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*': {  }
                               # ------- MENTION ----------
                               '*':
                                 type : collection
@@ -141,14 +169,21 @@ Configuration:
                                     libelle_long: { required: false }
                                     rendement: { type: float  }
                                     rendement_mention: { type: float  }
-                                    douane :
+                                    relations:
+                                      required: false
                                       type: collection
-                                      class: ConfigurationDouane
                                       definition:
                                         fields:
                                           '*': {  }
-                                    relations:
+                                    no_acces:
+                                      required: false
                                       type: collection
+                                      definition:
+                                        fields:
+                                          '*': { type: integer }
+                                    douane :
+                                      type: collection
+                                      class: ConfigurationDouane
                                       definition:
                                         fields:
                                           '*': {  }
@@ -177,6 +212,13 @@ Configuration:
                                                 no_dr: { type: integer, required: false }
                                                 no_ds: { type: integer, required: false }
                                           relations:
+                                            required: false
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                '*': {  }
+                                          no_acces:
+                                            required: false
                                             type: collection
                                             definition:
                                               fields:
@@ -206,6 +248,13 @@ Configuration:
                                                       no_dr: { type: integer, required: false }
                                                       no_ds: { type: integer, required: false }
                                                 relations:
+                                                  required: false
+                                                  type: collection
+                                                  definition:
+                                                    fields:
+                                                      '*': {  }
+                                                no_acces:
+                                                  required: false
                                                   type: collection
                                                   definition:
                                                     fields:
@@ -229,6 +278,13 @@ Configuration:
                                                             qualite: {required: false}
                                                             code_cepage: {required: false}
                                                       relations:
+                                                        required: false
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*': {  }
+                                                      no_acces:
+                                                        required: false
                                                         type: collection
                                                         definition:
                                                           fields:

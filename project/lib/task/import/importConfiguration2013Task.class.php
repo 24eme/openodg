@@ -66,7 +66,6 @@ EOF;
         
         $certifications = $configurationJson->declaration->certification;
         unset($configurationJson->declaration->certification);
-        
         /*
          * Identification des appellations revendiquees
          */
@@ -85,21 +84,19 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE = $certifications->genre->appellation_COMMUNALE;
         @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->relations->lots = "appellation_ALSACE";
         foreach($configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention as $key_lieu => $lieu) {
-            if(!preg_match('/^lieu/', $key_lieu)) {
+            if(!preg_match('/^lieu/', $key_lieu) || $key_lieu == "lieu") {
                 continue;
             }
             
             @$lieu->relations->lots = "lieu";
             @$lieu->relations->revendication = "lieu";
-
             foreach($lieu as $key_couleur => $couleur) {
-                if(!preg_match('/^couleur/', $key_couleur)) {
+                if(!preg_match('/^couleur/', $key_couleur) || $key_couleur == "couleur") {
                     continue;
                 }
                 @$couleur->relations->lots = "couleur";
             }
         }
-
         $configurationJson->declaration->certification->genre->appellation_LIEUDIT = $certifications->genre->appellation_LIEUDIT;
         @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->relations->lots = "appellation_ALSACE";
         @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->relations->lots = "couleur";
@@ -112,7 +109,7 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu = new stdClass();
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur = $grdCruCepages;
         foreach($configurationJson->declaration->certification->genre->appellation_GRDCRU->mention as $key_lieu => $lieu) {
-            if(!preg_match('/^lieu/', $key_lieu)) {
+            if(!preg_match('/^lieu/', $key_lieu) || $key_lieu == "lieu") {
                 continue;
             }
             @$lieu->relations->revendication = "lieu";
@@ -133,21 +130,7 @@ EOF;
          */
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->libelle = 'AOC Alsace Pinot noir rosé';
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->libelle = 'AOC Alsace Pinot noir rouge';
-        
-        
-        /*
-         * Identification des produits (niveau couleur) de la DRev
-         */
-        $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->drev = 1;
-        $configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->drev = 1;
-        
+
         /*
          * On ajoute l'appellation Alsace pour la gestion des lots
          */
@@ -156,7 +139,35 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_ALSACE->appellation = 'ALSACE';
         $configurationJson->declaration->certification->genre->appellation_ALSACE->libelle = 'AOC Alsace';
         @$configurationJson->declaration->certification->genre->appellation_ALSACE->mention->lieu->couleur = $alsaceCepages;
-        
+
+        /*
+         * Identification des produits (niveau couleur) de la DRev
+         */
+        @$configurationJson->declaration->certification->genre->appellation_ALSACE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        foreach($configurationJson->declaration->certification->genre->appellation_GRDCRU->mention as $key_lieu => $lieu) {
+            if(!preg_match('/^lieu/', $key_lieu) || $key_lieu == "lieu") {
+                continue;
+            }
+            @$lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        }
+        foreach($configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention as $key_lieu => $lieu) {
+            if(!preg_match('/^lieu/', $key_lieu) || $key_lieu == "lieu") {
+                continue;
+            }
+            @$lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        }
+
+         /*
+         * Identification des produits (niveau couleur) pour les lots
+         */
+        @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIR->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+
     	if ($options['import'] == 'couchdb') {
     		
     		if ($doc = acCouchdbManager::getClient()->find($configurationJson->_id, acCouchdbClient::HYDRATE_JSON)) {

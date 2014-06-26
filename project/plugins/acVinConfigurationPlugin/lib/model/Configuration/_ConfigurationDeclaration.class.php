@@ -9,13 +9,16 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     const TYPE_DECLARATION_DR = 'DR';
     const TYPE_DECLARATION_DS = 'DS';
+    const TYPE_DECLARATION_DREV_REVENDICATION = 'DREV_REVENDICATION';
+    const TYPE_DECLARATION_DREV_LOTS = 'DREV_LOTS';
 
     protected function loadAllData() {
       parent::loadAllData();
       $this->getProduits();
-      $this->getDrevProduits();
       $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
-      $this->getProduitsFilter(self::TYPE_DECLARATION_DS);
+      $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
+      $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationCouleur");
+      $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_LOTS);
       $this->getRendementAppellation();
       $this->getRendementCouleur();
       $this->getRendementCepage();
@@ -24,6 +27,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $this->existRendementCepage();
       $this->getChildrenFilter(self::TYPE_DECLARATION_DR);
       $this->getChildrenFilter(self::TYPE_DECLARATION_DS);
+      $this->getChildrenFilter(self::TYPE_DECLARATION_DREV_REVENDICATION);
+      $this->getChildrenFilter(self::TYPE_DECLARATION_DREV_LOTS);
     }
 
     abstract public function getChildrenNode();
@@ -45,11 +50,8 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function getChildrenFilterStorable($type_declaration = null) {
       $children = array();
       foreach($this->getChildrenNode() as $item) {
-        if($type_declaration == self::TYPE_DECLARATION_DR && !$item->isForDR()) {
-          continue;
-        }
-
-        if($type_declaration == self::TYPE_DECLARATION_DS && !$item->isForDS()) {
+        if(!$item->hasAcces($type_declaration)) {
+          
           continue;
         }
 
@@ -110,30 +112,9 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
       return $this->produits;
     }
-    
-	public function getDrevProduits()
-    {
-      if(is_null($this->drev_produits)) {
-        $this->drev_produits = array();
-        foreach($this->getChildrenNode() as $key => $item) {
-            $this->drev_produits = array_merge($this->drev_produits, $item->getDrevProduits());
-        }
-      }
-
-      return $this->drev_produits;
-    }
-    
-	public function getDrevLotProduits()
-    {
-        $drev_lot_produits = array();
-        foreach($this->getChildrenNode() as $key => $item) {
-            $drev_lot_produits = array_merge($drev_lot_produits, $item->getDrevLotProduits());
-        }
-      	return $drev_lot_produits;
-    }
 
     public function getKeyRelation($key) {
-        if($this->relations->exist($key)) {
+        if($this->exist('relations') && $this->relations->exist($key)) {
 
             return $this->relations->get($key);
         }
@@ -151,20 +132,24 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getDocument()->get($this->getHashRelation($key));
     }
 
-    public function getProduitsFilter($type_declaration = null) {
-      if(!$type_declaration) {
+    public function getProduitsFilter($type_declaration = null, $class_node = null) {
+      if($class_node && $this instanceof $class_node) {
+        return array($this->getHash() => $this);
+      }
+
+      if(!$type_declaration) {  
 
         return $this->getProduits();
       }
       
       if(is_null($this->produits[$type_declaration])) {
-        $this->produits[$type_declaration] = array();
+        $this->produits[$type_declaration.$class_node] = array();
         foreach($this->getChildrenFilter($type_declaration) as $key => $item) {
-            $this->produits[$type_declaration] = array_merge($this->produits[$type_declaration], $item->getProduitsFilter($type_declaration));
+            $this->produits[$type_declaration.$class_node] = array_merge($this->produits[$type_declaration.$class_node], $item->getProduitsFilter($type_declaration, $class_node));
         }
       }
 
-      return $this->produits[$type_declaration];
+      return $this->produits[$type_declaration.$class_node];
     }
 
     /**** RENDEMENT POUR LA DR ****/
@@ -334,6 +319,25 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function isForDS() {
 
         return !$this->exist('no_ds') || !$this->get('no_ds');
+    }
+
+    public function hasAcces($type_declaration) {
+        if($type_declaration == self::TYPE_DECLARATION_DR && !$item->isForDR()) {
+            
+            return false;
+        }
+
+        if($type_declaration == self::TYPE_DECLARATION_DS && !$item->isForDS()) {
+            
+            return false;
+        }
+
+        if(!$this->exist('no_acces')) {
+
+           return true;
+        }
+
+        return (!$this->no_acces->exist($type_declaration) || !$this->no_acces->get($type_declaration));
     }
     
     public function isAutoDs() {

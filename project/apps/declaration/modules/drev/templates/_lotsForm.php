@@ -19,7 +19,7 @@
     <tbody>
         <?php 
             foreach ($form['produits'] as $key => $embedForm) : 
-                $produit = $drev->get($key);
+                $produit = $form->getObject()->produits->get($key);
         ?>
             <tr>
                 <td><?php echo $produit->getLibelle() ?></td>
