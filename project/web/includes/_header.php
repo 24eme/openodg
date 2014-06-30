@@ -31,7 +31,8 @@
 	<!-- Fichier compilé par LESS -->
 	<link rel="stylesheet" type="text/css" href="<?php echo CSS_PATH.CSS_FILE; ?>.css" media="all" />
 	<link rel="stylesheet" type="text/css" href="<?php echo CSS_PATH; ?>print.css" media="print" />
-	
+
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet" type="text/css">	
 	
 	<script type="text/javascript">
 		var _siteLang = "<?php echo LANG; ?>";
@@ -41,7 +42,9 @@
 	
 	<script type="text/javascript" src="<?php echo JS_PATH; ?>lib/modernizr-2.8.2.js"></script>
 	<script type="text/javascript" src="<?php echo JS_PATH; ?>lib/device.min.js"></script>
-	
+	<!--[if lt IE 9]>
+      <script type="text/javascript" src="<?php echo JS_PATH; ?>lib/respond.min.js"></script>
+    <![endif]-->
 </head>
 
 <body role="document" class="<?php echo $cat_current; ?>">
@@ -61,34 +64,24 @@
 <div id="page">
 
 	<!-- #header -->
-	<header id="header" class="navbar navbar-default" role="banner">
-		<div class="container">
+	<header id="header" class="container" role="banner">
+
+		<h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
 			
-			<div class="navbar-header">
-				<h1 class="sr-only"><?php echo SITE_NAME." - ".SITE_BASELINE; ?></h1>
-		
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
-					<span class="sr-only">Afficher / Masquer la navigation</span>
-					<span class="btn-toggle-icon"></span>
-				</button>
-				
-				<div id="logo">
-					<a href="home.php" title="<?php echo SITE_NAME.' - '.SITE_BASELINE; ?> | Retour à la page d'accueil">
-						<img src="<?php echo IMG_PATH; ?>content/logo_site.png" alt="<?php echo SITE_NAME.' - '.SITE_BASELINE; ?>" />
-					</a>
-				</div>
-			</div>
-						
-			<nav id="navigation" class="navbar-collapse collapse" role="navigation">
-				<ul class="nav navbar-nav">
-					<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-					<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-					<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-					<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-					<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>  
-				</ul>
-			</nav>
-			
+		<div id="logo">
+			<a href="home.php" title="<?php echo SITE_NAME.' - '.SITE_BASELINE; ?> | Retour à la page d'accueil">
+				<img src="<?php echo IMG_PATH; ?>logo_site.png" alt="<?php echo SITE_NAME.' - '.SITE_BASELINE; ?>" />
+			</a>
 		</div>
+					
+		<!-- <nav id="navigation" class="navbar-collapse collapse" role="navigation">
+			<ul class="nav navbar-nav">
+				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
+				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
+				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
+				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
+				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>  
+			</ul>
+		</nav> -->
 	</header>
 	<!-- end #header -->

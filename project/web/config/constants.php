@@ -10,7 +10,7 @@
 	define("JS_PATH", "../js/");
 	define("IMG_PATH", "../images/");
 	define("URL_PAGE", $_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF']);
-	define("SITE_NAME", "Site name");
-	define("SITE_BASELINE", "Site baseline");
+	define("SITE_NAME", "AVA");
+	define("SITE_BASELINE", "Association des viticulteurs d'alsace");
 	
 ?>

@@ -25,6 +25,9 @@ html
 
 body
 {
+	background: url('../images/bg/bg_global.jpg') 50% 0 no-repeat;
+	background-size: cover;
+	-webkit-background-size: cover;
 }
 
 a
@@ -113,6 +116,11 @@ ol, ul {  }
 /**
  * Structuration
  ******************************************/
+.container
+{
+	width: @container-sm;
+}
+
 .center-block
 {
 	float: none;
@@ -182,12 +190,17 @@ ol, ul {  }
 /**
  * Fonts
  ******************************************/
-.helvetica { font-family: @font-family-sans-serif; }
 
 
 /**
  * Titles 
  ******************************************/
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 { font-weight: 600; }
+
+
+h2, .h2 { color: @font-color-h2; }
+
+h3, .h3 { color: @font-color-h3; }
 
 
 /**
@@ -205,7 +218,20 @@ ol, ul {  }
 	padding: @padding;
 }
 
+/**
+ * Tables
+ ******************************************/
+.table
+{ 
+	color: @table-font-color;
+	font-size: 14px;
 
+	thead > tr > th,
+	tbody > tr > td { border: 0; }
+
+	thead > tr > th + th,
+	tbody > tr > td + td { border-left: 2px solid @table-border-color; }
+}
 
 
 /**
@@ -221,6 +247,18 @@ ol, ul {  }
 /**
  * Buttons
  ******************************************/
+.btn-step
+{
+	background: @btn-etape-bg;
+	color: @btn-etape-color;
+	text-transform: uppercase;
+
+	&:hover,
+	&:focus
+	{
+		color: @btn-etape-color;
+	}
+}
 
 
 /**
@@ -258,6 +296,84 @@ ol, ul {  }
 	
 }
 
+.breadcrumb-steps
+{
+	background: @breadcrumb-steps-color;
+	counter-reset: steps;
+	display: table;
+	font-size: 0;
+	font-weight: 600;
+	overflow: hidden;
+	padding: 0;
+	table-layout: fixed;
+	width: 100%;
+
+	li
+	{
+		color: @white;
+		display: table-cell;
+		font-size: @font-size-base;
+		list-style-type: decimal;
+
+		&:first-child { width: 155px; }
+
+		&.visited
+		{
+			background: @breadcrumb-steps-visited-color;
+
+			.step:after { background-position: -104px -2px; }
+		}
+
+		&.active
+		{
+			background: @breadcrumb-steps-active-color;
+
+			.step:after
+			{ 
+				background-position: -52px -2px; 
+				border-left-color: @breadcrumb-steps-active-color;
+			}
+
+			a { color: @breadcrumb-steps-active-txt-color; }
+		}
+
+		& + li
+		{
+			.step { padding-left: 50px; }
+		}
+
+		.step
+		{
+			position: relative;
+
+			&:after
+			{
+				.img-pseudo-content(0 -2px, 52px, 86px);
+				.pos-abs(0, auto, auto, 100%);
+				content: '';
+			}
+		}
+	}
+
+	a 
+	{ 
+		color: @white;
+		display: block;
+		height: 82px;
+		line-height: 82px;
+		text-transform: uppercase;
+		text-decoration: none;
+		padding-left: 20px;
+		white-space: nowrap;
+
+		&:before
+		{
+			counter-increment: steps;
+			content: counter(steps, decimal)'. ';
+		}
+	}
+}
+
 /**
  * Pagination (BS overrides)
  ******************************************/
@@ -276,33 +392,11 @@ ol, ul {  }
 /* ============================================================= */
 #header
 {
-	/* Tablet */
-	@media (min-width: @screen-sm-min)
-	{
-	}
-	
-	.container
-	{
-		
-		/* Tablet */
-		@media (min-width: @screen-sm-min)
-		{
-		}
-		
-		/* Desktop */
-		@media (min-width: @screen-md-min)
-		{
-		}
-	}
-	
-}
+	background: @white url('../images/bg/bg_header.png') 100% 0 no-repeat;
+	margin-top: 25px;
+	padding: 25px 0;
 
-/**
- * Logo
- ******************************************/
-#logo
-{
-	
+	#logo { margin: 0 0 0 25px; }
 }
 
 /**
@@ -360,19 +454,10 @@ ol, ul {  }
 /* ============================================================= */
 #content
 {
-	padding: @content-padding-vertical 0;
-	
-	/* Tablet */
-	@media (min-width: @screen-sm-min)
-	{	
-		padding: @content-padding-sm-vertical 0;
-	}
-
-	/* Desktop */
-	@media (min-width: @screen-md-min)
-	{	
-		padding: @content-padding-md-vertical 0;
-	}
+	background: @white;
+	margin-top: 35px;
+	padding-bottom: 35px;
+	padding-top: 35px;
 }
 
 

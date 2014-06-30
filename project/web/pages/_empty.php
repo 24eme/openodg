@@ -9,20 +9,9 @@
 
 
 <!-- #content -->
-<section id="content">
+<section id="content" class="container">
 
-	<div class="container">
-
-		<div class="row">
-			<div class="col-sm-6">
-			50%
-			</div>
-
-			<div class="col-sm-6">
-			50%
-			</div>
-		</div>
-	</div>
+	
 	
 </section>
 <!-- end #content -->
