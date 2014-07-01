@@ -102,6 +102,57 @@
 		</li>
 	</ol>
 
+	<h1>Onglets</h1>
+
+	<ul class="nav nav-tabs" role="tablist">
+		<li class="active"><a href="#tab-1" role="tab" data-toggle="tab">Lorem ipsum.</a></li>
+		<li><a href="#tab-2" data-toggle="tab">Officia, officiis.</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div id="tab-1" class="tab-pane active">
+			<h2>Panels</h2>
+
+			<div class="row">
+				<div class="col-md-4">
+					<div class="panel panel-default">
+		  				<div class="panel-heading">
+		  					<h2 class="panel-title">Panel title</h2>
+		  				</div>
+						<div class="panel-body">
+							Panel content
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="panel panel-success">
+		  				<div class="panel-heading">
+		  					<h2 class="panel-title">Panel title</h2>
+		  				</div>
+						<div class="panel-body">
+							Panel content
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="panel panel-info">
+		  				<div class="panel-heading">
+		  					<h2 class="panel-title">Panel title</h2>
+		  				</div>
+						<div class="panel-body">
+							Panel content
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tab-2" class="tab-pane">
+			Officia
+		</div>
+	</div>
+
+
+
 </section>
 <!-- end #content -->
 

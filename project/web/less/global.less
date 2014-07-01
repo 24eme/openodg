@@ -254,10 +254,7 @@ h3, .h3 { color: @font-color-h3; }
 	text-transform: uppercase;
 
 	&:hover,
-	&:focus
-	{
-		color: @btn-etape-color;
-	}
+	&:focus { color: @btn-etape-color; }
 }
 
 
@@ -385,6 +382,82 @@ h3, .h3 { color: @font-color-h3; }
 
 .pagination
 {
+}
+
+/**
+ * Tabs (BS overrides)
+ ******************************************/
+.nav-tabs
+{
+	> li
+	{
+		&.active
+		{
+			a
+			{
+				padding-bottom: 12px; 
+				padding-top: 12px;
+			}
+		}
+
+		> a
+		{
+			background: @nav-tabs-link-bg;
+			color: @nav-tabs-link-color;
+			font-size: @nav-tabs-link-font-size;
+			font-weight: 600;
+
+			&:hover,
+			&:focus
+			{
+				background: @nav-tabs-content-bg;
+				border-bottom-color: @nav-tabs-content-bg;
+				color: @nav-tabs-active-link-hover-color;
+			}
+		}
+	}
+}
+
+.tab-content
+{
+	background: @nav-tabs-content-bg;
+	border: 1px solid @nav-tabs-border-color;
+	border-top: 0;
+	padding: @nav-tabs-content-padding;
+}
+
+/**
+ * Panels (BS overrides)
+ ******************************************/
+.panel
+{
+	border: 0; 
+	box-shadow: none;
+	font-size: 14px;
+
+	.panel-heading
+	{
+		margin: 0 @panel-body-padding;
+		padding: 28px 0 10px 0;
+
+		.panel-title { font-size: 18px; }
+	}
+
+	.panel-body { color: @panel-default-text; }
+
+	&.panel-success
+	{
+		background: @panel-success-heading-bg;
+
+		.panel-body { color: @panel-success-text; }
+	}
+
+	&.panel-info
+	{
+		background: @panel-info-heading-bg;
+
+		.panel-body { color: @panel-info-text; }
+	}
 }
 
 /* ============================================================= */
