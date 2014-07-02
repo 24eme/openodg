@@ -247,14 +247,37 @@ h3, .h3 { color: @font-color-h3; }
 /**
  * Buttons
  ******************************************/
-.btn-step
+.btn-primary
 {
-	background: @btn-etape-bg;
-	color: @btn-etape-color;
+	position: relative;
 	text-transform: uppercase;
+}
 
-	&:hover,
-	&:focus { color: @btn-etape-color; }
+.btn-prev,
+.btn-next
+{
+	padding-left: 45px;
+	padding-right: 45px;
+}
+
+.btn-prev
+{
+	&:before
+	{
+		.img-pseudo-content(0 -86px, 13px, 21px);
+		.pos-abs(5px, auto, auto, 15px);
+		content: '';
+	}
+}
+
+.btn-next
+{
+	&:before
+	{
+		.img-pseudo-content(-14px -86px, 13px, 21px);
+		.pos-abs(5px, 15px);
+		content: '';
+	}
 }
 
 
@@ -324,14 +347,13 @@ h3, .h3 { color: @font-color-h3; }
 		&.active
 		{
 			background: @breadcrumb-steps-active-color;
+			color: @breadcrumb-steps-active-txt-color;
 
 			.step:after
 			{ 
 				background-position: -52px -2px; 
 				border-left-color: @breadcrumb-steps-active-color;
 			}
-
-			a { color: @breadcrumb-steps-active-txt-color; }
 		}
 
 		& + li
@@ -345,7 +367,7 @@ h3, .h3 { color: @font-color-h3; }
 
 			&:after
 			{
-				.img-pseudo-content(0 -2px, 52px, 86px);
+				.img-pseudo-content(0 -2px, 52px, 82px);
 				.pos-abs(0, auto, auto, 100%);
 				content: '';
 			}
@@ -354,7 +376,7 @@ h3, .h3 { color: @font-color-h3; }
 
 	a 
 	{ 
-		color: @white;
+		color: inherit;
 		display: block;
 		height: 82px;
 		line-height: 82px;
@@ -460,6 +482,26 @@ h3, .h3 { color: @font-color-h3; }
 	}
 }
 
+/**
+ * Alerts (BS overrides)
+ ******************************************/
+.alert
+{
+	ol, ul
+	{ 
+		margin: 0;
+		padding: 0 0 0 20px;
+
+		li + li { margin: 8px 0 0; }
+	}
+
+	.alert-link
+	{
+		color: inherit; 
+		text-decoration: underline; 
+	}
+}
+
 /* ============================================================= */
 /* HEADER */
 /* ============================================================= */
@@ -529,8 +571,6 @@ h3, .h3 { color: @font-color-h3; }
 {
 	background: @white;
 	margin-top: 35px;
-	padding-bottom: 35px;
-	padding-top: 35px;
 }
 
 
@@ -540,12 +580,26 @@ h3, .h3 { color: @font-color-h3; }
 /* ============================================================= */
 #footer
 {
-	padding: @footer-padding-vertical 0;
+	background: @white;
+	font-size: 13px;
+	margin-bottom: 40px;
+	text-align: center;
 	
-	
-	/* Tablet */
-	@media (min-width: @screen-sm-min)
-	{	
-		padding: @footer-padding-sm-vertical 0;
+	ul
+	{
+		.inline-block-ie;
+		list-style: none;
+		padding: 0;
+
+		li
+		{
+			.inline-block-ie;
+
+			+ li:before
+			{
+				content: '|';
+				padding: 0 15px;
+			}
+		}
 	}
 }

@@ -32,7 +32,7 @@
 	<link rel="stylesheet" type="text/css" href="<?php echo CSS_PATH.CSS_FILE; ?>.css" media="all" />
 	<link rel="stylesheet" type="text/css" href="<?php echo CSS_PATH; ?>print.css" media="print" />
 
-	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet" type="text/css">	
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">	
 	
 	<script type="text/javascript">
 		var _siteLang = "<?php echo LANG; ?>";

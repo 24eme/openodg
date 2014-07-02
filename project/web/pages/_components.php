@@ -11,23 +11,6 @@
 <!-- #content -->
 <section id="content" class="container">
 
-	<h1>Grille</h1>
-
-	<div class="row">
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-		<div class="col-md-1" style="height:40px;border:1px solid #000;">.col-md-1</div>
-	</div>
-
 	<h1>Titres</h1>
 
 	<h1>Titre h1</h1>
@@ -37,7 +20,8 @@
 	<h1>Boutons</h1>
 
 	<a href="#" class="btn btn-default">Bouton default</a>
-	<a href="#" class="btn btn-step">Bouton étape</a>
+	<a href="#" class="btn btn-primary btn-prev">Bouton étape précédente</a>
+	<a href="#" class="btn btn-primary btn-next">Bouton étape suivante</a>
 
 	<h1>Tableaux</h1>
 
@@ -151,6 +135,28 @@
 		</div>
 	</div>
 
+	<h1>Alertes</h1>
+
+	<div class="alert alert-danger" role="alert">
+		<ul>
+			<li>Lorem ipsum dolor sit. <a href="#" class="alert-link">Lorem ipsum dolor.</a></li>
+			<li>Quos quo sit laborum. <a href="#" class="alert-link">Lorem ipsum dolor.</a></li>
+		</ul>
+	</div>
+
+	<div class="alert alert-warning" role="alert">
+		<ul>
+			<li>Lorem ipsum dolor sit. <a href="#" class="alert-link">Lorem ipsum dolor.</a></li>
+			<li>Quos quo sit laborum. <a href="#" class="alert-link">Lorem ipsum dolor.</a></li>
+		</ul>
+	</div>
+
+	<div class="alert alert-success" role="alert">
+		<ul>
+			<li>Lorem ipsum dolor sit. <a href="#" class="alert-link">Lorem ipsum dolor.</a></li>
+			<li>Quos quo sit laborum. <a href="#" class="alert-link">Lorem ipsum dolor.</a></li>
+		</ul>
+	</div>
 
 
 </section>
