@@ -61,7 +61,7 @@
 
 
 <!-- #page -->
-<div id="page">
+<div id="page" class="container">
 
 	<!-- #header -->
 	<header id="header" class="container" role="banner">

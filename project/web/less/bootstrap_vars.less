@@ -45,16 +45,16 @@
 @font-family-monospace:   Monaco, Menlo, Consolas, "Courier New", monospace;
 @font-family-base:        @font-family-sans-serif;
 
-@font-size-base:          15px;
-@font-size-large:         ceil(@font-size-base * 1.25); // ~18px
-@font-size-small:         ceil(@font-size-base * 0.85); // ~12px
+@font-size-base:          14px;
+@font-size-large:         18px;
+@font-size-small:         12px;
 
-@font-size-h1:            floor(@font-size-base * 2.6); // ~36px
-@font-size-h2:            floor(@font-size-base * 1.7); // ~24px
-@font-size-h3:            ceil(@font-size-base * 1.25); // ~18px
-@font-size-h4:            ceil(@font-size-base * 1.25); // ~18px
+@font-size-h1:            39px;
+@font-size-h2:            24px;
+@font-size-h3:            18px;
+@font-size-h4:            @font-size-base;
 @font-size-h5:            @font-size-base;
-@font-size-h6:            ceil(@font-size-base * 0.85); // ~12px
+@font-size-h6:            @font-size-base;
 
 @font-color-h2:           #5e5e5e;
 @font-color-h3:           #5e5e5e;
@@ -175,6 +175,10 @@
 @input-group-addon-bg:           @gray-lighter;
 @input-group-addon-border-color: @input-border;
 
+@input-rounded-border-radius:    (floor(@input-height-base / 2));
+@input-rounded-lg-border-radius: (floor(@input-height-large / 2));
+@input-rounded-sm-border-radius: (floor(@input-height-small / 2));
+
 
 // Dropdowns
 // -------------------------
@@ -261,7 +265,7 @@
 // Number of columns in the grid system
 @grid-columns:              12;
 // Padding, to be divided by two and applied to the left and right of all columns
-@grid-gutter-width:         40px;
+@grid-gutter-width:         20px;
 // Point at which the navbar stops collapsing
 @grid-float-breakpoint:     @screen-sm-min;
 // Point at which the navbar begins collapsing.
@@ -333,7 +337,7 @@
 // Navs
 // -------------------------
 
-@nav-link-padding:                          10px 15px;
+@nav-link-padding:                          20px 25px;
 @nav-link-hover-bg:                         @gray-lighter;
 
 @nav-disabled-link-color:                   @gray-light;
@@ -348,7 +352,7 @@
 @nav-tabs-link-font-size:                   13px;
 @nav-tabs-border-color:                     #c9c8c8;
 @nav-tabs-content-bg:                       #e5e5e5;
-@nav-tabs-content-padding:                  floor(@grid-gutter-width / 2);
+@nav-tabs-content-padding:                  @grid-gutter-width;
 
 @nav-tabs-link-hover-border-color:          @gray-lighter;
 
@@ -690,13 +694,13 @@
 // --------------------------------------------------
 
 // Small screen / tablet
-@container-tablet:             ((900px + @grid-gutter-width));
+@container-tablet:             ((920px + @grid-gutter-width));
 @container-sm:                 @container-tablet;
 
 // Medium screen / desktop
-@container-desktop:            ((900px + @grid-gutter-width));
+@container-desktop:            ((920px + @grid-gutter-width));
 @container-md:                 @container-desktop;
 
 // Large screen / wide desktop
-@container-large-desktop:      ((900px + @grid-gutter-width));
+@container-large-desktop:      ((920px + @grid-gutter-width));
 @container-lg:                 @container-large-desktop;

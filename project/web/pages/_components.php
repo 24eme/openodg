@@ -19,10 +19,51 @@
 
 	<h1>Boutons</h1>
 
-	<a href="#" class="btn btn-default">Bouton default</a>
-	<a href="#" class="btn btn-primary btn-prev">Bouton étape précédente</a>
-	<a href="#" class="btn btn-primary btn-next">Bouton étape suivante</a>
+	<div class="row-btns">
+		<a href="#" class="btn btn-default">Bouton default</a>
+		<a href="#" class="btn btn-primary">Bouton default</a>
+	</div>
 
+	<div class="row-btns">
+		<a href="#" class="btn btn-primary btn-sm btn-prev">Bouton étape précédente</a>
+		<a href="#" class="btn btn-primary btn-sm btn-next">Bouton étape suivante</a>
+	</div>
+
+	<div class="row-btns">
+		<a href="#" class="btn btn-primary btn-prev">Bouton étape précédente</a>
+		<a href="#" class="btn btn-primary btn-next">Bouton étape suivante</a>
+	</div>
+
+	<div class="row-btns">
+		<a href="#" class="btn btn-primary btn-lg btn-prev">Bouton étape précédente</a>
+		<a href="#" class="btn btn-primary btn-lg btn-next">Bouton étape suivante</a>
+	</div>
+
+	<div class="row-btns">
+		<a href="#" class="btn btn-default btn-sm btn-prev">Bouton étape précédente</a>
+		<a href="#" class="btn btn-default btn-sm btn-next">Bouton étape suivante</a>
+	</div>
+
+	<div class="row-btns">
+		<a href="#" class="btn btn-default btn-prev">Bouton étape précédente</a>
+		<a href="#" class="btn btn-default btn-next">Bouton étape suivante</a>
+	</div>
+
+	<div class="row-btns">
+		<a href="#" class="btn btn-default btn-lg btn-prev">Bouton étape précédente</a>
+		<a href="#" class="btn btn-default btn-lg btn-next">Bouton étape suivante</a>
+	</div>
+
+	<div class="row-btns">
+		<a href="#" class="btn btn-default btn-sm btn-plus">Bouton plus</a>
+		<a href="#" class="btn btn-default btn-sm btn-plus">Bouton plus</a>
+	</div>
+
+	<div class="row-btns">
+		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus</a>
+		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus</a>
+	</div>
+	
 	<h1>Tableaux</h1>
 
 	<table class="table table-striped table-condensed">
@@ -98,7 +139,7 @@
 			<h2>Panels</h2>
 
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-xs-4">
 					<div class="panel panel-default">
 		  				<div class="panel-heading">
 		  					<h2 class="panel-title">Panel title</h2>
@@ -108,7 +149,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-xs-4">
 					<div class="panel panel-success">
 		  				<div class="panel-heading">
 		  					<h2 class="panel-title">Panel title</h2>
@@ -118,7 +159,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-xs-4">
 					<div class="panel panel-info">
 		  				<div class="panel-heading">
 		  					<h2 class="panel-title">Panel title</h2>
