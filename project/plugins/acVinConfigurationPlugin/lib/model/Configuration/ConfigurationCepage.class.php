@@ -45,7 +45,7 @@ class ConfigurationCepage extends BaseConfigurationCepage {
     return array($this->getHash() => $this);
   }
 
-  public function getProduitsFilter($type_declaration = null) {
+  public function getProduitsFilter($type_declaration = null, $class_node = null) {
 
     return $this->getProduits();
   }

@@ -7,10 +7,10 @@ class DRevLotsProduitForm extends acCouchdbObjectForm
         $this->getWidget('nb_hors_vtsgn')->setLabel("Lots Hors VT / SGN :");
         $this->setValidator('nb_hors_vtsgn',  new sfValidatorNumber(array('required' => false)));
         
-        if($this->getObject()->hasVtsgn()) {
+        if($this->getObject()->hasConfigVtsgn()) {
             $this->setWidget('nb_vtsgn', new sfWidgetFormInputText());
             $this->getWidget('nb_vtsgn')->setLabel("Lots VT / SGN :");
-            $this->setValidator('nb_vtsgn',  new sfValidatorNumber(array('required' => false)));
+            $this->setValidator('nb_vtsgn', new sfValidatorNumber(array('required' => false)));
         }
 
   		$this->widgetSchema->setNameFormat('[%s]');

@@ -1,12 +1,10 @@
 <?php
 class DRevLotsAjoutProduitForm extends acCouchdbObjectForm 
 {    
-	protected $node;
 	protected $produits;
 	
-	public function __construct(acCouchdbJson $object, $node, $options = array(), $CSRFSecret = null) 
+	public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) 
 	{
-		$this->node = $node;
 		$this->produits = array();
 		parent::__construct($object, $options, $CSRFSecret);
 	}
@@ -30,21 +28,19 @@ class DRevLotsAjoutProduitForm extends acCouchdbObjectForm
 	public function getProduits() 
     {
     	if (!$this->produits) {
-    		$configuration = $this->getObject()->getConfiguration();
-    		$produits = $configuration->getDrevLotProduits(str_replace(DRev::PREFIXE_LOT_KEY, '', $this->node));
+    		$produits = $this->getObject()->getConfigProduits();
 	    	foreach ($produits as $produit) {
-		    	if ($this->node == DRev::PREFIXE_LOT_KEY.Drev::PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY && preg_match('/\/lieu\//', $produit)) {
-	    			continue;
-	    		}
-	    		$nodeHash = str_replace('/', '_', $produit); 
-	    		if (!$this->getObject()->lots->getOrAdd($this->node)->produits->exist($nodeHash)) {
-	    			$libelle = '';
-			    	if ($configuration->get($produit)->getLieu()->libelle) {
-			    		$libelle .= $configuration->get($produit)->getLieu()->libelle.' - ';
-			    	}
-			    	$libelle .= $configuration->get($produit)->libelle;
-	    			$this->produits[$produit] = $libelle;
-	    		}
+	    		$nodeHash = str_replace('/', '_', $produit->getHash());
+	    		if ($this->getObject()->lots->exist($nodeHash)) {
+                    continue;
+                } 
+
+    			$libelle = '';
+		    	if ($produit->getLieu()->libelle) {
+		    		$libelle .= $produit->getLieu()->libelle.' - ';
+		    	}
+		    	$libelle .= $produit->libelle;
+    			$this->produits[$produit->getHash()] = $libelle;
 	    	}
     	}
     	return array_merge(array('' => ''), $this->produits);

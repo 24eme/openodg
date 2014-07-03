@@ -8,9 +8,9 @@
 
     <h3>AOC Alsace</h3>
     <div class="form-group">
-        <?php echo $form['cuve_alsace']->renderError(); ?>
-        <?php echo $form['cuve_alsace']->renderLabel(); ?>
-        <?php echo $form['cuve_alsace']->render(); ?>
+        <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
+        <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(); ?>
+        <?php echo $form[DRev::CUVE_ALSACE]["date"]->render(); ?>
     </div>
     
     <h3>VT / SGN</h3>
@@ -22,9 +22,9 @@
       </div>
     </div>
     <div class="form-group">
-    <?php echo $form['cuve_vtsgn']->renderError(); ?>
-    <?php echo $form['cuve_vtsgn']->renderLabel(); ?>
-    <?php echo $form['cuve_vtsgn']->render(); ?>
+    <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderError(); ?>
+    <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderLabel(); ?>
+    <?php echo $form[DRev::CUVE_VTSGN]["date"]->render(); ?>
     </div>
 
 	<p class="clearfix">

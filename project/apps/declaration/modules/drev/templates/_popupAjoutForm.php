@@ -1,7 +1,7 @@
 <div class="modal fade" id="popupForm" tabindex="-1" role="dialog" aria-labelledby="Ajouter un produit" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form method="post" action="<?php echo url_for($callBackUrl, $drev) ?>" role="form" class="form-horizontal">
+			<form method="post" action="<?php echo url_for("drev_lots_ajout", $prelevement) ?>" role="form" class="form-horizontal">
 				<?php echo $form->renderGlobalErrors() ?>
 				<?php echo $form->renderHiddenFields() ?>
 				<div class="modal-header">

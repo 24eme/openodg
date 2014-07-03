@@ -1,8 +1,12 @@
 <?php include_partial('drev/step', array('step' => 'validation', 'drev' => $drev)) ?>
 
-<?php include_partial('drev/pointsAttentions', array('drev' => $drev)); ?>
+<?php 
+	if($validation->hasPoints()) {
+		include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); 
+	}
+?>
 
-<?php include_partial('drev/revendication', array('drev' => $drev)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev)); ?>
 
 <?php include_partial('drev/engagements', array('drev' => $drev)); ?>
 

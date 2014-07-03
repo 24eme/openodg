@@ -6,11 +6,24 @@
 
 class DRev extends BaseDRev 
 {
-	const PRODUITS_LOT_ALSACE_CONFIGURATION_KEY = 'ALSACE';
-	const PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY = 'GRDCRU';
-	const PREFIXE_LOT_KEY = 'cuve_';
-	const NODE_CUVE_ALSACE = 'cuve_ALSACE';
-	const NODE_CUVE_GRDCRU = 'cuve_GRDCRU';
+    const CUVE = 'cuve_';
+    const BOUTEILLE = 'bouteille_';
+
+	const CUVE_ALSACE = 'cuve_ALSACE';
+    const CUVE_GRDCRU = 'cuve_GRDCRU';
+    const CUVE_VTSGN = 'cuve_vtsgn';
+    const BOUTEILLE_ALSACE = 'bouteille_ALSACE';
+    const BOUTEILLE_GRDCRU = 'bouteille_GRDCRU';
+	const BOUTEILLE_VTSGN = 'bouteille_vtsgn';
+
+    public static $prelevement_keys = array(
+        self::CUVE_ALSACE,
+        self::CUVE_GRDCRU,
+        self::CUVE_VTSGN,
+        self::BOUTEILLE_ALSACE,
+        self::BOUTEILLE_GRDCRU,
+        self::BOUTEILLE_VTSGN,
+    );
 	
     public function constructId() 
     {
@@ -19,9 +32,19 @@ class DRev extends BaseDRev
     
 	public function getConfiguration() 
 	{     
-        $conf_2013 = acCouchdbManager::getClient('Configuration')->retrieveConfiguration('2013');
-        return $conf_2013;
+
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration('2013');
 	}
+
+    public function getConfigProduits() {
+
+        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationCouleur");
+    }
+
+    public function getConfigProduitsLots() {
+
+        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+    }
 	
 	public function initDrev($identifiant, $campagne)
 	{
@@ -31,9 +54,9 @@ class DRev extends BaseDRev
 
     public function initProduits() 
     {
-    	$produits = $this->getConfiguration()->getDrevProduits();
+    	$produits = $this->getConfigProduits();
     	foreach ($produits as $produit) {
-    		$this->addProduit($produit);
+    		$this->addProduit($produit->getHash());
     	}
     }
 
@@ -103,7 +126,7 @@ class DRev extends BaseDRev
                 continue;
             }
 
-            $this->addLotProduit($hash);
+            $this->addLotProduit($hash, self::CUVE);
         }
     }
 
@@ -117,58 +140,81 @@ class DRev extends BaseDRev
 	public function addProduit($hash)
 	{
         $config = $this->getConfiguration()->get($hash);
-
         $produit = $this->getOrAdd($config->getHash());
-        $produit->libelle = $config->getLibelle();
-        $produit->getLieu()->libelle = $config->getLieu()->libelle;
-        $produit->getMention()->libelle = $config->getMention()->libelle;
-        $produit->getAppellation()->libelle = $config->getAppellation()->libelle;
-        $produit->actif = 0;
+        $produit->getLibelle();
+
         return $produit;
+    }
+
+    public function getPrelevementKeys() {
+
+        return self::$prelevement_keys;
     }
 
     public function initLots() 
     {
-    	$alsaceProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_ALSACE_CONFIGURATION_KEY);
-    	$grdCruProduits = $this->getConfiguration()->getDrevLotProduits(self::PRODUITS_LOT_GRDCRU_CONFIGURATION_KEY);
-    	
-        foreach ($alsaceProduits as $alsaceProduit) {
-    		$this->addLotProduit($alsaceProduit);
-    	}
+    	$this->prelevements->add(self::CUVE_ALSACE)->getConfigProduitsLots()->initLots();
+    }
 
-    	foreach ($grdCruProduits as $grdCruProduit) {
-    		if (preg_match('/\/lieu\//', $grdCruProduit)) {
-    			continue;
-    		}
-    		$this->addLotProduit($grdCruProduit);
-    	}
+    public function addPrelevement($key)
+    {
+        if(!in_array($key, $this->getPrelevementKeys())) {
+            
+            return null;
+        }
+
+        return $this->prelevements->add($key);
     }
     
-    public function addLotProduit($hash, $prefix = self::PREFIXE_LOT_KEY)
+    public function addLotProduit($hash, $prefix)
     {
         $hash = $this->getConfiguration()->get($hash)->getHashRelation('lots');
-        $key = $prefix.$this->getLotsKeyByHash($hash);
-        $lot = $this->lots->add($key);
-    	$configuration = $this->getConfiguration();
-		$cepage = $lot->produits->add(str_replace('/', '_', $hash));
-    	$cepage->hash = $hash;
-    	$libelle = '';
-    	if ($configuration->get($hash)->getLieu()->libelle) {
-    		$libelle .= $configuration->get($hash)->getLieu()->libelle.' - ';
-    	}
-    	$libelle .= $configuration->get($hash)->libelle;
-    	$cepage->libelle = $libelle;
+        $key = $prefix.$this->getPrelevementsKeyByHash($hash);
 
-        $cepage->remove('no_vtsgn', 1);
+        $prelevement = $this->addPrelevement($key);
+    	
+		$lot = $prelevement->lots->add(str_replace('/', '_', $hash));
+        $lot->hash_produit = $hash;
+        $lot->getLibelle();
+        $lot->remove('no_vtsgn', 1);
 
-        if(!$configuration->get($hash)->hasVtsgn()) {
-            $cepage->add('no_vtsgn', 1);
+        if(!$lot->getConfig()->hasVtsgn()) {
+            $lot->add('no_vtsgn', 1);
         }
     }
 
-    public function getLotsKeyByHash($hash) {
+    public function getPrelevementsKeyByHash($hash) {
         
         return str_replace("appellation_", "", $this->getConfiguration()->get($hash)->getAppellation()->getKey());
+    }
+    
+    public function hasRevendicationAlsace()
+    {
+    	return 
+    		$this->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->isActive() &&
+    		$this->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->isActive() &&
+    		$this->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->isActive() &&
+    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->isActive() &&
+    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->isActive() && 
+    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->isActive() &&
+    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->isActive();
+    }
+    
+    public function hasRevendicationGrdCru()
+    {
+    	return $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
+    }
+    
+    public function hasLots($vtsgn = false, $horsvtsgn = false)
+    {
+        foreach($this->prelevements as $prelevement) {
+            if ($prelevement->hasLots($vtsgn, $horsvtsgn)) {
+                
+                return true;
+            }
+        }
+
+    	return false;
     }
 
 }

@@ -31,11 +31,4 @@ class ConfigurationCouleur extends BaseConfigurationCouleur {
         return $this->getRendementCouleur();
     }
     
-    public function getDrevProduits()
-    {
-    	if ($this->exist('drev') && $this->get('drev')) {
-    		return array($this->getHash());
-    	}
-    	return array();
-    }
 }

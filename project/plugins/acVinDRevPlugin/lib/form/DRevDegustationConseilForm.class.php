@@ -3,18 +3,15 @@
 class DRevDegustationConseilForm extends acCouchdbObjectForm
 {
     public function configure() {
-       $this->setWidgets(array(
-            'cuve_alsace' => new sfWidgetFormDate(array()),
-            'cuve_vtsgn' => new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())),
-        ));
+        $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_ALSACE));
+        
+        $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_VTSGN));
+        $form_vtsgn->setWidget("date", new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())));
+        $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))));
+        $form_vtsgn->getWidget("date")->setLabel("Période de prélévement");
 
-        $this->setValidators(array(
-            'cuve_alsace' => new sfValidatorDate(array('required' => true)),
-            'cuve_vtsgn' => new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))),
-        ));
-
-        $this->widgetSchema['cuve_alsace']->setLabel('Semaine du');
-        $this->widgetSchema['cuve_vtsgn']->setLabel('Période de prélévement');
+        $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
+        $this->embedForm(Drev::CUVE_VTSGN, $form_vtsgn);
 
         $this->widgetSchema->setNameFormat('degustation_conseil[%s]');
     }
@@ -27,5 +24,12 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
                      '2014-06-01' => 'Juin',
                      '2014-08-01' => 'Octobre',
                      );
+    }
+
+    public function doUpdateObject($values) 
+    {
+        foreach ($this->getEmbeddedForms() as $key => $embedForm) {
+            $embedForm->doUpdateObject($values[$key]);
+        }
     }
 }

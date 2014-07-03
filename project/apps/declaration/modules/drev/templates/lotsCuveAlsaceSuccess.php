@@ -27,4 +27,4 @@
 	</p>
 </form>
 
-<?php include_partial('drev/popupAjoutForm', array('drev' => $drev, 'callBackUrl' => 'drev_lots_alsace_ajout', 'form' => $ajoutForm)); ?>
+<?php include_partial('drev/popupAjoutForm', array('prelevement' => $prelevement, 'form' => $ajoutForm)); ?>

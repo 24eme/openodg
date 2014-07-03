@@ -7,16 +7,6 @@ DRev:
       type: { }
       campagne: { }
       identifiant: { }
-      prelevements:
-        type: collection
-        class: DRevPrelevements
-        definition:
-          fields:
-            cuve_alsace: { }
-            cuve_vtsgn: { }
-            bouteille_alsace: { }
-            bouteille_alsace_grdcru: { }
-            bouteille_vtsgn: { }
       declaration:
         type: collection
         class: DRevDeclaration
@@ -71,7 +61,6 @@ DRev:
                                             definition:
                                               fields:
                                                 libelle: { }
-                                                actif: { type:integer }
                                                 total_superficie: { type:float }
                                                 volume_revendique: { type: float }
                                                 dr:
@@ -83,27 +72,28 @@ DRev:
                                                       volume_sur_place_revendique: { type:float }
                                                       volume_total: { type:float }
                                                       usages_industriels_total: { type:float }
-      lots:
+      prelevements:
         type: collection
         definition:
           fields:
             '*':
               type: collection
-              class: DRevLot
+              class: DRevPrelevement
               definition:
                 fields:
-                  total: {  }
-                  produits:
+                  total_lots: {  }
+                  date: {  }
+                  lots:
                     type: collection
                     definition:
                       fields:
                         '*':
                           type: collection
-                          class: DRevLotCepage
+                          class: DRevLot
                           definition:
                             fields:
                               nb_vtsgn: {   }
                               nb_hors_vtsgn: {  }
                               libelle: {  }
-                              hash: {  }
+                              hash_produit: {  }
                               no_vtsgn: { type: integer, required: false }
