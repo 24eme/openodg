@@ -7,13 +7,10 @@
 {
 	min-height: 320px;
 
-	h2 { color: #105251; }
+	h2 { color: @green-dark; }
 }
 
-.first-connection
-{
-	background: #eee7d0;
-}
+.first-connection { background: #eee7d0; }
 
 .space-member
 {
@@ -33,7 +30,7 @@
 
 	.presentation-title
 	{
-		background: #2c4a48;
+		background: @green-darker;
 		margin: 0 0 48px;
 		padding: 25px 65px;
 		position: relative;
@@ -42,7 +39,7 @@
 		&:after
 		{
 			.pos-abs(100%, 0, auto, 0);
-			.triangle-b(34px, 17px, #2c4a48);
+			.triangle-b(34px, 17px, @green-darker);
 			margin: 0 auto;
 		}
 
@@ -75,7 +72,7 @@
 
 		h3
 		{
-			color: #105251;
+			color: @green-dark;
 			margin-top: 0;
 			margin-bottom: 20px;
 			text-transform: uppercase;
@@ -90,7 +87,3 @@
 		}
 	}
 }
-
-/* ============================================================= */
-/* ETAPES DECLARATION */
-/* ============================================================= */

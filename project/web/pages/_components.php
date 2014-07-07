@@ -2,8 +2,8 @@
 <?php 
 	$template = 1;
 	$cat_current = "wysiwyg";
-	$cat_title = "Page vide";
-	$page_title = "Page vide";
+	$cat_title = "Composants";
+	$page_title = "Composants";
 ?>
 <?php require(INCLUDES_PATH.'_header.php'); ?>
 
@@ -15,51 +15,42 @@
 
 	<h1>Titre h1</h1>
 	<h2>Titre h2</h2>
+	<h2 class="h2-border">Titre h2 avec bordure</h2>
 	<h3>Titre h3</h3>
 
 	<h1>Boutons</h1>
 
-	<div class="row-btns">
+	<div class="row-margin">
 		<a href="#" class="btn btn-default">Bouton default</a>
-		<a href="#" class="btn btn-primary">Bouton default</a>
+		<a href="#" class="btn btn-primary">Bouton primary</a>
 	</div>
 
-	<div class="row-btns">
-		<a href="#" class="btn btn-primary btn-sm btn-prev">Bouton étape précédente</a>
-		<a href="#" class="btn btn-primary btn-sm btn-next">Bouton étape suivante</a>
-	</div>
-
-	<div class="row-btns">
+	<div class="row-margin">
 		<a href="#" class="btn btn-primary btn-prev">Bouton étape précédente</a>
 		<a href="#" class="btn btn-primary btn-next">Bouton étape suivante</a>
 	</div>
 
-	<div class="row-btns">
+	<div class="row-margin">
 		<a href="#" class="btn btn-primary btn-lg btn-prev">Bouton étape précédente</a>
 		<a href="#" class="btn btn-primary btn-lg btn-next">Bouton étape suivante</a>
 	</div>
 
-	<div class="row-btns">
-		<a href="#" class="btn btn-default btn-sm btn-prev">Bouton étape précédente</a>
-		<a href="#" class="btn btn-default btn-sm btn-next">Bouton étape suivante</a>
-	</div>
-
-	<div class="row-btns">
+	<div class="row-margin">
 		<a href="#" class="btn btn-default btn-prev">Bouton étape précédente</a>
 		<a href="#" class="btn btn-default btn-next">Bouton étape suivante</a>
 	</div>
 
-	<div class="row-btns">
+	<div class="row-margin">
 		<a href="#" class="btn btn-default btn-lg btn-prev">Bouton étape précédente</a>
 		<a href="#" class="btn btn-default btn-lg btn-next">Bouton étape suivante</a>
 	</div>
 
-	<div class="row-btns">
-		<a href="#" class="btn btn-default btn-sm btn-plus">Bouton plus</a>
-		<a href="#" class="btn btn-default btn-sm btn-plus">Bouton plus</a>
+	<div class="row-margin">
+		<a href="#" class="btn btn-default btn-plus">Bouton plus</a>
+		<a href="#" class="btn btn-default btn-plus">Bouton plus</a>
 	</div>
 
-	<div class="row-btns">
+	<div class="row-margin">
 		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus</a>
 		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus</a>
 	</div>
@@ -107,20 +98,20 @@
 		</li>
 		<li class="visited">
 			<div class="step">
-				<a href="#">Exploitation</a>
-			</div>
-		</li>
-		<li class="active">
-			<div class="step">
-				<a href="#">Lots</a>
+				<a href="#">Revendication</a>
 			</div>
 		</li>
 		<li class="visited">
 			<div class="step">
-				<a href="#">Dégustation</a>
+				<a href="#">Dégustation conseil</a>
 			</div>
 		</li>
-		<li>
+		<li class="visited">
+			<div class="step">
+				<a href="#">Contrôle externe</a>
+			</div>
+		</li>
+		<li class="active">
 			<div class="step">
 				<a href="#">Validation</a>
 			</div>

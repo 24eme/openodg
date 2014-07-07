@@ -59,9 +59,12 @@
 <![endif]-->
 <!-- ####### PLEASE KEEP ####### -->
 
-
 <!-- #page -->
 <div id="page" class="container">
+
+	<div id="bg-page">
+		<img src="../images/bg/bg_global.jpg" alt="" />
+	</div>
 
 	<!-- #header -->
 	<header id="header" class="container" role="banner">
@@ -74,14 +77,15 @@
 			</a>
 		</div>
 					
-		<!-- <nav id="navigation" class="navbar-collapse collapse" role="navigation">
-			<ul class="nav navbar-nav">
-				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>
-				<li class="<?php if($cat_current == "cat_home") echo "active"; ?>"><a href="#">Link</a></li>  
+		<nav id="navigation" role="navigation">
+			<span class="profile-name">Vincent Rodriguez</span>
+
+			<ul>
+				<li><a href="#">Mon compte</a></li>
+				<li><a href="#">Mes déclarations</a></li>
+				<li><a href="#">Administration</a></li>
+				<li><a href="#">Déconnexion</a></li>
 			</ul>
-		</nav> -->
+		</nav>
 	</header>
 	<!-- end #header -->

@@ -13,7 +13,7 @@ if(typeof jQuery == 'undefined')
   <script src="<?php echo JS_PATH; ?>plugins/ie-bootstrap-carousel.min.js"></script>
 <![endif]-->
 
-<script type="text/javascript" src="<?php echo JS_PATH; ?>plugins/jquery.plugins.min.js"></script>
+<script type="text/javascript" src="<?php echo JS_PATH; ?>lib/jquery.plugins.min.js"></script>
 
 <?php if(isset($extra_js)): ?>
 	<?php foreach($extra_js as $js): ?>

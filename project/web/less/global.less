@@ -10,33 +10,13 @@
 /* GENERIC ELEMENTS */
 /* ============================================================= */
 
-html  { }
-button,
-input,
-select,
-textarea {  }
-
 
 html
 {
 	-webkit-font-smoothing: antialiased;
 }
 
-
-body
-{
-	background: url('../images/bg/bg_global.jpg') 50% 0 no-repeat;
-	background-size: cover;
-	-webkit-background-size: cover;
-}
-
-a
-{
-}
-
 img { max-width: 100%; }
-
-h1, h2, h3, h4, h5, h6 {  }
 
 p, ul, ol, blockquote
 {
@@ -45,21 +25,10 @@ p, ul, ol, blockquote
 
 ul, ol, li { zoom: 1; }
 
-blockquote
-{
-
-}
-
-
 audio,
 canvas,
 img,
 video { vertical-align: middle; }
-
-
-fieldset
-{
-}
 
 hr
 {
@@ -74,8 +43,6 @@ hr
 		margin: @hr-margin-sm-vertical auto;
 	}
 }
-
-ol, ul {  }
 
 
 /* ============================================================= */
@@ -114,6 +81,44 @@ ol, ul {  }
 /* ============================================================= */
 
 /**
+ * Full screen background
+ ******************************************/
+.backgroundsize
+{
+	body
+	{
+		background: url('../images/bg/bg_global.jpg') 50% 0 no-repeat;
+		background-size: cover;
+		-webkit-background-size: cover;
+	}
+
+	#bg-page { display: none; }
+}
+
+
+/* fallback */
+#bg-page
+{
+	height: 200%;
+	left: -50%;
+	position: fixed;
+	top: -50%;
+	width: 200%;
+
+	img
+	{
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		min-width: 50%;
+		min-height: 50%;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+}
+
+/**
  * Structuration
  ******************************************/
 .container
@@ -135,10 +140,17 @@ ol, ul {  }
   	}
 }
 
-.row-btns 
+.row-margin
 { 
 	margin-bottom: 20px; 
 	margin-top: 20px; 
+}
+
+.frame
+{
+	background: @gray-lighter;
+	border: 1px solid @gray-light;
+	padding: 0 @grid-gutter-width;
 }
 
 
@@ -208,6 +220,13 @@ h2, .h2 { color: @font-color-h2; }
 
 h3, .h3 { color: @font-color-h3; }
 
+.h2-border
+{
+	border-bottom: 1px solid #c5c3c3;
+	margin: 0 0 30px;
+	padding: 0 0 15px;
+}
+
 
 /**
  * Texts 
@@ -232,16 +251,16 @@ h3, .h3 { color: @font-color-h3; }
 	color: @table-font-color;
 	font-size: 14px;
 
-	tbody
-	{
-		background: @white;
-	}
+	tbody { background: @white; }
 
 	thead > tr > th,
 	tbody > tr > td 
 	{ 
 		border: 0;
-		vertical-align: middle; 
+		position: relative;
+		vertical-align: middle;
+
+		&.table-split { border-left: @grid-gutter-width solid @gray-lighter; }
 	}
 
 	thead > tr > th + th,
@@ -285,10 +304,7 @@ h3, .h3 { color: @font-color-h3; }
 /**
  * Buttons
  ******************************************/
-.btn
-{
-	position: relative;
-}
+.btn { position: relative; }
 
 .btn-lg
 {
@@ -296,10 +312,7 @@ h3, .h3 { color: @font-color-h3; }
 	padding-top: 8px;
 }
 
-.btn-primary
-{
-	text-transform: uppercase;
-}
+.btn-primary { text-transform: uppercase; }
 
 .btn-plus
 {
@@ -377,57 +390,47 @@ h3, .h3 { color: @font-color-h3; }
 /**
  * Video
  ******************************************/
-.video-container
-{
-	position: relative;
-    padding-bottom: 56.25%;
-    padding-top: 30px;
-	height: 0;
-	overflow: hidden;
-
-	iframe, object, embed
-	{
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-	}
-}
+ 
 
 /**
- * Breadcrumb (BS overrides)
+ * Breadcrumb steps
  ******************************************/
-.breadcrumb
-{
-	
-}
-
 .breadcrumb-steps
 {
+	.clearfix;
 	background: @breadcrumb-steps-color;
 	counter-reset: steps;
-	display: table;
-	font-size: 0;
+	font-size: 14px;
 	font-weight: 600;
-	overflow: hidden;
+	list-style: none;
 	margin-bottom: 40px;
 	margin-left: -(floor(@grid-gutter-width/2));
+	margin-top: 0;
+	overflow: hidden;
 	padding: 0;
-	table-layout: fixed;
 	width: @container-sm;
 
 	li
 	{
 		color: @white;
-		display: table-cell;
-		font-size: 15px;
-		line-height: 82px;
+		float: left;
 		height: 82px;
+		line-height: 82px;
+		position: relative;
 		text-transform: uppercase;
-		white-space: nowrap;
+		width: 188px;
 
-		&:first-child { width: 155px; }
+		&:first-child 
+		{
+			width: 155px; 
+
+			.step:before { left: 6px; }
+
+			a { padding-left: 23px; }
+		}
+
+		// last child
+		+ li + li + li + li { width: 221px; }
 
 		&.visited
 		{
@@ -448,18 +451,14 @@ h3, .h3 { color: @font-color-h3; }
 			}
 		}
 
-		& + li
-		{
-			.step { padding-left: 65px; }
-		}
-
 		.step
 		{
-			padding-left: 20px;
 			position: relative;
+			z-index: 5;
 
 			&:before
 			{
+				.pos-abs(auto, auto, auto, 58px);
 				counter-increment: steps;
 				content: counter(steps, decimal)'. ';
 			}
@@ -477,22 +476,10 @@ h3, .h3 { color: @font-color-h3; }
 	{ 
 		color: inherit;
 		display: inline-block;
+		line-height: normal;
+		padding: 20px 0 20px 75px;
 		text-decoration: none;
-		width: 110%;
 	}
-}
-
-/**
- * Pagination (BS overrides)
- ******************************************/
-.pagination-block
-{
-	position: relative;
-	text-align: center;
-}
-
-.pagination
-{
 }
 
 /**
@@ -587,6 +574,17 @@ h3, .h3 { color: @font-color-h3; }
 	}
 }
 
+.alert-container
+{
+	background: @white;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	margin: 0 0 20px;
+	padding: 30px 20px;
+
+	.alert { margin: 0; }
+}
+
 /* ============================================================= */
 /* HEADER */
 /* ============================================================= */
@@ -595,16 +593,9 @@ h3, .h3 { color: @font-color-h3; }
 	background: @white url('../images/bg/bg_header.png') 100% 0 no-repeat;
 	margin-top: 25px;
 	padding: 25px 0;
+	position: relative;
 
 	#logo { margin: 0 0 0 25px; }
-}
-
-/**
- * Collapsible navbar
- ******************************************/
-.navbar-collapse
-{
-	
 }
 
 
@@ -613,38 +604,40 @@ h3, .h3 { color: @font-color-h3; }
  ******************************************/
 #navigation
 {	
-	.nav
-	{		
-		> li
+	.pos-abs(0, 0, 0);
+	background: #105251;
+	color: @white;
+	padding: 10px 20px;
+	text-align: right;
+	width: 220px;
+
+	a { color: inherit; }
+
+	ul 
+	{ 
+		font-size: 13px;
+		list-style: none; 
+	}
+
+	li 
+	{ 
+		margin: 4px 0;
+		position: relative;
+
+		&:before
 		{
-			
-			> a
-			{
-			}
-			
-			&.active > a { }
-		}
-		
-		/* Tablet */
-		@media (min-width: @screen-sm-min)
-		{		
-			> li
-			{
-				> a
-				{
-				}
-				
-				&.active > a
-				{
-				}
-			}
-		}
-		
-		/* Desktop */
-		@media (min-width: @screen-md-min)
-		{
-			
-		}
+			.pos-abs(5px, auto, auto, 0);
+			background: url('../images/icons/nav-bullet-point.gif') no-repeat;
+			content: '';
+			height: 7px;
+			width: 5px;
+		} 
+	}
+
+	.profile-name
+	{
+		font-size: 15px;
+		font-weight: 600;
 	}
 }
 
@@ -656,6 +649,7 @@ h3, .h3 { color: @font-color-h3; }
 {
 	background: @white;
 	margin-top: 35px;
+	position: relative;
 }
 
 
@@ -668,6 +662,7 @@ h3, .h3 { color: @font-color-h3; }
 	background: @white;
 	font-size: 13px;
 	margin-bottom: 40px;
+	position: relative;
 	text-align: center;
 	
 	ul

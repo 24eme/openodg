@@ -57,13 +57,35 @@
 		}
 	};
 
-	
-	
+	$.initDatePickers = function()
+	{
+		var datePickers = $('.date-picker');
+
+		datePickers.each(function()
+		{
+			var currentDp = $(this);
+
+			currentDp.datetimepicker
+			({
+				language: 'fr',
+				pickTime: false,
+				daysOfWeekDisabled:[0,2,3,4,5,6]
+			});
+
+			currentDp.on('focus', 'input', function()
+			{
+				currentDp.data('DateTimePicker').show();
+			});
+		});
+	};
+
+
 	/* =================================================================================== */
 	/* FUNCTIONS CALL */
 	/* =================================================================================== */
-	_doc.ready( function()
+	_doc.ready(function()
 	{
+		$.initDatePickers();
 	});
 	
 })(jQuery);
