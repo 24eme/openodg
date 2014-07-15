@@ -1,0 +1,21 @@
+#Etablissement
+Etablissement:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      identifiant: {  }
+      raison_sociale: {  }
+      nom: {  }
+      cvi: {  }
+      email: {  }
+      telephone: {  }
+      fax: {  }
+      siege:
+        type: collection
+        definition:
+          fields:
+            adresse: {  }
+            code_postal: {  }
+            commune: {  }
