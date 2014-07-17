@@ -16,7 +16,6 @@ join -t ";" -1 2 -2 1 $WORKDIR/id_evv.csv $WORKDIR/evv.csv | sort -t ";" -k 2,2 
 cat $WORKDIR/id_evv_cvi.csv | sort -t ";" -k 1,1 > $WORKDIR/id_evv_cvi.sort_evv.csv
 cat $WORKDIR/evv.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10 | sed -r 's/^([0-9]+);/\1;1.CVI ;/' > $WORKDIR/cvi.csv
 
-
 #---COMMUNICATION---
 cat $DATADIR/COMMUNICATION.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,8,9,10,11,12,13,14 | sort -t ";" -k 2,2 > $WORKDIR/communication.csv
 
