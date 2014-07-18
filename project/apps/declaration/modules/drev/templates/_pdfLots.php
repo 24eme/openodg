@@ -2,10 +2,10 @@
 <br /><br />
 
 <?php echo h2("AOC Alsace") ?>
-<?php $th_style="font-weight: bold; border: 1px solid black;" ?>
-<?php $td_style_libelle="border: 1px solid black; text-align: left;" ?>
-<?php $td_style_value="border: 1px solid black; text-align: right ;" ?>
-<table border="1" cellspacing=0 cellpadding=0 style="text-align: right; border: 1px solid black;">
+<?php $th_style="font-weight: normal; border: 1px solid #c75268; background-color: #f7dce5; color: #c75268;" ?>
+<?php $td_style_libelle="border: 1px solid #c75268; text-align: left;" ?>
+<?php $td_style_value="border: 1px solid #c75268; text-align: right ;" ?>
+<table border="1" cellspacing=0 cellpadding=0 style="text-align: right; border: 1px solid #c75268;">
     <tr>
         <th style="<?php echo $th_style ?> text-align: left; width: 357px">&nbsp;Produits</th>
         <th style="<?php echo $th_style ?> text-align: center; width: 140px">Hors VT/SGN</th>
@@ -14,6 +14,7 @@
     <tr>
         <td style="<?php echo $td_style_libelle ?>">Assemblage</td>
         <td style="<?php echo $td_style_value ?>">1&nbsp;<small>lot (s)</small>&nbsp;&nbsp;&nbsp;</td>
+        <td style="<?php echo $td_style_value ?>" rowspan="10"></td>
     </tr>
     <tr>
         <td style="<?php echo $td_style_libelle ?>">Chasselas</td>
@@ -54,7 +55,7 @@
 </table>
 <br />
 <?php echo h2("AOC Alsace Grands Crus") ?>
-<table border="1" cellspacing=0 cellpadding=0 style="text-align: right; border: 1px solid black;">
+<table border="1" cellspacing=0 cellpadding=0 style="text-align: right; border: 1px solid #c75268;">
     <tr>
         <th style="<?php echo $th_style ?> text-align: left; width: 357px">&nbsp;Produits</th>
         <th style="<?php echo $th_style ?> text-align: center; width: 140px">Hors VT/SGN</th>
@@ -63,6 +64,7 @@
     <tr>
         <td style="<?php echo $td_style_libelle ?>">Brand - Assemblage</td>
         <td style="<?php echo $td_style_value ?>">1&nbsp;<small>lot (s)</small>&nbsp;&nbsp;&nbsp;</td>
+        <td style="<?php echo $td_style_value ?>" rowspan="3"></td>
     </tr>
     <tr>
         <td style="<?php echo $td_style_libelle ?>">Brand - Chasselas</td>
