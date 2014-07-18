@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF') ?>
+<?php use_helper('Float') ?>
 
 <span style="background-color: #f3c3d3; color: #c75268; font-weight: bold;">&nbsp;Exploitation&nbsp;</span><br/>
 <table style="border: 1px solid #f3c3d3;"><tr><td>
@@ -37,46 +38,13 @@
         <th style="<?php echo $th_style ?> text-align: center; width: 140px">Superficie</th>
         <th style="<?php echo $th_style ?> text-align: center; width: 140px">Volume</th>
     </tr>
+    <?php foreach($drev->declaration->getProduits() as $produit): ?>
     <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Pinot noir rosé</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
+        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?><?php echo sprintFloatFr($produit->total_superficie) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
+        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?><?php echo sprintFloatFr($produit->volume_revendique) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
     </tr>
-    <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Pinot noir rouge</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-    </tr>
-    <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Communale blanc</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-    </tr>
-    <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Communale rouge</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-    </tr>
-    <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Lieu-dit blanc</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-    </tr>
-    <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Lieu-dit rouge</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-    </tr>
-    <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Grands Crus</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-    </tr>
-    <tr>
-        <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;AOC Alsace Crémant</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>123.52&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?>100.56&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-    </tr>
+  <?php  endforeach; ?>
 </table>
 <br />
 <br />
