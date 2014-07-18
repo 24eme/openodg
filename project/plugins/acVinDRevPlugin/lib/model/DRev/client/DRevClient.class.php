@@ -11,17 +11,17 @@ class DRevClient extends acCouchdbClient {
     } 
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
-        $drev = parent::find($id, $hydrate, $force_return_ls);
+        $doc = parent::find($id, $hydrate, $force_return_ls);
 
-        if($drev && $drev->type != self::TYPE_MODEL) {
+        if($doc && $doc->type != self::TYPE_MODEL) {
 
             throw new sfException("Document \"%s\" is not type of \"%s\"", $id, self::TYPE_MODEL);
         }
 
-        return $drev;
+        return $doc;
     }
     
-    public function createDrev($identifiant, $campagne) 
+    public function createDoc($identifiant, $campagne) 
     {  
         $drev = new DRev();
         $drev->initDrev($identifiant, $campagne);
