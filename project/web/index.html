@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sommaire | Ava</title>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+	<meta name="Description" content="" /> 
+	<meta name="Keywords" content="" />
+	
+	
+	<style type="text/css" media="screen">
+	
+		* { font-size: 100%; margin: 0; padding: 0; }
+		html, body { font-family: Arial, Verdana, Helvetica, "trebuchet MS", sans-serif; height: 100%; line-height: 1; }
+		body { background: #fff; font-size: 12px; }
+		a img, fieldset { border: 0; }
+		
+		#sommaire_site
+		{
+			background: #fff;
+			border: 1px solid #ddd;
+			font-size: 12px;
+			margin: 15px auto 0;
+			padding: 15px 15px 0;
+			width: 800px;
+		}
+		
+		#sommaire_site h1,
+		#sommaire_site h2,
+		#sommaire_site h3 { color: #333; font: 22px/1 normal normal Georgia, "Times New Roman", Times, serif; }
+		#sommaire_site h1 { font-size: 26px; margin: 0 0 20px; }
+		#sommaire_site h2 { font-size: 20px; margin: 5px 0 15px; }
+		#sommaire_site h3 { font-size: 14px; margin: 0 0 10px; }
+		#sommaire_site p,
+		#sommaire_site ul { font-size: 12px; line-height: 16px; margin: 0 0 15px; }
+		#sommaire_site ul { list-style: disc; margin-left: 15px; }
+		#sommaire_site a { color: #06f; }
+		#sommaire_site a:hover { color: #f60; text-decoration: none; }
+		
+		#sommaire_site table { border: 1px solid #ddd; border-collapse: collapse; border-spacing: 0; margin: 0 0 15px;  width: 100%; }
+		#sommaire_site table th,
+		#sommaire_site table td { border: 1px solid #ddd; border-width: 0 1px 1px 0; line-height: 16px; padding: 5px; text-align: left; }
+		#sommaire_site table th { color: #fff; text-transform: uppercase; }
+		#sommaire_site table thead th { background: #666; }
+		#sommaire_site table tbody th { background: #999; width: 100%; }
+		#sommaire_site table td { vertical-align: top; }
+		#sommaire_site table tr.alt td { background: #fcfcfc; }
+		#sommaire_site table td.statut { vertical-align: middle; text-align: center; }
+		
+		#sommaire_site .definitif span,
+		#sommaire_site .en_cours span,
+		#sommaire_site .modification span,
+		#sommaire_site .a_faire span		
+		{
+			-webkit-border-radius: 100%;
+			-moz-border-radius: 100%;
+			border-radius: 100%;
+			display: inline-block;
+			height: 15px;
+			width: 15px;
+			vertical-align: middle;
+		}
+		
+		#sommaire_site .definitif span{ background: #093;  }
+		#sommaire_site .en_cours span { background: #f80; }
+		#sommaire_site .modification span { background: #f00; }
+		#sommaire_site .a_faire span { background: #61b3f2; }
+	</style>
+</head>
+
+<body>
+
+	<!-- #sommaire_site -->
+	<div id="sommaire_site">
+	
+		<h1>Sommaire - Ava</h1>
+	
+		<h2>Fichiers communs à toutes les pages</h2>
+	
+		<ul>
+			<li><a href="css/compile.css" target="_blank">css/compile.css</a></li>
+			<li><a href="js/lib/modernizr-2.8.2.js" target="_blank">js/lib/modernizr-2.8.2.js</a></li>
+			<li><a href="js/lib/device.min.js" target="_blank">js/lib/device.min.js</a></li>
+			<li><a href="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" target="_blank">https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js</a></li>
+			<li><a href="js/plugins/jquery.plugins.min.js" target="_blank">js/plugins/jquery.plugins.min.js</a></li>
+			<li><a href="js/global.js" target="_blank">js/global.js</a></li>
+		</ul>
+		
+		<h2>Légende</h2>
+		
+		<p class="definitif"><span></span> : Fichier définitif</p>
+		<p class="en_cours"><span></span> : En cours d'intégration</p>
+		<p class="modification"><span></span> : Modification impactant le code HTML</p>
+		
+		<h2>Gabarits</h2>
+	
+		<table cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<th class="statut">Statut</th>
+					<th>Fichier</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th colspan="3">Modèles</th>
+				</tr>
+				<tr>
+					<td class="statut en_cours"><span></span></td>
+					<td><a href="pages/_empty.php" target="_blank">_empty.php</a></td>
+					<td>Page vide (Header / Footer)</td>
+				</tr>
+				<tr>
+					<td class="statut en_cours"><span></span></td>
+					<td><a href="pages/_components.php" target="_blank">_components.php</a></td>
+					<td>Page composants</td>
+				</tr>
+				<tr>
+					<th colspan="3">Accueil</th>
+				</tr>
+				<tr>
+					<td class="statut definitif"><span></span></td>
+					<td><a href="pages/home.php" target="_blank">home.php</a></td>
+					<td>Accueil</td>
+				</tr>
+				<tr>
+					<th colspan="3">Déclaration</th>
+				</tr>
+				<tr>
+					<td class="statut definitif"><span></span></td>
+					<td><a href="pages/declaration_revendication.php" target="_blank">declaration_revendication.php</a></td>
+					<td>Revendication</td>
+				</tr>
+				<tr>
+					<td class="statut definitif"><span></span></td>
+					<td><a href="pages/declaration_degustation.php" target="_blank">declaration_degustation.php</a></td>
+					<td>Dégustation conseil</td>
+				</tr>
+				<tr>
+					<td class="statut definitif"><span></span></td>
+					<td><a href="pages/declaration_controle.php" target="_blank">declaration_controle.php</a></td>
+					<td>Contrôle externe</td>
+				</tr>
+				<tr>
+					<td class="statut definitif"><span></span></td>
+					<td><a href="pages/declaration_validation.php" target="_blank">declaration_validation.php</a></td>
+					<td>Validation</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- fin #sommaire_site -->
+
+</body>
+</html>

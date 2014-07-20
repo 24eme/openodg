@@ -1,0 +1,89 @@
+/* ============================================================= */
+/* HOME PAGE */
+/* ============================================================= */
+
+.first-connection,
+.space-member
+{
+	min-height: 320px;
+
+	h2 { color: @green-dark; }
+}
+
+.first-connection { background: #eee7d0; }
+
+.space-member
+{
+	label { text-align: right; }
+
+	.forgotten-password
+	{
+		font-size: 13px;
+		font-weight: 600;
+		text-decoration: underline; 
+	}
+}
+
+.presentation-services
+{
+	text-align: center;
+
+	.presentation-title
+	{
+		background: @green-darker;
+		margin: 0 0 48px;
+		padding: 25px 65px;
+		position: relative;
+		text-align: center;
+
+		&:after
+		{
+			.pos-abs(100%, 0, auto, 0);
+			.triangle-b(34px, 17px, @green-darker);
+			margin: 0 auto;
+		}
+
+		h2 
+		{
+			color: @white; 
+			font-size: 32px;
+			font-weight: 400;
+			line-height: 1.4;
+			margin: 0;
+		}
+	}
+
+	.module
+	{
+		padding: 115px 50px 0;
+		position: relative;
+
+		&:before
+		{
+			.img-pseudo-content(-28px -86px, 98px, 96px);
+			.pos-abs(0, auto, auto, 50%);
+			margin-left: -49px;
+			content: '';
+		}
+
+		&.module-bibliotheque:before { background-position: -125px -86px; }
+
+		&.module-cartographique:before { background-position: -222px -86px; }
+
+		h3
+		{
+			color: @green-dark;
+			margin-top: 0;
+			margin-bottom: 20px;
+			text-transform: uppercase;
+		}
+
+		ul
+		{
+			list-style: none;
+			padding: 0;
+
+			li { margin: 15px 0; }
+		}
+	}
+}

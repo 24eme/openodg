@@ -1,0 +1,457 @@
+//
+// Variables
+// --------------------------------------------------
+
+
+// Global values
+// --------------------------------------------------
+
+// Grays
+// -------------------------
+
+@white:		             #fff;
+@black:                  #000;
+@gray-darker:            lighten(#000, 13.5%); // #222
+@gray-dark:              lighten(#000, 20%);   // #333
+@gray:                   #5e5e5e;
+@gray-light:             #c9c8c8;
+@gray-lighter:           #e5e5e5;
+
+// Greens
+// -------------------------
+
+@green-darker:          #2c4a48;
+@green-dark:            #105251;
+@green:                 #b9cf62;          
+
+// Brand colors
+// -------------------------
+
+@brand-primary:         #428bca;
+@brand-success:         #5cb85c;
+@brand-warning:         #f0ad4e;
+@brand-danger:          #d9534f;
+@brand-info:            #5bc0de;
+
+// Scaffolding
+// -------------------------
+
+@body-bg:               #fff;
+@text-color:            @gray-dark;
+
+// Links
+// -------------------------
+
+@link-color:            @gray-dark;
+@link-hover-color:      darken(@link-color, 15%);
+
+// Typography
+// -------------------------
+
+@font-family-sans-serif:  "Open Sans", Helvetica, Arial, sans-serif;
+@font-family-serif:       Georgia, "Times New Roman", Times, serif;
+@font-family-monospace:   Monaco, Menlo, Consolas, "Courier New", monospace;
+@font-family-base:        @font-family-sans-serif;
+
+@font-size-base:          14px;
+@font-size-large:         18px;
+@font-size-small:         12px;
+
+@font-size-h1:            39px;
+@font-size-h2:            24px;
+@font-size-h3:            18px;
+@font-size-h4:            @font-size-base;
+@font-size-h5:            @font-size-base;
+@font-size-h6:            @font-size-base;
+
+@font-color-h2:           @gray;
+@font-color-h3:           @gray;
+
+@line-height-base:        1.428571429; // 20/14
+@line-height-computed:    floor(@font-size-base * @line-height-base); // ~20px
+
+@headings-font-family:    @font-family-base;
+@headings-font-weight:    500;
+@headings-line-height:    1.1;
+@headings-color:          inherit;
+
+
+// Iconography
+// -------------------------
+
+@icon-font-path:          "lib/bootstrap/fonts/";
+@icon-font-name:          "glyphicons-halflings-regular";
+@icon-font-svg-id:		  "glyphicons_halflingsregular";
+
+
+// Components
+// -------------------------
+// Based on 14px font-size and 1.428 line-height (~20px to start)
+
+@padding-base-vertical:          6px;
+@padding-base-horizontal:        12px;
+
+@padding-large-vertical:         10px;
+@padding-large-horizontal:       16px;
+
+@padding-small-vertical:         5px;
+@padding-small-horizontal:       10px;
+
+@padding-xs-vertical:			 1px;
+@padding-xs-horizontal:     	 5px;
+
+@line-height-large:              1.33;
+@line-height-small:              1.5;
+
+@border-radius-base:             4px;
+@border-radius-large:            6px;
+@border-radius-small:            3px;
+
+@component-active-color:         #fff;
+@component-active-bg:            @brand-primary;
+
+@caret-width-base:               4px;
+@caret-width-large:              5px;
+
+// Tables
+// -------------------------
+
+@table-cell-padding:                 8px;
+@table-condensed-cell-padding:       5px;
+
+@table-bg:                           transparent; // overall background-color
+@table-bg-accent:                    #efefef; // for striping
+@table-bg-hover:                     #f5f5f5;
+@table-bg-active:                    @table-bg-hover;
+
+@table-border-color:                 #828282; // table and cell border
+@table-font-color:                   @gray;
+
+
+// Buttons
+// -------------------------
+
+@btn-font-weight:                600;
+
+@btn-default-color:              @green-darker;
+@btn-default-bg:                 @green;
+@btn-default-border:             #939498;
+
+@btn-primary-color:              #fff;
+@btn-primary-bg:                 @green-darker;
+@btn-primary-border:             darken(@btn-primary-bg, 5%);
+
+@btn-success-color:              #fff;
+@btn-success-bg:                 @brand-success;
+@btn-success-border:             darken(@btn-success-bg, 5%);
+
+@btn-warning-color:              #fff;
+@btn-warning-bg:                 @brand-warning;
+@btn-warning-border:             darken(@btn-warning-bg, 5%);
+
+@btn-danger-color:               #fff;
+@btn-danger-bg:                  @brand-danger;
+@btn-danger-border:              darken(@btn-danger-bg, 5%);
+
+@btn-info-color:                 #fff;
+@btn-info-bg:                    @brand-info;
+@btn-info-border:                darken(@btn-info-bg, 5%);
+
+@btn-link-disabled-color:        @gray-light;
+
+
+// Forms
+// -------------------------
+
+@input-bg:                       #fff;
+@input-bg-disabled:              @gray-lighter;
+
+@input-color:                    @gray;
+@input-border:                   #ccc;
+@input-border-radius:            @border-radius-base;
+@input-border-focus:             @green-darker;
+
+@input-color-placeholder:        @gray-light;
+
+@input-height-base:              (@line-height-computed + (@padding-base-vertical * 2) + 2);
+@input-height-large:             (floor(@font-size-large * @line-height-large) + (@padding-large-vertical * 2) + 2);
+@input-height-small:             (floor(@font-size-small * @line-height-small) + (@padding-small-vertical * 2) + 2);
+
+@legend-color:                   @gray-dark;
+@legend-border-color:            @gray-lighter;
+
+@input-group-addon-bg:           @gray-lighter;
+@input-group-addon-border-color: @input-border;
+
+@input-rounded-border-radius:    (floor(@input-height-base / 2));
+@input-rounded-lg-border-radius: (floor(@input-height-large / 2));
+@input-rounded-sm-border-radius: (floor(@input-height-small / 2));
+
+
+// COMPONENT VARIABLES
+// --------------------------------------------------
+
+
+// Z-index master list
+// -------------------------
+// Used for a bird's eye view of components dependent on the z-axis
+// Try to avoid customizing these :)
+
+@zindex-navbar:            1000;
+@zindex-dropdown:          1000;
+@zindex-popover:           1010;
+@zindex-tooltip:           1030;
+@zindex-navbar-fixed:      1030;
+@zindex-modal-background:  1040;
+@zindex-modal:             1050;
+
+// Media queries breakpoints
+// --------------------------------------------------
+
+// Extra extra small screen / phone
+@screen-xxs:                  320px;
+@screen-xxs-min:              @screen-xxs;
+@screen-phone-portrait:       @screen-xxs-min;
+
+
+// Extra small screen / phone
+// Note: Deprecated @screen-xs and @screen-phone as of v3.0.1
+@screen-xs:                  480px;
+@screen-xs-min:              @screen-xs;
+@screen-phone:               @screen-xs-min;
+
+// Small screen / tablet
+// Note: Deprecated @screen-sm and @screen-tablet as of v3.0.1
+@screen-sm:                  768px;
+@screen-sm-min:              @screen-sm;
+@screen-tablet:              @screen-sm-min;
+
+// Medium screen / desktop
+// Note: Deprecated @screen-md and @screen-desktop as of v3.0.1
+@screen-md:                  992px;
+@screen-md-min:              @screen-md;
+@screen-desktop:             @screen-md-min;
+
+// Large screen / wide desktop
+// Note: Deprecated @screen-lg and @screen-lg-desktop as of v3.0.1
+@screen-lg:                  1200px;
+@screen-lg-min:              @screen-lg;
+@screen-lg-desktop:          @screen-lg-min;
+
+// So media queries don't overlap when required, provide a maximum
+@screen-xxs-max:             (@screen-xs-min - 1);
+@screen-xs-max:              (@screen-sm-min - 1);
+@screen-sm-max:              (@screen-md-min - 1);
+@screen-md-max:              (@screen-lg-min - 1);
+
+
+// Grid system
+// --------------------------------------------------
+
+// Number of columns in the grid system
+@grid-columns:              12;
+// Padding, to be divided by two and applied to the left and right of all columns
+@grid-gutter-width:         20px;
+// Point at which the navbar stops collapsing
+@grid-float-breakpoint:     @screen-sm-min;
+// Point at which the navbar begins collapsing.
+@grid-float-breakpoint-max: (@grid-float-breakpoint - 1);
+
+
+// Navs
+// -------------------------
+
+@nav-link-padding:                          20px 25px;
+@nav-link-hover-bg:                         @gray-lighter;
+
+@nav-disabled-link-color:                   @gray-light;
+@nav-disabled-link-hover-color:             @gray-light;
+
+@nav-open-link-hover-color:                 #fff;
+@nav-open-caret-border-color:               #fff;
+
+// Tabs
+@nav-tabs-link-bg:                          #9b9383;
+@nav-tabs-link-color:                       @white;
+@nav-tabs-link-font-size:                   13px;
+@nav-tabs-border-color:                     @gray-light;
+@nav-tabs-content-bg:                       @gray-lighter;
+@nav-tabs-content-padding:                  @grid-gutter-width;
+
+@nav-tabs-link-hover-border-color:          @gray-lighter;
+
+@nav-tabs-active-link-hover-bg:             @nav-tabs-content-bg;
+@nav-tabs-active-link-hover-color:          @green-darker;
+@nav-tabs-active-link-hover-border-color:   @gray-light;
+
+@nav-tabs-justified-link-border-color:            #ddd;
+@nav-tabs-justified-active-link-border-color:     @body-bg;
+
+// Pills
+@nav-pills-border-radius:                   @border-radius-base;
+@nav-pills-active-link-hover-bg:            @component-active-bg;
+@nav-pills-active-link-hover-color:         @component-active-color;
+
+
+// Form states and alerts
+// -------------------------
+
+@state-success-text:             #48874a;
+@state-success-bg:               #e0f0d9;
+@state-success-border:           darken(spin(@state-success-bg, -10), 5%);
+
+@state-info-text:                @white;
+@state-info-bg:                  #9b9383;
+@state-info-border:              @white;
+
+@state-warning-text:             #a8844a;
+@state-warning-bg:               #f5e8b6;
+@state-warning-border:           darken(spin(@state-warning-bg, -10), 5%);
+
+@state-danger-text:              #b74b4b;
+@state-danger-bg:                #f2dede;
+@state-danger-border:            darken(spin(@state-danger-bg, -10), 5%);
+
+
+// Labels
+// -------------------------
+
+@label-default-bg:            @gray-light;
+@label-primary-bg:            @green-darker;
+@label-success-bg:            @brand-success;
+@label-info-bg:               @brand-info;
+@label-warning-bg:            @brand-warning;
+@label-danger-bg:             @brand-danger;
+
+@label-color:                 #fff;
+@label-link-hover-color:      #fff;
+
+
+// Alerts
+// -------------------------
+@alert-padding:               15px;
+@alert-border-radius:         @border-radius-base;
+@alert-link-font-weight:      700;
+
+@alert-success-bg:            @state-success-bg;
+@alert-success-text:          @state-success-text;
+@alert-success-border:        @state-success-border;
+
+@alert-info-bg:               @state-info-bg;
+@alert-info-text:             @state-info-text;
+@alert-info-border:           @state-info-border;
+
+@alert-warning-bg:            @state-warning-bg;
+@alert-warning-text:          @state-warning-text;
+@alert-warning-border:        @state-warning-border;
+
+@alert-danger-bg:             @state-danger-bg;
+@alert-danger-text:           @state-danger-text;
+@alert-danger-border:         @state-danger-border;
+
+
+// Panels
+// -------------------------
+@panel-bg:                    @white;
+@panel-body-padding:          20px;
+@panel-inner-border:          #ddd;
+@panel-border-radius:         0;
+@panel-footer-bg:             #f5f5f5;
+
+@panel-default-text:          @gray;
+@panel-default-border:        #c5c3c3;
+@panel-default-heading-bg:    @white;
+
+@panel-primary-text:          @white;
+@panel-primary-border:        @brand-primary;
+@panel-primary-heading-bg:    @brand-primary;
+
+@panel-success-text:          @green-darker;
+@panel-success-border:        @green-darker;
+@panel-success-heading-bg:    @green;
+
+@panel-warning-text:          @state-warning-text;
+@panel-warning-border:        @state-warning-border;
+@panel-warning-heading-bg:    @state-warning-bg;
+
+@panel-danger-text:           @state-danger-text;
+@panel-danger-border:         @state-danger-border;
+@panel-danger-heading-bg:     @state-danger-bg;
+
+@panel-info-text:             @state-info-text;
+@panel-info-border:           @state-info-border;
+@panel-info-heading-bg:       @state-info-bg;
+
+
+// Thumbnails
+// -------------------------
+@thumbnail-padding:           4px;
+@thumbnail-bg:                @body-bg;
+@thumbnail-border:            #ddd;
+@thumbnail-border-radius:     @border-radius-base;
+
+@thumbnail-caption-color:     @text-color;
+@thumbnail-caption-padding:   9px;
+
+
+// Badges
+// -------------------------
+@badge-color:                 #fff;
+@badge-link-hover-color:      #fff;
+@badge-bg:                    @gray-light;
+
+@badge-active-color:          @link-color;
+@badge-active-bg:             #fff;
+
+@badge-font-weight:           bold;
+@badge-line-height:           1;
+@badge-border-radius:         10px;
+
+
+// Breadcrumbs
+// -------------------------
+@breadcrumb-padding-vertical:	8px;
+@breadcrumb-padding-horizontal:	15px;
+@breadcrumb-bg:					#f5f5f5;
+@breadcrumb-color:            	#ccc;
+@breadcrumb-active-color:		@gray-light;
+@breadcrumb-separator:			"/";
+
+// Type
+// ------------------------
+@text-muted:                  @gray-light;
+@abbr-border-color:           @gray-light;
+@headings-small-color:        @gray-light;
+@blockquote-small-color:      @gray-light;
+@blockquote-border-color:     @gray-lighter;
+@page-header-border-color:    @gray-lighter;
+
+// Miscellaneous
+// -------------------------
+
+// Hr border color
+@hr-border:                   @gray-lighter;
+@hr-border-size:              1px;
+@hr-width:					  100%;
+@hr-margin-vertical:		  30px;
+@hr-margin-sm-vertical:		  50px;
+
+
+// Horizontal forms & lists
+@component-offset-horizontal: 180px;
+
+
+// Container sizes
+// --------------------------------------------------
+
+// Small screen / tablet
+@container-tablet:             ((920px + @grid-gutter-width));
+@container-sm:                 @container-tablet;
+
+// Medium screen / desktop
+@container-desktop:            ((920px + @grid-gutter-width));
+@container-md:                 @container-desktop;
+
+// Large screen / wide desktop
+@container-large-desktop:      ((920px + @grid-gutter-width));
+@container-lg:                 @container-large-desktop;
