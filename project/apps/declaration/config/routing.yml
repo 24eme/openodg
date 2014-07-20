@@ -4,7 +4,7 @@
 # default rules
 
 drev_index:
-  url: /
+  url: /drev
   param: { module: drev, action: index }
 
 drev_create:

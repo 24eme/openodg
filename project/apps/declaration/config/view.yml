@@ -7,13 +7,12 @@ default:
     X-UA-Compatible: IE=edge
 
   metas:
-    title:         "Plateforme de télédéclaration de l'AVA"
-    charset:       "utf-8"
-    #description:  symfony project
-    #keywords:     symfony, project
-    #language:     en
-    #robots:       index, follow
-    viewport:      "width=device-width, initial-scale=1"
+    title:            "Plateforme de télédéclaration de l'AVA"
+    charset:          "utf-8"
+    description:      "Plateforme de télédéclaration de l'AVA"
+    robots:           "index,follow"
+    content-language: "fr-FR"
+    viewport:         "width=device-width, initial-scale=1"
 
   stylesheets:    [compile.css: { media: all }, print.css: { media: print }]
 

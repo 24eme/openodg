@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<!-- ####### PLEASE KEEP ####### -->
+<!--[if lte IE 6 ]><html class="no-js ie6 ielt7 ielt8 ielt9" lang="fr"><![endif]-->
+<!--[if IE 7 ]><html class="no-js ie7 ielt8 ielt9" lang="fr"><![endif]-->
+<!--[if IE 8 ]><html class="no-js ie8 ielt9" lang="fr"><![endif]-->
+<!--[if IE 9 ]><html class="no-js ie9" lang="fr"><![endif]-->
+<!--[if gt IE 9]><!--><html class="no-js" lang="fr"><!--<![endif]-->
+<!-- ####### PLEASE KEEP ####### -->
     <head>
         <?php include_http_metas() ?>
         <?php include_metas() ?>
         <?php include_title() ?>
-        <link rel="shortcut icon" href="/favicon.ico" />
+        
+        <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico" />
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
 
         <?php include_stylesheets() ?>
         
@@ -41,7 +49,7 @@
                 <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
                     
                 <div id="logo">
-                    <a href="home.php" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
+                    <a href="<?php echo url_for("drev_index") ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
