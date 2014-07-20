@@ -5,7 +5,7 @@ class DRevPrelevementForm extends acCouchdbObjectForm
 
     public function configure() {
        $this->setWidgets(array(
-            "date" => new sfWidgetFormDate(array()),
+            "date" => new sfWidgetFormInput(array()),
         ));
 
         $this->setValidators(array(

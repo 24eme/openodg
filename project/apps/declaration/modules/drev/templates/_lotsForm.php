@@ -8,12 +8,12 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 
-<table class="table table-striped table-bordered table-hover">
+<table class="table table-striped table-condensed">
     <thead>
         <tr>
-            <th class="col-md-6">Cépages</th>
-            <th class="text-center col-md-3">Lots Hors VT / SGN</th>
-            <th class="text-center col-md-3">Lots VT / SGN</th>
+            <th class="col-xs-6">Produits</th>
+            <th class="text-center col-xs-3">Lots Hors VT / SGN</th>
+            <th class="text-center col-xs-3">Lots VT / SGN</th>
         </tr>
     </thead>
     <tbody>
@@ -25,12 +25,21 @@
                 <td><?php echo $produit->getLibelle() ?></td>
                 <td class="text-center">
                     <span class="text-danger"><?php echo $embedForm['nb_hors_vtsgn']->renderError() ?></span>
-                    <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'text-right')) ?>
+                    <div class="form-group">
+                        <div class="col-xs-10 col-xs-offset-1">
+                            <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input-sm')) ?>
+                        </div>
+                    </div>
+                    
                 </td>
                 <td class="text-center">
                     <?php if(isset($embedForm['nb_vtsgn'])): ?>
                         <span class="text-danger"><?php echo $embedForm['nb_vtsgn']->renderError() ?></span>
-                        <?php echo $embedForm['nb_vtsgn']->render(array('class' => 'text-right')) ?>
+                        <div class="form-group">
+                            <div class="col-xs-10 col-xs-offset-1">
+                                <?php echo $embedForm['nb_vtsgn']->render(array('class' => 'form-control input-sm')) ?>
+                            </div>
+                        </div>
                     <?php endif; ?>
                 </td>
             </tr>

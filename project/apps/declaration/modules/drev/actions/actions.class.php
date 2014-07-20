@@ -3,6 +3,11 @@
 class drevActions extends sfActions
 {
 
+    public function executeIndex(sfWebRequest $request)
+    {
+
+    }
+
     public function executeCreate(sfWebRequest $request)
     {
     	if ($drev = DRevClient::getInstance()->find('DREV-7523700100-2013-2014')) {

@@ -2,12 +2,12 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">Revendication</div>
-	<table class="table table-striped table-bordered table-hover">
+	<table class="table table-striped table-condensed">
 		<thead>
 			<tr>
-				<th class="col-md-6">Appellation</th>
-				<th class="text-center col-md-3">Superficie totale</th>
-				<th class="text-center col-md-3">Vol. revendiqué</th>
+				<th class="col-md-6 small">Appellation</th>
+				<th class="text-center col-md-3 small">Superficie totale</th>
+				<th class="text-center col-md-3 small">Vol. revendiqué</th>
 			</tr>
 		</thead>
 		<tbody>

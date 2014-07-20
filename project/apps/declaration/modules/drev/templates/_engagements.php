@@ -1,5 +1,19 @@
-<ul class="bg-info list-unstyled" style="padding: 10px;">
-	<li><label style="font-weight: normal;"><input type="checkbox"> Joindre une copie de votre DR</label></li>
-	<li><label style="font-weight: normal;"><input type="checkbox"> Joindre une copie de votre SV11 ou DRM</label></li>
-	<li><label style="font-weight: normal;"><input type="checkbox"> Joindre une copie de votre SV12 ou DRM</label></li>
-</ul>
+<h2>Engagements</h2>
+
+<div class="alert-container">
+    <div class="alert alert-success" role="alert">
+        <strong>Je m'engage à :</strong>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" />
+                Joindre un copie de votre Déclaration de Récolte (automatique)
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" />
+                Joindre une copie de votre SV11 ou DRM
+            </label>
+        </div>
+    </div>
+</div>

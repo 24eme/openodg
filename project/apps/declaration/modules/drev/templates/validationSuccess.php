@@ -1,16 +1,24 @@
 <?php include_partial('drev/step', array('step' => 'validation', 'drev' => $drev)) ?>
 
-<?php 
-	if($validation->hasPoints()) {
-		include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); 
-	}
-?>
+<div class="frame">
+    <?php if($validation->hasPoints()): ?>
+        <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
+    <?php endif; ?>
+    <?php include_partial('drev/recap', array('drev' => $drev)); ?>
+    <?php include_partial('drev/engagements', array('drev' => $drev)); ?>
+</div>
 
-<?php include_partial('drev/recap', array('drev' => $drev)); ?>
-
-<?php include_partial('drev/engagements', array('drev' => $drev)); ?>
-
-<p class="clearfix">
-    <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
-    <button type="button" href="" class="btn btn-success btn-lg pull-right">Valider</button>
-</p>
+<div class="row row-margin">
+    <div class="col-xs-4">
+        <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg btn-block btn-prev">Étape précendente</a>
+    </div>
+    <div class="col-xs-4 text-center">
+        <a href="" class="btn btn-default btn-lg">
+            <span class="glyphicon glyphicon-save"></span>
+            Prévisualiser
+        </a>
+    </div>
+    <div class="col-xs-4">
+        <button type="submit" class="btn btn-primary btn-lg btn-block btn-next">Valider</a>
+    </div>
+</div>

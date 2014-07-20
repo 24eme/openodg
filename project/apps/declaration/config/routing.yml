@@ -3,6 +3,10 @@
 
 # default rules
 
+drev_index:
+  url: /
+  param: { module: drev, action: index }
+
 drev_create:
   url: /drev/creation
   param: { module: drev, action: create }

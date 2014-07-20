@@ -2,28 +2,32 @@
 
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'lot_grdcru', 'drev' => $drev)) ?>
 
-<p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace Grand Cru.</p>
+<form method="post" action="" role="form">
+	<div class="tab-content">
+		<div class="tab-pane active">
 
-<form method="post" action="" role="form" class="form-horizontal">
+			<p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace Grand Cru.</p>
+			<?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form)); ?>
+			
+			<?php if ($ajoutForm->hasProduits()): ?>
+				<button class="btn btn-default btn-plus" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit</button>
+			<?php endif; ?>
 
-	<?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form)); ?>
-	
-	<?php if ($ajoutForm->hasProduits()): ?>
-	<p class="clearfix">
-	    <a class="btn btn-success pull-left" data-toggle="modal" data-target="#popupForm">
-	        <span class="glyphicon glyphicon-plus"> Ajouter un produit</span>
-	    </a>
-	</p>
-	<?php endif; ?>
-
-	<p class="clearfix">
-		<a href="<?php echo url_for("drev_lots", $prelevement) ?>" class="btn btn-warning pull-left">Retourner à la répartition des lots précédents</a>
-		<button type="submit" class="btn btn-warning pull-right">Valider</button>
-	</p>
-	<p class="clearfix">
-		<a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg pull-left">Étape précedente</a>
-		<button type="submit" href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg pull-right">Étape suivante</button>
-	</p>
+			<div class="row row-margin">
+                <div class="col-xs-6">
+                    <a href="<?php echo url_for("drev_lots", $prelevement) ?>" class="btn btn-default btn-prev">Retourner à la répartition des lots précédents</a>
+                </div>
+                
+                <div class="col-xs-6 text-right">
+                    <button type="submit" class="btn btn-default btn-next">Valider</button>
+                </div>
+            </div>
+		</div>
+	</div>
+	<div class="row row-margin">
+		<div class="col-xs-4"><a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-block btn-prev">Étape précendente</a></div>
+		<div class="col-xs-4 col-xs-offset-4"><button type="submit" class="btn btn-primary btn-lg btn-block btn-next">Étape suivante</button></div>
+	</div>
 </form>
 
 <?php include_partial('drev/popupAjoutForm', array('prelevement' => $prelevement, 'form' => $ajoutForm)); ?>
