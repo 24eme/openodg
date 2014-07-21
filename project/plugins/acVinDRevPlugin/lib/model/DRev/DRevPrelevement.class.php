@@ -38,6 +38,26 @@ class DRevPrelevement extends BaseDRevPrelevement {
         return false;
     }
 
+    public function getDateObject() {
+        if(!$this->date) {
+
+            return null;
+        }
+
+        return new DateTime($this->date);
+    }
+
+    public function getDateFr() {
+        $date = $this->getDateObject();
+
+        if(!$date) {
+
+            return null;
+        }
+
+        return $date->format('d/m/Y');
+    }
+
     public function getPrefix() {
         preg_match("/^(.+_)/", $this->getKey(), $matches);
 

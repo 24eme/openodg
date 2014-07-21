@@ -26,11 +26,11 @@ Lancer le script d'installation :
 
 Test avec un serveur web PHP :
 
- > cd web
-
- > php -S localhost:9000
+ > php -S localhost:9000 -t web
 
 Droit d'écriture apache sur les des dossiers cache et log
+
+ > mkdir cache log
 
  > sudo chown www-data:your_user cache log
 
