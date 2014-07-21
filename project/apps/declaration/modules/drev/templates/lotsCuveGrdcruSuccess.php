@@ -17,10 +17,6 @@
                 <div class="col-xs-6">
                     <a href="<?php echo url_for("drev_lots", $prelevement) ?>" class="btn btn-default btn-prev">Retourner à la répartition des lots précédents</a>
                 </div>
-                
-                <div class="col-xs-6 text-right">
-                    <button type="submit" class="btn btn-default btn-next">Valider</button>
-                </div>
             </div>
 		</div>
 	</div>

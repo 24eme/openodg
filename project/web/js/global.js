@@ -79,6 +79,13 @@
 		});
 	};
 
+	$.initCheckboxRelations = function()
+	{
+		$('.checkbox-relation').click(function() {
+			$($(this).attr('data-relation')).toggleClass("hidden");
+		})
+
+	}
 
 	/* =================================================================================== */
 	/* FUNCTIONS CALL */
@@ -86,6 +93,7 @@
 	_doc.ready(function()
 	{
 		$.initDatePickers();
+		$.initCheckboxRelations();
 	});
 	
 })(jQuery);
