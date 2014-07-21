@@ -1,8 +1,8 @@
 <?php if ($sf_user->hasFlash('notice')): ?>
-<p class="bg-success"><?php echo $sf_user->getFlash('notice') ?></p>
+<div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 <?php if ($sf_user->hasFlash('erreur')): ?>
-<p class="bg-danger"><?php echo $sf_user->getFlash('erreur') ?></p>
+<p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
 <?php endif; ?>
 
 <?php echo $form->renderHiddenFields(); ?>
