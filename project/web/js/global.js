@@ -79,6 +79,12 @@
 		});
 	};
 
+	$.initSelect2Autocomplete = function()
+	{	
+
+		$('.select2autocomplete').select2({ allowClear: true, placeholder: true});
+	}
+
 	$.initCheckboxRelations = function()
 	{
 		$('.checkbox-relation').click(function() {
@@ -93,6 +99,7 @@
 	_doc.ready(function()
 	{
 		$.initDatePickers();
+		$.initSelect2Autocomplete();
 		$.initCheckboxRelations();
 	});
 	
