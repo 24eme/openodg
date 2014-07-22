@@ -83,6 +83,10 @@ DRev:
                 fields:
                   total_lots: {  }
                   date: {  }
+                  libelle_produit: {  }
+                  libelle_produit_type: {  }
+                  libelle_date: {  }
+                  libelle: {  }
                   lots:
                     type: collection
                     definition:

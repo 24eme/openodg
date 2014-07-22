@@ -16,6 +16,16 @@ class DRev extends BaseDRev
     const BOUTEILLE_GRDCRU = 'bouteille_GRDCRU';
 	const BOUTEILLE_VTSGN = 'bouteille_vtsgn';
 
+    public static $prelevement_libelles = array(
+            self::CUVE => "Dégustation conseil",
+            self::BOUTEILLE => "Contrôle externe",
+    );
+
+    public static $prelevement_libelles_produit_type = array(
+            self::CUVE => "Cuve ou fût",
+            self::BOUTEILLE => "Bouteille",
+    );
+    
     public static $prelevement_keys = array(
         self::CUVE_ALSACE,
         self::CUVE_GRDCRU,
@@ -186,6 +196,20 @@ class DRev extends BaseDRev
     public function getPrelevementsKeyByHash($hash) {
         
         return str_replace("appellation_", "", $this->getConfiguration()->get($hash)->getAppellation()->getKey());
+    }
+
+    public function getPrelevementsByDate() {
+        $prelevements = array();
+        foreach($this->prelevements as $prelevement) {
+            if(!$prelevement->date) {
+                continue;
+            }
+            $prelevements[$prelevement->date.$prelevement->getKey()] = $prelevement;
+        }
+
+        ksort($prelevements);
+
+        return $prelevements;
     }
     
     public function hasRevendicationAlsace()
