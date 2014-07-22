@@ -3,6 +3,10 @@
 
 # default rules
 
+home:
+  url: /
+  param: { module: ava, action: home }
+
 drev_index:
   url: /drev
   param: { module: drev, action: index }
@@ -14,6 +18,16 @@ drev_create:
 drev_edit:
   url: /drev/edition/:id
   param: { module: drev, action: edit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_delete:
+  url: /drev/suppression/:id
+  param: { module: drev, action: delete }
   class: DRevRoute
   options:
     model:    DRev

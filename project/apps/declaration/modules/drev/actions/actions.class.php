@@ -26,6 +26,14 @@ class drevActions extends sfActions
         return $this->redirect('drev_revendication', $drev);
     }
 
+    public function executeDelete(sfWebRequest $request)
+    {
+        $drev = $this->getRoute()->getDRev();
+		$drev->delete();	
+		$this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');	
+        return $this->redirect($this->generateUrl('home') . '#drev');
+    }
+
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->form = new DRevRevendicationForm($this->drev);
