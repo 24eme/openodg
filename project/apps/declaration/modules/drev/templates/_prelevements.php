@@ -1,45 +1,30 @@
+<?php use_helper("Date"); ?>
 <div class="panel panel-default">
-    <div class="panel-heading">Prélévements</div>
-    <table class="table table-striped table-condensed">
-        <thead>
-            <tr>
-                <th class="text-center col-md-3 small">Produit</th>
-                <th class="text-center col-md-3 small">Type</th>
-                <th class="text-center col-md-4 small">Semaine</th>
-                <th class="text-center col-md-1 small">Lots</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="text-center">1 Janv. 2014</td>
-                <td>Cuve</td>
-                <td>AOC Alsace</td>
-                <td class="text-center">5</td>
-            </tr>
-            <tr>
-                <td class="text-center">Avr. 2014</td>
-                <td>Cuve</td>
-                <td>VT / SGN</td>
-                <td class="text-center">2</td>
-            </tr>
-            <tr>
-                <td class="text-center">2 Juil. 2014</td>
-                <td>Bouteille</td>
-                <td>AOC Alsace</td>
-                <td class="text-center"></td>
-            </tr>
-            <tr>
-                <td class="text-center">14 Juil. 2014</td>
-                <td>Bouteille</td>
-                <td>AOC&nbsp;Alsace&nbsp;Grand&nbsp;Cru</td>
-                <td class="text-center"></td>
-            </tr>
-            <tr>
-                <td class="text-center">5 Juin 2015</td>
-                <td>Bouteille</td>
-                <td>VT / SGN</td>
-                <td class="text-center">2</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="panel-heading">
+        <h2 class="panel-title">Prélèvements</h2>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th class="text-center col-md-3 small">A partir du</th>
+                    <th class="text-center col-md-3 small">Prélévement</th>
+                    <th class="text-center col-md-2 small">Type</th>
+                    <th class="text-center col-md-3 small">Produit</th>
+                    <th class="text-center col-md-1 small">Lots</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($drev->getPrelevementsByDate() as $prelevement): ?>
+                <tr>
+                    <td class="text-center"><?php echo format_date($prelevement->date, "D", "fr_FR") ?></td>
+                    <td class="text-center"><?php echo $prelevement->libelle ?></td>
+                    <td class="text-center"><?php echo $prelevement->libelle_produit_type ?></td>
+                    <td class="text-center"><?php echo $prelevement->libelle_produit ?></td>
+                    <td class="text-center"><?php echo $prelevement->total_lots ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>

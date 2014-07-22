@@ -128,8 +128,6 @@
 <br />
 <br />
 <br />
-<br />
-<br />
 <?php echo h2("Pièces à joindre") ?>
 <table style="border: 1px solid #c75268;"><tr><td>
 <table border="0">
