@@ -25,7 +25,7 @@ join -t ";" -1 2 -2 2 $WORKDIR/id_evv_cvi.csv $WORKDIR/communication.csv | cut -
 
 cat $DATADIR/COORDONNEES.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,5,6,7,8,10,11,12,13 | sort -t ";" -k 2,2 > $WORKDIR/coordonnees.csv
 
-join -t ";" -1 2 -2 2 $WORKDIR/id_evv_cvi.csv $WORKDIR/coordonnees.csv | cut -d ";" -f 3,7,8,9,10,11,12,13 | sed -r 's/^([0-9]+);/\1;3.COOR;;/' > $WORKDIR/coordonnees_cvi.csv
+join -t ";" -1 2 -2 2 $WORKDIR/id_evv_cvi.csv $WORKDIR/coordonnees.csv | cut -d ";" -f 3,7,8,9,10,11,12,13 | sed -r 's/^([0-9]+);/\1;4.COOR;;/' > $WORKDIR/coordonnees_cvi.csv
 
 #---ATTRIBUT---
 cat $DATADIR/PPM_ATTRIBUTS.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | sort -t ";" -k 3,3 > $WORKDIR/attributs.csv
