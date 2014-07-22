@@ -19,3 +19,8 @@ Etablissement:
             adresse: {  }
             code_postal: {  }
             commune: {  }
+      droits:
+        type: array_collection
+        definition:
+          fields:
+             '*': { }

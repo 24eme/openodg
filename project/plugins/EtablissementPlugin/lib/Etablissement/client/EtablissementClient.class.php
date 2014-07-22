@@ -21,8 +21,13 @@ class EtablissementClient extends acCouchdbClient {
         return $doc;
     }
 
+    public function findByIdentifiant($identifiant) {
+
+        return $this->find('ETABLISSEMENT-'.$identifiant);
+    }
+
     public function createOrFind($identifiant) {
-        $doc = $this->find('ETABLISSEMENT-'.$identifiant);
+        $doc = $this->findByIdentifiant($identifiant);
 
         if($doc) {
 

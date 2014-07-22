@@ -38,7 +38,7 @@
         <th style="<?php echo $th_style ?> text-align: center; width: 140px">Superficie</th>
         <th style="<?php echo $th_style ?> text-align: center; width: 140px">Volume</th>
     </tr>
-    <?php foreach($drev->declaration->getProduits() as $produit): ?>
+    <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
     <tr>
         <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
         <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?><?php echo sprintFloatFr($produit->total_superficie) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>

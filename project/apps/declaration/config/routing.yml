@@ -3,6 +3,10 @@
 
 # default rules
 
+auth_login:
+  url: /login
+  param: { module: auth, action: login }
+
 drev_index:
   url: /drev
   param: { module: drev, action: index }
