@@ -21,6 +21,18 @@ class authActions extends sfActions
 
         $this->getUser()->signIn($this->form->getValue('etablissement'));
 
-        return $this->redirect('drev_index');
+        return $this->redirect('home');
+    }
+
+    public function executeLogout(sfWebRequest $request) {
+        $this->getUser()->signOut();
+
+        $urlBack = $this->generateUrl('home', array(), true);
+
+        if(sfConfig::get("app_auth_mode") == 'CAS') {
+            acCas::processLogout($urlBack);
+        }
+
+        return $this->redirect($urlBack);
     }
 }

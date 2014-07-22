@@ -61,7 +61,7 @@
                         <li><a href="#">Mon compte</a></li>
                         <li><a href="#">Mes déclarations</a></li>
                         <li><a href="#">Administration</a></li>
-                        <li><a href="#">Déconnexion</a></li>
+                        <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                     </ul>
                 </nav>
             </header>

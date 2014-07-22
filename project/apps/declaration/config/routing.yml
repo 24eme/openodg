@@ -7,6 +7,10 @@ auth_login:
   url: /login
   param: { module: auth, action: login }
 
+auth_logout:
+  url: /logout
+  param: { module: auth, action: logout }
+
 home:
   url: /
   param: { module: ava, action: home }
