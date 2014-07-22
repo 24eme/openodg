@@ -133,16 +133,16 @@
 
 	<div class="row row-margin">
 		<div class="col-xs-4">
-			<a href="#" class="btn btn-primary btn-lg btn-block btn-prev">étape précendente</a>
+			<a href="#" class="btn btn-primary btn-lg btn-block btn-prev"><span class="eleganticon arrow_carrot-left"></span> étape précendente</a>
 		</div>
 		<div class="col-xs-4 text-center">
 			<a href="#" class="btn btn-default btn-lg">
-				<span class="glyphicon glyphicon-save"></span>
+				<span class="eleganticon icon_download"></span>
 				Prévisualiser
 			</a>
 		</div>
 		<div class="col-xs-4">
-			<a href="#" class="btn btn-primary btn-lg btn-block btn-next">valider</a>
+			<a href="#" class="btn btn-primary btn-lg btn-block btn-next">valider <span class="eleganticon arrow_carrot-right"></span></a>
 		</div>
 	</div>
 	
