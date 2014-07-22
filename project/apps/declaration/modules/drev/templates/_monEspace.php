@@ -6,51 +6,18 @@
   					<h2 class="panel-title">Déclaration de l'année</h2>
   				</div>
 				<div class="panel-body">
-					<form id="drev-choices" action="" method="post">
-						<p><strong>Vous souhaitez :</strong></p>
 						<?php if ($drev): ?>
-						<div class="form-group">
-							<div class="radio">
-								<label>
-	    							<input type="radio" name="choice" value="<?php echo url_for('drev_edit', $drev) ?>" checked="checked" />
-	    							Continuer ma déclaration en cours
-	  							</label>
-  							</div>
-  							<div class="radio">
-								<label>
-	    							<input type="radio" name="choice" value="<?php echo url_for('drev_delete', $drev) ?>" />
-	    							Supprimer ma déclaration en cours
-	  							</label>
-  							</div>
-						</div>
+							<p>
+								<a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drev_edit', $drev) ?>">Continuer</a>
+							</p>
+							<p>
+								<a class="btn btn-sm btn-danger pull-right" href="<?php echo url_for('drev_delete', $drev) ?>">Supprimer</a>
+							</p>
 						<?php else: ?>
-						<div class="form-group">
-							<div class="radio">
-								<label>
-	    							<input type="radio" name="choice" value="<?php echo url_for('@drev_create') ?>" checked="checked" />
-	    							Démarrer une déclaration vierge
-	  							</label>
-	  						</div>
-	  						<div class="radio disabled">
-								<label>
-	    							<input type="radio" name="choice" disabled="disabled" value="" />
-	    							Démarrer à partir de la déclaration de récolte
-	  							</label>
-	  						</div>
-	  						<div class="radio disabled">
-								<label>
-	    							<input type="radio" name="choice" disabled="disabled" value="" />
-	    							Démarrer d'une déclaration d'une année précédente
-	  							</label>
-	  						</div>
-						</div>
+							<p>
+								<a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('@drev_create', $drev) ?>">Démarrer</a>
+							</p>
 						<?php endif; ?>
-						<div class="form-group">
-							<div class="col-xs-offset-8 col-xs-4">
-								<button class="btn btn-default btn-block" type="submit">Valider</button>
-							</div>
-						</div>
-					</form>
 				</div>
 			</div>
 		</div>
