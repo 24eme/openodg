@@ -32,7 +32,7 @@
 							<div class="form-group">
 								<div class="col-xs-10 col-xs-offset-1">
 									<span class="text-danger"><?php echo $embedForm['total_superficie']->renderError() ?></span>
-									<?php echo $embedForm['total_superficie']->render(array('class' => 'form-control input-sm text-right')) ?>
+									<?php echo $embedForm['total_superficie']->render(array('class' => 'form-control text-right')) ?>
 								</div>
 							</div>
 						</td>
@@ -40,7 +40,7 @@
 							<div class="form-group">
 								<div class="col-xs-10 col-xs-offset-1">
 									<span class="text-danger"><?php echo $embedForm['volume_revendique']->renderError() ?></span>
-									<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input-sm text-right')) ?>
+									<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right')) ?>
 								</div>
 							</div>
 						</td>

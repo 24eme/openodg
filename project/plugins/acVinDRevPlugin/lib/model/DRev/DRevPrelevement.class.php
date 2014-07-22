@@ -64,6 +64,45 @@ class DRevPrelevement extends BaseDRevPrelevement {
         return $matches[1];
     }
 
+    public function getLibelleProduit() {
+        if($this->_get('libelle_produit') === null) {
+            try {
+                $this->libelle_produit = $this->getConfig()->getLibelle();
+            } catch (Exception $e) {
+                $this->libelle_produit = "VT / SGN";
+            }
+        }
+
+        return $this->_get('libelle_produit');
+    }
+
+    public function getLibelle() {
+        if($this->_get('libelle') === null) {
+
+                $this->libelle = DRev::$prelevement_libelles[$this->getKeyType()];
+        }
+
+        return $this->_get('libelle');
+    }
+
+    public function getLibelleProduitType() {
+        if($this->_get('libelle_produit_type') === null) {
+
+                $this->libelle_produit_type = DRev::$prelevement_libelles_produit_type[$this->getKeyType()];
+        }
+
+        return $this->_get('libelle_produit_type');
+    }
+
+    public function getKeyType() {
+        if(preg_match("/".DRev::CUVE."/", $this->getKey())) {
+
+            return DRev::CUVE;
+        }
+
+        return DRev::BOUTEILLE;
+    }
+
     public function getHashProduit() {
 
         return "/declaration/certification/genre/".preg_replace("/^(.+_)/", "appellation", $this->getKey());
