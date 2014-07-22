@@ -5,6 +5,11 @@ class authActions extends sfActions
    
     public function executeLogin(sfWebRequest $request)
     {
+        if(sfConfig::get("app_auth_mode") != 'NO_CAS') {
+            
+            return $this->forward404();
+        }
+
         $this->form = new LoginForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
