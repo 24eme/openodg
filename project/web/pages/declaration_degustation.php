@@ -126,19 +126,19 @@
 
 			<div class="row row-margin">
 				<div class="col-xs-6">
-					<a href="#" class="btn btn-default btn-prev">Retourner à l'appellation précédente</a>
+					<a href="#" class="btn btn-default btn-prev"><span class="eleganticon arrow_carrot-left"></span> Retourner à l'appellation précédente</a>
 				</div>
 				
 				<div class="col-xs-6 text-right">
-					<a href="#" class="btn btn-default btn-next">Valider et passer à l'appellation</a>
+					<a href="#" class="btn btn-default btn-next">Valider et passer à l'appellation <span class="eleganticon arrow_carrot-right"></span></a>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<div class="row row-margin">
-		<div class="col-xs-4"><a href="#" class="btn btn-primary btn-lg btn-block btn-prev">étape précendente</a></div>
-		<div class="col-xs-4 col-xs-offset-4"><a href="#" class="btn btn-primary btn-lg btn-block btn-next">étape suivante</a></div>
+		<div class="col-xs-4"><a href="#" class="btn btn-primary btn-lg btn-block btn-prev"><span class="eleganticon arrow_carrot-left"></span> étape précendente</a></div>
+		<div class="col-xs-4 col-xs-offset-4"><a href="#" class="btn btn-primary btn-lg btn-block btn-next">étape suivante <span class="eleganticon arrow_carrot-right"></span></a></div>
 	</div>
 
 

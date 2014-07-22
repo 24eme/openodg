@@ -206,8 +206,27 @@ hr
 }
 
 /**
- * Fonts
+ * Icons
  ******************************************/
+.eleganticon
+{
+	font-family: 'ElegantIcons';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	position: relative;
+	top: -1px;
+	vertical-align: middle;
+	-webkit-font-smoothing: antialiased;
+}
+
+.arrow_carrot-left:before { content: "\34"; }
+.arrow_carrot-right:before { content: "\35"; }
+.icon_plus:before { content: "\4c"; }
+.icon_download:before { content: "\e092"; }
 
 
 /**
@@ -299,87 +318,32 @@ h3, .h3 { color: @font-color-h3; }
 /**
  * Buttons
  ******************************************/
-.btn { position: relative; }
+.btn 
+{ 
+	position: relative;
+
+	.arrow_carrot-left,
+	.arrow_carrot-right 
+	{ 
+		font-size: 32px;
+		line-height: .5; 
+	}
+}
 
 .btn-lg
 {
 	padding-bottom: 8px;
 	padding-top: 8px;
+
+	.arrow_carrot-left,
+	.arrow_carrot-right 
+	{ 
+		font-size: 42px; 
+		line-height: .5;
+	}
 }
 
 .btn-primary { text-transform: uppercase; }
-
-.btn-plus
-{
-	padding-left: 30px;
-
-	&:before
-	{
-		content: '+';
-		font-size: 18px;
-		position: absolute;
-		left: 10px;
-		top: 4px;
-	}
-
-	&.btn-sm:before { top: 0; }
-
-	&.btn-lg:before { top: 9px; }
-}
-
-.btn-prev,
-.btn-next
-{
-	&.btn-sm:before { top: 3px; }
-	&.btn-lg:before { top: 10px; }
-
-	&.btn-default
-	{
-		&:before
-		{
-			height: 16px;
-			top: 9px;
-			width: 10px;
-		}
-
-		&.btn-sm:before { top: 6px; }
-		&.btn-lg:before { top: 12px; }
-	}
-}
-
-.btn-prev
-{
-	padding-left: 40px;
-
-	&:before
-	{
-		.img-pseudo-content(0 -86px, 13px, 21px);
-		.pos-abs(5px, auto, auto, 15px);
-		content: '';
-	}
-
-	&.btn-default:before { background-position: 0 -108px; }
-}
-
-.btn-next
-{
-	padding-right: 40px;
-
-	&:before
-	{
-		.img-pseudo-content(-14px -86px, 13px, 21px);
-		.pos-abs(5px, 15px);
-		content: '';
-	}
-
-	&.btn-default:before { background-position: -10px -108px; }
-}
-
-
-/**
- * Icons
- ******************************************/
-
 
 
 /**

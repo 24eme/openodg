@@ -26,33 +26,33 @@
 	</div>
 
 	<div class="row-margin">
-		<a href="#" class="btn btn-primary btn-prev">Bouton étape précédente</a>
-		<a href="#" class="btn btn-primary btn-next">Bouton étape suivante</a>
+		<a href="#" class="btn btn-primary btn-prev"><span class="eleganticon arrow_carrot-left"></span> Bouton étape précédente</a>
+		<a href="#" class="btn btn-primary btn-next">Bouton étape suivante <span class="eleganticon arrow_carrot-right"></span></a>
 	</div>
 
 	<div class="row-margin">
-		<a href="#" class="btn btn-primary btn-lg btn-prev">Bouton étape précédente</a>
-		<a href="#" class="btn btn-primary btn-lg btn-next">Bouton étape suivante</a>
+		<a href="#" class="btn btn-primary btn-lg btn-prev"><span class="eleganticon arrow_carrot-left"></span> Bouton étape précédente</a>
+		<a href="#" class="btn btn-primary btn-lg btn-next">Bouton étape suivante <span class="eleganticon arrow_carrot-right"></span></a>
 	</div>
 
 	<div class="row-margin">
-		<a href="#" class="btn btn-default btn-prev">Bouton étape précédente</a>
-		<a href="#" class="btn btn-default btn-next">Bouton étape suivante</a>
+		<a href="#" class="btn btn-default btn-prev"><span class="eleganticon arrow_carrot-left"></span> Bouton étape précédente</a>
+		<a href="#" class="btn btn-default btn-next">Bouton étape suivante <span class="eleganticon arrow_carrot-right"></span></a>
 	</div>
 
 	<div class="row-margin">
-		<a href="#" class="btn btn-default btn-lg btn-prev">Bouton étape précédente</a>
-		<a href="#" class="btn btn-default btn-lg btn-next">Bouton étape suivante</a>
+		<a href="#" class="btn btn-default btn-lg btn-prev"><span class="eleganticon arrow_carrot-left"></span> Bouton étape précédente</a>
+		<a href="#" class="btn btn-default btn-lg btn-next">Bouton étape suivante <span class="eleganticon arrow_carrot-right"></span></a>
 	</div>
 
 	<div class="row-margin">
-		<a href="#" class="btn btn-default btn-plus">Bouton plus</a>
-		<a href="#" class="btn btn-default btn-plus">Bouton plus</a>
+		<a href="#" class="btn btn-default btn-plus">Bouton plus <span class="eleganticon icon_plus"></span></a>
+		<a href="#" class="btn btn-default btn-plus">Bouton plus <span class="eleganticon icon_plus"></span></a>
 	</div>
 
 	<div class="row-margin">
-		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus</a>
-		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus</a>
+		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus <span class="eleganticon icon_plus"></span></a>
+		<a href="#" class="btn btn-default btn-lg btn-plus">Bouton plus <span class="eleganticon icon_plus"></span></a>
 	</div>
 	
 	<h1>Tableaux</h1>
