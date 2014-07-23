@@ -1,0 +1,116 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1414" measuredH="564" mockupW="1000" mockupH="546">
+  <controls>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::Canvas" x="414" y="18" w="1000" h="88" measuredW="100" measuredH="70" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <borderColor>0</borderColor>
+        <color>16777215</color>
+      </controlProperties>
+    </control>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::PointyButton" x="414" y="536" w="212" h="-1" measuredW="198" measuredH="27" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>6710886</color>
+        <direction>left</direction>
+        <menuIcon>false</menuIcon>
+        <size>20</size>
+        <text>%C9tape%20pr%E9c%E9dente</text>
+      </controlProperties>
+    </control>
+    <control controlID="91" controlTypeID="com.balsamiq.mockups::PointyButton" x="1202" y="536" w="212" h="-1" measuredW="92" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>3700253</color>
+        <direction>right</direction>
+        <menuIcon>false</menuIcon>
+        <size>20</size>
+        <state>up</state>
+        <text>Valider</text>
+      </controlProperties>
+    </control>
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::Canvas" x="414" y="164" w="1000" h="353" measuredW="100" measuredH="70" zOrder="3" locked="false" isInGroup="-1"/>
+    <control controlID="112" controlTypeID="__group__" x="658" y="343" w="514" h="152" measuredW="514" measuredH="152" zOrder="5" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::DataGrid" x="0" y="0" w="514" h="152" measuredW="444" measuredH="153" zOrder="0" locked="false" isInGroup="112">
+          <controlProperties>
+            <alternateRowColor>15658734</alternateRowColor>
+            <borderStyle>square</borderStyle>
+            <hasHeader>true</hasHeader>
+            <hLines>false</hLines>
+            <rowHeight>33</rowHeight>
+            <text>%2C%0AP%E9riode%20de%20distillation%2C%20du%20%201er%20Janvier%202014%20au%2028%20Mai%202013%0AQuantit%E9%20de%20marc%20mise%20en%20oeuvre%2C%202625.00%20kg%0AVolume%20total%20obtenu%2C%20216.92%20hl%20d%27alcool%20pur%0ATitre%20alcool%E9mique%20volumique%2C%2063.80%20%25%0A%7B50L%2C50R%7D</text>
+            <value>89</value>
+            <verticalScrollbar>false</verticalScrollbar>
+            <vLines>true</vLines>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="124" controlTypeID="com.balsamiq.mockups::Paragraph" x="440" y="263" w="801" h="18" measuredW="275" measuredH="80" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>*%20Le%20volume%20en%20hl%20d%27alcool%20pur%20n%27est%20pas%20coh%E9rent%20avec%20le%20quantit%E9%20de%20marc</text>
+      </controlProperties>
+    </control>
+    <control controlID="125" controlTypeID="__group__" x="442" y="245" w="944" h="43" measuredW="944" measuredH="43" zOrder="4" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="0" y="0" w="944" h="43" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="125">
+          <controlProperties>
+            <color>16167531</color>
+            <text>Point%20de%20Vigilance</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="126" controlTypeID="__group__" x="440" y="179" w="948" h="54" measuredW="948" measuredH="54" zOrder="6" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::FieldSet" x="2" y="0" w="946" h="54" measuredW="200" measuredH="170" zOrder="0" locked="false" isInGroup="126">
+          <controlProperties>
+            <color>15374745</color>
+            <text>Point%20bloquant</text>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Paragraph" x="0" y="17" w="801" h="37" measuredW="275" measuredH="80" zOrder="1" locked="false" isInGroup="126">
+          <controlProperties>
+            <text>*%20La%20p%E9riode%20de%20distillation%20n%27est%20pas%20autoris%E9%0A*%20Le%20titre%20alcoom%E9trique%20volumique%20est%20trop%20bas</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="128" controlTypeID="com.balsamiq.mockups::Label" x="441" y="304" w="-1" h="-1" measuredW="93" measuredH="24" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <size>16</size>
+        <text>R%E9capitulatif</text>
+      </controlProperties>
+    </control>
+    <control controlID="138" controlTypeID="com.balsamiq.mockups::Button" x="827" y="536" w="-1" h="-1" measuredW="163" measuredH="28" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>15110456</color>
+        <icon>DownloadIcon%7Cxsmall</icon>
+        <size>20</size>
+        <text>Pr%E9visualiser</text>
+      </controlProperties>
+    </control>
+    <control controlID="139" controlTypeID="__group__" x="414" y="122" w="518" h="27" measuredW="518" measuredH="27" zOrder="10" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::PointyButton" x="320" y="0" w="198" h="-1" measuredW="127" measuredH="27" zOrder="0" locked="false" isInGroup="139">
+          <controlProperties>
+            <color>15110456</color>
+            <size>18</size>
+            <text>3.%20Validation</text>
+          </controlProperties>
+        </control>
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::PointyButton" x="141" y="0" w="212" h="-1" measuredW="165" measuredH="27" zOrder="1" locked="false" isInGroup="139">
+          <controlProperties>
+            <color>6989903</color>
+            <size>18</size>
+            <text>2.%20Revendication</text>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::PointyButton" x="0" y="0" w="162" h="-1" measuredW="140" measuredH="27" zOrder="2" locked="false" isInGroup="139">
+          <controlProperties>
+            <color>6989903</color>
+            <size>18</size>
+            <text>1.%20Exploitation</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+  </controls>
+</mockup>
