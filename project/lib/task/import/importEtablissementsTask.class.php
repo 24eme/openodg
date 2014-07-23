@@ -10,17 +10,18 @@ class importEtablissementsTask extends sfBaseTask
     const CSV_ADRESSE_2             = 4;
     const CSV_ADRESSE_3             = 5;
     const CSV_COMMUNE               = 6;
-    const CSV_CODE_POSTAL           = 7;
-    const CSV_CANTON                = 8;
-    const CSV_ACTIF                 = 9;
-    const CSV_ATTRIBUTS             = 10;
-    const CSV_TYPE                  = 11;
-    const CSV_TEL                   = 12;
-    const CSV_FAX                   = 13;
-    const CSV_PORTABLE              = 14;
-    const CSV_EMAIL                 = 15;
-    const CSV_WEB                   = 16;
-    const CSV_DATE_CHANGEMENT_ACTIF = 17;
+    const CSV_CODE_INSEE            = 7;
+    const CSV_CODE_POSTAL           = 8;
+    const CSV_CANTON                = 9;
+    const CSV_ACTIF                 = 10;
+    const CSV_ATTRIBUTS             = 11;
+    const CSV_TYPE                  = 12;
+    const CSV_TEL                   = 13;
+    const CSV_FAX                   = 14;
+    const CSV_PORTABLE              = 15;
+    const CSV_EMAIL                 = 16;
+    const CSV_WEB                   = 17;
+    const CSV_DATE_CHANGEMENT_ACTIF = 18;
 
     protected function configure()
     {
@@ -133,9 +134,11 @@ EOF;
 
         $etablissement->cvi = $data[self::CSV_CVI];
         $etablissement->raison_sociale = $data[self::CSV_RAISON_SOCIALE];
+        $etablissement->nom = $etablissement->raison_sociale;
         $etablissement->adresse = preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3]));
-        $etablissement->code_postal = $data[self::CSV_CODE_POSTAL];
-        $etablissement->commune = "";
+        $etablissement->commune = $data[self::CSV_COMMUNE];
+        $etablissement->code_postal = $data[self::CSV_CODE_INSEE];
+        $etablissement->code_insee = $data[self::CSV_CODE_POSTAL];
 
     }
 

@@ -44,8 +44,12 @@ join -t ";" -1 1 -2 1 $WORKDIR/id_evv_cvi.sort_evv.csv $WORKDIR/evv_chai.csv | c
 join -t ";" -1 2 -2 1 $WORKDIR/id_chai_cvi.csv $WORKDIR/chai.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10,11,12,13 | sed -r 's/^([0-9]+);/\1;2.CHAI;/' | sed -r 's/(;[0-9-]+;+[0-9-]+;[0-9-]+)$/;\1/' | sed -r 's/0;([0-9-]+;[0-9-]+)$/,CHAI_DE_VINIFICATION-1;\1/' | sed -r 's/-1;0;([0-9-]+)$/,CENTRE_DE_CONDITIONNEMENT-1;-1;\1/' | sed -r 's/-1;-1;0$/,LIEU_DE_STOCKAGE/' | sed 's/-1;-1;-1$//' | sed 's/;,/;/' | sed -r 's/^([0-9]+;2.CHAI);([a-Z0-9]*);(.+)$/\1;\3;\2/' > $WORKDIR/chai_cvi.csv
 
 #---FINAL---
-echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code postal;canton;actif;attributs;type;tel;fax;portable;email;web" > $WORKDIR/operateurs.csv
-cat $WORKDIR/cvi.csv $WORKDIR/chai_cvi.csv $WORKDIR/communication_cvi.csv $WORKDIR/coordonnees_cvi.csv $WORKDIR/attributs_cvi.csv | sort | sed -r 's/[ ]+/ /g' | sed -r 's/\t/ /g' >> $WORKDIR/operateurs.csv
+cat $WORKDIR/cvi.csv $WORKDIR/chai_cvi.csv $WORKDIR/communication_cvi.csv $WORKDIR/coordonnees_cvi.csv $WORKDIR/attributs_cvi.csv | sort | sed -r 's/[ ]+/ /g' | sed -r 's/\t/ /g' | sort -t ";" -k 7,7 > $WORKDIR/operateurs.sorted_by_commune.csv
 
 
+cat $DATADIR/LOCALITE_FRANCAISE.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3 | sort | uniq | sort -t ";" -k 1,1 > $WORKDIR/communes.csv
 
+join -a 2 -t ";" -1 1 -2 7 $WORKDIR/communes.csv $WORKDIR/operateurs.sorted_by_commune.csv | sed 's/^;/;;/' | awk -F ";" '{ print $3 ";" $4 ";" $5 ";" $6 ";" $7 ";" $8 ";" $2 ";" $1 ";" $9 ";" $10 ";" $11 ";" $12 ";" $13 ";" $14 ";" $15 ";" $16 ";" $17 ";" $18 ";" $19 ";" $20  }' | sort > $WORKDIR/operateurs_commune.csv
+
+echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web" > $WORKDIR/operateurs.csv
+cat $WORKDIR/operateurs_commune.csv >> $WORKDIR/operateurs.csv

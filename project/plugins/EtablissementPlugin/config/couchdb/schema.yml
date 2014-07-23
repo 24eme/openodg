@@ -15,6 +15,7 @@ Etablissement:
       fax: {  }
       adresse: {  }
       code_postal: {  }
+      code_insee: {  }
       commune: {  }
       droits:
         type: array_collection
