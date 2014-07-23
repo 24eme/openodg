@@ -50,7 +50,7 @@
                     <span>Tél : 06 82 87 68 92</span><br />
                                     
                     <div class="row-margin text-right">
-                        <a href="#" class="btn btn-default">Modifier</a>
+                        <a href="#" class="btn btn-warning">Modifier</a>
                     </div>
                 </div>
             </div>
@@ -59,14 +59,14 @@
                 <div class="col-xs-6">
                 </div>
                 <div class="col-xs-6 text-right">
-                    <button type="submit" class="btn btn-default btn-next">Valider et répartir les lots</button>
+                    <button type="submit" class="btn btn-default">Valider et répartir les lots<span class="eleganticon arrow_carrot-right"></span></button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row row-margin">
-        <div class="col-xs-4"><a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-block btn-prev">Étape précendente</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précendente</a></div>
     </div>
 </form>
 

@@ -75,14 +75,14 @@
                     <span>Tél : 06 82 87 68 92</span><br />
                                     
                     <div class="row-margin text-right">
-                        <a href="#" class="btn btn-default">Modifier</a>
+                        <a href="#" class="btn btn-warning">Modifier</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row row-margin">
-        <div class="col-xs-4"><a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg btn-block btn-prev">Étape précendente</a></div>
-        <div class="col-xs-4 col-xs-offset-4"><button type="submit" class="btn btn-primary btn-lg btn-block btn-next">Étape suivante</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précendente</a></div>
+        <div class="col-xs-4 col-xs-offset-4"><button type="submit" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-right pull-right"></span>Étape suivante</a></div>
     </div>
 </form>

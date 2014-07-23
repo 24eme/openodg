@@ -12,24 +12,24 @@
 		   	<?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form)); ?>
 
 		   	<?php if ($ajoutForm->hasProduits()): ?>
-				<button class="btn btn-default btn-plus" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit</button>
+				<button class="btn btn-default" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit&nbsp;<span class="eleganticon icon_plus"></span></button>
 			<?php endif; ?>
 
 			<div class="row row-margin">
                 <div class="col-xs-6">
-                    <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-default btn-prev">Retourner à l'organisation</a>
+                    <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-default"><span class="eleganticon arrow_carrot-left"></span>Retourner à l'organisation</a>
                 </div>
                 
                 <div class="col-xs-6 text-right">
-                    <button type="submit" class="btn btn-default btn-next">Valider et répartir les lots suivant</button>
+                    <button type="submit" class="btn btn-default">Valider et répartir les lots suivant<span class="eleganticon arrow_carrot-right"></span></button>
                 </div>
             </div>
 		</div>
 	</div>
 
 	<div class="row row-margin">
-		<div class="col-xs-4"><a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-block btn-prev">Étape précendente</a></div>
-	</div>
+        <div class="col-xs-4"><a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précendente</a></div>
+    </div>
 </form>
 
 <?php include_partial('drev/popupAjoutForm', array('prelevement' => $prelevement, 'form' => $ajoutForm)); ?>
