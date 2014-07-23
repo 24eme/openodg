@@ -20,17 +20,9 @@ class DeclarantDocument
         return $this->document->declarant;
     }
     
-   public function getDeclarantObject() {
-       if(is_null($this->etablissement)) {
-            $class = sfConfig::get('app_declarant_class', 'Etablissement');
-            $this->etablissement = acCouchdbManager::getClient($class)->findByIdentifiant($this->getIdentifiant());
-        }
-
-        return $this->etablissement;
-    }
-    
     public function getEtablissementObject() {
-        return $this->getDeclarantObject();
+        
+        return $this->document->getEtablissementObject();
     }
 
     public function storeDeclarant()
@@ -49,14 +41,31 @@ class DeclarantDocument
         $declarant->nom .= $etablissement->nom;
         $declarant->raison_sociale = $etablissement->getRaisonSociale();
         $declarant->cvi = $etablissement->cvi;
-        $declarant->no_accises = $etablissement->getNoAccises();
-        $declarant->adresse = $etablissement->siege->adresse;
-        if ($etablissement->siege->exist("adresse_complementaire")) {
-            $declarant->adresse .= ' ; '.$etablissement->siege->adresse_complementaire;
+        if($etablissement->exist("no_accises")) {
+            $declarant->no_accises = $etablissement->getNoAccises();
         }
-        $declarant->commune = $etablissement->siege->commune;
-        $declarant->code_postal = $etablissement->siege->code_postal;
-        $declarant->region = $etablissement->getRegion();
+        if($etablissement->exist("siege")) {
+            $declarant->adresse = $etablissement->siege->adresse;
+            if ($etablissement->siege->exist("adresse_complementaire")) {
+                $declarant->adresse .= ' ; '.$etablissement->siege->adresse_complementaire;
+            }
+            $declarant->commune = $etablissement->siege->commune;
+            $declarant->code_postal = $etablissement->siege->code_postal;
+        }
+
+        if($etablissement->exist("adresse")) {
+            $declarant->adresse = $etablissement->adresse;
+        }
+        if($etablissement->exist("commune")) {
+            $declarant->commune = $etablissement->commune;
+        }
+        if($etablissement->exist("code_postal")) {
+            $declarant->code_postal = $etablissement->code_postal;
+        }
+
+        if($etablissement->exist("region")) {
+            $declarant->region = $etablissement->getRegion();
+        }
         if ($etablissement->exist("siret")) {
             if($declarant->getDefinition()->exist('siret'))
                  $declarant->add('siret', $etablissement->siret);
