@@ -1,5 +1,5 @@
 all:
-  auth_mode: CAS #NO_CAS, CAS
+  auth_mode: NO_CAS #NO_CAS, CAS
   cas:
     domain: login.cas
     port: 443

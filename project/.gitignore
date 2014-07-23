@@ -4,8 +4,5 @@ config/databases.yml
 config/properties.ini
 apps/declaration/config/factories.yml
 web/declaration_dev.php
-data
-data/*.lck
-data/[^.]*
 cache/[^.]*
 log/[^.]*

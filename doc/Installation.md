@@ -36,7 +36,7 @@ Droit d'écriture apache sur les des dossiers cache et log
 
  > sudo chmod g+w cache log
 
-Apache Virtual host:
+Apache Virtual host :
 
         #ava.conf
         <VirtualHost *:80>
@@ -56,3 +56,12 @@ Apache Virtual host:
                 Require all granted
             </Directory>
         </VirtualHost>
+
+Récupération des données :
+
+> git submodule init;
+> git submodule update;
+
+Import de la configuration :
+
+> php symfony import:Configuration
