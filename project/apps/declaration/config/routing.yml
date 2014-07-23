@@ -3,6 +3,14 @@
 
 # default rules
 
+auth_login:
+  url: /login
+  param: { module: auth, action: login }
+
+auth_logout:
+  url: /logout
+  param: { module: auth, action: logout }
+
 home:
   url: /
   param: { module: ava, action: home }
@@ -12,8 +20,14 @@ drev_index:
   param: { module: drev, action: index }
 
 drev_create:
-  url: /drev/creation
+  url: /drev/creation/:id
   param: { module: drev, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
 
 drev_edit:
   url: /drev/edition/:id
@@ -34,6 +48,26 @@ drev_delete:
     type:     object
   requirements:
     sf_method: [get]
+
+drev_import_dr:
+  url: /drev/import-dr/:id
+  param: { module: drev, action: importDR }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_exploitation:
+  url: /drev/exploitation/:id
+  param: { module: drev, action: exploitation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 drev_revendication:
   url: /drev/revendication/:id

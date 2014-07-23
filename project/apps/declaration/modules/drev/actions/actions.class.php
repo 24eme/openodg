@@ -7,13 +7,11 @@ class drevActions extends sfActions
     {
 
     }
-
+ 
     public function executeCreate(sfWebRequest $request)
     {
-    	if ($drev = DRevClient::getInstance()->find('DREV-7523700100-2013-2014')) {
-    		$drev->delete();
-    	}
-        $drev = DRevClient::getInstance()->createDoc('7523700100', '2013-2014');
+        $etablissement = $this->getRoute()->getEtablissement();
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, '2013-2014');
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);
@@ -23,7 +21,7 @@ class drevActions extends sfActions
     {
         $drev = $this->getRoute()->getDRev();
 
-        return $this->redirect('drev_revendication', $drev);
+        return $this->redirect('drev_exploitation', $drev);
     }
 
     public function executeDelete(sfWebRequest $request)
@@ -32,6 +30,33 @@ class drevActions extends sfActions
 		$drev->delete();	
 		$this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');	
         return $this->redirect($this->generateUrl('home') . '#drev');
+    }
+
+    public function executeExploitation(sfWebRequest $request)
+    {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->etablissement = $this->drev->getEtablissementObject();
+
+        $this->form = new EtablissementForm($this->etablissement);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        $this->drev->storeDeclarant();
+        $this->drev->save();
+
+        return $this->redirect('drev_revendication', $this->drev);
     }
 
     public function executeRevendication(sfWebRequest $request) {

@@ -9,13 +9,16 @@ Etablissement:
       raison_sociale: {  }
       nom: {  }
       cvi: {  }
+      siret: {  }
       email: {  }
       telephone: {  }
       fax: {  }
-      siege:
-        type: collection
+      adresse: {  }
+      code_postal: {  }
+      code_insee: {  }
+      commune: {  }
+      droits:
+        type: array_collection
         definition:
           fields:
-            adresse: {  }
-            code_postal: {  }
-            commune: {  }
+             '*': { }

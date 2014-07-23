@@ -131,14 +131,14 @@ class DRevValidation extends DocumentValidation
   	protected function controleErrorRevendicationAlsaceSansLotAlsace()
   	{
   		if ($this->document->hasRevendicationAlsace() && !$this->document->addPrelevement(DRev::CUVE_ALSACE)->hasLots()) {
-  			$this->addPoint(self::TYPE_ERROR, 'revendication_alsace_sans_lot_alsace', '', $this->generateUrl('drev_lots_alsace', array('sf_subject' => $this->document)));
+  			$this->addPoint(self::TYPE_ERROR, 'revendication_alsace_sans_lot_alsace', '', $this->generateUrl('drev_lots', array('sf_subject' => $this->document)));
   		}
   	}
   	
   	protected function controleErrorLotAlsaceSansRevendicationAlsace()
   	{
   		if (!$this->document->hasRevendicationAlsace() && $this->document->addPrelevement(DRev::CUVE_ALSACE)->hasLots()) {
-  			$this->addPoint(self::TYPE_ERROR, 'lot_alsace_sans_revendication_alsace', '', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+  			$this->addPoint(self::TYPE_ERROR, 'lot_alsace_sans_revendication_alsace', '', $this->generateUrl('drev_revendication', array('sf_subject' => $this->document->addPrelevement(DRev::CUVE_ALSACE))));
   		}
   	}
   	

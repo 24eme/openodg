@@ -3,7 +3,6 @@
     <div class="panel-heading">
         <h2 class="panel-title">Prélèvements</h2>
     </div>
-    <div class="panel-body">
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
@@ -26,5 +25,4 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
-    </div>
 </div>

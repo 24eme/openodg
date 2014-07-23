@@ -4,7 +4,7 @@
  *
  */
 
-class DRev extends BaseDRev 
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDeclarantDocument
 {
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -34,6 +34,23 @@ class DRev extends BaseDRev
         self::BOUTEILLE_GRDCRU,
         self::BOUTEILLE_VTSGN,
     );
+
+    protected $declarant_document = null;
+
+
+    public function  __construct() {
+        parent::__construct();   
+        $this->initDocuments();
+    }
+
+    public function __clone() {
+        parent::__clone();
+        $this->initDocuments();
+    } 
+
+    protected function initDocuments() {
+        $this->declarant_document = new DeclarantDocument($this);
+    }
 	
     public function constructId() 
     {
@@ -45,6 +62,11 @@ class DRev extends BaseDRev
 
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration('2013');
 	}
+
+    public function getProduits() {
+
+        return $this->declaration->getProduits();
+    }
 
     public function getConfigProduits() {
 
@@ -198,10 +220,15 @@ class DRev extends BaseDRev
         return str_replace("appellation_", "", $this->getConfiguration()->get($hash)->getAppellation()->getKey());
     }
 
-    public function getPrelevementsByDate() {
+    public function getPrelevementsByDate($filter_key = null) {
         $prelevements = array();
         foreach($this->prelevements as $prelevement) {
             if(!$prelevement->date) {
+                
+                continue;
+            }
+            if($filter_key && !preg_match("/".$filter_key."/", $prelevement->getKey())) {
+
                 continue;
             }
             $prelevements[$prelevement->date.$prelevement->getKey()] = $prelevement;
@@ -239,6 +266,15 @@ class DRev extends BaseDRev
         }
 
     	return false;
+    }
+
+    public function storeDeclarant() {
+        $this->declarant_document->storeDeclarant();
+    }
+
+    public function getEtablissementObject() {
+
+        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
 }

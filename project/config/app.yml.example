@@ -1,0 +1,7 @@
+all:
+  auth_mode: CAS #NO_CAS, CAS
+  cas:
+    domain: login.cas
+    port: 443
+    path: cas
+    url : "https://login.cas:443/cas"

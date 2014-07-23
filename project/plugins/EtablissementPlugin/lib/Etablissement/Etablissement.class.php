@@ -8,7 +8,7 @@ class Etablissement extends BaseEtablissement {
 
     public function constructId() 
     {
-        $this->set('_id', 'ETABLISSEMENT-' . $this->identifiant);
+        $this->_id = sprintf("%s-%s", EtablissementClient::TYPE_COUCHDB, $this->identifiant);
     }
 
 }
