@@ -37,7 +37,7 @@ class drevActions extends sfActions
     public function executeExploitation(sfWebRequest $request)
     {
         $this->drev = $this->getRoute()->getDRev();
-        $this->etablissement = $this->drev->getEtablissement();
+        $this->etablissement = $this->drev->getEtablissementObject();
 
         $this->form = new EtablissementForm($this->etablissement);
 
@@ -54,6 +54,9 @@ class drevActions extends sfActions
         }
 
         $this->form->save();
+
+        $this->drev->storeDeclarant();
+        $this->drev->save();
 
         return $this->redirect('drev_revendication', $this->drev);
     }

@@ -7,6 +7,20 @@ DRev:
       type: { }
       campagne: { }
       identifiant: { }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
       declaration:
         type: collection
         class: DRevDeclaration

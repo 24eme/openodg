@@ -13,7 +13,7 @@
         <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg btn-block btn-prev">Étape précendente</a>
     </div>
     <div class="col-xs-4 text-center">
-        <a href="" class="btn btn-default btn-lg">
+        <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-default btn-lg">
             <span class="glyphicon glyphicon-save"></span>
             Prévisualiser
         </a>
