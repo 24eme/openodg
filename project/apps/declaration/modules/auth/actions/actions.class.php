@@ -24,7 +24,7 @@ class authActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        $this->getUser()->signIn($this->form->getValue('etablissement'));
+        $this->getUser()->signIn($this->form->getValue('etablissement')->identifiant);
 
         return $this->redirect('home');
     }

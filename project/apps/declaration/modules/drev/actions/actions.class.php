@@ -10,10 +10,8 @@ class drevActions extends sfActions
  
     public function executeCreate(sfWebRequest $request)
     {
-    	if ($drev = DRevClient::getInstance()->find('DREV-7523700100-2013-2014')) {
-    		$drev->delete();
-    	}
-        $drev = DRevClient::getInstance()->createDoc('7523700100', '2013-2014');
+        $etablissement = $this->getRoute()->getEtablissement();
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, '2013-2014');
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);

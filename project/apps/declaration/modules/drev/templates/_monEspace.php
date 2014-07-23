@@ -15,7 +15,7 @@
 							</p>
 						<?php else: ?>
 							<p>
-								<a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('@drev_create', $drev) ?>">Démarrer</a>
+								<a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drev_create', $etablissement) ?>">Démarrer</a>
 							</p>
 						<?php endif; ?>
 				</div>

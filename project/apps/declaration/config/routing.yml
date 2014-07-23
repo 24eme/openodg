@@ -20,8 +20,14 @@ drev_index:
   param: { module: drev, action: index }
 
 drev_create:
-  url: /drev/creation
+  url: /drev/creation/:id
   param: { module: drev, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
 
 drev_edit:
   url: /drev/edition/:id

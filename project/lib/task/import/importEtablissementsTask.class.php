@@ -135,7 +135,7 @@ EOF;
         $etablissement->cvi = $data[self::CSV_CVI];
         $etablissement->raison_sociale = $data[self::CSV_RAISON_SOCIALE];
         $etablissement->nom = $etablissement->raison_sociale;
-        $etablissement->adresse = preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3]));
+        $etablissement->adresse = trim(preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3])));
         $etablissement->commune = $data[self::CSV_COMMUNE];
         $etablissement->code_postal = $data[self::CSV_CODE_INSEE];
         $etablissement->code_insee = $data[self::CSV_CODE_POSTAL];

@@ -274,7 +274,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function getEtablissementObject() {
 
-        return EtablissementClient::getInstance()->findByIdentifiant('6823700100');
+        return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
 }

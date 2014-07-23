@@ -4,7 +4,8 @@ class drevComponents extends sfComponents
     
     public function executeMonEspace(sfWebRequest $request) 
     {
-      $this->drev = DRevClient::getInstance()->find('DREV-7523700100-2013-2014');
+        $this->etablissement = $this->getUser()->getEtablissement();
+        $this->drev = DRevClient::getInstance()->find('DREV-'.$this->etablissement->identifiant.'-2013-2014');
     }
     
 }
