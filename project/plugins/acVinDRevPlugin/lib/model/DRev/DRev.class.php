@@ -220,10 +220,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return str_replace("appellation_", "", $this->getConfiguration()->get($hash)->getAppellation()->getKey());
     }
 
-    public function getPrelevementsByDate() {
+    public function getPrelevementsByDate($filter_key = null) {
         $prelevements = array();
         foreach($this->prelevements as $prelevement) {
             if(!$prelevement->date) {
+                
+                continue;
+            }
+            if($filter_key && !preg_match("/".$filter_key."/", $prelevement->getKey())) {
+
                 continue;
             }
             $prelevements[$prelevement->date.$prelevement->getKey()] = $prelevement;
