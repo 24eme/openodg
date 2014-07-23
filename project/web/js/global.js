@@ -92,30 +92,6 @@
 		})
 
 	}
-	
-	$.initNavTab = function()
-	{
-		var hash = window.location.hash;
-		hash && $('ul.nav a[href="' + hash + '"]').tab('show');
-		$('.nav-tabs a').click(function (e) {
-			$(this).tab('show');
-			var scrollmem = $('body').scrollTop();
-			window.location.hash = this.hash;
-			$('html,body').scrollTop(scrollmem);
-		});
-	}
-	
-	$.initHome = function()
-	{
-		$('#drev-choices').submit(function (e) {
-			var form = $(this);
-			var redirect = form.find('input[name=choice]:checked').val();
-			if (redirect) {
-				window.location.href = redirect;
-			}
-			return false;
-		});
-	}
 
 	/* =================================================================================== */
 	/* FUNCTIONS CALL */
@@ -125,8 +101,6 @@
 		$.initDatePickers();
 		$.initSelect2Autocomplete();
 		$.initCheckboxRelations();
-		$.initNavTab();
-		$.initHome();
 	});
 	
 })(jQuery);

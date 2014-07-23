@@ -241,4 +241,9 @@ class DRev extends BaseDRev
     	return false;
     }
 
+    public function getEtablissement() {
+
+        return EtablissementClient::getInstance()->findByIdentifiant('6823700100');
+    }
+
 }

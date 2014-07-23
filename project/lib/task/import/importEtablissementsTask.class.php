@@ -52,10 +52,16 @@ EOF;
             $line = str_replace("\n", "", $line);
 
             if(preg_match("/^#/", $line)) {
+                
                 continue;
             }
 
             $data = str_getcsv($line, ';');
+
+            if(!$etablissement && $data[self::CSV_TYPE_LIGNE] != "1.CVI ") {
+
+                continue;
+            }
 
             if($etablissement && $etablissement->cvi != $data[self::CSV_CVI]) {
                 $this->saveEtablissement($etablissement);
@@ -71,6 +77,7 @@ EOF;
             } catch (Exception $e) {
 
                 echo sprintf("ERROR;%s;#LINE;%s\n", $e->getMessage(), $line);
+                $etablissement = null;
                 continue;
             }
         }
@@ -126,9 +133,9 @@ EOF;
 
         $etablissement->cvi = $data[self::CSV_CVI];
         $etablissement->raison_sociale = $data[self::CSV_RAISON_SOCIALE];
-        $etablissement->siege->adresse = preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3]));
-        $etablissement->siege->code_postal = $data[self::CSV_CODE_POSTAL];
-        $etablissement->siege->commune = "";
+        $etablissement->adresse = preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3]));
+        $etablissement->code_postal = $data[self::CSV_CODE_POSTAL];
+        $etablissement->commune = "";
 
     }
 
