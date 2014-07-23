@@ -98,7 +98,7 @@
         <?php foreach($drev->getPrelevementsByDate(DRev::BOUTEILLE) as $prelevement): ?>
         <tr>
             <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?>&nbsp;<?php echo $prelevement->libelle_produit ?></td>
-            <td style="<?php echo $td_style_libelle ?> text-align: center;"><?php echo $td_start ?><?php echo format_date($prelevement->date, "D", "fr_FR") ?></td>
+            <td style="<?php echo $td_style_libelle ?>"><?php echo $td_start ?><?php echo format_date($prelevement->date, "D", "fr_FR") ?></td>
             <td style="<?php echo $td_style_value ?>"><?php echo $td_start ?><?php echo $prelevement->total_lots ?>&nbsp;<small>lot (s)</small>&nbsp;&nbsp;&nbsp;</td>
         </tr>
         <?php endforeach; ?>
