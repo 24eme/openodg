@@ -10,15 +10,16 @@
 				<span class="label label-primary">Informations issues de la DR</span>
 			</div>
 		</div>
-		<table class="table table-striped table-condensed">
+		<p></p>
+		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th class="col-xs-5 small">Appellation revendiquée</th>
-					<th class="col-xs-2 small text-center">Superficie totale<br /><small>(ares)</small></th>
-					<th class="col-xs-2 small text-center">Volume revendiqué<br /><small>(hl)</small></th>
-					<th class="col-xs-1 small text-center"><small>Volume total</small></th>
-					<th class="col-xs-1 small text-center"><small>Volume sur place</small></th>
-					<th class="col-xs-1 small text-center"><small>Usages industriels</small></th>
+					<th class="col-xs-5">Appellation revendiquée</th>
+					<th class="col-xs-2 text-center">Superficie totale<br /><small>(ares)</small></th>
+					<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /><small>(hl)</small></th>
+					<th class="col-xs-1 small text-center">Volume total</th>
+					<th class="col-xs-1 small text-center">Volume sur place</th>
+					<th class="col-xs-1 small text-center">Usages industriels</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -32,7 +33,7 @@
 							<div class="form-group">
 								<div class="col-xs-10 col-xs-offset-1">
 									<span class="text-danger"><?php echo $embedForm['total_superficie']->renderError() ?></span>
-									<?php echo $embedForm['total_superficie']->render(array('class' => 'form-control text-right')) ?>
+									<?php echo $embedForm['total_superficie']->render(array('class' => 'form-control text-right input-rounded')) ?>
 								</div>
 							</div>
 						</td>
@@ -40,7 +41,7 @@
 							<div class="form-group">
 								<div class="col-xs-10 col-xs-offset-1">
 									<span class="text-danger"><?php echo $embedForm['volume_revendique']->renderError() ?></span>
-									<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right')) ?>
+									<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded')) ?>
 								</div>
 							</div>
 						</td>
@@ -49,17 +50,14 @@
 							<td></td>
 							<td></td>
 						<?php else: ?>
-							<td class="text-right small">
-								<?php echoFloat($produit->dr->volume_total); ?>
-								<small class="text-muted">hl</small>
+							<td class="text-right text-muted">
+								<?php echoFloat($produit->dr->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
 							</td>
-							<td class="text-right small">
-								<?php echoFloat($produit->dr->volume_sur_place); ?>
-								<small class="text-muted">hl</small>
+							<td class="text-right text-muted">
+								<?php echoFloat($produit->dr->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
 							</td>
-							<td class="text-right small">
-								<?php echoFloat($produit->dr->usages_industriels_total); ?>
-								<small class="text-muted">hl</small>
+							<td class="text-right text-muted">
+								<?php echoFloat($produit->dr->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
 							</td>
 						<?php endif; ?>
 					</tr>

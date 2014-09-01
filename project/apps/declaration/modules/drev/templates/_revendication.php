@@ -3,12 +3,12 @@
     <div class="panel-heading">
         <h2 class="panel-title">Revendication</h2>
     </div>
-	<table class="table table-striped table-condensed">
+	<table class="table table-striped">
 		<thead>
 			<tr>
-				<th class="col-md-6 small">Appellation</th>
-				<th class="text-center col-md-3 small">Superficie totale</th>
-				<th class="text-center col-md-3 small">Vol. revendiqué</th>
+				<th class="col-md-6">Appellation</th>
+				<th class="text-center col-md-3">Superficie totale</th>
+				<th class="text-center col-md-3">Vol. revendiqué</th>
 			</tr>
 		</thead>
 		<tbody>

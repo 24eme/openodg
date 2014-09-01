@@ -1,4 +1,4 @@
-<h2>Engagements</h2>
+<h2 class="h3">Engagements</h2>
 
 <div class="alert-container">
     <div class="alert alert-success" role="alert">

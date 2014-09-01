@@ -234,7 +234,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $prelevements[$prelevement->date.$prelevement->getKey()] = $prelevement;
         }
 
-        ksort($prelevements);
+        //ksort($prelevements);
 
         return $prelevements;
     }
