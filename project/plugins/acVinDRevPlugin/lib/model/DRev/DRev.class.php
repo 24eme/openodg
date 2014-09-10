@@ -95,7 +95,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function initFromCSV($csv) {
         $this->initFromCSVRevendication($csv);
         $this->initFromCSVRevendicationCepage($csv);
-        $this->initFromCSVLots($csv);
+        $this->initFromCepage($csv);
     }
 
     public function initFromCSVRevendication($csv) {
@@ -162,31 +162,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     }
 
-    public function initFromCSVLots($csv) {
-        foreach($csv as $line) {
-            if(
-               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_APPELLATION]) ||
-               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) ||
-               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])
-               ) {
-
-                continue;
-            }
-
-            $hash = preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT]));
-
-            if(!$this->getConfiguration()->exist($hash)) {
-                
-                continue;
-            }
-
-            $config = $this->getConfiguration()->get($hash);
-
-            if(!$config instanceof ConfigurationCepage) {
-                continue;
-            }
-
-            $this->addLotProduit($hash, self::CUVE);
+    public function initFromCepage() {
+        foreach($this->declaration->getProduitsCepage() as $produit) {
+            $this->addLotProduit($produit->getHash(), self::CUVE);
         }
     }
 
