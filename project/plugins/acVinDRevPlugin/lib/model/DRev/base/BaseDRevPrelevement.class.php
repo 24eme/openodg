@@ -6,12 +6,24 @@
 
  * @property string $total_lots
  * @property string $date
+ * @property string $libelle_produit
+ * @property string $libelle_produit_type
+ * @property string $libelle_date
+ * @property string $libelle
  * @property acCouchdbJson $lots
 
  * @method string getTotalLots()
  * @method string setTotalLots()
  * @method string getDate()
  * @method string setDate()
+ * @method string getLibelleProduit()
+ * @method string setLibelleProduit()
+ * @method string getLibelleProduitType()
+ * @method string setLibelleProduitType()
+ * @method string getLibelleDate()
+ * @method string setLibelleDate()
+ * @method string getLibelle()
+ * @method string setLibelle()
  * @method acCouchdbJson getLots()
  * @method acCouchdbJson setLots()
  

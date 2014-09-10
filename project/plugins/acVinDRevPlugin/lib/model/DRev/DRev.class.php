@@ -94,6 +94,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function initFromCSV($csv) {
         $this->initFromCSVRevendication($csv);
+        $this->initFromCSVRevendicationCepage($csv);
         $this->initFromCSVLots($csv);
     }
 
@@ -132,6 +133,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $produit->dr->volume_sur_place_revendique = -1;
             }
         }
+    }
+
+    public function initFromCSVRevendicationCepage($csv) {
+        foreach($csv as $line) {
+            if(
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_APPELLATION]) ||
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) ||
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])
+               ) {
+
+                continue;
+            }
+
+            $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT])));
+            
+            if(!$this->getConfiguration()->exist($hash)) {
+                continue;
+            }
+
+            $config = $this->getConfiguration()->get($hash)->getNodeRelation('revendication');
+
+            $produit = $this->getOrAdd($config->getHash());
+            $produit->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            $produit->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
+            $produit->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+        }
+
     }
 
     public function initFromCSVLots($csv) {

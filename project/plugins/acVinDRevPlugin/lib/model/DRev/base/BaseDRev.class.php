@@ -9,6 +9,7 @@
  * @property string $type
  * @property string $campagne
  * @property string $identifiant
+ * @property acCouchdbJson $declarant
  * @property DRevDeclaration $declaration
  * @property acCouchdbJson $prelevements
 
@@ -22,6 +23,8 @@
  * @method string setCampagne()
  * @method string getIdentifiant()
  * @method string setIdentifiant()
+ * @method acCouchdbJson getDeclarant()
+ * @method acCouchdbJson setDeclarant()
  * @method DRevDeclaration getDeclaration()
  * @method DRevDeclaration setDeclaration()
  * @method acCouchdbJson getPrelevements()
