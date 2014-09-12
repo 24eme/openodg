@@ -168,6 +168,10 @@ class drevActions extends sfActions
         $this->validation = new DRevValidation($this->drev);
     }
 
+    public function executeRevendicationCepage(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+    }
+
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 

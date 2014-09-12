@@ -94,7 +94,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function initFromCSV($csv) {
         $this->initFromCSVRevendication($csv);
-        $this->initFromCSVLots($csv);
+        $this->initFromCSVRevendicationCepage($csv);
+        $this->initFromCepage($csv);
     }
 
     public function initFromCSVRevendication($csv) {
@@ -134,7 +135,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
-    public function initFromCSVLots($csv) {
+    public function initFromCSVRevendicationCepage($csv) {
         foreach($csv as $line) {
             if(
                preg_match("/^TOTAL/", $line[DRCsvFile::CSV_APPELLATION]) ||
@@ -145,20 +146,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 continue;
             }
 
-            $hash = preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT]));
-
+            $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT])));
+            
             if(!$this->getConfiguration()->exist($hash)) {
-                
                 continue;
             }
 
-            $config = $this->getConfiguration()->get($hash);
+            $config = $this->getConfiguration()->get($hash)->getNodeRelation('revendication');
 
-            if(!$config instanceof ConfigurationCepage) {
-                continue;
-            }
+            $produit = $this->getOrAdd($config->getHash());
+            $produit->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            $produit->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
+            $produit->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+        }
 
-            $this->addLotProduit($hash, self::CUVE);
+    }
+
+    public function initFromCepage() {
+        foreach($this->declaration->getProduitsCepage() as $produit) {
+            $this->addLotProduit($produit->getHash(), self::CUVE);
         }
     }
 

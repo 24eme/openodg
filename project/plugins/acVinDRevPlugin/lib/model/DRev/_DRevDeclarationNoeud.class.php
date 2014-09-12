@@ -38,6 +38,17 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
 
         return $produits;
     }
+
+    public function getProduitsCepage() 
+    {
+        $produits = array();
+        foreach($this->getChildrenNode() as $key => $item) {
+            $produits = array_merge($produits, $item->getProduitsCepage());
+        }
+
+        return $produits;
+    }
+    
     
     public function getLibelle() {
         if(is_null($this->_get('libelle'))) {

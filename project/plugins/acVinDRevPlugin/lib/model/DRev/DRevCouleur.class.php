@@ -5,7 +5,12 @@ class DRevCouleur extends BaseDRevCouleur
 
 	public function getChildrenNode() 
     {
-        return null;
+        return $this->getCepages();
+    }
+
+    public function getCepages() {
+
+        return $this->filter('^cepage_');
     }
     
 	public function getLieu() 
@@ -30,7 +35,6 @@ class DRevCouleur extends BaseDRevCouleur
     	}
         return array($this->getHash() => $this);
     }
-    
     
     public function getTotalTotalSuperficie()
     {

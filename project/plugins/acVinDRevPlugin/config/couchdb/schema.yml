@@ -86,6 +86,17 @@ DRev:
                                                       volume_sur_place_revendique: { type:float }
                                                       volume_total: { type:float }
                                                       usages_industriels_total: { type:float }
+                                                # ------ Cépage ------
+                                                '*':
+                                                  type: collection
+                                                  class: DRevCepage
+                                                  inheritance: _DRevDeclarationNoeud
+                                                  definition:
+                                                    fields:
+                                                      libelle: { }
+                                                      superficie_total: { type:float }
+                                                      volume_sur_place: { type:float }
+                                                      volume_total: { type:float }
       prelevements:
         type: collection
         definition:

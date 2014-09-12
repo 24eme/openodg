@@ -79,6 +79,16 @@ drev_revendication:
   requirements:
     sf_method: [get, post]
 
+drev_revendication_cepage:
+  url: /drev/revendication/:id/cepage
+  param: { module: drev, action: revendicationCepage }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_degustation_conseil:
   url: /drev/degustation-conseil/:id
   param: { module: drev, action: degustationConseil }
