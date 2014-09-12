@@ -85,9 +85,9 @@ class drevmarcActions extends sfActions
     }
 
     public function executePDF(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
+        $drevmarc = $this->getRoute()->getDRevMarc();
 
-        $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportDRevMarcPdf($drevmarc, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if($request->getParameter('force')) {
