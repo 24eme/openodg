@@ -1,0 +1,30 @@
+#DREVMarc
+DRevMarc:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      debut_distillation: { }
+      fin_distillation: { }      
+      qte_marc: { }
+      volume_obtenu: { }
+      titre_alcool_vol: { }
+      validation: { }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
+      

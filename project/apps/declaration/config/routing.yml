@@ -139,6 +139,77 @@ drev_export_pdf:
   requirements:
     sf_method: [get]
 
+#DREVMARC
+drevmarc_create:
+  url: /drevmarc/creation/:id
+  param: { module: drevmarc, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drevmarc_edit:
+  url: /drevmarc/edition/:id
+  param: { module: drevmarc, action: edit }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drevmarc_exploitation:
+  url: /drevmarc/exploitation/:id
+  param: { module: drevmarc, action: exploitation }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drevmarc_revendication:
+  url: /drevmarc/revendication/:id
+  param: { module: drevmarc, action: revendication }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
+drevmarc_validation:
+  url: /drevmarc/validation/:id
+  param: { module: drevmarc, action: validation }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]    
+
+
+drevmarc_delete:
+  url: /drevmarc/suppression/:id
+  param: { module: drevmarc, action: delete }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drevmarc_export_pdf:
+  url: /drevmarc/pdf/:id
+  param: { module: drevmarc, action: PDF }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get]
 # generic rules
 # please, remove them by adding more specific rules
 default_index:
