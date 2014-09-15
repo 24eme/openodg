@@ -11,8 +11,9 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="col-xs-9">Produits</th>
+                        <th class="col-xs-6">Produits</th>
                         <th class="text-center col-xs-3">Volume revendiqué</th>
+                        <th class="text-center col-xs-3">Volume revendiqué VT/SGN</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +31,14 @@
                                     </div>
                                 </div>
                                 
+                            </td>
+                            <td class="text-center">
+                                <span class="text-danger"><?php echo $embedForm['volume_sur_place_revendique_vtsgn']->renderError() ?></span>
+                                <div class="form-group">
+                                    <div class="col-xs-8 col-xs-offset-2">
+                                        <?php echo $embedForm['volume_sur_place_revendique_vtsgn']->render(array('class' => 'form-control input input-rounded')) ?>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     <?php endforeach; ?>

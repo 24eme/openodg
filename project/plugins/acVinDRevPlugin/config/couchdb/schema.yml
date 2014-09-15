@@ -95,6 +95,7 @@ DRev:
                                                     fields:
                                                       libelle: { }
                                                       volume_sur_place_revendique: { type: float }
+                                                      volume_sur_place_revendique_vtsgn: { type: float }
                                                       superficie_total: { type:float }
                                                       volume_sur_place: { type:float }
                                                       volume_total: { type:float }
