@@ -19,6 +19,16 @@ class DRevLieu extends BaseDRevLieu
         return $this->getCouleurs();
     }
 
+    public function getProduits($onlyActive = false) 
+    {
+        if($this->getKey() != "lieu") {
+
+            return array();
+        }
+
+        return parent::getProduits($onlyActive);
+    }
+
     public function getCouleurs() 
     {
         return $this->filter('^couleur');

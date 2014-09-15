@@ -170,6 +170,24 @@ class drevActions extends sfActions
 
     public function executeRevendicationCepage(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->noeud = $this->drev->get("declaration/certification/genre/".$request->getParameter("hash"));
+        $this->form = new DRevRevendicationCepageForm($this->noeud);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('drev_revendication_cepage', array('sf_subject' => $this->drev, 'hash' => $request->getParameter("hash")));
     }
 
     public function executePDF(sfWebRequest $request) {

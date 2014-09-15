@@ -23,9 +23,9 @@ class DRevAppellation extends BaseDRevAppellation
         return $this->mention->getLieux();
     }
     
-     public function getLibelleComplet() 
-     {
-     	return $this->libelle;
-     }
+    public function getLibelleComplet() 
+    {
+        return $this->libelle;
+    }
 
 }

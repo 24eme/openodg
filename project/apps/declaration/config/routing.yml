@@ -80,7 +80,7 @@ drev_revendication:
     sf_method: [get, post]
 
 drev_revendication_cepage:
-  url: /drev/revendication/:id/cepage
+  url: /drev/revendication/:id/cepage/:hash
   param: { module: drev, action: revendicationCepage }
   class: DRevRoute
   options:

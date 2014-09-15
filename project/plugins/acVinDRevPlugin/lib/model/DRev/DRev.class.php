@@ -152,7 +152,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 continue;
             }
 
-            $config = $this->getConfiguration()->get($hash)->getNodeRelation('revendication');
+            $config = $this->getConfiguration()->get($hash);
 
             $produit = $this->getOrAdd($config->getHash());
             $produit->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
