@@ -27,7 +27,7 @@
                                 <span class="text-danger"><?php echo $embedForm['volume_sur_place_revendique']->renderError() ?></span>
                                 <div class="form-group">
                                     <div class="col-xs-8 col-xs-offset-2">
-                                        <?php echo $embedForm['volume_sur_place_revendique']->render(array('class' => 'form-control input input-rounded')) ?>
+                                        <?php echo $embedForm['volume_sur_place_revendique']->render(array('class' => 'form-control input input-rounded text-right')) ?>
                                     </div>
                                 </div>
                                 
@@ -36,7 +36,7 @@
                                 <span class="text-danger"><?php echo $embedForm['volume_sur_place_revendique_vtsgn']->renderError() ?></span>
                                 <div class="form-group">
                                     <div class="col-xs-8 col-xs-offset-2">
-                                        <?php echo $embedForm['volume_sur_place_revendique_vtsgn']->render(array('class' => 'form-control input input-rounded')) ?>
+                                        <?php echo $embedForm['volume_sur_place_revendique_vtsgn']->render(array('class' => 'form-control input input-rounded text-right')) ?>
                                     </div>
                                 </div>
                             </td>
@@ -47,13 +47,28 @@
 
             <div class="row row-margin">
                 <div class="col-xs-6">
-                    <a href="" class="btn btn-default"><span class="eleganticon arrow_carrot-left"></span>Appellation précédente</a>
+                    <?php if($noeud->getPreviousSister()): ?>
+                        <a href="<?php echo url_for('drev_revendication_cepage', array('sf_subject' => $drev, 'hash' => $noeud->getPreviousSister()->getKey())) ?>" class="btn btn-default"><span class="eleganticon arrow_carrot-left"></span>Appellation précédente</a>
+                    <?php else: ?>
+                         <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-default"><span class="eleganticon arrow_carrot-left"></span>Toutes les appellations</a>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="col-xs-6 text-right">
-                    <button type="submit" class="btn btn-default">Appellation suivante<span class="eleganticon arrow_carrot-right"></span></button>
+                    <?php if($noeud->getNextSister()): ?>
+                    <button type="submit" class="btn btn-default">Valider et saisir l'appellation suivante<span class="eleganticon arrow_carrot-right"></span></button>
+                    <?php endif; ?>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row row-margin">
+        <div class="col-xs-4"></div>
+        <div class="col-xs-4 col-xs-offset-4">
+            <?php if(!$noeud->getNextSister()): ?>
+            <button type="submit" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-right pull-right"></span>Étape suivante</button>
+            <?php endif; ?>
         </div>
     </div>
 </form>

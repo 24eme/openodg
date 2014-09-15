@@ -67,11 +67,19 @@
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+
+			<div class="row row-margin">
+				<div class="col-xs-6">
+                </div>
+                <div class="col-xs-6 text-right">
+                    <button type="submit" class="btn btn-default">Valider et saisir les données par cépage<span class="eleganticon arrow_carrot-right"></span></button>
+                </div>
+            </div>
 		</div>
 	</div>
 
 	<div class="row row-margin">
 		<div class="col-xs-4"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a></div>
-		<div class="col-xs-4 col-xs-offset-4"><button type="submit" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-right pull-right"></span>Étape suivante</button></div>
+		<div class="col-xs-4 col-xs-offset-4"></div>
 	</div>
 </form>
