@@ -4,15 +4,15 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm
    	public function configure()
     {
   		$this->setWidgets(array(
-        	'total_superficie' => new sfWidgetFormInputFloat(),
+        	'superficie_revendique' => new sfWidgetFormInputFloat(),
   		    'volume_revendique' => new sfWidgetFormInputFloat()
     	));
         $this->widgetSchema->setLabels(array(
-        	'total_superficie' => 'Superficie totale (ares):',
+        	'superficie_revendique' => 'Superficie totale (ares):',
         	'volume_revendique' => 'Volume revendiqué (hl):',
         ));
         $this->setValidators(array(
-        	'total_superficie' => new sfValidatorNumber(array('required' => false)),
+        	'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
         	'volume_revendique' => new sfValidatorNumber(array('required' => false))
         ));
   		$this->widgetSchema->setNameFormat('[%s]');

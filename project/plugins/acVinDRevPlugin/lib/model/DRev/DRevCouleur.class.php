@@ -47,21 +47,21 @@ class DRevCouleur extends BaseDRevCouleur
     }
 
     public function updateFromDR() {
-        if($this->dr->volume_sur_place_revendique === -1) {
-           $this->dr->volume_sur_place_revendique = null; 
+        if($this->volume_sur_place_revendique === -1) {
+           $this->volume_sur_place_revendique = null; 
         }
-        if(!is_null($this->dr->superficie_total)) {
-            $this->total_superficie = $this->dr->superficie_total;
+        if(!is_null($this->superficie_total)) {
+            $this->superficie_revendique = $this->superficie_total;
         }
 
-        if(!is_null($this->dr->volume_sur_place_revendique)) {
-            $this->volume_revendique = $this->dr->volume_sur_place_revendique;
+        if(!is_null($this->volume_sur_place_revendique)) {
+            $this->volume_revendique = $this->volume_sur_place_revendique;
         }
     }
     
     public function isActive()
     {
-	    return ($this->volume_revendique !== null && $this->total_superficie !== null)? true : false;
+	    return ($this->volume_revendique !== null && $this->superficie_revendique !== null)? true : false;
     }
     
 }

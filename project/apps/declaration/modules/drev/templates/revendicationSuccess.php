@@ -35,8 +35,8 @@
 							<td>
 								<div class="form-group">
 									<div class="col-xs-10 col-xs-offset-1">
-										<span class="text-danger"><?php echo $embedForm['total_superficie']->renderError() ?></span>
-										<?php echo $embedForm['total_superficie']->render(array('class' => 'form-control text-right input-rounded')) ?>
+										<span class="text-danger"><?php echo $embedForm['superficie_revendique']->renderError() ?></span>
+										<?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded')) ?>
 									</div>
 								</div>
 							</td>
@@ -48,19 +48,19 @@
 									</div>
 								</div>
 							</td>
-							<?php if(!$produit->dr->volume_sur_place): ?>
+							<?php if(!$produit->volume_sur_place): ?>
 								<td class=""></td>
 								<td></td>
 								<td></td>
 							<?php else: ?>
 								<td class="text-right text-muted">
-									<?php echoFloat($produit->dr->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
+									<?php echoFloat($produit->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
 								</td>
 								<td class="text-right text-muted">
-									<?php echoFloat($produit->dr->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
+									<?php echoFloat($produit->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
 								</td>
 								<td class="text-right text-muted">
-									<?php echoFloat($produit->dr->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
+									<?php echoFloat($produit->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
 								</td>
 							<?php endif; ?>
 						</tr>

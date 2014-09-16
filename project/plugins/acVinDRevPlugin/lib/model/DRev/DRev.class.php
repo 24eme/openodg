@@ -121,16 +121,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             }
 
             $produit = $this->get($config->getHash());
-            $produit->dr->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
-            if($produit->dr->volume_sur_place_revendique >= 0) {
-                $produit->dr->volume_sur_place_revendique += (float) $line[DRCsvFile::CSV_VOLUME] - $line[DRCsvFile::CSV_USAGES_INDUSTRIELS];
+            $produit->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            if($produit->volume_sur_place_revendique >= 0) {
+                $produit->volume_sur_place_revendique += (float) $line[DRCsvFile::CSV_VOLUME] - $line[DRCsvFile::CSV_USAGES_INDUSTRIELS];
             }
-            $produit->dr->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
-            $produit->dr->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
-            $produit->dr->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+            $produit->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
+            $produit->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
+            $produit->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
 
             if($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
-                $produit->dr->volume_sur_place_revendique = -1;
+                $produit->volume_sur_place_revendique = -1;
             }
         }
     }

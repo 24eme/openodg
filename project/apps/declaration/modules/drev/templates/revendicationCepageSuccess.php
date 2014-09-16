@@ -11,9 +11,10 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="col-xs-6">Produits</th>
-                        <th class="text-center col-xs-3">Volume revendiqué</th>
-                        <th class="text-center col-xs-3">Volume revendiqué VT/SGN</th>
+                        <th class="col-xs-3">Produits</th>
+                        <th class="text-center col-xs-3">Superficie</th>
+                        <th class="text-center col-xs-3">Volume</th>
+                        <th class="text-center col-xs-3">Volume VT/SGN</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,19 +25,28 @@
                         <tr>
                             <td><?php if($produit->getParent()->getParent()->getLibelle()): ?><?php echo $produit->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit->getLibelle() ?></td>
                             <td class="text-center">
-                                <span class="text-danger"><?php echo $embedForm['volume_sur_place_revendique']->renderError() ?></span>
+                                <span class="text-danger"><?php echo $embedForm['superficie_total']->renderError() ?></span>
                                 <div class="form-group">
                                     <div class="col-xs-8 col-xs-offset-2">
-                                        <?php echo $embedForm['volume_sur_place_revendique']->render(array('class' => 'form-control input input-rounded text-right')) ?>
+                                        <?php echo $embedForm['superficie_total']->render(array('class' => 'form-control input input-rounded text-right')) ?>
                                     </div>
                                 </div>
                                 
                             </td>
                             <td class="text-center">
-                                <span class="text-danger"><?php echo $embedForm['volume_sur_place_revendique_vtsgn']->renderError() ?></span>
+                                <span class="text-danger"><?php echo $embedForm['volume_sur_place']->renderError() ?></span>
                                 <div class="form-group">
                                     <div class="col-xs-8 col-xs-offset-2">
-                                        <?php echo $embedForm['volume_sur_place_revendique_vtsgn']->render(array('class' => 'form-control input input-rounded text-right')) ?>
+                                        <?php echo $embedForm['volume_sur_place']->render(array('class' => 'form-control input input-rounded text-right')) ?>
+                                    </div>
+                                </div>
+                                
+                            </td>
+                            <td class="text-center">
+                                <span class="text-danger"><?php echo $embedForm['volume_sur_place_vtsgn']->renderError() ?></span>
+                                <div class="form-group">
+                                    <div class="col-xs-8 col-xs-offset-2">
+                                        <?php echo $embedForm['volume_sur_place_vtsgn']->render(array('class' => 'form-control input input-rounded text-right')) ?>
                                     </div>
                                 </div>
                             </td>

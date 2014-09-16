@@ -4,16 +4,19 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm
     public function configure()
     {
         $this->setWidgets(array(
-            'volume_sur_place_revendique' => new sfWidgetFormInputFloat(),
-            'volume_sur_place_revendique_vtsgn' => new sfWidgetFormInputFloat()
+            'superficie_total' => new sfWidgetFormInputFloat(),
+            'volume_sur_place' => new sfWidgetFormInputFloat(),
+            'volume_sur_place_vtsgn' => new sfWidgetFormInputFloat(),
         ));
         $this->widgetSchema->setLabels(array(
-            'volume_sur_place_revendique' => 'Volume revendiqué (hl):',
-            'volume_sur_place_revendique_vtsgn' => 'Volume revendiqué (hl):',
+            'superficie_total' => 'Superficie ,:',
+            'volume_sur_place' => 'Volume revendiqué (hl):',
+            'volume_sur_place_vtsgn' => 'Volume revendiqué (hl):',
         ));
         $this->setValidators(array(
-            'volume_sur_place_revendique' => new sfValidatorNumber(array('required' => false)),
-            'volume_sur_place_revendique_vtsgn' => new sfValidatorNumber(array('required' => false))
+            'superficie_total' => new sfValidatorNumber(array('required' => false)),
+            'volume_sur_place' => new sfValidatorNumber(array('required' => false)),
+            'volume_sur_place_vtsgn' => new sfValidatorNumber(array('required' => false)),
         ));
         $this->widgetSchema->setNameFormat('[%s]');
     }
