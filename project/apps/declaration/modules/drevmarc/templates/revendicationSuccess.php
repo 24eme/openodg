@@ -22,19 +22,44 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-xs-1">
-                                        <?php echo $form['fin_distillation']->render(array('class' => 'datepicker-control date-picker text-right','placeholder' => 'Au')); ?>
+                                        <?php echo $form['fin_distillation']->render(array('class' => 'datepicker-control date-picker text-right', 'placeholder' => 'Au')); ?>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        <?php
+                        $periode_distillation_error = false;
+                        foreach ($form->getFormFieldSchema() as $key => $item):
+                            if ($item instanceof sfFormField && $item->hasError()):
+                                $periode_distillation_error = ($item->renderId() == "drevmarc_revendication_debut_distillation") || ($item->renderId() == "drevmarc_revendication_fin_distillation");
+                                if($periode_distillation_error):
+                                    break;
+                                endif;
+                            endif;
+                        endforeach;
+                        if ($periode_distillation_error):
+                            ?>
+                            <tr>
+                                <td class="col-xs-5"></td>
+                                <td class="col-xs-7 form-inline">
+                                    <div class="form-group">
+                                        <div class="col-xs-11">                                        
+                                            <span class="text-danger"><?php echo $form['debut_distillation']->renderError(); ?></span>
+                                            <span class="text-danger"><?php echo $form['fin_distillation']->renderError(); ?></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                            <?php endif; ?> 
                             <td  class="col-xs-5">
                                 <?php echo $form['qte_marc']->renderLabel(null, array('class' => 'control-label')); ?>
                             </td>
                             <td class="col-xs-7 form-inline">
                                 <div class="form-group">
                                     <div class="col-xs-11">                            
-                                        <?php echo $form['qte_marc']->render(array('class' => 'form-control input-rounded text-right', 'placeholder' => 'En kg')); ?>
+                                        <?php echo $form['qte_marc']->render(array('class' => 'form-control input-rounded text-right', 'placeholder' => 'En kg (minimum 50kg)')); ?>
+                                        <span class="text-danger"><?php echo $form['qte_marc']->renderError(); ?></span>
                                     </div>
                                 </div>
                             </td>
@@ -47,6 +72,7 @@
                                 <div class="form-group ">
                                     <div class="col-xs-11">
                                         <?php echo $form['volume_obtenu']->render(array('class' => 'form-control input-rounded text-right', 'placeholder' => 'En hl d\'alcool pur')); ?>
+                                        <span class="text-danger"><?php echo $form['volume_obtenu']->renderError(); ?></span>
                                     </div>
                                 </div>
                             </td>
@@ -58,7 +84,8 @@
                             <td class="col-xs-7 form-inline">
                                 <div class="form-group">
                                     <div class="col-xs-11">
-                                        <?php echo $form['titre_alcool_vol']->render(array('class' => 'form-control input-rounded text-right','placeholder' => 'En %')); ?>
+                                        <?php echo $form['titre_alcool_vol']->render(array('class' => 'form-control input-rounded text-right', 'placeholder' => 'En ° (minimum 40°)')); ?>
+                                        <span class="text-danger"><?php echo $form['titre_alcool_vol']->renderError(); ?></span>
                                     </div>
                                 </div>
                             </td>

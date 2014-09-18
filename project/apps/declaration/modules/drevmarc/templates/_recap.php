@@ -20,7 +20,7 @@
                     </tr>
                     <tr>
                         <td>Titre alcoométrique volumique</td>
-                        <td class="text-right"><?php echo $drevmarc->titre_alcool_vol ?> <small class="text-muted">%</small></td>
+                        <td class="text-right"><?php echo $drevmarc->titre_alcool_vol ?> <small class="text-muted">°</small></td>
                     </tr>
                     
                 </tbody>
