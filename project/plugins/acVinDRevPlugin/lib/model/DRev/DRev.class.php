@@ -219,6 +219,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         if(!$lot->getConfig()->hasVtsgn()) {
             $lot->add('no_vtsgn', 1);
         }
+
+        return $lot;
     }
 
     public function getPrelevementsKeyByHash($hash) {

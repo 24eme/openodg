@@ -124,7 +124,7 @@ EOF;
     protected function importLineCVI($data, $etablissement) {
         if($data[self::CSV_ACTIF] != "1") {
             
-            throw new Exception("L'établissement n'est pas actif");
+            //throw new Exception("L'établissement n'est pas actif");
         }
 
         if(!preg_match("/^[0-9]{10}$/", $data[self::CSV_CVI])) {
