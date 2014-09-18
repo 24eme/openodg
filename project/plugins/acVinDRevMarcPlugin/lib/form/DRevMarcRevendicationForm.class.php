@@ -6,11 +6,11 @@ class DRevMarcRevendicationForm extends acCouchdbObjectForm
             
         $this->widgetSchema->setNameFormat('drevmarc_revendication[%s]');
          $this->setWidget('debut_distillation', new sfWidgetFormInput());
-            $this->setValidator('debut_distillation', new sfValidatorDate(array('required' => true)));
+            $this->setValidator('debut_distillation', new sfValidatorRegex(array('pattern' => '/[0-9]{4}-[0-9]{2}-[0-9]{2}/','required' => true)));
             $this->getWidget('debut_distillation')->setLabel("du");
 
         $this->setWidget('fin_distillation', new sfWidgetFormInput());
-            $this->setValidator('fin_distillation', new sfValidatorDate(array('required' => true)));
+            $this->setValidator('fin_distillation', new sfValidatorRegex(array('pattern' => '/[0-9]{4}-[0-9]{2}-[0-9]{2}/','required' => true)));
             $this->getWidget('fin_distillation')->setLabel("au");
         
            $this->setWidget('qte_marc', new sfWidgetFormInput());
