@@ -66,7 +66,8 @@ class drevActions extends sfActions
     		$this->form->bind($request->getParameter($this->form->getName()));
         	if ($this->form->isValid()) {
         		$this->form->save();
-        		return $this->redirect('drev_degustation_conseil', $this->drev);
+
+                return $this->redirect('drev_revendication_cepage', array('sf_subject' => $this->drev, 'hash' => $this->drev->declaration->getAppellations()->getFirst()->getKey()));
         	}
         }
     }
@@ -170,6 +171,30 @@ class drevActions extends sfActions
 
     public function executeRevendicationCepage(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->noeud = $this->drev->get("declaration/certification/genre/".$request->getParameter("hash"));
+        $this->form = new DRevRevendicationCepageForm($this->noeud);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        if($this->noeud->getNextSister()) {
+            
+            return $this->redirect('drev_revendication_cepage', array('sf_subject' => $this->drev, 'hash' => $this->noeud->getNextSister()->getKey()));
+        } else {
+
+            return $this->redirect('drev_degustation_conseil', $this->drev);
+        }
     }
 
     public function executePDF(sfWebRequest $request) {

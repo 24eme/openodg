@@ -18,7 +18,7 @@
 			?>
 				<tr>
 					<td><?php echo $produit->getLibelleComplet() ?></td>
-					<td class="text-center"><?php echoFloat($produit->total_superficie) ?> <small class="text-muted">(ares)</small></td>
+					<td class="text-center"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">(ares)</small></td>
 					<td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">(hl)</small></td>
 				</tr>
 			<?php endforeach; ?>

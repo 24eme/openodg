@@ -68,10 +68,10 @@ class DRevValidation extends DocumentValidation
   	protected function controleWarningDrSurface($produit)
   	{
   		if (
-  			$produit->total_superficie !== null && 
+  			$produit->superficie_revendique !== null && 
   			$produit->exist('dr') && 
-  			$produit->dr->superficie_total !== null && 
-  			$produit->total_superficie != $produit->dr->superficie_total
+  			$produit->superficie_revendique !== null && 
+  			$produit->superficie_revendique != $produit->superficie_total
   		) {
   			$this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document))); 
   		}
@@ -82,8 +82,8 @@ class DRevValidation extends DocumentValidation
   		if (
   			$produit->volume_revendique !== null && 
   			$produit->exist('dr') && 
-  			$produit->dr->volume_sur_place_revendique !== null && 
-  			$produit->volume_revendique != $produit->dr->volume_sur_place_revendique
+  			$produit->volume_sur_place_revendique !== null && 
+  			$produit->volume_revendique != $produit->volume_sur_place_revendique
   		) {
   			$this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document))); 
   		}
@@ -92,8 +92,8 @@ class DRevValidation extends DocumentValidation
   	protected function controleErrorRevendicationIncomplete($produit)
   	{
   		if (
-  			($produit->total_superficie !== null && $produit->volume_revendique === null) ||
-  			($produit->total_superficie === null && $produit->volume_revendique !== null)
+  			($produit->superficie_revendique !== null && $produit->volume_revendique === null) ||
+  			($produit->superficie_revendique === null && $produit->volume_revendique !== null)
   		) {
   			$this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
@@ -104,9 +104,9 @@ class DRevValidation extends DocumentValidation
   		if (
   			$produit->volume_revendique !== null &&
   			$produit->exist('dr') && 
-  			$produit->dr->volume_sur_place !== null && 
-  			$produit->dr->usages_industriels_total !== null && 
-  			($produit->dr->volume_sur_place - $produit->dr->usages_industriels_total) > $produit->volume_revendique	
+  			$produit->volume_sur_place !== null && 
+  			$produit->usages_industriels_total !== null && 
+  			($produit->volume_sur_place - $produit->usages_industriels_total) > $produit->volume_revendique	
   		) {
   			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
@@ -114,8 +114,8 @@ class DRevValidation extends DocumentValidation
   		if (
   			$produit->volume_revendique !== null &&
   			$produit->exist('dr') && 
-  			$produit->dr->volume_sur_place !== null && 
-  			$produit->volume_revendique > $produit->dr->volume_sur_place
+  			$produit->volume_sur_place !== null && 
+  			$produit->volume_revendique > $produit->volume_sur_place
   		) {
   			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
