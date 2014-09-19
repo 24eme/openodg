@@ -20,7 +20,7 @@ class DRevClient extends acCouchdbClient {
 
         return $doc;
     }
-    
+
     public function createDoc($identifiant, $campagne) 
     {  
         $drev = new DRev();

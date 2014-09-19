@@ -44,7 +44,7 @@ cat $DATADIR/AVA_NOMBRE_LOTS.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut 
 
 join -t ";" -1 4 -2 1 $WORKDIR/lot.csv $WORKDIR/cepage.csv | sort -t ";" -k 1,1 | cut -d ";" -f 2,3,4,5,6,7 | sort -t ";" -k 1,1 > $WORKDIR/lot_cepage.csv
 
-join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/lot_cepage.csv | cut -d ";" -f 3,4,5,6,7,8 | awk -F ";" '{ print $1 ";" $2 ";2.LOT;;;;;" $5 ";" $3 ";" $6 ";" $4 }' > $WORKDIR/lot_cvi.csv
+join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/lot_cepage.csv | cut -d ";" -f 3,4,5,6,7,8 | awk -F ";" '{ print $1 ";" $2 ";2.LOT ;;;;;" $5 ";" $3 ";" $6 ";" $4 }' > $WORKDIR/lot_cvi.csv
 
 #===PRELEVEMENTS===
 
