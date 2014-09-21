@@ -5,3 +5,4 @@ all:
     port: 443
     path: cas
     url : "https://login.cas:443/cas"
+  url_dr_recuperation: "http://url_autorisation/"

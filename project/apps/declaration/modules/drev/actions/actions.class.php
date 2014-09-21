@@ -9,7 +9,7 @@ class drevActions extends sfActions
     }  
 
     public function executePushDR(sfWebRequest $request) {
-        $this->url = $request->getParameter('pull');
+        $this->url = $request->getParameter('url_import');
         $this->csv = base64_encode(file_get_contents(sfConfig::get('sf_data_dir').'/DR/DR-7523700100-2013.csv'));
         $this->pdf = base64_encode(file_get_contents(sfConfig::get('sf_data_dir').'/DR/DR-7523700100-2013.pdf'));
     }
@@ -47,7 +47,11 @@ class drevActions extends sfActions
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
-        return $this->redirect('drev_push_dr', array('pull' => $this->generateUrl('drev_dr_import', $drev)));
+        return $this->redirect(sfConfig::get('app_url_dr_recuperation').
+                              "?".
+                              http_build_query(array(
+                                    'url' => $this->generateUrl('drev_dr_import', $drev, true),
+                                    'id' => 'DR-'.$drev->identifiant.'-2013')));
     }
 
     public function executeDrImport(sfWebRequest $request) {
