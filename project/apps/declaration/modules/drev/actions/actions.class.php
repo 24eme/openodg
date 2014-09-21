@@ -202,11 +202,6 @@ class drevActions extends sfActions
         return $this->redirect('drev_validation', $this->drev);
     }
 
-    public function executeValidation(sfWebRequest $request) {
-        $this->drev = $this->getRoute()->getDRev();
-        $this->validation = new DRevValidation($this->drev);
-    }
-
     public function executeRevendicationCepage(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->noeud = $this->drev->get("declaration/certification/genre/".$request->getParameter("hash"));
@@ -233,6 +228,42 @@ class drevActions extends sfActions
 
             return $this->redirect('drev_degustation_conseil', $this->drev);
         }
+    }
+
+    public function executeValidation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->validation = new DRevValidation($this->drev);
+        $this->form = new DRevValidationForm($this->drev);
+
+        if(!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        if(!$this->validation->isValide()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->drev->validate();
+        $this->drev->save();
+
+        return $this->redirect('drev_confirmation', $this->drev);
+    }
+
+    public function executeConfirmation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
     }
 
     public function executePDF(sfWebRequest $request) {

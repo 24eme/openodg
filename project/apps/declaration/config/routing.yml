@@ -171,6 +171,26 @@ drev_validation:
   requirements:
     sf_method: [get, post]
 
+drev_confirmation:
+  url: /drev/confirmation/:id
+  param: { module: drev, action: confirmation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_visualisation:
+  url: /drev/visualisation/:id
+  param: { module: drev, action: visualisation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_export_pdf:
   url: /drev/pdf/:id
   param: { module: drev, action: PDF }

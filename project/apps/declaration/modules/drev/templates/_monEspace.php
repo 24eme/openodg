@@ -6,7 +6,11 @@
   					<h2 class="panel-title">DREV de l'année</h2>
   				</div>
 				<div class="panel-body">
-						<?php if ($drev): ?>
+						<?php if ($drev && $drev->validation): ?>
+							<p>
+								<a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser</a>
+							</p>
+						<?php elseif ($drev): ?>
 							<p>
 								<a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drev_edit', $drev) ?>">Continuer</a>
 							</p>

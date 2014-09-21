@@ -16,6 +16,7 @@ DRev:
       type: { }
       campagne: { }
       identifiant: { }
+      validation: { }
       declarant:
         type: collection
         definition:

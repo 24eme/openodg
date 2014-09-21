@@ -283,6 +283,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->declarant_document->storeDeclarant();
     }
 
+    public function validate() {
+        $this->validation = date('Y-m-d');
+    }
+
     public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
