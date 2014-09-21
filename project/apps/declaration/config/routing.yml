@@ -19,6 +19,18 @@ drev_index:
   url: /drev
   param: { module: drev, action: index }
 
+drev_request_dr:
+  url: /drev/dr/request
+  param: { module: drev, action: requestDR }
+
+drev_push_dr:
+  url: /drev/dr/push
+  param: { module: drev, action: pushDR }
+
+drev_pull_dr:
+  url: /drev/dr/pull
+  param: { module: drev, action: pullDR }
+
 drev_create:
   url: /drev/creation/:id
   param: { module: drev, action: create }
@@ -49,9 +61,29 @@ drev_delete:
   requirements:
     sf_method: [get]
 
-drev_import_dr:
-  url: /drev/import-dr/:id
-  param: { module: drev, action: importDR }
+drev_dr:
+  url: /drev/dr/:id
+  param: { module: drev, action: dr }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_dr_recuperation:
+  url: /drev/dr-recuperation/:id
+  param: { module: drev, action: drRecuperation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_dr_import:
+  url: /drev/dr-import/:id
+  param: { module: drev, action: drImport }
   class: DRevRoute
   options:
     model:    DRev
@@ -189,7 +221,7 @@ drevmarc_revendication:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 drevmarc_validation:
   url: /drevmarc/validation/:id
   param: { module: drevmarc, action: validation }
@@ -198,7 +230,7 @@ drevmarc_validation:
     model:    DRevMarc
     type:     object
   requirements:
-    sf_method: [get, post]    
+    sf_method: [get, post]
 
 
 drevmarc_delete:

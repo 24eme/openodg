@@ -5,7 +5,7 @@
                     "controle_externe" => 4,
                     "validation" => 5,
                       ); ?>
-<?php $stepNum = $steps[$step]; ?>
+<?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
 
 <ol class="breadcrumb-steps">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?> <?php if($stepNum > 1): ?>visited<?php endif; ?>">
