@@ -26,8 +26,9 @@
 							</p>
 						<?php endif; ?>
 				</div>
-                            
-                            <div class="panel-heading">
+            </div>
+            <div class="panel panel-default">     
+                <div class="panel-heading">
   					<h2 class="panel-title">DREVMARC de l'année</h2>
   				</div>
 				<div class="panel-body">
