@@ -145,7 +145,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getProduits();
       }
       
-      if(!isset($this->produits[$type_declaration]) || is_null($this->produits[$type_declaration])) {
+      if(!isset($this->produits[$type_declaration]) || is_null($this->produits[$type_declaration])) {
         $this->produits[$type_declaration.$class_node] = array();
         foreach($this->getChildrenFilter($type_declaration) as $key => $item) {
             $this->produits[$type_declaration.$class_node] = array_merge($this->produits[$type_declaration.$class_node], $item->getProduitsFilter($type_declaration, $class_node));

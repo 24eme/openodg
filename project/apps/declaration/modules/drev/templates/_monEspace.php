@@ -46,20 +46,17 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-8">			
-        <div class="panel">
+    <div class="col-xs-4">			
+        <div class="panel panel-default">
             <div class="panel-heading">
                 <h2 class="panel-title">Historique</h2>
             </div>
-            <div class="panel-body">
-                <ul>
-                <?php foreach ($drevsHistory as $drev_h): ?>
-                    <li>
-                        <a class="btn btn-link btn-primary" href="<?php echo url_for('drev_visualisation', $drev_h) ?>">Drev <?php echo $drev_h->campagne ?></a>
-                    </li>
-                <?php endforeach; ?>
-                </ul>
-            </div>
+            <?php foreach ($drevsHistory as $drev_h): ?>
+                <li class="list-group-item">
+                    <a class="btn btn-link btn-primary" href="<?php echo url_for('drev_visualisation', $drev_h) ?>">Drev <?php echo $drev_h->campagne ?></a>
+                </li>
+            <?php endforeach; ?>
+            </ul>
         </div>
     </div>
 </div>

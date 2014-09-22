@@ -189,19 +189,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     
     public function hasRevendicationAlsace()
     {
-    	return 
-    		$this->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->isActive() ||
-    		$this->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->isActive() ||
-    		$this->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->isActive() ||
-    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->isActive() ||
-    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->isActive() || 
-    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->isActive() ||
-    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->isActive();
+    	return true;
     }
     
     public function hasRevendicationGrdCru()
     {
-    	return $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
+    	return $this->declaration->certification->genre->exist('appellation_GRDCRU') && $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
     }
     
     public function hasLots($vtsgn = false, $horsvtsgn = false)

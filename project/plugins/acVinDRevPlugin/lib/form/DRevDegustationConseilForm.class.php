@@ -7,7 +7,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         
         $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_VTSGN));
         $form_vtsgn->setWidget("date", new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())));
-        $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getVtsgnChoices()))));
+        $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))));
         $form_vtsgn->getWidget("date")->setLabel("Période de prélévement");
 
         $this->setWidget("vtsgn_demande", new sfWidgetFormInputCheckbox(array()));

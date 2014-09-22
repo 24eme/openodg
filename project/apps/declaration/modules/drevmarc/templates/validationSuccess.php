@@ -11,18 +11,17 @@
     <?php endif; ?>
     <?php include_partial('drevmarc/recap', array('drevmarc' => $drevmarc)); ?>
 
-    <div class="row row-margin">
+     <div class="row row-margin">
         <div class="col-xs-4">
-            <a href="<?php echo url_for("drev_controle_externe", $drevmarc) ?>" class="btn btn-primary btn-lg"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a>
+            <a href="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
         </div>
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for("drevmarc_export_pdf", $drevmarc) ?>" class="btn btn-warning btn-lg">
-                <span class="glyphicon glyphicon-save"></span>
-                Prévisualiser
+                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-default btn-lg">VALIDER&nbsp;&nbsp;<span class="glyphicon glyphicon-check"></span></button>
+            <button type="submit" <?php if($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 

@@ -14,15 +14,15 @@
    	<?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form)); ?>
 
    	<?php if ($ajoutForm->hasProduits()): ?>
-		<button class="btn btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit&nbsp;<span class="eleganticon icon_plus"></span></button>
+		<button class="btn btn-warning ajax btn-sm" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit&nbsp;<span class="eleganticon icon_plus"></span></button>
 	<?php endif; ?>
 
     <div class="row row-margin">
         <div class="col-xs-6">
-            <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>Retourner à l'organisation</a>
+            <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'organisation</small></a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="submit" class="btn btn-default">Valider et répartir les lots suivant<span class="eleganticon arrow_carrot-right"></span></button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et répartir les lots suivant</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
         </div>
     </div>
 </form>

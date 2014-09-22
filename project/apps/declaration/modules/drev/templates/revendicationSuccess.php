@@ -34,8 +34,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php 
-				foreach ($form['produits'] as $key => $embedForm) : 
+			<?php foreach ($form['produits'] as $key => $embedForm) : 
 					$produit = $drev->get($key)
 			?>
 				<tr>
@@ -73,17 +72,21 @@
 					<?php endif; ?>
 				</tr>
 			<?php endforeach; ?>
+			<?php if ($ajoutForm->hasProduits()): ?>
+			<tr>
+				<td>
+					<button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
+			    </td>
+    			<td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<?php endif; ?>
 		</tbody>
 	</table>
 
-	<?php if ($ajoutForm->hasProduits()): ?>
-        <button class="btn btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button">Ajouter une appellation&nbsp;<span class="eleganticon icon_plus"></span></button>
-    <?php endif; ?>
-
 	<div class="row row-margin">
-		<div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a></div>
+		<div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
 		<div class="col-xs-6 text-right">
-			<button type="submit" class="btn btn-default">Valider et saisir les données par cépage<span class="eleganticon arrow_carrot-right"></span></button>
+			<button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et saisir les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 		</div>
 	</div>
 </form>
