@@ -8,9 +8,10 @@ class DRevPrelevementForm extends acCouchdbObjectForm
         ));
 
         $this->setValidators(array(
-            'date' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)),
+            'date' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)),
         ));
 
+                $this->validatorSchema['date']->setMessage('required', 'La semaine de degustation est obligatoire.');
         $this->widgetSchema["date"]->setLabel('Semaine du');
     }
 
