@@ -82,6 +82,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 	{
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
+        $this->declaration->add('certification')->add('genre');
 	}
 
     public function getCSV() {

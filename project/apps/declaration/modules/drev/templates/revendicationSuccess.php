@@ -20,8 +20,8 @@
 		<thead>
 			<tr>
 				<th class="col-xs-5">Appellation revendiquée</th>
-				<th class="col-xs-2 text-center">Superficie totale<br /><small>(ares)</small></th>
-				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /><small>(hl)</small></th>
+				<th class="col-xs-2 text-center">Superficie totale<br /></th>
+				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /><small class="text-muted"> VT/SGN Inclus</small></th>
 				<th class="col-xs-1 small text-center">Volume total</th>
 				<th class="col-xs-1 small text-center">Volume sur place</th>
 				<th class="col-xs-1 small text-center">Usages industriels</th>
@@ -38,7 +38,7 @@
 						<div class="form-group">
 							<div class="col-xs-10 col-xs-offset-1">
 								<span class="text-danger"><?php echo $embedForm['superficie_revendique']->renderError() ?></span>
-								<?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded')) ?>
+								<?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded' , 'placeholder' => "ares")) ?>
 							</div>
 						</div>
 					</td>
@@ -46,7 +46,7 @@
 						<div class="form-group">
 							<div class="col-xs-10 col-xs-offset-1">
 								<span class="text-danger"><?php echo $embedForm['volume_revendique']->renderError() ?></span>
-								<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded')) ?>
+								<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded', 'placeholder' => "hl")) ?>
 							</div>
 						</div>
 					</td>
