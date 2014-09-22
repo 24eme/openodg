@@ -21,7 +21,7 @@
                 <div class="panel-body">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                     <div class="form-group">
-                        <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
+                        <span class="text-danger"><?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?></span>
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">

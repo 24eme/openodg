@@ -19,7 +19,7 @@
                 <div class="panel-body">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                     <div class="form-group">
-                        <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderError(); ?>
+                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderError(); ?></span>
                         <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -40,7 +40,7 @@
                 <div class="panel-body">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté</p>
                     <div class="form-group">
-                        <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderError(); ?>
+                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderError(); ?></span>
                         <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -61,7 +61,7 @@
                 <div class="panel-body">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                     <div class="form-group">
-                        <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderError(); ?>
+                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderError(); ?></span>
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?>
+                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?></span>
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderLabel("Nombre de lots VT/SGN <small class=\"text-muted\">(toutes appellations confondues)</small>", array("class" => "col-xs-10 control-label")); ?>
                         <div class="col-xs-2">
                             <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->render(array("class" => "form-control")); ?>
