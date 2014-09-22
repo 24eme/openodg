@@ -53,9 +53,9 @@
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
-                            
+                <?php if($sf_user->isAuthenticated()): ?>          
                 <nav id="navigation" role="navigation">
-                    <span class="profile-name">Vincent Rodriguez</span>
+                    <span class="profile-name"><?php echo $sf_user->getEtablissement()->nom ?></span>
 
                     <ul>
                         <li><a href="<?php echo url_for('home') ?>#drev">Mes déclarations</a></li>
@@ -64,6 +64,7 @@
                         <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                     </ul>
                 </nav>
+                <?php endif; ?>
             </header>
             <!-- end #header -->
             

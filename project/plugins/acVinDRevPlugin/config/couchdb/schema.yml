@@ -4,9 +4,19 @@ DRev:
     fields:
       _id: { }
       _rev: { }
+      _attachments:
+        type: collection
+        definition:
+          fields: 
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
       type: { }
       campagne: { }
       identifiant: { }
+      validation: { }
       declarant:
         type: collection
         definition:

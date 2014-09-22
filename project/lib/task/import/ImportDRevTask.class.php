@@ -211,7 +211,7 @@ EOF;
 
         if($data[self::CSV_AOC] == "2") {
             
-            return sprintf("/declaration/certification/genre/appellation_GRDCRU/mention/lieu%s/couleur/cepage_%s", sprintf("%02d", $data[self::CSV_GRDCRU]),  $this->convertCepage($data[self::CSV_CEPAGE]));
+            return sprintf("/declaration/certification/genre/appellation_GRDCRU/mention/lieu%s/couleur/cepage_%s", sprintf("%02d", $this->convertGrdCruNum($data[self::CSV_GRDCRU])),  $this->convertCepage($data[self::CSV_CEPAGE]));
         }
 
         throw new sfException(sprintf("Appellation %s not found", $data[self::CSV_AOC]));
@@ -252,8 +252,9 @@ EOF;
             "12" => "/declaration/certification/genre/appellation_PINOTNOIR/mention/lieu/couleur",
             "13" => "/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur",
             "23" => "/declaration/certification/genre/appellation_GRDCRU/mention/lieu/couleur",
-            "103363" => "/declaration/certification/genre/appellation_ALSACEBLANC/mention/lieu/couleur",
-            "103371" => "/declaration/certification/genre/appellation_PINOTNOIRROUGE/mention/lieu/couleur",
+            "103361" => "/declaration/certification/genre/appellation_COMMUNALE/mention/lieu/couleurRouge",
+            "103363" => "/declaration/certification/genre/appellation_COMMUNALE/mention/lieu/couleurBlanc",
+            "103371" => "/declaration/certification/genre/appellation_LIEUDIT/mention/lieu/couleurRouge",
             "103373" => "/declaration/certification/genre/appellation_LIEUDIT/mention/lieu/couleurBlanc",
             "100943" => "/declaration/certification/genre/appellation_CREMANT/mention/lieu/couleur",
         );
@@ -263,5 +264,17 @@ EOF;
         }
 
         return $hash;
+    }
+
+    protected function convertGrdCruNum($num) {
+        $grdcru = array("1" => "01", "2" => "02", "3" => "26", "4" => "03", "5" => "49", "6" => "04", "7" => "27", "8" => "50", "9" => "28", "10" => "29", "11" => "48", "12" => "05", "13" => "06", "14" => "07", "15" => "08", "16" => "09", "17" => "51", "18" => "10", "19" => "11", "20" => "12", "21" => "13", "22" => "14", "23" => "15", "24" => "30", "25" => "31", "26" => "32", "27" => "16", "28" => "17", "29" => "34", "30" => "35", "31" => "37", "32" => "18", "33" => "19", "34" => "20", "35" => "21", "36" => "38", "37" => "22", "38" => "23", "39" => "24", "40" => "39", "41" => "40", "42" => "41", "43" => "42", "44" => "43", "45" => "25", "46" => "44", "47" => "45", "48" => "46", "49" => "47", "50" => "33", "52" => "36",
+        );
+
+        if(!isset($num)) {
+
+            throw new sfException(sprintf("Numero de grand cru %s", $num));
+        }
+
+        return $grdcru[$num];
     }
 }

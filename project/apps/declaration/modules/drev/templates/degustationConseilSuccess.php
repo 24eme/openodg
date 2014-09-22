@@ -1,18 +1,24 @@
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
 
+<div class="page-header">
+    <h2>Dégustation conseil <small>Réaliser par l'AVA</small></h2>
+</div>
+
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'prelevement', 'drev' => $drev)) ?>
 
 <form method="post" action="" role="form" class="form-horizontal">
+    <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
 
-    <div class="tab-content">
-        <div class="tab-pane active">
-            <div class="row">
-                <div class="col-xs-7">
-                    <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
-                    <?php echo $form->renderHiddenFields(); ?>
-                    <?php echo $form->renderGlobalErrors(); ?>
+    <div class="row">
+        <div class="col-xs-7">
+            <?php echo $form->renderHiddenFields(); ?>
+            <?php echo $form->renderGlobalErrors(); ?>
 
-                    <h2 class="h2-border">AOC Alsace</h2>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">AOC Alsace</h2>
+                </div>
+                <div class="panel-body">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                     <div class="form-group">
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
@@ -26,13 +32,20 @@
                             </div>
                         </div>
                     </div>
-                    <h2 class="h2-border">VT / SGN</h2>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">VT / SGN</h2>
+                </div>
+                <div class="panel-body">
                     <div class="form-group">
-                      <div class="checkbox">
-                        <label>
-                          <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélévement volontaire des VT / SGN
-                        </label>
-                      </div>
+                        <div class="checkbox">
+                            <label>
+                              <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélévement volontaire des VT / SGN
+                            </label>
+                        </div>
                     </div>
                     <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if(!$form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>hidden<?php endif; ?>">
                         <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderError(); ?>
@@ -42,31 +55,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-4 col-xs-offset-1">
-                    <h2>Lieu de prélèvement :</h2>
-                                    
-                    <span>Nom du responsable : Gwenael Chichery</span> <br />
-                    <span>Adresse : 1, rue Garnier Neuilly, 92110</span> <br />
-                    <span>Tél : 06 82 87 68 92</span><br />
-                                    
+            </div>
+        </div>
+        <div class="col-xs-4 col-xs-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2 class="panel-title">Lieu de prélèvement</h2>
+                </div>
+                <div class="panel-body">
+                    <span>1, rue Garnier Neuilly, 92110</span> <br />
                     <div class="row-margin text-right">
                         <a href="#" class="btn btn-warning">Modifier</a>
                     </div>
-                </div>
-            </div>
-
-            <div class="row row-margin">
-                <div class="col-xs-6">
-                </div>
-                <div class="col-xs-6 text-right">
-                    <button type="submit" class="btn btn-default">Valider et répartir les lots<span class="eleganticon arrow_carrot-right"></span></button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row row-margin">
-        <div class="col-xs-4"><a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a></div>
+        <div class="col-xs-6">
+            <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a>
+        </div>
+        <div class="col-xs-6 text-right">
+            <button type="submit" class="btn btn-default">Valider et répartir les lots<span class="eleganticon arrow_carrot-right"></span></button>
+        </div>
     </div>
 </form>
 

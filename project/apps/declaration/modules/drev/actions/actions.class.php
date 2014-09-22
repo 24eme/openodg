@@ -6,8 +6,14 @@ class drevActions extends sfActions
     public function executeIndex(sfWebRequest $request)
     {
 
+    }  
+
+    public function executePushDR(sfWebRequest $request) {
+        $this->url = $request->getParameter('url_import');
+        $this->csv = base64_encode(file_get_contents(sfConfig::get('sf_data_dir').'/DR/DR-7523700100-2013.csv'));
+        $this->pdf = base64_encode(file_get_contents(sfConfig::get('sf_data_dir').'/DR/DR-7523700100-2013.pdf'));
     }
- 
+
     public function executeCreate(sfWebRequest $request)
     {
         $etablissement = $this->getRoute()->getEtablissement();
@@ -21,7 +27,7 @@ class drevActions extends sfActions
     {
         $drev = $this->getRoute()->getDRev();
 
-        return $this->redirect('drev_exploitation', $drev);
+        return $this->redirect('drev_dr', $drev);
     }
 
     public function executeDelete(sfWebRequest $request)
@@ -30,6 +36,42 @@ class drevActions extends sfActions
 		$drev->delete();	
 		$this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');	
         return $this->redirect($this->generateUrl('home') . '#drev');
+    }
+
+    public function executeDr(sfWebRequest $request)
+    {
+        $this->drev = $this->getRoute()->getDRev();
+
+    }
+
+    public function executeDrRecuperation(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        return $this->redirect(sfConfig::get('app_url_dr_recuperation').
+                              "?".
+                              http_build_query(array(
+                                    'url' => $this->generateUrl('drev_dr_import', $drev, true),
+                                    'id' => 'DR-'.$drev->identifiant.'-2013')));
+    }
+
+    public function executeDrImport(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        umask(0002);
+        $cache_dir = sfConfig::get('sf_cache_dir').'/dr';
+        if (!file_exists($cache_dir)) {
+            mkdir($cache_dir);
+        }
+
+        file_put_contents($cache_dir."/DR.csv", base64_decode($request->getParameter('csv')));
+        $drev->storeAttachment($cache_dir."/DR.csv", "text/csv");
+
+        file_put_contents($cache_dir."/DR.pdf", base64_decode($request->getParameter('pdf')));
+        $drev->storeAttachment($cache_dir."/DR.pdf", "application/pdf");
+
+        $drev->updateFromCSV();
+        $drev->save();
+
+        return $this->redirect($this->generateUrl('drev_exploitation', $drev));
     }
 
     public function executeExploitation(sfWebRequest $request)
@@ -164,11 +206,6 @@ class drevActions extends sfActions
         return $this->redirect('drev_validation', $this->drev);
     }
 
-    public function executeValidation(sfWebRequest $request) {
-        $this->drev = $this->getRoute()->getDRev();
-        $this->validation = new DRevValidation($this->drev);
-    }
-
     public function executeRevendicationCepage(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->noeud = $this->drev->get("declaration/certification/genre/".$request->getParameter("hash"));
@@ -195,6 +232,42 @@ class drevActions extends sfActions
 
             return $this->redirect('drev_degustation_conseil', $this->drev);
         }
+    }
+
+    public function executeValidation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->validation = new DRevValidation($this->drev);
+        $this->form = new DRevValidationForm($this->drev);
+
+        if(!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        if(!$this->validation->isValide()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->drev->validate();
+        $this->drev->save();
+
+        return $this->redirect('drev_confirmation', $this->drev);
+    }
+
+    public function executeConfirmation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
     }
 
     public function executePDF(sfWebRequest $request) {

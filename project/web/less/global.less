@@ -42,8 +42,8 @@ hr
 	{
 		margin: @hr-margin-sm-vertical auto;
 	}
-}
 
+}
 
 /* ============================================================= */
 /* IE MESSAGE */
@@ -130,6 +130,16 @@ hr
 {
 	float: none;
 }
+
+.page-header
+{
+	margin-top: 20px;
+	padding-bottom: 0px;
+	padding-left: @grid-gutter-width;
+	padding-right: @grid-gutter-width;
+	margin-left: -(floor(@grid-gutter-width / 2));
+	margin-right: -(floor(@grid-gutter-width / 2));
+}
  
 .col-xxs-12
 {
@@ -146,14 +156,23 @@ hr
 	margin-top: 20px; 
 }
 
-.frame
-{
-	background: @gray-lighter;
-	border: 1px solid @gray-light;
-	padding: 0 @grid-gutter-width;
+.panel .table-striped {
+  > tbody > tr:nth-child(odd) {
+    > td,
+    > th {
+      background-color: @table-bg;
+    }
+  }
 }
 
-
+.panel .table-striped {
+  > tbody > tr:nth-child(even) {
+    > td,
+    > th {
+      background-color: @table-bg-accent;
+    }
+  }
+}
 
 /**
  * Sprites
@@ -1376,8 +1395,8 @@ h3, .h3 { color: @font-color-h3; }
 	font-size: 14px;
 	font-weight: 600;
 	list-style: none;
-	margin-bottom: 30px;
-	margin-left: -(floor(@grid-gutter-width/2));
+	margin-bottom: 0;
+	margin-left: -(floor(@grid-gutter-width));
 	margin-top: 0;
 	overflow: hidden;
 	padding: 0;
@@ -1460,6 +1479,10 @@ h3, .h3 { color: @font-color-h3; }
  ******************************************/
 .nav-tabs
 {
+	margin-left: -(floor(@grid-gutter-width / 2));
+	margin-right: -(floor(@grid-gutter-width / 2));
+	padding: 0 floor(@grid-gutter-width/4);
+	margin-bottom: @grid-gutter-width;
 	> li
 	{
 		&.active
@@ -1502,10 +1525,14 @@ h3, .h3 { color: @font-color-h3; }
 	box-shadow: none;
 	font-size: 14px;
 
+	background: @gray-lighter;
+
 	.panel-heading
 	{
 		margin: 0 @panel-body-padding;
 		padding: 20px 0 10px 0;
+
+		background: @gray-lighter;
 
 		.panel-title { font-size: 18px; }
 	}
@@ -1516,12 +1543,21 @@ h3, .h3 { color: @font-color-h3; }
 	{
 		background: @panel-success-heading-bg;
 
+		.panel-heading
+		{
+			background: @panel-success-heading-bg;
+		}
 		.panel-body { color: @panel-success-text; }
 	}
 
 	&.panel-info
 	{
 		background: @panel-info-heading-bg;
+
+		.panel-heading
+		{
+			background: @panel-info-heading-bg;
+		}
 
 		.panel-body { color: @panel-info-text; }
 	}
@@ -1623,6 +1659,7 @@ h3, .h3 { color: @font-color-h3; }
 	background: @white;
 	margin-top: 35px;
 	position: relative;
+	padding: 0 @grid-gutter-width;
 }
 
 

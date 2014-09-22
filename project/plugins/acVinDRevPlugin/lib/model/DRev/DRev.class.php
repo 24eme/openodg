@@ -92,10 +92,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	}
     }
 
-    public function initFromCSV($csv) {
+    public function updateFromCSV() {
+        $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
+        $csv = $csv->getCsvAcheteur($this->identifiant);
         $this->initFromCSVRevendication($csv);
         $this->initFromCSVRevendicationCepage($csv);
         $this->initFromCepage($csv);
+        $this->updateFromDR();
     }
 
     public function initFromCSVRevendication($csv) {
@@ -278,6 +281,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
+    }
+
+    public function validate() {
+        $this->validation = date('Y-m-d');
     }
 
     public function getEtablissementObject() {
