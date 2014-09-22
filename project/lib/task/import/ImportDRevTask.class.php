@@ -93,7 +93,7 @@ EOF;
         $doc = DRevClient::getInstance()->find($id);
         if(!$doc) {
             $doc = new DRev();
-            $doc->initDeclaration($cvi, $campagne);
+            $doc->initDoc($cvi, $campagne);
         }
 
         $doc->remove('declaration');

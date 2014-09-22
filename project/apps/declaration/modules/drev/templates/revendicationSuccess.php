@@ -10,6 +10,12 @@
 	<?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     <p>Veuillez saisir les informations des AOC revendiquées dans la déclaration de récolte de l'année</p>
+    <?php if ($sf_user->hasFlash('notice')): ?>
+        <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('erreur')): ?>
+        <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php endif; ?>
 	<div class="row">
 		<div class="col-xs-3 col-xs-offset-9 text-center">
 			<span class="label label-primary">Informations issues de la DR</span>
@@ -70,6 +76,10 @@
 		</tbody>
 	</table>
 
+	<?php if ($ajoutForm->hasProduits()): ?>
+        <button class="btn btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button">Ajouter une appellation&nbsp;<span class="eleganticon icon_plus"></span></button>
+    <?php endif; ?>
+
 	<div class="row row-margin">
 		<div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a></div>
 		<div class="col-xs-6 text-right">
@@ -77,3 +87,5 @@
 		</div>
 	</div>
 </form>
+
+<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_ajout', $drev), 'form' => $ajoutForm)); ?>

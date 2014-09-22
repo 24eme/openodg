@@ -24,13 +24,14 @@ class DRevClient extends acCouchdbClient {
     public function createDoc($identifiant, $campagne) 
     {  
         $drev = new DRev();
-        $drev->initDeclaration($identifiant, $campagne);
+        $drev->initDoc($identifiant, $campagne);
 
         $drev_previous = $this->find(sprintf("DREV-%s-%s", $identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getPrevious($campagne)));
 
         if($drev_previous) {
             $drev->updateFromDRev($drev_previous);
         }
+
 
         return $drev;
     }

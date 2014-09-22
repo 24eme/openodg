@@ -78,7 +78,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 	
-	public function initDeclaration($identifiant, $campagne)
+	public function initDoc($identifiant, $campagne)
 	{
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
@@ -229,6 +229,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
+    public function initProduits() 
+    {
+        $produits = $this->getConfigProduits();
+        foreach ($produits as $produit) {
+            $this->addProduit($produit->getHash());
+        }
+    }
+
     protected function updateDetailFromCSV($csv) {
         foreach($csv as $line) {
             if(!preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) && !preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])) {
@@ -321,14 +329,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     protected function resetCepage() {
         foreach($this->declaration->getProduitsCepage() as $produit) {
             $produit->resetRevendique();
-        }
-    }
-
-    protected function initProduits() 
-    {
-        $produits = $this->getConfigProduits();
-        foreach ($produits as $produit) {
-            $this->addProduit($produit->getHash());
         }
     }
 

@@ -98,7 +98,9 @@ class drevActions extends sfActions {
 
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+
         $this->form = new DRevRevendicationForm($this->drev);
+        $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
@@ -111,6 +113,29 @@ class drevActions extends sfActions {
                 return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
             }
         }
+    }
+
+    public function executeRevendicationAjoutProduit(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+
+        $this->ajoutForm = new DrevRevendicationAjoutProduitForm($this->drev);
+        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+
+        if (!$this->ajoutForm->isValid()) {
+            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+
+            return $this->redirect('drev_revendication', $this->drev);
+        }
+
+        $this->ajoutForm->save();
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderText(json_encode(array("success" => true)));
+        }
+
+        $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
+
+        return $this->redirect('drev_revendication', $this->drev);
     }
 
     public function executeRevendicationCepage(sfWebRequest $request) {
@@ -218,7 +243,7 @@ class drevActions extends sfActions {
         
         if ($request->isXmlHttpRequest()) {
             $this->drev = DRevClient::getInstance()->find($this->drev->_id);
-            return $this->renderText(json_encode(array("success" => true,'drev_rev' => $this->drev->_rev)));
+            return $this->renderText(json_encode(array("success" => true, 'drev_rev' => $this->drev->_rev)));
         }
 
         if ($this->prelevement->getKey() == Drev::CUVE_ALSACE) {

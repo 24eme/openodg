@@ -13,5 +13,6 @@ class DRevRevendicationForm extends acCouchdbObjectForm
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
         	$embedForm->doUpdateObject($values[$key]);
         }
+
     }
 }

@@ -155,13 +155,20 @@ $configurationJson->declaration->certification->genre->appellation_GRDCRU->menti
          * Identification des produits (niveau couleur) de la DRev
          */
         @$configurationJson->declaration->certification->genre->appellation_ALSACE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_ALSACE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
         foreach($configurationJson->declaration->certification->genre->appellation_GRDCRU->mention as $key_lieu => $lieu) {
+            if($key_lieu == "lieu") {
+                @$lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
+            }
             if(!preg_match('/^lieu/', $key_lieu) || $key_lieu == "lieu") {
                 continue;
             }
             @$lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
         }
         foreach($configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention as $key_lieu => $lieu) {
+            if($key_lieu == "lieu") {
+                @$lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
+            }
             if(!preg_match('/^lieu/', $key_lieu) || $key_lieu == "lieu") {
                 continue;
             }
