@@ -6,7 +6,7 @@
 
 <?php include_partial('drev/stepRevendication', array('drev' => $drev)) ?>
 
-<form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post">
+<form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
 	<?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     <p>Veuillez saisir les informations des AOC revendiquées dans la déclaration de récolte de l'année</p>

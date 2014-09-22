@@ -6,7 +6,7 @@
 
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'prelevement', 'drev' => $drev)) ?>
 
-<form method="post" action="" role="form" class="form-horizontal">
+<form method="post" action="" role="form" class="form-horizontal ajaxForm">
     <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
 
     <div class="row">

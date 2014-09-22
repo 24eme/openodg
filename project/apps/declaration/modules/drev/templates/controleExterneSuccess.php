@@ -4,7 +4,7 @@
     <h2>Contrôle externe <small>Prélèvement en bouteille</small></h2>
 </div>
 
-<form method="post" action="" role="form" class="form-horizontal">
+<form method="post" action="" role="form" class="form-horizontal ajaxForm">
     <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
     <div class="row">
         <div class="col-xs-7">

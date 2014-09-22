@@ -2,8 +2,8 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form method="post" action="<?php echo url_for("drev_lots_ajout", $prelevement) ?>" role="form" class="form-horizontal">
-				<?php echo $form->renderGlobalErrors() ?>
-				<?php echo $form->renderHiddenFields() ?>
+                            <?php echo $form['_csrf_token']->render(); ?>
+                            <?php echo $form['_revision']->render(array('class' => 'drev_rev')); ?>
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Ajouter un produit</h4>
