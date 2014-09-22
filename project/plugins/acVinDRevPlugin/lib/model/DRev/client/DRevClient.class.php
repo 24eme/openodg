@@ -24,16 +24,13 @@ class DRevClient extends acCouchdbClient {
     public function createDoc($identifiant, $campagne) 
     {  
         $drev = new DRev();
-        $drev->initDrev($identifiant, $campagne);
-        $drev->initProduits();
-        /*$csv_file = sfConfig::get('sf_data_dir').'/DR/DR-'.$identifiant.'-2013.csv';
-        if(file_exists($csv_file)) {
-            $csv = new DRCsvFile($csv_file);
-            $drev->initFromCSV($csv->getCsvAcheteur($drev->identifiant));
-            $drev->updateFromDR();
-        } else {
-            $drev->initLots();
-        }*/
+        $drev->initDeclaration($identifiant, $campagne);
+
+        $drev_previous = $this->find(sprintf("DREV-%s-%s", $identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getPrevious($campagne)));
+
+        if($drev_previous) {
+            $drev->updateFromDRev($drev_previous);
+        }
 
         return $drev;
     }

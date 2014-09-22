@@ -11,7 +11,12 @@ class DRevCepage extends BaseDRevCepage {
         return null;
     }
 
-    
+    public function resetRevendique() {
+        $this->superficie_revendique = null;
+        $this->volume_revendique = null;
+        $this->volume_revendique_vtsgn = null;
+    }
+
     public function getProduitsCepage() 
     {
 

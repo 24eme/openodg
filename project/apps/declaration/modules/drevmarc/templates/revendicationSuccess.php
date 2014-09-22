@@ -3,9 +3,10 @@
     <h2>Revendication</h2>
 </div>
 
-<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post">
-    <?php echo $form->renderHiddenFields() ?>
-    <?php echo $form->renderGlobalErrors() ?>
+<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm" id="form_drevmarc_<?php echo $drevmarc->_id; ?>" >
+    <div class="frame">	
+        <?php echo $form->renderHiddenFields() ?>
+        <?php echo $form->renderGlobalErrors() ?>
 
     <p></p>	
     <div class="row">

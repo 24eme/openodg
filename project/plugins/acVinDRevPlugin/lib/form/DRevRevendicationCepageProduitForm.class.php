@@ -4,19 +4,19 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm
     public function configure()
     {
         $this->setWidgets(array(
-            'superficie_total' => new sfWidgetFormInputFloat(),
-            'volume_sur_place' => new sfWidgetFormInputFloat(),
-            'volume_sur_place_vtsgn' => new sfWidgetFormInputFloat(),
+            'superficie_revendique' => new sfWidgetFormInputFloat(),
+            'volume_revendique' => new sfWidgetFormInputFloat(),
+            'volume_revendique_vtsgn' => new sfWidgetFormInputFloat(),
         ));
         $this->widgetSchema->setLabels(array(
-            'superficie_total' => 'Superficie ,:',
-            'volume_sur_place' => 'Volume revendiqué (hl):',
-            'volume_sur_place_vtsgn' => 'Volume revendiqué (hl):',
+            'superficie_revendique' => 'Superficie ,:',
+            'volume_revendique' => 'Volume revendiqué (hl):',
+            'volume_revendique_vtsgn' => 'Volume revendiqué (hl):',
         ));
         $this->setValidators(array(
-            'superficie_total' => new sfValidatorNumber(array('required' => false)),
-            'volume_sur_place' => new sfValidatorNumber(array('required' => false)),
-            'volume_sur_place_vtsgn' => new sfValidatorNumber(array('required' => false)),
+            'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
+            'volume_revendique' => new sfValidatorNumber(array('required' => false)),
+            'volume_revendique_vtsgn' => new sfValidatorNumber(array('required' => false)),
         ));
         $this->widgetSchema->setNameFormat('[%s]');
     }

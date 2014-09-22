@@ -50,19 +50,19 @@
 							</div>
 						</div>
 					</td>
-					<?php if(!$produit->volume_sur_place): ?>
+					<?php if(!$produit->detail->volume_sur_place): ?>
 						<td class=""></td>
 						<td></td>
 						<td></td>
 					<?php else: ?>
 						<td class="text-right text-muted">
-							<?php echoFloat($produit->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
+							<?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
 						</td>
 						<td class="text-right text-muted">
-							<?php echoFloat($produit->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
+							<?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
 						</td>
 						<td class="text-right text-muted">
-							<?php echoFloat($produit->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
+							<?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
 						</td>
 					<?php endif; ?>
 				</tr>

@@ -87,11 +87,16 @@ DRev:
                                                 libelle: { }
                                                 volume_revendique: { type: float }
                                                 superficie_revendique: { type:float }
-                                                superficie_total: { type:float }
-                                                usages_industriels_total: { type:float }
-                                                volume_sur_place: { type:float }
-                                                volume_sur_place_revendique: { type:float }
-                                                volume_total: { type:float }
+                                                detail:
+                                                  type: collection
+                                                  definition:
+                                                    fields:
+                                                      volume_sur_place: { type:float }
+                                                      volume_sur_place_revendique: { type:float }
+                                                      usages_industriels_sur_place: { type:float }
+                                                      usages_industriels_total: { type:float }
+                                                      volume_total: { type:float }
+                                                      superficie_total: { type:float }
                                                 # ------ Cépage ------
                                                 '*':
                                                   type: collection
@@ -100,10 +105,10 @@ DRev:
                                                   definition:
                                                     fields:
                                                       libelle: { }
-                                                      superficie_total: { type:float }
-                                                      volume_sur_place: { type:float }
-                                                      volume_sur_place_vtsgn: { type:float }
-                                                      volume_total: { type:float }
+                                                      superficie_revendique: { type:float }
+                                                      volume_revendique: { type:float }
+                                                      volume_revendique_vtsgn: { type:float }
+                                                      volume_revendique_total: { type:float }
       prelevements:
         type: collection
         definition:

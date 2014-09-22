@@ -69,9 +69,8 @@ class DRevValidation extends DocumentValidation
   	{
   		if (
   			$produit->superficie_revendique !== null && 
-  			$produit->exist('dr') && 
   			$produit->superficie_revendique !== null && 
-  			$produit->superficie_revendique != $produit->superficie_total
+  			$produit->superficie_revendique != $produit->detail->superficie_total
   		) {
   			$this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document))); 
   		}
@@ -81,9 +80,8 @@ class DRevValidation extends DocumentValidation
   	{
   		if (
   			$produit->volume_revendique !== null && 
-  			$produit->exist('dr') && 
-  			$produit->volume_sur_place_revendique !== null && 
-  			$produit->volume_revendique != $produit->volume_sur_place_revendique
+  			$produit->detail->volume_sur_place_revendique !== null && 
+  			$produit->volume_revendique != $produit->detail->volume_sur_place_revendique
   		) {
   			$this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document))); 
   		}
@@ -102,20 +100,18 @@ class DRevValidation extends DocumentValidation
   	protected function controleErrorVolumeRevendiqueIncorrect($produit)
   	{
   		if (
-  			$produit->volume_revendique !== null &&
-  			$produit->exist('dr') && 
-  			$produit->volume_sur_place !== null && 
-  			$produit->usages_industriels_total !== null && 
-  			($produit->volume_sur_place - $produit->usages_industriels_total) > $produit->volume_revendique	
+  			$produit->volume_revendique !== null && 
+  			$produit->detail->volume_sur_place !== null && 
+  			$produit->detail->usages_industriels_total !== null && 
+  			($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total) > $produit->volume_revendique	
   		) {
   			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}
   		
   		if (
-  			$produit->volume_revendique !== null &&
-  			$produit->exist('dr') && 
-  			$produit->volume_sur_place !== null && 
-  			$produit->volume_revendique > $produit->volume_sur_place
+  			$produit->volume_revendique !== null && 
+  			$produit->detail->volume_sur_place !== null && 
+  			$produit->volume_revendique > $produit->detail->volume_sur_place
   		) {
   			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
   		}

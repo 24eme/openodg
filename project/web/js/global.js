@@ -4,103 +4,103 @@
  * Authors : Hamza Iqbal - hiqbal[at]actualys.com
  *			 Mikaël Guillin - mguillin[at]actualys.com
  * Copyright : Actualys
-/* =================================================================================== */
+ /* =================================================================================== */
 
 
 /* =================================================================================== */
 /* JQUERY CONTEXT */
 /* =================================================================================== */
 (function($)
-{	
-	/* =================================================================================== */
-	/* GLOBAL VARS */
-	/* =================================================================================== */
-	
-	// Anchor
-	var _anchor = window.location.hash;
-	
-	
-	// Main elements
-	var _doc = $(document);
-	var _win = $(window);
-	var _html = $('html');
-	var _body = $('body');
-	var _header = $('#header');
-	var _navigation = $('#navigation');
-	var _content = $('#content');
-	var _footer = $('#footer');
-	
-	// Carousels
-	var _carousels = $('.carousel-content');
-	
-	var _classNames =
-	{
-		active : 'active',
-		opened : 'opened',
-		disabled : 'disabled'
-	};
-	
-	
-	// Fancybox - Defaut config
-	var _fbConfig =
-	{
-		padding: 0,
-		autoSize : true,
-		fitToView : true,
-		helpers :
-		{
-			title:
-			{
-				type: 'outside',
-				position: 'top'
-			}
-		}
-	};
+{
+    /* =================================================================================== */
+    /* GLOBAL VARS */
+    /* =================================================================================== */
 
-	$.initDatePickers = function()
-	{
-		var datePickers = $('.date-picker');
+    // Anchor
+    var _anchor = window.location.hash;
 
-		datePickers.each(function()
-		{
-			var currentDp = $(this);
 
-			currentDp.datetimepicker
-			({
-				language: 'fr',
-				pickTime: false,
-				daysOfWeekDisabled:[0,2,3,4,5,6]
-			});
+    // Main elements
+    var _doc = $(document);
+    var _win = $(window);
+    var _html = $('html');
+    var _body = $('body');
+    var _header = $('#header');
+    var _navigation = $('#navigation');
+    var _content = $('#content');
+    var _footer = $('#footer');
 
-			currentDp.on('focus', 'input', function()
-			{
-				currentDp.data('DateTimePicker').show();
-			});
-		});
-	};
+    // Carousels
+    var _carousels = $('.carousel-content');
 
-	$.initSelect2Autocomplete = function()
-	{	
+    var _classNames =
+            {
+                active: 'active',
+                opened: 'opened',
+                disabled: 'disabled'
+            };
 
-		$('.select2autocomplete').select2({ allowClear: true, placeholder: true});
-	}
 
-	$.initCheckboxRelations = function()
-	{
-		$('.checkbox-relation').click(function() {
-			$($(this).attr('data-relation')).toggleClass("hidden");
-		})
+    // Fancybox - Defaut config
+    var _fbConfig =
+            {
+                padding: 0,
+                autoSize: true,
+                fitToView: true,
+                helpers:
+                        {
+                            title:
+                                    {
+                                        type: 'outside',
+                                        position: 'top'
+                                    }
+                        }
+            };
 
-	}
+    $.initDatePickers = function()
+    {
+        var datePickers = $('.date-picker');
 
-	/* =================================================================================== */
-	/* FUNCTIONS CALL */
-	/* =================================================================================== */
-	_doc.ready(function()
-	{
-		$.initDatePickers();
-		$.initSelect2Autocomplete();
-		$.initCheckboxRelations();
-	});
-	
+        datePickers.each(function()
+        {
+            var currentDp = $(this);
+
+            currentDp.datetimepicker
+                    ({
+                        language: 'fr',
+                        pickTime: false,
+                        daysOfWeekDisabled: [0, 2, 3, 4, 5, 6]
+                    });
+
+            currentDp.on('focus', 'input', function()
+            {
+                currentDp.data('DateTimePicker').show();
+            });
+        });
+    };
+
+    $.initSelect2Autocomplete = function()
+    {
+
+        $('.select2autocomplete').select2({allowClear: true, placeholder: true});
+    }
+
+    $.initCheckboxRelations = function()
+    {
+        $('.checkbox-relation').click(function() {
+            $($(this).attr('data-relation')).toggleClass("hidden");
+        })
+
+    }
+
+    /* =================================================================================== */
+    /* FUNCTIONS CALL */
+    /* =================================================================================== */
+    _doc.ready(function()
+    {
+        $.initDatePickers();
+        $.initSelect2Autocomplete();
+        $.initCheckboxRelations();
+    });
+
 })(jQuery);
