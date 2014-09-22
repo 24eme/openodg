@@ -105,6 +105,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $p = $this->addProduit($produit->getHash());
             $p->superficie_revendique = $produit->superficie_revendique;
         }
+
+        foreach($drev->prelevements as $prelevement) {
+            $p = $this->addPrelevement($prelevement->getKey());
+            foreach($prelevement->lots as $lot) {
+                $p->addLotProduit($lot->hash_produit);
+            }
+        }
     }
     
 	public function addProduit($hash)
