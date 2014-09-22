@@ -11,7 +11,7 @@ class drevmarcActions extends sfActions
     public function executeCreate(sfWebRequest $request)
     {
         $etablissement = $this->getRoute()->getEtablissement();
-        $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, '2013-2014');
+        $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $drevmarc->save();
 
         return $this->redirect('drevmarc_edit', $drevmarc);

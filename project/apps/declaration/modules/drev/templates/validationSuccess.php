@@ -25,7 +25,7 @@
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-default btn-lg">VALIDER&nbsp;&nbsp;<span class="glyphicon glyphicon-check"></span></button>
+            <button type="submit" <?php if($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg">VALIDER&nbsp;&nbsp;<span class="glyphicon glyphicon-check"></span></button>
         </div>
     </div>
 </form>
