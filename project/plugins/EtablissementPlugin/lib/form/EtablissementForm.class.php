@@ -10,6 +10,7 @@ class EtablissementForm extends acCouchdbObjectForm
             "commune" => new sfWidgetFormInput(),
             "code_postal" => new sfWidgetFormInput(),
             "telephone" => new sfWidgetFormInput(),
+            "portable" => new sfWidgetFormInput(),
             "fax" => new sfWidgetFormInput(),
         ));
 
@@ -20,6 +21,7 @@ class EtablissementForm extends acCouchdbObjectForm
             'commune' => new sfValidatorString(),
             'code_postal' => new sfValidatorString(),
             'telephone' => new sfValidatorString(array("required" => false)),
+            'portable' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
         ));
 

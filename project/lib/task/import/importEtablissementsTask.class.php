@@ -148,7 +148,8 @@ EOF;
 
     protected function importLineCommunication($data, $etablissement) {
 
-        $etablissement->telephone = ($data[self::CSV_TEL]) ? $data[self::CSV_TEL] : $data[self::CSV_PORTABLE];
+        $etablissement->telephone = $data[self::CSV_TEL];
+        $etablissement->portable = $data[self::CSV_PORTABLE];
         $etablissement->fax = $data[self::CSV_FAX];
         $etablissement->email = $data[self::CSV_EMAIL];
     }

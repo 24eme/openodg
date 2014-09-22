@@ -12,6 +12,7 @@ Etablissement:
       siret: {  }
       email: {  }
       telephone: {  }
+      portable: {  }
       fax: {  }
       adresse: {  }
       code_postal: {  }

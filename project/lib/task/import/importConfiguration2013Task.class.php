@@ -128,9 +128,20 @@ EOF;
         /*
          * Modification des libelles pour le Pinot
          */
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->libelle = 'AOC Alsace Pinot noir rosé';
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->libelle = 'AOC Alsace Pinot noir rouge';
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->libelle = 'AOC Alsace Pinot noir rosé';    
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->cepage_PN->libelle = 'Pinot Noir Rosé';
 
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->libelle = 'AOC Alsace Pinot noir rouge';
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->cepage_PR->libelle = 'Pinot Noir Rouge';
+
+         /*
+         * Modification des libelles pour l'assemblage
+         */
+        $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage Edel';
+        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->cepage_ED->libelle = 'Assemblage Edel';
+$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu02->couleur->cepage_ED->libelle = 'Assemblage Edel';
+$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu51->couleur->cepage_ED->libelle = 'Assemblage Edel'; 
+$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage Edel';        
         /*
          * On ajoute l'appellation Alsace pour la gestion des lots
          */
