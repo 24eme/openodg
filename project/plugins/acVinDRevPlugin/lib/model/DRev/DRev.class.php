@@ -78,103 +78,39 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 	
-	public function initDrev($identifiant, $campagne)
+	public function initDeclaration($identifiant, $campagne)
 	{
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
 	}
 
-    public function initProduits() 
-    {
-    	$produits = $this->getConfigProduits();
-    	foreach ($produits as $produit) {
-    		$this->addProduit($produit->getHash());
-    	}
+    public function getCSV() {
+       $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
+       return $csv->getCsvAcheteur($this->identifiant); 
     }
 
     public function updateFromCSV() {
-        $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
-        $csv = $csv->getCsvAcheteur($this->identifiant);
-        $this->initFromCSVRevendication($csv);
-        $this->initFromCSVRevendicationCepage($csv);
-        $this->initFromCepage($csv);
-        $this->updateFromDR();
+        $csv = $this->getCSV();
+        $this->resetDetail();
+        $this->updateDetailFromCSV($csv);
+        $this->updateDetail();
+        $this->updateRevendiqueFromDetail();
+        $this->resetCepage();
+        $this->updateCepageFromCSV($csv);
+        $this->updateLotsFromCepage();
     }
 
-    public function initFromCSVRevendication($csv) {
-        foreach($csv as $line) {
-            if(!preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) && !preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])) {
-
-                continue;
-            }
-
-            if(!$this->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $line[DRCsvFile::CSV_HASH_PRODUIT]))) {
-                
-                continue;
-            }
-
-            $config = $this->getConfiguration()->get($line[DRCsvFile::CSV_HASH_PRODUIT])->getNodeRelation('revendication');
-
-            if($config instanceof ConfigurationAppellation && !$config->mention->lieu->hasManyCouleur()) {
-                $config = $config->mention->lieu->couleur;
-            }
-
-            if(!$config instanceof ConfigurationCouleur) {
-                continue;
-            }
-
-            $produit = $this->get($config->getHash());
-            $produit->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
-            if($produit->volume_sur_place_revendique >= 0) {
-                $produit->volume_sur_place_revendique += (float) $line[DRCsvFile::CSV_VOLUME] - $line[DRCsvFile::CSV_USAGES_INDUSTRIELS];
-            }
-            $produit->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
-            $produit->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
-            $produit->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
-
-            if($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
-                $produit->volume_sur_place_revendique = -1;
-            }
-        }
-    }
-
-    public function initFromCSVRevendicationCepage($csv) {
-        foreach($csv as $line) {
-            if(
-               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_APPELLATION]) ||
-               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) ||
-               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])
-               ) {
-
-                continue;
-            }
-
-            $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT])));
-            
-            if(!$this->getConfiguration()->exist($hash)) {
-                continue;
-            }
-
-            $config = $this->getConfiguration()->get($hash);
-
-            $produit = $this->getOrAdd($config->getHash());
-            $produit->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
-            $produit->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
-            $produit->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+    public function updateFromDRev($drev) {
+        foreach($drev->getProduits() as $produit) {
+            $p = $this->addProduit($produit->getHash());
+            $p->superficie_revendique = $produit->superficie_revendique;
         }
 
-    }
-
-    public function initFromCepage() {
-        foreach($this->declaration->getProduitsCepage() as $produit) {
-            $this->addLotProduit($produit->getHash(), self::CUVE);
-        }
-    }
-
-
-    public function updateFromDR() {
-        foreach($this->declaration->getProduits() as $produit) {
-            $produit->updateFromDR();
+        foreach($drev->prelevements as $prelevement) {
+            $p = $this->addPrelevement($prelevement->getKey());
+            foreach($prelevement->lots as $lot) {
+                $p->addLotProduit($lot->hash_produit);
+            }
         }
     }
     
@@ -290,6 +226,109 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+    }
+
+    protected function updateDetailFromCSV($csv) {
+        foreach($csv as $line) {
+            if(!preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) && !preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])) {
+
+                continue;
+            }
+
+            if(!$this->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $line[DRCsvFile::CSV_HASH_PRODUIT]))) {
+                
+                continue;
+            }
+
+            $config = $this->getConfiguration()->get($line[DRCsvFile::CSV_HASH_PRODUIT])->getNodeRelation('revendication');
+
+            if($config instanceof ConfigurationAppellation && !$config->mention->lieu->hasManyCouleur()) {
+                $config = $config->mention->lieu->couleur;
+            }
+
+            if(!$config instanceof ConfigurationCouleur) {
+                continue;
+            }
+
+            $produit = $this->addProduit($config->getHash());
+            $produit->detail->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
+            $produit->detail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
+            $produit->detail->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+            $produit->detail->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            if($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
+                $produit->detail->usages_industriels_sur_place = -1;
+            } elseif($produit->detail->usages_industriels_sur_place != -1) {
+                $produit->detail->usages_industriels_sur_place += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS];
+            }
+        }
+    }
+
+    protected function resetDetail() {
+        foreach($this->declaration->getProduits() as $produit) {
+            $produit->resetDetail();
+        }
+    }
+
+    protected function updateDetail() {
+        foreach($this->declaration->getProduits() as $produit) {
+            $produit->updateDetail();
+        }
+    }
+
+    protected function updateRevendiqueFromDetail() {
+        foreach($this->declaration->getProduits() as $produit) {
+            $produit->updateRevendiqueFromDetail();
+        }
+    }
+
+    protected function updateCepageFromCSV($csv) {
+        foreach($csv as $line) {
+            if(
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_APPELLATION]) ||
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) ||
+               preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])
+               ) {
+
+                continue;
+            }
+
+            $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT])));
+            
+            if(!$this->getConfiguration()->exist($hash)) {
+                continue;
+            }
+
+            $config = $this->getConfiguration()->get($hash);
+
+            $produit = $this->getOrAdd($config->getHash());
+            if($line[DRCsvFile::CSV_VTSGN]) {
+                $produit->volume_revendique_vtsgn += (float) $line[DRCsvFile::CSV_VOLUME];
+            } else {
+                $produit->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
+            }
+            $produit->superficie_revendique += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+        }
+
+    }
+
+    protected function updateLotsFromCepage() {
+        foreach($this->declaration->getProduitsCepage() as $produit) {
+            $this->addLotProduit($produit->getHash(), self::CUVE);
+        }
+    }
+
+    protected function resetCepage() {
+        foreach($this->declaration->getProduitsCepage() as $produit) {
+            $produit->resetRevendique();
+        }
+    }
+
+    protected function initProduits() 
+    {
+        $produits = $this->getConfigProduits();
+        foreach ($produits as $produit) {
+            $this->addProduit($produit->getHash());
+        }
     }
 
 }

@@ -14,7 +14,8 @@ class drevActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, '2013-2014');
+
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);
@@ -28,8 +29,10 @@ class drevActions extends sfActions {
 
     public function executeDelete(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $drev->delete();
-        $this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');
+
+		$drev->delete();	
+		$this->getUser()->setFlash("notice", "La DRev a été supprimé avec succès.");	
+        
         return $this->redirect($this->generateUrl('home') . '#drev');
     }
 

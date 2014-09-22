@@ -46,16 +46,29 @@ class DRevCouleur extends BaseDRevCouleur
     	return ($this->isActive())? $this->volume_revendique : 0;
     }
 
-    public function updateFromDR() {
-        if($this->volume_sur_place_revendique === -1) {
-           $this->volume_sur_place_revendique = null; 
-        }
-        if(!is_null($this->superficie_total)) {
-            $this->superficie_revendique = $this->superficie_total;
+    public function resetDetail() {
+        $this->remove('detail');
+        $this->add('detail');
+    }
+
+    public function updateDetail() {
+        if($this->detail->usages_industriels_sur_place === -1) {
+           $this->detail->volume_sur_place_revendique = null; 
+           $this->detail->usages_industriels_sur_place = null; 
         }
 
-        if(!is_null($this->volume_sur_place_revendique)) {
-            $this->volume_revendique = $this->volume_sur_place_revendique;
+        if(!is_null($this->detail->volume_sur_place) && !is_null($this->detail->usages_industriels_sur_place)) {
+            $this->detail->volume_sur_place_revendique = $this->detail->volume_sur_place - $this->detail->usages_industriels_sur_place;
+        }  
+    }
+
+    public function updateRevendiqueFromDetail() {
+        if(!is_null($this->detail->superficie_total)) {
+            $this->superficie_revendique = $this->detail->superficie_total;
+        }
+
+        if(!is_null($this->detail->volume_sur_place_revendique)) {
+            $this->volume_revendique = $this->detail->volume_sur_place_revendique;
         }
     }
     
