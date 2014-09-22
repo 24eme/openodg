@@ -1,15 +1,12 @@
 <?php
 
-class drevmarcActions extends sfActions
-{
+class drevmarcActions extends sfActions {
 
-    public function executeIndex(sfWebRequest $request)
-    {
-
+    public function executeIndex(sfWebRequest $request) {
+        
     }
- 
-    public function executeCreate(sfWebRequest $request)
-    {
+
+    public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, '2013-2014');
         $drevmarc->save();
@@ -17,23 +14,20 @@ class drevmarcActions extends sfActions
         return $this->redirect('drevmarc_edit', $drevmarc);
     }
 
-    public function executeEdit(sfWebRequest $request)
-    {
+    public function executeEdit(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
 
         return $this->redirect('drevmarc_exploitation', $drevmarc);
     }
 
-    public function executeDelete(sfWebRequest $request)
-    {
+    public function executeDelete(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
-		$drevmarc->delete();	
-		$this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');	
+        $drevmarc->delete();
+        $this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');
         return $this->redirect($this->generateUrl('home') . '#drev');
     }
 
-    public function executeExploitation(sfWebRequest $request)
-    {
+    public function executeExploitation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
         $this->etablissement = $this->drevmarc->getEtablissementObject();
 
@@ -46,7 +40,7 @@ class drevmarcActions extends sfActions
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
-        if(!$this->form->isValid()) {
+        if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
@@ -63,11 +57,14 @@ class drevmarcActions extends sfActions
         $this->drevmarc = $this->getRoute()->getDRevMarc();
         $this->form = new DRevMarcRevendicationForm($this->drevmarc);
         if ($request->isMethod(sfWebRequest::POST)) {
-    		$this->form->bind($request->getParameter($this->form->getName()));
-        	if ($this->form->isValid()) {
-        		$this->form->save();
-        		return $this->redirect('drevmarc_validation', $this->drevmarc);
-        	}
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->form->save();
+                if ($request->isXmlHttpRequest()) {
+                    return $this->renderText(json_encode(array("success" => true)));
+                }
+                return $this->redirect('drevmarc_validation', $this->drevmarc);
+            }
         }
     }
 
@@ -76,11 +73,11 @@ class drevmarcActions extends sfActions
         $this->validation = new DRevMarcValidation($this->drevmarc);
         $this->form = new DRevMarcValidationForm($this->drevmarc);
         if ($request->isMethod(sfWebRequest::POST)) {
-    		$this->form->bind($request->getParameter($this->form->getName()));
-        	if ($this->form->isValid()) {
-        		$this->form->save();
-        		return $this->redirect('home#drev');
-        	}
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->form->save();
+                return $this->redirect('home#drev');
+            }
         }
     }
 
@@ -90,14 +87,15 @@ class drevmarcActions extends sfActions
         $this->document = new ExportDRevMarcPdf($drevmarc, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
-        if($request->getParameter('force')) {
+        if ($request->getParameter('force')) {
             $this->document->removeCache();
         }
-        
+
         $this->document->generate();
 
         $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
     }
+
 }

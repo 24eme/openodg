@@ -1,6 +1,6 @@
 <?php include_partial('drevmarc/step', array('step' => 'revendication', 'drevmarc' => $drevmarc)) ?>
 
-<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post">
+<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm" id="form_drevmarc_<?php echo $drevmarc->_id; ?>" >
     <div class="frame">	
         <?php echo $form->renderHiddenFields() ?>
         <?php echo $form->renderGlobalErrors() ?>
