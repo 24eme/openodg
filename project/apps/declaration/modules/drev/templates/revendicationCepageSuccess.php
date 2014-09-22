@@ -9,7 +9,16 @@
 <form role="form" action="" method="post">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
+
     <p>Veuillez saisir les données par cépage</p>
+
+    <?php if ($sf_user->hasFlash('notice')): ?>
+        <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('erreur')): ?>
+        <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php endif; ?>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -57,10 +66,14 @@
         </tbody>
     </table>
 
+    <?php if ($ajoutForm->hasProduits()): ?>
+        <button class="btn btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit&nbsp;<span class="eleganticon icon_plus"></span></button>
+    <?php endif; ?>
+
     <div class="row row-margin">
         <div class="col-xs-6">
             <?php if($noeud->getPreviousSister()): ?>
-                <a href="<?php echo url_for('drev_revendication_cepage', array('sf_subject' => $drev, 'hash' => $noeud->getPreviousSister()->getKey())) ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>Appellation précédente</a>
+                <a href="<?php echo url_for('drev_revendication_cepage', $noeud->getPreviousSister()) ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>Appellation précédente</a>
             <?php else: ?>
                  <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>Toutes les appellations</a>
             <?php endif; ?>
@@ -74,3 +87,5 @@
         </div>
     </div>
 </form>
+
+<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_cepage_ajout', $noeud), 'form' => $ajoutForm)); ?>

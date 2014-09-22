@@ -48,7 +48,7 @@ class DRevLotsAjoutProduitForm extends acCouchdbObjectForm
     
     public function hasProduits()
     {
-    	return (count($this->getProduits()) > 0);
+    	return (count($this->getProduits()) > 1);
     }
     
     protected function doUpdateObject($values)

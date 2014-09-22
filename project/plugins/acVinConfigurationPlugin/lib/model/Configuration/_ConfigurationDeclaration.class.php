@@ -10,6 +10,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     const TYPE_DECLARATION_DR = 'DR';
     const TYPE_DECLARATION_DS = 'DS';
     const TYPE_DECLARATION_DREV_REVENDICATION = 'DREV_REVENDICATION';
+    const TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE = 'DREV_REVENDICATION_CEPAGE';
     const TYPE_DECLARATION_DREV_LOTS = 'DREV_LOTS';
 
     protected function loadAllData() {
@@ -18,6 +19,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationCouleur");
+      $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_LOTS);
       $this->getRendementAppellation();
       $this->getRendementCouleur();
@@ -28,6 +30,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $this->getChildrenFilter(self::TYPE_DECLARATION_DR);
       $this->getChildrenFilter(self::TYPE_DECLARATION_DS);
       $this->getChildrenFilter(self::TYPE_DECLARATION_DREV_REVENDICATION);
+      $this->getChildrenFilter(self::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
       $this->getChildrenFilter(self::TYPE_DECLARATION_DREV_LOTS);
     }
 
