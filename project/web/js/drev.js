@@ -40,6 +40,12 @@
                 if (ajax_post_url) {
                     document.location.href = ajax_post_url;
                 }
+                var drev_rev = $('.drev_rev')
+                if(msg.drev_rev && drev_rev.length > 0){
+                    drev_rev.each(function(){
+                        $(this).val(msg.drev_rev)
+                    });
+                }
             },
             error: function(textStatus) {
                 form.submit();

@@ -5,7 +5,8 @@
 <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
 <?php endif; ?>
 
-<?php echo $form->renderHiddenFields(); ?>
+<?php echo $form['_csrf_token']->render(); ?>
+<?php echo $form['_revision']->render(array('class' => 'drev_rev')); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 
 <table class="table table-striped">
