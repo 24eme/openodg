@@ -6,7 +6,7 @@
 
 <?php include_partial('drev/stepRevendication', array('drev' => $drev, 'noeud' => $noeud)) ?>
 
-<form role="form" action="" method="post">
+<form role="form" class="ajaxForm" action="<?php echo url_for("drev_revendication_cepage", $noeud) ?>" method="post">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
