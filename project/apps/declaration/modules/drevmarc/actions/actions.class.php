@@ -61,7 +61,8 @@ class drevmarcActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->form->save();
                 if ($request->isXmlHttpRequest()) {
-                    return $this->renderText(json_encode(array("success" => true)));
+                    
+                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drevmarc->_id,"revision" => $this->drevmarc->_rev))));
                 }
                 return $this->redirect('drevmarc_validation', $this->drevmarc);
             }

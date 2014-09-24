@@ -3,7 +3,7 @@
     <h2>Revendication</h2>
 </div>
 
-<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm" id="form_drevmarc_<?php echo $drevmarc->_id; ?>" >
+<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm" >
     
         <?php echo $form->renderHiddenFields() ?>
         <?php echo $form->renderGlobalErrors() ?>
