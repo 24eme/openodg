@@ -11,13 +11,30 @@ Etablissement:
       cvi: {  }
       siret: {  }
       email: {  }
-      telephone: {  }
-      portable: {  }
+      telephone_bureau: {  }
+      telephone_mobile: {  }
+      telephone_prive: {  }
       fax: {  }
       adresse: {  }
       code_postal: {  }
       code_insee: {  }
       commune: {  }
+      familles:
+        type: collection
+        definition:
+          fields:
+            '*': { }
+      chais:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
       droits:
         type: array_collection
         definition:
