@@ -10,6 +10,12 @@
 	<?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     <p>Veuillez saisir les informations des AOC revendiquées dans la déclaration de récolte de l'année</p>
+    <?php if ($sf_user->hasFlash('notice')): ?>
+        <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('erreur')): ?>
+        <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php endif; ?>
 	<div class="row">
 		<div class="col-xs-3 col-xs-offset-9 text-center">
 			<span class="label label-primary">Informations issues de la DR</span>
@@ -28,8 +34,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php 
-				foreach ($form['produits'] as $key => $embedForm) : 
+			<?php foreach ($form['produits'] as $key => $embedForm) : 
 					$produit = $drev->get($key)
 			?>
 				<tr>
@@ -67,13 +72,23 @@
 					<?php endif; ?>
 				</tr>
 			<?php endforeach; ?>
+			<?php if ($ajoutForm->hasProduits()): ?>
+			<tr>
+				<td>
+					<button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
+			    </td>
+    			<td></td><td></td><td></td><td></td><td></td>
+			</tr>
+			<?php endif; ?>
 		</tbody>
 	</table>
 
 	<div class="row row-margin">
-		<div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a></div>
+		<div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
 		<div class="col-xs-6 text-right">
-			<button type="submit" class="btn btn-default">Valider et saisir les données par cépage<span class="eleganticon arrow_carrot-right"></span></button>
+			<button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et saisir les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 		</div>
 	</div>
 </form>
+
+<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_ajout', $drev), 'form' => $ajoutForm)); ?>

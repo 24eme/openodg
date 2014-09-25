@@ -78,7 +78,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 	
-	public function initDeclaration($identifiant, $campagne)
+	public function initDoc($identifiant, $campagne)
 	{
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
@@ -189,19 +189,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     
     public function hasRevendicationAlsace()
     {
-    	return 
-    		$this->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->isActive() ||
-    		$this->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->isActive() ||
-    		$this->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->isActive() ||
-    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurBlanc->isActive() ||
-    		$this->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->isActive() || 
-    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->isActive() ||
-    		$this->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->isActive();
+    	return true;
     }
     
     public function hasRevendicationGrdCru()
     {
-    	return $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
+    	return $this->declaration->certification->genre->exist('appellation_GRDCRU') && $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
     }
     
     public function hasLots($vtsgn = false, $horsvtsgn = false)
@@ -227,6 +220,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
+    }
+
+    public function initProduits() 
+    {
+        $produits = $this->getConfigProduits();
+        foreach ($produits as $produit) {
+            $this->addProduit($produit->getHash());
+        }
     }
 
     protected function updateDetailFromCSV($csv) {
@@ -321,14 +322,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     protected function resetCepage() {
         foreach($this->declaration->getProduitsCepage() as $produit) {
             $produit->resetRevendique();
-        }
-    }
-
-    protected function initProduits() 
-    {
-        $produits = $this->getConfigProduits();
-        foreach ($produits as $produit) {
-            $this->addProduit($produit->getHash());
         }
     }
 

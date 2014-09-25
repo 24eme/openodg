@@ -5,10 +5,9 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
     public function configure() {
         $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_ALSACE));
         
-
         $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_VTSGN));
         $form_vtsgn->setWidget("date", new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())));
-        $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getVtsgnChoices()))));
+        $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))));
         $form_vtsgn->getWidget("date")->setLabel("Période de prélévement");
 
         $this->setWidget("vtsgn_demande", new sfWidgetFormInputCheckbox(array()));
@@ -17,7 +16,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
         $this->embedForm(Drev::CUVE_VTSGN, $form_vtsgn);
 
-        $this->validatorSchema['date']->setMessage('required', 'La semaine de degustation est obligatoire.');
+        $form_vtsgn->validatorSchema['date']->setMessage('required', 'La semaine de degustation est obligatoire.');
         
         $this->widgetSchema->setNameFormat('degustation_conseil[%s]');
     }

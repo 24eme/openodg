@@ -111,15 +111,35 @@ drev_revendication:
   requirements:
     sf_method: [get, post]
 
-drev_revendication_cepage:
-  url: /drev/revendication/:id/cepage/:hash
-  param: { module: drev, action: revendicationCepage }
+drev_revendication_ajout:
+  url: /drev/revendication/:id/ajout
+  param: { module: drev, action: revendicationAjoutProduit }
   class: DRevRoute
   options:
     model:    DRev
     type:     object
   requirements:
     sf_method: [get, post]
+
+drev_revendication_cepage:
+  url: /drev/revendication/:id/cepage/:hash
+  param: { module: drev, action: revendicationCepage }
+  class: DRevNoeudRoute
+  options:
+    model:    DRevAppellation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_cepage_ajout:
+  url: /drev/revendication/:id/cepage/:hash/ajout
+  param: { module: drev, action: revendicationCepageAjoutProduit }
+  class: DRevNoeudRoute
+  options:
+    model:    DRevAppellation
+    type:     object
+  requirements:
+    sf_method: [post]
 
 drev_degustation_conseil:
   url: /drev/degustation-conseil/:id

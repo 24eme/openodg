@@ -3,7 +3,7 @@
     <h2>Revendication</h2>
 </div>
 
-<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm" id="form_drevmarc_<?php echo $drevmarc->_id; ?>" >
+<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm" >
     
         <?php echo $form->renderHiddenFields() ?>
         <?php echo $form->renderGlobalErrors() ?>
@@ -99,7 +99,7 @@
         <div class="col-xs-2"></div>
     </div>
     <div class="row row-margin">
-        <div class="col-xs-4"><a href="<?php echo url_for("drevmarc_exploitation", $drevmarc) ?>" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-left pull-left"></span>Étape précédente</a></div>
-        <div class="col-xs-4 col-xs-offset-4"><button type="submit" class="btn btn-primary btn-lg btn-block"><span class="eleganticon arrow_carrot-right pull-right"></span>Étape suivante</button></div>
+        <div class="col-xs-6"><a href="<?php echo url_for("drevmarc_exploitation", $drevmarc) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
+        <div class="col-xs-6 text-right"><button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et étape suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button></div>
     </div>
 </form>

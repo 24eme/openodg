@@ -2,7 +2,11 @@
 
 class DRevAppellation extends BaseDRevAppellation 
 {
+    public function getConfigProduits() {
 
+        return $this->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+    }
+    
 	public function getGenre()
     {
         return $this->getParent();

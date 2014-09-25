@@ -6,10 +6,19 @@
 
 <?php include_partial('drev/stepRevendication', array('drev' => $drev, 'noeud' => $noeud)) ?>
 
-<form role="form" action="" method="post">
+<form role="form" class="ajaxForm" action="<?php echo url_for("drev_revendication_cepage", $noeud) ?>" method="post">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
+
     <p>Veuillez saisir les données par cépage</p>
+
+    <?php if ($sf_user->hasFlash('notice')): ?>
+        <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+    <?php endif; ?>
+    <?php if ($sf_user->hasFlash('erreur')): ?>
+        <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+    <?php endif; ?>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -20,10 +29,8 @@
             </tr>
         </thead>
         <tbody>
-            <?php
-                foreach ($form['produits'] as $hash => $embedForm) : 
-                    $produit = $drev->get($hash);
-            ?>
+            <?php foreach ($form['produits'] as $hash => $embedForm): ?> 
+            <?php $produit = $drev->get($hash); ?> 
                 <tr>
                     <td><?php if($produit->getParent()->getParent()->getLibelle()): ?><?php echo $produit->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit->getLibelle() ?></td>
                     <td class="text-center">
@@ -54,23 +61,33 @@
                     </td>
                 </tr>
             <?php endforeach; ?>
+            <?php if ($ajoutForm->hasProduits()): ?>
+            <tr>
+                <td>
+                    <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit / cépage</button>
+                </td>
+                <td></td><td></td><td>
+            </tr>
+            <?php endif; ?>
         </tbody>
     </table>
 
     <div class="row row-margin">
         <div class="col-xs-6">
             <?php if($noeud->getPreviousSister()): ?>
-                <a href="<?php echo url_for('drev_revendication_cepage', array('sf_subject' => $drev, 'hash' => $noeud->getPreviousSister()->getKey())) ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>Appellation précédente</a>
+                <a href="<?php echo url_for('drev_revendication_cepage', $noeud->getPreviousSister()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a>
             <?php else: ?>
-                 <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>Toutes les appellations</a>
+                 <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à Toutes les appellations</small></a>
             <?php endif; ?>
         </div>
         <div class="col-xs-6 text-right">
             <?php if($noeud->getNextSister()): ?>
-                <button type="submit" class="btn btn-default">Valider et saisir l'appellation suivante<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg"><span class="eleganticon arrow_carrot-right pull-right"></span>Étape suivante</button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et étape suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php endif; ?>
         </div>
     </div>
 </form>
+
+<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_cepage_ajout', $noeud), 'form' => $ajoutForm)); ?>

@@ -24,7 +24,7 @@ class DRevClient extends acCouchdbClient {
     public function createDoc($identifiant, $campagne) 
     {  
         $drev = new DRev();
-        $drev->initDeclaration($identifiant, $campagne);
+        $drev->initDoc($identifiant, $campagne);
 
         $drev_previous = $this->find(sprintf("DREV-%s-%s", $identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getPrevious($campagne)));
 
@@ -32,6 +32,11 @@ class DRevClient extends acCouchdbClient {
             $drev->updateFromDRev($drev_previous);
         }
 
+
         return $drev;
     }
+    
+    public function getHistory($cvi, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        return $this->startkey('DREV-'.$cvi.'-0000-0000')->endkey('DREV-'.$cvi.'-9999-9999')->execute($hydrate);
+        }
 }
