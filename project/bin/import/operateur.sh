@@ -16,16 +16,22 @@ join -t ";" -1 2 -2 1 $WORKDIR/id_evv.csv $WORKDIR/evv.csv | sort -t ";" -k 2,2 
 cat $WORKDIR/id_evv_cvi.csv | sort -t ";" -k 1,1 > $WORKDIR/id_evv_cvi.sort_evv.csv
 cat $WORKDIR/evv.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10 | sed -r 's/^([0-9]+);/\1;1.CVI ;/' > $WORKDIR/cvi.csv
 
+#Récupération des SIRET
+
+cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 2,25,26 | grep -Ev "[a-zA-Z]+"  | grep -E "^[0-9]+;" | grep -v ";;$" | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
+
+join -t ";" -1 2 -2 1 $WORKDIR/id_evv_cvi.csv $WORKDIR/ppm.csv | cut -d ";" -f 3,4,5 | sort -t ";" -k 1,1 | sed -r 's/^([0-9]+);/\1;3.SIRE;;;;;;;;;;;;;;;/' > $WORKDIR/siret_cvi.csv
+
 #---COMMUNICATION---
 cat $DATADIR/COMMUNICATION.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,8,9,10,11,12,13,14 | sort -t ";" -k 2,2 > $WORKDIR/communication.csv
 
-join -t ";" -1 2 -2 2 $WORKDIR/id_evv_cvi.csv $WORKDIR/communication.csv | cut -d ";" -f 3,7,8,9,10,11,12 | sed -r 's/^([0-9]+);/\1;3.COMM;;;;;;;;;;/' > $WORKDIR/communication_cvi.csv
+join -t ";" -1 2 -2 2 $WORKDIR/id_evv_cvi.csv $WORKDIR/communication.csv | cut -d ";" -f 3,7,8,9,10,11,12 | sed -r 's/^([0-9]+);/\1;4.COMM;;;;;;;;;;/' > $WORKDIR/communication_cvi.csv
 
 #---COORDONNEES---
 
 cat $DATADIR/COORDONNEES.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,5,6,7,8,10,11,12,13 | sort -t ";" -k 2,2 > $WORKDIR/coordonnees.csv
 
-join -t ";" -1 2 -2 2 $WORKDIR/id_evv_cvi.csv $WORKDIR/coordonnees.csv | cut -d ";" -f 3,7,8,9,10,11,12,13 | sed -r 's/^([0-9]+);/\1;4.COOR;;/' > $WORKDIR/coordonnees_cvi.csv
+join -t ";" -1 2 -2 2 $WORKDIR/id_evv_cvi.csv $WORKDIR/coordonnees.csv | cut -d ";" -f 3,7,8,9,10,11,12,13 | sed -r 's/^([0-9]+);/\1;5.COOR;;/' > $WORKDIR/coordonnees_cvi.csv
 
 #---ATTRIBUT---
 cat $DATADIR/PPM_ATTRIBUTS.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | sort -t ";" -k 3,3 > $WORKDIR/attributs.csv
@@ -34,7 +40,7 @@ cat $DATADIR/PPM_ATTRIBUT_REF.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | sor
 
 join -t ";" -1 3 -2 1 $WORKDIR/attributs.csv $WORKDIR/attributs_ref.csv | sort -t ";" -k 3,3 > $WORKDIR/attributs.join.csv
 
-join -t ";" -1 2 -2 3 $WORKDIR/id_evv_cvi.csv $WORKDIR/attributs.join.csv | cut -d ";" -f 3,7 | sed -r 's/^([0-9]+);/\1;5.ATTR;;;;;;;;;/' > $WORKDIR/attributs_cvi.csv
+join -t ";" -1 2 -2 3 $WORKDIR/id_evv_cvi.csv $WORKDIR/attributs.join.csv | cut -d ";" -f 3,7 | sed -r 's/^([0-9]+);/\1;6.ATTR;;;;;;;;;/' > $WORKDIR/attributs_cvi.csv
 
 #---CHAI---
 cat $DATADIR/CHAI.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,4,5,6,7,8,10,11,12,21,22,23 | sort -t ";" -k 1,1 > $WORKDIR/chai.csv
@@ -51,7 +57,7 @@ cat $DATADIR/LOCALITE_FRANCAISE.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | c
 
 join -a 2 -t ";" -1 1 -2 7 $WORKDIR/communes.csv $WORKDIR/operateurs.sorted_by_commune.csv | sed 's/^;/;;/' | awk -F ";" '{ print $3 ";" $4 ";" $5 ";" $6 ";" $7 ";" $8 ";" $2 ";" $1 ";" $9 ";" $10 ";" $11 ";" $12 ";" $13 ";" $14 ";" $15 ";" $16 ";" $17 ";" $18 ";" $19 ";" $20  }' | sort > $WORKDIR/operateurs_commune.csv
 
-echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web" > $WORKDIR/operateurs.csv
+echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web;siren;siret" > $WORKDIR/operateurs.csv
 cat $WORKDIR/operateurs_commune.csv >> $WORKDIR/operateurs.csv
 
-php symfony import:Etablissement $WORKDIR/operateurs.csv
+#php symfony import:Etablissement $WORKDIR/operateurs.csv
