@@ -2,7 +2,7 @@
 <?php use_helper('Float') ?>
 <?php use_helper("Date"); ?>
 <style>
-<?php echo style(); ?>
+<?php echo styleDRev(); ?>
 </style>
 
 <span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>

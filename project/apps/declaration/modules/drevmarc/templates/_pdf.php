@@ -3,7 +3,7 @@
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
 <style>
-<?php echo style(); ?>
+<?php echo styleDRevMarc(); ?>
 </style>
 
 <span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>
@@ -50,15 +50,15 @@
     </tr>
     <tr>
         <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Quantité de marc mis en oeuvre en kg<?php echo tdStart() ?></th>
-        <td style="border-top: none; text-align: right; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getQtemarc($drevmarc); ?><?php echo tdStart() ?></td>
+        <td style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getQtemarc($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
     <tr>
         <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Volume total obtenu en hl d'alcool pur<?php echo tdStart() ?></th>
-        <td style="border-top: none; text-align: right; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getVolumeObtenu($drevmarc); ?><?php echo tdStart() ?></td>
+        <td style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getVolumeObtenu($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
     <tr>
         <th class="th" style="border-top: none;  text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Titre alcoométrique volumique<?php echo tdStart() ?></th>
-        <td style="border-top: none;  text-align: right; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getTitreAlcoolVol($drevmarc); ?><?php echo tdStart() ?></td>
+        <td style="border-top: none;  text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getTitreAlcoolVol($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
 </table>
 <br />
