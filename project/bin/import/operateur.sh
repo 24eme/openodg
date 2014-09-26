@@ -18,7 +18,7 @@ cat $WORKDIR/evv.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10 | sed -r 's/^([0-9]+);/\
 
 #Récupération des SIRET
 
-cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 2,25,26 | grep -Ev "[a-zA-Z]+"  | grep -E "^[0-9]+;" | grep -v ";;$" | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
+cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\n" | tr "\r" "\n" | cut -d ";" -f 2,25,26 | grep -Ev "[a-zA-Z]+"  | grep -E "^[0-9]+;" | grep -v ";;$" | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
 
 join -t ";" -1 2 -2 1 $WORKDIR/id_evv_cvi.csv $WORKDIR/ppm.csv | cut -d ";" -f 3,4,5 | sort -t ";" -k 1,1 | sed -r 's/^([0-9]+);/\1;3.SIRE;;;;;;;;;;;;;;;;/' > $WORKDIR/siret_cvi.csv
 
