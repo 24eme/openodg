@@ -5,17 +5,17 @@ function getDatesDistillation($drevmarc){
 }
 
 function getQtemarc($drevmarc) {
-   return $drevmarc->qte_marc .'&nbsp;<small class="text-muted">kg</small>';
+   return $drevmarc->qte_marc .'&nbsp;kg';
 }
 
 
 function getVolumeObtenu($drevmarc) {
     
-return $drevmarc->volume_obtenu . '&nbsp;<small class="text-muted">hl d\'alcool pur</small>';
+return $drevmarc->volume_obtenu . '&nbsp;hl d\'alcool pur';
 }
 
 function getTitreAlcoolVol($drevmarc) {
     
-return $drevmarc->titre_alcool_vol . '&nbsp;<small class="text-muted">°</small>';
+return $drevmarc->titre_alcool_vol . '&nbsp;°';
 }
 

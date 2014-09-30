@@ -1,28 +1,54 @@
 <?php
-class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm 
-{
-    public function configure()
-    {
+
+class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
+
+    protected $vtsgn = false;
+
+    public function configure() {
+        $this->vtsgn = $this->getObject()->getConfig()->hasVtsgn();
+
         $this->setWidgets(array(
-            'superficie_revendique' => new sfWidgetFormInputFloat(),
-            'volume_revendique' => new sfWidgetFormInputFloat(),
-            'volume_revendique_vtsgn' => new sfWidgetFormInputFloat(),
-        ));
+            // 'superficie_revendique' => new sfWidgetFormInputFloat(),
+            'volume_revendique' => new sfWidgetFormInputFloat()));
+
         $this->widgetSchema->setLabels(array(
-            'superficie_revendique' => 'Superficie ,:',
-            'volume_revendique' => 'Volume revendiqué (hl):',
-            'volume_revendique_vtsgn' => 'Volume revendiqué (hl):',
+            // 'superficie_revendique' => 'Superficie ,:',
+            'volume_revendique' => 'Volume revendiqué (hl):'
         ));
         $this->setValidators(array(
-            'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
-            'volume_revendique' => new sfValidatorNumber(array('required' => false)),
-            'volume_revendique_vtsgn' => new sfValidatorNumber(array('required' => false)),
+            // 'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
+            'volume_revendique' => new sfValidatorNumber(array('required' => false))
         ));
+
+        if ($this->vtsgn) {
+
+            $this->setWidget('volume_revendique_vt', new sfWidgetFormInputFloat());
+            $this->setWidget('volume_revendique_sgn', new sfWidgetFormInputFloat());
+
+            $this->getWidget('volume_revendique_vt')->setLabel("Volume revendiqué (hl):");
+            $this->getWidget('volume_revendique_sgn')->setLabel("Volume revendiqué (hl):");
+
+            $this->setValidator('volume_revendique_vt', new sfValidatorNumber(array('required' => false)));
+            $this->setValidator('volume_revendique_sgn', new sfValidatorNumber(array('required' => false)));
+        }
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
-    
+
+    public function hasVtSgn() {
+        return $this->vtsgn;
+    }
+
     public function doUpdateObject($values) {
+        if ($this->hasVtSgn()) {
+            if ($values['volume_revendique_vt']) {
+                $this->getObject()->volume_revendique_vt = $values['volume_revendique_vt'];
+            }
+            if ($values['volume_revendique_sgn']) {
+                $this->getObject()->volume_revendique_sgn = $values['volume_revendique_sgn'];
+            }
+        }
         parent::doUpdateObject($values);
     }
-    
+
 }

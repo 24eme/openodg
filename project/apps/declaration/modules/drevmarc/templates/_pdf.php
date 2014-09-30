@@ -3,7 +3,7 @@
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
 <style>
-<?php echo style(); ?>
+<?php echo styleDRevMarc(); ?>
 </style>
 
 <span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>
@@ -34,31 +34,28 @@
 <br />
 <br />
 <br />
+<div><span class="h3">&nbsp;Période de distillation&nbsp;</span></div>
+<table class="table" border="1" cellspacing=2 cellpadding=0 style="text-align: right;">   
+    <tr>
+        <th class="td" style="border-top: none; text-align: center; width: 637px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Du&nbsp;<?php echo format_date($drevmarc->debut_distillation, "D", "fr_FR"); ?>&nbsp;au&nbsp;<?php echo format_date($drevmarc->fin_distillation, "D", "fr_FR"); ?>&nbsp;<?php echo tdStart() ?></th>
+    </tr>
+</table>
+<br />
+<br />
+
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=2 cellpadding=0 style="text-align: right;">   
     <tr>
-        <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Période de distillation<?php echo tdStart() ?></th>
-        <td style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo tdStart() ?></td>
+        <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Quantité de marc mis en oeuvre<?php echo tdStart() ?></th>
+        <td class="td" style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getQtemarc($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
     <tr>
-        <th class="th" style="border-top: none; text-align: right; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Du&nbsp;&nbsp;<?php echo tdStart() ?></th>
-        <td style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo format_date($drevmarc->debut_distillation, "D", "fr_FR"); ?><?php echo tdStart() ?></td>
-    </tr>
-    <tr>
-        <th class="th" style="border-top: none; text-align: right; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Au&nbsp;&nbsp;<?php echo tdStart() ?></th>
-        <td style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo format_date($drevmarc->fin_distillation, "D", "fr_FR"); ?><?php echo tdStart() ?></td>
-    </tr>
-    <tr>
-        <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Quantité de marc mis en oeuvre en kg<?php echo tdStart() ?></th>
-        <td style="border-top: none; text-align: right; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getQtemarc($drevmarc); ?><?php echo tdStart() ?></td>
-    </tr>
-    <tr>
-        <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Volume total obtenu en hl d'alcool pur<?php echo tdStart() ?></th>
-        <td style="border-top: none; text-align: right; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getVolumeObtenu($drevmarc); ?><?php echo tdStart() ?></td>
+        <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Volume total obtenu<?php echo tdStart() ?></th>
+        <td class="td" style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getVolumeObtenu($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
     <tr>
         <th class="th" style="border-top: none;  text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Titre alcoométrique volumique<?php echo tdStart() ?></th>
-        <td style="border-top: none;  text-align: right; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getTitreAlcoolVol($drevmarc); ?><?php echo tdStart() ?></td>
+        <td class="td" style="border-top: none;  text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getTitreAlcoolVol($drevmarc); ?><?php echo tdStart() ?></td>
     </tr>
 </table>
 <br />

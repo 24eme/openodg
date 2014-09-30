@@ -14,7 +14,7 @@
 class ValidatorDRevMarcRevendication extends sfValidatorBase {
 
     public function configure($options = array(), $messages = array()) {
-        $this->addMessage('invalid_volume_marc', 'La volume d\'alcool pur semble être exprimé en hl');
+        $this->addMessage('invalid_volume_marc', 'Le volume d\'alcool pur semble être exprimé en litre');
     }
 
     protected function doClean($values) {
