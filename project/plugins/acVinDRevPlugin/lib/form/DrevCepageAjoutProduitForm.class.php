@@ -58,6 +58,7 @@ class DrevCepageAjoutProduitForm extends acCouchdbObjectForm
             return;
         }
 
-        $this->getObject()->getDocument()->getOrAdd($values['hashref']);
+        $noeud = $this->getObject()->getDocument()->getOrAdd($values['hashref']);
+        $noeud->getParent()->reorderByConf();
     }
 }

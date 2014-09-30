@@ -11,6 +11,27 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     }
 
     abstract public function getChildrenNode();
+
+    public function reorderByConf() {
+        $children = array();
+
+        foreach($this->getChildrenNode() as $hash => $child) {
+            $children[$hash] = $child->getData();
+        }
+
+        foreach($children as $hash => $child) {
+            $this->remove($hash);
+        }
+
+        foreach($this->getConfig()->getChildrenNode() as $hash => $child) {
+            if(!array_key_exists($hash, $children)) {
+                continue;
+            }
+
+            $child_added = $this->add($hash, $children[$hash]);
+            $child_added->reorderByConf();
+        }
+    }
     
 	public function getChildrenNodeDeep($level = 1) 
 	{

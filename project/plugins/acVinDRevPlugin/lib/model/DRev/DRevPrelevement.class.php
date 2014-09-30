@@ -64,6 +64,29 @@ class DRevPrelevement extends BaseDRevPrelevement {
         return $matches[1];
     }
 
+    public function reorderByConf() {
+        $hashes_by_hash_produit = array();
+        $children_by_key = array();
+
+        foreach($this->lots as $lot) {
+            $children_by_key[$lot->getKey()] = $lot->getData();
+            $hashes_by_hash_produit[$lot->hash_produit] = $lot->getKey();
+        }
+
+        foreach($hashes_by_hash_produit as $key) {
+            $this->lots->remove($key);
+        }
+
+        foreach($this->getConfigProduits() as $hash_produit => $child) {
+            if(!array_key_exists($hash_produit, $hashes_by_hash_produit)) {
+                continue;
+            }
+            $key = $hashes_by_hash_produit[$hash_produit];
+
+            $this->lots->add($hashes_by_hash_produit[$hash_produit], $children_by_key[$key]);
+        }
+    }
+
     public function getLibelleProduit() {
         if($this->_get('libelle_produit') === null) {
             try {

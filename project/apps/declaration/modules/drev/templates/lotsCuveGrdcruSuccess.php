@@ -25,5 +25,5 @@
     </div>
 </form>
 
-<?php include_partial('drev/popupAjoutForm', array('url' => url_for("drev_lots", $prelevement), 'form' => $ajoutForm)); ?>
+<?php include_partial('drev/popupAjoutForm', array('url' => url_for("drev_lots_ajout", $prelevement), 'form' => $ajoutForm)); ?>
 

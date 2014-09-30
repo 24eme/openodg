@@ -99,6 +99,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->resetCepage();
         $this->updateCepageFromCSV($csv);
         $this->updateLotsFromCepage();
+        $this->declaration->reorderByConf();
     }
 
     public function updateFromDRev($drev) {
@@ -113,6 +114,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $p->addLotProduit($lot->hash_produit);
             }
         }
+        $this->declaration->reorderByConf();
     }
     
 	public function addProduit($hash)

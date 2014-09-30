@@ -49,6 +49,7 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbObjectForm
     {
         if (isset($values['hashref']) && !empty($values['hashref'])) {
             $this->getObject()->addProduit($values['hashref']);
+            $this->getObject()->declaration->reorderByConf();
         }
     }
 }
