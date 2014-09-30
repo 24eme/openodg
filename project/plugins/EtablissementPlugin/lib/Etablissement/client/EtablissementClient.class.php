@@ -5,6 +5,10 @@ class EtablissementClient extends acCouchdbClient {
     const TYPE_MODEL = "Etablissement"; 
     const TYPE_COUCHDB = "ETABLISSEMENT";
 
+    const FAMILLE_VINIFICATEUR = "VINIFICATEUR";
+    const FAMILLE_PRODUCTEUR = "PRODUCTEUR";
+    const FAMILLE_DISTILLATEUR = "DISTILLATEUR";
+
     public static function getInstance()
     {
       return acCouchdbManager::getClient(self::TYPE_MODEL);

@@ -107,7 +107,7 @@ class drevActions extends sfActions {
                 $this->form->save();
                 if ($request->isXmlHttpRequest()) {
                     
-                    return $this->renderText(json_encode(array("success" => true)));
+                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
                 }
                 
                 return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
@@ -128,10 +128,6 @@ class drevActions extends sfActions {
         }
 
         $this->ajoutForm->save();
-
-        if ($request->isXmlHttpRequest()) {
-            return $this->renderText(json_encode(array("success" => true)));
-        }
 
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
@@ -158,6 +154,11 @@ class drevActions extends sfActions {
 
         $this->form->save();
 
+        if ($request->isXmlHttpRequest()) {
+                    
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
+        }
+
         if ($this->noeud->getNextSister()) {
 
             return $this->redirect('drev_revendication_cepage', $this->noeud->getNextSister());
@@ -181,10 +182,6 @@ class drevActions extends sfActions {
         }
 
         $this->ajoutForm->save();
-
-        if ($request->isXmlHttpRequest()) {
-            return $this->renderText(json_encode(array("success" => true)));
-        }
 
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
@@ -211,7 +208,8 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if ($request->isXmlHttpRequest()) {
-            return $this->renderText(json_encode(array("success" => true)));
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
 
         return $this->redirect('drev_lots', $this->drev->addPrelevement(Drev::CUVE_ALSACE));
@@ -242,8 +240,8 @@ class drevActions extends sfActions {
         $this->form->save();
         
         if ($request->isXmlHttpRequest()) {
-            $this->drev = DRevClient::getInstance()->find($this->drev->_id);
-            return $this->renderText(json_encode(array("success" => true, 'drev_rev' => $this->drev->_rev)));
+            
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
 
         if ($this->prelevement->getKey() == Drev::CUVE_ALSACE) {
@@ -267,11 +265,6 @@ class drevActions extends sfActions {
         }
 
         $this->ajoutForm->save();
-
-        if ($request->isXmlHttpRequest()) {
-            return $this->renderText(json_encode(array("success" => true)));
-        }
-
 
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
@@ -298,7 +291,8 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if ($request->isXmlHttpRequest()) {
-            return $this->renderText(json_encode(array("success" => true)));
+            
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
 
         return $this->redirect('drev_validation', $this->drev);

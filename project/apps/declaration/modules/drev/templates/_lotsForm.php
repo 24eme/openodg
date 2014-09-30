@@ -1,12 +1,11 @@
-<?php if ($sf_user->hasFlash('notice')): ?>
+    <?php if ($sf_user->hasFlash('notice')): ?>
 <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 <?php if ($sf_user->hasFlash('erreur')): ?>
 <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
 <?php endif; ?>
 
-<?php echo $form['_csrf_token']->render(); ?>
-<?php echo $form['_revision']->render(array('class' => 'drev_rev')); ?>
+<?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 
 <table class="table table-striped">

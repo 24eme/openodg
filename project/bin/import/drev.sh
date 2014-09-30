@@ -56,6 +56,6 @@ join -t ";" -1 2 -2 1 $WORKDIR/dossier_cvi.csv $WORKDIR/prelevement.csv | cut -d
 
 echo "cvi;annee;type ligne;rev num ligne;rev type id;rev type libelle;rev valeur;aoc;grdcru;cepage;nb lot;annee prelevement;semaine prelevement" > $WORKDIR/drev.csv
 
-cat $WORKDIR/valeur_cvi_param.csv $WORKDIR/lot_cvi.csv $WORKDIR/prelevement_cvi.csv | sort >> $WORKDIR/drev.csv
+cat $WORKDIR/valeur_cvi_param.csv $WORKDIR/lot_cvi.csv $WORKDIR/prelevement_cvi.csv | sort | grep -E "^[0-9]+;2013;" >> $WORKDIR/drev.csv
 
 
