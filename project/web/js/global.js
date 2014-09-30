@@ -77,6 +77,24 @@
                 currentDp.data('DateTimePicker').show();
             });
         });
+        
+        var datePickers = $('.date-picker-all-days');
+
+        datePickers.each(function()
+        {
+            var currentDp = $(this);
+
+            currentDp.datetimepicker
+                    ({
+                        language: 'fr',
+                        pickTime: false
+                    });
+
+            currentDp.on('focus', 'input', function()
+            {
+                currentDp.data('DateTimePicker').show();
+            });
+        });
     };
 
     $.initSelect2Autocomplete = function()

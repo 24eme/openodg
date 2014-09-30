@@ -43,7 +43,7 @@ function styleDRev() {
 function styleDRevMarc() {
     return "
     .table {
-        border: 1px solid #6A8AB8;
+        border: 1px solid #1b4f8f;
     }
 
     .tableAlt {
@@ -51,27 +51,27 @@ function styleDRevMarc() {
     }
 
     .th {
-        font-weight: normal; border: 1px solid #6A8AB8; background-color: #D1F0FF; color: #6A8AB8;
+        font-weight: normal; border: 1px solid #1b4f8f; background-color: #D1F0FF; color: #1b4f8f;
     }
 
     .td {
-        border: 1px solid #6A8AB8; height:22px; text-align: left;
+        border: 1px solid #1b4f8f; height:22px; text-align: left;
     }
 
     .tdAlt {
-        border: 1px solid #6A8AB8; height:22px; text-align: left; background-color: #DAECFF;
+        border: 1px solid #1b4f8f; height:22px; text-align: left; background-color: #DAECFF;
     }
 
     .h2 {
-        text-align: left; font-size: 12pt; color: #6A8AB8;
+        text-align: left; font-size: 12pt; color: #1b4f8f;
     }
 
     .tdH2 {
-       border-bottom: 1px solid #6A8AB8; 
+       border-bottom: 1px solid #1b4f8f; 
     }
 
     .h3 {
-        background-color: #6A8AB8; color: white; font-weight: bold;
+        background-color: #1b4f8f; color: white; font-weight: bold;
     }
 
     .h3Alt {

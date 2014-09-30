@@ -107,7 +107,8 @@ DRev:
                                                       libelle: { }
                                                       superficie_revendique: { type:float }
                                                       volume_revendique: { type:float }
-                                                      volume_revendique_vtsgn: { type:float }
+                                                      volume_revendique_vt: { type:float }
+                                                      volume_revendique_sgn: { type:float }
                                                       volume_revendique_total: { type:float }
       prelevements:
         type: collection
