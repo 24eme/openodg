@@ -9,8 +9,9 @@ class EtablissementForm extends acCouchdbObjectForm
             "adresse" => new sfWidgetFormInput(),
             "commune" => new sfWidgetFormInput(),
             "code_postal" => new sfWidgetFormInput(),
-            "telephone" => new sfWidgetFormInput(),
-            "portable" => new sfWidgetFormInput(),
+            "telephone_bureau" => new sfWidgetFormInput(),
+            "telephone_mobile" => new sfWidgetFormInput(),
+            "telephone_prive" => new sfWidgetFormInput(),
             "fax" => new sfWidgetFormInput(),
         ));
 
@@ -20,8 +21,9 @@ class EtablissementForm extends acCouchdbObjectForm
             'adresse' => new sfValidatorString(),
             'commune' => new sfValidatorString(),
             'code_postal' => new sfValidatorString(),
-            'telephone' => new sfValidatorString(array("required" => false)),
-            'portable' => new sfValidatorString(array("required" => false)),
+            'telephone_bureau' => new sfValidatorString(array("required" => false)),
+            'telephone_mobile' => new sfValidatorString(array("required" => false)),
+            'telephone_prive' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
         ));
 
