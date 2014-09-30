@@ -21,8 +21,9 @@ class importEtablissementsTask extends sfBaseTask
     const CSV_PORTABLE              = 15;
     const CSV_EMAIL                 = 16;
     const CSV_WEB                   = 17;
-    const CSV_SIREN                 = 18;
-    const CSV_SIRET                 = 19;
+    const CSV_DATE_ARCHIVAGE        = 18;
+    const CSV_SIREN                 = 19;
+    const CSV_SIRET                 = 20;
 
     protected function configure()
     {
@@ -181,8 +182,11 @@ EOF;
     }
 
     protected function importLineSiret($data, $etablissement) {
-        $siret = $data[self::CSV_SIRET];
+        if($data[self::CSV_DATE_ARCHIVAGE]) {
 
+            throw new Exception("Etablissement archivé");
+        }
+        $siret = $data[self::CSV_SIRET];
         if(!$data[self::CSV_SIRET] && $data[self::CSV_SIREN]) {
             $siret = $data[self::CSV_SIREN];
         }

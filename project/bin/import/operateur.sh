@@ -18,9 +18,9 @@ cat $WORKDIR/evv.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10 | sed -r 's/^([0-9]+);/\
 
 #Récupération des SIRET
 
-cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\n" | tr "\r" "\n" | cut -d ";" -f 2,25,26 | grep -Ev "[a-zA-Z]+"  | grep -E "^[0-9]+;" | grep -v ";;$" | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
+cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\n" | tr "\r" "\n" | cut -d ";" -f 2,18,25,26 | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
 
-join -t ";" -1 2 -2 1 $WORKDIR/id_evv_cvi.csv $WORKDIR/ppm.csv | cut -d ";" -f 3,4,5 | sort -t ";" -k 1,1 | sed -r 's/^([0-9]+);/\1;3.SIRE;;;;;;;;;;;;;;;;/' > $WORKDIR/siret_cvi.csv
+join -t ";" -1 2 -2 1 $WORKDIR/id_evv_cvi.csv $WORKDIR/ppm.csv | cut -d ";" -f 3,4,5,6 | sort -t ";" -k 1,1 | sed -r 's/^([0-9]+);/\1;3.SIRE;;;;;;;;;;;;;;;;/' > $WORKDIR/siret_cvi.csv
 
 #---COMMUNICATION---
 cat $DATADIR/COMMUNICATION.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,8,9,10,11,12,13,14 | sort -t ";" -k 2,2 > $WORKDIR/communication.csv
@@ -55,9 +55,9 @@ cat $WORKDIR/cvi.csv $WORKDIR/chai_cvi.csv $WORKDIR/siret_cvi.csv $WORKDIR/commu
 
 cat $DATADIR/LOCALITE_FRANCAISE.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3 | sort | uniq | sort -t ";" -k 1,1 > $WORKDIR/communes.csv
 
-join -a 2 -t ";" -1 1 -2 7 $WORKDIR/communes.csv $WORKDIR/operateurs.sorted_by_commune.csv | sed 's/^;/;;/' | awk -F ";" '{ print $3 ";" $4 ";" $5 ";" $6 ";" $7 ";" $8 ";" $2 ";" $1 ";" $9 ";" $10 ";" $11 ";" $12 ";" $13 ";" $14 ";" $15 ";" $16 ";" $17 ";" $18 ";" $19 ";" $20  }' | sort > $WORKDIR/operateurs_commune.csv
+join -a 2 -t ";" -1 1 -2 7 $WORKDIR/communes.csv $WORKDIR/operateurs.sorted_by_commune.csv | sed 's/^;/;;/' | awk -F ";" '{ print $3 ";" $4 ";" $5 ";" $6 ";" $7 ";" $8 ";" $2 ";" $1 ";" $9 ";" $10 ";" $11 ";" $12 ";" $13 ";" $14 ";" $15 ";" $16 ";" $17 ";" $18 ";" $19 ";" $20 ";" $21 }' | sort > $WORKDIR/operateurs_commune.csv
 
-echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web;siren;siret" > $WORKDIR/operateurs.csv
+echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web;date archivage;siren;siret" > $WORKDIR/operateurs.csv
 cat $WORKDIR/operateurs_commune.csv >> $WORKDIR/operateurs.csv
 
 #php symfony import:Etablissement $WORKDIR/operateurs.csv
