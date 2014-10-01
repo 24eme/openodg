@@ -4,7 +4,7 @@
 
 <?php include_partial('drev/recap', array('drev' => $drev)); ?>
 
-<div class="row row-margin">
+<div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php echo url_for("home") ?>#drev" class="btn btn-primary btn-lg"><span class="eleganticon arrow_carrot-left pull-left"></span>Retour</a>
     </div>

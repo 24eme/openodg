@@ -9,7 +9,7 @@
          <a href="<?php echo url_for("drev_dr_recuperation", $drev) ?>" class="btn btn-default btn-lg">Récupérer les données DR</a>
     </div>
 </div>
-<div class="row row-margin">
+<div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("home") ?>#drev" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a></div>
     <div class="col-xs-6 text-right">
         <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for("drev_exploitation", $drev) ?>">Passer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>

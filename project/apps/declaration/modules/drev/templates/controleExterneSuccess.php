@@ -84,7 +84,7 @@
 
         </div>
         <div class="col-xs-4 col-xs-offset-1">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h2 class="panel-title">Lieu de prélèvement</h2>
                 </div>
@@ -98,7 +98,7 @@
         </div>
     </div>
     
-    <div class="row row-margin">
+    <div class="row row-margin row-button">
         <div class="col-xs-6">
             <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
         </div>

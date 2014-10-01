@@ -154,6 +154,10 @@ hr
 { 
 	margin-bottom: 20px; 
 	margin-top: 30px; 
+
+	&.row-button {
+		padding-top: 5px;
+	}
 }
 
 .panel .table-striped {
@@ -1354,12 +1358,13 @@ h3, .h3 { color: @font-color-h3; }
 .btn 
 { 
 	position: relative;
+	border: none;
 }
 
 .btn-lg
 {
-	padding-bottom: 8px;
-	padding-top: 8px;
+	padding-bottom: 9px;
+	padding-top: 9px;
 	font-size: 16px;
 
 	small {
@@ -1518,19 +1523,31 @@ h3, .h3 { color: @font-color-h3; }
 	box-shadow: none;
 	font-size: 14px;
 
-	background: @gray-lighter;
+	background: @white;
 
 	.panel-heading
 	{
 		margin: 0 @panel-body-padding;
 		padding: 20px 0 10px 0;
 
-		background: @gray-lighter;
+		background: @white;
 
 		.panel-title { font-size: 18px; }
 	}
 
 	.panel-body { color: @panel-default-text; }
+
+	&.panel-primary
+	{
+		background: @brune-lighter;
+
+		.panel-heading
+		{
+			background: @brune-lighter;
+		}
+		
+		.panel-body { color: @panel-default-text; }
+	}
 
 	&.panel-success
 	{
@@ -1652,7 +1669,7 @@ h3, .h3 { color: @font-color-h3; }
 	background: @white;
 	margin-top: 35px;
 	position: relative;
-	padding: 0 @grid-gutter-width;
+	padding: 0 @grid-gutter-width 10px @grid-gutter-width;
 }
 
 
@@ -1662,7 +1679,7 @@ h3, .h3 { color: @font-color-h3; }
 /* ============================================================= */
 #footer
 {
-	background: @white;
+	background: transparent;
 	font-size: 13px;
 	margin-bottom: 40px;
 	position: relative;
