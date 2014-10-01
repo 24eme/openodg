@@ -34,6 +34,6 @@ class ConfigurationClient extends acCouchdbClient {
 
     public function getCampagneManager() {
 
-        return new CampagneManager('08-01');
+        return new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
     }
 }

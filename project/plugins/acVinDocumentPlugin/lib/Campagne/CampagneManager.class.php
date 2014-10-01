@@ -2,15 +2,21 @@
 
 class CampagneManager {
 
-	protected $mm_dd_debut;
+    protected $mm_dd_debut;
+	protected $format;
 
-	public function __construct($mm_dd_debut) {
-		$this->mm_dd_debut = $mm_dd_debut;
+    const FORMAT_COMPLET = "COMPLET";
+    const FORMAT_PREMIERE_ANNEE = "PREMIERE_ANNEE";
+    const FORMAT_SECONDE_ANNEE = "SECONDE_ANNEE";
+
+	public function __construct($mm_dd_debut, $format = self::FORMAT_COMPLET) {
+        $this->mm_dd_debut = $mm_dd_debut;
+		$this->format = $format;
 	}
 
 	public function getCampagneByDate($date) {
 
-        return $this->formatCampagneOutput(sprintf('%s-%s', date('Y', strtotime($this->getDateDebutByDate($date))), date('Y', strtotime($this->getDateFinByDate($date)))));
+        return $this->formatCampagneOutput(sprintf("%s-%s", date('Y', strtotime($this->getDateDebutByDate($date))), date('Y', strtotime($this->getDateFinByDate($date)))));
     }
 
     public function getCurrent() {
@@ -51,6 +57,8 @@ class CampagneManager {
     }
 
     public function getPrevious($campagne) {
+        $campagne = $this->formatCampagneInput($campagne);
+
         $annees = $this->getAnnees($campagne);
 
         return $this->formatCampagneOutput(sprintf('%s-%s', $annees[1]-1, $annees[2]-1)); 
@@ -67,8 +75,6 @@ class CampagneManager {
     }
 
     protected function getAnnees($campagne) {
-        $campagne = $this->formatCampagneInput($campagne);
-        
     	if (!preg_match('/^([0-9]+)-([0-9]+)$/', $campagne, $annees)) {
 
             throw new sfException('campagne bad format');
@@ -78,11 +84,31 @@ class CampagneManager {
     }
 
     protected function formatCampagneOutput($campagne_output) {
+        if($this->format == self::FORMAT_PREMIERE_ANNEE) {
+            $annees = $this->getAnnees($campagne_output);
+
+            return $annees[1];
+        }
+
+        if($this->format == self::FORMAT_SECONDE_ANNEE) {
+            $annees = $this->getAnnees($campagne_output);
+
+            return $annees[2];
+        }
 
         return $campagne_output;
     }
 
     protected function formatCampagneInput($campagne_input) {
+        if($this->format == self::FORMAT_PREMIERE_ANNEE) {
+            
+            return sprintf("%s-%s", $campagne_input, $campagne_input + 1);
+        }
+
+        if($this->format == self::FORMAT_SECONDE_ANNEE) {
+            
+            return sprintf("%s-%s", $campagne_input - 1, $campagne_input);
+        }
 
         return $campagne_input;
     }
