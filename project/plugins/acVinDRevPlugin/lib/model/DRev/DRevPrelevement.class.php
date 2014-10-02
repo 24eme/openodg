@@ -110,8 +110,11 @@ class DRevPrelevement extends BaseDRevPrelevement {
 
     public function getLibelleProduitType() {
         if($this->_get('libelle_produit_type') === null) {
-
+            if(isset(DRev::$prelevement_libelles_produit_type[$this->getKey()])) {
+                $this->libelle_produit_type = DRev::$prelevement_libelles_produit_type[$this->getKey()];
+            } else {
                 $this->libelle_produit_type = DRev::$prelevement_libelles_produit_type[$this->getKeyType()];
+            }
         }
 
         return $this->_get('libelle_produit_type');

@@ -23,6 +23,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public static $prelevement_libelles_produit_type = array(
             self::CUVE => "Cuve ou fût",
+            self::CUVE_VTSGN => "Cuve, fût ou bouteille",
             self::BOUTEILLE => "Bouteille",
     );
     
@@ -181,10 +182,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
                 continue;
             }
-            $prelevements[$prelevement->date.$prelevement->getKey()] = $prelevement;
+            $prelevements[$prelevement->getKey().$prelevement->date] = $prelevement;
         }
 
-        //ksort($prelevements);
+        krsort($prelevements);
 
         return $prelevements;
     }
