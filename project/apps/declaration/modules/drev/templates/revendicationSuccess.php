@@ -40,17 +40,17 @@
 				<tr>
 					<td><?php echo $produit->getLibelleComplet() ?></td>
 					<td>
-						<div class="form-group">
+						<div class="form-group <?php if($embedForm['superficie_revendique']->hasError()): ?>has-error<?php endif; ?>">
+							<?php echo $embedForm['superficie_revendique']->renderError() ?>
 							<div class="col-xs-10 col-xs-offset-1">
-								<span class="text-danger"><?php echo $embedForm['superficie_revendique']->renderError() ?></span>
 								<?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded' , 'placeholder' => "ares")) ?>
 							</div>
 						</div>
 					</td>
 					<td>
-						<div class="form-group">
+						<div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
+							<?php echo $embedForm['volume_revendique']->renderError() ?>
 							<div class="col-xs-10 col-xs-offset-1">
-								<span class="text-danger"><?php echo $embedForm['volume_revendique']->renderError() ?></span>
 								<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded', 'placeholder' => "hl")) ?>
 							</div>
 						</div>

@@ -17,8 +17,8 @@
                 <h3>AOC Alsace</h3>
                 <div class="col-xs-offset-1">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
-                    <div class="form-group">
-                        <span class="text-danger"><?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?></span>
+                    <div class="form-group <?php if($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -41,7 +41,7 @@
                             </label>
                         </div>
                     </div>
-                    <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if(!$form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>hidden<?php endif; ?>">
+                    <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if(!$form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>hidden<?php endif; ?> <?php if($form[DRev::CUVE_VTSGN]["date"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderError(); ?>
                         <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">

@@ -68,7 +68,7 @@ p{margin:0 0 10px}
 small,.small{font-size:85%}
 cite{font-style:normal}
 .text-left{text-align:left}
-.text-right{text-align:right}
+.text-right,ul.error_list{text-align:right}
 .text-center{text-align:center}
 .text-justify{text-align:justify}
 .text-muted{color:#5e5e5e}
@@ -76,7 +76,7 @@ cite{font-style:normal}
 .text-success{color:#48874a}a.text-success:hover{color:#366638}
 .text-info{color:#fff}a.text-info:hover{color:#e6e6e6}
 .text-warning{color:#a8844a}a.text-warning:hover{color:#85683a}
-.text-danger{color:#b74b4b}a.text-danger:hover{color:#943b3b}
+.text-danger,ul.error_list{color:#b74b4b}a.text-danger:hover{color:#943b3b}
 .bg-primary{color:#fff;background-color:#428bca}a.bg-primary:hover{background-color:#3071a9}
 .bg-success{background-color:#e0f0d9}a.bg-success:hover{background-color:#c2e2b4}
 .bg-info{background-color:#9b9383}a.bg-info:hover{background-color:#827a69}
@@ -1175,6 +1175,7 @@ h3,.h3{color:#5e5e5e}
 .input-sm{font-size:13px;height:24px}
 .input-rounded{border-radius:14px}.input-rounded.input-lg{border-radius:22px}
 .input-rounded.input-sm{border-radius:15px}
+ul.error_list{margin-top:0}
 .btn{position:relative;border:none}
 .btn-lg{padding-bottom:9px;padding-top:9px;font-size:16px}.btn-lg small{font-size:70%}
 .btn.btn-upper{text-transform:uppercase}

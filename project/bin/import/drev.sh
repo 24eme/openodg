@@ -58,4 +58,4 @@ echo "cvi;annee;type ligne;rev num ligne;rev type id;rev type libelle;rev valeur
 
 cat $WORKDIR/valeur_cvi_param.csv $WORKDIR/lot_cvi.csv $WORKDIR/prelevement_cvi.csv | sort | grep -E "^[0-9]+;2013;" >> $WORKDIR/drev.csv
 
-
+php symfony import:DRev $WORKDIR/drev.csv

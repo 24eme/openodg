@@ -38,7 +38,7 @@ class DRevClient extends acCouchdbClient {
     }
     
     public function getHistory($cvi, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        
+            
         return $this->startkey('DREV-'.$cvi.'-0000')->endkey('DREV-'.$cvi.'-9999')->execute($hydrate);
     }
 }

@@ -1,9 +1,10 @@
 <?php $steps = array(
                     "exploitation" => 1,
                     "revendication" => 2,
-                    "validation" => 3
+                    "validation" => 3,
+                    "confirmation" => 4,
                       ); ?>
-<?php $stepNum = $steps[$step]; ?>
+<?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
 
 <ol class="breadcrumb-steps">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?>  <?php if($stepNum > 1): ?>visited<?php endif; ?>">

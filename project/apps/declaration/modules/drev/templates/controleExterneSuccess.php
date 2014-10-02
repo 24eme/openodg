@@ -15,8 +15,8 @@
                 <h3>AOC Alsace</h3>
                 <div class="col-xs-offset-1">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
-                    <div class="form-group">
-                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderError(); ?></span>
+                    <div class="form-group <?php if($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderError(); ?></span>
                         <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -33,8 +33,8 @@
                 <h3>AOC Alsace Grand Cru</h3>
                 <div class="col-xs-offset-1">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté</p>
-                    <div class="form-group">
-                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderError(); ?></span>
+                    <div class="form-group <?php if($form[DRev::BOUTEILLE_GRDCRU]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderError(); ?></span>
                         <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -44,6 +44,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -51,9 +52,9 @@
             <div class="row-margin">
                 <h3>VT / SGN</h3>
                 <div class="col-xs-offset-1">
-                    <div class="form-group">
-                        <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
-                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderError(); ?></span>
+                    <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
+                    <div class="form-group <?php if($form[DRev::BOUTEILLE_VTSGN]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderError(); ?>
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -64,8 +65,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?></span>
+                    <div class="form-group <?php if($form[DRev::BOUTEILLE_VTSGN]["total_lots"]->hasError()): ?>has-error<?php endif; ?>">
+                        <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?>
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderLabel("Nombre de lots VT/SGN <small class=\"text-muted\">(toutes appellations confondues)</small>", array("class" => "col-xs-10 control-label")); ?>
                         <div class="col-xs-2">
                             <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->render(array("class" => "form-control")); ?>

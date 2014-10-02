@@ -24,8 +24,8 @@
             <tr>
                 <td><?php echo $produit->getLibelle() ?></td>
                 <td class="text-center">
-                    <span class="text-danger"><?php echo $embedForm['nb_hors_vtsgn']->renderError() ?></span>
-                    <div class="form-group">
+                    <div class="form-group <?php if($embedForm['nb_hors_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
+                        <?php echo $embedForm['nb_hors_vtsgn']->renderError() ?>
                         <div class="col-xs-8 col-xs-offset-2">
                             <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input input-rounded')) ?>
                         </div>
@@ -34,8 +34,8 @@
                 </td>
                 <td class="text-center">
                     <?php if(isset($embedForm['nb_vtsgn'])): ?>
-                        <span class="text-danger"><?php echo $embedForm['nb_vtsgn']->renderError() ?></span>
-                        <div class="form-group">
+                        <div class="form-group <?php if($embedForm['nb_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['nb_vtsgn']->renderError() ?>
                             <div class="col-xs-8 col-xs-offset-2">
                                 <?php echo $embedForm['nb_vtsgn']->render(array('class' => 'form-control input input-rounded')) ?>
                             </div>
