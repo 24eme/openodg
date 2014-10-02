@@ -44,5 +44,14 @@
                 </td>
             </tr>
         <?php endforeach; ?>
+        <?php if (isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
+            <tr>
+                <td>
+                    <button class="btn btn-warning ajax btn-sm" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit&nbsp;<span class="eleganticon icon_plus"></span></button>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        <?php endif; ?>
     </tbody>
 </table>

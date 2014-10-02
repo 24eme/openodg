@@ -27,7 +27,7 @@
 			<tr>
 				<th class="col-xs-5">Appellation revendiquée</th>
 				<th class="col-xs-2 text-center">Superficie totale<br /></th>
-				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /><small class="text-muted"> VT/SGN Inclus</small></th>
+				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /></th>
 				<th class="col-xs-1 small text-center">Volume total</th>
 				<th class="col-xs-1 small text-center">Volume sur place</th>
 				<th class="col-xs-1 small text-center">Usages industriels</th>

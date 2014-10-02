@@ -5,18 +5,15 @@
 </div>
 
 <form method="post" action="" role="form" class="form-horizontal ajaxForm">
-    <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
+    
     <div class="row">
         <div class="col-xs-7">
-
+            <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">AOC Alsace</h2>
-                </div>
-                <div class="panel-body">
+            <div class="row-margin">
+                <h3>AOC Alsace</h3>
+                <div class="col-xs-offset-1">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                     <div class="form-group">
                         <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderError(); ?></span>
@@ -32,12 +29,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">AOC Alsace Grand Cru</h2>
-                </div>
-                <div class="panel-body">
+            <div class="row-margin">
+                <h3>AOC Alsace Grand Cru</h3>
+                <div class="col-xs-offset-1">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté</p>
                     <div class="form-group">
                         <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderError(); ?></span>
@@ -54,13 +48,11 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">VT / SGN</h2>
-                </div>
-                <div class="panel-body">
-                    <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
+            <div class="row-margin">
+                <h3>VT / SGN</h3>
+                <div class="col-xs-offset-1">
                     <div class="form-group">
+                        <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                         <span class="text-danger"><?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderError(); ?></span>
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
