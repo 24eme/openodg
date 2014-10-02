@@ -78,17 +78,18 @@ EOF;
     }
 
     protected function save($doc) {
+         $doc->constructId();
         if($doc->isNew()) {
-            echo sprintf("SUCCESS;%s;%s\n", "Création", $doc->identifiant);
+            echo sprintf("SUCCESS;%s;%s\n", "Création", $doc->_id);
         } else {
-            echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $doc->identifiant);
+            echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $doc->_id);
         }
         $doc->save();
     }
 
     public function findOrCreateDoc($data) {
         $cvi = $data[self::CSV_CVI];
-        $campagne = $data[self::CSV_ANNEE]."-".((int)$data[self::CSV_ANNEE] + 1);
+        $campagne = $data[self::CSV_ANNEE];
         $id = sprintf("DREV-%s-%s", $cvi, $campagne);
         $doc = DRevClient::getInstance()->find($id);
         if(!$doc) {

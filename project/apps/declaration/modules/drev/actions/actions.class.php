@@ -2,10 +2,6 @@
 
 class drevActions extends sfActions {
 
-    public function executeIndex(sfWebRequest $request) {
-        
-    }
-
     public function executePushDR(sfWebRequest $request) {
         $this->url = $request->getParameter('url_import');
         $this->csv = base64_encode(file_get_contents(sfConfig::get('sf_data_dir') . '/DR/DR-7523700100-2013.csv'));

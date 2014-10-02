@@ -2,10 +2,6 @@
 
 class drevmarcActions extends sfActions {
 
-    public function executeIndex(sfWebRequest $request) {
-        
-    }
-
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
