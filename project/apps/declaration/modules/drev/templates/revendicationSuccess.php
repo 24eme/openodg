@@ -4,7 +4,9 @@
     <h2>Revendication</h2>
 </div>
 
-<?php include_partial('drev/stepRevendication', array('drev' => $drev)) ?>
+<?php if(!$drev->hasDR()): ?>
+	<?php include_partial('drev/stepRevendication', array('drev' => $drev)) ?>
+<?php endif; ?>
 
 <form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
 	<?php echo $form->renderHiddenFields() ?>

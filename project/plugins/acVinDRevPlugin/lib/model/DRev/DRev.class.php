@@ -11,10 +11,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
 	const CUVE_ALSACE = 'cuve_ALSACE';
     const CUVE_GRDCRU = 'cuve_GRDCRU';
-    const CUVE_VTSGN = 'cuve_vtsgn';
+    const CUVE_VTSGN = 'cuve_VTSGN';
     const BOUTEILLE_ALSACE = 'bouteille_ALSACE';
     const BOUTEILLE_GRDCRU = 'bouteille_GRDCRU';
-	const BOUTEILLE_VTSGN = 'bouteille_vtsgn';
+	const BOUTEILLE_VTSGN = 'bouteille_VTSGN';
 
     public static $prelevement_libelles = array(
             self::CUVE => "Dégustation conseil",
@@ -79,6 +79,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 	
+    public function hasDR() {
+
+        return $this->_attachments->exist('DR.csv');
+    }
+
 	public function initDoc($identifiant, $campagne)
 	{
         $this->identifiant = $identifiant;
@@ -99,8 +104,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->updateRevendiqueFromDetail();
         $this->resetCepage();
         $this->updateCepageFromCSV($csv);
+        $this->updatePrelevementsFromRevendication();
         $this->updateLotsFromCepage();
-        $this->declaration->certification->genre->appellation_ALSACEBLANC->reorderByConf();
+        $this->declaration->reorderByConf();
     }
 
     public function updateFromDRev($drev) {
@@ -115,7 +121,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $p->addLotProduit($lot->hash_produit);
             }
         }
-        //$this->declaration->reorderByConf();
+        $this->updatePrelevementsFromRevendication();
+        $this->declaration->reorderByConf();
     }
     
 	public function addProduit($hash)
@@ -135,6 +142,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function initLots() 
     {
     	$this->prelevements->add(self::CUVE_ALSACE)->getConfigProduitsLots()->initLots();
+    }
+
+    public function hasPrelevement($key)
+    {
+
+        return $this->prelevements->exist($key);
     }
 
     public function addPrelevement($key)
@@ -287,6 +300,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     protected function updateRevendiqueFromDetail() {
         foreach($this->declaration->getProduits() as $produit) {
             $produit->updateRevendiqueFromDetail();
+        }
+    }
+
+    public function updatePrelevementsFromRevendication() {
+        foreach($this->declaration->getProduits() as $produit) {
+            $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
+            $key = $this->getPrelevementsKeyByHash($hash);
+            $this->addPrelevement(self::CUVE.$key);
+            $this->addPrelevement(self::BOUTEILLE.$key);
         }
     }
 

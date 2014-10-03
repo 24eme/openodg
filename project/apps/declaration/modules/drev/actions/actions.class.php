@@ -105,6 +105,11 @@ class drevActions extends sfActions {
                     
                     return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
                 }
+
+                if($this->drev->hasDR()) {
+
+                    return $this->redirect('drev_degustation_conseil', $this->drev);
+                }
                 
                 return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
             }
@@ -240,8 +245,8 @@ class drevActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
 
-        if ($this->prelevement->getKey() == Drev::CUVE_ALSACE) {
-            return $this->redirect('drev_lots', $this->drev->addPrelevement(Drev::CUVE_GRDCRU));
+        if ($this->prelevement->getKey() == Drev::CUVE_ALSACE && $this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
+            return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
         }
 
         return $this->redirect('drev_controle_externe', $this->drev);
