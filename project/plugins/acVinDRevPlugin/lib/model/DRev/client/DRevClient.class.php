@@ -33,7 +33,6 @@ class DRevClient extends acCouchdbClient {
             $drev->updateFromDRev($drev_previous);
         }
 
-
         return $drev;
     }
     

@@ -176,6 +176,11 @@ EOF;
     protected function importLineLot($data, $doc) {
         $hash = $this->convertLotToHashProduit($data);
         $lot = $doc->addLotProduit($hash, DREV::CUVE);
+
+        if(!$lot) {
+
+            return;
+        }
         $lot->nb_hors_vtsgn += $data[self::CSV_NB_LOT];
     }
 

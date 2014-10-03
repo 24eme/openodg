@@ -100,7 +100,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->resetCepage();
         $this->updateCepageFromCSV($csv);
         $this->updateLotsFromCepage();
-        $this->declaration->reorderByConf();
+        $this->declaration->certification->genre->appellation_ALSACEBLANC->reorderByConf();
     }
 
     public function updateFromDRev($drev) {
@@ -115,7 +115,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $p->addLotProduit($lot->hash_produit);
             }
         }
-        $this->declaration->reorderByConf();
+        //$this->declaration->reorderByConf();
     }
     
 	public function addProduit($hash)
@@ -153,7 +153,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $key = $prefix.$this->getPrelevementsKeyByHash($hash);
 
         $prelevement = $this->addPrelevement($key);
-    	
+
+        if(!$prelevement) {
+
+            return;
+        }
 		$lot = $prelevement->lots->add(str_replace('/', '_', $hash));
         $lot->hash_produit = $hash;
         $lot->getLibelle();
@@ -306,8 +310,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $config = $this->getConfiguration()->get($hash);
 
             $produit = $this->getOrAdd($config->getHash());
-            if($line[DRCsvFile::CSV_VTSGN]) {
-                $produit->volume_revendique_vtsgn += (float) $line[DRCsvFile::CSV_VOLUME];
+            if($line[DRCsvFile::CSV_VTSGN] == "VT") {
+                $produit->volume_revendique_vt += (float) $line[DRCsvFile::CSV_VOLUME];
+            } elseif($line[DRCsvFile::CSV_VTSGN] == "SGN") {
+                $produit->volume_revendique_sgn += (float) $line[DRCsvFile::CSV_VOLUME];
             } else {
                 $produit->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
             }
