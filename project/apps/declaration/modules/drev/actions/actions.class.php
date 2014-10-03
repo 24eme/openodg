@@ -3,9 +3,19 @@
 class drevActions extends sfActions {
 
     public function executePushDR(sfWebRequest $request) {
-        $this->url = $request->getParameter('url_import');
-        $this->csv = base64_encode(file_get_contents(sfConfig::get('sf_data_dir') . '/DR/DR-7523700100-2013.csv'));
-        $this->pdf = base64_encode(file_get_contents(sfConfig::get('sf_data_dir') . '/DR/DR-7523700100-2013.pdf'));
+        $this->url = $request->getParameter('url');
+        $this->id = $request->getParameter('id');
+
+        $file_path_csv = sprintf("%s/DR/%s.%s", sfConfig::get('sf_data_dir'), $this->id, "csv");
+        $file_path_pdf = sprintf("%s/DR/%s.%s", sfConfig::get('sf_data_dir'), $this->id, "pdf");
+
+        if(!file_exists($file_path_csv) || !file_exists($file_path_pdf)) {
+
+            return $this->redirect($this->url);
+        }
+
+        $this->csv = base64_encode(file_get_contents($file_path_csv));
+        $this->pdf = base64_encode(file_get_contents($file_path_pdf));
     }
 
     public function executeCreate(sfWebRequest $request) {
@@ -47,23 +57,28 @@ class drevActions extends sfActions {
     }
 
     public function executeDrImport(sfWebRequest $request) {
-        $drev = $this->getRoute()->getDRev();
+        $this->drev = $this->getRoute()->getDRev();
         umask(0002);
         $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
         if (!file_exists($cache_dir)) {
             mkdir($cache_dir);
         }
 
+        if(!$request->getParameter('csv') || !$request->getParameter('pdf')) {
+
+            return sfView::SUCCESS;
+        }
+
         file_put_contents($cache_dir . "/DR.csv", base64_decode($request->getParameter('csv')));
-        $drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
+         $this->drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
 
         file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
-        $drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
+         $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
 
-        $drev->updateFromCSV();
-        $drev->save();
+         $this->drev->updateFromCSV();
+         $this->drev->save();
 
-        return $this->redirect($this->generateUrl('drev_exploitation', $drev));
+        return $this->redirect($this->generateUrl('drev_exploitation', $this->drev));
     }
 
     public function executeExploitation(sfWebRequest $request) {
