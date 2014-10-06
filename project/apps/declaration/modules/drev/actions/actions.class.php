@@ -121,7 +121,7 @@ class drevActions extends sfActions {
                     return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
                 }
 
-                if($this->drev->hasDR()) {
+                if($this->drev->hasDR() || count($this->drev->declaration->getAppellations()) < 1) {
 
                     return $this->redirect('drev_degustation_conseil', $this->drev);
                 }
