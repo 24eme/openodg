@@ -1,3 +1,4 @@
+<?php use_helper("Date"); ?>
 <?php include_partial('drev/step', array('step' => 'controle_externe', 'drev' => $drev)) ?>
 
 <div class="page-header">
@@ -27,6 +28,10 @@
                                 </div>
                             </div>
                         </div>
+                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_ALSACE)->date_precedente): ?>
+                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small>
+                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_ALSACE)->date_precedente, "D", "fr_FR") ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -47,7 +52,10 @@
                                 </div>
                             </div>
                         </div>
-                        
+                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_GRDCRU)->date_precedente): ?>
+                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small> 
+                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_GRDCRU)->date_precedente, "D", "fr_FR") ?></small>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -61,12 +69,16 @@
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
-                                <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->render(array("class" => "form-control")); ?>
+                                <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->render(array("class" => "form-control", "data-date-defaultDate" => "01/01/2013")); ?>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </div>
                             </div>
                         </div>
+                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_VTSGN)->date_precedente): ?>
+                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small>
+                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_VTSGN)->date_precedente, "D", "fr_FR") ?></small>
+                        <?php endif; ?>
                     </div>
                     <div class="form-group <?php if($form[DRev::BOUTEILLE_VTSGN]["total_lots"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?>

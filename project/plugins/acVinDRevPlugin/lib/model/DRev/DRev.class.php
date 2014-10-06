@@ -117,6 +117,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
         foreach($drev->prelevements as $prelevement) {
             $p = $this->addPrelevement($prelevement->getKey());
+            $p->date_precedente = $prelevement->date;
             foreach($prelevement->lots as $lot) {
                 $p->addLotProduit($lot->hash_produit);
             }

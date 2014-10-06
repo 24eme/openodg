@@ -4,7 +4,7 @@ class DRevPrelevementForm extends acCouchdbObjectForm
 {
     public function configure() {
        $this->setWidgets(array(
-            "date" => new sfWidgetFormInput(array()),
+            "date" => new sfWidgetFormInput(array(), array("data-date-defaultDate" => $this->getDefaultDate())),
         ));
 
         $this->setValidators(array(
@@ -21,5 +21,10 @@ class DRevPrelevementForm extends acCouchdbObjectForm
         if($this->getValidator('date') instanceof sfValidatorDate) {
             $this->setDefault('date', $this->getObject()->getDateFr());
         }
+    }
+
+    protected function getDefaultDate() {
+
+        return '01-01-2015';
     }
 }

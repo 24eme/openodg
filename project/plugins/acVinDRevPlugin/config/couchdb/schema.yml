@@ -121,6 +121,7 @@ DRev:
                 fields:
                   total_lots: {  }
                   date: {  }
+                  date_precedente: {  }
                   libelle_produit: {  }
                   libelle_produit_type: {  }
                   libelle_date: {  }

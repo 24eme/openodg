@@ -65,12 +65,19 @@
         {
             var currentDp = $(this);
 
+            hasValue = currentDp.find('input').val();
+
             currentDp.datetimepicker
                     ({
                         language: 'fr',
                         pickTime: false,
+                        useCurrent: false,
                         daysOfWeekDisabled: [0, 2, 3, 4, 5, 6]
                     });
+
+            if(!hasValue) {
+                currentDp.find('input').val('');
+            }
 
             currentDp.on('focus', 'input', function()
             {
