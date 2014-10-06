@@ -122,6 +122,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             }
         }
         $this->updatePrelevementsFromRevendication();
+        $this->udateRevendicationCepageFromLots();
         $this->declaration->reorderByConf();
     }
     
@@ -309,6 +310,39 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $key = $this->getPrelevementsKeyByHash($hash);
             $this->addPrelevement(self::CUVE.$key);
             $this->addPrelevement(self::BOUTEILLE.$key);
+        }
+    }
+
+    protected function udateRevendicationCepageFromLots() {
+        if($this->prelevements->exist(self::CUVE_ALSACE) && count($this->prelevements->get(self::CUVE_ALSACE)->lots > 0)) {
+            foreach($this->getProduits() as $produit) {
+                $hash_rev_lot = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
+
+                foreach($this->prelevements[CUVE_ALSACE]->lots as $lot) {
+                    if(!preg_match("|".$hash_rev_lot."|", $lot->hash_produit)) {
+
+                        continue;
+                    }
+                    
+                    $hash = str_replace($hash_rev_lot, $produit->getHash(), $lot->hash_produit);
+
+                    if(!$this->getConfiguration()->exist($hash)) {
+
+                        continue;
+                    }
+                    $this->getOrAdd($hash);
+                    echo $hash . "\n";
+                }
+            }
+        }
+        if($this->prelevements->exist(self::CUVE_GRDCRU)) {
+            foreach($this->prelevements->get(self::CUVE_GRDCRU)->lots as $lot) {
+                if(!$this->getConfiguration()->exist($lot->hash_produit)) {
+
+                    continue;
+                }
+                $this->getOrAdd($lot->hash_produit);
+            }
         }
     }
 
