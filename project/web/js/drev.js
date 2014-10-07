@@ -15,12 +15,20 @@
         });
     }
 
+    $.initPrelevement = function()
+    {
+        $('.form-chai button').click(function() {
+            $('.form-chai button, .form-chai .form-group, .form-chai p').toggleClass('hidden');
+        });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
     _doc.ready(function()
     {
         $.initExploitation();
+        $.initPrelevement();
     });
 
 })(jQuery);

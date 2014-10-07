@@ -96,11 +96,21 @@
                 <div class="panel-heading">
                     <h2 class="panel-title">Lieu de prélèvement</h2>
                 </div>
-                <div class="panel-body">
-                    <span>1, rue Garnier Neuilly, 92110</span> <br />
-                    <div class="row-margin text-right">
-                        <a href="#" class="btn btn-warning">Modifier</a>
-                    </div>
+                <div class="panel-body form-chai">
+                    <?php $chai = $drev->chais->get(DRev::BOUTEILLE) ?>
+                    <p>
+                        <?php echo $chai->adresse ?><br />
+                        <?php echo $chai->code_postal ?> <?php echo $chai->commune ?>
+                    </p>
+                    <?php if(isset($form['chai'])): ?>
+                        <div class="form-group hidden">
+                            <?php echo $form["chai"]->renderError(); ?>
+                            <?php echo $form["chai"]->render(array("class" => "form-control")); ?>
+                        </div>
+                        <div class="row-margin text-right">
+                            <button type="button" class="btn btn-sm btn-warning">Modifier</button>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

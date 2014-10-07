@@ -5,18 +5,18 @@
  * Base model for DRevCouleur
 
  * @property string $libelle
- * @property float $total_superficie
  * @property float $volume_revendique
- * @property acCouchdbJson $dr
+ * @property float $superficie_revendique
+ * @property acCouchdbJson $detail
 
  * @method string getLibelle()
  * @method string setLibelle()
- * @method float getTotalSuperficie()
- * @method float setTotalSuperficie()
  * @method float getVolumeRevendique()
  * @method float setVolumeRevendique()
- * @method acCouchdbJson getDr()
- * @method acCouchdbJson setDr()
+ * @method float getSuperficieRevendique()
+ * @method float setSuperficieRevendique()
+ * @method acCouchdbJson getDetail()
+ * @method acCouchdbJson setDetail()
  
  */
 

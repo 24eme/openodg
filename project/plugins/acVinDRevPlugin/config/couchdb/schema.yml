@@ -140,3 +140,14 @@ DRev:
                               libelle: {  }
                               hash_produit: {  }
                               no_vtsgn: { type: integer, required: false }
+      chais:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
