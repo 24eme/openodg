@@ -7,21 +7,18 @@
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'prelevement', 'drev' => $drev)) ?>
 
 <form method="post" action="" role="form" class="form-horizontal ajaxForm">
-    <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
-
+    
     <div class="row">
         <div class="col-xs-7">
+            <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">AOC Alsace</h2>
-                </div>
-                <div class="panel-body">
+            <div class="row-margin">
+                <h3>AOC Alsace</h3>
+                <div class="col-xs-offset-1">
                     <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
-                    <div class="form-group">
-                        <span class="text-danger"><?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?></span>
+                    <div class="form-group <?php if($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
@@ -34,12 +31,9 @@
                     </div>
                 </div>
             </div>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h2 class="panel-title">VT / SGN</h2>
-                </div>
-                <div class="panel-body">
+            <div class="row-margin">
+                <h3>VT / SGN</h3>
+                <div class="col-xs-offset-1">
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
@@ -47,7 +41,7 @@
                             </label>
                         </div>
                     </div>
-                    <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if(!$form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>hidden<?php endif; ?>">
+                    <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if(!$form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>hidden<?php endif; ?> <?php if($form[DRev::CUVE_VTSGN]["date"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderError(); ?>
                         <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
@@ -58,21 +52,31 @@
             </div>
         </div>
         <div class="col-xs-4 col-xs-offset-1">
-            <div class="panel panel-default">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h2 class="panel-title">Lieu de prélèvement</h2>
                 </div>
-                <div class="panel-body">
-                    <span>1, rue Garnier Neuilly, 92110</span> <br />
-                    <div class="row-margin text-right">
-                        <a href="#" class="btn btn-warning">Modifier</a>
-                    </div>
+                <div class="panel-body form-chai">
+                    <?php $chai = $drev->chais->get(DRev::CUVE) ?>
+                    <p>
+                        <?php echo $chai->adresse ?><br />
+                        <?php echo $chai->code_postal ?> <?php echo $chai->commune ?>
+                    </p>
+                    <?php if(isset($form['chai'])): ?>
+                        <div class="form-group hidden">
+                            <?php echo $form["chai"]->renderError(); ?>
+                            <?php echo $form["chai"]->render(array("class" => "form-control")); ?>
+                        </div>
+                        <div class="row-margin text-right">
+                            <button type="button" class="btn btn-sm btn-warning">Modifier</button>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row row-margin">
+    <div class="row row-margin row-button">
         <div class="col-xs-6">
             <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
         </div>

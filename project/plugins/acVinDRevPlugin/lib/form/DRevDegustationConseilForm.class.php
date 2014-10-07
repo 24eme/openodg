@@ -16,9 +16,23 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
         $this->embedForm(Drev::CUVE_VTSGN, $form_vtsgn);
 
+        if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
+            $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice())));    
+            $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
+        }
+
         $form_vtsgn->validatorSchema['date']->setMessage('required', 'La semaine de degustation est obligatoire.');
         
         $this->widgetSchema->setNameFormat('degustation_conseil[%s]');
+    }
+
+    public function getChaiChoice() {
+        $choices = array();
+        foreach($this->getObject()->getDocument()->getEtablissementObject()->chais as $chai) {
+            $choices[$chai->getKey()] = sprintf("%s %s %s", $chai->adresse, $chai->code_postal, $chai->commune);
+        }
+
+        return $choices;
     }
 
     public function getVtsgnChoices() {
@@ -49,6 +63,10 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
     {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
             $embedForm->doUpdateObject($values[$key]);
+        }
+
+        if(isset($values["chai"])) {
+            $this->getObject()->getDocument()->chais->set(DRev::CUVE, $this->getObject()->getDocument()->getEtablissementObject()->chais->get($values["chai"])->toArray(true, false));
         }
     }
 }

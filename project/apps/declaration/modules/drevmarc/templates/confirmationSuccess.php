@@ -1,4 +1,4 @@
-<?php include_partial('drev/step', array('step' => 'confirmation', 'drev' => $drev)) ?>
+<?php include_partial('drevmarc/step', array('step' => 'confirmation', 'drevmarc' => $drevmarc)) ?>
 
 <p>
 Merci d'avoir valider la déclaration. <br />

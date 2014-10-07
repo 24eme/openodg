@@ -267,11 +267,30 @@ drevmarc_validation:
   param: { module: drevmarc, action: validation }
   class: DRevMarcRoute
   options:
-    model:    DRevMarc
+    model:    DRevMarcRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
+drevmarc_confirmation:
+  url: /drevmarc/confirmation/:id
+  param: { module: drevmarc, action: confirmation }
+  class: DRevMarcRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drevmarc_visualisation:
+  url: /drevmarc/visualisation/:id
+  param: { module: drevmarc, action: visualisation }
+  class: DRevMarcRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 drevmarc_delete:
   url: /drevmarc/suppression/:id

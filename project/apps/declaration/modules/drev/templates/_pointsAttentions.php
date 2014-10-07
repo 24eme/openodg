@@ -1,5 +1,5 @@
 <?php if($validation->hasErreurs()): ?>
-<h2 class="h3">Points bloquants</h2>
+<h3>Points bloquants</h2>
 <div class="alert alert-danger" role="alert">
     <ul>
     	<?php foreach ($validation->getPoints(DrevValidation::TYPE_ERROR) as $controle): ?>
@@ -20,7 +20,7 @@
 </div>
 <?php endif; ?>
 <?php if($validation->hasVigilances()): ?>
-<h2 class="h3">Points de vigilance</h2>
+<h3>Points de vigilance</h2>
 <div class="alert alert-warning" role="alert">
 <ul>
 	<?php foreach ($validation->getPoints(DrevValidation::TYPE_WARNING) as $controle): ?>

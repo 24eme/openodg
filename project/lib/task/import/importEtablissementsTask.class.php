@@ -96,11 +96,11 @@ EOF;
             echo sprintf("ERROR;%s;#LINE;%s\n", "Aucune famille", $etablissement->cvi);
             return;
         }
-
+        $etablissement->constructId();
         if($etablissement->isNew()) {
-            echo sprintf("SUCCESS;%s;%s\n", "Création", $etablissement->cvi);
+            echo sprintf("SUCCESS;%s;%s\n", "Création", $etablissement->_id);
         } else {
-            echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $etablissement->cvi);
+            echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $etablissement->_id);
         }
         $etablissement->save();
         $etablissement = null;

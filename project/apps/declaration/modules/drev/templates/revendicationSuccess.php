@@ -4,7 +4,9 @@
     <h2>Revendication</h2>
 </div>
 
-<?php include_partial('drev/stepRevendication', array('drev' => $drev)) ?>
+<?php if(!$drev->hasDR()): ?>
+	<?php include_partial('drev/stepRevendication', array('drev' => $drev)) ?>
+<?php endif; ?>
 
 <form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
 	<?php echo $form->renderHiddenFields() ?>
@@ -27,7 +29,7 @@
 			<tr>
 				<th class="col-xs-5">Appellation revendiquée</th>
 				<th class="col-xs-2 text-center">Superficie totale<br /></th>
-				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /><small class="text-muted"> VT/SGN Inclus</small></th>
+				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /></th>
 				<th class="col-xs-1 small text-center">Volume total</th>
 				<th class="col-xs-1 small text-center">Volume sur place</th>
 				<th class="col-xs-1 small text-center">Usages industriels</th>
@@ -40,17 +42,17 @@
 				<tr>
 					<td><?php echo $produit->getLibelleComplet() ?></td>
 					<td>
-						<div class="form-group">
+						<div class="form-group <?php if($embedForm['superficie_revendique']->hasError()): ?>has-error<?php endif; ?>">
+							<?php echo $embedForm['superficie_revendique']->renderError() ?>
 							<div class="col-xs-10 col-xs-offset-1">
-								<span class="text-danger"><?php echo $embedForm['superficie_revendique']->renderError() ?></span>
 								<?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded' , 'placeholder' => "ares")) ?>
 							</div>
 						</div>
 					</td>
 					<td>
-						<div class="form-group">
+						<div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
+							<?php echo $embedForm['volume_revendique']->renderError() ?>
 							<div class="col-xs-10 col-xs-offset-1">
-								<span class="text-danger"><?php echo $embedForm['volume_revendique']->renderError() ?></span>
 								<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded', 'placeholder' => "hl")) ?>
 							</div>
 						</div>
@@ -83,7 +85,7 @@
 		</tbody>
 	</table>
 
-	<div class="row row-margin">
+	<div class="row row-margin row-button">
 		<div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
 		<div class="col-xs-6 text-right">
 			<button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et saisir les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>

@@ -14,23 +14,25 @@
 @gray-darker:            lighten(#000, 13.5%); // #222
 @gray-dark:              lighten(#000, 20%);   // #333
 @gray:                   #5e5e5e;
-@gray-light:             #b9b8b8;
+@gray-light:             #a9a8a8;
 @gray-lighter:           #efefec;
+@brune-lighter:          #fffbde;
 
 // Greens
 // -------------------------
 
 @green-darker:          #2c4a48;
 @green-dark:            #105251;
-@green:                 #b9cf62;          
+@green:                 darken(#b9cf62, 4%);          
+@green-light:           #b9cf62;          
 
 // Brand colors
 // -------------------------
 
 @brand-primary:         #428bca;
 @brand-success:         #5cb85c;
-@brand-warning:         #f0ad4e;
-@brand-danger:          #d9534f;
+@brand-warning:         #ffb85c;
+@brand-danger:          #cb5748;
 @brand-info:            #5bc0de;
 
 // Scaffolding
@@ -120,11 +122,11 @@
 @table-condensed-cell-padding:       5px;
 
 @table-bg:                           transparent; // overall background-color
-@table-bg-accent:                    @gray-lighter; // for striping
+@table-bg-accent:                    @brune-lighter; // for striping
 @table-bg-hover:                     #f5f5f5;
 @table-bg-active:                    @table-bg-hover;
 
-@table-border-color:                 #828282; // table and cell border
+@table-border-color:                 #cbcbcb; // table and cell border
 @table-font-color:                   @gray-darker;
 
 
@@ -136,6 +138,7 @@
 @btn-default-color:              @green-darker;
 @btn-default-bg:                 @green;
 @btn-default-border:             #939498;
+//@btn-default-border:             darken(@btn-default-bg, 5%);
 
 @btn-primary-color:              #fff;
 @btn-primary-bg:                 @green-darker;
@@ -145,7 +148,7 @@
 @btn-success-bg:                 @brand-success;
 @btn-success-border:             darken(@btn-success-bg, 5%);
 
-@btn-warning-color:              #fff;
+@btn-warning-color:              #855619;
 @btn-warning-bg:                 @brand-warning;
 @btn-warning-border:             darken(@btn-warning-bg, 5%);
 
@@ -402,13 +405,13 @@
 @panel-default-border:        #c5c3c3;
 @panel-default-heading-bg:    @white;
 
-@panel-primary-text:          @white;
-@panel-primary-border:        @brand-primary;
-@panel-primary-heading-bg:    @brand-primary;
+@panel-primary-text:          @gray;
+@panel-primary-border:        @gray;
+@panel-primary-heading-bg:    @white;
 
 @panel-success-text:          @green-darker;
 @panel-success-border:        @green-darker;
-@panel-success-heading-bg:    @green;
+@panel-success-heading-bg:    @green-light;
 
 @panel-warning-text:          @state-warning-text;
 @panel-warning-border:        @state-warning-border;

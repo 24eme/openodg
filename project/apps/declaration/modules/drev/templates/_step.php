@@ -4,6 +4,7 @@
                     "degustation_conseil" => 3,
                     "controle_externe" => 4,
                     "validation" => 5,
+                    "confirmation" => 6,
                       ); ?>
 <?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
 

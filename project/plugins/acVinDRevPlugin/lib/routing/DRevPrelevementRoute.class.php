@@ -6,7 +6,12 @@ class DRevPrelevementRoute extends DRevRoute {
     protected function getObjectForParameters($parameters) {
         parent::getObjectForParameters($parameters);
         
-        $this->prelevement = $this->drev->addPrelevement($parameters['prelevement']);
+        $this->prelevement = null;
+
+        if($this->drev->prelevements->exist($parameters['prelevement'])) {
+            $this->prelevement = $this->drev->prelevements->get($parameters['prelevement']);
+        }
+       
         if (!$this->prelevement) {
 
             throw new sfError404Exception(sprintf('No Prelevement found for drev id "%s" with key %s.', $parameters['id'], $parameters['prelevement']));

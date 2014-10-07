@@ -11,13 +11,9 @@
 	
 	<p>Un lot doit correspondre au maximum à 4 récipients et au maximum à 2000 hl.</p>
 
-   	<?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form)); ?>
-
-   	<?php if ($ajoutForm->hasProduits()): ?>
-		<button class="btn btn-warning ajax btn-sm" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit&nbsp;<span class="eleganticon icon_plus"></span></button>
-	<?php endif; ?>
-
-    <div class="row row-margin">
+   	<?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm)); ?>
+    
+    <div class="row row-margin row-button">
         <div class="col-xs-6">
             <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'organisation</small></a>
         </div>

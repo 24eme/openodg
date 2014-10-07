@@ -2,10 +2,6 @@
 
 class drevmarcActions extends sfActions {
 
-    public function executeIndex(sfWebRequest $request) {
-        
-    }
-
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
@@ -76,10 +72,21 @@ class drevmarcActions extends sfActions {
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
-                $this->form->save();
-                return $this->redirect('home#drev');
+                
+                $this->drevmarc->validate();
+                $this->drevmarc->save();
+
+                return $this->redirect('drevmarc_confirmation', $this->drevmarc);
             }
         }
+    }
+
+    public function executeConfirmation(sfWebRequest $request) {
+        $this->drevmarc = $this->getRoute()->getDRevMarc();
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->drevmarc = $this->getRoute()->getDRevMarc();
     }
 
     public function executePDF(sfWebRequest $request) {

@@ -7,8 +7,6 @@ WORKDIROPERATEUR=$TMPDIR/import_operateurs
 DATADIR=data/import/extravitis/revendication
 mkdir $WORKDIR 2> /dev/null
 
-bash bin/import/operateur.sh
-
 #===PRODUITS===
 
 cat $DATADIR/AVA_GROUPE_VIN.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3 | sort -t ";" -k 1,1 > $WORKDIR/cepage.csv
@@ -58,4 +56,4 @@ echo "cvi;annee;type ligne;rev num ligne;rev type id;rev type libelle;rev valeur
 
 cat $WORKDIR/valeur_cvi_param.csv $WORKDIR/lot_cvi.csv $WORKDIR/prelevement_cvi.csv | sort | grep -E "^[0-9]+;2013;" >> $WORKDIR/drev.csv
 
-
+php symfony import:DRev $WORKDIR/drev.csv

@@ -1,5 +1,7 @@
+<?php use_helper('TemplatingPDF') ?>
+
 <style>
-<?php echo style(); ?>
+<?php echo styleDRev(); ?>
 </style>
 
 <span style="text-align: center; font-size: 12pt; font-weight:bold;">Déclaration des lots susceptibles d'être prelévés</span>

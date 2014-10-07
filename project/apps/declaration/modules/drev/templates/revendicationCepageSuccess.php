@@ -33,9 +33,9 @@
                 <?php $produit = $drev->get($hash); ?> 
                 <tr>
                     <td><?php if ($produit->getParent()->getParent()->getLibelle()): ?><?php echo $produit->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit->getLibelle() ?></td>
-                        <td class="text-center">
-                        <span class="text-danger"><?php echo $embedForm['volume_revendique']->renderError() ?></span>
-                        <div class="form-group">
+                    <td class="text-center">
+                        <div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['volume_revendique']->renderError() ?>
                             <div class="col-xs-8 col-xs-offset-2">
                                 <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input input-rounded text-right')) ?>
                             </div>
@@ -44,16 +44,16 @@
                     </td>
                     <?php if (isset($embedForm['volume_revendique_vt']) && isset($embedForm['volume_revendique_sgn'])): ?>
                         <td class="text-center">
-                            <span class="text-danger"><?php echo $embedForm['volume_revendique_vt']->renderError() ?></span>
-                            <div class="form-group">
+                            <div class="form-group <?php if($embedForm['volume_revendique_vt']->hasError()): ?>has-error<?php endif; ?>">
+                                <?php echo $embedForm['volume_revendique_vt']->renderError() ?>
                                 <div class="col-xs-8 col-xs-offset-2">
                                     <?php echo $embedForm['volume_revendique_vt']->render(array('class' => 'form-control input input-rounded text-right')) ?>
                                 </div>
                             </div>
                         </td>
                         <td class="text-center">
-                            <span class="text-danger"><?php echo $embedForm['volume_revendique_sgn']->renderError() ?></span>
-                            <div class="form-group">
+                            <div class="form-group <?php if($embedForm['volume_revendique_sgn']->hasError()): ?>has-error<?php endif; ?>">
+                                <?php echo $embedForm['volume_revendique_sgn']->renderError() ?>
                                 <div class="col-xs-8 col-xs-offset-2">
                                     <?php echo $embedForm['volume_revendique_sgn']->render(array('class' => 'form-control input input-rounded text-right')) ?>
                                 </div>
@@ -76,7 +76,7 @@
         </tbody>
     </table>
 
-    <div class="row row-margin">
+    <div class="row row-margin row-button">
         <div class="col-xs-6">
             <?php if ($noeud->getPreviousSister()): ?>
                 <a href="<?php echo url_for('drev_revendication_cepage', $noeud->getPreviousSister()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a>

@@ -11,10 +11,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
 	const CUVE_ALSACE = 'cuve_ALSACE';
     const CUVE_GRDCRU = 'cuve_GRDCRU';
-    const CUVE_VTSGN = 'cuve_vtsgn';
+    const CUVE_VTSGN = 'cuve_VTSGN';
     const BOUTEILLE_ALSACE = 'bouteille_ALSACE';
     const BOUTEILLE_GRDCRU = 'bouteille_GRDCRU';
-	const BOUTEILLE_VTSGN = 'bouteille_vtsgn';
+	const BOUTEILLE_VTSGN = 'bouteille_VTSGN';
 
     public static $prelevement_libelles = array(
             self::CUVE => "Dégustation conseil",
@@ -23,6 +23,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public static $prelevement_libelles_produit_type = array(
             self::CUVE => "Cuve ou fût",
+            self::CUVE_VTSGN => "Cuve, fût ou bouteille",
             self::BOUTEILLE => "Bouteille",
     );
     
@@ -78,6 +79,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 	
+    public function hasDR() {
+
+        return $this->_attachments->exist('DR.csv');
+    }
+
 	public function initDoc($identifiant, $campagne)
 	{
         $this->identifiant = $identifiant;
@@ -98,6 +104,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->updateRevendiqueFromDetail();
         $this->resetCepage();
         $this->updateCepageFromCSV($csv);
+        $this->updatePrelevementsFromRevendication();
         $this->updateLotsFromCepage();
         $this->declaration->reorderByConf();
     }
@@ -110,10 +117,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
         foreach($drev->prelevements as $prelevement) {
             $p = $this->addPrelevement($prelevement->getKey());
+            $p->date_precedente = $prelevement->date;
             foreach($prelevement->lots as $lot) {
                 $p->addLotProduit($lot->hash_produit);
             }
         }
+        $this->updatePrelevementsFromRevendication();
+        $this->udateRevendicationCepageFromLots();
         $this->declaration->reorderByConf();
     }
     
@@ -122,6 +132,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $config = $this->getConfiguration()->get($hash);
         $produit = $this->getOrAdd($config->getHash());
         $produit->getLibelle();
+
+        $config_produits = $produit->getAppellation()->getConfigProduits();
+        if(count($config_produits) == 1) {
+            reset($config_produits);
+            $this->getOrAdd(key($config_produits));
+        }
 
         return $produit;
     }
@@ -136,11 +152,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	$this->prelevements->add(self::CUVE_ALSACE)->getConfigProduitsLots()->initLots();
     }
 
+    public function hasPrelevement($key)
+    {
+
+        return $this->prelevements->exist($key);
+    }
+
     public function addPrelevement($key)
     {
         if(!in_array($key, $this->getPrelevementKeys())) {
             
             return null;
+        }
+
+        $prelevement = $this->prelevements->add($key);
+
+        if(!$this->chais->exist($prelevement->getPrefix())) {
+            $this->chais->add($prelevement->getPrefix(), $this->getEtablissementObject()->getChaiDefault()->toArray(true, false));
         }
 
         return $this->prelevements->add($key);
@@ -152,7 +180,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $key = $prefix.$this->getPrelevementsKeyByHash($hash);
 
         $prelevement = $this->addPrelevement($key);
-    	
+
+        if(!$prelevement) {
+
+            return;
+        }
 		$lot = $prelevement->lots->add(str_replace('/', '_', $hash));
         $lot->hash_produit = $hash;
         $lot->getLibelle();
@@ -181,10 +213,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
                 continue;
             }
-            $prelevements[$prelevement->date.$prelevement->getKey()] = $prelevement;
+            $prelevements[$prelevement->getKey().$prelevement->date] = $prelevement;
         }
 
-        //ksort($prelevements);
+        krsort($prelevements);
 
         return $prelevements;
     }
@@ -285,6 +317,48 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
+    public function updatePrelevementsFromRevendication() {
+        foreach($this->declaration->getProduits() as $produit) {
+            $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
+            $key = $this->getPrelevementsKeyByHash($hash);
+            $this->addPrelevement(self::CUVE.$key);
+            $this->addPrelevement(self::BOUTEILLE.$key);
+        }
+    }
+
+    protected function udateRevendicationCepageFromLots() {
+        if($this->prelevements->exist(self::CUVE_ALSACE) && count($this->prelevements->get(self::CUVE_ALSACE)->lots > 0)) {
+            foreach($this->getProduits() as $produit) {
+                $hash_rev_lot = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
+
+                foreach($this->prelevements[CUVE_ALSACE]->lots as $lot) {
+                    if(!preg_match("|".$hash_rev_lot."|", $lot->hash_produit)) {
+
+                        continue;
+                    }
+                    
+                    $hash = str_replace($hash_rev_lot, $produit->getHash(), $lot->hash_produit);
+
+                    if(!$this->getConfiguration()->exist($hash)) {
+
+                        continue;
+                    }
+                    $this->getOrAdd($hash);
+                    echo $hash . "\n";
+                }
+            }
+        }
+        if($this->prelevements->exist(self::CUVE_GRDCRU)) {
+            foreach($this->prelevements->get(self::CUVE_GRDCRU)->lots as $lot) {
+                if(!$this->getConfiguration()->exist($lot->hash_produit)) {
+
+                    continue;
+                }
+                $this->getOrAdd($lot->hash_produit);
+            }
+        }
+    }
+
     protected function updateCepageFromCSV($csv) {
         foreach($csv as $line) {
             if(
@@ -305,8 +379,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $config = $this->getConfiguration()->get($hash);
 
             $produit = $this->getOrAdd($config->getHash());
-            if($line[DRCsvFile::CSV_VTSGN]) {
-                $produit->volume_revendique_vtsgn += (float) $line[DRCsvFile::CSV_VOLUME];
+            if($line[DRCsvFile::CSV_VTSGN] == "VT") {
+                $produit->volume_revendique_vt += (float) $line[DRCsvFile::CSV_VOLUME];
+            } elseif($line[DRCsvFile::CSV_VTSGN] == "SGN") {
+                $produit->volume_revendique_sgn += (float) $line[DRCsvFile::CSV_VOLUME];
             } else {
                 $produit->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
             }

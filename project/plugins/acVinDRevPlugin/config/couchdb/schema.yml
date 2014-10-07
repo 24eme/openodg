@@ -121,6 +121,7 @@ DRev:
                 fields:
                   total_lots: {  }
                   date: {  }
+                  date_precedente: {  }
                   libelle_produit: {  }
                   libelle_produit_type: {  }
                   libelle_date: {  }
@@ -139,3 +140,14 @@ DRev:
                               libelle: {  }
                               hash_produit: {  }
                               no_vtsgn: { type: integer, required: false }
+      chais:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
