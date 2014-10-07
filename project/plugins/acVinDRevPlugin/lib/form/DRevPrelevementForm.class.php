@@ -24,7 +24,24 @@ class DRevPrelevementForm extends acCouchdbObjectForm
     }
 
     protected function getDefaultDate() {
+        if($this->getObject()->date_precedente) {
+            
+            $date = new DateTime($this->getObject()->date_precedente);
+            $date->modify("+1 year");
 
-        return '01-01-2015';
+            return $date->format("d/m/Y");
+        }
+
+        if($this->getObject()->getKey() == DRev::BOUTEILLE_VTSGN) {
+            
+            return sprintf('01/01/%s', $this->getObject()->getDocument()->campagne + 2);
+        }
+
+        if($this->getObject()->getKey() == DRev::CUVE_ALSACE) {
+
+            return sprintf('15/11/%s', $this->getObject()->getDocument()->campagne);
+        }
+
+        return sprintf('01/01/%s', $this->getObject()->getDocument()->campagne + 1);
     }
 }

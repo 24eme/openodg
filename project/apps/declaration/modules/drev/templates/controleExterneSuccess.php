@@ -69,7 +69,7 @@
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
-                                <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->render(array("class" => "form-control", "data-date-defaultDate" => "01/01/2013")); ?>
+                                <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->render(array("class" => "form-control")); ?>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </div>

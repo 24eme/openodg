@@ -60,4 +60,4 @@ join -a 2 -t ";" -1 1 -2 7 $WORKDIR/communes.csv $WORKDIR/operateurs.sorted_by_c
 echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web;date archivage;siren;siret" > $WORKDIR/operateurs.csv
 cat $WORKDIR/operateurs_commune.csv >> $WORKDIR/operateurs.csv
 
-#php symfony import:Etablissement $WORKDIR/operateurs.csv
+php symfony import:Etablissement $WORKDIR/operateurs.csv
