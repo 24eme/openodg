@@ -27,7 +27,7 @@
                     <div class="form-group <?php if($embedForm['nb_hors_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $embedForm['nb_hors_vtsgn']->renderError() ?>
                         <div class="col-xs-8 col-xs-offset-2">
-                            <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input input-rounded')) ?>
+                            <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input num_int input-rounded')) ?>
                         </div>
                     </div>
                     
@@ -37,7 +37,7 @@
                         <div class="form-group <?php if($embedForm['nb_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['nb_vtsgn']->renderError() ?>
                             <div class="col-xs-8 col-xs-offset-2">
-                                <?php echo $embedForm['nb_vtsgn']->render(array('class' => 'form-control input input-rounded')) ?>
+                                <?php echo $embedForm['nb_vtsgn']->render(array('class' => 'form-control num_int input input-rounded')) ?>
                             </div>
                         </div>
                     <?php endif; ?>
