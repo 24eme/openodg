@@ -139,9 +139,9 @@ EOF;
          */
         $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage Edel';
         $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->cepage_ED->libelle = 'Assemblage Edel';
-$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu02->couleur->cepage_ED->libelle = 'Assemblage Edel';
-$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu51->couleur->cepage_ED->libelle = 'Assemblage Edel'; 
-$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage Edel';        
+//        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu02->couleur->cepage_ED->libelle = 'Assemblage Edel';
+//        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu51->couleur->cepage_ED->libelle = 'Assemblage Edel'; 
+//        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage Edel';        
         /*
          * On ajoute l'appellation Alsace pour la gestion des lots
          */
