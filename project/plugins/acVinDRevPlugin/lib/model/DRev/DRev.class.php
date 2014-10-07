@@ -133,6 +133,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $produit = $this->getOrAdd($config->getHash());
         $produit->getLibelle();
 
+        $config_produits = $produit->getAppellation()->getConfigProduits();
+        if(count($config_produits) == 1) {
+            reset($config_produits);
+            $this->getOrAdd(key($config_produits));
+        }
+
         return $produit;
     }
 

@@ -128,11 +128,8 @@ EOF;
         /*
          * Modification des libelles pour le Pinot
          */
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->libelle = 'AOC Alsace Pinot noir rosé';    
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->mention->lieu->couleur->cepage_PN->libelle = 'Pinot Noir Rosé';
-
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->libelle = 'AOC Alsace Pinot noir rouge';
-        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->mention->lieu->couleur->cepage_PR->libelle = 'Pinot Noir Rouge';
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIR->libelle = 'AOC Alsace Pinot Noir Rosé';    
+        $configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->libelle = 'AOC Alsace Pinot Noir Rouge';
 
          /*
          * Modification des libelles pour l'assemblage
@@ -172,6 +169,7 @@ $configurationJson->declaration->certification->genre->appellation_GRDCRU->menti
             if(!preg_match('/^lieu/', $key_lieu) || $key_lieu == "lieu") {
                 continue;
             }
+
             @$lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
         }
 
