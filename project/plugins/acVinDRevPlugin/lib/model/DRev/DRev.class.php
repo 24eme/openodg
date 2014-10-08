@@ -333,6 +333,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $this->addPrelevement(self::CUVE.$key);
             $this->addPrelevement(self::BOUTEILLE.$key);
         }
+
+        if($this->declaration->hasVtsgn()) {
+            $this->addPrelevement(self::CUVE_VTSGN);
+            $this->addPrelevement(self::BOUTEILLE_VTSGN);
+        }
     }
 
     protected function updateRevendicationCepageFromLots() {

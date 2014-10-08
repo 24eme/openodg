@@ -23,6 +23,11 @@ class DRevCepage extends BaseDRevCepage {
         $this->volume_revendique_sgn = null;
     }
 
+    public function hasVtsgn() {
+
+        return $this->volume_revendique_vt || $this->volume_revendique_sgn;
+    }
+
     public function getProduitsCepage() 
     {
 

@@ -14,13 +14,15 @@ class DRevControleExterneForm extends acCouchdbObjectForm
             $this->embedForm(Drev::BOUTEILLE_GRDCRU, $form_grdcru);
         }
 
-        $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::BOUTEILLE_VTSGN));
+        if(($this->getObject()->getDocument()->prelevements->exist(Drev::BOUTEILLE_VTSGN))) {
+            $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::BOUTEILLE_VTSGN));
 
-        $form_vtsgn->setWidget('total_lots', new sfWidgetFormInputText());
-        $form_vtsgn->setValidator('total_lots', new sfValidatorNumber(array('required' => false)));
-        $form_vtsgn->getWidget('total_lots')->setLabel("Nombre de lots");
+            $form_vtsgn->setWidget('total_lots', new sfWidgetFormInputText());
+            $form_vtsgn->setValidator('total_lots', new sfValidatorNumber(array('required' => true)));
+            $form_vtsgn->getWidget('total_lots')->setLabel("Nombre de lots");
 
-        $this->embedForm(Drev::BOUTEILLE_VTSGN, $form_vtsgn);
+            $this->embedForm(Drev::BOUTEILLE_VTSGN, $form_vtsgn);
+        }
 
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
             $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice())));    
