@@ -129,7 +129,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             }
         }
         $this->updatePrelevementsFromRevendication();
-        $this->udateRevendicationCepageFromLots();
+        $this->updateRevendicationCepageFromLots();
         $this->declaration->reorderByConf();
     }
     
@@ -335,8 +335,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
-    protected function udateRevendicationCepageFromLots() {
-        if($this->prelevements->exist(self::CUVE_ALSACE) && count($this->prelevements->get(self::CUVE_ALSACE)->lots > 0)) {
+    protected function updateRevendicationCepageFromLots() {
+        if($this->prelevements->exist(self::CUVE_ALSACE) && count($this->prelevements->get(self::CUVE_ALSACE)->lots) > 0) {
             foreach($this->getProduits() as $produit) {
                 $hash_rev_lot = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
 
@@ -353,7 +353,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                         continue;
                     }
                     $this->getOrAdd($hash);
-                    echo $hash . "\n";
                 }
             }
         }
