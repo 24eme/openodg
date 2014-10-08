@@ -26,6 +26,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             self::CUVE_VTSGN => "Cuve, fût ou bouteille",
             self::BOUTEILLE => "Bouteille",
     );
+
+    public static $prelevement_appellation_libelles = array(
+            self::CUVE => "Cuve ou fût",
+            self::CUVE_VTSGN => "Cuve, fût ou bouteille",
+            self::BOUTEILLE => "Bouteille",
+    );
     
     public static $prelevement_keys = array(
         self::CUVE_ALSACE,

@@ -121,8 +121,13 @@ class DRevValidation extends DocumentValidation
           return;
       }
 
-      if (!$this->document->prelevements->get($key)->date) {
-        $this->addPoint(self::TYPE_ERROR, 'prelevement', $key, $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
+      $prelevement = $this->document->prelevements->get($key);
+
+      if (!$prelevement->date) {
+        $this->addPoint(self::TYPE_ERROR, 
+                        'prelevement', 
+                        sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit), 
+                        $this->generateUrl('drev_degustation_conseil', array('sf_subject' => $this->document)));
       }
     }
 
@@ -133,10 +138,12 @@ class DRevValidation extends DocumentValidation
             return;
         }
 
-        if (!$this->document->prelevements->get($key)->hasLots()) {
+        $prelevement = $this->document->prelevements->get($key);
+
+        if (!$prelevement->hasLots()) {
           $this->addPoint(self::TYPE_ERROR, 
                           'revendication_sans_lot', 
-                          $key, 
+                          sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit), 
                           $this->generateUrl('drev_lots', $this->document->prelevements->get($key)));
         }
     }
