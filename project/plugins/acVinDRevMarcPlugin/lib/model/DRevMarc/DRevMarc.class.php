@@ -34,6 +34,10 @@ class DRevMarc extends BaseDRevMarc {
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
     }
+    
+    public function storeEtape($etape) {
+    	$this->add('etape', $etape);
+    }
 
     public function getEtablissementObject() {
 
