@@ -16,3 +16,6 @@ bash bin/import/operateur.sh
 
 echo "Import des déclarations de Revendication"
 bash bin/import/drev.sh
+
+echo "Import des déclarations de Revendication de Marc de Gewurtz."
+bash bin/import/drevmarc.sh

@@ -24,7 +24,7 @@ class DRevMarcClient extends acCouchdbClient {
     public function createDoc($identifiant, $campagne) 
     {  
         $drevmarc = new DRevMarc();
-        $drevmarc->initDrevMarc($identifiant, $campagne);     
+        $drevmarc->initDoc($identifiant, $campagne);     
 
         return $drevmarc;
     }

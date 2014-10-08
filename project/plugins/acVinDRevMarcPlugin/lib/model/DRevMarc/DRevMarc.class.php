@@ -26,7 +26,7 @@ class DRevMarc extends BaseDRevMarc {
         $this->set('_id', 'DREVMARC-' . $this->identifiant . '-' . $this->campagne);
     }
 
-    public function initDrevMarc($identifiant, $campagne) {
+    public function initDoc($identifiant, $campagne) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
     }

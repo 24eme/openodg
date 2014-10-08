@@ -9,7 +9,7 @@ DRevMarc:
       identifiant: { }
       etape: { }
       debut_distillation: { }
-      fin_distillation: { }      
+      fin_distillation: { }
       qte_marc: { }
       volume_obtenu: { }
       titre_alcool_vol: { }
@@ -28,4 +28,3 @@ DRevMarc:
             telephone: { }
             fax: { }
             email: { }
-      
