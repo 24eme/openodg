@@ -340,7 +340,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             foreach($this->getProduits() as $produit) {
                 $hash_rev_lot = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
 
-                foreach($this->prelevements[CUVE_ALSACE]->lots as $lot) {
+                foreach($this->prelevements->get(self::CUVE_ALSACE)->lots as $lot) {
                     if(!preg_match("|".$hash_rev_lot."|", $lot->hash_produit)) {
 
                         continue;
