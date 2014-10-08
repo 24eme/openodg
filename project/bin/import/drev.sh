@@ -44,16 +44,22 @@ join -t ";" -1 4 -2 1 $WORKDIR/lot.csv $WORKDIR/cepage.csv | sort -t ";" -k 1,1 
 
 join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/lot_cepage.csv | cut -d ";" -f 3,4,5,6,7,8 | awk -F ";" '{ print $1 ";" $2 ";2.LOT ;;;;;" $5 ";" $3 ";" $6 ";" $4 }' > $WORKDIR/lot_cvi.csv
 
-#===PRELEVEMENTS===
+#===DEGUSTATION CONSEIL===
 
-cat $DATADIR/AVA_DREV_PRELEVEMENT.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | sort -t ";" -k 1,1 > $WORKDIR/prelevement.csv
+cat $DATADIR/CP_Prelevements_Supplementaires.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 2,3,4,5 | sort -t ";" -k 1,1 > $WORKDIR/prelevement_conseil.csv
 
-join -t ";" -1 2 -2 1 $WORKDIR/dossier_cvi.csv $WORKDIR/prelevement.csv | cut -d ";" -f 2,3,4,6,7,8 | awk -F ";" '{ print $1 ";" $2 ";3.PREL;;;;;" $3 ";;;" $6 ";" $4 ";" $5 }' > $WORKDIR/prelevement_cvi.csv
+join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/prelevement_conseil.csv | cut -d ";" -f 3,4,5,6 | awk -F ";" '{ print $1 ";" $2 ";3.PREL;;;;;3;;;;" $4 ";" $3 }' > $WORKDIR/prelevement_conseil_cvi.csv
+
+#===PRELEVEMENTS EXTERNE===
+
+cat $DATADIR/AVA_DREV_PRELEVEMENT.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | sort -t ";" -k 1,1 > $WORKDIR/prelevement_externe.csv
+
+join -t ";" -1 2 -2 1 $WORKDIR/dossier_cvi.csv $WORKDIR/prelevement.csv | cut -d ";" -f 2,3,4,6,7,8 | awk -F ";" '{ print $1 ";" $2 ";3.PREL;;;;;" $3 ";;;" $6 ";" $4 ";" $5 }' > $WORKDIR/prelevement_externe_cvi.csv
 
 #===FINAL===
 
 echo "cvi;annee;type ligne;rev num ligne;rev type id;rev type libelle;rev valeur;aoc;grdcru;cepage;nb lot;annee prelevement;semaine prelevement" > $WORKDIR/drev.csv
 
-cat $WORKDIR/valeur_cvi_param.csv $WORKDIR/lot_cvi.csv $WORKDIR/prelevement_cvi.csv | sort | grep -E "^[0-9]+;2013;" >> $WORKDIR/drev.csv
+cat $WORKDIR/valeur_cvi_param.csv $WORKDIR/lot_cvi.csv $WORKDIR/prelevement_conseil_cvi.csv $WORKDIR/prelevement_externe_cvi.csv | sort | grep -E "^[0-9]+;2013;" >> $WORKDIR/drev.csv
 
-php symfony import:DRev $WORKDIR/drev.csv
+#php symfony import:DRev $WORKDIR/drev.csv
