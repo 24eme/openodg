@@ -33,4 +33,4 @@ class DRevCepage extends BaseDRevCepage {
 
         return array($this->getHash() => $this);
     }
-}
+    }

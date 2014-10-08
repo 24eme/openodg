@@ -31,5 +31,5 @@ class DRevAppellation extends BaseDRevAppellation
     {
         return $this->libelle;
     }
-
+    
 }
