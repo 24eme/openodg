@@ -54,7 +54,7 @@ join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/prelevement_cons
 
 cat $DATADIR/AVA_VOLONTARIAT_VTSGN.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4 | sort -t ";" -k 1,1 > $WORKDIR/prelevement_conseil_vtsgn.csv
 
-join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/prelevement_conseil_vtsgn.csv | cut -d ";" -f 3,4,5 | awk -F ";" '{ print $1 ";" $3 ";3.PREL;;;;;4;;;;" $2 ";" }' > $WORKDIR/prelevement_conseil_vtsgn_cvi.csv
+join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/prelevement_conseil_vtsgn.csv | cut -d ";" -f 3,4,5 | awk -F ";" '{ print $1 ";" $3 ";3.PREL;;;;;4;;;;" $3 + 1 ";" $2 }' > $WORKDIR/prelevement_conseil_vtsgn_cvi.csv
 
 #===PRELEVEMENTS EXTERNE===
 
@@ -68,4 +68,4 @@ echo "cvi;annee;type ligne;rev num ligne;rev type id;rev type libelle;rev valeur
 
 cat $WORKDIR/valeur_cvi_param.csv $WORKDIR/lot_cvi.csv $WORKDIR/prelevement_conseil_cvi.csv $WORKDIR/prelevement_conseil_vtsgn_cvi.csv $WORKDIR/prelevement_externe_cvi.csv | sort | grep -E "^[0-9]+;2013;" >> $WORKDIR/drev.csv
 
-#php symfony import:DRev $WORKDIR/drev.csv
+php symfony import:DRev $WORKDIR/drev.csv

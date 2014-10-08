@@ -197,14 +197,25 @@ EOF;
 
         if(!$key) {
             
-            throw new sfException(sprintf("AOC introuvable %s", $num));
+            throw new sfException(sprintf("AOC introuvable %s", $data[self::CSV_AOC]));
         }
 
         $prelevement = $doc->addPrelevement($key);
-        $date = new DateTime(sprintf("%s-01-01", $data[self::CSV_ANNEE_PRELEVEMENT]));
-        $date->modify("-1 week");
-        $date->modify("Previous Monday");
-        $date->modify(sprintf("+%s week", $data[self::CSV_SEMAINE_PRELEVEMENT]));
+
+        if ($key == DRev::CUVE_VTSGN) {
+            if(!in_array($data[self::CSV_SEMAINE_PRELEVEMENT], array("1", "2", "3"))) {
+                
+                throw new sfException(sprintf("La période de prélèvement %s VTSGN est invalide", $data[self::CSV_SEMAINE_PRELEVEMENT]));
+            }
+
+            $date = new DateTime(sprintf("%s-%02d-%s", $data[self::CSV_ANNEE_PRELEVEMENT], $data[self::CSV_SEMAINE_PRELEVEMENT]*2+2, "01"));
+        } else {
+            $date = new DateTime(sprintf("%s-01-01", $data[self::CSV_ANNEE_PRELEVEMENT]));
+            $date->modify("-1 week");
+            $date->modify("Previous Monday");
+            $date->modify(sprintf("+%s week", $data[self::CSV_SEMAINE_PRELEVEMENT]));
+        }
+
         $prelevement->date = $date->format("Y-m-d");
 
         if($data[self::CSV_NB_LOT]) {
@@ -236,6 +247,8 @@ EOF;
             "0" => DRev::BOUTEILLE_ALSACE,
             "1" => DRev::BOUTEILLE_GRDCRU,
             "2" => DRev::BOUTEILLE_VTSGN,
+            "3" => DRev::CUVE_ALSACE,
+            "4" => DRev::CUVE_VTSGN,
         );
 
         return (isset($keys[$num])) ? $keys[$num] : null; 
