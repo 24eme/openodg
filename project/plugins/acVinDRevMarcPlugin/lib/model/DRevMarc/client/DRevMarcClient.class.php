@@ -15,7 +15,7 @@ class DRevMarcClient extends acCouchdbClient {
 
         if($doc && $doc->type != self::TYPE_MODEL) {
 
-            throw new sfException("Document \"%s\" is not type of \"%s\"", $id, self::TYPE_MODEL);
+            throw new sfException(sprintf("Document \"%s\" is not type of \"%s\"", $id, self::TYPE_MODEL));
         }
 
         return $doc;
@@ -27,5 +27,14 @@ class DRevMarcClient extends acCouchdbClient {
         $drevmarc->initDoc($identifiant, $campagne);     
 
         return $drevmarc;
+    }
+
+    public function getHistory($cvi, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $campagne_from = "0000";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent())."";
+
+        return $this->startkey(sprintf("DREVMARC-%s-%s", $cvi, $campagne_from))
+                    ->endkey(sprintf("DREVMARC-%s-%s", $cvi, $campagne_to))
+                    ->execute($hydrate);
     }
 }

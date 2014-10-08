@@ -16,7 +16,7 @@ class DRevClient extends acCouchdbClient {
 
         if($doc && $doc->type != self::TYPE_MODEL) {
 
-            throw new sfException("Document \"%s\" is not type of \"%s\"", $id, self::TYPE_MODEL);
+            throw new sfException(sprintf("Document \"%s\" is not type of \"%s\"", $id, self::TYPE_MODEL));
         }
 
         return $doc;

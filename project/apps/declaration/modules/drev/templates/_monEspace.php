@@ -64,6 +64,11 @@
                     <a class="btn btn-link btn-primary" href="<?php echo url_for('drev_visualisation', $drev_h) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Revendication <?php echo $drev_h->campagne ?></a>
                 </li>
             <?php endforeach; ?>
+            <?php foreach ($drevmarcsHistory as $drevmarc_h): ?>
+                <li class="list-unstyled">
+                    <a class="btn btn-link btn-primary" href="<?php echo url_for('drevmarc_visualisation', $drevmarc_h) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Revendication Marc <?php echo $drevmarc_h->campagne ?></a>
+                </li>
+            <?php endforeach; ?>
             </ul>
             </div>
         </div>
