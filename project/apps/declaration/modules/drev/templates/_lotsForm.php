@@ -12,8 +12,7 @@
     <thead>
         <tr>
             <th class="col-xs-6">Produits</th>
-            <th class="text-center col-xs-3">Lots Hors VT / SGN</th>
-            <th class="text-center col-xs-3">Lots VT / SGN</th>
+            <th class="text-center col-xs-6">Lots Hors VT / SGN</th>
         </tr>
     </thead>
     <tbody>
@@ -26,21 +25,11 @@
                 <td class="text-center">
                     <div class="form-group <?php if($embedForm['nb_hors_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $embedForm['nb_hors_vtsgn']->renderError() ?>
-                        <div class="col-xs-8 col-xs-offset-2">
+                        <div class="col-xs-6 col-xs-offset-3">
                             <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input num_int input-rounded')) ?>
                         </div>
                     </div>
                     
-                </td>
-                <td class="text-center">
-                    <?php if(isset($embedForm['nb_vtsgn'])): ?>
-                        <div class="form-group <?php if($embedForm['nb_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
-                            <?php echo $embedForm['nb_vtsgn']->renderError() ?>
-                            <div class="col-xs-8 col-xs-offset-2">
-                                <?php echo $embedForm['nb_vtsgn']->render(array('class' => 'form-control num_int input input-rounded')) ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
