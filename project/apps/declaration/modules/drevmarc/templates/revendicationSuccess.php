@@ -20,7 +20,7 @@
                         <td class="col-xs-7 form-inline">
                             <div class="form-group col-xs-6">
                                 <div class="input-group date-picker-all-days">
-                                    <?php echo $form['debut_distillation']->render(array('class' => 'text-right form-control', 'placeholder' => 'Du')); ?>
+                                    <?php echo $form['debut_distillation']->render(array('class' => 'text-right  form-control', 'placeholder' => 'Du')); ?>
                                     <div class="input-group-addon">
                                         <span class="glyphicon-calendar glyphicon"></span>
                                     </div>
@@ -28,7 +28,7 @@
                             </div>
                             <div class="form-group col-xs-6">
                                 <div class="input-group date-picker-all-days">
-                                    <?php echo $form['fin_distillation']->render(array('class' => 'text-right form-control', 'placeholder' => 'Au')); ?>
+                                    <?php echo $form['fin_distillation']->render(array('class' => 'text-right  form-control', 'placeholder' => 'Au')); ?>
                                     <div class="input-group-addon">
                                         <span class="glyphicon-calendar glyphicon"></span>
                                     </div>
@@ -64,12 +64,12 @@
                         <td  class="col-xs-5">
                             <?php echo $form['qte_marc']->renderLabel(null, array('class' => 'control-label')); ?>
                         </td>
-                        <td class="col-xs-7 input-group">
+                        <td class="col-xs-7 form-group">
                             <div class="col-xs-6">
-                                <?php echo $form['qte_marc']->render(array('class' => 'form-control text-right')); ?>
+                                <?php echo $form['qte_marc']->render(array('class' => 'form-control input-rounded text-right')); ?>
                             </div>
                             <div class="col-xs-4">
-                                <span>en kg</span>
+                                <span>kg</span>
                             </div>
                             <span class="text-danger"><?php echo $form['qte_marc']->renderError(); ?></span>
                             </div>
@@ -79,12 +79,12 @@
                         <td  class="col-xs-5">
                             <?php echo $form['volume_obtenu']->renderLabel(null, array('class' => 'control-label')); ?>
                         </td>
-                        <td class="col-xs-7 input-group">
+                        <td class="col-xs-7 form-group">
                             <div class="col-xs-6">
-                                <?php echo $form['volume_obtenu']->render(array('class' => 'form-control text-right')); ?>
+                                <?php echo $form['volume_obtenu']->render(array('class' => 'form-control input-rounded text-right')); ?>
                             </div>
                             <div class="col-xs-4">
-                                <span>en hl d'alcool pur</span>   
+                                <span>hl d'alcool pur</span>   
                             </div>
                             <span class="text-danger"><?php echo $form['volume_obtenu']->renderError(); ?></span>                          
                         </td>
@@ -93,12 +93,12 @@
                         <td  class="col-xs-5">
                             <?php echo $form['titre_alcool_vol']->renderLabel(null, array('class' => 'control-label')); ?>
                         </td>
-                        <td class="col-xs-7 input-group">
+                        <td class="col-xs-7 form-group">
                             <div class="col-xs-6">
-                                <?php echo $form['titre_alcool_vol']->render(array('class' => 'form-control text-right')); ?>
+                                <?php echo $form['titre_alcool_vol']->render(array('class' => 'form-control input-rounded text-right')); ?>
                             </div>
                             <div class="col-xs-4">
-                                <span>en °</span>
+                                <span>°</span>
                             </div>
                             <span class="text-danger"><?php echo $form['titre_alcool_vol']->renderError(); ?></span>
                         </td>

@@ -17,15 +17,15 @@ class DRevMarcRevendicationForm extends acCouchdbObjectForm {
         $this->setValidator('fin_distillation', new sfValidatorRegex(array('pattern' => '/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/', 'required' => true)));
         $this->getWidget('fin_distillation')->setLabel("au");
 
-        $this->setWidget('qte_marc', new sfWidgetFormInput());
+        $this->setWidget('qte_marc', new sfWidgetFormInputFloat());
         $this->setValidator('qte_marc', new sfValidatorNumber(array('required' => true, 'min' => 50)));
         $this->getWidget('qte_marc')->setLabel("Quantité de marc mise en oeuvre :");
 
-        $this->setWidget('volume_obtenu', new sfWidgetFormInput());
+        $this->setWidget('volume_obtenu', new sfWidgetFormInputFloat());
         $this->setValidator('volume_obtenu', new sfValidatorNumber(array('required' => true)));
         $this->getWidget('volume_obtenu')->setLabel("Volume total obtenu :");
 
-        $this->setWidget('titre_alcool_vol', new sfWidgetFormInput());
+        $this->setWidget('titre_alcool_vol', new sfWidgetFormInputFloat());
         $this->setValidator('titre_alcool_vol', new sfValidatorNumber(array('required' => true, 'min' => 40)));
         $this->getWidget('titre_alcool_vol')->setLabel("Titre alcoométrique volumique :");
 

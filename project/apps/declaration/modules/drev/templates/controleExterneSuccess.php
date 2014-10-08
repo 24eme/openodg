@@ -85,7 +85,7 @@
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?>
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderLabel("Nombre de lots VT/SGN <small class=\"text-muted\">(toutes appellations confondues)</small>", array("class" => "col-xs-10 control-label")); ?>
                         <div class="col-xs-2">
-                            <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->render(array("class" => "form-control num_int")); ?>
+                            <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->render(array("class" => "form-control input-rounded num_int text-right")); ?>
                         </div>
                     </div>
                 </div>
