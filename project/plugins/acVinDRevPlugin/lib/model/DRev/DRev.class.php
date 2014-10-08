@@ -327,16 +327,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updatePrelevementsFromRevendication() {
+        $prelevements_to_delete = array_flip($this->prelevement_keys);
         foreach($this->declaration->getProduits() as $produit) {
+            if(!$produit->isActive()) {
+
+                continue;
+            }
             $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
             $key = $this->getPrelevementsKeyByHash($hash);
             $this->addPrelevement(self::CUVE.$key);
             $this->addPrelevement(self::BOUTEILLE.$key);
+            unset($prelevements_to_delete[self::CUVE.$key]);
+            unset($prelevements_to_delete[self::BOUTEILLE.$key]);
         }
 
         if($this->declaration->hasVtsgn()) {
             $this->addPrelevement(self::CUVE_VTSGN);
             $this->addPrelevement(self::BOUTEILLE_VTSGN);
+            unset($prelevements_to_delete[self::CUVE_VTSGN]);
+            unset($prelevements_to_delete[self::BOUTEILLE_VTSGN]);
+        }
+       foreach($prelevements_to_delete as $key => $value) {
+            if(!$this->prelevements->exist($key)) {
+               
+               continue;
+            }
+
+            $this->prelevements->remove($key);
         }
     }
 

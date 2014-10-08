@@ -228,7 +228,15 @@ class drevActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
 
-        return $this->redirect('drev_lots', $this->drev->addPrelevement(Drev::CUVE_ALSACE));
+        if($this->drev->prelevements->exist(Drev::CUVE_ALSACE)) {
+            return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_ALSACE));
+        }
+
+        if($this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
+            return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
+        }
+
+        $this->redirect('drev_controle_externe', $this->drev);
     }
 
     public function executeLots(sfWebRequest $request) {

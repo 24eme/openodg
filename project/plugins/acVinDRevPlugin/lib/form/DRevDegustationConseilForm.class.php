@@ -3,9 +3,11 @@
 class DRevDegustationConseilForm extends acCouchdbObjectForm
 {
     public function configure() {
-        $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_ALSACE));
-        $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
-        
+
+        if($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_ALSACE)) {
+            $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::CUVE_ALSACE));
+            $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
+        }  
 
         if($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_VTSGN)) {
             $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::CUVE_VTSGN));
@@ -56,7 +58,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
 
     public function processValues($values) {
         $values = parent::processValues($values);
-        if(!$values['vtsgn_demande']) {
+        if(isset($values['vtsgn_demande']) && !$values['vtsgn_demande']) {
             $values[Drev::CUVE_VTSGN]['date'] = null;
         }
 
