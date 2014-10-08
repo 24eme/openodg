@@ -255,6 +255,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
     }
+    
+    public function storeEtape($etape) {
+    	$this->add('etape', $etape);
+    }
 
     public function validate() {
         $this->validation = date('Y-m-d');

@@ -15,6 +15,7 @@ DRev:
                   '*': { }
       type: { }
       campagne: { }
+      etape: { required: false }
       identifiant: { }
       validation: { }
       declarant:

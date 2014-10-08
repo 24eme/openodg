@@ -93,7 +93,7 @@ EOF;
         $cvi = $data[self::CSV_CVI];
         $campagne = $data[self::CSV_ANNEE];
 
-        if(!EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $cvi)), acCouchdbClient::HYDRATE_JSON) {
+        if(!EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $cvi), acCouchdbClient::HYDRATE_JSON)) {
 
             throw new sfException(sprintf("Etablissement %s does not exist", $cvi));
         }
