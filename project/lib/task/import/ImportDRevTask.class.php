@@ -59,10 +59,11 @@ EOF;
                 $doc = null;
             }
 
-            if(!$doc) {
-                $doc = $this->findOrCreateDoc($data);
-            }
             try{
+                if(!$doc) {
+                    $doc = $this->findOrCreateDoc($data);
+                }
+            
                 $object = $this->importLine($data, $doc, $object);
             } catch (Exception $e) {
 
@@ -88,8 +89,15 @@ EOF;
     }
 
     public function findOrCreateDoc($data) {
+
         $cvi = $data[self::CSV_CVI];
         $campagne = $data[self::CSV_ANNEE];
+
+        if(!EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $cvi))) {
+
+            throw new sfException(sprintf("Etablissement %s does not exist", $cvi));
+        }
+
         $id = sprintf("DREV-%s-%s", $cvi, $campagne);
         $doc = DRevClient::getInstance()->find($id);
         if(!$doc) {

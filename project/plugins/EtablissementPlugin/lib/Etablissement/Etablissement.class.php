@@ -14,7 +14,7 @@ class Etablissement extends BaseEtablissement {
     public function getChaiDefault() {
         if(count($this->chais) < 1) {
 
-            return array(); 
+            return null; 
         }
 
         return $this->chais->getFirst();
