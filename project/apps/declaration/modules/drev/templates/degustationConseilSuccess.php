@@ -13,6 +13,7 @@
             <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
+            <?php if(isset($form[DRev::CUVE_ALSACE])): ?>
             <div class="row-margin">
                 <h3>AOC Alsace</h3>
                 <div class="col-xs-offset-1">
@@ -31,6 +32,8 @@
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
+            <?php if(isset($form[DRev::CUVE_VTSGN])): ?>
             <div class="row-margin">
                 <h3>VT / SGN</h3>
                 <div class="col-xs-offset-1">
@@ -50,6 +53,7 @@
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
         <div class="col-xs-4 col-xs-offset-1">
             <div class="panel panel-primary">

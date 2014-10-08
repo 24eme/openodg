@@ -70,6 +70,16 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
     
+    public function hasVtsgn() {
+        foreach($this->getProduitsCepage() as $produit) {
+            if($produit->hasVtsgn()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     public function getLibelle() {
         if(is_null($this->_get('libelle'))) {
