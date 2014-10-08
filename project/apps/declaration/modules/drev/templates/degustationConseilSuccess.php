@@ -31,6 +31,7 @@
                     </div>
                 </div>
             </div>
+            <?php if(isset($form[DRev::CUVE_VTSGN])): ?>
             <div class="row-margin">
                 <h3>VT / SGN</h3>
                 <div class="col-xs-offset-1">
@@ -50,6 +51,7 @@
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
         <div class="col-xs-4 col-xs-offset-1">
             <div class="panel panel-primary">

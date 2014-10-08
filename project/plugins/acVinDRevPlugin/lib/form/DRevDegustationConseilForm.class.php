@@ -4,25 +4,29 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
 {
     public function configure() {
         $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_ALSACE));
-        
-        $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->addPrelevement(Drev::CUVE_VTSGN));
-        $form_vtsgn->setWidget("date", new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())));
-        $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))));
-        $form_vtsgn->getWidget("date")->setLabel("Période de prélévement");
-
-        $this->setWidget("vtsgn_demande", new sfWidgetFormInputCheckbox(array()));
-        $this->setValidator("vtsgn_demande", new sfValidatorBoolean());
-
         $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
-        $this->embedForm(Drev::CUVE_VTSGN, $form_vtsgn);
+        
+
+        if($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_VTSGN)) {
+            $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::CUVE_VTSGN));
+            $form_vtsgn->setWidget("date", new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())));
+            $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))));
+            $form_vtsgn->getWidget("date")->setLabel("Période de prélévement");
+
+            $this->setWidget("vtsgn_demande", new sfWidgetFormInputCheckbox(array()));
+            $this->setValidator("vtsgn_demande", new sfValidatorBoolean());
+
+            $this->embedForm(Drev::CUVE_VTSGN, $form_vtsgn);
+            $form_vtsgn->validatorSchema['date']->setMessage('required', 'La semaine de degustation est obligatoire.');
+        }
+
+        
 
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
             $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice())));    
             $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
         }
 
-        $form_vtsgn->validatorSchema['date']->setMessage('required', 'La semaine de degustation est obligatoire.');
-        
         $this->widgetSchema->setNameFormat('degustation_conseil[%s]');
     }
 
