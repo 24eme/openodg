@@ -12,6 +12,10 @@ class drevmarcActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
+        
+        if ($drevmarc->exist('etape') && $drevmarc->etape) {
+        	return $this->redirect('drevmarc_'.$drevmarc->etape, $drevmarc);
+        }
 
         return $this->redirect('drevmarc_exploitation', $drevmarc);
     }
@@ -25,6 +29,11 @@ class drevmarcActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+        
+        $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevMarcEtapes::ETAPE_EXPLOITATION));
+        
+        $this->drevmarc->save();
+        
         $this->etablissement = $this->drevmarc->getEtablissementObject();
 
         $this->form = new EtablissementForm($this->etablissement);
@@ -51,6 +60,10 @@ class drevmarcActions extends sfActions {
 
     public function executeRevendication(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+        
+        $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevMarcEtapes::ETAPE_REVENDICATION));
+	    $this->drevmarc->save();
+	    
         $this->form = new DRevMarcRevendicationForm($this->drevmarc);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
@@ -67,6 +80,10 @@ class drevmarcActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+        
+        $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevEtapes::ETAPE_VALIDATION));
+        $this->drevmarc->save();
+        
         $this->validation = new DRevMarcValidation($this->drevmarc);
         $this->form = new DRevMarcValidationForm($this->drevmarc);
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -104,6 +121,17 @@ class drevmarcActions extends sfActions {
         $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
+    }
+    
+
+    
+    protected function getEtape($drevmarc, $etape)
+    {
+    	$drevEtapes = DrevMarcEtapes::getInstance();
+    	if (!$drevmarc->exist('etape')) {
+    		return $etape;
+    	}
+        return ($drevEtapes->isLt($drevmarc->etape, $etape))? $etape : $drevmarc->etape;
     }
 
 }
