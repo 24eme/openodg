@@ -12,6 +12,13 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
 
     abstract public function getChildrenNode();
 
+    public function hasManyNoeuds(){
+        if(count($this->getChildrenNode()) > 1){
+            return true;
+        }
+        return false;
+    }
+
     public function reorderByConf() {
         $children = array();
 

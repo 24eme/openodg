@@ -13,9 +13,11 @@
     <tbody>
         <?php
         $cpt = 0;
+        $totalVolRevendique = 0;
         foreach ($drev->declaration->getProduits(true) as $key => $produit) :
             $produit = $drev->get($key);
             $key_for_tr_id = str_replace("/", '_', $key);
+            $totalVolRevendique += $produit->volume_revendique;
             ?>
             <tr data-toggle="collapse" data-target="#<?php echo $key_for_tr_id ?>" class="accordion-toggle <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>" >
                 <td>
@@ -45,7 +47,7 @@
                                             <tr>
                                                 <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle(); ?></small></td>
                                                 <?php if(!$drev->isNonRecoltant()): ?>
-                                                <td class="text-center text-muted col-md-3" >
+                                                <td class="text-center text-muted col-md-3">
                                                     <?php if ($produit_cepage->superficie_revendique): ?>
                                                         <small><?php echoFloat($produit_cepage->superficie_revendique) ?> <small class="text-muted">ares</small></small>
                                                     <?php endif; ?>
@@ -57,7 +59,7 @@
                                                 <tr>
                                                     <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() . ' VT'; ?></small></td>
                                                     <?php if(!$drev->isNonRecoltant()): ?>
-                                                    <td>
+                                                    <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_vt): ?>
                                                             <small><?php echoFloat($produit_cepage->superficie_revendique_vt) ?> <small class="text-muted">ares</small></small>
                                                         <?php endif; ?>
@@ -70,7 +72,7 @@
                                                 <tr>
                                                     <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() . ' SGN'; ?></small></td>
                                                     <?php if(!$drev->isNonRecoltant()): ?>
-                                                    <td>
+                                                    <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_sgn): ?>
                                                             <small><?php echoFloat($produit_cepage->superficie_revendique_sgn) ?> <small class="text-muted">ares</small></small>
                                                         <?php endif; ?>
@@ -89,5 +91,13 @@
             <?php endif; ?>
             <?php $cpt++; ?> 
         <?php endforeach; ?>
+        
+            <tr class="<?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>" >
+                <td><strong><div class="float-left col-xs-10">Total</div></strong></td>
+                <?php if(!$drev->isNonRecoltant()): ?>
+                <td></td>
+            	<?php endif; ?>
+                <td class="text-center"><strong><?php echoFloat($totalVolRevendique) ?></strong> <small class="text-muted">hl</small></td>
+            </tr>
     </tbody>
 </table>

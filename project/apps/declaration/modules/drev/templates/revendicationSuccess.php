@@ -4,7 +4,7 @@
     <h2>Revendication</h2>
 </div>
 
-<?php if (!$drev->hasDR()): ?>
+<?php if ($drev->isNonRecoltant()): ?>
     <?php include_partial('drev/stepRevendication', array('drev' => $drev)) ?>
 <?php endif; ?>
 
@@ -31,9 +31,9 @@
             <tr>
                 <th class="col-xs-5">Appellation revendiquée</th>
                 <?php if (!$drev->isNonRecoltant()): ?>
-                    <th class="col-xs-2 text-center">Superficie totale<br /></th>
+                    <th class="col-xs-2 text-center">Superficie totale <small class="text-muted">(ares)</small><br /></th>
                 <?php endif; ?>
-                <th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /></th>
+                <th class="col-xs-2 text-center">Volume&nbsp;revendiqué <small class="text-muted">(hl)</small><br /></th>
                 <?php if ($drev->hasDR()): ?>
                     <th class="col-xs-1 small text-center">Volume total</th>
                     <th class="col-xs-1 small text-center">Volume sur place</th>
@@ -44,31 +44,25 @@
         <tbody>
             <?php
             foreach ($form['produits'] as $key => $embedForm) :
-                $produit = $drev->get($key);
+                $produit = $drev->get($key)
                 ?>
                 <tr>
                     <td><?php echo $produit->getLibelleComplet() ?></td>
-                        <?php if (!$drev->isNonRecoltant()): ?>
+    <?php if (isset($embedForm['superficie_revendique'])): ?>
                         <td>
-                                <?php if (isset($embedForm['superficie_revendique'])): ?>
-                                <div class="form-group <?php if ($embedForm['superficie_revendique']->hasError()): ?>has-error<?php endif; ?>">
-                                        <?php echo $embedForm['superficie_revendique']->renderError() ?>
-                                    <div class="col-xs-10 col-xs-offset-1">
-            <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded', 'placeholder' => "ares")) ?>
-                                    </div>
+                            <div class="form-group <?php if ($embedForm['superficie_revendique']->hasError()): ?>has-error<?php endif; ?>">
+                                    <?php echo $embedForm['superficie_revendique']->renderError() ?>
+                                <div class="col-xs-10 col-xs-offset-1">
+        <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float', 'placeholder' => "ares")) ?>
                                 </div>
-                            <?php else: ?>
-                            <div class="text-center" >
-                                <?php echo $produit->detail->superficie_total; ?>
                             </div>
-                        <?php endif; ?>
                         </td>
     <?php endif; ?>
                     <td>
                         <div class="form-group <?php if ($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
                                 <?php echo $embedForm['volume_revendique']->renderError() ?>
                             <div class="col-xs-10 col-xs-offset-1">
-    <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded', 'placeholder' => "hl")) ?>
+    <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded num_float', 'placeholder' => "hl")) ?>
                             </div>
                         </div>
                     </td>
@@ -107,7 +101,12 @@
     <div class="row row-margin row-button">
         <div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
         <div class="col-xs-6 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
+                <button id="btn-validation" type="submit" class="btn btn-warning btn-lg btn-upper">Enregistrer <small>et revalider</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-sm btn-upper btn-spacing">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <?php else: ?>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+<?php endif; ?>
         </div>
     </div>
 </form>

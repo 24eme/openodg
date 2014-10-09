@@ -5,7 +5,7 @@
     <h2>Contrôle externe <small>Prélèvement en bouteille</small></h2>
 </div>
 
-<form method="post" action="" role="form" class="form-horizontal ajaxForm">
+<form method="post" action="<?php echo url_for("drev_controle_externe", $drev) ?>" role="form" class="form-horizontal ajaxForm">
     
     <div class="row">
         <div class="col-xs-7">
@@ -28,10 +28,6 @@
                                 </div>
                             </div>
                         </div>
-                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_ALSACE)->date_precedente): ?>
-                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small>
-                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_ALSACE)->date_precedente, "D", "fr_FR") ?></small>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -52,10 +48,6 @@
                                 </div>
                             </div>
                         </div>
-                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_GRDCRU)->date_precedente): ?>
-                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small> 
-                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_GRDCRU)->date_precedente, "D", "fr_FR") ?></small>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -76,10 +68,6 @@
                                 </div>
                             </div>
                         </div>
-                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_VTSGN)->date_precedente): ?>
-                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small>
-                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_VTSGN)->date_precedente, "D", "fr_FR") ?></small>
-                        <?php endif; ?>
                     </div>
                     <div class="form-group <?php if($form[DRev::BOUTEILLE_VTSGN]["total_lots"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?>
@@ -126,7 +114,12 @@
             <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la validation</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+        	<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
+	        <button id="btn-validation" type="submit" class="btn btn-warning btn-lg btn-upper">Enregistrer <small>et revalider</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <button type="submit" class="btn btn-default btn-sm btn-upper btn-spacing">Continuer <small>vers la validation</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <?php else: ?>
+	        <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la validation</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <?php endif; ?>
         </div>
     </div>
 </form>

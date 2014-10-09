@@ -28,9 +28,9 @@
         <thead>
             <tr>
                 <th class="col-xs-3">Produits</th>
-                <th class="text-center col-xs-3">Volume</th>
-                <th class="text-center col-xs-3">Volume VT</th>
-                <th class="text-center col-xs-3">Volume SGN</th>
+                <th class="text-center col-xs-3">Volume revendiqué <small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-3">Volume revendiqué VT <small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-3">Volume revendiqué SGN <small class="text-muted">(hl)</small></th>
             </tr>
         </thead>
         <tbody>
@@ -89,12 +89,14 @@
                 <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à Toutes les appellations</small></a>
             <?php endif; ?>
         </div>
+        
         <div class="col-xs-6 text-right">
-            <?php if ($noeud->getNextSister()): ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers l'appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-            <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la dégustation conseil</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-                <?php endif; ?>
+        	<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
+	        <button id="btn-validation" type="submit" class="btn btn-warning btn-lg btn-upper">Enregistrer <small>et revalider</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <button type="submit" class="btn btn-default btn-sm btn-upper btn-spacing">Continuer <small><?php if ($noeud->getNextSister()): ?>vers l'appellation suivante<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <?php else: ?>
+            <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small><?php if ($noeud->getNextSister()): ?>vers l'appellation suivante<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <?php endif; ?>
         </div>
     </div>
 </form>

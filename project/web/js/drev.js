@@ -22,6 +22,15 @@
         });
     }
 
+    $.initBtnValidation = function()
+    {
+        $('#btn-validation').click(function() {
+        	$('form').attr('action', $('form').attr('action')+'?redirect=validation');
+        	$('form').submit();
+            return false;
+        });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -29,6 +38,7 @@
     {
         $.initExploitation();
         $.initPrelevement();
+        $.initBtnValidation();
     });
 
 })(jQuery);
