@@ -238,7 +238,7 @@ class drevActions extends sfActions {
 
         if (!$this->form->isValid()) {
         	$values = $request->getParameter($this->form->getName());
-        	if (isset($values['chai']) && $this->drev->getChaiKey() != $values['chai']) {
+        	if (isset($values['chai']) && $this->drev->getChaiKey(Drev::CUVE) != $values['chai']) {
         		$this->formPrelevement = true;
         	}
             return sfView::SUCCESS;
@@ -328,6 +328,8 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->form = new DRevControleExterneForm($this->drev->prelevements);
+        
+        $this->formPrelevement = false;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -337,7 +339,10 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
+        	$values = $request->getParameter($this->form->getName());
+        	if (isset($values['chai']) && $this->drev->getChaiKey(Drev::BOUTEILLE) != $values['chai']) {
+        		$this->formPrelevement = true;
+        	}
             return sfView::SUCCESS;
         }
 
