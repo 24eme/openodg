@@ -4,4 +4,5 @@
 </ul>
 	
 <?php include_component('drev', 'monEspace'); ?>
+<?php include_component('drevmarc', 'monEspace'); ?>
 	

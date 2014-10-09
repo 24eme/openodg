@@ -20,4 +20,9 @@ class Etablissement extends BaseEtablissement {
         return $this->chais->getFirst();
     }
 
+    public function hasFamille($famille) {
+
+        return $this->familles->exist($famille);
+    }
+
 }
