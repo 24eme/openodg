@@ -40,14 +40,17 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                              <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélévement volontaire des VT / SGN
+                              <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue() || $form["vtsgn_demande"]->hasError()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélévement volontaire des VT / SGN
                             </label>
                         </div>
                     </div>
-                    <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if(!$form[DRev::CUVE_VTSGN]["date"]->getValue()): ?>hidden<?php endif; ?> <?php if($form[DRev::CUVE_VTSGN]["date"]->hasError()): ?>has-error<?php endif; ?>">
-                        <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderError(); ?>
-                        <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
-                        <div class="col-xs-7">
+                    <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if(!$form[DRev::CUVE_VTSGN]["date"]->getValue() && !$form["vtsgn_demande"]->hasError()): ?>hidden<?php endif; ?> <?php if($form[DRev::CUVE_VTSGN]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <div class="<?php if($form["vtsgn_demande"]->hasError()): ?>has-error<?php endif; ?>">
+                        	<?php echo $form["vtsgn_demande"]->renderError(); ?>
+	            			<?php echo $form[DRev::CUVE_VTSGN]["date"]->renderError(); ?>
+	                        <?php echo $form[DRev::CUVE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
+                        </div>
+                        <div class="col-xs-7<?php if($form["vtsgn_demande"]->hasError()): ?> has-error<?php endif; ?>">
                             <?php echo $form[DRev::CUVE_VTSGN]["date"]->render(array("class" => "form-control")); ?>
                         </div>
                     </div>
