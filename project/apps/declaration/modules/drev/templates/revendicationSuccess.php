@@ -31,9 +31,9 @@
 			<tr>
 				<th class="col-xs-5">Appellation revendiquée</th>
 				<?php if(!$drev->isNonRecoltant()): ?>
-				<th class="col-xs-2 text-center">Superficie totale<br /></th>
+				<th class="col-xs-2 text-center">Superficie totale <small class="text-muted">(ares)</small><br /></th>
 				<?php endif; ?>
-				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /></th>
+				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué <small class="text-muted">(hl)</small><br /></th>
 				<?php if($drev->hasDR()): ?>
 				<th class="col-xs-1 small text-center">Volume total</th>
 				<th class="col-xs-1 small text-center">Volume sur place</th>

@@ -28,9 +28,9 @@
         <thead>
             <tr>
                 <th class="col-xs-3">Produits</th>
-                <th class="text-center col-xs-3">Volume</th>
-                <th class="text-center col-xs-3">Volume VT</th>
-                <th class="text-center col-xs-3">Volume SGN</th>
+                <th class="text-center col-xs-3">Volume <small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-3">Volume VT <small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-3">Volume SGN <small class="text-muted">(hl)</small></th>
             </tr>
         </thead>
         <tbody>
