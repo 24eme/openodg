@@ -60,7 +60,7 @@ join -t ";" -1 2 -2 1 $WORKDIROPERATEUR/id_evv_cvi.csv $WORKDIR/prelevement_cons
 
 cat $DATADIR/AVA_DREV_PRELEVEMENT.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | sort -t ";" -k 1,1 > $WORKDIR/prelevement_externe.csv
 
-join -t ";" -1 2 -2 1 $WORKDIR/dossier_cvi.csv $WORKDIR/prelevement.csv | cut -d ";" -f 2,3,4,6,7,8 | awk -F ";" '{ print $1 ";" $2 ";3.PREL;;;;;" $3 ";;;" $6 ";" $4 ";" $5 }' > $WORKDIR/prelevement_externe_cvi.csv
+join -t ";" -1 2 -2 1 $WORKDIR/dossier_cvi.csv $WORKDIR/prelevement_externe.csv | cut -d ";" -f 2,3,4,6,7,8 | awk -F ";" '{ print $1 ";" $2 ";3.PREL;;;;;" $3 ";;;" $6 ";" $4 ";" $5 }' > $WORKDIR/prelevement_externe_cvi.csv
 
 #===FINAL===
 

@@ -189,9 +189,10 @@ class drevActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
 
-        if ($this->noeud->getNextSister()) {
+        $next_sister = $this->noeud->getNextSisterActive();
+        if ( $next_sister) {
 
-            return $this->redirect('drev_revendication_cepage', $this->noeud->getNextSister());
+            return $this->redirect('drev_revendication_cepage',  $next_sister);
         } else {
 
             return $this->redirect('drev_degustation_conseil', $this->drev);
