@@ -86,6 +86,10 @@ class DRevValidation extends DocumentValidation
   	
   	protected function controleErrorRevendicationIncomplete($produit)
   	{
+      if($this->document->isNonRecoltant()) {
+
+        return;
+      }
   		if (
   			($produit->superficie_revendique !== null && $produit->volume_revendique === null) ||
   			($produit->superficie_revendique === null && $produit->volume_revendique !== null)

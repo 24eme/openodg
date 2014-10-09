@@ -18,6 +18,7 @@ DRev:
       etape: { required: false }
       identifiant: { }
       validation: { }
+      non_recoltant: { required: false, type: integer }
       declarant:
         type: collection
         definition:
@@ -107,6 +108,8 @@ DRev:
                                                     fields:
                                                       libelle: { }
                                                       superficie_revendique: { type:float }
+                                                      superficie_revendique_vt: { type:float }
+                                                      superficie_revendique_sgn: { type:float }
                                                       volume_revendique: { type:float }
                                                       volume_revendique_vt: { type:float }
                                                       volume_revendique_sgn: { type:float }

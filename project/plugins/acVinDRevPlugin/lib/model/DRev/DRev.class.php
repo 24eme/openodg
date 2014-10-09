@@ -77,6 +77,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
+    public function isNonRecoltant() {
+
+        return $this->exist('non_recoltant') && $this->get('non_recoltant');
+    }
+
     public function hasDR() {
 
         return $this->_attachments->exist('DR.csv');
@@ -85,6 +90,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function initDoc($identifiant, $campagne) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
+        $etablissement = $this->getEtablissementObject();
         $this->declaration->add('certification')->add('genre');
     }
 
