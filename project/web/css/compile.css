@@ -1234,3 +1234,4 @@ ul{list-style:none}
 .revendication_recap_padding{padding:0 !important}
 .revendication_recap_td_libelle{padding-left:30px !important}
 .table_td_zebra{background-color:#fffbde}
+.table-striped-alt>tbody>tr:nth-child(2n+1)>td,.table-striped-alt>tbody>tr:nth-child(2n+1)>th{background-color:#efefec}

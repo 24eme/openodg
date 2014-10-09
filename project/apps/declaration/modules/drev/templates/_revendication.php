@@ -1,5 +1,5 @@
 <?php use_helper('Float') ?>
-<h3>Revendication</h2>
+<h3>Revendication</h3>
 <table class="table">
     <thead>
         <tr>
@@ -37,7 +37,7 @@
                     <td class="hiddenRow" colspan="3"  >
                         <div id="<?php echo $key_for_tr_id; ?>" class="accordian-body collapse" >
                             <div class="col-xs-12 revendication_recap_padding">
-                                <table class="table table-condensed">
+                                <table class="table table-striped-alt">
                                     <tbody>
                                         <?php
                                         foreach ($produit->getProduitsCepage() as $cepage_key => $produit_cepage) :
