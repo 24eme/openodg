@@ -35,6 +35,32 @@ class DRevCouleur extends BaseDRevCouleur
     	}
         return array($this->getHash() => $this);
     }
+
+    public function getProduitsCepage() {
+
+        if(!$this->getMention()->hasManyNoeuds()) {
+
+            return parent::getProduitsCepage();
+        }
+
+        if($this->getLieu()->getKey() != "lieu") {
+
+            return parent::getProduitsCepage();
+        }
+
+        $produits = array();
+        foreach($this->getMention()->getChildrenNode() as $lieu) {
+            if(!$lieu->exist($this->getKey())) {
+                continue;
+            }
+
+            foreach($lieu->get($this->getKey())->getChildrenNode() as $cepage) {
+                $produits = array_merge($produits, array($cepage->getHash() => $cepage));
+            }
+        }
+
+        return $produits;
+    }
     
     public function getTotalTotalSuperficie()
     {
