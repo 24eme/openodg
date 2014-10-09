@@ -30,7 +30,9 @@
 		<thead>
 			<tr>
 				<th class="col-xs-5">Appellation revendiquée</th>
+				<?php if(!$drev->isNonRecoltant()): ?>
 				<th class="col-xs-2 text-center">Superficie totale<br /></th>
+				<?php endif; ?>
 				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /></th>
 				<?php if($drev->hasDR()): ?>
 				<th class="col-xs-1 small text-center">Volume total</th>
@@ -45,6 +47,7 @@
 			?>
 				<tr>
 					<td><?php echo $produit->getLibelleComplet() ?></td>
+					<?php if(isset($embedForm['superficie_revendique'])): ?>
 					<td>
 						<div class="form-group <?php if($embedForm['superficie_revendique']->hasError()): ?>has-error<?php endif; ?>">
 							<?php echo $embedForm['superficie_revendique']->renderError() ?>
@@ -53,6 +56,7 @@
 							</div>
 						</div>
 					</td>
+					<?php endif; ?>
 					<td>
 						<div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
 							<?php echo $embedForm['volume_revendique']->renderError() ?>

@@ -18,6 +18,7 @@ DRev:
       etape: { required: false }
       identifiant: { }
       validation: { }
+      non_recoltant: { required: false, type: integer }
       declarant:
         type: collection
         definition:
