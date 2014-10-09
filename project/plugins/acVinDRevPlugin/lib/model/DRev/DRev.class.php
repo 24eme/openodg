@@ -404,12 +404,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $produit = $this->getOrAdd($config->getHash());
             if ($line[DRCsvFile::CSV_VTSGN] == "VT") {
                 $produit->volume_revendique_vt += (float) $line[DRCsvFile::CSV_VOLUME];
+                $produit->superficie_revendique_vt += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             } elseif ($line[DRCsvFile::CSV_VTSGN] == "SGN") {
                 $produit->volume_revendique_sgn += (float) $line[DRCsvFile::CSV_VOLUME];
+                $produit->superficie_revendique_sgn += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             } else {
                 $produit->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
+                $produit->superficie_revendique += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             }
-            $produit->superficie_revendique += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+            
         }
     }
 
