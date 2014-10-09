@@ -226,6 +226,8 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->form = new DRevDegustationConseilForm($this->drev->prelevements);
+        
+        $this->formPrelevement = false;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -235,7 +237,10 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
+        	$values = $request->getParameter($this->form->getName());
+        	if (isset($values['chai']) && $this->drev->getChaiKey() != $values['chai']) {
+        		$this->formPrelevement = true;
+        	}
             return sfView::SUCCESS;
         }
 

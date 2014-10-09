@@ -429,5 +429,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $produit->resetRevendique();
         }
     }
-
+    
+    public function getChaiKey()
+    {
+    	if ($this->exist('chais')) {
+        	if ($this->chais->exist(DRev::CUVE)) {
+    			foreach($this->getEtablissementObject()->chais as $chai) {
+    				if ($chai->adresse == $this->chais->get(DRev::CUVE)->adresse) {
+    					return $chai->getKey();
+    				}
+    			}
+    		}
+    	}
+    	return null;
+    }
 }

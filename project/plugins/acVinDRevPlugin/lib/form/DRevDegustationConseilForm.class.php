@@ -54,6 +54,16 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $this->setDefault('vtsgn_demande', 1);
+        if ($this->getObject()->getDocument()->exist('chais')) {
+        	if ($this->getObject()->getDocument()->chais->exist(DRev::CUVE)) {
+        		foreach ($this->getObject()->getDocument()->getEtablissementObject()->chais as $chai) {
+        			if ($chai->adresse == $this->getObject()->getDocument()->chais->get(DRev::CUVE)->adresse) {
+        				$this->setDefault('chai', $chai->getKey());
+        				break;
+        			}
+        		}
+        	}
+        }
     }
 
     public function processValues($values) {
