@@ -21,54 +21,55 @@
                         <?php echo $produit->getLibelleComplet() ?> 
                     </div>
                     <div class="float-right text-right col-xs-2">
-                        <?php if (count($produit->getProduitsCepage()) > 1): ?>
+                        <?php if (count($produit->getProduitsCepage()) > 0): ?>
                             <small style="cursor: pointer;"><span class="glyphicon glyphicon-chevron-down">&nbsp;</span></small><?php endif; ?>
                     </div>
                 </td>
                 <td class="text-center"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ares</small></td>
                 <td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small></td>
             </tr>
-            <?php if (count($produit->getProduitsCepage()) > 1): ?>
+            <?php if (count($produit->getProduitsCepage()) > 0): ?>
                 <tr>
                     <td class="hiddenRow" colspan="3"  >
                         <div id="<?php echo $key_for_tr_id; ?>" class="accordian-body collapse" >
-                            <div class="col-xs-12 no-padding">
+                            <div class="col-xs-12 revendication_recap_padding">
                                 <table class="table table-condensed">
                                     <tbody>
                                         <?php
                                         foreach ($produit->getProduitsCepage() as $cepage_key => $produit_cepage) :
-                                            $rowspan = 1;
-                                            if ($produit_cepage->volume_revendique_vt) {
-                                                $rowspan++;
-                                            }
-                                            if ($produit_cepage->volume_revendique_sgn) {
-                                                $rowspan++;
-                                            }
                                             ?>
                                             <tr>
-                                                <td class="col-md-6 text-muted"><small><?php echo $produit_cepage->getLibelle(); ?></small></td>
-                                                <td class="text-center text-muted col-md-3" rowspan="<?php echo $rowspan; ?>" >
+                                                <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle(); ?></small></td>
+                                                <td class="text-center text-muted col-md-3" >
                                                     <?php if ($produit_cepage->superficie_revendique): ?>
                                                         <small><?php echoFloat($produit_cepage->superficie_revendique) ?> <small class="text-muted">ares</small></small>
-            <?php endif; ?>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique) ?> <small class="text-muted">hl</small></small></td>                                           
                                             </tr>
-            <?php if ($produit_cepage->volume_revendique_vt): ?>
+                                            <?php if ($produit_cepage->volume_revendique_vt): ?>
                                                 <tr>
-                                                    <td class="col-md-6 text-muted"><small><?php echo $produit_cepage->getLibelle() . ' VT'; ?></small></td>
-
+                                                    <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() . ' VT'; ?></small></td>
+                                                    <td>
+                                                        <?php if ($produit_cepage->superficie_revendique_vt): ?>
+                                                            <small><?php echoFloat($produit_cepage->superficie_revendique_vt) ?> <small class="text-muted">ares</small></small>
+                                                        <?php endif; ?>
+                                                    </td>
                                                     <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?> <small class="text-muted">hl</small></small></td>                                           
                                                 </tr>
                                             <?php endif; ?>
-            <?php if ($produit_cepage->volume_revendique_sgn): ?>
+                                            <?php if ($produit_cepage->volume_revendique_sgn): ?>
                                                 <tr>
-                                                    <td class="col-md-6 text-muted"><small><?php echo $produit_cepage->getLibelle() . ' SGN'; ?></small></td>
-
+                                                    <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() . ' SGN'; ?></small></td>
+                                                    <td>
+                                                        <?php if ($produit_cepage->superficie_revendique_sgn): ?>
+                                                            <small><?php echoFloat($produit_cepage->superficie_revendique_sgn) ?> <small class="text-muted">ares</small></small>
+                                                        <?php endif; ?>
+                                                    </td>
                                                     <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?> <small class="text-muted">hl</small></small></td>                                           
                                                 </tr>
                                             <?php endif; ?>
-        <?php endforeach; ?>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -77,6 +78,6 @@
                 </tr>
             <?php endif; ?>
             <?php $cpt++; ?> 
-<?php endforeach; ?>
+        <?php endforeach; ?>
     </tbody>
 </table>
