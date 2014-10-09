@@ -119,7 +119,9 @@ class drevActions extends sfActions {
         $this->drev->storeDeclarant();
         
         $this->drev->save();
-
+		if ($request->getParameter('redirect', null)) {
+			return $this->redirect('drev_validation', $this->drev);
+		}
         return $this->redirect('drev_revendication', $this->drev);
     }
 
@@ -142,10 +144,16 @@ class drevActions extends sfActions {
                 }
 
                 if($this->drev->hasDR() || count($this->drev->declaration->getAppellations()) < 1) {
-					
+                
+					if ($request->getParameter('redirect', null)) {
+						return $this->redirect('drev_validation', $this->drev);
+					}
                     return $this->redirect('drev_degustation_conseil', $this->drev);
                 }
-                
+            
+				if ($request->getParameter('redirect', null)) {
+					return $this->redirect('drev_validation', $this->drev);
+				}
                 return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
             }
         }
@@ -196,8 +204,13 @@ class drevActions extends sfActions {
         }
 
         $next_sister = $this->noeud->getNextSisterActive();
+    
+		if ($request->getParameter('redirect', null)) {
+			return $this->redirect('drev_validation', $this->drev);
+		}
+		
         if ( $next_sister) {
-
+			
             return $this->redirect('drev_revendication_cepage',  $next_sister);
         } else {
 
@@ -259,6 +272,10 @@ class drevActions extends sfActions {
         }
         
         $this->drev->save();
+    
+		if ($request->getParameter('redirect', null)) {
+			return $this->redirect('drev_validation', $this->drev);
+		}
 
         if($this->drev->prelevements->exist(Drev::CUVE_ALSACE)) {
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_ALSACE));
@@ -299,6 +316,11 @@ class drevActions extends sfActions {
             
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
+        
+    
+		if ($request->getParameter('redirect', null)) {
+			return $this->redirect('drev_validation', $this->drev);
+		}
 
         if ($this->prelevement->getKey() == Drev::CUVE_ALSACE && $this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
@@ -361,6 +383,10 @@ class drevActions extends sfActions {
         }
         
         $this->drev->save();
+    
+		if ($request->getParameter('redirect', null)) {
+			return $this->redirect('drev_validation', $this->drev);
+		}
 
         return $this->redirect('drev_validation', $this->drev);
     }
