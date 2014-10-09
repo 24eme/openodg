@@ -28,10 +28,6 @@
                                 </div>
                             </div>
                         </div>
-                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_ALSACE)->date_precedente): ?>
-                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small>
-                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_ALSACE)->date_precedente, "D", "fr_FR") ?></small>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -52,10 +48,6 @@
                                 </div>
                             </div>
                         </div>
-                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_GRDCRU)->date_precedente): ?>
-                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small> 
-                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_GRDCRU)->date_precedente, "D", "fr_FR") ?></small>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -76,10 +68,6 @@
                                 </div>
                             </div>
                         </div>
-                        <?php if($drev->prelevements->get(DRev::BOUTEILLE_VTSGN)->date_precedente): ?>
-                            <small class="col-xs-5 text-right text-muted">Dégustation <?php echo $drev->campagne - 1 ?></small>
-                            <small class="col-xs-7 text-center text-muted">Semaine du <?php echo format_date($drev->prelevements->get(DRev::BOUTEILLE_VTSGN)->date_precedente, "D", "fr_FR") ?></small>
-                        <?php endif; ?>
                     </div>
                     <div class="form-group <?php if($form[DRev::BOUTEILLE_VTSGN]["total_lots"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->renderError(); ?>

@@ -47,7 +47,7 @@
                                             <tr>
                                                 <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle(); ?></small></td>
                                                 <?php if(!$drev->isNonRecoltant()): ?>
-                                                <td class="text-center text-muted col-md-3" >
+                                                <td class="text-center text-muted col-md-3">
                                                     <?php if ($produit_cepage->superficie_revendique): ?>
                                                         <small><?php echoFloat($produit_cepage->superficie_revendique) ?> <small class="text-muted">ares</small></small>
                                                     <?php endif; ?>
@@ -59,7 +59,7 @@
                                                 <tr>
                                                     <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() . ' VT'; ?></small></td>
                                                     <?php if(!$drev->isNonRecoltant()): ?>
-                                                    <td>
+                                                    <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_vt): ?>
                                                             <small><?php echoFloat($produit_cepage->superficie_revendique_vt) ?> <small class="text-muted">ares</small></small>
                                                         <?php endif; ?>
@@ -72,7 +72,7 @@
                                                 <tr>
                                                     <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() . ' SGN'; ?></small></td>
                                                     <?php if(!$drev->isNonRecoltant()): ?>
-                                                    <td>
+                                                    <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_sgn): ?>
                                                             <small><?php echoFloat($produit_cepage->superficie_revendique_sgn) ?> <small class="text-muted">ares</small></small>
                                                         <?php endif; ?>
