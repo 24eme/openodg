@@ -4,7 +4,7 @@
     <h2>Revendication</h2>
 </div>
 
-<?php if(!$drev->hasDR()): ?>
+<?php if($drev->isNonRecoltant()): ?>
 	<?php include_partial('drev/stepRevendication', array('drev' => $drev)) ?>
 <?php endif; ?>
 
