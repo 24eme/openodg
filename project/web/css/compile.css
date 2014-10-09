@@ -1194,7 +1194,7 @@ ul.error_list{margin-top:0}
 .breadcrumb-steps span{color:inherit;display:inline-block;line-height:normal;padding:20px 0 20px 75px}
 .nav-tabs{margin-left:-10px;margin-right:-10px;padding:0 5px;margin-bottom:20px}.nav-tabs>li.active a{padding-bottom:11px}
 .nav-tabs>li>a{background:#9b9383;color:#fff;font-size:14px;font-weight:600}.nav-tabs>li>a:hover,.nav-tabs>li>a:focus{background:#fff;border-bottom-color:#fff;color:#2c4a48}
-.nav-tabs>li.disabled>a{background-color:#fff}.nav-tabs>li.disabled>a.active>a,.nav-tabs>li.disabled>a.active>a:hover,.nav-tabs>li.disabled>a.active>a:focus{color:#a9a8a8}
+.nav-tabs>li.disabled>a{background-color:#fff}
 .tab-content{background:#fff;border:1px solid #a9a8a8;border-top:0;padding:20px}
 .panel{border:0;box-shadow:none;font-size:14px;background:#fff}.panel .panel-heading{margin:0 20px;padding:20px 0 10px 0;background:#fff}.panel .panel-heading .panel-title{font-size:18px}
 .panel .panel-body{color:#5e5e5e}
@@ -1230,3 +1230,7 @@ ul.error_list{margin-top:0}
 .datepicker-control{padding:6px 12px;border-radius:14px;background-color:#fff;background-image:none;border:1px solid #ccc;box-shadow:0 1px 1px rgba(0,0,0,0.075) inset;color:#333;display:block;font-size:14px;height:28px;line-height:1.42857;transition:border-color .15s ease-in-out 0,box-shadow .15s ease-in-out 0}
 ul{list-style:none}
 .notification{position:fixed;z-index:999999;bottom:0;left:45%;opacity:.9;display:none}
+.hiddenRow{padding:0 !important}
+.revendication_recap_padding{padding:0 !important}
+.revendication_recap_td_libelle{padding-left:30px !important}
+.table_td_zebra{background-color:#fffbde}
