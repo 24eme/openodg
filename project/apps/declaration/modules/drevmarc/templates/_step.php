@@ -10,7 +10,7 @@ $steps = array(
 <?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
 
 <ol class="breadcrumb-steps">
-    <li class="<?php if($stepNum == 1): ?>active<?php endif; ?>  <?php if($stepNum > 1): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 1): ?>active<?php endif; ?>  <?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_EXPLOITATION)): ?>
             <a href="<?php echo url_for("drevmarc_exploitation", $drevmarc) ?>" class="ajax">Exploitation</a>
@@ -19,7 +19,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
-    <li class="<?php if($stepNum == 2): ?>active<?php endif; ?> <?php if($stepNum > 2): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 2): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_REVENDICATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_REVENDICATION)): ?>
             <a href="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" class="ajax">Revendication</a>
@@ -28,7 +28,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
-    <li class="<?php if($stepNum == 3): ?>active<?php endif; ?> <?php if($stepNum > 3): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 3): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_VALIDATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_VALIDATION)): ?>
             <a href="<?php echo url_for("drevmarc_validation", $drevmarc) ?>" class="ajax">Validation</a>

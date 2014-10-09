@@ -34,7 +34,13 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_'.$drev->etape, $drev);
         }
 
-        return $this->redirect('drev_dr', $drev);
+        $etablissement = $drev->getEtablissementObject();
+
+        if($etablissement->hasFamille(EtablissementClient::FAMILLE_PRODUCTEUR)) {
+            return $this->redirect('drev_dr', $drev);
+        }
+
+        return $this->redirect('drev_exploitation', $drev);
     }
 
     public function executeDelete(sfWebRequest $request) {
@@ -189,9 +195,10 @@ class drevActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
         }
 
-        if ($this->noeud->getNextSister()) {
+        $next_sister = $this->noeud->getNextSisterActive();
+        if ( $next_sister) {
 
-            return $this->redirect('drev_revendication_cepage', $this->noeud->getNextSister());
+            return $this->redirect('drev_revendication_cepage',  $next_sister);
         } else {
 
             return $this->redirect('drev_degustation_conseil', $this->drev);
@@ -226,6 +233,8 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->form = new DRevDegustationConseilForm($this->drev->prelevements);
+        
+        $this->formPrelevement = false;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -235,7 +244,10 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
+        	$values = $request->getParameter($this->form->getName());
+        	if (isset($values['chai']) && $this->drev->getChaiKey(Drev::CUVE) != $values['chai']) {
+        		$this->formPrelevement = true;
+        	}
             return sfView::SUCCESS;
         }
 
@@ -323,6 +335,8 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->form = new DRevControleExterneForm($this->drev->prelevements);
+        
+        $this->formPrelevement = false;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -332,7 +346,10 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-
+        	$values = $request->getParameter($this->form->getName());
+        	if (isset($values['chai']) && $this->drev->getChaiKey(Drev::BOUTEILLE) != $values['chai']) {
+        		$this->formPrelevement = true;
+        	}
             return sfView::SUCCESS;
         }
 

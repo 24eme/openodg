@@ -18,21 +18,25 @@
     <?php if ($sf_user->hasFlash('erreur')): ?>
         <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
     <?php endif; ?>
+    <?php if($drev->hasDR()): ?>
 	<div class="row">
 		<div class="col-xs-3 col-xs-offset-9 text-center">
 			<span class="label label-primary">Informations issues de la DR</span>
 		</div>
 	</div>
 	<p></p>
+	<?php endif; ?>
 	<table class="table table-striped">
 		<thead>
 			<tr>
 				<th class="col-xs-5">Appellation revendiquée</th>
 				<th class="col-xs-2 text-center">Superficie totale<br /></th>
 				<th class="col-xs-2 text-center">Volume&nbsp;revendiqué<br /></th>
+				<?php if($drev->hasDR()): ?>
 				<th class="col-xs-1 small text-center">Volume total</th>
 				<th class="col-xs-1 small text-center">Volume sur place</th>
 				<th class="col-xs-1 small text-center">Usages industriels</th>
+				<?php endif; ?>
 			</tr>
 		</thead>
 		<tbody>
@@ -57,20 +61,22 @@
 							</div>
 						</div>
 					</td>
-					<?php if(!$produit->detail->volume_sur_place): ?>
-						<td class=""></td>
-						<td></td>
-						<td></td>
-					<?php else: ?>
-						<td class="text-right text-muted">
-							<?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
-						</td>
-						<td class="text-right text-muted">
-							<?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
-						</td>
-						<td class="text-right text-muted">
-							<?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
-						</td>
+					<?php if($drev->hasDR()): ?>
+						<?php if(!$produit->detail->volume_sur_place): ?>
+							<td class=""></td>
+							<td></td>
+							<td></td>
+						<?php else: ?>
+							<td class="text-right text-muted">
+								<?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
+							</td>
+							<td class="text-right text-muted">
+								<?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
+							</td>
+							<td class="text-right text-muted">
+								<?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
+							</td>
+						<?php endif; ?>
 					<?php endif; ?>
 				</tr>
 			<?php endforeach; ?>
@@ -79,7 +85,9 @@
 				<td>
 					<button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
 			    </td>
+			    <?php if($drev->hasDR()): ?>
     			<td></td><td></td><td></td><td></td><td></td>
+    			<?php endif; ?>
 			</tr>
 			<?php endif; ?>
 		</tbody>
@@ -88,7 +96,7 @@
 	<div class="row row-margin row-button">
 		<div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
 		<div class="col-xs-6 text-right">
-			<button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et saisir les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+			<button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 		</div>
 	</div>
 </form>

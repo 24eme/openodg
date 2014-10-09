@@ -12,7 +12,7 @@ $steps = array(
 <?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
 
 <ol class="breadcrumb-steps">
-    <li class="<?php if($stepNum == 1): ?>active<?php endif; ?> <?php if($stepNum > 1): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 1): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_EXPLOITATION)): ?>
             <a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="<?php if($stepNum <= 1): ?>ajax<?php endif; ?>">Exploitation</a>
@@ -21,7 +21,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
-    <li class="<?php if($stepNum == 2): ?>active<?php endif; ?> <?php if($stepNum > 2): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 2): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_REVENDICATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_REVENDICATION)): ?>
             <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="<?php if($stepNum <= 2): ?>ajax<?php endif; ?>">Revendication</a>
@@ -30,7 +30,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
-    <li class="<?php if($stepNum == 3): ?>active<?php endif; ?> <?php if($stepNum > 3): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 3): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_DEGUSTATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_DEGUSTATION)): ?>
             <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="<?php if($stepNum <= 3): ?>ajax<?php endif; ?>">Dégustation conseil</a>
@@ -39,7 +39,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
-    <li class="<?php if($stepNum == 4): ?>active<?php endif; ?> <?php if($stepNum > 4): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 4): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>
             <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="<?php if($stepNum <= 4): ?>ajax<?php endif; ?>">Contrôle externe</a>
@@ -48,7 +48,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
-    <li class="<?php if($stepNum == 5): ?>active<?php endif; ?> <?php if($stepNum > 5): ?>visited<?php endif; ?>">
+    <li class="<?php if($stepNum == 5): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_VALIDATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_VALIDATION)): ?>
             <a href="<?php echo url_for("drev_validation", $drev) ?>" class="<?php if($stepNum <= 5): ?>ajax<?php endif; ?>">Validation</a>

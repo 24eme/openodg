@@ -41,6 +41,20 @@ class DRevControleExterneForm extends acCouchdbObjectForm
         return $choices;
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        if ($this->getObject()->getDocument()->exist('chais')) {
+        	if ($this->getObject()->getDocument()->chais->exist(DRev::CUVE)) {
+        		foreach ($this->getObject()->getDocument()->getEtablissementObject()->chais as $chai) {
+        			if ($chai->adresse == $this->getObject()->getDocument()->chais->get(DRev::CUVE)->adresse) {
+        				$this->setDefault('chai', $chai->getKey());
+        				break;
+        			}
+        		}
+        	}
+        }
+    }
+
     public function doUpdateObject($values) 
     {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {

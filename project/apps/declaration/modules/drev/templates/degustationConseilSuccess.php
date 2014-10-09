@@ -62,18 +62,22 @@
                 </div>
                 <div class="panel-body form-chai">
                     <?php $chai = $drev->chais->get(DRev::CUVE) ?>
+                    <?php if(!$formPrelevement): ?>
                     <p>
                         <?php echo $chai->adresse ?><br />
                         <?php echo $chai->code_postal ?> <?php echo $chai->commune ?>
                     </p>
+                    <?php endif; ?>
                     <?php if(isset($form['chai'])): ?>
-                        <div class="form-group hidden">
+                        <div class="form-group <?php if(!$formPrelevement): ?>hidden<?php endif; ?>">
                             <?php echo $form["chai"]->renderError(); ?>
                             <?php echo $form["chai"]->render(array("class" => "form-control")); ?>
                         </div>
+                        <?php if(!$formPrelevement): ?>
                         <div class="row-margin text-right">
                             <button type="button" class="btn btn-sm btn-warning">Modifier</button>
                         </div>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>
@@ -85,7 +89,7 @@
             <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et répartir les lots</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en répartissant les lots</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
         </div>
     </div>
 </form>

@@ -6,6 +6,11 @@
 
 <?php include_partial('drev/stepRevendication', array('drev' => $drev, 'noeud' => $noeud)) ?>
 
+<?php if(!$noeud->isActive()): ?>
+    <div class="alert alert-warning" role="alert">Vous n'avez pas déclaré de volume revendiqué pour cette appellation <a class="btn btn-warning" href="<?php echo url_for("drev_revendication", $drev) ?>">Déclarer</a></div>
+    <?php return; ?>
+<?php endif; ?>
+
 <form role="form" class="ajaxForm" action="<?php echo url_for("drev_revendication_cepage", $noeud) ?>" method="post">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -86,9 +91,9 @@
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($noeud->getNextSister()): ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers l'appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et étape suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la dégustation conseil</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
                 <?php endif; ?>
         </div>
     </div>
