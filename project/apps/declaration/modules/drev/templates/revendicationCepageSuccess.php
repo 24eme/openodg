@@ -6,6 +6,11 @@
 
 <?php include_partial('drev/stepRevendication', array('drev' => $drev, 'noeud' => $noeud)) ?>
 
+<?php if(!$noeud->isActive()): ?>
+    <div class="alert alert-warning" role="alert">Vous n'avez pas déclaré de volume revendiqué pour cette appellation <a class="btn btn-warning" href="<?php echo url_for("drev_revendication", $drev) ?>">Déclarer</a></div>
+    <?php return; ?>
+<?php endif; ?>
+
 <form role="form" class="ajaxForm" action="<?php echo url_for("drev_revendication_cepage", $noeud) ?>" method="post">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>

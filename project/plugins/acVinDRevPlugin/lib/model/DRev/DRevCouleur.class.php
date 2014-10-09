@@ -74,7 +74,7 @@ class DRevCouleur extends BaseDRevCouleur
     
     public function isActive()
     {
-	    return ($this->volume_revendique !== null && $this->superficie_revendique !== null);
+	    return ($this->volume_revendique !== null || $this->superficie_revendique !== null);
     }
     
 }
