@@ -52,7 +52,7 @@
 						<div class="form-group <?php if($embedForm['superficie_revendique']->hasError()): ?>has-error<?php endif; ?>">
 							<?php echo $embedForm['superficie_revendique']->renderError() ?>
 							<div class="col-xs-10 col-xs-offset-1">
-								<?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded' , 'placeholder' => "ares")) ?>
+								<?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float' , 'placeholder' => "ares")) ?>
 							</div>
 						</div>
 					</td>
@@ -61,7 +61,7 @@
 						<div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
 							<?php echo $embedForm['volume_revendique']->renderError() ?>
 							<div class="col-xs-10 col-xs-offset-1">
-								<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded', 'placeholder' => "hl")) ?>
+								<?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded num_float', 'placeholder' => "hl")) ?>
 							</div>
 						</div>
 					</td>

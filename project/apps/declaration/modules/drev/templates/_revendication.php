@@ -13,9 +13,11 @@
     <tbody>
         <?php
         $cpt = 0;
+        $totalVolRevendique = 0;
         foreach ($drev->declaration->getProduits(true) as $key => $produit) :
             $produit = $drev->get($key);
             $key_for_tr_id = str_replace("/", '_', $key);
+            $totalVolRevendique += $produit->volume_revendique;
             ?>
             <tr data-toggle="collapse" data-target="#<?php echo $key_for_tr_id ?>" class="accordion-toggle <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>" >
                 <td>
@@ -89,5 +91,13 @@
             <?php endif; ?>
             <?php $cpt++; ?> 
         <?php endforeach; ?>
+        
+            <tr class="<?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>" >
+                <td><strong><div class="float-left col-xs-10">Total</div></strong></td>
+                <?php if(!$drev->isNonRecoltant()): ?>
+                <td></td>
+            	<?php endif; ?>
+                <td class="text-center"><strong><?php echoFloat($totalVolRevendique) ?></strong> <small class="text-muted">hl</small></td>
+            </tr>
     </tbody>
 </table>

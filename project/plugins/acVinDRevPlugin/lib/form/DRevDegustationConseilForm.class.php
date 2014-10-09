@@ -15,7 +15,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
             $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))));
             $form_vtsgn->getWidget("date")->setLabel("Période de prélévement");
 
-            $this->setWidget("vtsgn_demande", new sfWidgetFormInputCheckbox(array()));
+            $this->setWidget("vtsgn_demande", new WidgetFormInputCheckbox(array()));
             $this->setValidator("vtsgn_demande", new sfValidatorBoolean());
 
             $this->embedForm(Drev::CUVE_VTSGN, $form_vtsgn);
@@ -28,8 +28,8 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
             $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice())));    
             $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
         }
-
         $this->widgetSchema->setNameFormat('degustation_conseil[%s]');
+		$this->mergePostValidator(new DRevDegustationConseilValidator());
     }
 
     public function getChaiChoice() {
