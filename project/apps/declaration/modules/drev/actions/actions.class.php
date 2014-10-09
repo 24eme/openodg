@@ -34,7 +34,13 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_'.$drev->etape, $drev);
         }
 
-        return $this->redirect('drev_dr', $drev);
+        $etablissement = $drev->getEtablissementObject();
+
+        if($etablissement->hasFamille(EtablissementClient::FAMILLE_PRODUCTEUR)) {
+            return $this->redirect('drev_dr', $drev);
+        }
+
+        return $this->redirect('drev_exploitation', $drev);
     }
 
     public function executeDelete(sfWebRequest $request) {
