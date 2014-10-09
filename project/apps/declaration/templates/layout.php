@@ -11,8 +11,9 @@
         <?php include_metas() ?>
         <?php include_title() ?>
         
-        <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico" />
-        <link rel="icon" type="image/png" href="/images/favicon.png" />
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <link rel="icon" type="image/png" href="favicon.png" />
 
         <?php include_stylesheets() ?>
         
