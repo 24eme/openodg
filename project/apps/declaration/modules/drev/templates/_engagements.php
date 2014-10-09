@@ -1,6 +1,6 @@
 <h2 class="h3">Engagements</h2>
 
-<div class="alert alert-success" role="alert">
+<div class="alert" role="alert">
     <strong>Je m'engage à :</strong>
     <div class="checkbox">
         <label>
