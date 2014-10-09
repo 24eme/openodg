@@ -91,9 +91,9 @@
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($noeud->getNextSister()): ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers l'appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Valider <small>et étape suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la dégustation conseil</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
                 <?php endif; ?>
         </div>
     </div>
