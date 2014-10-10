@@ -1181,6 +1181,8 @@ input[type="checkbox"],input[type="radio"]{width:auto}
 .btn-lg{padding-bottom:9px;padding-top:9px;font-size:16px}.btn-lg small{font-size:70%}
 .btn.btn-upper{text-transform:uppercase}
 .btn.btn-spacing{margin:10px 0}
+.btn.btn-primary-step{color:#fff;background-color:#9b9383}.btn.btn-primary-step:hover,.btn.btn-primary-step:focus,.btn.btn-primary-step:active{background-color:#817969}
+.btn.btn-default-step{color:#2c4a48;background-color:#fff;border:1px solid #efefec}.btn.btn-default-step:hover,.btn.btn-default-step:focus,.btn.btn-default-step:active{background-color:#efefec}
 .breadcrumb-steps{background:#9b9383;counter-reset:steps;font-size:14px;font-weight:600;list-style:none;margin-bottom:0;margin-left:-20px;margin-top:0;overflow:hidden;padding:0;width:940px}.breadcrumb-steps:before,.breadcrumb-steps:after{content:" ";display:table}
 .breadcrumb-steps:after{clear:both}
 .breadcrumb-steps:before,.breadcrumb-steps:after{content:" ";display:table}
@@ -1237,4 +1239,4 @@ ul{list-style:none}
 .revendication_recap_td_libelle{padding-left:30px !important}
 .table_td_zebra{background-color:#fffbde}
 .table-striped-alt>tbody>tr:nth-child(2n+1)>td,.table-striped-alt>tbody>tr:nth-child(2n+1)>th{background-color:#efefec}
-.with_superficie{opacity:.5}
+.with_superficie_fade{opacity:.5}
