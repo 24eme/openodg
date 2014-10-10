@@ -13,12 +13,11 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for("drev_lots", $prelevement) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>aux lots précédents</small></a>
+            <a href="<?php echo url_for("drev_lots", $prelevement) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>aux lots précédents</small></a>
         </div>
         <div class="col-xs-6 text-right">
         	<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
-	        <button id="btn-validation" type="submit" class="btn btn-warning btn-lg btn-upper">Enregistrer <small>et revalider</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-	        <button type="submit" class="btn btn-default btn-sm btn-upper btn-spacing">Continuer <small>vers le contrôle externe</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
 	        <?php else: ?>
 	        <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers le contrôle externe</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 	        <?php endif; ?>

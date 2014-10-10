@@ -1407,6 +1407,25 @@ input[type="radio"]
 {
 	&.btn-upper { text-transform: uppercase; }
 	&.btn-spacing { margin: 10px 0; }
+	&.btn-primary-step { 
+	   color: @nav-tabs-link-color;
+	   background-color: @nav-tabs-link-bg;
+	   &:hover,
+	   &:focus,
+	   &:active {
+	       background-color: @nav-tabs-link-bg-dark;
+	   }
+	}
+	&.btn-default-step { 
+       color: @nav-tabs-active-link-hover-color;
+       background-color: @nav-tabs-link-color;
+       border: 1px solid @nav-tabs-link-hover-border-color;
+       &:hover,
+       &:focus,
+       &:active {
+            background-color: @nav-tabs-link-hover-border-color;
+       }
+	}
 }
 
 /**

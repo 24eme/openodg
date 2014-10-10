@@ -84,18 +84,17 @@
     <div class="row row-margin row-button">
         <div class="col-xs-6">
             <?php if ($noeud->getPreviousSister()): ?>
-                <a href="<?php echo url_for('drev_revendication_cepage', $noeud->getPreviousSister()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a>
+                <a href="<?php echo url_for('drev_revendication_cepage', $noeud->getPreviousSister()) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a>
             <?php else: ?>
-                <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à Toutes les appellations</small></a>
+                <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à Toutes les appellations</small></a>
             <?php endif; ?>
         </div>
         
         <div class="col-xs-6 text-right">
         	<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
-	        <button id="btn-validation" type="submit" class="btn btn-warning btn-lg btn-upper">Enregistrer <small>et revalider</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-	        <button type="submit" class="btn btn-default btn-sm btn-upper btn-spacing">Continuer <small><?php if ($noeud->getNextSister()): ?>vers l'appellation suivante<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	        <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
 	        <?php else: ?>
-            <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small><?php if ($noeud->getNextSister()): ?>vers l'appellation suivante<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper<?php if ($noeud->getNextSister()): ?> btn-default-step<?php endif; ?>">Continuer <small><?php if ($noeud->getNextSister()): ?>vers l'appellation suivante<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 	        <?php endif; ?>
         </div>
     </div>

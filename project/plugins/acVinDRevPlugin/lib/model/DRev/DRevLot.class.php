@@ -17,7 +17,11 @@ class DRevLot extends BaseDRevLot
             if ($this->getConfig()->getLieu()->libelle) {
                 $libelle .= $this->getConfig()->getLieu()->libelle.' - ';
             }
-            $libelle .= $this->getConfig()->libelle;
+            if($this->getConfig()->exist('libelle_long')) {
+                 $libelle .= $this->getConfig()->libelle_long;
+            } else {
+                 $libelle .= $this->getConfig()->libelle; 
+            }
             $this->_set('libelle', $libelle);
         }
 

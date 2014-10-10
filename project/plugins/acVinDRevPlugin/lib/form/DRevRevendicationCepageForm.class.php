@@ -13,5 +13,7 @@ class DRevRevendicationCepageForm extends acCouchdbObjectForm
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
             $embedForm->doUpdateObject($values[$key]);
         }
+
+        $this->getObject()->getDocument()->updatePrelevementsFromRevendication();
     }
 }
