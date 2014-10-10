@@ -239,6 +239,7 @@
         $.initCheckboxRelations();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
+        $('.btn-tooltip').tooltip();
     });
 
 })(jQuery);
