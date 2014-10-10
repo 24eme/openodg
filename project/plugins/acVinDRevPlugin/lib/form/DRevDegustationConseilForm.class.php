@@ -25,11 +25,21 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         
 
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
-            $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice())));    
+            $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice(), 'expanded' => true, 'renderer_options' => array('formatter' => array($this, 'formatter')))));    
             $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
         }
         $this->widgetSchema->setNameFormat('degustation_conseil[%s]');
 		$this->mergePostValidator(new DRevDegustationConseilValidator());
+    }
+
+    public function formatter($widget, $inputs) 
+    {
+        $rows = array();
+        foreach ($inputs as $input) {
+            $rows[] = $widget->renderContentTag('div', '<label>'  . $input['input'] . strip_tags($input['label'])  . '</label>' , array('class' => 'radio'));
+        }
+
+        return!$rows ? '' : implode($widget->getOption('separator'), $rows);
     }
 
     public function getChaiChoice() {
