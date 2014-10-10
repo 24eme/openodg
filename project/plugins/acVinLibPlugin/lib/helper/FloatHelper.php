@@ -2,7 +2,7 @@
 
 function sprintFloat($float, $format = "%01.02f") 
 {
-	if (is_null($float))
+	if (is_null($float) || $float == "")
 		return null;
   return sprintf($format, $float);
 }

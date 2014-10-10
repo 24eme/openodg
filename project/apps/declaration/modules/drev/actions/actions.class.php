@@ -9,7 +9,7 @@ class drevActions extends sfActions {
         $file_path_csv = sprintf("%s/DR/%s.%s", sfConfig::get('sf_data_dir'), $this->id, "csv");
         $file_path_pdf = sprintf("%s/DR/%s.%s", sfConfig::get('sf_data_dir'), $this->id, "pdf");
 
-        if(!file_exists($file_path_csv) || !file_exists($file_path_pdf)) {
+        if (!file_exists($file_path_csv) || !file_exists($file_path_pdf)) {
 
             return $this->redirect($this->url);
         }
@@ -23,18 +23,18 @@ class drevActions extends sfActions {
 
         $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $drev->save();
-        
+
         return $this->redirect('drev_edit', $drev);
     }
 
     public function executeEdit(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        
+
         if ($drev->exist('etape') && $drev->etape) {
-        	return $this->redirect('drev_'.$drev->etape, $drev);
+            return $this->redirect('drev_' . $drev->etape, $drev);
         }
 
-        if($drev->isNonRecoltant()) {
+        if ($drev->isNonRecoltant()) {
             return $this->redirect('drev_exploitation', $drev);
         }
 
@@ -44,9 +44,9 @@ class drevActions extends sfActions {
     public function executeDelete(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
-		$drev->delete();	
-		$this->getUser()->setFlash("notice", "La DRev a été supprimé avec succès.");	
-        
+        $drev->delete();
+        $this->getUser()->setFlash("notice", "La DRev a été supprimé avec succès.");
+
         return $this->redirect($this->generateUrl('home') . '#drev');
     }
 
@@ -72,30 +72,30 @@ class drevActions extends sfActions {
             mkdir($cache_dir);
         }
 
-        if(!$request->getParameter('csv') || !$request->getParameter('pdf')) {
+        if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
 
             return sfView::SUCCESS;
         }
 
         file_put_contents($cache_dir . "/DR.csv", base64_decode($request->getParameter('csv')));
-         $this->drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
+        $this->drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
 
         file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
-         $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
+        $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
 
-         $this->drev->updateFromCSV();
-         $this->drev->save();
+        $this->drev->updateFromCSV();
+        $this->drev->save();
 
         return $this->redirect($this->generateUrl('drev_exploitation', $this->drev));
     }
 
     public function executeExploitation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        
+
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION));
-        
+
         $this->drev->save();
-        
+
         $this->etablissement = $this->drev->getEtablissementObject();
 
         $this->form = new EtablissementForm($this->etablissement);
@@ -115,43 +115,48 @@ class drevActions extends sfActions {
         $this->form->save();
 
         $this->drev->storeDeclarant();
-        
+
         $this->drev->save();
-		if ($request->getParameter('redirect', null)) {
-			return $this->redirect('drev_validation', $this->drev);
-		}
+        if ($request->getParameter('redirect', null)) {
+            return $this->redirect('drev_validation', $this->drev);
+        }
         return $this->redirect('drev_revendication', $this->drev);
     }
 
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        
+
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
-	    $this->drev->save();
-		
+        $this->drev->save();
+
         $this->form = new DRevRevendicationForm($this->drev);
         $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
+
+            if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
+
+                return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+            }
             if ($this->form->isValid()) {
                 $this->form->save();
-                
+
                 if ($request->isXmlHttpRequest()) {
-                    
-                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
+
+                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
                 }
 
-                if(!$this->drev->isNonRecoltant() || count($this->drev->declaration->getAppellations()) < 1) {
-                
-					if ($request->getParameter('redirect', null)) {
-						return $this->redirect('drev_validation', $this->drev);
-					}
+                if (!$this->drev->isNonRecoltant() || count($this->drev->declaration->getAppellations()) < 1) {
+
+                    if ($request->getParameter('redirect', null)) {
+                        return $this->redirect('drev_validation', $this->drev);
+                    }
                     return $this->redirect('drev_degustation_conseil', $this->drev);
                 }
-            
-				if ($request->getParameter('redirect', null)) {
-					return $this->redirect('drev_validation', $this->drev);
-				}
+
+                if ($request->getParameter('redirect', null)) {
+                    return $this->redirect('drev_validation', $this->drev);
+                }
                 return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
             }
         }
@@ -197,19 +202,19 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if ($request->isXmlHttpRequest()) {
-                    
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
 
         $next_sister = $this->noeud->getNextSisterActive();
-    
-		if ($request->getParameter('redirect', null)) {
-			return $this->redirect('drev_validation', $this->drev);
-		}
-		
-        if ( $next_sister) {
-			
-            return $this->redirect('drev_revendication_cepage',  $next_sister);
+
+        if ($request->getParameter('redirect', null)) {
+            return $this->redirect('drev_validation', $this->drev);
+        }
+
+        if ($next_sister) {
+
+            return $this->redirect('drev_revendication_cepage', $next_sister);
         } else {
 
             return $this->redirect('drev_degustation_conseil', $this->drev);
@@ -238,13 +243,13 @@ class drevActions extends sfActions {
 
     public function executeDegustationConseil(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        
+
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_DEGUSTATION));
-        
+
         $this->drev->save();
 
         $this->form = new DRevDegustationConseilForm($this->drev->prelevements);
-        
+
         $this->formPrelevement = false;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -255,10 +260,10 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-        	$values = $request->getParameter($this->form->getName());
-        	if (isset($values['chai']) && $this->drev->getChaiKey(Drev::CUVE) != $values['chai']) {
-        		$this->formPrelevement = true;
-        	}
+            $values = $request->getParameter($this->form->getName());
+            if (isset($values['chai']) && $this->drev->getChaiKey(Drev::CUVE) != $values['chai']) {
+                $this->formPrelevement = true;
+            }
             return sfView::SUCCESS;
         }
 
@@ -266,20 +271,20 @@ class drevActions extends sfActions {
 
         if ($request->isXmlHttpRequest()) {
 
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
-        
-        $this->drev->save();
-    
-		if ($request->getParameter('redirect', null)) {
-			return $this->redirect('drev_validation', $this->drev);
-		}
 
-        if($this->drev->prelevements->exist(Drev::CUVE_ALSACE)) {
+        $this->drev->save();
+
+        if ($request->getParameter('redirect', null)) {
+            return $this->redirect('drev_validation', $this->drev);
+        }
+
+        if ($this->drev->prelevements->exist(Drev::CUVE_ALSACE)) {
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_ALSACE));
         }
 
-        if($this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
+        if ($this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
         }
 
@@ -309,16 +314,16 @@ class drevActions extends sfActions {
         }
 
         $this->form->save();
-        
+
         if ($request->isXmlHttpRequest()) {
-            
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
-        
-    
-		if ($request->getParameter('redirect', null)) {
-			return $this->redirect('drev_validation', $this->drev);
-		}
+
+
+        if ($request->getParameter('redirect', null)) {
+            return $this->redirect('drev_validation', $this->drev);
+        }
 
         if ($this->prelevement->getKey() == Drev::CUVE_ALSACE && $this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
@@ -349,13 +354,13 @@ class drevActions extends sfActions {
 
     public function executeControleExterne(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        
+
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_CONTROLE));
-        
+
         $this->drev->save();
 
         $this->form = new DRevControleExterneForm($this->drev->prelevements);
-        
+
         $this->formPrelevement = false;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -366,36 +371,36 @@ class drevActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-        	$values = $request->getParameter($this->form->getName());
-        	if (isset($values['chai']) && $this->drev->getChaiKey(Drev::BOUTEILLE) != $values['chai']) {
-        		$this->formPrelevement = true;
-        	}
+            $values = $request->getParameter($this->form->getName());
+            if (isset($values['chai']) && $this->drev->getChaiKey(Drev::BOUTEILLE) != $values['chai']) {
+                $this->formPrelevement = true;
+            }
             return sfView::SUCCESS;
         }
 
         $this->form->save();
 
         if ($request->isXmlHttpRequest()) {
-            
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id,"revision" => $this->drev->_rev))));
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
-        
+
         $this->drev->save();
-    
-		if ($request->getParameter('redirect', null)) {
-			return $this->redirect('drev_validation', $this->drev);
-		}
+
+        if ($request->getParameter('redirect', null)) {
+            return $this->redirect('drev_validation', $this->drev);
+        }
 
         return $this->redirect('drev_validation', $this->drev);
     }
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        
+
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
-        
+
         $this->drev->save();
-        
+
         $this->validation = new DRevValidation($this->drev);
         $this->form = new DRevValidationForm($this->drev);
 
@@ -417,7 +422,7 @@ class drevActions extends sfActions {
         }
 
         $this->drev->validate();
-        
+
         $this->drev->save();
 
         return $this->redirect('drev_confirmation', $this->drev);
@@ -447,16 +452,13 @@ class drevActions extends sfActions {
 
         return $this->renderText($this->document->output());
     }
-    
 
-    
-    protected function getEtape($drev, $etape)
-    {
-    	$drevEtapes = DrevEtapes::getInstance();
-    	if (!$drev->exist('etape')) {
-    		return $etape;
-    	}
-        return ($drevEtapes->isLt($drev->etape, $etape))? $etape : $drev->etape;
+    protected function getEtape($drev, $etape) {
+        $drevEtapes = DrevEtapes::getInstance();
+        if (!$drev->exist('etape')) {
+            return $etape;
+        }
+        return ($drevEtapes->isLt($drev->etape, $etape)) ? $etape : $drev->etape;
     }
 
 }

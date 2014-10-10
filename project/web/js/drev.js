@@ -25,9 +25,64 @@
     $.initBtnValidation = function()
     {
         $('#btn-validation').click(function() {
-        	$('form').attr('action', $('form').attr('action')+'?redirect=validation');
-        	$('form').submit();
+            $('form').attr('action', $('form').attr('action') + '?redirect=validation');
+            $('form').submit();
             return false;
+        });
+    }
+
+    $.initFocusAndErrorToRevendicationField = function()
+    {
+        var field = $('.error_field_to_focused');
+        field.focus();
+    }
+
+    $.initRevendicationFadeRow = function()
+    {
+
+        $('tr.with_superficie').each(function() {
+            var children = $(this).find(" td input");
+            if (children.length == 2) {
+                var fade = true;
+                children.each(function() {
+                    if ($(this).val() != "") {
+                        fade = false;
+                    }
+                });
+                if (fade) {
+                    $(this).addClass('with_superficie_fade');
+                }
+            }
+
+        });
+    }
+
+    $.initRevendicationEventsFadeInOut = function() {
+        $('tr.with_superficie_fade').each(function() {
+            var tr = $(this);
+            var children = $(this).find(" td input");
+            children.each(function() {
+                $(this).focus(function() {
+                    tr.removeClass('with_superficie_fade');
+                });
+                $(this).blur(function() {
+                    $.initRevendicationFadeRow();
+                });
+            });
+        });
+    }
+
+    $.initEventErrorRevendicationField = function() {
+        var field = $('.error_field_to_focused');
+        var divError = field.parent().parent();
+        field.each(function() {
+            $(this).blur(function() {
+                if ($(this).val() != "") {
+                    divError.removeClass('has-error');
+                }else{
+                    divError.addClass('has-error');
+                }
+            });
         });
     }
 
@@ -39,6 +94,11 @@
         $.initExploitation();
         $.initPrelevement();
         $.initBtnValidation();
+        $.initFocusAndErrorToRevendicationField();
+        $.initEventErrorRevendicationField();
+        $.initRevendicationFadeRow();
+        $.initRevendicationEventsFadeInOut();
+
     });
 
 })(jQuery);
