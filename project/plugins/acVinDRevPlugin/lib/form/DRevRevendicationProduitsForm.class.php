@@ -15,6 +15,8 @@ class DRevRevendicationProduitsForm extends sfForm
           $form = new DRevRevendicationProduitForm($produit);
 			    $this->embedForm($hash, $form);
     	}
+        
+        $this->validatorSchema->setPostValidator(new DRevRevendicationProduitValidator());
     }
 
     public function doUpdateObject($values) 
@@ -24,4 +26,6 @@ class DRevRevendicationProduitsForm extends sfForm
         	$embedForm->doUpdateObject($values[$key]);
         }
     }
+    
+    
 }
