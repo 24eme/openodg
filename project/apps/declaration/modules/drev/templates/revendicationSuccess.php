@@ -1,5 +1,9 @@
 <?php include_partial('drev/step', array('step' => 'revendication', 'drev' => $drev)) ?>
-
+<?php
+$global_error_with_infos = $form->renderHiddenFields();
+$hasError = ($form->renderHiddenFields() != "");
+$global_error_msg = preg_replace("/^\[\[\[0-9a-zA-Z_\/]]\[[a-z_]\]\](.*)/", '\1', $global_error_with_infos);
+?>
 <div class="page-header">
     <h2>Revendication</h2>
 </div>
@@ -10,7 +14,7 @@
 
 <form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
     <?php echo $form->renderHiddenFields(); ?>
-    <?php echo $form->renderGlobalErrors(); ?>
+    <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <p>Veuillez saisir les informations des AOC revendiquées dans la déclaration de récolte de l'année</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
         <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -48,65 +52,67 @@
                 ?>
                 <tr>
                     <td><?php echo $produit->getLibelleComplet() ?></td>
-    <?php if (isset($embedForm['superficie_revendique'])): ?>
+                    <?php if (isset($embedForm['superficie_revendique'])): ?>
                         <td>
                             <div class="form-group <?php if ($embedForm['superficie_revendique']->hasError()): ?>has-error<?php endif; ?>">
-                                    <?php echo $embedForm['superficie_revendique']->renderError() ?>
+                                <?php echo $embedForm['superficie_revendique']->renderError() ?>
                                 <div class="col-xs-10 col-xs-offset-1">
-        <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float', 'placeholder' => "ares")) ?>
+                                    <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float', 'placeholder' => "ares")) ?>
                                 </div>
                             </div>
                         </td>
-    <?php endif; ?>
+                    <?php else: ?>
+                        <td class="text-center"><?php echo $produit->detail->superficie_total; ?></td>      
+                    <?php endif; ?>           
                     <td>
                         <div class="form-group <?php if ($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
-                                <?php echo $embedForm['volume_revendique']->renderError() ?>
+                            <?php echo $embedForm['volume_revendique']->renderError() ?>
                             <div class="col-xs-10 col-xs-offset-1">
-    <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded num_float', 'placeholder' => "hl")) ?>
+                                <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded num_float', 'placeholder' => "hl")) ?>
                             </div>
                         </div>
                     </td>
                     <?php if ($drev->hasDR()): ?>
-        <?php if (!$produit->detail->volume_sur_place): ?>
+                        <?php if (!$produit->detail->volume_sur_place): ?>
                             <td class=""></td>
                             <td></td>
                             <td></td>
-                            <?php else: ?>
+                        <?php else: ?>
                             <td class="text-right text-muted">
-            <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
+                                <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
                             </td>
                             <td class="text-right text-muted">
-            <?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
+                                <?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
                             </td>
                             <td class="text-right text-muted">
-                            <?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
+                                <?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
                             </td>
                         <?php endif; ?>
-                <?php endif; ?>
+                    <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
-<?php if ($ajoutForm->hasProduits()): ?>
+            <?php if ($ajoutForm->hasProduits()): ?>
                 <tr>
                     <td>
                         <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
                     </td>
                     <?php if ($drev->hasDR()): ?>
                         <td></td><td></td><td></td><td></td><td></td>
-                <?php endif; ?>
+                    <?php endif; ?>
                 </tr>
-<?php endif; ?>
+            <?php endif; ?>
         </tbody>
     </table>
 
     <div class="row row-margin row-button">
         <div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
         <div class="col-xs-6 text-right">
-<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
+            <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-warning btn-lg btn-upper">Enregistrer <small>et revalider</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
                 <button type="submit" class="btn btn-default btn-sm btn-upper btn-spacing">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-                <?php else: ?>
+            <?php else: ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-<?php endif; ?>
+                <?php endif; ?>
         </div>
     </div>
 </form>

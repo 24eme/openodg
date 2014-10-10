@@ -4,6 +4,7 @@ class DRevRevendicationForm extends acCouchdbObjectForm
 	public function configure()
     {
         $this->embedForm('produits', new DRevRevendicationProduitsForm($this->getObject()->declaration->getProduits()));
+        $this->validatorSchema->setPostValidator(new DRevRevendicationProduitValidator());
         $this->widgetSchema->setNameFormat('drev_produits[%s]');
     }
     
