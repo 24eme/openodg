@@ -30,6 +30,12 @@
             return false;
         });
     }
+    
+    $.initFocusAndErrorToRevendicationField = function()
+    {       
+        var field = $('.error_field_to_focused');
+        field.focus();
+    }
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
@@ -39,6 +45,7 @@
         $.initExploitation();
         $.initPrelevement();
         $.initBtnValidation();
+        $.initFocusAndErrorToRevendicationField();
     });
 
 })(jQuery);

@@ -25,20 +25,20 @@ class DRevRevendicationProduitValidator extends sfValidatorSchema {
         foreach ($produits as $key => $produit) {
             if (is_array($produit) && array_key_exists('superficie_revendique', $produit)) {
                 if (!$produit['superficie_revendique'] && $produit['volume_revendique']) {
-                    $this->setMessage('invalid_volume', str_replace('[key]', '[['.$key.'][superficie_revendique]]', $this->getMessage('invalid_volume')));
+                    $this->setMessage('invalid_superficie', str_replace('[key]', '['.$key.'][superficie_revendique]', $this->getMessage('invalid_volume')));
                     $errorSchema->addError(new sfValidatorError($this, 'invalid_superficie'), 'superficie_revendique');
                     throw new sfValidatorErrorSchema($this, $errorSchema);
                     return $values;
                 }
                 if ($produit['superficie_revendique'] && !$produit['volume_revendique']) {
-                    $this->setMessage('invalid_volume', str_replace('[key]', '[['.$key.'][volume_revendique]]', $this->getMessage('invalid_volume')));
+                    $this->setMessage('invalid_volume', str_replace('[key]', '['.$key.'][volume_revendique]', $this->getMessage('invalid_volume')));
                     $errorSchema->addError(new sfValidatorError($this, 'invalid_volume'), 'volume_revendique');
                     throw new sfValidatorErrorSchema($this, $errorSchema);
                     return $values;
                 }
             } else {
                 if (!$produit['volume_revendique']) {  
-                    $this->setMessage('invalid_volume', str_replace('[key]', '[['.$key.'][volume_revendique]]', $this->getMessage('invalid_volume')));
+                    $this->setMessage('invalid_volume', str_replace('[key]', '['.$key.'][volume_revendique]', $this->getMessage('invalid_volume')));
                     $errorSchema->addError(new sfValidatorError($this, 'invalid_volume'),'volume_revendique'); 
                     throw new sfValidatorErrorSchema($this, $errorSchema);
                     return $values;
