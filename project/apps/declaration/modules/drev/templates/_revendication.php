@@ -14,10 +14,12 @@
         <?php
         $cpt = 0;
         $totalVolRevendique = 0;
+        $totalSuperficie = 0;
         foreach ($drev->declaration->getProduits(true) as $key => $produit) :
             $produit = $drev->get($key);
             $key_for_tr_id = str_replace("/", '_', $key);
             $totalVolRevendique += $produit->volume_revendique;
+            $totalSuperficie += $produit->superficie_revendique;
             ?>
             <tr data-toggle="collapse" data-target="#<?php echo $key_for_tr_id ?>" class="accordion-toggle <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>" >
                 <td>
@@ -30,9 +32,9 @@
                     </div>
                 </td>
                 <?php if(!$drev->isNonRecoltant()): ?>
-                <td class="text-center"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ares</small></td>
+                <td class="text-center"><?php echoFloat($produit->superficie_revendique) ?><?php if (!is_null($produit->superficie_revendique)): ?> <small class="text-muted">ares</small><?php endif; ?></td>
             	<?php endif; ?>
-                <td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small></td>
+                <td class="text-center"><?php echoFloat($produit->volume_revendique) ?><?php if (!is_null($produit->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></td>
             </tr>
             <?php if (count($produit->getProduitsCepage()) > 0): ?>
                 <tr>
@@ -49,11 +51,11 @@
                                                 <?php if(!$drev->isNonRecoltant()): ?>
                                                 <td class="text-center text-muted col-md-3">
                                                     <?php if ($produit_cepage->superficie_revendique): ?>
-                                                        <small><?php echoFloat($produit_cepage->superficie_revendique) ?> <small class="text-muted">ares</small></small>
+                                                        <small><?php echoFloat($produit_cepage->superficie_revendique) ?><?php if (!is_null($produit_cepage->superficie_revendique)): ?> <small class="text-muted">ares</small><?php endif; ?></small>
                                                     <?php endif; ?>
                                                 </td>
                                             	<?php endif; ?>
-                                                <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique) ?> <small class="text-muted">hl</small></small></td>                                           
+                                                <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>                                           
                                             </tr>
                                             <?php if ($produit_cepage->volume_revendique_vt): ?>
                                                 <tr>
@@ -61,11 +63,11 @@
                                                     <?php if(!$drev->isNonRecoltant()): ?>
                                                     <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_vt): ?>
-                                                            <small><?php echoFloat($produit_cepage->superficie_revendique_vt) ?> <small class="text-muted">ares</small></small>
+                                                            <small><?php echoFloat($produit_cepage->superficie_revendique_vt) ?><?php if (!is_null($produit_cepage->superficie_revendique_vt)): ?> <small class="text-muted">ares</small><?php endif; ?></small>
                                                         <?php endif; ?>
                                                     </td>
                                                 	<?php endif; ?>
-                                                    <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?> <small class="text-muted">hl</small></small></td>                                           
+                                                    <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>                                           
                                                 </tr>
                                             <?php endif; ?>
                                             <?php if ($produit_cepage->volume_revendique_sgn): ?>
@@ -74,11 +76,11 @@
                                                     <?php if(!$drev->isNonRecoltant()): ?>
                                                     <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_sgn): ?>
-                                                            <small><?php echoFloat($produit_cepage->superficie_revendique_sgn) ?> <small class="text-muted">ares</small></small>
+                                                            <small><?php echoFloat($produit_cepage->superficie_revendique_sgn) ?><?php if (!is_null($produit_cepage->superficie_revendique_sgn)): ?> <small class="text-muted">ares</small><?php endif; ?></small>
                                                         <?php endif; ?>
                                                     </td>
                                                 	<?php endif; ?>
-                                                    <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?> <small class="text-muted">hl</small></small></td>                                           
+                                                    <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?><?php if (!is_null($produit_cepage->volume_revendique_sgn)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>                                           
                                                 </tr>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
@@ -95,9 +97,9 @@
             <tr class="<?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>" >
                 <td><strong><div class="float-left col-xs-10">Total</div></strong></td>
                 <?php if(!$drev->isNonRecoltant()): ?>
-                <td></td>
+                <td class="text-center"><strong><?php echoFloat($totalSuperficie) ?></strong><?php if (!is_null($totalSuperficie)): ?> <small class="text-muted">ares</small><?php endif; ?></td>
             	<?php endif; ?>
-                <td class="text-center"><strong><?php echoFloat($totalVolRevendique) ?></strong> <small class="text-muted">hl</small></td>
+                <td class="text-center"><strong><?php echoFloat($totalVolRevendique) ?></strong><?php if (!is_null($totalVolRevendique)): ?> <small class="text-muted">hl</small><?php endif; ?></td>
             </tr>
     </tbody>
 </table>
