@@ -58,7 +58,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             foreach ($form['produits'] as $key => $embedForm) :
                 $produit = $drev->get($key)
                 ?>
-                <tr>
+                <tr class="<?php echo (isset($embedForm['superficie_revendique']))? 'with_superficie' : ''; ?>" >
                     <td><?php echo $produit->getLibelleComplet() ?></td>
                     <?php if (isset($embedForm['superficie_revendique'])): ?>
                         <td>                            

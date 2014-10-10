@@ -25,16 +25,41 @@
     $.initBtnValidation = function()
     {
         $('#btn-validation').click(function() {
-        	$('form').attr('action', $('form').attr('action')+'?redirect=validation');
-        	$('form').submit();
+            $('form').attr('action', $('form').attr('action') + '?redirect=validation');
+            $('form').submit();
             return false;
         });
     }
-    
+
     $.initFocusAndErrorToRevendicationField = function()
-    {       
+    {
         var field = $('.error_field_to_focused');
         field.focus();
+    }
+
+    $.initRevendicationFadeRow = function()
+    {
+
+        $('tr.with_superficie').each(function() {
+            var children = $(this).find(" td input");
+            if (children.length == 2) {
+                var fade = true;
+                children.each(function() {
+                    if ($(this).val() != "") {
+                        fade = false;
+                    }
+                });
+                if (fade) {
+                    $(this).addClass('with_superficie_fade');
+                }
+            }
+
+        });
+
+        $('tr.with_superficie_fade').blur(function (){
+            $(this).removeClass('with_superficie_fade');
+        })
+
     }
 
     /* =================================================================================== */
@@ -46,6 +71,7 @@
         $.initPrelevement();
         $.initBtnValidation();
         $.initFocusAndErrorToRevendicationField();
+        $.initRevendicationFadeRow();
     });
 
 })(jQuery);

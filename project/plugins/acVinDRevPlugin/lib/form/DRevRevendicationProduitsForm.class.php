@@ -1,20 +1,20 @@
 <?php
 class DRevRevendicationProduitsForm extends sfForm 
 {
-	protected $produits;
-	
+    protected $produits;
+
 	public function __construct($produits, $defaults = array(), $options = array(), $CSRFSecret = null)
   	{
-  		$this->produits = $produits;
-		parent::__construct($defaults, $options, $CSRFSecret);
-  	}
-  	
+        $this->produits = $produits;
+        parent::__construct($defaults, $options, $CSRFSecret);
+    }
+
    	public function configure()
     {
-    	foreach ($this->produits as $hash => $produit) {
-          $form = new DRevRevendicationProduitForm($produit);
-			    $this->embedForm($hash, $form);
-    	}
+        foreach ($this->produits as $hash => $produit) {
+            $form = new DRevRevendicationProduitForm($produit);
+            $this->embedForm($hash, $form);
+        }
         
     }
 
@@ -23,8 +23,8 @@ class DRevRevendicationProduitsForm extends sfForm
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
           unset($values[$key]['_revision']);
         	$embedForm->doUpdateObject($values[$key]);
-        }
     }
-    
+    }
+
     
 }
