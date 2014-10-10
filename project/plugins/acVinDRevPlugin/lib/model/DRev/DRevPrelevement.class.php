@@ -63,6 +63,11 @@ class DRevPrelevement extends BaseDRevPrelevement {
     }
 
     public function reorderByConf() {
+        if(!count($this->lots)) {
+
+            return;
+        }
+
         $hashes_by_hash_produit = array();
         $children_by_key = array();
 

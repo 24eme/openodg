@@ -123,7 +123,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             foreach ($prelevement->lots as $lot) {
                 $p->addLotProduit($lot->hash_produit);
             }
+
+            $p->reorderByConf();
         }
+        
         $this->updatePrelevementsFromRevendication();
         $this->updateRevendicationCepageFromLots();
         $this->declaration->reorderByConf();
@@ -426,9 +429,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $produitsCepageByAppellations;
     }
 
-    protected function updateLotsFromCepage() {
+    public function updateLotsFromCepage() {
+        $prelevements = array();
         foreach ($this->declaration->getProduitsCepage() as $produit) {
-            $this->addLotProduit($produit->getHash(), self::CUVE);
+            $lot = $this->addLotProduit($produit->getHash(), self::CUVE);
+
+            if($lot) {
+                $prelevements[$lot->getPrelevement()->getKey()] = $lot->getPrelevement();
+            }
+        }
+
+        foreach($prelevements as $prelevement) {
+            $prelevement->reorderByConf();
         }
     }
 

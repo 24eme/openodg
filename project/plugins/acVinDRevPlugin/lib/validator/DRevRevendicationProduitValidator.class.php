@@ -25,7 +25,7 @@ class DRevRevendicationProduitValidator extends sfValidatorSchema {
         foreach ($produits as $key => $produit) {
             if (is_array($produit) && array_key_exists('superficie_revendique', $produit)) {
                 if (is_null($produit['superficie_revendique']) && !is_null($produit['volume_revendique'])) {
-                    $this->setMessage('invalid_superficie', str_replace('[key]', '['.$key.'][superficie_revendique]', $this->getMessage('invalid_volume')));
+                    $this->setMessage('invalid_superficie', str_replace('[key]', '['.$key.'][superficie_revendique]', $this->getMessage('invalid_superficie')));
                     $errorSchema->addError(new sfValidatorError($this, 'invalid_superficie'), 'superficie_revendique');
                     throw new sfValidatorErrorSchema($this, $errorSchema);
                     return $values;

@@ -17,7 +17,7 @@
             <div class="row-margin">
                 <h3>AOC Alsace</h3>
                 <div class="col-xs-offset-1">
-                    <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
+                    <p>Semaine à partir de laquelle le vin est prêt à être dégusté : <a title="Les vins sont à présenter fermentation terminée, stablisés et clarifiés (fitration non obligatoire)" data-placement="right" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a></p>
                     <div class="form-group <?php if($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>

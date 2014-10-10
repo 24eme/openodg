@@ -4,6 +4,7 @@
 $global_error_with_infos = "";
 foreach ($form->getGlobalErrors() as $item):
     $global_error_with_infos = $item->getMessage();
+    break;
 endforeach;
 
 $hasError = ($global_error_with_infos != "");

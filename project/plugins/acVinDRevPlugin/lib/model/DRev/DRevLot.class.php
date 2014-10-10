@@ -11,6 +11,11 @@ class DRevLot extends BaseDRevLot
         return $this->getDocument()->getConfiguration()->get($this->hash_produit);
     }
 
+    public function getPrelevement() {
+
+        return $this->getParent()->getParent();
+    }
+
     public function getLibelle() {
         if(is_null($this->_get('libelle'))) {
             $libelle = '';
