@@ -25,11 +25,21 @@ class DRevControleExterneForm extends acCouchdbObjectForm
         }
 
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
-            $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice())));    
+            $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice(), 'expanded' => true, 'renderer_options' => array('formatter' => array($this, 'formatter')))));
             $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
         }
 
         $this->widgetSchema->setNameFormat('controle_externe[%s]');
+    }
+
+    public function formatter($widget, $inputs) 
+    {
+        $rows = array();
+        foreach ($inputs as $input) {
+            $rows[] = $widget->renderContentTag('div', '<label>'  . $input['input'] . strip_tags($input['label'])  . '</label>' , array('class' => 'radio'));
+        }
+
+        return!$rows ? '' : implode($widget->getOption('separator'), $rows);
     }
 
     public function getChaiChoice() {
@@ -44,9 +54,9 @@ class DRevControleExterneForm extends acCouchdbObjectForm
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         if ($this->getObject()->getDocument()->exist('chais')) {
-        	if ($this->getObject()->getDocument()->chais->exist(DRev::CUVE)) {
+        	if ($this->getObject()->getDocument()->chais->exist(DRev::BOUTEILLE)) {
         		foreach ($this->getObject()->getDocument()->getEtablissementObject()->chais as $chai) {
-        			if ($chai->adresse == $this->getObject()->getDocument()->chais->get(DRev::CUVE)->adresse) {
+        			if ($chai->adresse == $this->getObject()->getDocument()->chais->get(DRev::BOUTEILLE)->adresse) {
         				$this->setDefault('chai', $chai->getKey());
         				break;
         			}
