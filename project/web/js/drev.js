@@ -55,11 +55,35 @@
             }
 
         });
+    }
 
-        $('tr.with_superficie_fade').blur(function (){
-            $(this).removeClass('with_superficie_fade');
-        })
+    $.initRevendicationEventsFadeInOut = function() {
+        $('tr.with_superficie_fade').each(function() {
+            var tr = $(this);
+            var children = $(this).find(" td input");
+            children.each(function() {
+                $(this).focus(function() {
+                    tr.removeClass('with_superficie_fade');
+                });
+                $(this).blur(function() {
+                    $.initRevendicationFadeRow();
+                });
+            });
+        });
+    }
 
+    $.initEventErrorRevendicationField = function() {
+        var field = $('.error_field_to_focused');
+        var divError = field.parent().parent();
+        field.each(function() {
+            $(this).blur(function() {
+                if ($(this).val() != "") {
+                    divError.removeClass('has-error');
+                }else{
+                    divError.addClass('has-error');
+                }
+            });
+        });
     }
 
     /* =================================================================================== */
@@ -71,7 +95,10 @@
         $.initPrelevement();
         $.initBtnValidation();
         $.initFocusAndErrorToRevendicationField();
+        $.initEventErrorRevendicationField();
         $.initRevendicationFadeRow();
+        $.initRevendicationEventsFadeInOut();
+
     });
 
 })(jQuery);
