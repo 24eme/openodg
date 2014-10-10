@@ -11,7 +11,7 @@ class EtablissementClient extends acCouchdbClient {
 
     public static function getInstance()
     {
-      return acCouchdbManager::getClient(self::TYPE_MODEL);
+        return acCouchdbManager::getClient(self::TYPE_MODEL);
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -23,6 +23,14 @@ class EtablissementClient extends acCouchdbClient {
         }
 
         return $doc;
+    }
+
+    public function getAll($hydrate = self::HYDRATE_DOCUMENT) {
+
+        $query = $this->startkey(sprintf("ETABLISSEMENT-%s", "0000000000"))
+                    ->endkey(sprintf("ETABLISSEMENT-%s", "9999999999"));
+        
+        return $query->execute(acCouchdbClient::HYDRATE_ARRAY);
     }
 
     public function findByIdentifiant($identifiant) {

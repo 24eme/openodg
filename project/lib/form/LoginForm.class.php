@@ -6,8 +6,11 @@ class LoginForm extends BaseForm {
      * 
      */
     public function configure() {
+
+        $choices = $this->getChoices();
+        
         $this->setWidgets(array(
-                'login'   => new sfWidgetFormInputText(),
+                'login'   => new sfWidgetFormChoice(array("choices" => $choices)),
         ));
 
         $this->widgetSchema->setLabels(array(
@@ -15,13 +18,32 @@ class LoginForm extends BaseForm {
         ));
 
         $this->setValidators(array(
-                'login' => new sfValidatorString(array('required' => true)),
+                'login' => new sfValidatorChoice(array("required" => true, "choices" => array_keys($choices)))
         ));
         
         $this->widgetSchema->setNameFormat('login[%s]');
 
         $this->validatorSchema['login']->setMessage('required', 'Champ obligatoire');
         $this->validatorSchema->setPostValidator(new ValidatorLogin());
+    }
+
+    public function getChoices() {
+        $etablissements = EtablissementClient::getInstance()->getAll()->getDocs();
+        $choices = array("" => "");
+        foreach($etablissements as $etablissement) {
+            if(!array_key_exists(EtablissementClient::FAMILLE_VINIFICATEUR, $etablissement["familles"]) && !array_key_exists(EtablissementClient::FAMILLE_DISTILLATEUR, $etablissement["familles"])) {
+                
+                continue;
+            }
+            $choices[$etablissement["cvi"]] = sprintf("%s - %s %s - %s (%s)", 
+                $etablissement["nom"], 
+                $etablissement["code_postal"], 
+                $etablissement["commune"], 
+                $etablissement["cvi"],
+                implode(", ", array_keys($etablissement["familles"])));
+        }        
+
+        return $choices;
     }
 
     /**

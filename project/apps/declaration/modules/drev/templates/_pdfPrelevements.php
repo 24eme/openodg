@@ -24,15 +24,12 @@
     <?php endif; ?>
 </table>
 <small>&nbsp;</small>
+<?php $chai = $drev->chais->get($prelevement->getPrefix()) ?>
 <div><span class="h3Alt">&nbsp;Lieu de prélèvement&nbsp;</span></div>
 <table class="tableAlt"><tr><td>
   <table border="0">
       <tr>
-          <td style="width: 420px;">&nbsp;Nom du responsable : <i><?php echo $drev->declarant->raison_sociale ?></i></td>
-          <td>&nbsp;Tel : <i><?php echo $drev->declarant->telephone ?></i></td>
-      </tr>
-      <tr>
-          <td colspan="2">&nbsp;Adresse : <i><?php echo $drev->declarant->adresse ?>, <?php echo $drev->declarant->code_postal ?>, <?php echo $drev->declarant->commune ?></i></td>
+          <td style="height:22px;" colspan="2"><?php echo tdStart() ?>&nbsp;<i><?php echo $chai->adresse ?>, <?php echo $chai->code_postal ?>, <?php echo $chai->commune ?></i></td>
       </tr>
   </table>
 </td></tr></table>
