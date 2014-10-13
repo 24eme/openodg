@@ -10,7 +10,7 @@
             <th class="text-center col-md-3">Vol. revendiqué</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="revendication_accordion" >
         <?php
         $cpt = 0;
         $totalVolRevendique = 0;
@@ -21,7 +21,9 @@
             $totalVolRevendique += $produit->volume_revendique;
             $totalSuperficie += $produit->superficie_revendique;
             ?>
-            <tr data-toggle="collapse" data-target="#<?php echo $key_for_tr_id ?>" class="accordion-toggle <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>" >
+            <tr data-toggle="collapse" data-target="#<?php echo $key_for_tr_id ?>" class="accordion-toggle 
+                <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>
+                <?php echo (count($produit->getProduitsCepage()) > 0)? 'trAccordion' : ''; ?>" >
                 <td>
                     <div class="float-left col-xs-10">
                         <?php echo $produit->getLibelleComplet() ?> 
@@ -47,7 +49,7 @@
                                         foreach ($produit->getProduitsCepage() as $cepage_key => $produit_cepage) :
                                             ?>
                                             <tr>
-                                                <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle(); ?></small></td>
+                                                <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php if ($produit_cepage->getParent()->getParent()->getLibelle()): ?><?php echo $produit_cepage->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit_cepage->getLibelle() ?></small></td>
                                                 <?php if(!$drev->isNonRecoltant()): ?>
                                                 <td class="text-center text-muted col-md-3">
                                                     <?php if ($produit_cepage->superficie_revendique): ?>
