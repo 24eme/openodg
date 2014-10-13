@@ -1,41 +1,40 @@
 <?php
 
-function sprintFloat($float, $format = "%01.02f") 
-{
-	if (is_null($float) || $float == "")
-		return null;
-  return sprintf($format, $float);
+function sprintInputFloat($float, $format = "%01.02f") {
+    if (is_null($float) || $float == "")
+        return null;
+    return sprintFloat($float, $format);
 }
 
-function sprintFloatFr($float, $format = "%01.02f")
-{
-
-  return preg_replace('/\./', ',', sprintFloat($float, $format));
+function sprintFloat($float, $format = "%01.02f") {
+    if (is_null($float))
+        return null;
+    return sprintf($format, $float);
 }
 
-function echoFloat($float) 
-{
-  echo sprintFloat($float);
+function sprintFloatFr($float, $format = "%01.02f") {
+
+    return preg_replace('/\./', ',', sprintFloat($float, $format));
 }
 
-function echoLongFloat($float) 
-{
-  echo sprintFloat($float, "%01.04f");
+function echoFloat($float) {
+    echo sprintFloat($float);
 }
 
-function echoLongFloatFr($float)
-{
-  echo sprintFloatFr($float, "%01.04f");
+function echoLongFloat($float) {
+    echo sprintFloat($float, "%01.04f");
 }
 
-function echoFloatFr($float)
-{
-  echo sprintFloatFr($float);
+function echoLongFloatFr($float) {
+    echo sprintFloatFr($float, "%01.04f");
 }
 
-function echoSignedFloat($float) 
-{
-  echo ($float>0)? '+'.sprintFloat($float) : sprintFloat($float);
+function echoFloatFr($float) {
+    echo sprintFloatFr($float);
+}
+
+function echoSignedFloat($float) {
+    echo ($float > 0) ? '+' . sprintFloat($float) : sprintFloat($float);
 }
 
 function echoArialFloat($float) {
