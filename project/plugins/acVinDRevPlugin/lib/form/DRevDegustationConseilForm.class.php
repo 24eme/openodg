@@ -53,11 +53,13 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
 
     public function getVtsgnChoices() {
         
+        $annee = $this->getObject()->getDocument()->getCampagne() + 1;
+
         return array(
                      '' => '',
-                     '2014-04-01' => 'Avril',
-                     '2014-06-01' => 'Juin',
-                     '2014-08-01' => 'Octobre',
+                     sprintf('%s-04-01', $annee) => sprintf('Avril %s', $annee),
+                     sprintf('%s-06-01', $annee) => sprintf('Juin %s', $annee),
+                     sprintf('%s-08-01', $annee) => sprintf('Octobre %s', $annee),
                      );
     }
 

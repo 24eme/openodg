@@ -96,6 +96,12 @@ EOF;
             echo sprintf("ERROR;%s;#LINE;%s\n", "Aucune famille", $etablissement->cvi);
             return;
         }
+
+        if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_VINIFICATEUR)) {
+            echo sprintf("ERROR;%s;#LINE;%s\n", "Etablissement non vinificateur ignoré", $etablissement->cvi);
+            return;
+        }
+
         $etablissement->constructId();
         if($etablissement->isNew()) {
             echo sprintf("SUCCESS;%s;%s\n", "Création", $etablissement->_id);
