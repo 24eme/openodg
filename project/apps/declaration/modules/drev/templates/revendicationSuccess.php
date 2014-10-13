@@ -61,6 +61,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 ?>
                 <tr class="<?php echo (isset($embedForm['superficie_revendique']))? 'with_superficie' : ''; ?>" >
                     <td><?php echo $produit->getLibelleComplet() ?></td>
+                    <?php if (!$drev->isNonRecoltant()): ?>    
                     <?php if (isset($embedForm['superficie_revendique'])): ?>
                         <td>                            
                             <?php $global_error_class = ('drev_produits[produits]' . $global_error_id == $embedForm['superficie_revendique']->renderName()) ?
@@ -75,7 +76,8 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                         </td>
                     <?php else: ?>
                         <td class="text-center"><?php echo $produit->detail->superficie_total; ?></td>      
-                        <?php endif; ?>           
+                        <?php endif; ?>
+                    <?php endif; ?>
                     <td>
                         <?php $global_error_class = ('drev_produits[produits]' . $global_error_id == $embedForm['volume_revendique']->renderName()) ?
                                 'error_field_to_focused' : '';
