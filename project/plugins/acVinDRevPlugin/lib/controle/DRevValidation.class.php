@@ -63,7 +63,8 @@ class DRevValidation extends DocumentValidation
   			$produit->superficie_revendique !== null && 
   			$produit->superficie_revendique != $produit->detail->superficie_total
   		) {
-  			$this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document))); 
+                    $appellation_hash = str_replace('/','-',$produit->getHash()).'-surface';
+  			$this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash))); 
   		}
   	}
   	
@@ -80,7 +81,8 @@ class DRevValidation extends DocumentValidation
   			$produit->detail->volume_sur_place_revendique !== null && 
   			$produit->volume_revendique != $produit->detail->volume_sur_place_revendique
   		) {
-  			$this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document))); 
+                    $appellation_hash = str_replace('/','-',$produit->getHash()).'-volume';
+  			$this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document,'appellation' => $appellation_hash))); 
   		}
   	}
   	
@@ -106,7 +108,8 @@ class DRevValidation extends DocumentValidation
   			$produit->detail->usages_industriels_total !== null && 
   			($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total) > $produit->volume_revendique	
   		) {
-  			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                    $appellation_hash =  str_replace('/','-',$produit->getHash()).'-volume';
+  			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
   		}
   		
   		if (
@@ -114,7 +117,8 @@ class DRevValidation extends DocumentValidation
   			$produit->detail->volume_sur_place !== null && 
   			$produit->volume_revendique > $produit->detail->volume_sur_place
   		) {
-  			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+                    $appellation_hash = str_replace('/','-',$produit->getHash()).'-volume';
+  			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
   		}
   	}
 

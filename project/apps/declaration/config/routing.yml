@@ -102,15 +102,15 @@ drev_exploitation:
     sf_method: [get, post]
 
 drev_revendication:
-  url: /drev/revendication/:id
-  param: { module: drev, action: revendication }
+  url: /drev/revendication/:id/:appellation
+  param: { module: drev, action: revendication, appellation: 0 }
   class: DRevRoute
   options:
     model:    DRev
     type:     object
   requirements:
     sf_method: [get, post]
-
+    
 drev_revendication_ajout:
   url: /drev/revendication/:id/ajout
   param: { module: drev, action: revendicationAjoutProduit }

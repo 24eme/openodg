@@ -57,44 +57,49 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         <tbody>
             <?php
             foreach ($form['produits'] as $key => $embedForm) :
-                $produit = $drev->get($key)
+                $produit = $drev->get($key);
+                $global_error_class = ($appellation && ($appellation_hash == $key))? 'error_field_to_focused' : '';                
                 ?>
-                <tr class="<?php echo (isset($embedForm['superficie_revendique']))? 'with_superficie' : ''; ?>" >
+                <tr class="<?php echo (isset($embedForm['superficie_revendique'])) ? 'with_superficie' : ''; ?>" >
                     <td><?php echo $produit->getLibelleComplet() ?></td>
                     <?php if (!$drev->isNonRecoltant()): ?>    
-                    <?php if (isset($embedForm['superficie_revendique'])): ?>
-                        <td>                            
-                            <?php $global_error_class = ('drev_produits[produits]' . $global_error_id == $embedForm['superficie_revendique']->renderName()) ?
-                                    'error_field_to_focused' : '';
-                            ?>
-                            <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
-                                    <?php echo $embedForm['superficie_revendique']->renderError() ?>
-                                <div class="col-xs-10 col-xs-offset-1">
-        <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "ares")) ?>
+                            <?php if (isset($embedForm['superficie_revendique'])): ?>
+                            <td>                            
+                                <?php
+                                $global_error_class = ((($global_error_class == 'error_field_to_focused') && $appellation_field == 'surface') ||
+                                        ('drev_produits[produits]' . $global_error_id == $embedForm['superficie_revendique']->renderName())) ?
+                                        'error_field_to_focused' : '';
+                                ?>
+                                <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
+                                        <?php echo $embedForm['superficie_revendique']->renderError() ?>
+                                    <div class="col-xs-10 col-xs-offset-1">
+            <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "ares")) ?>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    <?php else: ?>
-                        <td class="text-center"><?php echo $produit->detail->superficie_total; ?></td>      
+                            </td>
+                        <?php else: ?>
+                            <td class="text-center"><?php echo $produit->detail->superficie_total; ?></td>      
+                            <?php endif; ?>
                         <?php endif; ?>
-                    <?php endif; ?>
                     <td>
-                        <?php $global_error_class = ('drev_produits[produits]' . $global_error_id == $embedForm['volume_revendique']->renderName()) ?
+                        <?php
+                        $global_error_class = ((($global_error_class == 'error_field_to_focused') && $appellation_field == 'volume') ||
+                                ('drev_produits[produits]' . $global_error_id == $embedForm['volume_revendique']->renderName())) ?
                                 'error_field_to_focused' : '';
                         ?>
                         <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
-                                <?php echo $embedForm['volume_revendique']->renderError() ?>
+    <?php echo $embedForm['volume_revendique']->renderError() ?>
                             <div class="col-xs-10 col-xs-offset-1">
-    <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "hl")) ?>
+                    <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "hl")) ?>
                             </div>
                         </div>
                     </td>
     <?php if ($drev->hasDR()): ?>
-        <?php if (!$produit->detail->volume_sur_place): ?>
+                        <?php if (!$produit->detail->volume_sur_place): ?>
                             <td class=""></td>
                             <td></td>
                             <td></td>
-                            <?php else: ?>
+        <?php else: ?>
                             <td class="text-right text-muted">
                                 <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
                             </td>
@@ -113,9 +118,9 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                     <td>
                         <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
                     </td>
-                    <?php if ($drev->hasDR()): ?>
+                <?php if ($drev->hasDR()): ?>
                         <td></td><td></td><td></td><td></td><td></td>
-                <?php endif; ?>
+    <?php endif; ?>
                 </tr>
 <?php endif; ?>
         </tbody>
@@ -127,7 +132,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-warning btn-lg btn-upper">Enregistrer <small>et revalider</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
                 <button type="submit" class="btn btn-default btn-sm btn-upper btn-spacing">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-                <?php else: ?>
+<?php else: ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 <?php endif; ?>
         </div>

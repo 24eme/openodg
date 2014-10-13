@@ -124,8 +124,13 @@ class drevActions extends sfActions {
     }
 
     public function executeRevendication(sfWebRequest $request) {
-        $this->drev = $this->getRoute()->getDRev();
-
+        $this->drev = $this->getRoute()->getDRev();        
+        $this->appellation = false;
+        if($request->getParameter(('appellation'))){            
+            $this->appellation = $request->getParameter(('appellation'));
+            $this->appellation_field = substr(strrchr($this->appellation, '-'),1);
+            $this->appellation_hash = str_replace('-','/',str_replace('-'.$this->appellation_field, '', $this->appellation));
+        }
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
         $this->drev->save();
 
