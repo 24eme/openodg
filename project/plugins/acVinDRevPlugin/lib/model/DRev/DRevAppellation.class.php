@@ -17,20 +17,6 @@ class DRevAppellation extends BaseDRevAppellation
         return $this->getMentions();
     }
 
-    public function getNextSisterActive() {
-        if(!$this->getNextSister()) {
-
-            return null;
-        }
-
-        if(!$this->getNextSister()->isActive()) {
-
-            return $this->getNextSister()->getNextSisterActive();
-        }
-
-        return $this->getNextSister();
-    }
-
     public function isActive() {
         foreach($this->getProduits() as $produit) {
             if($produit->isActive()) {

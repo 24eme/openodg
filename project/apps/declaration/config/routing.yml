@@ -101,6 +101,16 @@ drev_exploitation:
   requirements:
     sf_method: [get, post]
 
+drev_revendication_recap:
+  url: /drev/revendication-recap/:id
+  param: { module: drev, action: revendicationRecap }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_revendication:
   url: /drev/revendication/:id/:appellation
   param: { module: drev, action: revendication, appellation: 0 }

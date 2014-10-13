@@ -120,10 +120,21 @@ class drevActions extends sfActions {
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
         }
+
         return $this->redirect('drev_revendication', $this->drev);
     }
 
+    public function executeRevendicationRecap(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+
+        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
+        $this->drev->save();
+
+        $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
+    }
+
     public function executeRevendication(sfWebRequest $request) {
+
         $this->drev = $this->getRoute()->getDRev();        
         $this->appellation = false;
         if($request->getParameter(('appellation'))){            
@@ -131,6 +142,11 @@ class drevActions extends sfActions {
             $this->appellation_field = substr(strrchr($this->appellation, '-'),1);
             $this->appellation_hash = str_replace('-','/',str_replace('-'.$this->appellation_field, '', $this->appellation));
         }
+        if($this->drev->isNonRecoltant()) {
+
+            return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
+        }
+
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
         $this->drev->save();
 
@@ -151,18 +167,10 @@ class drevActions extends sfActions {
                     return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
                 }
 
-                if (!$this->drev->isNonRecoltant() || count($this->drev->declaration->getAppellations()) < 1) {
-
-                    if ($request->getParameter('redirect', null)) {
-                        return $this->redirect('drev_validation', $this->drev);
-                    }
-                    return $this->redirect('drev_degustation_conseil', $this->drev);
-                }
-
                 if ($request->getParameter('redirect', null)) {
                     return $this->redirect('drev_validation', $this->drev);
                 }
-                return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
+                return $this->redirect('drev_degustation_conseil', $this->drev);
             }
         }
     }
@@ -191,6 +199,7 @@ class drevActions extends sfActions {
         $this->noeud = $this->drev->get("declaration/certification/genre/" . $request->getParameter("hash"));
         $this->form = new DRevRevendicationCepageForm($this->noeud);
         $this->ajoutForm = new DrevCepageAjoutProduitForm($this->noeud);
+        $this->ajoutAppellationForm = new DRevRevendicationAjoutProduitForm($this->drev);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -211,18 +220,19 @@ class drevActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
 
-        $next_sister = $this->noeud->getNextSisterActive();
 
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
         }
+
+        $next_sister = $this->noeud->getNextSister();
 
         if ($next_sister) {
 
             return $this->redirect('drev_revendication_cepage', $next_sister);
         } else {
 
-            return $this->redirect('drev_degustation_conseil', $this->drev);
+            return $this->redirect('drev_revendication_recap', $this->drev);
         }
     }
 
