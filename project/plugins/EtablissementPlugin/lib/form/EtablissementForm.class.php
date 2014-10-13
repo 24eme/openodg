@@ -16,7 +16,7 @@ class EtablissementForm extends acCouchdbObjectForm
         ));
 
         $this->setValidators(array(
-            'siret' => new sfValidatorInteger(array("required" => false, "min" => 14, "max" => 14), array("min" => "Le siret doit être un nombre de 14 chiffres", "max" => "Le siret doit être un nombre de 14 chiffres")),
+            'siret' => new sfValidatorNumber(array("required" => false, "min" => 14, "max" => 14), array("min" => "Le siret doit être un nombre à 14 chiffres", "max" => "Le siret doit être un nombre à 14 chiffres")),
             'raison_sociale' => new sfValidatorString(),
             'adresse' => new sfValidatorString(),
             'commune' => new sfValidatorString(),
