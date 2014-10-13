@@ -16,5 +16,6 @@ class DRevRevendicationCepageForm extends acCouchdbObjectForm
 
         $this->getObject()->getDocument()->updatePrelevementsFromRevendication();
         $this->getObject()->getDocument()->updateLotsFromCepage();
+        $this->getObject()->getDocument()->updateProduitsFromCepage();
     }
 }

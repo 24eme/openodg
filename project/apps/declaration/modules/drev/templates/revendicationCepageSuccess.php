@@ -4,7 +4,7 @@
     <h2>Revendication</h2>
 </div>
 
-<?php include_partial('drev/stepRevendication', array('drev' => $drev, 'noeud' => $noeud)) ?>
+<?php include_partial('drev/stepRevendication', array('drev' => $drev, 'noeud' => $noeud, 'ajoutForm' => $ajoutAppellationForm)) ?>
 
 <?php if(!$noeud->isActive()): ?>
     <div class="alert alert-warning" role="alert">Vous n'avez pas déclaré de volume revendiqué pour cette appellation <a class="btn btn-warning" href="<?php echo url_for("drev_revendication", $drev) ?>">Déclarer</a></div>
@@ -86,18 +86,22 @@
             <?php if ($noeud->getPreviousSister()): ?>
                 <a href="<?php echo url_for('drev_revendication_cepage', $noeud->getPreviousSister()) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a>
             <?php else: ?>
-                <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à Toutes les appellations</small></a>
+                <a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
             <?php endif; ?>
         </div>
         
         <div class="col-xs-6 text-right">
         	<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
-	        <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
-	        <?php else: ?>
-            <button type="submit" class="btn btn-default btn-lg btn-upper<?php if ($noeud->getNextSister()): ?> btn-default-step<?php endif; ?>">Continuer <small><?php if ($noeud->getNextSister()): ?>vers l'appellation suivante<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+	           <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
+	        <?php elseif($noeud->getNextSister()): ?>
+                <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer <small>vers l'appellation suivante</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+            <?php else: ?>
+                <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer <small>vers le récapitulatif</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
 	        <?php endif; ?>
         </div>
     </div>
 </form>
 
 <?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_cepage_ajout', $noeud), 'form' => $ajoutForm)); ?>
+
+<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_ajout', $drev), 'form' => $ajoutAppellationForm)); ?>

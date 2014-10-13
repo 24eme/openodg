@@ -449,6 +449,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $produit->resetRevendique();
         }
     }
+
+    public function updateProduitsFromCepage() {
+        foreach($this->getProduits() as $produit) {
+            $produit->updateFromCepage();
+        }
+    }
     
     public function getChaiKey($conditionnement)
     {
