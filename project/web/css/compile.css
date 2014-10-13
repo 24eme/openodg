@@ -1191,6 +1191,7 @@ h3,.h3{color:#5e5e5e}
 .input-rounded{border-radius:14px}.input-rounded.input-lg{border-radius:22px}
 .input-rounded.input-sm{border-radius:15px}
 ul.error_list{margin-top:0}
+form#drevmarc_form ul.error_list{padding:0;margin:0}
 input[type="checkbox"],input[type="radio"]{width:auto}
 .btn{position:relative;border:none}
 .btn-lg{padding-bottom:9px;padding-top:9px;font-size:16px}.btn-lg small{font-size:70%}

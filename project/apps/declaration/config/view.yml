@@ -16,7 +16,7 @@ default:
 
   stylesheets:    [compile.css: { media: all }, print.css: { media: print }]
 
-  javascripts:    [lib/jquery/jquery.min.js, lib/jquery.plugins.min.js, lib/bootstrap/bootstrap.min.js, global.js, drev.js, form.js]
+  javascripts:    [lib/jquery/jquery.min.js, lib/jquery.plugins.min.js, lib/bootstrap/bootstrap.min.js, global.js, drev.js, drevmarc.js, form.js]
 
   has_layout:     true
   layout:         layout
