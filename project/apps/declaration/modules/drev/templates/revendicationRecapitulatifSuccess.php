@@ -6,9 +6,7 @@
     <h2>Revendication</h2>
 </div>
 
-<?php if ($drev->isNonRecoltant()): ?>
-    <?php include_partial('drev/stepRevendication', array('drev' => $drev, 'step' => 'recapitulatif','ajoutForm' => $ajoutForm)) ?>
-<?php endif; ?>
+<?php include_component('drev', 'stepRevendication', array('drev' => $drev, 'step' => 'recapitulatif')) ?>
 
 <table class="table table-striped">
     <thead>
@@ -39,5 +37,3 @@
     </div>
 </div>
 </form>
-
-<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_ajout', $drev), 'form' => $ajoutForm)); ?>

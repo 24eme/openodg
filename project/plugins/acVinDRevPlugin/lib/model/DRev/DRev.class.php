@@ -94,6 +94,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->declaration->add('certification')->add('genre');
     }
 
+    public function initAppellations() {
+        foreach($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
+            $this->addAppellation($appellation->getHash());
+        }
+    }
+
     public function getCSV() {
         $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
         return $csv->getCsvAcheteur($this->identifiant);
@@ -130,6 +136,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->updatePrelevementsFromRevendication();
         $this->updateRevendicationCepageFromLots();
         $this->declaration->reorderByConf();
+    }
+
+    public function addAppellation($hash) {
+        $config = $this->getConfiguration()->get($hash);
+        $appellation = $this->getOrAdd($config->hash);
+        $config_produits = $appellation->getConfigProduits();
+        if (count($config_produits) == 1) {
+            reset($config_produits);
+            $this->addProduitCepage(key($config_produits));
+        }
+        
+        return $appellation;
+    }
+
+    public function addProduitCepage($hash) {
+        $produit = $this->getOrAdd($hash);
+        $this->addProduit($produit->getProduitHash());
+
+        return $produit;
     }
 
     public function addProduit($hash) {

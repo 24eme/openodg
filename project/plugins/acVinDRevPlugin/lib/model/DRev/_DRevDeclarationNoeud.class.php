@@ -10,6 +10,11 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
     }
 
+    public function getConfigChidrenNode() {
+
+        return $this->getConfig()->getChildrenFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION);
+    }
+
     abstract public function getChildrenNode();
 
     public function hasManyNoeuds(){

@@ -1,4 +1,4 @@
-<div class="modal fade" id="popupForm" role="dialog" aria-labelledby="Ajouter un produit" aria-hidden="true">
+<div class="modal fade" id="<?php if(!isset($html_id)): ?>popupForm<?php else: ?><?php echo $html_id ?><?php endif; ?>" role="dialog" aria-labelledby="Ajouter un produit" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form method="post" action="<?php echo $url ?>" role="form" class="form-horizontal">

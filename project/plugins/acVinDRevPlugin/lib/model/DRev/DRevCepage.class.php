@@ -39,6 +39,11 @@ class DRevCepage extends BaseDRevCepage {
         return array($this->getHash() => $this);
     }
 
+    public function getProduitHash() {
+
+        return $this->getCouleur()->getProduitHash();
+    }
+
     public function updateTotal() {
         $this->volume_revendique_total = $this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt;
     }

@@ -17,7 +17,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       parent::loadAllData();
       $this->getProduits();
       $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
-      $this->getProduitsFilter(self::TYPE_DECLARATION_DR);
+      $this->getProduitsFilter(self::TYPE_DECLARATION_DS);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationCouleur");
       $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_LOTS);

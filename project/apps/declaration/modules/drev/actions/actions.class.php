@@ -124,25 +124,23 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication', $this->drev);
     }
 
-    public function executeRevendicationRecap(sfWebRequest $request) {
+    public function executeRevendicationRecapitulatif(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
-        $this->drev->save();
-
-        $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
     }
 
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
 
-        if($this->drev->isNonRecoltant()) {
-
-            return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
-        }
-
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
         $this->drev->save();
+
+        if($this->drev->isNonRecoltant()) {
+            if(!count($this->drev->declaration->getAppellations())) {
+
+                return $this->redirect('drev_revendication_repartition', $this->drev);
+            }
+            return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
+        }
 
         $this->form = new DRevRevendicationForm($this->drev);
         $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
@@ -167,6 +165,25 @@ class drevActions extends sfActions {
                 return $this->redirect('drev_degustation_conseil', $this->drev);
             }
         }
+    }
+
+     public function executeRevendicationAjoutAppellation(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+
+        $this->ajoutForm = new DRevAjoutAppellationForm($this->drev);
+        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+
+        if (!$this->ajoutForm->isValid()) {
+            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+
+            return $this->redirect('drev_revendication', $this->drev);
+        }
+
+        $this->ajoutForm->save();
+
+        $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
+
+        return $this->redirect('drev_revendication_cepage', $this->ajoutForm->getNoeud());
     }
 
     public function executeRevendicationAjoutProduit(sfWebRequest $request) {

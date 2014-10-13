@@ -1,7 +1,8 @@
 <?php
-class DrevCepageAjoutProduitForm extends acCouchdbObjectForm 
+class DRevAjoutAppellationForm extends acCouchdbObjectForm 
 {    
     protected $produits;
+    protected $noeud;
     
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) 
     {
@@ -20,26 +21,21 @@ class DrevCepageAjoutProduitForm extends acCouchdbObjectForm
         ));
 
         $this->setValidators(array(
-            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucun produit saisi."))
+            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucune appellation saisie."))
         ));
-        $this->widgetSchema->setNameFormat('drev_cepage_ajout_produit[%s]');
+        $this->widgetSchema->setNameFormat('drev_ajout_appellation[%s]');
     }
     
     public function getProduits() 
     {
         if (!$this->produits) {
-            $produits = $this->getObject()->getConfigProduits();
-            $doc = $this->getObject()->getDocument();
+            $produits = $this->getObject()->declaration->certification->genre->getConfigChidrenNode();
             foreach ($produits as $produit) {
-                if ($doc->exist($produit->getHash())) {
+                if ($this->getObject()->exist($produit->getHash())) {
                     continue;
                 } 
-                $libelle = '';
-                if ($produit->getLieu()->libelle) {
-                    $libelle .= $produit->getLieu()->libelle.' - ';
-                }
-                $libelle .= $produit->libelle;
-                $this->produits[$produit->getHash()] = $libelle;
+
+                $this->produits[$produit->getHash()] = $produit->libelle;
             }
         }
 
@@ -58,7 +54,12 @@ class DrevCepageAjoutProduitForm extends acCouchdbObjectForm
             return;
         }
 
-        $noeud = $this->getObject()->getDocument()->addProduitCepage($values['hashref']);
-        $noeud->getParent()->reorderByConf();
+        $this->noeud = $this->getObject()->getDocument()->addAppellation($values['hashref']);
+        $this->noeud->getParent()->reorderByConf();
+    }
+
+    public function getNoeud() {
+
+        return $this->noeud;
     }
 }

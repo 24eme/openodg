@@ -4,12 +4,7 @@
     <h2>Revendication</h2>
 </div>
 
-<?php include_partial('drev/stepRevendication', array('drev' => $drev, 'noeud' => $noeud, 'ajoutForm' => $ajoutAppellationForm)) ?>
-
-<?php if(!$noeud->isActive()): ?>
-    <div class="alert alert-warning" role="alert">Vous n'avez pas déclaré de volume revendiqué pour cette appellation <a class="btn btn-warning" href="<?php echo url_for("drev_revendication", $drev) ?>">Déclarer</a></div>
-    <?php return; ?>
-<?php endif; ?>
+<?php include_component('drev', 'stepRevendication', array('drev' => $drev, 'noeud' => $noeud)) ?>
 
 <form role="form" class="ajaxForm" action="<?php echo url_for("drev_revendication_cepage", $noeud) ?>" method="post">
     <?php echo $form->renderHiddenFields(); ?>
@@ -89,7 +84,6 @@
                 <a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
             <?php endif; ?>
         </div>
-        
         <div class="col-xs-6 text-right">
         	<?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
 	           <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
@@ -103,5 +97,3 @@
 </form>
 
 <?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_cepage_ajout', $noeud), 'form' => $ajoutForm)); ?>
-
-<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_ajout', $drev), 'form' => $ajoutAppellationForm)); ?>

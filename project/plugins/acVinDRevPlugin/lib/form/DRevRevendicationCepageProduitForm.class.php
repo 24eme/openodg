@@ -8,15 +8,12 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
         $this->vtsgn = $this->getObject()->getConfig()->hasVtsgn();
 
         $this->setWidgets(array(
-            // 'superficie_revendique' => new sfWidgetFormInputFloat(),
             'volume_revendique' => new sfWidgetFormInputFloat()));
 
         $this->widgetSchema->setLabels(array(
-            // 'superficie_revendique' => 'Superficie ,:',
             'volume_revendique' => 'Volume revendiqué (hl):'
         ));
         $this->setValidators(array(
-            // 'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
             'volume_revendique' => new sfValidatorNumber(array('required' => false))
         ));
 

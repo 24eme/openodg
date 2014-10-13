@@ -103,7 +103,7 @@ drev_exploitation:
 
 drev_revendication_recap:
   url: /drev/revendication-recap/:id
-  param: { module: drev, action: revendicationRecap }
+  param: { module: drev, action: revendicationRecapitulatif }
   class: DRevRoute
   options:
     model:    DRev
@@ -130,6 +130,16 @@ drev_revendication_ajout:
     type:     object
   requirements:
     sf_method: [get, post]
+
+drev_revendication_appellation_ajout:
+  url: /drev/revendication/:id/appellation_ajout
+  param: { module: drev, action: revendicationAjoutAppellation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [post]
 
 drev_revendication_cepage:
   url: /drev/revendication/:id/cepage/:hash

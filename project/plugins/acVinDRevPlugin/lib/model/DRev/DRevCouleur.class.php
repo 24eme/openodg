@@ -36,6 +36,16 @@ class DRevCouleur extends BaseDRevCouleur
         return array($this->getHash() => $this);
     }
 
+    public function getProduitHash() {
+        if(!$this->getMention()->hasManyNoeuds()) {
+
+            return $this->getHash();
+        }
+
+
+        return $this->getMention()->getHash()."/lieu/".$this->getKey();
+    }
+
     public function getProduitsCepage() {
 
         if(!$this->getMention()->hasManyNoeuds()) {
@@ -43,7 +53,7 @@ class DRevCouleur extends BaseDRevCouleur
             return parent::getProduitsCepage();
         }
 
-        if($this->getLieu()->getKey() != "lieu") {
+        if($this->getMention()->getKey() != "lieu") {
 
             return parent::getProduitsCepage();
         }
