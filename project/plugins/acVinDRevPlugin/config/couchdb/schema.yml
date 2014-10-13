@@ -144,6 +144,17 @@ DRev:
                               libelle: {  }
                               hash_produit: {  }
                               no_vtsgn: { type: integer, required: false }
+      documents:
+        required: false
+        class: DRevDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }
       chais:
         type: collection
         definition:

@@ -12,7 +12,7 @@
             <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
         <?php endif; ?>
         <?php include_partial('drev/recap', array('drev' => $drev)); ?>
-        <?php include_partial('drev/engagements', array('drev' => $drev)); ?>
+        <?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">

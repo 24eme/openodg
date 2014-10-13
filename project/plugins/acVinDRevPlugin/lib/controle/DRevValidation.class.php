@@ -3,11 +3,12 @@ class DRevValidation extends DocumentValidation
 {
     const TYPE_ERROR = 'erreur';
     const TYPE_WARNING = 'vigilance';
+    const TYPE_ENGAGEMENT = 'engagement';
 	
 	public function __construct($document, $options = null)
     {
         parent::__construct($document, $options);
-        $this->noticeVigilance = false;
+        $this->noticeVigilance = true;
     }
     
   	public function configure() 
@@ -16,9 +17,9 @@ class DRevValidation extends DocumentValidation
   		 * Warning
   		 */
   		$this->addControle(self::TYPE_WARNING, 'dr_surface', 'La surface revendiquée est différente de celle déclarée de votre DR.');
-      $this->addControle(self::TYPE_WARNING, 'dr_volume', 'Le volume revendiqué est différent de celui déclaré de votre DR.');
+      	$this->addControle(self::TYPE_WARNING, 'dr_volume', 'Le volume revendiqué est différent de celui déclaré de votre DR.');
   		$this->addControle(self::TYPE_WARNING, 'dr_cepage', 'Vous ne déclarez aucun lot pour un cépage présent dans votre DR'); // !!!!
-      //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
+      	//$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
       
   		/*
   		 * Error
@@ -27,9 +28,14 @@ class DRevValidation extends DocumentValidation
     	$this->addControle(self::TYPE_ERROR, 'volume_revendique_incorrect', 'Le volume revendiqué ne peut pas être inférieur au volume sur place déduit des usages industriels et supérieur au volume sur place.');
     	$this->addControle(self::TYPE_ERROR, 'prelevement', 'Vous devez saisir une semaine de prélèvement');
     	$this->addControle(self::TYPE_ERROR, 'revendication_sans_lot', 'Vous avez revendiqué des produits sans spécifier de lots');
-    	
-      $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN'); // !!!!
-    	
+		$this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
+		
+		/*
+  		 * Engagement
+  		 */
+    	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre un copie de votre Déclaration de Récolte');
+    	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
+    	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie de votre carnet de pressoir');
     	
   	}
 
@@ -41,6 +47,7 @@ class DRevValidation extends DocumentValidation
         $this->controleWarningDrVolume($revendicationProduit);
         $this->controleErrorRevendicationIncomplete($revendicationProduit);
         $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
+      	$this->controleEngagementPressoir($revendicationProduit);
       }
 
       $this->controleErrorPrelevement(DRev::CUVE_ALSACE);
@@ -49,6 +56,30 @@ class DRevValidation extends DocumentValidation
       
       $this->controleErrorRevendicationSansLot(DRev::CUVE_ALSACE);
       $this->controleErrorRevendicationSansLot(DRev::CUVE_GRDCRU);
+      
+      $this->controleEngagementDr();
+      $this->controleEngagementSv();
+    }
+    
+    protected function controleEngagementDr()
+    {
+    	if (!$this->document->isNonRecoltant()) {
+  			$this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, ''); 
+  		}
+    }
+    
+    protected function controleEngagementSv()
+    {
+    	if (!$this->document->isNonRecoltant()) {
+  			$this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, ''); 
+  		}
+    }
+    
+    protected function controleEngagementPressoir($produit)
+    {
+    	if ($produit->volume_revendique !== null && $produit->getAppellation()->getKey() == 'appellation_CREMANT') {
+  			$this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, ''); 
+  		}
     }
   	
   	protected function controleWarningDrSurface($produit)

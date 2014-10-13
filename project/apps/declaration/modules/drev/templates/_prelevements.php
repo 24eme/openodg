@@ -1,5 +1,5 @@
 <?php use_helper("Date"); ?>
-<h3>Organisation des Prélèvements</h2>
+<h3>Organisation des Prélèvements</h3>
 <table class="table table-striped">
     <thead>
         <tr>
