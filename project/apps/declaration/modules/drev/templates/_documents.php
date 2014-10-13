@@ -13,7 +13,7 @@
         </tr>
     </thead>
     <tbody>
-    	<?php if ($form): ?>
+    	<?php if (isset($form)): ?>
     		<?php foreach ($form->getEmbeddedForms() as $key => $documentForm): ?>
 	        <tr>
 	            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle($key) ?><?php if($key == DRevDocuments::DOC_DR && $drev->hasDr()): ?> - <a href="<?php echo $drev->getAttachmentUri('DR.pdf'); ?>" target="_blank"><small>Télécharger ma DR</small></a><?php endif; ?></td>

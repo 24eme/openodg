@@ -1432,22 +1432,24 @@ input[type="radio"]
        }
 	}
 	&.btn-tooltip { 
-	   color: @green-dark;
-	   background-color: @white;
-	   padding: 2px;
+	   color: @tooltip-bg;
+	   background-color: transparent;
+	   padding: 0;
 	   &:hover,
 	   &:focus,
 	   &:active {
-	       background-color: @white;
 	   }
 	   &.btn-lg {
 	   		font-size:24px;
+	   }
+	   &.btn-md {
+	   		font-size:18px;
 	   }
 	}
 }
 
 .tooltip-inner {
-	min-width: 400px;
+	min-width: 300px;
 	font-size: @font-size-base;
 }
 

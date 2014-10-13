@@ -22,7 +22,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Veuillez saisir les informations des AOC revendiquées dans la déclaration de récolte de l'année</p>
+    <p>Veuillez saisir les informations des appellations revendiquées dans la déclaration de Récolte de l'année</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
@@ -32,7 +32,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($drev->hasDR()): ?>
     <div class="row">
         <div class="col-xs-3 col-xs-offset-9 text-center">
-            <span class="label label-primary">Informations issues de la DR</span>
+            <span class="label label-primary">Informations issues de votre DR</span>
         </div>
     </div>
     <p></p>
@@ -41,8 +41,8 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         <thead>
             <tr>
                 <th class="col-xs-5">Appellation revendiquée</th>
-                <th class="col-xs-2 text-center">Superficie totale <small class="text-muted">(ares)</small><br /></th>
-                <th class="col-xs-2 text-center">Volume&nbsp;revendiqué <small class="text-muted">(hl)</small><br /></th>
+                <th class="col-xs-2 text-center"><a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Superficie <br />totale<small class="text-muted">(ares)</small></th>
+                <th class="col-xs-2 text-center"><a title="Le volume revendiqué corrspond au volume sur place de votre déclaration de récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Volume<br />revendiqué <small class="text-muted">(hl)</small></th>
                 <?php if ($drev->hasDR()): ?>
                 <th class="col-xs-1 small text-center">Volume total</th>
                 <th class="col-xs-1 small text-center">Volume sur place</th>

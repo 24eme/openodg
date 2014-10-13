@@ -2,14 +2,14 @@
 <?php include_partial('drev/step', array('step' => 'controle_externe', 'drev' => $drev)) ?>
 
 <div class="page-header">
-    <h2>Contrôle externe <small>Prélèvement en bouteille</small></h2>
+    <h2>Contrôle externe <small>effectué par Qualisud</small></h2>
 </div>
 
 <form method="post" action="<?php echo url_for("drev_controle_externe", $drev) ?>" role="form" class="form-horizontal ajaxForm">
     
     <div class="row">
         <div class="col-xs-7">
-            <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
+            <p>Les prélèvements se font uniquement sur des vins mis en bouteille, <strong>au plus proche de la commercialisation</strong></p>
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <?php if(isset($form[DRev::BOUTEILLE_ALSACE])): ?>
@@ -83,7 +83,10 @@
         <div class="col-xs-4 col-xs-offset-1">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h2 class="panel-title">Lieu de prélèvement</h2>
+                    <h2 class="panel-title">
+                        Lieu de prélèvement
+                        <a title="L'adresse à préciser ici est celle du lieu de stockage de vos bouteilles" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
+                    </h2>
                 </div>
                 <div class="panel-body form-chai">
                     <?php $chai = $drev->chais->get(DRev::BOUTEILLE) ?>
