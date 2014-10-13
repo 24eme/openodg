@@ -1,9 +1,13 @@
-<?php include_partial('drevmarc/step', array('step' => 'revendication', 'drevmarc' => $drevmarc)) ?>
+<?php
+use_helper('DRevMarc');
+include_partial('drevmarc/step', array('step' => 'revendication', 'drevmarc' => $drevmarc));
+$hasError = false;
+?>
 <div class="page-header">
     <h2>Revendication</h2>
 </div>
 
-<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm">
+<form role="form" action="<?php echo url_for("drevmarc_revendication", $drevmarc) ?>" method="post" class="ajaxForm" id="drevmarc_form">
 
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
@@ -19,16 +23,18 @@
                         </td>
                         <td class="col-xs-7 form-inline">
                             <div class="form-group col-xs-6">
-                                <div class="input-group date-picker-all-days">
-                                    <?php echo $form['debut_distillation']->render(array('class' => 'text-right  form-control', 'placeholder' => 'Du')); ?>
+                                <?php $errorClass = getErrorClass($form['debut_distillation']->renderError(), $hasError); ?>
+                                <div class="input-group date-picker-all-days <?php if ($errorClass): ?>has-error<?php endif; ?>">
+                                    <?php echo $form['debut_distillation']->render(array('class' => 'text-right  form-control ' . $errorClass, 'placeholder' => 'Du')); ?>
                                     <div class="input-group-addon">
                                         <span class="glyphicon-calendar glyphicon"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group col-xs-6">
-                                <div class="input-group date-picker-all-days">
-                                    <?php echo $form['fin_distillation']->render(array('class' => 'text-right  form-control', 'placeholder' => 'Au')); ?>
+                                <?php $errorClass = getErrorClass($form['fin_distillation']->renderError(), $hasError); ?>
+                                <div class="input-group date-picker-all-days <?php if ($errorClass): ?>has-error<?php endif; ?>">
+                                    <?php echo $form['fin_distillation']->render(array('class' => 'text-right  form-control ' . $errorClass, 'placeholder' => 'Au')); ?>
                                     <div class="input-group-addon">
                                         <span class="glyphicon-calendar glyphicon"></span>
                                     </div>
@@ -52,8 +58,10 @@
                             <td class="col-xs-5"></td>
                             <td class="col-xs-7 form-inline">
                                 <div class="form-group">
-                                    <div class="col-xs-11">                                        
+                                    <div class="col-xs-6">                                        
                                         <span class="text-danger"><?php echo $form['debut_distillation']->renderError(); ?></span>
+                                    </div>
+                                    <div class="col-xs-6">     
                                         <span class="text-danger"><?php echo $form['fin_distillation']->renderError(); ?></span>
                                     </div>
                                 </div>
@@ -65,44 +73,70 @@
                             <?php echo $form['qte_marc']->renderLabel(null, array('class' => 'control-label')); ?>
                         </td>
                         <td class="col-xs-7 form-group">
-                            <div class="col-xs-6">
-                                <?php echo $form['qte_marc']->render(array('class' => 'form-control input-rounded text-right')); ?>
+                            <?php $errorClass = getErrorClass($form['qte_marc']->renderError(), $hasError); ?>
+                            <div class="col-xs-6  <?php if ($errorClass): ?>has-error<?php endif; ?>">
+                                <?php echo $form['qte_marc']->render(array('class' => 'form-control input-rounded text-right ' . $errorClass)); ?>
                             </div>
                             <div class="col-xs-4">
                                 <span>kg</span>
                             </div>
-                            <span class="text-danger"><?php echo $form['qte_marc']->renderError(); ?></span>
-                            </div>
                         </td>
                     </tr>
+                    <?php if ($form['qte_marc']->renderError() !== ""): ?>
+                        <tr>
+                            <td  class="col-xs-5">
+                            </td>
+                            <td class="col-xs-7 form-group">
+                                <span class="text-danger"><?php echo $form['qte_marc']->renderError(); ?></span>
+                            </td>
+                        </tr>
+                    <?php endif; ?>          
                     <tr>
                         <td  class="col-xs-5">
                             <?php echo $form['volume_obtenu']->renderLabel(null, array('class' => 'control-label')); ?>
                         </td>
                         <td class="col-xs-7 form-group">
-                            <div class="col-xs-6">
-                                <?php echo $form['volume_obtenu']->render(array('class' => 'form-control input-rounded text-right')); ?>
+                            <?php $errorClass = getErrorClass($form['volume_obtenu']->renderError(), $hasError); ?>
+                            <div class="col-xs-6  <?php if ($errorClass): ?>has-error<?php endif; ?>">
+                                <?php echo $form['volume_obtenu']->render(array('class' => 'form-control input-rounded text-right ' . $errorClass)); ?>
                             </div>
                             <div class="col-xs-4">
                                 <span>hl d'alcool pur</span>   
                             </div>
-                            <span class="text-danger"><?php echo $form['volume_obtenu']->renderError(); ?></span>                          
                         </td>
                     </tr>
+                    <?php if ($form['volume_obtenu']->renderError() !== ""): ?>
+                        <tr>
+                            <td  class="col-xs-5">
+                            </td>
+                            <td class="col-xs-7 form-group">
+                                <span class="text-danger"><?php echo $form['volume_obtenu']->renderError(); ?></span>
+                            </td>
+                        </tr>
+                    <?php endif; ?>                                                      
                     <tr>
                         <td  class="col-xs-5">
                             <?php echo $form['titre_alcool_vol']->renderLabel(null, array('class' => 'control-label')); ?>
                         </td>
                         <td class="col-xs-7 form-group">
-                            <div class="col-xs-6">
-                                <?php echo $form['titre_alcool_vol']->render(array('class' => 'form-control input-rounded text-right')); ?>
+                            <?php $errorClass = getErrorClass($form['titre_alcool_vol']->renderError(), $hasError); ?>
+                            <div class="col-xs-6  <?php if ($errorClass): ?>has-error<?php endif; ?>">
+                                <?php echo $form['titre_alcool_vol']->render(array('class' => 'form-control input-rounded text-right ' . $errorClass)); ?>
                             </div>
                             <div class="col-xs-4">
                                 <span>°</span>
                             </div>
-                            <span class="text-danger"><?php echo $form['titre_alcool_vol']->renderError(); ?></span>
                         </td>
                     </tr>
+                    <?php if ($form['titre_alcool_vol']->renderError() !== ""): ?>
+                        <tr>
+                            <td  class="col-xs-5">
+                            </td>
+                            <td class="col-xs-7 form-group">
+                                <span class="text-danger"><?php echo $form['titre_alcool_vol']->renderError(); ?></span>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

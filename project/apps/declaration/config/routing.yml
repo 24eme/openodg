@@ -101,8 +101,8 @@ drev_exploitation:
   requirements:
     sf_method: [get, post]
 
-drev_revendication_recap:
-  url: /drev/revendication-recap/:id
+drev_revendication_recapitulatif:
+  url: /drev/drev_revendication-recapitulatif/:id
   param: { module: drev, action: revendicationRecapitulatif }
   class: DRevRoute
   options:
@@ -112,8 +112,8 @@ drev_revendication_recap:
     sf_method: [get, post]
 
 drev_revendication:
-  url: /drev/revendication/:id
-  param: { module: drev, action: revendication }
+  url: /drev/revendication/:id/:appellation
+  param: { module: drev, action: revendication, appellation: 0 }
   class: DRevRoute
   options:
     model:    DRev

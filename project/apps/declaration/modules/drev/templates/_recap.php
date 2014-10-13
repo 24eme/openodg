@@ -5,4 +5,7 @@
     <div class="col-xs-12">
         <?php include_partial('drev/prelevements', array('drev' => $drev)); ?>
     </div>
+    <div class="col-xs-12">
+    	<?php include_partial('drev/documents', array('drev' => $drev, 'form' => $form)); ?>
+    </div>
 </div>

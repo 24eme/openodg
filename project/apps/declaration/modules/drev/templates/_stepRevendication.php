@@ -5,7 +5,7 @@
     <?php if($ajoutForm->hasProduits()): ?>
         <li class="text-center"><a role="tab" data-toggle="modal" data-target="#popupAjoutAppellationForm" href=""><span class="glyphicon glyphicon-plus-sign"></span></a></li>
     <?php endif; ?>
-    <li class="text-center pull-right <?php if(isset($step) && $step == 'recapitulatif'): ?>active<?php endif; ?>"><a role="tab" href="<?php echo url_for("drev_revendication_recap", $drev) ?>"><span class="glyphicon glyphicon-th-list"></span><br />Récap.</a></li>
+    <li class="text-center pull-right <?php if(isset($step) && $step == 'recapitulatif'): ?>active<?php endif; ?>"><a role="tab" href="<?php echo url_for("drev_revendication_recapitulatif", $drev) ?>"><span class="glyphicon glyphicon-th-list"></span><br />Récap.</a></li>
 </ul>
 
 <?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_appellation_ajout', $drev), 'form' => $ajoutForm, 'html_id' => 'popupAjoutAppellationForm')); ?>

@@ -129,7 +129,8 @@ class drevActions extends sfActions {
     }
 
     public function executeRevendication(sfWebRequest $request) {
-        $this->drev = $this->getRoute()->getDRev();
+
+        $this->drev = $this->getRoute()->getDRev();        
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
         $this->drev->save();
@@ -137,9 +138,17 @@ class drevActions extends sfActions {
         if($this->drev->isNonRecoltant()) {
             if(!count($this->drev->declaration->getAppellations())) {
 
-                return $this->redirect('drev_revendication_repartition', $this->drev);
+                return $this->redirect('drev_revendication_recapitulatif', $this->drev);
             }
+            
             return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
+        }
+
+        $this->appellation = false;
+        if($request->getParameter(('appellation'))){            
+            $this->appellation = $request->getParameter(('appellation'));
+            $this->appellation_field = substr(strrchr($this->appellation, '-'),1);
+            $this->appellation_hash = str_replace('-','/',str_replace('-'.$this->appellation_field, '', $this->appellation));
         }
 
         $this->form = new DRevRevendicationForm($this->drev);
@@ -243,7 +252,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_revendication_cepage', $next_sister);
         } else {
 
-            return $this->redirect('drev_revendication_recap', $this->drev);
+            return $this->redirect('drev_revendication_recapitulatif', $this->drev);
         }
     }
 
@@ -428,7 +437,8 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->validation = new DRevValidation($this->drev);
-        $this->form = new DRevValidationForm($this->drev);
+        
+        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -446,6 +456,13 @@ class drevActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+        
+        $documents = $this->drev->getOrAdd('documents');
+        
+        foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
+        	$document = $documents->add($engagement->getCode());
+        	$document->statut = ($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr())? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+        }
 
         $this->drev->validate();
 
@@ -460,6 +477,25 @@ class drevActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        
+        $documents = $this->drev->getOrAdd('documents');
+        
+        $this->form = (count($documents->toArray()))? new DRevDocumentsForm($documents) : null;
+        
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+		
+        $this->form->save();
+        
+        return $this->redirect('drev_visualisation', $this->drev);
     }
 
     public function executePDF(sfWebRequest $request) {
