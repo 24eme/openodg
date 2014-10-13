@@ -79,10 +79,37 @@
             $(this).blur(function() {
                 if ($(this).val() != "") {
                     divError.removeClass('has-error');
-                }else{
+                } else {
                     divError.addClass('has-error');
                 }
             });
+        });
+    }
+
+    $.initRecapEventsAccordion = function() {
+        $('#revendication_accordion tr.trAccordion').click(function() {
+            var eventId = $(this).attr('data-target');
+            var span = $(this).find('small span');
+
+            var ouverts = $('tr td.hiddenRow div.in');
+            if (ouverts.length && (eventId == '#' + ouverts.attr('id'))) {
+                span.removeClass('glyphicon-chevron-right');
+                span.addClass('glyphicon-chevron-down');
+                $(eventId).collapse('hide');
+            } else {
+                $('tr td.hiddenRow div').each(function() {
+                    $('#revendication_accordion tr.trAccordion').each(function() {
+                        var span_all = $(this).find('small span');
+                        span_all.removeClass('glyphicon-chevron-right');
+                        span_all.addClass('glyphicon-chevron-down');
+                    });
+                    $(this).removeClass('in');
+                });
+                span.removeClass('glyphicon-chevron-down');
+                span.addClass('glyphicon-chevron-right');
+                $(eventId).collapse('show');
+
+            }
         });
     }
 
@@ -98,6 +125,9 @@
         $.initEventErrorRevendicationField();
         $.initRevendicationFadeRow();
         $.initRevendicationEventsFadeInOut();
+
+
+        $.initRecapEventsAccordion();
 
     });
 

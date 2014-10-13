@@ -11,6 +11,11 @@ class DRevCepage extends BaseDRevCepage {
         return null;
     }
 
+    public function getCouleur() {
+
+        return $this->getParent();
+    }
+
     public function reorderByConf() {
 
         return null;
@@ -33,4 +38,8 @@ class DRevCepage extends BaseDRevCepage {
 
         return array($this->getHash() => $this);
     }
+
+    public function updateTotal() {
+        $this->volume_revendique_total = $this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt;
     }
+}

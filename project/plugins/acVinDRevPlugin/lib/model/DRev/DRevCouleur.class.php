@@ -61,6 +61,19 @@ class DRevCouleur extends BaseDRevCouleur
 
         return $produits;
     }
+
+    public function updateFromCepage() {
+        $this->volume_revendique = 0;
+        foreach($this->getAppellation()->getProduitsCepage() as $produit) {
+            if($produit->getCouleur()->getKey() != $this->getKey()) {
+                continue;
+            }
+
+            $produit->updateTotal();
+
+            $this->volume_revendique += $produit->volume_revendique_total;
+        }
+    }
     
     public function getTotalTotalSuperficie()
     {
