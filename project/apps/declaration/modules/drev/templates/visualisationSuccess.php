@@ -2,7 +2,7 @@
     <h2>Déclaration de revendication 2013</h2>
 </div>
 
-<?php include_partial('drev/recap', array('drev' => $drev)); ?>
+<?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form)); ?>
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
