@@ -8,7 +8,7 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 
-<table class="table table-striped">
+<table class="table table-striped<?php if ($form->hasGlobalErrors()): ?> has-error<?php endif; ?>">
     <thead>
         <tr>
             <th class="col-xs-6">Produits</th>

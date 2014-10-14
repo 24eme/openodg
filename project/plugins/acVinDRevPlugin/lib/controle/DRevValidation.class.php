@@ -22,6 +22,7 @@ class DRevValidation extends DocumentValidation
 
   		$this->addControle(self::TYPE_WARNING, 'dr_cepage', 'Vous ne déclarez aucun lot pour un cépage présent dans votre DR'); // !!!!
       	//$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
+		$this->addControle(self::TYPE_WARNING, 'periodes_cuves', 'Vous devez déclarer vos lots.');
       
   		/*
   		 * Error
@@ -51,10 +52,12 @@ class DRevValidation extends DocumentValidation
         $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
       	$this->controleEngagementPressoir($revendicationProduit);
       }
-
+      
+      $this->controleWarningRevendicationLot();
       $this->controleErrorPrelevement(DRev::CUVE_ALSACE);
       $this->controleErrorPrelevement(DRev::BOUTEILLE_ALSACE);
       $this->controleErrorPrelevement(DRev::BOUTEILLE_GRDCRU);
+      $this->controleErrorPeriodes();
       
       $this->controleErrorRevendicationSansLot(DRev::CUVE_ALSACE);
       $this->controleErrorRevendicationSansLot(DRev::CUVE_GRDCRU);
@@ -119,6 +122,22 @@ class DRevValidation extends DocumentValidation
   		}
   	}
   	
+  	protected function controleWarningRevendicationLot()
+  	{
+  		foreach ($this->document->declaration->getProduitsCepage() as $hash => $produitCepage) {
+  			if ($produitCepage->volume_revendique) {
+  				$correspondance = $this->document->getConfiguration()->get($hash)->getHashRelation('lots');
+  				$correspondanceLot = str_replace('/', '_', $correspondance);
+  				$cuve = Drev::CUVE.$this->document->getPrelevementsKeyByHash($correspondance);
+  				if ($this->document->prelevements->get($cuve)->lots->exist($correspondanceLot)) {
+  					if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
+  						$this->addPoint(self::TYPE_WARNING, 'periodes_cuves', $this->document->prelevements->get($cuve)->libelle_produit.' '.$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
+  					}
+  				}
+  			}
+  		}
+  	}
+  	
   	protected function controleErrorRevendicationIncomplete($produit)
   	{
       if($this->document->isNonRecoltant()) {
@@ -154,6 +173,24 @@ class DRevValidation extends DocumentValidation
   			$this->addPoint(self::TYPE_ERROR, 'volume_revendique_incorrect', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
   		}
   	}
+
+    protected function controleErrorPeriodes()
+    {
+      if(!$this->document->prelevements->exist(DRev::CUVE_ALSACE) || !$this->document->prelevements->exist(DRev::BOUTEILLE_ALSACE)) {
+
+          return;
+      }
+
+      $prelevement = $this->document->prelevements->get(DRev::CUVE_ALSACE);
+      $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
+
+      if ($prelevement->date && $degustation->date && $degustation->date <= $prelevement->date) {
+        $this->addPoint(self::TYPE_ERROR, 
+                        'periodes_cuves', 
+                        sprintf("%s - %s", $degustation->libelle, $degustation->libelle_produit), 
+                        $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)));
+      }
+    }
 
     protected function controleErrorPrelevement($key)
     {
