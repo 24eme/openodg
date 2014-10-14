@@ -23,12 +23,10 @@ class DRevControleExterneForm extends acCouchdbObjectForm
 
             $this->embedForm(Drev::BOUTEILLE_VTSGN, $form_vtsgn);
         }
-
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
             $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice(), 'expanded' => true, 'renderer_options' => array('formatter' => array($this, 'formatter')))));
             $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
         }
-
         $this->widgetSchema->setNameFormat('controle_externe[%s]');
     }
 
