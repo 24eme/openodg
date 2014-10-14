@@ -331,6 +331,17 @@ drevmarc_export_pdf:
     type:     object
   requirements:
     sf_method: [get]
+    
+#Mon compte    
+
+mon_compte:
+  url: /monCompte
+  param: { module: compte, action: modification }   
+
+redirect_to_mon_compte_civa:    
+  url: /monCompteCiva
+  param: { module: compte, action: redirectToMonCompteCiva }
+    
 # generic rules
 # please, remove them by adding more specific rules
 default_index:

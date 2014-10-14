@@ -60,7 +60,7 @@
 
                     <ul>
                         <li><a href="<?php echo url_for('home') ?>#drev">Mes déclarations</a></li>
-                        <li><a href="#">Mon compte</a></li>
+                         <li><a href="<?php echo url_for('mon_compte'); ?>">Mon compte</a></li>
                         <!--<li><a href="#">Administration</a></li>-->
                         <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                     </ul>
