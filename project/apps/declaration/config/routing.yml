@@ -111,16 +111,6 @@ drev_revendication_recapitulatif:
   requirements:
     sf_method: [get, post]
 
-drev_revendication:
-  url: /drev/revendication/:id/:appellation
-  param: { module: drev, action: revendication, appellation: 0 }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
 drev_revendication_ajout:
   url: /drev/revendication/:id/ajout
   param: { module: drev, action: revendicationAjoutProduit }
@@ -140,6 +130,16 @@ drev_revendication_appellation_ajout:
     type:     object
   requirements:
     sf_method: [post]
+
+drev_revendication:
+  url: /drev/revendication/:id/:appellation
+  param: { module: drev, action: revendication, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 drev_revendication_cepage:
   url: /drev/revendication/:id/cepage/:hash
@@ -331,6 +331,17 @@ drevmarc_export_pdf:
     type:     object
   requirements:
     sf_method: [get]
+    
+#Mon compte    
+
+mon_compte:
+  url: /monCompte
+  param: { module: compte, action: modification }   
+
+redirect_to_mon_compte_civa:    
+  url: /monCompteCiva
+  param: { module: compte, action: redirectToMonCompteCiva }
+    
 # generic rules
 # please, remove them by adding more specific rules
 default_index:

@@ -138,6 +138,24 @@ ul {
     background-color: @gray-lighter;
 }
 
+.table-striped {
+  > tbody > tr:nth-child(odd) {
+    > td.cell-striped,
+    > th.cell-striped {
+      background-color: @table-bg-accent;
+    }
+  }
+}
+
+.table-striped {
+  > tbody > tr:nth-child(odd) {
+    > td.cell-striped-alt,
+    > th.cell-striped-alt {
+      background-color: @gray-lighter;
+    }
+  }
+}
+
 .with_superficie_fade{
     opacity: 0.6;
 }

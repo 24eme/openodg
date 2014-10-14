@@ -1,23 +1,24 @@
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
 
 <div class="page-header">
-    <h2>Dégustation conseil <small>Réaliser par l'AVA</small></h2>
+    <h2>Dégustation conseil <small>Réalisée par l'ODG - AVA</small></h2>
 </div>
 
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'prelevement', 'drev' => $drev)) ?>
 
 <form method="post" action="<?php echo url_for("drev_degustation_conseil", $drev) ?>" role="form" class="form-horizontal ajaxForm">
-    
     <div class="row">
         <div class="col-xs-7">
-            <p>Vin prêt à être dégusté ou plus proche de la commercialisation...</p>
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <?php if(isset($form[DRev::CUVE_ALSACE])): ?>
             <div class="row-margin">
                 <h3>AOC Alsace</h3>
                 <div class="col-xs-offset-1">
-                    <p>Semaine à partir de laquelle le vin est prêt à être dégusté : <a title="Les vins sont à présenter fermentation terminée, stablisés et clarifiés (fitration non obligatoire)" data-placement="right" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a></p>
+                    <p>
+                        Semaine à partir de laquelle le vin est prêt à être dégusté : 
+                        <a title="Les vins sont à présenter fermentation terminée, stablisés et clarifiés (fitration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
+                    </p>
                     <div class="form-group <?php if($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
@@ -40,7 +41,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                              <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue() || $form["vtsgn_demande"]->hasError()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélévement volontaire des VT / SGN
+                              <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue() || $form["vtsgn_demande"]->hasError()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélévement volontaire des VT / SGN <a title="Le prélévement se fera de préférence sur des vins encore en cuve ou en fût" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
                             </label>
                         </div>
                     </div>
@@ -61,7 +62,10 @@
         <div class="col-xs-4 col-xs-offset-1">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                    <h2 class="panel-title">Lieu de prélèvement</h2>
+                    <h2 class="panel-title">
+                    Lieu de prélèvement
+                    <a title="L'adresse à préciser ici est celle de votre lieu de vinification" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
+                    </h2>
                 </div>
                 <div class="panel-body form-chai">
                     <?php $chai = $drev->chais->get(DRev::CUVE) ?>

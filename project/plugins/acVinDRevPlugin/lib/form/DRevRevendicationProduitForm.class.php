@@ -16,15 +16,13 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
             'volume_revendique' => new sfValidatorNumber(array('required' => false))
         ));
 
-        if ($this->getObject()->getDocument()->isNonRecoltant()) {
+        if ($this->getObject()->detail->superficie_total) {
             unset($this->widgetSchema['superficie_revendique']);
             unset($this->validatorSchema['superficie_revendique']);
-        } else {
-
-            if ($this->getObject()->detail->superficie_total) {
-                unset($this->widgetSchema['superficie_revendique']);
-                unset($this->validatorSchema['superficie_revendique']);
-            }
+        } 
+        if ($this->getObject()->detail->volume_sur_place_revendique) {
+            unset($this->widgetSchema['volume_revendique']);
+            unset($this->validatorSchema['volume_revendique']);
         }
         
         $this->widgetSchema->setNameFormat('[%s]');
