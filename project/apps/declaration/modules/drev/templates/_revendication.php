@@ -7,7 +7,7 @@
             <?php if(!$drev->isNonRecoltant()): ?>
             <th class="text-center col-md-3">Superficie totale</th>
         	<?php endif; ?>
-            <th class="text-center col-md-3">Vol. revendiqué</th>
+            <th class="text-center col-md-3">Volume revendiqué</th>
         </tr>
     </thead>
     <tbody id="revendication_accordion" >

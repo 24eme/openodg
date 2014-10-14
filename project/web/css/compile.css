@@ -614,7 +614,7 @@ button.close{padding:0;cursor:pointer;background:transparent;border:0;-webkit-ap
 .tooltip.right{margin-left:3px;padding:0 5px}
 .tooltip.bottom{margin-top:3px;padding:5px 0}
 .tooltip.left{margin-left:-3px;padding:0 5px}
-.tooltip-inner{max-width:600px;padding:3px 8px;color:#fff;text-align:center;text-decoration:none;background-color:#827a69;border-radius:4px}
+.tooltip-inner{max-width:400px;padding:3px 8px;color:#fff;text-align:center;text-decoration:none;background-color:#827a69;border-radius:4px}
 .tooltip-arrow{position:absolute;width:0;height:0;border-color:transparent;border-style:solid}
 .tooltip.top .tooltip-arrow{bottom:0;left:50%;margin-left:-5px;border-width:5px 5px 0;border-top-color:#827a69}
 .tooltip.top-left .tooltip-arrow{bottom:0;left:5px;border-width:5px 5px 0;border-top-color:#827a69}
@@ -1202,7 +1202,7 @@ input[type="checkbox"],input[type="radio"]{width:auto}
 .btn.btn-tooltip{color:#827a69;background-color:transparent;padding:0}
 .btn.btn-tooltip.btn-lg{font-size:24px}
 .btn.btn-tooltip.btn-md{font-size:18px}
-.tooltip-inner{min-width:300px;font-size:14px}
+.tooltip-inner{font-size:14px}
 .breadcrumb-steps{background:#9b9383;counter-reset:steps;font-size:14px;font-weight:600;list-style:none;margin-bottom:0;margin-left:-20px;margin-top:0;overflow:hidden;padding:0;width:940px}.breadcrumb-steps:before,.breadcrumb-steps:after{content:" ";display:table}
 .breadcrumb-steps:after{clear:both}
 .breadcrumb-steps:before,.breadcrumb-steps:after{content:" ";display:table}
@@ -1259,4 +1259,6 @@ ul{list-style:none}
 .revendication_recap_td_libelle{padding-left:30px !important}
 .table_td_zebra{background-color:#fffbde}
 .table-striped-alt>tbody>tr:nth-child(2n+1)>td,.table-striped-alt>tbody>tr:nth-child(2n+1)>th{background-color:#efefec}
+.table-striped>tbody>tr:nth-child(odd)>td.cell-striped,.table-striped>tbody>tr:nth-child(odd)>th.cell-striped{background-color:#fffbde}
+.table-striped>tbody>tr:nth-child(odd)>td.cell-striped-alt,.table-striped>tbody>tr:nth-child(odd)>th.cell-striped-alt{background-color:#efefec}
 .with_superficie_fade{opacity:.6}
