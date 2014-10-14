@@ -1,5 +1,6 @@
 all:
   auth_mode: NO_CAS #NO_CAS, CAS
+  url_compte_civa : "https://url_compte_civa_pour_modifier_mdp"
   cas:
     domain: login.cas
     port: 443
