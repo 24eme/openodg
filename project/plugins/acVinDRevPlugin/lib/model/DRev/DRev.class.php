@@ -289,6 +289,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function validate() {
+        $this->cleanDoc();
         $this->validation = date('Y-m-d');
     }
 

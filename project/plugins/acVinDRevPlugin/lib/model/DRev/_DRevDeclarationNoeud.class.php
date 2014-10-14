@@ -130,6 +130,10 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     }
 
     public function isCleanable() {
+        if(count($this->getChildrenNode()) == 0) {
+            
+            return true;
+        }
 
         return false;
     }

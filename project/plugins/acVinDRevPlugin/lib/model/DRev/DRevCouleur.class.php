@@ -120,6 +120,11 @@ class DRevCouleur extends BaseDRevCouleur
             $this->volume_revendique = $this->detail->volume_sur_place_revendique;
         }
     }
+
+    public function isProduit() {
+
+        return $this->getProduitHash() == $this->getHash();
+    }
     
     public function isActive()
     {
@@ -127,9 +132,18 @@ class DRevCouleur extends BaseDRevCouleur
     }
 
     public function isCleanable() {
+
+        if(!$this->isProduit()) {
+
+            return parent::isCleanable();
+        }
+
         if(!$this->volume_revendique && !$this->superficie_revendique && !count($this->getProduitsCepage())) {
+            
             return true;
         }
+
+        return false;
     }
 
     
