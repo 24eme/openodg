@@ -22,7 +22,8 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Veuillez saisir les informations des appellations revendiquées dans la déclaration de Récolte de l'année</p>
+    <p>Les informations de revendication sont reprise depuis la déclaration de récolte quand cela est possible. 
+    <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
     <?php endif; ?>
@@ -59,15 +60,16 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                     ?>
                     <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
                         <?php echo $embedForm['superficie_revendique']->renderError() ?>
-                        <div class="col-xs-10 col-xs-offset-1">
+                        <div class="col-xs-8 col-xs-offset-2">
                             <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "ares")) ?>
                         </div>
                     </div>
                     <?php else: ?>
-                    <?php echo $produit->detail->superficie_total; ?>
+                        <?php echoFloat($produit->detail->superficie_total); ?> <small class="text-muted">ares</small>
                     <?php endif; ?>
                 </td>   
-                <td>
+                <td class="text-center">
+                    <?php if (isset($embedForm['volume_revendique'])): ?>
                     <?php
                     $global_error_class = ((($global_error_class == 'error_field_to_focused') && $appellation_field == 'volume') ||
                     ('drev_produits[produits]' . $global_error_id == $embedForm['volume_revendique']->renderName())) ?
@@ -75,15 +77,22 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                     ?>
                     <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
 
+                        <?php if($produit->detail->volume_sur_place): ?>
+                        <a title="Afin de calculer le volume revendiqué il faut: <br />
+                         1. Déterminer la partie du total des usages industriels dédiée au volume sur place. <br />
+                         2. Déduire le volume obtenu au volume sur place" data-placement="auto" data-toggle="tooltip" data-html="true" class="btn-tooltip btn btn-md pull-right col-xs-2"><span class="glyphicon glyphicon-question-sign"></span></a>
+                        <?php endif; ?>
+
                         <?php echo $embedForm['volume_revendique']->renderError() ?>
-                        <div class="col-xs-10 col-xs-offset-1">
+                        <div class="col-xs-8 col-xs-offset-2">
                             <?php $options = array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "hl"); ?>
 
                             <?php echo $embedForm['volume_revendique']->render(array('class' => 'disabled form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "hl")) ?>
                         </div>
-
-                        
                     </div>
+                    <?php else: ?>
+                        <?php echoFloat($produit->volume_revendique); ?> <small class="text-muted">hl</small>
+                    <?php endif; ?>
                 </td>
                 <?php if ($drev->hasDR()): ?>
                     <?php if (!$produit->detail->volume_sur_place): ?>
@@ -123,7 +132,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
                 <?php else: ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-			<?php endif; ?>
+            <?php endif; ?>
 
         </div>
     </div>
