@@ -57,7 +57,7 @@ class DRevLot extends BaseDRevLot
     }
     
     public function isCleanable() {
-        if($this->nb_hors_vtsgn > 1) {
+        if($this->nb_hors_vtsgn > 0) {
             return false;
         }
 

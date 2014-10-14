@@ -503,6 +503,10 @@ class drevActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
+        if(!$drev->validation) {
+            $drev->cleanDoc();
+        }
+
         $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
