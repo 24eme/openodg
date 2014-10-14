@@ -21,9 +21,9 @@ class DRevRevendicationProduitsForm extends sfForm
     public function doUpdateObject($values) 
     {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
-          unset($values[$key]['_revision']);
+            unset($values[$key]['_revision']);
         	$embedForm->doUpdateObject($values[$key]);
-    }
+        }
     }
 
     

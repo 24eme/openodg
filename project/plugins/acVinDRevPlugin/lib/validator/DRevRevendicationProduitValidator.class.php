@@ -22,6 +22,12 @@ class DRevRevendicationProduitValidator extends sfValidatorSchema {
 
         $errorSchema = new sfValidatorErrorSchema($this);
         $produits = $values['produits'];
+        if(!is_array($produits)) {
+            if (count($errorSchema)) { 
+                throw new sfValidatorErrorSchema($this, $errorSchema);
+            }
+            return $values;
+        }
         foreach ($produits as $key => $produit) {
             if (is_array($produit) && array_key_exists('superficie_revendique', $produit)) {
                 if (is_null($produit['superficie_revendique']) && !is_null($produit['volume_revendique'])) {
@@ -37,7 +43,7 @@ class DRevRevendicationProduitValidator extends sfValidatorSchema {
                     return $values;
                 }
             } else {
-                if (is_null($produit['volume_revendique'])) {  
+                if (array_key_exists('volume_revendique', $produit) && is_null($produit['volume_revendique'])) {  
                     $this->setMessage('invalid_volume', str_replace('[key]', '['.$key.'][volume_revendique]', $this->getMessage('invalid_volume')));
                     $errorSchema->addError(new sfValidatorError($this, 'invalid_volume'),'volume_revendique'); 
                     throw new sfValidatorErrorSchema($this, $errorSchema);

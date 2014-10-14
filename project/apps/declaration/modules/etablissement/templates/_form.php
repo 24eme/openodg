@@ -4,14 +4,14 @@
     <div id="row_form_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if(!$form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
             <div class="form-group">
-                <strong class="col-xs-3 text-right">CVI</strong>
+                <strong class="col-xs-3 text-right">N°&nbsp;CVI</strong>
                 <span class="col-xs-9">
                    <?php echo $etablissement->cvi; ?>
                 </span>
             </div>
             <div class="form-group">
                 <?php echo $form["siret"]->renderError(); ?>
-                <?php echo $form["siret"]->renderLabel(null, array("class" => "col-xs-3 control-label")); ?>
+                <?php echo $form["siret"]->renderLabel("N°&nbsp;SIRET", array("class" => "col-xs-3 control-label")); ?>
                 <div class="col-xs-9">
                     <?php echo $form["siret"]->render(array("class" => "form-control")); ?>
                 </div>
@@ -79,13 +79,13 @@
     <div id="row_info_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
             <div class="form-group">
-                <strong class="col-xs-3 text-right">CVI</strong>
+                <strong class="col-xs-3 text-right">N°&nbsp;CVI</strong>
                 <span class="col-xs-9">
                    <?php echo $etablissement->cvi; ?>
                 </span>
             </div>
             <div class="form-group">
-                <strong class="col-xs-3 text-right">SIRET</strong>
+                <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
                 <span class="col-xs-9">
                    <?php echo $etablissement->siret; ?>
                 </span>

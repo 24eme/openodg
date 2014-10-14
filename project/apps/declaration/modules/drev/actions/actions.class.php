@@ -34,11 +34,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_' . $drev->etape, $drev);
         }
 
-        if ($drev->isNonRecoltant()) {
-            return $this->redirect('drev_exploitation', $drev);
-        }
-
-        return $this->redirect('drev_dr', $drev);
+        return $this->redirect('drev_exploitation', $drev);
     }
 
     public function executeDelete(sfWebRequest $request) {
@@ -86,7 +82,7 @@ class drevActions extends sfActions {
         $this->drev->updateFromCSV();
         $this->drev->save();
 
-        return $this->redirect($this->generateUrl('drev_exploitation', $this->drev));
+        return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
     }
 
     public function executeExploitation(sfWebRequest $request) {
@@ -119,6 +115,11 @@ class drevActions extends sfActions {
         $this->drev->save();
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
+        }
+
+        if(!$this->drev->isNonRecoltant() && !$this->drev->hasDr()) {
+
+            return $this->redirect('drev_dr', $this->drev);
         }
 
         return $this->redirect('drev_revendication', $this->drev);

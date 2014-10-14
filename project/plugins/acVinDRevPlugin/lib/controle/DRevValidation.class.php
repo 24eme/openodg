@@ -93,7 +93,7 @@ class DRevValidation extends DocumentValidation
       
   		if (
   			$produit->superficie_revendique !== null && 
-  			$produit->superficie_revendique !== null && 
+  			$produit->detail->superficie_total !== null && 
   			$produit->superficie_revendique != $produit->detail->superficie_total
   		) {
                     $appellation_hash = str_replace('/','-',$produit->getHash()).'-surface';
