@@ -14,7 +14,13 @@ $global_error_id = substr($global_error_with_infos, 0, strrpos($global_error_wit
 $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 ?>
 <div class="page-header">
-    <h2>Revendication</h2>
+    <?php if($drev->hasDR()): ?>
+        <a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>
+    <?php endif; ?>
+    <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
+        <a class="btn btn-warning btn-sm pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Récupérer les données de la Déclaration de Récolte</a>
+    <?php endif; ?>
+    <h2>Revendication</h2> 
 </div>
 
 <form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
@@ -22,7 +28,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Les informations de revendication sont reprise depuis la déclaration de récolte quand cela est possible. 
+    <p>Les informations de revendication sont reprise depuis la Déclaration de Récolte quand cela est possible. 
     <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
