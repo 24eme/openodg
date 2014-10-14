@@ -171,6 +171,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $produit;
     }
 
+    public function cleanDoc() {
+
+        $this->declaration->cleanNode();
+        $this->cleanLots();
+    }
+
+    public function cleanLots() {
+        foreach($this->prelevements as $prelevement) {
+            $prelevement->cleanLots();
+        }
+    }
+
     public function getPrelevementKeys() {
 
         return self::$prelevement_keys;

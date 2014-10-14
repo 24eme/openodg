@@ -56,6 +56,14 @@ class DRevLot extends BaseDRevLot
         return ($this->hasVtsgn() || $this->hasHorsVtsgn())? true : false;
     }
     
+    public function isCleanable() {
+        if($this->nb_hors_vtsgn > 1) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function hasConfigVtsgn() {
 
         return !$this->exist('no_vtsgn') || !$this->get('no_vtsgn');
