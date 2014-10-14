@@ -47,4 +47,14 @@ class DRevCepage extends BaseDRevCepage {
     public function updateTotal() {
         $this->volume_revendique_total = $this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt;
     }
+
+    public function isCleanable() {
+
+        return !$this->volume_revendique_total && !$this->superficie_revendique;
+    }
+
+    public function cleanNode() {
+        
+        return false;
+    }
 }

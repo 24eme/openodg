@@ -437,6 +437,7 @@ class drevActions extends sfActions {
 
         $this->drev->save();
 
+        $this->drev->declaration->cleanNode();
         $this->validation = new DRevValidation($this->drev);
         
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));

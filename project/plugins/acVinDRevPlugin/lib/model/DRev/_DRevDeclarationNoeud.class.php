@@ -129,5 +129,23 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $total;
     }
 
+    public function isCleanable() {
+
+        return false;
+    }
+
+    public function cleanNode() {
+        $hash_to_delete = array();
+        foreach($this->getChildrenNode() as $children) {
+            $children->cleanNode();
+            if($children->isCleanable()) {
+                $hash_to_delete[] = $children->getHash();
+            }
+        }
+
+        foreach($hash_to_delete as $hash) {
+            $this->getDocument()->remove($hash);
+        }
+    }
 
 } 

@@ -53,7 +53,7 @@ class DRevCouleur extends BaseDRevCouleur
             return parent::getProduitsCepage();
         }
 
-        if($this->getMention()->getKey() != "lieu") {
+        if($this->getLieu()->getKey() != "lieu") {
 
             return parent::getProduitsCepage();
         }
@@ -125,5 +125,12 @@ class DRevCouleur extends BaseDRevCouleur
     {
 	    return ($this->volume_revendique !== null || $this->superficie_revendique !== null);
     }
+
+    public function isCleanable() {
+        if(!$this->volume_revendique && !$this->superficie_revendique && !count($this->getProduitsCepage())) {
+            return true;
+        }
+    }
+
     
 }
