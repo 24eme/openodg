@@ -54,4 +54,8 @@ class DRevClient extends acCouchdbClient {
                     ->endkey(sprintf("DREV-%s-%s", $cvi, $campagne_to))
                     ->execute($hydrate);
     }
+    
+    public function getOrdrePrelevements() {
+        return array("cuve" => array("cuve_ALSACE","cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
+    }
 }

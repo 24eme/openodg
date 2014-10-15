@@ -95,7 +95,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function initAppellations() {
-        foreach($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
+        foreach ($this->declaration->certification->genre->getConfigChidrenNode() as $appellation) {
             $this->addAppellation($appellation->getHash());
         }
     }
@@ -132,7 +132,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
             $p->reorderByConf();
         }
-        
+
         $this->updatePrelevementsFromRevendication();
         $this->updateRevendicationCepageFromLots();
         $this->declaration->reorderByConf();
@@ -146,7 +146,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             reset($config_produits);
             $this->addProduitCepage(key($config_produits));
         }
-        
+
         return $appellation;
     }
 
@@ -249,6 +249,35 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $prelevements;
     }
 
+    public function getPrelevementsOrdered($filter_key = null) {
+        $drev_prelevements = $this->getPrelevementsByDate();
+        $ordrePrelevements = DRevClient::getInstance()->getOrdrePrelevements();
+        $result = array();
+        foreach ($ordrePrelevements as $type => $prelevementsOrdered) {
+            foreach ($prelevementsOrdered as $prelevementOrdered) {
+                foreach ($drev_prelevements as $prelevement) {                    
+                    if ('/prelevements/' . $prelevementOrdered == $prelevement->getHash()) {
+
+                        if (!array_key_exists($type, $result)) {
+
+                            $result[$type] = new stdClass();
+                            if ($type == "cuve") {
+                                $result[$type]->libelle = "Dégustation conseil";
+                            }
+                            if ($type == "bouteille") {
+                                $result[$type]->libelle = "Contrôle externe";
+                            }
+                            $result[$type]->prelevements = array();
+                        }
+                        $result[$type]->prelevements[] = $prelevement;
+                    }
+                }
+            }
+        
+        }
+        return $result;
+    }
+
     public function hasRevendicationAlsace() {
         return true;
     }
@@ -271,9 +300,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
     }
-    
+
     public function storeEtape($etape) {
-    	$this->add('etape', $etape);
+        $this->add('etape', $etape);
     }
 
     public function validate() {
@@ -347,30 +376,30 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function updatePrelevementsFromRevendication() {
         $prelevements_to_delete = array_flip($this->prelevement_keys);
-        foreach($this->declaration->getProduits() as $produit) {
-            if(!$produit->isActive()) {
+        foreach ($this->declaration->getProduits() as $produit) {
+            if (!$produit->isActive()) {
 
                 continue;
             }
             $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
             $key = $this->getPrelevementsKeyByHash($hash);
-            $this->addPrelevement(self::CUVE.$key);
-            $this->addPrelevement(self::BOUTEILLE.$key);
-            unset($prelevements_to_delete[self::CUVE.$key]);
-            unset($prelevements_to_delete[self::BOUTEILLE.$key]);
+            $this->addPrelevement(self::CUVE . $key);
+            $this->addPrelevement(self::BOUTEILLE . $key);
+            unset($prelevements_to_delete[self::CUVE . $key]);
+            unset($prelevements_to_delete[self::BOUTEILLE . $key]);
         }
 
-        if($this->declaration->hasVtsgn()) {
+        if ($this->declaration->hasVtsgn()) {
             $this->addPrelevement(self::CUVE_VTSGN);
             $this->addPrelevement(self::BOUTEILLE_VTSGN);
             unset($prelevements_to_delete[self::CUVE_VTSGN]);
             unset($prelevements_to_delete[self::BOUTEILLE_VTSGN]);
         }
 
-        foreach($prelevements_to_delete as $key => $value) {
-            if(!$this->prelevements->exist($key)) {
-               
-               continue;
+        foreach ($prelevements_to_delete as $key => $value) {
+            if (!$this->prelevements->exist($key)) {
+
+                continue;
             }
 
             $this->prelevements->remove($key);
@@ -439,7 +468,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $produit->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
                 $produit->superficie_revendique += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             }
-            
         }
     }
 
@@ -447,9 +475,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $appellations = $this->declaration->getAppellations();
         $produitsCepageByAppellations = array();
         foreach ($appellations as $appellation) {
-                $produitsCepageByAppellations[$appellation->getHash()] = new stdClass();
-                $produitsCepageByAppellations[$appellation->getHash()]->appellation = $appellation;
-                $produitsCepageByAppellations[$appellation->getHash()]->cepages = $appellation->getProduitsCepage();
+            $produitsCepageByAppellations[$appellation->getHash()] = new stdClass();
+            $produitsCepageByAppellations[$appellation->getHash()]->appellation = $appellation;
+            $produitsCepageByAppellations[$appellation->getHash()]->cepages = $appellation->getProduitsCepage();
         }
         return $produitsCepageByAppellations;
     }
@@ -459,12 +487,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         foreach ($this->declaration->getProduitsCepage() as $produit) {
             $lot = $this->addLotProduit($produit->getHash(), self::CUVE);
 
-            if($lot) {
+            if ($lot) {
                 $prelevements[$lot->getPrelevement()->getKey()] = $lot->getPrelevement();
             }
         }
 
-        foreach($prelevements as $prelevement) {
+        foreach ($prelevements as $prelevement) {
             $prelevement->reorderByConf();
         }
     }
@@ -476,22 +504,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateProduitsFromCepage() {
-        foreach($this->getProduits() as $produit) {
+        foreach ($this->getProduits() as $produit) {
             $produit->updateFromCepage();
         }
     }
-    
-    public function getChaiKey($conditionnement)
-    {
-    	if ($this->exist('chais')) {
-        	if ($this->chais->exist($conditionnement)) {
-    			foreach($this->getEtablissementObject()->chais as $chai) {
-    				if ($chai->adresse == $this->chais->get($conditionnement)->adresse) {
-    					return $chai->getKey();
-    				}
-    			}
-    		}
-    	}
-    	return null;
+
+    public function getChaiKey($conditionnement) {
+        if ($this->exist('chais')) {
+            if ($this->chais->exist($conditionnement)) {
+                foreach ($this->getEtablissementObject()->chais as $chai) {
+                    if ($chai->adresse == $this->chais->get($conditionnement)->adresse) {
+                        return $chai->getKey();
+                    }
+                }
+            }
+        }
+        return null;
     }
+
 }
