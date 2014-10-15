@@ -1589,20 +1589,18 @@ input[type="radio"]
 
         > a#btn-popup
         {
-            background: @btn-warning-bg;
-            color: @btn-warning-color;
+            background: @white;
+            color: @btn-warning-bg;
             font-size: @nav-tabs-link-font-size;
             font-weight: 600;
             font-size: 25px;
             padding-top: 16px;
-            color: @btn-primary-color;
             border: none;
 
             &:hover,
             &:focus
             {
-                background: @btn-warning-border;
-                border: none;
+            	color: darken(@btn-warning-bg, 15%);
             }
         }
 
