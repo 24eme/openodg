@@ -137,6 +137,20 @@ class DRevPrelevement extends BaseDRevPrelevement {
         return "/declaration/certification/genre/" . preg_replace("/^(.+_)/", "appellation", $this->getKey());
     }
 
+    public function cleanLots() {
+        $lots_to_delete = array();
+
+        foreach($this->lots as $lot) {
+            if($lot->isCleanable()) {
+                $lots_to_delete[] = $lot->getKey();
+            }
+        }
+
+        foreach($lots_to_delete as $key) {
+            $this->lots->remove($key);
+        }
+    }
+
     public function updateTotal() {
 
         $this->total_lots = 0;

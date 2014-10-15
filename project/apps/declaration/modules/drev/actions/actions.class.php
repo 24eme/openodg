@@ -437,6 +437,7 @@ class drevActions extends sfActions {
 
         $this->drev->save();
 
+        $this->drev->cleanDoc();
         $this->validation = new DRevValidation($this->drev);
         
         $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
@@ -501,6 +502,10 @@ class drevActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+
+        if(!$drev->validation) {
+            $drev->cleanDoc();
+        }
 
         $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));

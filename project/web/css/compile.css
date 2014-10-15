@@ -1262,3 +1262,5 @@ ul{list-style:none}
 .table-striped>tbody>tr:nth-child(odd)>td.cell-striped,.table-striped>tbody>tr:nth-child(odd)>th.cell-striped{background-color:#fffbde}
 .table-striped>tbody>tr:nth-child(odd)>td.cell-striped-alt,.table-striped>tbody>tr:nth-child(odd)>th.cell-striped-alt{background-color:#efefec}
 .with_superficie_fade{opacity:.6}
+#modification_compte .presentation .btn_row,#modification_compte .modification .btn_row{padding-top:33px}
+#modification_compte .presentation .row,#modification_compte .modification .row{padding-top:20px}#modification_compte .presentation .row div,#modification_compte .modification .row div{line-height:30px}
