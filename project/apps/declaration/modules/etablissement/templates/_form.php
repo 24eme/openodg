@@ -74,6 +74,13 @@
                     <?php echo $form["fax"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <div class="form-group">
+                <?php echo $form["email"]->renderError(); ?>
+                <?php echo $form["email"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                    <?php echo $form["email"]->render(array("class" => "form-control")); ?>
+                </div>
+            </div>
         </div>
     </div>
     <div id="row_info_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
@@ -138,6 +145,12 @@
                 <strong class="col-xs-4 text-right">Fax</strong>
                 <span class="col-xs-8">
                    <?php echo $etablissement->fax; ?>
+                </span>
+            </div>
+            <div class="form-group">
+                <strong class="col-xs-4 text-right">Email</strong>
+                <span class="col-xs-8">
+                   <?php echo $etablissement->email; ?>
                 </span>
             </div>
         </div>

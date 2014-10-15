@@ -69,12 +69,6 @@ class DRevValidation extends DocumentValidation {
         }
     }
 
-    protected function controleEngagementSv() {
-        if (!$this->document->isNonRecoltant()) {
-            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
-        }
-    }
-
     protected function controleEngagementPressoir($produit) {
         if ($produit->volume_revendique !== null && $produit->getAppellation()->getKey() == 'appellation_CREMANT') {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
@@ -141,6 +135,12 @@ class DRevValidation extends DocumentValidation {
                 ($produit->superficie_revendique === null && $produit->volume_revendique !== null)
         ) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        }
+    }
+
+    protected function controleEngagementSv() {
+        if ($this->document->isNonRecoltant()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
         }
     }
 

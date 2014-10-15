@@ -13,6 +13,7 @@ class EtablissementForm extends acCouchdbObjectForm
             "telephone_mobile" => new sfWidgetFormInput(),
             "telephone_prive" => new sfWidgetFormInput(),
             "fax" => new sfWidgetFormInput(),
+       		"email" => new sfWidgetFormInput(),
         ));
 
         $this->setValidators(array(
@@ -25,6 +26,7 @@ class EtablissementForm extends acCouchdbObjectForm
             'telephone_mobile' => new sfValidatorString(array("required" => false)),
             'telephone_prive' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
+       		"email" => new sfValidatorEmailStrict(array("required" => false)),
         ));
 
         $this->widgetSchema->setNameFormat('etablissement[%s]');

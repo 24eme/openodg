@@ -2,7 +2,7 @@
 <?php include_partial('drev/step', array('step' => 'controle_externe', 'drev' => $drev)) ?>
 
 <div class="page-header">
-    <h2>Contrôle externe <small>effectué par Qualisud</small></h2>
+    <h2>Contrôle externe <small>Effectué par Qualisud</small></h2>
 </div>
 
 <form method="post" action="<?php echo url_for("drev_controle_externe", $drev) ?>" role="form" class="form-horizontal ajaxForm">

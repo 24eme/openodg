@@ -1587,6 +1587,25 @@ input[type="radio"]
 			}
 		}
 
+        > a#btn-popup
+        {
+            background: @btn-warning-bg;
+            color: @btn-warning-color;
+            font-size: @nav-tabs-link-font-size;
+            font-weight: 600;
+            font-size: 25px;
+            padding-top: 16px;
+            color: @btn-primary-color;
+            border: none;
+
+            &:hover,
+            &:focus
+            {
+                background: @btn-warning-border;
+                border: none;
+            }
+        }
+
 	    &.disabled > a {
 	      background-color: @white;
 	    }
