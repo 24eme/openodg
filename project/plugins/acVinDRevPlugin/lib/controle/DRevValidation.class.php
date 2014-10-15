@@ -75,7 +75,7 @@ class DRevValidation extends DocumentValidation
     
     protected function controleEngagementSv()
     {
-    	if (!$this->document->isNonRecoltant()) {
+    	if ($this->document->isNonRecoltant()) {
   			$this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, ''); 
   		}
     }
