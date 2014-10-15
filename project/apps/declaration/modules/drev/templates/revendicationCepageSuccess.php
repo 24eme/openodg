@@ -37,7 +37,7 @@
                         <div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['volume_revendique']->renderError() ?>
                             <div class="col-xs-8 col-xs-offset-2">
-                                <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input input-rounded text-right')) ?>
+                                <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input input-rounded num_float text-right')) ?>
                             </div>
                         </div>
 
@@ -47,7 +47,7 @@
                             <div class="form-group <?php if($embedForm['volume_revendique_vt']->hasError()): ?>has-error<?php endif; ?>">
                                 <?php echo $embedForm['volume_revendique_vt']->renderError() ?>
                                 <div class="col-xs-8 col-xs-offset-2">
-                                    <?php echo $embedForm['volume_revendique_vt']->render(array('class' => 'form-control input input-rounded text-right')) ?>
+                                    <?php echo $embedForm['volume_revendique_vt']->render(array('class' => 'form-control input input-rounded num_float text-right')) ?>
                                 </div>
                             </div>
                         </td>
@@ -55,7 +55,7 @@
                             <div class="form-group <?php if($embedForm['volume_revendique_sgn']->hasError()): ?>has-error<?php endif; ?>">
                                 <?php echo $embedForm['volume_revendique_sgn']->renderError() ?>
                                 <div class="col-xs-8 col-xs-offset-2">
-                                    <?php echo $embedForm['volume_revendique_sgn']->render(array('class' => 'form-control input input-rounded text-right')) ?>
+                                    <?php echo $embedForm['volume_revendique_sgn']->render(array('class' => 'form-control input input-rounded num_float text-right')) ?>
                                 </div>
                             </div>
                         </td>

@@ -26,7 +26,7 @@ class EtablissementForm extends acCouchdbObjectForm
             'telephone_mobile' => new sfValidatorString(array("required" => false)),
             'telephone_prive' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
-       		"email" => new sfValidatorEmailStrict(array("required" => true)),
+       		"email" => new sfValidatorEmailStrict(array("required" => false)),
         ));
 
         $this->widgetSchema->setNameFormat('etablissement[%s]');
