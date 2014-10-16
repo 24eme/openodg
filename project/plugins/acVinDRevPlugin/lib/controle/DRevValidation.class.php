@@ -21,7 +21,7 @@ class DRevValidation extends DocumentValidation {
 
         $this->addControle(self::TYPE_WARNING, 'dr_cepage', 'Vous ne déclarez aucun lot pour un cépage présent dans votre DR'); // !!!!
         //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
-        $this->addControle(self::TYPE_WARNING, 'periodes_cuves', 'Vous devez déclarer vos lots.');
+        $this->addControle(self::TYPE_WARNING, 'declaration_lots', 'Vous devez déclarer vos lots.');
 
         /*
          * Error
@@ -31,6 +31,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'prelevement', 'Vous devez saisir une semaine de prélèvement');
         $this->addControle(self::TYPE_ERROR, 'revendication_sans_lot', 'Vous avez revendiqué des produits sans spécifier de lots');
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
+		$this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'La période de dégustation ne peut pas être antérieur à la période de prélèvement');
 
         /*
          * Engagement
@@ -117,7 +118,7 @@ class DRevValidation extends DocumentValidation {
                 if ($this->document->prelevements->exist($cuve)) {
                     if ($this->document->prelevements->get($cuve)->lots->exist($correspondanceLot)) {
                         if (!$this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->nb_hors_vtsgn) {
-                            $this->addPoint(self::TYPE_WARNING, 'periodes_cuves', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
+                            $this->addPoint(self::TYPE_WARNING, 'declaration_lots', $this->document->prelevements->get($cuve)->libelle_produit . ' ' . $this->document->prelevements->get($cuve)->lots->get($correspondanceLot)->libelle, $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($cuve))));
                         }
                     }
                 }
@@ -175,7 +176,7 @@ class DRevValidation extends DocumentValidation {
         $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
 
         if ($prelevement->date && $degustation->date && $degustation->date <= $prelevement->date) {
-            //$this->addPoint(self::TYPE_WARNING, 'periodes_cuves', sprintf("%s - %s", $degustation->libelle, $degustation->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_ERROR, 'periodes_cuves', sprintf("%s - %s", $degustation->libelle, $degustation->libelle_produit), $this->generateUrl('drev_controle_externe', array('sf_subject' => $this->document)));
         }
     }
 
