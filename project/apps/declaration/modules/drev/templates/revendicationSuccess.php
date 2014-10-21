@@ -40,15 +40,15 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         <thead>
             <tr>
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
-                <th colspan="2" style="opacity: 0.6;" class="text-center">Déclaration de Récolte</th>
+                <th colspan="2" style="opacity: 0.7;" class="text-center">Déclaration de Récolte</th>
             </tr>
             <tr>
                 <th class="col-xs-4">Appellation revendiquée</th>
-                <th class="col-xs-2 text-center">Superficie Totale<a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-2 text-center">Volume<a title="Le volume revendiqué corrspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a><br />Revendiqué</th>
+                <th class="col-xs-2 text-center"><a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Superficie Totale<br /><small class="text-muted">(ares)</small></th>
+                <th class="col-xs-2 text-center"><a title="Le volume revendiqué corrspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Volume Revendiqué<br /><small class="text-muted">(hl)</small></th>
                  <?php if ($drev->hasDR()): ?>
-                <th style="opacity: 0.6;" class="col-xs-1 text-center small">Volume sur place</th>
-                <th style="opacity: 0.6;" class="col-xs-2 text-center small">Volume total <small>dont</small> Usages industriels</th>
+                <th style="opacity: 0.7;" class="col-xs-1 text-center small">Volume sur place</th>
+                <th style="opacity: 0.7;" class="col-xs-2 text-center small">Volume total <small>dont</small> Usages industriels</th>
                 <?php endif; ?>
             </tr>
 
@@ -70,12 +70,14 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                     ?>
                     <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
                         <?php echo $embedForm['superficie_revendique']->renderError() ?>
-                        <div class="col-xs-8 col-xs-offset-2">
+                        <div class="col-xs-10 col-xs-offset-1">
                             <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "ares")) ?>
                         </div>
                     </div>
                     <?php else: ?>
-                        <?php echoFloat($produit->detail->superficie_total); ?> <small class="text-muted">ares</small>
+                        <div class="col-xs-10 text-right">
+                        <?php echoFloat($produit->detail->superficie_total); ?>
+                        </div>
                     <?php endif; ?>
                 </td>   
                 <td class="text-center">
@@ -86,17 +88,8 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                     'error_field_to_focused' : '';
                     ?>
                     <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
-
-                        <?php if($produit->detail->volume_sur_place): ?>
-                        <a title="Afin de calculer le volume revendiqué il faut: <br />
-                         1. Déterminer la partie du total des usages industriels dédiée au volume sur place. <br />
-                         2. Déduire le volume obtenu au volume sur place" data-placement="auto" data-toggle="tooltip" data-html="true" class="btn-tooltip btn btn-md pull-right col-xs-2"><span class="glyphicon glyphicon-question-sign"></span></a>
-                        <?php endif; ?>
-
                         <?php echo $embedForm['volume_revendique']->renderError() ?>
-                        <div class="col-xs-8 col-xs-offset-2">
-                            <?php $options = array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "hl"); ?>
-
+                        <div class="col-xs-10 col-xs-offset-1">
                             <?php echo $embedForm['volume_revendique']->render(array('class' => 'disabled form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "hl")) ?>
                         </div>
                     </div>
@@ -106,13 +99,13 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 </td>
                 <?php if ($drev->hasDR()): ?>
                     <?php if (!$produit->detail->volume_sur_place): ?>
-                        <td style="opacity: 0.6;"></td>
-                        <td style="opacity: 0.6;"></td>
+                        <td style="opacity: 0.7;"></td>
+                        <td style="opacity: 0.7;"></td>
                     <?php else: ?>
-                        <td style="opacity: 0.6;" class="text-right text-muted">
+                        <td style="opacity: 0.7;" class="text-right text-muted">
                           <?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
                         </td>
-                        <td style="opacity: 0.6;" class="text-right text-muted">
+                        <td style="opacity: 0.7;" class="text-right text-muted">
                           <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
                           <small>dont</small>
                           <?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
