@@ -36,18 +36,22 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($sf_user->hasFlash('erreur')): ?>
     <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
     <?php endif; ?>
-    
     <table class="table table-striped">
         <thead>
             <tr>
+                <th colspan="3" class="text-center">Déclaration de Revendication</th>
+                <th colspan="2" style="opacity: 0.6;" class="text-center">Déclaration de Récolte</th>
+            </tr>
+            <tr>
                 <th class="col-xs-4">Appellation revendiquée</th>
-                <th class="col-xs-2 text-center">Superficie Totale<br /><small class="text-muted"> (ares)</small><a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-2 text-center">Volume&nbsp;Revendiqué<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué corrspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <?php if ($drev->hasDR()): ?>
-                <th class="col-xs-1 text-center">Volume sur place</th>
-                <th class="col-xs-2 text-center text-muted">Volume total <small>dont</small> Usages industriels</th>
+                <th class="col-xs-2 text-center">Superficie Totale<a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-2 text-center">Volume<a title="Le volume revendiqué corrspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a><br />Revendiqué</th>
+                 <?php if ($drev->hasDR()): ?>
+                <th style="opacity: 0.6;" class="col-xs-1 text-center small">Volume sur place</th>
+                <th style="opacity: 0.6;" class="col-xs-2 text-center small">Volume total <small>dont</small> Usages industriels</th>
                 <?php endif; ?>
             </tr>
+
         </thead>
         <tbody>
             <?php
@@ -102,13 +106,13 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 </td>
                 <?php if ($drev->hasDR()): ?>
                     <?php if (!$produit->detail->volume_sur_place): ?>
-                        <td class=""></td>
-                        <td></td>
+                        <td style="opacity: 0.6;"></td>
+                        <td style="opacity: 0.6;"></td>
                     <?php else: ?>
-                        <td class="text-right">
+                        <td style="opacity: 0.6;" class="text-right text-muted">
                           <?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
                         </td>
-                        <td class="text-right text-muted">
+                        <td style="opacity: 0.6;" class="text-right text-muted">
                           <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
                           <small>dont</small>
                           <?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
@@ -117,19 +121,12 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                   <?php endif; ?>
             </tr>
             <?php endforeach; ?>
-            <?php if ($ajoutForm->hasProduits()): ?>
-            <tr>
-                <td>
-                    <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
-                </td>
-                <td></td><td></td>
-                <?php if ($drev->hasDR()): ?>
-                    <td></td><td></td>
-                <?php endif; ?>
-            </tr>
-            <?php endif; ?>
         </tbody>
     </table>
+
+    <?php if ($ajoutForm->hasProduits()): ?>
+        <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
+    <?php endif; ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
