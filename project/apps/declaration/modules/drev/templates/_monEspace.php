@@ -1,12 +1,12 @@
 <?php if(!count($drevsHistory) && !$etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)): ?>
     <?php return; ?>
 <?php endif; ?>
-<div class="row">
+
     <div class="col-xs-4">
          <?php if($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)): ?>
         <div class="panel <?php if ($drev && $drev->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
             <div class="panel-heading">
-                <h2 class="panel-title">DREV de l'année</h2>
+                <h3>Appellations&nbsp;Viticoles&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?></h3>
             </div>
             <div class="panel-body">
                 <?php if ($drev && $drev->validation): ?>
@@ -32,20 +32,3 @@
         </div>
         <?php endif; ?>
     </div>
-    <div class="col-xs-4">
-        <?php if(count($drevsHistory) > 0): ?>  	
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h2 class="panel-title">Historique</h2>
-            </div>
-            <ul class="list-group">
-            <?php foreach ($drevsHistory as $drev_h): ?>
-                <li class="list-group-item">
-                    <a class="btn btn-link btn-primary" href="<?php echo url_for('drev_visualisation', $drev_h) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Revendication <?php echo $drev_h->campagne ?></a>
-                </li>
-            <?php endforeach; ?>
-            </ul>
-        </div>
-        <?php endif; ?>
-    </div>
-</div>
