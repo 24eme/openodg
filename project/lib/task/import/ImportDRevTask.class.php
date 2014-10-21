@@ -79,12 +79,16 @@ EOF;
     }
 
     protected function save($doc) {
-         $doc->constructId();
+        $doc->constructId();
         if($doc->isNew()) {
             echo sprintf("SUCCESS;%s;%s\n", "Création", $doc->_id);
         } else {
             echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $doc->_id);
         }
+
+        $doc->cleanDoc();
+        $doc->validation = date('Y-m-d');
+
         $doc->save();
     }
 
@@ -109,6 +113,8 @@ EOF;
         $doc->add('declaration');
         $doc->remove('prelevements');
         $doc->add('prelevements');
+
+        $doc->storeDeclarant();
 
         return $doc;
     }
