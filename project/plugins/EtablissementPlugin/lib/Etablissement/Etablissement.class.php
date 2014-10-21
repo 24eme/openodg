@@ -24,5 +24,10 @@ class Etablissement extends BaseEtablissement {
 
         return $this->familles->exist($famille);
     }
+    
+    public function needEmailConfirmation()
+    {
+    	return (!$this->exist('date_premiere_connexion') || !$this->get('date_premiere_connexion'))? true : false;
+    }
 
 }
