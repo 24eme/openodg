@@ -481,8 +481,8 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         
         $documents = $this->drev->getOrAdd('documents');
-        
-        $this->form = (count($documents->toArray()))? new DRevDocumentsForm($documents) : null;
+
+        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin())? new DRevDocumentsForm($documents) : null;
         
         if (!$request->isMethod(sfWebRequest::POST)) {
 
