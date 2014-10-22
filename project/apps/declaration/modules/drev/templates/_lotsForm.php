@@ -11,7 +11,7 @@
 <table class="table table-striped<?php if ($form->hasGlobalErrors()): ?> has-error<?php endif; ?>">
     <thead>
         <tr>
-            <th class="col-xs-6">Produits</th>
+            <th class="col-xs-6"><?php echo $title ?></th>
             <th class="text-center col-xs-6">Lots Hors VT / SGN</th>
         </tr>
     </thead>

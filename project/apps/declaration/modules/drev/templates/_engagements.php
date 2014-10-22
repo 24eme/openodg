@@ -1,12 +1,13 @@
-<h2 class="h3">Engagements</h2>
+<h2 class="h3">Je m'engage à fournir <?php if (count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 1): ?>les pièces suivantes<?php else: ?>la pièce suivante<?php endif; ?></h2>
 
-<div class="alert" role="alert">
-    <strong>Je m'engage à :</strong>
+<div class="alert" role="alert" id="engagements">
     <div class="form-group">
     <?php if($form->hasErrors()): ?>
-    <ul class="error_list">
-		<li class="text-left">Vous devez vous engager pour valider.</li>
-	</ul>
+    <div class="alert alert-danger" role="alert">
+	    <ul class="error_list">
+			<li class="text-left">Vous devez vous engager pour valider.</li>
+		</ul>
+	</div>
     <?php endif; ?>
     <?php foreach ($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement): ?>
     <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?><div class="has-error"><?php endif; ?>

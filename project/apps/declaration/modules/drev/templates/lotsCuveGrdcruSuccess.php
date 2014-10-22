@@ -9,7 +9,7 @@
 <form method="post" action="<?php echo url_for('drev_lots', $drev->addPrelevement(Drev::CUVE_GRDCRU)); ?>" role="form" class="ajaxForm">
 
     <p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace Grand Cru.</p>
-    <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm)); ?>
+    <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm, 'title' => 'Lieux - Cépages')); ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">

@@ -4,7 +4,7 @@
     <h2>Validation de votre déclaration</h2>
 </div>
 
-<form role="form" action="" method="post">
+<form role="form" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
@@ -12,8 +12,9 @@
             <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
         <?php endif; ?>
         <?php include_partial('drev/recap', array('drev' => $drev)); ?>
-    
-        <?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
+    	<?php  if (count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+        	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
+        <?php endif; ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">
