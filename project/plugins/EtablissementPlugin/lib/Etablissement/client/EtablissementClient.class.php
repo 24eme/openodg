@@ -8,6 +8,11 @@ class EtablissementClient extends acCouchdbClient {
     const FAMILLE_VINIFICATEUR = "VINIFICATEUR";
     const FAMILLE_PRODUCTEUR = "PRODUCTEUR";
     const FAMILLE_DISTILLATEUR = "DISTILLATEUR";
+    const FAMILLE_ELABORATEUR = "ELABORATEUR";
+    const FAMILLE_CONDITIONNEUR = "CONDITIONNEUR";
+    const FAMILLE_METTEUR_EN_MARCHE = "METTEUR_EN_MARCHE";
+    const FAMILLE_NEGOCIANT = "NEGOCIANT";
+    const FAMILLE_CAVE_COOPERATIVE = "CAVE_COOPERATIVE";
 
     public static function getInstance()
     {
