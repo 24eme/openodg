@@ -269,6 +269,26 @@ EOF;
         if(preg_match("/Distillation/", $data[self::CSV_ATTRIBUTS])) {
             $etablissement->familles->add(EtablissementClient::FAMILLE_DISTILLATEUR);
         }
+
+        if(preg_match("/laborateur/", $data[self::CSV_ATTRIBUTS])) {
+            $etablissement->familles->add(EtablissementClient::FAMILLE_ELABORATEUR);
+        }
+
+        if(preg_match("/Négoce/", $data[self::CSV_ATTRIBUTS])) {
+            $etablissement->familles->add(EtablissementClient::FAMILLE_NEGOCIANT);
+        }
+
+        if(preg_match("/Cave coopérative/", $data[self::CSV_ATTRIBUTS])) {
+            $etablissement->familles->add(EtablissementClient::FAMILLE_CAVE_COOPERATIVE);
+        }
+
+        if(preg_match("/Metteur en marché/", $data[self::CSV_ATTRIBUTS])) {
+            $etablissement->familles->add(EtablissementClient::FAMILLE_METTEUR_EN_MARCHE);
+        }
+
+        if(preg_match("/Conditionneur/", $data[self::CSV_ATTRIBUTS])) {
+            $etablissement->familles->add(EtablissementClient::FAMILLE_CONDITIONNEUR);
+        }
     }
 
     protected function formatAdresse($data) {
