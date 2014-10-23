@@ -31,7 +31,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'prelevement', 'Vous devez saisir une semaine de prélèvement');
         $this->addControle(self::TYPE_ERROR, 'revendication_sans_lot', 'Vous avez revendiqué des produits sans spécifier de lots');
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
-		$this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'La période de dégustation ne peut pas être antérieur à la période de prélèvement');
+		$this->addControle(self::TYPE_ERROR, 'periodes_cuves', 'Votre semaine de prélèvement pour le contrôle externe ne peut pas précéder celle pour la dégustation conseil');
 
         /*
          * Engagement

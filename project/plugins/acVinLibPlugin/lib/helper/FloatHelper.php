@@ -1,7 +1,7 @@
 <?php
 
 function sprintInputFloat($float, $format = "%01.02f") {
-    if (is_null($float) || $float == "")
+    if (is_null($float) || $float === "")
         return null;
     return sprintFloat($float, $format);
 }

@@ -39,4 +39,9 @@ class myUser extends sfBasicSecurityUser
     {
         return EtablissementClient::getInstance()->find($this->getAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH));
     }
+    
+    public function isAdmin()
+    {
+    	return false;
+    }
 }

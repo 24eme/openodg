@@ -24,6 +24,14 @@
     }
 }
 
+ul.list-group-history {
+    padding: 0;
+    
+    a {
+        padding-right: 0;
+    }
+}
+
 .presentation-services
 {
     text-align: center;
@@ -152,6 +160,25 @@ ul {
         > td.cell-striped-alt,
         > th.cell-striped-alt {
             background-color: @gray-lighter;
+        }
+    }
+}
+
+.table-striped {
+    > tbody > tr:nth-child(odd),
+    > thead > tr:nth-child(odd) {
+        > td.striped-success,
+        > th.striped-success {
+            background-color: #f2ffdb;
+            color: #2c4203;
+        }
+    }
+    > tbody > tr:nth-child(even),
+    > thead > tr:nth-child(even) {
+        > td.striped-success,
+        > th.striped-success {
+            background-color: #f8ffea;
+            color: #2c4203;
         }
     }
 }

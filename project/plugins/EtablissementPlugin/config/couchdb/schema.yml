@@ -19,6 +19,7 @@ Etablissement:
       code_postal: {  }
       code_insee: {  }
       commune: {  }
+      date_premiere_connexion: { required: false }
       familles:
         type: collection
         definition:
