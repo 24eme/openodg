@@ -1188,6 +1188,8 @@ h3,.h3{color:#5e5e5e}
 .table thead>tr>th,.table tbody>tr>td{background-clip:padding-box;border:0;position:relative;vertical-align:middle}.table thead>tr>th.table-split,.table tbody>tr>td.table-split{border-left:20px solid #efefec}
 .table thead>tr>th{border-bottom:1px solid #cbcbcb;color:#5e5e5e;font-weight:normal}
 .table thead>tr>th+th,.table tbody>tr>td+td{border-left:1px solid #cbcbcb}
+.form-control{height:auto}
+.checkbox input[type=checkbox],.checkbox-inline input[type=checkbox],.radio input[type=radio],.radio-inline input[type=radio]{float:none}
 .input-sm{font-size:13px;height:24px}
 .input-rounded{border-radius:14px}.input-rounded.input-lg{border-radius:22px}
 .input-rounded.input-sm{border-radius:15px}
