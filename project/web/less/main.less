@@ -2,12 +2,27 @@
 /* HOME PAGE */
 /* ============================================================= */
 
+.home_auth {
+    .row {
+        margin: 0 -20px;
+    }
+
+    #footer
+    {
+        background: white;
+    }
+}
+
 .first-connection,
 .space-member
 {
     min-height: 320px;
 
-    h2 { color: @green-dark; }
+    h2 { 
+        color: @green-dark; 
+        padding-bottom: 10px; 
+        font-size: 22px;
+    }
 }
 
 .first-connection { background: #eee7d0; }
@@ -35,6 +50,14 @@ ul.list-group-history {
 .presentation-services
 {
     text-align: center;
+
+    h3
+    {
+        color: @green-dark;
+        margin-top: 0;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
 
     .presentation-title
     {
@@ -77,14 +100,6 @@ ul.list-group-history {
         &.module-bibliotheque:before { background-position: -97px -86px; }
 
         &.module-cartographique:before { background-position: -194px -86px; }
-
-        h3
-        {
-            color: @green-dark;
-            margin-top: 0;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
 
         ul
         {
