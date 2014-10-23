@@ -24,6 +24,7 @@ test:
 
 all:
   .settings:
+    enabled_modules:        [default, Email]
     # Form security secret (CSRF protection)
     csrf_secret:            false
 
@@ -36,3 +37,6 @@ all:
 
     login_module:           auth
     login_action:           login
+
+    i18n:                   true
+    default_culture:        fr 

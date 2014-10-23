@@ -28,7 +28,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Les informations de revendication sont reprise depuis la Déclaration de Récolte quand cela est possible. 
+    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte si vous avez autorisé le transfert de vos données. 
     <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -52,10 +52,9 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                 <?php endif; ?>
-                <th class="col-xs-2 text-center"><a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Superficie Totale<br /><small class="text-muted">(ares)</small></th>
-                <th class="col-xs-2 text-center"><a title="Le volume revendiqué corrspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Volume Revendiqué<br /><small class="text-muted">(hl)</small></th>
+                <th class="col-xs-2 text-center"><a title="Cette superficie correspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Superficie Totale<br /><small class="text-muted">(ares)</small></th>
+                <th class="col-xs-2 text-center"><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Volume Revendiqué<br /><small class="text-muted">(hl)</small></th>
             </tr>
-
         </thead>
         <tbody>
             <?php

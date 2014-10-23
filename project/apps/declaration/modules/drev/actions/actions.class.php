@@ -390,6 +390,8 @@ class drevActions extends sfActions {
 
     public function executeControleExterne(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        
+        $this->focus = $request->getParameter("focus");
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_CONTROLE));
 
@@ -469,6 +471,8 @@ class drevActions extends sfActions {
         $this->drev->validate();
 
         $this->drev->save();
+        
+        $this->sendDrevValidation($this->drev);
 
         return $this->redirect('drev_confirmation', $this->drev);
     }
@@ -496,6 +500,10 @@ class drevActions extends sfActions {
         }
 		
         $this->form->save();
+        
+        if ($this->drev->hasCompleteDocuments()) {
+        	$this->sendDrevConfirmee($this->drev);
+        }
         
         return $this->redirect('drev_visualisation', $this->drev);
     }
@@ -528,5 +536,17 @@ class drevActions extends sfActions {
         }
         return ($drevEtapes->isLt($drev->etape, $etape)) ? $etape : $drev->etape;
     }
+    
+	protected function sendDrevValidation($drev) {
+	  	$pdf = new ExportDRevPdf($drev, 'pdf', true);
+	  	$pdf->setPartialFunction(array($this, 'getPartial'));
+	  	$pdf->removeCache();
+	  	$pdf->generate();
+		Email::getInstance()->sendDrevValidation($drev);
+  	}
+    
+	protected function sendDrevConfirmee($drev) {
+		Email::getInstance()->sendDrevConfirmee($drev);
+  	}
 
 }
