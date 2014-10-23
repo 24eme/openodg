@@ -499,7 +499,7 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 		
-        $this->drev = $this->form->save();
+        $this->form->save();
         
         if ($this->drev->hasCompleteDocuments()) {
         	$this->sendDrevConfirmee($this->drev);

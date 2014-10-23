@@ -550,7 +550,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function hasCompleteDocuments()
     {
     	$complete = true;
-    	foreach($drev->getOrAdd('documents') as $document) {
+    	foreach($this->getOrAdd('documents') as $document) {
     		if ($document->statut != DRevDocuments::STATUT_RECU) {
     			$complete = false;
     			break;
