@@ -48,9 +48,9 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public static function buildFileName($drev, $with_rev = false) {
-        $filename = sprintf("DREV_%s_%s", '7523700100', '2013-2014');
+        $filename = sprintf("DREV_%s_%s", $drev->identifiant, $drev->campagne);
 
-        $declarant_nom = strtoupper(KeyInflector::slugify("DECLARANT"));
+        $declarant_nom = strtoupper(KeyInflector::slugify($drev->declarant->nom));
         $filename .= '_'.$declarant_nom;
 
         if($with_rev) {
