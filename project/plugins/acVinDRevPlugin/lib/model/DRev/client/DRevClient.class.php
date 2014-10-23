@@ -56,6 +56,6 @@ class DRevClient extends acCouchdbClient {
     }
     
     public function getOrdrePrelevements() {
-        return array("cuve" => array("cuve_ALSACE","cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
+        return array("cuve" => array("cuve_ALSACE", "cuve_GRDCRU", "cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
     }
 }

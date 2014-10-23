@@ -102,6 +102,11 @@ EOF;
             return;
         }
 
+        if(count($etablissement->chais) == 0) {
+            echo sprintf("ERROR;%s;#LINE;%s\n", "Aucun chai", $etablissement->cvi);
+            return;
+        }
+
         $etablissement->constructId();
         if($etablissement->isNew()) {
             echo sprintf("SUCCESS;%s;%s\n", "Création", $etablissement->_id);
@@ -199,9 +204,15 @@ EOF;
 
         $siret = str_replace(" ", "", $siret);
 
+        if(!$siret) {
+
+            echo sprintf("WARNING;%s;#LINE;%s", "Le SIRET est vide", $etablissement->identifiant)."\n";
+        }
+
         if($siret && !preg_match("/^[0-9]+$/", $siret)) {
 
-            throw new Exception("Le SIRET n'est pas au bon format");
+            echo sprintf("WARNING;%s;#LINE;%s", "Le SIRET n'est pas au bon format", $etablissement->identifiant)."\n";
+            $siret = null;
         }
 
         $etablissement->siret = ($siret) ? $siret : null;
