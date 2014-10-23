@@ -420,7 +420,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
-    protected function updatePrelevements() {
+    public function updatePrelevements() {
         foreach($this->prelevements as $prelevement) {
             $prelevement->updatePrelevement();
         }

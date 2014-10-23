@@ -86,6 +86,7 @@ EOF;
             echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $doc->_id);
         }
 
+        $doc->updatePrelevements();
         $doc->cleanDoc();
         $doc->validation = date('Y-m-d');
 
@@ -97,7 +98,9 @@ EOF;
         $cvi = $data[self::CSV_CVI];
         $campagne = $data[self::CSV_ANNEE];
 
-        if(!EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $cvi), acCouchdbClient::HYDRATE_JSON)) {
+        $etablissement = EtablissementClient::getInstance()->find(sprintf("ETABLISSEMENT-%s", $cvi));
+
+        if(!$etablissement) {
 
             throw new sfException(sprintf("Etablissement %s does not exist", $cvi));
         }
@@ -107,6 +110,10 @@ EOF;
         if(!$doc) {
             $doc = new DRev();
             $doc->initDoc($cvi, $campagne);
+
+            if(!$etablissement->hasFamille(EtablissementClient::FAMILLE_PRODUCTEUR)) {
+                $doc->add('non_recoltant', 1);
+            }
         }
 
         $doc->remove('declaration');
