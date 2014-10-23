@@ -38,13 +38,13 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php endif; ?>
     <table class="table table-striped">
         <thead>
+            <?php if ($drev->hasDR()): ?>
             <tr>
                 <th class="text-center"></th>
-                <?php if ($drev->hasDR()): ?>
-                    <th colspan="3" class="text-center striped-success small">Déclaration de Récolte</th>
-                <?php endif; ?>
+                <th colspan="3" class="text-center striped-success small">Déclaration de Récolte</th>
                 <th colspan="2" class="text-center">Déclaration de Revendication</th>
             </tr>
+            <?php endif; ?>
             <tr>
                 <th class="col-xs-3">Appellation revendiquée</th>
                 <?php if ($drev->hasDR()): ?>

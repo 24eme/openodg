@@ -46,7 +46,7 @@
 						</div>
 					
 						<div class="form-group form-group-lg">
-							<label class="col-xs-4 control-label" for="password">Le mot de passe</label>
+							<label class="col-xs-4 control-label" for="password">Mot de passe :</label>
 							<div class="col-xs-8">
 								<input id="password" placeholder="Le même que sur Vinsalsace.pro" class="form-control" type="text" />
 							</div>
