@@ -36,3 +36,6 @@ all:
 
     login_module:           auth
     login_action:           login
+
+    i18n:                   true
+    default_culture:        fr 
