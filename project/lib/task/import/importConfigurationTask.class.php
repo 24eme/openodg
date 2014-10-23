@@ -1,6 +1,6 @@
 <?php
 
-class importConfiguration2013Task extends sfBaseTask
+class importConfigurationTask extends sfBaseTask
 {
 
     protected $cepage_order = array("CH", "SY", "AU", "PB", "PI", "ED", "RI", "PG", "MU", "MO", "GW");
@@ -8,9 +8,9 @@ class importConfiguration2013Task extends sfBaseTask
     protected function configure()
     {
         // // add your own arguments here
-        // $this->addArguments(array(
-        //   new sfCommandArgument('my_arg', sfCommandArgument::REQUIRED, 'My argument'),
-        // ));
+        $this->addArguments(array(
+           new sfCommandArgument('campagne', sfCommandArgument::REQUIRED, 'Campagne'),
+         ));
 
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name'),
@@ -22,8 +22,8 @@ class importConfiguration2013Task extends sfBaseTask
         ));
 
         $this->namespace = 'import';
-        $this->name = 'Configuration2013';
-        $this->briefDescription = 'import configuration 2013';
+        $this->name = 'Configuration';
+        $this->briefDescription = 'import configuration';
         $this->detailedDescription = <<<EOF
 The [import|INFO] task does things.
 Call it with:
@@ -48,12 +48,12 @@ EOF;
         }
         
         /*
-         * Parsing de la configuration 2013 Civa
+         * Parsing de la configuration Civa
          */
-        $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/2013.json');
+        $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/'.$arguments['campagne'].'.json');
         
         if (!$configurationJson) {
-        	throw new sfCommandException("Le fichier de configuration 2013 n'est pas existant dans l'arborescence ".sfConfig::get('sf_data_dir') . '/import/configuration/');
+        	throw new sfCommandException("Le fichier de configuration n'est pas existant dans l'arborescence ".sfConfig::get('sf_data_dir') . '/import/configuration/');
         }
         $configurationJson = json_decode($configurationJson);
 

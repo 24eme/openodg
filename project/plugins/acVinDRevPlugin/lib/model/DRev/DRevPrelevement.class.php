@@ -152,17 +152,17 @@ class DRevPrelevement extends BaseDRevPrelevement {
     }
 
     public function updateTotal() {
-
         $this->total_lots = 0;
         foreach ($this->lots as $produit_lot) {
             $nb_hors_vtsgn = ($produit_lot->exist('nb_hors_vtsgn') && $produit_lot->nb_hors_vtsgn) ?
                     $produit_lot->nb_hors_vtsgn : 0;
-
-            //            $nb_vtsgn = ($produit_lot->exist('nb_vtsgn') && $produit_lot->nb_vtsgn) ?
-            //                    $produit_lot->nb_vtsgn : 0;
-            $total = $nb_hors_vtsgn; //+ $nb_vtsgn;
+            $total = $nb_hors_vtsgn; 
             $this->total_lots += $total;
         }
+    }
+
+    public function updatePrelevement() {
+        $this->updateTotal();
     }
 
 }

@@ -67,7 +67,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <tr class="<?php echo (isset($embedForm['superficie_revendique'])) ? 'with_superficie' : ''; ?>" >
                 <td><?php echo $produit->getLibelleComplet() ?></td>
                 <?php if ($drev->hasDR()): ?>
-                    <?php if (!$produit->detail->volume_sur_place): ?>
+                    <?php if (!$produit->detail->superficie_total): ?>
                         <td class="striped-success"></td>
                         <td class="striped-success"></td>
                         <td class="striped-success"></td>

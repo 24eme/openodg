@@ -20,12 +20,21 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return 'Déclaration de Revendicaton 2014';
+        return sprintf("Déclaration de Revendicaton %s", $this->drev->campagne);
     }
 
     protected function getHeaderSubtitle() {
 
-        return "Cave d'Actualys\nCommune de déclaration : Colmar\nDéclaration validée le 30/08/2014";
+        $header_subtitle = sprintf("%s\n\n", 
+                $this->drev->declarant->nom
+                );
+
+        if($this->drev->validation) {
+            $date = new DateTime($this->drev->validation);
+            $header_subtitle .= sprintf("Signé éléctroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+        }
+
+        return $header_subtitle;
     }
 
     protected function getConfig() {
@@ -39,9 +48,9 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     public static function buildFileName($drev, $with_rev = false) {
-        $filename = sprintf("DREV_%s_%s", '7523700100', '2013-2014');
+        $filename = sprintf("DREV_%s_%s", $drev->identifiant, $drev->campagne);
 
-        $declarant_nom = strtoupper(KeyInflector::slugify("DECLARANT"));
+        $declarant_nom = strtoupper(KeyInflector::slugify($drev->declarant->nom));
         $filename .= '_'.$declarant_nom;
 
         if($with_rev) {
