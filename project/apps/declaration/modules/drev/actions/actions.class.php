@@ -507,7 +507,7 @@ class drevActions extends sfActions {
             $drev->cleanDoc();
         }
 
-        $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), true);
+        $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {

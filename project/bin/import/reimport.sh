@@ -8,8 +8,11 @@ curl -X DELETE "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE"
 echo "Création de la Base"
 curl -X PUT "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE"
 
-echo "Import de la Configuration"
-php symfony import:Configuration
+echo "Import de la Configuration 2013"
+php symfony import:Configuration 2013
+
+echo "Import de la Configuration 2014"
+php symfony import:Configuration 2014
 
 echo "Import des opérateurs"
 bash bin/import/operateur.sh

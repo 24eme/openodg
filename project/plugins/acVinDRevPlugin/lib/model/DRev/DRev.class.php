@@ -59,7 +59,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration('2013');
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
     }
 
     public function getProduits() {
