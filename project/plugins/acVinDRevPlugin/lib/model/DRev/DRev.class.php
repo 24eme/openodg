@@ -318,6 +318,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function validate() {
+        $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = date('Y-m-d');
     }
@@ -416,6 +417,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             }
 
             $this->prelevements->remove($key);
+        }
+    }
+
+    protected function updatePrelevements() {
+        foreach($this->prelevements as $prelevement) {
+            $prelevement->updatePrelevement();
         }
     }
 
