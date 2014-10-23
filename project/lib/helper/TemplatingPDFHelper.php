@@ -29,6 +29,10 @@ function styleDRev() {
     .tdH2 {
        border-bottom: 1px solid #c75268; 
     }
+    
+    .tdH2Big {
+       font-weight: bold; font-size: 24pt;
+    }
 
     .h3 {
         background-color: #c75268; color: white; font-weight: bold;
