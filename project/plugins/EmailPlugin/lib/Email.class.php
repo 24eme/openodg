@@ -45,7 +45,12 @@ class Email {
         $to = array($drev->declarant->email);
         $subject = 'Validation de votre DRev';
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drev' => $drev));
-        $message = $this->getMailer()->compose($from, $to, $subject, $body)->setContentType('text/html');
+        $message = Swift_Message::newInstance()
+  					->setFrom($from)
+  					->setTo($to)
+  					->setSubject($subject)
+  					->setBody($body)
+  					->setContentType('text/html');
 		return $this->getMailer()->send($message);
     }
 
