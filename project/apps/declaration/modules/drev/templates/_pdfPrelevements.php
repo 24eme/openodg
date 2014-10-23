@@ -19,7 +19,7 @@
         <?php endforeach; ?>
     <?php else: ?>
         <tr>
-          <td colspan="3" class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<i>Aucun prélévement prévu</i></td>
+          <td colspan="3" class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<i>Aucun prélèvement prévu</i></td>
         </tr>
     <?php endif; ?>
 </table>

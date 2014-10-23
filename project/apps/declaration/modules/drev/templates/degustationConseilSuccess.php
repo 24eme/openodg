@@ -17,7 +17,7 @@
                 <div class="col-xs-offset-1">
                     <p>
                         Semaine à partir de laquelle le vin est prêt à être dégusté : 
-                        <a title="Les vins sont à présenter fermentation terminée, stablisés et clarifiés (fitration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
+                        <a title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
                     </p>
                     <div class="form-group <?php if($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderError(); ?>
@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                              <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue() || $form["vtsgn_demande"]->hasError()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélévement volontaire des VT / SGN <a title="Le prélévement se fera de préférence sur des vins encore en cuve ou en fût" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
+                              <input name="<?php echo $form["vtsgn_demande"]->renderName() ?>" value="<?php echo $form["vtsgn_demande"]->getValue() ?>" type="checkbox" <?php if($form[DRev::CUVE_VTSGN]["date"]->getValue() || $form["vtsgn_demande"]->hasError()): ?>checked="checked"<?php endif; ?> class="checkbox-relation" data-relation="#degustation_conseil_cuve_vtsgn_date_form_group" /> Demande de prélèvement volontaire des VT / SGN <a title="Le prélèvement se fera de préférence sur des vins encore en cuve ou en fût" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
                             </label>
                         </div>
                     </div>
