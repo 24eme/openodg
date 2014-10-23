@@ -98,7 +98,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                     <?php endif; ?>
                 </td>
                 <?php if ($drev->hasDR()): ?>
-                    <?php if (!$produit->detail->volume_sur_place): ?>
+                    <?php if (!$produit->detail->superficie_total): ?>
                         <td style="opacity: 0.7;"></td>
                         <td style="opacity: 0.7;"></td>
                     <?php else: ?>
