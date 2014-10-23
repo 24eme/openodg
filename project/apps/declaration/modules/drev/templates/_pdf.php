@@ -60,22 +60,3 @@
 </table>
 <br />
 <?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::BOUTEILLE)); ?>
-<br />
-<br />
-<br />
-<div><span class="h3">&nbsp;Pièces à joindre&nbsp;</span></div>
-<table class="table"><tr><td>
-<table border="0">
-    <tr>
-        <td>- Une copie de la déclaration de Récolte</td>
-    </tr>
-    <tr>
-        <td>- Une copie de la SV12</td>
-    </tr>
-    <tr>
-        <td>- Le carnet de préssoir</td>
-    </tr>
-</table>
-</td></tr></table>
-<br />
-<p>Signé éléctroniquement <i>via l'application de télédéclaration le 08/06/2014</i></p>

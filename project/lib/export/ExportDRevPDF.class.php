@@ -20,12 +20,21 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return 'Déclaration de Revendicaton 2014';
+        return sprintf("Déclaration de Revendicaton %s", $this->drev->campagne);
     }
 
     protected function getHeaderSubtitle() {
 
-        return "Cave d'Actualys\nCommune de déclaration : Colmar\nDéclaration validée le 30/08/2014";
+        $header_subtitle = sprintf("%s\n\n", 
+                $this->drev->declarant->nom
+                );
+
+        if($this->drev->validation) {
+            $date = new DateTime($this->drev->validation);
+            $header_subtitle .= sprintf("Signé éléctroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+        }
+
+        return $header_subtitle;
     }
 
     protected function getConfig() {
