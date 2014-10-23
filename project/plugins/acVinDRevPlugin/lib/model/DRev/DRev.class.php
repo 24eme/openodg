@@ -494,10 +494,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function getProduitsCepageByAppellations() {
         $appellations = $this->declaration->getAppellations();
         $produitsCepageByAppellations = array();
+        $nb_cepages = 0;
         foreach ($appellations as $appellation) {
             $produitsCepageByAppellations[$appellation->getHash()] = new stdClass();
             $produitsCepageByAppellations[$appellation->getHash()]->appellation = $appellation;
             $produitsCepageByAppellations[$appellation->getHash()]->cepages = $appellation->getProduitsCepage();
+            $nb_cepages += count($appellation->getProduitsCepage());
+        }
+        if($nb_cepages === 0){
+            return null;
         }
         return $produitsCepageByAppellations;
     }
