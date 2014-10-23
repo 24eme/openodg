@@ -541,5 +541,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
         return null;
     }
+    
+    public function hasCompleteDocuments()
+    {
+    	$complete = true;
+    	foreach($drev->getOrAdd('documents') as $document) {
+    		if ($document->statut != DRevDocuments::STATUT_RECU) {
+    			$complete = false;
+    			break;
+    		}
+    	}
+    	return $complete;
+    }
 
 }
