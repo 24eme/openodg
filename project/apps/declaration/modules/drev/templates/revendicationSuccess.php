@@ -39,16 +39,21 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <table class="table table-striped">
         <thead>
             <tr>
-                <th colspan="3" class="text-center">Déclaration de Revendication</th>
-                <th colspan="2" style="opacity: 0.7;" class="text-center">Déclaration de Récolte</th>
+                <th class="text-center"></th>
+                <?php if ($drev->hasDR()): ?>
+                    <th colspan="3" class="text-center striped-success small">Déclaration de Récolte</th>
+                <?php endif; ?>
+                <th colspan="2" class="text-center">Déclaration de Revendication</th>
             </tr>
             <tr>
-                <th class="col-xs-4">Appellation revendiquée</th>
+                <th class="col-xs-3">Appellation revendiquée</th>
+                <?php if ($drev->hasDR()): ?>
+                <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
+                <th class="col-xs-1 text-center striped-success small">Volume total</th>
+                <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                 <th class="col-xs-2 text-center"><a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Superficie Totale<br /><small class="text-muted">(ares)</small></th>
                 <th class="col-xs-2 text-center"><a title="Le volume revendiqué corrspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Volume Revendiqué<br /><small class="text-muted">(hl)</small></th>
-                 <?php if ($drev->hasDR()): ?>
-                <th style="opacity: 0.7;" class="col-xs-1 text-center small">Volume sur place</th>
-                <th style="opacity: 0.7;" class="col-xs-2 text-center small">Volume total <small>dont</small> Usages industriels</th>
+                
                 <?php endif; ?>
             </tr>
 
@@ -61,6 +66,23 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             ?>
             <tr class="<?php echo (isset($embedForm['superficie_revendique'])) ? 'with_superficie' : ''; ?>" >
                 <td><?php echo $produit->getLibelleComplet() ?></td>
+                <?php if ($drev->hasDR()): ?>
+                    <?php if (!$produit->detail->volume_sur_place): ?>
+                        <td class="striped-success"></td>
+                        <td class="striped-success"></td>
+                        <td class="striped-success"></td>
+                    <?php else: ?>
+                        <td class="text-right striped-success small">
+                          <?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small>hl</small>
+                        </td>
+                        <td class="text-right striped-success small">
+                          <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small >hl</small>
+                        </td>
+                        <td class="text-right striped-success small">
+                          <?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small>hl</small>
+                        </td>
+                <?php endif; ?>
+                <?php endif; ?>
                 <td class="text-center">              
                     <?php if (isset($embedForm['superficie_revendique'])): ?>
                     <?php
@@ -97,21 +119,6 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                         <?php echoFloat($produit->volume_revendique); ?> <small class="text-muted">hl</small>
                     <?php endif; ?>
                 </td>
-                <?php if ($drev->hasDR()): ?>
-                    <?php if (!$produit->detail->volume_sur_place): ?>
-                        <td style="opacity: 0.7;"></td>
-                        <td style="opacity: 0.7;"></td>
-                    <?php else: ?>
-                        <td style="opacity: 0.7;" class="text-right text-muted">
-                          <?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small class="text-muted">hl</small>
-                        </td>
-                        <td style="opacity: 0.7;" class="text-right text-muted">
-                          <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small class="text-muted">hl</small>
-                          <small>dont</small>
-                          <?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small class="text-muted">hl</small>
-                        </td>
-                  <?php endif; ?>
-                  <?php endif; ?>
             </tr>
             <?php endforeach; ?>
         </tbody>
