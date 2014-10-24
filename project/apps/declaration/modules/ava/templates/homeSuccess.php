@@ -15,18 +15,9 @@
     </form>
 <?php else: ?>
     <div class="row">
-        <?php if (!$drev_non_ouverte): ?>
-            <?php include_component('drev', 'monEspace'); ?>
-        <?php else: ?>
-            <?php include_partial('drevNonOuvert', array('date_ouverture_drev' => $date_ouverture_drev)); ?>
-        <?php endif; ?>
-        <?php if (!$drevmarc_non_ouverte): ?>
-            <?php include_component('drevmarc', 'monEspace'); ?>
-        <?php else: ?>
-            <?php include_partial('drevmarcNonOuvert', array('date_ouverture_drevmarc' => $date_ouverture_drevmarc)); ?>
-        <?php endif; ?>
-        
-        <?php include_component('ava', 'history'); ?>
+      <?php include_component('drev', 'monEspace'); ?>
+      <?php include_component('drevmarc', 'monEspace'); ?>
+      <?php include_component('ava', 'history'); ?>
     </div>
 <?php endif; ?>
 
