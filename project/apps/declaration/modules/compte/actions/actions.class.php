@@ -2,6 +2,14 @@
 
 class compteActions extends sfActions {
 
+    public function executeCreation(sfWebRequest $request) {
+        
+    }
+
+    public function executeCreationConfirmation(sfWebRequest $request) {
+        
+    }
+
     public function executeModification(sfWebRequest $request) {
         $this->etablissement = $this->getUser()->getEtablissement();
         
@@ -16,7 +24,6 @@ class compteActions extends sfActions {
             }
         }
     }
-    
     
     public function executeRedirectToMonCompteCiva(sfWebRequest $request) {
         $url_compte_civa = sfConfig::get('app_url_compte_civa');

@@ -50,7 +50,7 @@
                 <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
                     
                 <div id="logo">
-                    <a href="<?php echo url_for('home') ?>#drev" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
+                    <a href="<?php echo url_for('home') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>

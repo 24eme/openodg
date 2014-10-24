@@ -1,9 +1,4 @@
-
-
 <div id="mon_compte">
-
-
-
     <div class="panel" id="modification_compte">
         <div class="panel-heading"><h2 class="titre_section">Mon compte</h2></div>
         <div class="panel-body" >

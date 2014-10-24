@@ -51,10 +51,5 @@ class avaActions extends sfActions {
 
         
     }
-    
-	public function executeCreationCompte(sfWebRequest $request) {
-
-        
-    }
 
 }
