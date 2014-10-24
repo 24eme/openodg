@@ -37,7 +37,7 @@ class DRevCouleur extends BaseDRevCouleur
     }
 
     public function getProduitHash() {
-        if(!$this->getMention()->hasManyNoeuds()) {
+        if(!$this->getMention()->getConfig()->hasManyNoeuds()) {
 
             return $this->getHash();
         }

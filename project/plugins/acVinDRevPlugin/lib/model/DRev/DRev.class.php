@@ -529,7 +529,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateProduitsFromCepage() {
-        foreach ($this->getProduits() as $produit) {
+        foreach($this->getProduits() as $produit) {
             $produit->updateFromCepage();
         }
     }
