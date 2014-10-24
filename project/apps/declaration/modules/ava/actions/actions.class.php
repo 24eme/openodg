@@ -32,5 +32,15 @@ class avaActions extends sfActions {
 
         return $this->redirect('home');
     }
+    
+	public function executeContact(sfWebRequest $request) {
+
+        
+    }
+    
+	public function executeMentionsLegales(sfWebRequest $request) {
+
+        
+    }
 
 }
