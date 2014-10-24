@@ -3,3 +3,6 @@ creation:
 
 creationConfirmation:
   is_secure: false
+
+motDePasseOublie:
+  is_secure: false

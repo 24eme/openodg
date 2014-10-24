@@ -10,6 +10,10 @@ class compteActions extends sfActions {
         
     }
 
+    public function executeMotDePasseOublie(sfWebRequest $request) {
+        
+    }
+
     public function executeModification(sfWebRequest $request) {
         $this->etablissement = $this->getUser()->getEtablissement();
         

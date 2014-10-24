@@ -350,6 +350,10 @@ compte_creation_confirmation:
   url: /compte-creation-confirmation
   param: { module: compte, action: creationConfirmation }
 
+compte_mot_de_passe_oublie:
+  url: /mot_de_passe_oublie
+  param: { module: compte, action: motDePasseOublie }
+
 mon_compte:
   url: /mon-compte
   param: { module: compte, action: modification }

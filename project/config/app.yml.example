@@ -5,7 +5,8 @@ all:
   url_compte_civa: "https://url_compte_civa_pour_modifier_mdp"
   url_civa: "https://url_civa"
   url:
-    compte_creation: "http://url_compte_creation"  
+    compte_creation: "http://url_compte_creation"
+    compte_mot_de_passe_oublie: "http://url_compte_mot_de_pass_oublie" 
   cas:
     domain: login.cas
     port: 443
