@@ -57,6 +57,39 @@
                         }
             };
 
+    /**
+     * Equal heights
+     ******************************************/
+    $.fn.equalHeights = function()
+    {
+        var maxHeight = 0,
+            $this = $(this);
+
+        $this.each( function() {
+            var height = $(this).innerHeight();
+
+            if ( height > maxHeight ) { maxHeight = height; }
+        });
+
+        return $this.css('height', maxHeight);
+    };
+
+    /**
+     * Applique la même hauteur sur tous les élément
+     * qui ont la classe .equal-height sur chaque ligne
+     * $.initEqualHeight();
+     ******************************************/
+    $.initEqualHeight = function()
+    {
+        if($('.equal-height').length > 0)
+        {
+            $('.row').each(function()
+            {
+                $(this).find('.equal-height').equalHeights();
+            });
+        }
+    };
+
     $.initDatePickers = function()
     {
         var datePickers = $('.date-picker');
@@ -241,6 +274,7 @@
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip]').tooltip({'container': 'body'});
         $('input[data-toggle=tooltip]').tooltip({'trigger':'focus', 'container': 'body'});
+        $.initEqualHeight();
     });
 
 })(jQuery);

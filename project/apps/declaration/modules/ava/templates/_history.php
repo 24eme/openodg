@@ -1,6 +1,6 @@
     <div class="col-xs-4">
         <?php if(count($history) > 0): ?>  	
-        <div class="panel panel-primary">
+        <div class="panel panel-primary equal-height">
             <div class="panel-heading">
                 <h3>Historique</h3>
             </div>
