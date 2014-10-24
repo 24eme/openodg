@@ -58,7 +58,9 @@ cat $DATADIR/LOCALITE_FRANCAISE.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | c
 
 join -a 2 -t ";" -1 1 -2 7 $WORKDIR/communes.csv $WORKDIR/operateurs.sorted_by_commune.csv | sed 's/^;/;;/' | awk -F ";" '{ print $3 ";" $4 ";" $5 ";" $6 ";" $7 ";" $8 ";" $2 ";" $1 ";" $9 ";" $10 ";" $11 ";" $12 ";" $13 ";" $14 ";" $15 ";" $16 ";" $17 ";" $18 ";" $19 ";" $20 ";" $21 }' | sort > $WORKDIR/operateurs_commune.csv
 
+bash $DATADIR/complements.sh $WORKDIR/operateurs_commune.csv | sort > $WORKDIR/operateurs_avec_complements.csv
+
 echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web;date archivage;siren;siret" > $WORKDIR/operateurs.csv
-cat $WORKDIR/operateurs_commune.csv >> $WORKDIR/operateurs.csv
+cat $WORKDIR/operateurs_avec_complements.csv >> $WORKDIR/operateurs.csv
 
 php symfony import:Etablissement $WORKDIR/operateurs.csv
