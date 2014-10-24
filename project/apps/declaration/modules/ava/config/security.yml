@@ -6,3 +6,6 @@ contact:
 
 mentionsLegales:
   is_secure: false
+
+creationCompte:
+  is_secure: false
