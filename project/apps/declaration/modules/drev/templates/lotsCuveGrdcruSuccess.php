@@ -1,3 +1,13 @@
+<?php
+$global_error_msg = "";
+foreach ($form->getGlobalErrors() as $item):
+    $global_error_msg = $item->getMessage();
+    break;
+endforeach;
+
+$hasError = ($global_error_msg != "");
+?>
+
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
 
 <div class="page-header no-border">
@@ -7,7 +17,9 @@
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'lot_grdcru', 'drev' => $drev)) ?>
 
 <form method="post" action="<?php echo url_for('drev_lots', $drev->addPrelevement(Drev::CUVE_GRDCRU)); ?>" role="form" class="ajaxForm">
-
+    <?php if ($hasError): ?>
+        <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
+    <?php endif; ?>
     <p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace Grand Cru.</p>
     <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm, 'title' => 'Lieux - Cépages')); ?>
 
