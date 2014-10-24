@@ -4,7 +4,7 @@
 
     <div class="col-xs-4">
          <?php if($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)): ?>
-        <div class="panel <?php if ($drev && $drev->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
+        <div class="panel <?php if ($drev && $drev->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?> equal-height">
             <div class="panel-heading">
                 <h3>Appellations&nbsp;Viticoles&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?></h3>
             </div>
