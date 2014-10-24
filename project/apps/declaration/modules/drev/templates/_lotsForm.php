@@ -12,7 +12,7 @@
     <thead>
         <tr>
             <th class="col-xs-6"><?php echo $title ?></th>
-            <th class="text-center col-xs-6">Lots Hors VT / SGN</th>
+            <th class="text-center col-xs-6">Lots Hors VT / SGN <small class="text-muted">(nombre de lot)</small></th>
         </tr>
     </thead>
     <tbody>

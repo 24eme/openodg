@@ -14,7 +14,7 @@ class DRevControleExterneForm extends acCouchdbObjectForm
             $this->embedForm(Drev::BOUTEILLE_GRDCRU, $form_grdcru);
         }
 
-        if(($this->getObject()->getDocument()->prelevements->exist(Drev::BOUTEILLE_VTSGN))) {
+        if(($this->getObject()->getDocument()->prelevements->exist(Drev::BOUTEILLE_VTSGN)) || !$this->getObject()->getDocument()->hasDr()) {
             $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::BOUTEILLE_VTSGN));
 
             $form_vtsgn->setWidget('total_lots', new sfWidgetFormInputText());

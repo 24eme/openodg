@@ -104,7 +104,7 @@ EOF;
 
         $configurationJson->declaration->certification->genre->appellation_GRDCRU = $certifications->genre->appellation_GRDCRU;
 
-        $configurationJson->declaration->certification->genre->appellation_CREMANT = $certifications->genre->appellation_CREMANT;
+        $configurationJson->declaration->certification->genre->appellation_CREMANT = $this->getConfigurationCremant($certifications->genre->appellation_CREMANT);
         $grdCruCepages = $this->getCepages($configurationJson->declaration->certification->genre->appellation_GRDCRU);
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu = new stdClass();
         $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur = $grdCruCepages;
@@ -220,6 +220,16 @@ EOF;
     		}
     	}
     	return VarManipulator::arrayToObject($cepages);
+    }
+    
+    protected function getConfigurationCremant($appellations)
+    {
+    	$appellations->mention->lieu->couleur->cepage_BLRS->libelle = "Blanc + Rosé";
+    	$appellations->mention->lieu->couleur->cepage_BLRS->rendement = null;
+    	$appellations->mention->lieu->couleur->cepage_BLRS->no_dr = 1;
+    	unset($appellations->mention->lieu->couleur->cepage_BL);
+    	unset($appellations->mention->lieu->couleur->cepage_RS);
+    	return $appellations;
     }
     
     protected function getCepages($appellation, $noeudCouleur = 'couleur') 
