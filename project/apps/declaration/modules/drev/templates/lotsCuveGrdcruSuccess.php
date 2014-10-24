@@ -11,7 +11,7 @@ $hasError = ($global_error_msg != "");
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
 
 <div class="page-header no-border">
-    <h2>Dégustation conseil <small>Réaliser par l'AVA</small></h2>
+    <h2>Dégustation conseil <small>Réalisée par l'ODG - AVA</small></h2>
 </div>
 
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'lot_grdcru', 'drev' => $drev)) ?>
