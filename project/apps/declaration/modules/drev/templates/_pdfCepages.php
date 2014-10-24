@@ -9,6 +9,7 @@
 
 <?php
 foreach ($drev->getProduitsCepageByAppellations() as $produitsCepageByAppellations):
+    if(count($produitsCepageByAppellations->cepages)):
     ?>
     <div><span class="h3">&nbsp;<?php echo $produitsCepageByAppellations->appellation->getLibelle() ?>&nbsp;</span></div>
 
@@ -45,5 +46,6 @@ foreach ($drev->getProduitsCepageByAppellations() as $produitsCepageByAppellatio
     </table>
     <br />
     <?php
+    endif;
 endforeach;
 ?>

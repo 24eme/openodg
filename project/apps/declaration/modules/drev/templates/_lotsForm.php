@@ -12,7 +12,7 @@
     <thead>
         <tr>
             <th class="col-xs-6"><?php echo $title ?></th>
-            <th class="text-center col-xs-6">Lots Hors VT / SGN</th>
+            <th class="text-center col-xs-6">Lots Hors VT / SGN <small class="text-muted">(nombre de lot)</small></th>
         </tr>
     </thead>
     <tbody>
@@ -25,8 +25,8 @@
                 <td class="text-center">
                     <div class="form-group <?php if($embedForm['nb_hors_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
                         <?php echo $embedForm['nb_hors_vtsgn']->renderError() ?>
-                        <div class="col-xs-6 col-xs-offset-3">
-                            <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input num_int input-rounded')) ?>
+                        <div class="col-xs-4 col-xs-offset-4">
+                            <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input num_int input-rounded text-right')) ?>
                         </div>
                     </div>
                     

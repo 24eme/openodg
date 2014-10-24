@@ -22,7 +22,11 @@
                         <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
                         <div class="col-xs-7">
                             <div class="input-group date-picker">
-                                <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->render(array("class" => "form-control")); ?>
+                        		<?php if($focus == "aoc_alsace"): ?>
+                                	<?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->render(array("class" => "form-control", "autofocus" => "autofocus")); ?>
+                                <?php else: ?>
+                                	<?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->render(array("class" => "form-control")); ?>
+                                <?php endif; ?>
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </div>

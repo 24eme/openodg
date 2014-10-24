@@ -28,7 +28,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Les informations de revendication sont reprise depuis la Déclaration de Récolte quand cela est possible. 
+    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte si vous avez autorisé le transfert de vos données. 
     <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -38,25 +38,23 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php endif; ?>
     <table class="table table-striped">
         <thead>
+            <?php if ($drev->hasDR()): ?>
             <tr>
                 <th class="text-center"></th>
-                <?php if ($drev->hasDR()): ?>
-                    <th colspan="3" class="text-center striped-success small">Déclaration de Récolte</th>
-                <?php endif; ?>
+                <th colspan="3" class="text-center striped-success small">Déclaration de Récolte</th>
                 <th colspan="2" class="text-center">Déclaration de Revendication</th>
             </tr>
+            <?php endif; ?>
             <tr>
                 <th class="col-xs-3">Appellation revendiquée</th>
                 <?php if ($drev->hasDR()): ?>
                 <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
-                <th class="col-xs-2 text-center"><a title="Cette superficie corrspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Superficie Totale<br /><small class="text-muted">(ares)</small></th>
-                <th class="col-xs-2 text-center"><a title="Le volume revendiqué corrspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Volume Revendiqué<br /><small class="text-muted">(hl)</small></th>
-                
                 <?php endif; ?>
+                <th class="col-xs-2 text-center"><a title="Cette superficie correspond à la superficie totale de votre exploitation en production" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Superficie Totale<br /><small class="text-muted">(ares)</small></th>
+                <th class="col-xs-2 text-center"><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a>Volume Revendiqué<br /><small class="text-muted">(hl)</small></th>
             </tr>
-
         </thead>
         <tbody>
             <?php
@@ -140,7 +138,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
                 <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>en saisissant les cépages</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small><?php if($drev->isNonRecoltant()): ?>en saisissant les cépages<?php else: ?>vers la dégustation conseil<?php endif; ?></small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php endif; ?>
 
         </div>

@@ -20,7 +20,7 @@ class compteActions extends sfActions {
     
     public function executeRedirectToMonCompteCiva(sfWebRequest $request) {
         $url_compte_civa = sfConfig::get('app_url_compte_civa');
-        return $this->redirect($url_compte_civa);
+        return $this->redirect($url_compte_civa);        
     }   
 
 }

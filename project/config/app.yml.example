@@ -1,4 +1,6 @@
 all:
+  date_ouverture_drev : "YYYY-mm-dd"
+  date_ouverture_drevmarc : "YYYY-mm-dd"
   auth_mode: NO_CAS #NO_CAS, CAS
   url_compte_civa : "https://url_compte_civa_pour_modifier_mdp"
   cas:

@@ -4,9 +4,9 @@ class ExportDRevPDF extends ExportPDF {
 
     protected $drev = null;
 
-    public function __construct($drev, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
+    public function __construct($drev, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->drev = $drev;
-        if(!$filename) {
+        if (!$filename) {
             $filename = $this->getFileName(true, true);
         }
 
@@ -15,7 +15,9 @@ class ExportDRevPDF extends ExportPDF {
 
     public function create() {
         $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev)));
-        $this->printable_document->addPage($this->getPartial('drev/pdfCepages', array('drev' => $this->drev)));
+        if(!is_null($this->drev->getProduitsCepageByAppellations())) {
+            $this->printable_document->addPage($this->getPartial('drev/pdfCepages', array('drev' => $this->drev)));
+        }
         $this->printable_document->addPage($this->getPartial('drev/pdfLots', array('drev' => $this->drev)));
     }
 
@@ -25,11 +27,10 @@ class ExportDRevPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", 
-                $this->drev->declarant->nom
-                );
+        $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
+        );
 
-        if($this->drev->validation) {
+        if ($this->drev->validation) {
             $date = new DateTime($this->drev->validation);
             $header_subtitle .= sprintf("Signé éléctroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
         }
@@ -44,19 +45,20 @@ class ExportDRevPDF extends ExportPDF {
 
     public function getFileName($with_rev = false) {
 
-      return self::buildFileName($this->drev, true, false);
+        return self::buildFileName($this->drev, true, false);
     }
 
     public static function buildFileName($drev, $with_rev = false) {
         $filename = sprintf("DREV_%s_%s", $drev->identifiant, $drev->campagne);
 
         $declarant_nom = strtoupper(KeyInflector::slugify($drev->declarant->nom));
-        $filename .= '_'.$declarant_nom;
+        $filename .= '_' . $declarant_nom;
 
-        if($with_rev) {
-            $filename .= '_'.$drev->_rev;
+        if ($with_rev) {
+            $filename .= '_' . $drev->_rev;
         }
 
-        return $filename.'.pdf';
+        return $filename . '.pdf';
     }
+
 }

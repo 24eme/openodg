@@ -18,7 +18,7 @@ cat $WORKDIR/evv.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10 | sed -r 's/^([0-9]+);/\
 
 #Récupération des SIRET
 
-cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\n" | tr "\r" "\n" | cut -d ";" -f 2,18,25,26 | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
+cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\n" | tr -d "\r" | sed "s/AVA;/\nAVA;/g" | cut -d ";" -f 2,18,25,26 | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
 
 join -t ";" -1 2 -2 1 $WORKDIR/id_evv_cvi.csv $WORKDIR/ppm.csv | cut -d ";" -f 3,4,5,6 | sort -t ";" -k 1,1 | sed -r 's/^([0-9]+);/\1;3.SIRE;;;;;;;;;;;;;;;;/' > $WORKDIR/siret_cvi.csv
 
@@ -44,7 +44,8 @@ join -t ";" -1 2 -2 3 $WORKDIR/id_evv_cvi.csv $WORKDIR/attributs.join.csv | cut 
 
 #---CHAI---
 cat $DATADIR/CHAI.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,4,5,6,7,8,10,11,12,21,22,23 | sort -t ";" -k 1,1 > $WORKDIR/chai.csv
-cat $DATADIR/EVV_CHAI.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,2 | sort -t ";" -k 1,1 > $WORKDIR/evv_chai.csv
+
+cat $DATADIR/PPM_EVV_CHAI.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 4,5 | sort -t ";" -k 1,1 > $WORKDIR/evv_chai.csv
 
 join -t ";" -1 1 -2 1 $WORKDIR/id_evv_cvi.sort_evv.csv $WORKDIR/evv_chai.csv | cut -d ";" -f 3,4 | sort -t ";" -k 2,2 > $WORKDIR/id_chai_cvi.csv
 join -t ";" -1 2 -2 1 $WORKDIR/id_chai_cvi.csv $WORKDIR/chai.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10,11,12,13 | sed -r 's/^([0-9]+);/\1;2.CHAI;/' | sed -r 's/(;[0-9-]+;+[0-9-]+;[0-9-]+)$/;\1/' | sed -r 's/0;([0-9-]+;[0-9-]+)$/,CHAI_DE_VINIFICATION-1;\1/' | sed -r 's/-1;0;([0-9-]+)$/,CENTRE_DE_CONDITIONNEMENT-1;-1;\1/' | sed -r 's/-1;-1;0$/,LIEU_DE_STOCKAGE/' | sed 's/-1;-1;-1$//' | sed 's/;,/;/' | sed -r 's/^([0-9]+;2.CHAI);([a-Z0-9]*);(.+)$/\1;\3;\2/' > $WORKDIR/chai_cvi.csv
@@ -57,7 +58,9 @@ cat $DATADIR/LOCALITE_FRANCAISE.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | c
 
 join -a 2 -t ";" -1 1 -2 7 $WORKDIR/communes.csv $WORKDIR/operateurs.sorted_by_commune.csv | sed 's/^;/;;/' | awk -F ";" '{ print $3 ";" $4 ";" $5 ";" $6 ";" $7 ";" $8 ";" $2 ";" $1 ";" $9 ";" $10 ";" $11 ";" $12 ";" $13 ";" $14 ";" $15 ";" $16 ";" $17 ";" $18 ";" $19 ";" $20 ";" $21 }' | sort > $WORKDIR/operateurs_commune.csv
 
+bash $DATADIR/complements.sh $WORKDIR/operateurs_commune.csv | sort > $WORKDIR/operateurs_avec_complements.csv
+
 echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web;date archivage;siren;siret" > $WORKDIR/operateurs.csv
-cat $WORKDIR/operateurs_commune.csv >> $WORKDIR/operateurs.csv
+cat $WORKDIR/operateurs_avec_complements.csv >> $WORKDIR/operateurs.csv
 
 php symfony import:Etablissement $WORKDIR/operateurs.csv

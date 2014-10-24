@@ -51,6 +51,14 @@ div.date-picker
         cursor: pointer;
     }
 }
+.btn-tooltip
+{
+    span {
+        font-size: 12px;
+        line-height: 0;
+        top: -2px;
+    }
+}
 
 /* ============================================================= */
 /* IE MESSAGE */
@@ -1675,6 +1683,10 @@ input[type="radio"]
 			background: @panel-success-heading-bg;
 		}
 		.panel-body { color: @panel-success-text; }
+        
+        h3 {
+            color: @panel-success-text;   
+        }
 	}
 
 	&.panel-info
