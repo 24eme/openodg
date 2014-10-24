@@ -38,7 +38,7 @@ class DrevCepageAjoutProduitForm extends acCouchdbObjectForm
                 if ($produit->getLieu()->libelle) {
                     $libelle .= $produit->getLieu()->libelle.' - ';
                 }
-                $libelle .= $produit->libelle;
+                $libelle .= $produit->libelle_long;
                 $this->produits[$produit->getHash()] = $libelle;
             }
         }
