@@ -59,7 +59,7 @@
                     <span class="profile-name"><?php echo $sf_user->getEtablissement()->nom ?></span>
 
                     <ul>
-                        <li><a href="<?php echo url_for('home') ?>#drev">Mes déclarations AVA</a></li>
+                        <li><a href="<?php echo url_for('home') ?>">Mes déclarations AVA</a></li>
                         <li><a href="<?php echo sfConfig::get('app_url_civa') ?>">Mon espace CIVA</a></li>
                          <li><a href="<?php echo url_for('mon_compte'); ?>">Mon compte</a></li>
                         <!--<li><a href="#">Administration</a></li>-->
