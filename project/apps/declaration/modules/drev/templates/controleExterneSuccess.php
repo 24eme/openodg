@@ -17,7 +17,7 @@
                     <h3>AOC Alsace</h3>
                     <div class="col-xs-offset-1">
                         <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
-                        <div class="form-group <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
+                        <div class="form-group <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError() || $focus): ?>has-error<?php endif; ?>">
                             <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError()): ?>                            
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->getError(); ?></div>
                             <?php endif; ?>
