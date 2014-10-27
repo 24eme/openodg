@@ -1,7 +1,6 @@
-<?php if (!count($drevsHistory) && !$etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)): ?>
+<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement)->isAuthorized(EtablissementSecurity::DECLARANT_DREV)): ?>
     <?php return; ?>
 <?php endif; ?>
-
 <div class="col-xs-4">
     <?php if ($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)): ?>
         <?php if (!$drev_non_ouverte): ?>

@@ -20,6 +20,7 @@ class drevActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $this->etablissement);
 
         $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $drev->save();
@@ -29,6 +30,8 @@ class drevActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+
+        $this->secure(DRevSecurity::EDITION, $drev);
 
         if ($drev->exist('etape') && $drev->etape) {
             return $this->redirect('drev_' . $drev->etape, $drev);
@@ -40,28 +43,34 @@ class drevActions extends sfActions {
     public function executeDelete(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
+        $this->secure(DRevSecurity::EDITION, $drev);
+
         $drev->delete();
         $this->getUser()->setFlash("notice", "La DRev a été supprimé avec succès.");
 
-        return $this->redirect($this->generateUrl('home') . '#drev');
+        return $this->redirect($this->generateUrl('home'));
     }
 
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
     }
 
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
                         "?" .
                         http_build_query(array(
                             'url' => $this->generateUrl('drev_dr_import', $drev, true),
-                            'id' => 'DR-' . $drev->identifiant . '-2013')));
+                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne))));
     }
 
     public function executeDrImport(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
         umask(0002);
         $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
         if (!file_exists($cache_dir)) {
@@ -87,6 +96,7 @@ class drevActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION));
 
@@ -127,11 +137,12 @@ class drevActions extends sfActions {
 
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
     }
 
     public function executeRevendication(sfWebRequest $request) {
-
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
         $this->drev->save();
@@ -179,6 +190,7 @@ class drevActions extends sfActions {
 
     public function executeRevendicationAjoutAppellation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->ajoutForm = new DRevAjoutAppellationForm($this->drev);
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
@@ -198,6 +210,7 @@ class drevActions extends sfActions {
 
     public function executeRevendicationAjoutProduit(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->ajoutForm = new DrevRevendicationAjoutProduitForm($this->drev);
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
@@ -217,6 +230,8 @@ class drevActions extends sfActions {
 
     public function executeRevendicationCepage(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
         $this->noeud = $this->drev->get("declaration/certification/genre/" . $request->getParameter("hash"));
         $this->form = new DRevRevendicationCepageForm($this->noeud);
         $this->ajoutForm = new DrevCepageAjoutProduitForm($this->noeud);
@@ -259,6 +274,8 @@ class drevActions extends sfActions {
 
     public function executeRevendicationCepageAjoutProduit(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
         $this->noeud = $this->getRoute()->getNoeud();
 
         $this->ajoutForm = new DrevCepageAjoutProduitForm($this->noeud);
@@ -279,6 +296,8 @@ class drevActions extends sfActions {
 
     public function executeDegustationConseil(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_DEGUSTATION));
 
         $this->drev->save();
@@ -327,8 +346,9 @@ class drevActions extends sfActions {
     }
 
     public function executeLots(sfWebRequest $request) {
-
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
         $this->prelevement = $this->getRoute()->getPrelevement();
 
         $this->form = new DRevLotsForm($this->prelevement);
@@ -372,6 +392,8 @@ class drevActions extends sfActions {
 
     public function executeLotsAjoutProduit(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
         $this->prelevement = $this->getRoute()->getPrelevement();
 
         $this->ajoutForm = new DrevLotsAjoutProduitForm($this->prelevement);
@@ -392,6 +414,7 @@ class drevActions extends sfActions {
 
     public function executeControleExterne(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->focus = $request->getParameter("focus");
 
@@ -436,6 +459,7 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
 
@@ -474,17 +498,20 @@ class drevActions extends sfActions {
 
         $this->drev->save();
 
-        $this->sendDrevValidation($this->drev);
+        $this->sendDRevValidation($this->drev);
 
         return $this->redirect('drev_confirmation', $this->drev);
     }
 
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
     }
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $documents = $this->drev->getOrAdd('documents');
 
@@ -504,7 +531,7 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if ($this->drev->hasCompleteDocuments()) {
-            $this->sendDrevConfirmee($this->drev);
+            $this->sendDRevConfirmee($this->drev);
         }
 
         return $this->redirect('drev_visualisation', $this->drev);
@@ -512,6 +539,7 @@ class drevActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if (!$drev->validation) {
             $drev->cleanDoc();
@@ -539,16 +567,37 @@ class drevActions extends sfActions {
         return ($drevEtapes->isLt($drev->etape, $etape)) ? $etape : $drev->etape;
     }
 
-    protected function sendDrevValidation($drev) {
+    protected function sendDRevValidation($drev) {
         $pdf = new ExportDRevPdf($drev, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();
-        Email::getInstance()->sendDrevValidation($drev);
+        Email::getInstance()->sendDRevValidation($drev);
     }
 
     protected function sendDrevConfirmee($drev) {
         Email::getInstance()->sendDrevConfirmee($drev);
+    }
+
+    protected function secure($droits, $doc) {
+        if(!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+            
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function secureEtablissement($droits, $etablissement) {
+        if(!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
+            
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function forwardSecure()
+    {    
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
     }
 
 }

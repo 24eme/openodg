@@ -7,6 +7,8 @@ class myUser extends sfBasicSecurityUser
     const SESSION_ETABLISSEMENT = "ETABLISSEMENT";
     const NAMESPACE_AUTH = "AUTH";
 
+    protected $etablissement = null;
+
     public function signIn($identifiant) 
     {
         $this->setAttribute(self::SESSION_LOGIN, $identifiant, self::NAMESPACE_AUTH);
@@ -37,7 +39,11 @@ class myUser extends sfBasicSecurityUser
 
     public function getEtablissement() 
     {
-        return EtablissementClient::getInstance()->find($this->getAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH));
+        if(is_null($this->etablissement)) {
+            $this->etablissement = EtablissementClient::getInstance()->find($this->getAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH));
+        }
+
+        return $this->etablissement;
     }
     
     public function isAdmin()
