@@ -31,7 +31,7 @@ class Email {
   					->setTo($to)
   					->setSubject($subject)
   					->setBody($body)
-  					->setContentType('text/html')
+  					->setContentType('text/plain')
   					->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevPDF::buildFileName($drev, true)));
 		    return $this->getMailer()->send($message);
     }
