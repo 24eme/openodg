@@ -13,3 +13,13 @@ all:
     path: cas
     url : "https://login.cas:443/cas"
   url_dr_recuperation: "http://url_autorisation/"
+  ac_exception_notifier:
+    enabled: true
+    email:
+      from: "email@email.com"
+      from_name: "acExceptionNotifierPlugin"
+      to: ["email@email.com"]
+      subject: "[Nom] Erreur 500 : %title%"
+  email_plugin:
+    from_adresse: email@email.fr
+    from_name: "From name"
