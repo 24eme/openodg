@@ -37,7 +37,13 @@ class DRevValidation extends DocumentValidation {
          * Engagement
          */
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre un copie de votre Déclaration de Récolte');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
+        if ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT))
+        	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV12');
+        elseif  ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE))
+        	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11');
+        else {
+        	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
+        }
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie de votre carnet de pressoir');
     }
 
@@ -65,7 +71,7 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleEngagementDr() {
-        if (!$this->document->isNonRecoltant()) {
+        if (!$this->document->isNonRecoltant() && !$this->document->hasDR()) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, '');
         }
     }

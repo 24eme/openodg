@@ -1,11 +1,11 @@
-<h2 class="h3">Je m'engage à fournir <?php if (count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 1): ?>les pièces suivantes<?php else: ?>la pièce suivante<?php endif; ?></h2>
+<h2 class="h3">J'ai pris connaissance des pièces à fournir</h2>
 
 <div class="alert" role="alert" id="engagements">
     <div class="form-group">
     <?php if($form->hasErrors()): ?>
     <div class="alert alert-danger" role="alert">
 	    <ul class="error_list">
-			<li class="text-left">Vous devez vous engager pour valider.</li>
+			<li class="text-left">Vous devez cocher pour valider.</li>
 		</ul>
 	</div>
     <?php endif; ?>
