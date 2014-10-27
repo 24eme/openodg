@@ -16,7 +16,7 @@ $hasError = ($global_error_msg != "");
 
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'lot_grdcru', 'drev' => $drev)) ?>
 
-<form method="post" action="<?php echo url_for('drev_lots', $drev->addPrelevement(Drev::CUVE_GRDCRU)); ?>" role="form" class="ajaxForm">
+<form method="post" action="<?php echo url_for('drev_lots', $drev->addPrelevement(Drev::CUVE_GRDCRU)); ?>" role="form" class="ajaxForm" autocomplete="off">
     <?php if ($hasError): ?>
         <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
