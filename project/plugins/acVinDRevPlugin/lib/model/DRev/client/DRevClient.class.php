@@ -39,7 +39,7 @@ class DRevClient extends acCouchdbClient {
             $drev->updateFromDRev($drev_previous);
         }
 
-        if(count($drev->declaration->getAppellations()) == 0) {
+        if(count($drev->declaration->getAppellations()) == 0 && $drev->isNonRecoltant()) {
             $drev->initAppellations();
         }
 
