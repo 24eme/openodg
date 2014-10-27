@@ -113,6 +113,12 @@
         });
     }
 
+    $.initValidationDeclaration = function() {
+    	$('#submit-confirmation-validation').click(function() {
+    	    $('#validation-form').submit();
+    	});
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -128,6 +134,7 @@
 
 
         $.initRecapEventsAccordion();
+        $.initValidationDeclaration();
 
     });
 
