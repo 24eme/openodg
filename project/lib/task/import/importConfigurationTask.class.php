@@ -134,8 +134,8 @@ EOF;
          /*
          * Modification des libelles pour l'assemblage
          */
-        $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage Edel';
-        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->cepage_ED->libelle = 'Assemblage Edel';
+        $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage/Edelzwicker';
+        $configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->cepage_ED->libelle = 'Assemblage/Edelzwicker';
 //        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu02->couleur->cepage_ED->libelle = 'Assemblage Edel';
 //        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu51->couleur->cepage_ED->libelle = 'Assemblage Edel'; 
 //        $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->cepage_ED->libelle = 'Assemblage Edel';        

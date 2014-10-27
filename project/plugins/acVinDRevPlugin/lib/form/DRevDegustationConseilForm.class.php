@@ -9,7 +9,17 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
             $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
         }  
 
-        if(($this->getObject()->getDocument()->isNonRecoltant() && $this->getObject()->getDocument()->declaration->hasVtsgn()) || (!$this->getObject()->getDocument()->isNonRecoltant() && ($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_VTSGN) || !$this->getObject()->getDocument()->hasDr()))) {
+        $vtsgn = false;
+        if ($this->getObject()->getDocument()->isNonRecoltant()) {
+        	if ($this->getObject()->getDocument()->declaration->hasVtsgn()) {
+        		$vtsgn = true;
+        	}
+        } else {
+        	if ($this->getObject()->getDocument()->prelevements->exist(Drev::BOUTEILLE_VTSGN) || !$this->getObject()->getDocument()->hasDr()) {
+        		$vtsgn = true;
+        	}
+        }
+        if($vtsgn) {
             $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->getOrAdd(Drev::CUVE_VTSGN));
             $form_vtsgn->setWidget("date", new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())));
             $form_vtsgn->setValidator("date", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getVtsgnChoices()))));

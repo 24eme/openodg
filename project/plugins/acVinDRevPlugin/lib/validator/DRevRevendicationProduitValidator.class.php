@@ -14,8 +14,8 @@
 class DRevRevendicationProduitValidator extends sfValidatorSchema {
 
     public function configure($options = array(), $messages = array()) {
-        $this->addMessage('invalid_volume', '[key]Les volumes revendiqués doivent être remplis');
-        $this->addMessage('invalid_superficie', '[key]Les superficies totales doivent être remplies.');
+        $this->addMessage('invalid_volume', '[key]Vous devez saisir la superficie et le volume pour vos produits revendiqués.');
+        $this->addMessage('invalid_superficie', '[key]Vous devez saisir la superficie et le volume pour vos produits revendiqués.');
     }
 
     protected function doClean($values) {
