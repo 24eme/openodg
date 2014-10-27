@@ -24,7 +24,7 @@ class drevmarcActions extends sfActions {
         $drevmarc = $this->getRoute()->getDRevMarc();
         $drevmarc->delete();
         $this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');
-        return $this->redirect($this->generateUrl('home') . '#drev');
+        return $this->redirect($this->generateUrl('home'));
     }
 
     public function executeExploitation(sfWebRequest $request) {
@@ -122,8 +122,6 @@ class drevmarcActions extends sfActions {
 
         return $this->renderText($this->document->output());
     }
-    
-
     
     protected function getEtape($drevmarc, $etape)
     {
