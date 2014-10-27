@@ -21,7 +21,7 @@ $hasError = ($global_error_msg != "");
         <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
     <p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace Grand Cru.</p>
-    <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm, 'title' => 'Lieux - Cépages')); ?>
+    <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm, 'title' => 'Lieux dits – Cépages')); ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
