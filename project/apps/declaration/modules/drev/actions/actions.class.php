@@ -539,7 +539,7 @@ class drevActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->secure(DRevSecurity::EDITION, $drev);
 
         if (!$drev->validation) {
             $drev->cleanDoc();
