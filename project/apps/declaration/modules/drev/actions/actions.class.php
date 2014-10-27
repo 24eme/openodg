@@ -58,7 +58,7 @@ class drevActions extends sfActions {
 
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->secure(DRevSecurity::EDITION, $drev);
 
         return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
                         "?" .
