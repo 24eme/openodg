@@ -57,7 +57,7 @@ class drevActions extends sfActions {
                         "?" .
                         http_build_query(array(
                             'url' => $this->generateUrl('drev_dr_import', $drev, true),
-                            'id' => 'DR-' . $drev->identifiant . '-2013')));
+                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne))));
     }
 
     public function executeDrImport(sfWebRequest $request) {
