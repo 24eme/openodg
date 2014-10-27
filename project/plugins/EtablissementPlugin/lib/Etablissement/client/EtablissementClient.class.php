@@ -14,6 +14,8 @@ class EtablissementClient extends acCouchdbClient {
     const FAMILLE_NEGOCIANT = "NEGOCIANT";
     const FAMILLE_CAVE_COOPERATIVE = "CAVE_COOPERATIVE";
 
+    const STATUT_INSCRIT = 'INSCRIT';
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient(self::TYPE_MODEL);
