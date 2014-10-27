@@ -16,7 +16,7 @@
 <?php else: ?>
     <div class="row">
       <?php include_component('drev', 'monEspace'); ?>
-      <?php include_component('drevmarc', 'monEspace'); ?>
+      <?php //include_component('drevmarc', 'monEspace'); ?>
       <?php include_component('ava', 'history'); ?>
     </div>
 <?php endif; ?>
