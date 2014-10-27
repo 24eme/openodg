@@ -20,7 +20,7 @@ class drevActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $this->etablissement);
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
         $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $drev->save();
