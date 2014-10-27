@@ -4,7 +4,7 @@
     <h2>Validation de votre déclaration</h2>
 </div>
 
-<form role="form" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post">
+<form role="form" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post" id="validation-form">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 
@@ -26,7 +26,8 @@
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="submit" <?php if($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" data-toggle="modal" data-target="#drev-confirmation-validation" <?php if($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
 </form>
+<?php include_partial('drev/popupConfirmationValidation'); ?>

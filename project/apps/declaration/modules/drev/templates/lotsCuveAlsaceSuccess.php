@@ -16,11 +16,11 @@ $hasError = ($global_error_msg != "");
 
 <?php include_partial('drev/stepDegustationConseil', array('step' => 'lot_alsace', 'drev' => $drev)) ?>
 
-<form method="post" action="<?php echo url_for('drev_lots', $drev->addPrelevement(Drev::CUVE_ALSACE)); ?>" role="form" class="ajaxForm">
+<form method="post" action="<?php echo url_for('drev_lots', $drev->addPrelevement(Drev::CUVE_ALSACE)); ?>" role="form" class="ajaxForm"  autocomplete="off">
     <?php if ($hasError): ?>
         <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace (AOC Alsace Communale et Lieu-dit inclus).</p>
+    <p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace (<strong>AOC Alsace Communale et Lieu-dit inclus</strong>).</p>
 
     <p>Un lot doit correspondre au maximum à 4 récipients et au maximum à 2000 hl.</p>
 

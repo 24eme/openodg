@@ -9,7 +9,7 @@
                    <?php echo $etablissement->cvi; ?>
                 </span>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["siret"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["siret"]->renderError(); ?>
                 <?php echo $form["siret"]->renderLabel("N°&nbsp;SIRET", array("class" => "col-xs-3 control-label")); ?>
                 <div class="col-xs-9">
@@ -18,63 +18,63 @@
             </div>
         </div>
         <div class="col-xs-7">
-            <div class="form-group">
+            <div class="form-group<?php if($form["raison_sociale"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["raison_sociale"]->renderError(); ?>
                 <?php echo $form["raison_sociale"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["raison_sociale"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["adresse"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["adresse"]->renderError(); ?>
                 <?php echo $form["adresse"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["adresse"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["commune"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["commune"]->renderError(); ?>
                 <?php echo $form["commune"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["commune"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["code_postal"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["code_postal"]->renderError(); ?>
                 <?php echo $form["code_postal"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["code_postal"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["telephone_bureau"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["telephone_bureau"]->renderError(); ?>
                 <?php echo $form["telephone_bureau"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["telephone_bureau"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["telephone_mobile"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["telephone_mobile"]->renderError(); ?>
                 <?php echo $form["telephone_mobile"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["telephone_mobile"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["telephone_prive"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["telephone_prive"]->renderError(); ?>
                 <?php echo $form["telephone_prive"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["telephone_prive"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["fax"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["fax"]->renderError(); ?>
                 <?php echo $form["fax"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <?php echo $form["fax"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group<?php if($form["email"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["email"]->renderError(); ?>
                 <?php echo $form["email"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
