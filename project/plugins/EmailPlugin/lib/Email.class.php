@@ -6,7 +6,7 @@ class Email {
 	protected $_context;
 	
 	public function __construct($context = null) { 
-		$this->_context = ($context)? $context : sfContext::getInstance();
+		  $this->_context = ($context)? $context : sfContext::getInstance();
 	}
 	
 	public static function getInstance($context = null)
@@ -17,11 +17,11 @@ class Email {
 		return self::$_instance;
     }
     
-    public function sendDrevValidation($drev) 
+    public function sendDRevValidation($drev) 
     {
-    	if (!$drev->declarant->email) {
-    		return;
-    	}
+      	if (!$drev->declarant->email) {
+      		return;
+      	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
         $subject = 'Validation de votre DRev';
@@ -33,14 +33,14 @@ class Email {
   					->setBody($body)
   					->setContentType('text/html')
   					->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevPDF::buildFileName($drev, true)));
-		return $this->getMailer()->send($message);
+		    return $this->getMailer()->send($message);
     }
     
-    public function sendDrevConfirmee($drev) 
+    public function sendDRevConfirmee($drev) 
     {
-    	if (!$drev->declarant->email) {
-    		return;
-    	}
+      	if (!$drev->declarant->email) {
+      		return;
+      	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
         $subject = 'Validation de votre DRev';
@@ -51,7 +51,7 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/html');
-		return $this->getMailer()->send($message);
+		    return $this->getMailer()->send($message);
     }
 
     protected function getMailer() 

@@ -474,7 +474,7 @@ class drevActions extends sfActions {
 
         $this->drev->save();
 
-        $this->sendDrevValidation($this->drev);
+        $this->sendDRevValidation($this->drev);
 
         return $this->redirect('drev_confirmation', $this->drev);
     }
@@ -504,7 +504,7 @@ class drevActions extends sfActions {
         $this->form->save();
 
         if ($this->drev->hasCompleteDocuments()) {
-            $this->sendDrevConfirmee($this->drev);
+            $this->sendDRevConfirmee($this->drev);
         }
 
         return $this->redirect('drev_visualisation', $this->drev);
@@ -539,12 +539,12 @@ class drevActions extends sfActions {
         return ($drevEtapes->isLt($drev->etape, $etape)) ? $etape : $drev->etape;
     }
 
-    protected function sendDrevValidation($drev) {
+    protected function sendDRevValidation($drev) {
         $pdf = new ExportDRevPdf($drev, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();
-        Email::getInstance()->sendDrevValidation($drev);
+        Email::getInstance()->sendDRevValidation($drev);
     }
 
     protected function sendDrevConfirmee($drev) {
