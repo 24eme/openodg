@@ -1,4 +1,4 @@
 all:
   email_plugin:
-    from_adresse: contact@ava-aoc.net
-    from_name: "AVA"
+    from_adresse: email@email.fr
+    from_name: "From name"
