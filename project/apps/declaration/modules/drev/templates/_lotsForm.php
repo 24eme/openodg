@@ -4,6 +4,11 @@
 <?php if ($sf_user->hasFlash('erreur')): ?>
     <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
 <?php endif; ?>
+    
+<?php if ($sf_user->hasFlash('warning')): ?>
+    <p class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></p>
+<?php endif; ?>
+
 
 <?php echo $form->renderHiddenFields(); ?>
 

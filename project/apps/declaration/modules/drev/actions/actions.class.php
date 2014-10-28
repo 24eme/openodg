@@ -364,6 +364,9 @@ class drevActions extends sfActions {
             if ($type_error == 'erreur') {
                 $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
             }
+            if($type_error == 'vigilancewithFlash') {
+                $this->getUser()->setFlash("warning", "Pour supprimer un lot, il suffit de vider la case.");
+            }
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
