@@ -54,9 +54,10 @@
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
+                <?php use_helper('Text'); ?>
                 <?php if($sf_user->isAuthenticated()): ?>          
                 <nav id="navigation" role="navigation">
-                    <span class="profile-name"><?php echo $sf_user->getEtablissement()->nom ?></span>
+                    <span class="profile-name"><?php echo truncate_text(preg_replace('/(EARL|SCEA|SARL|SA|GAEC|SAS)(.*)/', "$2", $sf_user->getEtablissement()->nom),30); ?></span>
 
                     <ul>
                         <li><a href="<?php echo url_for('home') ?>">Mes déclarations AVA</a></li>
