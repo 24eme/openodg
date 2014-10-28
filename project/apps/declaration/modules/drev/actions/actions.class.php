@@ -146,7 +146,7 @@ class drevActions extends sfActions {
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
         $this->drev->save();
-
+        
         if ($this->drev->isNonRecoltant()) {
             if (!count($this->drev->declaration->getAppellations())) {
 
@@ -236,7 +236,7 @@ class drevActions extends sfActions {
         $this->form = new DRevRevendicationCepageForm($this->noeud);
         $this->ajoutForm = new DrevCepageAjoutProduitForm($this->noeud);
         $this->ajoutAppellationForm = new DRevRevendicationAjoutProduitForm($this->drev);
-
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -364,7 +364,7 @@ class drevActions extends sfActions {
             if ($type_error == 'erreur') {
                 $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
             }
-            if($type_error == 'vigilancewithFlash') {
+            if ($type_error == 'vigilancewithFlash') {
                 $this->getUser()->setFlash("warning", "Pour supprimer un lot, il suffit de vider la case.");
             }
         }
@@ -390,7 +390,7 @@ class drevActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
 
-
+        
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
         }

@@ -25,8 +25,8 @@
     $.initBtnValidation = function()
     {
         $('#btn-validation').click(function() {
-            $('form').attr('action', $('form').attr('action') + '?redirect=validation');
-            $('form').submit();
+            $(this).parents('form').attr('action', $(this).parents('form').attr('action') + '?redirect=validation');
+            $(this).parents('form').submit();
             return false;
         });
     }
