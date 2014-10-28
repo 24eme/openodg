@@ -5,7 +5,7 @@
 <div class="col-xs-4">
     <?php if ($etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
         <?php if (!$drevmarc_non_ouverte): ?>
-            <div class="panel <?php if ($drevmarc && $drevmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
+            <div class="block_declaration panel <?php if ($drevmarc && $drevmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
                 <div class="panel-heading">
                     <h3>Marc&nbsp;d'Alsace&nbsp;Gewurzt.&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?></h3>
                 </div>
