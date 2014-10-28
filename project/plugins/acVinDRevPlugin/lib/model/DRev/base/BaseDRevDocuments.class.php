@@ -1,4 +1,12 @@
 <?php
+/**
+ * BaseDRevDocuments
+ * 
+ * Base model for DRevDocuments
+
+
+ 
+ */
 
 abstract class BaseDRevDocuments extends acCouchdbDocumentTree {
                 

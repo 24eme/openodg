@@ -9,11 +9,14 @@
  * @property acCouchdbJson $_attachments
  * @property string $type
  * @property string $campagne
+ * @property string $etape
  * @property string $identifiant
  * @property string $validation
+ * @property integer $non_recoltant
  * @property acCouchdbJson $declarant
  * @property DRevDeclaration $declaration
  * @property acCouchdbJson $prelevements
+ * @property DRevDocuments $documents
  * @property acCouchdbJson $chais
 
  * @method string get_id()
@@ -26,16 +29,22 @@
  * @method string setType()
  * @method string getCampagne()
  * @method string setCampagne()
+ * @method string getEtape()
+ * @method string setEtape()
  * @method string getIdentifiant()
  * @method string setIdentifiant()
  * @method string getValidation()
  * @method string setValidation()
+ * @method integer getNonRecoltant()
+ * @method integer setNonRecoltant()
  * @method acCouchdbJson getDeclarant()
  * @method acCouchdbJson setDeclarant()
  * @method DRevDeclaration getDeclaration()
  * @method DRevDeclaration setDeclaration()
  * @method acCouchdbJson getPrelevements()
  * @method acCouchdbJson setPrelevements()
+ * @method DRevDocuments getDocuments()
+ * @method DRevDocuments setDocuments()
  * @method acCouchdbJson getChais()
  * @method acCouchdbJson setChais()
  

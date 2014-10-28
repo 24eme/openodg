@@ -65,7 +65,7 @@ class DRevCouleur extends BaseDRevCouleur
             }
 
             foreach($lieu->get($this->getKey())->getChildrenNode() as $cepage) {
-                $produits = array_merge($produits, array($cepage->getHash() => $cepage));
+                $produits = array_merge($produits, $cepage->getProduitsCepage());
             }
         }
 

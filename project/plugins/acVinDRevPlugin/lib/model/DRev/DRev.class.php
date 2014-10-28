@@ -154,7 +154,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $produit = $this->getOrAdd($hash);
         $this->addProduit($produit->getProduitHash());
 
-        return $produit;
+        return $produit->addDetailNode();
     }
 
     public function addProduit($hash) {
@@ -443,7 +443,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
                         continue;
                     }
-                    $this->getOrAdd($hash);
+                    $this->getOrAdd($hash)->addDetailNode();
                 }
             }
         }
@@ -453,7 +453,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
                     continue;
                 }
-                $this->getOrAdd($lot->hash_produit);
+                $this->getOrAdd($lot->hash_produit)->addDetailNode();
             }
         }
     }
@@ -476,17 +476,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             }
 
             $config = $this->getConfiguration()->get($hash);
-
-            $produit = $this->getOrAdd($config->getHash());
+            $detail = $this->getOrAdd($config->getHash())->addDetailNode($line[DRCsvFile::CSV_LIEU]);
             if ($line[DRCsvFile::CSV_VTSGN] == "VT") {
-                $produit->volume_revendique_vt += (float) $line[DRCsvFile::CSV_VOLUME];
-                $produit->superficie_revendique_vt += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+                $detail->volume_revendique_vt += (float) $line[DRCsvFile::CSV_VOLUME];
+                $detail->superficie_revendique_vt += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             } elseif ($line[DRCsvFile::CSV_VTSGN] == "SGN") {
-                $produit->volume_revendique_sgn += (float) $line[DRCsvFile::CSV_VOLUME];
-                $produit->superficie_revendique_sgn += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+                $detail->volume_revendique_sgn += (float) $line[DRCsvFile::CSV_VOLUME];
+                $detail->superficie_revendique_sgn += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             } else {
-                $produit->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
-                $produit->superficie_revendique += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+                $detail->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
+                $detail->superficie_revendique += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             }
         }
     }
@@ -510,7 +509,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function updateLotsFromCepage() {
         $prelevements = array();
         foreach ($this->declaration->getProduitsCepage() as $produit) {
-            $lot = $this->addLotProduit($produit->getHash(), self::CUVE);
+            $lot = $this->addLotProduit($produit->getCepage()->getHash(), self::CUVE);
 
             if ($lot) {
                 $prelevements[$lot->getPrelevement()->getKey()] = $lot->getPrelevement();

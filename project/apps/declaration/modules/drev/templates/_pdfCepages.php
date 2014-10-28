@@ -15,10 +15,10 @@ foreach ($drev->getProduitsCepageByAppellations() as $produitsCepageByAppellatio
 
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
         <tr>
-            <th class="th" style="text-align: left; width: 217px">&nbsp;Produits</th>        
-            <th class="th" style="text-align: center; width: 140px">Hors VT/SGN</th>
-            <th class="th" style="text-align: center; width: 140px">VT</th>
-            <th class="th" style="text-align: center; width: 140px">SGN</th>   
+            <th class="th" style="text-align: left; width: 267px">&nbsp;Produits</th>        
+            <th class="th" style="text-align: center; width: 120px">Hors VT/SGN</th>
+            <th class="th" style="text-align: center; width: 120px">VT</th>
+            <th class="th" style="text-align: center; width: 120px">SGN</th>   
         </tr>
         <?php
         foreach ($produitsCepageByAppellations->cepages as $cepages):

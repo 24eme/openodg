@@ -50,7 +50,7 @@
                                             ?>
                                             <?php if ($produit_cepage->volume_revendique): ?>
                                             <tr>
-                                                <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php if ($produit_cepage->getParent()->getParent()->getLibelle()): ?><?php echo $produit_cepage->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit_cepage->getLibelle() ?></small></td>
+                                                <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?></small></td>
                                                 <?php if(!$drev->isNonRecoltant()): ?>
                                                 <td class="text-center text-muted col-md-3">
                                                     <?php if ($produit_cepage->superficie_revendique): ?>
@@ -63,7 +63,7 @@
                                             <?php endif; ?>
                                             <?php if ($produit_cepage->volume_revendique_vt): ?>
                                                 <tr>
-                                                    <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php if ($produit_cepage->getParent()->getParent()->getLibelle()): ?><?php echo $produit_cepage->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit_cepage->getLibelle() ?> - VT</small></td>
+                                                    <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - VT</small></td>
                                                     <?php if(!$drev->isNonRecoltant()): ?>
                                                     <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_vt): ?>
@@ -76,7 +76,7 @@
                                             <?php endif; ?>
                                             <?php if ($produit_cepage->volume_revendique_sgn): ?>
                                                 <tr>
-                                                    <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php if ($produit_cepage->getParent()->getParent()->getLibelle()): ?><?php echo $produit_cepage->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit_cepage->getLibelle() ?> - SGN</small></td>
+                                                    <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - SGN</small></td>
                                                     <?php if(!$drev->isNonRecoltant()): ?>
                                                     <td class="text-center text-muted col-md-3">
                                                         <?php if ($produit_cepage->superficie_revendique_sgn): ?>

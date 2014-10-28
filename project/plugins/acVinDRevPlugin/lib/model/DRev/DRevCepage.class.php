@@ -8,7 +8,7 @@ class DRevCepage extends BaseDRevCepage {
     
     public function getChildrenNode() 
     {
-        return null;
+        return $this->detail;
     }
 
     public function getCouleur() {
@@ -21,40 +21,41 @@ class DRevCepage extends BaseDRevCepage {
         return null;
     }
 
-    public function resetRevendique() {
-        $this->superficie_revendique = null;
-        $this->volume_revendique = null;
-        $this->volume_revendique_vt = null;
-        $this->volume_revendique_sgn = null;
-    }
-
-    public function hasVtsgn() {
-
-        return $this->volume_revendique_vt || $this->volume_revendique_sgn;
-    }
-
-    public function getProduitsCepage() 
-    {
-
-        return array($this->getHash() => $this);
-    }
-
     public function getProduitHash() {
 
         return $this->getCouleur()->getProduitHash();
     }
 
-    public function updateTotal() {
-        $this->volume_revendique_total = $this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt;
+    public function addDetailNode($lieu = null) {
+        if(!$this->getConfig()->hasLieuEditable()) {
+            $lieu = null;
+        }
+
+        $detail = $this->getDetailNode($lieu);
+        if($detail) {
+
+            return $detail;
+        }
+
+        $detail = $this->detail->add();
+        $detail->lieu = $lieu;
+
+        return $detail;
     }
 
-    public function isCleanable() {
+    public function getDetailNode($lieu = null) {
+       foreach ($this->detail as $detail) {
+            if(is_null($lieu)) {
 
-        return !$this->volume_revendique_total && !$this->superficie_revendique;
-    }
+                return $detail;
+            }
 
-    public function cleanNode() {
-        
-        return false;
+            if($detail->exist('lieu') && trim(strtolower($detail->lieu) == trim(strtolower($lieu)))) {                
+             
+                return $detail;
+            }
+        }
+
+        return null;
     }
 }

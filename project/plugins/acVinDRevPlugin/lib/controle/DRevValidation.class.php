@@ -100,7 +100,7 @@ class DRevValidation extends DocumentValidation {
             $prelevement = $drev->prelevements->get($key);
             $hashes_lot = array();
             foreach ($drev->declaration->getProduitsCepage() as $produitCepage) {
-                $hashes_lot[$produitCepage->getHash()] = $drev->getConfiguration()->get($produitCepage->getHash())->getHashRelation('lots');
+                $hashes_lot[$produitCepage->getCepage()->getHash()] = $drev->getConfiguration()->get($produitCepage->getCepage()->getHash())->getHashRelation('lots');
             }
             foreach ($prelevement->lots as $lot) {
                 $found = false;
@@ -123,7 +123,7 @@ class DRevValidation extends DocumentValidation {
             $prelevement = $drev->prelevements->get($key);
             $hashes_lot = array();
             foreach ($drev->declaration->getProduitsCepage() as $produitCepage) {
-                $hashes_lot[$produitCepage->getHash()] = $drev->getConfiguration()->get($produitCepage->getHash())->getHashRelation('lots');
+                $hashes_lot[$produitCepage->getCepage()->getHash()] = $drev->getConfiguration()->get($produitCepage->getCepage()->getHash())->getHashRelation('lots');
             }
             $lotsHashProduit = array();
             foreach ($hashes_lot as $hash_cepage => $hash_rev_lot) {
@@ -195,7 +195,7 @@ class DRevValidation extends DocumentValidation {
     protected function controleWarningRevendicationLot() {
         foreach ($this->document->declaration->getProduitsCepage() as $hash => $produitCepage) {
             if ($produitCepage->volume_revendique) {
-                $correspondance = $this->document->getConfiguration()->get($hash)->getHashRelation('lots');
+                $correspondance = $this->document->getConfiguration()->get($produitCepage->getCepage()->getHash())->getHashRelation('lots');
                 $correspondanceLot = str_replace('/', '_', $correspondance);
                 $cuve = Drev::CUVE . $this->document->getPrelevementsKeyByHash($correspondance);
                 if ($this->document->prelevements->exist($cuve)) {

@@ -32,7 +32,7 @@
             <?php foreach ($form['produits'] as $hash => $embedForm): ?> 
                 <?php $produit = $drev->get($hash); ?> 
                 <tr>
-                    <td><?php if ($produit->getParent()->getParent()->getLibelle()): ?><?php echo $produit->getParent()->getParent()->getLibelle() ?> - <?php endif; ?><?php echo $produit->getLibelle() ?></td>
+                    <td><?php echo $produit->getLibelle() ?></td>
                     <td class="text-center">
                         <div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['volume_revendique']->renderError() ?>
