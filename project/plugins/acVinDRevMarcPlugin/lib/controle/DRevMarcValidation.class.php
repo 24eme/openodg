@@ -16,7 +16,7 @@ class DRevMarcValidation extends DocumentValidation
   		 * Warning
   		 */
   		$this->addControle(self::TYPE_WARNING, 'dr_surface', 'La surface revendiquée est différente de celle déclarée de votre DR.');
-  		$this->addControle(self::TYPE_WARNING, 'dr_volume', 'Le volume revendiqué est différent de celui déclaré de votre DR.');
+  		$this->addControle(self::TYPE_WARNING, 'dr_volume', 'Le volume revendiqué est différent de celui déclaré dans votre DR.');
   		$this->addControle(self::TYPE_WARNING, 'prelevement_vtsgn_sans_lot', 'Vous avez fait une demande de prélèvement VT/SGN sans déclarer de lot.');
   		$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
   		$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_controle_externe', 'Vous n\'avez pas renseigné vos informations VT/SGN.');

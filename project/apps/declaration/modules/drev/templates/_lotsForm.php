@@ -4,6 +4,11 @@
 <?php if ($sf_user->hasFlash('erreur')): ?>
     <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
 <?php endif; ?>
+    
+<?php if ($sf_user->hasFlash('warning')): ?>
+    <p class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></p>
+<?php endif; ?>
+
 
 <?php echo $form->renderHiddenFields(); ?>
 
@@ -17,15 +22,16 @@
     <tbody>
         <?php
         foreach ($form['lots'] as $key => $embedForm) :
-            $produit = $form->getObject()->lots->get($key);
+            $produit = $form->getObject()->lots->get($key);        
+            $error_field_focus = ($key == $error_produit)? 'error_field_to_focused' : '';
             ?>
             <tr>
                 <td><?php echo $produit->getLibelle() ?></td>
                 <td class="text-center">
-                    <div class="form-group <?php if($embedForm['nb_hors_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
+                    <div class="form-group <?php if($embedForm['nb_hors_vtsgn']->hasError() || $error_field_focus): ?>has-error<?php endif; ?>">
                         <?php echo $embedForm['nb_hors_vtsgn']->renderError() ?>
                         <div class="col-xs-4 col-xs-offset-4">
-                            <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input num_int input-rounded text-right')) ?>
+                            <?php echo $embedForm['nb_hors_vtsgn']->render(array('class' => 'form-control input num_int input-rounded text-right '.$error_field_focus)) ?>
                         </div>
                     </div>
 

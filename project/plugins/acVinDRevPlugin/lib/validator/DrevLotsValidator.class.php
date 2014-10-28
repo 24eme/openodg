@@ -13,7 +13,7 @@ class DrevLotsValidator extends sfValidatorSchema
     			$empty = false;
     			break;
     		}
-    	}
+    	} 
     	if ($empty) {
         	throw new sfValidatorErrorSchema($this, array(new sfValidatorError($this, 'required')));
     	}
