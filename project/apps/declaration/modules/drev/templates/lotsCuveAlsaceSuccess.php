@@ -24,7 +24,7 @@ $hasError = ($global_error_msg != "");
 
     <p>Un lot doit correspondre au maximum à 4 récipients et au maximum à 2000 hl.</p>
 
-    <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm, 'title' => 'Cépages')); ?>
+    <?php include_partial('drev/lotsForm', array('drev' => $drev, 'form' => $form, 'ajoutForm' => $ajoutForm, 'error_produit' => $error_produit, 'title' => 'Cépages')); ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">

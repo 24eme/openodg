@@ -180,8 +180,8 @@ drev_degustation_conseil:
     sf_method: [get, post]
 
 drev_lots:
-  url: /drev/lots/:id/:prelevement
-  param: { module: drev, action: lots }
+  url: /drev/lots/:id/:prelevement/:error_produit
+  param: { module: drev, action: lots, error_produit: 0 }
   class: DRevPrelevementRoute
   options:
     model:    DRevPrelevement

@@ -311,24 +311,24 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-            $this->form->bind($request->getParameter($this->form->getName()));
+        $this->form->bind($request->getParameter($this->form->getName()));
 
-            if (!$this->form->isValid()) {
-                $values = $request->getParameter($this->form->getName());
-                if (isset($values['chai']) && $this->drev->getChaiKey(Drev::CUVE) != $values['chai']) {
-                    $this->formPrelevement = true;
-                }
-                return sfView::SUCCESS;
+        if (!$this->form->isValid()) {
+            $values = $request->getParameter($this->form->getName());
+            if (isset($values['chai']) && $this->drev->getChaiKey(Drev::CUVE) != $values['chai']) {
+                $this->formPrelevement = true;
             }
+            return sfView::SUCCESS;
+        }
 
-            $this->form->save();
+        $this->form->save();
 
-            if ($request->isXmlHttpRequest()) {
+        if ($request->isXmlHttpRequest()) {
 
-                return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
-            }
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+        }
 
-            $this->drev->save();
+        $this->drev->save();
 
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
@@ -356,6 +356,15 @@ class drevActions extends sfActions {
 
         $this->setTemplate(lcfirst(sfInflector::camelize(strtolower(('lots_' . $this->prelevement->getKey())))));
 
+        $this->error_produit = null;
+        if ($request->getParameter(('error_produit'))) {
+            $type_error = strstr($request->getParameter('error_produit'), '-', true);
+            $error_produit = str_replace($type_error, '', $request->getParameter('error_produit'));
+            $this->error_produit = str_replace('-', '_', $error_produit);
+            if ($type_error == 'erreur') {
+                $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
+            }
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -363,10 +372,10 @@ class drevActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-        if($request->isXmlHttpRequest() && !$this->form->isValid()){
+        if ($request->isXmlHttpRequest() && !$this->form->isValid()) {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
-        }        
-        
+        }
+
         if (!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
@@ -506,7 +515,6 @@ class drevActions extends sfActions {
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -580,21 +588,20 @@ class drevActions extends sfActions {
     }
 
     protected function secure($droits, $doc) {
-        if(!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
-            
+        if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+
             return $this->forwardSecure();
         }
     }
 
     protected function secureEtablissement($droits, $etablissement) {
-        if(!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
-            
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
+
             return $this->forwardSecure();
         }
     }
 
-    protected function forwardSecure()
-    {    
+    protected function forwardSecure() {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
 
         throw new sfStopException();

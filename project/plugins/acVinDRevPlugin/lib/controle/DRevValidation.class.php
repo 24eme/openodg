@@ -48,11 +48,11 @@ class DRevValidation extends DocumentValidation {
          */
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre un copie de votre Déclaration de Récolte');
         if ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT))
-        	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV12');
-        elseif  ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE))
-        	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11');
+            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV12');
+        elseif ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE))
+            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11');
         else {
-        	$this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
+            $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
         }
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie de votre carnet de pressoir');
     }
@@ -111,7 +111,10 @@ class DRevValidation extends DocumentValidation {
                     }
                 }
                 if (!$found) {
-                    $this->addPoint(self::TYPE_ERROR, 'lot_sans_cepage_revendique', sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit), $this->generateUrl('drev_lots', $this->document->prelevements->get($key)));
+                    $text = sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit . ' - ' . $lot->libelle);
+                    $produit_lot_hash = self::TYPE_ERROR.str_replace('/', '-', $lot->hash_produit);
+                    $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key, 'error_produit' => $produit_lot_hash));
+                    $this->addPoint(self::TYPE_ERROR, 'lot_sans_cepage_revendique', $text, $url);
                 }
             }
         }
@@ -140,8 +143,11 @@ class DRevValidation extends DocumentValidation {
                     }
                 }
                 if (!$found && !in_array($hash_rev_lot, $lotsHashProduit)) {
-                   $lotsHashProduit[] = $hash_rev_lot;
-                   $this->addPoint(self::TYPE_WARNING, 'revendication_cepage_sans_lot', $drev->get($hash_cepage)->getLibelleComplet(), $this->generateUrl('drev_lots', array('sf_subject' => $this->document->prelevements->get($key))));
+                    $lotsHashProduit[] = $hash_rev_lot;
+                    $produit_lot_hash = self::TYPE_WARNING.str_replace('/', '-', $hash_rev_lot);
+                    $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key, 'error_produit' => $produit_lot_hash));
+
+                    $this->addPoint(self::TYPE_WARNING, 'revendication_cepage_sans_lot', $drev->get($hash_cepage)->getLibelleComplet(), $url);
                 }
             }
         }
