@@ -30,7 +30,7 @@ class EtablissementConfirmationEmailForm extends acCouchdbObjectForm
     {
         parent::doUpdateObject($values);
         if ($this->getObject()->needEmailConfirmation()) {
-        	$this->getObject()->add('date_premiere_connexion', date('c'));
+        	$this->getObject()->add('date_premiere_connexion', date('Y-m-d H:i:s'));
         }
     }
 }
