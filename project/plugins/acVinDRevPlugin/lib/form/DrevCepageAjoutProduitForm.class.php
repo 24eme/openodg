@@ -13,15 +13,22 @@ class DrevCepageAjoutProduitForm extends acCouchdbObjectForm
     {
         $produits = $this->getProduits();
         $this->setWidgets(array(
-            'hashref' => new sfWidgetFormChoice(array('choices' => $produits))
+            'hashref' => new sfWidgetFormChoice(array('choices' => $produits)),
         ));
         $this->widgetSchema->setLabels(array(
-            'hashref' => 'Produit: '
+            'hashref' => 'Produit: ',
         ));
 
         $this->setValidators(array(
-            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucun produit saisi."))
+            'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucun produit saisi.")),
         ));
+
+        if($this->getObject()->getConfig()->hasLieuEditable()) {
+            $this->widgetSchema['lieu'] = new sfWidgetFormInput();
+            $this->widgetSchema['lieu']->setLabel("Lieu-dit");
+            $this->validatorSchema['lieu'] = new sfValidatorString(array('required' => true));
+        }
+
         $this->widgetSchema->setNameFormat('drev_cepage_ajout_produit[%s]');
     }
     
@@ -58,7 +65,9 @@ class DrevCepageAjoutProduitForm extends acCouchdbObjectForm
             return;
         }
 
-        $noeud = $this->getObject()->getDocument()->addProduitCepage($values['hashref']);
+        $lieu = (isset($values['lieu']) && $values['lieu']) ? $values['lieu'] : null;
+
+        $noeud = $this->getObject()->getDocument()->addProduitCepage($values['hashref'], $lieu);
         $noeud->getCouleur()->reorderByConf();
     }
 }

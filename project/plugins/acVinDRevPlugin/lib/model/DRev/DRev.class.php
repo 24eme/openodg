@@ -150,11 +150,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $appellation;
     }
 
-    public function addProduitCepage($hash) {
+    public function addProduitCepage($hash, $lieu = null) {
         $produit = $this->getOrAdd($hash);
         $this->addProduit($produit->getProduitHash());
 
-        return $produit->addDetailNode();
+        return $produit->addDetailNode($lieu);
     }
 
     public function addProduit($hash) {

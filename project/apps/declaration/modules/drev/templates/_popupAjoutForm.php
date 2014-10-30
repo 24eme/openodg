@@ -12,9 +12,17 @@
 					<span class="error"><?php echo $form['hashref']->renderError() ?></span>
 					<div class="form-group row">
 						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['hashref']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete")) ?>
+						<?php echo $form['hashref']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
 						</div>
 					</div>
+					<?php if(isset($form['lieu'])): ?>
+					<span class="error"><?php echo $form['lieu']->renderError() ?></span>
+					<div class="form-group row">
+						<div class="col-xs-10 col-xs-offset-1">
+						<?php echo $form['lieu']->render(array("placeholder" => "Saisissez un lieu-dit", "class" => "form-control", "required" => true)) ?>
+						</div>
+					</div>
+					<?php endif; ?>
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>
