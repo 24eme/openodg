@@ -443,6 +443,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
                         continue;
                     }
+
+                    if ($this->getConfiguration()->get($hash)->getAppellation()->hasManyLieu()) {
+
+                        continue;
+                    }
+
+                    if ($this->getConfiguration()->get($hash)->getAppellation()->hasLieuEditable()) {
+
+                        continue;
+                    }
+
                     $this->getOrAdd($hash)->addDetailNode();
                 }
             }
