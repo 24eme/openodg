@@ -38,7 +38,7 @@ class DrevCepageAjoutProduitForm extends acCouchdbObjectForm
             $produits = $this->getObject()->getConfigProduits();
             $doc = $this->getObject()->getDocument();
             foreach ($produits as $produit) {
-                if ($doc->exist($produit->getHash())) {
+                if ($doc->exist($produit->getHash()) && !$produit->hasLieuEditable()) {
                     continue;
                 } 
                 $libelle = '';
