@@ -62,7 +62,13 @@ class ConfigurationDeclaration extends BaseConfigurationDeclaration {
         return true;
     }
     
-   public function isAutoDs() {
+    public function isAutoDs() {
+        
+        return false;
+    }
+
+    public function isAutoDRev() {
+        
         return false;
     }
 }

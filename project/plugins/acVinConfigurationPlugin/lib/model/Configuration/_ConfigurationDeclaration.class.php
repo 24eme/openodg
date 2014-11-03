@@ -351,4 +351,12 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getParentNode()->isAutoDs();
     }
 
+    public function isAutoDRev() {
+        if ($this->exist('auto_drev')) {
+            return $this->get('auto_drev');
+        }
+        
+        return $this->getParentNode()->isAutoDRev();
+    }
+
 }

@@ -144,31 +144,34 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $config_produits = $appellation->getConfigProduits();
         if (count($config_produits) == 1) {
             reset($config_produits);
-            $this->addProduitCepage(key($config_produits));
+            $this->addProduitCepage(key($config_produits), null, false);
+        } else {
+            foreach($config_produits as $hash => $config_produit) {
+                if($config_produit->isAutoDRev()) {
+                    $this->addProduitCepage($hash, null, false);
+                }
+            }
         }
 
         return $appellation;
     }
 
-    public function addProduitCepage($hash, $lieu = null) {
-        $produit = $this->getOrAdd($hash);
-        $this->addProduit($produit->getProduitHash());
-
-        return $produit->addDetailNode($lieu);
-    }
-
-    public function addProduit($hash) {
+    public function addProduit($hash, $add_appellation = true) {
         $config = $this->getConfiguration()->get($hash);
+        if($add_appellation) {
+            $this->addAppellation($config->getAppellation()->getHash());
+        }
         $produit = $this->getOrAdd($config->getHash());
         $produit->getLibelle();
 
-        $config_produits = $produit->getAppellation()->getConfigProduits();
-        if (count($config_produits) == 1) {
-            reset($config_produits);
-            $this->getOrAdd(key($config_produits));
-        }
-
         return $produit;
+    }
+
+    public function addProduitCepage($hash, $lieu = null, $add_appellation = true) {
+        $produit = $this->getOrAdd($hash);
+        $this->addProduit($produit->getProduitHash(), $add_appellation);
+
+        return $produit->addDetailNode($lieu);
     }
 
     public function cleanDoc() {

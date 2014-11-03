@@ -224,11 +224,18 @@ EOF;
     
     protected function getConfigurationCremant($appellations)
     {
+        unset($appellations->mention->lieu->couleur->cepage_BL);
+        unset($appellations->mention->lieu->couleur->cepage_RS);
+        unset($appellations->mention->lieu->couleur->cepage_RB);
+        $cepageRB = $appellations->mention->lieu->couleur->cepage_RB;
+
     	$appellations->mention->lieu->couleur->cepage_BLRS->libelle = "Blanc + Rosé";
     	$appellations->mention->lieu->couleur->cepage_BLRS->rendement = null;
-    	$appellations->mention->lieu->couleur->cepage_BLRS->no_dr = 1;
-    	unset($appellations->mention->lieu->couleur->cepage_BL);
-    	unset($appellations->mention->lieu->couleur->cepage_RS);
+        $appellations->mention->lieu->couleur->cepage_BLRS->no_dr = 1;
+    	$appellations->mention->lieu->couleur->cepage_BLRS->auto_drev = 1;
+        $cepageRB->auto_drev = 1;
+        $appellations->mention->lieu->couleur->cepage_RB = $cepageRB;
+    	
     	return $appellations;
     }
     

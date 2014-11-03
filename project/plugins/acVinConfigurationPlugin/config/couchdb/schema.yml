@@ -302,4 +302,5 @@ Configuration:
                                                       no_motif_non_recolte : { type: integer, required: false }
                                                       no_dr: { type: integer, required: false }
                                                       no_ds: { type: integer, required: false }
+                                                      auto_drev: { type: integer, required: false }
 
