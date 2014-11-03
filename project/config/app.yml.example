@@ -1,18 +1,10 @@
 all:
-  date_ouverture_drev : "YYYY-mm-dd"
-  date_ouverture_drevmarc : "YYYY-mm-dd"
   auth_mode: NO_CAS #NO_CAS, CAS
-  url_compte_civa: "https://url_compte_civa_pour_modifier_mdp"
-  url_civa: "https://url_civa"
-  url:
-    compte_creation: "http://url_compte_creation"
-    compte_mot_de_passe_oublie: "http://url_compte_mot_de_pass_oublie" 
   cas:
     domain: login.cas
     port: 443
     path: cas
     url : "https://login.cas:443/cas"
-  url_dr_recuperation: "http://url_autorisation/"
   ac_exception_notifier:
     enabled: true
     email:
@@ -23,3 +15,12 @@ all:
   email_plugin:
     from_adresse: email@email.fr
     from_name: "From name"
+  url:
+    civa: "https://url_civa"
+    compte_mot_de_passe: "https://url_compte_civa_pour_modifier_mdp"
+    compte_creation: "http://url_compte_creation"
+    compte_mot_de_passe_oublie: "http://url_compte_mot_de_pass_oublie"
+    dr_recuperation: "http://url_autorisation/"
+  date_ouverture:
+    drev: "YYYY-mm-dd"
+    drevmarc: "YYYY-mm-dd"
