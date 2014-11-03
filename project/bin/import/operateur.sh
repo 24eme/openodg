@@ -7,7 +7,7 @@ DATADIR=data/import/extravitis/operateur
 mkdir $WORKDIR 2> /dev/null
 
 #---CVI---
-cat $DATADIR/EVV.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,5,6,7,9,10,11,19 | sort -t ";" -k 1,1 | sed 's/ ;/;/g' | grep -E ";6[0-9]{7,12};"  > $WORKDIR/evv.csv
+cat $DATADIR/EVV.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,5,6,7,9,10,11,19 | sort -t ";" -k 1,1 | sed 's/ ;/;/g' | grep -E ";6[0-9]{7,12};" | grep -v "^483;" | grep -v "^2779" | grep -v "^4535"  > $WORKDIR/evv.csv
 
 cat $DATADIR/PPM_EVV_MFV.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 3,4 | sort | uniq | sort -t ";" -k 2,2  > $WORKDIR/id_evv.csv
 
@@ -21,6 +21,8 @@ cat $WORKDIR/evv.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10 | sed -r 's/^([0-9]+);/\
 cat $DATADIR/PPM.csv | iconv -f iso88591 -t utf8 | tr -d "\n" | tr -d "\r" | sed "s/AVA;/\nAVA;/g" | cut -d ";" -f 2,18,25,26 | sort -t ";" -k 1,1 > $WORKDIR/ppm.csv
 
 join -t ";" -1 2 -2 1 $WORKDIR/id_evv_cvi.csv $WORKDIR/ppm.csv | cut -d ";" -f 3,4,5,6 | sort -t ";" -k 1,1 | sed -r 's/^([0-9]+);/\1;3.SIRE;;;;;;;;;;;;;;;;/' > $WORKDIR/siret_cvi.csv
+
+cat $DATADIR/SIRET.csv | sed -r 's/^([0-9]+);/\1;3.SIRE;;;;;;;;;;;;;;;;;;/' >> $WORKDIR/siret_cvi.csv
 
 #---COMMUNICATION---
 cat $DATADIR/COMMUNICATION.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,8,9,10,11,12,13,14 | sort -t ";" -k 2,2 > $WORKDIR/communication.csv
@@ -63,4 +65,4 @@ bash $DATADIR/complements.sh $WORKDIR/operateurs_commune.csv | sort > $WORKDIR/o
 echo "#cvi;type ligne;raison sociale;adresse 1;adresse 2;adresse 3;commune;code insee;code postal;canton;actif;attributs;type;tel;fax;portable;email;web;date archivage;siren;siret" > $WORKDIR/operateurs.csv
 cat $WORKDIR/operateurs_avec_complements.csv >> $WORKDIR/operateurs.csv
 
-php symfony import:Etablissement $WORKDIR/operateurs.csv
+#php symfony import:Etablissement $WORKDIR/operateurs.csv
