@@ -229,6 +229,7 @@ EOF;
         $cepageRB = $appellations->mention->lieu->couleur->cepage_RB;
         unset($appellations->mention->lieu->couleur->cepage_RB);
 
+        $appellations->mention->lieu->couleur->cepage_BLRS = new stdClass();
     	$appellations->mention->lieu->couleur->cepage_BLRS->libelle = "Blanc + Rosé";
     	$appellations->mention->lieu->couleur->cepage_BLRS->rendement = null;
         $appellations->mention->lieu->couleur->cepage_BLRS->no_dr = 1;
