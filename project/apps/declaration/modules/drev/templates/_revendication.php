@@ -22,13 +22,16 @@
             $totalSuperficie += $produit->superficie_revendique;
             ?>
             <tr data-toggle="collapse" data-target="#<?php echo $key_for_tr_id ?>" class="accordion-toggle 
-                <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>">
+                <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>
+                <?php echo (count($produit->getProduitsCepage()) > 0)? 'trAccordion' : ''; ?>" >
                 <td>
                     <div class="float-left col-xs-10">
                         <?php echo $produit->getLibelleComplet() ?> 
                     </div>
                     <div class="float-right text-right col-xs-2">
+                        <?php if (count($produit->getProduitsCepage()) > 0): ?>
                         <small style="cursor: pointer;"><span class="glyphicon glyphicon-chevron-down">&nbsp;</span></small>
+                        <?php endif; ?>
                     </div>
                 </td>
                 <?php if(!$drev->isNonRecoltant()): ?>
@@ -36,6 +39,7 @@
             	<?php endif; ?>
                 <td class="text-center"><?php echoFloat($produit->volume_revendique) ?><?php if (!is_null($produit->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></td>
             </tr>
+            <?php if (count($produit->getProduitsCepage()) > 0): ?>
                 <tr>
                     <td class="hiddenRow" colspan="3"  >
                         <div id="<?php echo $key_for_tr_id; ?>" class="accordian-body collapse" >
@@ -91,6 +95,7 @@
                         </div>
                     </td>
                 </tr>
+            <?php endif; ?>
             <?php $cpt++; ?> 
         <?php endforeach; ?>
         
