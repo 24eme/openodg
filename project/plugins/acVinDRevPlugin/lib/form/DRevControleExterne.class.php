@@ -27,7 +27,7 @@ class DRevControleExterneForm extends acCouchdbObjectForm
         	$form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->getOrAdd(Drev::BOUTEILLE_VTSGN));
 
             $form_vtsgn->setWidget('total_lots', new sfWidgetFormInputText());
-            $form_vtsgn->setValidator('total_lots', new sfValidatorNumber(array('required' => true),array('required' => 'Champs obligatoire')));
+            $form_vtsgn->setValidator('total_lots', new sfValidatorNumber(array('required' => true, 'min' => 1),array('required' => 'Champs obligatoire', "min" => "Le nombre de lot doit être strictement supérieur à 0")));
             $form_vtsgn->getWidget('total_lots')->setLabel("Nombre de lots");
 
             $this->embedForm(Drev::BOUTEILLE_VTSGN, $form_vtsgn);
