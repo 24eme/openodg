@@ -138,6 +138,8 @@ class drevActions extends sfActions {
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        $this->isBlocked = count($this->drev->getProduits(true) < 1);
     }
 
     public function executeRevendication(sfWebRequest $request) {

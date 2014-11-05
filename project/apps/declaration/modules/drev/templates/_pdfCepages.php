@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingPDF') ?>
+<?php use_helper('Float') ?>
 
 <style>
 <?php echo styleDRev(); ?>
@@ -27,17 +28,17 @@ foreach ($drev->getProduitsCepageByAppellations() as $produitsCepageByAppellatio
                 <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $cepages->libelle ?></td>
 
                 <?php if ($cepages->exist('volume_revendique') && $cepages->volume_revendique): ?>
-                    <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo $cepages->volume_revendique ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+                    <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($cepages->volume_revendique) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
                 <?php else: ?>
                     <td class="tdAlt"><?php echo tdStart() ?>&nbsp;</td>
                 <?php endif; ?>
                 <?php if ($cepages->exist('volume_revendique_vt') && $cepages->volume_revendique_vt): ?>
-                    <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo $cepages->volume_revendique_vt ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+                    <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($cepages->volume_revendique_vt) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
                 <?php else: ?>
                     <td class="tdAlt"><?php echo tdStart() ?>&nbsp;</td>
                 <?php endif; ?>
                 <?php if ($cepages->exist('volume_revendique_sgn') && $cepages->volume_revendique_sgn): ?>
-                    <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo $cepages->volume_revendique_sgn ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+                    <td class="td" style="text-align: right;"><?php echo tdStart() ?><?php echo sprintFloatFr($cepages->volume_revendique_sgn) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
                 <?php else: ?>
                     <td class="tdAlt"><?php echo tdStart() ?>&nbsp;</td>
                 <?php endif; ?>

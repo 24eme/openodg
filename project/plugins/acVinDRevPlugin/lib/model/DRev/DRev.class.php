@@ -62,9 +62,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
     }
 
-    public function getProduits() {
+    public function getProduits($onlyActive = false) {
 
-        return $this->declaration->getProduits();
+        return $this->declaration->getProduits($onlyActive);
     }
 
     public function getConfigProduits() {
@@ -75,6 +75,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function getConfigProduitsLots() {
 
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+    }
+
+    public function mustDeclareCepage() {
+
+        return $this->isNonRecoltant() || $this->hasDR();
     }
 
     public function isNonRecoltant() {
@@ -120,21 +125,57 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function updateFromDRev($drev) {
         foreach ($drev->getProduits() as $produit) {
+            $this->addAppellation($produit->getAppellation()->getHash());
+            if(!$produit->superficie_revendique) {
+                continue;
+            }
             $p = $this->addProduit($produit->getHash());
             $p->superficie_revendique = $produit->superficie_revendique;
         }
 
-        foreach ($drev->prelevements as $prelevement) {
-            $p = $this->addPrelevement($prelevement->getKey());
-            foreach ($prelevement->lots as $lot) {
-                $p->addLotProduit($lot->hash_produit);
-            }
+        if ($drev->prelevements->exist(self::CUVE_ALSACE) && count($drev->prelevements->get(self::CUVE_ALSACE)->lots) > 0) {
+            foreach ($drev->getProduits() as $produit) {
+                $hash_rev_lot = $drev->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
 
-            $p->reorderByConf();
+                foreach ($drev->prelevements->get(self::CUVE_ALSACE)->lots as $lot) {
+                    if (!preg_match("|" . $hash_rev_lot . "|", $lot->hash_produit)) {
+
+                        continue;
+                    }
+
+                    $hash = str_replace($hash_rev_lot, $produit->getHash(), $lot->hash_produit);
+
+                    if (!$drev->getConfiguration()->exist($hash)) {
+
+                        continue;
+                    }
+
+                    if ($drev->getConfiguration()->get($hash)->getAppellation()->hasManyLieu()) {
+
+                        continue;
+                    }
+
+                    if ($drev->getConfiguration()->get($hash)->getAppellation()->hasLieuEditable()) {
+
+                        continue;
+                    }
+
+                    $this->getOrAdd($hash)->addDetailNode();
+                }
+            }
+        }
+
+        if ($drev->prelevements->exist(self::CUVE_GRDCRU)) {
+            foreach ($drev->prelevements->get(self::CUVE_GRDCRU)->lots as $lot) {
+                if (!$drev->getConfiguration()->exist($lot->hash_produit)) {
+
+                    continue;
+                }
+                $this->getOrAdd($lot->hash_produit)->addDetailNode();
+            }
         }
 
         $this->updatePrelevementsFromRevendication();
-        $this->updateRevendicationCepageFromLots();
         $this->declaration->reorderByConf();
     }
 
@@ -169,6 +210,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function addProduitCepage($hash, $lieu = null, $add_appellation = true) {
         $produit = $this->getOrAdd($hash);
+
         $this->addProduit($produit->getProduitHash(), $add_appellation);
 
         return $produit->addDetailNode($lieu);
@@ -429,49 +471,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
-    protected function updateRevendicationCepageFromLots() {
-        if ($this->prelevements->exist(self::CUVE_ALSACE) && count($this->prelevements->get(self::CUVE_ALSACE)->lots) > 0) {
-            foreach ($this->getProduits() as $produit) {
-                $hash_rev_lot = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
-
-                foreach ($this->prelevements->get(self::CUVE_ALSACE)->lots as $lot) {
-                    if (!preg_match("|" . $hash_rev_lot . "|", $lot->hash_produit)) {
-
-                        continue;
-                    }
-
-                    $hash = str_replace($hash_rev_lot, $produit->getHash(), $lot->hash_produit);
-
-                    if (!$this->getConfiguration()->exist($hash)) {
-
-                        continue;
-                    }
-
-                    if ($this->getConfiguration()->get($hash)->getAppellation()->hasManyLieu()) {
-
-                        continue;
-                    }
-
-                    if ($this->getConfiguration()->get($hash)->getAppellation()->hasLieuEditable()) {
-
-                        continue;
-                    }
-
-                    $this->getOrAdd($hash)->addDetailNode();
-                }
-            }
-        }
-        if ($this->prelevements->exist(self::CUVE_GRDCRU)) {
-            foreach ($this->prelevements->get(self::CUVE_GRDCRU)->lots as $lot) {
-                if (!$this->getConfiguration()->exist($lot->hash_produit)) {
-
-                    continue;
-                }
-                $this->getOrAdd($lot->hash_produit)->addDetailNode();
-            }
-        }
-    }
-
     protected function updateCepageFromCSV($csv) {
         foreach ($csv as $line) {
             if (
@@ -523,6 +522,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function updateLotsFromCepage() {
         $prelevements = array();
         foreach ($this->declaration->getProduitsCepage() as $produit) {
+            if(!$produit->volume_revendique_total > 0) {
+                continue;
+            }
+
             $lot = $this->addLotProduit($produit->getCepage()->getHash(), self::CUVE);
 
             if ($lot) {

@@ -29,10 +29,12 @@ class DRevCouleur extends BaseDRevCouleur
     }
 
     public function getProduits($onlyActive = false) 
-    {
+    {   
     	if ($onlyActive && !$this->isActive()) {
+
     		return array();
     	}
+
         return array($this->getHash() => $this);
     }
 
@@ -128,7 +130,8 @@ class DRevCouleur extends BaseDRevCouleur
     
     public function isActive()
     {
-	    return ($this->volume_revendique !== null || $this->superficie_revendique !== null);
+
+	    return ($this->volume_revendique > 0 || $this->superficie_revendique > 0);
     }
 
     public function isCleanable() {

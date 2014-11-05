@@ -22,7 +22,7 @@ class DRevValidation extends DocumentValidation {
         //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
         $this->addControle(self::TYPE_WARNING, 'declaration_lots', 'Vous devez déclarer vos lots.');
 
-        $this->addControle(self::TYPE_WARNING, 'revendication_cepage_sans_lot', 'Vous ne déclarez aucun lot pour un cépage que vous avez revendiqué. Si c\'est un lot qui a été replié en assemblage, ne penez pas compte de ce point de vigilance.');
+        $this->addControle(self::TYPE_WARNING, 'revendication_cepage_sans_lot', 'Vous ne déclarez aucun lot pour un cépage que vous avez revendiqué. Si c\'est un lot qui a été replié en assemblage, ne tenez pas compte de ce point de vigilance.');
 
         $this->addControle(self::TYPE_WARNING, 'lot_sans_cepage_revendique', 'Vous avez déclaré un lot pour un cépage que vous n\'avez pas revendiqué.');
 
@@ -38,7 +38,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'prelevement', 'Vous devez saisir une semaine de prélèvement');
         $this->addControle(self::TYPE_ERROR, 'revendication_sans_lot', 'Vous avez revendiqué des produits sans spécifier de lots');
 
-        $this->addControle(self::TYPE_ERROR, 'lot_sans_cepage_revendique_negoce', 'Vous avez déclaré un lot pour un cépage que vous n\'avez pas revendiqué.');
+        $this->addControle(self::TYPE_ERROR, 'lot_sans_cepage_revendique', 'Vous avez déclaré un lot pour un cépage que vous n\'avez pas revendiqué.');
 
 
         $this->addControle(self::TYPE_ERROR, 'controle_externe_vtsgn', 'Vous devez renseigner une semaine et le nombre total de lots pour le VT/SGN');
@@ -78,17 +78,13 @@ class DRevValidation extends DocumentValidation {
         $this->controleErrorPrelevement(DRev::BOUTEILLE_GRDCRU);
         $this->controleErrorPeriodes();
 
-        $isNegoce = $etablissement->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT);
-
-        $this->controleErrorAndWarningLotSansCepage(DRev::CUVE_ALSACE, $isNegoce);
-        $this->controleErrorAndWarningLotSansCepage(DRev::BOUTEILLE_ALSACE, $isNegoce);
-        $this->controleErrorAndWarningLotSansCepage(DRev::BOUTEILLE_GRDCRU, $isNegoce);
-
-
-        if ($isNegoce) {
+        if ($this->document->mustDeclareCepage()) {
             $this->controleWarningCepageSansLot(DRev::CUVE_ALSACE);
             $this->controleWarningCepageSansLot(DRev::BOUTEILLE_ALSACE);
             $this->controleWarningCepageSansLot(DRev::BOUTEILLE_GRDCRU);
+            $this->controleErrorAndWarningLotSansCepage(DRev::CUVE_ALSACE, $this->document->isNonRecoltant());
+            $this->controleErrorAndWarningLotSansCepage(DRev::BOUTEILLE_ALSACE, $this->document->isNonRecoltant());
+            $this->controleErrorAndWarningLotSansCepage(DRev::BOUTEILLE_GRDCRU, $this->document->isNonRecoltant());
         }
 
         $this->controleErrorRevendicationSansLot(DRev::CUVE_ALSACE);
@@ -116,10 +112,10 @@ class DRevValidation extends DocumentValidation {
                 }
                 if (!$found) {
                     $text = sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit . ' - ' . $lot->libelle);
-                    if ($isNegoce) {
+                    if ($drev->isNonRecoltant()) {
                         $produit_lot_hash = self::TYPE_ERROR . str_replace('/', '-', $lot->hash_produit);
                         $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key)).'?error_produit='.$produit_lot_hash;
-                        $this->addPoint(self::TYPE_ERROR, 'lot_sans_cepage_revendique_negoce', $text, $url);
+                        $this->addPoint(self::TYPE_ERROR, 'lot_sans_cepage_revendique', $text, $url);
                     } else {
                         $produit_lot_hash = self::TYPE_WARNING.'withFlash' . str_replace('/', '-', $lot->hash_produit);
                         $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key)).'?error_produit='.$produit_lot_hash;
@@ -157,7 +153,7 @@ class DRevValidation extends DocumentValidation {
                     $produit_lot_hash = self::TYPE_WARNING . str_replace('/', '-', $hash_rev_lot);
                     $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key)).'?error_produit='.$produit_lot_hash;
 
-                    $this->addPoint(self::TYPE_WARNING, 'revendication_cepage_sans_lot', $drev->get($hash_cepage)->getLibelleComplet(), $url);
+                    $this->addPoint(self::TYPE_WARNING, 'revendication_cepage_sans_lot', sprintf("%s - %s", $drev->get($hash_cepage)->getParent()->getLibelleComplet(), $drev->get($hash_cepage)->getLibelle()), $url);
                 }
             }
         }

@@ -8,6 +8,13 @@
 
 <?php include_component('drev', 'stepRevendication', array('drev' => $drev, 'step' => 'recapitulatif')) ?>
 
+<?php if($isBlocked): ?>
+<div class="alert alert-danger">
+Vous devez déclarer vos volumes revendiqués par cépages pour pouvoir continuer
+</div>
+<?php endif; ?>
+
+<?php if(count($drev->getProduits(true)) > 0): ?>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -16,8 +23,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php
-        foreach ($drev->getProduits() as $key => $produit) : ?>
+        <?php foreach ($drev->getProduits(true) as $key => $produit) : ?>
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?></td>
                 <td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small></td>
@@ -25,14 +31,15 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?php endif; ?>
 
 <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("drev_revendication_cepage", $drev->declaration->getAppellations()->getLast()) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'appellation précédente</small></a></div>
     <div class="col-xs-6 text-right">
         <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
-            <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
+            <button <?php if($isBlocked): ?>disabled="disabled"<?php endif; ?>  id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
             <?php else: ?>
-            <a href="<?php echo url_for("drev_degustation_conseil", $drev)?>" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la dégustation conseil</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
+            <a <?php if($isBlocked): ?>disabled="disabled"<?php endif; ?> href="<?php echo url_for("drev_degustation_conseil", $drev)?>" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la dégustation conseil</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
         <?php endif; ?>
     </div>
 </div>
