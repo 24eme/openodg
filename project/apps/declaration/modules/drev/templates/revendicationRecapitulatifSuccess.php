@@ -10,7 +10,7 @@
 
 <?php if($isBlocked): ?>
 <div class="alert alert-danger">
-Vous devez déclarer vos volumes revendiqués par cépages pour pouvoir continuer
+Vous devez déclarer vos volumes revendiqués par cépage pour pouvoir continuer
 </div>
 <?php endif; ?>
 
