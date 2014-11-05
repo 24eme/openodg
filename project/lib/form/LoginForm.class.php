@@ -23,7 +23,7 @@ class LoginForm extends BaseForm {
         
         $this->widgetSchema->setNameFormat('login[%s]');
 
-        $this->validatorSchema['login']->setMessage('required', 'Champ obligatoire');
+        $this->validatorSchema['login']->setMessage('required', 'Champs obligatoire');
         $this->validatorSchema->setPostValidator(new ValidatorLogin());
     }
 

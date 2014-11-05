@@ -47,7 +47,7 @@ class DRevValidation extends DocumentValidation {
         /*
          * Engagement
          */
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre un copie de votre Déclaration de Récolte');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, 'Joindre une copie de votre Déclaration de Récolte');
         if ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT))
             $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV12');
         elseif ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE))
