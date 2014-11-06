@@ -20,7 +20,7 @@
     </div>
 <?php endif; ?>
 <?php if ($validation->hasVigilances()): ?>
-    <h3>Points de vigilance <a title="Les points de vigilances vous permettent de repérer d'enventuels oublis ou erreur de saisie.  Cependant ils ne vous empêchent pas de valider votre déclaration." data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a></h2>
+    <h3>Points de vigilance <a title="Les points de vigilances vous permettent de repérer d'éventuels oublis ou erreur de saisie.  Cependant ils ne vous empêchent pas de valider votre déclaration." data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a></h2>
         <div class="alert alert-warning" role="alert">
             <ul>
                 <?php foreach ($validation->getPoints(DrevValidation::TYPE_WARNING) as $controle): ?>
