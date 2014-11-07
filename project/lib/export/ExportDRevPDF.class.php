@@ -22,7 +22,7 @@ class ExportDRevPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration de Revendicaton %s", $this->drev->campagne);
+        return sprintf("Déclaration de Revendication %s", $this->drev->campagne);
     }
 
     protected function getHeaderSubtitle() {
@@ -30,9 +30,9 @@ class ExportDRevPDF extends ExportPDF {
         $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
         );
 
-        if ($this->drev->validation) {
+        if ($this->drev->validation && $this->drev->campagne == "2014") {
             $date = new DateTime($this->drev->validation);
-            $header_subtitle .= sprintf("Signé éléctroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+            $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
         }
 
         return $header_subtitle;
