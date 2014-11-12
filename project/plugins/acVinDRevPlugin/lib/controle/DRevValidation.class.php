@@ -244,7 +244,7 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        if ($this->etablissement->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
+        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, '');
             
             return;
