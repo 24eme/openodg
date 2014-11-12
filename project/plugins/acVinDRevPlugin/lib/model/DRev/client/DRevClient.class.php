@@ -33,6 +33,10 @@ class DRevClient extends acCouchdbClient {
             $drev->add('non_recoltant', 1);
         }
 
+        if(!$etablissement->hasFamille(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
+            $drev->add('non_conditionneur', 1);
+        }
+
         $drev_previous = $this->find(sprintf("DREV-%s-%s", $identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getPrevious($campagne)));
 
         if($drev_previous) {

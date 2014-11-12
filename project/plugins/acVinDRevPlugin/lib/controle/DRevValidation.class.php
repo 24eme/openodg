@@ -6,7 +6,10 @@ class DRevValidation extends DocumentValidation {
     const TYPE_WARNING = 'vigilance';
     const TYPE_ENGAGEMENT = 'engagement';
 
+    protected $etablissement = null;
+
     public function __construct($document, $options = null) {
+        $this->etablissement = $document->getEtablissementObject();
         parent::__construct($document, $options);
         $this->noticeVigilance = true;
     }
@@ -55,9 +58,6 @@ class DRevValidation extends DocumentValidation {
     }
 
     public function controle() {
-
-        $etablissement = $this->document->getEtablissementObject();
-
         $revendicationProduits = $this->document->declaration->getProduits();
         foreach ($revendicationProduits as $hash => $revendicationProduit) {
             $this->controleWarningDrSurface($revendicationProduit);
@@ -67,11 +67,13 @@ class DRevValidation extends DocumentValidation {
             $this->controleEngagementPressoir($revendicationProduit);
         }
 
-
         $this->controleWarningRevendicationLot();
         $this->controleErrorPrelevement(DRev::CUVE_ALSACE);
-        $this->controleErrorPrelevement(DRev::BOUTEILLE_ALSACE);
-        $this->controleErrorPrelevement(DRev::BOUTEILLE_GRDCRU);
+        if(!$this->document->isNonConditionneur()) {
+            $this->controleErrorPrelevement(DRev::BOUTEILLE_ALSACE);
+            $this->controleErrorPrelevement(DRev::BOUTEILLE_GRDCRU);
+        }
+       
         $this->controleErrorPeriodes();
 
         if ($this->document->mustDeclareCepage()) {
@@ -236,13 +238,13 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        if ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE)) {
+        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE)) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, '');
             
             return;
         }
 
-        if ($this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
+        if ($this->etablissement->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, '');
             
             return;
@@ -277,7 +279,7 @@ class DRevValidation extends DocumentValidation {
 
             return;
         }
-
+       
         $prelevement = $this->document->prelevements->get(DRev::CUVE_ALSACE);
         $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
 

@@ -55,8 +55,10 @@
 <?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::CUVE)); ?>
 <br />
 <br />
+<?php if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0): ?>
 <br />
 <table cellspacing=0 cellpadding=0>
 <tr><td class="tdH2Big"><span class="h2">Contrôle externe</span></td></tr>
 </table>
 <?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::BOUTEILLE)); ?>
+<?php endif; ?>

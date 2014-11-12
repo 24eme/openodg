@@ -333,18 +333,26 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         if ($request->getParameter('redirect', null)) {
+            
             return $this->redirect('drev_validation', $this->drev);
         }
 
         if ($this->drev->prelevements->exist(Drev::CUVE_ALSACE)) {
+            
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_ALSACE));
         }
 
         if ($this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
+            
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
         }
 
-        $this->redirect('drev_controle_externe', $this->drev);
+        if($this->drev->isNonConditionneur()) {
+
+            return $this->redirect('drev_validation', $this->drev);
+        }
+        
+        return $this->redirect('drev_controle_externe', $this->drev);
     }
 
     public function executeLots(sfWebRequest $request) {
@@ -399,6 +407,11 @@ class drevActions extends sfActions {
 
         if ($this->prelevement->getKey() == Drev::CUVE_ALSACE && $this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
+        }
+
+        if($this->drev->isNonConditionneur()) {
+
+            return $this->redirect('drev_validation', $this->drev);
         }
 
         return $this->redirect('drev_controle_externe', $this->drev);

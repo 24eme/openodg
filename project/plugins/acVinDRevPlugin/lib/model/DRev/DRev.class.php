@@ -87,6 +87,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->exist('non_recoltant') && $this->get('non_recoltant');
     }
 
+    public function isNonConditionneur() {
+
+        return $this->exist('non_conditionneur') && $this->get('non_conditionneur');
+    }
+
     public function hasDR() {
 
         return $this->_attachments->exist('DR.csv');
@@ -443,14 +448,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $hash = $this->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
             $key = $this->getPrelevementsKeyByHash($hash);
             $this->addPrelevement(self::CUVE . $key);
-            $this->addPrelevement(self::BOUTEILLE . $key);
+            if(!$this->isNonConditionneur()) {
+                $this->addPrelevement(self::BOUTEILLE . $key);
+            }
             unset($prelevements_to_delete[self::CUVE . $key]);
             unset($prelevements_to_delete[self::BOUTEILLE . $key]);
         }
 
         if ($this->declaration->hasVtsgn()) {
             $this->addPrelevement(self::CUVE_VTSGN);
-            $this->addPrelevement(self::BOUTEILLE_VTSGN);
+            if(!$this->isNonConditionneur()) {
+                $this->addPrelevement(self::BOUTEILLE_VTSGN);
+            }
             unset($prelevements_to_delete[self::CUVE_VTSGN]);
             unset($prelevements_to_delete[self::BOUTEILLE_VTSGN]);
         }

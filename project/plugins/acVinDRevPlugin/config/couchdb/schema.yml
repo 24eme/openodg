@@ -19,6 +19,7 @@ DRev:
       identifiant: { }
       validation: { }
       non_recoltant: { required: false, type: integer }
+      non_conditionneur: { required: false, type: integer }
       declarant:
         type: collection
         definition:

@@ -39,6 +39,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
+    <?php if(!$drev->isNonConditionneur()): ?>
     <li class="<?php if($stepNum == 4): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>
@@ -48,6 +49,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
+    <?php endif; ?>
     <li class="<?php if($stepNum == 5): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_VALIDATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_VALIDATION)): ?>

@@ -24,12 +24,14 @@
     <?php endif; ?>
 </table>
 <small>&nbsp;</small>
-<?php $chai = $drev->chais->get($prelevement->getPrefix()) ?>
-<div><span class="h3Alt">&nbsp;Lieu de prélèvement&nbsp;</span></div>
-<table class="tableAlt"><tr><td>
-  <table border="0">
-      <tr>
-          <td style="height:22px;" colspan="2"><?php echo tdStart() ?>&nbsp;<i><?php echo $chai->adresse ?>, <?php echo $chai->code_postal ?>, <?php echo $chai->commune ?></i></td>
-      </tr>
-  </table>
-</td></tr></table>
+<?php if($drev->chais->exist($type)): ?>
+  <?php $chai = $drev->chais->get($type) ?>
+  <div><span class="h3Alt">&nbsp;Lieu de prélèvement&nbsp;</span></div>
+  <table class="tableAlt"><tr><td>
+    <table border="0">
+        <tr>
+            <td style="height:22px;" colspan="2"><?php echo tdStart() ?>&nbsp;<i><?php echo $chai->adresse ?>, <?php echo $chai->code_postal ?>, <?php echo $chai->commune ?></i></td>
+        </tr>
+    </table>
+  </td></tr></table>
+<?php endif; ?>
