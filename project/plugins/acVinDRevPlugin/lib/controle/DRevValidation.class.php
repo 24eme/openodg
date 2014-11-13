@@ -34,9 +34,9 @@ class DRevValidation extends DocumentValidation {
          */
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', 'Vous devez saisir la superficie et le volume pour vos produits revendiqués');
 
-        $this->addControle(self::TYPE_ERROR, 'volume_revendique_usages_inferieur_sur_place', 'Le volume revendiqué ne peut pas être inférieur au volume sur place déduit des usages industriels.');
+        $this->addControle(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', 'Le volume revendiqué ne peut pas être inférieur au volume sur place déduit des usages industriels de votre DR');
 
-        $this->addControle(self::TYPE_ERROR, 'volume_revendique_superieur_sur_place', 'Le volume revendiqué ne peut pas être supérieur au volume sur place.');
+        $this->addControle(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', 'Le volume revendiqué ne peut pas être supérieur au volume sur place de votre DR');
 
         $this->addControle(self::TYPE_ERROR, 'prelevement', 'Vous devez saisir une semaine de prélèvement');
         $this->addControle(self::TYPE_ERROR, 'revendication_sans_lot', 'Vous avez revendiqué des produits sans spécifier de lots');
@@ -258,10 +258,10 @@ class DRevValidation extends DocumentValidation {
                 $produit->volume_revendique !== null &&
                 $produit->detail->volume_sur_place !== null &&
                 $produit->detail->usages_industriels_total !== null &&
-                ($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total) > $produit->volume_revendique
+                round($produit->detail->volume_sur_place - $produit->detail->usages_industriels_total, 2) > $produit->volume_revendique
         ) {
-            $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
-            $this->addPoint(self::TYPE_ERROR, 'volume_revendique_usages_inferieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+	    $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
+            $this->addPoint(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
 
         if (
@@ -270,7 +270,7 @@ class DRevValidation extends DocumentValidation {
                 $produit->volume_revendique > $produit->detail->volume_sur_place
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
-            $this->addPoint(self::TYPE_ERROR, 'volume_revendique_superieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+            $this->addPoint(self::TYPE_WARNING, 'volume_revendique_superieur_sur_place', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
     }
 
