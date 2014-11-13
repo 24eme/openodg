@@ -3,12 +3,15 @@
 <div class="row">
     <div id="row_form_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if(!$form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
+            <?php if($etablissement->cvi): ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;CVI</strong>
                 <span class="col-xs-9">
                    <?php echo $etablissement->cvi; ?>
                 </span>
             </div>
+            <?php endif; ?>
+            <?php if(isset($form['siret'])): ?>
             <div class="form-group<?php if($form["siret"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["siret"]->renderError(); ?>
                 <?php echo $form["siret"]->renderLabel("N°&nbsp;SIRET", array("class" => "col-xs-3 control-label")); ?>
@@ -16,6 +19,14 @@
                     <?php echo $form["siret"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <?php else: ?>
+            <div class="form-group">
+                <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
+                <span class="col-xs-9">
+                   <?php echo $etablissement->siret; ?>
+                </span>
+            </div>
+            <?php endif; ?>
         </div>
         <div class="col-xs-7">
             <div class="form-group<?php if($form["raison_sociale"]->hasError()): ?> has-error<?php endif; ?>">
@@ -85,12 +96,14 @@
     </div>
     <div id="row_info_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
+            <?php if($etablissement->cvi): ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;CVI</strong>
                 <span class="col-xs-9">
                    <?php echo $etablissement->cvi; ?>
                 </span>
             </div>
+            <?php endif; ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
                 <span class="col-xs-9">
@@ -100,7 +113,7 @@
         </div>
         <div class="col-xs-7">
             <div class="form-group">
-                <strong class="col-xs-4 text-right">Raison sociale</strong>
+                <strong class="col-xs-4 text-right">Raison Sociale</strong>
                 <span class="col-xs-8">
                    <?php echo $etablissement->raison_sociale; ?>
                 </span>

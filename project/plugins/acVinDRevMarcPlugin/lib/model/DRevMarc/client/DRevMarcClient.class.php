@@ -29,12 +29,12 @@ class DRevMarcClient extends acCouchdbClient {
         return $drevmarc;
     }
 
-    public function getHistory($cvi, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
         $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent())."";
 
-        return $this->startkey(sprintf("DREVMARC-%s-%s", $cvi, $campagne_from))
-                    ->endkey(sprintf("DREVMARC-%s-%s", $cvi, $campagne_to))
+        return $this->startkey(sprintf("DREVMARC-%s-%s", $identifiant, $campagne_from))
+                    ->endkey(sprintf("DREVMARC-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
 }

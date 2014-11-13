@@ -31,15 +31,15 @@ class LoginForm extends BaseForm {
         $etablissements = EtablissementClient::getInstance()->getAll()->getDocs();
         $choices = array("" => "");
         foreach($etablissements as $etablissement) {
-            if(!array_key_exists(EtablissementClient::FAMILLE_VINIFICATEUR, $etablissement["familles"]) && !array_key_exists(EtablissementClient::FAMILLE_DISTILLATEUR, $etablissement["familles"])) {
+            /*if(!array_key_exists(EtablissementClient::FAMILLE_VINIFICATEUR, $etablissement["familles"]) && !array_key_exists(EtablissementClient::FAMILLE_DISTILLATEUR, $etablissement["familles"])) {
                 
                 continue;
-            }
-            $choices[$etablissement["cvi"]] = sprintf("%s - %s %s - %s (%s)", 
+            }*/
+            $choices[$etablissement["identifiant"]] = sprintf("%s - %s %s - %s (%s)", 
                 $etablissement["nom"], 
                 $etablissement["code_postal"], 
                 $etablissement["commune"], 
-                $etablissement["cvi"],
+                $etablissement["identifiant"],
                 implode(", ", array_keys($etablissement["familles"])));
         }        
 

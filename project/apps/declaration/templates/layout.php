@@ -57,7 +57,7 @@
                 <?php use_helper('Text'); ?>
                 <?php if($sf_user->isAuthenticated()): ?>          
                 <nav id="navigation" role="navigation">
-                    <span class="profile-name"><?php echo str_replace(" ", "&nbsp;", truncate_text(preg_replace('/(EARL|SCEA|SARL|SAS|SA|GAEC)(.*)/', "$2", $sf_user->getEtablissement()->nom),30)); ?></span>
+                    <span class="profile-name"><?php echo str_replace(" ", "&nbsp;", truncate_text(preg_replace('/(EARL|SCEA|SARL|SAS|SA|GAEC|Distillerie)(.*)/', "$2", $sf_user->getEtablissement()->nom),30)); ?></span>
 
                     <ul>
                         <li><a href="<?php echo url_for('home') ?>">Mes déclarations AVA</a></li>

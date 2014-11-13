@@ -7,11 +7,13 @@ DATADIR=data/import/extravitis/operateur
 mkdir $WORKDIR 2> /dev/null
 
 #---CVI---
-cat $DATADIR/EVV.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,5,6,7,9,10,11,19 | sort -t ";" -k 1,1 | sed 's/ ;/;/g' | grep -E ";6[0-9]{7,12};" | grep -v "^483;" | grep -v "^2779" | grep -v "^4535"  > $WORKDIR/evv.csv
+cat $DATADIR/EVV.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 1,3,4,5,6,7,9,10,11,19 | sort -t ";" -k 1,1 | sed 's/ ;/;/g' | grep -E ";6[0-9]{7,12};" | grep -v "^483;" | grep -v "^2779" | grep -v "^4535"  > $WORKDIR/evv_cvi.csv
+
+cat $WORKDIR/evv_cvi.csv $DATADIR/EVV_SIREN.csv | grep -E "^[0-9]+" | sort -t ";" -k 1,1 > $WORKDIR/evv.csv
 
 cat $DATADIR/PPM_EVV_MFV.csv | iconv -f iso88591 -t utf8 | tr -d "\r" | cut -d ";" -f 3,4 | sort | uniq | sort -t ";" -k 2,2  > $WORKDIR/id_evv.csv
 
-join -t ";" -1 2 -2 1 $WORKDIR/id_evv.csv $WORKDIR/evv.csv | sort -t ";" -k 2,2 | cut -d ";" -f 1,2,3 | sort -t ";" -k 2,2  > $WORKDIR/id_evv_cvi.csv
+join -t ";" -1 2 -2 1 $WORKDIR/id_evv.csv $WORKDIR/evv.csv | sort -t ";" -k 2,2 | cut -d ";" -f 1,2,3 | sort -t ";" -k 2,2 > $WORKDIR/id_evv_cvi.csv
 
 cat $WORKDIR/id_evv_cvi.csv | sort -t ";" -k 1,1 > $WORKDIR/id_evv_cvi.sort_evv.csv
 cat $WORKDIR/evv.csv | cut -d ";" -f 2,3,4,5,6,7,8,9,10 | sed -r 's/^([0-9]+);/\1;1.CVI ;/' > $WORKDIR/cvi.csv

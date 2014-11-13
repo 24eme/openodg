@@ -11,7 +11,7 @@
                         <strong>Login/CVI : </strong>
                     </div>
                     <div class="col-xs-3">
-                        <strong><?php echo $etablissement->cvi; ?></strong>
+                        <strong><?php echo $etablissement->identifiant; ?></strong>
                     </div>
                 </div>
                 <div class="row">
@@ -41,7 +41,7 @@
                             <strong>Login/CVI : </strong>
                         </div>
                         <div class="col-xs-3">
-                            <strong><?php echo $etablissement->cvi; ?></strong>
+                            <strong><?php echo $etablissement->identifiant; ?></strong>
                         </div>
                     </div>
                     <div class="row">

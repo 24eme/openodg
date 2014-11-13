@@ -9,6 +9,7 @@ Etablissement:
       raison_sociale: {  }
       nom: {  }
       cvi: {  }
+      siren: {  }
       siret: {  }
       email: {  }
       telephone_bureau: {  }

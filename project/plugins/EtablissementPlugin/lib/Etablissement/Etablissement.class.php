@@ -24,6 +24,16 @@ class Etablissement extends BaseEtablissement {
 
         return $this->familles->exist($famille);
     }
+
+    public function getSiret() {
+
+        if(!$this->_get('siret') && $this->siren) {
+
+            return $this->siren;
+        }
+
+        return $this->_get('siret');
+    }
     
     public function needEmailConfirmation()
     {

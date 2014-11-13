@@ -66,7 +66,7 @@ EOF;
                 continue;
             }
 
-            if($etablissement && $etablissement->cvi != $data[self::CSV_CVI]) {
+            if($etablissement && $etablissement->identifiant != $data[self::CSV_CVI]) {
                 $this->saveEtablissement($etablissement);
                 $etablissement = null;
             }
@@ -93,18 +93,23 @@ EOF;
     protected function saveEtablissement($etablissement) {
 
         if(count($etablissement->familles) == 0) {
-            echo sprintf("ERROR;%s;#LINE;%s\n", "Aucune famille", $etablissement->cvi);
+            echo sprintf("ERROR;%s;#LINE;%s\n", "Aucune famille", $etablissement->identifiant);
             return;
         }
 
-        if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_VINIFICATEUR)) {
-            echo sprintf("ERROR;%s;#LINE;%s\n", "Etablissement non vinificateur ignoré", $etablissement->cvi);
+        if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_VINIFICATEUR) && !$etablissement->familles->exist(EtablissementClient::FAMILLE_DISTILLATEUR)) {
+            echo sprintf("ERROR;%s;#LINE;%s\n", "Etablissement non vinificateur ou distillateur ignoré", $etablissement->identifiant);
             return;
         }
 
-        if(count($etablissement->chais) == 0) {
-            echo sprintf("ERROR;%s;#LINE;%s\n", "Aucun chai", $etablissement->cvi);
+        if($etablissement->familles->exist(EtablissementClient::FAMILLE_VINIFICATEUR) && count($etablissement->chais) == 0) {
+            echo sprintf("ERROR;%s;#LINE;%s\n", "Aucun chai", $etablissement->identifiant);
             return;
+        }
+
+        if($etablissement->siren && strpos($etablissement->siret, $etablissement->siren) === false) {
+            echo sprintf("ERROR;%s;#LINE;%s\n", "Le SIREN et le SIRET ne sont pas cohérent", $etablissement->identifiant);
+            return; 
         }
 
         $etablissement->constructId();
@@ -156,12 +161,19 @@ EOF;
             //throw new Exception("L'établissement n'est pas actif");
         }
 
-        if(!preg_match("/^[0-9]{10}$/", $data[self::CSV_CVI])) {
+        if(!preg_match("/^[0-9]+$/", $data[self::CSV_CVI])) {
 
             throw new Exception("Le CVI n'est pas au bon format");
         }
 
-        $etablissement->cvi = $data[self::CSV_CVI];
+        if(preg_match("/^[0-9]{10}$/", $data[self::CSV_CVI])) {
+            $etablissement->cvi = $data[self::CSV_CVI];
+        } elseif(preg_match("/^[0-9]{9}$/", $data[self::CSV_CVI])) {
+            $etablissement->siren = $data[self::CSV_CVI];
+        } else {
+            throw new Exception("L'identifiant n'est pas un CVI ou un SIRET");
+        }
+        
         $etablissement->raison_sociale = $data[self::CSV_RAISON_SOCIALE];
         $etablissement->nom = $etablissement->raison_sociale;
         $adresse = $this->formatAdresse($data);

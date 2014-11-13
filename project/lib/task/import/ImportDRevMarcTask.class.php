@@ -79,6 +79,8 @@ EOF;
             $doc->initDoc($cvi, $campagne);
         }
 
+        $doc->storeDeclarant();
+
         return $doc;
     }
 

@@ -4,16 +4,16 @@ class EtablissementForm extends acCouchdbObjectForm
 {
      public function configure() {
        $this->setWidgets(array(
-            "siret" => new sfWidgetFormInput(),
-            "raison_sociale" => new sfWidgetFormInput(),
-            "adresse" => new sfWidgetFormInput(),
-            "commune" => new sfWidgetFormInput(),
-            "code_postal" => new sfWidgetFormInput(),
-            "telephone_bureau" => new sfWidgetFormInput(),
-            "telephone_mobile" => new sfWidgetFormInput(),
-            "telephone_prive" => new sfWidgetFormInput(),
-            "fax" => new sfWidgetFormInput(),
-       		"email" => new sfWidgetFormInput(),
+            "siret" => new sfWidgetFormInput(array("label" => "N° SIRET")),
+            "raison_sociale" => new sfWidgetFormInput(array("label" => "Raison Sociale")),
+            "adresse" => new sfWidgetFormInput(array("label" => "Adresse")),
+            "commune" => new sfWidgetFormInput(array("label" => "Commune")),
+            "code_postal" => new sfWidgetFormInput(array("label" => "Code Postal")),
+            "telephone_bureau" => new sfWidgetFormInput(array("label" => "Tél. Bureau")),
+            "telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
+            "telephone_prive" => new sfWidgetFormInput(array("label" => "Tél. Privé")),
+            "fax" => new sfWidgetFormInput(array("label" => "Fax")),
+       		"email" => new sfWidgetFormInput(array("label" => "Email")),
         ));
 
         $this->setValidators(array(
@@ -28,6 +28,10 @@ class EtablissementForm extends acCouchdbObjectForm
             'fax' => new sfValidatorString(array("required" => false)),
        		"email" => new sfValidatorEmailStrict(array("required" => true)),
         ));
+
+        if($this->getObject()->identifiant == $this->getObject()->siren) {
+            unset($this['siret']);
+        }
 
         $this->widgetSchema->setNameFormat('etablissement[%s]');
     }
