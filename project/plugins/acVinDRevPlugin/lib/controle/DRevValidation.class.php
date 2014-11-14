@@ -164,7 +164,7 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleEngagementPressoir($produit) {
-        if ($produit->volume_revendique !== null && $produit->getAppellation()->getKey() == 'appellation_CREMANT') {
+        if ($produit->getAppellation()->getKey() == 'appellation_CREMANT' && $produit->volume_revendique > 0) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
         }
     }
