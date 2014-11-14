@@ -41,7 +41,7 @@ class LoginForm extends BaseForm {
                 $etablissement["commune"], 
                 $etablissement["identifiant"],
                 implode(", ", array_keys($etablissement["familles"])));
-        }        
+        }
 
         return $choices;
     }

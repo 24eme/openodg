@@ -1,0 +1,14 @@
+#Compte
+Compte:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      identifiant: {  }
+      nom: {  }
+      droits:
+        type: collection
+        definition:
+          fields:
+            '*': { }

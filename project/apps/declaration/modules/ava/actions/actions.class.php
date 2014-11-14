@@ -23,6 +23,14 @@ class avaActions extends sfActions {
 
         $this->etablissement = $this->getUser()->getEtablissement();
 
+        if(!$this->etablissement && $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+
+            return $this->redirect('admin');
+        } elseif(!$this->etablissement) {
+
+            return $this->forwardSecure();
+        }
+
         $this->form = new EtablissementConfirmationEmailForm($this->etablissement);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -50,6 +58,12 @@ class avaActions extends sfActions {
 	public function executeMentionsLegales(sfWebRequest $request) {
 
         
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
     }
 
 }

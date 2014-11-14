@@ -23,6 +23,10 @@ mentions_legales:
   url: /mentions-legales
   param: { module: ava, action: mentionsLegales }
 
+admin:
+  url: /admin
+  param: { module: admin, action: index }
+
 drev_index:
   url: /drev
   param: { module: drev, action: index }

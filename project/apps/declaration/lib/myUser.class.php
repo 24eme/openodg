@@ -5,9 +5,14 @@ class myUser extends sfBasicSecurityUser
 
     const SESSION_LOGIN = "LOGIN";
     const SESSION_ETABLISSEMENT = "ETABLISSEMENT";
+    const SESSION_COMPTE = "COMPTE";
     const NAMESPACE_AUTH = "AUTH";
 
+    const CREDENTIAL_ADMIN = CompteClient::DROIT_ADMIN;
+    const CREDENTIAL_OPERATEUR = CompteClient::DROIT_OPERATEUR;
+
     protected $etablissement = null;
+    protected $compte = null;
 
     public function signIn($identifiant) 
     {
@@ -15,19 +20,35 @@ class myUser extends sfBasicSecurityUser
         $this->setAuthenticated(true);
 
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
-        if(!$etablissement) {
+        
+        if($etablissement) {
+
+            $this->signInEtablissement($etablissement);
 
             return;
         }
 
-        $this->setAttribute(self::SESSION_ETABLISSEMENT, $etablissement->_id, self::NAMESPACE_AUTH);
-        
-        foreach($etablissement->droits as $droit) {
-            $roles = Roles::getRoles($droit);
-            $this->addCredentials($droit);
-        }
+        $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
 
-         $this->addCredentials('drev');
+        if($compte) {
+            $this->signInCompte($compte);
+
+            return;
+        }
+    }
+
+    public function signInCompte($compte) {
+        $this->compte = null;
+        $this->setAttribute(self::SESSION_COMPTE, $compte->_id, self::NAMESPACE_AUTH);
+
+        foreach($compte->droits as $droit => $value) {
+            $this->addCredential($droit);
+        }
+    }
+
+    public function signInEtablissement($etablissement) {
+        $this->etablissement = null;
+        $this->setAttribute(self::SESSION_ETABLISSEMENT, $etablissement->_id, self::NAMESPACE_AUTH);
     }
 
     public function signOut() 
@@ -40,14 +61,37 @@ class myUser extends sfBasicSecurityUser
     public function getEtablissement() 
     {
         if(is_null($this->etablissement)) {
-            $this->etablissement = EtablissementClient::getInstance()->find($this->getAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH));
+            $id = $this->getAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH);
+
+            if(!$id) {
+                
+                return null;
+            }
+
+            $this->etablissement = EtablissementClient::getInstance()->find($id);
         }
 
         return $this->etablissement;
     }
+
+    public function getCompte() 
+    {
+        if(is_null($this->compte)) {
+            $id = $this->getAttribute(self::SESSION_COMPTE, null, self::NAMESPACE_AUTH);
+
+            if(!$id) {
+                
+                return null;
+            }
+
+            $this->compte = CompteClient::getInstance()->find($id);
+        }
+
+        return $this->compte;
+    }
     
     public function isAdmin()
     {
-    	return false;
+    	return $this->hasCredential(self::CREDENTIAL_OPERATEUR);
     }
 }
