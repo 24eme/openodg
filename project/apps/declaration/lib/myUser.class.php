@@ -9,7 +9,6 @@ class myUser extends sfBasicSecurityUser
     const NAMESPACE_AUTH = "AUTH";
 
     const CREDENTIAL_ADMIN = CompteClient::DROIT_ADMIN;
-    const CREDENTIAL_OPERATEUR = CompteClient::DROIT_OPERATEUR;
 
     protected $etablissement = null;
     protected $compte = null;
@@ -92,6 +91,6 @@ class myUser extends sfBasicSecurityUser
     
     public function isAdmin()
     {
-    	return $this->hasCredential(self::CREDENTIAL_OPERATEUR);
+    	return $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
 }

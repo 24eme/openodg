@@ -441,7 +441,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function updatePrelevementsFromRevendication() {
         $prelevements_to_delete = array_flip($this->prelevement_keys);
         foreach ($this->declaration->getProduits() as $produit) {
-            if (!$produit->isActive()) {
+            if (!$produit->volume_revendique) {
 
                 continue;
             }

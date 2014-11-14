@@ -39,7 +39,7 @@ class DRevLotsAjoutProduitForm extends acCouchdbObjectForm
 		    	if ($produit->getLieu()->libelle) {
 		    		$libelle .= $produit->getLieu()->libelle.' - ';
 		    	}
-		    	$libelle .= $produit->libelle;
+		    	$libelle .= $produit->getLibelleLong();
     			$this->produits[$produit->getHash()] = $libelle;
 	    	}
     	}
