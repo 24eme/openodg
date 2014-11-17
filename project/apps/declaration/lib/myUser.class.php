@@ -50,6 +50,12 @@ class myUser extends sfBasicSecurityUser
         $this->setAttribute(self::SESSION_ETABLISSEMENT, $etablissement->_id, self::NAMESPACE_AUTH);
     }
 
+    public function signOutEtablissement() 
+    {
+        $this->setAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH);
+        $this->etablissement = null;
+    }
+
     public function signOut() 
     {
         $this->setAuthenticated(false);

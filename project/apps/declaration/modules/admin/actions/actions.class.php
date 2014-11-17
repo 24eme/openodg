@@ -4,6 +4,8 @@ class adminActions extends sfActions {
     
     public function executeIndex(sfWebRequest $request) {
 
+        $this->getUser()->signOutEtablissement();
+        
         $this->form = new LoginForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
