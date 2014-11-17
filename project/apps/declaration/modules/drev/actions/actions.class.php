@@ -539,6 +539,8 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
+        $this->service = $request->getParameter('service');
+
         $documents = $this->drev->getOrAdd('documents');
 
         $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin()) ? new DRevDocumentsForm($documents) : null;
