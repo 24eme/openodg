@@ -8,7 +8,7 @@
     </div>
 <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-success">
-        Cette déclaration n'a pas encore été validé par l'AVA
+        Cette déclaration n'a pas encore été validée par l'AVA
     </div>
 <?php endif; ?>
 
