@@ -5,6 +5,8 @@ Votre déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $
 
 Cette validation sera définitive lorsque votre déclaration aura été vérifiée.
 
+D'autre par vous trouverez en pièce jointe le document PDF de votre déclaration de Marc d'Alsace Gewurztraminer.
+
 Bien cordialement,
 
 Le service Appui technique (via l'application de télédéclaration)
