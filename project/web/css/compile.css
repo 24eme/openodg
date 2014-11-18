@@ -1211,7 +1211,7 @@ input[type="checkbox"],input[type="radio"]{width:auto}
 .breadcrumb-steps:before,.breadcrumb-steps:after{content:" ";display:table}
 .breadcrumb-steps:after{clear:both}
 .breadcrumb-steps li{color:#fff;float:left;height:82px;line-height:82px;position:relative;text-transform:uppercase;width:188px}.breadcrumb-steps li:first-child{width:155px}.breadcrumb-steps li:first-child .step:before{left:6px}
-.breadcrumb-steps li:first-child a{padding-left:23px}
+.breadcrumb-steps li:first-child a,.breadcrumb-steps li:first-child span{padding-left:23px}
 .breadcrumb-steps li+li+li+li+li{width:221px}
 .breadcrumb-steps li.visited{background:#2c4a48}.breadcrumb-steps li.visited .step:after{background-position:-104px -2px}
 .breadcrumb-steps li.active{background:#b9cf62;color:#2c4a48}.breadcrumb-steps li.active .step:after{background-position:-52px -2px;border-left-color:#b9cf62}

@@ -1,7 +1,7 @@
 <?php echo include_partial('Email/headerMail') ?>
 Madame, Monsieur,
 
-Votre déclaration de revendication 2014 a bien été validée et envoyée au service Appui technique de l'AVA.
+Votre déclaration de revendication <?php echo $drev->campagne; ?> a bien été validée et envoyée au service Appui technique de l'AVA.
 
 Cette validation sera définitive lorsque votre déclaration aura été vérifiée et que les éventuelles pièces à joindre nous serons parvenues.
 
