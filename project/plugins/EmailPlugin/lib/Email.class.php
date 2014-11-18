@@ -61,7 +61,7 @@ class Email {
       	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drevmarc->declarant->email);
-        $subject = 'Validation de votre DRev Marc d\'Alsace de Gewurzt.';
+        $subject = 'Validation de votre DRev Marc d\'Alsace de Gewurztraminer';
         $body = $this->getBodyFromPartial('send_drevmarc_validation', array('drevmarc' => $drevmarc));
         $message = Swift_Message::newInstance()
   					->setFrom($from)

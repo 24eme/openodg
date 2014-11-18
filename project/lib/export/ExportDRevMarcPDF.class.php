@@ -18,7 +18,7 @@ class ExportDRevMarcPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration de Revendication de Marc d'Alsace Gewurzt. %s", $this->drevmarc->campagne);
+        return sprintf("Déclaration de Revendication de Marc d'Alsace Gewurztraminer %s", $this->drevmarc->campagne);
     }
 
     protected function getHeaderSubtitle() {
