@@ -3,6 +3,8 @@
 abstract class DocumentSecurity implements SecurityInterface {
 
     const EDITION = 'EDITION';
+    const VALIDATION_ADMIN = 'VALIDATION_ADMIN';
+    const VISUALISATION = 'VISUALISATION';
 
     protected $doc;
     protected $user;
@@ -23,14 +25,19 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        /*if(in_array(self::EDITION, $droits) && $this->doc->validation) {
+        if(in_array(self::EDITION, $droits) && $this->doc->validation) {
 
             return false;
-        }*/
+        }
 
-        if(in_array(self::EDITION, $droits)) {
+        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin()) {
 
-            return true;
+            return false;
+        }
+
+        if(in_array(self::VALIDATION_ADMIN, $droits) && $this->doc->validation_odg) {
+
+            return false;
         }
 
         return true;

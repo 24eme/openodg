@@ -532,12 +532,12 @@ class drevActions extends sfActions {
 
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
         $this->service = $request->getParameter('service');
 
@@ -562,16 +562,24 @@ class drevActions extends sfActions {
 
         $this->form->save();
 
-        if ($this->drev->hasCompleteDocuments()) {
-            $this->sendDRevConfirmee($this->drev);
-        }
+        return $this->redirect('drev_visualisation', $this->drev);
+    }
+
+    public function executeValidationAdmin(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
+
+        $this->drev->validation_odg = date('Y-m-d');
+        $this->drev->save();
+
+        $this->sendDRevConfirmee($this->drev);
 
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $drev);
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
 
         if (!$drev->validation) {
             $drev->cleanDoc();

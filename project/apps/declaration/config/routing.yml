@@ -223,6 +223,16 @@ drev_validation:
   requirements:
     sf_method: [get, post]
 
+drev_validation_admin:
+  url: /drev/validation_admin/:id
+  param: { module: drev, action: validationAdmin }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_confirmation:
   url: /drev/confirmation/:id
   param: { module: drev, action: confirmation }
