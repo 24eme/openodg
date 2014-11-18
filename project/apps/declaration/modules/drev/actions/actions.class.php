@@ -539,9 +539,15 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
+        $this->service = $request->getParameter('service');
+
         $documents = $this->drev->getOrAdd('documents');
 
-        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin()) ? new DRevDocumentsForm($documents) : null;
+        if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
+            $this->validation = new DRevValidation($this->drev);
+        }
+
+        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

@@ -4,7 +4,7 @@
             <div class="panel-heading">
                 <h3>Historique</h3>
             </div>
-            <ul class="list-group-history">
+            <ul class="list-group">
             <?php foreach ($history as $drev): ?>
             	<?php if ($drev->type == DRevMarcClient::TYPE_MODEL): ?>
             	<li class="list-group-item">
