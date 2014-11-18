@@ -50,9 +50,47 @@ class Email {
   					->setTo($to)
   					->setSubject($subject)
   					->setBody($body)
-  					->setContentType('text/html');
+  					->setContentType('text/plain');
 		    return $this->getMailer()->send($message);
     }
+    
+      public function sendDRevMarcValidation($drevmarc) 
+    {
+      	if (!$drevmarc->declarant->email) {
+      		return;
+      	}
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($drevmarc->declarant->email);
+        $subject = 'Validation de votre DRev Marc d\'Alsace de Gewurztraminer';
+        $body = $this->getBodyFromPartial('send_drevmarc_validation', array('drevmarc' => $drevmarc));
+        $message = Swift_Message::newInstance()
+  					->setFrom($from)
+  					->setTo($to)
+  					->setSubject($subject)
+  					->setBody($body)
+  					->setContentType('text/plain')
+  					->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevMarcPDF::buildFileName($drevmarc, true)));
+		    return $this->getMailer()->send($message);
+    }
+    
+        public function sendDRevMarcConfirmee($drevmarc) 
+    {
+      	if (!$drevmarc->declarant->email) {
+      		return;
+      	}
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($drevmarc->declarant->email);
+        $subject = 'Validation Définitive de votre Déclaration de Revendication Marc d\'Alsace de Gewurztraminer';
+        $body = $this->getBodyFromPartial('send_drev_confirmee', array('drevmarc' => $drevmarc));
+        $message = Swift_Message::newInstance()
+  					->setFrom($from)
+  					->setTo($to)
+  					->setSubject($subject)
+  					->setBody($body)
+  					->setContentType('text/plain');
+		    return $this->getMailer()->send($message);
+    }
+    
 
     protected function getMailer() 
     {

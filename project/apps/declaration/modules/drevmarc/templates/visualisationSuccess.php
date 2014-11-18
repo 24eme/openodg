@@ -1,5 +1,5 @@
 <div class="page-header no-border">
-    <h2>Déclaration de revendication de Marc Gewurt. 2013</h2>
+    <h2>Déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $drevmarc->campagne; ?></h2>
 </div>
 
 <?php include_partial('drevmarc/recap', array('drevmarc' => $drevmarc)); ?>

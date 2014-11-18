@@ -18,12 +18,16 @@ class ExportDRevMarcPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return 'Déclaration de Revendication de Marc 2014';
+        return sprintf("Déclaration de Revendication de Marc d'Alsace Gewurztraminer %s", $this->drevmarc->campagne);
     }
 
     protected function getHeaderSubtitle() {
-
-        return "Cave d'Actualys\nCommune de déclaration : Colmar\nDéclaration validée le 30/08/2014";
+        $header_subtitle = sprintf("%s\n\n", $this->drevmarc->declarant->nom);
+        if ($this->drevmarc->validation && $this->drevmarc->campagne >= "2014") {
+            $date = new DateTime($this->drevmarc->validation);
+            $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+        }
+        return $header_subtitle;        
     }
 
     protected function getConfig() {
@@ -37,15 +41,16 @@ class ExportDRevMarcPDF extends ExportPDF {
     }
 
     public static function buildFileName($drevmarc, $with_rev = false) {
-        $filename = sprintf("DREVMARC_%s_%s", '7523700100', '2013-2014');
+        
+        $filename = sprintf("DREVMARC_%s_%s", $drevmarc->identifiant, $drevmarc->campagne);
 
-        $declarant_nom = strtoupper(KeyInflector::slugify("DECLARANT"));
-        $filename .= '_'.$declarant_nom;
+        $declarant_nom = strtoupper(KeyInflector::slugify($drevmarc->declarant->nom));
+        $filename .= '_' . $declarant_nom;
 
-        if($with_rev) {
-            $filename .= '_'.$drevmarc->_rev;
+        if ($with_rev) {
+            $filename .= '_' . $drevmarc->_rev;
         }
 
-        return $filename.'.pdf';
+        return $filename . '.pdf';
     }
 }

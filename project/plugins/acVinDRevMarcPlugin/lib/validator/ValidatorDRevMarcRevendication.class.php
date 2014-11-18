@@ -32,7 +32,7 @@ class ValidatorDRevMarcRevendication extends sfValidatorBase {
         $date_fin_distillation = Date::getIsoDateFromFrenchDate($values['fin_distillation']);      
         
         
-        if ($date_debut_distillation >= $date_fin_distillation) {
+        if ($date_debut_distillation > $date_fin_distillation) {
             $errorSchema->addError(new sfValidatorError($this, 'invalid_periode_distillation'), 'debut_distillation');
         }
         

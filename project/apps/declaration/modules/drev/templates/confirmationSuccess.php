@@ -1,10 +1,20 @@
 <?php include_partial('drev/step', array('step' => 'confirmation', 'drev' => $drev)) ?>
 
-<p>
-Merci d'avoir validé votre déclaration de Revendication. <br />
-<br />
-Vous allez recevoir un mail de confirmation.
-</p>
+<br/>
+<div class="page-header">
+    <h2>Confirmation de validation de votre déclaration</h2>
+</div>
+<div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">            
+            <p>
+                Merci d'avoir valider votre déclaration. <br />
+                <br />
+                Vous allez recevoir un mail de confirmation.
+            </p>
+        </div>
+</div>
+</div>
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">

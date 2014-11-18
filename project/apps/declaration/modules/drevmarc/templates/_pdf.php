@@ -61,4 +61,3 @@
 </table>
 <br />
 <br />
-<p>Signé éléctroniquement <i>via l'application de télédéclaration le 08/06/2014</i></p>

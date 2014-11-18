@@ -614,11 +614,15 @@ class drevActions extends sfActions {
         $pdf->generate();
         Email::getInstance()->sendDRevValidation($drev);
     }
-
+    
     protected function sendDrevConfirmee($drev) {
         Email::getInstance()->sendDrevConfirmee($drev);
     }
 
+    protected function sendDrevMarcConfirmee($drevmarc) {
+        Email::getInstance()->sendDrevMarcConfirmee($drevmarc);
+    }
+    
     protected function secure($droits, $doc) {
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 

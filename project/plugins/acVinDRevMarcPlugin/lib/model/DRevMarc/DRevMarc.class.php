@@ -47,5 +47,8 @@ class DRevMarc extends BaseDRevMarc {
     public function validate() {
         $this->validation = date('Y-m-d');
     }
-
+    
+    public function isValide() {
+        return $this->exist('validation') && $this->validation;
+    }
 }

@@ -12,9 +12,9 @@ class drevmarcActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
-        
+
         if ($drevmarc->exist('etape') && $drevmarc->etape) {
-        	return $this->redirect('drevmarc_'.$drevmarc->etape, $drevmarc);
+            return $this->redirect('drevmarc_' . $drevmarc->etape, $drevmarc);
         }
 
         return $this->redirect('drevmarc_exploitation', $drevmarc);
@@ -29,11 +29,11 @@ class drevmarcActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
-        
+
         $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevMarcEtapes::ETAPE_EXPLOITATION));
-        
+
         $this->drevmarc->save();
-        
+
         $this->etablissement = $this->drevmarc->getEtablissementObject();
 
         $this->form = new EtablissementForm($this->etablissement);
@@ -60,18 +60,18 @@ class drevmarcActions extends sfActions {
 
     public function executeRevendication(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
-        
+
         $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevMarcEtapes::ETAPE_REVENDICATION));
-	    $this->drevmarc->save();
-	    
+        $this->drevmarc->save();
+
         $this->form = new DRevMarcRevendicationForm($this->drevmarc);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
                 $this->form->save();
                 if ($request->isXmlHttpRequest()) {
-                    
-                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drevmarc->_id,"revision" => $this->drevmarc->_rev))));
+
+                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drevmarc->_id, "revision" => $this->drevmarc->_rev))));
                 }
                 return $this->redirect('drevmarc_validation', $this->drevmarc);
             }
@@ -80,18 +80,19 @@ class drevmarcActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
-        
+
         $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevEtapes::ETAPE_VALIDATION));
         $this->drevmarc->save();
-        
+
         $this->validation = new DRevMarcValidation($this->drevmarc);
         $this->form = new DRevMarcValidationForm($this->drevmarc);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
-                
+
                 $this->drevmarc->validate();
                 $this->drevmarc->save();
+                $this->sendDRevMarcValidation($this->drevmarc);
 
                 return $this->redirect('drevmarc_confirmation', $this->drevmarc);
             }
@@ -122,14 +123,21 @@ class drevmarcActions extends sfActions {
 
         return $this->renderText($this->document->output());
     }
-    
-    protected function getEtape($drevmarc, $etape)
-    {
-    	$drevEtapes = DrevMarcEtapes::getInstance();
-    	if (!$drevmarc->exist('etape')) {
-    		return $etape;
-    	}
-        return ($drevEtapes->isLt($drevmarc->etape, $etape))? $etape : $drevmarc->etape;
+
+    protected function getEtape($drevmarc, $etape) {
+        $drevEtapes = DrevMarcEtapes::getInstance();
+        if (!$drevmarc->exist('etape')) {
+            return $etape;
+        }
+        return ($drevEtapes->isLt($drevmarc->etape, $etape)) ? $etape : $drevmarc->etape;
+    }
+
+    protected function sendDRevMarcValidation($drevmarc) {
+        $pdf = new ExportDRevMarcPdf($drevmarc, 'pdf', true);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->removeCache();
+        $pdf->generate();
+        Email::getInstance()->sendDRevMarcValidation($drevmarc);
     }
 
 }
