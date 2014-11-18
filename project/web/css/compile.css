@@ -1258,6 +1258,7 @@ input[type="checkbox"],input[type="radio"]{width:auto}
 .panel .panel-body{color:#5e5e5e}
 .panel.panel-primary{background:#fffbde}.panel.panel-primary .panel-heading{background:#fffbde}
 .panel.panel-primary .panel-body{color:#5e5e5e}
+.panel.panel-primary .list-group-item{background:#fffbde}
 .panel.panel-success{background:#b9cf62}.panel.panel-success .panel-heading{background:#b9cf62}
 .panel.panel-success .panel-body{color:#2c4a48}
 .panel.panel-success h3{color:#2c4a48}

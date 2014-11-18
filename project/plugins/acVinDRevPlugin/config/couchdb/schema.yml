@@ -18,6 +18,7 @@ DRev:
       etape: { required: false }
       identifiant: { }
       validation: { }
+      validation_odg: { }
       non_recoltant: { required: false, type: integer }
       non_conditionneur: { required: false, type: integer }
       declarant:

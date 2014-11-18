@@ -21,7 +21,7 @@
                     <a class="list-group-item" href="<?php echo url_for("drev_visualisation", array("id" => $drev->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
                     <span class="col-xs-2 text-muted">
                     <?php if($drev->key[3]): ?>
-                        <?php echo format_date($drev->key[2], "dd/MM/yyyy", "fr_FR"); ?>
+                        <?php echo format_date($drev->key[3], "dd/MM/yyyy", "fr_FR"); ?>
                     <?php elseif($drev->key[2]): ?>
                         <?php echo format_date($drev->key[2], "dd/MM/yyyy", "fr_FR"); ?>
                     <?php elseif(!$drev->key[2] && $drev->key[4]): ?>
