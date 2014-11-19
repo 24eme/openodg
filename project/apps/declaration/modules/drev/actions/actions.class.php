@@ -51,6 +51,20 @@ class drevActions extends sfActions {
         return $this->redirect($this->generateUrl('home'));
     }
 
+    public function executeDevalidation(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $this->secure(DRevSecurity::DEVALIDATION, $drev);
+
+        $drev->validation = null;
+        $drev->validation_odg = null;
+        $drev->save();
+
+        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+
+        return $this->redirect($this->generateUrl('home'));
+    }
+
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);

@@ -73,6 +73,16 @@ drev_delete:
   requirements:
     sf_method: [get]
 
+drev_devalidation:
+  url: /drev/devalidation/:id
+  param: { module: drev, action: devalidation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_dr:
   url: /drev/dr/:id
   param: { module: drev, action: dr }
