@@ -33,7 +33,6 @@ class DRevControleExterneForm extends acCouchdbObjectForm
             $form_vtsgn->getWidget('total_lots')->setLabel("Nombre de lots");
 
             $this->embedForm(Drev::BOUTEILLE_VTSGN, $form_vtsgn);
-            $this->mergePostValidator(new DRevControleExterneValidator());
         }
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
             $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice(), 'expanded' => true, 'renderer_options' => array('formatter' => array($this, 'formatter')))));
@@ -42,6 +41,7 @@ class DRevControleExterneForm extends acCouchdbObjectForm
 
         $this->widgetSchema->setNameFormat('controle_externe[%s]');
         
+        $this->mergePostValidator(new DRevControleExterneValidator());
     }
 
     public function formatter($widget, $inputs) 

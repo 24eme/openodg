@@ -9,7 +9,12 @@ class DRevControleExterneValidator extends sfValidatorSchema
     protected function doClean($values) {
         if (isset($values[DRev::BOUTEILLE_VTSGN]['date']) && $values[DRev::BOUTEILLE_VTSGN]['date']) {
             if (!isset($values[DRev::BOUTEILLE_VTSGN]['total_lots']) || !$values[DRev::BOUTEILLE_VTSGN]['total_lots']) {
-                throw new sfValidatorErrorSchema($this, array('total_lots' => new sfValidatorError($this, 'required')));
+                
+                $errorSchema =  new sfValidatorErrorSchema($this);
+                $error =  new sfValidatorError($this, 'required');
+                $errorSchema->addError($error, 'total_lots');
+
+                throw new sfValidatorErrorSchema($errorSchema->getValidator(), array(DRev::BOUTEILLE_VTSGN => $errorSchema));
             }
         }
         
