@@ -22,11 +22,6 @@ class DRevMarcSecurity extends DocumentSecurity implements SecurityInterface {
             return false;
         }
 
-        if(in_array(self::VALIDATION_ADMIN, $droits)) {
-
-            return false;
-        }
-
         return true;
     }
 
