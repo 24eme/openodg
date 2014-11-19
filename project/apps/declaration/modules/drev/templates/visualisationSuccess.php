@@ -2,6 +2,10 @@
     <h2>Déclaration de revendication <?php echo $drev->campagne ?></h2>
 </div>
 
+<?php if ($sf_user->hasFlash('notice')): ?>
+    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+<?php endif; ?>
+
 <?php if(!$drev->validation): ?>
     <div class="alert alert-warning">
         La saisie de cette déclaration n'est pas terminée elle est en cours d'édition.

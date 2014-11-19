@@ -46,7 +46,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $drev);
 
         $drev->delete();
-        $this->getUser()->setFlash("notice", "La DRev a été supprimé avec succès.");
+        $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
         return $this->redirect($this->generateUrl('home'));
     }
@@ -573,6 +573,8 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->sendDRevConfirmee($this->drev);
+
+         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a éyé envoyé au télédéclarant.");
 
         return $this->redirect('drev_visualisation', $this->drev);
     }
