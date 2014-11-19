@@ -642,9 +642,6 @@ class drevActions extends sfActions {
         Email::getInstance()->sendDrevConfirmee($drev);
     }
 
-    protected function sendDrevMarcConfirmee($drevmarc) {
-        Email::getInstance()->sendDrevMarcConfirmee($drevmarc);
-    }
     
     protected function secure($droits, $doc) {
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {

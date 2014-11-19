@@ -24,7 +24,7 @@ class Email {
       	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
-        $subject = 'Validation de votre DRev';
+        $subject = 'Validation de votre Déclaration de Revendication';
         $body = $this->getBodyFromPartial('send_drev_validation', array('drev' => $drev));
         $message = Swift_Message::newInstance()
   					->setFrom($from)
@@ -43,7 +43,7 @@ class Email {
       	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
-        $subject = 'Validation de votre DRev';
+        $subject = 'Confirmation de validation de votre Déclaration de Revendication par nos services';
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drev' => $drev));
         $message = Swift_Message::newInstance()
   					->setFrom($from)
@@ -61,7 +61,7 @@ class Email {
       	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drevmarc->declarant->email);
-        $subject = 'Validation de votre DRev Marc d\'Alsace de Gewurztraminer';
+        $subject = 'Validation de votre Déclaration de Revendication Marc d\'Alsace de Gewurztraminer';
         $body = $this->getBodyFromPartial('send_drevmarc_validation', array('drevmarc' => $drevmarc));
         $message = Swift_Message::newInstance()
   					->setFrom($from)
@@ -80,7 +80,7 @@ class Email {
       	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drevmarc->declarant->email);
-        $subject = 'Validation Définitive de votre Déclaration de Revendication Marc d\'Alsace de Gewurztraminer';
+        $subject = 'Confirmation de validation de votre Déclaration de Revendication Marc d\'Alsace de Gewurztraminer par nos services';
         $body = $this->getBodyFromPartial('send_drev_confirmee', array('drevmarc' => $drevmarc));
         $message = Swift_Message::newInstance()
   					->setFrom($from)

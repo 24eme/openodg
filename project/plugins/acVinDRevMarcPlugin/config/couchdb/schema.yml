@@ -14,6 +14,7 @@ DRevMarc:
       volume_obtenu: { }
       titre_alcool_vol: { }
       validation: { }
+      validation_odg: { }
       declarant:
         type: collection
         definition:

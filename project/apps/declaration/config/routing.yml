@@ -319,17 +319,27 @@ drevmarc_validation:
   param: { module: drevmarc, action: validation }
   class: DRevMarcRoute
   options:
-    model:    DRevMarcRoute
+    model:    DRevMarc
     type:     object
   requirements:
     sf_method: [get, post]
+    
+drevmarc_validation_admin:
+  url: /drevmarc/validation_admin/:id
+  param: { module: drevmarc, action: validationAdmin }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get]
 
 drevmarc_confirmation:
   url: /drevmarc/confirmation/:id
   param: { module: drevmarc, action: confirmation }
   class: DRevMarcRoute
   options:
-    model:    DRev
+    model:    DRevMarc
     type:     object
   requirements:
     sf_method: [get, post]
@@ -339,7 +349,7 @@ drevmarc_visualisation:
   param: { module: drevmarc, action: visualisation }
   class: DRevMarcRoute
   options:
-    model:    DRev
+    model:    DRevMarc
     type:     object
   requirements:
     sf_method: [get, post]
