@@ -57,7 +57,7 @@
                 <?php use_helper('Text'); ?>
                 <?php if($sf_user->isAuthenticated()): ?>
                 <?php if($sf_user->getCompte()): ?>
-                <nav style="<?php if($sf_user->getEtablissement()): ?>opacity: 0.8; right: 220px; background: #b74b4b<?php endif; ?>" id="navigation" class="bg-danger" role="navigation">
+                <nav class="<?php if($sf_user->getEtablissement()): ?>bloc-right<?php endif; ?>" id="navigation-admin" role="navigation">
                     <span class="profile-name"><?php echo $sf_user->getCompte()->nom ?></span>
                     <ul>
                         <?php if($sf_user->isAdmin()): ?>

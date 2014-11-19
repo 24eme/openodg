@@ -1760,7 +1760,7 @@ input[type="radio"]
 /**
  * Main navigation
  ******************************************/
-#navigation
+#navigation, #navigation-admin
 {	
 	.pos-abs(0, 0, 0);
 	background: #105251;
@@ -1768,6 +1768,12 @@ input[type="radio"]
 	padding: 10px 20px;
 	text-align: right;
 	width: 220px;
+
+	&.bloc-right {
+		opacity: 0.8; 
+		right: 220px; 
+		background: @state-danger-text;
+	}
 
 	a { color: inherit; }
 
