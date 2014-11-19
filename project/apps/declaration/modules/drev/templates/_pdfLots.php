@@ -4,7 +4,7 @@
 <?php echo styleDRev(); ?>
 </style>
 
-<span style="text-align: center; font-size: 12pt; font-weight:bold;">Déclaration des lots susceptibles d'être prelévés</span>
+<span style="text-align: center; font-size: 12pt; font-weight:bold;">Déclaration des lots susceptibles d'être prélevés</span>
 <br /><br />
 
 <?php foreach($drev->prelevements as $prelevement): ?>
