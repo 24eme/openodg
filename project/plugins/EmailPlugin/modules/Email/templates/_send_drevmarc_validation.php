@@ -7,6 +7,9 @@ Cette validation sera définitive lorsque votre déclaration aura été vérifi�
 
 D'autre par vous trouverez en pièce jointe le document PDF de votre déclaration de Marc d'Alsace Gewurztraminer.
 
+Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', $drevmarc, true); ?>
+
+
 Bien cordialement,
 
 Le service Appui technique (via l'application de télédéclaration)

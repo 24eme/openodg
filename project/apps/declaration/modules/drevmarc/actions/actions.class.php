@@ -99,6 +99,20 @@ class drevmarcActions extends sfActions {
         }
     }
 
+    public function executeValidationAdmin(sfWebRequest $request) {
+        $this->drevmarc = $this->getRoute()->getDRevMarc();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drevmarc);
+
+        $this->drevmarc->validation_odg = date('Y-m-d');
+        $this->drevmarc->save();
+
+        $this->sendDRevMarcConfirmee($this->drevmarc);
+
+        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a éyé envoyé au télédéclarant.");
+
+        return $this->redirect('drevmarc_visualisation', $this->drevmarc);
+    }
+
     public function executeConfirmation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
     }
@@ -138,6 +152,23 @@ class drevmarcActions extends sfActions {
         $pdf->removeCache();
         $pdf->generate();
         Email::getInstance()->sendDRevMarcValidation($drevmarc);
+    }
+
+    protected function sendDrevMarcConfirmee($drevmarc) {
+        Email::getInstance()->sendDrevMarcConfirmee($drevmarc);
+    }
+
+    protected function secure($droits, $doc) {
+        if (!DRevMarcSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
     }
 
 }

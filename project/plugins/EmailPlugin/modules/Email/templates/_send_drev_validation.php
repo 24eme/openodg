@@ -13,6 +13,12 @@ Pour rappel :
 <?php endforeach; ?>
 
 <?php endif; ?>
+
+D'autre par vous trouverez en pièce jointe le document PDF de votre déclaration.
+
+Cette dernière est également consultable sur la plateforme de télédéclaration : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>
+
+
 Bien cordialement,
 
 Le service Appui technique (via l'application de télédéclaration)
