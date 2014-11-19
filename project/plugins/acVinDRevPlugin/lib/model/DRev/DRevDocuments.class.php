@@ -16,7 +16,7 @@ class DRevDocuments extends BaseDRevDocuments
 	const STATUT_RECU = 'RECU';
 	
 	private static $_document_libelles = array(
-		self::DOC_DR => 'Déclaration de récolte (DR)',
+		self::DOC_DR => 'Déclaration de Récolte',
 		self::DOC_SV11 => 'SV11',
 		self::DOC_SV12 => 'SV12',
 		self::DOC_SV => 'SV11 / SV12',
@@ -24,7 +24,7 @@ class DRevDocuments extends BaseDRevDocuments
 	);
 	
 	private static $_statut_libelles = array(
-		self::STATUT_EN_ATTENTE => 'En attente de reception',
+		self::STATUT_EN_ATTENTE => 'En attente de réception',
 		self::STATUT_RECU => 'Reçu'
 	);
 	

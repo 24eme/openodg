@@ -2,13 +2,17 @@
     <h2>Déclaration de revendication <?php echo $drev->campagne ?></h2>
 </div>
 
+<?php if ($sf_user->hasFlash('notice')): ?>
+    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+<?php endif; ?>
+
 <?php if(!$drev->validation): ?>
     <div class="alert alert-warning">
         La saisie de cette déclaration n'est pas terminée elle est en cours d'édition.
     </div>
 <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-success">
-        Cette déclaration n'a pas encore été validé par l'AVA
+        Cette déclaration n'a pas encore été validée par l'AVA
     </div>
 <?php endif; ?>
 
@@ -40,7 +44,7 @@
     <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="col-xs-4 text-right">
             <!--<button type="submit" class="btn btn-danger btn-lg btn-upper"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Refuser</button>-->
-            <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</button>
+            <a href="<?php echo url_for("drev_validation_admin", $drev) ?>" <?php if(!$drev->hasCompleteDocuments()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
     </div>
     <?php endif; ?>
 </div>

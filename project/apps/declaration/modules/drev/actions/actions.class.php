@@ -46,7 +46,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $drev);
 
         $drev->delete();
-        $this->getUser()->setFlash("notice", "La DRev a été supprimé avec succès.");
+        $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
         return $this->redirect($this->generateUrl('home'));
     }
@@ -532,12 +532,12 @@ class drevActions extends sfActions {
 
     public function executeConfirmation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
 
         $this->service = $request->getParameter('service');
 
@@ -562,16 +562,26 @@ class drevActions extends sfActions {
 
         $this->form->save();
 
-        if ($this->drev->hasCompleteDocuments()) {
-            $this->sendDRevConfirmee($this->drev);
-        }
+        return $this->redirect('drev_visualisation', $this->drev);
+    }
+
+    public function executeValidationAdmin(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
+
+        $this->drev->validation_odg = date('Y-m-d');
+        $this->drev->save();
+
+        $this->sendDRevConfirmee($this->drev);
+
+         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a éyé envoyé au télédéclarant.");
 
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $drev);
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
 
         if (!$drev->validation) {
             $drev->cleanDoc();
@@ -589,6 +599,27 @@ class drevActions extends sfActions {
         $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
+    }
+
+    public function executeDrPdf(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
+
+        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+
+        if(!$file) {
+
+            $this->forward404();
+        }
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="DR-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText($file);
     }
 
     protected function getEtape($drev, $etape) {

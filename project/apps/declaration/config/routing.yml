@@ -103,6 +103,16 @@ drev_dr_import:
   requirements:
     sf_method: [get, post]
 
+drev_dr_pdf:
+  url: /drev/dr-pdf/:id
+  param: { module: drev, action: drPdf }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_exploitation:
   url: /drev/exploitation/:id
   param: { module: drev, action: exploitation }
@@ -222,6 +232,16 @@ drev_validation:
     type:     object
   requirements:
     sf_method: [get, post]
+
+drev_validation_admin:
+  url: /drev/validation_admin/:id
+  param: { module: drev, action: validationAdmin }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
 
 drev_confirmation:
   url: /drev/confirmation/:id
