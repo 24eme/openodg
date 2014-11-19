@@ -2,6 +2,20 @@
     <h2>Déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $drevmarc->campagne; ?></h2>
 </div>
 
+<?php if ($sf_user->hasFlash('notice')): ?>
+    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+<?php endif; ?>
+    
+<?php if(!$drevmarc->validation): ?>
+    <div class="alert alert-warning">
+        La saisie de cette déclaration n'est pas terminée elle est en cours d'édition.
+    </div>
+<?php elseif(!$drevmarc->validation_odg && $sf_user->isAdmin()): ?>
+    <div class="alert alert-success">
+        Cette déclaration n'a pas encore été validée par l'AVA
+    </div>
+<?php endif; ?>
+
 <?php include_partial('drevmarc/recap', array('drevmarc' => $drevmarc)); ?>
 
 <div class="row row-margin row-button">
