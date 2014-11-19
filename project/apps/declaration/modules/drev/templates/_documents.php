@@ -16,13 +16,13 @@
         <?php if($drev->hasDr()): ?>
             <tr>
                 <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle(DRevDocuments::DOC_DR) ?></td>
-                <td class="text-center"><a class="text-success" href="<?php echo $drev->getAttachmentUri('DR.pdf'); ?>" target="_blank">Télécharger</a></td>
+                <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank">Télécharger</a></td>
             </tr>
         <?php endif; ?>
     	<?php if (isset($form)): ?>
     		<?php foreach ($form->getEmbeddedForms() as $key => $documentForm): ?>
 	        <tr>
-	            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle($key) ?><?php if($key == DRevDocuments::DOC_DR && $drev->hasDr()): ?> - <a href="<?php echo $drev->getAttachmentUri('DR.pdf'); ?>" target="_blank"><small>Télécharger ma DR</small></a><?php endif; ?></td>
+	            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle($key) ?></td>
 	            <td class="text-left">
 	            	<div class="checkbox">
 				        <label>

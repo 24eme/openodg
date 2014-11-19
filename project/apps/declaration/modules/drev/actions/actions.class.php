@@ -599,6 +599,27 @@ class drevActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
+    public function executeDrPdf(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
+
+        $file = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+
+        if(!$file) {
+
+            $this->forward404();
+        }
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="DR-%s-%s.pdf"', $drev->identifiant, $drev->campagne));
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText($file);
+    }
+
     protected function getEtape($drev, $etape) {
         $drevEtapes = DrevEtapes::getInstance();
         if (!$drev->exist('etape')) {
