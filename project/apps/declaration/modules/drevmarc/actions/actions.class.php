@@ -159,7 +159,7 @@ class drevmarcActions extends sfActions {
     }
 
     protected function secure($droits, $doc) {
-        if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+        if (!DRevMarcSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
             return $this->forwardSecure();
         }
