@@ -10,15 +10,15 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         }  
 
         $vtsgn = false;
-        if ($this->getObject()->getDocument()->isNonRecoltant()) {
-        	if ($this->getObject()->getDocument()->declaration->hasVtsgn()) {
-        		$vtsgn = true;
-        	}
-        } else {
-        	if ($this->getObject()->getDocument()->prelevements->exist(Drev::BOUTEILLE_VTSGN) || !$this->getObject()->getDocument()->hasDr()) {
-        		$vtsgn = true;
-        	}
+
+        if(!$this->getObject()->getDocument()->mustDeclareCepage()) {
+            $vtsgn = true;
         }
+
+        if ($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_VTSGN)) {
+            $vtsgn = true;
+        }
+
         if($vtsgn) {
             $form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->getOrAdd(Drev::CUVE_VTSGN));
             $form_vtsgn->setWidget("date", new sfWidgetFormChoice(array('choices' => $this->getVtsgnChoices())));
