@@ -588,9 +588,11 @@ class drevActions extends sfActions {
 
         $this->sendDRevConfirmee($this->drev);
 
-         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
+        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 
-        return $this->redirect('drev_visualisation', $this->drev);
+        $service = $request->getParameter("service");
+
+        return $this->redirect('drev_visualisation', array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null));
     }
 
     public function executePDF(sfWebRequest $request) {

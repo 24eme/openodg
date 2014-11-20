@@ -5,7 +5,7 @@
    
         <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert">
     	    <ul class="error_list">
-    			<li class="text-left">Vous devez cocher pour valider.</li>
+    			<li class="text-left">Vous devez cocher pour valider votre déclaration.</li>
     		</ul>
     	</div>
         

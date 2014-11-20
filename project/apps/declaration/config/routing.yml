@@ -27,6 +27,10 @@ admin:
   url: /admin
   param: { module: admin, action: index }
 
+admin_doc:
+  url: /admin/doc
+  param: { module: admin, action: doc }
+
 drev_index:
   url: /drev
   param: { module: drev, action: index }

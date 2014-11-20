@@ -17,23 +17,18 @@
     <di class="col-xs-12">
         <?php if (count($lists[$statut]) > 0): ?>
             <div class="list-group">
-                <?php foreach ($lists[$statut] as $drev_or_drevmarc): ?>
-                    <?php if ($drev_or_drevmarc->key[0] == "DRevMarc") : ?>
-                        <a class="list-group-item" href="<?php echo url_for("drevmarc_visualisation", array("id" => $drev_or_drevmarc->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
-                        <?php endif; ?>
-                        <?php if ($drev_or_drevmarc->key[0] == "DRev") : ?>
-                            <a class="list-group-item" href="<?php echo url_for("drev_visualisation", array("id" => $drev_or_drevmarc->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
-                            <?php endif; ?>
+                <?php foreach ($lists[$statut] as $doc): ?>
+                            <a class="list-group-item" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
                             <span class="col-xs-2 text-muted">
-                                <?php if ($drev_or_drevmarc->key[3]): ?>
-                                    <?php echo format_date($drev_or_drevmarc->key[3], "dd/MM/yyyy", "fr_FR"); ?>
-                                <?php elseif ($drev_or_drevmarc->key[2]): ?>
-                                    <?php echo format_date($drev_or_drevmarc->key[2], "dd/MM/yyyy", "fr_FR"); ?>
-                                <?php elseif (!$drev_or_drevmarc->key[2] && $drev_or_drevmarc->key[4]): ?>
-                                    <?php echo $drev_or_drevmarc->key[4] ?>
+                                <?php if ($doc->key[3]): ?>
+                                    <?php echo format_date($doc->key[3], "dd/MM/yyyy", "fr_FR"); ?>
+                                <?php elseif ($doc->key[2]): ?>
+                                    <?php echo format_date($doc->key[2], "dd/MM/yyyy", "fr_FR"); ?>
+                                <?php elseif (!$doc->key[2] && $doc->key[4]): ?>
+                                    <?php echo $doc->key[4] ?>
                                 <?php endif; ?>
                             </span>
-                            <?php echo $drev_or_drevmarc->key[6] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $drev_or_drevmarc->key[5] ?></span>
+                            <?php echo $doc->key[6] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span>
                         </a>
                     <?php endforeach; ?>
             </div>

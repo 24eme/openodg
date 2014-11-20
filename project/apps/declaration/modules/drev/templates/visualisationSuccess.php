@@ -44,7 +44,7 @@
     <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="col-xs-4 text-right">
             <!--<button type="submit" class="btn btn-danger btn-lg btn-upper"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Refuser</button>-->
-            <a href="<?php echo url_for("drev_validation_admin", $drev) ?>" <?php if(!$drev->hasCompleteDocuments()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+            <a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" <?php if(!$drev->hasCompleteDocuments()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
     </div>
     <?php endif; ?>
 </div>
