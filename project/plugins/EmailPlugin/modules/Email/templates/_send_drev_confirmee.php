@@ -1,5 +1,6 @@
 Bonjour,
-<?php if (count($drev->getOrAdd('documents')) > 0): ?>Nous avons bien reçu les éléments qui complètent votre déclaration de Revendication.<?php endif; ?>
+<?php if (count($drev->getOrAdd('documents')) > 0): ?>
+Nous avons bien reçu les éléments qui complètent votre déclaration de Revendication.<?php endif; ?>
 
 Après vérification, votre déclaration de Revendication <?php echo $drev->campagne; ?> a été définitivement validée par notre service.
 
