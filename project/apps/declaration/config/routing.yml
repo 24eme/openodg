@@ -333,7 +333,7 @@ drevmarc_validation:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 drevmarc_validation_admin:
   url: /drevmarc/validation_admin/:id
   param: { module: drevmarc, action: validationAdmin }
@@ -373,6 +373,17 @@ drevmarc_delete:
     type:     object
   requirements:
     sf_method: [get]
+
+drevmarc_devalidation:
+  url: /drevmarc/devalidation/:id
+  param: { module: drevmarc, action: devalidation }
+  class: DRevMarcRoute
+  options:
+    model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
 
 drevmarc_export_pdf:
   url: /drevmarc/pdf/:id

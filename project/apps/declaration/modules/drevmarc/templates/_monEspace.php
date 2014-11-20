@@ -14,9 +14,11 @@
                         <p>
                             <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('drevmarc_visualisation', $drevmarc) ?>">Visualiser</a>
                         </p>
+                        <?php if($sf_user->isAdmin()): ?>
                         <p>
-                            <a class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('drevmarc_delete', $drevmarc) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer</a>
+                            <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drevmarc_devalidation', $drevmarc) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
                         </p>
+                        <?php endif; ?>
                     <?php elseif ($drevmarc): ?>
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drevmarc_edit', $drevmarc) ?>">Continuer</a>

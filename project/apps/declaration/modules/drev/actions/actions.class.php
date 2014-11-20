@@ -588,7 +588,7 @@ class drevActions extends sfActions {
 
         $this->sendDRevConfirmee($this->drev);
 
-         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a éyé envoyé au télédéclarant.");
+         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 
         return $this->redirect('drev_visualisation', $this->drev);
     }

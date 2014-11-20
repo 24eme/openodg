@@ -17,7 +17,7 @@
                         <p>
                             <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
                         </p>
-                    <?php endif; ?>
+                        <?php endif; ?>
                     <?php elseif ($drev): ?>
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drev_edit', $drev) ?>">Continuer</a>

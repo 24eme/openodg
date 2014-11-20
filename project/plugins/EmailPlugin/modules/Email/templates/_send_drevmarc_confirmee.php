@@ -1,9 +1,10 @@
 Bonjour,
 
-Après vérification, votre déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $drevmarc->campagne ?> a été validé par notre service.
+Après vérification, votre déclaration de Revendication Marc d'Alsace Gewurztraminer <?php echo $drevmarc->campagne ?> a été définitivement validée par notre service.
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', $drevmarc, true); ?>
 
-Bien cordialement,
+
+Bien Cordialement,
 
 Le service Appui technique (via l'application de télédéclaration)

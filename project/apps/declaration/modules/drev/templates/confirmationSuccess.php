@@ -5,15 +5,13 @@
     <h2>Confirmation de validation de votre déclaration</h2>
 </div>
 <div class="row">
-    <div class="panel panel-default">
-        <div class="panel-body">            
-            <p>
-                Merci d'avoir valider votre déclaration. <br />
-                <br />
-                Vous allez recevoir un mail de confirmation.
-            </p>
-        </div>
-</div>
+    <div class="col-xs-12">
+        <p>
+            Merci d'avoir validé votre déclaration. <br />
+            <br />
+            Vous allez recevoir un mail de confirmation.
+        </p>
+    </div>
 </div>
 
 <div class="row row-margin row-button">

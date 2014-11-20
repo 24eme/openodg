@@ -27,8 +27,24 @@ class drevmarcActions extends sfActions {
         return $this->redirect($this->generateUrl('home'));
     }
 
+    public function executeDevalidation(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRevMarc();
+
+        $this->secure(DRevMarcSecurity::DEVALIDATION, $drev);
+
+        $drev->validation = null;
+        $drev->validation_odg = null;
+        $drev->save();
+
+        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+
+        return $this->redirect($this->generateUrl('home'));
+    }
+
     public function executeExploitation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+
+        $this->secure(DRevMarcSecurity::EDITION, $this->drevmarc);
 
         $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevMarcEtapes::ETAPE_EXPLOITATION));
 
@@ -61,6 +77,8 @@ class drevmarcActions extends sfActions {
     public function executeRevendication(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
 
+        $this->secure(DRevMarcSecurity::EDITION, $this->drevmarc);
+
         $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevMarcEtapes::ETAPE_REVENDICATION));
         $this->drevmarc->save();
 
@@ -80,6 +98,8 @@ class drevmarcActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+
+        $this->secure(DRevMarcSecurity::EDITION, $this->drevmarc);
 
         $this->drevmarc->storeEtape($this->getEtape($this->drevmarc, DrevEtapes::ETAPE_VALIDATION));
         $this->drevmarc->save();
@@ -101,6 +121,7 @@ class drevmarcActions extends sfActions {
 
     public function executeValidationAdmin(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+        
         $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drevmarc);
 
         $this->drevmarc->validation_odg = date('Y-m-d');
