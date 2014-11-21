@@ -26,7 +26,7 @@ class DRevMarcRevendicationForm extends acCouchdbObjectForm {
         $this->getWidget('volume_obtenu')->setLabel("Volume total obtenu :");
 
         $this->setWidget('titre_alcool_vol', new sfWidgetFormInputFloat());
-        $this->setValidator('titre_alcool_vol', new sfValidatorNumber(array('required' => true, 'min' => 40)));
+        $this->setValidator('titre_alcool_vol', new sfValidatorNumber(array('required' => true, 'min' => 45)));
         $this->getWidget('titre_alcool_vol')->setLabel("Titre alcoométrique volumique :");
 
         $this->validatorSchema['debut_distillation']->setMessage('invalid', 'La date de début de distillation doit être au format jj/mm/aaaa.');
@@ -44,7 +44,7 @@ class DRevMarcRevendicationForm extends acCouchdbObjectForm {
 
         $this->validatorSchema['titre_alcool_vol']->setMessage('required', 'Le titre alcoométrique volumique est obligatoire.');
         $this->validatorSchema['titre_alcool_vol']->setMessage('invalid', 'Le titre alcoométrique volumique doit être un nombre.');
-        $this->validatorSchema['titre_alcool_vol']->setMessage('min', 'Le titre alcoométrique volumique ne doit pas être inférieur à 40°.');
+        $this->validatorSchema['titre_alcool_vol']->setMessage('min', 'Le titre alcoométrique volumique ne doit pas être inférieur à 45°.');
 
         $this->validatorSchema->setPostValidator(new ValidatorDRevMarcRevendication());
     }
