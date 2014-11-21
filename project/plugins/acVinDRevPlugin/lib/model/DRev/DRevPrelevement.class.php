@@ -152,6 +152,11 @@ class DRevPrelevement extends BaseDRevPrelevement {
     }
 
     public function updateTotal() {
+        if($this->getKey() == DRev::BOUTEILLE_VTSGN) {
+
+            return;
+        }
+
         $this->total_lots = 0;
         foreach ($this->lots as $produit_lot) {
             $nb_hors_vtsgn = ($produit_lot->exist('nb_hors_vtsgn') && $produit_lot->nb_hors_vtsgn) ?
