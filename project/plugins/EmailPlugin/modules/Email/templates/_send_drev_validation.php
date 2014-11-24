@@ -9,8 +9,8 @@ Rappel des documents à envoyés :
 
 <?php foreach($drev->getOrAdd('documents') as $document): ?>
 - <?php echo DRevDocuments::getDocumentLibelle($document->getKey()) ?>
-<?php endforeach; ?>
 
+<?php endforeach; ?>
 
 Le ou les document(s) annexes peuvent nous être envoyés par mail (m.parisot@ava-aoc.fr) ou par voie postale :
 
