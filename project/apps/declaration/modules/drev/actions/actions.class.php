@@ -28,6 +28,16 @@ class drevActions extends sfActions {
         return $this->redirect('drev_edit', $drev);
     }
 
+    public function executeCreatePapier(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
+
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true);
+        $drev->save();
+
+        return $this->redirect('drev_edit', $drev);
+    }
+
     public function executeEdit(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
 
@@ -141,7 +151,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr()) {
+        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->papier) {
 
             return $this->redirect('drev_dr', $this->drev);
         }

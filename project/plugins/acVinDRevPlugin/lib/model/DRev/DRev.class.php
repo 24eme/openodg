@@ -92,6 +92,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->exist('non_conditionneur') && $this->get('non_conditionneur');
     }
 
+    public function isPapier() { 
+        return $this->exist('papier') && $this->get('papier');
+    }
+
     public function hasDR() {
 
         return $this->_attachments->exist('DR.csv');

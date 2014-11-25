@@ -57,6 +57,16 @@ drev_create:
   requirements:
     sf_method: [get]
 
+drev_create_papier:
+  url: /drev/creation-papier/:id
+  param: { module: drev, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_edit:
   url: /drev/edition/:id
   param: { module: drev, action: edit }
