@@ -158,12 +158,22 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleEngagementDr() {
+        if($this->document->isPapier()) {
+            
+            return;
+        }
+
         if (!$this->document->isNonRecoltant() && !$this->document->hasDR()) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_DR, '');
         }
     }
 
     protected function controleEngagementPressoir($produit) {
+        if($this->document->isPapier()) {
+            
+            return;
+        }
+        
         if ($produit->getAppellation()->getKey() == 'appellation_CREMANT' && $produit->volume_revendique > 0) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
         }
@@ -233,6 +243,11 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleEngagementSv() {
+        if($this->document->isPapier()) {
+            
+            return;
+        }
+
         if (!$this->document->isNonRecoltant()) {
             
             return;
