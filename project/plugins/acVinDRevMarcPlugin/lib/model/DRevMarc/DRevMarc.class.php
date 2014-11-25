@@ -51,4 +51,9 @@ class DRevMarc extends BaseDRevMarc {
     public function isValide() {
         return $this->exist('validation') && $this->validation;
     }
+
+    public function isPapier() {
+
+        return false;
+    }
 }

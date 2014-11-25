@@ -31,6 +31,11 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
+        if(in_array(self::EDITION, $droits) && $this->doc->isPapier() && !$this->user->isAdmin()) {
+
+            return false;
+        }
+
         if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin()) {
 
             return false;

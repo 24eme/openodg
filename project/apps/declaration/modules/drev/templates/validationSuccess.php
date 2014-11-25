@@ -5,16 +5,35 @@
 </div>
 
 <form role="form" action="<?php echo url_for('drev_validation', $drev) ?>#engagements" method="post" id="validation-form">
-        <?php echo $form->renderHiddenFields(); ?>
-        <?php echo $form->renderGlobalErrors(); ?>
+    <?php echo $form->renderHiddenFields(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
 
-        <?php if($validation->hasPoints()): ?>
-            <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
-        <?php endif; ?>
-        <?php include_partial('drev/recap', array('drev' => $drev)); ?>
-    	<?php  if (count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
-        	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
-        <?php endif; ?>
+     <?php if(isset($form["date"])): ?>
+    <div class="row">
+        <div class="form-group col-xs-8 <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
+            <?php if ($form["date"]->hasError()): ?>                            
+                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
+            <?php endif; ?>
+            <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-6 control-label")); ?>
+            <div class="col-xs-6">
+                <div class="input-group date-picker-all-days">
+                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <?php if($validation->hasPoints()): ?>
+        <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
+    <?php endif; ?>
+    <?php include_partial('drev/recap', array('drev' => $drev)); ?>
+	<?php  if (count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+    	<?php include_partial('drev/engagements', array('drev' => $drev, 'validation' => $validation, 'form' => $form)); ?>
+    <?php endif; ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">

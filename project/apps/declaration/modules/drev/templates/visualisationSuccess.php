@@ -1,6 +1,14 @@
+<?php use_helper('Date') ?>
+
 <div class="page-header no-border">
-    <h2>Déclaration de revendication <?php echo $drev->campagne ?></h2>
+    <h2>Déclaration de Revendication <?php echo $drev->campagne ?></h2>
 </div>
+
+<?php if($drev->campagne >= "2014" && $drev->validation && !$drev->isPapier()): ?>
+<div class="alert alert-success"><strong>Déclaration papier</strong> reçue le <strong><?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?></strong><?php if($drev->validation_odg): ?> et validé par l'AVA le <strong><?php echo format_date($drev->validation_odg, "dd/MM/yyyy", "fr_FR"); ?></strong><?php endif; ?></div>
+<?php elseif($drev->campagne >= "2014" && $drev->validation): ?>
+<div class="alert alert-success"><strong>Télédéclaration</strong> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?> <?php if($drev->validation_odg): ?> et validé par l'AVA le <strong><?php echo format_date($drev->validation_odg, "dd/MM/yyyy", "fr_FR"); ?></strong><?php endif; ?></div>
+<?php endif; ?>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>

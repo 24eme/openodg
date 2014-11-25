@@ -151,7 +151,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->papier) {
+        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
 
             return $this->redirect('drev_dr', $this->drev);
         }
@@ -545,8 +545,17 @@ class drevActions extends sfActions {
             $document->statut = ($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
         }
 
-        $this->drev->validate();
+        if($this->drev->isPapier()) {
+            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
+            $this->drev->validate($this->form->getValue("date"));
+            $this->drev->validateOdg();
+            $this->drev->save();
+
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        $this->drev->validate();
         $this->drev->save();
 
         $this->sendDRevValidation($this->drev);
@@ -593,7 +602,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
 
-        $this->drev->validation_odg = date('Y-m-d');
+        $this->drev->validateOdg();
         $this->drev->save();
 
         $this->sendDRevConfirmee($this->drev);
