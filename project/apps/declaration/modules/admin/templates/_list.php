@@ -18,7 +18,7 @@
         <?php if (count($lists[$statut]) > 0): ?>
             <div class="list-group">
                 <?php foreach ($lists[$statut] as $doc): ?>
-                            <a class="list-group-item" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
+                            <a class="list-group-item col-xs-12 <?php if ($doc->key[2] && !$doc->key[3] && !$doc->key[6]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
                             <span class="col-xs-2 text-muted">
                                 <?php if ($doc->key[3]): ?>
                                     <?php echo format_date($doc->key[3], "dd/MM/yyyy", "fr_FR"); ?>
@@ -28,7 +28,10 @@
                                     <?php echo $doc->key[4] ?>
                                 <?php endif; ?>
                             </span>
-                            <?php echo $doc->key[6] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span>
+                            <span class="col-xs-6"><?php echo $doc->key[7] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span></span>
+                            <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?>
+                                <span class="text-warning col-xs-4 text-right"><?php echo $doc->key[6] ?>&nbsp;pièce(s) en attente</span>
+                            <?php endif; ?>
                         </a>
                     <?php endforeach; ?>
             </div>
