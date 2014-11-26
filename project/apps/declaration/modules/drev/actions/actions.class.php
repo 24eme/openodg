@@ -127,8 +127,8 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->etablissement = $this->drev->getEtablissementObject();
-
-        $this->form = new EtablissementForm($this->etablissement);
+        
+        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->drev->isPapier()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
