@@ -28,7 +28,9 @@
                                     <?php echo $doc->key[4] ?>
                                 <?php endif; ?>
                             </span>
-                            <span class="col-xs-6"><?php echo $doc->key[7] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span></span>
+                            <span class="col-xs-6"><?php if($doc->key[7]): ?>
+                                    <span class="glyphicon glyphicon-file"></span>
+                                <?php endif; ?><?php echo $doc->key[8] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span></span>
                             <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?>
                                 <span class="text-warning col-xs-4 text-right"><?php echo $doc->key[6] ?>&nbsp;pièce(s) en attente</span>
                             <?php endif; ?>

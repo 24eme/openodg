@@ -5,7 +5,7 @@ function(doc) {
         return;
     }
 
-    nb_doc_en_attente = 0;
+    var nb_doc_en_attente = 0;
     
     if(doc.documents) {
         for(key in doc.documents) {
@@ -15,5 +15,11 @@ function(doc) {
         }
     }
 
-    emit([doc.type, doc.campagne, doc.validation, doc.validation_odg, doc.etape, doc.identifiant, nb_doc_en_attente, doc.declarant.nom], 1);
+    var papier = 0;
+
+    if(doc.papier) {
+        papier = 1;
+    }
+
+    emit([doc.type, doc.campagne, doc.validation, doc.validation_odg, doc.etape, doc.identifiant, nb_doc_en_attente, papier, doc.declarant.nom], 1);
 }
