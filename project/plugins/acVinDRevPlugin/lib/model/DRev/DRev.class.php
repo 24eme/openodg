@@ -132,6 +132,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->declaration->reorderByConf();
     }
 
+    public function reUpdateCepageFromCSV() {
+        $csv = $this->getCSV();
+        $this->resetCepage();
+        $this->updateCepageFromCSV($csv);
+    }
+
     public function updateFromDRev($drev) {
         foreach ($drev->getProduits() as $produit) {
             $this->addAppellation($produit->getAppellation()->getHash());
@@ -521,6 +527,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $detail->volume_revendique += (float) $line[DRCsvFile::CSV_VOLUME];
                 $detail->superficie_revendique += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             }
+
+            $detail->updateTotal();
         }
     }
 
