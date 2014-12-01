@@ -125,6 +125,7 @@ DRev:
                                                                   superficie_revendique: { type: float }
                                                                   superficie_revendique_vt: { type: float }
                                                                   superficie_revendique_sgn: { type: float }
+                                                                  superficie_revendique_total: { type: float }
                                                                   lieu: {  }
                                                                   libelle: {  }
       prelevements:

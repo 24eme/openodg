@@ -33,7 +33,11 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     }
 
     public function resetRevendique() {
+        $this->superficie_revendique_total = null;
         $this->superficie_revendique = null;
+        $this->superficie_revendique_vt = null;
+        $this->superficie_revendique_sgn = null;
+        $this->volume_revendique_total = null;
         $this->volume_revendique = null;
         $this->volume_revendique_vt = null;
         $this->volume_revendique_sgn = null;
@@ -50,12 +54,14 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     }
 
     public function updateTotal() {
-        $this->volume_revendique_total = $this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt;
+        $this->volume_revendique_total = round($this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt, 2);
+        $this->superficie_revendique_total = round($this->superficie_revendique + $this->superficie_revendique_sgn + $this->superficie_revendique_vt, 2);
     }
 
     public function isCleanable() {
-
-        return !$this->volume_revendique_total && !$this->superficie_revendique;
+        $this->updateTotal();
+        
+        return !$this->volume_revendique_total && !$this->superficie_revendique_total;
     }
     
     public function cleanNode() {
