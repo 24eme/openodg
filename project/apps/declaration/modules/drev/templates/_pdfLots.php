@@ -13,7 +13,7 @@
 <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 497px">&nbsp;Produits</th>
-        <th class="th" style="text-align: center; width: 140px">Hors VT/SGN</th>
+        <th class="th" style="text-align: center; width: 140px"><?php if($prelevement->getKey() == DRev::CUVE_GRDCRU): ?>VT/SGN inclus<?php else: ?>Hors VT/SGN<?php endif; ?></th>
     </tr>
     <?php foreach($prelevement->lots as $lot): ?>
     <?php if(!count($prelevement->lots)): continue; endif; ?>

@@ -16,7 +16,7 @@
     <thead>
         <tr>
             <th class="col-xs-6"><?php echo $title ?></th>
-            <th class="text-center col-xs-6">Nombre de lots <small class="text-muted">(hors VT/SGN)</small></th>
+            <th class="text-center col-xs-6">Nombre de lots <small class="text-muted"><?php if(isset($vtsgn_inclus)): ?>(<strong>VT/SGN inclus</strong>)<?php else: ?>(hors VT/SGN)<?php endif; ?></small></th>
         </tr>
     </thead>
     <tbody>
