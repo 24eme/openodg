@@ -91,6 +91,11 @@ EOF;
         } else {
             echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $doc->_id);
         }
+
+        $doc->validation = true;
+        $doc->validation_odg = true;
+        $doc->add('papier', 1);
+        
         $doc->save();
     }
 
