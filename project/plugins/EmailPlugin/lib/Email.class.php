@@ -41,6 +41,11 @@ class Email {
       	if (!$drev->declarant->email) {
       		return;
       	}
+
+        $pdf = new ExportDRevPdf($drev);
+        $pdf->generate();
+        $pdfAttachment = Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
         $subject = 'Validation définitive de votre Déclaration de Revendication';
@@ -51,7 +56,7 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/plain')
-            ->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevPDF::buildFileName($drev, true)));
+            ->attach($pdfAttachment);
 
 		    return $this->getMailer()->send($message);
     }
