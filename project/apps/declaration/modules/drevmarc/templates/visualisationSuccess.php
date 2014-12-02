@@ -1,3 +1,5 @@
+<?php use_helper('Date') ?>
+
 <div class="page-header no-border">
     <h2>Déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $drevmarc->campagne; ?>
         <br />
