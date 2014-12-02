@@ -124,7 +124,7 @@ class Email {
 
     public function getPartial($templateName, $vars = null)
     {
-      $this->getContext()->getConfiguration()->loadHelpers('Partial');
+      sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
 
       $vars = null !== $vars ? $vars : $this->varHolder->getAll();
 
