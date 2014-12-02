@@ -88,7 +88,9 @@ EOF;
 
         $doc->updatePrelevements();
         $doc->cleanDoc();
-        $doc->validation = date('Y-m-d');
+        $doc->validation = true;
+        $doc->validation_odg = true;
+        $doc->add('papier', 1);
 
         $doc->save();
     }

@@ -1,5 +1,12 @@
 <div class="page-header no-border">
-    <h2>Déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $drevmarc->campagne; ?></h2>
+    <h2>Déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $drevmarc->campagne; ?>
+        <br />
+        <?php if($drevmarc->isPapier()): ?>
+    <small><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drevmarc->validation && $drevmarc->validation !== true): ?> reçue le <?php echo format_date($drevmarc->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
+    <?php elseif($drevmarc->validation): ?>
+    <small>Télédéclaration<?php if($drevmarc->validation && $drevmarc->validation !== true): ?> validée le <?php echo format_date($drevmarc->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
+    <?php endif; ?>
+    </h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -7,12 +14,14 @@
 <?php endif; ?>
     
 <?php if(!$drevmarc->validation): ?>
+<div class="alert alert-warning">
+    La saisie de cette déclaration n'est pas terminée elle est en cours d'édition
+</div>
+<?php endif; ?>
+
+<?php if($drevmarc->validation && !$drevmarc->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-warning">
-        La saisie de cette déclaration n'est pas terminée elle est en cours d'édition.
-    </div>
-<?php elseif(!$drevmarc->validation_odg && $sf_user->isAdmin()): ?>
-    <div class="alert alert-success">
-        Cette déclaration n'a pas encore été validée par l'AVA
+        Cette déclaration est en <strong>attente de validation</strong> par l'AVA
     </div>
 <?php endif; ?>
 

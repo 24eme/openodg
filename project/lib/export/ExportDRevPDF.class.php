@@ -30,10 +30,15 @@ class ExportDRevPDF extends ExportPDF {
         $header_subtitle = sprintf("%s\n\n", $this->drev->declarant->nom
         );
 
-        if ($this->drev->validation && $this->drev->campagne >= "2014") {
+        if (!$this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
             $date = new DateTime($this->drev->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-        }
+        } 
+
+        if ($this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
+            $date = new DateTime($this->drev->validation);
+            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
+        }  
 
         return $header_subtitle;
     }
