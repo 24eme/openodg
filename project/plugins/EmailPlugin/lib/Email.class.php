@@ -32,7 +32,6 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/plain')
-  					->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevPDF::buildFileName($drev, true)));
 		    return $this->getMailer()->send($message);
     }
     
@@ -51,6 +50,7 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/plain');
+            ->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevPDF::buildFileName($drev, true)));
 		    return $this->getMailer()->send($message);
     }
     
@@ -69,7 +69,6 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/plain')
-  					->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevMarcPDF::buildFileName($drevmarc, true)));
 		    return $this->getMailer()->send($message);
     }
     
@@ -88,6 +87,7 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/plain');
+            ->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevMarcPDF::buildFileName($drevmarc, true)));
 		    return $this->getMailer()->send($message);
     }
     
