@@ -43,6 +43,7 @@ class Email {
       	}
 
         $pdf = new ExportDRevPdf($drev);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
         $pdfAttachment = Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
 
@@ -109,5 +110,14 @@ class Email {
     protected function getBodyFromPartial($partial, $vars = null) 
     {
         return $this->_context->getController()->getAction('Email', 'main')->getPartial('Email/' . $partial, $vars);
+    }
+
+    protected function getPartial($templateName, $vars = null)
+    {
+      $this->getContext()->getConfiguration()->loadHelpers('Partial');
+
+      $vars = null !== $vars ? $vars : $this->varHolder->getAll();
+
+      return get_partial($templateName, $vars);
     }
 }
