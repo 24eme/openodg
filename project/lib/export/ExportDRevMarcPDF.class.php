@@ -23,10 +23,16 @@ class ExportDRevMarcPDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
         $header_subtitle = sprintf("%s\n\n", $this->drevmarc->declarant->nom);
-        if ($this->drevmarc->validation && $this->drevmarc->campagne >= "2014") {
+        if (!$this->drevmarc->isPapier() && $this->drevmarc->validation && $this->drevmarc->campagne >= "2014") {
             $date = new DateTime($this->drevmarc->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
         }
+
+        if ($this->drevmarc->isPapier() && $this->drevmarc->validation && $this->drevmarc->validation !== true) {
+            $date = new DateTime($this->drevmarc->validation);
+            $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
+        } 
+
         return $header_subtitle;        
     }
 

@@ -14,6 +14,10 @@ class ValidatorLogin extends sfValidatorBase {
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($values['login']);
 
         if (!$etablissement) {
+            $etablissement = CompteClient::getInstance()->findByIdentifiant($values['login']);
+        }
+
+        if (!$etablissement) {
             throw new sfValidatorErrorSchema($this, array($this->getOption('login') => new sfValidatorError($this, 'invalid')));
         }
             

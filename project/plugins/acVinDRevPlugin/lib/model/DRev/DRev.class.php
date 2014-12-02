@@ -92,6 +92,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->exist('non_conditionneur') && $this->get('non_conditionneur');
     }
 
+    public function isPapier() { 
+        return $this->exist('papier') && $this->get('papier');
+    }
+
     public function hasDR() {
 
         return $this->_attachments->exist('DR.csv');
@@ -137,7 +141,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function updateFromDRev($drev) {
         foreach ($drev->getProduits() as $produit) {
             $this->addAppellation($produit->getAppellation()->getHash());
-            if(!$produit->superficie_revendique) {
+            if(!$produit->superficie_revendique && !$produit->volume_revendique) {
                 continue;
             }
             $p = $this->addProduit($produit->getHash());
@@ -373,10 +377,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->add('etape', $etape);
     }
 
-    public function validate() {
+    public function validate($date = null) {
+        if(is_null($date)) {
+            $date = date('Y-m-d');
+        }
+
         $this->updatePrelevements();
         $this->cleanDoc();
-        $this->validation = date('Y-m-d');
+        $this->validation = $date;
+    }
+
+    public function validateOdg() {
+        $this->validation_odg = date('Y-m-d');
     }
 
     public function getEtablissementObject() {

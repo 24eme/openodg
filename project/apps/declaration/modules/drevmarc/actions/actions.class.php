@@ -52,7 +52,7 @@ class drevmarcActions extends sfActions {
 
         $this->etablissement = $this->drevmarc->getEtablissementObject();
 
-        $this->form = new EtablissementForm($this->etablissement);
+        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->drevmarc->isPapier()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

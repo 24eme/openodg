@@ -15,6 +15,7 @@ DRevMarc:
       titre_alcool_vol: { }
       validation: { }
       validation_odg: { }
+      papier: { required: false, type: integer }
       declarant:
         type: collection
         definition:

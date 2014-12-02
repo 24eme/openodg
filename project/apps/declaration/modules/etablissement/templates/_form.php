@@ -85,6 +85,7 @@
                     <?php echo $form["fax"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <?php if(isset($form["email"])): ?>
             <div class="form-group<?php if($form["email"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["email"]->renderError(); ?>
                 <?php echo $form["email"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -92,6 +93,7 @@
                     <?php echo $form["email"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
     <div id="row_info_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
@@ -160,12 +162,14 @@
                    <?php echo $etablissement->fax; ?>
                 </span>
             </div>
+            <?php if(isset($form["email"])): ?>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Email</strong>
                 <span class="col-xs-8">
                    <?php echo $etablissement->email; ?>
                 </span>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

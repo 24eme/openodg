@@ -10,7 +10,7 @@ class authActions extends sfActions
             return $this->forward404();
         }
 
-        $this->form = new LoginForm();
+        $this->form = new LoginForm(array(), array("use_compte" => true));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -24,7 +24,7 @@ class authActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        $this->getUser()->signIn($this->form->getValue('etablissement')->identifiant);
+        $this->getUser()->signIn($this->form->getValue('login'));
 
         return $this->redirect('home');
     }

@@ -10,11 +10,10 @@ $steps = array(
                     "confirmation" => 6,
                       ); ?>
 <?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
-
 <ol class="breadcrumb-steps">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
         <div class="step">
-        	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_EXPLOITATION)): ?>
+            <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_EXPLOITATION)): ?>
             <a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="<?php if($stepNum <= 1): ?>ajax<?php endif; ?>">Exploitation</a>
             <?php else: ?>
             <span>Exploitation</span>
