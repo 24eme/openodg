@@ -173,8 +173,18 @@ class DRevValidation extends DocumentValidation {
             
             return;
         }
+
+        if ($produit->getAppellation()->getKey() != 'appellation_CREMANT') {
+
+            return;
+        }
+
+        if($produit->exist('cepage_RB') && $produit->get('cepage_RB')->getDetailNode() && $produit->get('cepage_RB')->getDetailNode()->volume_revendique_total > 0) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
+        }
+
+        if ($produit->volume_revendique > 0) {
         
-        if ($produit->getAppellation()->getKey() == 'appellation_CREMANT' && $produit->volume_revendique > 0) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
         }
     }
