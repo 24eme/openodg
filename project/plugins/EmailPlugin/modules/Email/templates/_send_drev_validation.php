@@ -20,9 +20,7 @@ BP 91 225
 68012 Colmar Cedex
 <?php endif; ?>
 
-D'autre part, vous trouverez en pièce jointe le document PDF de votre déclaration.
-
-Cette dernière est également consultable sur la plateforme de télédéclaration : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>
+Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>
 
 
 Bien cordialement,

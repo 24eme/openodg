@@ -181,11 +181,15 @@ class DRevValidation extends DocumentValidation {
 
         if($produit->exist('cepage_RB') && $produit->get('cepage_RB')->getDetailNode() && $produit->get('cepage_RB')->getDetailNode()->volume_revendique_total > 0) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
+
+            return;
         }
 
         if ($produit->volume_revendique > 0) {
         
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
+
+            return;
         }
     }
 

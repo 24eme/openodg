@@ -4,8 +4,6 @@ Votre déclaration de Revendication Marc d'Alsace Gewurztraminer <?php echo $dre
 
 Cette validation sera définitive lorsque votre déclaration aura été vérifiée.
 
-D'autre part, vous trouverez en pièce jointe le document PDF de votre déclaration.
-
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', $drevmarc, true); ?>
 
 

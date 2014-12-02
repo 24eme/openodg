@@ -20,7 +20,8 @@ class Email {
     public function sendDRevValidation($drev) 
     {
       	if (!$drev->declarant->email) {
-      		return;
+      		  
+            return;
       	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
@@ -31,16 +32,23 @@ class Email {
   					->setTo($to)
   					->setSubject($subject)
   					->setBody($body)
-  					->setContentType('text/plain')
-  					->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevPDF::buildFileName($drev, true)));
+  					->setContentType('text/plain');
+
 		    return $this->getMailer()->send($message);
     }
     
     public function sendDRevConfirmee($drev) 
     {
       	if (!$drev->declarant->email) {
-      		return;
+      		  
+            return;
       	}
+
+        $pdf = new ExportDRevPdf($drev);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
         $subject = 'Validation définitive de votre Déclaration de Revendication';
@@ -50,14 +58,17 @@ class Email {
   					->setTo($to)
   					->setSubject($subject)
   					->setBody($body)
-  					->setContentType('text/plain');
+  					->setContentType('text/plain')
+            ->attach($pdfAttachment);
+
 		    return $this->getMailer()->send($message);
     }
     
       public function sendDRevMarcValidation($drevmarc) 
     {
       	if (!$drevmarc->declarant->email) {
-      		return;
+      		
+            return;
       	}
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drevmarc->declarant->email);
@@ -68,16 +79,23 @@ class Email {
   					->setTo($to)
   					->setSubject($subject)
   					->setBody($body)
-  					->setContentType('text/plain')
-  					->attach(Swift_Attachment::fromPath(sfConfig::get('sf_cache_dir').'/pdf/'.ExportDRevMarcPDF::buildFileName($drevmarc, true)));
+  					->setContentType('text/plain');
+
 		    return $this->getMailer()->send($message);
     }
     
     public function sendDRevMarcConfirmee($drevmarc) 
     {
       	if (!$drevmarc->declarant->email) {
-      		return;
+      		
+            return;
       	}
+
+        $pdf = new ExportDRevMarcPDF($drevmarc);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drevmarc->declarant->email);
         $subject = "Validation définitive de votre Déclaration de Revendication Marc d'Alsace Gewurztraminer";
@@ -87,7 +105,9 @@ class Email {
   					->setTo($to)
   					->setSubject($subject)
   					->setBody($body)
-  					->setContentType('text/plain');
+  					->setContentType('text/plain')
+            ->attach($pdfAttachment);
+
 		    return $this->getMailer()->send($message);
     }
     
@@ -100,5 +120,14 @@ class Email {
     protected function getBodyFromPartial($partial, $vars = null) 
     {
         return $this->_context->getController()->getAction('Email', 'main')->getPartial('Email/' . $partial, $vars);
+    }
+
+    public function getPartial($templateName, $vars = null)
+    {
+      sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+
+      $vars = null !== $vars ? $vars : $this->varHolder->getAll();
+
+      return get_partial($templateName, $vars);
     }
 }
