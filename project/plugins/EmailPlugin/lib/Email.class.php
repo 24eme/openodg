@@ -91,7 +91,7 @@ class Email {
             return;
       	}
 
-        $pdf = new ExportDRevMarcPDF($drev);
+        $pdf = new ExportDRevMarcPDF($drevmarc);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
