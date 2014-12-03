@@ -30,7 +30,7 @@ class EtablissementForm extends acCouchdbObjectForm
         )); 
 
         if(!$this->getOption("use_email")) {
-            unset($this['email']);
+            $this->getValidator('email')->setOption('required', false);
         }
 
         if($this->getObject()->identifiant == $this->getObject()->siren) {
