@@ -10,8 +10,10 @@ class adminComponents extends sfComponents {
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "brouillon" => "En cours de saisie", "valide" => "Validé");
 
-        $this->documents = acCouchdbManager::getClient()->startkey(array($this->type, $this->campagne))
-                    ->endkey(array($this->type, $this->campagne, array()))
+        $this->documents = acCouchdbManager::getClient()
+                    ->startkey(array($this->type, $this->campagne, array()))
+                    ->endkey(array($this->type, $this->campagne))
+                    ->descending(true)
                     ->getView('declaration', 'tous')->rows;
 
         $this->lists = array("a_valider" => array(), "brouillon" => array(), "valide" => array());
