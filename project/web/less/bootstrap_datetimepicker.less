@@ -128,23 +128,33 @@
         border-radius: 4px;
     }
 
+    th.cw {
+        color: @gray-light;
+    }
+
     td {
         height: 54px;
         line-height: 54px;
         width: 54px;
 
-        &.day
+        &.day, &.cw
         {
             height: 20px;
             line-height: 20px;
             width: 20px;
         }
 
+        &.cw {
+            font-weight: bold;
+            color: @gray-light;
+        }
+
         &.day:hover,
         &.hour:hover,
         &.minute:hover,
         &.second:hover {
-            background: @gray-lighter;
+            background: @green-darker;
+            color: @white;
             cursor: pointer;
         }
 
