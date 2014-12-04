@@ -10,12 +10,12 @@
 
      <?php if(isset($form["date"])): ?>
     <div class="row">
-        <div class="form-group col-xs-8 <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
+        <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
             <?php if ($form["date"]->hasError()): ?>                            
                 <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
             <?php endif; ?>
-            <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-6 control-label")); ?>
-            <div class="col-xs-6">
+            <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <div class="col-xs-4">
                 <div class="input-group date-picker-all-days">
                     <?php echo $form["date"]->render(array("class" => "form-control")); ?>
                     <div class="input-group-addon">

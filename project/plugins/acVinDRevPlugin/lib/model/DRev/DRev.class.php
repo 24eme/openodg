@@ -121,6 +121,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function updateFromCSV() {
         $csv = $this->getCSV();
+        $this->updatePrelevementsFromRevendication();
         $this->resetDetail();
         $this->updateDetailFromCSV($csv);
         $this->updateDetail();
@@ -153,6 +154,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $hash_rev_lot = $drev->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
 
                 foreach ($drev->prelevements->get(self::CUVE_ALSACE)->lots as $lot) {
+
+                    $this->addLotProduit($lot->hash_produit, self::CUVE);
+
                     if (!preg_match("|" . $hash_rev_lot . "|", $lot->hash_produit)) {
 
                         continue;
@@ -186,11 +190,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
                     continue;
                 }
+
+                $this->addLotProduit($lot->hash_produit, self::CUVE);
+
                 $this->getOrAdd($lot->hash_produit)->addDetailNode();
             }
         }
 
-        $this->updatePrelevementsFromRevendication();
         $this->declaration->reorderByConf();
     }
 
@@ -285,10 +291,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
             return;
         }
+
         $lot = $prelevement->lots->add(str_replace('/', '_', $hash));
         $lot->hash_produit = $hash;
         $lot->getLibelle();
-        $lot->remove('no_vtsgn', 1);
+        $lot->remove('no_vtsgn');
 
         if (!$lot->getConfig()->hasVtsgn()) {
             $lot->add('no_vtsgn', 1);
