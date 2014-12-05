@@ -1,6 +1,6 @@
 <?php
 
-class DRevSendMailPieceTask extends sfBaseTask
+class DRevSendMailRappelDocumentTask extends sfBaseTask
 {
 
     protected function configure()
@@ -15,7 +15,7 @@ class DRevSendMailPieceTask extends sfBaseTask
         ));
 
         $this->namespace = 'drev';
-        $this->name = 'send-mail-piece';
+        $this->name = 'send-mail-rappel-document';
         $this->briefDescription = "Envoi d'un mail de rappel des pièces non recus";
         $this->detailedDescription = <<<EOF
 EOF;
