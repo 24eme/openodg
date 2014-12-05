@@ -26,7 +26,9 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        sfContext::createInstance($this->configuration);
+        $routing = clone ProjectConfiguration::getAppRouting();
+        $context = sfContext::createInstance($this->configuration);
+        $context->set('routing', $routing);
 
         $this->rows = acCouchdbManager::getClient()
                     ->startkey(array('DRev', '2014', array()))
