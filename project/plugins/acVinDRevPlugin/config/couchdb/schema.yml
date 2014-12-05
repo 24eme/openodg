@@ -170,6 +170,7 @@ DRev:
               definition:
                 fields:
                   statut: { }
+      documents_rappel: { required: false }
       chais:
         type: collection
         definition:
