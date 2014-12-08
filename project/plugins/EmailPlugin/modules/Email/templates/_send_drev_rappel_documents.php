@@ -1,6 +1,6 @@
 Bonjour,
 
-Suite à la validation de votre déclaration vous n'avez pas envoyer tous les documents permettant de compléter votre Déclaration de Revendication.
+Suite à la validation de votre déclaration vous n'avez pas envoyé tous les documents permettant de compléter votre Déclaration de Revendication.
 <?php if (count($drev->getOrAdd('documents')) > 0): ?>
 
 Rappel des documents restant à envoyer :
@@ -20,6 +20,8 @@ BP 91 225
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>
 
+
+La validation définitive de votre déclaration de Revendication ne pourra se faire que lorsque nous aurons réceptionné la ou les pièces manquantes.
 
 Bien cordialement,
 

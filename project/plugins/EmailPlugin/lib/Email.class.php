@@ -78,7 +78,7 @@ class Email {
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
-        $subject = "Rappel Documents à envoyer - Déclaration de Revendication";
+        $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication";
         $body = $this->getBodyFromPartial('send_drev_rappel_documents', array('drev' => $drev));
         $message = Swift_Message::newInstance()
             ->setFrom($from)
