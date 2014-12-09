@@ -558,15 +558,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function updateLotsFromCepage() {
         $prelevements = array();
         foreach ($this->declaration->getProduitsCepage() as $produit) {
-            if(!$produit->volume_revendique > 0) {
+            if(!$produit->volume_revendique_total > 0) {
                 continue;
             }
 
+
             $lot = $this->addLotProduit($produit->getCepage()->getHash(), self::CUVE);
 
-            if ($lot) {
-                $prelevements[$lot->getPrelevement()->getKey()] = $lot->getPrelevement();
+
+            if (!$lot) {
+
+                continue;
             }
+            
+            $prelevements[$lot->getPrelevement()->getKey()] = $lot->getPrelevement();
         }
 
         foreach ($prelevements as $prelevement) {

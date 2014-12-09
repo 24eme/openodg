@@ -78,11 +78,9 @@ class DRevValidation extends DocumentValidation {
 
         if ($this->document->mustDeclareCepage()) {
             $this->controleWarningCepageSansLot(DRev::CUVE_ALSACE);
-            $this->controleWarningCepageSansLot(DRev::BOUTEILLE_ALSACE);
-            $this->controleWarningCepageSansLot(DRev::BOUTEILLE_GRDCRU);
-            $this->controleErrorAndWarningLotSansCepage(DRev::CUVE_ALSACE, $this->document->isNonRecoltant());
-            $this->controleErrorAndWarningLotSansCepage(DRev::BOUTEILLE_ALSACE, $this->document->isNonRecoltant());
-            $this->controleErrorAndWarningLotSansCepage(DRev::BOUTEILLE_GRDCRU, $this->document->isNonRecoltant());
+            $this->controleWarningCepageSansLot(DRev::CUVE_GRDCRU);
+            $this->controleErrorAndWarningLotSansCepage(DRev::CUVE_ALSACE);
+            $this->controleErrorAndWarningLotSansCepage(DRev::CUVE_GRDCRU);
         }
 
         $this->controleErrorRevendicationSansLot(DRev::CUVE_ALSACE);
@@ -92,7 +90,7 @@ class DRevValidation extends DocumentValidation {
         $this->controleEngagementSv();
     }
 
-    public function controleErrorAndWarningLotSansCepage($key, $isNegoce = false) {
+    public function controleErrorAndWarningLotSansCepage($key) {
         $drev = $this->document;
         if ($drev->prelevements->exist($key) && count($drev->prelevements->get($key)->lots) > 0) {
             $prelevement = $drev->prelevements->get($key);
@@ -110,15 +108,10 @@ class DRevValidation extends DocumentValidation {
                 }
                 if (!$found) {
                     $text = sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit . ' - ' . $lot->libelle);
-                    if ($drev->isNonRecoltant()) {
-                        $produit_lot_hash = self::TYPE_ERROR . str_replace('/', '-', $lot->hash_produit);
-                        $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key)).'?error_produit='.$produit_lot_hash;
-                        $this->addPoint(self::TYPE_ERROR, 'lot_sans_cepage_revendique', $text, $url);
-                    } else {
-                        $produit_lot_hash = self::TYPE_WARNING.'withFlash' . str_replace('/', '-', $lot->hash_produit);
-                        $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key)).'?error_produit='.$produit_lot_hash;
-                        $this->addPoint(self::TYPE_WARNING, 'lot_sans_cepage_revendique', $text, $url);
-                    }
+                   
+                    $produit_lot_hash = self::TYPE_WARNING.'withFlash' . str_replace('/', '-', $lot->hash_produit);
+                    $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key)).'?error_produit='.$produit_lot_hash;
+                    $this->addPoint(self::TYPE_WARNING, 'lot_sans_cepage_revendique', $text, $url);
                 }
             }
         }
