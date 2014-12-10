@@ -7,7 +7,7 @@
             <?php if(!$drev->isNonRecoltant()): ?>
             <th class="text-center col-md-3">Superficie totale</th>
         	<?php endif; ?>
-            <th class="text-center col-md-3">Volume revendiqué</th>
+            <th class="text-center col-md-3">Volume revendiqué <?php if($drev->hasDR()): ?><a title="Les volumes ventilés par cépage sont ceux issus de la déclaration de récolte, usages industriels inclus" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a><?php endif; ?></th>
         </tr>
     </thead>
     <tbody id="revendication_accordion" >

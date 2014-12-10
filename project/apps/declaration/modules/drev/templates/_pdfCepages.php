@@ -8,6 +8,11 @@
 <span style="text-align: center; font-size: 12pt; font-weight:bold;">Déclaration des cépages</span>
 <br /><br />
 
+<?php if($drev->hasDR()): ?>
+<i>Ces volumes ceux issus de la déclaration de récolte, usages industriels inclus.</i>
+<br />
+<?php endif; ?>
+
 <?php
 foreach ($drev->getProduitsCepageByAppellations() as $produitsCepageByAppellations):
     if(count($produitsCepageByAppellations->cepages)):
