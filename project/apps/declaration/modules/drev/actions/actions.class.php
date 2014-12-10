@@ -68,6 +68,7 @@ class drevActions extends sfActions {
 
         $drev->validation = null;
         $drev->validation_odg = null;
+        $drev->etape = null;
         $drev->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
