@@ -9,39 +9,55 @@ class adminComponents extends sfComponents {
         $this->statut = $request->getParameter('doc_statut', "a_valider");
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "brouillon" => "En cours de saisie", "valide" => "Validé");
+        $this->lists = array();
+        $this->lists["DRev2014"] = $this->getList("DRev", "2014");
+        $this->lists["DRevMarc2014"] = $this->getList("DRevMarc", "2014");
+    }
 
-        $this->documents = acCouchdbManager::getClient()
-                    ->startkey(array($this->type, $this->campagne, array()))
-                    ->endkey(array($this->type, $this->campagne))
+    protected function getList($type, $campagne) {
+        $documents = acCouchdbManager::getClient()
+                    ->startkey(array($type, $campagne, array()))
+                    ->endkey(array($type, $campagne))
                     ->descending(true)
                     ->getView('declaration', 'tous')->rows;
 
-        $this->lists = array("a_valider" => array(), "brouillon" => array(), "valide" => array());
-        $this->nb_teledeclares = 0;
-        $this->nb_papiers = 0;
-        foreach($this->documents as $document) {
+        $lists = array("type" => $type,
+                       "campagne" => $campagne,
+                       "statuts" => array(
+                           "a_valider" => array(), 
+                           "brouillon" => array(), 
+                           "valide" => array(), 
+                       ),
+                       "stats" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0));
+        foreach($documents as $document) {
             if($document->key[2] && $document->key[7]) {
-                $this->nb_papiers += 1;
+                $lists["stats"]["nb_papiers"] += 1;
             }
 
             if($document->key[2] && !$document->key[7]) {
-                $this->nb_teledeclares += 1;
+                $lists["stats"]["nb_teledeclares"] += 1;
+            }
+
+            if ($document->key[2] && !$document->key[3] && !$document->key[6]) {
+                $lists["stats"]["nb_can_be_validate"] += 1;
             }
 
             if($document->key[3]) {
-                $this->lists["valide"][] = $document;
+                $lists["statuts"]["valide"][] = $document;
 
                 continue;
             }
 
             if($document->key[2]) {
-                $this->lists["a_valider"][] = $document;
+                $lists["statuts"]["a_valider"][] = $document;
 
                 continue;
             }
             
-            $this->lists["brouillon"][] = $document;
+            $lists["statuts"]["brouillon"][] = $document;
         }
+
+        return $lists;
     }
 
 }

@@ -1,26 +1,27 @@
 <?php echo use_helper("Date"); ?>
 
 <ul class="nav nav-tabs">
-    <li role="presentation" <?php if ($type == "DRev" && $campagne == "2014"): ?>class="active"<?php endif ?>>
-        <a href="<?php echo url_for('admin', array("doc_type" => "DRev", 'doc_campagne' => $campagne)) ?>">DRev <?php echo $campagne; ?>
-            &nbsp;<span class="badge"><span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $nb_teledeclares ?>
-            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nb_papiers ?></span>
+    <?php foreach($lists as $list): ?>
+    <li role="presentation" <?php if ($list['type'] == $type && $list['campagne'] == $campagne): ?>class="active"<?php endif ?>>
+        <a href="<?php echo url_for('admin', array("doc_type" => $list['type'], 'doc_campagne' => $list['campagne'])) ?>"><?php echo $list['type'] ?> <?php echo  $list['campagne'] ?>
+            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $list['stats']['nb_can_be_validate'] ?></span>
+            &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $list['stats']['nb_teledeclares'] ?>
+            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['nb_papiers'] ?>
         </a></li>
-    <li role="presentation" <?php if ($type == "DRevMarc" && $campagne == "2014"): ?>class="active"<?php endif ?>>
-        <a href="<?php echo url_for('admin', array("doc_type" => "DRevMarc", 'doc_campagne' => $campagne)) ?>">DRev Marc <?php echo $campagne; ?></a></li>
+    <?php endforeach; ?>
 </ul>
 
 <ul class="nav nav-pills">
-    <?php foreach ($lists as $key => $list): ?>
+    <?php foreach ($lists[$type.$campagne]["statuts"] as $key => $list): ?>
         <li <?php if ($key == $statut): ?>class="active"<?php endif; ?>><a href="<?php echo url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $key)) ?>"><?php echo $statuts_libelle[$key] ?> <span class="badge"><?php echo count($list) ?></span></a></li>
     <?php endforeach; ?>
 </ul>
 
 <div class="row" style="margin-top: 20px;">
     <di class="col-xs-12">
-        <?php if (count($lists[$statut]) > 0): ?>
+        <?php if (count($lists[$type.$campagne]['statuts'][$statut]) > 0): ?>
             <div class="list-group">
-                <?php foreach ($lists[$statut] as $doc): ?>
+                <?php foreach ($lists[$type.$campagne]['statuts'][$statut] as $doc): ?>
                             <a class="list-group-item col-xs-12 <?php if ($doc->key[2] && !$doc->key[3] && !$doc->key[6]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
                             <span class="col-xs-2 text-muted">
                                 <?php if ($doc->key[2]): ?>
