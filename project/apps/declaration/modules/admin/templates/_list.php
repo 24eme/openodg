@@ -6,7 +6,7 @@
         <a href="<?php echo url_for('admin', array("doc_type" => $list['type'], 'doc_campagne' => $list['campagne'])) ?>"><?php echo $list['type'] ?> <?php echo  $list['campagne'] ?>
             &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $list['stats']['nb_teledeclares'] ?>
             &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['nb_papiers'] ?>
-            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $list['stats']['nb_can_be_validate'] ?></span>
+            &nbsp;<span class="label label-warning"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $list['stats']['nb_can_be_validate'] ?></span>
         </a></li>
     <?php endforeach; ?>
 </ul>
