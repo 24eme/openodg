@@ -17,7 +17,17 @@ class adminComponents extends sfComponents {
                     ->getView('declaration', 'tous')->rows;
 
         $this->lists = array("a_valider" => array(), "brouillon" => array(), "valide" => array());
+        $this->nb_teledeclares = 0;
+        $this->nb_papiers = 0;
         foreach($this->documents as $document) {
+            if($document->key[2] && $document->key[7]) {
+                $this->nb_papiers += 1;
+            }
+
+            if($document->key[2] && !$document->key[7]) {
+                $this->nb_teledeclares += 1;
+            }
+
             if($document->key[3]) {
                 $this->lists["valide"][] = $document;
 

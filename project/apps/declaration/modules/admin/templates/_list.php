@@ -2,7 +2,10 @@
 
 <ul class="nav nav-tabs">
     <li role="presentation" <?php if ($type == "DRev" && $campagne == "2014"): ?>class="active"<?php endif ?>>
-        <a href="<?php echo url_for('admin', array("doc_type" => "DRev", 'doc_campagne' => $campagne)) ?>">DRev <?php echo $campagne; ?></a></li>
+        <a href="<?php echo url_for('admin', array("doc_type" => "DRev", 'doc_campagne' => $campagne)) ?>">DRev <?php echo $campagne; ?>
+            &nbsp;<span class="badge"><span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $nb_teledeclares ?>
+            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nb_papiers ?></span>
+        </a></li>
     <li role="presentation" <?php if ($type == "DRevMarc" && $campagne == "2014"): ?>class="active"<?php endif ?>>
         <a href="<?php echo url_for('admin', array("doc_type" => "DRevMarc", 'doc_campagne' => $campagne)) ?>">DRev Marc <?php echo $campagne; ?></a></li>
 </ul>
