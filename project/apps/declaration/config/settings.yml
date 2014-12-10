@@ -35,8 +35,14 @@ all:
     # Enable the database manager
     use_database:           true
 
+    error_404_module:       global
+    error_404_action:       error404
+
     login_module:           auth
     login_action:           login
+
+    secure_module:          global
+    secure_action:          error403
 
     i18n:                   true
     default_culture:        fr 
