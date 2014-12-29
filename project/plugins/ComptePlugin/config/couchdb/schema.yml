@@ -6,9 +6,38 @@ Compte:
       _rev: {  }
       type: {  }
       identifiant: {  }
+      type_compte: {  }
+      civilite: {  }
       nom: {  }
-      droits:
+      prenom: {  }
+      nom_a_afficher: { }
+      adresse: { }
+      code_postal: { }
+      ville: { }
+      telephone_bureau: { }
+      telephone_prive: { }
+      telephone_mobile: { }
+      fax: { }
+      email: { }      
+      siret: { }
+      cvi: { }
+      etablissement: { }
+      tags:
         type: collection
         definition:
           fields:
-            '*': { }
+            'attributs': 
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
+            'produits':  
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
+            'manuels':  
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
