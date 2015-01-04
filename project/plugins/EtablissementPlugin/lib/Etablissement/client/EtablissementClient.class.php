@@ -15,6 +15,16 @@ class EtablissementClient extends acCouchdbClient {
     const FAMILLE_CAVE_COOPERATIVE = "CAVE_COOPERATIVE";
 
     const STATUT_INSCRIT = 'INSCRIT';
+    
+    private $libelles_attributs_compte_etablissement = array(EtablissementClient::FAMILLE_CAVE_COOPERATIVE => 'Cave Coopérative',
+                EtablissementClient::FAMILLE_CONDITIONNEUR => 'Conditionneur',
+                EtablissementClient::FAMILLE_DISTILLATEUR => 'Distillateur',
+                EtablissementClient::FAMILLE_ELABORATEUR => 'Elaborateur',
+                EtablissementClient::FAMILLE_METTEUR_EN_MARCHE => 'Metteur en Marché',
+                EtablissementClient::FAMILLE_NEGOCIANT => 'Négociant',
+                EtablissementClient::FAMILLE_PRODUCTEUR => 'Producteur',
+                EtablissementClient::FAMILLE_VINIFICATEUR => 'Vinificateur');
+    
 
     public static function getInstance()
     {
@@ -61,5 +71,9 @@ class EtablissementClient extends acCouchdbClient {
         $doc->identifiant = $identifiant;
 
         return $doc;
+    }
+    
+    public function getAllLibellesAttributs() {
+        return $this->libelles_attributs_compte_etablissement;
     }
 }

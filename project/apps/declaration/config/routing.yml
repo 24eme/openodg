@@ -431,6 +431,31 @@ redirect_to_mon_compte_civa:
   url: /mon-compte-civa
   param: { module: compte, action: redirectToMonCompteCiva }
 
+#Compte et etablissement admin
+compte_creation_admin:
+  url: /compte-admin-creation
+  param: { module: compte, action: creationAdmin }
+  
+compte_visualisation_admin:
+  url: /compte-visualisation/:id
+  param: { module: compte, action: visualisationAdmin }  
+  class: CompteRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get]
+    
+compte_modification_admin:
+  url: /compte-modification/:id
+  param: { module: compte, action: modificationAdmin }  
+  class: CompteRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
 # generic rules
 # please, remove them by adding more specific rules
 default_index:

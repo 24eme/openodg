@@ -6,3 +6,12 @@ creationConfirmation:
 
 motDePasseOublie:
   is_secure: false
+  
+creationAdmin:
+  is_secure: false
+  
+visualisationAdmin:
+  is_secure: false
+  
+modificationAdmin:
+  is_secure: false
