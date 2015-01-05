@@ -21,6 +21,7 @@ Etablissement:
       code_insee: {  }
       commune: {  }
       date_premiere_connexion: { required: false }
+      compte_id: {  }
       familles:
         type: collection
         definition:

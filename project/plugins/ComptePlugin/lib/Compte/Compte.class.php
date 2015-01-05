@@ -6,13 +6,18 @@
  */
 class Compte extends BaseCompte {
 
+    public function __construct($type_compte = null) {
+        parent::__construct();
+        $this->setTypeCompte($type_compte);
+    }
+    
     public function constructId() {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
     }
 
     public function save() {
         if ($this->isNew()) {
-            $this->identifiant = CompteClient::getInstance()->getNextIdentifiant();
+            $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
             $this->initNomAAfficher();
         }
         parent::save();
@@ -37,6 +42,10 @@ class Compte extends BaseCompte {
             $this->tags->add($nodeType, null);
         }
         $this->tags->$nodeType->add($key, $value);
+    }
+    
+    public function isTypeCompte($type) {
+        return $type == $this->getTypeCompte();
     }
 
 }
