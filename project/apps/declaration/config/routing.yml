@@ -432,8 +432,13 @@ redirect_to_mon_compte_civa:
   param: { module: compte, action: redirectToMonCompteCiva }
 
 #Compte et etablissement admin
+
+compte_choice_creation_admin:
+  url: /compte-choice-admin-creation
+  param: { module: compte, action: choiceCreationAdmin } 
+
 compte_creation_admin:
-  url: /compte-admin-creation
+  url: /compte-admin-creation/:type_compte
   param: { module: compte, action: creationAdmin }
   
 compte_visualisation_admin:
@@ -455,6 +460,10 @@ compte_modification_admin:
     type:     object
   requirements:
     sf_method: [get,post]
+    
+compte_modification_etablissement:
+  url: /compte-modification-etablissement
+  param: { module: compte, action: modificationEtablissementAdmin }  
 
 # generic rules
 # please, remove them by adding more specific rules
