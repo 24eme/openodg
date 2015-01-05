@@ -67,4 +67,11 @@ class compteActions extends sfActions {
         return $this->redirect($url_compte_civa);
     }
 
+    public function executeRecherche(sfWebRequest $request) {
+    	$this->form = new CompteRechercheForm();
+    	$this->form->bind($request->getParameter($this->form->getName()));
+        if ($this->form->isValid()) {
+        }
+    }
+
 }

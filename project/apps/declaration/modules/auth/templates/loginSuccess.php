@@ -19,5 +19,6 @@
     <div class="col-xs-offset-2 col-xs-8">
         <a href="<?php echo  url_for('compte_creation_admin'); ?>" class="btn btn-warning">Créer un compte</a>
         <a href="#" class="btn btn-danger">Créer un établissement</a>
+        <a href="<?php echo  url_for('compte_recherche'); ?>" class="btn btn-info">Rechercher un compte</a>
     </div>
 </div>

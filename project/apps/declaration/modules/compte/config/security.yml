@@ -15,3 +15,6 @@ visualisationAdmin:
   
 modificationAdmin:
   is_secure: false
+  
+recherche:
+  is_secure: false

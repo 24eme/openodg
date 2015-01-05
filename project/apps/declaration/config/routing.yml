@@ -415,6 +415,10 @@ compte_creation:
   url: /compte
   param: { module: compte, action: creation }
 
+compte_recherche:
+  url: /compte/recherche
+  param: { module: compte, action: recherche }
+
 compte_creation_confirmation:
   url: /compte-creation-confirmation
   param: { module: compte, action: creationConfirmation }
