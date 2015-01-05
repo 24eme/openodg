@@ -1,5 +1,5 @@
 <div class="row row-margin">
-    <form method="post" action="" role="form">
+    <form method="post" action="" role="form" name="<?php echo $form->getName(); ?>">
 
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
@@ -16,9 +16,20 @@
     </form>    
 </div>
 <div class="row row-margin">
-    <div class="col-xs-offset-2 col-xs-8">
-        <a href="<?php echo  url_for('compte_creation_admin'); ?>" class="btn btn-warning">Créer un compte</a>
-        <a href="#" class="btn btn-danger">Créer un établissement</a>
-        <a href="<?php echo  url_for('compte_recherche'); ?>" class="btn btn-info">Rechercher un compte</a>
-    </div>
+
+    <form method="post" action="<?php echo url_for('compte_choice_creation_admin'); ?>" name="<?php echo $formChoiceCreateCompte->getName(); ?>" role="form">
+
+        <?php echo $formChoiceCreateCompte->renderHiddenFields(); ?>
+        <?php echo $formChoiceCreateCompte->renderGlobalErrors(); ?>
+        <div class="col-xs-offset-2 col-xs-8">
+            <div class="form-group">
+                <?php echo $formChoiceCreateCompte["type_compte"]->renderError(); ?>
+                <?php echo $formChoiceCreateCompte["type_compte"]->renderLabel(null, array("class" => "control-label")); ?>
+                <?php echo $formChoiceCreateCompte["type_compte"]->render(array("data-placeholder" => "Type de Compte", "class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+            </div>
+
+            <button type="submit" class="btn btn-default">Créer Compte</button>
+            <a href="<?php echo  url_for('compte_recherche'); ?>" class="btn btn-info">Rechercher un compte</a>
+        </div>
+    </form>    
 </div>

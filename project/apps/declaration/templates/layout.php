@@ -73,7 +73,8 @@
                     <ul>
                         <li><a href="<?php echo url_for('home') ?>">Mes déclarations AVA</a></li>
                         <li><a href="<?php echo sfConfig::get('app_url_civa') ?>">Mon espace CIVA</a></li>
-                         <li><a href="<?php echo url_for('mon_compte'); ?>">Mon compte</a></li>
+                        <li><a href="<?php echo url_for('mon_compte'); ?>">Mon compte</a></li>
+                        <li><a href="<?php echo url_for('compte_modification_etablissement') ?>">Modifier établissement</a></li>
                         <?php if(!$sf_user->getCompte()): ?>
                         <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                         <?php endif; ?>

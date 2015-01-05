@@ -11,7 +11,6 @@ class CompteModificationForm extends acCouchdbObjectForm {
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
-        $this->getObject()->setTypeCompte(CompteClient::TYPE_COMPTE_PERSONNE);
         $this->initDefaultAttributs();
     }
 
@@ -63,11 +62,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
     private function getAttributsForCompte() {
         $compteClient = CompteClient::getInstance();
         if (!$this->attributsForCompte) {
-            $this->attributsForCompte = array();
-            $attributsCodesForCompte = $compteClient->getAttributsForType(CompteClient::TYPE_COMPTE_PERSONNE);
-            foreach ($attributsCodesForCompte as $attributCode) {
-                $this->attributsForCompte[$attributCode] = $compteClient->getAttributLibelle($attributCode);
-            }
+            $this->attributsForCompte = $compteClient->getAttributsForType($this->getObject()->getTypeCompte());
         }
         return $this->attributsForCompte;
     }

@@ -9,9 +9,10 @@ class authActions extends sfActions
             
             return $this->forward404();
         }
-
+        
         $this->form = new LoginForm(array(), array("use_compte" => true));
-
+        $this->formChoiceCreateCompte = new CompteChoiceCreationForm();
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;

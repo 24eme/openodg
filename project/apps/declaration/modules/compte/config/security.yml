@@ -7,6 +7,9 @@ creationConfirmation:
 motDePasseOublie:
   is_secure: false
   
+choiceCreationAdmin:
+  is_secure: false
+  
 creationAdmin:
   is_secure: false
   
