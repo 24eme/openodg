@@ -10,33 +10,41 @@ Compte:
       civilite: {  }
       nom: {  }
       prenom: {  }
+      raison_sociale: { }
       nom_a_afficher: { }
       adresse: { }
       code_postal: { }
       ville: { }
+      commune: { }
+      cedex: { }
       telephone_bureau: { }
       telephone_prive: { }
       telephone_mobile: { }
       fax: { }
-      email: { }      
+      email: { }
+      web: { }
       siret: { }
       cvi: { }
       etablissement: { }
+      statut: { }
+      date_archivage: { }
+      date_creation: { }
+      no_accises: { }
       tags:
         type: collection
         definition:
           fields:
-            'attributs': 
+            'attributs':
               type: collection
               definition:
                 fields:
                   '*' : { }
-            'produits':  
+            'produits':
               type: collection
               definition:
                 fields:
                   '*' : { }
-            'manuels':  
+            'manuels':
               type: collection
               definition:
                 fields:
