@@ -9,7 +9,7 @@ class CompteChoiceCreationForm extends sfForm {
     }
 
     public function getTypesCompte() {
-        return CompteClient::getInstance()->getAllTypesCompte();
+        return CompteClient::getInstance()->getAllTypesCompteWithLibelles();
     }
 
 }

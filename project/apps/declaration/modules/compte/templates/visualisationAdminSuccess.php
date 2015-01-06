@@ -26,7 +26,7 @@
             <div class="row">
                 <label  class="col-xs-6">Commune</label>          
                 <div class="col-xs-6">
-                    <?php echo $compte->ville; ?>    
+                    <?php echo $compte->commune; ?>    
                 </div>
             </div>
              <div class="row">

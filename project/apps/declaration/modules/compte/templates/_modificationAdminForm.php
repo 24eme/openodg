@@ -1,7 +1,37 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 <div id="row_form_compte_modification" class="row col-xs-offset-1 col-xs-10">
+
     <div class="col-xs-6">
+        <?php if(isset($form['cvi'])): ?>
+        <div class="form-group">
+            <?php echo $form["cvi"]->renderError(); ?>
+            <?php echo $form["cvi"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <div class="col-xs-8">
+                <?php echo $form["cvi"]->render(array("class" => "form-control")); ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        
+        <?php if(isset($form['code_insee'])): ?>
+        <div class="form-group">
+            <?php echo $form["code_insee"]->renderError(); ?>
+            <?php echo $form["code_insee"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <div class="col-xs-8">
+                <?php echo $form["code_insee"]->render(array("class" => "form-control")); ?>
+            </div>
+        </div>
+        <?php endif; ?>
+                <?php if(isset($form['siren'])): ?>
+        <div class="form-group">
+            <?php echo $form["siren"]->renderError(); ?>
+            <?php echo $form["siren"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <div class="col-xs-8">
+                <?php echo $form["siren"]->render(array("class" => "form-control")); ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        
         <div class="form-group<?php if ($form["civilite"]->hasError()): ?> has-error<?php endif; ?>">
             <?php echo $form["civilite"]->renderError(); ?>
             <?php echo $form["civilite"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -23,6 +53,16 @@
                 <?php echo $form["prenom"]->render(array("class" => "form-control")); ?>
             </div>
         </div>
+        
+        <div class="form-group">
+            <?php echo $form["raison_sociale"]->renderError(); ?>
+            <?php echo $form["raison_sociale"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <div class="col-xs-8">
+                <?php echo $form["raison_sociale"]->render(array("class" => "form-control")); ?>
+            </div>
+        </div>
+        
+        
         <div class="form-group<?php if ($form["adresse"]->hasError()): ?> has-error<?php endif; ?>">
             <?php echo $form["adresse"]->renderError(); ?>
             <?php echo $form["adresse"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -30,11 +70,11 @@
                 <?php echo $form["adresse"]->render(array("class" => "form-control")); ?>
             </div>
         </div>
-        <div class="form-group<?php if ($form["ville"]->hasError()): ?> has-error<?php endif; ?>">
-            <?php echo $form["ville"]->renderError(); ?>
-            <?php echo $form["ville"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+        <div class="form-group<?php if ($form["commune"]->hasError()): ?> has-error<?php endif; ?>">
+            <?php echo $form["commune"]->renderError(); ?>
+            <?php echo $form["commune"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
             <div class="col-xs-8">
-                <?php echo $form["ville"]->render(array("class" => "form-control")); ?>
+                <?php echo $form["commune"]->render(array("class" => "form-control")); ?>
             </div>
         </div>
         <div class="form-group<?php if ($form["code_postal"]->hasError()): ?> has-error<?php endif; ?>">
@@ -81,6 +121,7 @@
                 <?php echo $form["email"]->render(array("class" => "form-control")); ?>
             </div>
         </div>
+        <?php if(isset($form["siret"])): ?>
         <div class="form-group">
             <?php echo $form["siret"]->renderError(); ?>
             <?php echo $form["siret"]->renderLabel("N°&nbsp;SIRET/SIREN", array("class" => "col-xs-4 control-label")); ?>
@@ -88,6 +129,7 @@
                 <?php echo $form["siret"]->render(array("class" => "form-control")); ?>
             </div>
         </div>
+        <?php endif; ?>
 
     </div>
     <div class="form-group">
@@ -97,4 +139,14 @@
             <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
         </div>
     </div>
+    <?php if(isset($form["produits"])): ?>
+        <div class="form-group">
+        <?php echo $form["produits"]->renderError(); ?>
+        <?php echo $form["produits"]->renderLabel("Produits", array("class" => "col-xs-2 control-label")); ?>
+        <div class="col-xs-9">
+            <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    
 </div>

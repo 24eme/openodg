@@ -7,6 +7,7 @@ Compte:
       type: {  }
       identifiant: {  }
       type_compte: {  }
+      code_insee: {  }
       civilite: {  }
       nom: {  }
       prenom: {  }
@@ -14,7 +15,6 @@ Compte:
       nom_a_afficher: { }
       adresse: { }
       code_postal: { }
-      ville: { }
       commune: { }
       cedex: { }
       telephone_bureau: { }
@@ -24,6 +24,7 @@ Compte:
       email: { }
       web: { }
       siret: { }
+      siren: { }
       cvi: { }
       etablissement: { }
       statut: { }
@@ -35,6 +36,11 @@ Compte:
         definition:
           fields:
             'attributs':
+              type: collection
+              definition:
+                fields:
+                  '*' : { }            
+            'automatiques':
               type: collection
               definition:
                 fields:

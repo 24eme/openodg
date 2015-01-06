@@ -1,7 +1,11 @@
 <?php
 
-class EtablissementForm extends acCouchdbObjectForm
+class EtablissementForm extends CompteModificationForm
 {
+    public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        parent::__construct($object, $options, $CSRFSecret);
+    }
+    
      public function configure() {
        $this->setWidgets(array(
             "siret" => new sfWidgetFormInput(array("label" => "N° SIRET")),
@@ -13,7 +17,7 @@ class EtablissementForm extends acCouchdbObjectForm
             "telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
             "telephone_prive" => new sfWidgetFormInput(array("label" => "Tél. Privé")),
             "fax" => new sfWidgetFormInput(array("label" => "Fax")),
-       		"email" => new sfWidgetFormInput(array("label" => "Email")),
+            "email" => new sfWidgetFormInput(array("label" => "Email")),
         ));
 
         $this->setValidators(array(
@@ -26,14 +30,14 @@ class EtablissementForm extends acCouchdbObjectForm
             'telephone_mobile' => new sfValidatorString(array("required" => false)),
             'telephone_prive' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
-       		'email' => new sfValidatorEmailStrict(array("required" => true)),
+       	    'email' => new sfValidatorEmailStrict(array("required" => true)),
         )); 
 
         if(!$this->getOption("use_email")) {
             $this->getValidator('email')->setOption('required', false);
         }
 
-        if($this->getObject()->identifiant == $this->getObject()->siren) {
+        if($this->getObject()->exist('siren') && $this->getObject()->identifiant == $this->getObject()->siren) {
             unset($this['siret']);
         }
 
