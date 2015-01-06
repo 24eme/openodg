@@ -15,6 +15,12 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
     
     public function configure() {
         parent::configure();
+        
+        $this->setWidget("raison_sociale", new sfWidgetFormInput(array("label" => "Raison sociale")));
+      
+         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => true)));
+                
+        
         $this->setWidget("cvi", new sfWidgetFormInput(array("label" => "Cvi")));
         $this->setValidator('cvi', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]{10}$/"), array("invalid" => "Le cvi doit être un nombre à 10 chiffres")));
         
@@ -27,6 +33,12 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $this->setWidget("siren", new sfWidgetFormInput(array("label" => "N° SIREN")));
         $this->setValidator('siren', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siren doit être un nombre à 14 chiffres")));
         
+        $this->setWidget("siren", new sfWidgetFormInput(array("label" => "N° SIREN")));
+        $this->setValidator('siren', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siren doit être un nombre à 14 chiffres")));
+     
+        $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
+	    	'nbChais'    => $this->getOption('nbChais', 1)));
+        $this->embedForm('chais', $formChais);
         
     }
 }

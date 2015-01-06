@@ -33,6 +33,7 @@
  * @property string $date_archivage
  * @property string $date_creation
  * @property string $no_accises
+ * @property acCouchdbJson $chais
  * @property acCouchdbJson $tags
 
  * @method string get_id()
@@ -93,6 +94,8 @@
  * @method string setDateCreation()
  * @method string getNoAccises()
  * @method string setNoAccises()
+ * @method acCouchdbJson getChais()
+ * @method acCouchdbJson setChais()
  * @method acCouchdbJson getTags()
  * @method acCouchdbJson setTags()
  

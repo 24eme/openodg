@@ -39,15 +39,13 @@ class compteActions extends sfActions {
     public function executeModificationAdmin(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
 
-        if ($this->compte->isTypeCompte(CompteClient::TYPE_COMPTE_CONTACT)) {
-            $this->form = new CompteModificationForm($this->compte);
-            if ($request->isMethod(sfWebRequest::POST)) {
-                $this->form->bind($request->getParameter($this->form->getName()));
-                if ($this->form->isValid()) {
-                    $this->compte = $this->form->save();
-                    $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                    $this->redirect('home');
-                }
+        $this->form = $this->getCompteModificationForm();
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+                $this->compte = $this->form->save();
+                $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
+                $this->redirect('home');
             }
         }
     }
@@ -93,12 +91,11 @@ class compteActions extends sfActions {
         return $this->redirect($url_compte_civa);
     }
 
-
     public function executeRecherche(sfWebRequest $request) {
-    	$this->form = new CompteRechercheForm();
-    	$this->form->bind($request->getParameter($this->form->getName()));
+        $this->form = new CompteRechercheForm();
+        $this->form->bind($request->getParameter($this->form->getName()));
         if ($this->form->isValid()) {
-        	
+            
         }
         $test = new acElasticaQueryMatchAll();
     }
