@@ -31,6 +31,17 @@ Compte:
       date_archivage: { }
       date_creation: { }
       no_accises: { }
+      chais:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
       tags:
         type: collection
         definition:
