@@ -16,14 +16,16 @@ class Compte extends BaseCompte {
     }
 
     public function save() {
-        if ($this->isNew()) {
+        if ($this->isNew() && !$this->identifiant) {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
-            $this->initNomAAfficher();
         }
+
+        $this->updateNomAAfficher();
+
         parent::save();
     }
 
-    public function initNomAAfficher() {
+    public function updateNomAAfficher() {
         $this->nom_a_afficher = $this->civilite . ' ' . $this->prenom . ' ' . $this->nom;
     }
 
