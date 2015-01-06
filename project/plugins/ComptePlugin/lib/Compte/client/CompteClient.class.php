@@ -101,7 +101,7 @@ class CompteClient extends acCouchdbClient {
         }
     }
 
-    private function getPrefix($type_compte) {
+    public function getPrefix($type_compte) {
         if ($type_compte == self::TYPE_COMPTE_CONTACT) {
             return "C";
         }
@@ -111,7 +111,7 @@ class CompteClient extends acCouchdbClient {
         if ($type_compte == self::TYPE_COMPTE_AGENT_PRELEVEMENT) {
             return "A";
         }
-        throw new sfException("Ce type de compte n'est pas incrémental");
+        throw new sfException(sprintf("Ce type de compte %s n'est pas incrémental", $type_compte));
     }
 
     public function getNextIdentifiantForIncrementCompte($prefixForIdentifiant) {
