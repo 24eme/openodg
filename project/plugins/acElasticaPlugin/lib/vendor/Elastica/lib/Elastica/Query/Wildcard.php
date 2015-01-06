@@ -1,16 +1,14 @@
 <?php
-
-namespace Elastica\Query;
-
 /**
  * Wildcard query
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/wildcard-query.html
  */
-class Wildcard extends AbstractQuery
+class Elastica_Query_Wildcard extends Elastica_Query_Abstract
 {
     /**
      * Construct wildcard query
@@ -29,13 +27,12 @@ class Wildcard extends AbstractQuery
     /**
      * Sets the query expression for a key with its boost value
      *
-     * @param  string                       $key
-     * @param  string                       $value
-     * @param  float                        $boost
-     * @return \Elastica\Query\Wildcard
+     * @param string $key
+     * @param string $value
+     * @param float  $boost
      */
     public function setValue($key, $value, $boost = 1.0)
     {
-        return $this->setParam($key, array('value' => $value, 'boost' => $boost));
+        $this->setParam($key, array('value' => $value, 'boost' => $boost));
     }
 }

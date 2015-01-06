@@ -1,16 +1,14 @@
 <?php
-
-namespace Elastica\Filter;
-
 /**
  * Exists query
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Oleg Cherniy <oleg.cherniy@gmail.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/exists-filter.html
  */
-class Exists extends AbstractFilter
+class Elastica_Filter_Exists extends Elastica_Filter_Abstract
 {
     /**
      * Construct exists filter
@@ -25,8 +23,8 @@ class Exists extends AbstractFilter
     /**
      * Set field
      *
-     * @param  string                       $field
-     * @return \Elastica\Filter\Exists
+     * @param  string                 $field
+     * @return Elastica_Filter_Exists
      */
     public function setField($field)
     {

@@ -1,22 +1,20 @@
 <?php
-
-namespace Elastica\Query;
-
 /**
  * More Like This query
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Raul Martinez, Jr <juneym@gmail.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/mlt-query.html
  */
-class MoreLikeThis extends AbstractQuery
+class Elastica_Query_MoreLikeThis extends Elastica_Query_Abstract
 {
     /**
      * Adds field to mlt query
      *
-     * @param  array                            $fields Field names
-     * @return \Elastica\Query\MoreLikeThis Current object
+     * @param  array                       $fields Field names
+     * @return Elastica_Query_MoreLikeThis Current object
      */
     public function setFields(array $fields)
     {
@@ -26,8 +24,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set the "like_text" value
      *
-     * @param  string                           $likeText
-     * @return \Elastica\Query\MoreLikeThis This current object
+     * @param  string                      $likeText
+     * @return Elastica_Query_MoreLikeThis This current object
      */
     public function setLikeText($likeText)
     {
@@ -39,8 +37,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set boost
      *
-     * @param  float                            $boost Boost value
-     * @return \Elastica\Query\MoreLikeThis Query object
+     * @param  float                       $boost Boost value
+     * @return Elastica_Query_MoreLikeThis Query object
      */
     public function setBoost($boost)
     {
@@ -50,8 +48,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set max_query_terms
      *
-     * @param  int                              $maxQueryTerms Max query terms value
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  int                         $maxQueryTerms Max query terms value
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setMaxQueryTerms($maxQueryTerms)
     {
@@ -61,8 +59,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set percent terms to match
      *
-     * @param  float                            $percentTermsToMatch Percentage
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  float                       $percentTermsToMatch Percentage
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setPercentTermsToMatch($percentTermsToMatch)
     {
@@ -72,8 +70,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set min term frequency
      *
-     * @param  int                              $minTermFreq
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  int                         $minTermFreq
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setMinTermFrequency($minTermFreq)
     {
@@ -83,8 +81,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * set min document frequency
      *
-     * @param  int                              $minDocFreq
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  int                         $minDocFreq
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setMinDocFrequency($minDocFreq)
     {
@@ -94,8 +92,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * set max document frequency
      *
-     * @param  int                              $maxDocFreq
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  int                         $maxDocFreq
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setMaxDocFrequency($maxDocFreq)
     {
@@ -105,8 +103,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set min word length
      *
-     * @param  int                              $minWordLength
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  int                         $minWordLength
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setMinWordLength($minWordLength)
     {
@@ -116,8 +114,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set max word length
      *
-     * @param  int                              $maxWordLength
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  int                         $maxWordLength
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setMaxWordLength($maxWordLength)
     {
@@ -127,8 +125,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set boost terms
      *
-     * @param  bool                             $boostTerms
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  bool                        $boostTerms
+     * @return Elastica_Query_MoreLikeThis
      * @link http://www.elasticsearch.org/guide/reference/query-dsl/mlt-query.html
      */
     public function setBoostTerms($boostTerms)
@@ -139,8 +137,8 @@ class MoreLikeThis extends AbstractQuery
     /**
      * Set analyzer
      *
-     * @param  string                           $analyzer
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  string                      $analyzer
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setAnalyzer($analyzer)
     {
@@ -150,10 +148,10 @@ class MoreLikeThis extends AbstractQuery
     }
 
     /**
-     * Set stop words
+     * Set stopwords
      *
-     * @param  array                            $stopWords
-     * @return \Elastica\Query\MoreLikeThis
+     * @param  array                       $stopWords
+     * @return Elastica_Query_MoreLikeThis
      */
     public function setStopWords(array $stopWords)
     {

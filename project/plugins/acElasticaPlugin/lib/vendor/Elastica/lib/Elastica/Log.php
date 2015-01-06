@@ -1,7 +1,5 @@
 <?php
 
-namespace Elastica;
-
 /**
  * Elastica log object
  *
@@ -9,14 +7,14 @@ namespace Elastica;
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  */
-class Log
+class Elastica_Log
 {
     /**
      * Log path or true if enabled
      *
      * @var string|bool
      */
-    protected $_log = true;
+    protected $_log = false;
 
     /**
      * Last logged message
@@ -26,29 +24,33 @@ class Log
     protected $_lastMessage = '';
 
     /**
-     * Inits log object
+     * Inits log object. Checks if logging is enabled for the given client
      *
-     * @param string|bool String to set a specific file for logging
+     * @param Elastica_Client $client
      */
-    public function __construct($log = '')
+    public function __construct(Elastica_Client $client)
     {
-        $this->setLog($log);
+        $this->setLog($client->getConfig('log'));
     }
 
     /**
      * Log a message
      *
-     * @param string|\Elastica\Request $message
+     * @param string|Elastica_Request $message
      */
     public function log($message)
     {
-        if ($message instanceof Request) {
-            $message = $message->toString();
+        if (!$this->_log) {
+            return;
+        }
+
+        if ($message instanceof Elastica_Request) {
+            $message = $this->_convertRequest($message);
         }
 
         $this->_lastMessage = $message;
 
-        if (!empty($this->_log) && is_string($this->_log)) {
+        if (is_string($this->_log)) {
             error_log($message . PHP_EOL, 3, $this->_log);
         } else {
             error_log($message);
@@ -60,13 +62,40 @@ class Log
      * Enable/disable log or set log path
      *
      * @param  bool|string  $log Enables log or sets log path
-     * @return \Elastica\Log
+     * @return Elastica_Log
      */
     public function setLog($log)
     {
         $this->_log = $log;
 
         return $this;
+    }
+
+    /**
+     * Converts a request to a log message
+     *
+     * @param  Elastica_Request $request
+     * @return string           Request log message
+     */
+    protected function _convertRequest(Elastica_Request $request)
+    {
+        $message = 'curl -X' . strtoupper($request->getMethod()) . ' ';
+        $message .= '\'http://' . $request->getClient()->getHost() . ':' . $request->getClient()->getPort() . '/';
+        $message .= $request->getPath();
+
+        $query = $request->getQuery();
+        if (!empty($query)) {
+            $message .= '?' . http_build_query($query);
+        }
+
+        $message .= '\'';
+
+        $data = $request->getData();
+        if (!empty($data)) {
+            $message .= ' -d \'' . json_encode($data) . '\'';
+        }
+
+        return $message;
     }
 
     /**

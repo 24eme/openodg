@@ -1,8 +1,4 @@
 <?php
-
-namespace Elastica;
-use Elastica\Index\Status as IndexStatus;
-
 /**
  * Elastica general status
  *
@@ -11,12 +7,12 @@ use Elastica\Index\Status as IndexStatus;
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-status.html
  */
-class Status
+class Elastica_Status
 {
     /**
      * Contains all status infos
      *
-     * @var \Elastica\Response Response object
+     * @var Elastica_Response Response object
      */
     protected $_response = null;
 
@@ -30,16 +26,16 @@ class Status
     /**
      * Client object
      *
-     * @var \Elastica\Client Client object
+     * @var Elastica_Client Client object
      */
     protected $_client = null;
 
     /**
      * Constructs Status object
      *
-     * @param \Elastica\Client $client Client object
+     * @param Elastica_Client $client Client object
      */
-    public function __construct(Client $client)
+    public function __construct(Elastica_Client $client)
     {
         $this->_client = $client;
         $this->refresh();
@@ -58,14 +54,14 @@ class Status
     /**
      * Returns status objects of all indices
      *
-     * @return array|\Elastica\Index\Status[] List of Elastica\Client\Index objects
+     * @return array List of Elastica_Client_Index objects
      */
     public function getIndexStatuses()
     {
         $statuses = array();
         foreach ($this->getIndexNames() as $name) {
-            $index = new Index($this->_client, $name);
-            $statuses[] = new IndexStatus($index);
+            $index = new Elastica_Index($this->_client, $name);
+            $statuses[] = new Elastica_Index_Status($index);
         }
 
         return $statuses;
@@ -117,8 +113,8 @@ class Status
     /**
      * Returns an array with all indices that the given alias name points to
      *
-     * @param  string                 $name Alias name
-     * @return array|\Elastica\Index[] List of Elastica\Index
+     * @param  string $name Alias name
+     * @return array  List of Elastica_Index
      */
     public function getIndicesWithAlias($name)
     {
@@ -135,7 +131,7 @@ class Status
     /**
      * Returns response object
      *
-     * @return \Elastica\Response Response object
+     * @return Elastica_Response Response object
      */
     public function getResponse()
     {
@@ -158,7 +154,7 @@ class Status
     public function refresh()
     {
         $path = '_status';
-        $this->_response = $this->_client->request($path, Request::GET);
+        $this->_response = $this->_client->request($path, Elastica_Request::GET);
         $this->_data = $this->getResponse()->getData();
     }
 
@@ -168,7 +164,7 @@ class Status
     public function getServerStatus()
     {
         $path = '';
-        $response = $this->_client->request($path, Request::GET);
+        $response = $this->_client->request($path, Elastica_Request::GET);
 
         return  $response->getData();
     }

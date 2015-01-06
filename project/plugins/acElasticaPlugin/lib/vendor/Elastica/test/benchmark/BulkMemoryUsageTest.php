@@ -1,9 +1,7 @@
 <?php
+require_once dirname(__FILE__) . '/../bootstrap.php';
 
-use Elastica\Client;
-use Elastica\Document;
-
-class BulkMemoryUsageTest extends \PHPUnit_Framework_TestCase
+class BulkMemoryUsageTest extends PHPUnit_Framework_TestCase
 {
 
     /**
@@ -13,7 +11,7 @@ class BulkMemoryUsageTest extends \PHPUnit_Framework_TestCase
      */
     public function testServersArray()
     {
-        $client = new Client();
+        $client = new Elastica_Client();
         $index = $client->getIndex('test');
         $index->create(array(), true);
         $type = $index->getType('test');
@@ -30,7 +28,7 @@ class BulkMemoryUsageTest extends \PHPUnit_Framework_TestCase
             $docs = array();
 
             for ($i = 1; $i <= 3000; $i++) {
-                $docs[] = new Document(uniqid(), $data);
+                $docs[] = new Elastica_Document(uniqid(), $data);
             }
 
             $type->addDocuments($docs);
@@ -41,6 +39,6 @@ class BulkMemoryUsageTest extends \PHPUnit_Framework_TestCase
 
         $endMemory = memory_get_usage();
 
-        $this->assertLessThan(1.2, $endMemory/$startMemory);
+        $this->assertLessThan(1.1, $endMemory/$startMemory);
     }
 }

@@ -1,17 +1,14 @@
 <?php
-
-namespace Elastica\Query;
-use Elastica\Exception\InvalidException;
-
 /**
  * Terms query
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/terms-query.html
  */
-class Terms extends AbstractQuery
+class Elastica_Query_Terms extends Elastica_Query_Abstract
 {
     /**
      * Terms
@@ -48,9 +45,8 @@ class Terms extends AbstractQuery
     /**
      * Sets key and terms for the query
      *
-     * @param  string                    $key   Terms key
-     * @param  array                     $terms Terms for the query.
-     * @return \Elastica\Query\Terms
+     * @param string $key   Terms key
+     * @param array  $terms Terms for the query.
      */
     public function setTerms($key, array $terms)
     {
@@ -63,8 +59,7 @@ class Terms extends AbstractQuery
     /**
      * Adds a single term to the list
      *
-     * @param  string                    $term Term
-     * @return \Elastica\Query\Terms
+     * @param string $term Term
      */
     public function addTerm($term)
     {
@@ -76,8 +71,7 @@ class Terms extends AbstractQuery
     /**
      * Sets the minimum matching values
      *
-     * @param  int                       $minimum Minimum value
-     * @return \Elastica\Query\Terms
+     * @param int $minimum Minimum value
      */
     public function setMinimumMatch($minimum)
     {
@@ -87,14 +81,13 @@ class Terms extends AbstractQuery
     /**
      * Converts the terms object to an array
      *
-     * @see \Elastica\Query\AbstractQuery::toArray()
-     * @throws \Elastica\Exception\InvalidException
-     * @return array                               Query array
+     * @return array Query array
+     * @see Elastica_Query_Abstract::toArray()
      */
     public function toArray()
     {
         if (empty($this->_key)) {
-            throw new InvalidException('Terms key has to be set');
+            throw new Elastica_Exception_Invalid('Terms key has to be set');
         }
         $this->setParam($this->_key, $this->_terms);
 

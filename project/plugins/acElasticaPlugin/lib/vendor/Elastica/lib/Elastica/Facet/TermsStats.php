@@ -1,7 +1,5 @@
 <?php
 
-namespace Elastica\Facet;
-
 /**
  * Implements the statistical facet on a per term basis.
  *
@@ -10,14 +8,14 @@ namespace Elastica\Facet;
  * @author Tom Michaelis <tom.michaelis@gmail.com>
  * @link http://www.elasticsearch.org/guide/reference/api/search/facets/terms-stats-facet.html
  */
-class TermsStats extends AbstractFacet
+class Elastica_Facet_TermsStats extends Elastica_Facet_Abstract
 {
 
     /**
      * Sets the key field for the query.
      *
-     * @param  string                         $keyField The key field name for the query.
-     * @return \Elastica\Facet\TermsStats
+     * @param  string                    $keyField The key field name for the query.
+     * @return Elastica_Facet_TermsStats
      */
     public function setKeyField( $keyField )
     {
@@ -27,8 +25,8 @@ class TermsStats extends AbstractFacet
     /**
      * Sets a script to calculate statistical information on a per term basis
      *
-     * @param  string                         $valueScript The script to do calculations on the statistical values
-     * @return \Elastica\Facet\TermsStats
+     * @param  string                    $valueScript The script to do calculations on the statistical values
+     * @return Elastica_Facet_TermsStats
      */
     public function setValueScript( $valueScript )
     {
@@ -38,8 +36,8 @@ class TermsStats extends AbstractFacet
     /**
      * Sets a field to compute basic statistical results on
      *
-     * @param  string                         $valueField The field to compute statistical values for
-     * @return \Elastica\Facet\TermsStats
+     * @param  string                    $valueField The field to compute statistical values for
+     * @return Elastica_Facet_TermsStats
      */
     public function setValueField( $valueField )
     {
@@ -50,7 +48,7 @@ class TermsStats extends AbstractFacet
      * Creates the full facet definition, which includes the basic
      * facet definition of the parent.
      *
-     * @see \Elastica\Facet\AbstractFacet::toArray()
+     * @see Elastica_Facet_Abstract::toArray()
      * @return array
      */
     public function toArray()

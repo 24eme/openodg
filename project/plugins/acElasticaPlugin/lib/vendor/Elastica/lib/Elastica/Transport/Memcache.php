@@ -1,12 +1,4 @@
 <?php
-
-namespace Elastica\Transport;
-
-use Elastica\Exception\InvalidException;
-use Elastica\Exception\ResponseException;
-use Elastica\Request;
-use Elastica\Response;
-
 /**
  * Elastica Memcache Transport object
  *
@@ -14,21 +6,20 @@ use Elastica\Response;
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  */
-class Memcache extends AbstractTransport
+class Elastica_Transport_Memcache extends Elastica_Transport_Abstract
 {
     /**
      * Makes calls to the elasticsearch server
      *
-     * @param \Elastica\Request $request
-     * @param  array                               $params Host, Port, ...
-     * @throws \Elastica\Exception\ResponseException
-     * @throws \Elastica\Exception\InvalidException
-     * @return \Elastica\Response                   Response object
+     * @param  array             $params Host, Port, ...
+     * @return Elastica_Response Response object
      */
-    public function exec(Request $request, array $params)
+    public function exec(array $params)
     {
-        $memcache = new \Memcache();
-        $memcache->connect($this->getConnection()->getHost(), $this->getConnection()->getPort());
+        $request = $this->getRequest();
+
+        $memcache = new Memcache();
+        $memcache->connect($params['host'], $params['port']);
 
         // Finds right function name
         $function = strtolower($request->getMethod());
@@ -62,14 +53,19 @@ class Memcache extends AbstractTransport
             case 'delete':
                 break;
             default:
-                throw new InvalidException('Method ' . $function . ' is not supported in memcache transport');
+                throw new Elastica_Exception_Invalid('Method ' . $function . ' is not supported in memcache transport');
 
         }
 
-        $response = new Response($responseString);
+        $response = new Elastica_Response($responseString);
+
+        if (defined('DEBUG') && DEBUG) {
+            $response->setQueryTime($end - $start);
+            $response->setTransferInfo(curl_getinfo($conn));
+        }
 
         if ($response->hasError()) {
-            throw new ResponseException($request, $response);
+            throw new Elastica_Exception_Response($response);
         }
 
         return $response;

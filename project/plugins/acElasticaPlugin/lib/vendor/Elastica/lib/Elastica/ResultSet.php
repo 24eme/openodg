@@ -1,18 +1,15 @@
 <?php
-
-namespace Elastica;
-
 /**
  * Elastica result set
  *
  * List of all hits that are returned for a search on elasticsearch
- * Result set implements iterator
+ * Result set implents iterator
  *
  * @category Xodoa
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  */
-class ResultSet implements \Iterator, \Countable
+class Elastica_ResultSet implements Iterator, Countable
 {
     /**
      * Results
@@ -31,54 +28,35 @@ class ResultSet implements \Iterator, \Countable
     /**
      * Response
      *
-     * @var \Elastica\Response Response object
+     * @var Elastica_Response Response object
      */
     protected $_response = null;
-
-    /**
-     * Query
-     *
-     * @var \Elastica\Query Query object
-     */
-    protected $_query;
-
-    /**
-     * @var int
-     */
     protected $_took = 0;
-
-    /**
-     * @var int
-     */
-    protected $_totalHits = 0;
-
     /**
      * Constructs ResultSet object
      *
-     * @param \Elastica\Response $response Response object
-     * @param \Elastica\Query    $query    Query object
+     * @param Elastica_Response $response Response object
      */
-    public function __construct(Response $response, Query $query)
+    public function __construct(Elastica_Response $response)
     {
         $this->rewind();
         $this->_init($response);
-        $this->_query = $query;
     }
 
     /**
-     * Loads all data into the results object (initialisation)
+     * Loads all data into the results object (initalisation)
      *
-     * @param \Elastica\Response $response Response object
+     * @param Elastica_Response $response Response object
      */
-    protected function _init(Response $response)
+    protected function _init(Elastica_Response $response)
     {
         $this->_response = $response;
         $result = $response->getData();
-        $this->_totalHits = isset($result['hits']['total']) ? $result['hits']['total'] : 0;
+        $this->_totalHits = $result['hits']['total'];
         $this->_took = isset($result['took']) ? $result['took'] : 0;
         if (isset($result['hits']['hits'])) {
             foreach ($result['hits']['hits'] as $hit) {
-                $this->_results[] = new Result($hit);
+                $this->_results[] = new Elastica_Result($hit);
             }
         }
     }
@@ -140,19 +118,11 @@ class ResultSet implements \Iterator, \Countable
     /**
      * Returns response object
      *
-     * @return \Elastica\Response Response object
+     * @return Elastica_Response Response object
      */
     public function getResponse()
     {
         return $this->_response;
-    }
-
-    /**
-     * @return \Elastica\Query
-     */
-    public function getQuery()
-    {
-        return $this->_query;
     }
 
     /**
@@ -168,7 +138,7 @@ class ResultSet implements \Iterator, \Countable
     /**
      * Returns the current object of the set
      *
-     * @return \Elastica\Result|bool Set object or false if not valid (no more entries)
+     * @return Elastica_Result|bool Set object or false if not valid (no more entries)
      */
     public function current()
     {

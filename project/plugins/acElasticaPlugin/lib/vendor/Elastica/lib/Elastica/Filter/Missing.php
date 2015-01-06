@@ -1,16 +1,15 @@
 <?php
 
-namespace Elastica\Filter;
-
 /**
  * Missing Filter
  *
+ * @uses Elastica_Filter_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Maciej Wiercinski <maciej@wiercinski.net>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/missing-filter.html
  */
-class Missing extends AbstractFilter
+class Elastica_Filter_Missing extends Elastica_Filter_Abstract
 {
     /**
      * Construct missing filter
@@ -27,8 +26,7 @@ class Missing extends AbstractFilter
     /**
      * Set field
      *
-     * @param  string                        $field
-     * @return \Elastica\Filter\Missing
+     * @param string $field
      */
     public function setField($field)
     {

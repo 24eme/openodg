@@ -1,10 +1,4 @@
 <?php
-
-namespace Elastica;
-use Elastica\Cluster\Health;
-use Elastica\Cluster\Settings;
-use Elastica\Exception\NotImplementedException;
-
 /**
  * Cluster informations for elasticsearch
  *
@@ -13,54 +7,40 @@ use Elastica\Exception\NotImplementedException;
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/api/
  */
-class Cluster
+class Elastica_Cluster
 {
     /**
      * Client
      *
-     * @var \Elastica\Client Client object
+     * @var Elastica_Client Client object
      */
     protected $_client = null;
 
     /**
-     * Cluster state response.
-     *
-     * @var \Elastica\Response
-     */
-    protected $_response;
-
-    /**
-     * Cluster state data.
-     *
-     * @var array
-     */
-    protected $_data;
-
-    /**
      * Creates a cluster object
      *
-     * @param \Elastica\Client $client Connection client object
+     * @param Elastica_Client $client Connection client object
      */
-    public function __construct(Client $client)
+    public function __construct(Elastica_Client $client)
     {
         $this->_client = $client;
         $this->refresh();
     }
 
     /**
-     * Refreshes all cluster information (state)
+     * Refreshs all cluster information (state)
      */
     public function refresh()
     {
         $path = '_cluster/state';
-        $this->_response = $this->_client->request($path, Request::GET);
+        $this->_response = $this->_client->request($path, Elastica_Request::GET);
         $this->_data = $this->getResponse()->getData();
     }
 
     /**
      * Returns the response object
      *
-     * @return \Elastica\Response Response object
+     * @return Elastica_Response Response object
      */
     public function getResponse()
     {
@@ -110,13 +90,13 @@ class Cluster
     /**
      * Returns all nodes of the cluster
      *
-     * @return \Elastica\Node[]
+     * @return array List of Elastica_Node objects
      */
     public function getNodes()
     {
         $nodes = array();
         foreach ($this->getNodeNames() as $name) {
-            $nodes[] = new Node($name, $this->getClient());
+            $nodes[] = new Elastica_Node($name, $this->getClient());
         }
 
         return $nodes;
@@ -125,7 +105,7 @@ class Cluster
     /**
      * Returns the client object
      *
-     * @return \Elastica\Client Client object
+     * @return Elastica_Client Client object
      */
     public function getClient()
     {
@@ -135,47 +115,46 @@ class Cluster
     /**
      * Returns the cluster information (not implemented yet)
      *
-     * @param  array                                      $args Additional arguments
-     * @throws \Elastica\Exception\NotImplementedException
-     * @link http://www.elasticsearch.org/guide/reference/api/admin-cluster-nodes-info.html
+     * @param array $args Additional arguemtns
+     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/cluster/nodes_info/
      */
     public function getInfo(array $args)
     {
-        throw new NotImplementedException('not implemented yet');
+        throw new Exception('not implemented yet');
     }
 
     /**
      * Return Cluster health
      *
-     * @return \Elastica\Cluster\Health
-     * @link http://www.elasticsearch.org/guide/reference/api/admin-cluster-health.html
+     * @param array $args OPTIONAL
+     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/cluster/health/
      */
-    public function getHealth()
+    public function getHealth($args = array())
     {
-        return new Health($this->getClient());
+        throw new Exception('not implemented yet');
     }
 
     /**
      * Return Cluster settings
      *
-     * @return \Elastica\Cluster\Settings
+     * @return Elastica_Cluster_Settings
      */
     public function getSettings()
     {
-        return new Settings($this->getClient());
+        return new Elastica_Cluster_Settings($this->getClient());
     }
 
     /**
      * Shuts down the complete cluster
      *
      * @param  string            $delay OPTIONAL Seconds to shutdown cluster after (default = 1s)
-     * @return \Elastica\Response
+     * @return Elastica_Response
      * @link http://www.elasticsearch.org/guide/reference/api/admin-cluster-nodes-shutdown.html
      */
     public function shutdown($delay = '1s')
     {
         $path = '_shutdown?delay=' . $delay;
 
-        return $this->_client->request($path, Request::POST);
+        return $this->_client->request($path, Elastica_Request::POST);
     }
 }

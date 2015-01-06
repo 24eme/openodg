@@ -1,22 +1,20 @@
 <?php
-
-namespace Elastica\Filter;
-
 /**
  * Limit Filter
  *
+ * @uses Elastica_Filter_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/limit-filter.html
  */
-class Limit extends AbstractFilter
+class Elastica_Filter_Limit extends Elastica_Filter_Abstract
 {
     /**
      * Construct limit filter
      *
-     * @param  int                         $limit Limit
-     * @return \Elastica\Filter\Limit
+     * @param  int                   $limit Limit
+     * @return Elastica_Filter_Limit
      */
     public function __construct($limit)
     {
@@ -26,8 +24,8 @@ class Limit extends AbstractFilter
     /**
      * Set the limit
      *
-     * @param  int                         $limit Limit
-     * @return \Elastica\Filter\Limit
+     * @param  int                   $limit Limit
+     * @return Elastica_Filter_Limit
      */
     public function setLimit($limit)
     {

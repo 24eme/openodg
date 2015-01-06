@@ -1,17 +1,14 @@
 <?php
-
-namespace Elastica\Query;
-use Elastica\Exception\InvalidException;
-
 /**
  * Field query
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/field-query.html
  */
-class Field extends AbstractQuery
+class Elastica_Query_Field extends Elastica_Query_Abstract
 {
     /**
      * Field for object
@@ -42,8 +39,8 @@ class Field extends AbstractQuery
     /**
      * Sets the field
      *
-     * @param  string                    $field Field
-     * @return \Elastica\Query\Field Current object
+     * @param  string               $field Field
+     * @return Elastica_Query_Field Current object
      */
     public function setField($field)
     {
@@ -55,14 +52,13 @@ class Field extends AbstractQuery
     /**
      * Sets a new query string for the object
      *
-     * @param  string                              $queryString Query string
-     * @throws \Elastica\Exception\InvalidException
-     * @return \Elastica\Query\Field           Current object
+     * @param  string               $queryString Query string
+     * @return Elastica_Query_Field Current object
      */
     public function setQueryString($queryString)
     {
         if (!is_string($queryString)) {
-            throw new InvalidException('Parameter has to be a string');
+            throw new Elastica_Exception_Invalid('Parameter has to be a string');
         }
 
         $this->_queryString = $queryString;
@@ -74,7 +70,7 @@ class Field extends AbstractQuery
      * Converts query to array
      *
      * @return array Query array
-     * @see \Elastica\Query\AbstractQuery::toArray()
+     * @see Elastica_Query_Abstract::toArray()
      */
     public function toArray()
     {

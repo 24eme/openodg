@@ -1,23 +1,21 @@
 <?php
-
-namespace Elastica\Query;
-
 /**
  * Text query
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/text-query.html
  */
-class Text extends AbstractQuery
+class Elastica_Query_Text extends Elastica_Query_Abstract
 {
     /**
      * Sets a param for the message array
      *
-     * @param  string                   $field
-     * @param  mixed                    $values
-     * @return \Elastica\Query\Text
+     * @param  string              $field
+     * @param  mixed               $values
+     * @return Elastica_Query_Text
      */
     public function setField($field, $values)
     {
@@ -27,10 +25,10 @@ class Text extends AbstractQuery
     /**
      * Sets a param for the given field
      *
-     * @param  string                   $field
-     * @param  string                   $key
-     * @param  string                   $value
-     * @return \Elastica\Query\Text
+     * @param  string              $field
+     * @param  string              $key
+     * @param  string              $value
+     * @return Elastica_Query_Text
      */
     public function setFieldParam($field, $key, $value)
     {
@@ -46,9 +44,9 @@ class Text extends AbstractQuery
     /**
      * Sets the query string
      *
-     * @param  string                   $field
-     * @param  string                   $query
-     * @return \Elastica\Query\Text
+     * @param  string              $field
+     * @param  string              $query
+     * @return Elastica_Query_Text
      */
     public function setFieldQuery($field, $query)
     {
@@ -58,9 +56,9 @@ class Text extends AbstractQuery
     /**
      * Set field type
      *
-     * @param  string                   $field
-     * @param  string                   $type  Text query type
-     * @return \Elastica\Query\Text
+     * @param  string              $field
+     * @param  string              $type  Text query type
+     * @return Elastica_Query_Text
      */
     public function setFieldType($field, $type)
     {
@@ -70,9 +68,9 @@ class Text extends AbstractQuery
     /**
      * Set field max expansions
      *
-     * @param  string                   $field
-     * @param  int                      $maxExpansions
-     * @return \Elastica\Query\Text
+     * @param  string              $field
+     * @param  int                 $maxExpansions
+     * @return Elastica_Query_Text
      */
     public function setFieldMaxExpansions($field, $maxExpansions)
     {

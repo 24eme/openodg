@@ -1,10 +1,4 @@
 <?php
-
-namespace Elastica\Facet;
-
-use Elastica\Exception\InvalidException;
-use Elastica\Script;
-
 /**
  * Implements the terms facet.
  *
@@ -14,7 +8,7 @@ use Elastica\Script;
  * @author Jasper van Wanrooy <jasper@vanwanrooy.net>
  * @link http://www.elasticsearch.org/guide/reference/api/search/facets/terms-facet.html
  */
-class Terms extends AbstractFacet
+class Elastica_Facet_Terms extends Elastica_Facet_Abstract
 {
     /**
      * Holds the types of ordering which are allowed
@@ -27,8 +21,8 @@ class Terms extends AbstractFacet
     /**
      * Sets the field for the terms.
      *
-     * @param  string                    $field The field name for the terms.
-     * @return \Elastica\Facet\Terms
+     * @param  string               $field The field name for the terms.
+     * @return Elastica_Facet_Terms
      */
     public function setField($field)
     {
@@ -36,26 +30,10 @@ class Terms extends AbstractFacet
     }
 
     /**
-     * Sets the script for the term.
-     *
-     * @param  string                   $script The script for the term.
-     * @return \Elastica\Facet\Terms
-     */
-    public function setScript($script)
-    {
-        $script = Script::create($script);
-        foreach ($script->toArray() as $param => $value) {
-            $this->setParam($param, $value);
-        }
-
-        return $this;
-    }
-
-    /**
      * Sets multiple fields for the terms.
      *
-     * @param  array                     $fields Numerical array with the fields for the terms.
-     * @return \Elastica\Facet\Terms
+     * @param  array                $fields Numerical array with the fields for the terms.
+     * @return Elastica_Facet_Terms
      */
     public function setFields(array $fields)
     {
@@ -66,8 +44,8 @@ class Terms extends AbstractFacet
      * Sets the flag to return all available terms. When they
      * don't have a hit, they have a count of zero.
      *
-     * @param  bool                      $allTerms Flag to fetch all terms.
-     * @return \Elastica\Facet\Terms
+     * @param  bool                 $allTerms Flag to fetch all terms.
+     * @return Elastica_Facet_Terms
      */
     public function setAllTerms($allTerms)
     {
@@ -78,14 +56,14 @@ class Terms extends AbstractFacet
      * Sets the ordering type for this facet. ElasticSearch
      * internal default is count.
      *
-     * @param  string                              $type The order type to set use for sorting of the terms.
-     * @throws \Elastica\Exception\InvalidException When an invalid order type was set.
-     * @return \Elastica\Facet\Terms
+     * @param  string                     $type The order type to set use for sorting of the terms.
+     * @throws Elastica_Exception_Invalid When an invalid order type was set.
+     * @return Elastica_Facet_Terms
      */
     public function setOrder($type)
     {
         if (!in_array($type, $this->_orderTypes)) {
-            throw new InvalidException('Invalid order type: ' . $type);
+            throw new Elastica_Exception_Invalid('Invalid order type: ' . $type);
         }
 
         return $this->setParam('order', $type);
@@ -94,8 +72,8 @@ class Terms extends AbstractFacet
     /**
      * Set an array with terms which are omitted in the search.
      *
-     * @param  array                     $exclude Numerical array which includes all terms which needs to be ignored.
-     * @return \Elastica\Facet\Terms
+     * @param  array                $exclude Numerical array which includes all terms which needs to be ignored.
+     * @return Elastica_Facet_Terms
      */
     public function setExclude(array $exclude)
     {
@@ -105,8 +83,8 @@ class Terms extends AbstractFacet
     /**
      * Sets the amount of terms to be returned.
      *
-     * @param  int                       $size The amount of terms to be returned.
-     * @return \Elastica\Facet\Terms
+     * @param  int                  $size The amount of terms to be returned.
+     * @return Elastica_Facet_Terms
      */
     public function setSize($size)
     {
@@ -117,7 +95,7 @@ class Terms extends AbstractFacet
      * Creates the full facet definition, which includes the basic
      * facet definition of the parent.
      *
-     * @see \Elastica\Facet\AbstractFacet::toArray()
+     * @see Elastica_Facet_Abstract::toArray()
      * @return array
      */
     public function toArray()

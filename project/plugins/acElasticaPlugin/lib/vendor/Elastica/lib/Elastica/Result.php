@@ -1,7 +1,4 @@
 <?php
-
-namespace Elastica;
-
 /**
  * Elastica result item
  *
@@ -11,7 +8,7 @@ namespace Elastica;
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  */
-class Result
+class Elastica_Result
 {
     /**
      * Hit array
@@ -35,7 +32,7 @@ class Result
      *
      * This function can be used to retrieve all data for which a specific
      * function doesn't exist.
-     * If the param does not exist, an empty array is returned
+     * If the param does not exist, an empty array is retured
      *
      * @param  string $name Param name
      * @return array  Result data

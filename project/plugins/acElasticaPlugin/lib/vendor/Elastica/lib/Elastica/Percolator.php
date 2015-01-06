@@ -1,7 +1,4 @@
 <?php
-
-namespace Elastica;
-
 /**
  * Percolator class
  *
@@ -10,21 +7,21 @@ namespace Elastica;
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/api/percolate.html
  */
-class Percolator
+class Elastica_Percolator
 {
     /**
      * Index object
      *
-     * @var \Elastica\Index
+     * @var Elastica_Index
      */
     protected $_index = null;
 
     /**
-     * Construct new percolator
+     * Construct new perlocator
      *
-     * @param \Elastica\Index $index
+     * @param Elastica_Index $index
      */
-    public function __construct(Index $index)
+    public function __construct(Elastica_Index $index)
     {
         $this->_index = $index;
     }
@@ -32,43 +29,43 @@ class Percolator
     /**
      * Registers a percolator query
      *
-     * @param  string                                             $name  Query name
-     * @param  string|\Elastica\Query|\Elastica\Query\AbstractQuery $query Query to add
-     * @return \Elastica\Response
+     * @param  string                                        $name  Query name
+     * @param  string|Elastica_Query|Elastica_Query_Abstract $query Query to add
+     * @return Elastica_Response
      */
     public function registerQuery($name, $query)
     {
         $path = '_percolator/' . $this->_index->getName() . '/' . $name;
-        $query = Query::create($query);
+        $query = Elastica_Query::create($query);
 
-        return $this->_index->getClient()->request($path, Request::PUT, $query->toArray());
+        return $this->_index->getClient()->request($path, Elastica_Request::PUT, $query->toArray());
     }
 
     /**
      * Removes a percolator query
      * @param  string            $name query name
-     * @return \Elastica\Response
+     * @return Elastica_Response
      */
     public function unregisterQuery($name)
     {
         $path = '_percolator/' . $this->_index->getName() . '/' . $name;
 
-        return $this->_index->getClient()->request($path, Request::DELETE);
+        return $this->_index->getClient()->request($path, Elastica_Request::DELETE);
     }
 
     /**
      * Match a document to percolator queries
      *
-     * @param  \Elastica\Document                                  $doc
-     * @param  string|\Elastica\Query|\Elastica\Query\AbstractQuery $query Not implemented yet
-     * @return \Elastica\Response
+     * @param  Elastica_Document                             $doc
+     * @param  string|Elastica_Query|Elastica_Query_Abstract $query Not implemented yet
+     * @return Elastica_Response
      */
-    public function matchDoc(Document $doc, $query = null)
+    public function matchDoc(Elastica_Document $doc, $query = null)
     {
         $path = $this->_index->getName() . '/type/_percolate';
         $data = array('doc' => $doc->getData());
 
-        $response = $this->getIndex()->getClient()->request($path, Request::GET, $data);
+        $response = $this->getIndex()->getClient()->request($path, Elastica_Request::GET, $data);
         $data = $response->getData();
 
         return $data['matches'];
@@ -77,7 +74,7 @@ class Percolator
     /**
      * Return index object
      *
-     * @return \Elastica\Index
+     * @return Elastica_Index
      */
     public function getIndex()
     {

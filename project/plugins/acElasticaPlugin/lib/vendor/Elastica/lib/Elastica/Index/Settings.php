@@ -1,14 +1,9 @@
 <?php
-
-namespace Elastica\Index;
-use Elastica\Index as BaseIndex;
-use Elastica\Request;
-
 /**
  * Elastica index settings object
  *
  * All settings listed in the update settings API (http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html)
- * can be changed on a running indices. To make changes like the merge policy (http://www.elasticsearch.org/guide/reference/index-modules/merge.html)
+ * can be changed on a running indice. To make changes like the merge policy (http://www.elasticsearch.org/guide/reference/index-modules/merge.html)
  * the index has to be closed first and reopened after the call
  *
  * @category Xodoa
@@ -17,12 +12,12 @@ use Elastica\Request;
  * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-update-settings.html
  * @link http://www.elasticsearch.org/guide/reference/index-modules/merge.html
  */
-class Settings
+class Elastica_Index_Settings
 {
     /**
      * Response
      *
-     * @var \Elastica\Response Response object
+     * @var Elastica_Response Response object
      */
     protected $_response = null;
 
@@ -36,7 +31,7 @@ class Settings
     /**
      * Index
      *
-     * @var \Elastica\Index Index object
+     * @var Elastica_Index Index object
      */
     protected $_index = null;
 
@@ -45,9 +40,9 @@ class Settings
     /**
      * Construct
      *
-     * @param \Elastica\Index $index Index object
+     * @param Elastica_Index $index Index object
      */
-    public function __construct(BaseIndex $index)
+    public function __construct(Elastica_Index $index)
     {
         $this->_index = $index;
     }
@@ -82,7 +77,7 @@ class Settings
      * Sets the number of replicas
      *
      * @param  int               $replicas Number of replicas
-     * @return \Elastica\Response Response object
+     * @return Elastica_Response Response object
      */
     public function setNumberOfReplicas($replicas)
     {
@@ -97,7 +92,7 @@ class Settings
      * Sets the index to read only
      *
      * @param  bool              $readOnly (default = true)
-     * @return \Elastica\Response
+     * @return Elastica_Response
      */
     public function setReadOnly($readOnly = true)
     {
@@ -114,7 +109,7 @@ class Settings
 
     /**
      * @param  bool              $state OPTIONAL (default = true)
-     * @return \Elastica\Response
+     * @return Elastica_Response
      */
     public function setBlocksRead($state = true)
     {
@@ -133,7 +128,7 @@ class Settings
 
     /**
      * @param  bool              $state OPTIONAL (default = true)
-     * @return \Elastica\Response
+     * @return Elastica_Response
      */
     public function setBlocksWrite($state = true)
     {
@@ -152,7 +147,7 @@ class Settings
 
     /**
      * @param  bool              $state OPTIONAL (default = true)
-     * @return \Elastica\Response
+     * @return Elastica_Response
      */
     public function setBlocksMetadata($state = true)
     {
@@ -168,7 +163,7 @@ class Settings
      * 5m for 5 minutes. -1 refreshing is disabled.
      *
      * @param  int               $interval Number of seconds
-     * @return \Elastica\Response Response object
+     * @return Elastica_Response Response object
      */
     public function setRefreshInterval($interval)
     {
@@ -207,7 +202,7 @@ class Settings
      * Sets merge policy
      *
      * @param  string            $type Merge policy type
-     * @return \Elastica\Response Response object
+     * @return Elastica_Response Response object
      * @link http://www.elasticsearch.org/guide/reference/index-modules/merge.html
      */
     public function setMergePolicyType($type)
@@ -226,7 +221,7 @@ class Settings
      *
      * @param  string            $key   Merge policy key (for ex. expunge_deletes_allowed)
      * @param  string            $value
-     * @return \Elastica\Response
+     * @return Elastica_Response
      * @link http://www.elasticsearch.org/guide/reference/index-modules/merge.html
      */
     public function setMergePolicy($key, $value)
@@ -254,17 +249,17 @@ class Settings
      * Can be used to set/update settings
      *
      * @param  array             $data Arguments
-     * @return \Elastica\Response Response object
+     * @return Elastica_Response Response object
      */
     public function set(array $data)
     {
-        return $this->request($data, Request::PUT);
+        return $this->request($data, Elastica_Request::PUT);
     }
 
     /**
      * Returns the index object
      *
-     * @return \Elastica\Index Index object
+     * @return Elastica_Index Index object
      */
     public function getIndex()
     {
@@ -285,10 +280,10 @@ class Settings
      * - index.auto_expand_replicas
      *
      * @param  array             $data   OPTIONAL Data array
-     * @param  string            $method OPTIONAL Transfer method (default = \Elastica\Request::GET)
-     * @return \Elastica\Response Response object
+     * @param  string            $method OPTIONAL Transfer method (default = Elastica_Request::GET)
+     * @return Elastica_Response Response object
      */
-    public function request(array $data = array(), $method = Request::GET)
+    public function request(array $data = array(), $method = Elastica_Request::GET)
     {
         $path = '_settings';
 

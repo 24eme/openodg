@@ -1,21 +1,18 @@
 <?php
 
-namespace Elastica\Filter;
-
-use Elastica\Exception\InvalidException;
-
 /**
  * Geo bounding box filter
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Fabian Vogler <fabian@equivalence.ch>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/geo-bounding-box-filter.html
  */
-class GeoBoundingBox extends AbstractFilter
+class Elastica_Filter_GeoBoundingBox extends Elastica_Filter_Abstract
 {
     /**
-     * Construct BoundingBoxFilter
+     * Construct GeoBoundingBox filter
      *
      * @param string $key         Key
      * @param array  $coordinates Array with top left coordinate as first and bottom right coordinate as second element
@@ -28,15 +25,15 @@ class GeoBoundingBox extends AbstractFilter
     /**
      * Add coordinates
      *
-     * @param  string                               $key         Key
-     * @param  array                                $coordinates Array with top left coordinate as first and bottom right coordinate as second element
-     * @throws \Elastica\Exception\InvalidException  If $coordinates doesn't have two elements
-     * @return \Elastica\Filter\GeoBoundingBox Current object
+     * @param  string                         $key         Key
+     * @param  array                          $coordinates Array with top left coordinate as first and bottom right coordinate as second element
+     * @throws Elastica_Exception_Invalid     If $coordinates doesn't have two elements
+     * @return Elastica_Filter_GeoBoundingBox Current object
      */
     public function addCoordinates($key, array $coordinates)
     {
         if (!isset($coordinates[0]) || !isset($coordinates[1])) {
-            throw new InvalidException('expected $coordinates to be an array with two elements');
+            throw new Elastica_Exception_Invalid('expected $coordinates to be an array with two elements');
         }
 
         $this->setParam($key, array(

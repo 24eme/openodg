@@ -1,7 +1,4 @@
 <?php
-
-namespace Elastica\Transport;
-
 /**
  * Elastica Http Transport object
  *
@@ -9,7 +6,7 @@ namespace Elastica\Transport;
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  */
-class Https extends Http
+class Elastica_Transport_Https extends Elastica_Transport_Http
 {
     /**
      * Https scheme

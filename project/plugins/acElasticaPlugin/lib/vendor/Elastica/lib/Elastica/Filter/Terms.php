@@ -1,18 +1,14 @@
 <?php
-
-namespace Elastica\Filter;
-
-use Elastica\Exception\InvalidException;
-
 /**
  * Terms filter
  *
+ * @uses Elastica_Query_Abstract
  * @category Xodoa
  * @package Elastica
  * @author Nicolas Ruflin <spam@ruflin.com>
  * @link http://www.elasticsearch.org/guide/reference/query-dsl/terms-filter.html
  */
-class Terms extends AbstractFilter
+class Elastica_Filter_Terms extends Elastica_Filter_Abstract
 {
     /**
      * Terms
@@ -49,9 +45,8 @@ class Terms extends AbstractFilter
     /**
      * Sets key and terms for the filter
      *
-     * @param  string                      $key   Terms key
-     * @param  array                       $terms Terms for the query.
-     * @return \Elastica\Filter\Terms
+     * @param string $key   Terms key
+     * @param array  $terms Terms for the query.
      */
     public function setTerms($key, array $terms)
     {
@@ -64,8 +59,8 @@ class Terms extends AbstractFilter
     /**
      * Adds an additional term to the query
      *
-     * @param  string                      $term Filter term
-     * @return \Elastica\Filter\Terms Filter object
+     * @param  string                   $term Filter term
+     * @return Elastica_Filter_Abstract Filter object
      */
     public function addTerm($term)
     {
@@ -75,16 +70,15 @@ class Terms extends AbstractFilter
     }
 
     /**
-     * Converts object to an array
+     * Convers object to an arrray
      *
-     * @see \Elastica\Filter\AbstractFilter::toArray()
-     * @throws \Elastica\Exception\InvalidException
-     * @return array                               data array
+     * @see Elastica_Filter_Abstract::toArray()
+     * @return array data array
      */
     public function toArray()
     {
         if (empty($this->_key)) {
-            throw new InvalidException('Terms key has to be set');
+            throw new Elastica_Exception_Invalid('Terms key has to be set');
         }
         $this->_params[$this->_key] = $this->_terms;
 
