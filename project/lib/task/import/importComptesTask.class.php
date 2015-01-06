@@ -154,12 +154,6 @@ EOF;
         $compte->type_compte = $type_compte;
         $compte->identifiant = $this->getIdentifiantCompte($compte, $id);
 
-        if($compte->nom) {
-            echo "TEST;".$compte->type_compte.";"."NOM\n";
-        } else {
-            echo "TEST;".$compte->type_compte.";"."RS\n";    
-        }
-
         $this->save($compte, $etablissement);
     }
 
