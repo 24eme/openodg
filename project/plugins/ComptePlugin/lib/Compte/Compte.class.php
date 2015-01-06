@@ -35,7 +35,19 @@ class Compte extends BaseCompte {
     }
 
     public function updateNomAAfficher() {
-        $this->nom_a_afficher = $this->civilite . ' ' . $this->prenom . ' ' . $this->nom;
+        $this->nom_a_afficher = "";
+
+        if($this->prenom) {
+            $this->nom_a_afficher = trim(sprintf("%s %s %s", $this->civilite, $this->prenom, $this->nom)); 
+        }
+
+        if($this->raison_sociale && $this->nom_a_afficher) {
+            $this->nom_a_afficher .= " - ";
+        }
+
+        if($this->raison_sociale) {
+            $this->nom_a_afficher .= $this->raison_sociale;
+        }
     }
 
     public function getAttributs() {
