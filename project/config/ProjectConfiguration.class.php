@@ -22,6 +22,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('ComptePlugin');
         $this->enablePlugins('EmailPlugin');
         $this->enablePlugins('acExceptionNotifierPlugin');
+        $this->enablePlugins('acElasticaPlugin');
     }
 
     public static function getAppRouting()

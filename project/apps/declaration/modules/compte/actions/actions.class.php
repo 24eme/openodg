@@ -100,6 +100,7 @@ class compteActions extends sfActions {
         if ($this->form->isValid()) {
         	
         }
+        $test = new acElasticaQueryMatchAll();
     }
 
     private function getCompteModificationForm() {
