@@ -1,6 +1,6 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
-<div id="row_form_compte_modification" class="row col-xs-offset-1 col-xs-10">
+<div id="row_form_compte_modification" class="row  col-xs-12">
     <div class="row">
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -172,6 +172,7 @@
             </div>
         </div>
     </div>
+    <?php if(isset($form['chais'])): ?>
     <div class="row">
         <div class="col-xs-12 panel panel-primary">
             <div class="panel-heading">
@@ -194,4 +195,5 @@
             </div>
         </div>
     </div>
+    <?php endif; ?>
 </div>

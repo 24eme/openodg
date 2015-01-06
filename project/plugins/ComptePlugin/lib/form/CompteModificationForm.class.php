@@ -41,7 +41,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
     }
 
-    private function getCivilites() {
+    protected function getCivilites() {
         if (!$this->civilites) {
             $this->civilites = array(self::CIVILITE_MONSIEUR => self::CIVILITE_MONSIEUR,
                 self::CIVILITE_MADAME => self::CIVILITE_MADAME,

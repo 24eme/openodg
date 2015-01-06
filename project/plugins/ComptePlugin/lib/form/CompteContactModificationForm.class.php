@@ -22,7 +22,7 @@ class CompteContactModificationForm extends CompteModificationForm {
 
         $this->setWidget("raison_sociale", new sfWidgetFormInput(array("label" => "Société")));
 
-        $this->setValidator('civilite', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->civilites)), array('required' => "Aucune civilité choisie.")));
+        $this->setValidator('civilite', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCivilites())), array('required' => "Aucune civilité choisie.")));
         $this->setValidator('prenom', new sfValidatorString(array("required" => false)));
         $this->setValidator('nom', new sfValidatorString(array("required" => false)));
 
