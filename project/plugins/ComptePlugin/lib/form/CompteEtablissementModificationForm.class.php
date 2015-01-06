@@ -13,4 +13,17 @@
  */
 class CompteEtablissementModificationForm extends CompteModificationForm {
     
+    public function configure() {
+        parent::configure();
+        $this->setWidget("cvi", new sfWidgetFormInput(array("label" => "Cvi")));
+        $this->setValidator('cvi', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]{10}$/"), array("invalid" => "Le cvi doit être un nombre à 10 chiffres")));
+        
+        $this->setWidget("code_insee", new sfWidgetFormInput(array("label" => "Code Insee")));
+        $this->setValidator('code_insee', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{5}$/"), array("invalid" => "Le code insee doit être un nombre à 5 chiffres")));
+        
+        $this->setWidget("siren", new sfWidgetFormInput(array("label" => "Siren")));
+        $this->setValidator('siren', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siren doit être un nombre à 14 chiffres")));
+        
+        
+    }
 }

@@ -15,37 +15,41 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-        $this->setWidgets(array(
-            "civilite" => new sfWidgetFormChoice(array('choices' => $this->getCivilites())),
-            "nom" => new sfWidgetFormInput(array("label" => "Nom")),
-            "prenom" => new sfWidgetFormInput(array("label" => "Prénom")),
-            "adresse" => new sfWidgetFormInput(array("label" => "Adresse")),
-            "code_postal" => new sfWidgetFormInput(array("label" => "Code Postal")),
-            "ville" => new sfWidgetFormInput(array("label" => "Commune")),
-            "telephone_bureau" => new sfWidgetFormInput(array("label" => "Tél. Bureau")),
-            "telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
-            "telephone_prive" => new sfWidgetFormInput(array("label" => "Tél. Privé")),
-            "fax" => new sfWidgetFormInput(array("label" => "Fax")),
-            "email" => new sfWidgetFormInput(array("label" => "Email")),
-            "siret" => new sfWidgetFormInput(array("label" => "N° SIRET/SIREN")),
-            "attributs" => new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())),
-        ));
+                
+        $this->setWidget("civilite", new sfWidgetFormChoice(array('choices' => $this->getCivilites())));
+        $this->setWidget("prenom", new sfWidgetFormInput(array("label" => "Prénom")));
+        $this->setWidget("nom", new sfWidgetFormInput(array("label" => "Nom")));
+        
+        $this->setWidget("raison_sociale", new sfWidgetFormInput(array("label" => "Raison sociale")));
+        
+        $this->setWidget("adresse", new sfWidgetFormInput(array("label" => "Adresse")));
+        $this->setWidget("code_postal", new sfWidgetFormInput(array("label" => "Code Postal")));
+        $this->setWidget("commune", new sfWidgetFormInput(array("label" => "Commune")));
+        $this->setWidget("telephone_bureau", new sfWidgetFormInput(array("label" => "Tél. Bureau")));
+        $this->setWidget("telephone_mobile", new sfWidgetFormInput(array("label" => "Tél. Mobile")));
+        $this->setWidget("telephone_prive", new sfWidgetFormInput(array("label" => "Tél. Privé")));
+        $this->setWidget("fax", new sfWidgetFormInput(array("label" => "Fax")));
+        $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
+        $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET/SIREN")));
+        $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
 
-        $this->setValidators(array(
-            'civilite' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->civilites)), array('required' => "Aucune civilité choisie.")),
-            'prenom' => new sfValidatorString(array("required" => false)),
-            'nom' => new sfValidatorString(array("required" => false)),
-            'adresse' => new sfValidatorString(array("required" => true)),
-            'ville' => new sfValidatorString(array("required" => true)),
-            'code_postal' => new sfValidatorString(array("required" => true)),
-            'telephone_bureau' => new sfValidatorString(array("required" => false)),
-            'telephone_mobile' => new sfValidatorString(array("required" => false)),
-            'telephone_prive' => new sfValidatorString(array("required" => false)),
-            'fax' => new sfValidatorString(array("required" => false)),
-            'email' => new sfValidatorEmailStrict(array("required" => true)),
-            'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
-            'attributs' => new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))),
-        ));
+        
+        $this->setValidator('civilite', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->civilites)), array('required' => "Aucune civilité choisie.")));
+        $this->setValidator('prenom', new sfValidatorString(array("required" => false)));
+        $this->setValidator('nom', new sfValidatorString(array("required" => false)));
+        
+         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => false)));
+                
+        $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
+        $this->setValidator('commune', new sfValidatorString(array("required" => true)));
+        $this->setValidator('code_postal', new sfValidatorString(array("required" => true)));
+        $this->setValidator('telephone_bureau', new sfValidatorString(array("required" => false)));
+        $this->setValidator('telephone_mobile', new sfValidatorString(array("required" => false)));
+        $this->setValidator('telephone_prive', new sfValidatorString(array("required" => false)));
+        $this->setValidator('fax', new sfValidatorString(array("required" => false)));
+        $this->setValidator('email', new sfValidatorEmailStrict(array("required" => true)));
+        $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")));
+        $this->setValidator('attributs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
 
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
     }

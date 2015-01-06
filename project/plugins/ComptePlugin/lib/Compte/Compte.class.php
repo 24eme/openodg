@@ -20,6 +20,15 @@ class Compte extends BaseCompte {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
         }
 
+        if($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)){
+            $etablissement = EtablissementClient::getInstance()->createOrFind($this->cvi);
+            if($this->isNew() && !$etablissement->isNew()){
+                throw new sfException("Pas possible de créer un etablissement avec cet Id");
+            }
+            $etablissement->synchroFromCompte($this);
+            $etablissement->save();
+            $this->setEtablissement($etablissement->_id);
+        }
         $this->updateNomAAfficher();
 
         parent::save();
