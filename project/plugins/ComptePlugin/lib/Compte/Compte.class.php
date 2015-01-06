@@ -47,7 +47,15 @@ class Compte extends BaseCompte {
             $this->updateTags('attributs', $attribut_code, CompteClient::getInstance()->getAttributLibelle($attribut_code));
         }
     }
-
+    
+    public function updateTagsProduits($produits_hash_array = array()) {
+        $allProduits = ConfigurationClient::getConfiguration()->getProduits();
+        foreach ($produits_hash_array as $produits_hash) {
+            $libelle_complet = $allProduits[str_replace('-','/', $produits_hash)]->getLibelleComplet();
+            $this->updateTags('produits', $produits_hash, $libelle_complet);
+        }
+    }
+    
     public function updateTags($nodeType, $key, $value) {
         if (!$this->tags->exist($nodeType)) {
             $this->tags->add($nodeType, null);

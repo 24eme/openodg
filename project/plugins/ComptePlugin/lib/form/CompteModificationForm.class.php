@@ -20,7 +20,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("prenom", new sfWidgetFormInput(array("label" => "Prénom")));
         $this->setWidget("nom", new sfWidgetFormInput(array("label" => "Nom")));
         
-        $this->setWidget("raison_sociale", new sfWidgetFormInput(array("label" => "Raison sociale")));
+        $this->setWidget("raison_sociale", new sfWidgetFormInput(array("label" => "Société")));
         
         $this->setWidget("adresse", new sfWidgetFormInput(array("label" => "Adresse")));
         $this->setWidget("code_postal", new sfWidgetFormInput(array("label" => "Code Postal")));
@@ -30,8 +30,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("telephone_prive", new sfWidgetFormInput(array("label" => "Tél. Privé")));
         $this->setWidget("fax", new sfWidgetFormInput(array("label" => "Fax")));
         $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
-        $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET/SIREN")));
         $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
+        
 
         
         $this->setValidator('civilite', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->civilites)), array('required' => "Aucune civilité choisie.")));
@@ -48,7 +48,6 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('telephone_prive', new sfValidatorString(array("required" => false)));
         $this->setValidator('fax', new sfValidatorString(array("required" => false)));
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => true)));
-        $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")));
         $this->setValidator('attributs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
 
         $this->widgetSchema->setNameFormat('compte_modification[%s]');

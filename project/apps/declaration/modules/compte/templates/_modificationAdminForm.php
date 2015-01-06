@@ -121,6 +121,7 @@
                 <?php echo $form["email"]->render(array("class" => "form-control")); ?>
             </div>
         </div>
+        <?php if(isset($form["siret"])): ?>
         <div class="form-group">
             <?php echo $form["siret"]->renderError(); ?>
             <?php echo $form["siret"]->renderLabel("N°&nbsp;SIRET/SIREN", array("class" => "col-xs-4 control-label")); ?>
@@ -128,6 +129,7 @@
                 <?php echo $form["siret"]->render(array("class" => "form-control")); ?>
             </div>
         </div>
+        <?php endif; ?>
 
     </div>
     <div class="form-group">
@@ -137,4 +139,14 @@
             <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
         </div>
     </div>
+    <?php if(isset($form["produits"])): ?>
+        <div class="form-group">
+        <?php echo $form["produits"]->renderError(); ?>
+        <?php echo $form["produits"]->renderLabel("Produits", array("class" => "col-xs-2 control-label")); ?>
+        <div class="col-xs-9">
+            <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+        </div>
+    </div>
+    <?php endif; ?>
+    
 </div>
