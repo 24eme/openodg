@@ -30,7 +30,64 @@ curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXRIVER/" -d '{
 curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXGLOBAL/" -d '{
     "settings" : {
         "number_of_shards" : 5,
-        "number_of_replicas" : 0
+        "number_of_replicas" : 0,
+        "index":{
+          "analysis":{
+            "analyzer":{
+              "francais":{
+                "type":"custom",
+                "tokenizer":"standard",
+                "filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
+              }
+            },
+            "filter":{
+              "stop_francais":{
+                "type":"stop",
+                "stopwords":["_french_"]
+              },
+              "fr_stemmer" : {
+                "type" : "stemmer",
+                "name" : "french"
+              },
+              "elision" : {
+                "type" : "elision",
+                "articles" : ["l", "m", "t", "qu", "n", "s", "j", "d"]
+              }
+            }
+          }
+        } 
+    },
+    "mappings" : {
+        "compte" : {
+            "_all" : { "analyzer":"francais" },
+            "properties" : {
+                "tags" : { 
+                    "properties" : {
+                        "attributs" : {
+                            "type" : "multi_field",
+                            "fields" : {
+                                "attributs": { "type": "string", "index" : "analyzed", "analyzer": "keyword" },
+                                "untouched": {"type": "string", "index": "not_analyzed"}
+                            }
+                        },
+                        "produits" : {
+                            "type" : "multi_field",
+                            "fields" : {
+                                "produits": { "type": "string", "index" : "analyzed", "analyzer": "keyword" },
+                                "untouched": {"type": "string", "index": "not_analyzed"}
+                            }
+                        },
+                        "manuels" : {
+                            "type" : "multi_field",
+                            "fields" : {
+                                "manuels": { "type": "string", "index" : "analyzed", "analyzer": "keyword" },
+                                "untouched": {"type": "string", "index": "not_analyzed"}
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }'
 

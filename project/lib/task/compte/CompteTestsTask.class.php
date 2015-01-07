@@ -50,41 +50,41 @@ EOF;
 	      	$compte->cvi = ""; 
 	      	$compte->etablissement = "";
         	if ($i%3 == 0) {
-        		$compte->tags->attributs->add('degustateur', "Dégustateur");
-        		$compte->tags->attributs->add('prelevement', "Prélèvement");
+        		$compte->tags->attributs->add(null,"Dégustateur");
+        		$compte->tags->attributs->add(null,"Prélèvement");
         	} else {
         		if ($i%2 == 0) {
-        			$compte->tags->attributs->add('degustateur', "Dégustateur");
+        			$compte->tags->attributs->add(null,"Dégustateur");
         		} else {
-        			$compte->tags->attributs->add('prelevement', "Prélèvement");
+        			$compte->tags->attributs->add(null,"Prélèvement");
         		}
         	}
         	if ($i%3 == 0) {
-        		$compte->tags->manuels->add('hotel', "Hôtel");
-        		$compte->tags->manuels->add('restaurant', "Restaurant");
+        		$compte->tags->manuels->add(null,"Hôtel");
+        		$compte->tags->manuels->add(null,"Restaurant");
         	} else {
         		if ($i%2 == 0) {
-        			$compte->tags->manuels->add('hotel', "Hôtel");
+        			$compte->tags->manuels->add(null,"Hôtel");
         		} else {
-        			$compte->tags->manuels->add('restaurant', "Restaurant");
+        			$compte->tags->manuels->add(null,"Restaurant");
         		}
         	}
         	if ($i%4 == 0) {
-        		$compte->tags->produits->add('certification_genre_appellation_ALSACEBLANC', "AOC Alsace blanc");
-        		$compte->tags->produits->add('certification_genre_appellation_GRDCRU', "AOC Alsace Grands Crus");
-        		$compte->tags->produits->add('certification_genre_appellation_CREMANT', "AOC Crémant d'Alsace");
-        		$compte->tags->produits->add('certification_genre_appellation_PINOTNOIRROUGE', "AOC Alsace Pinot Noir Rouge");
+        		$compte->tags->produits->add(null,"AOC Alsace blanc");
+        		$compte->tags->produits->add(null,"AOC Alsace Grands Crus");
+        		$compte->tags->produits->add(null,"AOC Crémant d'Alsace");
+        		$compte->tags->produits->add(null,"AOC Alsace Pinot Noir Rouge");
         	} else {
         		if ($i%3 == 0) {
-	        		$compte->tags->produits->add('certification_genre_appellation_ALSACEBLANC', "AOC Alsace blanc");
-	        		$compte->tags->produits->add('certification_genre_appellation_CREMANT', "AOC Crémant d'Alsace");
-	        		$compte->tags->produits->add('certification_genre_appellation_PINOTNOIRROUGE', "AOC Alsace Pinot Noir Rouge");
+	        		$compte->tags->produits->add(null,"AOC Alsace blanc");
+	        		$compte->tags->produits->add(null,"AOC Crémant d'Alsace");
+	        		$compte->tags->produits->add(null,"AOC Alsace Pinot Noir Rouge");
         		} else {
         			if ($i%2 == 0) {
-        				$compte->tags->produits->add('certification_genre_appellation_ALSACEBLANC', "AOC Alsace blanc");
-        				$compte->tags->produits->add('certification_genre_appellation_PINOTNOIRROUGE', "AOC Alsace Pinot Noir Rouge");
+        				$compte->tags->produits->add(null,"AOC Alsace blanc");
+        				$compte->tags->produits->add(null,"AOC Alsace Pinot Noir Rouge");
         			} else {
-        				$compte->tags->produits->add('certification_genre_appellation_CREMANT', "AOC Crémant d'Alsace");
+        				$compte->tags->produits->add(null,"AOC Crémant d'Alsace");
         			}
         		}
         	}

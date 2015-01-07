@@ -4,13 +4,15 @@ class CompteRechercheForm extends BaseForm
 {
     public function configure() {
         $this->setWidgets(array(
-            "query" => new sfWidgetFormInput(),
+            "q" => new sfWidgetFormInput(),
+        	"all" => new sfWidgetFormInputCheckbox()
         ));
 
         $this->setValidators(array(
-            'query' => new sfValidatorString(array("required" => false)),
+            "q" => new sfValidatorString(array("required" => false)),
+        	"all" => new ValidatorBoolean()
         ));
 
-        $this->widgetSchema->setNameFormat('compte_recherche[%s]');
+        $this->widgetSchema->setNameFormat('%s');
     }
 }
