@@ -154,7 +154,7 @@
                         <label class="col-xs-3">Produit</label> 
                         <div class="col-xs-9">
                             <ul>                            
-                                <?php foreach ($compte->getProduits() as $produit_code => $produit_libelle): ?>
+                                <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
                                     <li><?php echo $produit_libelle ?></li>
                                 <?php endforeach; ?>
                             </ul>

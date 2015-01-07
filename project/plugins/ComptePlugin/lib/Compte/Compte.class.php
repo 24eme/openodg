@@ -20,7 +20,7 @@ class Compte extends BaseCompte {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
         }
 
-        if($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement){
+        if ($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement) {
             $etablissement = EtablissementClient::getInstance()->createOrFind($this->cvi);
             if ($this->isNew() && !$etablissement->isNew()) {
                 throw new sfException("Pas possible de créer un etablissement avec cet Id");
@@ -29,8 +29,10 @@ class Compte extends BaseCompte {
             $etablissement->save();
             $this->setEtablissement($etablissement->_id);
         }
-        
+
         $this->updateNomAAfficher();
+        $this->updateInfosTagsAutomatiques();
+        $this->updateTags();
 
         parent::save();
     }
@@ -59,6 +61,14 @@ class Compte extends BaseCompte {
         return $this->infos->get('produits');
     }
 
+    public function getInfosManuels() {
+        return $this->infos->get('manuels');
+    }
+
+    public function getInfosAutomatiques() {
+        return $this->infos->get('manuels');
+    }
+
     public function hasProduits() {
         return count($this->infos->get('produits'));
     }
@@ -68,11 +78,11 @@ class Compte extends BaseCompte {
             $this->updateInfosTags('attributs', $attribut_code, CompteClient::getInstance()->getAttributLibelle($attribut_code));
         }
     }
-    
+
     public function updateInfosTagsManuels($infos_manuels = array()) {
         foreach ($infos_manuels as $info_manuel) {
             $info_manuel_key = str_replace(' ', '_', $info_manuel);
-            $this->updateInfosTags('manuels', $info_manuel_key, CompteClient::getInstance()->getAttributLibelle($info_manuel));
+            $this->updateInfosTags('manuels', $info_manuel_key, $info_manuel);
         }
     }
 
@@ -93,6 +103,40 @@ class Compte extends BaseCompte {
 
     public function isTypeCompte($type) {
         return $type == $this->getTypeCompte();
+    }
+
+    public function updateInfosTagsAutomatiques() {
+        $this->updateInfosTags('automatiques', "TYPE_COMPTE", $this->getTypeCompte());
+    }
+
+    public function updateTags() {
+        if ($this->exist('tags')) {
+            $this->remove('tags');
+        }
+        $this->add('tags');
+        foreach ($this->getInfosAttributs() as $key => $attribut) {
+            $this->addTag('attributs', $this->formatTag($attribut));
+        }
+        foreach ($this->getInfosProduits() as $produit) {
+            $this->addTag('produits', $this->formatTag($produit));
+        }
+        foreach ($this->getInfosManuels() as $key => $manuel) {
+            $this->addTag('manuels', $this->formatTag($manuel));
+        }
+        foreach ($this->getInfosAutomatiques() as $automatique) {
+            $this->addTag('automatiques', $this->formatTag($automatique));
+        }
+    }
+
+    private function formatTag($tag) {
+        return $tag;
+    }
+
+    public function addTag($nodeType, $value) {
+        if (!$this->tags->exist($nodeType)) {
+            $this->tags->add($nodeType, null);
+        }
+        $this->tags->$nodeType->add(null,$value);
     }
 
 }
