@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h2>Modification du compte <?php echo $compte->identifiant; ?></h2>
+    <h2>Modification du compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?>)</h2>
 </div>
 
 <form action="<?php echo url_for("compte_modification_admin", array('id' => $compte->identifiant)) ?>" method="post" class="form-horizontal">

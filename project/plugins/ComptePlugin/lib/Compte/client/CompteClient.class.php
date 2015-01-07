@@ -177,6 +177,11 @@ class CompteClient extends acCouchdbClient {
             self::TYPE_COMPTE_AGENT_PRELEVEMENT => self::TYPE_COMPTE_AGENT_PRELEVEMENT);
     }
     
+    public function getCompteTypeLibelle($type_compte) {
+        $allTypesCompte = $this->getAllTypesCompteWithLibelles();
+        return $allTypesCompte[$type_compte];
+    }
+    
         public function getAllTypesCompteWithLibelles() {
         return array(self::TYPE_COMPTE_CONTACT => "Contact",
             self::TYPE_COMPTE_ETABLISSEMENT => "Opérateur",

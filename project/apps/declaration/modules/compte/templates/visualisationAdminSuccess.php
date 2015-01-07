@@ -1,7 +1,5 @@
-<?php $typesCompteLibelles = CompteClient::getInstance()->getAllTypesCompteWithLibelles(); ?>
-
 <div class="page-header">
-    <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo $typesCompteLibelles[$compte->type_compte]; ?>)</h2>
+    <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?>)</h2>
 </div>
 
 <div class="row col-xs-offset-1 col-xs-10">

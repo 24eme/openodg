@@ -157,7 +157,7 @@
                     <?php echo $form["attributs"]->renderError(); ?>
                     <?php echo $form["attributs"]->renderLabel("Attributs", array("class" => "col-xs-3 control-label")); ?>
                     <div class="col-xs-9">
-                        <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                        <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "attributs")); ?>
                     </div>
                 </div>
                 <?php if (isset($form["produits"])): ?>
@@ -165,7 +165,7 @@
                         <?php echo $form["produits"]->renderError(); ?>
                         <?php echo $form["produits"]->renderLabel("Produits", array("class" => "col-xs-3 control-label")); ?>
                         <div class="col-xs-9">
-                            <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete")); ?>
+                            <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "produits")); ?>
                         </div>
                     </div>
                 <?php endif; ?>
