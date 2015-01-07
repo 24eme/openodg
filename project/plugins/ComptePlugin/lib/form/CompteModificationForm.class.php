@@ -16,11 +16,6 @@ class CompteModificationForm extends acCouchdbObjectForm {
 
     public function configure() {
                 
-        $this->setWidget("civilite", new sfWidgetFormChoice(array('choices' => $this->getCivilites())));
-        $this->setWidget("prenom", new sfWidgetFormInput(array("label" => "Prénom")));
-        $this->setWidget("nom", new sfWidgetFormInput(array("label" => "Nom")));
-        
-        $this->setWidget("raison_sociale", new sfWidgetFormInput(array("label" => "Société")));
         
         $this->setWidget("adresse", new sfWidgetFormInput(array("label" => "Adresse")));
         $this->setWidget("code_postal", new sfWidgetFormInput(array("label" => "Code Postal")));
@@ -32,14 +27,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
         $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
         
-
         
-        $this->setValidator('civilite', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->civilites)), array('required' => "Aucune civilité choisie.")));
-        $this->setValidator('prenom', new sfValidatorString(array("required" => false)));
-        $this->setValidator('nom', new sfValidatorString(array("required" => false)));
-        
-         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => false)));
-                
         $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
         $this->setValidator('commune', new sfValidatorString(array("required" => true)));
         $this->setValidator('code_postal', new sfValidatorString(array("required" => true)));
@@ -48,12 +36,12 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('telephone_prive', new sfValidatorString(array("required" => false)));
         $this->setValidator('fax', new sfValidatorString(array("required" => false)));
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => true)));
-        $this->setValidator('attributs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
+        $this->setValidator('attributs', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()), 'min' => 1)));
 
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
     }
 
-    private function getCivilites() {
+    protected function getCivilites() {
         if (!$this->civilites) {
             $this->civilites = array(self::CIVILITE_MONSIEUR => self::CIVILITE_MONSIEUR,
                 self::CIVILITE_MADAME => self::CIVILITE_MADAME,

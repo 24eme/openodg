@@ -1,5 +1,6 @@
+<?php $typesCompteLibelles = CompteClient::getInstance()->getAllTypesCompteWithLibelles(); ?>
 <div class="page-header">
-    <h2>Création d'un nouveau compte</h2>
+    <h2>Création d'un nouveau compte <?php echo $typesCompteLibelles[$type_compte]; ?></h2>
 </div>
 
 <form action="<?php echo url_for("compte_creation_admin", array('type_compte' => $type_compte)) ?>" method="post" class="form-horizontal">
