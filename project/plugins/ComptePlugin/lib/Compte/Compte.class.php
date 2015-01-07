@@ -15,12 +15,12 @@ class Compte extends BaseCompte {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
     }
 
-    public function save() {
+    public function save($synchro_etablissement = true) {
         if ($this->isNew() && !$this->identifiant) {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
         }
 
-        if($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)){
+        if($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement){
             $etablissement = EtablissementClient::getInstance()->createOrFind($this->cvi);
             if($this->isNew() && !$etablissement->isNew()){
                 throw new sfException("Pas possible de créer un etablissement avec cet Id");
@@ -29,6 +29,7 @@ class Compte extends BaseCompte {
             $etablissement->save();
             $this->setEtablissement($etablissement->_id);
         }
+        
         $this->updateNomAAfficher();
 
         parent::save();

@@ -47,7 +47,7 @@ class Etablissement extends BaseEtablissement {
     
     public function synchroFromCompte($compte) {
         $this->raison_sociale = $compte->raison_sociale;
-        $this->nom = $compte->nom;
+        $this->nom = $compte->raison_sociale;
         $this->cvi = $compte->cvi;
         $this->siren = $compte->siren;
         $this->siret = $compte->siret;
@@ -61,10 +61,7 @@ class Etablissement extends BaseEtablissement {
         $this->commune = $compte->commune;
         $this->code_insee = $compte->code_insee;
         $this->compte_id = $compte->identifiant;
-        foreach ($compte->getAttributs() as $attribut) {
-            $this->familles->add($attribut);
-        }
-        
+        $this->familles = $compte->getAttributs()->toArray(true, false);
     }
 
 }
