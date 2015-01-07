@@ -16,7 +16,8 @@ Compte:
       adresse: { }
       code_postal: { }
       commune: { }
-      cedex: { }
+      cedex: { required: false }
+      pays: { }
       telephone_bureau: { }
       telephone_prive: { }
       telephone_mobile: { }
