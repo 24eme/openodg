@@ -8,6 +8,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
 
     private $civilites;
     private $attributsForCompte;
+    private $tagsManuelsForCompte;
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -15,42 +16,35 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-        $this->setWidgets(array(
-            "civilite" => new sfWidgetFormChoice(array('choices' => $this->getCivilites())),
-            "nom" => new sfWidgetFormInput(array("label" => "Nom")),
-            "prenom" => new sfWidgetFormInput(array("label" => "Prénom")),
-            "adresse" => new sfWidgetFormInput(array("label" => "Adresse")),
-            "code_postal" => new sfWidgetFormInput(array("label" => "Code Postal")),
-            "ville" => new sfWidgetFormInput(array("label" => "Commune")),
-            "telephone_bureau" => new sfWidgetFormInput(array("label" => "Tél. Bureau")),
-            "telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
-            "telephone_prive" => new sfWidgetFormInput(array("label" => "Tél. Privé")),
-            "fax" => new sfWidgetFormInput(array("label" => "Fax")),
-            "email" => new sfWidgetFormInput(array("label" => "Email")),
-            "siret" => new sfWidgetFormInput(array("label" => "N° SIRET/SIREN")),
-            "attributs" => new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())),
-        ));
-
-        $this->setValidators(array(
-            'civilite' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->civilites)), array('required' => "Aucune civilité choisie.")),
-            'prenom' => new sfValidatorString(array("required" => false)),
-            'nom' => new sfValidatorString(array("required" => false)),
-            'adresse' => new sfValidatorString(array("required" => true)),
-            'ville' => new sfValidatorString(array("required" => true)),
-            'code_postal' => new sfValidatorString(array("required" => true)),
-            'telephone_bureau' => new sfValidatorString(array("required" => false)),
-            'telephone_mobile' => new sfValidatorString(array("required" => false)),
-            'telephone_prive' => new sfValidatorString(array("required" => false)),
-            'fax' => new sfValidatorString(array("required" => false)),
-            'email' => new sfValidatorEmailStrict(array("required" => true)),
-            'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
-            'attributs' => new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))),
-        ));
+                
+        
+        $this->setWidget("adresse", new sfWidgetFormInput(array("label" => "Adresse")));
+        $this->setWidget("code_postal", new sfWidgetFormInput(array("label" => "Code Postal")));
+        $this->setWidget("commune", new sfWidgetFormInput(array("label" => "Commune")));
+        $this->setWidget("telephone_bureau", new sfWidgetFormInput(array("label" => "Tél. Bureau")));
+        $this->setWidget("telephone_mobile", new sfWidgetFormInput(array("label" => "Tél. Mobile")));
+        $this->setWidget("telephone_prive", new sfWidgetFormInput(array("label" => "Tél. Privé")));
+        $this->setWidget("fax", new sfWidgetFormInput(array("label" => "Fax")));
+        $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
+        $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
+        $this->setWidget("manuels", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getTagsManuelsForCompte())));
+        
+        
+        $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
+        $this->setValidator('commune', new sfValidatorString(array("required" => true)));
+        $this->setValidator('code_postal', new sfValidatorString(array("required" => true)));
+        $this->setValidator('telephone_bureau', new sfValidatorString(array("required" => false)));
+        $this->setValidator('telephone_mobile', new sfValidatorString(array("required" => false)));
+        $this->setValidator('telephone_prive', new sfValidatorString(array("required" => false)));
+        $this->setValidator('fax', new sfValidatorString(array("required" => false)));
+        $this->setValidator('email', new sfValidatorEmailStrict(array("required" => true)));
+        $this->setValidator('attributs', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()), 'min' => 1)));
+        $this->setValidator('manuels', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getTagsManuelsForCompte()))));
 
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
     }
 
-    private function getCivilites() {
+    protected function getCivilites() {
         if (!$this->civilites) {
             $this->civilites = array(self::CIVILITE_MONSIEUR => self::CIVILITE_MONSIEUR,
                 self::CIVILITE_MADAME => self::CIVILITE_MADAME,
@@ -66,17 +60,28 @@ class CompteModificationForm extends acCouchdbObjectForm {
         }
         return $this->attributsForCompte;
     }
+    
+    private function getTagsManuelsForCompte() {
+        $compteClient = CompteClient::getInstance();
+        if (!$this->tagsManuelsForCompte) {
+            $this->tagsManuelsForCompte = $compteClient->getTagsManuelsForCompte();
+        }
+        return $this->tagsManuelsForCompte;
+    }
 
     public function save($con = null) {
         if ($attributs = $this->values['attributs']) {
-            $this->getObject()->updateTagsAttributs($attributs);
+            $this->getObject()->updateInfosTagsAttributs($attributs);
+        }
+        if ($tagsManuels = $this->values['manuels']) {
+            $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
         parent::save($con);
     }
 
     private function initDefaultAttributs() {
         $default_attributs = array();
-        foreach ($this->getObject()->getAttributs() as $attribut_code => $attribut) {
+        foreach ($this->getObject()->getInfosAttributs() as $attribut_code => $attribut) {
             $default_attributs[] = $attribut_code;
         }
         $this->widgetSchema['attributs']->setDefault($default_attributs);

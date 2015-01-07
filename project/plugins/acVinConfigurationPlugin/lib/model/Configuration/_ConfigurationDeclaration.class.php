@@ -358,5 +358,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         
         return $this->getParentNode()->isAutoDRev();
     }
+    
+        public function getLibelleComplet() 
+    {
+    	$libelle = $this->getParent()->getLibelleComplet();
+    	return trim($libelle).' '.$this->libelle;
+    }
 
 }
