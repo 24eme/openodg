@@ -143,7 +143,7 @@
                     <label class="col-xs-3">Attributs</label> 
                     <div class="col-xs-9">
                         <ul>                            
-                            <?php foreach ($compte->getAttributs() as $attribut_code => $attribut_libelle): ?>
+                            <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
                                 <li><?php echo $attribut_libelle ?></li>
                             <?php endforeach; ?>
                         </ul>

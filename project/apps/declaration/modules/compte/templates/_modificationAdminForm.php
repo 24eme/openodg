@@ -169,6 +169,13 @@
                         </div>
                     </div>
                 <?php endif; ?>
+                <div class="form-group">
+                    <?php echo $form["manuels"]->renderError(); ?>
+                    <?php echo $form["manuels"]->renderLabel("Tags manuels", array("class" => "col-xs-3 control-label")); ?>
+                    <div class="col-xs-9">
+                        <?php echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "tags manuels")); ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

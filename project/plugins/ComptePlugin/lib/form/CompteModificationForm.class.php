@@ -8,6 +8,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
 
     private $civilites;
     private $attributsForCompte;
+    private $tagsManuelsForCompte;
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -26,6 +27,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("fax", new sfWidgetFormInput(array("label" => "Fax")));
         $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
         $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
+        $this->setWidget("manuels", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getTagsManuelsForCompte())));
         
         
         $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
@@ -37,6 +39,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('fax', new sfValidatorString(array("required" => false)));
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => true)));
         $this->setValidator('attributs', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()), 'min' => 1)));
+        $this->setValidator('manuels', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getTagsManuelsForCompte()))));
 
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
     }
@@ -57,17 +60,28 @@ class CompteModificationForm extends acCouchdbObjectForm {
         }
         return $this->attributsForCompte;
     }
+    
+    private function getTagsManuelsForCompte() {
+        $compteClient = CompteClient::getInstance();
+        if (!$this->tagsManuelsForCompte) {
+            $this->tagsManuelsForCompte = $compteClient->getTagsManuelsForCompte();
+        }
+        return $this->tagsManuelsForCompte;
+    }
 
     public function save($con = null) {
         if ($attributs = $this->values['attributs']) {
-            $this->getObject()->updateTagsAttributs($attributs);
+            $this->getObject()->updateInfosTagsAttributs($attributs);
+        }
+        if ($tagsManuels = $this->values['manuels']) {
+            $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
         parent::save($con);
     }
 
     private function initDefaultAttributs() {
         $default_attributs = array();
-        foreach ($this->getObject()->getAttributs() as $attribut_code => $attribut) {
+        foreach ($this->getObject()->getInfosAttributs() as $attribut_code => $attribut) {
             $default_attributs[] = $attribut_code;
         }
         $this->widgetSchema['attributs']->setDefault($default_attributs);

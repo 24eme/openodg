@@ -42,7 +42,7 @@ Compte:
                   adresse: { }
                   commune: { }
                   code_postal: { }
-      tags:
+      infos:
         type: collection
         definition:
           fields:
@@ -66,3 +66,27 @@ Compte:
               definition:
                 fields:
                   '*' : { }
+      tags:
+        type: collection
+        definition:
+          fields:
+            'attributs':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }            
+            'automatiques':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }
+            'produits':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }
+            'manuels':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }            

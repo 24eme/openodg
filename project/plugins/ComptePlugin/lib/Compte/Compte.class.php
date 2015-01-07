@@ -51,37 +51,44 @@ class Compte extends BaseCompte {
         }
     }
 
-    public function getAttributs() {
-        return $this->tags->get('attributs');
+    public function getInfosAttributs() {
+        return $this->infos->get('attributs');
     }
 
-    public function getProduits() {
-        return $this->tags->get('produits');
+    public function getInfosProduits() {
+        return $this->infos->get('produits');
     }
 
     public function hasProduits() {
-        return count($this->tags->get('produits'));
+        return count($this->infos->get('produits'));
     }
 
-    public function updateTagsAttributs($attributs_array = array()) {
+    public function updateInfosTagsAttributs($attributs_array = array()) {
         foreach ($attributs_array as $attribut_code) {
-            $this->updateTags('attributs', $attribut_code, CompteClient::getInstance()->getAttributLibelle($attribut_code));
+            $this->updateInfosTags('attributs', $attribut_code, CompteClient::getInstance()->getAttributLibelle($attribut_code));
+        }
+    }
+    
+    public function updateInfosTagsManuels($infos_manuels = array()) {
+        foreach ($infos_manuels as $info_manuel) {
+            $info_manuel_key = str_replace(' ', '_', $info_manuel);
+            $this->updateInfosTags('manuels', $info_manuel_key, CompteClient::getInstance()->getAttributLibelle($info_manuel));
         }
     }
 
-    public function updateTagsProduits($produits_hash_array = array()) {
+    public function updateLocalTagsProduits($produits_hash_array = array()) {
         $allProduits = ConfigurationClient::getConfiguration()->getProduits();
         foreach ($produits_hash_array as $produits_hash) {
             $libelle_complet = $allProduits[str_replace('-', '/', $produits_hash)]->getLibelleComplet();
-            $this->updateTags('produits', $produits_hash, $libelle_complet);
+            $this->updateInfosTags('produits', $produits_hash, $libelle_complet);
         }
     }
 
-    public function updateTags($nodeType, $key, $value) {
-        if (!$this->tags->exist($nodeType)) {
-            $this->tags->add($nodeType, null);
+    public function updateInfosTags($nodeType, $key, $value) {
+        if (!$this->infos->exist($nodeType)) {
+            $this->infos->add($nodeType, null);
         }
-        $this->tags->$nodeType->add($key, $value);
+        $this->infos->$nodeType->add($key, $value);
     }
 
     public function isTypeCompte($type) {

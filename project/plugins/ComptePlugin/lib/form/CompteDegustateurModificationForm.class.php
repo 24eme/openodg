@@ -44,7 +44,7 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
     
         public function save($con = null) {
         if ($produits = $this->values['produits']) {
-            $this->getObject()->updateTagsProduits($produits);
+            $this->getObject()->updateLocalTagsProduits($produits);
         }
         parent::save($con);
     }
