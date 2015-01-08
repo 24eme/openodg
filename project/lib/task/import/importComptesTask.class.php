@@ -163,6 +163,8 @@ EOF;
             $compte->civilite = null;
         }
 
+        $compte->infos->attributs->remove('NON_CONDITIONNEUR'));
+
         $compte->identifiant = $this->getIdentifiantCompte($compte, $id);
 
         $this->save($compte, $etablissement);
@@ -266,7 +268,7 @@ EOF;
         if(!$compte->adresse) {
            $this->echoWarning("Adresse vide", $data); 
         }
-        
+
         $compte->code_postal = trim($data[self::CSV_CODE_POSTAL]);
         if($data[self::CSV_PAYS] == "FRANCE" || !$data[self::CSV_PAYS]) {
             if(!preg_match("/^[0-9]+$/", $compte->code_postal)) {
@@ -292,12 +294,15 @@ EOF;
             $compte->code_postal = null;
         }
 
-        $compte->date_creation = null;
-        $compte->date_archivage = null;
+        $compte->date_creation = $this->formatDate($data[self::CSV_DATE_CREATION]);
 
+        $compte->date_archivage = null;
+        if(trim($data[self::CSV_DATE_ARCHIVAGE])) {
+            $compte->date_archivage = $this->formatDate($data[self::CSV_DATE_ARCHIVAGE]);
+        }
         $compte->statut = 'ACTIF';
 
-        if($data[self::CSV_DATE_ARCHIVAGE]) {
+        if($compte->date_archivage) {
             $compte->statut = 'INACTIF';
         }
 
@@ -333,6 +338,14 @@ EOF;
         $etablissement->adresse = $compte->adresse;
         $etablissement->code_postal = $compte->code_postal;
         $etablissement->commune = $compte->commune;
+        
+        foreach($etablissement->familles as $famille_key => $null) {
+            $compte->infos->attributs->add($famille_key, CompteClient::getInstance()->getAttributLibelle($famille_key));
+        }
+
+        if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
+            $compte->infos->attributs->add('NON_CONDITIONNEUR');
+        }
 
         return $etablissement;
     }
@@ -428,67 +441,67 @@ EOF;
         
         if(!$type_compte || $type_compte == CompteClient::TYPE_COMPTE_DEGUSTATEUR) {
             if(preg_match("/Porteurs de mémoires/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES));
             }
 
             if(preg_match("/Techniciens du produit/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT));
             }
         
             if(preg_match("/Usagers du produit/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT));
             }
         }
 
         if(!$type_compte || $type_compte == CompteClient::TYPE_COMPTE_AGENT_PRELEVEMENT) {
             if(preg_match("/Préleveur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR));
             }
 
             if(preg_match("/Agent de contrôle/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE));
             }
         }
 
         if(!$type_compte || $type_compte != CompteClient::TYPE_COMPTE_ETABLISSEMENT) {
             if(preg_match("/Vinificateur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR));
             }
 
             if(preg_match("/Producteur de raisins en structure collective/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR));
             }
 
             if(preg_match("/Producteur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS));
             }
 
             if(preg_match("/Distillation/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR));
             }
 
             if(preg_match("/laborateur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR));
             }
 
             if(preg_match("/Négoce/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCE));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT));
             }
 
             if(preg_match("/Cave coopérative/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE));
             }
 
             if(preg_match("/Metteur en marché/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE));
             }
 
-            if(preg_match("/Conditionneur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR));
+            if(preg_match("/Conditionneur/", $data[self::CSV_ATTRIBUTS]) && !$compte->infos->attributs->exist('NON_CONDITIONNEUR')) {
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR));
             }
 
             if(preg_match("/Viticulteur indépendant/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->tags->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT));
             }
         }     
     }
@@ -512,7 +525,7 @@ EOF;
             return null;
         }
 
-        $dateObj = new Date($date);
+        $dateObj = new DateTime($date);
 
         return $dateObj->format('Y-m-d');
     }
