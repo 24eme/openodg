@@ -34,6 +34,7 @@
  * @property string $date_creation
  * @property string $no_accises
  * @property acCouchdbJson $chais
+ * @property acCouchdbJson $infos
  * @property acCouchdbJson $tags
 
  * @method string get_id()
@@ -96,6 +97,8 @@
  * @method string setNoAccises()
  * @method acCouchdbJson getChais()
  * @method acCouchdbJson setChais()
+ * @method acCouchdbJson getInfos()
+ * @method acCouchdbJson setInfos()
  * @method acCouchdbJson getTags()
  * @method acCouchdbJson setTags()
  

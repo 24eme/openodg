@@ -1,7 +1,5 @@
-<?php $typesCompteLibelles = CompteClient::getInstance()->getAllTypesCompteWithLibelles(); ?>
-
 <div class="page-header">
-    <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo $typesCompteLibelles[$compte->type_compte]; ?>)</h2>
+    <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?>)</h2>
 </div>
 
 <div class="row col-xs-offset-1 col-xs-10">
@@ -145,7 +143,7 @@
                     <label class="col-xs-3">Attributs</label> 
                     <div class="col-xs-9">
                         <ul>                            
-                            <?php foreach ($compte->getAttributs() as $attribut_code => $attribut_libelle): ?>
+                            <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
                                 <li><?php echo $attribut_libelle ?></li>
                             <?php endforeach; ?>
                         </ul>
@@ -156,7 +154,7 @@
                         <label class="col-xs-3">Produit</label> 
                         <div class="col-xs-9">
                             <ul>                            
-                                <?php foreach ($compte->getProduits() as $produit_code => $produit_libelle): ?>
+                                <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
                                     <li><?php echo $produit_libelle ?></li>
                                 <?php endforeach; ?>
                             </ul>

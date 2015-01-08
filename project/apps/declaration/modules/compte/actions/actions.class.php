@@ -92,13 +92,53 @@ class compteActions extends sfActions {
     }
 
     public function executeRecherche(sfWebRequest $request) {
-        $this->form = new CompteRechercheForm();
-        $this->form->bind($request->getParameter($this->form->getName()));
-        if ($this->form->isValid()) {
-            
-        }
-        $test = new acElasticaQueryMatchAll();
+    	$this->form = new CompteRechercheForm();
+      	$q = $this->initSearch($request);
+        $res_by_page = 20;
+      	$page = $request->getParameter('page', 1);
+      	$from = $res_by_page * ($page - 1);
+      	$q->setLimit($res_by_page);
+      	$q->setFrom($from);
+      	$facets = array('attributs' => 'tags.attributs', 'produits' => 'tags.produits', 'manuels' => 'tags.manuels');
+      	foreach($facets as $nom => $f) {
+			$elasticaFacet 	= new acElasticaFacetTerms($nom);
+			$elasticaFacet->setField($f);
+			$elasticaFacet->setSize(200);
+			$elasticaFacet->setOrder('count');
+			$q->addFacet($elasticaFacet);
+      	}
+
+      	$index = acElasticaManager::getType('compte');
+      	$resset = $index->search($q);
+      	$this->results = $resset->getResults();
+      	$this->nb_results = $resset->getTotalHits();
+      	$this->facets = $resset->getFacets();
+	
+      	$this->last_page = ceil($this->nb_results / $res_by_page); 
+      	$this->current_page = $page;
     }
+
+    private function initSearch(sfWebRequest $request) 
+    {
+		$this->q = $query = $request->getParameter('q', '*');
+		if (!$this->q) {
+			$this->q = $query = '*';
+		}
+		$this->tags = $request->getParameter('tags', array());
+		$this->all = $request->getParameter('all', 0);
+		if (!$this->all) {
+			//$query .= " statut:ACTIF";
+		}
+		foreach ($this->tags as $tag) {
+			$explodeTag = explode(':', $tag);
+			$query .= ' tags.'.$explodeTag[0].':"'.html_entity_decode($explodeTag[1], ENT_QUOTES).'"';
+		}
+		$qs = new acElasticaQueryQueryString($query);
+		$q = new acElasticaQuery();
+		$q->setQuery($qs);
+		$this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
+		return $q;
+	}
 
     private function getCompteModificationForm() {
         switch ($this->compte->getTypeCompte()) {

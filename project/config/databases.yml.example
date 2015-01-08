@@ -7,3 +7,8 @@ all:
     param:
       dsn: http://localhost:5984/
       dbname: ava
+  elastica:
+    class: acElasticaDatabase
+    param:
+      dsn: http://127.0.0.1:9200/
+      dbname: teledeclaration

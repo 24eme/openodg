@@ -10,7 +10,7 @@
 /* =================================================================================== */
 /* JQUERY CONTEXT */
 /* =================================================================================== */
-(function($)
+(function ($)
 {
     /* =================================================================================== */
     /* GLOBAL VARS */
@@ -60,15 +60,17 @@
     /**
      * Equal heights
      ******************************************/
-    $.fn.equalHeights = function()
+    $.fn.equalHeights = function ()
     {
         var maxHeight = 0,
-            $this = $(this);
+                $this = $(this);
 
-        $this.each( function() {
+        $this.each(function () {
             var height = $(this).innerHeight();
 
-            if ( height > maxHeight ) { maxHeight = height; }
+            if (height > maxHeight) {
+                maxHeight = height;
+            }
         });
 
         return $this.css('height', maxHeight);
@@ -79,22 +81,22 @@
      * qui ont la classe .equal-height sur chaque ligne
      * $.initEqualHeight();
      ******************************************/
-    $.initEqualHeight = function()
+    $.initEqualHeight = function ()
     {
-        if($('.equal-height').length > 0)
+        if ($('.equal-height').length > 0)
         {
-            $('.row').each(function()
+            $('.row').each(function ()
             {
                 $(this).find('.equal-height').equalHeights();
             });
         }
     };
 
-    $.initDatePickers = function()
+    $.initDatePickers = function ()
     {
         var datePickers = $('.date-picker');
 
-        datePickers.each(function()
+        datePickers.each(function ()
         {
             var currentDp = $(this);
 
@@ -108,19 +110,19 @@
                         calendarWeeks: true
                     });
 
-            if(!hasValue) {
+            if (!hasValue) {
                 currentDp.find('input').val('');
             }
 
-            currentDp.on('focus', 'input', function()
+            currentDp.on('focus', 'input', function ()
             {
                 currentDp.data('DateTimePicker').show();
             });
         });
-        
+
         var datePickers = $('.date-picker-all-days');
 
-        datePickers.each(function()
+        datePickers.each(function ()
         {
             var currentDp = $(this);
 
@@ -130,38 +132,67 @@
                         pickTime: false
                     });
 
-            currentDp.on('focus', 'input', function()
+            currentDp.on('focus', 'input', function ()
             {
                 currentDp.data('DateTimePicker').show();
             });
         });
     };
 
-    $.initSelect2Autocomplete = function()
+    $.initSelect2Autocomplete = function ()
     {
-
         $('.select2autocomplete').select2({allowClear: true, placeholder: true});
     }
 
-    $.initCheckboxRelations = function()
+    $.initSelect2AutocompletePermissif = function ()
     {
-        $('.checkbox-relation').click(function() {
+        $('.select2autocompletepermissif').select2({
+            minimumInputLength: 1,
+            "ajax": {
+                data: function (term, page) {
+                    return {term: term, page: page};
+                },
+                dataType: "json",
+                quietMillis: 100,
+                results: function (data, page) {
+                    return {results: data.results};
+                },
+                "url": url
+            },
+            id: function (object) {
+                return object.text;
+            },
+            //Allow manually entered text in drop down.
+            createSearchChoice: function (term, data) {
+                if ($(data).filter(function () {
+                    return this.text.localeCompare(term) === 0;
+                }).length === 0) {
+                    return {id: term, text: term};
+                }
+            },
+        }
+        );
+    }
+
+    $.initCheckboxRelations = function ()
+    {
+        $('.checkbox-relation').click(function () {
             $($(this).attr('data-relation')).toggleClass("hidden");
         })
 
     }
-    
-        /**
+
+    /**
      * Contrôle la bonne saisie de nombres dans
      * un champ
      * $(s).saisieNum(float, callbackKeypress);
      ******************************************/
-    $.fn.saisieNum = function(float, callbackKeypress, callbackBlur)
+    $.fn.saisieNum = function (float, callbackKeypress, callbackBlur)
     {
         var champ = $(this);
-        
+
         // A chaque touche pressée
-        champ.keypress(function(e)
+        champ.keypress(function (e)
         {
             var val = $(this).val();
             var touche = e.which;
@@ -169,111 +200,129 @@
             var chiffre = (touche >= 48 && touche <= 57); // Si chiffre
 
             // touche "entrer"
-            if(touche == 13) return e;
+            if (touche == 13)
+                return e;
 
             // touche "entrer"
-            if(touche == 0) return e;
-                    
+            if (touche == 0)
+                return e;
+
             // Champ nombre décimal
-            if(float)
-            { 
+            if (float)
+            {
                 // !backspace && !null && !point && !virgule && !chiffre
-                if(touche != 8 && touche != 0 && touche != 46 && touche != 44 && !chiffre) return false;    
+                if (touche != 8 && touche != 0 && touche != 46 && touche != 44 && !chiffre)
+                    return false;
                 // point déjà présent
-                if(touche == 46 && ponctuationPresente) e.preventDefault(); 
+                if (touche == 46 && ponctuationPresente)
+                    e.preventDefault();
                 // virgule déjà présente
-                if(touche == 44 && ponctuationPresente) e.preventDefault(); 
+                if (touche == 44 && ponctuationPresente)
+                    e.preventDefault();
                 // 2 décimales
-                if(val.match(/[\.\,][0-9][0-9]/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 3) e.preventDefault();
+                if (val.match(/[\.\,][0-9][0-9]/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 3)
+                    e.preventDefault();
             }
             // Champ nombre entier
             else
             {
-                if(touche != 8 && touche != 0 && !chiffre) e.preventDefault();
+                if (touche != 8 && touche != 0 && !chiffre)
+                    e.preventDefault();
             }
-            
-            if(callbackKeypress) callbackKeypress();
+
+            if (callbackKeypress)
+                callbackKeypress();
             return e;
         });
-        
+
         // A chaque touche pressée
-        champ.keyup(function(e)
+        champ.keyup(function (e)
         {
             var touche = e.which;
-            
+
             // touche "retour"
-            if(touche == 8)
+            if (touche == 8)
             {
-                if(callbackKeypress) callbackKeypress(); 
+                if (callbackKeypress)
+                    callbackKeypress();
                 return e;
             }
         });
-        
-        
+
+
         // A chaque fois que l'on quitte le champ
-        champ.blur(function()
+        champ.blur(function ()
         {
             console.log('blur');
             $(this).nettoyageChamps();
-            if(callbackBlur) callbackBlur();
+            if (callbackBlur)
+                callbackBlur();
         });
     };
-    
-    
+
+
     /**
      * Nettoie les champs après la saisie
      * $(champ).nettoyageChamps();
      ******************************************/
-    $.fn.nettoyageChamps = function()
+    $.fn.nettoyageChamps = function ()
     {
         var champ = $(this);
         var val = champ.val();
         var float = champ.hasClass('num_float');
         console.log(val);
         // Si quelque chose a été saisi
-        if(val)
+        if (val)
         {
             // Remplacement de toutes les virgules par des points
-            if(val.indexOf(',') != -1) val = val.replace(',', '.');
-            
+            if (val.indexOf(',') != -1)
+                val = val.replace(',', '.');
+
             // Si un point a été saisi sans chiffre
-            if(val.indexOf('.') != -1 && val.length == 1) val = ''; //val = '0';
-            
+            if (val.indexOf('.') != -1 && val.length == 1)
+                val = ''; //val = '0';
+
             // Un nombre commençant par 0 peut être interprété comme étant en octal
-            if(val.indexOf('0') == 0 && val.length > 1) val = val.substring(1);
-            
+            if (val.indexOf('0') == 0 && val.length > 1)
+                val = val.substring(1);
+
             // Comparaison nombre entier / flottant
-            if(float || parseInt(val) != parseFloat(val)) val = parseFloat(val).toFixed(2);     
-            else val = parseInt(val);
+            if (float || parseInt(val) != parseFloat(val))
+                val = parseFloat(val).toFixed(2);
+            else
+                val = parseInt(val);
         }
         // Si rien n'a été saisi
         //else val = 0;
-        else val = '';
-        
+        else
+            val = '';
+
         // Si ce n'est pas un nombre (ex : copier/coller d'un texte)
-        if(isNaN(val)) val = ''; //val = 0;
+        if (isNaN(val))
+            val = ''; //val = 0;
 
         /*if (val == 0) {
-            champ.addClass('num_light');
-        } else {
-            champ.removeClass('num_light');
-        }*/
+         champ.addClass('num_light');
+         } else {
+         champ.removeClass('num_light');
+         }*/
         champ.val(val);
     };
-    
+
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
-    _doc.ready(function()
+    _doc.ready(function ()
     {
         $.initDatePickers();
         $.initSelect2Autocomplete();
+        $.initSelect2AutocompletePermissif();
         $.initCheckboxRelations();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip]').tooltip({'container': 'body'});
-        $('input[data-toggle=tooltip]').tooltip({'trigger':'focus', 'container': 'body'});
+        $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
     });
 
