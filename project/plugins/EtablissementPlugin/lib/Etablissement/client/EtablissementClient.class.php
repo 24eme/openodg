@@ -5,27 +5,17 @@ class EtablissementClient extends acCouchdbClient {
     const TYPE_MODEL = "Etablissement"; 
     const TYPE_COUCHDB = "ETABLISSEMENT";
 
-    const FAMILLE_VINIFICATEUR = "VINIFICATEUR";
-    const FAMILLE_PRODUCTEUR = "PRODUCTEUR";
-    const FAMILLE_DISTILLATEUR = "DISTILLATEUR";
-    const FAMILLE_ELABORATEUR = "ELABORATEUR";
-    const FAMILLE_CONDITIONNEUR = "CONDITIONNEUR";
-    const FAMILLE_METTEUR_EN_MARCHE = "METTEUR_EN_MARCHE";
-    const FAMILLE_NEGOCIANT = "NEGOCIANT";
-    const FAMILLE_CAVE_COOPERATIVE = "CAVE_COOPERATIVE";
+    const FAMILLE_VINIFICATEUR = CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR;
+    const FAMILLE_PRODUCTEUR = CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS;
+    const FAMILLE_DISTILLATEUR = CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR;
+    const FAMILLE_ELABORATEUR = CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR;
+    const FAMILLE_CONDITIONNEUR = CompteClient::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR;
+    const FAMILLE_METTEUR_EN_MARCHE = CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE;
+    const FAMILLE_NEGOCIANT = CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT;
+    const FAMILLE_CAVE_COOPERATIVE = CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE;
 
     const STATUT_INSCRIT = 'INSCRIT';
     
-    private $libelles_attributs_compte_etablissement = array(EtablissementClient::FAMILLE_CAVE_COOPERATIVE => 'Cave Coopérative',
-                EtablissementClient::FAMILLE_CONDITIONNEUR => 'Conditionneur',
-                EtablissementClient::FAMILLE_DISTILLATEUR => 'Distillateur',
-                EtablissementClient::FAMILLE_ELABORATEUR => 'Elaborateur',
-                EtablissementClient::FAMILLE_METTEUR_EN_MARCHE => 'Metteur en Marché',
-                EtablissementClient::FAMILLE_NEGOCIANT => 'Négociant',
-                EtablissementClient::FAMILLE_PRODUCTEUR => 'Producteur',
-                EtablissementClient::FAMILLE_VINIFICATEUR => 'Vinificateur');
-    
-
     public static function getInstance()
     {
         return acCouchdbManager::getClient(self::TYPE_MODEL);
@@ -71,9 +61,5 @@ class EtablissementClient extends acCouchdbClient {
         $doc->identifiant = $identifiant;
 
         return $doc;
-    }
-    
-    public function getAllLibellesAttributs() {
-        return $this->libelles_attributs_compte_etablissement;
     }
 }
