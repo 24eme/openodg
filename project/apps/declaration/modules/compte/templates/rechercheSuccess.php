@@ -49,7 +49,7 @@
 			?>
 			<tr>
 				<td>
-					<strong><?php echo $data['nom_a_afficher']; ?></strong><br />
+                                    <a href="<?php echo url_for('compte_visualisation_admin',array("id" => $data["identifiant"])); ?>"><strong><?php echo $data['nom_a_afficher']; ?></strong></a><br />
 					<?php echo $data['email']; ?>
 				</td>
 				<td>

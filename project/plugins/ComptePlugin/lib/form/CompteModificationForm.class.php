@@ -67,14 +67,20 @@ class CompteModificationForm extends acCouchdbObjectForm {
         if (!$this->tagsManuelsForCompte) {
             $this->tagsManuelsForCompte = $compteClient->getTagsManuelsForCompte();
         }
-        return $this->tagsManuelsForCompte;
+        return array();//$this->tagsManuelsForCompte;
     }
 
     public function save($con = null) {
         if ($attributs = $this->values['attributs']) {
             $this->getObject()->updateInfosTagsAttributs($attributs);
         }
-        if ($tagsManuels = $this->values['manuels']) {
+        if ($tagsManuelsValues = $this->values['manuels']) {
+            $tagsManuelsValuesSplited = explode(",",$tagsManuelsValues);
+            $tagsManuels = array();
+            foreach ($tagsManuelsValuesSplited as $manuel) {
+                $manuel_key = str_replace('-', '_',strtoupper(KeyInflector::slugify( $manuel)));
+                $tagsManuels[$manuel_key] = $manuel;
+            }
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
         parent::save($con);

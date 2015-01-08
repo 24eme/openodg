@@ -18,8 +18,6 @@
 
     // Anchor
     var _anchor = window.location.hash;
-
-
     // Main elements
     var _doc = $(document);
     var _win = $(window);
@@ -29,18 +27,14 @@
     var _navigation = $('#navigation');
     var _content = $('#content');
     var _footer = $('#footer');
-
     // Carousels
     var _carousels = $('.carousel-content');
-
     var _classNames =
             {
                 active: 'active',
                 opened: 'opened',
                 disabled: 'disabled'
             };
-
-
     // Fancybox - Defaut config
     var _fbConfig =
             {
@@ -56,7 +50,6 @@
                                     }
                         }
             };
-
     /**
      * Equal heights
      ******************************************/
@@ -64,18 +57,14 @@
     {
         var maxHeight = 0,
                 $this = $(this);
-
         $this.each(function () {
             var height = $(this).innerHeight();
-
             if (height > maxHeight) {
                 maxHeight = height;
             }
         });
-
         return $this.css('height', maxHeight);
     };
-
     /**
      * Applique la même hauteur sur tous les élément
      * qui ont la classe .equal-height sur chaque ligne
@@ -91,17 +80,13 @@
             });
         }
     };
-
     $.initDatePickers = function ()
     {
         var datePickers = $('.date-picker');
-
         datePickers.each(function ()
         {
             var currentDp = $(this);
-
             hasValue = currentDp.find('input').val();
-
             currentDp.datetimepicker
                     ({
                         language: 'fr',
@@ -109,7 +94,6 @@
                         useCurrent: false,
                         calendarWeeks: true
                     });
-
             if (!hasValue) {
                 currentDp.find('input').val('');
             }
@@ -119,26 +103,21 @@
                 currentDp.data('DateTimePicker').show();
             });
         });
-
         var datePickers = $('.date-picker-all-days');
-
         datePickers.each(function ()
         {
             var currentDp = $(this);
-
             currentDp.datetimepicker
                     ({
                         language: 'fr',
                         pickTime: false
                     });
-
             currentDp.on('focus', 'input', function ()
             {
                 currentDp.data('DateTimePicker').show();
             });
         });
     };
-
     $.initSelect2Autocomplete = function ()
     {
         $('.select2autocomplete').select2({allowClear: true, placeholder: true});
@@ -146,34 +125,59 @@
 
     $.initSelect2AutocompletePermissif = function ()
     {
+        console.log($('.select2autocompletepermissif').data('url'));
         $('.select2autocompletepermissif').select2({
-            minimumInputLength: 1,
-            "ajax": {
+            tags: true,
+            tokenSeparators: [','],
+            createSearchChoice: function (term) {
+                return {
+                    id: $.trim(term),
+                    text: $.trim(term) + ' (nouveau tag)'
+                };
+            },
+            ajax: {
+                url: $('.select2autocompletepermissif').data('url'),
+                dataType: 'json',
                 data: function (term, page) {
-                    return {term: term, page: page};
+                    return {
+                        q: term
+                    };
                 },
-                dataType: "json",
-                quietMillis: 100,
                 results: function (data, page) {
-                    return {results: data.results};
-                },
-                "url": url
-            },
-            id: function (object) {
-                return object.text;
-            },
-            //Allow manually entered text in drop down.
-            createSearchChoice: function (term, data) {
-                if ($(data).filter(function () {
-                    return this.text.localeCompare(term) === 0;
-                }).length === 0) {
-                    return {id: term, text: term};
+                    return {
+                        results: data
+                    };
                 }
             },
-        }
-        );
-    }
+            
+            initSelection: function (element, callback) {
+                var data = [];
 
+                function splitVal(string, separator) {
+                    var val, i, l;
+                    if (string === null || string.length < 1)
+                        return [];
+                    val = string.split(separator);
+                    for (i = 0, l = val.length; i < l; i = i + 1)
+                        val[i] = $.trim(val[i]);
+                    return val;
+                }
+
+                $(splitVal(element.val(), ",")).each(function () {
+                    data.push({
+                        id: this,
+                        text: this
+                    });
+                });
+
+                callback(data);
+            },
+            
+            formatSelectionTooBig: function (limit) {
+                return "Max tags is only " + limit;
+            }
+        });
+    }
     $.initCheckboxRelations = function ()
     {
         $('.checkbox-relation').click(function () {
@@ -190,7 +194,6 @@
     $.fn.saisieNum = function (float, callbackKeypress, callbackBlur)
     {
         var champ = $(this);
-
         // A chaque touche pressée
         champ.keypress(function (e)
         {
@@ -202,11 +205,9 @@
             // touche "entrer"
             if (touche == 13)
                 return e;
-
             // touche "entrer"
             if (touche == 0)
                 return e;
-
             // Champ nombre décimal
             if (float)
             {
@@ -234,12 +235,10 @@
                 callbackKeypress();
             return e;
         });
-
         // A chaque touche pressée
         champ.keyup(function (e)
         {
             var touche = e.which;
-
             // touche "retour"
             if (touche == 8)
             {
@@ -248,8 +247,6 @@
                 return e;
             }
         });
-
-
         // A chaque fois que l'on quitte le champ
         champ.blur(function ()
         {
@@ -259,8 +256,6 @@
                 callbackBlur();
         });
     };
-
-
     /**
      * Nettoie les champs après la saisie
      * $(champ).nettoyageChamps();
@@ -277,7 +272,6 @@
             // Remplacement de toutes les virgules par des points
             if (val.indexOf(',') != -1)
                 val = val.replace(',', '.');
-
             // Si un point a été saisi sans chiffre
             if (val.indexOf('.') != -1 && val.length == 1)
                 val = ''; //val = '0';
@@ -285,7 +279,6 @@
             // Un nombre commençant par 0 peut être interprété comme étant en octal
             if (val.indexOf('0') == 0 && val.length > 1)
                 val = val.substring(1);
-
             // Comparaison nombre entier / flottant
             if (float || parseInt(val) != parseFloat(val))
                 val = parseFloat(val).toFixed(2);
@@ -296,7 +289,6 @@
         //else val = 0;
         else
             val = '';
-
         // Si ce n'est pas un nombre (ex : copier/coller d'un texte)
         if (isNaN(val))
             val = ''; //val = 0;
@@ -308,8 +300,6 @@
          }*/
         champ.val(val);
     };
-
-
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -325,5 +315,4 @@
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
     });
-
 })(jQuery);

@@ -173,7 +173,7 @@
                     <?php echo $form["manuels"]->renderError(); ?>
                     <?php echo $form["manuels"]->renderLabel("Tags manuels", array("class" => "col-xs-3 control-label")); ?>
                     <div class="col-xs-9">
-                        <?php echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "tags manuels")); ?>
+                        <?php echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocompletepermissif", "placeholder" => "tags manuels" , "data-url" => url_for('compte_tags_manuels'))); ?>
                     </div>
                 </div>
             </div>

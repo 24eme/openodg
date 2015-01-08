@@ -469,6 +469,12 @@ compte_modification_etablissement:
   url: /compte-modification-etablissement
   param: { module: compte, action: modificationEtablissementAdmin }  
 
+compte_tags_manuels:
+  url: /compte-tags-manuels
+  param: { module: compte, action: allTagsManuels }  
+  requirements:
+    sf_method: [get]
+
 # generic rules
 # please, remove them by adding more specific rules
 default_index:

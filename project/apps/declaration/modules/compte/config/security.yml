@@ -21,3 +21,6 @@ modificationAdmin:
   
 recherche:
   is_secure: false
+  
+allTagsManuels:
+  is_secure: false

@@ -91,54 +91,78 @@ class compteActions extends sfActions {
         return $this->redirect($url_compte_civa);
     }
 
-    public function executeRecherche(sfWebRequest $request) {
-    	$this->form = new CompteRechercheForm();
-      	$q = $this->initSearch($request);
-        $res_by_page = 20;
-      	$page = $request->getParameter('page', 1);
-      	$from = $res_by_page * ($page - 1);
-      	$q->setLimit($res_by_page);
-      	$q->setFrom($from);
-      	$facets = array('attributs' => 'tags.attributs', 'produits' => 'tags.produits', 'manuels' => 'tags.manuels');
-      	foreach($facets as $nom => $f) {
-			$elasticaFacet 	= new acElasticaFacetTerms($nom);
-			$elasticaFacet->setField($f);
-			$elasticaFacet->setSize(200);
-			$elasticaFacet->setOrder('count');
-			$q->addFacet($elasticaFacet);
-      	}
+    public function executeAllTagsManuels() {
 
-      	$index = acElasticaManager::getType('compte');
-      	$resset = $index->search($q);
-      	$this->results = $resset->getResults();
-      	$this->nb_results = $resset->getTotalHits();
-      	$this->facets = $resset->getFacets();
-	
-      	$this->last_page = ceil($this->nb_results / $res_by_page); 
-      	$this->current_page = $page;
+        $qm = new acElasticaQueryMatchAll();
+        $q = new acElasticaQuery();
+        $q->setQuery($qm);
+        $elasticaFacet = new acElasticaFacetTerms('manuels');
+        $elasticaFacet->setField('tags.manuels');
+        $elasticaFacet->setSize(200);
+        $elasticaFacet->setOrder('count');
+        $q->addFacet($elasticaFacet);
+        $index = acElasticaManager::getType('compte');
+        $resset = $index->search($q);
+        $this->facets = $resset->getFacets();
+
+        $results = array();
+
+        foreach ($this->facets['manuels']['terms'] as $terms) {
+            $result = new stdClass();
+            $result->id = $terms['term'];
+            $result->text = $terms['term'];
+            $results[] = $result;
+        }
+        return $this->renderText(json_encode($results));
     }
 
-    private function initSearch(sfWebRequest $request) 
-    {
-		$this->q = $query = $request->getParameter('q', '*');
-		if (!$this->q) {
-			$this->q = $query = '*';
-		}
-		$this->tags = $request->getParameter('tags', array());
-		$this->all = $request->getParameter('all', 0);
-		if (!$this->all) {
-			//$query .= " statut:ACTIF";
-		}
-		foreach ($this->tags as $tag) {
-			$explodeTag = explode(':', $tag);
-			$query .= ' tags.'.$explodeTag[0].':"'.html_entity_decode($explodeTag[1], ENT_QUOTES).'"';
-		}
-		$qs = new acElasticaQueryQueryString($query);
-		$q = new acElasticaQuery();
-		$q->setQuery($qs);
-		$this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
-		return $q;
-	}
+    public function executeRecherche(sfWebRequest $request) {
+        $this->form = new CompteRechercheForm();
+        $q = $this->initSearch($request);
+        $res_by_page = 20;
+        $page = $request->getParameter('page', 1);
+        $from = $res_by_page * ($page - 1);
+        $q->setLimit($res_by_page);
+        $q->setFrom($from);
+        $facets = array('attributs' => 'tags.attributs', 'produits' => 'tags.produits', 'manuels' => 'tags.manuels');
+        foreach ($facets as $nom => $f) {
+            $elasticaFacet = new acElasticaFacetTerms($nom);
+            $elasticaFacet->setField($f);
+            $elasticaFacet->setSize(200);
+            $elasticaFacet->setOrder('count');
+            $q->addFacet($elasticaFacet);
+        }
+
+        $index = acElasticaManager::getType('compte');
+        $resset = $index->search($q);
+        $this->results = $resset->getResults();
+        $this->nb_results = $resset->getTotalHits();
+        $this->facets = $resset->getFacets();
+
+        $this->last_page = ceil($this->nb_results / $res_by_page);
+        $this->current_page = $page;
+    }
+
+    private function initSearch(sfWebRequest $request) {
+        $this->q = $query = $request->getParameter('q', '*');
+        if (!$this->q) {
+            $this->q = $query = '*';
+        }
+        $this->tags = $request->getParameter('tags', array());
+        $this->all = $request->getParameter('all', 0);
+        if (!$this->all) {
+            //$query .= " statut:ACTIF";
+        }
+        foreach ($this->tags as $tag) {
+            $explodeTag = explode(':', $tag);
+            $query .= ' tags.' . $explodeTag[0] . ':"' . html_entity_decode($explodeTag[1], ENT_QUOTES) . '"';
+        }
+        $qs = new acElasticaQueryQueryString($query);
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        $this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
+        return $q;
+    }
 
     private function getCompteModificationForm() {
         switch ($this->compte->getTypeCompte()) {
