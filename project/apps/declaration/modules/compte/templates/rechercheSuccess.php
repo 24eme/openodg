@@ -54,7 +54,7 @@
 				</td>
 				<td>
 					<?php echo $data['adresse']; ?><br />
-					<?php echo $data['code_postal']; ?>&nbsp;<?php echo $data['ville']; ?>
+					<?php echo $data['code_postal']; ?>&nbsp;<?php echo $data['commune']; ?>
 				</td>
 				<td>
 					Bureau : <?php echo $data['telephone_bureau']; ?><br />

@@ -66,7 +66,7 @@ class Compte extends BaseCompte {
     }
 
     public function getInfosAutomatiques() {
-        return $this->infos->get('manuels');
+        return $this->infos->get('automatiques');
     }
 
     public function hasProduits() {

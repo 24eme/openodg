@@ -13,6 +13,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
         $this->initDefaultAttributs();
+         $this->initDefaultTagsManuels();
     }
 
     public function configure() {
@@ -27,7 +28,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("fax", new sfWidgetFormInput(array("label" => "Fax")));
         $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
         $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
-        $this->setWidget("manuels", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getTagsManuelsForCompte())));
+        $this->setWidget("manuels", new sfWidgetFormInput());
         
         
         $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
@@ -39,7 +40,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('fax', new sfValidatorString(array("required" => false)));
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => true)));
         $this->setValidator('attributs', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()), 'min' => 1)));
-        $this->setValidator('manuels', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getTagsManuelsForCompte()))));
+        $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
 
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
     }
@@ -85,6 +86,14 @@ class CompteModificationForm extends acCouchdbObjectForm {
             $default_attributs[] = $attribut_code;
         }
         $this->widgetSchema['attributs']->setDefault($default_attributs);
+    }
+
+    public function initDefaultTagsManuels() {
+        $default_tags = array();
+        foreach ($this->getObject()->getInfosManuels() as $tag_manuel_key => $tag_manuel) {
+            $default_tags[$tag_manuel_key] = $tag_manuel;
+        }
+        $this->widgetSchema['manuels']->setDefault($default_tags);
     }
 
 }

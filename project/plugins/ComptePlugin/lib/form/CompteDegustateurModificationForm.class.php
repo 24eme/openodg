@@ -12,13 +12,17 @@
  * @author mathurin
  */
 class CompteDegustateurModificationForm extends CompteModificationForm {
-    
+
     protected $produits;
 
+    public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        parent::__construct($object, $options, $CSRFSecret);
+        $this->initDefaultProduits();
+    }
 
     public function configure() {
         parent::configure();
-                $this->setWidget("civilite", new sfWidgetFormChoice(array('choices' => $this->getCivilites())));
+        $this->setWidget("civilite", new sfWidgetFormChoice(array('choices' => $this->getCivilites())));
         $this->setWidget("prenom", new sfWidgetFormInput(array("label" => "Prénom")));
         $this->setWidget("nom", new sfWidgetFormInput(array("label" => "Nom")));
 
@@ -29,11 +33,12 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         $this->setValidator('nom', new sfValidatorString(array("required" => false)));
 
         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => false)));
+        
         $this->setWidget("produits", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAllProduits())));
         $this->setValidator('produits', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAllProduits()))));
     }
-    
-        private function getAllProduits() {
+
+    private function getAllProduits() {
         if (!$this->produits) {
             foreach (ConfigurationClient::getConfiguration()->getProduits() as $hash => $produitCepage) {
                 $this->produits[str_replace('/', '-', $hash)] = $produitCepage->getLibelleComplet();
@@ -41,19 +46,20 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         }
         return $this->produits;
     }
-    
-        public function save($con = null) {
+
+    public function save($con = null) {
         if ($produits = $this->values['produits']) {
             $this->getObject()->updateLocalTagsProduits($produits);
         }
         parent::save($con);
     }
-    
-        private function initDefaultProduits() {
+
+    public function initDefaultProduits() {
         $default_produits = array();
-        foreach ($this->getObject()->getProduits() as $produit_code => $produit) {
-            $default_produits[] = $produit_code;
+        foreach ($this->getObject()->getInfosProduits() as $produit_hash => $produit_libelle) {
+            $default_produits[] = $produit_hash;
         }
         $this->widgetSchema['produits']->setDefault($default_produits);
     }
+
 }
