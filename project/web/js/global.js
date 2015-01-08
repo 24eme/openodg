@@ -125,7 +125,6 @@
 
     $.initSelect2AutocompletePermissif = function ()
     {
-        console.log($('.select2autocompletepermissif').data('url'));
         $('.select2autocompletepermissif').select2({
             tags: true,
             tokenSeparators: [','],

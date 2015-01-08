@@ -26,8 +26,8 @@ class compteActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
                 $this->compte = $this->form->save();
-                $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('home');
+                $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');               
+                $this->redirect('compte_visualisation_admin',array('id' => $this->compte->identifiant));
             }
         }
     }
@@ -45,7 +45,7 @@ class compteActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->compte = $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('home');
+                $this->redirect('compte_visualisation_admin',array('id' => $this->compte->identifiant));
             }
         }
     }
