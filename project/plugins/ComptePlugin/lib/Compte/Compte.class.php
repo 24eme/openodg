@@ -18,6 +18,7 @@ class Compte extends BaseCompte {
     public function save($synchro_etablissement = true) {
         if ($this->isNew() && !$this->identifiant) {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
+            $this->statut = CompteClient::STATUT_ACTIF;
         }
 
         if ($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement) {
@@ -136,7 +137,7 @@ class Compte extends BaseCompte {
         if (!$this->tags->exist($nodeType)) {
             $this->tags->add($nodeType, null);
         }
-        $this->tags->$nodeType->add(null,$value);
+        $this->tags->$nodeType->add(null, $value);
     }
 
 }
