@@ -591,7 +591,7 @@ EOF;
         }
 
         if($data[self::CSV_ATTRIBUTS] == "Abonnés Revue \"Les Vins d'Alsace\"") {
-            $libelle = "Abonnés revue \"Les Vins d'Alsace\"";
+            $libelle = "Abonnés revue";
             $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
         }
 

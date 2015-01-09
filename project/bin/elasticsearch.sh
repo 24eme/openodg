@@ -63,6 +63,13 @@ curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXGLOBAL/" -d '{
             "properties" : {
                 "tags" : { 
                     "properties" : {
+                        "automatiques" : {
+                            "type" : "multi_field",
+                            "fields" : {
+                                "automatiques": { "type": "string", "index" : "analyzed", "analyzer": "keyword" },
+                                "untouched": {"type": "string", "index": "not_analyzed"}
+                            }
+                        },
                         "attributs" : {
                             "type" : "multi_field",
                             "fields" : {
@@ -81,6 +88,13 @@ curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXGLOBAL/" -d '{
                             "type" : "multi_field",
                             "fields" : {
                                 "manuels": { "type": "string", "index" : "analyzed", "analyzer": "keyword" },
+                                "untouched": {"type": "string", "index": "not_analyzed"}
+                            }
+                        },
+                        "syndicats" : {
+                            "type" : "multi_field",
+                            "fields" : {
+                                "syndicats": { "type": "string", "index" : "analyzed", "analyzer": "keyword" },
                                 "untouched": {"type": "string", "index": "not_analyzed"}
                             }
                         }
