@@ -165,7 +165,6 @@ class Compte extends BaseCompte {
     }
 
     public function updateInfosTagsAutomatiques() {
-        $this->updateInfosTags('automatiques', "TYPE_COMPTE", $this->getTypeCompte());
         $this->updateInfosTags('automatiques', "TYPE_COMPTE_LIBELLE",  CompteClient::getInstance()->getCompteTypeLibelle($this->getTypeCompte()));
     }
 
