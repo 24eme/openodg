@@ -74,13 +74,41 @@ class Compte extends BaseCompte {
         return count($this->infos->get('produits'));
     }
 
+    public function hasManuels() {
+        return count($this->infos->get('manuels'));
+    }
+
+    public function hasAutomatiques() {
+        return count($this->infos->get('automatiques'));
+    }
+
+    public function getDefaultManuelsTagsFormatted() {
+        $result = '[';
+        foreach ($this->getInfosManuels() as $infosManuels) {
+            $result.='"' . $infosManuels . '",';
+        }
+        if (count($this->getInfosManuels())) {
+            $result = substr($result, 0, strlen($result) - 1);
+        }
+        $result.=']';
+        return $result;
+    }
+
+    public function removeInfosTagsNode($node) {
+        if ($this->exist('infos') && $this->infos->exist($node)) {
+            $this->infos->remove($node);
+        }
+    }
+    
     public function updateInfosTagsAttributs($attributs_array = array()) {
+        $this->removeInfosTagsNode('attributs');
         foreach ($attributs_array as $attribut_code) {
             $this->updateInfosTags('attributs', $attribut_code, CompteClient::getInstance()->getAttributLibelle($attribut_code));
         }
     }
 
     public function updateInfosTagsManuels($infos_manuels = array()) {
+        $this->removeInfosTagsNode('manuels');
         foreach ($infos_manuels as $info_manuel) {
             $info_manuel_key = str_replace(' ', '_', $info_manuel);
             $this->updateInfosTags('manuels', $info_manuel_key, $info_manuel);
@@ -88,6 +116,7 @@ class Compte extends BaseCompte {
     }
 
     public function updateLocalTagsProduits($produits_hash_array = array()) {
+        //$this->removeInfosTagsNode('produits');
         $allProduits = ConfigurationClient::getConfiguration()->getProduits();
         foreach ($produits_hash_array as $produits_hash) {
             $libelle_complet = $allProduits[str_replace('-', '/', $produits_hash)]->getLibelleComplet();
@@ -95,7 +124,7 @@ class Compte extends BaseCompte {
         }
     }
 
-    public function updateInfosTags($nodeType, $key, $value) {
+    public function updateInfosTags($nodeType, $key, $value) {        
         if (!$this->infos->exist($nodeType)) {
             $this->infos->add($nodeType, null);
         }

@@ -13,7 +13,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
         $this->initDefaultAttributs();
-         $this->initDefaultTagsManuels();
+        $this->initDefaultTagsManuels();
     }
 
     public function configure() {
@@ -38,7 +38,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('telephone_mobile', new sfValidatorString(array("required" => false)));
         $this->setValidator('telephone_prive', new sfValidatorString(array("required" => false)));
         $this->setValidator('fax', new sfValidatorString(array("required" => false)));
-        $this->setValidator('email', new sfValidatorEmailStrict(array("required" => true)));
+        $this->setValidator('email', new sfValidatorEmailStrict(array("required" => false)));
         $this->setValidator('attributs', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()), 'min' => 1)));
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
 
@@ -62,14 +62,6 @@ class CompteModificationForm extends acCouchdbObjectForm {
         return $this->attributsForCompte;
     }
     
-    private function getTagsManuelsForCompte() {
-        $compteClient = CompteClient::getInstance();
-        if (!$this->tagsManuelsForCompte) {
-            $this->tagsManuelsForCompte = $compteClient->getTagsManuelsForCompte();
-        }
-        return array();//$this->tagsManuelsForCompte;
-    }
-
     public function save($con = null) {
         if ($attributs = $this->values['attributs']) {
             $this->getObject()->updateInfosTagsAttributs($attributs);
@@ -96,8 +88,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
 
     public function initDefaultTagsManuels() {
         $default_tags = array();
-        foreach ($this->getObject()->getInfosManuels() as $tag_manuel_key => $tag_manuel) {
-            $default_tags[$tag_manuel_key] = $tag_manuel;
+        foreach ($this->getObject()->getInfosManuels() as $tag_manuel) {
+            $default_tags[] = $tag_manuel;
         }
         $this->widgetSchema['manuels']->setDefault($default_tags);
     }

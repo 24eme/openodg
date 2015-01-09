@@ -164,9 +164,6 @@ class CompteClient extends acCouchdbClient {
         }
     }
 
-    public function getTagsManuelsForCompte() {
-        return array('test_tag' => "TEST TAG");
-    }
 
     public function getAttributLibelle($compte_attribut) {
         $libellesArr = array_merge($this->libelles_attributs_etablissements, $this->libelles_attributs_degustateurs, $this->libelles_attributs_agents_prelevement, $this->libelles_attributs_contacts);
