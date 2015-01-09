@@ -199,12 +199,21 @@
                             </div>
                         </div>
                         <br/>
-                    <?php endif; ?>
-
-                    <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
+                    <?php endif; ?>                        
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && count($compte->chais)): ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3>Chais</h3>
+                    </div>
+                    <div class="panel-body">
                         <div class="form-group">
-                            <label class="col-xs-3">Chais</label>
-                            <div class="col-xs-9">
+                            <div class="col-xs-12">
                                 <ul>        
                                     <?php foreach ($compte->chais as $chai) : ?>
                                         <li>
@@ -216,17 +225,24 @@
                                 </ul>
                             </div>
                         </div>
-                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
+        </div>  
+    <?php endif; ?>
+
+    <div class="row row-margin row-button">
+        <div class="col-xs-4">
+            <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>Retour à la recherche</a>
         </div>
-    </div>
-</div>
-<div class="row row-margin row-button">
-    <div class="col-xs-4">
-        <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>Retour à la recherche</a>
-    </div>
-    <div class="col-xs-4 text-center">
-        <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin', array('id' => $compte->identifiant)) ?>">Modifier</a>
+        <div class="col-xs-4 text-center">
+            <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin', array('id' => $compte->identifiant)) ?>">Modifier</a>
+        </div>
+        <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
+            <div class="col-xs-4 text-right">               
+
+                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('compte_redirect_espace_etablissement', array("id" => $compte->identifiant)); ?>">Espace etablissement<span class="eleganticon arrow_carrot-right"></span></a>
+            </div>
+        <?php endif; ?>
     </div>
 </div>

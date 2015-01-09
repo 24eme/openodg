@@ -36,9 +36,9 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $this->setWidget("siren", new sfWidgetFormInput(array("label" => "N° SIREN")));
         $this->setValidator('siren', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siren doit être un nombre à 14 chiffres")));
      
-        $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
-	    	'nbChais'    => $this->getOption('nbChais', 1)));
-        $this->embedForm('chais', $formChais);
+//        $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
+//	    	'nbChais'    => $this->getOption('nbChais', 1)));
+//        $this->embedForm('chais', $formChais);
         
     }
 }

@@ -35,6 +35,16 @@ class compteActions extends sfActions {
     public function executeVisualisationAdmin(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
     }
+    
+    public function executeRedirectEspaceEtablissement(sfWebRequest $request) {
+        $this->compte = $this->getRoute()->getCompte();        
+        if(!($etablissement = $this->compte->getEtablissementObj())){
+            throw new sfException("L'établissement du compte n'a pas été trouvé");
+        }
+        $this->getUser()->signIn($etablissement->identifiant);
+
+        return $this->redirect('home');
+    }
 
     public function executeModificationAdmin(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();

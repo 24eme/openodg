@@ -130,6 +130,13 @@ class Compte extends BaseCompte {
         }
         $this->infos->$nodeType->add($key, $value);
     }
+    
+    public function getEtablissementObj() {
+        if(!$this->getEtablissement()){
+            return null;
+        }
+        return EtablissementClient::getInstance()->find($this->getEtablissement());
+    }
 
     public function isTypeCompte($type) {
         return $type == $this->getTypeCompte();

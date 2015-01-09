@@ -32,6 +32,12 @@ Compte:
       date_archivage: { }
       date_creation: { }
       no_accises: { }
+      droits:
+        type: collection
+        required: false
+        definition:
+          fields:
+             '*': { }
       chais:
         type: array_collection
         definition:
