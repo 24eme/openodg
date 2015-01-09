@@ -189,7 +189,19 @@
                             </div>
                         </div>
                         <br/>
-                    <?php endif; ?>                  
+                    <?php endif; ?>  
+                        <?php if ($compte->hasSyndicats()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Syndicats :</label> 
+                            <p>                         
+                                    <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
+                                <span class="label label-xs label-danger" style="display: inline-block; margin: 2px;"><?php echo $syndicat_libelle ?></span>
+                                    <?php endforeach; ?>
+                                
+                            </p>
+                        </div>
+                        <br/>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

@@ -13,6 +13,13 @@
  */
 class CompteAgentPrelevementModificationForm extends CompteModificationForm {
 
+    private $syndicats;
+
+       public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        parent::__construct($object, $options, $CSRFSecret);
+        $this->initDefaultSyndicats();
+    }
+    
     public function configure() {
         parent::configure();
 
@@ -27,6 +34,35 @@ class CompteAgentPrelevementModificationForm extends CompteModificationForm {
         $this->setValidator('nom', new sfValidatorString(array("required" => false)));
 
         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => false)));
+
+        $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
+        $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));
+    }
+
+    private function getSyndicats() {
+        $compteClient = CompteClient::getInstance();
+        if (!$this->syndicats) {
+            foreach ($compteClient->getAllSyndicats() as $syndicatId) {      
+                $syndicat = CompteClient::getInstance()->find($syndicatId);
+            $this->syndicats[$syndicatId] = $syndicat->nom_a_afficher;
+            }
+        }
+        return $this->syndicats;
+    }
+        public function initDefaultSyndicats() {
+        $default_syndicats = array();
+        foreach ($this->getObject()->getInfosSyndicats() as $syndicats_key => $syndicats_libelle) {
+            $default_syndicats[] = $syndicats_key;
+        }
+        $this->widgetSchema['syndicats']->setDefault($default_syndicats);
+    }
+    
+
+    public function save($con = null) {
+        if ($syndicats = $this->values['syndicats']) {
+            $this->getObject()->updateLocalSyndicats($syndicats);
+        }
+        parent::save($con);
     }
 
 }

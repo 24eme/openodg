@@ -19,6 +19,7 @@
  * @property string $code_postal
  * @property string $commune
  * @property string $cedex
+ * @property string $pays
  * @property string $telephone_bureau
  * @property string $telephone_prive
  * @property string $telephone_mobile
@@ -33,6 +34,7 @@
  * @property string $date_archivage
  * @property string $date_creation
  * @property string $no_accises
+ * @property acCouchdbJson $droits
  * @property acCouchdbJson $chais
  * @property acCouchdbJson $infos
  * @property acCouchdbJson $tags
@@ -67,6 +69,8 @@
  * @method string setCommune()
  * @method string getCedex()
  * @method string setCedex()
+ * @method string getPays()
+ * @method string setPays()
  * @method string getTelephoneBureau()
  * @method string setTelephoneBureau()
  * @method string getTelephonePrive()
@@ -95,6 +99,8 @@
  * @method string setDateCreation()
  * @method string getNoAccises()
  * @method string setNoAccises()
+ * @method acCouchdbJson getDroits()
+ * @method acCouchdbJson setDroits()
  * @method acCouchdbJson getChais()
  * @method acCouchdbJson setChais()
  * @method acCouchdbJson getInfos()

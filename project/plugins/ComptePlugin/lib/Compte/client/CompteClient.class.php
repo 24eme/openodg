@@ -10,9 +10,8 @@ class CompteClient extends acCouchdbClient {
     const TYPE_COMPTE_AGENT_PRELEVEMENT = "AGENT_PRELEVEMENT";
     const TYPE_COMPTE_DEGUSTATEUR = "DEGUSTATEUR";
     const TYPE_COMPTE_CONTACT = "CONTACT";
-    
+    const TYPE_COMPTE_SYNDICAT = "SYNDICAT";
     const STATUT_ACTIF = "ACTIF";
-    
     const ATTRIBUT_ETABLISSEMENT_COOPERATEUR = "COOPERATEUR";
     const ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS = "PRODUCTEUR";
     const ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR = "CONDITIONNEUR";
@@ -31,8 +30,10 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT = "USAGER_PRODUIT";
     const ATTRIBUT_CONTACT_RESTAURANT = "RESTAURANT";
     const ATTRIBUT_CONTACT_HOTEL = "HOTEL";
-   // const ATTRIBUT_CONTACT_PARC_ATTRACTION = "PARC_ATTRACTION";
-    
+    const ATTRIBUT_SYNDICAT_SYNDICAT = "SYNDICAT";
+
+    // const ATTRIBUT_CONTACT_PARC_ATTRACTION = "PARC_ATTRACTION";
+
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_COOPERATEUR => 'Coopérateur',
         self::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS => 'Producteur de raisin',
@@ -46,21 +47,21 @@ class CompteClient extends acCouchdbClient {
         self::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT => 'Viticulteur indépendant',
         self::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE => 'Cave coopérative'
     );
-    
     private $libelles_attributs_agents_prelevement = array(
         self::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR => 'Prélèveur',
         self::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE => 'Agent de contrôle');
-    
     private $libelles_attributs_degustateurs = array(
         self::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES => 'Porteur de mémoire',
         self::ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT => 'Technicien du produit',
         self::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT => 'Usager du produit');
-    
     private $libelles_attributs_contacts = array(
         self::ATTRIBUT_CONTACT_RESTAURANT => 'Restaurant',
         self::ATTRIBUT_CONTACT_HOTEL => 'Hôtel'
-      //  self::ATTRIBUT_CONTACT_PARC_ATTRACTION => 'Parc d\'attraction'
-            );
+            //  self::ATTRIBUT_CONTACT_PARC_ATTRACTION => 'Parc d\'attraction'
+    );
+    private $libelles_attributs_syndicats = array(
+        self::ATTRIBUT_SYNDICAT_SYNDICAT => 'Syndicat'
+    );
 
     public static function getInstance() {
         return acCouchdbManager::getClient(self::TYPE_MODEL);
@@ -85,6 +86,10 @@ class CompteClient extends acCouchdbClient {
                 ->endkey(sprintf("COMPTE-" . $prefix . "%s", "999999"));
 
         return $query->execute(acCouchdbClient::HYDRATE_ARRAY)->getIds();
+    }
+    
+    public function getAllSyndicats() {
+        return $this->getAllComptesPrefixedIds('S');
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -130,6 +135,9 @@ class CompteClient extends acCouchdbClient {
         if ($type_compte == self::TYPE_COMPTE_AGENT_PRELEVEMENT) {
             return "A";
         }
+        if ($type_compte == self::TYPE_COMPTE_SYNDICAT) {
+            return "S";
+        }
         throw new sfException(sprintf("Ce type de compte %s n'est pas incrémental", $type_compte));
     }
 
@@ -163,11 +171,13 @@ class CompteClient extends acCouchdbClient {
         if ($type_compte == self::TYPE_COMPTE_ETABLISSEMENT) {
             return $this->libelles_attributs_etablissements;
         }
+        if ($type_compte == self::TYPE_COMPTE_SYNDICAT) {
+            return $this->libelles_attributs_syndicats;
+        }
     }
 
-
     public function getAttributLibelle($compte_attribut) {
-        $libellesArr = array_merge($this->libelles_attributs_etablissements, $this->libelles_attributs_degustateurs, $this->libelles_attributs_agents_prelevement, $this->libelles_attributs_contacts);
+        $libellesArr = array_merge($this->libelles_attributs_etablissements, $this->libelles_attributs_degustateurs, $this->libelles_attributs_agents_prelevement, $this->libelles_attributs_contacts,$this->libelles_attributs_syndicats);
         return $libellesArr[$compte_attribut];
     }
 
@@ -175,7 +185,8 @@ class CompteClient extends acCouchdbClient {
         return array(self::TYPE_COMPTE_CONTACT => self::TYPE_COMPTE_CONTACT,
             self::TYPE_COMPTE_ETABLISSEMENT => self::TYPE_COMPTE_ETABLISSEMENT,
             self::TYPE_COMPTE_DEGUSTATEUR => self::TYPE_COMPTE_DEGUSTATEUR,
-            self::TYPE_COMPTE_AGENT_PRELEVEMENT => self::TYPE_COMPTE_AGENT_PRELEVEMENT);
+            self::TYPE_COMPTE_AGENT_PRELEVEMENT => self::TYPE_COMPTE_AGENT_PRELEVEMENT,
+            self::TYPE_COMPTE_SYNDICAT => self::TYPE_COMPTE_SYNDICAT);
     }
 
     public function getCompteTypeLibelle($type_compte) {
@@ -185,9 +196,10 @@ class CompteClient extends acCouchdbClient {
 
     public function getAllTypesCompteWithLibelles() {
         return array(self::TYPE_COMPTE_CONTACT => "Contact",
-            self::TYPE_COMPTE_ETABLISSEMENT => "Opérateur",
-            self::TYPE_COMPTE_DEGUSTATEUR => "Dégustateur",
-            self::TYPE_COMPTE_AGENT_PRELEVEMENT => "Agent de prélèvement");
+        self::TYPE_COMPTE_ETABLISSEMENT => "Opérateur",
+        self::TYPE_COMPTE_DEGUSTATEUR => "Dégustateur",
+        self::TYPE_COMPTE_AGENT_PRELEVEMENT => "Agent de prélèvement",
+        self::TYPE_COMPTE_SYNDICAT => "Syndicat");
     }
 
     public function getAllAttributsByTypeCompte() {

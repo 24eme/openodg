@@ -182,6 +182,15 @@
                             ?>
                         </div>
                     </div>
+                                        <?php if (isset($form["syndicats"])): ?>
+                        <div class="form-group">
+                            <?php echo $form["syndicats"]->renderError(); ?>
+                            <?php echo $form["syndicats"]->renderLabel("Syndicats", array("class" => "col-xs-3 control-label")); ?>
+                            <div class="col-xs-9">
+                                <?php echo $form["syndicats"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "syndicats")); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

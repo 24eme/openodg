@@ -41,7 +41,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => false)));
         $this->setValidator('attributs', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
-
+        
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
     }
 
@@ -60,7 +60,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
             $this->attributsForCompte = $compteClient->getAttributsForType($this->getObject()->getTypeCompte());
         }
         return $this->attributsForCompte;
-    }
+    }   
     
     public function save($con = null) {
         if ($attributs = $this->values['attributs']) {

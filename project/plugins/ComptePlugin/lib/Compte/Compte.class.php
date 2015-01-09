@@ -69,6 +69,10 @@ class Compte extends BaseCompte {
     public function getInfosAutomatiques() {
         return $this->infos->get('automatiques');
     }
+    
+    public function getInfosSyndicats() {
+        return $this->infos->get('syndicats');
+    }
 
     public function hasProduits() {
         return count($this->infos->get('produits'));
@@ -80,6 +84,10 @@ class Compte extends BaseCompte {
 
     public function hasManuels() {
         return count($this->infos->get('manuels'));
+    }
+    
+    public function hasSyndicats() {
+        return count($this->infos->get('syndicats'));
     }
 
     public function hasAutomatiques() {
@@ -110,6 +118,7 @@ class Compte extends BaseCompte {
             $this->updateInfosTags('attributs', $attribut_code, CompteClient::getInstance()->getAttributLibelle($attribut_code));
         }
     }
+    
 
     public function updateInfosTagsManuels($infos_manuels = array()) {
         $this->removeInfosTagsNode('manuels');
@@ -128,6 +137,15 @@ class Compte extends BaseCompte {
         }
     }
 
+    public function updateLocalSyndicats($syndicats_array = array()) {
+         $this->removeInfosTagsNode('syndicats');
+        foreach ($syndicats_array as $syndicatId) {
+            $syndicat = CompteClient::getInstance()->find($syndicatId);
+            $syndicat_libelle = $syndicat->nom_a_afficher;//." (".$syndicat->commune.")";
+            $this->updateInfosTags('syndicats', $syndicatId, $syndicat_libelle);
+        }
+    }
+    
     public function updateInfosTags($nodeType, $key, $value) {        
         if (!$this->infos->exist($nodeType)) {
             $this->infos->add($nodeType, null);
@@ -167,6 +185,9 @@ class Compte extends BaseCompte {
         }
         foreach ($this->getInfosAutomatiques() as $automatique) {
             $this->addTag('automatiques', $this->formatTag($automatique));
+        }
+        foreach ($this->getInfosSyndicats() as $syndicat) {
+            $this->addTag('syndicats', $this->formatTag($syndicat));
         }
     }
 

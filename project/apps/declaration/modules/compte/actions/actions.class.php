@@ -184,6 +184,8 @@ class compteActions extends sfActions {
                 return new CompteDegustateurModificationForm($this->compte);
             case CompteClient::TYPE_COMPTE_AGENT_PRELEVEMENT:
                 return new CompteAgentPrelevementModificationForm($this->compte);
+            case CompteClient::TYPE_COMPTE_SYNDICAT:
+                return new CompteSyndicatModificationForm($this->compte);
         }
     }
 
