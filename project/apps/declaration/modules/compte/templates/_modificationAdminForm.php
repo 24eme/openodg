@@ -148,62 +148,69 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 panel panel-primary">
-            <div class="panel-heading">
-                <h3>Informations complémentaire</h3>
-            </div>
-            <div class="panel-body">
-                <div class="form-group">
-                    <?php echo $form["attributs"]->renderError(); ?>
-                    <?php echo $form["attributs"]->renderLabel("Attributs", array("class" => "col-xs-3 control-label")); ?>
-                    <div class="col-xs-9">
-                        <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "attributs")); ?>
-                    </div>
+        <div class="col-xs-12" >
+            <div class=" panel panel-primary">
+                <div class="panel-heading">
+                    <h3>Informations complémentaire</h3>
                 </div>
-                <?php if (isset($form["produits"])): ?>
+                <div class="panel-body">
                     <div class="form-group">
-                        <?php echo $form["produits"]->renderError(); ?>
-                        <?php echo $form["produits"]->renderLabel("Produits", array("class" => "col-xs-3 control-label")); ?>
+                        <?php echo $form["attributs"]->renderError(); ?>
+                        <?php echo $form["attributs"]->renderLabel("Attributs", array("class" => "col-xs-3 control-label")); ?>
                         <div class="col-xs-9">
-                            <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "produits")); ?>
+                            <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "attributs")); ?>
                         </div>
                     </div>
-                <?php endif; ?>
-                <div class="form-group">
-                    <?php echo $form["manuels"]->renderError(); ?>
-                    <?php echo $form["manuels"]->renderLabel("Tags manuels", array("class" => "col-xs-3 control-label")); ?>
-                    <div class="col-xs-9">                        
-                        <?php echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocompletepermissif",
-                            "placeholder" => "tags manuels",
-                            "data-url" => url_for('compte_tags_manuels'),
-                            "data-initvalue" => $form->getObject()->getDefaultManuelsTagsFormatted())); ?>
+                    <?php if (isset($form["produits"])): ?>
+                        <div class="form-group">
+                            <?php echo $form["produits"]->renderError(); ?>
+                            <?php echo $form["produits"]->renderLabel("Produits", array("class" => "col-xs-3 control-label")); ?>
+                            <div class="col-xs-9">
+                                <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "produits")); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                    <div class="form-group">
+                        <?php echo $form["manuels"]->renderError(); ?>
+                        <?php echo $form["manuels"]->renderLabel("Tags manuels", array("class" => "col-xs-3 control-label")); ?>
+                        <div class="col-xs-9">                        
+                            <?php
+                            echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocompletepermissif",
+                                "placeholder" => "tags manuels",
+                                "data-url" => url_for('compte_tags_manuels'),
+                                "data-initvalue" => $form->getObject()->getDefaultManuelsTagsFormatted()));
+                            ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <?php if(isset($form['chais'])): ?>
-    <div class="row">
-        <div class="col-xs-12 panel panel-primary">
-            <div class="panel-heading">
-                <h3>Chais</h3>
-            </div>
-            <div class="panel-body">
-                <p class="intro">Veuillez ajouter vos chais</p>
-                <?php
-                include_partial('templateChai');
-                include_partial('chais', array('indice' => 0, 'form' => $form['chais'][0], 'supprimer' => false));
-                $i = 0;
-                foreach ($form['chais'] as $chai) {
-                    if ($i > 0) {
-                        include_partial('chai', array('indice' => $i, 'form' => $chai, 'supprimer' => true));
-                    }
-                    $i++;
-                }
-                ?>
+<?php if (isset($form['chais'])): ?>
+<!--        <div class="row">
+            <div class="col-xs-12" >        
 
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3>Chais</h3>
+                    </div>
+                    <div class="panel-body">
+                        <p class="intro">Veuillez ajouter vos chais</p>-->
+                        <?php
+//                        include_partial('templateChai');
+//                        include_partial('chais', array('indice' => 0, 'form' => $form['chais'][0], 'supprimer' => false));
+//                        $i = 0;
+//                        foreach ($form['chais'] as $chai) {
+//                            if ($i > 0) {
+//                                include_partial('chai', array('indice' => $i, 'form' => $chai, 'supprimer' => true));
+//                            }
+//                            $i++;
+//                        }
+                        ?>
+
+<!--                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <?php endif; ?>
+        </div>-->
+<?php endif; ?>
 </div>

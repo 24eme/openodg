@@ -9,8 +9,8 @@
     </div>
     <div class="row row-margin row-button">
         <div class="col-xs-4">
-            <a href="<?php echo url_for("home") ?>" class="btn btn-primary btn-lg btn-upper">
-                <span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à mon espace</small>
+            <a href="<?php echo url_for("compte_visualisation_admin",array("id" => $compte->identifiant)) ?>" class="btn btn-primary btn-lg btn-upper">
+                <span class="eleganticon arrow_carrot-left"></span>Annuler
             </a>
         </div>
         <div class="col-xs-4 text-center">

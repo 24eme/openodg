@@ -2,7 +2,7 @@
     <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?>)</h2>
 </div>
 
-<div class="row col-xs-offset-1 col-xs-10">
+<div class="row col-xs-12">
     <div class="row">
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -144,82 +144,89 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 panel panel-primary">
-            <div class="panel-heading">
-                <h3>Informations complémentaire</h3>
-            </div>
-            <div class="panel-body">
-                <div class="form-group">
-                    <label class="col-xs-3">Attributs :</label> 
-                    <div class="col-xs-9">
-                        <ul>                            
-                            <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
-                            <li><strong><?php echo $attribut_libelle ?></strong></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3>Informations complémentaire</h3>
                 </div>
-                <br/>
-                <?php if ($compte->hasProduits()): ?>
+                <div class="panel-body">
                     <div class="form-group">
-                        <label class="col-xs-3">Produits :</label> 
+                        <label class="col-xs-3">Attributs :</label> 
                         <div class="col-xs-9">
                             <ul>                            
-                                <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
-                                    <li><strong><?php echo $produit_libelle ?></strong></li>
+                                <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
+                                    <li><strong><?php echo $attribut_libelle ?></strong></li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     </div>
-                <br/>
-                <?php endif; ?>
-                <?php if ($compte->hasManuels()): ?>
-                    <div class="form-group">
-                        <label class="col-xs-3">Tags manuels :</label> 
-                        <div class="col-xs-9">
-                            <ul>                            
-                                <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
-                                    <li><strong><?php echo $tag_manuel ?></strong></li>
-                                <?php endforeach; ?>
-                            </ul>
+                    <br/>
+                    <?php if ($compte->hasProduits()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Produits :</label> 
+                            <div class="col-xs-9">
+                                <ul>                            
+                                    <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
+                                        <li><strong><?php echo $produit_libelle ?></strong></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                <br/>
-                <?php endif; ?>
-                <?php if ($compte->hasAutomatiques()): ?>
-                    <div class="form-group">
-                        <label class="col-xs-3">Tags automatiques :</label> 
-                        <div class="col-xs-9">
-                            <ul>                            
-                                <?php foreach ($compte->getInfosAutomatiques() as $tag_auto_code => $tag_auto): ?>
-                                    <li><strong><?php echo $tag_auto ?></strong></li>
-                                <?php endforeach; ?>
-                            </ul>
+                        <br/>
+                    <?php endif; ?>
+                    <?php if ($compte->hasManuels()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Tags manuels :</label> 
+                            <div class="col-xs-9">
+                                <ul>                            
+                                    <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
+                                        <li><strong><?php echo $tag_manuel ?></strong></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                <br/>
-                <?php endif; ?>
-                
-                <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
-                    <div class="form-group">
-                        <label class="col-xs-3">Chais</label>
-                        <div class="col-xs-9">
-                            <ul>        
-                                <?php foreach ($compte->chais as $chai) : ?>
-                                    <li>
-                                        <strong>
-                                            <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?>
-                                        </strong>                                    
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
+                        <br/>
+                    <?php endif; ?>
+                    <?php if ($compte->hasAutomatiques()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Tags automatiques :</label> 
+                            <div class="col-xs-9">
+                                <ul>                            
+                                    <?php foreach ($compte->getInfosAutomatiques() as $tag_auto_code => $tag_auto): ?>
+                                        <li><strong><?php echo $tag_auto ?></strong></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                <?php endif; ?>
+                        <br/>
+                    <?php endif; ?>
+
+                    <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Chais</label>
+                            <div class="col-xs-9">
+                                <ul>        
+                                    <?php foreach ($compte->chais as $chai) : ?>
+                                        <li>
+                                            <strong>
+                                                <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?>
+                                            </strong>                                    
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<div class="row col-xs-offset-1 col-xs-10 text-center">
-    <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin', array('id' => $compte->identifiant)) ?>">Modifier</a>
+<div class="row row-margin row-button">
+    <div class="col-xs-4">
+        <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>Retour à la recherche</a>
+    </div>
+    <div class="col-xs-4 text-center">
+        <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin', array('id' => $compte->identifiant)) ?>">Modifier</a>
+    </div>
 </div>

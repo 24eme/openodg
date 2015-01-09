@@ -39,7 +39,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('telephone_prive', new sfValidatorString(array("required" => false)));
         $this->setValidator('fax', new sfValidatorString(array("required" => false)));
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => false)));
-        $this->setValidator('attributs', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()), 'min' => 1)));
+        $this->setValidator('attributs', new sfValidatorChoice(array('multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
 
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
