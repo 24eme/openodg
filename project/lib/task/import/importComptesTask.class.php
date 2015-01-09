@@ -268,6 +268,10 @@ EOF;
             throw new Exception("L'identifiant n'est pas au bon format");
         }
 
+        if(preg_match("/4 - Possède une DR/", $data[self::CSV_RAISON_SOCIALE])) {
+            throw new Exception("IGNORE : 4 - Possède une DR");
+        }
+
         if($data[self::CSV_RAISON_SOCIALE]) {
             $compte->raison_sociale = trim(sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE]));
         } elseif($data[self::CSV_NOM]) {
@@ -294,21 +298,12 @@ EOF;
         }
 
         $compte->code_postal = trim($data[self::CSV_CODE_POSTAL]);
-        if(trim($data[self::CSV_PAYS]) == "FRANCE" || !trim($data[self::CSV_PAYS])) {
-            if(!$compte->code_postal || $compte->code_postal == "Canton non précisé") {
-                $this->echoWarning("Code postal non trouvé", $data);
-            }
-        }
+        
         if($compte->code_postal && !preg_match("/^[0-9]+$/", $compte->code_postal)) {
             $this->echoWarning("Code postal au mauvais format", $data);
         }
 
         $compte->commune = trim($data[self::CSV_COMMUNE]);
-        if(trim($data[self::CSV_PAYS]) == "FRANCE" || !trim($data[self::CSV_PAYS])) {
-            if(!$compte->commune || $compte->commune == "Canton non précisé") {
-                $this->echoWarning("Ville non trouvé", $data);
-            }
-        }
 
         $compte->pays = trim($data[self::CSV_PAYS]);
 
@@ -333,6 +328,22 @@ EOF;
             $compte->statut = 'INACTIF';
         }
 
+        if($compte->pays == "FRANCE" && !$compte->commune && !$compte->code_postal && !preg_match("/SYND/", $compte->raison_sociale)) {
+            throw new Exception("IGNORE : Contact FRANCE sans code postal et commune");
+        }
+
+        if($compte->pays == "FRANCE") {
+            if(!$compte->code_postal || $compte->code_postal == "Canton non précisé") {
+                $this->echoWarning("Code postal non trouvé", $data);
+            }
+        }
+
+        if($compte->pays == "FRANCE") {
+            if(!$compte->commune || $compte->commune == "Canton non précisé") {
+                $this->echoWarning("Ville non trouvé", $data);
+            }
+        }
+
         $compte->updateNomAAfficher();
     }
 
@@ -348,10 +359,18 @@ EOF;
             return null;
         }
 
+        if($compte->etablissement) {
+           $this->echoWarning("Doublon de ligne CVI (Ignoré)", $data);
+
+           return null;
+        }
+
         $cvi = str_replace(" ", "", $data[self::CSV_CVI]);
 
         if(!preg_match("/^[0-9]{10}$/", $cvi)) {
-
+            if($compte->date_archivage) {
+              throw new Exception("Le CVI n'est pas au bon format mais archivé");  
+            }
             throw new Exception("Le CVI n'est pas au bon format");
         }
 
@@ -392,11 +411,20 @@ EOF;
         $adresse = $this->formatAdresse($data);
         
         if(!$adresse) {
-            throw new sfException("Adresse vide");
+            $this->echoWarning("Chai sans adresse", $data);
+            return;
         }
         $chai->adresse = $adresse;
         $chai->commune = $data[self::CSV_COMMUNE];
         $chai->code_postal = $data[self::CSV_CODE_POSTAL];
+
+        if(!$chai->commune) {
+            $this->echoWarning("Chai sans commune", $data);
+        }
+
+        if(!$chai->code_postal) {
+            $this->echoWarning("Chai sans code postal", $data);
+        }
     }
 
     protected function importLineCommunication($data, $compte) {
@@ -425,7 +453,7 @@ EOF;
         } elseif(!$compte->telephone_mobile && $mobile) {
             $compte->telephone_mobile = $mobile;
         } elseif($compte->telephone_prive && $mobile && $compte->telephone_prive == $mobile) {
-            
+
         } elseif($mobile && !$compte->telephone_prive) {
             $compte->telephone_prive = $mobile;
         } elseif($mobile) {

@@ -37,7 +37,37 @@ LEFT JOIN PAYS pa ON c.PAYS = pa.COG
 " | sed 's/\t/;/g'
 
 mysql -u root -pboris97 AVA_base -N -e "
-SELECT        LPAD(pe.CODE_IDENT_SITE_EXPLT, 6, '0') as ID,         '2.   CVI' as TYPE_LIGNE,         e.NR_EVV as CVI,         '' as SIREN,         '' as SIRET,        '' as TVA_INTRA,         '' as CIVILITE,         e.INTITULE as RAISON_SOCIALE,        '' as NOM,        '' as PRENOM,        '' as FAMILLE,        REPLACE(e.ADRESSE1,';','') as ADRESSE_1,        REPLACE(e.ADRESSE2,';','') as ADRESSE_2,        REPLACE(e.ADRESSE3,';','') as ADRESSE_3,        e.CODE_POSTAL as CODE_POSTAL,        c.NCCCT as COMMUNE,        e.COMMUNE as CODE_INSEE,        e.CEDEX as CEDEX,       '' as PAYS,        '' as TEL,        '' as FAX,        '' as PORTABLE,        '' as EMAIL,        '' as WEB,        '' as ATTRIBUTS,        '' as DATE_ARCHIVAGE,         '' as DATE_CREATION, '' as LIAISON FROM EVV e INNER JOIN PPM_EVV_MFV as pe ON e.CLE_EVV = pe.CLE_EVV LEFT JOIN COMMUNE_FRANCAISE as c ON c.INSEE = e.COMMUNE;" | sed 's/\t/;/g'
+SELECT        LPAD(pe.CODE_IDENT_SITE_EXPLT, 6, '0') as ID,
+              '2.   CVI' as TYPE_LIGNE,
+              e.NR_EVV as CVI,         
+              LPAD((10000 - e.CLE_EVV), 6, '0') as SIREN,         
+              '' as SIRET,        
+              '' as TVA_INTRA,         
+              '' as CIVILITE,         
+              e.INTITULE as RAISON_SOCIALE,        
+              '' as NOM,        
+              '' as PRENOM,        
+              '' as FAMILLE,        
+              REPLACE(e.ADRESSE1,';','') as ADRESSE_1,        
+              REPLACE(e.ADRESSE2,';','') as ADRESSE_2,        
+              REPLACE(e.ADRESSE3,';','') as ADRESSE_3,        
+              e.CODE_POSTAL as CODE_POSTAL,        
+              co.LIBELLE as COMMUNE,        
+              e.COMMUNE as CODE_INSEE,        
+              e.CEDEX as CEDEX,       
+              '' as PAYS,        
+              '' as TEL,        
+              '' as FAX,        
+              '' as PORTABLE,        
+              '' as EMAIL,        
+              '' as WEB,        
+              '' as ATTRIBUTS,        
+              '' as DATE_ARCHIVAGE,         
+              '' as DATE_CREATION, 
+              '' as LIAISON 
+              FROM EVV e INNER JOIN PPM_EVV_MFV as pe ON e.CLE_EVV = pe.CLE_EVV 
+              LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = e.COMMUNE
+" | sed 's/\t/;/g'
 
 mysql -u root -pboris97 AVA_base -N -e "
 SELECT
@@ -56,7 +86,7 @@ SELECT
        REPLACE(c.ADRESSE2,';','') as ADRESSE_2,
        REPLACE(c.ADRESSE3,';','') as ADRESSE_3,
        c.CODE_POSTAL as CODE_POSTAL,
-       co.NCCCT as COMMUNE,
+       co.LIBELLE as COMMUNE,
        c.COMMUNE as CODE_INSEE,
        c.CEDEX as CEDEX,
        '' as PAYS,
@@ -70,7 +100,7 @@ SELECT
        '' as DATE_CREATION,
        '' as LIAISON
 FROM CHAI c
-LEFT JOIN COMMUNE_FRANCAISE as co ON co.INSEE = c.COMMUNE
+LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = c.COMMUNE
 INNER JOIN PPM_EVV_CHAI as pe ON pe.CLE_CHAI = c.CLE_CHAI
 INNER JOIN EVV as e ON e.CLE_EVV = pe.CLE_EVV
 " | sed 's/\t/;/g'
