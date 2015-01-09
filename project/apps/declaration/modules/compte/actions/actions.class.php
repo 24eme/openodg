@@ -134,7 +134,7 @@ class compteActions extends sfActions {
         $from = $res_by_page * ($page - 1);
         $q->setLimit($res_by_page);
         $q->setFrom($from);
-        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels', "syndicats" => 'tags.syndicat');
+        $facets = array('attributs' => 'tags.attributs', 'manuels' => 'tags.manuels', "syndicats" => 'tags.syndicats');
         foreach ($facets as $nom => $f) {
             $elasticaFacet = new acElasticaFacetTerms($nom);
             $elasticaFacet->setField($f);
