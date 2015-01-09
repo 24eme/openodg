@@ -24,3 +24,6 @@ recherche:
   
 allTagsManuels:
   is_secure: false
+
+redirectEspaceEtablissement:
+  is_secure: false   

@@ -14,10 +14,12 @@
 class CompteDegustateurModificationForm extends CompteModificationForm {
 
     protected $produits;
+        private $syndicats;
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
         $this->initDefaultProduits();
+        $this->initDefaultSyndicats();
     }
 
     public function configure() {
@@ -36,8 +38,24 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         
         $this->setWidget("produits", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAllProduits())));
         $this->setValidator('produits', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAllProduits()))));
+    
+         $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
+        $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));
+
+        
     }
 
+    private function getSyndicats() {
+        $compteClient = CompteClient::getInstance();
+        if (!$this->syndicats) {
+            foreach ($compteClient->getAllSyndicats() as $syndicatId) {      
+                $syndicat = CompteClient::getInstance()->find($syndicatId);
+            $this->syndicats[$syndicatId] = $syndicat->nom_a_afficher;
+            }
+        }
+        return $this->syndicats;
+    }
+    
     private function getAllProduits() {
         if (!$this->produits) {
             foreach (ConfigurationClient::getConfiguration()->getProduits() as $hash => $produitCepage) {
@@ -51,6 +69,9 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         if ($produits = $this->values['produits']) {
             $this->getObject()->updateLocalTagsProduits($produits);
         }
+        if ($syndicats = $this->values['syndicats']) {
+            $this->getObject()->updateLocalSyndicats($syndicats);
+        }
         parent::save($con);
     }
 
@@ -60,6 +81,14 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
             $default_produits[] = $produit_hash;
         }
         $this->widgetSchema['produits']->setDefault($default_produits);
+    }
+    
+        public function initDefaultSyndicats() {
+        $default_syndicats = array();
+        foreach ($this->getObject()->getInfosSyndicats() as $syndicats_key => $syndicats_libelle) {
+            $default_syndicats[] = $syndicats_key;
+        }
+        $this->widgetSchema['syndicats']->setDefault($default_syndicats);
     }
 
 }

@@ -32,6 +32,12 @@ Compte:
       date_archivage: { }
       date_creation: { }
       no_accises: { }
+      droits:
+        type: collection
+        required: false
+        definition:
+          fields:
+             '*': { }
       chais:
         type: array_collection
         definition:
@@ -67,6 +73,11 @@ Compte:
               definition:
                 fields:
                   '*' : { }
+            'syndicats':
+              type: collection
+              definition:
+                fields:
+                  '*' : { }                   
       tags:
         type: collection
         definition:
@@ -90,4 +101,9 @@ Compte:
               type: array_collection
               definition:
                 fields:
-                  '*' : { }            
+                  '*' : { }   
+            'syndicats':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }   

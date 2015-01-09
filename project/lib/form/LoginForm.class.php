@@ -32,7 +32,7 @@ class LoginForm extends BaseForm {
         $choices = array("" => "");
         foreach($etablissements as $etablissement) {
             $choices[$etablissement["identifiant"]] = sprintf("%s - %s %s - %s (%s)", 
-                $etablissement["nom"], 
+                $etablissement["raison_sociale"], 
                 $etablissement["code_postal"], 
                 $etablissement["commune"], 
                 $etablissement["identifiant"],

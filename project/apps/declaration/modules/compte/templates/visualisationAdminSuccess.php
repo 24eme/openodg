@@ -2,7 +2,7 @@
     <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?>)</h2>
 </div>
 
-<div class="row col-xs-offset-1 col-xs-10">
+<div class="row col-xs-12">
     <div class="row">
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -89,98 +89,162 @@
                             </div>                
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-xs-6">Téléphone bureau</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->telephone_bureau; ?>
-                            </div>                
-                        </div>                        
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-xs-6">Téléphone mobile</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->telephone_mobile; ?>
-                            </div>                
-                        </div>     
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-xs-6">Téléphone privé</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->telephone_prive; ?>
-                            </div>                
-                        </div>     
-                    </div>
-                    <div class="form-group">
-                        <div class="row">
-                            <label class="col-xs-6">Fax</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->fax; ?>
-                            </div>                
-                        </div>   
-                    </div>
-                    <div class="form-group"> 
-                        <div class="row">
-                            <label class="col-xs-6">Email</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->email; ?>
-                            </div>                
-                        </div>     
-                    </div>
+                    <?php if ($compte->telephone_bureau): ?>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-xs-6">Téléphone bureau</label>    
+                                <div class="col-xs-6">
+                                    <?php echo $compte->telephone_bureau; ?>
+                                </div>                
+                            </div>                        
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($compte->telephone_mobile): ?>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-xs-6">Téléphone mobile</label>    
+                                <div class="col-xs-6">
+                                    <?php echo $compte->telephone_mobile; ?>
+                                </div>                
+                            </div>     
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($compte->telephone_prive): ?>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-xs-6">Téléphone privé</label>    
+                                <div class="col-xs-6">
+                                    <?php echo $compte->telephone_prive; ?>
+                                </div>                
+                            </div>     
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($compte->fax): ?>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-xs-6">Fax</label>    
+                                <div class="col-xs-6">
+                                    <?php echo $compte->fax; ?>
+                                </div>                
+                            </div>   
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($compte->email): ?>
+                        <div class="form-group"> 
+                            <div class="row">
+                                <label class="col-xs-6">Email</label>    
+                                <div class="col-xs-6">
+                                    <?php echo $compte->email; ?>
+                                </div>                
+                            </div>     
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 panel panel-primary">
-            <div class="panel-heading">
-                <h3>Informations complémentaire</h3>
-            </div>
-            <div class="panel-body">
-                <div class="form-group">
-                    <label class="col-xs-3">Attributs</label> 
-                    <div class="col-xs-9">
-                        <ul>                            
-                            <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
-                                <li><?php echo $attribut_libelle ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3>Informations complémentaire</h3>
                 </div>
-                <?php if ($compte->hasProduits()): ?>
+                <div class="panel-body">
+                    
+                        <div class="form-group">
+                            <label class="col-xs-3">Type de compte :</label> 
+                            <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
+                        </div>
+                        <br/>  
+                    <?php if ($compte->hasAttributs()): ?>
                     <div class="form-group">
-                        <label class="col-xs-3">Produit</label> 
-                        <div class="col-xs-9">
-                            <ul>                            
-                                <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
-                                    <li><?php echo $produit_libelle ?></li>
-                                <?php endforeach; ?>
-                            </ul>
+                        <label class="col-xs-3">Attributs :</label> 
+                        <div>                                                   
+                                <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
+                                    <span class="label label-xs label-default" style="display: inline-block; margin: 2px;"><?php echo $attribut_libelle ?></span>
+                                <?php endforeach; ?>                           
                         </div>
                     </div>
-                <?php endif; ?>
-                <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
-                    <div class="form-group">
-                        <label class="col-xs-3">Chais</label>
-                        <div class="col-xs-9">
-                            <ul>        
-                                <?php foreach ($compte->chais as $chai) : ?>
-                                    <li>
-                                        <strong>
-                                            <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?>
-                                        </strong>                                    
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
+                    <br/>
+                    <?php endif; ?>
+                    <?php if ($compte->hasProduits()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Produits :</label> 
+                            <p>                         
+                                    <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
+                                <span class="label label-xs label-info" style="display: inline-block; margin: 2px;"><?php echo $produit_libelle ?></span>
+                                    <?php endforeach; ?>
+                                
+                            </p>
                         </div>
-                    </div>
-                <?php endif; ?>
+                        <br/>
+                    <?php endif; ?>
+                    <?php if ($compte->hasManuels()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Tags manuels :</label> 
+                            <div>           
+                                    <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
+                                <span class="label label-xs label-success" style="display: inline-block; margin: 2px;"><?php echo $tag_manuel ?></span>
+                                    <?php endforeach; ?>                               
+                            </div>
+                        </div>
+                        <br/>
+                    <?php endif; ?>  
+                        <?php if ($compte->hasSyndicats()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Syndicats :</label> 
+                            <p>                         
+                                    <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
+                                <span class="label label-xs label-danger" style="display: inline-block; margin: 2px;"><?php echo $syndicat_libelle ?></span>
+                                    <?php endforeach; ?>
+                                
+                            </p>
+                        </div>
+                        <br/>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="row col-xs-offset-1 col-xs-10 text-center">
-    <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin',array('id' => $compte->identifiant))?>">Modifier</a>
+    <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && count($compte->chais)): ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3>Chais</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <ul>        
+                                    <?php foreach ($compte->chais as $chai) : ?>
+                                        <li>
+                                            <strong>
+                                                <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?>
+                                            </strong>                                    
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    <?php endif; ?>
+
+    <div class="row row-margin row-button">
+        <div class="col-xs-4">
+            <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>Retour à la recherche</a>
+        </div>
+        <div class="col-xs-4 text-center">
+            <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin', array('id' => $compte->identifiant)) ?>">Modifier</a>
+        </div>
+        <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
+            <div class="col-xs-4 text-right">               
+
+                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('compte_redirect_espace_etablissement', array("id" => $compte->identifiant)); ?>">Espace etablissement<span class="eleganticon arrow_carrot-right"></span></a>
+            </div>
+        <?php endif; ?>
+    </div>
 </div>

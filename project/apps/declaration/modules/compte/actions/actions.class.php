@@ -25,15 +25,25 @@ class compteActions extends sfActions {
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
-                $this->compte = $this->form->save();
-                $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');               
-                $this->redirect('compte_visualisation_admin',array('id' => $this->compte->identifiant));
+                $this->form->save();
+                $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
+                $this->redirect('compte_visualisation_admin', array('id' => $this->compte->identifiant));
             }
         }
     }
 
     public function executeVisualisationAdmin(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
+    }
+    
+    public function executeRedirectEspaceEtablissement(sfWebRequest $request) {
+        $this->compte = $this->getRoute()->getCompte();        
+        if(!($etablissement = $this->compte->getEtablissementObj())){
+            throw new sfException("L'établissement du compte n'a pas été trouvé");
+        }
+        $this->getUser()->signIn($etablissement->identifiant);
+
+        return $this->redirect('home');
     }
 
     public function executeModificationAdmin(sfWebRequest $request) {
@@ -43,9 +53,9 @@ class compteActions extends sfActions {
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
-                $this->compte = $this->form->save();
+                $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('compte_visualisation_admin',array('id' => $this->compte->identifiant));
+                $this->redirect('compte_visualisation_admin', array('id' => $this->compte->identifiant));
             }
         }
     }
@@ -174,6 +184,8 @@ class compteActions extends sfActions {
                 return new CompteDegustateurModificationForm($this->compte);
             case CompteClient::TYPE_COMPTE_AGENT_PRELEVEMENT:
                 return new CompteAgentPrelevementModificationForm($this->compte);
+            case CompteClient::TYPE_COMPTE_SYNDICAT:
+                return new CompteSyndicatModificationForm($this->compte);
         }
     }
 
