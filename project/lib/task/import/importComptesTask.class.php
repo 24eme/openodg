@@ -30,7 +30,8 @@ class importComptesTask extends sfBaseTask
     const CSV_ATTRIBUTS             = 24;
     const CSV_DATE_ARCHIVAGE        = 25;
     const CSV_DATE_CREATION         = 26;
-    const CSV_LIASON                = 27;
+    const CSV_LIAISON               = 27;
+    const CSV_LIAISON_NOM           = 28;
 
     protected function configure()
     {
@@ -256,14 +257,19 @@ EOF;
             return $this->importLineChai($data, $compte, $etablissement, $type_compte);
         }
 
+        if($data[self::CSV_TYPE_LIGNE] == "4.ATTRIB") {
+
+            return $this->importLineAttribut($data, $compte, $type_compte);
+        }
+
         if($data[self::CSV_TYPE_LIGNE] == "5.COMMUN") {
             
             return $this->importLineCommunication($data, $compte);
         }
 
-        if($data[self::CSV_TYPE_LIGNE] == "4.ATTRIB") {
+        if($data[self::CSV_TYPE_LIGNE] == "6.LIAISON") {
 
-            return $this->importLineAttribut($data, $compte, $type_compte);
+            return $this->importLineLiaison($data, $compte);
         }
     }
 
@@ -571,6 +577,16 @@ EOF;
         if(!$type_compte) {
            $compte->infos->attributs->add("SYNDICAT", "SYNDICAT"); 
         }  
+    }
+
+    protected function importLineLiaison($data, $compte) {
+        if(!trim($data[self::CSV_LIAISON])) {
+            $this->echoWarning('Liaison inexistante', $data);
+        }
+        if(!trim($data[self::CSV_LIAISON_NOM])) {
+            $this->echoWarning('Liaison nom inexistante', $data);
+        }
+        $compte->infos->syndicat->add("COMPTE-S".trim($data[self::CSV_LIAISON]), trim($data[self::CSV_LIAISON_NOM]));
     }
 
     protected function formatAdresse($data) {

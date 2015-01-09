@@ -29,7 +29,8 @@ SELECT
        '' as ATTRIBUTS,
        p.DATE_ARCHIVAGE as DATE_ARCHIVAGE, 
        p.DATE_CREATION as DATE_CREATION,
-       '' as LIAISON
+       '' as LIAISON,
+       '' as LIAISON_NOM
 FROM PPM p
 LEFT JOIN COORDONNEES c ON c.CODE_IDENT_SITE = p.CODE_IDENT_SITE AND c.NR_ORDRE = 0
 LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = c.COMMUNE
@@ -64,7 +65,8 @@ SELECT        LPAD(pe.CODE_IDENT_SITE_EXPLT, 6, '0') as ID,
               '' as ATTRIBUTS,        
               '' as DATE_ARCHIVAGE,         
               '' as DATE_CREATION, 
-              '' as LIAISON 
+              '' as LIAISON,
+              '' as LIAISON_NOM
               FROM EVV e INNER JOIN PPM_EVV_MFV as pe ON e.CLE_EVV = pe.CLE_EVV 
               LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = e.COMMUNE
 " | sed 's/\t/;/g'
@@ -98,7 +100,8 @@ SELECT
        CONCAT(IF(c.CHAI_DE_VINIFICATION > 0, 'CHAI_DE_VINIFICATION,', ','),IF(c.CENTRE_DE_CONDITIONNEMENT > 0, 'CENTRE_DE_CONDITIONNEMENT,', ','),IF(c.LIEU_DE_STOCKAGE > 0, 'LIEU_DE_STOCKAGE,', ','),IF(c.centre_de_pressurage > 0, 'CENTRE_DE_PRESSURAGE,', ',')) as ATTRIBUTS,
        '' as DATE_ARCHIVAGE, 
        '' as DATE_CREATION,
-       '' as LIAISON
+       '' as LIAISON,
+       '' as LIAISON_NOM
 FROM CHAI c
 LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = c.COMMUNE
 INNER JOIN PPM_EVV_CHAI as pe ON pe.CLE_CHAI = c.CLE_CHAI
@@ -134,7 +137,8 @@ SELECT
        r.LIBELLE_ATTRIBUT as ATTRIBUTS,
        '' as DATE_ARCHIVAGE, 
        '' as DATE_CREATION,
-       '' as LIAISON
+       '' as LIAISON,
+       '' as LIAISON_NOM
 FROM PPM_ATTRIBUTS a
 LEFT JOIN PPM_ATTRIBUT_REF r ON r.CLE_ATTRIBUT = a.ATTRIBUT
 " | sed 's/\t/;/g'
@@ -168,7 +172,8 @@ SELECT
        'SYNDICAT' as ATTRIBUTS,
        '' as DATE_ARCHIVAGE, 
        '' as DATE_CREATION,
-       '' as LIAISON
+       '' as LIAISON,
+       '' as LIAISON_NOM
 FROM Syndicats_Locaux s
 " | sed 's/\t/;/g'
 
@@ -201,7 +206,8 @@ SELECT
        '' as ATTRIBUTS,
        '' as DATE_ARCHIVAGE, 
        '' as DATE_CREATION,
-       '' as LIAISON
+       '' as LIAISON,
+       '' as LIAISON_NOM
 FROM COMMUNICATION c
 WHERE c.CLE_COORDONNEES > 0
 " | sed 's/\t/;/g'
@@ -235,9 +241,11 @@ SELECT
        '' as ATTRIBUTS,
        '' as DATE_ARCHIVAGE, 
        '' as DATE_CREATION,
-       LPAD(s.CIS, 6, '0') as LIAISON
+       LPAD(s.CIS, 6, '0') as LIAISON,
+       TRIM(CONCAT(p.TITRE, CONCAT(' ', p.RS))) as LIAISON_NOM
 FROM Syndicats_Locaux_Membres sm
 INNER JOIN Syndicats_Locaux s ON sm.ID_SL = s.Id_Syndicats_Locaux
+INNER JOIN AVA_base.PPM p ON s.CIS = p.CODE_IDENT_SITE
 WHERE sm.Cotisant = 1
 " | sed 's/\t/;/g'
 
