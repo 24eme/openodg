@@ -30,8 +30,8 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT = "TECHNICIEN_PRODUIT";
     const ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT = "USAGER_PRODUIT";
     const ATTRIBUT_CONTACT_RESTAURANT = "RESTAURANT";
-    const ATTRIBUT_CONTACT_PISCINE = "PISCINE";
-    const ATTRIBUT_CONTACT_PARC_ATTRACTION = "PARC_ATTRACTION";
+    const ATTRIBUT_CONTACT_HOTEL = "HOTEL";
+   // const ATTRIBUT_CONTACT_PARC_ATTRACTION = "PARC_ATTRACTION";
     
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_COOPERATEUR => 'Coopérateur',
@@ -58,8 +58,9 @@ class CompteClient extends acCouchdbClient {
     
     private $libelles_attributs_contacts = array(
         self::ATTRIBUT_CONTACT_RESTAURANT => 'Restaurant',
-        self::ATTRIBUT_CONTACT_PISCINE => 'Piscine',
-        self::ATTRIBUT_CONTACT_PARC_ATTRACTION => 'Parc d\'attraction');
+        self::ATTRIBUT_CONTACT_HOTEL => 'Hôtel'
+      //  self::ATTRIBUT_CONTACT_PARC_ATTRACTION => 'Parc d\'attraction'
+            );
 
     public static function getInstance() {
         return acCouchdbManager::getClient(self::TYPE_MODEL);

@@ -150,56 +150,46 @@
                     <h3>Informations complémentaire</h3>
                 </div>
                 <div class="panel-body">
+                    
+                        <div class="form-group">
+                            <label class="col-xs-3">Type de compte :</label> 
+                            <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
+                        </div>
+                        <br/>  
+                    <?php if ($compte->hasAttributs()): ?>
                     <div class="form-group">
                         <label class="col-xs-3">Attributs :</label> 
-                        <div class="col-xs-9">
-                            <ul>                            
+                        <div>                                                   
                                 <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
-                                    <li><strong><?php echo $attribut_libelle ?></strong></li>
-                                <?php endforeach; ?>
-                            </ul>
+                                    <span class="label label-xs label-default" style="display: inline-block; margin: 2px;"><?php echo $attribut_libelle ?></span>
+                                <?php endforeach; ?>                           
                         </div>
                     </div>
                     <br/>
+                    <?php endif; ?>
                     <?php if ($compte->hasProduits()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Produits :</label> 
-                            <div class="col-xs-9">
-                                <ul>                            
+                            <p>                         
                                     <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
-                                        <li><strong><?php echo $produit_libelle ?></strong></li>
+                                <span class="label label-xs label-info" style="display: inline-block; margin: 2px;"><?php echo $produit_libelle ?></span>
                                     <?php endforeach; ?>
-                                </ul>
-                            </div>
+                                
+                            </p>
                         </div>
                         <br/>
                     <?php endif; ?>
                     <?php if ($compte->hasManuels()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Tags manuels :</label> 
-                            <div class="col-xs-9">
-                                <ul>                            
+                            <div>           
                                     <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
-                                        <li><strong><?php echo $tag_manuel ?></strong></li>
-                                    <?php endforeach; ?>
-                                </ul>
+                                <span class="label label-xs label-success" style="display: inline-block; margin: 2px;"><?php echo $tag_manuel ?></span>
+                                    <?php endforeach; ?>                               
                             </div>
                         </div>
                         <br/>
-                    <?php endif; ?>
-                    <?php if ($compte->hasAutomatiques()): ?>
-                        <div class="form-group">
-                            <label class="col-xs-3">Tags automatiques :</label> 
-                            <div class="col-xs-9">
-                                <ul>                            
-                                    <?php foreach ($compte->getInfosAutomatiques() as $tag_auto_code => $tag_auto): ?>
-                                        <li><strong><?php echo $tag_auto ?></strong></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        </div>
-                        <br/>
-                    <?php endif; ?>                        
+                    <?php endif; ?>                  
                 </div>
             </div>
         </div>

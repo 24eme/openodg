@@ -73,6 +73,10 @@ class Compte extends BaseCompte {
     public function hasProduits() {
         return count($this->infos->get('produits'));
     }
+    
+    public function hasAttributs() {
+        return count($this->infos->get('attributs'));
+    }
 
     public function hasManuels() {
         return count($this->infos->get('manuels'));
@@ -144,6 +148,7 @@ class Compte extends BaseCompte {
 
     public function updateInfosTagsAutomatiques() {
         $this->updateInfosTags('automatiques', "TYPE_COMPTE", $this->getTypeCompte());
+        $this->updateInfosTags('automatiques', "TYPE_COMPTE_LIBELLE",  CompteClient::getInstance()->getCompteTypeLibelle($this->getTypeCompte()));
     }
 
     public function updateTags() {
