@@ -77,7 +77,7 @@ Compte:
               type: collection
               definition:
                 fields:
-                  '*' : { }                   
+                  '*' : { }
       tags:
         type: collection
         definition:
@@ -86,7 +86,7 @@ Compte:
               type: array_collection
               definition:
                 fields:
-                  '*' : { }            
+                  '*' : { }
             'automatiques':
               type: array_collection
               definition:

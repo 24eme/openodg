@@ -184,7 +184,7 @@ EOF;
             $etablissement->remove('code_insee');
             $etablissement->remove('nom');
             foreach($etablissement->familles as $famille_key => $null) {
-                //$compte->infos->attributs->add($famille_key, CompteClient::getInstance()->getAttributLibelle($famille_key));
+                $compte->infos->attributs->add($famille_key, CompteClient::getInstance()->getAttributLibelle($famille_key));
             }
 
             if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
@@ -257,9 +257,14 @@ EOF;
             return $this->importLineChai($data, $compte, $etablissement, $type_compte);
         }
 
-        if($data[self::CSV_TYPE_LIGNE] == "4.ATTRIB") {
+        if($data[self::CSV_TYPE_LIGNE] == "4.ATTRIB" && !$data[self::CSV_FAMILLE]) {
 
             return $this->importLineAttribut($data, $compte, $type_compte);
+        }
+
+        if($data[self::CSV_TYPE_LIGNE] == "4.ATTRIB" && $data[self::CSV_FAMILLE]) {
+
+            return $this->importLineAttributAutre($data, $compte, $type_compte);
         }
 
         if($data[self::CSV_TYPE_LIGNE] == "5.COMMUN") {
@@ -574,9 +579,96 @@ EOF;
             }
         }
 
-        if(!$type_compte) {
+        if(!$type_compte && $data[self::CSV_ATTRIBUTS] == "SYNDICAT") {
            $compte->infos->attributs->add("SYNDICAT", "SYNDICAT"); 
         }  
+    }
+
+    protected function importLineAttributAutre($data, $compte) {
+        if(!$data[self::CSV_ATTRIBUTS]) {
+
+            return;
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Abonnés Revue \"Les Vins d'Alsace\"") {
+            $libelle = "Abonnés revue \"Les Vins d'Alsace\"";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Clients Capsules") {
+            $libelle = "Clients Capsules";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Œnologue") {
+            $libelle = "Oenologue";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Conseil d'administration") {
+            $libelle = "Conseil d'administration";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Présidents des syndicats viticoles 68") {
+            $libelle = "Présidents des syndicats viticoles 68";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Courtier") {
+            $libelle = "Courtier";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Personnel AVA et Centre de dégustation") {
+            $libelle = "Personnel AVA et Centre de dégustation";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Bureau") {
+            $libelle = "Membre du bureau";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Sommelier") {
+            $libelle = "Sommelier";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Laboratoires") {
+            $libelle = "Laboratoires";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        /*if($data[self::CSV_ATTRIBUTS] == "Vice-Président") {
+            $libelle = "Vice-Président";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Trésorier Adjoint") {
+            $libelle = "Trésorier Adjoint";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Secrétaire Général") {
+            $libelle = "Secrétaire Général";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Trésorier") {
+            $libelle = "Trésorier";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
+
+        if($data[self::CSV_ATTRIBUTS] == "Trésorier") {
+            $libelle = "Trésorier";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }*/
+
+    }
+
+    protected function getAttributManuelKey($libelle) {
+        return str_replace('-', '_',strtoupper(KeyInflector::slugify($libelle)));
     }
 
     protected function importLineLiaison($data, $compte) {
@@ -586,7 +678,7 @@ EOF;
         if(!trim($data[self::CSV_LIAISON_NOM])) {
             $this->echoWarning('Liaison nom inexistante', $data);
         }
-        $compte->infos->syndicat->add("COMPTE-S".trim($data[self::CSV_LIAISON]), trim($data[self::CSV_LIAISON_NOM]));
+        $compte->infos->syndicats->add("COMPTE-S".trim($data[self::CSV_LIAISON]), trim($data[self::CSV_LIAISON_NOM]));
     }
 
     protected function formatAdresse($data) {

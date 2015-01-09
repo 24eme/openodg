@@ -249,3 +249,72 @@ INNER JOIN AVA_base.PPM p ON s.CIS = p.CODE_IDENT_SITE
 WHERE sm.Cotisant = 1
 " | sed 's/\t/;/g'
 
+mysql -u root -pboris97 AVA_base -N -e "
+SELECT
+       LPAD(p.CODE_PPM_PROFIL, 6, '0') as ID, 
+       '4.ATTRIB' as TYPE_LIGNE, 
+       '' as CVI, 
+       '' as SIREN, 
+       '' as SIRET,
+       '' as TVA_INTRA, 
+       '' as CIVILITE, 
+       '' as RAISON_SOCIALE,
+       '' as NOM,
+       '' as PRENOM,
+       'FONCTION' as FAMILLE,
+       '' as ADRESSE_1,
+       '' as ADRESSE_2,
+       '' as ADRESSE_3,
+       '' as CODE_POSTAL,
+       '' as COMMUNE,
+       '' as CODE_INSEE,
+       '' as CEDEX,
+       '' as PAYS,
+       '' as TEL,
+       '' as FAX,
+       '' as PORTABLE,
+       '' as EMAIL,
+       '' as WEB,
+       fg.LIB_FONCTION as ATTRIBUTS,
+       '' as DATE_ARCHIVAGE, 
+       '' as DATE_CREATION,
+       '' as LIAISON,
+       '' as LIAISON_NOM
+FROM PROFIL p 
+LEFT JOIN FONCTIONS_GROUPE fg ON p.FONCTION = fg.FONCTION;
+" | sed 's/\t/;/g'
+
+mysql -u root -pboris97 AVA_base -N -e "
+SELECT
+       LPAD(p.CODE_PPM_PROFIL, 6, '0') as ID, 
+       '4.ATTRIB' as TYPE_LIGNE, 
+       '' as CVI, 
+       '' as SIREN,
+       '' as SIRET,
+       '' as TVA_INTRA, 
+       '' as CIVILITE, 
+       '' as RAISON_SOCIALE,
+       '' as NOM,
+       '' as PRENOM,
+       'GROUPE' as FAMILLE,
+       '' as ADRESSE_1,
+       '' as ADRESSE_2,
+       '' as ADRESSE_3,
+       '' as CODE_POSTAL,
+       '' as COMMUNE,
+       '' as CODE_INSEE,
+       '' as CEDEX,
+       '' as PAYS,
+       '' as TEL,
+       '' as FAX,
+       '' as PORTABLE,
+       '' as EMAIL,
+       '' as WEB,
+       g.LIBELLE_GROUPE as ATTRIBUTS,
+       '' as DATE_ARCHIVAGE, 
+       '' as DATE_CREATION,
+       '' as LIAISON,
+       '' as LIAISON_NOM
+FROM PROFIL p
+LEFT JOIN GROUPE g ON p.CLE_GROUPE = g.CLE_GROUPE
+" | sed 's/\t/;/g'
