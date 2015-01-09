@@ -223,6 +223,11 @@ EOF;
             }
         }
 
+        if($compte->infos->attributs->exist('SYNDICAT')) {
+            $compte->infos->attributs->remove('SYNDICAT');
+            $types_compte['SYNDICAT'] = null;
+        }
+
         if($compte->etablissement) {
             $types_compte[CompteClient::TYPE_COMPTE_ETABLISSEMENT] = null;
         }
@@ -272,23 +277,29 @@ EOF;
             throw new Exception("IGNORE : 4 - Possède une DR");
         }
 
+        if(preg_match("/4 - Possède une DR/", $data[self::CSV_NOM])) {
+            throw new Exception("IGNORE : 4 - Possède une DR");
+        }
+
         if($data[self::CSV_RAISON_SOCIALE]) {
             $compte->raison_sociale = trim(sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE]));
         } elseif($data[self::CSV_NOM]) {
-            $compte->civilite = $data[self::CSV_CIVILITE];
-            $compte->nom = $data[self::CSV_NOM];
-            $compte->prenom = $data[self::CSV_PRENOM];
+            $compte->civilite = trim($data[self::CSV_CIVILITE]);
+            $compte->nom = trim($data[self::CSV_NOM]);
+            $compte->prenom = trim($data[self::CSV_PRENOM]);
         } else {
             throw new sfException("Aucun nom ou raison sociale");
         }
 
         $compte->siret = trim(str_replace(" ", "", $data[self::CSV_SIRET]));
         if($compte->siret && !preg_match("/^[0-9]+$/", $compte->siret)) {
+            $compte->siret = null;
             $this->echoWarning(sprintf("Le SIRET n'est pas au bon format : %s", $compte->siret), $data);
         }
 
         $compte->no_accises = trim(str_replace(" ", "", $data[self::CSV_TVA_INTRA]));
         if($compte->no_accises && !preg_match("/^FR[0-9]+$/", $compte->no_accises)) {
+            $compte->no_accises = null;
             $this->echoWarning(sprintf("Le numéro d'accises n'est pas au bon format : %s", $compte->no_accises), $data); 
         }
 
@@ -555,7 +566,11 @@ EOF;
             if(preg_match("/Viticulteur indépendant/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT));
             }
-        }     
+        }
+
+        if(!$type_compte) {
+           $compte->infos->attributs->add("SYNDICAT", "SYNDICAT"); 
+        }  
     }
 
     protected function formatAdresse($data) {
@@ -565,7 +580,7 @@ EOF;
 
     protected function formatPhone($numero) {
         $numero = trim(preg_replace("/[ xœ_\.]+/", "", $numero));
-        if($numero && !preg_match("/^[0-9]{8,11}$/", $numero)) {
+        if($numero && !preg_match("/^[0-9]{7,15}$/", $numero)) {
             throw new Exception(sprintf("Téléphone invalide : %s", $numero)); 
         }
 

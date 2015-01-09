@@ -196,7 +196,7 @@ SELECT
        c.TEL as TEL,
        c.FAX as FAX,
        c.PORTABLE as PORTABLE,
-       c.EMAIL as EMAIL,
+       REPLACE(c.EMAIL, '\n', '') as EMAIL,
        c.WEB as WEB,
        '' as ATTRIBUTS,
        '' as DATE_ARCHIVAGE, 

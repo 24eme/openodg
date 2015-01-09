@@ -51,7 +51,7 @@ Compte:
               type: collection
               definition:
                 fields:
-                  '*' : { }            
+                  '*' : { }
             'automatiques':
               type: collection
               definition:
