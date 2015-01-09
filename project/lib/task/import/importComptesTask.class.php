@@ -456,6 +456,7 @@ EOF;
 
         } elseif($mobile && !$compte->telephone_prive) {
             $compte->telephone_prive = $mobile;
+            echo sprintf("INFO;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Téléphone mobile en double => enregistré dans téléphone privé", implode(";", $data), $compte->telephone_prive, $mobile);
         } elseif($mobile) {
             echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Téléphone mobile en double", implode(";", $data), $compte->telephone_mobile, $mobile);
         }
