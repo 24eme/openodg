@@ -134,7 +134,7 @@ class compteActions extends sfActions {
         $from = $res_by_page * ($page - 1);
         $q->setLimit($res_by_page);
         $q->setFrom($from);
-        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels', "syndicats" => 'tags.syndicats');
+        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels');
         foreach ($facets as $nom => $f) {
             $elasticaFacet = new acElasticaFacetTerms($nom);
             $elasticaFacet->setField($f);
@@ -161,7 +161,7 @@ class compteActions extends sfActions {
         $this->tags = $request->getParameter('tags', array());
         $this->all = $request->getParameter('all', 0);
         if (!$this->all) {
-            //$query .= " statut:ACTIF";
+            $query .= " statut:ACTIF";
         }
         foreach ($this->tags as $tag) {
             $explodeTag = explode(':', $tag);
