@@ -7,7 +7,7 @@ Etablissement:
       type: {  }
       identifiant: {  }
       raison_sociale: {  }
-      nom: {  }
+      nom: { required: false }
       cvi: {  }
       siren: {  }
       siret: {  }
@@ -18,7 +18,7 @@ Etablissement:
       fax: {  }
       adresse: {  }
       code_postal: {  }
-      code_insee: {  }
+      code_insee: { required: false }
       commune: {  }
       date_premiere_connexion: { required: false }
       compte_id: {  }

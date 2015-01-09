@@ -19,6 +19,11 @@ class Etablissement extends BaseEtablissement {
         return $this->chais->getFirst();
     }
 
+    public function getNom() {
+
+        return $this->getRaisonSociale();
+    }
+
     public function hasFamille($famille) {
 
         return $this->familles->exist($famille);
@@ -47,7 +52,7 @@ class Etablissement extends BaseEtablissement {
     
     public function synchroFromCompte($compte) {
         $this->raison_sociale = $compte->raison_sociale;
-        $this->nom = $compte->raison_sociale;
+        //$this->nom = $compte->raison_sociale;
         $this->cvi = $compte->cvi;
         $this->siren = $compte->siren;
         $this->siret = $compte->siret;
@@ -59,9 +64,9 @@ class Etablissement extends BaseEtablissement {
         $this->adresse = $compte->adresse;
         $this->code_postal = $compte->code_postal;
         $this->commune = $compte->commune;
-        $this->code_insee = $compte->code_insee;
+        //$this->code_insee = $compte->code_insee;
         $this->compte_id = $compte->identifiant;
-        $this->familles = $compte->getAttributs()->toArray(true, false);
+        $this->familles = $compte->infos->attributs->toArray(true, false);
     }
 
 }

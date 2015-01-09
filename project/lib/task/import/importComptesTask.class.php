@@ -163,9 +163,33 @@ EOF;
             $compte->civilite = null;
         }
 
-        $compte->infos->attributs->remove('NON_CONDITIONNEUR'));
+        $compte->infos->attributs->remove('NON_CONDITIONNEUR');
 
         $compte->identifiant = $this->getIdentifiantCompte($compte, $id);
+
+        if($etablissement && $etablissement->exist('date_connexion') && $etablissement->date_connexion) {
+            $compte->adresse = $etablissement->adresse;
+            $compte->commune = $etablissement->commune;
+            $compte->code_postal = $etablissement->code_postal;
+
+            $compte->email = $etablissement->email;
+            $compte->telephone = $compte->telephone;
+            $compte->telephone_prive = $etablissement->telephone_prive;
+            $compte->telephone_mobile = $etablissement->telephone_mobile;
+            $compte->fax = $etablissement->fax;
+        }
+
+        if($etablissement) {
+            $etablissement->remove('code_insee');
+            $etablissement->remove('nom');
+            foreach($etablissement->familles as $famille_key => $null) {
+                //$compte->infos->attributs->add($famille_key, CompteClient::getInstance()->getAttributLibelle($famille_key));
+            }
+
+            if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
+                $compte->infos->attributs->remove(EtablissementClient::FAMILLE_CONDITIONNEUR);
+            }
+        }
 
         $this->save($compte, $etablissement);
     }
@@ -191,7 +215,7 @@ EOF;
     protected function getTypesCompte($compte) {
         $types_compte = array();
 
-        foreach($compte->getAttributs() as $key => $libelle) {
+        foreach($compte->infos->attributs as $key => $libelle) {
             foreach(CompteClient::getInstance()->getAllTypesCompte() as $tc) {
                 if(array_key_exists($key, CompteClient::getInstance()->getAttributsForType($tc))) {
                     $types_compte[$tc] = null;
@@ -241,7 +265,7 @@ EOF;
     protected function importLineCompte($data, $compte) {
         if(!preg_match("/^[0-9]{6}$/", $data[self::CSV_ID])) {
 
-            throw new Exception("'identifiant n'est pas au bon format");
+            throw new Exception("L'identifiant n'est pas au bon format");
         }
 
         if($data[self::CSV_RAISON_SOCIALE]) {
@@ -270,14 +294,17 @@ EOF;
         }
 
         $compte->code_postal = trim($data[self::CSV_CODE_POSTAL]);
-        if($data[self::CSV_PAYS] == "FRANCE" || !$data[self::CSV_PAYS]) {
-            if(!preg_match("/^[0-9]+$/", $compte->code_postal)) {
-                $this->echoWarning("Code postal au mauvais format", $data);
+        if(trim($data[self::CSV_PAYS]) == "FRANCE" || !trim($data[self::CSV_PAYS])) {
+            if(!$compte->code_postal || $compte->code_postal == "Canton non précisé") {
+                $this->echoWarning("Code postal non trouvé", $data);
             }
+        }
+        if($compte->code_postal && !preg_match("/^[0-9]+$/", $compte->code_postal)) {
+            $this->echoWarning("Code postal au mauvais format", $data);
         }
 
         $compte->commune = trim($data[self::CSV_COMMUNE]);
-        if($data[self::CSV_PAYS] == "FRANCE" || !$data[self::CSV_PAYS]) {
+        if(trim($data[self::CSV_PAYS]) == "FRANCE" || !trim($data[self::CSV_PAYS])) {
             if(!$compte->commune || $compte->commune == "Canton non précisé") {
                 $this->echoWarning("Ville non trouvé", $data);
             }
@@ -339,14 +366,6 @@ EOF;
         $etablissement->code_postal = $compte->code_postal;
         $etablissement->commune = $compte->commune;
         
-        foreach($etablissement->familles as $famille_key => $null) {
-            $compte->infos->attributs->add($famille_key, CompteClient::getInstance()->getAttributLibelle($famille_key));
-        }
-
-        if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
-            $compte->infos->attributs->add('NON_CONDITIONNEUR');
-        }
-
         return $etablissement;
     }
 
@@ -381,37 +400,44 @@ EOF;
     }
 
     protected function importLineCommunication($data, $compte) {
-
         $telephone = $this->formatPhone($data[self::CSV_TEL]);
         $mobile = $this->formatPhone($data[self::CSV_PORTABLE]);
-        $fax = $this->formatPhone($data[self::CSV_FAX]);  
+        $fax = $this->formatPhone($data[self::CSV_FAX]);
 
-        if($data[self::CSV_FAMILLE] == "bur") {
+        preg_match("/^([0-9]+)/", $data[self::CSV_FAMILLE], $matches);
+        $nb_ordre = $matches[1];
+
+        if($compte->telephone_bureau && $telephone && $telephone == $compte->telephone_bureau) {
+
+        } elseif(!$compte->telephone_bureau && $telephone) {
             $compte->telephone_bureau = $telephone;
-            $compte->telephone_mobile = $mobile;
-            $compte->fax = $fax;  
+        } elseif($compte->telephone_prive && $telephone && $telephone == $compte->prive) {
+
+        } elseif(!$compte->telephone_prive && $telephone) {
+            $compte->telephone_prive = $telephone;
+            echo sprintf("INFO;%s;#LINE;%s;#DOUBLON;%s;%s\n", "Telephone bureau en double => enregistré dans téléphone privé", implode(";", $data), $compte->telephone_bureau, $telephone); 
+        } elseif($telephone) {
+            echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Telephone privé en double", implode(";", $data), $compte->telephone_prive, $telephone); 
         }
 
-        if($data[self::CSV_FAMILLE] != "bur") {
-            if($telephone) {
-                $compte->telephone_prive = $telephone;
-            }
+        if($compte->telephone_mobile && $mobile && $compte->telephone_mobile == $mobile) {
 
-            if($telephone && !$compte->telephone_bureau) {
-                $compte->telephone_bureau = $telephone;
-            }
+        } elseif(!$compte->telephone_mobile && $mobile) {
+            $compte->telephone_mobile = $mobile;
+        } elseif($compte->telephone_prive && $mobile && $compte->telephone_prive == $mobile) {
+            
+        } elseif($mobile && !$compte->telephone_prive) {
+            $compte->telephone_prive = $mobile;
+        } elseif($mobile) {
+            echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Téléphone mobile en double", implode(";", $data), $compte->telephone_mobile, $mobile);
+        }
 
-            if($fax && !$compte->fax) {
-                $compte->fax = $fax;
-            }
+        if($compte->fax && $fax && $compte->fax == $fax) {
 
-            if($mobile) {
-                $compte->telephone_prive = $mobile;
-            }
-
-            if($mobile && !$compte->telephone_mobile) {
-                $compte->telephone_mobile = $mobile;
-            }
+        } elseif(!$compte->fax && $fax) {
+            $compte->fax = $fax;
+        } elseif($fax) {
+            echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Fax en double", implode(";", $data), $compte->fax, $fax);
         }
 
         $email = trim($data[self::CSV_EMAIL]);
@@ -423,18 +449,15 @@ EOF;
 
         $web = trim($data[self::CSV_WEB]);
 
-        if($data[self::CSV_FAMILLE] == "bur") {
-            $compte->email = $email;  
-            $compte->web = $web;  
+        if($compte->email && $email && $compte->email == $email) {
+
+        } elseif(!$compte->email && $email) {
+            $compte->email = $email;
+        } elseif($email) {
+           echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Email en double", implode(";", $data), $compte->email, $email); 
         }
 
-        if($email && !$compte->email && $data[self::CSV_FAMILLE] == "pri") {
-            $compte->email = $email;  
-        }
-
-        if($web && !$compte->web && $data[self::CSV_FAMILLE] == "pri") {
-            $compte->web = $web;  
-        }
+        $compte->web = $web;
     }
 
     protected function importLineAttribut($data, $compte, $type_compte = null) {
@@ -496,7 +519,7 @@ EOF;
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE));
             }
 
-            if(preg_match("/Conditionneur/", $data[self::CSV_ATTRIBUTS]) && !$compte->infos->attributs->exist('NON_CONDITIONNEUR')) {
+            if(preg_match("/Conditionneur/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR));
             }
 

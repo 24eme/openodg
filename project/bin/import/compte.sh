@@ -17,7 +17,7 @@ SELECT
        REPLACE(c.ADRESSE2,';','') as ADRESSE_2,
        REPLACE(c.ADRESSE3,';','') as ADRESSE_3,
        c.CODE_POSTAL as CODE_POSTAL,
-       co.NCCENR as COMMUNE,
+       co.LIBELLE as COMMUNE,
        c.COMMUNE as CODE_INSEE,
        c.CEDEX as CEDEX,
        pa.LIBCOG as PAYS,
@@ -32,7 +32,7 @@ SELECT
        '' as LIAISON
 FROM PPM p
 LEFT JOIN COORDONNEES c ON c.CODE_IDENT_SITE = p.CODE_IDENT_SITE AND c.NR_ORDRE = 0
-LEFT JOIN COMMUNE_FRANCAISE co ON co.INSEE = c.COMMUNE
+LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = c.COMMUNE
 LEFT JOIN PAYS pa ON c.PAYS = pa.COG   
 " | sed 's/\t/;/g'
 
@@ -154,7 +154,7 @@ SELECT
        '' as RAISON_SOCIALE,
        '' as NOM,
        '' as PRENOM,
-       c.LIB_COORDONNEES as FAMILLE,
+       CONCAT(CONCAT(c.NR_ORDRE, '-'), c.LIB_COORDONNEES) as FAMILLE,
        '' as ADRESSE_1,
        '' as ADRESSE_2,
        '' as ADRESSE_3,
