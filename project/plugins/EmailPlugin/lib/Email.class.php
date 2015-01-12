@@ -76,10 +76,17 @@ class Email {
             return;
         }
 
+        $partial = 'send_drev_rappel_documents';
+        $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication";
+
+        if(count($drev->exist('documents_rappels') && $drev->documents_rappels->toArray(true, false)) > 0) {
+          $partial = 'send_drev_rappel_documents_second';
+          $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication Second";
+        }
+
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($drev->declarant->email);
-        $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication";
-        $body = $this->getBodyFromPartial('send_drev_rappel_documents', array('drev' => $drev));
+        $body = $this->getBodyFromPartial($partial, array('drev' => $drev));
         $message = Swift_Message::newInstance()
             ->setFrom($from)
             ->setTo($to)

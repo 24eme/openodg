@@ -171,6 +171,12 @@ DRev:
                 fields:
                   statut: { }
       documents_rappel: { required: false }
+      documents_rappels:
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*': { }
       chais:
         type: collection
         definition:

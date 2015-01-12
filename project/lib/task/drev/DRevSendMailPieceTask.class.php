@@ -37,6 +37,16 @@ EOF;
                     ->getView('declaration', 'tous')->rows;
 
         foreach($this->rows as $row) {
+
+            $doc = DRevClient::getInstance()->find($row->id);
+
+            if($doc->exist('documents_rappel') && $doc->documents_rappel) {
+                $doc->add('documents_rappels')->add(null, $doc->documents_rappel);
+                $doc->remove('documents_rappel');
+                echo "replace rappel ".$doc->_id." \n";
+                $doc->save();
+            }
+
             if($row->key[7]) {
 
                 continue;
@@ -66,13 +76,21 @@ EOF;
                 continue;
             }
 
-            if($doc->exist('documents_rappel') && $doc->documents_rappel) {
+            $nb_rappel = ($doc->exist('documents_rappels')) ? count($doc->documents_rappels->toArray(true, false)) : 0;
+
+            if($nb_rappel > 1) {
 
                 continue;
             }
 
             $dateFrom = new DateTime($doc->validation);
-            $dateFrom->modify("+ 15 days");
+            $dateFrom->modify("+15 days");
+
+            if($nb_rappel == 1) {
+                $dateFrom = new DateTime($doc->documents_rappels->getLast());
+                $dateFrom->modify("+30 days");
+            }
+
             $dateTo = new DateTime();
 
             if($dateFrom->format('Y-m-d') > $dateTo->format('Y-m-d')) {
@@ -80,14 +98,14 @@ EOF;
                 continue;
             }
 
-            $sended = Email::getInstance()->sendDRevRappelDocuments($doc);
+            $sended = Email::getInstance()->sendDRevRappelDocuments($doc, $nb_rappel);
 
             if(!$sended) {
                 echo sprintf("ERROR;SENDED_FAIL;%s\n", $doc->_id);
                 continue;
             }
 
-            $doc->add('documents_rappel', date('Y-m-d'));
+            $doc->add('documents_rappels')->add(null, date('Y-m-d'));
             $doc->save();
 
             echo sprintf("SUCCESS;SENDED;%s\n", $doc->_id);
