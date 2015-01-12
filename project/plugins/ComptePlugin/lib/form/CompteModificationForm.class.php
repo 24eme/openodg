@@ -34,10 +34,10 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
         $this->setValidator('commune', new sfValidatorString(array("required" => true)));
         $this->setValidator('code_postal', new sfValidatorString(array("required" => true)));
-        $this->setValidator('telephone_bureau', new sfValidatorString(array("required" => false)));
-        $this->setValidator('telephone_mobile', new sfValidatorString(array("required" => false)));
-        $this->setValidator('telephone_prive', new sfValidatorString(array("required" => false)));
-        $this->setValidator('fax', new sfValidatorString(array("required" => false)));
+        $this->setValidator('telephone_bureau', new ValidatorPhone(array("required" => false)));
+        $this->setValidator('telephone_mobile', new ValidatorPhone(array("required" => false)));
+        $this->setValidator('telephone_prive', new ValidatorPhone(array("required" => false)));
+        $this->setValidator('fax', new ValidatorPhone(array("required" => false)));
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => false)));
         $this->setValidator('attributs', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
