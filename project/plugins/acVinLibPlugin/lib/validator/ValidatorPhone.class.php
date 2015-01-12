@@ -11,14 +11,14 @@ class ValidatorPhone extends sfValidatorString {
     {
         $clean = parent::doClean($value);
 
-        $value = preg_replace("/[-\. ]+/", "", $value);
+        $clean = preg_replace("/[-\. ]+/", "", $clean);
           
-        if(preg_match("/^\+[0-9]{2}[0-9]{9}$/", $value)) {
+        if(preg_match("/^\+[0-9]{2}[0-9]{9}$/", $clean)) {
 
             return $clean;
         }
 
-        if(preg_match("/^[0-9]{10}$/", $value)) {
+        if(preg_match("/^[0-9]{10}$/", $clean)) {
 
             return $clean;
         }
