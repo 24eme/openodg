@@ -147,12 +147,12 @@
             <nav>
                 <ul class="pagination">
                     <?php
-                    $args = array('q' => $q, 'tags' => $args['tags']);
+                    $args_search = array('q' => $q, 'tags' => $args['tags']->getRawValue());
                     ?>
                     <?php if ($current_page > 1) : ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
-                        <?php if ($current_page > 1) $args['page'] = $current_page - 1; ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
+                        <?php if ($current_page > 1) $args_search['page'] = $current_page - 1; ?>
+                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                     <?php else: ?>
                         <li class="disabled"><span aria-hidden="true">&laquo;&laquo;</span></li>
                         <li class="disabled"><span aria-hidden="true">&laquo;</span></li>
@@ -160,18 +160,18 @@
                     <li><span aria-hidden="true"><?php echo $current_page ?>/<?php echo $last_page ?></span></li>
                     <?php
                     if ($current_page < $last_page)
-                        $args['page'] = $current_page + 1;
+                        $args_search['page'] = $current_page + 1;
                     else
-                        $args['page'] = $last_page;
+                        $args_search['page'] = $last_page;
                     ?>
-                    <?php if ($current_page != $args['page']): ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args); ?>" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                    <?php if ($current_page != $args_search['page']): ?>
+                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                     <?php else: ?>
                         <li class="disabled"><span aria-hidden="true">&raquo;</span></li>
                     <?php endif; ?>
-                    <?php $args['page'] = $last_page; ?>
-                    <?php if ($current_page != $args['page']): ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args); ?>" aria-label="Next"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
+                    <?php $args_search['page'] = $last_page; ?>
+                    <?php if ($current_page != $args_search['page']): ?>
+                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Next"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
                     <?php else: ?>
                         <li class="disabled"><span aria-hidden="true">&raquo;&raquo;</span></li>
                     <?php endif; ?>
