@@ -26,9 +26,9 @@ class CompteChaiNouveauForm extends sfForm {
             'code_postal' => 'Code postal'
         ));
         $this->setValidators(array(
-            'adresse' => new sfValidatorString(array('required' => true, 'min_length' => 3)),
-            'commune' => new sfValidatorString(array('required' => true, 'min_length' => 2)),
-            'code_postal' => new sfValidatorString(array('required' => true, 'min_length' => 2))));
+            'adresse' => new sfValidatorString(array('required' => false, 'min_length' => 3)),
+            'commune' => new sfValidatorString(array('required' => false, 'min_length' => 2)),
+            'code_postal' => new sfValidatorString(array('required' => false, 'min_length' => 2))));
         $this->widgetSchema->setNameFormat('comptechais[%s]');
     }
 

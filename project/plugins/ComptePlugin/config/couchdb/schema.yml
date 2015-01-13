@@ -32,6 +32,8 @@ Compte:
       date_archivage: { }
       date_creation: { }
       no_accises: { }
+      lat: { }
+      lon: { }
       droits:
         type: collection
         required: false
