@@ -18,27 +18,12 @@
                 </span>
             </div>
         </div>
-        <!--<div class="col-xs-3 ">
-            <p class="text-right">
-                <?php
-                $argsTemplate = $args->getRawValue();
-                foreach ($argsTemplate['tags'] as $key => $tag):
-                    $argsTemplate['tags'] = array_diff($argsTemplate['tags'], array($tag));
-                    $explodeTag = explode(':', $tag);
-                    ?>
-                    <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="btn btn-info btn-xs"><?php echo $explodeTag[1] ?> <span class="glyphicon glyphicon-remove"></span></a>
-                    <?php
-                    $argsTemplate = $args->getRawValue();
-                endforeach;
-                ?>
-            </p>
-        </div>-->
         <?php if ($nb_results > 0): ?>
         <div class="col-xs-12" style="padding-top: 15px">
             <div class="list-group">
             <?php foreach ($results as $res): ?>
             <?php $data = $res->getData(); ?>
-                <a href="<?php echo url_for('compte_visualisation_admin', array("id" => $data["identifiant"])); ?>" class="list-group-item">
+                <a style="<?php if($data['statut'] != CompteClient::STATUT_ACTIF): ?>opacity: 0.6<?php endif ?>" href="<?php echo url_for('compte_visualisation_admin', array("id" => $data["identifiant"])); ?>" class="list-group-item">
                     <h3 class="list-group-item-heading"><?php echo $data['nom_a_afficher']; ?> <?php if($data['cvi'] || $data['siret']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siret']): ?> / <?php endif; ?><?php if($data['siret']): ?><?php echo $data['siret'] ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
                     <p class="list-group-item-text">
                     <div class="pull-right">
