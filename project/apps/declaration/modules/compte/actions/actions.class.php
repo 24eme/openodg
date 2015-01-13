@@ -129,12 +129,13 @@ class compteActions extends sfActions {
     public function executeRecherche(sfWebRequest $request) {
         $this->form = new CompteRechercheForm();
         $q = $this->initSearch($request);
-        $res_by_page = 20;
+        $res_by_page = 15;
         $page = $request->getParameter('page', 1);
         $from = $res_by_page * ($page - 1);
         $q->setLimit($res_by_page);
         $q->setFrom($from);
-        $facets = array('attributs' => 'tags.attributs', 'automatiques' => 'tags.automatiques', 'manuels' => 'tags.manuels');
+        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels');
+        $this->facets_libelle = array('automatiques' => 'Par type', 'attributs' => 'Par attributs', 'manuels' => 'Par mots clés');
         foreach ($facets as $nom => $f) {
             $elasticaFacet = new acElasticaFacetTerms($nom);
             $elasticaFacet->setField($f);
