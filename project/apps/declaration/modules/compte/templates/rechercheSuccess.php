@@ -3,9 +3,12 @@
 <div class="page-header">
     <h2>Recherche de compte</h2>
 </div>
-<form action="<?php echo url_for("compte_recherche") ?>" method="get" class="form-horizontal">
-    <div class="row">
+
+<form action="<?php echo url_for("compte_recherche") ?>" method="get" class="form-horizontal">  
+<div class="row">
+    <div class="col-xs-9">
         <div class="col-xs-12">
+            
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="input-group">
@@ -14,16 +17,8 @@
                     <button class="btn btn-lg btn-info" type="submit" style="font-size: 22px; padding-top: 8px; padding-bottom: 8px;"><span class="glyphicon glyphicon-search"></span></button>
                 </span>
             </div>
-            <div class="input-group">
-                <div class="checkbox">
-                    <label>
-                        <?php echo ($all) ? $form["all"]->render(array('checked' => 'checked')) : $form["all"]->render(); ?> Inclure les comptes inactifs
-                    </label>
-                </div>
-            </div>
         </div>
-        <div class="col-xs-9"></div>
-        <div class="col-xs-3 ">
+        <!--<div class="col-xs-3 ">
             <p class="text-right">
                 <?php
                 $argsTemplate = $args->getRawValue();
@@ -37,147 +32,122 @@
                 endforeach;
                 ?>
             </p>
-        </div>
-    </div>
-</form>
-
-<div class="col-xs-12">
-    <p><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></p>
-</div>
-<?php if ($nb_results > 0): ?>
-    <div class="row">
-        <div class="col-xs-9">
-            <table class="table table-striped table-hover">
-                <?php
-                foreach ($results as $res):
-                    $data = $res->getData();
-                    ?>
-                    <tr>
-                        <td>
-                            <a href="<?php echo url_for('compte_visualisation_admin', array("id" => $data["identifiant"])); ?>"><strong><?php echo $data['nom_a_afficher']; ?></strong><br />
-                                <?php if ($data['email']): ?>   <?php echo $data['email']; ?><br/> <?php endif; ?>
-                                <strong>  <?php echo $allTypeCompte[$data['type_compte']]; ?></strong><br/>
-                                <?php
-                                $i = 0;
-                                $nbAttributs = count($data['tags']['attributs']);
-                                foreach ($data['tags']['attributs'] as $attributValue) {
-                                    $i++;
-                                    echo '<label class="label label-xs label-default pull-left" style="margin-right:5px">' . $attributValue . '</label>';
-                                }
-                                ?>
-                            </a>
-                        </td>
-                        <td style="vertical-align: top">
-                            <?php echo $data['adresse']; ?>&nbsp;<?php echo $data['code_postal']; ?>&nbsp;<?php echo $data['commune']; ?><br/>
-                            <?php
-                            $tiret = false;
-                            if ($data['telephone_bureau']):
-                                $tiret = true;
-                                ?>
-                                <?php echo $data['telephone_bureau'] ?> (bureau) 
-                                <?php
-                            endif;
-                            if ($data['telephone_mobile']):
-                                ?>
-                                <?php echo ($tiret) ? ' - ' : ''; ?>
-                                <?php echo $data['telephone_mobile'] ?> (mobile) 
-                                <?php
-                                $tiret = true;
-                            endif;
-                            if ($data['telephone_prive']):
-                                ?>
-                                <?php echo ($tiret) ? ' - ' : ''; ?>
-                                <?php echo $data['telephone_prive'] ?> (privé) 
-                                <?php
-                                $tiret = true;
-                            endif;
-                            if ($data['fax']):
-                                ?>
-                                <?php echo ($tiret) ? ' - ' : ''; ?>
-                                <?php echo $data['fax'] ?> (fax) 
-                                <?php
-                            endif;
-                            ?>
-                        </td>
-                        <!--<td>-->
-                        <?php
-//                            $i = 0;
-//                            $nbAttributs = count($data['tags']['attributs']);
-//                            foreach ($data['tags']['attributs'] as $attributValue) {
-//                                $i++;
-//                                echo $attributValue;
-//                                if ($i != $nbAttributs) {
-//                                    echo "<br />";
-//                                }
-//                            }
-                        ?>
-                        <!--</td>-->
-                    </tr>
-                <?php endforeach; ?>
-            </table>
-        </div>
-        <div class="col-xs-3">
-            <?php foreach ($facets as $type => $ftype): ?>
-                <div class="panel panel-default" style="margin-bottom: 10px;">
-                    <div class="panel-heading" style="padding-top: 0px; margin: 0 5px;"><?php echo ucfirst($type) ?></div>
-                    <div class="panel-body" style="margin: 0 5px; padding: 10px 0;">
-                        <?php if (count($ftype['terms'])): ?>
-                            <div class="list-group">
-                                <?php
-                                foreach ($ftype['terms'] as $f):
-                                    $tag = $type . ':' . $f['term'];
-                                    $argsTemplate = $args->getRawValue();
-                                    if (!in_array($tag, $argsTemplate['tags'])) {
-                                        $argsTemplate['tags'][] = $tag;
-                                    }
-                                    ?>
-                                    <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item"><span class="badge"><?php echo $f['count'] ?></span><?php echo $f['term'] ?></a>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endif; ?>
+        </div>-->
+        <?php if ($nb_results > 0): ?>
+        <div class="col-xs-12" style="padding-top: 10px">
+            <div class="list-group">
+            <?php foreach ($results as $res): ?>
+            <?php $data = $res->getData(); ?>
+                <a href="<?php echo url_for('compte_visualisation_admin', array("id" => $data["identifiant"])); ?>" class="list-group-item">
+                    <h3 class="list-group-item-heading"><?php echo $data['nom_a_afficher']; ?> <?php if($data['cvi'] || $data['siret']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siret']): ?> / <?php endif; ?><?php if($data['siret']): ?><?php echo $data['siret'] ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
+                    <p class="list-group-item-text">
+                    <div class="pull-right">
+                     <?php if ($data['telephone_bureau']):?>
+                                    <abbr class="text-muted" title="Mobile"><i>Bureau</abbr>&nbsp;:</i>&nbsp;&nbsp;<?php echo $data['telephone_bureau'] ?><br />
+                                <?php endif; ?>
+                                <?php if ($data['telephone_mobile']):?>
+                                    <abbr class="text-muted" title="Mobile"><i>Mobile</abbr>&nbsp;:</i>&nbsp;&nbsp;&nbsp;<?php echo $data['telephone_mobile'] ?><br />
+                                <?php endif; ?>
+                                <?php if ($data['telephone_prive']):?>
+                                    <abbr class="text-muted" title="Privé"><i>Privé</abbr>&nbsp;:</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $data['telephone_prive'] ?><br />
+                                <?php endif; ?>
                     </div>
+                    <div>
+                              <?php echo $data['adresse']; ?><br />
+                              <?php echo $data['code_postal']; ?>&nbsp;<?php echo $data['commune']; ?><br />
+                              <?php if ($data['email']):?>
+                                <span class="glyphicon glyphicon-envelope"></span>&nbsp;<?php echo $data['email'] ?><br />
+                            <?php endif; ?>
+                            <?php $tags_contact = array_merge($data['tags']['attributs']->getRawValue(), $data['tags']['manuels']->getRawValue()); ?>
+                            <?php if(count($tags_contact) > 0): ?>
+                            <br />
+                            <small class="text-muted"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;&nbsp;<?php echo implode(", ", $tags_contact); ?></small>
+                            <?php endif; ?>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
+        <?php if ($nb_results > 0 && $last_page > 1): ?>
+            <div class="col-xs-12 text-center">
+                <nav>
+                    <ul class="pagination pagination-lg" style="margin-top: 0;">
+                        <?php
+                        $argssearch = array('q' => $q, 'tags' => $args['tags']->getRawValue());
+                        ?>
+                        <?php if ($current_page > 1) : ?>
+                            <?php $argssearch['page'] = $current_page - 1; ?>
+                            <li><a href="<?php echo url_for('compte_recherche', $argssearch); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
+                            <?php $argssearch['page'] = 1; ?>
+                            <li><a href="<?php echo url_for('compte_recherche', $argssearch); ?>" aria-label="Previous"><span aria-hidden="true"><small><small class="text-muted">Première page</small></small></span</span></a></li>
+                        <?php else: ?>
+                            <li class="disabled"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></li>
+                            <li class="disabled"><span aria-hidden="true"><small><small>Première page</small></small></span></li>
+                        <?php endif; ?>
+                        <li><span aria-hidden="true"><small><small>Page <?php echo $current_page ?> / <?php echo $last_page ?></span></small></small></li>
+                        <?php $argssearch['page'] = $last_page; ?>
+                        <?php if ($current_page != $argssearch['page']): ?>
+                            <li><a href="<?php echo url_for('compte_recherche', $argssearch); ?>" aria-label="Next"><span aria-hidden="true"><small><small class="text-muted">Dernière page</small></small></span></a></li>
+                        <?php else: ?>
+                            <li class="disabled"><span aria-hidden="true"><small><small>Dernière page</small></small></span></li>
+                        <?php endif; ?>
+                        <?php
+                        if ($current_page < $last_page)
+                            $argssearch['page'] = $current_page + 1;
+                        else
+                            $argssearch['page'] = $last_page;
+                        ?>
+                        <?php if ($current_page != $argssearch['page']): ?>
+                            <li><a href="<?php echo url_for('compte_recherche', $argssearch); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+                        <?php else: ?>
+                            <li class="disabled"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-right"></span></span></li>
+                        <?php endif; ?>
+                        
+                    </ul>
+                </nav>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="col-xs-3">
+        <p class="text-muted"><i><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></i></p>
+        <h4>Affiner la recherche</h4>
+        <div class="input-group">
+            <div class="checkbox">
+                <label>
+                    <small><?php echo ($all) ? $form["all"]->render(array('checked' => 'checked')) : $form["all"]->render(); ?> Inclure les comptes inactifs</small>
+                </label>
+            </div>
+        </div>
+        <div class="input-group">
+        <?php if(count($args['tags']->getRawValue()) > 0): ?>
+        <p>
+            <?php $argsTemplate = $args->getRawValue(); unset($argsTemplate['tags']); ?>
+            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="text-danger"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
+        </p>
+        <?php endif; ?>
+        <?php foreach ($facets as $type => $ftype): ?>
+            <?php if (count($ftype['terms'])): ?>
+                <h5><small><?php echo $facets_libelle[$type] ?></small></h5>
+                <div class="list-group">
+                    <?php
+                    foreach ($ftype['terms'] as $f):
+                        $tag = $type . ':' . $f['term'];
+                        $argsTemplate = $args->getRawValue();
+                        if (!in_array($tag, $argsTemplate['tags'])) {
+                            $argsTemplate['tags'][] = $tag;
+                        }
+                        ?>
+                        <?php if(in_array($tag, $args['tags']->getRawValue())): ?>
+                            <?php $argsTemplate['tags'] = array_diff($argsTemplate['tags'], array($tag)); ?>
+                            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item list-group-item-warning" style="padding: 8px 8px"><small class="pull-right"><span class="glyphicon glyphicon-trash"></span></small><small><?php echo $f['term'] ?></small></a>
+                        <?php else: ?>
+                            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item" style="padding: 8px 8px"><span class="badge"><small><?php echo $f['count'] ?></small></span><small><?php echo $f['term'] ?></small></a>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
     </div>
-<?php endif; ?>
-<?php if ($nb_results > 0 && $last_page > 1): ?>
-    <div class="row">
-        <div class="col-xs-9 text-center">
-            <nav>
-                <ul class="pagination">
-                    <?php
-                    $args_search = array('q' => $q, 'tags' => $args['tags']->getRawValue());
-                    ?>
-                    <?php if ($current_page > 1) : ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
-                        <?php if ($current_page > 1) $args_search['page'] = $current_page - 1; ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                    <?php else: ?>
-                        <li class="disabled"><span aria-hidden="true">&laquo;&laquo;</span></li>
-                        <li class="disabled"><span aria-hidden="true">&laquo;</span></li>
-                    <?php endif; ?>
-                    <li><span aria-hidden="true"><?php echo $current_page ?>/<?php echo $last_page ?></span></li>
-                    <?php
-                    if ($current_page < $last_page)
-                        $args_search['page'] = $current_page + 1;
-                    else
-                        $args_search['page'] = $last_page;
-                    ?>
-                    <?php if ($current_page != $args_search['page']): ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                    <?php else: ?>
-                        <li class="disabled"><span aria-hidden="true">&raquo;</span></li>
-                    <?php endif; ?>
-                    <?php $args_search['page'] = $last_page; ?>
-                    <?php if ($current_page != $args_search['page']): ?>
-                        <li><a href="<?php echo url_for('compte_recherche', $args_search); ?>" aria-label="Next"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
-                    <?php else: ?>
-                        <li class="disabled"><span aria-hidden="true">&raquo;&raquo;</span></li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
-        </div>
-        <div class="col-xs-3"></div>
-    </div>
-<?php endif; ?>
+</div>
+</form>
