@@ -24,7 +24,7 @@
             <?php foreach ($results as $res): ?>
             <?php $data = $res->getData(); ?>
                 <a style="<?php if($data['statut'] != CompteClient::STATUT_ACTIF): ?>opacity: 0.6<?php endif ?>" href="<?php echo url_for('compte_visualisation_admin', array("id" => $data["identifiant"])); ?>" class="list-group-item">
-                    <h3 class="list-group-item-heading"><?php echo $data['nom_a_afficher']; ?> <?php if($data['cvi'] || $data['siret']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siret']): ?> / <?php endif; ?><?php if($data['siret']): ?><?php echo $data['siret'] ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
+                    <h3 class="list-group-item-heading"><?php echo $data['nom_a_afficher']; ?> <?php if($data['cvi'] || $data['siren']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siren']): ?> / <?php endif; ?><?php if($data['siren']): ?><?php echo $data['siren'] ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
                     <p class="list-group-item-text">
                     <div class="pull-right">
                      <?php if ($data['telephone_bureau']):?>

@@ -54,6 +54,16 @@ class Compte extends BaseCompte {
         }
     }
 
+    public function setSiret($value) {
+        $return = $this->_set('siret', $value);
+
+        if($value && strlen($value) >= 9)  {
+            $this->siren = substr($value, 0, 9);
+        }
+
+        return $return;
+    }
+
     public function getInfosAttributs() {
         return $this->infos->get('attributs');
     }

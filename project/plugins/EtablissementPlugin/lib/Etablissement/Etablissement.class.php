@@ -49,7 +49,7 @@ class Etablissement extends BaseEtablissement {
         }
         return CompteClient::getInstance()->findByIdentifiant($this->compte_id);
     }
-    
+
     public function synchroFromCompte($compte) {
         $this->raison_sociale = $compte->raison_sociale;
         //$this->nom = $compte->raison_sociale;
@@ -67,6 +67,23 @@ class Etablissement extends BaseEtablissement {
         //$this->code_insee = $compte->code_insee;
         $this->compte_id = $compte->identifiant;
         $this->familles = $compte->infos->attributs->toArray(true, false);
+    }
+
+    public function updateCompte() {
+        $compte = $this->getCompte();
+
+        $compte->raison_sociale = $this->raison_sociale;
+        $compte->siret = $this->siret;
+        $compte->adresse = $this->adresse;
+        $compte->commune = $this->commune;
+        $compte->code_postal = $this->code_postal;
+
+        $compte->telephone_bureau = $this->telephone_bureau;
+        $compte->telephone_mobile = $this->telephone_mobile;
+        $compte->telephone_prive = $this->telephone_prive;
+        $compte->fax = $this->fax;
+        $compte->email = $this->email;
+        $compte->save(false);
     }
 
 }

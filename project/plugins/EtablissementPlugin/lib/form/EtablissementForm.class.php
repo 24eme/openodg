@@ -1,6 +1,6 @@
 <?php
 
-class EtablissementForm extends CompteModificationForm
+class EtablissementForm extends acCouchdbObjectForm
 {
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -42,5 +42,11 @@ class EtablissementForm extends CompteModificationForm
         }
 
         $this->widgetSchema->setNameFormat('etablissement[%s]');
+    }
+    
+    public function save($con = null) {
+        
+        parent::save($con);
+            $this->getObject()->updateCompte();
     }
 }

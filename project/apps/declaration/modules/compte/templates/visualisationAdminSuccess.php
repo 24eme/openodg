@@ -24,22 +24,6 @@
                             </div>                
                         </div>
                     <?php endif; ?>
-                    <?php if ($compte->code_insee): ?>
-                        <div class="row">
-                            <label class="col-xs-6">Code Insee</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->code_insee; ?>
-                            </div>                
-                        </div>
-                    <?php endif; ?>
-                    <?php if ($compte->siren): ?>
-                        <div class="row">
-                            <label class="col-xs-6">Siren</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->siren; ?>
-                            </div>                
-                        </div>
-                    <?php endif; ?>
                     <?php if ($compte->siret): ?>
                         <div class="row">
                             <label class="col-xs-6">Siret</label>    
