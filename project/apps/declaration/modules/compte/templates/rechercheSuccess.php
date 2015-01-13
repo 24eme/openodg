@@ -43,7 +43,7 @@
                               <?php if ($data['email']):?>
                                 <span class="glyphicon glyphicon-envelope"></span>&nbsp;<?php echo $data['email'] ?><br />
                             <?php endif; ?>
-                            <?php $tags_contact = array_merge($data['tags']['attributs']->getRawValue(), $data['tags']['manuels']->getRawValue()); ?>
+                            <?php $tags_contact = (isset($data['tags'])) ? array_merge($data['tags']['attributs']->getRawValue(), $data['tags']['manuels']->getRawValue()) : array(); ?>
                             <?php if(count($tags_contact) > 0): ?>
                             <br />
                             <small class="text-muted"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;&nbsp;<?php echo implode(", ", $tags_contact); ?></small>
