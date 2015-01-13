@@ -29,7 +29,7 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => true)));
 
         if($this->getObject()->isNew()) {
-            $this->setWidget("cvi", new sfWidgetFormInput(array("label" => "Cvi")));
+            $this->setWidget("cvi", new sfWidgetFormInput(array("label" => "CVI")));
             $this->setValidator('cvi', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]{10}$/"), array("invalid" => "Le cvi doit être un nombre à 10 chiffres")));
         }
 

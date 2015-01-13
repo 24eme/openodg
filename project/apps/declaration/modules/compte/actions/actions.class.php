@@ -175,6 +175,10 @@ class compteActions extends sfActions {
         return $q;
     }
 
+    public function executeExportCSV(sfWebRequest $request) {
+
+    }
+
     private function getCompteModificationForm() {
         switch ($this->compte->getTypeCompte()) {
             case CompteClient::TYPE_COMPTE_CONTACT:
