@@ -26,7 +26,7 @@
                     <?php endif; ?>
                     <?php if ($compte->siret): ?>
                         <div class="row">
-                            <label class="col-xs-6">Siret</label>    
+                            <label class="col-xs-6">SIRET / SIREN</label>    
                             <div class="col-xs-6">
                                 <?php echo $compte->siret; ?>
                             </div>                
