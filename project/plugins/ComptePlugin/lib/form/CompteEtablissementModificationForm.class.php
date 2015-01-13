@@ -34,14 +34,8 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $this->setWidget("code_insee", new sfWidgetFormInput(array("label" => "Code Insee")));
         $this->setValidator('code_insee', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{5}$/"), array("invalid" => "Le code insee doit être un nombre à 5 chiffres")));
 
-        $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET")));
-        $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")));
-
-        $this->setWidget("siren", new sfWidgetFormInput(array("label" => "N° SIREN")));
-        $this->setValidator('siren', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siren doit être un nombre à 14 chiffres")));
-
-        $this->setWidget("siren", new sfWidgetFormInput(array("label" => "N° SIREN")));
-        $this->setValidator('siren', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siren doit être un nombre à 14 chiffres")));
+        $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET / SIREN")));
+        $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^([0-9]{14})|([0-9]{9})$/"), array("invalid" => "Le SIRET doit être un nombre à 14 chiffres ou à 9 chiffres pour le SIREN")));
 
         $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
         $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));

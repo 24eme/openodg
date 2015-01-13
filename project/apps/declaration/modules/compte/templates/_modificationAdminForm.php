@@ -60,15 +60,6 @@
                             </div>
                         </div>
                     <?php endif; ?>
-                    <?php if (isset($form['siren'])): ?>
-                        <div class="form-group">
-                            <?php echo $form["siren"]->renderError(); ?>
-                            <?php echo $form["siren"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-                            <div class="col-xs-8">
-                                <?php echo $form["siren"]->render(array("class" => "form-control")); ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
                     <?php if (isset($form["siret"])): ?>
                         <div class="form-group">
                             <?php echo $form["siret"]->renderError(); ?>
