@@ -34,7 +34,7 @@
             </p>
         </div>-->
         <?php if ($nb_results > 0): ?>
-        <div class="col-xs-12" style="padding-top: 10px">
+        <div class="col-xs-12" style="padding-top: 15px">
             <div class="list-group">
             <?php foreach ($results as $res): ?>
             <?php $data = $res->getData(); ?>
