@@ -36,8 +36,8 @@ EOF;
                     ->descending(true)
                     ->getView('declaration', 'tous')->rows;
 
-        foreach($this->rows as $row) 
-            
+        foreach($this->rows as $row) {
+
             if($row->key[7]) {
 
                 continue;
