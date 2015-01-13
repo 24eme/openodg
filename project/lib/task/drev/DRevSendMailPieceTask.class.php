@@ -88,7 +88,7 @@ EOF;
 
             if($nb_rappel == 1) {
                 $dateFrom = new DateTime($doc->documents_rappels->getLast());
-                $dateFrom->modify("+30 days");
+                $dateFrom->modify("+15 days");
             }
 
             $dateTo = new DateTime();
