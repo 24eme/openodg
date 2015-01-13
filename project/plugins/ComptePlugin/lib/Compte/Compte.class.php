@@ -24,7 +24,7 @@ class Compte extends BaseCompte {
         if ($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement) {
             $etablissement = EtablissementClient::getInstance()->createOrFind($this->cvi);
             if ($this->isNew() && !$etablissement->isNew()) {
-                throw new sfException("Pas possible de créer un etablissement avec cet Id");
+                throw new sfException("Pas possible de créer un etablissement avec cet Id (".$this->cvi.")");
             }
             $etablissement->synchroFromCompte($this);
             $etablissement->save();

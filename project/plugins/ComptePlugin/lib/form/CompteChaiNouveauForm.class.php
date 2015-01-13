@@ -11,13 +11,10 @@
  *
  * @author mathurin
  */
-class CompteChaiNouveauForm extends acCouchdbObjectForm {
+class CompteChaiNouveauForm extends sfForm {
 
     public function configure() {
 
-//        $siretCni_errors = array('required' => 'SIRET obligatoire ou CNI le cas échéant', 'invalid' => 'Le Siret/Cni doit être soit un numéro de siret (14 chiffres) soit un numéro Cni (12 chiffres ou lettres majuscules)');
-//        $cniValid = new ValidatorCni();
-//        $siretValid = new ValidatorSiret();
         $this->setWidgets(array(
             'adresse' => new sfWidgetFormInputText(),
             'commune' => new sfWidgetFormInputText(),
@@ -33,7 +30,6 @@ class CompteChaiNouveauForm extends acCouchdbObjectForm {
             'commune' => new sfValidatorString(array('required' => true, 'min_length' => 2)),
             'code_postal' => new sfValidatorString(array('required' => true, 'min_length' => 2))));
         $this->widgetSchema->setNameFormat('comptechais[%s]');
-//        $this->mergePostValidator(new ValidatorEtablissementSiretCni());
     }
 
     public function doUpdateObject($values) {

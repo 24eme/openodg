@@ -14,6 +14,7 @@
 class CompteEtablissementModificationForm extends CompteModificationForm {
 
     private $syndicats;
+    private $nbChais;
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -31,9 +32,6 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $this->setWidget("cvi", new sfWidgetFormInput(array("label" => "Cvi")));
         $this->setValidator('cvi', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]{10}$/"), array("invalid" => "Le cvi doit être un nombre à 10 chiffres")));
 
-        $this->setWidget("code_insee", new sfWidgetFormInput(array("label" => "Code Insee")));
-        $this->setValidator('code_insee', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{5}$/"), array("invalid" => "Le code insee doit être un nombre à 5 chiffres")));
-
         $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET")));
         $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")));
 
@@ -47,9 +45,10 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));
 
 
-//        $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
-//	    	'nbChais'    => $this->getOption('nbChais', 1)));
-//        $this->embedForm('chais', $formChais);
+        $nbChais = $this->getNbChais();
+        $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
+            'nbChais' => $nbChais));
+        $this->embedForm('chais', $formChais);
     }
 
     public function initDefaultSyndicats() {
@@ -63,12 +62,24 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
     private function getSyndicats() {
         $compteClient = CompteClient::getInstance();
         if (!$this->syndicats) {
+            $this->syndicats = array();
             foreach ($compteClient->getAllSyndicats() as $syndicatId) {
                 $syndicat = CompteClient::getInstance()->find($syndicatId);
                 $this->syndicats[$syndicatId] = $syndicat->nom_a_afficher;
             }
         }
         return $this->syndicats;
+    }
+
+    public function getNbChais() {
+        if (is_null($this->nbChais)) {
+            if (is_null($this->getObject()->getChais())) {
+                $this->nbChais = 0;
+            } else {
+                $this->nbChais = count($this->getObject()->getChais());
+            }
+        }
+        return $this->nbChais;
     }
 
     public function save($con = null) {
