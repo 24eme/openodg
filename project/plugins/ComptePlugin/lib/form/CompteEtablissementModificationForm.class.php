@@ -28,9 +28,10 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
 
         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => true)));
 
-
-        $this->setWidget("cvi", new sfWidgetFormInput(array("label" => "Cvi")));
-        $this->setValidator('cvi', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]{10}$/"), array("invalid" => "Le cvi doit être un nombre à 10 chiffres")));
+        if($this->getObject()->isNew()) {
+            $this->setWidget("cvi", new sfWidgetFormInput(array("label" => "Cvi")));
+            $this->setValidator('cvi', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]{10}$/"), array("invalid" => "Le cvi doit être un nombre à 10 chiffres")));
+        }
 
         $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET / SIREN")));
         $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^([0-9]{14})|([0-9]{9})$/"), array("invalid" => "Le SIRET doit être un nombre à 14 chiffres ou à 9 chiffres pour le SIREN")));
@@ -44,6 +45,9 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
             'nbChais' => $nbChais));
         $this->embedForm('chais', $formChais);
+        
+       $this->validatorSchema->setPostValidator(new ValidatorCompteEtablissementModification());
+
     }
 
     public function initDefaultSyndicats() {

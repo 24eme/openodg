@@ -18,7 +18,7 @@
                     </div>
                     <?php if ($compte->cvi): ?>
                         <div class="row">
-                            <label class="col-xs-6">Cvi </label>    
+                            <label class="col-xs-6">CVI </label>    
                             <div class="col-xs-6">
                                 <?php echo $compte->cvi; ?>
                             </div>                

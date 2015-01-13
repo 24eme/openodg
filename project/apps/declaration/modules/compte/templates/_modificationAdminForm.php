@@ -50,6 +50,13 @@
                                 <?php echo $form["cvi"]->render(array("class" => "form-control")); ?>
                             </div>
                         </div>
+                    <?php elseif($form->getObject()->cvi): ?>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label">CVI</label>
+                            <div class="col-xs-8">
+                                <input disabled="disabled" value="<?php echo $form->getObject()->cvi; ?>" class="form-control" />
+                            </div>
+                        </div>
                     <?php endif; ?>
                     <?php if (isset($form['code_insee'])): ?>
                         <div class="form-group">
