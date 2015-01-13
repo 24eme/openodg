@@ -154,6 +154,20 @@ class compteActions extends sfActions {
         $this->current_page = $page;
     }
 
+    public function executeExportCSV(sfWebRequest $request) {
+        ini_set('memory_limit', '128M');
+        $this->setLayout(false);
+        $q = $this->initSearch($request);
+        $q->setLimit(10000);
+        $index = acElasticaManager::getType('compte');
+        $resset = $index->search($q);
+        $this->results = $resset->getResults();
+
+        $attachement = "attachment; filename=export_contacts.csv";
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+    }
+
     private function initSearch(sfWebRequest $request) {
         $this->q = $query = $request->getParameter('q', '*');
         if (!$this->q) {
@@ -173,10 +187,6 @@ class compteActions extends sfActions {
         $q->setQuery($qs);
         $this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
         return $q;
-    }
-
-    public function executeExportCSV(sfWebRequest $request) {
-
     }
 
     private function getCompteModificationForm() {

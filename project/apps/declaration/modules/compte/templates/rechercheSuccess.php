@@ -96,6 +96,7 @@
     </div>
     <div class="col-xs-3">
         <p class="text-muted"><i><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></i></p>
+        <p><a href="<?php echo url_for("compte_export_csv", $args->getRawValue()) ?>" class="btn btn-default btn-default-step"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a></p>
         <h4>Affiner la recherche</h4>
         <div class="input-group">
             <div class="checkbox">

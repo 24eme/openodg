@@ -419,6 +419,10 @@ compte_recherche:
   url: /compte/recherche
   param: { module: compte, action: recherche }
 
+compte_export_csv:
+  url: /compte/export/csv
+  param: { module: compte, action: exportCSV }
+
 compte_creation_confirmation:
   url: /compte-creation-confirmation
   param: { module: compte, action: creationConfirmation }
