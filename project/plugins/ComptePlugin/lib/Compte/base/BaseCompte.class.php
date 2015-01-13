@@ -34,6 +34,8 @@
  * @property string $date_archivage
  * @property string $date_creation
  * @property string $no_accises
+ * @property string $lat
+ * @property string $lon
  * @property acCouchdbJson $droits
  * @property acCouchdbJson $chais
  * @property acCouchdbJson $infos
@@ -99,6 +101,10 @@
  * @method string setDateCreation()
  * @method string getNoAccises()
  * @method string setNoAccises()
+ * @method string getLat()
+ * @method string setLat()
+ * @method string getLon()
+ * @method string setLon()
  * @method acCouchdbJson getDroits()
  * @method acCouchdbJson setDroits()
  * @method acCouchdbJson getChais()

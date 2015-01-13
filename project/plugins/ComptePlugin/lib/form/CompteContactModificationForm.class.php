@@ -42,6 +42,7 @@ class CompteContactModificationForm extends CompteModificationForm {
     private function getSyndicats() {
         $compteClient = CompteClient::getInstance();
         if (!$this->syndicats) {
+            $this->syndicats = array();
             foreach ($compteClient->getAllSyndicats() as $syndicatId) {
                 $syndicat = CompteClient::getInstance()->find($syndicatId);
                 $this->syndicats[$syndicatId] = $syndicat->nom_a_afficher;

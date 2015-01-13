@@ -67,6 +67,7 @@ class Etablissement extends BaseEtablissement {
         //$this->code_insee = $compte->code_insee;
         $this->compte_id = $compte->identifiant;
         $this->familles = $compte->infos->attributs->toArray(true, false);
+        $this->chais = $compte->chais->toArray(true, false);
     }
 
     public function updateCompte() {
