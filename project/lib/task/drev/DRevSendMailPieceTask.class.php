@@ -38,15 +38,6 @@ EOF;
 
         foreach($this->rows as $row) {
 
-            $doc = DRevClient::getInstance()->find($row->id);
-
-            if($doc->exist('documents_rappel') && $doc->documents_rappel) {
-                $doc->add('documents_rappels')->add(null, $doc->documents_rappel);
-                $doc->remove('documents_rappel');
-                echo "replace rappel ".$doc->_id." \n";
-                $doc->save();
-            }
-
             if($row->key[7]) {
 
                 continue;
@@ -88,7 +79,7 @@ EOF;
 
             if($nb_rappel == 1) {
                 $dateFrom = new DateTime($doc->documents_rappels->getLast());
-                $dateFrom->modify("+30 days");
+                $dateFrom->modify("+15 days");
             }
 
             $dateTo = new DateTime();

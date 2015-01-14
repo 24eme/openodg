@@ -2,18 +2,6 @@
 
 class compteActions extends sfActions {
 
-    public function executeChoiceCreationAdmin(sfWebRequest $request) {
-
-        $this->form = new CompteChoiceCreationForm();
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {
-                $type_compte = $this->form->getValue("type_compte");
-                $this->redirect('compte_creation_admin', array("type_compte" => $type_compte));
-            }
-        }
-    }
-
     public function executeCreationAdmin(sfWebRequest $request) {
         $this->type_compte = $request->getParameter('type_compte');
         if (!$this->type_compte) {
@@ -129,12 +117,13 @@ class compteActions extends sfActions {
     public function executeRecherche(sfWebRequest $request) {
         $this->form = new CompteRechercheForm();
         $q = $this->initSearch($request);
-        $res_by_page = 20;
+        $res_by_page = 15;
         $page = $request->getParameter('page', 1);
         $from = $res_by_page * ($page - 1);
         $q->setLimit($res_by_page);
         $q->setFrom($from);
-        $facets = array('attributs' => 'tags.attributs', 'automatiques' => 'tags.automatiques', 'manuels' => 'tags.manuels');
+        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels');
+        $this->facets_libelle = array('automatiques' => 'Par type', 'attributs' => 'Par attributs', 'manuels' => 'Par mots clés');
         foreach ($facets as $nom => $f) {
             $elasticaFacet = new acElasticaFacetTerms($nom);
             $elasticaFacet->setField($f);
@@ -153,6 +142,49 @@ class compteActions extends sfActions {
         $this->current_page = $page;
     }
 
+    public function executeRechercheCsv(sfWebRequest $request) {
+        ini_set('memory_limit', '128M');
+        $this->setLayout(false);
+        $q = $this->initSearch($request);
+        $q->setLimit(10000);
+        $index = acElasticaManager::getType('compte');
+        $resset = $index->search($q);
+        $this->results = $resset->getResults();
+
+        $attachement = "attachment; filename=export_contacts.csv";
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+    }
+    
+    public function executeRechercheJson($request) {
+
+        $q = $this->initSearch($request);
+
+        $q->setLimit(60);
+        $index = acElasticaManager::getType('compte');
+        $resset = $index->search($q);
+        $results = $resset->getResults();
+
+        $list = array();
+        foreach ($results as $res) {
+            $data = $res->getData();
+            $item = new stdClass();
+            $item->nom_a_afficher = $data['nom_a_afficher'];
+            $item->commune = $data['commune'];
+            $item->code_postal = $data['code_postal'];
+            $item->cvi = $data['cvi'];
+            $item->siret = $data['siret'];
+            $item->text = sprintf("%s (%s) à %s (%s)", $data['nom_a_afficher'], $data['cvi'], $data['commune'], $data['code_postal']);
+            $item->text_html = sprintf("%s <small>(%s)</small> à %s <small>(%s)</small><br /><small>%s</small>", $data['nom_a_afficher'], $data['cvi'], $data['commune'], $data['code_postal'], implode(", ", $data['tags']['attributs']));
+            $item->id = $data['_id'];
+            $list[] = $item;
+        }
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode($list));
+    }
+
     private function initSearch(sfWebRequest $request) {
         $this->q = $query = $request->getParameter('q', '*');
         if (!$this->q) {
@@ -167,6 +199,11 @@ class compteActions extends sfActions {
             $explodeTag = explode(':', $tag);
             $query .= ' tags.' . $explodeTag[0] . ':"' . html_entity_decode($explodeTag[1], ENT_QUOTES) . '"';
         }
+        $this->type_compte = $request->getParameter('type_compte', null);
+        if($this->type_compte) {
+            $query .= " type_compte:".$this->type_compte;
+        }
+
         $qs = new acElasticaQueryQueryString($query);
         $q = new acElasticaQuery();
         $q->setQuery($qs);

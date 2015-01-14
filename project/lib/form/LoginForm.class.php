@@ -10,7 +10,7 @@ class LoginForm extends BaseForm {
         $choices = $this->getChoices();
         
         $this->setWidgets(array(
-                'login'   => new sfWidgetFormChoice(array("choices" => $choices)),
+                'login'   => new sfWidgetFormInput(),
         ));
 
         $this->widgetSchema->setLabels(array(
@@ -18,7 +18,7 @@ class LoginForm extends BaseForm {
         ));
 
         $this->setValidators(array(
-                'login' => new sfValidatorChoice(array("required" => true, "choices" => array_keys($choices)))
+                'login' => new sfValidatorString(array("required" => true)),
         ));
         
         $this->widgetSchema->setNameFormat('login[%s]');
@@ -28,10 +28,12 @@ class LoginForm extends BaseForm {
     }
 
     public function getChoices() {
+
+        return array();
         $etablissements = EtablissementClient::getInstance()->getAll()->getDocs();
         $choices = array("" => "");
         foreach($etablissements as $etablissement) {
-            $choices[$etablissement["identifiant"]] = sprintf("%s - %s %s - %s (%s)", 
+                $choices[$etablissement["identifiant"]] = sprintf("%s - %s %s - %s (%s)", 
                 $etablissement["raison_sociale"], 
                 $etablissement["code_postal"], 
                 $etablissement["commune"], 

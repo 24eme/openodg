@@ -419,6 +419,14 @@ compte_recherche:
   url: /compte/recherche
   param: { module: compte, action: recherche }
 
+compte_recherche_json:
+  url: /compte/recherche.json
+  param: { module: compte, action: rechercheJson }
+
+compte_recherche_csv:
+  url: /compte/recherche.csv
+  param: { module: compte, action: rechercheCsv }
+
 compte_creation_confirmation:
   url: /compte-creation-confirmation
   param: { module: compte, action: creationConfirmation }
@@ -439,45 +447,45 @@ redirect_to_mon_compte_civa:
 
 compte_choice_creation_admin:
   url: /compte-choice-admin-creation
-  param: { module: compte, action: choiceCreationAdmin } 
+  param: { module: compte, action: choiceCreationAdmin }
 
 compte_creation_admin:
   url: /compte-admin-creation/:type_compte
   param: { module: compte, action: creationAdmin }
-  
+
 compte_visualisation_admin:
   url: /compte-visualisation/:id
-  param: { module: compte, action: visualisationAdmin }  
+  param: { module: compte, action: visualisationAdmin }
   class: CompteRoute
   options:
     model:    Compte
     type:     object
   requirements:
     sf_method: [get]
-    
+
 compte_modification_admin:
   url: /compte-modification/:id
-  param: { module: compte, action: modificationAdmin }  
+  param: { module: compte, action: modificationAdmin }
   class: CompteRoute
   options:
     model:    Compte
     type:     object
   requirements:
     sf_method: [get,post]
-    
+
 compte_modification_etablissement:
   url: /compte-modification-etablissement
-  param: { module: compte, action: modificationEtablissementAdmin }  
+  param: { module: compte, action: modificationEtablissementAdmin }
 
 compte_tags_manuels:
   url: /compte-tags-manuels
-  param: { module: compte, action: allTagsManuels }  
+  param: { module: compte, action: allTagsManuels }
   requirements:
     sf_method: [get]
-    
+
 compte_redirect_espace_etablissement:
   url: /compte-redirect-espace-etablissement/:id
-  param: { module: compte, action: redirectEspaceEtablissement }  
+  param: { module: compte, action: redirectEspaceEtablissement }
   class: CompteRoute
   options:
     model:    Compte

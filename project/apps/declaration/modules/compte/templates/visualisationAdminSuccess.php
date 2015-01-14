@@ -18,39 +18,15 @@
                     </div>
                     <?php if ($compte->cvi): ?>
                         <div class="row">
-                            <label class="col-xs-6">Cvi </label>    
+                            <label class="col-xs-6">CVI </label>    
                             <div class="col-xs-6">
                                 <?php echo $compte->cvi; ?>
                             </div>                
                         </div>
                     <?php endif; ?>
-                    <?php if ($compte->code_insee): ?>
-                        <div class="row">
-                            <label class="col-xs-6">Code Insee</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->code_insee; ?>
-                            </div>                
-                        </div>
-                    <?php endif; ?>
-                    <?php if ($compte->code_insee): ?>
-                        <div class="row">
-                            <label class="col-xs-6">Code Insee</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->code_insee; ?>
-                            </div>                
-                        </div>
-                    <?php endif; ?>
-                    <?php if ($compte->siren): ?>
-                        <div class="row">
-                            <label class="col-xs-6">Siren</label>    
-                            <div class="col-xs-6">
-                                <?php echo $compte->siren; ?>
-                            </div>                
-                        </div>
-                    <?php endif; ?>
                     <?php if ($compte->siret): ?>
                         <div class="row">
-                            <label class="col-xs-6">Siret</label>    
+                            <label class="col-xs-6">SIRET / SIREN</label>    
                             <div class="col-xs-6">
                                 <?php echo $compte->siret; ?>
                             </div>                
@@ -134,7 +110,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Email</label>    
                                 <div class="col-xs-6">
-                                    <?php echo $compte->email; ?>
+                                    <a href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
                                 </div>                
                             </div>     
                         </div>
@@ -150,31 +126,31 @@
                     <h3>Informations complémentaire</h3>
                 </div>
                 <div class="panel-body">
-                    
-                        <div class="form-group">
-                            <label class="col-xs-3">Type de compte :</label> 
-                            <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
-                        </div>
-                        <br/>  
-                    <?php if ($compte->hasAttributs()): ?>
+
                     <div class="form-group">
-                        <label class="col-xs-3">Attributs :</label> 
-                        <div>                                                   
+                        <label class="col-xs-3">Type de compte :</label> 
+                        <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
+                    </div>
+                    <br/>  
+                    <?php if ($compte->hasAttributs()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Attributs :</label> 
+                            <div>                                                   
                                 <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
                                     <span class="label label-xs label-default" style="display: inline-block; margin: 2px;"><?php echo $attribut_libelle ?></span>
                                 <?php endforeach; ?>                           
+                            </div>
                         </div>
-                    </div>
-                    <br/>
+                        <br/>
                     <?php endif; ?>
                     <?php if ($compte->hasProduits()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Produits :</label> 
                             <p>                         
-                                    <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
-                                <span class="label label-xs label-info" style="display: inline-block; margin: 2px;"><?php echo $produit_libelle ?></span>
-                                    <?php endforeach; ?>
-                                
+                                <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
+                                    <span class="label label-xs label-info" style="display: inline-block; margin: 2px;"><?php echo $produit_libelle ?></span>
+                                <?php endforeach; ?>
+
                             </p>
                         </div>
                         <br/>
@@ -183,21 +159,21 @@
                         <div class="form-group">
                             <label class="col-xs-3">Tags manuels :</label> 
                             <div>           
-                                    <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
-                                <span class="label label-xs label-success" style="display: inline-block; margin: 2px;"><?php echo $tag_manuel ?></span>
-                                    <?php endforeach; ?>                               
+                                <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
+                                    <span class="label label-xs label-success" style="display: inline-block; margin: 2px;"><?php echo $tag_manuel ?></span>
+                                <?php endforeach; ?>                               
                             </div>
                         </div>
                         <br/>
                     <?php endif; ?>  
-                        <?php if ($compte->hasSyndicats()): ?>
+                    <?php if ($compte->hasSyndicats()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Syndicats :</label> 
                             <p>                         
-                                    <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
-                                <span class="label label-xs label-danger" style="display: inline-block; margin: 2px;"><?php echo $syndicat_libelle ?></span>
-                                    <?php endforeach; ?>
-                                
+                                <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
+                                    <span class="label label-xs label-danger" style="display: inline-block; margin: 2px;"><?php echo $syndicat_libelle ?></span>
+                                <?php endforeach; ?>
+
                             </p>
                         </div>
                         <br/>
@@ -215,16 +191,15 @@
                     </div>
                     <div class="panel-body">
                         <div class="form-group">
-                            <div class="col-xs-12">
-                                <ul>        
-                                    <?php foreach ($compte->chais as $chai) : ?>
-                                        <li>
-                                            <strong>
-                                                <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?>
-                                            </strong>                                    
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
+                            <div class="row"> 
+                                <?php foreach ($compte->chais as $key => $chai) : ?>
+                                    <div class="col-xs-4 text-center">
+                                        <strong>Chai N° <?php echo $key + 1; ?></strong>                                    
+                                    </div>  
+                                    <div class="col-xs-6 text-center">
+                                        <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?> 
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>

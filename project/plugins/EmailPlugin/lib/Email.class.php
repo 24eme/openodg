@@ -81,7 +81,7 @@ class Email {
 
         if(count($drev->exist('documents_rappels') && $drev->documents_rappels->toArray(true, false)) > 0) {
           $partial = 'send_drev_rappel_documents_second';
-          $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication Second";
+          $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
         }
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));

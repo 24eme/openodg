@@ -11,12 +11,24 @@
  *
  * @author mathurin
  */
-class CompteChaisCollectionForm extends acCouchdbForm
-{
-  public function configure()
-  {      
-    for ($i=0; $i < $this->getOption('nbChai', 1) ; $i++) {
-    	$this->embedForm ($i, new CompteChaiNouveauForm($this->getDocument()->chais->add()));
+class CompteChaisCollectionForm extends acCouchdbForm {
+
+    
+    
+    public function configure() {
+        if (is_null($this->getOption('nbChais'))) {
+            throw new InvalidArgumentException('Il doit y avoir une option nbChais.');
+        }
+        $hasItem = false;
+        $key = 0;
+       $chais = $this->getDocument()->getChais();
+        foreach ($chais as $chai) {
+            $this->embedForm($key, new CompteChaiNouveauForm(null, array('chai' => $chai)));
+            $hasItem = true;
+            $key++;
+        }
+
+        $this->embedForm($key, new CompteChaiNouveauForm($this->getDocument()->chais->add()));        
     }
-  }
+
 }

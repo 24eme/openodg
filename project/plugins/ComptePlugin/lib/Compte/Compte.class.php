@@ -20,11 +20,12 @@ class Compte extends BaseCompte {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
             $this->statut = CompteClient::STATUT_ACTIF;
         }
-
+        
         if ($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement) {
+            $this->updateChais();
             $etablissement = EtablissementClient::getInstance()->createOrFind($this->cvi);
             if ($this->isNew() && !$etablissement->isNew()) {
-                throw new sfException("Pas possible de créer un etablissement avec cet Id");
+                throw new sfException("Pas possible de créer un etablissement avec cet Id (".$this->cvi.")");
             }
             $etablissement->synchroFromCompte($this);
             $etablissement->save();
@@ -34,10 +35,10 @@ class Compte extends BaseCompte {
         $this->updateNomAAfficher();
         $this->updateInfosTagsAutomatiques();
         $this->updateTags();
-
+        $this->updateCoordonneesLongLat();
         parent::save();
     }
-
+    
     public function updateNomAAfficher() {
         $this->nom_a_afficher = "";
 
@@ -52,6 +53,16 @@ class Compte extends BaseCompte {
         if ($this->raison_sociale) {
             $this->nom_a_afficher .= $this->raison_sociale;
         }
+    }
+
+    public function setSiret($value) {
+        $return = $this->_set('siret', $value);
+
+        if($value && strlen($value) >= 9)  {
+            $this->siren = substr($value, 0, 9);
+        }
+
+        return $return;
     }
 
     public function getInfosAttributs() {
@@ -199,6 +210,40 @@ class Compte extends BaseCompte {
             $this->tags->add($nodeType, null);
         }
         $this->tags->$nodeType->add(null, $value);
+    }
+
+    private function updateCoordonneesLongLat() {
+       
+        $serviceOSM = sfConfig::get('app_osm_url_search');
+        $format = "format=".sfConfig::get('app_osm_return_format');
+        
+        $postalCode = "postalcode=".$this->getCodePostal();
+        $city = "city=".$this->getCommune();
+        $adresse = preg_replace('/(B.P. [0-9]*|BP [0-9]*|B.P [0-9]*|BP. [0-9]*)(.*)/', "$2", trim($this->getAdresse()));
+        $requet = "q=".urlencode($adresse)."&".urlencode($city)."&".urlencode($postalCode)."&".$format;
+        
+        $url = utf8_decode($serviceOSM."?".$requet);
+        $file = file_get_contents($url);
+
+        $result_requet = json_decode($file);
+        
+        if(!count($result_requet)){
+            return false;
+        }
+        $this->setLat($result_requet[0]->lat);
+        $this->setLon($result_requet[0]->lon);
+        return true;
+    }
+
+    public function updateChais() {
+        $newChais = array();
+        foreach ($this->chais as $chai) {
+            if($chai->adresse && $chai->commune && $chai->code_postal){
+                $newChais[] = $chai;
+            }
+        }
+        $this->remove("chais");
+        $this->add("chais", $newChais);
     }
 
 }

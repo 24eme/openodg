@@ -4,10 +4,10 @@
     <?php foreach($lists as $list): ?>
     <li role="presentation" <?php if ($list['type'] == $type && $list['campagne'] == $campagne): ?>class="active"<?php endif ?>>
         <a href="<?php echo url_for('admin', array("doc_type" => $list['type'], 'doc_campagne' => $list['campagne'])) ?>"><?php echo $list['type'] ?> <?php echo  $list['campagne'] ?>
-            &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $list['stats']['nb_teledeclares'] ?>
-            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['nb_papiers'] ?>
-            <?php if($list['stats']['nb_can_be_validate']): ?>
-            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $list['stats']['nb_can_be_validate'] ?></span>
+            &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $list['stats']['global']['nb_teledeclares'] ?>
+            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['global']['nb_papiers'] ?>
+            <?php if($list['stats']['global']['nb_can_be_validate']): ?>
+            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $list['stats']['global']['nb_can_be_validate'] ?></span>
             <?php endif; ?>
         </a></li>
     <?php endforeach; ?>
@@ -15,7 +15,15 @@
 
 <ul class="nav nav-pills">
     <?php foreach ($lists[$type.$campagne]["statuts"] as $key => $list): ?>
-        <li <?php if ($key == $statut): ?>class="active"<?php endif; ?>><a href="<?php echo url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $key)) ?>"><?php echo $statuts_libelle[$key] ?> <span class="badge"><?php echo count($list) ?></span></a></li>
+        <li <?php if ($key == $statut): ?>class="active"<?php endif; ?>><a href="<?php echo url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $key)) ?>"><?php echo $statuts_libelle[$key] ?>
+            &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $lists[$type.$campagne]['stats'][$key]['nb_teledeclares'] ?>
+            <?php if($lists[$type.$campagne]['stats'][$key]['nb_papiers']): ?>
+            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $lists[$type.$campagne]['stats'][$key]['nb_papiers'] ?>
+            <?php endif; ?>
+            <?php if($lists[$type.$campagne]['stats'][$key]['nb_can_be_validate']): ?>
+            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $lists[$type.$campagne]['stats'][$key]['nb_can_be_validate'] ?></span>
+            <?php endif; ?>
+            </a></li>
     <?php endforeach; ?>
 </ul>
 

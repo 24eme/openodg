@@ -11,17 +11,19 @@ class ValidatorLogin extends sfValidatorBase {
             return array_merge($values);
         }
         
-        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($values['login']);
+        $compte = CompteClient::getInstance()->find($values['login']);
 
-        if (!$etablissement) {
-            $etablissement = CompteClient::getInstance()->findByIdentifiant($values['login']);
+        if (!$compte) {
+            throw new sfValidatorErrorSchema($this, array($this->getOption('login') => new sfValidatorError($this, 'invalid')));
         }
+
+        $etablissement = $compte->getEtablissementObj();
 
         if (!$etablissement) {
             throw new sfValidatorErrorSchema($this, array($this->getOption('login') => new sfValidatorError($this, 'invalid')));
         }
-            
-        return array_merge($values, array('etablissement' => $etablissement));
+
+        return array_merge($values, array('compte' => $compte, 'etablissement' => $etablissement));
     }
 
 }

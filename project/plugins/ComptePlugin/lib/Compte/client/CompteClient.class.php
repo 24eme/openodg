@@ -182,8 +182,9 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function getAllTypesCompte() {
-        return array(self::TYPE_COMPTE_CONTACT => self::TYPE_COMPTE_CONTACT,
+        return array(
             self::TYPE_COMPTE_ETABLISSEMENT => self::TYPE_COMPTE_ETABLISSEMENT,
+            self::TYPE_COMPTE_CONTACT => self::TYPE_COMPTE_CONTACT,
             self::TYPE_COMPTE_DEGUSTATEUR => self::TYPE_COMPTE_DEGUSTATEUR,
             self::TYPE_COMPTE_AGENT_PRELEVEMENT => self::TYPE_COMPTE_AGENT_PRELEVEMENT,
             self::TYPE_COMPTE_SYNDICAT => self::TYPE_COMPTE_SYNDICAT);

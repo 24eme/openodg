@@ -50,6 +50,13 @@
                                 <?php echo $form["cvi"]->render(array("class" => "form-control")); ?>
                             </div>
                         </div>
+                    <?php elseif($form->getObject()->cvi): ?>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label">CVI</label>
+                            <div class="col-xs-8">
+                                <input disabled="disabled" value="<?php echo $form->getObject()->cvi; ?>" class="form-control" />
+                            </div>
+                        </div>
                     <?php endif; ?>
                     <?php if (isset($form['code_insee'])): ?>
                         <div class="form-group">
@@ -57,15 +64,6 @@
                             <?php echo $form["code_insee"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                             <div class="col-xs-8">
                                 <?php echo $form["code_insee"]->render(array("class" => "form-control")); ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    <?php if (isset($form['siren'])): ?>
-                        <div class="form-group">
-                            <?php echo $form["siren"]->renderError(); ?>
-                            <?php echo $form["siren"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-                            <div class="col-xs-8">
-                                <?php echo $form["siren"]->render(array("class" => "form-control")); ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -182,7 +180,7 @@
                             ?>
                         </div>
                     </div>
-                                        <?php if (isset($form["syndicats"])): ?>
+                    <?php if (isset($form["syndicats"])): ?>
                         <div class="form-group">
                             <?php echo $form["syndicats"]->renderError(); ?>
                             <?php echo $form["syndicats"]->renderLabel("Syndicats", array("class" => "col-xs-3 control-label")); ?>
@@ -195,8 +193,8 @@
             </div>
         </div>
     </div>
-<?php if (isset($form['chais'])): ?>
-<!--        <div class="row">
+    <?php if (isset($form['chais'])): ?>
+        <div class="row">
             <div class="col-xs-12" >        
 
                 <div class="panel panel-primary">
@@ -204,22 +202,28 @@
                         <h3>Chais</h3>
                     </div>
                     <div class="panel-body">
-                        <p class="intro">Veuillez ajouter vos chais</p>-->
-                        <?php
-//                        include_partial('templateChai');
-//                        include_partial('chais', array('indice' => 0, 'form' => $form['chais'][0], 'supprimer' => false));
-//                        $i = 0;
-//                        foreach ($form['chais'] as $chai) {
-//                            if ($i > 0) {
-//                                include_partial('chai', array('indice' => $i, 'form' => $chai, 'supprimer' => true));
-//                            }
-//                            $i++;
-//                        }
-                        ?>
+                        <h4>Veuillez ajouter vos chais</h4>
+                        <div id="formsChais">
+                            <div class="row">
+                                <div class="col-xs-2 text-center" ></div> 
+                                <div class="col-xs-4 text-center" ><label class="control-label">Adresse</label></div> 
+                                <div class="col-xs-3 text-center" ><label class="control-label">Commune</label></div> 
+                                <div class="col-xs-3 text-center" ><label class="control-label">Code postal</label></div> 
+                            </div>
+                            <br/>
+                            <?php foreach ($form['chais'] as $key => $chaiform): ?>
+                                <?php include_partial('form_chai_item', array('partial' => 'form_chai_item', 'form' => $chaiform, 'indice' => $key, 'existChai' => true)); ?>
+                            <?php endforeach; ?>
+                            <?php include_partial('form_collection_template', array('partial' => 'form_chai_item', 'form' => $form['chais'][count($form['chais'])-1], 'indice' => count($form['chais']))); ?>
 
-<!--                    </div>
+                        </div>
+                        <div class="col-xs-12 text-right">
+                        <a class="btn btn-plus btn_ajouter_chai_template"
+                           data-container="#formsChais" data-template="#template_form_chai_item" href="#">+ Ajouter un chai</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>-->
-<?php endif; ?>
+        </div>
+    <?php endif; ?>
 </div>
