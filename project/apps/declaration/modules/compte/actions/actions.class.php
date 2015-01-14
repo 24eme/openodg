@@ -2,18 +2,6 @@
 
 class compteActions extends sfActions {
 
-    public function executeChoiceCreationAdmin(sfWebRequest $request) {
-
-        $this->form = new CompteChoiceCreationForm();
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {
-                $type_compte = $this->form->getValue("type_compte");
-                $this->redirect('compte_creation_admin', array("type_compte" => $type_compte));
-            }
-        }
-    }
-
     public function executeCreationAdmin(sfWebRequest $request) {
         $this->type_compte = $request->getParameter('type_compte');
         if (!$this->type_compte) {

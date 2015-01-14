@@ -1,8 +1,24 @@
 <?php $allTypeCompte = CompteClient::getInstance()->getAllTypesCompteWithLibelles(); ?>
 
-<div class="page-header">
-    <h2>Recherche de compte</h2>
+<div>
+<div class="btn-group pull-right">
+    <button type="button" class="btn btn-default btn-default-step" data-toggle="dropdown" aria-expanded="false">
+        <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu">
+    <?php foreach(CompteClient::getInstance()->getAllTypesCompteWithLibelles() as $type_compte => $libelle): ?>
+        <li><a href="<?php echo url_for("compte_creation_admin", array("type_compte" => $type_compte)) ?>"><?php echo $libelle ?></a></li>
+    <?php endforeach; ?>
+    </ul>
 </div>
+
+<ul class="nav nav-tabs">
+  <li role="presentation" ><a href="<?php echo url_for('admin'); ?>">Déclarations</a></li>
+  <li role="presentation" class="active"><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
+</ul>
+</div>
+
+
 
 <form action="<?php echo url_for("compte_recherche") ?>" method="get" class="form-horizontal">  
 <div class="row">

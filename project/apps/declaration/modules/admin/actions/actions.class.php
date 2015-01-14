@@ -7,7 +7,6 @@ class adminActions extends sfActions {
         $this->getUser()->signOutEtablissement();
         
         $this->form = new LoginForm();
-        $this->formChoiceCreateCompte = new CompteChoiceCreationForm();
         
         if (!$request->isMethod(sfWebRequest::POST)) {
 
