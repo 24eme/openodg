@@ -128,7 +128,7 @@
         $('.select2autocompleteremote').select2({
                 allowClear: true,
                 placeholder: true,
-                minimumInputLength: 1,
+                minimumInputLength: 3,
                 ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
                     url: $('.select2autocompleteremote').data('url'),
                     dataType: 'json',
