@@ -123,6 +123,40 @@
         $('.select2autocomplete').select2({allowClear: true, placeholder: true});
     }
 
+    $.initSelect2AutocompleteRemote = function ()
+    {
+        $('.select2autocompleteremote').select2({
+                allowClear: true,
+                placeholder: true,
+                minimumInputLength: 1,
+                ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
+                    url: $('.select2autocompleteremote').data('url'),
+                    dataType: 'json',
+                    quietMillis: 250,
+                    data: function (term, page) {
+                        return {
+                            q: term,
+                        };
+                    },
+                    results: function (data, page) {
+                        return { results: data };
+                    },
+                    cache: true
+                },
+                initSelection: function(element, callback) {
+                    
+                },
+                formatResult: function(item) {
+                    if(item.text_html) {
+
+                        return item.text_html;
+                    }
+
+                    return item.text;
+                }
+        });
+    }
+
     $.initSelect2AutocompletePermissif = function ()
     {
 
@@ -334,6 +368,7 @@
     {
         $.initDatePickers();
         $.initSelect2Autocomplete();
+        $.initSelect2AutocompleteRemote();
         $.initSelect2AutocompletePermissif();
         $.initCheckboxRelations();
         $('input.num_float').saisieNum(true);
