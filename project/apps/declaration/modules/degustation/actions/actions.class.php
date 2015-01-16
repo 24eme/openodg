@@ -6,12 +6,19 @@ class degustationActions extends sfActions {
         
     }
 
-    public function executeOrganisationCreation(sfWebRequest $request) {
+    public function executeCreation(sfWebRequest $request) {
         
     }
 
-    public function executeOrganisationChoixOperateurs(sfWebRequest $request) {
+    public function executeChoixOperateurs(sfWebRequest $request) {
         
     }
 
+    public function executeDegustation(sfWebRequest $request) {
+ 
+    }
+
+    public function executeChoixDegustateurs(sfWebRequest $request) {
+ 
+    }
 }

@@ -120,7 +120,7 @@
     };
     $.initSelect2Autocomplete = function ()
     {
-        $('.select2autocomplete').select2({allowClear: true, placeholder: true});
+        $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
     }
 
     $.initSelect2AutocompleteRemote = function ()

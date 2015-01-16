@@ -492,8 +492,33 @@ compte_redirect_espace_etablissement:
     type:     object
   requirements:
     sf_method: [get]
-# generic rules
-# please, remove them by adding more specific rules
+
+# Dégustation
+
+degustation_creation:
+  url: /desgustation/creation
+  param: { module: degustation, action: creation }
+  requirements:
+    sf_method: [get]
+
+degustation_choix_operateurs:
+  url: /desgustation/choix-operateurs
+  param: { module: degustation, action: choixOperateurs }
+  requirements:
+    sf_method: [get]
+
+degustation_degustation:
+  url: /desgustation/degustation
+  param: { module: degustation, action: degustation }
+  requirements:
+    sf_method: [get]
+
+degustation_choix_degustateurs:
+  url: /desgustation/choix-degustateurs
+  param: { module: degustation, action: choixDegustateurs }
+  requirements:
+    sf_method: [get]
+
 default_index:
   url:   /:module
   param: { action: index }

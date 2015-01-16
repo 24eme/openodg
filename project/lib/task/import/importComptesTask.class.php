@@ -190,6 +190,7 @@ EOF;
             if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
                 $compte->infos->attributs->remove(EtablissementClient::FAMILLE_CONDITIONNEUR);
             }
+            $compte->chais = $etablissement->chais->toArray(true, false);
         }
 
         $this->save($compte, $etablissement);
