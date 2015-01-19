@@ -544,6 +544,10 @@ EOF;
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR));
             }
 
+            if(preg_match("/^Elaborateur$/", $data[self::CSV_ATTRIBUTS])) {
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR));
+            }
+
             if(preg_match("/Producteur de raisins en structure collective/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR));
             }
@@ -556,9 +560,9 @@ EOF;
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR));
             }
 
-            if(preg_match("/laborateur/", $data[self::CSV_ATTRIBUTS])) {
+            /*if(preg_match("/laborateur/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR));
-            }
+            }*/
 
             if(preg_match("/Négoce/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT));
@@ -584,6 +588,12 @@ EOF;
         if(!$type_compte && $data[self::CSV_ATTRIBUTS] == "SYNDICAT") {
            $compte->infos->attributs->add("SYNDICAT", "SYNDICAT"); 
         }  
+
+        // Pour test
+        if($data[self::CSV_ATTRIBUTS] == "Prestataire de service") {
+            $libelle = "Prestataire de service";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
     }
 
     protected function importLineAttributAutre($data, $compte) {
@@ -593,7 +603,7 @@ EOF;
         }
 
         if($data[self::CSV_ATTRIBUTS] == "Abonnés Revue \"Les Vins d'Alsace\"") {
-            $libelle = "Abonnés revue";
+            $libelle = "Abonné revue";
             $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
         }
 
