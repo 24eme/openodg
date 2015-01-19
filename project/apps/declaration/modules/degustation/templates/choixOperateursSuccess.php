@@ -4,33 +4,34 @@
     <h2>Choix des Opérateurs</h2>
 </div>
 
-<form action methode="post" class="form-horizontal">
+<form id="form_degustation_choix_operateurs" action="" methode="post" class="form-horizontal">
 
 <div class="row">
     <div class="col-xs-12">
-        <p>
-            <strong>Nombre de prélévements : </strong> 12
-        </p>
-        <p>
-            <strong>Cépages : </strong> Riesling <span class="badge">3</span> Chasselas <span class="badge">3</span> Riesling <span class="badge">3</span> Pinot Gris <span class="badge">2</span> Gewurztraminer <span class="badge">2</span>
-        </p>
+        <ul id="recap_cepages">
+            <li data-cepage="Riesling">Riesling <span class="badge">0</span></li>
+            <li data-cepage="Chasselas">Chasselas <span class="badge">0</span></li>
+            <li data-cepage="Pinot Gris">Pinot Gris <span class="badge">0</span></li>
+            <li data-cepage="Gewurztraminer">Gewurztraminer <span class="badge">0</span></li>
+        </ul>
     </div>
 
     <div class="col-xs-12">
         <ul class="nav nav-pills">
-            <li id="nav_a_prelever"><a href="">Opérateur à preléver <span class="badge">16</span></a></li>
-            <li id="nav_tous" class="active" role="presentation"><a href="">Tous les opérateurs <span class="badge">60</span></a></li>
+            <li id="nav_tous" class="active" role="presentation"><a href="">Tous <span class="badge">60</span></a></li>
+            <li id="nav_a_prelever"><a href="">À preléver <span class="badge">0</span></a></li>
         </ul>
     </div>
     <div class="col-xs-12" style="padding-top: 20px;">
         <div id="listes_operateurs" class="list-group">
             <?php for($i = 0; $i <= 60; $i++): ?>
-            <div class="list-group-item col-xs-12">
+            <div class="list-group-item col-xs-12 clickable">
                 <div class="col-xs-3">M. NOM PRENOM  <?php echo $i ?></div>
                 <div class="col-xs-3">AMMERSCHWIHR</div>
                 <div class="col-xs-3">Prélevé en 2012, 2014</div>
                 <div class="col-xs-2">
                     <select data-placeholder="Sélectionner" class="form-control input-sm hidden">
+                        <option></option>
                         <option>Chasselas</option>
                         <option>Riesling</option>
                         <option>Pinot Gris</option>
@@ -39,7 +40,7 @@
                 </div>
                 <div class="col-xs-1">
                     <button class="btn btn-success btn-sm pull-right" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                    <button class="btn btn-danger btn-sm pull-right hidden" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                    <button class="btn btn-danger btn-sm pull-right hidden" style="opacity: 0.7;" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                 </div>
             </div>
             <?php endfor; ?>
