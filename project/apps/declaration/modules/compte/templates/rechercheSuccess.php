@@ -113,7 +113,7 @@
     <div class="col-xs-3">
         <p class="text-muted"><i><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></i></p>
         <p><a href="<?php echo url_for("compte_recherche_csv", $args->getRawValue()) ?>" class="btn btn-default btn-default-step"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a></p>
-        <div style="<?php if($q == '*'): echo "opacity: 0.5"; endif; ?>">
+        <div style="<?php if($q == '*'): echo "opacity: 0.7"; endif; ?>">
             <h4>Affiner la recherche</h4>
             <div class="input-group">
                 <div class="checkbox">
