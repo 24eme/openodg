@@ -13,7 +13,7 @@ class CompteClient extends acCouchdbClient {
     const TYPE_COMPTE_SYNDICAT = "SYNDICAT";
     const STATUT_ACTIF = "ACTIF";
     const STATUT_INACTIF = "INACTIF";
-    const ATTRIBUT_ETABLISSEMENT_COOPERATEUR = "COOPERATEUR";
+    const ATTRIBUT_ETABLISSEMENT_APPORTEUR = "APPORTEUR";
     const ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS = "PRODUCTEUR";
     const ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR = "CONDITIONNEUR";
     const ATTRIBUT_ETABLISSEMENT_VINIFICATEUR = "VINIFICATEUR";
@@ -32,7 +32,7 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_SYNDICAT_SYNDICAT = "SYNDICAT";
 
     private $libelles_attributs_etablissements = array(
-        self::ATTRIBUT_ETABLISSEMENT_COOPERATEUR => 'Coopérateur',
+        self::ATTRIBUT_ETABLISSEMENT_APPORTEUR => 'Producteur en structure collective',
         self::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS => 'Producteur de raisin',
         self::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR => 'Conditionneur',
         self::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR => 'Vinificateur',

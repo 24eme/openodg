@@ -414,6 +414,10 @@ EOF;
         if($etablissement->familles->exist(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR)) {
             $etablissement->familles->remove(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR);
         }
+
+        if($etablissement->familles->exist('COOPERATEUR')) {
+            $etablissement->familles->remove('COOPERATEUR');
+        }
         
         return $etablissement;
     }
@@ -555,12 +559,14 @@ EOF;
             }
 
             if(preg_match("/Producteur de raisins en structure collective/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_APPORTEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_APPORTEUR));
             }
 
             if(preg_match("/Producteur/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS));
             }
+
+
 
             if(preg_match("/Distillation/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR));
