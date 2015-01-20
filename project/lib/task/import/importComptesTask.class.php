@@ -531,11 +531,11 @@ EOF;
 
         if(!$type_compte || $type_compte == CompteClient::TYPE_COMPTE_AGENT_PRELEVEMENT) {
             if(preg_match("/Préleveur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT));
             }
 
             if(preg_match("/Agent de contrôle/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE));
             }
         }
 

@@ -103,9 +103,9 @@ Compte:
               type: array_collection
               definition:
                 fields:
-                  '*' : { }   
+                  '*' : { }
             'syndicats':
               type: array_collection
               definition:
                 fields:
-                  '*' : { }   
+                  '*' : { }

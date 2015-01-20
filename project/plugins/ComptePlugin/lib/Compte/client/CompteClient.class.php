@@ -23,16 +23,12 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_ETABLISSEMENT_NEGOCIANT = "NEGOCIANT";
     const ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT = "VITICULTEUR_INDEPENDANT";
     const ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE = "CAVE_COOPERATIVE";
-    const ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR = "PRELEVEUR";
-    const ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE = "AGENT_CONTROLE";
+    const ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT = "AGENT_PRELEVEMENTS";
+    const ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE = "APPUI_TECHNIQUE";
     const ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES = "PORTEUR_MEMOIRES";
     const ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT = "TECHNICIEN_PRODUIT";
     const ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT = "USAGER_PRODUIT";
-    const ATTRIBUT_CONTACT_RESTAURANT = "RESTAURANT";
-    const ATTRIBUT_CONTACT_HOTEL = "HOTEL";
     const ATTRIBUT_SYNDICAT_SYNDICAT = "SYNDICAT";
-
-    // const ATTRIBUT_CONTACT_PARC_ATTRACTION = "PARC_ATTRACTION";
 
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_COOPERATEUR => 'Coopérateur',
@@ -48,16 +44,15 @@ class CompteClient extends acCouchdbClient {
         self::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE => 'Cave coopérative'
     );
     private $libelles_attributs_agents_prelevement = array(
-        self::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR => 'Prélèveur',
-        self::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE => 'Agent de contrôle');
+        self::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT => 'Agent de prélèvement',
+        self::ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE => 'Appui technique'
+    );
     private $libelles_attributs_degustateurs = array(
         self::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES => 'Porteur de mémoire',
         self::ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT => 'Technicien du produit',
-        self::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT => 'Usager du produit');
+        self::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT => 'Usager du produit'
+    );
     private $libelles_attributs_contacts = array(
-        self::ATTRIBUT_CONTACT_RESTAURANT => 'Restaurant',
-        self::ATTRIBUT_CONTACT_HOTEL => 'Hôtel'
-            //  self::ATTRIBUT_CONTACT_PARC_ATTRACTION => 'Parc d\'attraction'
     );
     private $libelles_attributs_syndicats = array(
         self::ATTRIBUT_SYNDICAT_SYNDICAT => 'Syndicat'
