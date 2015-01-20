@@ -19,8 +19,9 @@
 </div>
 
 
-
-<form action="<?php echo url_for("compte_recherche") ?>" method="get" class="form-horizontal">  
+<?php $argsForm = $args->getRawValue(); ?>
+<?php unset($argsForm['q']) ?>
+<form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">  
 <div class="row">
     <div class="col-xs-9">
         <div class="col-xs-12">
@@ -113,43 +114,45 @@
     <div class="col-xs-3">
         <p class="text-muted"><i><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></i></p>
         <p><a href="<?php echo url_for("compte_recherche_csv", $args->getRawValue()) ?>" class="btn btn-default btn-default-step"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a></p>
-        <h4>Affiner la recherche</h4>
-        <div class="input-group">
-            <div class="checkbox">
-                <label>
-                    <small><?php echo ($all) ? $form["all"]->render(array('checked' => 'checked')) : $form["all"]->render(); ?> Inclure les comptes inactifs</small>
-                </label>
-            </div>
-        </div>
-        <div class="input-group">
-        <?php if(count($args['tags']->getRawValue()) > 0): ?>
-        <p>
-            <?php $argsTemplate = $args->getRawValue(); unset($argsTemplate['tags']); ?>
-            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="text-danger"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
-        </p>
-        <?php endif; ?>
-        <?php foreach ($facets as $type => $ftype): ?>
-            <?php if (count($ftype['terms'])): ?>
-                <h5><small><?php echo $facets_libelle[$type] ?></small></h5>
-                <div class="list-group">
-                    <?php
-                    foreach ($ftype['terms'] as $f):
-                        $tag = $type . ':' . $f['term'];
-                        $argsTemplate = $args->getRawValue();
-                        if (!in_array($tag, $argsTemplate['tags'])) {
-                            $argsTemplate['tags'][] = $tag;
-                        }
-                        ?>
-                        <?php if(in_array($tag, $args['tags']->getRawValue())): ?>
-                            <?php $argsTemplate['tags'] = array_diff($argsTemplate['tags'], array($tag)); ?>
-                            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item list-group-item-warning" style="padding: 8px 8px"><small class="pull-right"><span class="glyphicon glyphicon-trash"></span></small><small><?php echo $f['term'] ?></small>&nbsp;</a>
-                        <?php else: ?>
-                            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item" style="padding: 8px 8px"><span class="badge"><small><?php echo $f['count'] ?></small></span><small><?php echo $f['term'] ?></small>&nbsp;</a>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+        <div style="<?php if($q == '*'): echo "opacity: 0.5"; endif; ?>">
+            <h4>Affiner la recherche</h4>
+            <div class="input-group">
+                <div class="checkbox">
+                    <label>
+                        <small><?php echo ($all) ? $form["all"]->render(array('checked' => 'checked')) : $form["all"]->render(); ?> Inclure les comptes inactifs</small>
+                    </label>
                 </div>
+            </div>
+            <div class="input-group">
+            <?php if(count($args['tags']->getRawValue()) > 0): ?>
+            <p>
+                <?php $argsTemplate = $args->getRawValue(); unset($argsTemplate['tags']); ?>
+                <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="text-danger"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
+            </p>
             <?php endif; ?>
-        <?php endforeach; ?>
+            <?php foreach ($facets as $type => $ftype): ?>
+                <?php if (count($ftype['terms'])): ?>
+                    <h5><small><?php echo $facets_libelle[$type] ?></small></h5>
+                    <div class="list-group">
+                        <?php
+                        foreach ($ftype['terms'] as $f):
+                            $tag = $type . ':' . $f['term'];
+                            $argsTemplate = $args->getRawValue();
+                            if (!in_array($tag, $argsTemplate['tags'])) {
+                                $argsTemplate['tags'][] = $tag;
+                            }
+                            ?>
+                            <?php if(in_array($tag, $args['tags']->getRawValue())): ?>
+                                <?php $argsTemplate['tags'] = array_diff($argsTemplate['tags'], array($tag)); ?>
+                                <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item list-group-item-warning" style="padding: 8px 8px"><small class="pull-right"><span class="glyphicon glyphicon-trash"></span></small><small><?php echo $f['term'] ?></small>&nbsp;</a>
+                            <?php else: ?>
+                                <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item" style="padding: 8px 8px"><span class="badge"><small><?php echo $f['count'] ?></small></span><small><?php echo $f['term'] ?></small>&nbsp;</a>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
 </form>
