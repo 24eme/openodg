@@ -87,11 +87,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }
 
     public function initDefaultTagsManuels() {
-        $default_tags = array();
-        foreach ($this->getObject()->getInfosManuels() as $tag_manuel) {
-            $default_tags[] = $tag_manuel;
-        }
-        $this->widgetSchema['manuels']->setDefault($default_tags);
+
+        $this->widgetSchema['manuels']->setDefault(implode(",", $this->getObject()->getInfosManuels()->toArray(true, false)));
     }
 
 }

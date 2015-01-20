@@ -143,9 +143,6 @@
                     },
                     cache: true
                 },
-                initSelection: function(element, callback) {
-                    
-                },
                 formatResult: function(item) {
                     if(item.text_html) {
 
@@ -161,7 +158,7 @@
     {
 
         $('.select2autocompletepermissif').select2({
-            tags: true,
+            tags:[],
             tokenSeparators: [','],
             createSearchChoice: function (term) {
                 return {
@@ -185,7 +182,6 @@
             },
             initSelection: function (element, callback) {
                 var data = [];
-
                 function splitVal(string, separator) {
                     var val, i, l;
                     if (string === null || string.length < 1)
@@ -197,19 +193,20 @@
                 }
 
                 $(splitVal(element.val(), ",")).each(function () {
+                    console.log(this);
                     data.push({
                         id: this,
                         text: this
                     });
                 });
 
-                callback(data);
+
 
                 callback($.map(element.val().split(','), function (id) {
                     return {id: id, text: id};
                 }));
             }
-        });         
+        });
     }
 
     $.initCheckboxRelations = function ()
@@ -376,9 +373,6 @@
         $('a[data-toggle=tooltip], button[data-toggle=tooltip]').tooltip({'container': 'body'});
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
-        
-        var defaultValue = eval($('.select2autocompletepermissif').attr('data-initvalue'));
-        $('.select2autocompletepermissif').select2('val', defaultValue, true);
         $.initCollectionAddTemplate('.btn_ajouter_chai_template', /var---nbItem---/g, null);
     });
 })(jQuery);
