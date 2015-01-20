@@ -566,15 +566,13 @@ EOF;
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS));
             }
 
-
+            if(preg_match("/donneur d'ordre/", $data[self::CSV_ATTRIBUTS])) {
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DONNEUR_ORDRE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DONNEUR_ORDRE));
+            }
 
             if(preg_match("/Distillation/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR));
             }
-
-            /*if(preg_match("/laborateur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR));
-            }*/
 
             if(preg_match("/Négoce/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT));
