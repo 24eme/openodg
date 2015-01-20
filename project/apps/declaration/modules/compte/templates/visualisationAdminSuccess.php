@@ -120,7 +120,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Email</label>    
                                 <div class="col-xs-6">
-                                    <a href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
+                                    <a class="btn-link" href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
                                 </div>                
                             </div>     
                         </div>
