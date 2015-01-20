@@ -17,8 +17,6 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-                
-        
         $this->setWidget("adresse", new sfWidgetFormInput(array("label" => "Adresse")));
         $this->setWidget("code_postal", new sfWidgetFormInput(array("label" => "Code Postal")));
         $this->setWidget("commune", new sfWidgetFormInput(array("label" => "Commune")));
@@ -43,6 +41,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
         
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
+
+        $this->validatorSchema->setPostValidator(new ValidatorCompteModification());
     }
 
     protected function getCivilites() {

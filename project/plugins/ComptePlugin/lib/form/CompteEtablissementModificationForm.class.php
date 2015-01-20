@@ -45,9 +45,6 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
             'nbChais' => $nbChais));
         $this->embedForm('chais', $formChais);
-        
-       $this->validatorSchema->setPostValidator(new ValidatorCompteEtablissementModification());
-
     }
 
     public function initDefaultSyndicats() {
