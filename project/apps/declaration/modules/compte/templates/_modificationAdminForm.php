@@ -168,18 +168,6 @@
                             </div>
                         </div>
                     <?php endif; ?>
-                    <div class="form-group">
-                        <?php echo $form["manuels"]->renderError(); ?>
-                        <?php echo $form["manuels"]->renderLabel("Tags manuels", array("class" => "col-xs-3 control-label")); ?>
-                        <div class="col-xs-9">                        
-                            <?php
-                            echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocompletepermissif",
-                                "placeholder" => "tags manuels",
-                                "data-url" => url_for('compte_tags_manuels'),
-                                "data-initvalue" => $form->getObject()->getDefaultManuelsTagsFormatted()));
-                            ?>
-                        </div>
-                    </div>
                     <?php if (isset($form["syndicats"])): ?>
                         <div class="form-group">
                             <?php echo $form["syndicats"]->renderError(); ?>
@@ -189,6 +177,18 @@
                             </div>
                         </div>
                     <?php endif; ?>
+                    <div class="form-group">
+                        <?php echo $form["manuels"]->renderError(); ?>
+                        <?php echo $form["manuels"]->renderLabel("Mots clés", array("class" => "col-xs-3 control-label")); ?>
+                        <div class="col-xs-9">                        
+                            <?php
+                            echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocompletepermissif",
+                                "placeholder" => "tags manuels",
+                                "data-url" => url_for('compte_tags_manuels'),
+                                "data-initvalue" => $form->getObject()->getDefaultManuelsTagsFormatted()));
+                            ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

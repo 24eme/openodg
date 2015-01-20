@@ -137,47 +137,43 @@
                             <label class="col-xs-3">Attributs :</label> 
                             <div>                                                   
                                 <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
-                                    <span class="label label-xs label-default" style="display: inline-block; margin: 2px;"><?php echo $attribut_libelle ?></span>
+                                    <span class="label label-success"><?php echo $attribut_libelle ?></span>
                                 <?php endforeach; ?>                           
                             </div>
                         </div>
-                        <br/>
                     <?php endif; ?>
                     <?php if ($compte->hasProduits()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Produits :</label> 
-                            <p>                         
+                            <div>                         
                                 <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
-                                    <span class="label label-xs label-info" style="display: inline-block; margin: 2px;"><?php echo $produit_libelle ?></span>
+                                    <span class="label label-info"><?php echo $produit_libelle ?></span>
                                 <?php endforeach; ?>
 
-                            </p>
-                        </div>
-                        <br/>
-                    <?php endif; ?>
-                    <?php if ($compte->hasManuels()): ?>
-                        <div class="form-group">
-                            <label class="col-xs-3">Tags manuels :</label> 
-                            <div>           
-                                <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
-                                    <span class="label label-xs label-success" style="display: inline-block; margin: 2px;"><?php echo $tag_manuel ?></span>
-                                <?php endforeach; ?>                               
                             </div>
                         </div>
-                        <br/>
-                    <?php endif; ?>  
+                    <?php endif; ?>
                     <?php if ($compte->hasSyndicats()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Syndicats :</label> 
-                            <p>                         
+                            <div>                         
                                 <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
-                                    <span class="label label-xs label-danger" style="display: inline-block; margin: 2px;"><?php echo $syndicat_libelle ?></span>
+                                    <span class="label label-danger" style="margin: 2px;"><?php echo $syndicat_libelle ?></span>
                                 <?php endforeach; ?>
 
-                            </p>
+                            </div>
                         </div>
-                        <br/>
                     <?php endif; ?>
+                    <?php if ($compte->hasManuels()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Mots clés :</label> 
+                            <div>           
+                                <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
+                                    <span class="label label-default" style="margin: 2px;"><?php echo $tag_manuel ?></span>
+                                <?php endforeach; ?>                               
+                            </div>
+                        </div>
+                    <?php endif; ?>  
                 </div>
             </div>
         </div>
