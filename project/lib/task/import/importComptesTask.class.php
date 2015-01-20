@@ -164,8 +164,6 @@ EOF;
             $compte->civilite = null;
         }
 
-        $compte->infos->attributs->remove('NON_CONDITIONNEUR');
-
         $compte->identifiant = $this->getIdentifiantCompte($compte, $id);
 
         if($etablissement && $etablissement->exist('date_connexion') && $etablissement->date_connexion) {
@@ -413,6 +411,9 @@ EOF;
         $etablissement->adresse = $compte->adresse;
         $etablissement->code_postal = $compte->code_postal;
         $etablissement->commune = $compte->commune;
+        if($etablissement->familles->exist(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR)) {
+            $etablissement->familles->remove(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR);
+        }
         
         return $etablissement;
     }
