@@ -246,4 +246,14 @@ class Compte extends BaseCompte {
         $this->add("chais", $newChais);
     }
 
+    public function archiver() {
+        $this->statut = CompteClient::STATUT_INACTIF;
+        $this->date_archivage = date('Y-m-d');
+    }
+
+    public function desarchiver() {
+        $this->statut = CompteClient::STATUT_ACTIF;
+        $this->date_archivage = null;
+    }
+
 }

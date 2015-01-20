@@ -1,8 +1,18 @@
+<?php echo use_helper('Date'); ?>
 <div class="page-header">
-    <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?>)</h2>
+    <?php if(!$compte->date_archivage): ?>
+    <a href="<?php echo url_for('compte_archiver', $compte) ?>" class="btn btn-sm btn-default btn-default-step pull-right"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Archiver</a>
+    <?php endif; ?>
+    <h2><?php echo $compte->nom_a_afficher ?> <small><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?></span> - <?php echo $compte->identifiant; ?></small></h2>
 </div>
 
 <div class="row col-xs-12">
+    <?php if($compte->date_archivage): ?>
+    <div class="alert alert-warning">
+        Compte archivé le <?php echo format_date($compte->date_archivage, "dd/MM/yyyy", "fr_FR"); ?>
+        <small><a href="<?php echo url_for('compte_desarchiver', $compte) ?>" class="text-danger">(annuler l'archivage)</a></small>
+    </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -206,15 +216,15 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">
-            <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>Retour à la recherche</a>
+            <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour à la recherche</a>
         </div>
         <div class="col-xs-4 text-center">
-            <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin', array('id' => $compte->identifiant)) ?>">Modifier</a>
+            <a class="btn btn-lg btn-warning" href="<?php echo url_for('compte_modification_admin', $compte) ?>">Modifier</a>
         </div>
         <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
             <div class="col-xs-4 text-right">               
 
-                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('compte_redirect_espace_etablissement', array("id" => $compte->identifiant)); ?>">Espace etablissement<span class="eleganticon arrow_carrot-right"></span></a>
+                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('compte_redirect_espace_etablissement', $compte); ?>">Espace etablissement&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
             </div>
         <?php endif; ?>
     </div>

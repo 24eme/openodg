@@ -5,7 +5,7 @@ class CompteRoute extends sfObjectRoute {
 
     protected function getObjectForParameters($parameters) {
 
-        $this->compte = CompteClient::getInstance()->findByIdentifiant($parameters['id']);
+        $this->compte = CompteClient::getInstance()->find($parameters['id']);
         if (!$this->compte) {
 
             throw new sfError404Exception(sprintf('No compte found with the id "%s".', $parameters['id']));

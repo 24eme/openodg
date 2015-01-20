@@ -346,6 +346,11 @@ EOF;
         if(trim($data[self::CSV_DATE_ARCHIVAGE])) {
             $compte->date_archivage = $this->formatDate($data[self::CSV_DATE_ARCHIVAGE]);
         }
+
+        if($compte->date_creation && $compte->date_archivage && $compte->date_archivage < $compte->date_creation) {
+            $compte->date_archivage = $compte->date_creation;
+        }
+
         $compte->statut = 'ACTIF';
 
         if($compte->date_archivage) {
