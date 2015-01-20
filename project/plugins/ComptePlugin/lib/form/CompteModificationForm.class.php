@@ -39,6 +39,10 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => false)));
         $this->setValidator('attributs', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
+
+        if(!count($this->getAttributsForCompte())) {
+            unset($this['attributs']);
+        } 
         
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
 
@@ -63,7 +67,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }   
     
     public function save($con = null) {
-        if ($attributs = $this->values['attributs']) {
+        if (isset($this->values['attributs']) && $attributs = $this->values['attributs']) {
             $this->getObject()->updateInfosTagsAttributs($attributs);
         }
         if ($tagsManuelsValues = $this->values['manuels']) {
@@ -79,6 +83,9 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }
 
     private function initDefaultAttributs() {
+        if(!isset($this['attributs'])) {
+            return;
+        }
         $default_attributs = array();
         foreach ($this->getObject()->getInfosAttributs() as $attribut_code => $attribut) {
             $default_attributs[] = $attribut_code;

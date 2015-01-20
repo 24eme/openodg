@@ -152,19 +152,21 @@
                     <h3>Informations complémentaire</h3>
                 </div>
                 <div class="panel-body">
+                    <?php if (isset($form["attributs"])): ?>
                     <div class="form-group">
                         <?php echo $form["attributs"]->renderError(); ?>
                         <?php echo $form["attributs"]->renderLabel("Attributs", array("class" => "col-xs-3 control-label")); ?>
                         <div class="col-xs-9">
-                            <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "attributs")); ?>
+                            <?php echo $form["attributs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Ajouter des attributs")); ?>
                         </div>
                     </div>
+                    <?php endif; ?>
                     <?php if (isset($form["produits"])): ?>
                         <div class="form-group">
                             <?php echo $form["produits"]->renderError(); ?>
                             <?php echo $form["produits"]->renderLabel("Produits", array("class" => "col-xs-3 control-label")); ?>
                             <div class="col-xs-9">
-                                <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "produits")); ?>
+                                <?php echo $form["produits"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Ajouter des produits")); ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -173,7 +175,7 @@
                             <?php echo $form["syndicats"]->renderError(); ?>
                             <?php echo $form["syndicats"]->renderLabel("Syndicats", array("class" => "col-xs-3 control-label")); ?>
                             <div class="col-xs-9">
-                                <?php echo $form["syndicats"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "syndicats")); ?>
+                                <?php echo $form["syndicats"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Ajouter des syndicats")); ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -183,7 +185,7 @@
                         <div class="col-xs-9">                        
                             <?php
                             echo $form["manuels"]->render(array("class" => "form-control select2 select2-offscreen select2autocompletepermissif",
-                                "placeholder" => "tags manuels",
+                                "placeholder" => "Ajouter des mots clés (liste permissive)",
                                 "data-url" => url_for('compte_tags_manuels'),
                                 "data-initvalue" => $form->getObject()->getDefaultManuelsTagsFormatted()));
                             ?>

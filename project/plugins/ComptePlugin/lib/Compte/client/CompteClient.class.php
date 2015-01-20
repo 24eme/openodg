@@ -29,7 +29,6 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES = "PORTEUR_MEMOIRES";
     const ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT = "TECHNICIEN_PRODUIT";
     const ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT = "USAGER_PRODUIT";
-    const ATTRIBUT_SYNDICAT_SYNDICAT = "SYNDICAT";
 
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_APPORTEUR => 'Producteur en structure collective',
@@ -56,7 +55,6 @@ class CompteClient extends acCouchdbClient {
     private $libelles_attributs_contacts = array(
     );
     private $libelles_attributs_syndicats = array(
-        self::ATTRIBUT_SYNDICAT_SYNDICAT => 'Syndicat'
     );
 
     public static function getInstance() {
