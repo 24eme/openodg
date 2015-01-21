@@ -6,6 +6,7 @@ Compte:
       _rev: {  }
       type: {  }
       identifiant: {  }
+      identifiant_interne: {  }
       type_compte: {  }
       code_insee: {  }
       civilite: {  }

@@ -292,6 +292,8 @@ EOF;
             throw new Exception("IGNORE : 4 - Possède une DR");
         }
 
+        $compte->identifiant_interne = $data[self::CSV_ID];
+
         if($data[self::CSV_RAISON_SOCIALE]) {
             $compte->raison_sociale = trim(sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE]));
         } elseif($data[self::CSV_NOM]) {
