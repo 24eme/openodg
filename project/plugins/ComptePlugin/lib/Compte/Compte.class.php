@@ -35,7 +35,6 @@ class Compte extends BaseCompte {
         $this->updateNomAAfficher();
         $this->updateInfosTagsAutomatiques();
         $this->updateTags();
-        //$this->updateCoordonneesLongLat();
         parent::save();
     }
     

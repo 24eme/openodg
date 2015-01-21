@@ -79,6 +79,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
             }
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
+
+        $this->getObject()->updateCoordonneesLongLat();
         parent::save($con);
     }
 
