@@ -415,18 +415,6 @@ compte_creation:
   url: /compte
   param: { module: compte, action: creation }
 
-compte_recherche:
-  url: /compte/recherche
-  param: { module: compte, action: recherche }
-
-compte_recherche_json:
-  url: /compte/recherche.json
-  param: { module: compte, action: rechercheJson }
-
-compte_recherche_csv:
-  url: /compte/recherche.csv
-  param: { module: compte, action: rechercheCsv }
-
 compte_creation_confirmation:
   url: /compte-creation-confirmation
   param: { module: compte, action: creationConfirmation }
@@ -444,6 +432,18 @@ redirect_to_mon_compte_civa:
   param: { module: compte, action: redirectToMonCompteCiva }
 
 #Compte et etablissement admin
+
+compte_recherche:
+  url: /compte/recherche
+  param: { module: compte, action: recherche }
+
+compte_recherche_json:
+  url: /compte/recherche.json
+  param: { module: compte, action: rechercheJson }
+
+compte_recherche_csv:
+  url: /compte/recherche.csv
+  param: { module: compte, action: rechercheCsv }
 
 compte_choice_creation_admin:
   url: /compte-choice-admin-creation
@@ -472,10 +472,6 @@ compte_modification_admin:
     type:     object
   requirements:
     sf_method: [get,post]
-
-compte_modification_etablissement:
-  url: /compte-modification-etablissement
-  param: { module: compte, action: modificationEtablissementAdmin }
 
 compte_tags_manuels:
   url: /compte-tags-manuels

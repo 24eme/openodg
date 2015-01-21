@@ -12,11 +12,8 @@
     </ul>
 </div>
 
-<ul class="nav nav-tabs">
-  <li role="presentation" ><a href="<?php echo url_for('admin'); ?>">Déclarations</a></li>
-  <li role="presentation" class="active"><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
-</ul>
-</div>
+
+<?php include_partial('admin/menu', array('active' => 'contacts')); ?>
 
 
 <?php $argsForm = $args->getRawValue(); ?>

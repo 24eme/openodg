@@ -6,24 +6,36 @@ creationConfirmation:
 
 motDePasseOublie:
   is_secure: false
-  
+
 choiceCreationAdmin:
-  is_secure: false
-  
+  credentials: [[CONTACT, ADMIN]]
+
 creationAdmin:
-  is_secure: false
-  
+  credentials: [[CONTACT, ADMIN]]
+
 visualisationAdmin:
-  is_secure: false
-  
+  credentials: [[CONTACT, ADMIN]]
+
 modificationAdmin:
-  is_secure: false
-  
+  credentials: [[CONTACT, ADMIN]]
+
 recherche:
-  is_secure: false
-  
+  credentials: [[CONTACT, ADMIN]]
+
+rechercheCsv:
+  credentials: [[CONTACT, ADMIN]]
+
+rechercheJson:
+  credentials: [[CONTACT, ADMIN]]
+
+desarchiver:
+  credentials: [[CONTACT, ADMIN]]
+
+archiver:
+  credentials: [[CONTACT, ADMIN]]
+
 allTagsManuels:
-  is_secure: false
+  credentials: [[CONTACT, ADMIN]]
 
 redirectEspaceEtablissement:
-  is_secure: false   
+  credentials: [[ADMIN]]
