@@ -35,7 +35,7 @@ class Compte extends BaseCompte {
         $this->updateNomAAfficher();
         $this->updateInfosTagsAutomatiques();
         $this->updateTags();
-        $this->updateCoordonneesLongLat();
+        //$this->updateCoordonneesLongLat();
         parent::save();
     }
     
@@ -212,7 +212,7 @@ class Compte extends BaseCompte {
         $this->tags->$nodeType->add(null, $value);
     }
 
-    private function updateCoordonneesLongLat() {
+    public function updateCoordonneesLongLat() {
        
         $serviceOSM = sfConfig::get('app_osm_url_search');
         $format = "format=".sfConfig::get('app_osm_return_format');
