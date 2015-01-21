@@ -18,10 +18,10 @@
 
 <?php $argsForm = $args->getRawValue(); ?>
 <?php unset($argsForm['q']) ?>
-<form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">  
 <div class="row">
     <div class="col-xs-9">
         <div class="col-xs-12">
+            <form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">  
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="input-group">
@@ -30,6 +30,7 @@
                     <button class="btn btn-lg btn-info" type="submit" style="font-size: 22px; padding-top: 8px; padding-bottom: 8px;"><span class="glyphicon glyphicon-search"></span></button>
                 </span>
             </div>
+            </form>
         </div>
         <?php if ($nb_results > 0): ?>
         <div class="col-xs-12" style="padding-top: 15px">
@@ -110,16 +111,15 @@
     <div class="col-xs-3">
         <p class="text-muted"><i><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></i></p>
         <p><a href="<?php echo url_for("compte_recherche_csv", $args->getRawValue()) ?>" class="btn btn-default btn-default-step"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a></p>
-        <div style="<?php if($q == '*'): echo "opacity: 0.7"; endif; ?>">
+        <div style="<?php if($q == '*'): echo "opacity: 0.8"; endif; ?>">
             <h4>Affiner la recherche</h4>
-            <div class="input-group">
-                <div class="checkbox">
-                    <label>
-                        <small><?php echo ($all) ? $form["all"]->render(array('checked' => 'checked')) : $form["all"]->render(); ?> Inclure les comptes inactifs</small>
-                    </label>
-                </div>
-            </div>
-            <div class="input-group">
+            <?php if(!isset($args['all']) || !$args['all']): ?>
+            <?php $argsTemplate = $args->getRawValue(); $argsTemplate['all'] = 1; ?>
+            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class=""><span class="glyphicon glyphicon-unchecked"></span><small>&nbsp;&nbsp;Inclure les comptes inactifs</small></a>
+            <?php else: ?>
+            <?php $argsTemplate = $args->getRawValue(); $argsTemplate['all'] = 0; ?>
+            <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class=""><span class="glyphicon glyphicon-check"></span><small>&nbsp;&nbsp;Inclure les comptes inactifs</small></a>
+            <?php endif ?>
             <?php if(count($args['tags']->getRawValue()) > 0): ?>
             <p>
                 <?php $argsTemplate = $args->getRawValue(); unset($argsTemplate['tags']); ?>
@@ -151,4 +151,3 @@
         </div>
     </div>
 </div>
-</form>
