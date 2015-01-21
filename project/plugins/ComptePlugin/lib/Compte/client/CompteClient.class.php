@@ -80,7 +80,7 @@ class CompteClient extends acCouchdbClient {
         $query = $this->startkey(sprintf("COMPTE-" . $prefix . "%s", "000000"))
                 ->endkey(sprintf("COMPTE-" . $prefix . "%s", "999999"));
 
-        return $query->execute(acCouchdbClient::HYDRATE_ARRAY)->getIds();
+        return $query->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
     }
     
     public function getAllSyndicats() {

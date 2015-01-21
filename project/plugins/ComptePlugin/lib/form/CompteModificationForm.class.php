@@ -70,7 +70,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
         if (isset($this->values['attributs']) && $attributs = $this->values['attributs']) {
             $this->getObject()->updateInfosTagsAttributs($attributs);
         }
-        if ($tagsManuelsValues = $this->values['manuels']) {
+        if (isset($this->values['manuels'])) {
+            $tagsManuelsValues = $this->values['manuels'];
             $tagsManuelsValuesSplited = explode(",",$tagsManuelsValues);
             $tagsManuels = array();
             foreach ($tagsManuelsValuesSplited as $manuel) {
