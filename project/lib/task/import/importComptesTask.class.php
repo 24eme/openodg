@@ -549,7 +549,7 @@ EOF;
             }
         }
 
-        if(!$type_compte || $type_compte != CompteClient::TYPE_COMPTE_ETABLISSEMENT) {
+        if(!$type_compte || $type_compte == CompteClient::TYPE_COMPTE_ETABLISSEMENT) {
             if(preg_match("/Vinificateur/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR));
             }
@@ -661,32 +661,6 @@ EOF;
             $libelle = "Laboratoires";
             $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
         }
-
-        /*if($data[self::CSV_ATTRIBUTS] == "Vice-Président") {
-            $libelle = "Vice-Président";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Trésorier Adjoint") {
-            $libelle = "Trésorier Adjoint";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Secrétaire Général") {
-            $libelle = "Secrétaire Général";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Trésorier") {
-            $libelle = "Trésorier";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Trésorier") {
-            $libelle = "Trésorier";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }*/
-
     }
 
     protected function getAttributManuelKey($libelle) {
