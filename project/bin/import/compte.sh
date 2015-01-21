@@ -1,6 +1,7 @@
+PREFIX=$1
 echo "000000#id;type_ligne;cvi;siren;siret;num_tva_intracom;civilite;raison_sociale;nom;prenom;famille;adresse_1;adresse_2;adresse_3;code_postal;commune;code_insee;cedex;attributs;date_archivage;date_creation;liaison"
 
-mysql -u root -pboris97 AVA_base -N -e "
+mysql -u root -pboris97 "$PREFIX"base -N -e "
 SELECT 
        LPAD(p.CODE_IDENT_SITE, 6, '0') as ID,
        '1.COMPTE' as TYPE_LIGNE, 
@@ -37,7 +38,7 @@ LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = c.COMMUNE
 LEFT JOIN PAYS pa ON c.PAYS = pa.COG   
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_base -N -e "
+mysql -u root -pboris97 "$PREFIX"base -N -e "
 SELECT        LPAD(pe.CODE_IDENT_SITE_EXPLT, 6, '0') as ID,
               '2.   CVI' as TYPE_LIGNE,
               e.NR_EVV as CVI,         
@@ -71,7 +72,7 @@ SELECT        LPAD(pe.CODE_IDENT_SITE_EXPLT, 6, '0') as ID,
               LEFT JOIN LOCALITE_FRANCAISE co ON co.INSEE = e.COMMUNE
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_base -N -e "
+mysql -u root -pboris97 "$PREFIX"base -N -e "
 SELECT
        LPAD(pe.CODE_IDENT_SITE, 6, '0') as ID, 
        '3.  CHAI' as TYPE_LIGNE, 
@@ -108,7 +109,7 @@ INNER JOIN PPM_EVV_CHAI as pe ON pe.CLE_CHAI = c.CLE_CHAI
 INNER JOIN EVV as e ON e.CLE_EVV = pe.CLE_EVV
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_extra -N -e "
+mysql -u root -pboris97 "$PREFIX"extra -N -e "
 SELECT
        LPAD(a.CODE_IDENT_SITE, 6, '0') as ID, 
        '4.ATTRIB' as TYPE_LIGNE, 
@@ -143,7 +144,7 @@ FROM PPM_ATTRIBUTS a
 LEFT JOIN PPM_ATTRIBUT_REF r ON r.CLE_ATTRIBUT = a.ATTRIBUT
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_extra2 -N -e "
+mysql -u root -pboris97 "$PREFIX"extra2 -N -e "
 SELECT
        LPAD(s.CIS, 6, '0') as ID, 
        '4.ATTRIB' as TYPE_LIGNE, 
@@ -177,7 +178,7 @@ SELECT
 FROM Syndicats_Locaux s
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_base -N -e "
+mysql -u root -pboris97 "$PREFIX"base -N -e "
 SELECT
        LPAD(c.CODE_IDENT_SITE, 6, '0') as ID, 
        '5.COMMUN' as TYPE_LIGNE, 
@@ -212,7 +213,7 @@ FROM COMMUNICATION c
 WHERE c.CLE_COORDONNEES > 0
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_extra2 -N -e "
+mysql -u root -pboris97 "$PREFIX"extra2 -N -e "
 SELECT
        LPAD(sm.CIS_Membre, 6, '0') as ID, 
        '6.LIAISON' as TYPE_LIGNE, 
@@ -245,11 +246,11 @@ SELECT
        TRIM(CONCAT(p.TITRE, CONCAT(' ', p.RS))) as LIAISON_NOM
 FROM Syndicats_Locaux_Membres sm
 INNER JOIN Syndicats_Locaux s ON sm.ID_SL = s.Id_Syndicats_Locaux
-INNER JOIN AVA_base.PPM p ON s.CIS = p.CODE_IDENT_SITE
+INNER JOIN "$PREFIX"base.PPM p ON s.CIS = p.CODE_IDENT_SITE
 WHERE sm.Cotisant = 1
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_base -N -e "
+mysql -u root -pboris97 "$PREFIX"base -N -e "
 SELECT
        LPAD(p.CODE_PPM_PROFIL, 6, '0') as ID, 
        '4.ATTRIB' as TYPE_LIGNE, 
@@ -284,7 +285,7 @@ FROM PROFIL p
 LEFT JOIN FONCTIONS_GROUPE fg ON p.FONCTION = fg.FONCTION;
 " | sed 's/\t/;/g'
 
-mysql -u root -pboris97 AVA_base -N -e "
+mysql -u root -pboris97 "$PREFIX"base -N -e "
 SELECT
        LPAD(p.CODE_PPM_PROFIL, 6, '0') as ID, 
        '4.ATTRIB' as TYPE_LIGNE, 
