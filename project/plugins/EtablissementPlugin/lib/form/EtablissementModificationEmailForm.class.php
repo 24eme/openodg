@@ -25,4 +25,10 @@ class EtablissementModificationEmailForm extends acCouchdbObjectForm
 
         $this->widgetSchema->setNameFormat('etablissement_email[%s]');
     }
+
+    protected function doUpdateObject($values) 
+    {
+        parent::doUpdateObject($values);
+        $this->getObject()->updateCompte();
+    }
 }
