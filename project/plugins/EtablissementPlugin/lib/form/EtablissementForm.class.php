@@ -47,6 +47,6 @@ class EtablissementForm extends acCouchdbObjectForm
     public function save($con = null) {
         
         parent::save($con);
-            $this->getObject()->updateCompte();
+        $this->getObject()->updateCompte();
     }
 }
