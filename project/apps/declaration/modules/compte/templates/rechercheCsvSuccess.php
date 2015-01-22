@@ -29,6 +29,7 @@ foreach ($results as $res) {
   echo '"'.$data['_id']. '";';  
   echo '"'.implode(", ", $data['infos']['attributs']). '";';  
   echo '"'.implode(", ", $data['infos']['syndicats']). '";';  
-  echo '"'.implode(", ", $data['infos']['manuels']). '";';  
+  echo '"'.implode(", ", $data['infos']['manuels']). '";';
+  echo '"'.str_replace("\n", '\n', $data['commentaires']).'";';  
   echo "\n";
 }

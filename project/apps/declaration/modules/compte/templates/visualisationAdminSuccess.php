@@ -44,6 +44,8 @@
                     <?php endif; ?>
                 </div>
             </div>
+
+            <?php //include_partial('compte/carte', array('compte' => $compte)); ?>
         </div>
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -212,6 +214,14 @@
                 </div>
             </div>
         </div>  
+    <?php endif; ?>
+
+    <?php if($compte->commentaires): ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <code><small><?php echo nl2br($compte->commentaires) ?></small></code>
+        </div>
+    </div>
     <?php endif; ?>
 
     <div class="row row-margin row-button">

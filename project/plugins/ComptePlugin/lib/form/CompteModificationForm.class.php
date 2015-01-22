@@ -27,6 +27,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
         $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
         $this->setWidget("manuels", new sfWidgetFormInput());
+        $this->setWidget("commentaires", new sfWidgetFormTextarea());
         
         
         $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
@@ -39,6 +40,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => false)));
         $this->setValidator('attributs', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
+        $this->setValidator('commentaires', new sfValidatorString(array("required" => false)));
 
         if(!count($this->getAttributsForCompte())) {
             unset($this['attributs']);

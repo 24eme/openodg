@@ -29,6 +29,7 @@ Compte:
       siren: { }
       cvi: { }
       etablissement: { }
+      commentaires: { }
       statut: { }
       date_archivage: { }
       date_creation: { }

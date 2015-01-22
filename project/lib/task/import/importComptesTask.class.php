@@ -257,7 +257,6 @@ EOF;
     }
 
     protected function importLine($data, $compte, $etablissement, $type_compte) {
-
         if($data[self::CSV_TYPE_LIGNE] == "1.COMPTE") {
             
             return $this->importLineCompte($data, $compte);
@@ -291,6 +290,11 @@ EOF;
         if($data[self::CSV_TYPE_LIGNE] == "6.LIAISON") {
 
             return $this->importLineLiaison($data, $compte);
+        }
+
+        if($data[self::CSV_TYPE_LIGNE] == "7.COMMEN") {
+
+            return $this->importLineCommentaires($data, $compte);
         }
     }
 
@@ -708,6 +712,13 @@ EOF;
             $this->echoWarning('Liaison nom inexistante', $data);
         }
         $compte->infos->syndicats->add("COMPTE-S".trim($data[self::CSV_LIAISON]), trim($data[self::CSV_LIAISON_NOM]));
+    }
+
+    protected function importLineCommentaires($data, $compte) {
+        if($compte->commentaires) {
+            $compte->commentaires .= "\n";
+        }
+        $compte->commentaires .= $data[self::CSV_ATTRIBUTS]; 
     }
 
     protected function formatAdresse($data) {
