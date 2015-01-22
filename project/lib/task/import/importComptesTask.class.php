@@ -33,10 +33,13 @@ class importComptesTask extends sfBaseTask
     const CSV_LIAISON               = 27;
     const CSV_LIAISON_NOM           = 28;
 
+    protected $types_ignore = array();
+
     protected function configure()
     {
         $this->addArguments(array(
             new sfCommandArgument('file', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('types_ignore', sfCommandArgument::IS_ARRAY, "Types de compte à ignorés"),
         ));
 
         $this->addOptions(array(
@@ -57,7 +60,7 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-
+        $this->types_ignore = $arguments['types_ignore'];
         $datas = array();
         $id = null;
         foreach(file($arguments['file']) as $line) {
@@ -151,6 +154,11 @@ EOF;
             }
         }
 
+        if(in_array($type_compte, $this->types_ignore)) {
+            $this->echoWarning(sprintf("Compte %s ignoré", $type_compte), array($id));
+            return;
+        }
+
         if(!$type_compte) {
             return;
         }
@@ -227,6 +235,14 @@ EOF;
         if($compte->infos->attributs->exist('SYNDICAT')) {
             $compte->infos->attributs->remove('SYNDICAT');
             $types_compte['SYNDICAT'] = null;
+        }
+
+        if($compte->infos->attributs->exist(CompteClient::TYPE_COMPTE_DEGUSTATEUR)) {
+            if(!array_key_exists(CompteClient::TYPE_COMPTE_DEGUSTATEUR, $types_compte)) {
+                $this->echoWarning("Degustateur forcé", array($compte->identifiant_interne));
+            }
+            $compte->infos->attributs->remove(CompteClient::TYPE_COMPTE_DEGUSTATEUR);
+            $types_compte[CompteClient::TYPE_COMPTE_DEGUSTATEUR] = null;
         }
 
         if($compte->etablissement) {
@@ -464,12 +480,23 @@ EOF;
     }
 
     protected function importLineCommunication($data, $compte) {
+        
+        if($data[self::CSV_FAMILLE] == 'multi' && strlen(preg_replace("/[ \.]+/", "", $data[self::CSV_TEL])) == 20) {
+            $telephone_tmp = preg_replace("/[ \.]+/", "", $data[self::CSV_TEL]);
+            $data[self::CSV_TEL] = substr($telephone_tmp, 0, 10);
+            $data[self::CSV_PORTABLE] = substr($telephone_tmp, 10, 10);
+            $this->echoWarning("Téléhpone dédoublé", array($data[self::CSV_TEL]));
+            $this->echoWarning("Mobile dédoublé", array($data[self::CSV_PORTABLE]));
+        }
+
+        if($data[self::CSV_FAMILLE] == 'multi' && preg_match('/fax /i', $data[self::CSV_EMAIL])) {
+            $data[self::CSV_FAX] = preg_replace('/[a-zA-Z: ]+/', "", $data[self::CSV_EMAIL]);
+            $data[self::CSV_EMAIL] = null;
+        }
+
         $telephone = $this->formatPhone($data[self::CSV_TEL]);
         $mobile = $this->formatPhone($data[self::CSV_PORTABLE]);
         $fax = $this->formatPhone($data[self::CSV_FAX]);
-
-        preg_match("/^([0-9]+)/", $data[self::CSV_FAMILLE], $matches);
-        $nb_ordre = $matches[1];
 
         if($compte->telephone_bureau && $telephone && $telephone == $compte->telephone_bureau) {
 
@@ -505,7 +532,7 @@ EOF;
             echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Fax en double", implode(";", $data), $compte->fax, $fax);
         }
 
-        $email = trim($data[self::CSV_EMAIL]);
+        $email = str_replace("œ", "oe", str_replace(",", ".", str_replace(" ", "", $data[self::CSV_EMAIL])));
         if($email && !preg_match("/^[a-zA-Z0-9\._-]+@[a-zA-Z0-9\._-]+$/", $email)) {
             throw new Exception("L'email n'est pas au bon format"); 
         }
@@ -597,6 +624,10 @@ EOF;
             }
         }
 
+        if(!$type_compte && $data[self::CSV_ATTRIBUTS] == "Degustateur") {
+           $compte->infos->attributs->add(CompteClient::TYPE_COMPTE_DEGUSTATEUR, CompteClient::TYPE_COMPTE_DEGUSTATEUR); 
+        }  
+
         if(!$type_compte && $data[self::CSV_ATTRIBUTS] == "SYNDICAT") {
            $compte->infos->attributs->add("SYNDICAT", "SYNDICAT"); 
         }  
@@ -685,7 +716,7 @@ EOF;
     }
 
     protected function formatPhone($numero) {
-        $numero = trim(preg_replace("/[ xœ_\.]+/", "", $numero));
+        $numero = trim(preg_replace('/[ xœ_\.]+/', "", $numero));
         if($numero && !preg_match("/^[0-9]{7,15}$/", $numero)) {
             throw new Exception(sprintf("Téléphone invalide : %s", $numero)); 
         }
