@@ -8,7 +8,7 @@ Compte:
       identifiant: {  }
       identifiant_interne: {  }
       type_compte: {  }
-      code_insee: {  }
+      code_insee: { required: false }
       civilite: {  }
       nom: {  }
       prenom: {  }
@@ -26,7 +26,7 @@ Compte:
       telephone_mobile: { }
       fax: { }
       email: { }
-      web: { }
+      web: { required: false }
       siret: { }
       siren: { }
       cvi: { }
@@ -55,6 +55,11 @@ Compte:
                   adresse: { }
                   commune: { }
                   code_postal: { }
+                  attributs:
+                    type: collection
+                    definition:
+                      fields:
+                         '*': { }
       infos:
         type: collection
         definition:

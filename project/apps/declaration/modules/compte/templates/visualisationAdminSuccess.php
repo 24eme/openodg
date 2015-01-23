@@ -44,8 +44,7 @@
                     <?php endif; ?>
                 </div>
             </div>
-
-            <?php //include_partial('compte/carte', array('compte' => $compte)); ?>
+            <?php include_partial('compte/carte', array('compte' => $compte)); ?>
         </div>
         <div class="col-xs-6">
             <div class="panel panel-primary">

@@ -42,11 +42,6 @@ class ValidatorCompteModification extends sfValidatorBase
             }
         }
 
-        if(isset($values['nom']) && trim($values['nom']) && (!isset($values['prenom']) || !trim($values['prenom']))) {
-
-            throw new sfValidatorErrorSchema($this, array('prenom' => new sfValidatorError($this, 'required')));
-        }
-
         if((!isset($values['nom']) || !trim($values['nom'])) && isset($values['prenom']) && trim($values['prenom'])) {
             
             throw new sfValidatorErrorSchema($this, array('nom' => new sfValidatorError($this, 'required')));

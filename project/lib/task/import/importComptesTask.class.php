@@ -315,13 +315,18 @@ EOF;
         $compte->identifiant_interne = $data[self::CSV_ID];
 
         if(trim($data[self::CSV_RAISON_SOCIALE])) {
-            $compte->raison_sociale = trim(sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE]));
+            $compte->raison_sociale = trim(preg_replace("/[ ]+/", " ", sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE])));
         } elseif(trim($data[self::CSV_NOM])) {
-            $compte->civilite = trim($data[self::CSV_CIVILITE]);
-            $compte->nom = trim($data[self::CSV_NOM]);
-            $compte->prenom = trim($data[self::CSV_PRENOM]);
+            $compte->civilite = trim(preg_replace("/[ ]+/", " ", $data[self::CSV_CIVILITE]));
+            $compte->nom = trim(preg_replace("/[ ]+/", " ", $data[self::CSV_NOM]));
+            $compte->prenom = trim(preg_replace("/[ ]+/", " ", $data[self::CSV_PRENOM]));
         } else {
             throw new sfException("Aucun nom ou raison sociale");
+        }
+
+        if($compte->nom && !$compte->raison_sociale && !$compte->prenom && !$this->civilite && !preg_match("/^L[EA]{1} /i")) {
+            $compte->raison_sociale = $compte->nom;
+            $compte->nom = null; 
         }
 
         /*if(!preg_match("/^[0-9]+/", trim($data[self::CSV_ADRESSE_1])) && !preg_match("/[0-9]+$/", trim($data[self::CSV_ADRESSE_1]))) {
@@ -483,12 +488,31 @@ EOF;
         $chai->commune = $data[self::CSV_COMMUNE];
         $chai->code_postal = $data[self::CSV_CODE_POSTAL];
 
+        $attributs = $data[self::CSV_ATTRIBUTS];
+
+        if(preg_match("/CHAI_DE_VINIFICATION/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_VINIFICATION, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_VINIFICATION));
+        }
+        if(preg_match("/CENTRE_DE_CONDITIONNEMENT/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_CONDITIONNEMENT, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_CONDITIONNEMENT));
+        }
+        if(preg_match("/LIEU_DE_STOCKAGE/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_STOCKAGE, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_STOCKAGE));
+        }
+        if(preg_match("/CENTRE_DE_PRESSURAGE/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_PRESSURAGE, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_PRESSURAGE));
+        }
+
         if(!$chai->commune) {
             $this->echoWarning("Chai sans commune", $data);
         }
 
         if(!$chai->code_postal) {
             $this->echoWarning("Chai sans code postal", $data);
+        }
+
+        if(!count($chai->attributs->toArray(true, false))) {
+            $this->echoWarning("Chai sans attribut", $data);
         }
     }
 
@@ -552,8 +576,6 @@ EOF;
 
         $email = ($email) ? $email : null;
 
-        $web = trim($data[self::CSV_WEB]);
-
         if($compte->email && $email && $compte->email == $email) {
 
         } elseif(!$compte->email && $email) {
@@ -561,8 +583,6 @@ EOF;
         } elseif($email) {
            echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Email en double", implode(";", $data), $compte->email, $email); 
         }
-
-        $compte->web = $web;
     }
 
     protected function importLineAttribut($data, $compte, $type_compte = null) {
@@ -793,6 +813,7 @@ EOF;
     protected function formatAdresseComplement($complement, $data) {
         $complement = trim(preg_replace("/[ ]+/", " ", $complement));
         $complement = trim(preg_replace("/-$/", "", $complement));
+        $complement = trim(preg_replace("/^-/", "", $complement));
 
         if(!$complement) {
 

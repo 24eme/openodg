@@ -31,6 +31,11 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT = "TECHNICIEN_PRODUIT";
     const ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT = "USAGER_PRODUIT";
 
+    const CHAI_ATTRIBUT_VINIFICATION = "VINIFICATION";
+    const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
+    const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
+    const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
+
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_APPORTEUR => 'Producteur en structure collective',
         self::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS => 'Producteur de raisin',
@@ -56,6 +61,13 @@ class CompteClient extends acCouchdbClient {
     private $libelles_attributs_contacts = array(
     );
     private $libelles_attributs_syndicats = array(
+    );
+
+    private $libelles_chais_attributs = array(
+        self::CHAI_ATTRIBUT_VINIFICATION => "Chai de vinification",
+        self::CHAI_ATTRIBUT_CONDITIONNEMENT => "Centre de conditionnement",
+        self::CHAI_ATTRIBUT_STOCKAGE => "Lieu de stockage",
+        self::CHAI_ATTRIBUT_PRESSURAGE => "Centre de pressurage",
     );
 
     public static function getInstance() {
@@ -174,6 +186,11 @@ class CompteClient extends acCouchdbClient {
     public function getAttributLibelle($compte_attribut) {
         $libellesArr = array_merge($this->libelles_attributs_etablissements, $this->libelles_attributs_degustateurs, $this->libelles_attributs_agents_prelevement, $this->libelles_attributs_contacts,$this->libelles_attributs_syndicats);
         return $libellesArr[$compte_attribut];
+    }
+
+    public function getChaiAttributLibelle($attribut) {
+       
+        return $this->libelles_chais_attributs[$attribut];
     }
 
     public function getAllTypesCompte() {

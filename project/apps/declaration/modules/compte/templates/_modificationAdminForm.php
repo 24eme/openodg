@@ -58,15 +58,6 @@
                             </div>
                         </div>
                     <?php endif; ?>
-                    <?php if (isset($form['code_insee'])): ?>
-                        <div class="form-group">
-                            <?php echo $form["code_insee"]->renderError(); ?>
-                            <?php echo $form["code_insee"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-                            <div class="col-xs-8">
-                                <?php echo $form["code_insee"]->render(array("class" => "form-control")); ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
                     <?php if (isset($form["siret"])): ?>
                         <div class="form-group">
                             <?php echo $form["siret"]->renderError(); ?>
