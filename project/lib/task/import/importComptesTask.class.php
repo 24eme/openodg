@@ -834,7 +834,7 @@ EOF;
     protected function formatVoie($adresse, $data) {
         $adresse = trim(preg_replace("/[ ]+/", " ", $adresse));
 
-        $preg_voie = "(rue | rue|'rue|place |route |impasse |avenue |boulevard |quai |Haut Village|bas village|faubourg|rte |passage| rn |lotissement|square|pré |basse|sentier|voie|fbg | av |bas-village|haut-village|marché|chemin|r\.n\.|r\.d\.)";
+        $preg_voie = "(rue | rue|'rue|place |route |impasse |avenue |boulevard |quai |Haut Village|bas village|faubourg|rte |passage| rn |lotissement|square|pré |basse|sentier|voie|fbg | av |bas-village|haut-village|marché|chemin|r\.n\.|r\.d\.|strasse )";
 
         if(preg_match("/Cédex/", $adresse)) {
 
