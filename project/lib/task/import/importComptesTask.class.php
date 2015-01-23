@@ -324,10 +324,10 @@ EOF;
             throw new sfException("Aucun nom ou raison sociale");
         }
 
-        if(!preg_match("/^[0-9]+/", trim($data[self::CSV_ADRESSE_1])) && !preg_match("/[0-9]+$/", trim($data[self::CSV_ADRESSE_1]))) {
+        /*if(!preg_match("/^[0-9]+/", trim($data[self::CSV_ADRESSE_1])) && !preg_match("/[0-9]+$/", trim($data[self::CSV_ADRESSE_1]))) {
             $compte->raison_sociale = preg_replace("/[ ]+/", " ", $data[self::CSV_ADRESSE_1]);
             $data[self::CSV_ADRESSE_1] = null;
-        }
+        }*/
 
         $compte->siret = trim(str_replace(" ", "", $data[self::CSV_SIRET]));
         if($compte->siret && !preg_match("/^[0-9]+$/", $compte->siret)) {
