@@ -32,7 +32,7 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("commentaires", new sfWidgetFormTextarea());
         
         
-        $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
+        $this->setValidator('adresse', new sfValidatorString(array("required" => false)));
         $this->setValidator('adresse_complement_destinataire', new sfValidatorString(array("required" => false)));
         $this->setValidator('adresse_complement_lieu', new sfValidatorString(array("required" => false)));
         $this->setValidator('commune', new sfValidatorString(array("required" => true)));
