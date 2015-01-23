@@ -57,7 +57,15 @@
                         <div class="row">
                             <label class="col-xs-6">Adresse</label>    
                             <div class="col-xs-6">
-                                <?php echo $compte->adresse; ?>
+                                <?php if($compte->adresse_complement_destinataire): ?>
+                                    <?php echo $compte->adresse_complement_destinataire; ?><br />
+                                <?php endif; ?>
+                                <?php if($compte->adresse): ?>
+                                <?php echo $compte->adresse; ?><br />
+                                <?php endif; ?>
+                                <?php if($compte->adresse_complement_lieu): ?>
+                                    <?php echo $compte->adresse_complement_lieu; ?><br />
+                                <?php endif; ?>
                             </div>                
                         </div>
                     </div>

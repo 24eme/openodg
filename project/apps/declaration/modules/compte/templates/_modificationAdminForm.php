@@ -86,10 +86,27 @@
                 </div>
                 <div class="panel-body">
                     <div class="form-group">
-                        <?php echo $form["adresse"]->renderError(); ?>
-                        <?php echo $form["adresse"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+                        <label class="col-xs-4 control-label">Adresse</label>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $form["adresse_complement_destinataire"]->renderError(); ?>
+                        <?php echo $form["adresse_complement_destinataire"]->renderLabel("Mention complémentaire", array("class" => "col-xs-4 control-label",  "style" => "font-weight: normal;")); ?>
                         <div class="col-xs-8">
-                            <?php echo $form["adresse"]->render(array("class" => "form-control")); ?>
+                            <?php echo $form["adresse_complement_destinataire"]->render(array("placeholder" => "Service, Batiment, etc.", "class" => "form-control",  "style" => "opacity: 0.7")); ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $form["adresse"]->renderError(); ?>
+                        <?php echo $form["adresse"]->renderLabel("N° et nom de rue", array("class" => "col-xs-4 control-label")); ?>
+                        <div class="col-xs-8">
+                            <?php echo $form["adresse"]->render(array("placeholder" => "N° et nom de rue", "class" => "form-control")); ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <?php echo $form["adresse_complement_lieu"]->renderError(); ?>
+                        <?php echo $form["adresse_complement_lieu"]->renderLabel("Complément<br />de lieu", array("class" => "col-xs-4 control-label", "style" => "font-weight: normal;")); ?>
+                        <div class="col-xs-8">
+                            <?php echo $form["adresse_complement_lieu"]->render(array("placeholder" => "Boite postale, Lieu dit, etc.", "class" => "form-control", "style" => "opacity: 0.7")); ?>
                         </div>
                     </div>
                     <div class="form-group">

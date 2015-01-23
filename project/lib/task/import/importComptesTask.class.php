@@ -314,14 +314,19 @@ EOF;
 
         $compte->identifiant_interne = $data[self::CSV_ID];
 
-        if($data[self::CSV_RAISON_SOCIALE]) {
+        if(trim($data[self::CSV_RAISON_SOCIALE])) {
             $compte->raison_sociale = trim(sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE]));
-        } elseif($data[self::CSV_NOM]) {
+        } elseif(trim($data[self::CSV_NOM])) {
             $compte->civilite = trim($data[self::CSV_CIVILITE]);
             $compte->nom = trim($data[self::CSV_NOM]);
             $compte->prenom = trim($data[self::CSV_PRENOM]);
         } else {
             throw new sfException("Aucun nom ou raison sociale");
+        }
+
+        if(!preg_match("/^[0-9]+/", trim($data[self::CSV_ADRESSE_1])) && !preg_match("/[0-9]+$/", trim($data[self::CSV_ADRESSE_1]))) {
+            $compte->raison_sociale = preg_replace("/[ ]+/", " ", $data[self::CSV_ADRESSE_1]);
+            $data[self::CSV_ADRESSE_1] = null;
         }
 
         $compte->siret = trim(str_replace(" ", "", $data[self::CSV_SIRET]));
@@ -336,7 +341,11 @@ EOF;
             $this->echoWarning(sprintf("Le numéro d'accises n'est pas au bon format : %s", $compte->no_accises), $data); 
         }
 
-        $compte->adresse = $this->formatAdresse($data);
+        $adresses = $this->formatAdresse($data);
+        $compte->adresse = $adresses['adresse'];
+        $compte->adresse_complement_destinataire = $adresses['precision'];
+        $compte->adresse_complement_lieu = $adresses['complement'];
+
         if(!$compte->adresse) {
            $this->echoWarning("Adresse vide", $data); 
         }
@@ -464,7 +473,7 @@ EOF;
             $data[self::CSV_ADRESSE_1] = $data[self::CSV_RAISON_SOCIALE];
         }
 
-        $adresse = $this->formatAdresse($data);
+        $adresse = $this->formatAdresseSimple($data);
         
         if(!$adresse) {
             $this->echoWarning("Chai sans adresse", $data);
@@ -721,15 +730,134 @@ EOF;
         $compte->commentaires .= $data[self::CSV_ATTRIBUTS]; 
     }
 
-    protected function formatAdresse($data) {
+    protected function formatAdresseSimple($data) {
 
-        return trim(preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3], $data[self::CSV_CEDEX])));
+        return trim(preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3])));
+    }
+
+    protected function formatAdresse($data) {
+        $adresse = array("adresse" => null, "precision" => null, "complement" => null);
+        
+        $voie_1 = $this->formatVoie($data[self::CSV_ADRESSE_1], $data);
+        
+        if($voie_1) {
+            $adresse['adresse'] = $voie_1;
+            $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_2]." - ".$data[self::CSV_ADRESSE_3], $data);
+
+            return $adresse;
+        }
+
+        $voie_2 = $this->formatVoie($data[self::CSV_ADRESSE_2], $data);
+
+        if($voie_2) {
+            $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1], $data);
+            $adresse['adresse'] = $voie_2;
+            $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_3], $data);
+
+            return $adresse;
+        }
+
+        $voie_3 = $this->formatVoie($data[self::CSV_ADRESSE_3], $data);
+
+        if($voie_3) {
+            $adresse['adresse'] = $voie_3;
+            if($this->isComplement($data[self::CSV_ADRESSE_2])) {
+                $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1], $data);
+                $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_2], $data);
+            } else {
+                $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1] . " - " . $data[self::CSV_ADRESSE_2], $data);
+            }
+
+            return $adresse;
+        }
+
+        return $adresse;
+    }
+
+    protected function isComplement($complement) {
+        $complement = trim(preg_replace("/[ ]+/", " ", $complement));
+
+        if(preg_match("/^B.P. [0-9]+$/", $complement)) {
+
+            return true;
+        }
+
+        if(preg_match("/^BP [0-9]+$/", $complement)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function formatAdresseComplement($complement, $data) {
+        $complement = trim(preg_replace("/[ ]+/", " ", $complement));
+        $complement = trim(preg_replace("/-$/", "", $complement));
+
+        if(!$complement) {
+
+            return null;
+        }
+
+        return $complement;
+    }
+
+    protected function formatVoie($adresse, $data) {
+        $adresse = trim(preg_replace("/[ ]+/", " ", $adresse));
+
+        $preg_voie = "(rue | rue|'rue|place |route |impasse |avenue |boulevard |quai |Haut Village|bas village|faubourg|rte |passage| rn |lotissement|square|pré |basse|sentier|voie|fbg | av |bas-village|haut-village|marché|chemin|r\.n\.|r\.d\.)";
+
+        if(preg_match("/Cédex/", $adresse)) {
+
+            return null;
+        }
+
+        if(preg_match("/6EME JOUR/", $adresse)) {
+
+            return null;
+        }
+
+        if(preg_match("/^B\.P\. [0-9]+$/", $adresse)) {
+
+            return null;
+        }
+
+        if(preg_match("/^RN [0-9]+$/", $adresse)) {
+
+            return $adresse;
+        }
+
+        if(preg_match("/^POSTFACH [0-9]+$/", $adresse)) {
+
+            return null;
+        }
+
+        if (preg_match("/^[0-9]{1,3}[0-9a-zA-Z-]*[ ]+/", trim($adresse))) {
+
+            return $adresse;
+        }
+
+        if (preg_match("/$preg_voie/i", $adresse)) {
+
+            return $adresse;
+        }
+
+        if(preg_match("/^Via /", $adresse)) {
+
+            return $adresse;
+        }
+
+        if (trim($data[self::CSV_PAYS]) && $data[self::CSV_PAYS] != "FRANCE" && preg_match("/[ ]+[0-9a-zA-Z-]*[0-9]{1,3}$/", $adresse)) {
+            
+            return $adresse;
+        }
+
+        return null;
     }
 
     protected function formatPhone($numero) {
         $numero = trim(preg_replace('/[ xœ_\.]+/', "", $numero));
         if($numero && !preg_match("/^[0-9]{7,15}$/", $numero)) {
-            throw new Exception(sprintf("Téléphone invalide : %s", $numero)); 
         }
 
         return ($numero) ? $numero : null;

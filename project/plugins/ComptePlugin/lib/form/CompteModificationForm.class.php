@@ -2,9 +2,9 @@
 
 class CompteModificationForm extends acCouchdbObjectForm {
 
-    const CIVILITE_MADEMOISELLE = "Mlle.";
-    const CIVILITE_MADAME = "Mme.";
-    const CIVILITE_MONSIEUR = "M.";
+    const CIVILITE_MADEMOISELLE = "MLLE";
+    const CIVILITE_MADAME = "MME";
+    const CIVILITE_MONSIEUR = "M";
 
     private $civilites;
     private $attributsForCompte;
@@ -18,6 +18,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->setWidget("adresse", new sfWidgetFormInput(array("label" => "Adresse")));
+        $this->setWidget("adresse_complement_destinataire", new sfWidgetFormInput(array("label" => "Adresse")));
+        $this->setWidget("adresse_complement_lieu", new sfWidgetFormInput(array("label" => "Adresse")));
         $this->setWidget("code_postal", new sfWidgetFormInput(array("label" => "Code Postal")));
         $this->setWidget("commune", new sfWidgetFormInput(array("label" => "Commune")));
         $this->setWidget("telephone_bureau", new sfWidgetFormInput(array("label" => "Tél. Bureau")));
@@ -31,6 +33,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
         
         
         $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
+        $this->setValidator('adresse_complement_destinataire', new sfValidatorString(array("required" => false)));
+        $this->setValidator('adresse_complement_lieu', new sfValidatorString(array("required" => false)));
         $this->setValidator('commune', new sfValidatorString(array("required" => true)));
         $this->setValidator('code_postal', new sfValidatorString(array("required" => true)));
         $this->setValidator('telephone_bureau', new ValidatorPhone(array("required" => false)));

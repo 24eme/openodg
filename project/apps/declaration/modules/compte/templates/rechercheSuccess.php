@@ -52,9 +52,15 @@
                                 <?php endif; ?>
                     </div>
                     <div>
-                              <?php echo $data['adresse']; ?><br />
-                              <?php echo $data['code_postal']; ?>&nbsp;<?php echo $data['commune']; ?><br />
-                              <?php if ($data['email']):?>
+                            <?php if($data['adresse_complement_destinataire']): ?>
+                                <?php echo $data['adresse_complement_destinataire']; ?><br />
+                            <?php endif; ?>
+                            <?php echo $data['adresse']; ?><br />
+                            <?php if($data['adresse_complement_lieu']): ?>
+                                <?php echo $data['adresse_complement_lieu']; ?><br />
+                            <?php endif; ?>
+                            <?php echo $data['code_postal']; ?>&nbsp;<?php echo $data['commune']; ?><br />
+                            <?php if ($data['email']):?>
                                 <span class="glyphicon glyphicon-envelope"></span>&nbsp;<?php echo $data['email'] ?><br />
                             <?php endif; ?>
                             <?php $tags_contact = (isset($data['tags'])) ? array_merge($data['tags']['attributs']->getRawValue(), $data['tags']['manuels']->getRawValue()) : array(); ?>
