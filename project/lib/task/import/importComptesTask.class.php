@@ -171,6 +171,17 @@ EOF;
             $compte->civilite = null;
         }
 
+        if(
+            $compte->adresse_complement_destinataire && 
+            !$compte->raison_sociale && 
+            !preg_match("/(Service|Vallée|Centre|Domaine|Z\.A|Zone Artisanale|BUREAU|PRESIDENT|Chez|B\.P\.|Lieu-dit|Résidence|CONSEILLER|Florimont|PREFET|Z\.I\.|Zone Industrielle|ZA|Sénateur|maire|parc|Immeuble|restaurant|Vignoble|Hôtel|Hotel|SENATEUR|Exploitation Viticole|Expert comptable|Expert-Comptable|DEPUTE|députe|Député|Weingut Rappenhof|viticole|Localita|Traitement de l'Information|RESERVATIONS|RENSEIGNEMENT|MME|Château|Comité|Avocat|cité|Bât|BAT\.|BADISCHE|ESPACE)/i", $compte->adresse_complement_destinataire) &&
+            !preg_match("/^(AU|LE|LA|LES|M\.|CLOS|Ferme|MAIS\.|Madame|MONSIEUR|Mme|COMMUNE|ville|Documentation|ESPACE|CS|ABS|Indemnisat|Information|BP|CITE|maison de|maison des|Cellier) /i", $compte->adresse_complement_destinataire) && 
+            !preg_match("/^(Coopérative Vinicole|Cave Coopérative Vinicole|Cooéprative Viinicole|Cave Vinicole|COOPERATIVE VINICOLE|DISTILERIE ARTISANALE)$/i", $compte->adresse_complement_destinataire)
+           ) {
+            $compte->raison_sociale = $compte->adresse_complement_destinataire;
+            $compte->adresse_complement_destinataire = null;
+        }
+
         $compte->identifiant = $this->getIdentifiantCompte($compte, $id);
 
         if($etablissement && $etablissement->exist('date_connexion') && $etablissement->date_connexion) {
