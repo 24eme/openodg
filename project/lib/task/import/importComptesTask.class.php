@@ -138,6 +138,7 @@ EOF;
                 return;
             }
         }
+
         if(!$type_compte) {
             $types_compte = $this->getTypesCompte($compte);
 
@@ -789,6 +790,9 @@ EOF;
 
             return $adresse;
         }
+
+        $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1], $data);
+        $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_2] . " - " .$data[self::CSV_ADRESSE_3], $data);
 
         return $adresse;
     }
