@@ -41,7 +41,7 @@ class Compte extends BaseCompte {
     public function updateNomAAfficher() {
         $this->nom_a_afficher = "";
 
-        if ($this->prenom) {
+        if ($this->nom || $this->prenom) {
             $this->nom_a_afficher = trim(sprintf("%s %s %s", $this->civilite, $this->prenom, $this->nom));
         }
 
