@@ -183,6 +183,11 @@ EOF;
             $compte->adresse_complement_destinataire = null;
         }
 
+        if($compte->type_compte == CompteClient::TYPE_COMPTE_ETABLISSEMENT && (!$compte->cvi || !$compte->etablissement)) {
+            $this->echoWarning(sprintf("Compte établissement sans CVI (Ignoré)"), array($id, $compte->date_archivage, $compte->date_creation));
+            return;
+        }
+
         $compte->identifiant = $this->getIdentifiantCompte($compte, $id);
 
         if($etablissement && $etablissement->exist('date_connexion') && $etablissement->date_connexion) {
