@@ -138,7 +138,6 @@ EOF;
                 return;
             }
         }
-
         if(!$type_compte) {
             $types_compte = $this->getTypesCompte($compte);
 
@@ -178,7 +177,6 @@ EOF;
             $compte->adresse = $etablissement->adresse;
             $compte->commune = $etablissement->commune;
             $compte->code_postal = $etablissement->code_postal;
-
             $compte->email = $etablissement->email;
             $compte->telephone = $compte->telephone;
             $compte->telephone_prive = $etablissement->telephone_prive;
@@ -324,15 +322,10 @@ EOF;
             throw new sfException("Aucun nom ou raison sociale");
         }
 
-        if($compte->nom && !$compte->raison_sociale && !$compte->prenom && !$this->civilite && !preg_match("/^L[EA]{1} /i")) {
+        if($compte->nom && !$compte->raison_sociale && !$compte->prenom && !$compte->civilite && !preg_match("/^L[EA]{1} /i", $compte->nom)) {
             $compte->raison_sociale = $compte->nom;
             $compte->nom = null; 
         }
-
-        /*if(!preg_match("/^[0-9]+/", trim($data[self::CSV_ADRESSE_1])) && !preg_match("/[0-9]+$/", trim($data[self::CSV_ADRESSE_1]))) {
-            $compte->raison_sociale = preg_replace("/[ ]+/", " ", $data[self::CSV_ADRESSE_1]);
-            $data[self::CSV_ADRESSE_1] = null;
-        }*/
 
         $compte->siret = trim(str_replace(" ", "", $data[self::CSV_SIRET]));
         if($compte->siret && !preg_match("/^[0-9]+$/", $compte->siret)) {
@@ -442,11 +435,6 @@ EOF;
 
         $etablissement = EtablissementClient::getInstance()->createOrFind($data[self::CSV_CVI]);
         $etablissement->chais = array();
-        $etablissement->raison_sociale = $compte->nom_a_afficher;
-        $etablissement->siret = $compte->siret;
-        $etablissement->adresse = $compte->adresse;
-        $etablissement->code_postal = $compte->code_postal;
-        $etablissement->commune = $compte->commune;
         if($etablissement->familles->exist(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR)) {
             $etablissement->familles->remove(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR);
         }
