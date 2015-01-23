@@ -1,6 +1,6 @@
 <?php
 
-class CompteUpdatePositionTask extends sfBaseTask
+class CompteArchivageTask extends sfBaseTask
 {
 
     protected function configure()
@@ -16,8 +16,8 @@ class CompteUpdatePositionTask extends sfBaseTask
         ));
 
         $this->namespace = 'compte';
-        $this->name = 'update-position';
-        $this->briefDescription = "Mise à jour de la lattitude/longitude d'un compte";
+        $this->name = 'archivage';
+        $this->briefDescription = "Permet d'archiver un compte";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -35,12 +35,16 @@ EOF;
             return;
         }
 
-        if(!$compte->updateCoordonneesLongLat()) {
-            echo sprintf("ERROR;COMPTE %s position non trouvée\n", $arguments['doc_id']);
+
+        if($compte->date_archivage && $compte->statut == CompteClient::STATUT_INACTIF) {
+            echo sprintf("WARNING;COMPTE %s déjà archivé\n", $arguments['doc_id']);
+
             return;
         }
 
+        $compte->archiver();
+
         $compte->save();
-        echo sprintf("SUCCESS;COMPTE %s position update\n", $arguments['doc_id']);
+        echo sprintf("SUCCESS;COMPTE %s archivé\n", $arguments['doc_id']);
     }
 }
