@@ -1,8 +1,11 @@
 <?php echo use_helper('Date'); ?>
 <div class="page-header">
-    <?php if(!$compte->date_archivage): ?>
-    <a href="<?php echo url_for('compte_archiver', $compte) ?>" class="btn btn-sm btn-default btn-default-step pull-right"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Archiver</a>
-    <?php endif; ?>
+    <div class="btn-group pull-right">
+        <?php if(!$compte->date_archivage): ?>
+        <a href="<?php echo url_for('compte_archiver', $compte) ?>" class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Archiver</a>
+        <?php endif; ?>
+        <a href="<?php echo url_for('compte_modification_admin', $compte) ?>" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier</a>
+    </div>
     <h2><?php echo $compte->nom_a_afficher ?> <small><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?></span> - <?php echo $compte->identifiant; ?></small></h2>
 </div>
 
@@ -138,6 +141,17 @@
             </div>
         </div>
     </div>
+    <?php if($compte->commentaires): ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <code><small><?php echo nl2br($compte->commentaires) ?></small></code>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col-xs-12">
             <div class="panel panel-primary">
@@ -221,14 +235,6 @@
                 </div>
             </div>
         </div>  
-    <?php endif; ?>
-
-    <?php if($compte->commentaires): ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <code><small><?php echo nl2br($compte->commentaires) ?></small></code>
-        </div>
-    </div>
     <?php endif; ?>
 
     <div class="row row-margin row-button">

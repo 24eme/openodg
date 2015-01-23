@@ -154,6 +154,17 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <?php echo $form["commentaires"]->renderError(); ?>
+                <?php echo $form["commentaires"]->renderLabel(null, array("class" => "col-xs-12")); ?>
+                <div class="col-xs-12">
+                    <?php echo $form["commentaires"]->render(array("class" => "form-control", "rows" => "2")); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-xs-12" >
             <div class=" panel panel-primary">
                 <div class="panel-heading">
@@ -236,16 +247,4 @@
             </div>
         </div>
     <?php endif; ?>
-
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="form-group">
-                <?php echo $form["commentaires"]->renderError(); ?>
-                <?php echo $form["commentaires"]->renderLabel(null, array("class" => "col-xs-12")); ?>
-                <div class="col-xs-12">
-                    <?php echo $form["commentaires"]->render(array("class" => "form-control", "rows" => 3)); ?>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
