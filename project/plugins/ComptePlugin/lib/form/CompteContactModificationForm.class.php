@@ -37,6 +37,8 @@ class CompteContactModificationForm extends CompteModificationForm {
 
         $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
         $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));
+
+        $this->getValidator('adresse')->setOption('required', false);
     }
 
     private function getSyndicats() {
