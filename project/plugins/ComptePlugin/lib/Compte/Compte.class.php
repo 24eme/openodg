@@ -238,8 +238,14 @@ class Compte extends BaseCompte {
         $newChais = array();
         foreach ($this->chais as $chai) {
             if($chai->adresse && $chai->commune && $chai->code_postal){
-                $newChais[] = $chai;
+                $newChai = $chai->toArray(false, false);
+                $newChai['attributs'] = array();
+                foreach($chai->attributs as $key) {
+                    $newChai['attributs'][$key] = CompteClient::getInstance()->getChaiAttributLibelle($key);
+                }
+                $newChais[] = $newChai;
             }
+            
         }
         $this->remove("chais");
         $this->add("chais", $newChais);

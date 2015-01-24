@@ -159,7 +159,6 @@
                     <h3>Informations complémentaire</h3>
                 </div>
                 <div class="panel-body">
-
                     <div class="form-group">
                         <label class="col-xs-3">Type de compte :</label> 
                         <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
@@ -214,24 +213,21 @@
     <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && count($compte->chais)): ?>
         <div class="row">
             <div class="col-xs-12">
-                <div class="panel panel-primary">
+                <div class="panel  panel-primary">
                     <div class="panel-heading">
                         <h3>Chais</h3>
                     </div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <div class="row"> 
-                                <?php foreach ($compte->chais as $key => $chai) : ?>
-                                    <div class="col-xs-4 text-center">
-                                        <strong>Chai N° <?php echo $key + 1; ?></strong>                                    
-                                    </div>  
-                                    <div class="col-xs-6 text-center">
-                                        <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?> 
-                                    </div>
-                                <?php endforeach; ?>
+                    <ul class="list-group">
+                        <?php foreach ($compte->chais as $key => $chai) : ?>
+                            <li class="list-group-item text-center">
+                            <?php echo $chai->adresse . ', ' . $chai->code_postal . ' ' . $chai->commune; ?>&nbsp;&nbsp;
+                            <div style="margin-top: 6px;">
+                            <?php foreach($chai->attributs as $attribut_libelle): ?>
+                            <span class="label label-default"><?php echo $attribut_libelle ?></span>
+                            <?php endforeach; ?>
                             </div>
-                        </div>
-                    </div>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
             </div>
         </div>  

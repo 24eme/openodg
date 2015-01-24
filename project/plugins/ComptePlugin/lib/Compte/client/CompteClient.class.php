@@ -188,6 +188,11 @@ class CompteClient extends acCouchdbClient {
         return $libellesArr[$compte_attribut];
     }
 
+    public function getChaiAttributLibelles() {
+
+        return $this->libelles_chais_attributs;
+    }
+
     public function getChaiAttributLibelle($attribut) {
        
         return $this->libelles_chais_attributs[$attribut];

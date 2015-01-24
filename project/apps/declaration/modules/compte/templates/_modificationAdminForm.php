@@ -1,6 +1,6 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
-<div id="row_form_compte_modification" class="row  col-xs-12">
+<div id="row_form_compte_modification" class="row col-xs-12">
     <div class="row">
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -155,18 +155,22 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="form-group">
-                <?php echo $form["commentaires"]->renderError(); ?>
-                <?php echo $form["commentaires"]->renderLabel(null, array("class" => "col-xs-12")); ?>
-                <div class="col-xs-12">
-                    <?php echo $form["commentaires"]->render(array("class" => "form-control", "rows" => "2")); ?>
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <?php echo $form["commentaires"]->renderError(); ?>
+                        <?php echo $form["commentaires"]->renderLabel(null, array("class" => "col-xs-12")); ?>
+                        <div class="col-xs-12">
+                            <?php echo $form["commentaires"]->render(array("class" => "form-control", "rows" => "2")); ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12" >
-            <div class=" panel panel-primary">
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3>Informations complémentaire</h3>
                 </div>
@@ -217,7 +221,6 @@
     <?php if (isset($form['chais'])): ?>
         <div class="row">
             <div class="col-xs-12" >        
-
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3>Chais</h3>
@@ -226,21 +229,16 @@
                         <h4>Veuillez ajouter vos chais</h4>
                         <div id="formsChais">
                             <div class="row">
-                                <div class="col-xs-2 text-center" ></div> 
-                                <div class="col-xs-4 text-center" ><label class="control-label">Adresse</label></div> 
+                                <div class="col-xs-3 text-center" ><label class="control-label">Adresse</label></div> 
                                 <div class="col-xs-3 text-center" ><label class="control-label">Commune</label></div> 
-                                <div class="col-xs-3 text-center" ><label class="control-label">Code postal</label></div> 
+                                <div class="col-xs-2 text-center" ><label class="control-label">Code postal</label></div> 
+                                <div class="col-xs-4 text-center" ><label class="control-label">Attributs</label></div> 
                             </div>
                             <br/>
                             <?php foreach ($form['chais'] as $key => $chaiform): ?>
-                                <?php include_partial('form_chai_item', array('partial' => 'form_chai_item', 'form' => $chaiform, 'indice' => $key, 'existChai' => true)); ?>
+                                <?php include_partial('form_chai_item', array('partial' => 'form_chai_item', 'form' => $chaiform, 'indice' => $key)); ?>
                             <?php endforeach; ?>
-                            <?php include_partial('form_collection_template', array('partial' => 'form_chai_item', 'form' => $form['chais'][count($form['chais'])-1], 'indice' => count($form['chais']))); ?>
 
-                        </div>
-                        <div class="col-xs-12 text-right">
-                        <a class="btn btn-plus btn_ajouter_chai_template"
-                           data-container="#formsChais" data-template="#template_form_chai_item" href="#">+ Ajouter un chai</a>
                         </div>
                     </div>
                 </div>
