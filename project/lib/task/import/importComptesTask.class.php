@@ -450,7 +450,7 @@ EOF;
         $compte->etablissement = 'ETABLISSEMENT-'.$cvi;
         $compte->cvi = $cvi;
 
-        $etablissement = EtablissementClient::getInstance()->createOrFind($data[self::CSV_CVI]);
+        $etablissement = EtablissementClient::getInstance()->createOrFind($compte->cvi);
         $etablissement->chais = array();
         if($etablissement->familles->exist(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR)) {
             $etablissement->familles->remove(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR);
