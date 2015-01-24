@@ -1,6 +1,6 @@
 <?php
 printf("\xef\xbb\xbf");//UTF8 BOM (pour windows)
-echo "#nom complet ; type ; raison sociale ; civilité ; nom ; prénom ; adresse ; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone privé ; fax ; email ; cvi ;  siret ; statut ; date de création ; date d'archivage ; id contact ; attributs ; syndicats ; mots clés\n";
+echo "#nom complet ; type ; raison sociale ; civilité ; nom ; prénom ; adresse complement destinataire ; adresse ; adresse complément lieu; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone privé ; fax ; email ; cvi ;  siret ; statut ; date de création ; date d'archivage ; identifiant interne ; id ; attributs ; syndicats ; mots clés\n";
 $allTypeCompte = CompteClient::getInstance()->getAllTypesCompteWithLibelles();
 foreach ($results as $res) {
   $data = $res->getData()->getRawValue();
@@ -11,7 +11,9 @@ foreach ($results as $res) {
   echo '"'.$data['civilite']. '";';
   echo '"'.$data['prenom']. '";';
   echo '"'.$data['nom']. '";';
+  echo '"'.$data['adresse_complement_destinataire']. '";';
   echo '"'.$data['adresse']. '";';
+  echo '"'.$data['adresse_complement_lieu']. '";';
   echo '"'.$data['code_postal']. '";';
   echo '"'.$data['commune']. '";';
   echo '"'.$data['pays']. '";';
@@ -25,9 +27,11 @@ foreach ($results as $res) {
   echo '"'.$data['statut']. '";';  
   echo '"'.$data['date_creation']. '";';  
   echo '"'.$data['date_archivage']. '";';  
+  echo '"'.$data['identifiant_interne']. '";';  
   echo '"'.$data['_id']. '";';  
   echo '"'.implode(", ", $data['infos']['attributs']). '";';  
   echo '"'.implode(", ", $data['infos']['syndicats']). '";';  
-  echo '"'.implode(", ", $data['infos']['manuels']). '";';  
+  echo '"'.implode(", ", $data['infos']['manuels']). '";';
+  echo '"'.str_replace("\n", '\n', $data['commentaires']).'";';  
   echo "\n";
 }

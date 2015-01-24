@@ -6,14 +6,17 @@ Compte:
       _rev: {  }
       type: {  }
       identifiant: {  }
+      identifiant_interne: {  }
       type_compte: {  }
-      code_insee: {  }
+      code_insee: { required: false }
       civilite: {  }
       nom: {  }
       prenom: {  }
       raison_sociale: { }
       nom_a_afficher: { }
       adresse: { }
+      adresse_complement_destinataire: { }
+      adresse_complement_lieu: { }
       code_postal: { }
       commune: { }
       cedex: { required: false }
@@ -23,11 +26,12 @@ Compte:
       telephone_mobile: { }
       fax: { }
       email: { }
-      web: { }
+      web: { required: false }
       siret: { }
       siren: { }
       cvi: { }
       etablissement: { }
+      commentaires: { }
       statut: { }
       date_archivage: { }
       date_creation: { }
@@ -51,6 +55,11 @@ Compte:
                   adresse: { }
                   commune: { }
                   code_postal: { }
+                  attributs:
+                    type: collection
+                    definition:
+                      fields:
+                         '*': { }
       infos:
         type: collection
         definition:
@@ -103,9 +112,9 @@ Compte:
               type: array_collection
               definition:
                 fields:
-                  '*' : { }   
+                  '*' : { }
             'syndicats':
               type: array_collection
               definition:
                 fields:
-                  '*' : { }   
+                  '*' : { }

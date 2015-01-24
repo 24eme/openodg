@@ -104,7 +104,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         }
 
         if(isset($values["chai"])) {
-            $this->getObject()->getDocument()->chais->set(DRev::CUVE, $this->getObject()->getDocument()->getEtablissementObject()->chais->get($values["chai"])->toArray(true, false));
+            $this->getObject()->getDocument()->chais->set(DRev::CUVE, $this->getObject()->getDocument()->getEtablissementObject()->chais->get($values["chai"])->toArray(false, false));
         }
     }
 }

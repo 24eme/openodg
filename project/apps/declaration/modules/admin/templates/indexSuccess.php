@@ -1,7 +1,4 @@
-<ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="<?php echo url_for('admin'); ?>">Déclarations</a></li>
-  <li role="presentation"><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
-</ul>
+<?php include_partial('admin/menu', array('active' => 'declarations')); ?>
 
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">

@@ -2,9 +2,9 @@
 
 class CompteModificationForm extends acCouchdbObjectForm {
 
-    const CIVILITE_MADEMOISELLE = "Mlle.";
-    const CIVILITE_MADAME = "Mme.";
-    const CIVILITE_MONSIEUR = "M.";
+    const CIVILITE_MADEMOISELLE = "MLLE";
+    const CIVILITE_MADAME = "MME";
+    const CIVILITE_MONSIEUR = "M";
 
     private $civilites;
     private $attributsForCompte;
@@ -17,9 +17,9 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-                
-        
         $this->setWidget("adresse", new sfWidgetFormInput(array("label" => "Adresse")));
+        $this->setWidget("adresse_complement_destinataire", new sfWidgetFormInput(array("label" => "Adresse")));
+        $this->setWidget("adresse_complement_lieu", new sfWidgetFormInput(array("label" => "Adresse")));
         $this->setWidget("code_postal", new sfWidgetFormInput(array("label" => "Code Postal")));
         $this->setWidget("commune", new sfWidgetFormInput(array("label" => "Commune")));
         $this->setWidget("telephone_bureau", new sfWidgetFormInput(array("label" => "Tél. Bureau")));
@@ -29,9 +29,12 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setWidget("email", new sfWidgetFormInput(array("label" => "Email")));
         $this->setWidget("attributs", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributsForCompte())));
         $this->setWidget("manuels", new sfWidgetFormInput());
+        $this->setWidget("commentaires", new sfWidgetFormTextarea());
         
         
-        $this->setValidator('adresse', new sfValidatorString(array("required" => true)));
+        $this->setValidator('adresse', new sfValidatorString(array("required" => false)));
+        $this->setValidator('adresse_complement_destinataire', new sfValidatorString(array("required" => false)));
+        $this->setValidator('adresse_complement_lieu', new sfValidatorString(array("required" => false)));
         $this->setValidator('commune', new sfValidatorString(array("required" => true)));
         $this->setValidator('code_postal', new sfValidatorString(array("required" => true)));
         $this->setValidator('telephone_bureau', new ValidatorPhone(array("required" => false)));
@@ -41,8 +44,15 @@ class CompteModificationForm extends acCouchdbObjectForm {
         $this->setValidator('email', new sfValidatorEmailStrict(array("required" => false)));
         $this->setValidator('attributs', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getAttributsForCompte()))));
         $this->setValidator('manuels', new sfValidatorString(array("required" => false)));
+        $this->setValidator('commentaires', new sfValidatorString(array("required" => false)));
+
+        if(!count($this->getAttributsForCompte())) {
+            unset($this['attributs']);
+        } 
         
         $this->widgetSchema->setNameFormat('compte_modification[%s]');
+
+        $this->validatorSchema->setPostValidator(new ValidatorCompteModification());
     }
 
     protected function getCivilites() {
@@ -63,10 +73,11 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }   
     
     public function save($con = null) {
-        if ($attributs = $this->values['attributs']) {
+        if (isset($this->values['attributs']) && $attributs = $this->values['attributs']) {
             $this->getObject()->updateInfosTagsAttributs($attributs);
         }
-        if ($tagsManuelsValues = $this->values['manuels']) {
+        if (isset($this->values['manuels'])) {
+            $tagsManuelsValues = $this->values['manuels'];
             $tagsManuelsValuesSplited = explode(",",$tagsManuelsValues);
             $tagsManuels = array();
             foreach ($tagsManuelsValuesSplited as $manuel) {
@@ -75,10 +86,15 @@ class CompteModificationForm extends acCouchdbObjectForm {
             }
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
+
+        $this->getObject()->updateCoordonneesLongLat();
         parent::save($con);
     }
 
     private function initDefaultAttributs() {
+        if(!isset($this['attributs'])) {
+            return;
+        }
         $default_attributs = array();
         foreach ($this->getObject()->getInfosAttributs() as $attribut_code => $attribut) {
             $default_attributs[] = $attribut_code;
@@ -87,11 +103,8 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }
 
     public function initDefaultTagsManuels() {
-        $default_tags = array();
-        foreach ($this->getObject()->getInfosManuels() as $tag_manuel) {
-            $default_tags[] = $tag_manuel;
-        }
-        $this->widgetSchema['manuels']->setDefault($default_tags);
+
+        $this->widgetSchema['manuels']->setDefault(implode(",", $this->getObject()->getInfosManuels()->toArray(true, false)));
     }
 
 }

@@ -143,9 +143,6 @@
                     },
                     cache: true
                 },
-                initSelection: function(element, callback) {
-                    
-                },
                 formatResult: function(item) {
                     if(item.text_html) {
 
@@ -161,7 +158,7 @@
     {
 
         $('.select2autocompletepermissif').select2({
-            tags: true,
+            tags:[],
             tokenSeparators: [','],
             createSearchChoice: function (term) {
                 return {
@@ -185,7 +182,6 @@
             },
             initSelection: function (element, callback) {
                 var data = [];
-
                 function splitVal(string, separator) {
                     var val, i, l;
                     if (string === null || string.length < 1)
@@ -203,13 +199,13 @@
                     });
                 });
 
-                callback(data);
+
 
                 callback($.map(element.val().split(','), function (id) {
                     return {id: id, text: id};
                 }));
             }
-        });         
+        });
     }
 
     $.initCheckboxRelations = function ()
@@ -225,7 +221,6 @@
 
         $(element).click(function ()
         {
-            console.log($(this).attr('data-template'));
             var bloc_html = $($(this).attr('data-template')).html().replace(regexp_replace, UUID.generate());
 
             try {
@@ -238,13 +233,27 @@
                 bloc_html = bloc_html.replace(new RegExp(key, "g"), params[key]);
             }
 
-            var bloc = $($(this).attr('data-container')).append(bloc_html);
+            var bloc = $(bloc_html);
+
+            $($(this).attr('data-container')).append(bloc);
 
             if (callback) {
                 callback(bloc);
             }
             return false;
         });
+    }
+
+    $.initCarte = function()
+    {
+        var map = L.map('carte').setView([51.505, -0.09], 13);
+        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'examples.map-i875mjb7'
+        }).addTo(map);
     }
 
     /**
@@ -371,14 +380,11 @@
         $.initSelect2AutocompleteRemote();
         $.initSelect2AutocompletePermissif();
         $.initCheckboxRelations();
+        //$.initCarte();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip]').tooltip({'container': 'body'});
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
-        
-        var defaultValue = eval($('.select2autocompletepermissif').attr('data-initvalue'));
-        $('.select2autocompletepermissif').select2('val', defaultValue, true);
-        $.initCollectionAddTemplate('.btn_ajouter_chai_template', /var---nbItem---/g, null);
     });
 })(jQuery);

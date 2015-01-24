@@ -26,6 +26,9 @@ class avaActions extends sfActions {
         if(!$this->etablissement && $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
 
             return $this->redirect('admin');
+        } if(!$this->etablissement && $this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
+
+            return $this->redirect('compte_recherche');
         } elseif(!$this->etablissement) {
 
             return $this->forwardSecure();

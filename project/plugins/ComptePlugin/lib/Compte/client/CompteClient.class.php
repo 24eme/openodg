@@ -6,13 +6,15 @@ class CompteClient extends acCouchdbClient {
     const TYPE_COUCHDB = "COMPTE";
     const DROIT_ADMIN = "ADMIN";
     const DROIT_OPERATEUR = "OPERATEUR";
+    const DROIT_CONTACT = "CONTACT";
     const TYPE_COMPTE_ETABLISSEMENT = "ETABLISSEMENT";
     const TYPE_COMPTE_AGENT_PRELEVEMENT = "AGENT_PRELEVEMENT";
     const TYPE_COMPTE_DEGUSTATEUR = "DEGUSTATEUR";
     const TYPE_COMPTE_CONTACT = "CONTACT";
     const TYPE_COMPTE_SYNDICAT = "SYNDICAT";
     const STATUT_ACTIF = "ACTIF";
-    const ATTRIBUT_ETABLISSEMENT_COOPERATEUR = "COOPERATEUR";
+    const STATUT_INACTIF = "INACTIF";
+    const ATTRIBUT_ETABLISSEMENT_APPORTEUR = "APPORTEUR";
     const ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS = "PRODUCTEUR";
     const ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR = "CONDITIONNEUR";
     const ATTRIBUT_ETABLISSEMENT_VINIFICATEUR = "VINIFICATEUR";
@@ -23,19 +25,19 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_ETABLISSEMENT_NEGOCIANT = "NEGOCIANT";
     const ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT = "VITICULTEUR_INDEPENDANT";
     const ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE = "CAVE_COOPERATIVE";
-    const ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR = "PRELEVEUR";
-    const ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE = "AGENT_CONTROLE";
+    const ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT = "AGENT_PRELEVEMENTS";
+    const ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE = "APPUI_TECHNIQUE";
     const ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES = "PORTEUR_MEMOIRES";
     const ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT = "TECHNICIEN_PRODUIT";
     const ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT = "USAGER_PRODUIT";
-    const ATTRIBUT_CONTACT_RESTAURANT = "RESTAURANT";
-    const ATTRIBUT_CONTACT_HOTEL = "HOTEL";
-    const ATTRIBUT_SYNDICAT_SYNDICAT = "SYNDICAT";
 
-    // const ATTRIBUT_CONTACT_PARC_ATTRACTION = "PARC_ATTRACTION";
+    const CHAI_ATTRIBUT_VINIFICATION = "VINIFICATION";
+    const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
+    const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
+    const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
 
     private $libelles_attributs_etablissements = array(
-        self::ATTRIBUT_ETABLISSEMENT_COOPERATEUR => 'Coopérateur',
+        self::ATTRIBUT_ETABLISSEMENT_APPORTEUR => 'Producteur en structure collective',
         self::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS => 'Producteur de raisin',
         self::ATTRIBUT_ETABLISSEMENT_CONDITIONNEUR => 'Conditionneur',
         self::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR => 'Vinificateur',
@@ -48,19 +50,24 @@ class CompteClient extends acCouchdbClient {
         self::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE => 'Cave coopérative'
     );
     private $libelles_attributs_agents_prelevement = array(
-        self::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR => 'Prélèveur',
-        self::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE => 'Agent de contrôle');
+        self::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT => 'Agent de prélèvement',
+        self::ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE => 'Appui technique'
+    );
     private $libelles_attributs_degustateurs = array(
         self::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES => 'Porteur de mémoire',
         self::ATTRIBUT_DEGUSTATEUR_TECHNICIEN_PRODUIT => 'Technicien du produit',
-        self::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT => 'Usager du produit');
+        self::ATTRIBUT_DEGUSTATEUR_USAGER_PRODUIT => 'Usager du produit'
+    );
     private $libelles_attributs_contacts = array(
-        self::ATTRIBUT_CONTACT_RESTAURANT => 'Restaurant',
-        self::ATTRIBUT_CONTACT_HOTEL => 'Hôtel'
-            //  self::ATTRIBUT_CONTACT_PARC_ATTRACTION => 'Parc d\'attraction'
     );
     private $libelles_attributs_syndicats = array(
-        self::ATTRIBUT_SYNDICAT_SYNDICAT => 'Syndicat'
+    );
+
+    private $libelles_chais_attributs = array(
+        self::CHAI_ATTRIBUT_VINIFICATION => "Chai de vinification",
+        self::CHAI_ATTRIBUT_CONDITIONNEMENT => "Centre de conditionnement",
+        self::CHAI_ATTRIBUT_STOCKAGE => "Lieu de stockage",
+        self::CHAI_ATTRIBUT_PRESSURAGE => "Centre de pressurage",
     );
 
     public static function getInstance() {
@@ -85,7 +92,7 @@ class CompteClient extends acCouchdbClient {
         $query = $this->startkey(sprintf("COMPTE-" . $prefix . "%s", "000000"))
                 ->endkey(sprintf("COMPTE-" . $prefix . "%s", "999999"));
 
-        return $query->execute(acCouchdbClient::HYDRATE_ARRAY)->getIds();
+        return $query->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
     }
     
     public function getAllSyndicats() {
@@ -179,6 +186,16 @@ class CompteClient extends acCouchdbClient {
     public function getAttributLibelle($compte_attribut) {
         $libellesArr = array_merge($this->libelles_attributs_etablissements, $this->libelles_attributs_degustateurs, $this->libelles_attributs_agents_prelevement, $this->libelles_attributs_contacts,$this->libelles_attributs_syndicats);
         return $libellesArr[$compte_attribut];
+    }
+
+    public function getChaiAttributLibelles() {
+
+        return $this->libelles_chais_attributs;
+    }
+
+    public function getChaiAttributLibelle($attribut) {
+       
+        return $this->libelles_chais_attributs[$attribut];
     }
 
     public function getAllTypesCompte() {

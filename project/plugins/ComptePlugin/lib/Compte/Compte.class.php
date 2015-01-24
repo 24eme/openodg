@@ -35,14 +35,13 @@ class Compte extends BaseCompte {
         $this->updateNomAAfficher();
         $this->updateInfosTagsAutomatiques();
         $this->updateTags();
-        $this->updateCoordonneesLongLat();
         parent::save();
     }
     
     public function updateNomAAfficher() {
         $this->nom_a_afficher = "";
 
-        if ($this->prenom) {
+        if ($this->nom || $this->prenom) {
             $this->nom_a_afficher = trim(sprintf("%s %s %s", $this->civilite, $this->prenom, $this->nom));
         }
 
@@ -212,7 +211,7 @@ class Compte extends BaseCompte {
         $this->tags->$nodeType->add(null, $value);
     }
 
-    private function updateCoordonneesLongLat() {
+    public function updateCoordonneesLongLat() {
        
         $serviceOSM = sfConfig::get('app_osm_url_search');
         $format = "format=".sfConfig::get('app_osm_return_format');
@@ -239,11 +238,27 @@ class Compte extends BaseCompte {
         $newChais = array();
         foreach ($this->chais as $chai) {
             if($chai->adresse && $chai->commune && $chai->code_postal){
-                $newChais[] = $chai;
+                $newChai = $chai->toArray(false, false);
+                $newChai['attributs'] = array();
+                foreach($chai->attributs as $key) {
+                    $newChai['attributs'][$key] = CompteClient::getInstance()->getChaiAttributLibelle($key);
+                }
+                $newChais[] = $newChai;
             }
+            
         }
         $this->remove("chais");
         $this->add("chais", $newChais);
+    }
+
+    public function archiver() {
+        $this->statut = CompteClient::STATUT_INACTIF;
+        $this->date_archivage = date('Y-m-d');
+    }
+
+    public function desarchiver() {
+        $this->statut = CompteClient::STATUT_ACTIF;
+        $this->date_archivage = null;
     }
 
 }

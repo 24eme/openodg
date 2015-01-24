@@ -6,3 +6,4 @@ apps/declaration/config/factories.yml
 web/declaration_dev.php
 cache/[^.]*
 log/[^.]*
+data

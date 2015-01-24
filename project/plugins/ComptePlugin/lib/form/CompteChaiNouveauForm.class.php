@@ -18,22 +18,32 @@ class CompteChaiNouveauForm extends sfForm {
         $this->setWidgets(array(
             'adresse' => new sfWidgetFormInputText(),
             'commune' => new sfWidgetFormInputText(),
-            'code_postal' => new sfWidgetFormInputText()
+            'code_postal' => new sfWidgetFormInputText(),
+            'attributs' => new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAttributs())),
         ));
         $this->widgetSchema->setLabels(array(
             'adresse' => 'Adresse',
             'commune' => 'Commune',
-            'code_postal' => 'Code postal'
+            'code_postal' => 'Code postal',
+            'attributs' => 'Attributs',
         ));
         $this->setValidators(array(
             'adresse' => new sfValidatorString(array('required' => false, 'min_length' => 3)),
             'commune' => new sfValidatorString(array('required' => false, 'min_length' => 2)),
-            'code_postal' => new sfValidatorString(array('required' => false, 'min_length' => 2))));
+            'code_postal' => new sfValidatorString(array('required' => false, 'min_length' => 2)),
+            'attributs' => new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getAttributs()))),
+        ));
+
         $this->widgetSchema->setNameFormat('comptechais[%s]');
     }
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
+    }
+
+    public function getAttributs() {
+
+        return CompteClient::getInstance()->getChaiAttributLibelles();
     }
 
 }

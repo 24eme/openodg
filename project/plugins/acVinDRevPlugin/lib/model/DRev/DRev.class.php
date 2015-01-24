@@ -274,7 +274,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         if (!$this->chais->exist($prelevement->getPrefix())) {
             $chai = $this->getEtablissementObject()->getChaiDefault();
             if ($chai) {
-                $this->chais->add($prelevement->getPrefix(), $chai->toArray(true, false));
+                $this->chais->add($prelevement->getPrefix(), $chai->toArray(false, false));
             }
         }
 

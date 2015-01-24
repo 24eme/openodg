@@ -33,10 +33,13 @@ class importComptesTask extends sfBaseTask
     const CSV_LIAISON               = 27;
     const CSV_LIAISON_NOM           = 28;
 
+    protected $types_ignore = array();
+
     protected function configure()
     {
         $this->addArguments(array(
             new sfCommandArgument('file', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('types_ignore', sfCommandArgument::IS_ARRAY, "Types de compte à ignorés"),
         ));
 
         $this->addOptions(array(
@@ -57,7 +60,7 @@ EOF;
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-
+        $this->types_ignore = $arguments['types_ignore'];
         $datas = array();
         $id = null;
         foreach(file($arguments['file']) as $line) {
@@ -151,6 +154,11 @@ EOF;
             }
         }
 
+        if(in_array($type_compte, $this->types_ignore)) {
+            $this->echoWarning(sprintf("Compte %s ignoré", $type_compte), array($id));
+            return;
+        }
+
         if(!$type_compte) {
             return;
         }
@@ -164,7 +172,21 @@ EOF;
             $compte->civilite = null;
         }
 
-        $compte->infos->attributs->remove('NON_CONDITIONNEUR');
+        if(
+            $compte->adresse_complement_destinataire && 
+            !$compte->raison_sociale && 
+            !preg_match("/(Service|Vallée|Centre|Domaine|Z\.A|Zone Artisanale|BUREAU|PRESIDENT|Chez|B\.P\.|Lieu-dit|Résidence|CONSEILLER|Florimont|PREFET|Z\.I\.|Zone Industrielle|ZA|Sénateur|maire|parc|Immeuble|restaurant|Vignoble|Hôtel|Hotel|SENATEUR|Exploitation Viticole|Expert comptable|Expert-Comptable|DEPUTE|députe|Député|Weingut Rappenhof|viticole|Localita|Traitement de l'Information|RESERVATIONS|RENSEIGNEMENT|MME|Château|Comité|Avocat|cité|Bât|BAT\.|BADISCHE|ESPACE)/i", $compte->adresse_complement_destinataire) &&
+            !preg_match("/^(AU|LE|LA|LES|M\.|CLOS|Ferme|MAIS\.|Madame|MONSIEUR|Mme|COMMUNE|ville|Documentation|ESPACE|CS|ABS|Indemnisat|Information|BP|CITE|maison de|maison des|Cellier) /i", $compte->adresse_complement_destinataire) && 
+            !preg_match("/^(Coopérative Vinicole|Cave Coopérative Vinicole|Cooéprative Viinicole|Cave Vinicole|COOPERATIVE VINICOLE|DISTILERIE ARTISANALE)$/i", $compte->adresse_complement_destinataire)
+           ) {
+            $compte->raison_sociale = $compte->adresse_complement_destinataire;
+            $compte->adresse_complement_destinataire = null;
+        }
+
+        if($compte->type_compte == CompteClient::TYPE_COMPTE_ETABLISSEMENT && (!$compte->cvi || !$compte->etablissement)) {
+            $this->echoWarning(sprintf("Compte établissement sans CVI (Ignoré)"), array($id, $compte->date_archivage, $compte->date_creation));
+            return;
+        }
 
         $compte->identifiant = $this->getIdentifiantCompte($compte, $id);
 
@@ -172,7 +194,6 @@ EOF;
             $compte->adresse = $etablissement->adresse;
             $compte->commune = $etablissement->commune;
             $compte->code_postal = $etablissement->code_postal;
-
             $compte->email = $etablissement->email;
             $compte->telephone = $compte->telephone;
             $compte->telephone_prive = $etablissement->telephone_prive;
@@ -190,6 +211,7 @@ EOF;
             if(!$etablissement->familles->exist(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
                 $compte->infos->attributs->remove(EtablissementClient::FAMILLE_CONDITIONNEUR);
             }
+
             $compte->chais = $etablissement->chais->toArray(true, false);
         }
 
@@ -230,6 +252,14 @@ EOF;
             $types_compte['SYNDICAT'] = null;
         }
 
+        if($compte->infos->attributs->exist(CompteClient::TYPE_COMPTE_DEGUSTATEUR)) {
+            if(!array_key_exists(CompteClient::TYPE_COMPTE_DEGUSTATEUR, $types_compte)) {
+                $this->echoWarning("Degustateur forcé", array($compte->identifiant_interne));
+            }
+            $compte->infos->attributs->remove(CompteClient::TYPE_COMPTE_DEGUSTATEUR);
+            $types_compte[CompteClient::TYPE_COMPTE_DEGUSTATEUR] = null;
+        }
+
         if($compte->etablissement) {
             $types_compte[CompteClient::TYPE_COMPTE_ETABLISSEMENT] = null;
         }
@@ -242,7 +272,6 @@ EOF;
     }
 
     protected function importLine($data, $compte, $etablissement, $type_compte) {
-
         if($data[self::CSV_TYPE_LIGNE] == "1.COMPTE") {
             
             return $this->importLineCompte($data, $compte);
@@ -277,6 +306,11 @@ EOF;
 
             return $this->importLineLiaison($data, $compte);
         }
+
+        if($data[self::CSV_TYPE_LIGNE] == "7.COMMEN") {
+
+            return $this->importLineCommentaires($data, $compte);
+        }
     }
 
     protected function importLineCompte($data, $compte) {
@@ -293,14 +327,21 @@ EOF;
             throw new Exception("IGNORE : 4 - Possède une DR");
         }
 
-        if($data[self::CSV_RAISON_SOCIALE]) {
-            $compte->raison_sociale = trim(sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE]));
-        } elseif($data[self::CSV_NOM]) {
-            $compte->civilite = trim($data[self::CSV_CIVILITE]);
-            $compte->nom = trim($data[self::CSV_NOM]);
-            $compte->prenom = trim($data[self::CSV_PRENOM]);
+        $compte->identifiant_interne = $data[self::CSV_ID];
+
+        if(trim($data[self::CSV_RAISON_SOCIALE])) {
+            $compte->raison_sociale = trim(preg_replace("/[ ]+/", " ", sprintf("%s %s", $data[self::CSV_CIVILITE], $data[self::CSV_RAISON_SOCIALE])));
+        } elseif(trim($data[self::CSV_NOM])) {
+            $compte->civilite = trim(preg_replace("/[ ]+/", " ", $data[self::CSV_CIVILITE]));
+            $compte->nom = trim(preg_replace("/[ ]+/", " ", $data[self::CSV_NOM]));
+            $compte->prenom = trim(preg_replace("/[ ]+/", " ", $data[self::CSV_PRENOM]));
         } else {
             throw new sfException("Aucun nom ou raison sociale");
+        }
+
+        if($compte->nom && !$compte->raison_sociale && !$compte->prenom && !$compte->civilite && !preg_match("/^L[EA]{1} /i", $compte->nom)) {
+            $compte->raison_sociale = $compte->nom;
+            $compte->nom = null; 
         }
 
         $compte->siret = trim(str_replace(" ", "", $data[self::CSV_SIRET]));
@@ -315,7 +356,11 @@ EOF;
             $this->echoWarning(sprintf("Le numéro d'accises n'est pas au bon format : %s", $compte->no_accises), $data); 
         }
 
-        $compte->adresse = $this->formatAdresse($data);
+        $adresses = $this->formatAdresse($data);
+        $compte->adresse = $adresses['adresse'];
+        $compte->adresse_complement_destinataire = $adresses['precision'];
+        $compte->adresse_complement_lieu = $adresses['complement'];
+
         if(!$compte->adresse) {
            $this->echoWarning("Adresse vide", $data); 
         }
@@ -345,6 +390,11 @@ EOF;
         if(trim($data[self::CSV_DATE_ARCHIVAGE])) {
             $compte->date_archivage = $this->formatDate($data[self::CSV_DATE_ARCHIVAGE]);
         }
+
+        if($compte->date_creation && $compte->date_archivage && $compte->date_archivage < $compte->date_creation) {
+            $compte->date_archivage = $compte->date_creation;
+        }
+
         $compte->statut = 'ACTIF';
 
         if($compte->date_archivage) {
@@ -400,13 +450,15 @@ EOF;
         $compte->etablissement = 'ETABLISSEMENT-'.$cvi;
         $compte->cvi = $cvi;
 
-        $etablissement = EtablissementClient::getInstance()->createOrFind($data[self::CSV_CVI]);
+        $etablissement = EtablissementClient::getInstance()->createOrFind($compte->cvi);
         $etablissement->chais = array();
-        $etablissement->raison_sociale = $compte->nom_a_afficher;
-        $etablissement->siret = $compte->siret;
-        $etablissement->adresse = $compte->adresse;
-        $etablissement->code_postal = $compte->code_postal;
-        $etablissement->commune = $compte->commune;
+        if($etablissement->familles->exist(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR)) {
+            $etablissement->familles->remove(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR);
+        }
+
+        if($etablissement->familles->exist('COOPERATEUR')) {
+            $etablissement->familles->remove('COOPERATEUR');
+        }
         
         return $etablissement;
     }
@@ -431,7 +483,7 @@ EOF;
             $data[self::CSV_ADRESSE_1] = $data[self::CSV_RAISON_SOCIALE];
         }
 
-        $adresse = $this->formatAdresse($data);
+        $adresse = $this->formatAdresseSimple($data);
         
         if(!$adresse) {
             $this->echoWarning("Chai sans adresse", $data);
@@ -441,6 +493,21 @@ EOF;
         $chai->commune = $data[self::CSV_COMMUNE];
         $chai->code_postal = $data[self::CSV_CODE_POSTAL];
 
+        $attributs = $data[self::CSV_ATTRIBUTS];
+
+        if(preg_match("/CHAI_DE_VINIFICATION/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_VINIFICATION, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_VINIFICATION));
+        }
+        if(preg_match("/CENTRE_DE_CONDITIONNEMENT/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_CONDITIONNEMENT, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_CONDITIONNEMENT));
+        }
+        if(preg_match("/LIEU_DE_STOCKAGE/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_STOCKAGE, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_STOCKAGE));
+        }
+        if(preg_match("/CENTRE_DE_PRESSURAGE/", $attributs)) {
+            $chai->attributs->add(CompteClient::CHAI_ATTRIBUT_PRESSURAGE, CompteClient::getInstance()->getChaiAttributLibelle(CompteClient::CHAI_ATTRIBUT_PRESSURAGE));
+        }
+
         if(!$chai->commune) {
             $this->echoWarning("Chai sans commune", $data);
         }
@@ -448,15 +515,30 @@ EOF;
         if(!$chai->code_postal) {
             $this->echoWarning("Chai sans code postal", $data);
         }
+
+        if(!count($chai->attributs->toArray(true, false))) {
+            $this->echoWarning("Chai sans attribut", $data);
+        }
     }
 
     protected function importLineCommunication($data, $compte) {
+        
+        if($data[self::CSV_FAMILLE] == 'multi' && strlen(preg_replace("/[ \.]+/", "", $data[self::CSV_TEL])) == 20) {
+            $telephone_tmp = preg_replace("/[ \.]+/", "", $data[self::CSV_TEL]);
+            $data[self::CSV_TEL] = substr($telephone_tmp, 0, 10);
+            $data[self::CSV_PORTABLE] = substr($telephone_tmp, 10, 10);
+            $this->echoWarning("Téléhpone dédoublé", array($data[self::CSV_TEL]));
+            $this->echoWarning("Mobile dédoublé", array($data[self::CSV_PORTABLE]));
+        }
+
+        if($data[self::CSV_FAMILLE] == 'multi' && preg_match('/fax /i', $data[self::CSV_EMAIL])) {
+            $data[self::CSV_FAX] = preg_replace('/[a-zA-Z: ]+/', "", $data[self::CSV_EMAIL]);
+            $data[self::CSV_EMAIL] = null;
+        }
+
         $telephone = $this->formatPhone($data[self::CSV_TEL]);
         $mobile = $this->formatPhone($data[self::CSV_PORTABLE]);
         $fax = $this->formatPhone($data[self::CSV_FAX]);
-
-        preg_match("/^([0-9]+)/", $data[self::CSV_FAMILLE], $matches);
-        $nb_ordre = $matches[1];
 
         if($compte->telephone_bureau && $telephone && $telephone == $compte->telephone_bureau) {
 
@@ -492,14 +574,12 @@ EOF;
             echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Fax en double", implode(";", $data), $compte->fax, $fax);
         }
 
-        $email = trim($data[self::CSV_EMAIL]);
+        $email = str_replace("œ", "oe", str_replace(",", ".", str_replace(" ", "", $data[self::CSV_EMAIL])));
         if($email && !preg_match("/^[a-zA-Z0-9\._-]+@[a-zA-Z0-9\._-]+$/", $email)) {
             throw new Exception("L'email n'est pas au bon format"); 
         }
 
         $email = ($email) ? $email : null;
-
-        $web = trim($data[self::CSV_WEB]);
 
         if($compte->email && $email && $compte->email == $email) {
 
@@ -508,8 +588,6 @@ EOF;
         } elseif($email) {
            echo sprintf("WARNING;%s;#LINE;%s;#DOUBLONS;%s;%s\n", "Email en double", implode(";", $data), $compte->email, $email); 
         }
-
-        $compte->web = $web;
     }
 
     protected function importLineAttribut($data, $compte, $type_compte = null) {
@@ -530,33 +608,37 @@ EOF;
 
         if(!$type_compte || $type_compte == CompteClient::TYPE_COMPTE_AGENT_PRELEVEMENT) {
             if(preg_match("/Préleveur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_PRELEVEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT));
             }
 
             if(preg_match("/Agent de contrôle/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_CONTROLE));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE));
             }
         }
 
-        if(!$type_compte || $type_compte != CompteClient::TYPE_COMPTE_ETABLISSEMENT) {
+        if(!$type_compte || $type_compte == CompteClient::TYPE_COMPTE_ETABLISSEMENT) {
             if(preg_match("/Vinificateur/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR));
             }
 
+            if(preg_match("/^Elaborateur$/", $data[self::CSV_ATTRIBUTS])) {
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR));
+            }
+
             if(preg_match("/Producteur de raisins en structure collective/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_COOPERATEUR));
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_APPORTEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_APPORTEUR));
             }
 
             if(preg_match("/Producteur/", $data[self::CSV_ATTRIBUTS])) {
                 $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_PRODUCTEUR_RAISINS));
             }
 
-            if(preg_match("/Distillation/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR));
+            if(preg_match("/donneur d'ordre/", $data[self::CSV_ATTRIBUTS])) {
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DONNEUR_ORDRE, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DONNEUR_ORDRE));
             }
 
-            if(preg_match("/laborateur/", $data[self::CSV_ATTRIBUTS])) {
-                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_ELABORATEUR));
+            if(preg_match("/Distillation/", $data[self::CSV_ATTRIBUTS])) {
+                $compte->infos->attributs->add(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR, CompteClient::getInstance()->getAttributLibelle(CompteClient::ATTRIBUT_ETABLISSEMENT_DISTILLATEUR));
             }
 
             if(preg_match("/Négoce/", $data[self::CSV_ATTRIBUTS])) {
@@ -580,9 +662,19 @@ EOF;
             }
         }
 
+        if(!$type_compte && $data[self::CSV_ATTRIBUTS] == "Degustateur") {
+           $compte->infos->attributs->add(CompteClient::TYPE_COMPTE_DEGUSTATEUR, CompteClient::TYPE_COMPTE_DEGUSTATEUR); 
+        }  
+
         if(!$type_compte && $data[self::CSV_ATTRIBUTS] == "SYNDICAT") {
            $compte->infos->attributs->add("SYNDICAT", "SYNDICAT"); 
         }  
+
+        // Pour test
+        if($data[self::CSV_ATTRIBUTS] == "Prestataire de service") {
+            $libelle = "Prestataire de service";
+            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
+        }
     }
 
     protected function importLineAttributAutre($data, $compte) {
@@ -592,7 +684,7 @@ EOF;
         }
 
         if($data[self::CSV_ATTRIBUTS] == "Abonnés Revue \"Les Vins d'Alsace\"") {
-            $libelle = "Abonnés revue";
+            $libelle = "Abonné revue";
             $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
         }
 
@@ -640,32 +732,6 @@ EOF;
             $libelle = "Laboratoires";
             $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
         }
-
-        /*if($data[self::CSV_ATTRIBUTS] == "Vice-Président") {
-            $libelle = "Vice-Président";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Trésorier Adjoint") {
-            $libelle = "Trésorier Adjoint";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Secrétaire Général") {
-            $libelle = "Secrétaire Général";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Trésorier") {
-            $libelle = "Trésorier";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }
-
-        if($data[self::CSV_ATTRIBUTS] == "Trésorier") {
-            $libelle = "Trésorier";
-            $compte->infos->manuels->add($this->getAttributManuelKey($libelle), $libelle);
-        }*/
-
     }
 
     protected function getAttributManuelKey($libelle) {
@@ -682,15 +748,145 @@ EOF;
         $compte->infos->syndicats->add("COMPTE-S".trim($data[self::CSV_LIAISON]), trim($data[self::CSV_LIAISON_NOM]));
     }
 
-    protected function formatAdresse($data) {
+    protected function importLineCommentaires($data, $compte) {
+        if($compte->commentaires) {
+            $compte->commentaires .= "\n";
+        }
+        $compte->commentaires .= $data[self::CSV_ATTRIBUTS]; 
+    }
 
-        return trim(preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3], $data[self::CSV_CEDEX])));
+    protected function formatAdresseSimple($data) {
+
+        return trim(preg_replace("/[ ]+/", " ", sprintf("%s %s %s", $data[self::CSV_ADRESSE_1], $data[self::CSV_ADRESSE_2], $data[self::CSV_ADRESSE_3])));
+    }
+
+    protected function formatAdresse($data) {
+        $adresse = array("adresse" => null, "precision" => null, "complement" => null);
+        
+        $voie_1 = $this->formatVoie($data[self::CSV_ADRESSE_1], $data);
+        
+        if($voie_1) {
+            $adresse['adresse'] = $voie_1;
+            $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_2]." - ".$data[self::CSV_ADRESSE_3], $data);
+
+            return $adresse;
+        }
+
+        $voie_2 = $this->formatVoie($data[self::CSV_ADRESSE_2], $data);
+
+        if($voie_2) {
+            $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1], $data);
+            $adresse['adresse'] = $voie_2;
+            $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_3], $data);
+
+            return $adresse;
+        }
+
+        $voie_3 = $this->formatVoie($data[self::CSV_ADRESSE_3], $data);
+
+        if($voie_3) {
+            $adresse['adresse'] = $voie_3;
+            if($this->isComplement($data[self::CSV_ADRESSE_2])) {
+                $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1], $data);
+                $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_2], $data);
+            } else {
+                $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1] . " - " . $data[self::CSV_ADRESSE_2], $data);
+            }
+
+            return $adresse;
+        }
+
+        $adresse['precision'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_1], $data);
+        $adresse['complement'] = $this->formatAdresseComplement($data[self::CSV_ADRESSE_2] . " - " .$data[self::CSV_ADRESSE_3], $data);
+
+        return $adresse;
+    }
+
+    protected function isComplement($complement) {
+        $complement = trim(preg_replace("/[ ]+/", " ", $complement));
+
+        if(preg_match("/^B.P. [0-9]+$/", $complement)) {
+
+            return true;
+        }
+
+        if(preg_match("/^BP [0-9]+$/", $complement)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function formatAdresseComplement($complement, $data) {
+        $complement = trim(preg_replace("/[ ]+/", " ", $complement));
+        $complement = trim(preg_replace("/-$/", "", $complement));
+        $complement = trim(preg_replace("/^-/", "", $complement));
+
+        if(!$complement) {
+
+            return null;
+        }
+
+        return $complement;
+    }
+
+    protected function formatVoie($adresse, $data) {
+        $adresse = trim(preg_replace("/[ ]+/", " ", $adresse));
+
+        $preg_voie = "(rue | rue|'rue|place |route |impasse |avenue |boulevard |quai |Haut Village|bas village|faubourg|rte |passage| rn |lotissement|square|pré |basse|sentier|voie|fbg | av |bas-village|haut-village|marché|chemin|r\.n\.|r\.d\.|Haupstrasse|Schwarzwaldstrasse|HALDENSTRASSE)";
+
+        if(preg_match("/Cédex/", $adresse)) {
+
+            return null;
+        }
+
+        if(preg_match("/6EME JOUR/", $adresse)) {
+
+            return null;
+        }
+
+        if(preg_match("/^B\.P\. [0-9]+$/", $adresse)) {
+
+            return null;
+        }
+
+        if(preg_match("/^RN [0-9]+$/", $adresse)) {
+
+            return $adresse;
+        }
+
+        if(preg_match("/^POSTFACH [0-9]+$/", $adresse)) {
+
+            return null;
+        }
+
+        if (preg_match("/^[0-9]{1,3}[0-9a-zA-Z-]*[ ]+/", trim($adresse))) {
+
+            return $adresse;
+        }
+
+        if (preg_match("/$preg_voie/i", $adresse)) {
+
+            return $adresse;
+        }
+
+        if(preg_match("/^Via /", $adresse)) {
+
+            return $adresse;
+        }
+
+        if (trim($data[self::CSV_PAYS]) && $data[self::CSV_PAYS] != "FRANCE" && preg_match("/[ ]+[0-9a-zA-Z-]*[0-9]{1,3}$/", $adresse)) {
+            
+            return $adresse;
+        }
+
+        return null;
     }
 
     protected function formatPhone($numero) {
-        $numero = trim(preg_replace("/[ xœ_\.]+/", "", $numero));
+        $numero = trim(preg_replace('/[ xœ_\.]+/', "", $numero));
         if($numero && !preg_match("/^[0-9]{7,15}$/", $numero)) {
-            throw new Exception(sprintf("Téléphone invalide : %s", $numero)); 
         }
 
         return ($numero) ? $numero : null;

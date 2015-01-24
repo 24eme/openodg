@@ -19,6 +19,7 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
         $this->initDefaultSyndicats();
+        $this->initDefaultChais();
     }
 
     public function configure() {
@@ -40,14 +41,12 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
         $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));
 
+        $this->getValidator('adresse')->setOption('required', true);
 
         $nbChais = $this->getNbChais();
         $formChais = new CompteChaisCollectionForm($this->getObject(), array(), array(
             'nbChais' => $nbChais));
         $this->embedForm('chais', $formChais);
-        
-       $this->validatorSchema->setPostValidator(new ValidatorCompteEtablissementModification());
-
     }
 
     public function initDefaultSyndicats() {
@@ -56,6 +55,12 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
             $default_syndicats[] = $syndicats_key;
         }
         $this->widgetSchema['syndicats']->setDefault($default_syndicats);
+    }
+
+    public function initDefaultChais() {
+        foreach($this->getObject()->chais as $key => $chai) {
+            $this->defaults['chais'][$key]['attributs'] = array_keys($chai->attributs->toArray(true, false));
+        }
     }
 
     private function getSyndicats() {

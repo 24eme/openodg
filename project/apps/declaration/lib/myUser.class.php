@@ -9,6 +9,7 @@ class myUser extends sfBasicSecurityUser
     const NAMESPACE_AUTH = "AUTH";
 
     const CREDENTIAL_ADMIN = CompteClient::DROIT_ADMIN;
+    const CREDENTIAL_CONTACT = CompteClient::DROIT_CONTACT;
 
     protected $etablissement = null;
     protected $compte = null;

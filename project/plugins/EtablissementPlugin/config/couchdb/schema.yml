@@ -38,6 +38,12 @@ Etablissement:
                   adresse: { }
                   commune: { }
                   code_postal: { }
+                  attributs:
+                    type: collection
+                    definition:
+                      fields:
+                         '*': { }
+
       droits:
         type: array_collection
         definition:

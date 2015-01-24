@@ -15,7 +15,7 @@ class compteActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('compte_visualisation_admin', array('id' => $this->compte->identifiant));
+                $this->redirect('compte_visualisation_admin', $this->compte);
             }
         }
     }
@@ -43,18 +43,9 @@ class compteActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('compte_visualisation_admin', array('id' => $this->compte->identifiant));
+                $this->redirect('compte_visualisation_admin', $this->compte);
             }
         }
-    }
-
-    public function executeModificationEtablissementAdmin(sfWebRequest $request) {
-        $this->etablissement = $this->getUser()->getEtablissement();
-        $this->compte = $this->etablissement->getCompte();
-        if (!$this->compte) {
-            throw new sfException("L'etablissement " . $this->etablissement->identifiant . " n'a pas de compte");
-        }
-        $this->redirect('compte_modification_admin', array('id' => $this->compte->identifiant));
     }
 
     public function executeCreation(sfWebRequest $request) {
@@ -67,6 +58,30 @@ class compteActions extends sfActions {
 
     public function executeMotDePasseOublie(sfWebRequest $request) {
         
+    }
+
+    public function executeArchiver(sfWebRequest $request) {
+        $this->compte = $this->getRoute()->getCompte();
+        if($this->compte->date_archivage) {
+            throw new sfException("Le compte est déjà archivé");
+        }
+
+        $this->compte->archiver();
+        $this->compte->save();
+
+        $this->redirect('compte_visualisation_admin', $this->compte);
+    }
+
+    public function executeDesarchiver(sfWebRequest $request) {
+        $this->compte = $this->getRoute()->getCompte();
+        if(!$this->compte->date_archivage) {
+            throw new sfException("Le compte n'est pas archivé");
+        }
+
+        $this->compte->desarchiver();
+        $this->compte->save();
+
+        $this->redirect('compte_visualisation_admin', $this->compte);
     }
 
     public function executeModification(sfWebRequest $request) {

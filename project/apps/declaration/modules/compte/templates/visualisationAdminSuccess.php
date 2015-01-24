@@ -1,8 +1,21 @@
+<?php echo use_helper('Date'); ?>
 <div class="page-header">
-    <h2>Compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?>)</h2>
+    <div class="btn-group pull-right">
+        <?php if(!$compte->date_archivage): ?>
+        <a href="<?php echo url_for('compte_archiver', $compte) ?>" class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Archiver</a>
+        <?php endif; ?>
+        <a href="<?php echo url_for('compte_modification_admin', $compte) ?>" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier</a>
+    </div>
+    <h2><?php echo $compte->nom_a_afficher ?> <small><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?></span> - <?php echo $compte->identifiant; ?></small></h2>
 </div>
 
 <div class="row col-xs-12">
+    <?php if($compte->date_archivage): ?>
+    <div class="alert alert-warning">
+        Compte archivé le <?php echo format_date($compte->date_archivage, "dd/MM/yyyy", "fr_FR"); ?>
+        <small><a href="<?php echo url_for('compte_desarchiver', $compte) ?>" class="text-danger">(annuler l'archivage)</a></small>
+    </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -34,6 +47,7 @@
                     <?php endif; ?>
                 </div>
             </div>
+            <?php include_partial('compte/carte', array('compte' => $compte)); ?>
         </div>
         <div class="col-xs-6">
             <div class="panel panel-primary">
@@ -45,7 +59,15 @@
                         <div class="row">
                             <label class="col-xs-6">Adresse</label>    
                             <div class="col-xs-6">
-                                <?php echo $compte->adresse; ?>
+                                <?php if($compte->adresse_complement_destinataire): ?>
+                                    <?php echo $compte->adresse_complement_destinataire; ?><br />
+                                <?php endif; ?>
+                                <?php if($compte->adresse): ?>
+                                <?php echo $compte->adresse; ?><br />
+                                <?php endif; ?>
+                                <?php if($compte->adresse_complement_lieu): ?>
+                                    <?php echo $compte->adresse_complement_lieu; ?><br />
+                                <?php endif; ?>
                             </div>                
                         </div>
                     </div>
@@ -110,7 +132,7 @@
                             <div class="row">
                                 <label class="col-xs-6">Email</label>    
                                 <div class="col-xs-6">
-                                    <a href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
+                                    <a class="btn-link" href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
                                 </div>                
                             </div>     
                         </div>
@@ -119,6 +141,17 @@
             </div>
         </div>
     </div>
+    <?php if($compte->commentaires): ?>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <code><small><?php echo nl2br($compte->commentaires) ?></small></code>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col-xs-12">
             <div class="panel panel-primary">
@@ -126,7 +159,6 @@
                     <h3>Informations complémentaire</h3>
                 </div>
                 <div class="panel-body">
-
                     <div class="form-group">
                         <label class="col-xs-3">Type de compte :</label> 
                         <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
@@ -137,47 +169,43 @@
                             <label class="col-xs-3">Attributs :</label> 
                             <div>                                                   
                                 <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
-                                    <span class="label label-xs label-default" style="display: inline-block; margin: 2px;"><?php echo $attribut_libelle ?></span>
+                                    <span class="label label-success"><?php echo $attribut_libelle ?></span>
                                 <?php endforeach; ?>                           
                             </div>
                         </div>
-                        <br/>
                     <?php endif; ?>
                     <?php if ($compte->hasProduits()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Produits :</label> 
-                            <p>                         
+                            <div>                         
                                 <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
-                                    <span class="label label-xs label-info" style="display: inline-block; margin: 2px;"><?php echo $produit_libelle ?></span>
+                                    <span class="label label-info"><?php echo $produit_libelle ?></span>
                                 <?php endforeach; ?>
 
-                            </p>
-                        </div>
-                        <br/>
-                    <?php endif; ?>
-                    <?php if ($compte->hasManuels()): ?>
-                        <div class="form-group">
-                            <label class="col-xs-3">Tags manuels :</label> 
-                            <div>           
-                                <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
-                                    <span class="label label-xs label-success" style="display: inline-block; margin: 2px;"><?php echo $tag_manuel ?></span>
-                                <?php endforeach; ?>                               
                             </div>
                         </div>
-                        <br/>
-                    <?php endif; ?>  
+                    <?php endif; ?>
                     <?php if ($compte->hasSyndicats()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Syndicats :</label> 
-                            <p>                         
+                            <div>                         
                                 <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
-                                    <span class="label label-xs label-danger" style="display: inline-block; margin: 2px;"><?php echo $syndicat_libelle ?></span>
+                                    <span class="label label-danger" style="margin: 2px;"><?php echo $syndicat_libelle ?></span>
                                 <?php endforeach; ?>
 
-                            </p>
+                            </div>
                         </div>
-                        <br/>
                     <?php endif; ?>
+                    <?php if ($compte->hasManuels()): ?>
+                        <div class="form-group">
+                            <label class="col-xs-3">Mots clés :</label> 
+                            <div>           
+                                <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
+                                    <span class="label label-default" style="margin: 2px;"><?php echo $tag_manuel ?></span>
+                                <?php endforeach; ?>                               
+                            </div>
+                        </div>
+                    <?php endif; ?>  
                 </div>
             </div>
         </div>
@@ -185,24 +213,21 @@
     <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && count($compte->chais)): ?>
         <div class="row">
             <div class="col-xs-12">
-                <div class="panel panel-primary">
+                <div class="panel  panel-primary">
                     <div class="panel-heading">
                         <h3>Chais</h3>
                     </div>
-                    <div class="panel-body">
-                        <div class="form-group">
-                            <div class="row"> 
-                                <?php foreach ($compte->chais as $key => $chai) : ?>
-                                    <div class="col-xs-4 text-center">
-                                        <strong>Chai N° <?php echo $key + 1; ?></strong>                                    
-                                    </div>  
-                                    <div class="col-xs-6 text-center">
-                                        <?php echo $chai->adresse . ' ' . $chai->code_postal . ' ' . $chai->commune; ?> 
-                                    </div>
-                                <?php endforeach; ?>
+                    <ul class="list-group">
+                        <?php foreach ($compte->chais as $key => $chai) : ?>
+                            <li class="list-group-item text-center">
+                            <?php echo $chai->adresse . ', ' . $chai->code_postal . ' ' . $chai->commune; ?>&nbsp;&nbsp;
+                            <div style="margin-top: 6px;">
+                            <?php foreach($chai->attributs as $attribut_libelle): ?>
+                            <span class="label label-default"><?php echo $attribut_libelle ?></span>
+                            <?php endforeach; ?>
                             </div>
-                        </div>
-                    </div>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
             </div>
         </div>  
@@ -210,15 +235,15 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">
-            <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>Retour à la recherche</a>
+            <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour à la recherche</a>
         </div>
         <div class="col-xs-4 text-center">
-            <a class="btn btn-warning" href="<?php echo url_for('compte_modification_admin', array('id' => $compte->identifiant)) ?>">Modifier</a>
+            <a class="btn btn-lg btn-warning" href="<?php echo url_for('compte_modification_admin', $compte) ?>">Modifier</a>
         </div>
-        <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT)): ?>
+        <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $sf_user->isAdmin()): ?>
             <div class="col-xs-4 text-right">               
 
-                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('compte_redirect_espace_etablissement', array("id" => $compte->identifiant)); ?>">Espace etablissement<span class="eleganticon arrow_carrot-right"></span></a>
+                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('compte_redirect_espace_etablissement', $compte); ?>">Espace etablissement&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
             </div>
         <?php endif; ?>
     </div>
