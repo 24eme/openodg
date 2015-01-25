@@ -357,6 +357,22 @@
          }*/
         champ.val(val);
     };
+
+    $.initCarte = function()
+    {
+        $('.carte').each(function() {
+            var map = L.map($(this).attr('id'), {minZoom: 7, zoom: 10, }).setView([48.100901, 7.361051], 9);
+            L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                    'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                id: 'examples.map-i875mjb7'
+            }).addTo(map);
+
+            L.marker(JSON.parse("["+$(this).attr('data-point')+"]"), {title: $(this).attr('data-title')}).addTo(map);
+        });
+    };  
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -367,7 +383,7 @@
         $.initSelect2AutocompleteRemote();
         $.initSelect2AutocompletePermissif();
         $.initCheckboxRelations();
-        //$.initCarte();
+        $.initCarte();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip]').tooltip({'container': 'body'});

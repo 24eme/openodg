@@ -45,9 +45,7 @@
     </div>
 
     <div class="row">
-        <div id="carte" class="col-xs-4">
-        </div>
-        <div class="col-xs-4">
+        <div class="col-xs-6">
             <address>
               <span class="lead text-muted"><strong>EARL XXXXXX XXXXXXXX</strong></span><br />
               <span class="lead">6 rue Principale</span><br />
@@ -57,7 +55,10 @@
               <abbr title="Phone">Mobile</abbr> : 0689201627<br />
             </address>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-6">
+            <div id="carte_<?php echo $i ?>" data-title="" data-point="48.100901,7.36105" class="col-xs-12 carte" style="height: 250px; margin-bottom: 20px;"></div>
+        </div>
+        <div class="col-xs-12">
             <span class="lead text-muted">3 lots à prélever</span>
             <ul class="list-group">
             <?php for($j=1; $j <= 3; $j++): ?>
@@ -73,7 +74,7 @@
             </ul>
         </div>
     </div>
-    <div class="row">
+    <div class="row row-margin">
         <div class="col-xs-6">
             <a href="#mission" class="btn btn-primary btn-lg btn-upper btn-block link-to-section">Retour</a>
         </div>

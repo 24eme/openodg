@@ -14,6 +14,7 @@
             $($(this).attr('href')).removeClass('hidden');
             $(document).scrollTo($(this).attr('href'));
             $(this).closest('section').addClass('hidden');
+            console.log(L.getMap('carte_1'));
             return false;
         });
 
