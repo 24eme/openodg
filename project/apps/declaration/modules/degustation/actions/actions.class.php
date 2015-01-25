@@ -33,4 +33,8 @@ class degustationActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
  
     }
+
+    public function executeTournee(sfWebRequest $request) {
+
+    }
 }

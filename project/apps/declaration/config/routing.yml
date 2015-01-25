@@ -559,6 +559,12 @@ degustation_prelevements:
   requirements:
     sf_method: [get]
 
+degustation_tournee:
+  url: /desgustation/tournee
+  param: { module: degustation, action: tournee }
+  requirements:
+    sf_method: [get]
+
 default_index:
   url:   /:module
   param: { action: index }
