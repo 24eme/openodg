@@ -511,15 +511,21 @@ compte_desarchiver:
 
 # Dégustation
 
+degustation:
+  url: /desgustation
+  param: { module: degustation, action: index }
+  requirements:
+    sf_method: [get]
+
 degustation_creation:
   url: /desgustation/creation
   param: { module: degustation, action: creation }
   requirements:
     sf_method: [get]
 
-degustation_choix_operateurs:
-  url: /desgustation/choix-operateurs
-  param: { module: degustation, action: choixOperateurs }
+degustation_operateurs:
+  url: /desgustation/operateurs
+  param: { module: degustation, action: operateurs }
   requirements:
     sf_method: [get]
 
@@ -529,9 +535,27 @@ degustation_degustation:
   requirements:
     sf_method: [get]
 
-degustation_choix_degustateurs:
-  url: /desgustation/choix-degustateurs
-  param: { module: degustation, action: choixDegustateurs }
+degustation_degustateurs:
+  url: /desgustation/degustateurs
+  param: { module: degustation, action: degustateurs }
+  requirements:
+    sf_method: [get]
+
+degustation_validation:
+  url: /desgustation/validation
+  param: { module: degustation, action: validation }
+  requirements:
+    sf_method: [get]
+
+degustation_agents:
+  url: /desgustation/agents
+  param: { module: degustation, action: agents }
+  requirements:
+    sf_method: [get]
+
+degustation_prelevements:
+  url: /desgustation/prelevements
+  param: { module: degustation, action: prelevements }
   requirements:
     sf_method: [get]
 

@@ -1,7 +1,15 @@
+<?php include_partial('degustation/step', array('active' => 'degustateurs')); ?>
+
 <div class="page-header">
     <h2>Dégustation</h2>
 </div>
 
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="<?php echo url_for('degustation_degustation') ?>">Dégustation</a></li>
+  <li role="presentation"><a href="<?php echo url_for('degustation_degustateurs') ?>">Porteur de mémoire</a></li>
+  <li role="presentation"><a href="#">Technicien du produit</a></li>
+  <li role="presentation"><a href="#">Usagers du produit</a></li>
+</ul>
 <form action="" method="post" class="form-horizontal">
     
     <div class="row">
@@ -43,10 +51,10 @@
 
     <div class="row row-margin row-button">
     <div class="col-xs-6">
-        <a href="<?php echo url_for('degustation_choix_operateurs') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
+        <a href="<?php echo url_for('degustation_operateurs') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
-        <a href="<?php echo url_for('degustation_choix_degustateurs') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
+        <a href="<?php echo url_for('degustation_degustateurs') ?>" class="btn btn-default btn-default-step btn-lg btn-upper">Continuer</a>
     </div>
     </div>
 

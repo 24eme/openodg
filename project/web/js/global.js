@@ -244,18 +244,6 @@
         });
     }
 
-    $.initCarte = function()
-    {
-        var map = L.map('carte').setView([51.505, -0.09], 13);
-        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            id: 'examples.map-i875mjb7'
-        }).addTo(map);
-    }
-
     /**
      * Contrôle la bonne saisie de nombres dans
      * un champ
@@ -275,8 +263,7 @@
             // touche "entrer"
             if (touche == 13)
                 return e;
-            // touche "entrer"
-            if (touche == 0)
+           if (touche == 0)
                 return e;
             // Champ nombre décimal
             if (float)
