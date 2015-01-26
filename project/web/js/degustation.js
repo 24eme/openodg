@@ -40,7 +40,7 @@
             }
         );
 
-        $("#listes_operateurs .list-group-item[data-state!=active]").click(function() {
+        $("#listes_operateurs .list-group-item.clickable").click(function() {
             var ligne = $(this);
             $.addItem(ligne);
 
@@ -54,13 +54,24 @@
             return false;
         });
 
-        $("#nav_a_prelever").click(function() {
+        $(".nav-filter").click(function() {
+            console.log('test');
             $(this).parent().find('a').removeClass('active')
             $(this).addClass('active');
-            $("#listes_operateurs .list-group-item[data-state!=active]").addClass('hidden');
-            $("#listes_operateurs .list-group-item[data-state=active]").removeClass('list-group-item-success');
+
+            $("#listes_operateurs .list-group-item").removeClass('hidden');
+
+            if($(this).attr('data-filter')) {
+                $("#listes_operateurs .list-group-item[data-state!="+$(this).attr('data-filter')+"]").addClass('hidden');
+                $('#listes_operateurs .list-group-item[data-state=""]').removeClass('hidden');
+            }
+            //$("#listes_operateurs .list-group-item[data-state='']").removeClass('hidden');
+            /*$("#listes_operateurs .list-group-item[data-state="+$(this).attr('data-state')+"][data-filter="+$(this).attr('data-filter')+"]").removeClass('list-group-item-success');*/
 
             if($('#carte').length > 0) {
+                $("#listes_operateurs .list-group-item").each(function() {
+                    markers[$(this).attr('data-point')].setOpacity(100);
+                });
                 $("#listes_operateurs .list-group-item.hidden").each(function() {
                     markers[$(this).attr('data-point')].setOpacity(0);
                 });
@@ -69,28 +80,13 @@
             return false;
         });
 
-        $("#nav_tous").click(function() {
-            $(this).parent().find('a').removeClass('active')
-            $(this).addClass('active');
-            $("#listes_operateurs .list-group-item").removeClass('hidden');
-            $("#listes_operateurs .list-group-item[data-state=active]").addClass('list-group-item-success');
-
-            if($('#carte').length > 0) {
-                $("#listes_operateurs .list-group-item").each(function() {
-                    markers[$(this).attr('data-point')].setOpacity(100);
-                });
-            }
-
-            return false;
-        });
-
         if($('#carte').length > 0) {
-            $.initCarte();
+            $.initCarteDegustation();
         }
 
     });
 
-    $.initCarte = function()
+    $.initCarteDegustation = function()
     {
         greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});
         redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});
@@ -148,7 +144,7 @@
     }
 
     $.addItem = function(ligne) {
-        ligne.attr('data-state', 'active');
+        ligne.attr('data-state', $('.nav-filter.active').attr('data-state'));
         $.updateItem(ligne);
     }
 
@@ -158,7 +154,7 @@
     }
 
     $.toggleItem = function(ligne) {
-        if(ligne.attr('data-state') == 'active') {
+        if(ligne.attr('data-state')) {
             $.removeItem(ligne);
         } else {
             $.addItem(ligne);
@@ -167,7 +163,7 @@
 
     $.updateItem = function(ligne)
     {
-        if(ligne.attr('data-state') == "active") {
+        if(ligne.attr('data-state')) {
             ligne.find('button.btn-danger, select').removeClass('hidden');
             ligne.find('button.btn-success').addClass('hidden');
             if(ligne.hasClass('clickable')) {
@@ -200,13 +196,18 @@
             }
         }
 
-        $.updateNbPrelever();
+        $.updateNbFilter();
         $.updateRecapCepages();
     }
 
-    $.updateNbPrelever = function()
+    $.updateNbFilter = function()
     {
-        $("#nav_a_prelever .badge").html($("#listes_operateurs .list-group-item[data-state=active]").length);
+        $(".nav-filter").each(function() {
+            if(!$(this).attr('data-filter')) {
+                return;
+            }
+            $(this).find('.badge').html($("#listes_operateurs .list-group-item[data-state="+$(this).attr('data-filter')+"]").length);
+        });
     }
 
     $.tireAuSortCepage = function(select)

@@ -11,8 +11,8 @@
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
-            <a id="nav_tous" class="btn btn-info active" href="">Tous <span class="badge">25</span></a>
-            <a  id="nav_a_prelever" class="btn btn-default"  href="">Séléctionné <span class="badge">0</span></a>
+            <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge">25</span></a>
+            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">Séléctionné <span class="badge">0</span></a>
         </div>
     </div>
     <div class="col-xs-12">

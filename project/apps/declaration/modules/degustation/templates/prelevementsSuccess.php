@@ -12,12 +12,16 @@
 
 <div class="row">
     <div class="col-xs-12">
-    <h2>Vicky CHAN <small>30 Janvier 2015</small></h2>
+        <div class="btn-group" style="margin-bottom: 15px">
+            <a data-filter="" href="" class="btn btn-default btn-default-step nav-filter active">Tous <span class="badge" style="color: #fff;">25</span></a>
+            <a data-state="vicky" data-filter="vicky" href="" class="btn btn-default btn-default-step nav-filter">Vicky <small class="text-muted">30/01</small> <span class="badge" style="color: #fff">0</span></a>
+            <a href="" data-state="martine" data-filter="martine" class="btn btn-default btn-default-step nav-filter">Martine <small class="text-muted">30/01</small> <span class="badge" style="color: #fff">0</span></a>
+        </div>
     </div>
     <div class="col-xs-5">
-        <div id="listes_operateurs" class="list-group" style="height: 400px; overflow-y: auto; overflow-x:hidden; padding-right: 2px;">
+        <div id="listes_operateurs" class="list-group" style="height: 450px; overflow-y: auto; overflow-x:hidden; padding-right: 2px;">
             <?php for($i = 0; $i <= 24; $i++): ?>
-            <div data-title="M. NOM PRENOM <?php echo $i ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="list-group-item col-xs-12 clickable">
+            <div data-state="" data-title="M. NOM PRENOM <?php echo $i ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="list-group-item col-xs-12 clickable">
                 <div class="col-xs-1">
                     <span class="glyphicon glyphicon-map-marker" style="padding-top: 8px; padding-bottom: 0; margin-bottom: 0px; margin-left: -12px; font-size: 24px;"></span>
                 </div>
@@ -35,11 +39,11 @@
        
     </div>
     <div class="col-xs-7">
-        <div class="btn-group">
+        <!--<div class="btn-group">
             <a id="nav_tous" class="btn btn-info active" href="">Tous <span class="badge">25</span></a>
             <a  id="nav_a_prelever" class="btn btn-default"  href="">Séléctionné <span class="badge">0</span></a>
-        </div>
-        <div id="carte" class="col-xs-12" style="height: 353px; margin-top: 15px;">
+        </div>-->
+        <div id="carte" class="col-xs-12" style="height: 450px;">
             
         </div>
     </div>
