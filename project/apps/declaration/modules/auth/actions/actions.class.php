@@ -11,7 +11,6 @@ class authActions extends sfActions
         }
         
         $this->form = new LoginForm(array(), array("use_compte" => true));
-        $this->formChoiceCreateCompte = new CompteChoiceCreationForm();
         
         if (!$request->isMethod(sfWebRequest::POST)) {
 
