@@ -85,12 +85,18 @@
         });
 
         if($('#carte').length > 0) {
-            $.initCarte();
+            $.initCarteDegustation();
         }
+
+	for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
+		$.addItem($("#listes_operateurs .list-group-item").eq(i));
+	}
+
+	$("#nav_a_prelever").click();
 
     });
 
-    $.initCarte = function()
+    $.initCarteDegustation = function()
     {
         greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});
         redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});
