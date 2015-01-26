@@ -27,7 +27,7 @@
                 </div>
                 <div class="col-xs-11">
                     <div class="pull-right">
-                        <button class="btn btn-success btn-sm" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                        <button class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
                         <button class="btn btn-danger btn-sm hidden" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                     </div>
                   M. NOM PRENOM <?php echo $i ?><br />

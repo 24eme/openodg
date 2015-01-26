@@ -65,6 +65,13 @@
                 $("#listes_operateurs .list-group-item[data-state!="+$(this).attr('data-filter')+"]").addClass('hidden');
                 $('#listes_operateurs .list-group-item[data-state=""]').removeClass('hidden');
             }
+            if($(this).attr('data-state')) {
+                $('#listes_operateurs .list-group-item[data-state=""] .btn-success').removeClass('hidden'); 
+                $('#listes_operateurs .list-group-item[data-state=""]').addClass('clickable');
+            } else {
+                $('#listes_operateurs .list-group-item').removeClass('clickable'); 
+                $('#listes_operateurs .list-group-item .btn-success').addClass('hidden'); 
+            }
             //$("#listes_operateurs .list-group-item[data-state='']").removeClass('hidden');
             /*$("#listes_operateurs .list-group-item[data-state="+$(this).attr('data-state')+"][data-filter="+$(this).attr('data-filter')+"]").removeClass('list-group-item-success');*/
 
@@ -166,9 +173,10 @@
         if(ligne.attr('data-state')) {
             ligne.find('button.btn-danger, select').removeClass('hidden');
             ligne.find('button.btn-success').addClass('hidden');
-            if(ligne.hasClass('clickable')) {
+            /*if(ligne.hasClass('clickable')) {
                 ligne.addClass('list-group-item-success');
-            }
+            }*/
+            ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
             if(ligne.find('select[data-auto=true]').length > 0) {
                 if(ligne.find('select option[selected=selected]').length == 0) {
@@ -180,14 +188,14 @@
             }
         } else {
             ligne.find('button.btn-danger, select').addClass('hidden');
-            ligne.find('button.btn-success').removeClass('hidden');
+            
             ligne.removeClass('list-group-item-success');
-            ligne.addClass('clickable');
-            if($("#nav_a_prelever").hasClass('active')) {
-                ligne.addClass('hidden');
-                if(ligne.attr('data-point')) {
-                    markers[ligne.attr('data-point')].setOpacity(0);
-                }
+            if($('.nav-filter.active').attr('data-state')) {
+                ligne.addClass('clickable');
+                ligne.find('button.btn-success').removeClass('hidden');
+            } else {
+                ligne.removeClass('clickable');
+                ligne.find('button.btn-success').addClass('hidden');
             }
             ligne.find('select option[selected=selected]').removeAttr('selected');
 
