@@ -8,6 +8,8 @@
 
 <form id="form_degustation_choix_operateurs" action="" methode="post" class="form-horizontal">
 
+<input type="hidden" id="nb_a_prelever" value="20"/>
+
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div id="recap_cepages" class="btn-group">

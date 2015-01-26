@@ -91,6 +91,12 @@
             $.initCarteDegustation();
         }
 
+	for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
+		$.addItem($("#listes_operateurs .list-group-item").eq(i));
+	}
+
+	$("#nav_a_prelever").click();
+
     });
 
     $.initCarteDegustation = function()
