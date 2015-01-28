@@ -40,7 +40,7 @@
             }
         );
 
-        $("#listes_operateurs .list-group-item[data-state!=active]").click(function() {
+        $("#listes_operateurs .list-group-item.clickable").click(function() {
             var ligne = $(this);
             $.addItem(ligne);
 
@@ -54,13 +54,31 @@
             return false;
         });
 
-        $("#nav_a_prelever").click(function() {
+        $(".nav-filter").click(function() {
+            console.log('test');
             $(this).parent().find('a').removeClass('active')
             $(this).addClass('active');
-            $("#listes_operateurs .list-group-item[data-state!=active]").addClass('hidden');
-            $("#listes_operateurs .list-group-item[data-state=active]").removeClass('list-group-item-success');
+
+            $("#listes_operateurs .list-group-item").removeClass('hidden');
+
+            if($(this).attr('data-filter')) {
+                $("#listes_operateurs .list-group-item[data-state!="+$(this).attr('data-filter')+"]").addClass('hidden');
+                $('#listes_operateurs .list-group-item[data-state=""]').removeClass('hidden');
+            }
+            if($(this).attr('data-state')) {
+                $('#listes_operateurs .list-group-item[data-state=""] .btn-success').removeClass('hidden'); 
+                $('#listes_operateurs .list-group-item[data-state=""]').addClass('clickable');
+            } else {
+                $('#listes_operateurs .list-group-item').removeClass('clickable'); 
+                $('#listes_operateurs .list-group-item .btn-success').addClass('hidden'); 
+            }
+            //$("#listes_operateurs .list-group-item[data-state='']").removeClass('hidden');
+            /*$("#listes_operateurs .list-group-item[data-state="+$(this).attr('data-state')+"][data-filter="+$(this).attr('data-filter')+"]").removeClass('list-group-item-success');*/
 
             if($('#carte').length > 0) {
+                $("#listes_operateurs .list-group-item").each(function() {
+                    markers[$(this).attr('data-point')].setOpacity(100);
+                });
                 $("#listes_operateurs .list-group-item.hidden").each(function() {
                     markers[$(this).attr('data-point')].setOpacity(0);
                 });
@@ -69,28 +87,19 @@
             return false;
         });
 
-        $("#nav_tous").click(function() {
-            $(this).parent().find('a').removeClass('active')
-            $(this).addClass('active');
-            $("#listes_operateurs .list-group-item").removeClass('hidden');
-            $("#listes_operateurs .list-group-item[data-state=active]").addClass('list-group-item-success');
-
-            if($('#carte').length > 0) {
-                $("#listes_operateurs .list-group-item").each(function() {
-                    markers[$(this).attr('data-point')].setOpacity(100);
-                });
-            }
-
-            return false;
-        });
-
         if($('#carte').length > 0) {
-            $.initCarte();
+            $.initCarteDegustation();
         }
+
+	for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
+		$.addItem($("#listes_operateurs .list-group-item").eq(i));
+	}
+
+	$("#nav_a_prelever").click();
 
     });
 
-    $.initCarte = function()
+    $.initCarteDegustation = function()
     {
         greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});
         redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});
@@ -148,7 +157,7 @@
     }
 
     $.addItem = function(ligne) {
-        ligne.attr('data-state', 'active');
+        ligne.attr('data-state', $('.nav-filter.active').attr('data-state'));
         $.updateItem(ligne);
     }
 
@@ -158,7 +167,7 @@
     }
 
     $.toggleItem = function(ligne) {
-        if(ligne.attr('data-state') == 'active') {
+        if(ligne.attr('data-state')) {
             $.removeItem(ligne);
         } else {
             $.addItem(ligne);
@@ -167,12 +176,13 @@
 
     $.updateItem = function(ligne)
     {
-        if(ligne.attr('data-state') == "active") {
+        if(ligne.attr('data-state')) {
             ligne.find('button.btn-danger, select').removeClass('hidden');
             ligne.find('button.btn-success').addClass('hidden');
-            if(ligne.hasClass('clickable')) {
+            /*if(ligne.hasClass('clickable')) {
                 ligne.addClass('list-group-item-success');
-            }
+            }*/
+            ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
             if(ligne.find('select[data-auto=true]').length > 0) {
                 if(ligne.find('select option[selected=selected]').length == 0) {
@@ -184,14 +194,14 @@
             }
         } else {
             ligne.find('button.btn-danger, select').addClass('hidden');
-            ligne.find('button.btn-success').removeClass('hidden');
+            
             ligne.removeClass('list-group-item-success');
-            ligne.addClass('clickable');
-            if($("#nav_a_prelever").hasClass('active')) {
-                ligne.addClass('hidden');
-                if(ligne.attr('data-point')) {
-                    markers[ligne.attr('data-point')].setOpacity(0);
-                }
+            if($('.nav-filter.active').attr('data-state')) {
+                ligne.addClass('clickable');
+                ligne.find('button.btn-success').removeClass('hidden');
+            } else {
+                ligne.removeClass('clickable');
+                ligne.find('button.btn-success').addClass('hidden');
             }
             ligne.find('select option[selected=selected]').removeAttr('selected');
 
@@ -200,13 +210,18 @@
             }
         }
 
-        $.updateNbPrelever();
+        $.updateNbFilter();
         $.updateRecapCepages();
     }
 
-    $.updateNbPrelever = function()
+    $.updateNbFilter = function()
     {
-        $("#nav_a_prelever .badge").html($("#listes_operateurs .list-group-item[data-state=active]").length);
+        $(".nav-filter").each(function() {
+            if(!$(this).attr('data-filter')) {
+                return;
+            }
+            $(this).find('.badge').html($("#listes_operateurs .list-group-item[data-state="+$(this).attr('data-filter')+"]").length);
+        });
     }
 
     $.tireAuSortCepage = function(select)
