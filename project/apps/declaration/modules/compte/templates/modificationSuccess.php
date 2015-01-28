@@ -73,7 +73,7 @@
                     </div>
                     <div class="panel-body">
                         <p>Afin de modifier votre mot de passe de connexion, veuillez vous rendre sur le portail du CIVA (le bouton ci-dessous permet de vous rendre immédiatement sur le portail du CIVA pour un changement de mot de passe).</p>
-                        <a href="<?php echo url_for('redirect_to_mon_compte_civa'); ?>" class="btn btn-default btn-default-step">Changer de mot de passe</a>
+                        <a href="<?php echo url_for('redirect_to_mon_compte_civa', array('return_mon_compte' => true)); ?>" class="btn btn-default btn-default-step">Changer de mot de passe</a>
                     </div>
                 </div>
 
