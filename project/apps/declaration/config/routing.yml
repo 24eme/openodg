@@ -509,8 +509,62 @@ compte_desarchiver:
   requirements:
     sf_method: [get]
 
-# generic rules
-# please, remove them by adding more specific rules
+# Dégustation
+
+degustation:
+  url: /desgustation
+  param: { module: degustation, action: index }
+  requirements:
+    sf_method: [get]
+
+degustation_creation:
+  url: /desgustation/creation
+  param: { module: degustation, action: creation }
+  requirements:
+    sf_method: [get]
+
+degustation_operateurs:
+  url: /desgustation/operateurs
+  param: { module: degustation, action: operateurs }
+  requirements:
+    sf_method: [get]
+
+degustation_degustation:
+  url: /desgustation/degustation
+  param: { module: degustation, action: degustation }
+  requirements:
+    sf_method: [get]
+
+degustation_degustateurs:
+  url: /desgustation/degustateurs
+  param: { module: degustation, action: degustateurs }
+  requirements:
+    sf_method: [get]
+
+degustation_validation:
+  url: /desgustation/validation
+  param: { module: degustation, action: validation }
+  requirements:
+    sf_method: [get]
+
+degustation_agents:
+  url: /desgustation/agents
+  param: { module: degustation, action: agents }
+  requirements:
+    sf_method: [get]
+
+degustation_prelevements:
+  url: /desgustation/prelevements
+  param: { module: degustation, action: prelevements }
+  requirements:
+    sf_method: [get]
+
+degustation_tournee:
+  url: /desgustation/tournee
+  param: { module: degustation, action: tournee }
+  requirements:
+    sf_method: [get]
+
 default_index:
   url:   /:module
   param: { action: index }
