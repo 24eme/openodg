@@ -48,7 +48,7 @@
             </div>
             <div class="form-group">
                 <label for="inputDate1" class="col-xs-6 control-label">Heure</label>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                     <div class="input-group date-picker-time">
                         <input type="date" class="form-control" id="inputHoure" placeholder="">
                         <div class="input-group-addon">
