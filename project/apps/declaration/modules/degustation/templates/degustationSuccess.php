@@ -145,7 +145,7 @@
                 </div>
                 <?php endforeach; ?>
                 <div class="form-group form-group-lg" style="padding-top: 20px;">
-                    <label class="col-xs-3 control-label lead text-muted">Appréciation</label>
+                    <label class="col-xs-3 control-label lead text-muted">Appréciations</label>
                     <div class="col-xs-9">
                         <div class="col-xs-12">
                             <textarea placeholder="Saisissez vos appréciations" class="form-control input-lg"></textarea>
