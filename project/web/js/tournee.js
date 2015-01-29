@@ -12,8 +12,8 @@
     {
         $('a.link-to-section').click(function() {
             $($(this).attr('href')).removeClass('hidden');
-            $(document).scrollTo($(this).attr('href'));
             $(this).closest('section').addClass('hidden');
+            $(document).scrollTo($(this).attr('href'));
 
             return false;
         });
