@@ -100,8 +100,11 @@ class compteActions extends sfActions {
     }
 
     public function executeRedirectToMonCompteCiva(sfWebRequest $request) {
-        $url_compte_civa = sfConfig::get('app_url_compte_mot_de_passe');
-        return $this->redirect($url_compte_civa);
+        if($request->getParameter('return_mon_compte')) {
+            return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("mon_compte", array(), true)))));
+        }
+
+        return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("home", array(), true)))));
     }
 
     public function executeAllTagsManuels() {
