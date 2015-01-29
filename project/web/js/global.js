@@ -117,6 +117,20 @@
                 currentDp.data('DateTimePicker').show();
             });
         });
+        var datePickers = $('.date-picker-time');
+        datePickers.each(function ()
+        {
+            var currentDp = $(this);
+            currentDp.datetimepicker
+                    ({
+                        language: 'fr',
+                        pickDate: false,
+                    });
+            currentDp.on('focus', 'input', function ()
+            {
+                currentDp.data('DateTimePicker').show();
+            });
+        });
     };
     $.initSelect2Autocomplete = function ()
     {
