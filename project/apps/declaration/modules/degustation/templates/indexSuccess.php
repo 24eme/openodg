@@ -56,13 +56,13 @@
                     AOC Alsace
                     </span>
                     <span class="col-xs-6 text-muted">
-                    50 opérateurs, 12 dégustateurs
+                    50 opérateurs, 12 dégustateurs et 5 tournées
                     </span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-info">Tournée</span>
                     </span>
                 </a>
-                <a href="" class="list-group-item col-xs-12">
+                <a href="<?php echo url_for('degustation_affectation') ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-2 text-muted">
                     20/02/2014
                     </span>

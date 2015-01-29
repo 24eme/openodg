@@ -565,6 +565,12 @@ degustation_tournee:
   requirements:
     sf_method: [get]
 
+degustation_affectation:
+  url: /degustation/affectation
+  param: { module: degustation, action: affectation }
+  requirements:
+    sf_method: [get]
+
 default_index:
   url:   /:module
   param: { action: index }
