@@ -31,5 +31,79 @@
             </div>
         </div>
     </div>
-    
+    <div class="row" style="margin-top: 20px;">
+    <di class="col-xs-12">
+            <div class="list-group">
+                <a href="<?php echo url_for('degustation_prelevements') ?>" class="list-group-item col-xs-12">
+                    <span class="col-xs-2 text-muted">
+                    20/02/2014
+                    </span>
+                    <span class="col-xs-2 text-muted">
+                    AOC Alsace
+                    </span>
+                    <span class="col-xs-6 text-muted">
+                    50 opérateurs, 12 dégustateurs et 5 tournées
+                    </span>
+                    <span class="col-xs-2 text-muted text-right">
+                        <span class="label label-default">Saisie</span>
+                    </span>
+                </a>
+                <a href="<?php echo url_for('degustation_tournee') ?>" class="list-group-item col-xs-12">
+                    <span class="col-xs-2 text-muted">
+                    20/02/2014
+                    </span>
+                    <span class="col-xs-2 text-muted">
+                    AOC Alsace
+                    </span>
+                    <span class="col-xs-6 text-muted">
+                    50 opérateurs, 12 dégustateurs
+                    </span>
+                    <span class="col-xs-2 text-muted text-right">
+                        <span class="label label-info">Tournée</span>
+                    </span>
+                </a>
+                <a href="" class="list-group-item col-xs-12">
+                    <span class="col-xs-2 text-muted">
+                    20/02/2014
+                    </span>
+                    <span class="col-xs-2 text-muted">
+                    AOC Alsace
+                    </span>
+                    <span class="col-xs-6 text-muted">
+                    50 opérateurs, 12 dégustateurs et 5 tournées
+                    </span>
+                    <span class="col-xs-2 text-muted text-right">
+                        <span class="label label-warning">Affectation des vins</span>
+                    </span>
+                </a>
+                <a href="" class="list-group-item col-xs-12">
+                    <span class="col-xs-2 text-muted">
+                    20/02/2014
+                    </span>
+                    <span class="col-xs-2 text-muted">
+                    AOC Alsace
+                    </span>
+                    <span class="col-xs-6 text-muted">
+                    50 opérateurs, 12 dégustateurs et 5 tournées
+                    </span>
+                    <span class="col-xs-2 text-muted text-right">
+                        <span class="label label-danger">Dégustation</span>
+                    </span>
+                </a>
+                <a href="" class="list-group-item col-xs-12">
+                    <span class="col-xs-2 text-muted">
+                    20/02/2014
+                    </span>
+                    <span class="col-xs-2 text-muted">
+                    AOC Alsace
+                    </span>
+                    <span class="col-xs-6 text-muted">
+                    50 opérateurs, 12 dégustateurs et 5 tournées
+                    </span>
+                    <span class="col-xs-2 text-muted text-right">
+                        <span class="label label-success">Terminé</span>
+                    </span>
+                </a>
+            </div>
+</div>
 </form>
