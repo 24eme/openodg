@@ -25,7 +25,7 @@ class authActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        $this->getUser()->signIn($this->form->getValue('login'));
+        $this->getUser()->signIn(preg_replace("/COMPTE-[E]*/", "", $this->form->getValue('login')));
 
         return $this->redirect('home');
     }
