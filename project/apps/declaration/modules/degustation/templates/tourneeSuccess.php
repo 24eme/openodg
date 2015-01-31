@@ -30,7 +30,7 @@
     </div>
     <div class="row row-margin">
         <div class="col-xs-6">
-            <a href="" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
+            <a href="<?php echo url_for('degustation') ?>" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
         </div>
         <div class="col-xs-6">
             <a href="" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>

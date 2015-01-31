@@ -6,9 +6,6 @@ class LoginForm extends BaseForm {
      * 
      */
     public function configure() {
-
-        $choices = $this->getChoices();
-        
         $this->setWidgets(array(
                 'login'   => new sfWidgetFormInput(),
         ));
@@ -25,31 +22,6 @@ class LoginForm extends BaseForm {
 
         $this->validatorSchema['login']->setMessage('required', 'Champs obligatoire');
         $this->validatorSchema->setPostValidator(new ValidatorLogin());
-    }
-
-    public function getChoices() {
-
-        return array();
-        $etablissements = EtablissementClient::getInstance()->getAll()->getDocs();
-        $choices = array("" => "");
-        foreach($etablissements as $etablissement) {
-                $choices[$etablissement["identifiant"]] = sprintf("%s - %s %s - %s (%s)", 
-                $etablissement["raison_sociale"], 
-                $etablissement["code_postal"], 
-                $etablissement["commune"], 
-                $etablissement["identifiant"],
-                implode(", ", array_keys($etablissement["familles"])));
-        }
-
-        if($this->getOption("use_compte")) {
-            $comptes = CompteClient::getInstance()->getAll()->getDocs();
-            foreach($comptes as $compte) {
-                $choices[$compte["identifiant"]] = $compte["nom"];
-            }
-            
-        }
-
-        return $choices;
     }
 
     /**

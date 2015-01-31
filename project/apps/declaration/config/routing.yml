@@ -512,56 +512,62 @@ compte_desarchiver:
 # Dégustation
 
 degustation:
-  url: /desgustation
+  url: /degustation
   param: { module: degustation, action: index }
   requirements:
     sf_method: [get]
 
 degustation_creation:
-  url: /desgustation/creation
+  url: /degustation/creation
   param: { module: degustation, action: creation }
   requirements:
     sf_method: [get]
 
 degustation_operateurs:
-  url: /desgustation/operateurs
+  url: /degustation/operateurs
   param: { module: degustation, action: operateurs }
   requirements:
     sf_method: [get]
 
 degustation_degustation:
-  url: /desgustation/degustation
+  url: /degustation/degustation
   param: { module: degustation, action: degustation }
   requirements:
     sf_method: [get]
 
 degustation_degustateurs:
-  url: /desgustation/degustateurs
+  url: /degustation/degustateurs
   param: { module: degustation, action: degustateurs }
   requirements:
     sf_method: [get]
 
 degustation_validation:
-  url: /desgustation/validation
+  url: /degustation/validation
   param: { module: degustation, action: validation }
   requirements:
     sf_method: [get]
 
 degustation_agents:
-  url: /desgustation/agents
+  url: /degustation/agents
   param: { module: degustation, action: agents }
   requirements:
     sf_method: [get]
 
 degustation_prelevements:
-  url: /desgustation/prelevements
+  url: /degustation/prelevements
   param: { module: degustation, action: prelevements }
   requirements:
     sf_method: [get]
 
 degustation_tournee:
-  url: /desgustation/tournee
+  url: /degustation/tournee
   param: { module: degustation, action: tournee }
+  requirements:
+    sf_method: [get]
+
+degustation_affectation:
+  url: /degustation/affectation
+  param: { module: degustation, action: affectation }
   requirements:
     sf_method: [get]
 

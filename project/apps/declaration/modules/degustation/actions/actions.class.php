@@ -37,4 +37,8 @@ class degustationActions extends sfActions {
     public function executeTournee(sfWebRequest $request) {
 
     }
+
+    public function executeAffectation(sfWebRequest $request) {
+
+    }
 }
