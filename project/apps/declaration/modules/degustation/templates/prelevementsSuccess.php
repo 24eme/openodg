@@ -1,7 +1,6 @@
 <?php use_javascript("degustation.js", "last") ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
-<?php use_javascript('/js/lib/jquery.sortable.min.js'); ?>
 
 <?php include_partial('degustation/step', array('active' => 'prelevements')); ?>
 
@@ -20,9 +19,12 @@
         </div>
     </div>
     <div class="col-xs-5">
-        <ul id="listes_operateurs" class="list-group" style="height: 450px; overflow-y: auto; overflow-x:hidden; padding-right: 2px; margin-top: 0;">
+        <ul id="listes_operateurs" class="list-group sortable" style="height: 450px; overflow-y: auto; overflow-x:hidden; padding-right: 2px; margin-top: 0;">
+                <?php for($i = 8; $i <= 18; $i++): ?>
+                    <li class="list-group-item col-xs-12 list-group-item-info text-center" style="padding-top: 4px; padding-bottom: 4px; border-color: #fff;"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo sprintf("%02d", $i) ?> h</small></li>
+                <?php endfor; ?>
                 <?php for($i = 0; $i <= 24; $i++): ?>
-                <li data-state="" data-title="M. NOM PRENOM <?php echo $i ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="list-group-item col-xs-12 clickable sortable-item">
+                <li data-state="" data-value="<?php echo $i ?>" data-title="M. NOM PRENOM <?php echo $i ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="list-group-item list-group-item-item col-xs-12 clickable">
                     <div class="col-xs-1">
                         <span class="glyphicon glyphicon-map-marker" style="padding-top: 8px; padding-bottom: 0; margin-bottom: 0px; margin-left: -12px; font-size: 24px;"></span>
                     </div>
@@ -34,7 +36,8 @@
                         </div>
                       M. NOM PRENOM <?php echo $i ?><br />
                       <small class="text-muted">COMMUNE</small>
-                    </li>
+                    </div>
+                </li>
             <?php endfor; ?>
         </ul>
     </div>
