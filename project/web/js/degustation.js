@@ -10,12 +10,24 @@
     var pinkIcon = null;
     var blueIcon = null;
     var timerHover = null;
+    var adjustment = null;
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
     _doc.ready(function()
     {
+        $("#listes_operateurs").sortable(
+            {
+                placeholder: '<li class="placeholder list-group-item col-xs-12"></li>',
+                pullPlaceholder: true,
+                handle: 'span.glyphicon-move',
+                afterMove: function ($placeholder, container, $closestItemOrContainer) {
+                    $placeholder.html(container.group.item.eq(0).html());
+                }
+            }
+        );
+
         $("#listes_operateurs .list-group-item .btn-success").click(function() {
             var ligne = $(this).parents(".list-group-item");
             $.addItem(ligne);

@@ -222,3 +222,24 @@ ul {
     border-color: #fff;
     color: #fff;
 }
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  opacity: 0.5;
+  display: none;
+}
+
+ul#listes_operateurs li.placeholder {
+  position: relative;
+  border-style: dotted;
+  opacity: 0.2;
+  /** More li styles **/
+}
+
+ul#listes_operateurs li span.glyphicon-move:hover {
+    cursor: pointer;
+    /*opacity: 0.2;*/
+}
