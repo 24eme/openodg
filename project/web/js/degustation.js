@@ -115,10 +115,30 @@
 
     $.initCarteDegustation = function()
     {
-        greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});
-        redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});
-        pinkIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-pink.png'});
+        /*greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});*/
+        /*redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});*/
+        /*pinkIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-pink.png'});*/
         blueIcon = new L.Icon.Default();
+
+        blueIcon = L.AwesomeMarkers.icon({
+            icon: 'coffee',
+            markerColor: 'blue'
+        });
+
+        greenIcon = L.AwesomeMarkers.icon({
+            icon: 'coffee',
+            markerColor: 'green'
+        });
+
+        redIcon = L.AwesomeMarkers.icon({
+            icon: 'coffee',
+            markerColor: 'red'
+        });
+
+        pinkIcon = L.AwesomeMarkers.icon({
+            icon: 'coffee',
+            markerColor: 'red'
+        });
 
         var map = L.map('carte', {minZoom: 8, icon: blueIcon}).setView([48.100901, 7.361051], 9);
         L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
@@ -139,7 +159,7 @@
         for(key in points) {
             var point = points[key];
             var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + point[0] + "," + point[1] + '"]');
-            var marker = L.marker(point, {title: ligne.attr('data-title')});
+            var marker = L.marker(point, {title: ligne.attr('data-title'), icon: blueIcon});
             marker.addTo(map);
 
             marker.on('click', function(m) {
