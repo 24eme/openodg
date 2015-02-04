@@ -76,7 +76,7 @@
                 }
             }
 
-            return "<i " + iconColorStyle + "class='" + options.extraClasses + " " + options.prefix + " " + iconClass + " " + iconSpinClass + " " + iconColorClass + "'><div style='background: #fff; width: 22px; height: 22px; border-radius: 50%; position: absolute; left: 13px; top: 4px;'></div><span style='font-size: 44px; color: #5CB85C; position: absolute; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;' class='glyphicon-map-marker'></span><span style='font-size: 11px; color: black; position: absolute; left: 16px; top: 8px;' class='glyphicon glyphicon-remove'></span></i>";
+            return "<i " + iconColorStyle + "class='" + options.extraClasses + " " + options.prefix + " " + iconClass + " " + iconSpinClass + " " + iconColorClass + "'><div style='background: #fff; width: 22px; height: 22px; border-radius: 50%; position: absolute; left: 13px; top: 4px;'></div><span style='font-size: 38px; color: #5CB85C; position: absolute; text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;' class='glyphicon-map-marker'></span><span style='font-size: 10px; color: black; position: absolute; left: 14px; top: 7px;' class='glyphicon glyphicon-trash'></span></i>";
         },
 
         _setIconStyles: function (img, name) {
