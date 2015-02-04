@@ -598,6 +598,12 @@ parcellaire_parcelle_appellation:
   requirements:
     sf_method: [get] 
 
+parcellaire_acheteurs:
+  url: /parcellaire/acheteurs/:identifiant
+  param: { module: parcellaire, action: acheteurs }
+  requirements:
+    sf_method: [get]  
+
 default_index:
   url:   /:module
   param: { action: index }

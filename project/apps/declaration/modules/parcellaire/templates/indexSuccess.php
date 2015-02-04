@@ -19,7 +19,7 @@
         <div class="form-group">
             <div class="col-xs-8 col-xs-offset-1" >
                 <a class="list-group-item col-xs-4 list-group-item-success" href="<?php echo url_for2('parcellaire_creation', array('identifiant' => '6700000010')); ?>">Créer un parcellaire</a>
-            </div>q
+            </div>
         </div>
     </form>
 </div>

@@ -5,10 +5,10 @@
 </div>
 
 <ul class="nav nav-tabs">
-    <li role="presentation"><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'COMMUNALE')) ?>">Communales</a></li>
-    <li role="presentation" class="active"><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'LIEUX_DITS')) ?>">Lieux dits</a></li>
-    <li role="presentation"><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'GRD_CRU')) ?>">Grand Crus</a></li>
-    <li role="presentation"><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'CREMANT')) ?>">Crémant</a></li>
+    <li role="presentation"  <?php echo ($appellation == 'COMMUNALE')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'COMMUNALE')) ?>">Communales</a></li>
+    <li role="presentation" <?php echo ($appellation == 'LIEUX_DITS')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'LIEUX_DITS')) ?>">Lieux dits</a></li>
+    <li role="presentation"  <?php echo ($appellation == 'GRD_CRU')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'GRD_CRU')) ?>">Grand Crus</a></li>
+    <li role="presentation"  <?php echo ($appellation == 'CREMANT')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'CREMANT')) ?>">Crémant</a></li>
 </ul>
 
 <form action="" method="post" class="form-horizontal">
@@ -35,17 +35,17 @@
                 </table>
             </div>
             <div class="text-left">
-                <button class="btn btn-warning ajax btn-sm" data-toggle="modal" data-target="#popupForm" type="button">Ajouter un produit&nbsp;<span class="eleganticon icon_plus"></span></button>
+                <button class="btn btn-warning ajax btn-sm" data-toggle="modal" data-target="#popupForm" type="button">Ajouter<span class="eleganticon icon_plus"></span></button>
             </div>
         </div>
     </div>
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('degustation_degustation') ?>" class="btn btn-primary btn-primary-step btn-lg btn-upper">Précédent</a>
+            <a href="<?php echo url_for('parcellaire_infos_modification', array('identifiant' => 'XXX')) ?>" class="btn btn-primary btn-primary-step btn-lg btn-upper">Précédent</a>
         </div>
         <div class="col-xs-6 text-right">
-            <a href="<?php echo url_for('degustation_agents') ?>" class="btn btn-default btn-default-step btn-lg btn-upper">Continuer</a>
+            <a href="<?php echo url_for('parcellaire_acheteurs', array('identifiant' => 'XXX')) ?>" class="btn btn-default btn-default-step btn-lg btn-upper">Continuer</a>
         </div>
     </div>
 </form>

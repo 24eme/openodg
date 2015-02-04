@@ -18,12 +18,26 @@ class parcellaireActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
-
+        
+        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));        
         return $this->redirect('home'); 
     }
 
-    public function executeCreation(sfWebRequest $request) {
+    public function executeCreation(sfWebRequest $request) {        
+        $this->etablissementIdentifiant = $request->getParameter('identifiant');
+        
+        if(!$this->etablissementIdentifiant){
+            throw new sfException("L'identifiant de l'etablissement est obligatoire pour créer un parcellaire");
+        }
+        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->etablissementIdentifiant);        
+        if(!$this->etablissement){
+            throw new sfException("L'etablissement n'a pas été trouvé");
+        }
+        
+        $campagneManager = new CampagneManager('08-01',  CampagneManager::FORMAT_PREMIERE_ANNEE);        
+        $this->campagne = $campagneManager->getCurrent();              
+        
+        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($this->etablissement,$this->campagne);
         
         if($request->isMethod(sfWebRequest::POST)){
             return $this->redirect('parcellaire_parcelles',array('identifiant' => $request['identifiant'])); 
@@ -34,8 +48,13 @@ class parcellaireActions extends sfActions {
     public function executeParcelles(sfWebRequest $request) {
         
     }
+    
+    public function executeParcelleAppellation(sfWebRequest $request) {
+        $this->appellation = $request->getParameter('appellation');
+        return $this->setTemplate('parcelles');
+    }
 
-    public function executeDegustation(sfWebRequest $request) {
+    public function executeAcheteurs(sfWebRequest $request) {
  
     }
 
