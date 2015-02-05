@@ -2,6 +2,21 @@
 
 class ParcellaireClient extends acCouchdbClient {
 
+    const TYPE_MODEL = "Parcellaire"; 
+    const TYPE_COUCHDB = "PARCELLAIRE";
+    
+    const TYPE_PROPRIETAIRE_VITICULTEUR = "VITICULTEUR";
+    const TYPE_PROPRIETAIRE_ADHERENT_CAVE_COOP = "ADHERENT_CAVE_COOP";
+    const TYPE_PROPRIETAIRE_VENDEUR_RAISIN = "VENDEUR_RAISIN";
+    
+    
+    public static $type_proprietaire_libelles = array(
+        self::TYPE_PROPRIETAIRE_VITICULTEUR => "Viticulteur - manipulant",
+        self::TYPE_PROPRIETAIRE_ADHERENT_CAVE_COOP => "Adhérent Cave Coop",
+        self::TYPE_PROPRIETAIRE_VENDEUR_RAISIN => "Vendeur de raisin",
+    );
+    
+    
     public static function getInstance() {
         return acCouchdbManager::getClient("Parcellaire");
     }

@@ -1,4 +1,4 @@
-<?php include_partial('step', array('active' => 'acheteurs', 'identifiant' => 'XXX')); ?>
+<?php include_partial('step', array('step' => 'acheteurs', 'identifiant' => 'XXX')); ?>
 
 <div class="page-header">
     <h2>Saisie des acheteurs</h2>

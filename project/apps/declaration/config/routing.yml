@@ -581,6 +581,16 @@ parcellaire_creation:
   param: { module: parcellaire, action: creation }
   requirements:
     sf_method: [get,post]
+    
+parcellaire_exploitation:
+  url: /parcellaire/exploitation/:id
+  param: { module: parcellaire, action: exploitation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 
 parcellaire_infos_modification:
@@ -591,16 +601,15 @@ parcellaire_infos_modification:
 
 
 parcellaire_parcelles:
-  url: /parcellaire/parcelles/:identifiant
+  url: /parcellaire/parcelles/:id/:appellation
   param: { module: parcellaire, action: parcelles }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
   requirements:
     sf_method: [get] 
 
-parcellaire_parcelle_appellation:
-  url: /parcellaire/parcelles/:identifiant/:appellation
-  param: { module: parcellaire, action: parcelleAppellation }
-  requirements:
-    sf_method: [get] 
 
 parcellaire_acheteurs:
   url: /parcellaire/acheteurs/:identifiant

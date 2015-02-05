@@ -1,14 +1,14 @@
-<?php include_partial('step', array('active' => 'parcelles','identifiant' => 'XXX')); ?>
+<?php include_partial('step', array('step' => 'parcelles','parcellaire' => $parcellaire)); ?>
 
 <div class="page-header">
     <h2>Saisie des parcelles</h2>
 </div>
 
 <ul class="nav nav-tabs">
-    <li role="presentation"  <?php echo ($appellation == 'COMMUNALE')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'COMMUNALE')) ?>">Communales</a></li>
-    <li role="presentation" <?php echo ($appellation == 'LIEUX_DITS')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'LIEUX_DITS')) ?>">Lieux dits</a></li>
-    <li role="presentation"  <?php echo ($appellation == 'GRD_CRU')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'GRD_CRU')) ?>">Grand Crus</a></li>
-    <li role="presentation"  <?php echo ($appellation == 'CREMANT')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'CREMANT')) ?>">Crémant</a></li>
+    <li role="presentation"  <?php echo ($appellation == 'COMMUNALE')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => 'COMMUNALE')) ?>">Communales</a></li>
+    <li role="presentation" <?php echo ($appellation == 'LIEUX_DITS')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => 'LIEUX_DITS')) ?>">Lieux dits</a></li>
+    <li role="presentation"  <?php echo ($appellation == 'GRD_CRU')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => 'GRD_CRU')) ?>">Grand Crus</a></li>
+    <li role="presentation"  <?php echo ($appellation == 'CREMANT')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => 'CREMANT')) ?>">Crémant</a></li>
 </ul>
 
 <form action="" method="post" class="form-horizontal">

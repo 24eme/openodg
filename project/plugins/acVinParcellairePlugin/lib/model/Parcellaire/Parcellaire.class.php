@@ -36,7 +36,18 @@ class Parcellaire extends BaseParcellaire {
         $this->campagne = $campagne;
         $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne));
         $this->storeDeclarant();
-        
+    }
+
+    public function storeEtape($etape) {
+        $this->add('etape', $etape);
+    }
+
+    public function isPapier() {
+        return $this->exist('papier') && $this->get('papier');
+    }
+    
+   public function hasVendeurs() {
+        return count($this->vendeurs);
     }
 
 }

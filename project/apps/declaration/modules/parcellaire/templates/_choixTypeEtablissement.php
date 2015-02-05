@@ -1,46 +1,21 @@
-    <div class="panel panel-primary" > 
-        <div class="panel-body">
-            <form action="<?php echo url_for('parcellaire_creation', array('identifiant' => 'ETB000000')) ?>" method="post" class="form-horizontal"  >
-                <div class="row">
-                    <div class="col-xs-8">
-                        <div class="form-group">
-                            <div class="col-sm-6 text-right">
-                                <input type="checkbox" class="form-control" name="info_type" value="">                              
-                            </div>
-                            <label for="info_type" class="col-sm-6 text-right control-label">Viticulteur - manipulant</label>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-6 text-right">
-                                <input type="checkbox" class="form-control" name="info_type" value="">                              
-                            </div>
-                            <label for="info_type" class="col-sm-6 text-right control-label">Adhérent Cave Coop</label>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-6 text-right">
-                                <input type="checkbox" class="form-control" name="info_type" value="">                              
-                            </div>
-                            <label for="info_type" class="col-sm-6 text-right control-label">Vendeur de raisin</label>
-                        </div>
+<div class="row">
+    <div class="row col-xs-offset-1 col-xs-10 ">  
 
-                         <div class="form-group">
-                            <div class="col-sm-6 text-right">
-                                <select class="form-control" name="vendeur_liste" value="">  
-                                    <option>Nom - CVI</option>
-                                    <option>Nom 2 - CVI 2</option>
-                                </select>
-                            </div>
-                            <label for="info_type" class="col-sm-6 text-right control-label">Vendeur de raisin</label>
-                        </div>
-
-
-                        <div class="row row-margin row-button">
-                            <div class="col-sm-6"></div>
-                            <div class="col-xs-6 text-right">
-                                <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider</button>
-                            </div>               
-                        </div>
-                    </div>
-                </div>
-            </form>
+        <div class="form-group">
+            <?php echo $parcellaireTypeProprietaireForm["type_proprietaire"]->renderError(); ?>
+            <?php echo $parcellaireTypeProprietaireForm["type_proprietaire"]->renderLabel("type_proprietaire", array("class" => "col-xs-3 control-label")); ?>
+            <div class="col-xs-9">
+                <?php echo $parcellaireTypeProprietaireForm["type_proprietaire"]->render(array("class" => "form-control")); ?>
+            </div>
         </div>
+
+        <div class="form-group">
+            <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->renderError(); ?>
+            <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->renderLabel("vendeurs", array("class" => "col-xs-3 control-label")); ?>
+            <div class="col-xs-9">
+                <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Ajouter des attributs")); ?>
+            </div>
+        </div>
+
     </div>
+</div>
