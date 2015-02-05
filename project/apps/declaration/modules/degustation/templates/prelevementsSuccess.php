@@ -13,7 +13,7 @@
 <form id="form_degustation_choix_operateurs" action="" methode="post" class="form-horizontal">
 
 <div class="row">
-    <div class="col-xs-12" data-spy="affix" data-offset-top="290" style="background: #fff; width: 910px; z-index: 1000; display: block; padding-top: 10px">
+    <div class="col-xs-12">
         <div class="btn-group" style="margin-bottom: 15px;">
             <a data-filter="" 
                 href="" 
@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="col-xs-6">
-        <ul id="listes_operateurs" data-spy="affix" data-offset-top="300" class="list-group sortable" style="margin-top: 0;">
+        <ul id="listes_operateurs" class="list-group sortable" style="height: 500px; overflow-y: auto; overflow-x:hidden; padding-right: 2px; margin-top: 0;">
                 <?php for($i = 8; $i <= 18; $i++): ?>
                     <li class="list-group-item col-xs-12 list-group-item-info text-center" style="padding-top: 4px; padding-bottom: 4px; border-color: #fff; background: #e2e2e2; color: #555"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo sprintf("%02d", $i) ?> h</small></li>
                 <?php endfor; ?>
@@ -59,7 +59,7 @@
         </ul>
     </div>
     <div class="col-xs-6">
-        <div data-spy="affix" data-offset-top="290" data-offset-bottom="190" class="col-xs-12" id="carte" style="height: 380px; width: 440px;"></div>
+        <div class="col-xs-12" id="carte" style="height: 500px;"></div>
     </div>
 </div>
 
