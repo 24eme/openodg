@@ -575,6 +575,45 @@ degustation_affectation:
   requirements:
     sf_method: [get]
 
+# Parcellaire
+parcellaire:
+  url: /parcellaire
+  param: { module: parcellaire, action: index }
+  requirements:
+    sf_method: [get]
+
+parcellaire_creation:
+  url: /parcellaire/creation/:identifiant
+  param: { module: parcellaire, action: creation }
+  requirements:
+    sf_method: [get,post]
+
+
+parcellaire_infos_modification:
+  url: /parcellaire/infos/:identifiant
+  param: { module: parcellaire, action: infoModification }
+  requirements:
+    sf_method: [get] 
+
+
+parcellaire_parcelles:
+  url: /parcellaire/parcelles/:identifiant
+  param: { module: parcellaire, action: parcelles }
+  requirements:
+    sf_method: [get] 
+
+parcellaire_parcelle_appellation:
+  url: /parcellaire/parcelles/:identifiant/:appellation
+  param: { module: parcellaire, action: parcelleAppellation }
+  requirements:
+    sf_method: [get] 
+
+parcellaire_acheteurs:
+  url: /parcellaire/acheteurs/:identifiant
+  param: { module: parcellaire, action: acheteurs }
+  requirements:
+    sf_method: [get]  
+
 default_index:
   url:   /:module
   param: { action: index }
