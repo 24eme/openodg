@@ -2,6 +2,7 @@
 
 <div>
 <div class="btn-group pull-right">
+    <a class="btn btn-default btn-default-step" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherce avancée</a>
     <button type="button" class="btn btn-default btn-default-step" data-toggle="dropdown" aria-expanded="false">
         <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
     </button>
@@ -79,7 +80,7 @@
                 <nav>
                     <ul class="pagination pagination-lg" style="margin-top: 0;">
                         <?php
-                        $argssearch = array('q' => $q, 'tags' => $args['tags']->getRawValue());
+                        $argssearch = array('q' => $q, 'tags' => $args['tags']->getRawValue(), 'all' => $args['all']);
                         ?>
                         <?php if ($current_page > 1) : ?>
                             <?php $argssearch['page'] = $current_page - 1; ?>
