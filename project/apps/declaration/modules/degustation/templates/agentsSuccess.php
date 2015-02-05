@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div id="listes_operateurs" class="list-group">
             <?php for($i = 0; $i <= 24; $i++): ?>
-            <div class="list-group-item col-xs-12 clickable">
+            <div class="list-group-item list-group-item-item col-xs-12 clickable">
                 <div class="col-xs-3">M. NOM PRENOM <?php echo $i ?></div>
                 <div class="col-xs-8">
                     <select multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete hidden">

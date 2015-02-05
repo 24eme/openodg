@@ -28,7 +28,7 @@
     <div class="col-xs-12">
         <div id="listes_operateurs" class="list-group">
             <?php for($i = 0; $i <= 60; $i++): ?>
-            <div class="list-group-item col-xs-12 clickable">
+            <div class="list-group-item list-group-item-item col-xs-12 clickable">
                 <div class="col-xs-5">M. NOM PRENOM  <?php echo $i ?> <small class="text-muted">à AMMERSCHWIHR</small></div>
                 <div class="col-xs-3 text-left"><small class="text-muted">Prélevé le</small> 2012, 2014</div>
                 <div class="col-xs-3">
