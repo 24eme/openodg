@@ -17,7 +17,7 @@
 
         <?php include_stylesheets() ?>
         
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
+        <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">-->
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
@@ -65,6 +65,7 @@
                         <?php elseif($sf_user->hasCredential(myUser::CREDENTIAL_CONTACT)): ?>
                         <li><a href="<?php echo url_for('compte_recherche') ?>">Contacts</a></li>
                         <?php endif; ?>
+                        <li><a href="<?php echo url_for('redirect_to_mon_compte_civa'); ?>">Mon compte</a></li>
                         <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                     </ul>
                 </nav>    

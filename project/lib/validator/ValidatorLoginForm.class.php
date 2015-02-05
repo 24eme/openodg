@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 class ValidatorLogin extends sfValidatorBase {
     
@@ -20,7 +20,7 @@ class ValidatorLogin extends sfValidatorBase {
         $etablissement = $compte->getEtablissementObj();
 
         if (!$etablissement) {
-            throw new sfValidatorErrorSchema($this, array($this->getOption('login') => new sfValidatorError($this, 'invalid')));
+            return array_merge($values, array('compte' => $compte));
         }
 
         return array_merge($values, array('compte' => $compte, 'etablissement' => $etablissement));

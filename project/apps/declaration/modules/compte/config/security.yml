@@ -22,6 +22,9 @@ modificationAdmin:
 recherche:
   credentials: [[CONTACT, ADMIN]]
 
+recherche-avancee:
+  credentials: [[CONTACT, ADMIN]]
+
 rechercheCsv:
   credentials: [[CONTACT, ADMIN]]
 

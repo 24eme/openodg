@@ -100,8 +100,11 @@ class compteActions extends sfActions {
     }
 
     public function executeRedirectToMonCompteCiva(sfWebRequest $request) {
-        $url_compte_civa = sfConfig::get('app_url_compte_mot_de_passe');
-        return $this->redirect($url_compte_civa);
+        if($request->getParameter('return_mon_compte')) {
+            return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("mon_compte", array(), true)))));
+        }
+
+        return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("home", array(), true)))));
     }
 
     public function executeAllTagsManuels() {
@@ -155,6 +158,26 @@ class compteActions extends sfActions {
 
         $this->last_page = ceil($this->nb_results / $res_by_page);
         $this->current_page = $page;
+    }
+
+    public function executeRechercheAvancee(sfWebRequest $request) {
+        $this->form = new CompteRechercheAvanceeForm();
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
+            
+            return sfView::SUCCESS;
+        }
+
+        $cvis = explode("\n", preg_replace("/^\n/", "",  preg_replace("/\n$/", "", preg_replace("/([^0-9\n]+|\n\n)/", "", str_replace("\n", "\n", $this->form->getValue('cvis'))))));
+
+        return $this->redirect('compte_recherche', array("q" => "(cvi:" . implode(" OR cvi:", $cvis) . ")", "all" => 1));
     }
 
     public function executeRechercheCsv(sfWebRequest $request) {
