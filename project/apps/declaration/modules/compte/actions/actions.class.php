@@ -175,9 +175,9 @@ class compteActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $cvis = explode(",", preg_replace("/,$/", "", preg_replace("/([^0-9,]+|,,)/", "", str_replace("\n", ",", $this->form->getValue('cvis')))));
+        $cvis = explode("\n", preg_replace("/^\n/", "",  preg_replace("/\n$/", "", preg_replace("/([^0-9\n]+|\n\n)/", "", str_replace("\n", "\n", $this->form->getValue('cvis'))))));
 
-        return $this->redirect('compte_recherche', array("q" => "(cvi:" . implode(" OR cvi:", $cvis) . ")"));
+        return $this->redirect('compte_recherche', array("q" => "(cvi:" . implode(" OR cvi:", $cvis) . ")", "all" => 1));
     }
 
     public function executeRechercheCsv(sfWebRequest $request) {
