@@ -522,16 +522,24 @@ degustation:
     sf_method: [get]
 
 degustation_creation:
-  url: /degustation/creation
+  url: /degustation/creation/:id
   param: { module: degustation, action: creation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 degustation_operateurs:
-  url: /degustation/operateurs
+  url: /degustation/operateurs/:id
   param: { module: degustation, action: operateurs }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 degustation_degustation:
   url: /degustation/degustation

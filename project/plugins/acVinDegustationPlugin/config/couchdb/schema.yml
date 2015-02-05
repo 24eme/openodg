@@ -1,0 +1,16 @@
+#Degustation
+Degustation:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      etape: { required: false }
+      identifiant: { }
+      date: { }
+      appellation: { }
+      date_prelevement_debut: { }
+      date_prelevement_fin: { }
+      nombre_commissions: { type: integer }
+      heure: { }
+      lieu: { }

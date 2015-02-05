@@ -1,6 +1,6 @@
 <?php use_javascript("degustation.js", "last") ?>
 
-<?php include_partial('degustation/step', array('active' => 'operateurs')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'operateurs')); ?>
 
 <div class="page-header">
     <h2>Choix des Opérateurs</h2>
@@ -52,7 +52,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-6">
-        <a href="<?php echo url_for('degustation_creation') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
+        <a href="<?php echo url_for('degustation_creation', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
         <a href="<?php echo url_for('degustation_degustation') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>

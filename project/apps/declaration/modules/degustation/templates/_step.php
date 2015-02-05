@@ -1,7 +1,7 @@
 <ol class="breadcrumb-steps">
     <li class="<?php if ($active == 'operateurs'): ?>active<?php endif; ?> <?php if (in_array($active, array('degustation', 'degustateurs', 'agents', 'prelevements', 'validation'))): ?>visited<?php endif; ?>">
         <div class="step">
-            <a href="<?php echo url_for("degustation_operateurs") ?>">Opérateurs</a>
+            <a href="<?php echo url_for("degustation_operateurs", $degustation) ?>">Opérateurs</a>
         </div>
     </li>
     <li class="<?php if ($active == 'degustateurs'): ?>active<?php endif; ?> <?php if (in_array($active, array('agents', 'prelevements', 'validation'))): ?>visited<?php endif; ?>">
