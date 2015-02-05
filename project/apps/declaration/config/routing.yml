@@ -437,6 +437,10 @@ compte_recherche:
   url: /compte/recherche
   param: { module: compte, action: recherche }
 
+compte_recherche_avancee:
+  url: /compte/recherche-avancee
+  param: { module: compte, action: rechercheAvancee }
+
 compte_recherche_json:
   url: /compte/recherche.json
   param: { module: compte, action: rechercheJson }
