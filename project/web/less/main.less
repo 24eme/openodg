@@ -236,7 +236,6 @@ ul#listes_operateurs li.placeholder {
   position: relative;
   border-style: dotted;
   opacity: 0.4;
-  /** More li styles **/
 }
 
 ul#listes_operateurs li span.glyphicon-resize-vertical:hover {
@@ -245,4 +244,15 @@ ul#listes_operateurs li span.glyphicon-resize-vertical:hover {
 
 ul#listes_operateurs li span.glyphicon-map-marker:hover {
     cursor: pointer;
+}
+
+.affix {
+    top: 0;
+    position: fixed;
+    z-index: 1001;
+}
+
+#carte.affix {
+    top: 60px;
+    z-index: 1000;
 }

@@ -138,7 +138,7 @@
             marker.on('click', function(m) {
                 var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + m.latlng.lat + "," + m.latlng.lng + '"]');
                 $.toggleItem(ligne);
-                $('#listes_operateurs').scrollTo(ligne, 200, { offset: -150, queue: false });
+                $(document).scrollTo(ligne, 200, { offset: ligne.outerHeight()*1.5*(-1), queue: false });
             });
 
             marker.on('mouseover', function(m) {
@@ -146,7 +146,7 @@
                 var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + m.latlng.lat + "," + m.latlng.lng + '"]');
                 $.toggleMarkerHover(m.target, ligne, false, true);
                 timerHover = setTimeout(function(){
-                    $('#listes_operateurs').scrollTo(ligne, 200, { offset: -150, queue: false });
+                    $(document).scrollTo(ligne, 200, { offset: ligne.outerHeight()*1.5*(-1), queue: false });
                 }, 600);
             })
 
@@ -178,7 +178,7 @@
         if(withLigneOpacity) {
             $("#listes_operateurs .list-group-item-item .glyphicon-map-marker").each(function() {
                 if($(this).css('opacity') == '1') {
-                    $(this).css('opacity', '0.15');
+                    $(this).css('opacity', '0.3');
                 } else {
                     $(this).css('opacity', '1');
                 }
