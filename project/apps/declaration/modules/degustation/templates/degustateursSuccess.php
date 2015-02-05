@@ -7,7 +7,6 @@
 </div>
 
 <ul class="nav nav-tabs">
-  <li role="presentation"><a href="<?php echo url_for('degustation_degustation') ?>">Dégustation</a></li>
   <li role="presentation" class="active"><a href="<?php echo url_for('degustation_degustateurs') ?>">Porteur de mémoire</a></li>
   <li role="presentation"><a href="#">Technicien du produit</a></li>
   <li role="presentation"><a href="#">Usagers du produit</a></li>
