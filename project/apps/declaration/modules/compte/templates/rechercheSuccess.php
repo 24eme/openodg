@@ -80,7 +80,7 @@
                 <nav>
                     <ul class="pagination pagination-lg" style="margin-top: 0;">
                         <?php
-                        $argssearch = array('q' => $q, 'tags' => $args['tags']->getRawValue());
+                        $argssearch = array('q' => $q, 'tags' => $args['tags']->getRawValue(), 'all' => $args['all']);
                         ?>
                         <?php if ($current_page > 1) : ?>
                             <?php $argssearch['page'] = $current_page - 1; ?>
