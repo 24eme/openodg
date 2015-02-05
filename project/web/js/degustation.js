@@ -8,7 +8,7 @@
     var greenIcon = null;
     var redIcon = null;
     var pinkIcon = null;
-    var blueIcon = null;
+    var defaultIcon = null;
     var timerHover = null;
     var adjustment = null;
 
@@ -21,7 +21,7 @@
             {
                 placeholder: '<li class="placeholder list-group-item list-group-item-item col-xs-12"></li>',
                 pullPlaceholder: true,
-                handle: 'span.glyphicon-move',
+                handle: 'span.glyphicon.glyphicon-resize-vertical',
                 afterMove: function ($placeholder, container, $closestItemOrContainer) {
                     $placeholder.html(container.group.item.eq(0).html());
                 }
@@ -39,7 +39,8 @@
             function() {
                 var ligne = $(this);
                 if(ligne.attr('data-point')) {
-                    markers[ligne.attr('data-point')].setIcon(pinkIcon);
+                    var icon = L.BootstrapMarkers.icon({ color: ligne.find('.glyphicon-map-marker').css('color'), 'size': 'lg' });
+                    markers[ligne.attr('data-point')].setIcon(icon);
                     ligne.find('span.glyphicon-map-marker').addClass('text-pink');
                 }
             },
@@ -67,7 +68,6 @@
         });
 
         $(".nav-filter").click(function() {
-            console.log('test');
             $(this).parent().find('a').removeClass('active')
             $(this).addClass('active');
 
@@ -83,6 +83,12 @@
             } else {
                 $('#listes_operateurs .list-group-item-item').removeClass('clickable'); 
                 $('#listes_operateurs .list-group-item-item .btn-success').addClass('hidden'); 
+            }
+
+            $('#listes_operateurs .list-group-item-item').attr('data-color', null);
+
+            if($(this).attr('data-color')) {
+                $('#listes_operateurs .list-group-item-item').attr('data-color', $(this).attr('data-color'));
             }
 
             if($('#carte').length > 0) {
@@ -115,22 +121,15 @@
 
     $.initCarteDegustation = function()
     {
-        /*greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});*/
-        /*redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});*/
-        /*pinkIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-pink.png'});*/
-        blueIcon = new L.Icon.Default();
+        greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});
+        redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});
+        pinkIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-pink.png'});
 
-        blueIcon = L.AwesomeMarkers.icon({
-            icon: 'coffee',
-            markerColor: 'blue'
-        });
+        defaultIcon = L.BootstrapMarkers.icon({ color: '#e2e2e2' });
+        hoverIcon = L.BootstrapMarkers.icon({ color: '#555555' });
 
-        greenIcon = L.AwesomeMarkers.icon({
-            icon: 'coffee',
-            markerColor: 'green'
-        });
-
-        redIcon = L.AwesomeMarkers.icon({
+        
+        /*redIcon = L.AwesomeMarkers.icon({
             icon: 'coffee',
             markerColor: 'red'
         });
@@ -138,9 +137,9 @@
         pinkIcon = L.AwesomeMarkers.icon({
             icon: 'coffee',
             markerColor: 'red'
-        });
+        });*/
 
-        var map = L.map('carte', {minZoom: 8, icon: blueIcon}).setView([48.100901, 7.361051], 9);
+        var map = L.map('carte', {minZoom: 8, icon: defaultIcon}).setView([48.100901, 7.361051], 9);
         L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
             maxZoom: 18,
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -159,7 +158,7 @@
         for(key in points) {
             var point = points[key];
             var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + point[0] + "," + point[1] + '"]');
-            var marker = L.marker(point, {title: ligne.attr('data-title'), icon: blueIcon});
+            var marker = L.marker(point, {title: ligne.attr('data-title'), icon: defaultIcon});
             marker.addTo(map);
 
             marker.on('click', function(m) {
@@ -171,7 +170,8 @@
             marker.on('mouseover', function(m) {
                 
                 var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + m.latlng.lat + "," + m.latlng.lng + '"]');
-                m.target.setIcon(pinkIcon);
+                var icon = L.BootstrapMarkers.icon({ color: ligne.find('.glyphicon-map-marker').css('color'), 'size': 'lg' });
+                m.target.setIcon(icon);
                 timerHover = setTimeout(function(){
                     ligne.find('.glyphicon-map-marker').addClass('text-pink');
                     $('#listes_operateurs').scrollTo(ligne, 200, { offset: -150, queue: false });
@@ -226,7 +226,10 @@
                 }
             }
             if(ligne.attr('data-point')) {
-                markers[ligne.attr('data-point')].setIcon(greenIcon);
+                if(ligne.attr('data-color')) {
+                    ligne.find('.glyphicon-map-marker').css('color', ligne.attr('data-color'));
+                    markers[ligne.attr('data-point')].setIcon(L.BootstrapMarkers.icon({ color: ligne.attr('data-color')}));
+                }
             }
         } else {
             ligne.find('button.btn-danger, select').addClass('hidden');
@@ -242,8 +245,10 @@
             ligne.find('select option[selected=selected]').removeAttr('selected');
 
             if(ligne.attr('data-point')) {
-                markers[ligne.attr('data-point')].setIcon(blueIcon);
+                markers[ligne.attr('data-point')].setIcon(defaultIcon);
             }
+
+            ligne.find('.glyphicon-map-marker').css('color', '#e2e2e2');
         }
 
         $.updateNbFilter();
