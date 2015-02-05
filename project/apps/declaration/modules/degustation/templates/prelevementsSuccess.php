@@ -37,7 +37,7 @@
         </div>
     </div>
     <div class="col-xs-6">
-        <ul id="listes_operateurs" class="list-group sortable" style="margin-top: 0;">
+        <ul id="listes_operateurs" data-spy="affix" data-offset-top="300" class="list-group sortable" style="margin-top: 0;">
                 <?php for($i = 8; $i <= 18; $i++): ?>
                     <li class="list-group-item col-xs-12 list-group-item-info text-center" style="padding-top: 4px; padding-bottom: 4px; border-color: #fff; background: #e2e2e2; color: #555"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo sprintf("%02d", $i) ?> h</small></li>
                 <?php endfor; ?>
