@@ -2,6 +2,7 @@
 
 <div>
 <div class="btn-group pull-right">
+    <a class="btn btn-default btn-default-step" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherce avancée</a>
     <button type="button" class="btn btn-default btn-default-step" data-toggle="dropdown" aria-expanded="false">
         <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
     </button>

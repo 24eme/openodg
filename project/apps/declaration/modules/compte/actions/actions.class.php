@@ -160,6 +160,26 @@ class compteActions extends sfActions {
         $this->current_page = $page;
     }
 
+    public function executeRechercheAvancee(sfWebRequest $request) {
+        $this->form = new CompteRechercheAvanceeForm();
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
+            
+            return sfView::SUCCESS;
+        }
+
+        $cvis = explode(",", preg_replace("/,$/", "", preg_replace("/([^0-9,]+|,,)/", "", str_replace("\n", ",", $this->form->getValue('cvis')))));
+
+        return $this->redirect('compte_recherche', array("q" => "(cvi:" . implode(" OR cvi:", $cvis) . ")"));
+    }
+
     public function executeRechercheCsv(sfWebRequest $request) {
         ini_set('memory_limit', '128M');
         $this->setLayout(false);
