@@ -12,7 +12,7 @@
             <h3>Appellation / Mention</h3>
             <div class="form-group">
                 <strong class="col-xs-4 text-right"></strong>
-                <div class="col-xs-8"><span>AOC Alsace</span></div>
+                <div class="col-xs-8"><span><?php echo $degustation->appellation ?></span></div>
             </div>
         </div>
     </div>
@@ -21,11 +21,11 @@
             <h3>Prélévements</h3>
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Date de prélevement</strong>
-                <div class="col-xs-6"><span>du 12/12/2014 au 02/28/2014</span></div>
+                <div class="col-xs-6"><span>du <?php echo $degustation->date_prelevement_debut ?> au <?php echo $degustation->date_prelevement_fin ?></span></div>
             </div>
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Nombre d'opérateurs concernés</strong>
-                <div class="col-xs-6"><span>60</span></div>
+                <div class="col-xs-6"><span><?php echo count($prelevements) ?></span></div>
             </div>
             <div class="form-group <?php if($form["nombre_operateurs_a_prelever"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["nombre_operateurs_a_prelever"]->renderError(); ?>

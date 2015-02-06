@@ -26,6 +26,8 @@ class degustationActions extends sfActions {
     public function executeCreation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
 
+        $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+
         $this->form = new DegustationCreationFinForm($this->degustation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -47,10 +49,15 @@ class degustationActions extends sfActions {
 
     public function executeOperateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+
+        //print_r(DegustationClient::getInstance()->getPrelevements("2014-09-01", date('Y-m-d')));
     }
 
     public function executeDegustation(sfWebRequest $request) {
- 
+        
+
     }
 
     public function executeDegustateurs(sfWebRequest $request) {
