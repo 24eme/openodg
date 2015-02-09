@@ -88,7 +88,8 @@ Parcellaire:
                                             class: ParcellaireCouleur
                                             inheritance: _ParcellaireDeclarationNoeud
                                             definition:
-                                              fields:                                                
+                                              fields:
+                                                libelle: {}
                                                 # ------ Cépage ------
                                                 '*':
                                                   type: collection
@@ -101,12 +102,12 @@ Parcellaire:
                                                         type: collection
                                                         definition:
                                                           fields:
-                                                            '*': #commune+identifiant_parcelle+numero_parcelle
+                                                            '*': #commune_section_numeroparcelle
                                                               type: collection
                                                               class: ParcellaireCepageDetail
                                                               definition:
                                                                 fields:
                                                                   superficie: { type: float }
                                                                   commune: { }
-                                                                  identifiant_parcelle: { }
+                                                                  section: { }
                                                                   numero_parcelle: { }
