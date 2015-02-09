@@ -44,6 +44,9 @@ EOF;
                 continue;
             }
             if (!$p->isNew()) {
+                if (count($csv) < 14) {
+                    print "WARNING: ligne $i: ligne contient moins de 14 champs :(\n";
+                }
                 $p->add('declarant')->add('cvi', $csv[8]);
                 $p->add('declarant')->add('nom', $csv[9]);
                 $p->add('declarant')->add('adresse', $csv[10]);
