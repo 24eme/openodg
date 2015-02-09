@@ -38,6 +38,10 @@ class Parcellaire extends BaseParcellaire {
         $this->storeDeclarant();
     }
 
+    public function getConfiguration() {
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
+    }
+
     public function storeEtape($etape) {
         $this->add('etape', $etape);
     }
