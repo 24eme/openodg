@@ -32,10 +32,19 @@ class ParcellaireClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findOrCreate($etablissement, $campagne) {
-        $parcellaire = $this->find($this->buildId($etablissement->identifiant, $campagne));
+    public function findOrCreateFromEtablissement($etablissement, $campagne) {
+        return $this->findOrCreate($etablissement->identifiant, $campagne);
+    }
+    
+    public function findOrCreate($cvi, $campagne) {
+        if (strlen($cvi) != 10) {
+            throw new sfException("Le CVI doit avoir 10 caractères : $cvi");
+        }
+        if (strlen($campagne) != 4)
+            throw new sfException("La campagne doit être une année et non ".$campagne);
+        $parcellaire = $this->find($this->buildId($cvi, $campagne));
         if (is_null($parcellaire)) {
-            $parcellaire = $this->createDoc($etablissement->identifiant, $campagne);
+            $parcellaire = $this->createDoc($cvi, $campagne);
         }
 
         return $parcellaire;
