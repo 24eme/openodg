@@ -584,10 +584,16 @@ degustation_agents:
     sf_method: [get, post]
 
 degustation_prelevements:
-  url: /degustation/prelevements
+  url: /degustation/prelevements/:id
   param: { module: degustation, action: prelevements }
   requirements:
     sf_method: [get]
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 degustation_tournee:
   url: /degustation/tournee

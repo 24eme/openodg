@@ -4,7 +4,7 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
-<?php include_partial('degustation/step', array('active' => 'prelevements')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'prelevements')); ?>
 
 <div class="page-header">
     <h2>Affectation des prélevements</h2>
@@ -65,7 +65,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-6">
-        <a href="<?php echo url_for('degustation_agents') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
+        <a href="<?php echo url_for('degustation_agents', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
         <a href="<?php echo url_for('degustation_validation') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>

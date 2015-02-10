@@ -16,7 +16,7 @@
     </li>
     <li class="<?php if ($active == 'prelevements'): ?>active<?php endif; ?> <?php if (in_array($active, array('validation'))): ?>visited<?php endif; ?>">
         <div class="step">
-            <a href="<?php echo url_for("degustation_prelevements") ?>">Prélevements</a>
+            <a href="<?php echo url_for("degustation_prelevements", $degustation) ?>">Prélevements</a>
         </div>
     </li>
     <li class="<?php if ($active == 'validation'): ?>active<?php endif; ?>">

@@ -104,7 +104,7 @@
         }
 
     	for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
-    		$.addItem($("#listes_operateurs .list-group-item-item").eq(i));
+    		//$.addItem($("#listes_operateurs .list-group-item-item").eq(i));
     	}
 
     });
@@ -219,6 +219,7 @@
             }*/
             ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
+            ligne.find('input, select').removeAttr('disabled');
             if(ligne.find('select[data-auto=true]').length > 0) {
                 if(ligne.find('select option[selected=selected]').length == 0) {
                     $.tireAuSortCepage(ligne.find('select'));
@@ -232,7 +233,7 @@
             }
         } else {
             ligne.find('button.btn-danger, select').addClass('hidden');
-            
+            ligne.find('input, select').attr('disabled', 'disabled');
             ligne.removeClass('list-group-item-success');
             if($('.nav-filter.active').attr('data-state')) {
                 ligne.addClass('clickable');
@@ -266,8 +267,8 @@
 
     $.tireAuSortCepage = function(select)
     {
-        var nb_options = (select.find('option').length - 1);
-        select.find('option').eq(Math.floor((Math.random() * nb_options) + 1)).attr('selected', 'selected');
+        var nb_options = select.find('option').length;
+        select.find('option').eq(Math.floor((Math.random() * nb_options))).attr('selected', 'selected');
     }
 
     $.updateRecapCepages = function()

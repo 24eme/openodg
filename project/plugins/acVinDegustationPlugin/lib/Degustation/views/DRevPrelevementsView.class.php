@@ -41,10 +41,11 @@ class DRevPrelevementsView extends acCouchdbView
             $item->identifiant = $row->key[self::KEY_IDENTIFIANT];
             $item->raison_sociale = $row->key[self::KEY_RAISON_SOCIALE];
             $item->commune = $row->key[self::KEY_COMMUNE];
-            $item->lots[$row->key[self::KEY_PRODUIT_HASH]] = new stdClass();
-            $item->lots[$row->key[self::KEY_PRODUIT_HASH]]->hash_produit = $row->key[self::KEY_PRODUIT_HASH];
-            $item->lots[$row->key[self::KEY_PRODUIT_HASH]]->libelle = $row->key[self::KEY_PRODUIT_LIBELLE];
-            $item->lots[$row->key[self::KEY_PRODUIT_HASH]]->nb = $row->value;
+            $key_hash = str_replace("/", "-", $row->key[self::KEY_PRODUIT_HASH]);
+            $item->lots[$key_hash] = new stdClass();
+            $item->lots[$key_hash]->hash_produit = $row->key[self::KEY_PRODUIT_HASH];
+            $item->lots[$key_hash]->libelle = $row->key[self::KEY_PRODUIT_LIBELLE];
+            $item->lots[$key_hash]->nb = $row->value;
 
             $items[$key] = $item;
         }

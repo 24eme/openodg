@@ -16,5 +16,5 @@ class Degustation extends BaseDegustation {
         
         return $this->_set('date', $date);
     }
-    
+
 }

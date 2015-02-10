@@ -14,3 +14,30 @@ Degustation:
       nombre_commissions: { type: integer }
       heure: { }
       lieu: { }
+      prelevements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              #------ Certification ------
+              type: collection
+              definition:
+                fields:
+                  raison_sociale: { }
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
+                  lat: { }
+                  lng: { }
+                  lots:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          #------ Certification ------
+                          type: collection
+                          definition:
+                            fields:
+                              hash_produit: { }
+                              libelle: { }
+                              nb: { }

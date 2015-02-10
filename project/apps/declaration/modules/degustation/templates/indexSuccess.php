@@ -47,7 +47,7 @@
     <div class="row" style="margin-top: 20px;">
         <div class="col-xs-12">
             <div class="list-group">
-                <a href="<?php echo url_for('degustation_prelevements') ?>" class="list-group-item col-xs-12">
+                <a href="<?php //echo url_for('degustation_prelevements') ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-2 text-muted">
                     20/02/2014
                     </span>

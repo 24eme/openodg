@@ -51,6 +51,29 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
 
         $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $values = $request->getParameter("operateurs", array());
+
+        foreach($values as $key => $value) {
+            $p = $this->prelevements[$key];
+            $prelevement = $this->degustation->prelevements->add($p->identifiant);
+            $prelevement->raison_sociale = $p->raison_sociale;
+            $prelevement->commune = $p->commune;
+            $prelevement->remove("lots");
+            $prelevement->add("lots");
+            $lot = $prelevement->lots->add($value);
+            $lot->hash_produit = $p->lots[$value]->hash_produit;
+            $lot->libelle = $p->lots[$value]->libelle;
+            $lot->nb = $p->lots[$value]->nb;
+        }
+        $this->degustation->save();
+
+        return $this->redirect('degustation_degustateurs', $this->degustation);
     }
 
     public function executeDegustateurs(sfWebRequest $request) {
@@ -104,6 +127,7 @@ class degustationActions extends sfActions {
     }
 
     public function executePrelevements(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
 
     }
 
