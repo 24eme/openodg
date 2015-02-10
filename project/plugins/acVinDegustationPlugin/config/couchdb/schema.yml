@@ -19,7 +19,6 @@ Degustation:
         definition:
           fields:
             '*':
-              #------ Certification ------
               type: collection
               definition:
                 fields:
@@ -34,7 +33,6 @@ Degustation:
                     definition:
                       fields:
                         '*':
-                          #------ Certification ------
                           type: collection
                           definition:
                             fields:
@@ -46,7 +44,6 @@ Degustation:
         definition:
           fields:
             '*':
-              #------ Certification ------
               type: collection
               definition:
                 fields:
@@ -56,8 +53,12 @@ Degustation:
         definition:
           fields:
             '*':
-              #------ Certification ------
               type: collection
               definition:
                 fields:
                   nom: { }
+                  dates:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

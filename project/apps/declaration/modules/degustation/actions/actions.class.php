@@ -149,6 +149,24 @@ class degustationActions extends sfActions {
             $this->jours[] = $date->format('Y-m-d');
             $date->modify('+ 1 day');
         }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $values = $request->getParameter("agents", array());
+
+        foreach($values as $key => $value) {
+            $agent = $this->degustation->agents->add($key);
+            $a = $this->agents[$key];
+            $agent->nom = $a->nom_a_afficher;
+            $agent->dates = $value;
+        }
+
+        $this->degustation->save();
+
+        return $this->redirect('degustation_prelevements', $this->degustation);
     }
 
     public function executePrelevements(sfWebRequest $request) {
