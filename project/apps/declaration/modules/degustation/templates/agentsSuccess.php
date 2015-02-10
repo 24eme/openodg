@@ -1,3 +1,4 @@
+<?php use_helper('Date'); ?>
 <?php use_javascript("degustation.js", "last") ?>
 
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'agents')); ?>
@@ -23,18 +24,9 @@
                 <div class="col-xs-7">
                     <select multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete hidden">
                         <option></option>
-                        <option>Lundi 2 janvier 2015</option>
-                        <option>Mardi 3 janvier 2015</option>
-                        <option>Mercredi 4 janvier 2015</option>
-                        <option>Jeudi 5 janvier 2015</option>
-                        <option>Vendredi 6 janvier 2015</option>
-                        <option>Samedi 7 janvier 2015</option>
-                        <option>Dimanche 8 janvier 2015</option>
-                        <option>Lundi 9 janvier 2015</option>
-                        <option>Mardi 10 janvier 2015</option>
-                        <option>Mercredi 11 janvier 2015</option>
-                        <option>Jeudi 12 janvier 2015</option>
-                        <option>Vendredi 13 janvier 2015</option>
+                        <?php foreach($jours as $jour): ?>
+                        <option value="<?php echo $jour ?>"><?php echo format_date($jour, "P", "fr_FR") ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="col-xs-1">

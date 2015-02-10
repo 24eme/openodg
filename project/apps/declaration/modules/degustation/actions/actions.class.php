@@ -92,6 +92,15 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
 
         $this->agents = DegustationClient::getInstance()->getAgents();
+
+        $this->jours = array();
+        $date = new DateTime($this->degustation->date);
+        $date->modify('-7 days');
+
+        for($i=1; $i <= 7; $i++) {
+            $this->jours[] = $date->format('Y-m-d');
+            $date->modify('+ 1 day');
+        }
     }
 
     public function executePrelevements(sfWebRequest $request) {
