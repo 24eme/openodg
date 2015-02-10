@@ -28,6 +28,9 @@ Degustation:
                   code_postal: { }
                   lat: { }
                   lng: { }
+                  date: { }
+                  heure: { }
+                  agent: { }
                   lots:
                     type: collection
                     definition:

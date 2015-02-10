@@ -160,7 +160,7 @@ class degustationActions extends sfActions {
         foreach($values as $key => $value) {
             $agent = $this->degustation->agents->add($key);
             $a = $this->agents[$key];
-            $agent->nom = $a->nom_a_afficher;
+            $agent->nom = sprintf("%s %s.", $a->prenom, substr($a->nom, 0, 1));
             $agent->dates = $value;
         }
 
@@ -171,7 +171,13 @@ class degustationActions extends sfActions {
 
     public function executePrelevements(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-
+        $this->couleurs = array("#91204d", "#fa6900", "#E05D6F", "#1693a5",  "#7ab317",  "#ffba06", "#907860");
+        $this->heures = array();
+        for($i = 8; $i <= 18; $i++) {
+            $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
+        }
+        $this->heures["24:00"] = "24";
+        $this->prelevements = $this->degustation->getPrelevementsOrderByHour();
     }
 
     public function executeValidation(sfWebRequest $request) {

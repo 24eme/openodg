@@ -110,7 +110,7 @@ DRev:
                                                   definition:
                                                     fields:
                                                       libelle: { }
-                                                      detail:                                                        
+                                                      detail:
                                                         type: array_collection
                                                         definition:
                                                           fields:

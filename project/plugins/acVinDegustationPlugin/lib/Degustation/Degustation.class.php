@@ -17,4 +17,18 @@ class Degustation extends BaseDegustation {
         return $this->_set('date', $date);
     }
 
+    public function getPrelevementsOrderByHour() {
+        $prelevements = array();
+        foreach($this->prelevements as $prelevement) {
+            $heure = $prelevement->heure;
+
+            if(!$prelevement->heure) {
+                $heure = "24:00"; 
+            }
+            $prelevements[$heure] = $prelevement;
+        }
+
+        return $prelevements;
+    }
+
 }
