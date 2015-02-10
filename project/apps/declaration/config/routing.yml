@@ -548,10 +548,24 @@ degustation_degustation:
     sf_method: [get]
 
 degustation_degustateurs:
-  url: /degustation/degustateurs
+  url: /degustation/degustateurs/:id
   param: { module: degustation, action: degustateurs }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
+
+degustation_degustateurs_type:
+  url: /degustation/degustateurs/:id/:type
+  param: { module: degustation, action: degustateursType }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 degustation_validation:
   url: /degustation/validation

@@ -94,6 +94,14 @@ class CompteClient extends acCouchdbClient {
 
         return $query->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
     }
+
+    public function getAllComptesPrefixed($prefix, $hydrate = self::HYDRATE_JSON) {
+        
+        $query = $this->startkey(sprintf("COMPTE-" . $prefix . "%s", "000000"))
+                ->endkey(sprintf("COMPTE-" . $prefix . "%s", "999999"));
+
+        return $query->execute(acCouchdbClient::HYDRATE_JSON);
+    }
     
     public function getAllSyndicats() {
         return $this->getAllComptesPrefixedIds('S');

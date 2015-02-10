@@ -55,7 +55,7 @@
         <a href="<?php echo url_for('degustation_creation', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
-        <a href="<?php echo url_for('degustation_degustateurs') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
+        <a href="<?php echo url_for('degustation_degustateurs', $degustation) ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
     </div>
 </div>
 
