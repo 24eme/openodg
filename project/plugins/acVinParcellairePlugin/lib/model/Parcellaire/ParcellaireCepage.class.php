@@ -20,4 +20,17 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->getCouleur()->getProduitHash();
     }
 
+    public function getProduits($onlyActive = false) {
+        if ($onlyActive && !$this->isActive()) {
+
+            return array();
+        }
+
+        return array($this->getHash() => $this);
+    }
+
+    public function getAppellation() {
+        return $this->getCouleur()->getAppellation();
+    }
+
 }

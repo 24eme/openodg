@@ -25,6 +25,6 @@ class ParcellaireCouleur extends BaseParcellaireCouleur {
 
     public function getAppellation() {
         return $this->getMention()->getAppellation();
-    }
-
+    }   
+    
 }

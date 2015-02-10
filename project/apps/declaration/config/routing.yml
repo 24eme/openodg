@@ -585,6 +585,26 @@ parcellaire_delete:
     type:     object
   requirements:
     sf_method: [post]
+
+parcellaire_visualisation:
+  url: /parcellaire/visualisation/:id
+  param: { module: parcellaire, action: visualisation }
+  class: ParcellaireRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]  
+ 
+parcellaire_devalidation:
+  url: /parcellaire/devalidation/:id
+  param: { module: parcellaire, action: devalidation }
+  class: ParcellaireRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]  
   
 
 parcellaire_create:
@@ -636,7 +656,7 @@ parcellaire_parcelles:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [get] 
+    sf_method: [get,post] 
 
 
 parcellaire_acheteurs:

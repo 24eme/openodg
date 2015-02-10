@@ -75,25 +75,43 @@ class parcellaireActions extends sfActions {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->etablissement = $this->parcellaire->getEtablissementObject();
         $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->parcellaire->isPapier()));
-        
+
         $this->parcellaireTypeProprietaireForm = new ParcellaireExploitationTypeProprietaireForm($this->parcellaire);
-        var_dump($request->getParameter($this->parcellaireTypeProprietaireForm->getName()));
+
         $this->parcellaireTypeProprietaireForm->bind($request->getParameter($this->parcellaireTypeProprietaireForm->getName()));
         if (!$this->parcellaireTypeProprietaireForm->isValid()) {
-//            var_dump($this->parcellaireTypeProprietaireForm->getErrorSchema()); exit;
-           return $this->setTemplate('exploitation');
             throw new sfException("form no valid");
-            
         }
         $this->parcellaireTypeProprietaireForm->save();
 
         $this->parcellaire->save();
-        return $this->redirect('parcellaire_parcelles',array('id' => $this->parcellaire->_id,'appellation' => 'COMMUNALE'));
+        $this->firstAppellation = $this->parcellaire->getFirstAppellation();
+        return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->firstAppellation));
     }
 
     public function executeParcelles(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->parcellaire->initProduitFromLastParcellaire();
+        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
+
+        $allParcellesByAppellations = $this->parcellaire->getAllParcellesByAppellations();
+        $this->parcelles = array();
+        foreach ($allParcellesByAppellations as $appellation) {
+            $appellationKey = str_replace('appellation_', '', $appellation->appellation->getKey());
+            if ($this->appellation == $appellationKey) {
+                $this->parcelles = $appellation->parcelles;
+            }
+        }
+
+        $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if ($this->form->isValid()) {
+                $this->form->save();
+            }
+        }
     }
 
     public function executeAcheteurs(sfWebRequest $request) {

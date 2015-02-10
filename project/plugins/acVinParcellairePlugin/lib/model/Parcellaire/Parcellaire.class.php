@@ -49,9 +49,44 @@ class Parcellaire extends BaseParcellaire {
     public function isPapier() {
         return $this->exist('papier') && $this->get('papier');
     }
-    
-   public function hasVendeurs() {
+
+    public function hasVendeurs() {
         return count($this->vendeurs);
+    }
+
+    public function initProduitFromLastParcellaire() {
+        if (count($this->declaration) == 0) {
+            $this->importProduitsFromLastParcellaire();
+        }
+    }
+
+    private function importProduitsFromLastParcellaire() {
+        $campagnePrec = $this->campagne - 1;
+        $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
+        $parcellairePrev = ParcellaireClient::getInstance()->find($parcellairePrevId);
+        if (!$parcellairePrev) {
+            return;
+        }
+        $this->declaration = $parcellairePrev->declaration;
+    }
+
+    public function getProduits($onlyActive = false) {
+        return $this->declaration->getProduits($onlyActive = false);
+    }
+
+    public function getAllParcellesByAppellations() {
+        $appellations = $this->declaration->getAppellations();
+        $parcellesByAppellations = array();
+        foreach ($appellations as $appellation) {
+            $parcellesByAppellations[$appellation->getHash()] = new stdClass();
+            $parcellesByAppellations[$appellation->getHash()]->appellation = $appellation;
+            $parcellesByAppellations[$appellation->getHash()]->parcelles = $appellation->getProduitsCepageDetails();
+        }
+        return $parcellesByAppellations;
+    }
+
+    public function getFirstAppellation() {
+        return 'LIEUDIT';
     }
 
 }
