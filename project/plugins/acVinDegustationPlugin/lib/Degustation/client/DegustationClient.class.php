@@ -35,6 +35,26 @@ class DegustationClient extends acCouchdbClient {
         return DRevPrelevementsView::getInstance()->getPrelevements($date_from, $date_to);
     }
 
+    public function getAgents($attribut = null) {
+
+        $agents = CompteClient::getInstance()->getAllComptesPrefixed("A");
+        $agents_result = array();
+
+        foreach($agents as $agent) {
+            if($agent->statut == CompteClient::STATUT_INACTIF) {
+                continue;
+            }
+
+            if($attribut && !isset($agent->infos->attributs->{$attribut})) {
+                continue;
+            }
+            
+            $agents_result[$agent->_id] = $agent;
+        }
+
+        return $agents_result;
+    }
+
     public function getDegustateurs($attribut = null) {
 
         $degustateurs = CompteClient::getInstance()->getAllComptesPrefixed("D");

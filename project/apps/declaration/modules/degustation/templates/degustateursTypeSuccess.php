@@ -51,7 +51,7 @@
             <?php if($type_next): ?>
                 <a href="<?php echo url_for('degustation_degustateurs_type', array('sf_subject' => $degustation, 'type' => $type_next)) ?>" class="btn btn-default btn-default-step btn-lg btn-upper">Continuer</a>
             <?php else: ?>
-            <a href="<?php echo url_for('degustation_agents') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
+            <a href="<?php echo url_for('degustation_agents', $degustation) ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
             <?php endif; ?>
         </div>
     </div>

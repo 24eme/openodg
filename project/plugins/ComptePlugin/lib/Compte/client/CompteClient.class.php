@@ -102,7 +102,7 @@ class CompteClient extends acCouchdbClient {
 
         return $query->execute(acCouchdbClient::HYDRATE_JSON);
     }
-    
+
     public function getAllSyndicats() {
         return $this->getAllComptesPrefixedIds('S');
     }

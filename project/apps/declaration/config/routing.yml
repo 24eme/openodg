@@ -574,10 +574,14 @@ degustation_validation:
     sf_method: [get]
 
 degustation_agents:
-  url: /degustation/agents
+  url: /degustation/agents/:id
   param: { module: degustation, action: agents }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 degustation_prelevements:
   url: /degustation/prelevements

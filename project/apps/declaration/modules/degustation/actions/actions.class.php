@@ -89,7 +89,9 @@ class degustationActions extends sfActions {
     }
 
     public function executeAgents(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
 
+        $this->agents = DegustationClient::getInstance()->getAgents();
     }
 
     public function executePrelevements(sfWebRequest $request) {

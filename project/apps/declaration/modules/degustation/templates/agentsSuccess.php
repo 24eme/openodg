@@ -1,6 +1,6 @@
 <?php use_javascript("degustation.js", "last") ?>
 
-<?php include_partial('degustation/step', array('active' => 'agents')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'agents')); ?>
 
 <div class="page-header">
     <h2>Choix des agents de prélevements</h2>
@@ -17,10 +17,10 @@
     </div>
     <div class="col-xs-12">
         <div id="listes_operateurs" class="list-group">
-            <?php for($i = 0; $i <= 24; $i++): ?>
+            <?php foreach($agents as $agent): ?>
             <div class="list-group-item list-group-item-item col-xs-12 clickable">
-                <div class="col-xs-3">M. NOM PRENOM <?php echo $i ?></div>
-                <div class="col-xs-8">
+                <div class="col-xs-4"><?php echo $agent->nom_a_afficher ?></div>
+                <div class="col-xs-7">
                     <select multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete hidden">
                         <option></option>
                         <option>Lundi 2 janvier 2015</option>
@@ -42,14 +42,14 @@
                     <button class="btn btn-danger btn-sm pull-right hidden" style="opacity: 0.7;" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                 </div>
             </div>
-            <?php endfor; ?>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
 
 <div class="row row-margin row-button">
     <div class="col-xs-6">
-        <a href="<?php echo url_for('degustation_degustation') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
+        <a href="<?php echo url_for('degustation_degustateurs', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
         <a href="<?php echo url_for('degustation_prelevements') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
