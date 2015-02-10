@@ -21,7 +21,7 @@ $steps = array(
     <li class="<?php if($stepNum == 2): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_PARCELLES)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_PARCELLES)): ?>
-            <a href="<?php echo url_for("parcellaire_parcelles", $drev) ?>" class="<?php if($stepNum <= 2): ?>ajax<?php endif; ?>">Parcelles</a>
+            <a href="<?php echo url_for("parcellaire_parcelles", array('id' => $parcellaire->_id, 'appellation' => $parcellaire->getFirstAppellation())) ?>" class="<?php if($stepNum <= 2): ?>ajax<?php endif; ?>">Parcelles</a>
             <?php else: ?>
             <span>Parcelles</span>
             <?php endif; ?>
@@ -30,7 +30,7 @@ $steps = array(
     <li class="<?php if($stepNum == 3): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_ACHETEURS)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_ACHETEURS)): ?>
-            <a href="<?php echo url_for("parcellaire_acheteurs", $drev) ?>" class="<?php if($stepNum <= 3): ?>ajax<?php endif; ?>">Acheteurs</a>
+            <a href="<?php echo url_for("parcellaire_acheteurs", $parcellaire) ?>" class="<?php if($stepNum <= 3): ?>ajax<?php endif; ?>">Acheteurs</a>
             <?php else: ?>
             <span>Acheteurs</span>
             <?php endif; ?>
@@ -39,7 +39,7 @@ $steps = array(
     <li class="<?php if($stepNum == 4): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_VALIDATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_VALIDATION)): ?>
-            <a href="<?php echo url_for("parcellaire_validation", $drev) ?>" class="<?php if($stepNum <= 4): ?>ajax<?php endif; ?>">Validation</a>
+            <a href="<?php echo url_for("parcellaire_validation", $parcellaire) ?>" class="<?php if($stepNum <= 4): ?>ajax<?php endif; ?>">Validation</a>
             <?php else: ?>
             <span>Validation</span>
             <?php endif; ?>

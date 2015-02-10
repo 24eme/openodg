@@ -110,6 +110,7 @@ class parcellaireActions extends sfActions {
 
             if ($this->form->isValid()) {
                 $this->form->save();
+                return $this->redirect('parcellaire_validation',$this->parcellaire);
             }
         }
     }
@@ -119,7 +120,26 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeValidation(sfWebRequest $request) {
-        
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+
+      //  $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+
+        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION));
+        $this->parcellaire->save();
+
+        $this->validation = new ParcellaireValidation($this->parcellaire);
+        $this->form = new ParcellaireValidationForm($this->parcellaire);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+
+                $this->parcellaire->validate();
+                $this->parcellaire->save();
+                $this->sendParcellaireValidation($this->parcellaire);
+
+                return $this->redirect('parcellaire_confirmation', $this->parcellaire);
+            }
+        }
     }
 
     protected function getEtape($parcellaire, $etape) {

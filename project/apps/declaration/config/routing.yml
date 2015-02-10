@@ -660,10 +660,35 @@ parcellaire_parcelles:
 
 
 parcellaire_acheteurs:
-  url: /parcellaire/acheteurs/:identifiant
+  url: /parcellaire/acheteurs/:id
   param: { module: parcellaire, action: acheteurs }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
   requirements:
-    sf_method: [get]  
+    sf_method: [get,post] 
+  
+    
+parcellaire_validation:
+  url: /parcellaire/validation/:id
+  param: { module: parcellaire, action: validation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post] 
+
+parcellaire_export_pdf:
+  url: /parcellaire/pdf/:id
+  param: { module: parcellaire, action: PDF }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get] 
 
 default_index:
   url:   /:module
