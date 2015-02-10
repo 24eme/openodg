@@ -21,23 +21,23 @@ class parcellaireActions extends sfActions {
         return $this->redirect('home');
     }
 
-    public function executeCreation(sfWebRequest $request) {
-        $this->etablissementIdentifiant = $request->getParameter('identifiant');
-
-        if (!$this->etablissementIdentifiant) {
-            throw new sfException("L'identifiant de l'etablissement est obligatoire pour créer un parcellaire");
-        }
-        $this->etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->etablissementIdentifiant);
-        if (!$this->etablissement) {
-            throw new sfException("L'etablissement n'a pas été trouvé");
-        }
-
-        $campagneManager = new CampagneManager('08-01', CampagneManager::FORMAT_PREMIERE_ANNEE);
-        $this->campagne = $campagneManager->getCurrent();
-
-        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($this->etablissement, $this->campagne);
+    public function executeCreate(sfWebRequest $request) {
+        
+        $etablissement = $this->getRoute()->getEtablissement();
+        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->parcellaire->save();
-        $this->redirect('parcellaire_exploitation', $this->parcellaire);
+
+        return $this->redirect('parcellaire_edit', $this->parcellaire);        
+    }
+    
+    public function executeEdit(sfWebRequest $request) {
+        $parcellaire = $this->getRoute()->getParcellaire();
+
+        if ($parcellaire->exist('etape') && $parcellaire->etape) {
+            return $this->redirect('parcellaire_' . $parcellaire->etape, $parcellaire);
+        }
+
+        return $this->redirect('parcellaire_exploitation', $parcellaire);
     }
 
     public function executeExploitation(sfWebRequest $request) {

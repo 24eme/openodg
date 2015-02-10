@@ -576,11 +576,25 @@ parcellaire:
   requirements:
     sf_method: [get]
 
-parcellaire_creation:
-  url: /parcellaire/creation/:identifiant
-  param: { module: parcellaire, action: creation }
+parcellaire_create:
+  url: /parcellaire/creation/:id
+  param: { module: parcellaire, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
   requirements:
-    sf_method: [get,post]
+    sf_method: [get]
+    
+parcellaire_edit:
+  url: /parcellaire/edition/:id
+  param: { module: parcellaire, action: edit }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
     
 parcellaire_exploitation:
   url: /parcellaire/exploitation/:id

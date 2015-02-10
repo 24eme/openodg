@@ -70,6 +70,8 @@ EOF;
             $parcelle->superficie = str_replace(',', '.', $csv[6]) * 1;
             $isNew = $p->isNew();
             try{
+                $p->validation = true;
+                $p->validation_odg = true;
                 $p->save();
             }catch(sfException $e) {
                 print "ERROR: ligne $i: ".$e->getMessage()."\n";
