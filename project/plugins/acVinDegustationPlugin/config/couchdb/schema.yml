@@ -41,3 +41,23 @@ Degustation:
                               hash_produit: { }
                               libelle: { }
                               nb: { }
+      degustateurs:
+        type: collection
+        definition:
+          fields:
+            '*':
+              #------ Certification ------
+              type: collection
+              definition:
+                fields:
+                  nom: { }
+      agents:
+        type: collection
+        definition:
+          fields:
+            '*':
+              #------ Certification ------
+              type: collection
+              definition:
+                fields:
+                  nom: { }

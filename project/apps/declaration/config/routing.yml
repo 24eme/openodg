@@ -567,6 +567,36 @@ degustation_degustateurs_type:
   requirements:
     sf_method: [get, post]
 
+degustation_degustateurs_type_precedent:
+  url: /degustation/degustateurs/:id/:type/precedent
+  param: { module: degustation, action: degustateursTypePrecedent }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustateurs_type_suivant:
+  url: /degustation/degustateurs/:id/:type/suivant
+  param: { module: degustation, action: degustateursTypeSuivant }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_prelevements:
+  url: /degustation/prelevements/:id
+  param: { module: degustation, action: prelevements }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_validation:
   url: /degustation/validation
   param: { module: degustation, action: validation }

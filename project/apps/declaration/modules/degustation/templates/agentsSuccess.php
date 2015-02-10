@@ -13,7 +13,7 @@
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
             <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge">25</span></a>
-            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">Séléctionné <span class="badge">0</span></a>
+            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">Séléctionné <span class="badge"><?php echo count($degustation->agents) ?></span></a>
         </div>
     </div>
     <div class="col-xs-12">
@@ -44,7 +44,7 @@
         <a href="<?php echo url_for('degustation_degustateurs', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
-        <a href="<?php echo url_for('degustation_prelevements') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
+        <a href="<?php echo url_for('degustation_prelevements', $degustation) ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
     </div>
 </div>
 
