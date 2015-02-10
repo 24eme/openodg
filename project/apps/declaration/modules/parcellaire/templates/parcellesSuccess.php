@@ -42,7 +42,7 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('parcellaire_infos_modification', array('identifiant' => 'XXX')) ?>" class="btn btn-primary btn-primary-step btn-lg btn-upper">Précédent</a>
+            <a href="<?php echo url_for('parcellaire_exploitation', $parcellaire) ?>" class="btn btn-primary btn-primary-step btn-lg btn-upper">Précédent</a>
         </div>
         <div class="col-xs-6 text-right">
             <a href="<?php echo url_for('parcellaire_acheteurs', array('identifiant' => 'XXX')) ?>" class="btn btn-default btn-default-step btn-lg btn-upper">Continuer</a>

@@ -576,6 +576,17 @@ parcellaire:
   requirements:
     sf_method: [get]
 
+parcellaire_delete:
+  url: /parcellaire/supprimer/:id
+  param: { module: parcellaire, action: delete }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [post]
+  
+
 parcellaire_create:
   url: /parcellaire/creation/:id
   param: { module: parcellaire, action: create }
@@ -605,13 +616,16 @@ parcellaire_exploitation:
     type:     object
   requirements:
     sf_method: [get, post]
-
-
-parcellaire_infos_modification:
-  url: /parcellaire/infos/:identifiant
-  param: { module: parcellaire, action: infoModification }
+    
+parcellaire_choix_propriete:
+  url: /parcellaire/propriete/:id
+  param: { module: parcellaire, action: propriete }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
   requirements:
-    sf_method: [get] 
+    sf_method: [post] 
 
 
 parcellaire_parcelles:

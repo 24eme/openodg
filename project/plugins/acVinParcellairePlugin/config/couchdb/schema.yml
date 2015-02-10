@@ -11,7 +11,11 @@ Parcellaire:
       validation: { }
       validation_odg: { }
       papier: { required: false, type: integer }
-      type_proprietaire: { }
+      type_proprietaire:
+        type: collection
+        definition:
+          fields:
+            '*': { }
       acheteurs:
         type: collection
         definition:

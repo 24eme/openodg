@@ -4,7 +4,10 @@
  * 
  * Base model for ParcellaireCouleur
 
+ * @property string $libelle
 
+ * @method string getLibelle()
+ * @method string setLibelle()
  
  */
 

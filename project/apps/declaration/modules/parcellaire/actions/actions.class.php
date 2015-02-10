@@ -22,14 +22,14 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeCreate(sfWebRequest $request) {
-        
+
         $etablissement = $this->getRoute()->getEtablissement();
         $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->parcellaire->save();
 
-        return $this->redirect('parcellaire_edit', $this->parcellaire);        
+        return $this->redirect('parcellaire_edit', $this->parcellaire);
     }
-    
+
     public function executeEdit(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
 
@@ -42,7 +42,9 @@ class parcellaireActions extends sfActions {
 
     public function executeExploitation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
-        //  $this->secure(DRevSecurity::EDITION, $this->parcellaire);
+
+        //   $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+
         $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_EXPLOITATION));
         $this->parcellaire->save();
         $this->etablissement = $this->parcellaire->getEtablissementObject();
@@ -59,22 +61,34 @@ class parcellaireActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-
         $this->form->save();
-
         $this->parcellaire->storeDeclarant();
 
         $this->parcellaire->save();
-        if ($request->getParameter('redirect', null)) {
-            return $this->redirect('parcellaire_validation', $this->parcellaire);
+        return $this->redirect('parcellaire_exploitation', $this->parcellaire);
+    }
+
+    public function executePropriete(sfWebRequest $request) {
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            throw new sfException("NO POST");
         }
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->etablissement = $this->parcellaire->getEtablissementObject();
+        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->parcellaire->isPapier()));
+        
+        $this->parcellaireTypeProprietaireForm = new ParcellaireExploitationTypeProprietaireForm($this->parcellaire);
+        var_dump($request->getParameter($this->parcellaireTypeProprietaireForm->getName()));
+        $this->parcellaireTypeProprietaireForm->bind($request->getParameter($this->parcellaireTypeProprietaireForm->getName()));
+        if (!$this->parcellaireTypeProprietaireForm->isValid()) {
+//            var_dump($this->parcellaireTypeProprietaireForm->getErrorSchema()); exit;
+           return $this->setTemplate('exploitation');
+            throw new sfException("form no valid");
+            
+        }
+        $this->parcellaireTypeProprietaireForm->save();
 
-//        if (!$this->parcellaire->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
-//
-//            return $this->redirect('drev_dr', $this->drev);
-//        }
-
-        return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => 'COMMUNALE'));
+        $this->parcellaire->save();
+        return $this->redirect('parcellaire_parcelles',array('id' => $this->parcellaire->_id,'appellation' => 'COMMUNALE'));
     }
 
     public function executeParcelles(sfWebRequest $request) {

@@ -6,15 +6,15 @@
 
  * @property float $superficie
  * @property string $commune
- * @property string $identifiant_parcelle
+ * @property string $section
  * @property string $numero_parcelle
 
  * @method float getSuperficie()
  * @method float setSuperficie()
  * @method string getCommune()
  * @method string setCommune()
- * @method string getIdentifiantParcelle()
- * @method string setIdentifiantParcelle()
+ * @method string getSection()
+ * @method string setSection()
  * @method string getNumeroParcelle()
  * @method string setNumeroParcelle()
  
