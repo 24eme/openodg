@@ -39,10 +39,11 @@
     <div class="col-xs-6">
         <ul id="listes_operateurs" class="list-group sortable" style="height: 500px; overflow-y: auto; overflow-x:hidden; padding-right: 2px; margin-top: 0;">
                 <?php foreach($heures as $key_heure => $libelle_heure): ?>
-                    <li class="list-group-item col-xs-12 list-group-item-info text-center" style="padding-top: 4px; padding-bottom: 4px; border-color: #fff; background: #e2e2e2; color: #555"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small></li>
+                    <li data-value="<?php echo $key_heure ?>" class="list-group-item col-xs-12 list-group-item-info list-group-item-container text-center" style="padding-top: 4px; padding-bottom: 4px; border-color: #fff; background: #e2e2e2; color: #555"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small></li>
                     <?php if(isset($prelevements[$key_heure])): ?>
                     <?php foreach($prelevements[$key_heure] as $prelevement): ?>
-                        <li data-state="" data-value="" data-title="" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="list-group-item list-group-item-item col-xs-12 clickable">
+                        <li data-state="" data-value="<?php echo $prelevement->getKey() ?>" data-title="<?php echo $prelevement->raison_sociale ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="list-group-item list-group-item-item col-xs-12 clickable">
+                            <input type="hidden" name="prelevements[<?php echo $prelevement->getKey() ?>][heure]" value="" />
                             <div class="col-xs-12">
                                 <div class="pull-right">
                                     <button class="btn btn-success btn-xs hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
@@ -52,7 +53,7 @@
                                     <span class="glyphicon glyphicon-resize-vertical" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
                                     <span class="glyphicon glyphicon-map-marker" style="color: #c2c2c2; font-size: 24px;"></span>
                                 </div>
-                                <?php //echo $prelevement->raison_sociale ?>&nbsp;<small class="text-muted"><?php //echo $prelevement->commune ?></small>
+                                <?php echo $prelevement->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $prelevement->commune ?></small>
                             </div>
                         </li>
                     <?php endforeach; ?>

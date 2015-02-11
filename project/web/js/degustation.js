@@ -18,9 +18,24 @@
                 handle: 'span.glyphicon.glyphicon-resize-vertical',
                 afterMove: function ($placeholder, container, $closestItemOrContainer) {
                     $placeholder.html(container.group.item.eq(0).html());
+                },
+                onDrop: function ($item, container, _super, event) {
+                    $.setValuesBySort();
+                    _super($item, container);
                 }
             }
         );
+
+        $.setValuesBySort = function() {
+            var heure = "";
+            $("#listes_operateurs .list-group-item").each(function() {
+                if($(this).hasClass('list-group-item-container')) {
+                    heure = $(this).attr('data-value');
+                } else {
+                    $(this).find('input').val(heure);
+                }
+            });
+        }
 
         $("#listes_operateurs .list-group-item-item .btn-success").click(function() {
             var ligne = $(this).parents(".list-group-item-item");

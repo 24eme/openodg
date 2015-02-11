@@ -171,7 +171,7 @@ class degustationActions extends sfActions {
 
     public function executePrelevements(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->couleurs = array("#91204d", "#fa6900", "#E05D6F", "#1693a5",  "#7ab317",  "#ffba06", "#907860");
+        $this->couleurs = array("#91204d", "#fa6900",  "#1693a5", "#e05d6f", "#7ab317",  "#ffba06", "#907860");
         $this->heures = array();
         for($i = 8; $i <= 18; $i++) {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
