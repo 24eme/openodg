@@ -85,6 +85,17 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesByAppellations;
     }
 
+    public function getAllParcellesByLieux() {
+        $lieux = $this->declaration->getLieux();
+        $parcellesBylieux = array();
+        foreach ($lieux as $lieu) {
+            $parcellesBylieux[$lieu->getHash()] = new stdClass();
+            $parcellesBylieux[$lieu->getHash()]->lieu = $lieu;
+            $parcellesBylieux[$lieu->getHash()]->parcelles = $lieu->getProduitsCepageDetails();
+        }
+        return $parcellesBylieux;
+    }
+
     public function updateParcellesForAppellation($appellationKey, $produits) {
         $appellations = $this->declaration->getAppellations();
         $appellationNode = null;
@@ -166,10 +177,10 @@ class Parcellaire extends BaseParcellaire {
                 }
                 $key_produit = $parcelle->commune . '-' . $parcelle->section . '-' . $parcelle->numero_parcelle;
                 $parcellesByCommunes[$parcelle->commune]->produits[$key_produit] = new stdClass();
-                
+
                 $configLieuLibelle = $config->get($parcelle->getCepage()->getCouleur()->getLieu()->getHash())->getLibelle();
                 $configCepageLibelle = $config->get($parcelle->getCepage()->getHash())->getLibelle();
-                
+
                 $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->appellation_libelle = $configAppellationLibelle;
                 $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->lieu_libelle = $configLieuLibelle;
                 $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->cepage_libelle = $configCepageLibelle;
@@ -179,6 +190,38 @@ class Parcellaire extends BaseParcellaire {
             }
         }
         return $parcellesByCommunes;
+    }
+
+    public function getParcellesByLieux() {
+        $parcellesByLieux = array();
+        $allParcellesByLieux = $this->getAllParcellesByLieux();
+        $config = $this->getConfiguration();
+        foreach ($allParcellesByLieux as $lieu_hash => $lieuNode) {
+
+            $configAppellationLibelle = $config->get($lieu_hash)->getAppellation()->getLibelle();
+            $configLieuLibelle = $config->get($lieu_hash)->getLibelle();
+
+            if (!array_key_exists($lieu_hash, $parcellesByLieux)) {
+                $parcellesByLieux[$lieu_hash] = new stdClass();
+                $parcellesByLieux[$lieu_hash]->total_superficie = 0;
+                $parcellesByLieux[$lieu_hash]->appellation_libelle = $configAppellationLibelle;
+                $parcellesByLieux[$lieu_hash]->lieu_libelle = $configLieuLibelle;
+                $parcellesByLieux[$lieu_hash]->parcelles = array();
+            }
+            $parcelaireCouleurs = $this->get($lieu_hash)->getCouleurs();
+            foreach ($parcelaireCouleurs as $parcelaireCouleur) {
+                foreach ($parcelaireCouleur->getCepages() as $parcelaireCepage) {
+                    foreach ($parcelaireCepage->detail as $parcelle) {
+                        $configCepageLibelle = $config->get($parcelle->getCepage()->getHash())->getLibelleLong();
+                        $parcellesByLieux[$lieu_hash]->parcelles[$parcelle->gethash()] = new stdClass();
+                        $parcellesByLieux[$lieu_hash]->parcelles[$parcelle->gethash()]->cepage_libelle = $configCepageLibelle;
+                        $parcellesByLieux[$lieu_hash]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
+                        $parcellesByLieux[$lieu_hash]->total_superficie += $parcelle->superficie;
+                    }
+                }
+            }
+        }
+        return $parcellesByLieux;
     }
 
     public function getFirstAppellation() {
