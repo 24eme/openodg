@@ -79,7 +79,7 @@ class Email {
         $partial = 'send_drev_rappel_documents';
         $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication";
 
-        if(count($drev->exist('documents_rappels') && $drev->documents_rappels->toArray(true, false)) > 0) {
+        if($drev->exist('documents_rappels') && count($drev->documents_rappels->toArray(true, false)) > 0) {
           $partial = 'send_drev_rappel_documents_second';
           $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
         }
