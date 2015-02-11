@@ -515,7 +515,248 @@ compte_desarchiver:
 
 # Dégustation
 
+degustation:
+  url: /degustation
+  param: { module: degustation, action: index }
+  requirements:
+    sf_method: [get]
+
+degustation_creation:
+  url: /degustation/creation/:id
+  param: { module: degustation, action: creation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_operateurs:
+  url: /degustation/operateurs/:id
+  param: { module: degustation, action: operateurs }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustation:
+  url: /degustation/degustation
+  param: { module: degustation, action: degustation }
+  requirements:
+    sf_method: [get]
+
+degustation_degustateurs:
+  url: /degustation/degustateurs/:id
+  param: { module: degustation, action: degustateurs }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustateurs_type:
+  url: /degustation/degustateurs/:id/:type
+  param: { module: degustation, action: degustateursType }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustateurs_type_precedent:
+  url: /degustation/degustateurs/:id/:type/precedent
+  param: { module: degustation, action: degustateursTypePrecedent }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustateurs_type_suivant:
+  url: /degustation/degustateurs/:id/:type/suivant
+  param: { module: degustation, action: degustateursTypeSuivant }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_prelevements:
+  url: /degustation/prelevements/:id
+  param: { module: degustation, action: prelevements }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_validation:
+  url: /degustation/validation
+  param: { module: degustation, action: validation }
+  requirements:
+    sf_method: [get]
+
+degustation_agents:
+  url: /degustation/agents/:id
+  param: { module: degustation, action: agents }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_prelevements:
+  url: /degustation/prelevements/:id
+  param: { module: degustation, action: prelevements }
+  requirements:
+    sf_method: [get]
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_tournee:
+  url: /degustation/tournee
+  param: { module: degustation, action: tournee }
+  requirements:
+    sf_method: [get]
+
+degustation_affectation:
+  url: /degustation/affectation
+  param: { module: degustation, action: affectation }
+  requirements:
+    sf_method: [get]
+
 # Parcellaire
+
+parcellaire:
+  url: /parcellaire
+  param: { module: parcellaire, action: index }
+  requirements:
+    sf_method: [get]
+
+parcellaire_delete:
+  url: /parcellaire/supprimer/:id
+  param: { module: parcellaire, action: delete }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [post]
+
+parcellaire_visualisation:
+  url: /parcellaire/visualisation/:id
+  param: { module: parcellaire, action: visualisation }
+  class: ParcellaireRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaire_devalidation:
+  url: /parcellaire/devalidation/:id
+  param: { module: parcellaire, action: devalidation }
+  class: ParcellaireRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_create:
+  url: /parcellaire/creation/:id
+  param: { module: parcellaire, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_edit:
+  url: /parcellaire/edition/:id
+  param: { module: parcellaire, action: edit }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_exploitation:
+  url: /parcellaire/exploitation/:id
+  param: { module: parcellaire, action: exploitation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaire_choix_propriete:
+  url: /parcellaire/propriete/:id
+  param: { module: parcellaire, action: propriete }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [post]
+
+
+parcellaire_parcelles:
+  url: /parcellaire/parcelles/:id/:appellation
+  param: { module: parcellaire, action: parcelles }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+
+parcellaire_acheteurs:
+  url: /parcellaire/acheteurs/:id
+  param: { module: parcellaire, action: acheteurs }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
+
+
+parcellaire_validation:
+  url: /parcellaire/validation/:id
+  param: { module: parcellaire, action: validation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post] 
+
+parcellaire_export_pdf:
+  url: /parcellaire/pdf/:id
+  param: { module: parcellaire, action: PDF }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get] 
 
 default_index:
   url:   /:module
