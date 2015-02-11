@@ -13,7 +13,7 @@
  * @property string $validation
  * @property string $validation_odg
  * @property integer $papier
- * @property string $type_proprietaire
+ * @property acCouchdbJson $type_proprietaire
  * @property acCouchdbJson $acheteurs
  * @property acCouchdbJson $declarant
  * @property ParcellaireDeclaration $declaration
@@ -36,8 +36,8 @@
  * @method string setValidationOdg()
  * @method integer getPapier()
  * @method integer setPapier()
- * @method string getTypeProprietaire()
- * @method string setTypeProprietaire()
+ * @method acCouchdbJson getTypeProprietaire()
+ * @method acCouchdbJson setTypeProprietaire()
  * @method acCouchdbJson getAcheteurs()
  * @method acCouchdbJson setAcheteurs()
  * @method acCouchdbJson getDeclarant()

@@ -5,13 +5,7 @@
 {
     var _doc = $(document);
     var markers = [];
-    var greenIcon = null;
-    var redIcon = null;
-    var pinkIcon = null;
     var defaultIcon = null;
-    var timerHover = null;
-    var adjustment = null;
-
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -24,9 +18,24 @@
                 handle: 'span.glyphicon.glyphicon-resize-vertical',
                 afterMove: function ($placeholder, container, $closestItemOrContainer) {
                     $placeholder.html(container.group.item.eq(0).html());
+                },
+                onDrop: function ($item, container, _super, event) {
+                    $.setValuesBySort();
+                    _super($item, container);
                 }
             }
         );
+
+        $.setValuesBySort = function() {
+            var heure = "";
+            $("#listes_operateurs .list-group-item").each(function() {
+                if($(this).hasClass('list-group-item-container')) {
+                    heure = $(this).attr('data-value');
+                } else {
+                    $(this).find('input').val(heure);
+                }
+            });
+        }
 
         $("#listes_operateurs .list-group-item-item .btn-success").click(function() {
             var ligne = $(this).parents(".list-group-item-item");
@@ -35,20 +44,18 @@
             return false;
         });
 
-        $("#listes_operateurs .list-group-item-item").hover(
+        $("#listes_operateurs .list-group-item-item .glyphicon-map-marker").hover(
             function() {
-                var ligne = $(this);
+                var ligne = $(this).parents(".list-group-item-item");
                 if(ligne.attr('data-point')) {
-                    var icon = L.BootstrapMarkers.icon({ color: ligne.find('.glyphicon-map-marker').css('color'), 'size': 'lg' });
-                    markers[ligne.attr('data-point')].setIcon(icon);
-                    ligne.find('span.glyphicon-map-marker').addClass('text-pink');
+                    $.toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
                 }
             },
             function() {
-                var ligne = $(this);
+                var ligne = $(this).parents(".list-group-item-item");
                 if(ligne.attr('data-point')) {
                     $.updateItem(ligne);
-                    ligne.find('span.glyphicon-map-marker').removeClass('text-pink');
+                    $.toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
                 }
             }
         );
@@ -94,12 +101,12 @@
             if($('#carte').length > 0) {
                 $("#listes_operateurs .list-group-item-item").each(function() {
                     if($(this).attr('data-point')) {
-                        markers[$(this).attr('data-point')].setOpacity(100);
+                        $(markers[$(this).attr('data-point')]._icon).removeClass('hidden');
                     }
                 });
                 $("#listes_operateurs .list-group-item-item.hidden").each(function() {
                     if($(this).attr('data-point')) {
-                        markers[$(this).attr('data-point')].setOpacity(0);
+                        $(markers[$(this).attr('data-point')]._icon).addClass('hidden');
                     }
                 });
             }
@@ -111,33 +118,15 @@
             $.initCarteDegustation();
         }
 
-	for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
-		$.addItem($("#listes_operateurs .list-group-item-item").eq(i));
-	}
-
-	$("#nav_a_prelever").click();
+    	for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
+    		//$.addItem($("#listes_operateurs .list-group-item-item").eq(i));
+    	}
 
     });
 
     $.initCarteDegustation = function()
     {
-        greenIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-green.png'});
-        redIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-red.png'});
-        pinkIcon = new L.Icon.Default({iconUrl: '/js/lib/leaflet/images/marker-icon-pink.png'});
-
         defaultIcon = L.BootstrapMarkers.icon({ color: '#e2e2e2' });
-        hoverIcon = L.BootstrapMarkers.icon({ color: '#555555' });
-
-        
-        /*redIcon = L.AwesomeMarkers.icon({
-            icon: 'coffee',
-            markerColor: 'red'
-        });
-
-        pinkIcon = L.AwesomeMarkers.icon({
-            icon: 'coffee',
-            markerColor: 'red'
-        });*/
 
         var map = L.map('carte', {minZoom: 8, icon: defaultIcon}).setView([48.100901, 7.361051], 9);
         L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
@@ -170,10 +159,8 @@
             marker.on('mouseover', function(m) {
                 
                 var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + m.latlng.lat + "," + m.latlng.lng + '"]');
-                var icon = L.BootstrapMarkers.icon({ color: ligne.find('.glyphicon-map-marker').css('color'), 'size': 'lg' });
-                m.target.setIcon(icon);
+                $.toggleMarkerHover(m.target, ligne, false, true);
                 timerHover = setTimeout(function(){
-                    ligne.find('.glyphicon-map-marker').addClass('text-pink');
                     $('#listes_operateurs').scrollTo(ligne, 200, { offset: -150, queue: false });
                 }, 600);
             })
@@ -181,7 +168,7 @@
             marker.on('mouseout', function(m) {
                 clearTimeout(timerHover);
                 var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + m.latlng.lat + "," + m.latlng.lng + '"]');
-                ligne.find('span.glyphicon-map-marker').removeClass('text-pink');
+                $.toggleMarkerHover(m.target, ligne, false, true);
                 $.updateItem(ligne);
             });
 
@@ -190,6 +177,33 @@
 
         //map.fitBounds(points, {padding: [10, 10]});
 
+    }
+
+    $.toggleMarkerHover = function(marker, ligne, withMarkerOpacity, withLigneOpacity) {
+        for(coordonnees in markers) {
+            if(withMarkerOpacity) {
+                if($(markers[coordonnees]._icon).css('opacity') == '1') {
+                    $(markers[coordonnees]._icon).css('opacity', '0.3');
+                } else {
+                    $(markers[coordonnees]._icon).css('opacity', '1');
+                }
+            }
+            markers[coordonnees].setZIndexOffset(900);
+        }
+        if(withLigneOpacity) {
+            $("#listes_operateurs .list-group-item-item .glyphicon-map-marker").each(function() {
+                if($(this).css('opacity') == '1') {
+                    $(this).css('opacity', '0.3');
+                } else {
+                    $(this).css('opacity', '1');
+                }
+            });
+            ligne.find('.glyphicon-map-marker').css('opacity', '1');
+        }
+        if(withMarkerOpacity) {
+            $(marker._icon).css('opacity', '1');
+        }
+        marker.setZIndexOffset(1000);
     }
 
     $.addItem = function(ligne) {
@@ -220,6 +234,7 @@
             }*/
             ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
+            ligne.find('input, select').removeAttr('disabled');
             if(ligne.find('select[data-auto=true]').length > 0) {
                 if(ligne.find('select option[selected=selected]').length == 0) {
                     $.tireAuSortCepage(ligne.find('select'));
@@ -228,12 +243,12 @@
             if(ligne.attr('data-point')) {
                 if(ligne.attr('data-color')) {
                     ligne.find('.glyphicon-map-marker').css('color', ligne.attr('data-color'));
-                    markers[ligne.attr('data-point')].setIcon(L.BootstrapMarkers.icon({ color: ligne.attr('data-color')}));
+                    $(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', ligne.attr('data-color'));
                 }
             }
         } else {
             ligne.find('button.btn-danger, select').addClass('hidden');
-            
+            ligne.find('input, select').attr('disabled', 'disabled');
             ligne.removeClass('list-group-item-success');
             if($('.nav-filter.active').attr('data-state')) {
                 ligne.addClass('clickable');
@@ -245,10 +260,10 @@
             ligne.find('select option[selected=selected]').removeAttr('selected');
 
             if(ligne.attr('data-point')) {
-                markers[ligne.attr('data-point')].setIcon(defaultIcon);
+                $(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', '#e2e2e2');
+                ligne.find('.glyphicon-map-marker').css('color', '#c2c2c2');
             }
-
-            ligne.find('.glyphicon-map-marker').css('color', '#e2e2e2');
+            
         }
 
         $.updateNbFilter();
@@ -267,8 +282,8 @@
 
     $.tireAuSortCepage = function(select)
     {
-        var nb_options = (select.find('option').length - 1);
-        select.find('option').eq(Math.floor((Math.random() * nb_options) + 1)).attr('selected', 'selected');
+        var nb_options = select.find('option').length;
+        select.find('option').eq(Math.floor((Math.random() * nb_options))).attr('selected', 'selected');
     }
 
     $.updateRecapCepages = function()

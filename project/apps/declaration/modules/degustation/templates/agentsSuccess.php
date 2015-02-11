@@ -1,58 +1,51 @@
+<?php use_helper('Date'); ?>
 <?php use_javascript("degustation.js", "last") ?>
 
-<?php include_partial('degustation/step', array('active' => 'agents')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'agents')); ?>
 
 <div class="page-header">
     <h2>Choix des agents de prélevements</h2>
 </div>
 
-<form id="form_degustation_choix_operateurs" action="" methode="post" class="form-horizontal">
+<form id="form_degustation_choix_operateurs" action="" method="post" class="form-horizontal">
 
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
             <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge">25</span></a>
-            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">Séléctionné <span class="badge">0</span></a>
+            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">Séléctionné <span class="badge"><?php echo count($degustation->agents) ?></span></a>
         </div>
     </div>
     <div class="col-xs-12">
         <div id="listes_operateurs" class="list-group">
-            <?php for($i = 0; $i <= 24; $i++): ?>
-            <div class="list-group-item list-group-item-item col-xs-12 clickable">
-                <div class="col-xs-3">M. NOM PRENOM <?php echo $i ?></div>
-                <div class="col-xs-8">
-                    <select multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete hidden">
+            <?php foreach($agents as $agent): ?>
+            <?php $exist = $degustation->agents->exist($agent->_id); ?>
+            <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
+                <div class="col-xs-4"><?php echo $agent->nom_a_afficher ?></div>
+                <div class="col-xs-7">
+                    <select name="agents[<?php echo $agent->_id ?>][]" <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete <?php if(!$exist): ?>hidden<?php endif; ?>">
                         <option></option>
-                        <option>Lundi 2 janvier 2015</option>
-                        <option>Mardi 3 janvier 2015</option>
-                        <option>Mercredi 4 janvier 2015</option>
-                        <option>Jeudi 5 janvier 2015</option>
-                        <option>Vendredi 6 janvier 2015</option>
-                        <option>Samedi 7 janvier 2015</option>
-                        <option>Dimanche 8 janvier 2015</option>
-                        <option>Lundi 9 janvier 2015</option>
-                        <option>Mardi 10 janvier 2015</option>
-                        <option>Mercredi 11 janvier 2015</option>
-                        <option>Jeudi 12 janvier 2015</option>
-                        <option>Vendredi 13 janvier 2015</option>
+                        <?php foreach($jours as $jour): ?>
+                        <option <?php if($exist && in_array($jour, $degustation->agents->get($agent->_id)->dates->toArray(true, false)->getRawValue())): ?>selected="selected"<?php endif; ?> value="<?php echo $jour ?>"><?php echo format_date($jour, "P", "fr_FR") ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="col-xs-1">
-                    <button class="btn btn-success btn-sm pull-right" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                    <button class="btn btn-danger btn-sm pull-right hidden" style="opacity: 0.7;" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                    <button class="btn btn-success btn-sm pull-right <?php if($exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                    <button class="btn btn-danger btn-sm pull-right <?php if(!$exist): ?>hidden<?php endif; ?>" style="opacity: 0.7;" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                 </div>
             </div>
-            <?php endfor; ?>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
 
 <div class="row row-margin row-button">
     <div class="col-xs-6">
-        <a href="<?php echo url_for('degustation_degustation') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
+        <a href="<?php echo url_for('degustation_degustateurs', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
-        <a href="<?php echo url_for('degustation_prelevements') ?>" class="btn btn-default btn-lg btn-upper">Continuer</a>
+        <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer</button>
     </div>
 </div>
 

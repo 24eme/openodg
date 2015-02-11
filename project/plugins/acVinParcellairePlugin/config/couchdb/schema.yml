@@ -11,7 +11,11 @@ Parcellaire:
       validation: { }
       validation_odg: { }
       papier: { required: false, type: integer }
-      type_proprietaire: { }
+      type_proprietaire:
+        type: collection
+        definition:
+          fields:
+            '*': { }
       acheteurs:
         type: collection
         definition:
@@ -22,6 +26,16 @@ Parcellaire:
                 fields:
                   cvi : { }
                   nom : { }
+                  produits:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              hash_produit: { }
+                              libelle: { }
       declarant:
         type: collection
         definition:
@@ -88,7 +102,8 @@ Parcellaire:
                                             class: ParcellaireCouleur
                                             inheritance: _ParcellaireDeclarationNoeud
                                             definition:
-                                              fields:                                                
+                                              fields:
+                                                libelle: {}
                                                 # ------ Cépage ------
                                                 '*':
                                                   type: collection
@@ -101,12 +116,12 @@ Parcellaire:
                                                         type: collection
                                                         definition:
                                                           fields:
-                                                            '*': #commune+identifiant_parcelle+numero_parcelle
+                                                            '*': #commune_section_numeroparcelle
                                                               type: collection
                                                               class: ParcellaireCepageDetail
                                                               definition:
                                                                 fields:
                                                                   superficie: { type: float }
                                                                   commune: { }
-                                                                  identifiant_parcelle: { }
+                                                                  section: { }
                                                                   numero_parcelle: { }

@@ -18,4 +18,9 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
         return $this->filter('^mention');
     }
 
+    public function getConfigProduits() {
+
+        return $this->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+    }
+
 }

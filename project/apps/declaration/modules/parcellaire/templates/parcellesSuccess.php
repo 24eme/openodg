@@ -1,37 +1,42 @@
-<?php include_partial('step', array('active' => 'parcelles','identifiant' => 'XXX')); ?>
+<?php include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire)); ?>
 
 <div class="page-header">
     <h2>Saisie des parcelles</h2>
 </div>
 
 <ul class="nav nav-tabs">
-    <li role="presentation"  <?php echo ($appellation == 'COMMUNALE')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'COMMUNALE')) ?>">Communales</a></li>
-    <li role="presentation" <?php echo ($appellation == 'LIEUX_DITS')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'LIEUX_DITS')) ?>">Lieux dits</a></li>
-    <li role="presentation"  <?php echo ($appellation == 'GRD_CRU')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'GRD_CRU')) ?>">Grand Crus</a></li>
-    <li role="presentation"  <?php echo ($appellation == 'CREMANT')? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelle_appellation', array('identifiant' => 'XXX', 'appellation' => 'CREMANT')) ?>">Crémant</a></li>
+    <?php foreach ($parcellaireAppellations as $appellationKey => $appellationName) : ?>
+        <li role="presentation"  <?php echo ($appellation == $appellationKey) ? 'class="active"' : '' ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>"><?php echo $appellationName; ?></a></li>
+    <?php endforeach; ?>
 </ul>
 
-<form action="" method="post" class="form-horizontal">
+<form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal">
+    <?php echo $form->renderHiddenFields(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
+
     <div class="row">       
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
                 <table class="table table-striped">
                     <tr>
-                        <th>Nom communale</th>           
+                        <?php if ($appellation != 'LIEUDIT'): ?>
+                            <th>Nom <?php echo $parcellaireAppellations[$appellation]; ?></th>      
+                        <?php endif; ?>
                         <th>Identifiant parcelle</th>        
                         <th>Cépage</th>        
                         <th>Superficie</th>                 
                     </tr>
-
-                    <?php for ($i = 0; $i <= 10; $i++): ?>
+                    <?php foreach ($parcelles as $key => $parcelle):
+                        ?>
                         <tr>
-                            <td>Klevener</td>           
-                            <td>Commune X B 17</td>        
-                            <td><input type="select"/>
-                            </td>        
-                            <td><input type="text"></td>                 
+                            <?php if ($appellation != 'LIEUDIT'): ?>
+                                <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
+                            <?php endif; ?>
+                            <td><?php echo $parcelle->getParcelleIdentifiant(); ?></td>           
+                            <td><?php echo $form['produits'][$parcelle->getHashForKey()]['cepage']->render(); ?></td>        
+                            <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(); ?></td>                 
                         </tr>
-                    <?php endfor; ?>
+                    <?php endforeach; ?>
                 </table>
             </div>
             <div class="text-left">
@@ -39,13 +44,18 @@
             </div>
         </div>
     </div>
-
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('parcellaire_infos_modification', array('identifiant' => 'XXX')) ?>" class="btn btn-primary btn-primary-step btn-lg btn-upper">Précédent</a>
+            <a href="<?php echo url_for("parcellaire_exploitation", $parcellaire) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
+
         </div>
         <div class="col-xs-6 text-right">
-            <a href="<?php echo url_for('parcellaire_acheteurs', array('identifiant' => 'XXX')) ?>" class="btn btn-default btn-default-step btn-lg btn-upper">Continuer</a>
+            <?php //if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireEtapes::ETAPE_VALIDATION): ?>
+                <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
+            <?php //else: ?>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la validation</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <?php //endif; ?>
+
         </div>
     </div>
 </form>
