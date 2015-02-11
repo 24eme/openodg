@@ -594,8 +594,8 @@ parcellaire_visualisation:
     model:    DRev
     type:     object
   requirements:
-    sf_method: [get, post]  
- 
+    sf_method: [get, post]
+
 parcellaire_devalidation:
   url: /parcellaire/devalidation/:id
   param: { module: parcellaire, action: devalidation }
@@ -604,8 +604,7 @@ parcellaire_devalidation:
     model:    DRev
     type:     object
   requirements:
-    sf_method: [get]  
-  
+    sf_method: [get]
 
 parcellaire_create:
   url: /parcellaire/creation/:id
@@ -616,7 +615,7 @@ parcellaire_create:
     type:     object
   requirements:
     sf_method: [get]
-    
+
 parcellaire_edit:
   url: /parcellaire/edition/:id
   param: { module: parcellaire, action: edit }
@@ -626,7 +625,7 @@ parcellaire_edit:
     type:     object
   requirements:
     sf_method: [get]
-    
+
 parcellaire_exploitation:
   url: /parcellaire/exploitation/:id
   param: { module: parcellaire, action: exploitation }
@@ -636,7 +635,7 @@ parcellaire_exploitation:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 parcellaire_choix_propriete:
   url: /parcellaire/propriete/:id
   param: { module: parcellaire, action: propriete }
@@ -645,7 +644,7 @@ parcellaire_choix_propriete:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [post] 
+    sf_method: [post]
 
 
 parcellaire_parcelles:
@@ -656,7 +655,7 @@ parcellaire_parcelles:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [get,post] 
+    sf_method: [get,post]
 
 
 parcellaire_acheteurs:
@@ -667,9 +666,9 @@ parcellaire_acheteurs:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [get,post] 
-  
-    
+    sf_method: [get,post]
+
+
 parcellaire_validation:
   url: /parcellaire/validation/:id
   param: { module: parcellaire, action: validation }

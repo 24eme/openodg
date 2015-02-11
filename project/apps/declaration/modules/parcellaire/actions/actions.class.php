@@ -17,7 +17,6 @@ class parcellaireActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-
         return $this->redirect('home');
     }
 
@@ -116,9 +115,29 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeAcheteurs(sfWebRequest $request) {
-        
-    }
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->form = new ParcellaireAcheteursForm($this->parcellaire);
 
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->update();
+        /*print_r($this->parcellaire->acheteurs->toArray(true, false));
+        exit;*/
+        $this->form->save();
+
+        return $this->redirect('parcellaire_validation', $this->parcellaire);
+    }
+    
     public function executeValidation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 

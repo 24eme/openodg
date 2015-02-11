@@ -22,10 +22,6 @@ class ParcellaireLieu extends BaseParcellaireLieu {
 
     public function getProduits($onlyActive = false) 
     {
-        if($this->getKey() != "lieu") {
-
-            return array();
-        }
 
         return parent::getProduits($onlyActive);
     }
