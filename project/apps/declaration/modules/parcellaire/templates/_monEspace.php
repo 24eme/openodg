@@ -1,7 +1,3 @@
-<?php if (!count($parcellairesHistory) && !$etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
-    <?php return; ?>
-<?php endif; ?>
-
 <div class="col-xs-4">
         <?php if (!$parcellaire_non_ouverte): ?>
             <div class="block_declaration panel <?php if ($parcellaire && $parcellaire->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
