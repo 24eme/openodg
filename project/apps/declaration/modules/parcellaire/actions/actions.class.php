@@ -161,7 +161,25 @@ class parcellaireActions extends sfActions {
             }
         }
     }
+    
+    public function executePDF(sfWebRequest $request) {
+        $parcellaire = $this->getRoute()->getParcellaire();
 
+        $this->document = new ExportParcellairePDF($parcellaire, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+
+        $this->document->generate();
+
+        $this->document->addHeaders($this->getResponse());
+
+        return $this->renderText($this->document->output());
+    }
+    
+    
     protected function getEtape($parcellaire, $etape) {
         $parcellaireEtapes = ParcellaireEtapes::getInstance();
         if (!$parcellaire->exist('etape')) {
