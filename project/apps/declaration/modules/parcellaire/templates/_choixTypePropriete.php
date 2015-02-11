@@ -1,7 +1,7 @@
 <?php echo $parcellaireTypeProprietaireForm->renderHiddenFields() ?>
 <?php echo $parcellaireTypeProprietaireForm->renderGlobalErrors() ?>
 <div class="row">
-    <div class="row col-xs-offset-3 col-xs-6 ">  
+    <div class="row col-xs-12 ">  
 
         <div class="form-group">
             <?php echo $parcellaireTypeProprietaireForm["type_proprietaire"]->renderError(); ?>
@@ -13,9 +13,9 @@
 
         <div class="form-group">
             <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->renderError(); ?>
-            <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->renderLabel("vendeurs", array("class" => "col-xs-3 control-label")); ?>
+            <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->renderLabel("Vos acheteurs", array("class" => "col-xs-3 control-label")); ?>
             <div class="col-xs-9">
-                <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Ajouter des attributs")); ?>
+                <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Selectionner des acheteurs")); ?>
             </div>
         </div>
 

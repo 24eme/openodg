@@ -26,6 +26,16 @@ Parcellaire:
                 fields:
                   cvi : { }
                   nom : { }
+                  produits:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              hash_produit: { }
+                              libelle: { }
       declarant:
         type: collection
         definition:
