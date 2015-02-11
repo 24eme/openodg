@@ -9,7 +9,7 @@
     <?php if ($validation->hasPoints()): ?>
         <?php //include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire)); ?>
+    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire,'parcellesByCommunes' => $parcellesByCommunes)); ?>
 
      <div class="row row-margin row-button">
         <div class="col-xs-4">

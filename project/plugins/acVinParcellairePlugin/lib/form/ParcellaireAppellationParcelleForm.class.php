@@ -21,6 +21,9 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->setWidgets(array(
+            'commune' => new sfWidgetFormInputHidden(),
+            'section' => new sfWidgetFormInputHidden(),
+            'numero_parcelle' => new sfWidgetFormInputHidden(),
             'superficie' => new sfWidgetFormInputFloat(),
             'cepage' => new sfWidgetFormChoice(array('multiple' => false, 'expanded' => false, 'choices' => $this->getCepagesForLieu(),
         ))));
@@ -29,6 +32,9 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
             'cepage' => 'Cepage'
         ));
         $this->setValidators(array(
+            'commune' => new sfValidatorPass(),
+            'section' => new sfValidatorPass(),
+            'numero_parcelle' => new sfValidatorPass(),
             'superficie' => new sfValidatorNumber(array('required' => false)),
             'cepage' => new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getCepagesForLieu())))
         ));
