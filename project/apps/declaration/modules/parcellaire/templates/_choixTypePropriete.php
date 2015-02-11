@@ -12,10 +12,10 @@
         </div>
 
         <div class="form-group">
-            <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->renderError(); ?>
-            <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->renderLabel("Vos acheteurs", array("class" => "col-xs-3 control-label")); ?>
+            <?php echo $parcellaireTypeProprietaireForm["acheteurs_select"]->renderError(); ?>
+            <?php echo $parcellaireTypeProprietaireForm["acheteurs_select"]->renderLabel("Vos acheteurs", array("class" => "col-xs-3 control-label")); ?>
             <div class="col-xs-9">
-                <?php echo $parcellaireTypeProprietaireForm["vendeurs_select"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Selectionner des acheteurs")); ?>
+                <?php echo $parcellaireTypeProprietaireForm["acheteurs_select"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Selectionner des acheteurs")); ?>
             </div>
         </div>
 

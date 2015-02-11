@@ -12,7 +12,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         foreach($this->getDocument()->declaration->getAppellations() as $appelation) {
             foreach($appelation->mention->getLieux() as $lieu) {
                 $this->setWidget($lieu->getHash(), new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
-                $this->setValidator($lieu->getHash(), new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true)));   
+                $this->setValidator($lieu->getHash(), new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
                 $this->getWidget($lieu->getHash())->setLabel($lieu->getLibelleComplet());             
             }
         }
@@ -38,7 +38,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
     public function getAcheteurs() {
         $acheteurs = array();
         foreach($this->getDocument()->acheteurs as $acheteur) {
-            $acheteurs[$acheteur->getKey()] = sprintf("%s (%s)", $acheteur->nom, $acheteur->cvi);
+            $acheteurs[$acheteur->getKey()] = sprintf("%s", $acheteur->nom);
         }
 
         return $acheteurs;
@@ -55,8 +55,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
                 continue;
             }
             foreach($cvis as $cvi) {
-                $acheteur = $this->getDocument()->acheteurs->add($cvi);
-                $acheteur->cvi = $cvi;
+                $acheteur = $this->getDocument()->addAcheteurNode($cvi);
                 $produit = $acheteur->produits->add(str_replace("/", "-", $hash));
                 $produit->hash_produit = $hash;
                 $produit->libelle = $this->getDocument()->get($hash)->getLibelleComplet();

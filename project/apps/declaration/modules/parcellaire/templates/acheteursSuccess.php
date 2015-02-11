@@ -17,12 +17,7 @@
                         <th></th>
                         <?php foreach($form->getAcheteurs() as $libelle): ?>           
                         <th><?php echo $libelle ?></th>
-                        <?php endforeach; ?>
-                        <th>
-                    <div class="text-center">
-                        <button class="btn btn-warning ajax btn-sm" data-toggle="modal" data-target="#popupForm" type="button"><span class="eleganticon icon_plus"></span></button>
-                    </div>
-                    </th>        
+                        <?php endforeach; ?>  
                     </tr>
                     <?php foreach($form as $key => $field) : ?>
                     <?php if($field->isHidden()) { continue; } ?>
@@ -32,9 +27,8 @@
                             <?php echo $field->renderError() ?>
                         </td>
                         <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>            
-                        <td><input type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> /></td>
+                        <td><input type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> /></td>
                         <?php endforeach; ?>
-                        <td></td> 
                     </tr>
                     <?php endforeach; ?>
                 </table>

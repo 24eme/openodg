@@ -151,6 +151,24 @@ class Parcellaire extends BaseParcellaire {
         return $appellation;
     }
 
+    public function addAcheteurNode($cvi) {
+        if($this->acheteurs->exist($cvi)) {
+
+            return $this->acheteurs->get($cvi);
+        }
+
+        $acheteur = $this->acheteurs->add($cvi);
+        $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$cvi, acCouchdbClient::HYDRATE_JSON);
+        if(!$etablissement) {
+            throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-'.$cvi));
+        }
+
+        $acheteur->nom = $etablissement->raison_sociale;
+        $acheteur->cvi = $cvi;
+
+        return $acheteur;
+    }
+
     public function getParcellesByCommunes() {
         $parcellesByCommunes = array();
         $allParcellesByAppellations = $this->getAllParcellesByAppellations();
