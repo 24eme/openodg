@@ -33,8 +33,7 @@ class ParcellaireAppellationEditForm extends acCouchdbObjectForm {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
             $embedForm->doUpdateObject($values[$key]);
         }
-
-       // $this->getObject()->updateParcellesForAppellation();
+        $this->getObject()->updateParcellesForAppellation($this->appellationKey,$values['produits']);
     }
 
 }

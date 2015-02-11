@@ -85,6 +85,73 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesByAppellations;
     }
 
+    public function updateParcellesForAppellation($appellationKey, $produits) {
+        $appellations = $this->declaration->getAppellations();
+        $appellationNode = null;
+        $appellationNodeHash = null;
+        foreach ($appellations as $key => $appellation) {
+            if ('appellation_' . $appellationKey == $key) {
+                $appellationNode = $appellation;
+                $appellationNodeHash = $appellation->getHash();
+                break;
+            }
+        }
+
+        if ($appellationNode) {
+            $this->remove($appellationNodeHash);
+            $this->getOrAdd($appellationNodeHash);
+            foreach ($produits as $cepageKey => $parcelle) {
+                $cepageKeyMatches = array();
+                preg_match('/^(.*)-detail-(.*)$/', $cepageKey, $cepageKeyMatches);
+                print_r($cepageKey);
+                if (count($cepageKeyMatches) != 3) {
+                    throw new sfException("La hash produit " . $cepageKey . " n'est pas conforme");
+                }
+                $hashCepage = str_replace('-', '/', $parcelle["cepage"]);
+                $parcelleKey = $cepageKeyMatches[2];
+                $cepage = $this->addProduitParcelle($hashCepage, $parcelleKey, $parcelle["superficie"]);
+            }
+        }
+        //$nouveauNoeudAppellation->getParent()->reorderByConf();
+    }
+
+    public function addProduit($hash, $add_appellation = true) {
+        $config = $this->getConfiguration()->get($hash);
+        if ($add_appellation) {
+            $this->addAppellation($config->getAppellation()->getHash());
+        }
+        $produit = $this->getOrAdd($config->getHash());
+        $produit->getLibelle();
+
+        return $produit;
+    }
+
+    public function addProduitParcelle($hash, $parcelleKey, $superficie) {
+        $produit = $this->getOrAdd($hash);
+
+        $this->addProduit($produit->getProduitHash());
+
+        return $produit->addDetailNode($parcelleKey, $superficie);
+    }
+
+    public function addAppellation($hash) {
+        $config = $this->getConfiguration()->get($hash);
+        $appellation = $this->getOrAdd($config->hash);
+//        $config_produits = $appellation->getConfigProduits();
+//        if (count($config_produits) == 1) {
+//            reset($config_produits);
+//            $this->addProduitCepage(key($config_produits), null, false);
+//        } else {
+//            foreach ($config_produits as $hash => $config_produit) {
+//                if ($config_produit->isAutoDRev()) {
+//                    $this->addProduitCepage($hash, null, false);
+//                }
+//            }
+//        }
+
+        return $appellation;
+    }
+
     public function getFirstAppellation() {
         return 'LIEUDIT';
     }

@@ -33,4 +33,33 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->getCouleur()->getAppellation();
     }
 
+    public function addDetailNode($key, $superficie = null) {
+//        if(!$this->getConfig()->hasLieuEditable()) {
+//            $lieu = null;
+//        }
+
+        $detail = $this->getDetailNode($key);
+        if($detail) {
+
+            return $detail;
+        }
+
+        $detail = $this->detail->add($key);
+        $detail->superficie = $superficie;
+        return $detail;
+    }
+    
+    public function getDetailNode($key) {
+       foreach ($this->detail as $parcelleKey => $detail) {
+            
+
+            if($parcelleKey ==  $key) {                
+             
+                return $detail;
+            }
+        }
+
+        return null;
+    }
+    
 }
