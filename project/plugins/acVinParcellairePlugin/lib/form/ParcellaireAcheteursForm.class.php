@@ -36,7 +36,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
     }
 
     public function getAcheteurs() {
-        $acheteurs = array("6823700100" => "BOXLER Justin", "6823700101" => "Arthur METZ");
+        $acheteurs = array();
         foreach($this->getDocument()->acheteurs as $acheteur) {
             $acheteurs[$acheteur->getKey()] = sprintf("%s (%s)", $acheteur->nom, $acheteur->cvi);
         }
