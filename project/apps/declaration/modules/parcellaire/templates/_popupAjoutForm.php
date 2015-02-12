@@ -11,22 +11,50 @@
 				<div class="modal-body">
 					<span class="error"><?php echo $form['commune']->renderError() ?></span>
 					<div class="form-group row">
-						<div class="col-xs-10 col-xs-offset-1">
-						<?php echo $form['commune']->render(array("data-placeholder" => "Saisissez une commune", "class" => "form-control", "required" => true)) ?>
+                                            <div class="col-xs-4">
+						<?php echo $form['commune']->renderLabel(); ?>
+						</div>
+						<div class="col-xs-8">
+						<?php echo $form['commune']->render(array("placeholder" => "Saisissez une commune", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
 					<span class="error"><?php echo $form['section']->renderError() ?></span>
 					<div class="form-group row">
-						<div class="col-xs-10 col-xs-offset-1">
+                                            <div class="col-xs-4">
+						<?php echo $form['section']->renderLabel(); ?>
+						</div>
+						<div class="col-xs-8">
 						<?php echo $form['section']->render(array("placeholder" => "Saisissez une section", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
                                         <span class="error"><?php echo $form['numero_parcelle']->renderError() ?></span>
 					<div class="form-group row">
-						<div class="col-xs-10 col-xs-offset-1">
+                                            <div class="col-xs-4">
+						<?php echo $form['numero_parcelle']->renderLabel(); ?>
+						</div>
+						<div class="col-xs-8">
 						<?php echo $form['numero_parcelle']->render(array("placeholder" => "Saisissez un numéro de parcelle", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
+                                        <span class="error"><?php echo $form['cepage']->renderError() ?></span>
+					<div class="form-group row">
+                                            <div class="col-xs-4">
+						<?php echo $form['cepage']->renderLabel(); ?>
+						</div>
+						<div class="col-xs-8">
+						<?php echo $form['cepage']->render(array("placeholder" => "Saisissez un lieu/cépage", "class" => "form-control", "required" => true)) ?>
+						</div>
+					</div>
+                                                                                <span class="error"><?php echo $form['superficie']->renderError() ?></span>
+					<div class="form-group row">
+                                            <div class="col-xs-4">
+						<?php echo $form['superficie']->renderLabel(); ?>
+						</div>
+						<div class="col-xs-8">
+						<?php echo $form['superficie']->render(array("placeholder" => "Saisissez une superficie", "class" => "form-control", "required" => true)) ?>
+						</div>
+					</div>
+                                        
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>

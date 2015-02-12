@@ -49,7 +49,7 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
     }
 
     public function getCepagesForLieu() {
-        $this->allCepagesLieu = array();
+        $this->allCepagesAppellation = array();
         foreach ($this->getObject()->getLieuNode()->getConfig()->getProduits() as $key => $cepage) {
             $keyCepage = str_replace('/', '-', $key);
             $libelle = $cepage->getLibelle();

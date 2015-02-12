@@ -96,19 +96,23 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesBylieux;
     }
 
-    public function updateParcellesForAppellation($appellationKey, $produits) {
+    public function getAppellationNodeFromAppellationKey($appellationKey) {
         $appellations = $this->declaration->getAppellations();
         $appellationNode = null;
-        $appellationNodeHash = null;
         foreach ($appellations as $key => $appellation) {
             if ('appellation_' . $appellationKey == $key) {
                 $appellationNode = $appellation;
-                $appellationNodeHash = $appellation->getHash();
                 break;
             }
         }
-
+        return $appellationNode;
+    }
+    
+    public function updateParcellesForAppellation($appellationKey, $produits) {
+        $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
+        
         if ($appellationNode) {
+            $appellationNodeHash = $appellation->getHash();
             $this->remove($appellationNodeHash);
             $this->getOrAdd($appellationNodeHash);
             foreach ($produits as $cepageKey => $parcelle) {
@@ -144,8 +148,13 @@ class Parcellaire extends BaseParcellaire {
         return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie);
     }
     
-    public function addParcelleForAppellation($appellation,$commune,$section,$numero_parcelle) {
-        
+    public function addParcelleForAppellation($appellation,$commune,$section,$numero_parcelle,$cepage,$superficie = 0) {
+        $hash = str_replace('-', '/', $cepage);
+        $commune = KeyInflector::slugify($commune);
+        $section = KeyInflector::slugify($section);
+        $numero_parcelle = KeyInflector::slugify($numero_parcelle);
+        $parcelleKey = KeyInflector::slugify($commune.'-'.$section.'-'.$numero_parcelle);
+        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie);
     }
 
     public function addAppellation($hash) {
