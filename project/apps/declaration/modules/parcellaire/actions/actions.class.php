@@ -93,7 +93,7 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
-
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire,$this->appellation);
         $allParcellesByAppellations = $this->parcellaire->getAllParcellesByAppellations();
         $this->parcelles = array();
         foreach ($allParcellesByAppellations as $appellation) {
@@ -114,6 +114,28 @@ class parcellaireActions extends sfActions {
         }
     }
 
+    public function executeAjoutParcelle(sfWebRequest $request){
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->appellation = $request->getParameter('appellation');
+       
+
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire,$this->appellation);
+        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+
+        if (!$this->ajoutForm->isValid()) {
+            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+
+            return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
+        }
+
+        $this->ajoutForm->save();
+
+        $this->getUser()->setFlash("notice", 'La parcelle a été ajoutée avec succès.');
+
+        return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
+    }
+    
+    
     public function executeAcheteurs(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->form = new ParcellaireAcheteursForm($this->parcellaire);
