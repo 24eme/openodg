@@ -20,4 +20,8 @@ class ParcellaireMention extends BaseParcellaireMention {
     {
         return $this->filter('^lieu');
     }
+    
+    public function hasLieux() {
+        return $this->getLieux();
+    }
 }

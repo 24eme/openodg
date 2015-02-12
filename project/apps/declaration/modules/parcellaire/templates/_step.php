@@ -31,7 +31,7 @@ $steps = array(
     <li class="<?php if($stepNum == 3): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_PARCELLES)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_PARCELLES)): ?>
-            <a href="<?php echo url_for("parcellaire_parcelles", array('sf_subject' => $parcellaire, 'appellation' => $parcellaire->getFirstAppellation())) ?>" class="<?php if($stepNum <= 2): ?>ajax<?php endif; ?>">Parcelles</a>
+            <a href="<?php echo url_for("parcellaire_parcelles", array('sf_subject' => $parcellaire, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation())) ?>" class="<?php if($stepNum <= 2): ?>ajax<?php endif; ?>">Parcelles</a>
             <?php else: ?>
             <span>Parcelles</span>
             <?php endif; ?>
