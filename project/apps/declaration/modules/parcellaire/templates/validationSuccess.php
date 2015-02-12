@@ -3,13 +3,18 @@
     <h2>Validation de votre parcellaire</h2>
 </div>
 
+<div class="row col-xs-12">
+    <h3>Voici les changements de parcelles sur l'année <?php echo $parcellaire->campagne; ?></h3>
+    <p>Le Pdf vous fourni une version complète de votre parcellaire</p>
+</div>
+
 <form role="form" action="<?php echo url_for("parcellaire_validation", $parcellaire) ?>" method="post">
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     <?php if ($validation->hasPoints()): ?>
         <?php //include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire,'parcellesByCommunes' => $parcellesByCommunes)); ?>
+    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire,'parcellesByCommunes' => $parcellesByCommunes, 'parcellesByCommunesLastCampagne' => $parcellesByCommunesLastCampagne)); ?>
 
      <div class="row row-margin row-button">
         <div class="col-xs-4">

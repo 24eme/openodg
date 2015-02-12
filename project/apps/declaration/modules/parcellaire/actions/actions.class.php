@@ -234,12 +234,16 @@ class parcellaireActions extends sfActions {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
-
+        
         $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION));
         $this->parcellaire->save();
 
+        
         $this->validation = new ParcellaireValidation($this->parcellaire);
-        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
+        
+        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();        
+        $this->parcellesByCommunesLastCampagne = $this->parcellaire->getParcellesByCommunesLastCampagne();
+        
         $this->form = new ParcellaireValidationForm($this->parcellaire);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
@@ -258,11 +262,20 @@ class parcellaireActions extends sfActions {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
     }
+    
+    
+     public function executeVisualisation(sfWebRequest $request) {
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
+         $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();      
+    }
 
     public function executePDF(sfWebRequest $request) {
-        $parcellaire = $this->getRoute()->getParcellaire();
-
-        $this->document = new ExportParcellairePDF($parcellaire, $this->getRequestParameter('output', 'pdf'), false);
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        
+        $this->parcellaire->declaration->cleanNode();
+        
+        $this->document = new ExportParcellairePDF($this->parcellaire, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {

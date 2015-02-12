@@ -701,6 +701,16 @@ parcellaire_export_pdf:
   requirements:
     sf_method: [get]
 
+drevmarc_visualisation:
+  url: /parcellaire/visualisation/:id
+  param: { module: parcellaire, action: visualisation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
 default_index:
   url:   /:module
   param: { action: index }

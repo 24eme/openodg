@@ -29,7 +29,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             'section' => new sfWidgetFormInput(),
             'numero_parcelle' => new sfWidgetFormInput(),
             'cepage' => new sfWidgetFormChoice(array('choices' => $produits)),
-            'superficie' => new sfWidgetFormInputFloat(),
+            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
         ));
         $this->widgetSchema->setLabels(array(
             'commune' => 'Commune :',
