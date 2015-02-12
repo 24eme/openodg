@@ -263,8 +263,22 @@ class Parcellaire extends BaseParcellaire {
             }
         }
         return $parcellesByLieux;
+    }    
+    
+    public function validate($date = null) {
+        if(is_null($date)) {
+            $date = date('Y-m-d');
+        }
+
+        $this->declaration->cleanNode();
+        $this->validation = $date;
+        $this->validateOdg();
     }
 
+     public function validateOdg() {
+        $this->validation_odg = date('Y-m-d');
+    }
+    
     public function getFirstAppellation() {
         return 'LIEUDIT';
     }

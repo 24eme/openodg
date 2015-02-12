@@ -49,10 +49,19 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
 
         return $this->getCepage()->getCouleur();
     }
+    
+     public function isCleanable() {        
+        return !$this->superficie;
+    }
 
     public function getLieuNode() {
 
         return $this->getCouleur()->getLieu();
+    }
+
+    public function cleanNode() {
+
+        return false;
     }
 
 }
