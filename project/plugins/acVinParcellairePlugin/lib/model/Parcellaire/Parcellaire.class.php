@@ -143,6 +143,10 @@ class Parcellaire extends BaseParcellaire {
 
         return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie);
     }
+    
+    public function addParcelleForAppellation($appellation,$commune,$section,$numero_parcelle) {
+        
+    }
 
     public function addAppellation($hash) {
         $config = $this->getConfiguration()->get($hash);

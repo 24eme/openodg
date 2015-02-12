@@ -58,3 +58,5 @@
         </div>
     </div>
 </form>
+
+<?php include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id,'appellation' => $appellation)), 'form' => $ajoutForm)); ?>
