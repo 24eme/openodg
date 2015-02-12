@@ -27,7 +27,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             'section' => new sfWidgetFormInput(),
             'numero_parcelle' => new sfWidgetFormInput(),
             'cepage' => new sfWidgetFormChoice(array('choices' => $produits)),
-            'superficie' => new sfWidgetFormInputFloat(),
+            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
         ));
         $this->widgetSchema->setLabels(array(
             'commune' => 'Commune :',
@@ -78,7 +78,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $section = $values['section'];
         $numero_parcelle = $values['numero_parcelle'];
         $cepage = $values['cepage'];
-        $superficie = (!isset($values['superficie']) || $values['superficie'])? $values['superficie'] : 0;
+        $superficie = (!isset($values['superficie']) || $values['superficie'])? $values['superficie'] : 0;        
         $this->getObject()->addParcelleForAppellation($this->appellationKey, $commune, $section, $numero_parcelle,$cepage,$superficie);
     }
 

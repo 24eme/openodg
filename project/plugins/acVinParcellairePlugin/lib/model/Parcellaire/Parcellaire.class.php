@@ -60,10 +60,14 @@ class Parcellaire extends BaseParcellaire {
         }
     }
 
-    private function importProduitsFromLastParcellaire() {
+    private function getParcellaireLastCampagne() {
         $campagnePrec = $this->campagne - 1;
         $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
-        $parcellairePrev = ParcellaireClient::getInstance()->find($parcellairePrevId);
+        return ParcellaireClient::getInstance()->find($parcellairePrevId);
+    }
+    
+    private function importProduitsFromLastParcellaire() {
+        $parcellairePrev = $this->getParcellaireLastCampagne();
         if (!$parcellairePrev) {
             return;
         }
@@ -248,6 +252,14 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesByCommunes;
     }
 
+    public function getParcellesByCommunesLastCampagne() {
+        $parcellairePrev = $this->getParcellaireLastCampagne();
+         if (!$parcellairePrev) {
+            return array();
+        }
+        return $parcellairePrev->getParcellesByCommunes();
+    }
+    
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
         $allParcellesByLieux = $this->getAllParcellesByLieux();

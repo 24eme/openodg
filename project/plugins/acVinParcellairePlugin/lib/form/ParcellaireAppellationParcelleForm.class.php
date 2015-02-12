@@ -24,7 +24,7 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
             'commune' => new sfWidgetFormInputHidden(),
             'section' => new sfWidgetFormInputHidden(),
             'numero_parcelle' => new sfWidgetFormInputHidden(),
-            'superficie' => new sfWidgetFormInputFloat(),
+            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
             'cepage' => new sfWidgetFormChoice(array('multiple' => false, 'expanded' => false, 'choices' => $this->getCepagesForLieu(),
         ))));
         $this->widgetSchema->setLabels(array(
