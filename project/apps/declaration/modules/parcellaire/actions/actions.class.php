@@ -92,6 +92,15 @@ class parcellaireActions extends sfActions {
 
         $this->parcellaire->save();
 
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
+        }
+
+        if ($request->getParameter('redirect', null)) {
+            return $this->redirect('parcellaire_validation', $this->parcellaire);
+        }
+
         return $this->redirect('parcellaire_propriete', $this->parcellaire);
     }
 
@@ -118,6 +127,15 @@ class parcellaireActions extends sfActions {
         }
 
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->parcellaire->_id, "revision" => $this->parcellaire->_rev))));
+        }
+
+        if ($request->getParameter('redirect', null)) {
+            return $this->redirect('parcellaire_validation', $this->parcellaire);
+        }
 
         $this->firstAppellation = $this->parcellaire->getFirstAppellation();
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->firstAppellation));
@@ -150,6 +168,17 @@ class parcellaireActions extends sfActions {
 
             if ($this->form->isValid()) {
                 $this->form->save();
+
+                if ($request->isXmlHttpRequest()) {
+
+                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->parcellaire->_id, "revision" => $this->parcellaire->_rev))));
+                }
+
+                if ($request->getParameter('redirect', null)) {
+                    
+                    return $this->redirect('parcellaire_validation', $this->parcellaire);
+                }
+
                 return $this->redirect('parcellaire_acheteurs',$this->parcellaire);
             }
         }
@@ -200,6 +229,16 @@ class parcellaireActions extends sfActions {
 
         $this->form->update();
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->parcellaire->_id, "revision" => $this->parcellaire->_rev))));
+        }
+
+        if ($request->getParameter('redirect', null)) {
+            
+            return $this->redirect('parcellaire_validation', $this->parcellaire);
+        }
 
         return $this->redirect('parcellaire_validation', $this->parcellaire);
     }
