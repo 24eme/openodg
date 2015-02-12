@@ -215,7 +215,6 @@ class Parcellaire extends BaseParcellaire {
         $allParcellesByLieux = $this->getAllParcellesByLieux();
         $config = $this->getConfiguration();
         foreach ($allParcellesByLieux as $lieu_hash => $lieuNode) {
-
             $configAppellationLibelle = $config->get($lieu_hash)->getAppellation()->getLibelle();
             $configLieuLibelle = $config->get($lieu_hash)->getLibelle();
 
@@ -225,7 +224,9 @@ class Parcellaire extends BaseParcellaire {
                 $parcellesByLieux[$lieu_hash]->appellation_libelle = $configAppellationLibelle;
                 $parcellesByLieux[$lieu_hash]->lieu_libelle = $configLieuLibelle;
                 $parcellesByLieux[$lieu_hash]->parcelles = array();
+                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteurs();
             }
+            
             $parcelaireCouleurs = $this->get($lieu_hash)->getCouleurs();
             foreach ($parcelaireCouleurs as $parcelaireCouleur) {
                 foreach ($parcelaireCouleur->getCepages() as $parcelaireCepage) {
