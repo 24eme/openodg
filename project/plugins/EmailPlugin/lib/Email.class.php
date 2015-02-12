@@ -145,6 +145,26 @@ class Email {
 		    return $this->getMailer()->send($message);
     }
     
+    public function sendParcellaireValidation($parcellaire) 
+    {
+      	if (!$drev->declarant->email) {
+      		  
+            return;
+      	}
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($parcellaire->declarant->email);
+        $subject = 'Validation de votre Parcellaire';
+        $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
+        $message = Swift_Message::newInstance()
+  					->setFrom($from)
+  					->setTo($to)
+  					->setSubject($subject)
+  					->setBody($body)
+  					->setContentType('text/plain');
+
+		    return $this->getMailer()->send($message);
+    }
+    
 
     protected function getMailer() 
     {

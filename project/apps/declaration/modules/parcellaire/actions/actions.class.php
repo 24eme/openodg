@@ -267,6 +267,11 @@ class parcellaireActions extends sfActions {
         }
     }
     
+    public function executeConfirmation(sfWebRequest $request) {
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
+    }
+    
     public function executePDF(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
 
@@ -282,6 +287,14 @@ class parcellaireActions extends sfActions {
         $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
+    }
+    
+    public function sendParcellaireValidation($parcellaire) {
+        $pdf = new ExportParcellairePdf($parcellaire, 'pdf', true);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->removeCache();
+        $pdf->generate();
+        Email::getInstance()->sendParcellaireValidation($parcellaire);
     }
     
     

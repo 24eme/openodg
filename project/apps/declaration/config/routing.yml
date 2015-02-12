@@ -685,6 +685,16 @@ parcellaire_validation:
     type:     object
   requirements:
     sf_method: [get,post]
+    
+parcellaire_confirmation:
+  url: /parcellaire/confirmation/:id
+  param: { module: parcellaire, action: confirmation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
 
 parcellaire_export_pdf:
   url: /parcellaire/pdf/:id
