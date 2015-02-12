@@ -119,7 +119,7 @@ class parcellaireActions extends sfActions {
             return $this->redirect('parcellaire_validation', $this->parcellaire);
         }
 
-        $this->firstAppellation = $this->parcellaire->getFirstAppellation();
+        $this->firstAppellation = ParcellaireClient::getInstance()->getFirstAppellation();
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->firstAppellation));
     }
 
@@ -134,7 +134,9 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
-        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire,$this->appellation);
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
+        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation);
+
         $allParcellesByAppellations = $this->parcellaire->getAllParcellesByAppellations();
         $this->parcelles = array();
         foreach ($allParcellesByAppellations as $appellation) {
@@ -157,21 +159,25 @@ class parcellaireActions extends sfActions {
                 }
 
                 if ($request->getParameter('redirect', null)) {
-                    
+
                     return $this->redirect('parcellaire_validation', $this->parcellaire);
                 }
-
-                return $this->redirect('parcellaire_acheteurs',$this->parcellaire);
+                $next_appellation = $this->appellationNode->getNextAppellationKey();
+                if ($next_appellation) {
+                    return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $next_appellation));
+                } else {
+                    return $this->redirect('parcellaire_acheteurs', $this->parcellaire);
+                }
             }
         }
     }
 
-    public function executeAjoutParcelle(sfWebRequest $request){
+    public function executeAjoutParcelle(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->appellation = $request->getParameter('appellation');
-       
 
-        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire,$this->appellation);
+
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
@@ -186,8 +192,7 @@ class parcellaireActions extends sfActions {
 
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
     }
-    
-    
+
     public function executeAcheteurs(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
@@ -218,13 +223,13 @@ class parcellaireActions extends sfActions {
         }
 
         if ($request->getParameter('redirect', null)) {
-            
+
             return $this->redirect('parcellaire_validation', $this->parcellaire);
         }
 
         return $this->redirect('parcellaire_validation', $this->parcellaire);
     }
-    
+
     public function executeValidation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
@@ -248,12 +253,12 @@ class parcellaireActions extends sfActions {
             }
         }
     }
-    
+
     public function executeConfirmation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
     }
-    
+
     public function executePDF(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
 
@@ -270,7 +275,7 @@ class parcellaireActions extends sfActions {
 
         return $this->renderText($this->document->output());
     }
-    
+
     public function sendParcellaireValidation($parcellaire) {
         $pdf = new ExportParcellairePdf($parcellaire, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
@@ -278,8 +283,7 @@ class parcellaireActions extends sfActions {
         $pdf->generate();
         Email::getInstance()->sendParcellaireValidation($parcellaire);
     }
-    
-    
+
     protected function getEtape($parcellaire, $etape) {
         $parcellaireEtapes = ParcellaireEtapes::getInstance();
         if (!$parcellaire->exist('etape')) {
