@@ -21,6 +21,8 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
+        $appellationNode = $this->getAppellationNode();
+
         $produits = $this->getProduits();
         $this->setWidgets(array(
             'commune' => new sfWidgetFormInput(),
@@ -45,13 +47,22 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             'superficie' => new sfValidatorNumber(array('required' => false)),
         ));
 
-
+        if($appellationNode->getConfig()->hasLieuEditable()) {
+           $this->setWidget('lieu', new sfWidgetFormInput());
+           $this->setValidator('lieu', new sfValidatorString(array('required' => true), array('required' => "Aucune lieu-dit saisi")));
+        }
 
         $this->widgetSchema->setNameFormat('parcellaire_ajout_parcelle[%s]');
     }
 
+    public function getAppellationNode() {
+
+        return $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey,true);
+    }
+
     public function getProduits() {
-        $appellationNode = $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey,true);
+        $appellationNode = $this->getAppellationNode();
+
         $this->allCepagesAppellation = array();
         foreach ($appellationNode->getConfig()->getProduits() as $key => $cepage) {
             $keyCepage = str_replace('/', '-', $key);
@@ -79,7 +90,11 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $numero_parcelle = $values['numero_parcelle'];
         $cepage = $values['cepage'];
         $superficie = (!isset($values['superficie']) || $values['superficie'])? $values['superficie'] : 0;
-        $this->getObject()->addParcelleForAppellation($this->appellationKey, $commune, $section, $numero_parcelle,$cepage,$superficie);
+        $lieu = null;
+        if(isset($values['lieu'])) {
+            $lieu = $values['lieu'];
+        }
+        $this->getObject()->addParcelleForAppellation($this->appellationKey, $commune, $section, $numero_parcelle, $cepage, $superficie, $lieu);
     }
 
 }

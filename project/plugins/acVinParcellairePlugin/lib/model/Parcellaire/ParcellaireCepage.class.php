@@ -33,7 +33,7 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->getCouleur()->getAppellation();
     }
 
-    public function addDetailNode($key, $commune, $section , $numero_parcelle, $superficie = null) {
+    public function addDetailNode($key, $commune, $section , $numero_parcelle, $superficie = null, $lieu = null) {
 
         $detail = $this->getDetailNode($key);
         if($detail) {
@@ -46,6 +46,7 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
         $detail->superficie = $superficie;
+        $detail->lieu = $lieu;
         
         return $detail;
     }
