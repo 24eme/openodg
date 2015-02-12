@@ -4,7 +4,7 @@
     <h2>Type de propriété</h2>
 </div>
 
-<form action="" method="post" class="form-horizontal">
+<form action="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" method="post" class="form-horizontal ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     <div class="row">
@@ -12,7 +12,6 @@
 
             <div class="form-group">
                 <?php echo $form["type_proprietaire"]->renderError(); ?>
-                <?php //echo $form["type_proprietaire"]->renderLabel("type_proprietaire", array("class" => "col-xs-3 control-label")); ?>
                 <div class="col-xs-9">
                     <?php echo $form["type_proprietaire"]->render(array("class" => "checkbox-inline")); ?>
                 </div>
