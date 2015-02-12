@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class ParcellaireExploitationTypeProprietaireForm extends acCouchdbObjectForm {
+class ParcellaireTypeProprietaireForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->disableCSRFProtection();

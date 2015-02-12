@@ -18,29 +18,29 @@
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
                 <table class="table table-striped">
-                    <tr>
-                        <?php if ($appellation != 'LIEUDIT'): ?>
-                            <th>Nom <?php echo $parcellaireAppellations[$appellation]; ?></th>      
-                        <?php endif; ?>
-                        <th>Identifiant parcelle</th>        
-                        <th>Cépage</th>        
-                        <th>Superficie</th>                 
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th class="col-xs-4">Lieu-dit <?php //echo $parcellaireAppellations[$appellation]; ?></th>      
+                            <th class="col-xs-3">Identifiant parcelle</th>        
+                            <th class="col-xs-3">Cépage</th>        
+                            <th class="col-xs-3">Superficie</th>                 
+                        </tr>
+                    </thead>
+                    <tbody>
                     <?php foreach ($parcelles as $key => $parcelle):
                         ?>
                         <tr>
-                            <?php if ($appellation != 'LIEUDIT'): ?>
-                                <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
-                            <?php endif; ?>
+                            <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                             <td><?php echo $parcelle->getParcelleIdentifiant(); ?></td>           
-                            <td><?php echo $form['produits'][$parcelle->getHashForKey()]['cepage']->render(); ?></td>        
-                            <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(); ?></td>                 
+                            <td><?php echo $form['produits'][$parcelle->getHashForKey()]['cepage']->render(array('class' => 'form-control')); ?></td>        
+                            <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float")); ?></td>                 
                         </tr>
                     <?php endforeach; ?>
+                    </tbody>
                 </table>
             </div>
             <div class="text-left">
-                <button class="btn btn-warning ajax btn-sm" data-toggle="modal" data-target="#popupForm" type="button">Ajouter<span class="eleganticon icon_plus"></span></button>
+                <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
             </div>
         </div>
     </div>
@@ -50,12 +50,11 @@
 
         </div>
         <div class="col-xs-6 text-right">
-            <?php //if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireEtapes::ETAPE_VALIDATION): ?>
+            <?php if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
-            <?php //else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la validation</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-                <?php //endif; ?>
-
+            <?php else: ?>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers les acheteurs</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+            <?php endif; ?>
         </div>
     </div>
 </form>

@@ -20,6 +20,32 @@ class parcellaireActions extends sfActions {
         return $this->redirect('home');
     }
 
+    public function executeDelete(sfWebRequest $request) {
+        $parcellaire = $this->getRoute()->getParcellaire();
+
+        $this->secure(ParcellaireSecurity::EDITION, $parcellaire);
+
+        $parcellaire->delete();
+        $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
+
+        return $this->redirect($this->generateUrl('home'));
+    }
+
+    public function executeDevalidation(sfWebRequest $request) {
+        $parcellaire = $this->getRoute()->getParcellaire();
+
+        $this->secure(ParcellaireSecurity::DEVALIDATION, $parcellaire);
+
+        $parcellaire->validation = null;
+        $parcellaire->validation_odg = null;
+        $parcellaire->etape = null;
+        $parcellaire->save();
+
+        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+
+        return $this->redirect($this->generateUrl('home'));
+    }
+
     public function executeCreate(sfWebRequest $request) {
 
         $etablissement = $this->getRoute()->getEtablissement();
@@ -42,13 +68,14 @@ class parcellaireActions extends sfActions {
     public function executeExploitation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
-        //   $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
         $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_EXPLOITATION));
         $this->parcellaire->save();
+
         $this->etablissement = $this->parcellaire->getEtablissementObject();
         $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->parcellaire->isPapier()));
-        $this->parcellaireTypeProprietaireForm = new ParcellaireExploitationTypeProprietaireForm($this->parcellaire);
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -64,32 +91,46 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->storeDeclarant();
 
         $this->parcellaire->save();
-        return $this->redirect('parcellaire_exploitation', $this->parcellaire);
+
+        return $this->redirect('parcellaire_propriete', $this->parcellaire);
     }
 
     public function executePropriete(sfWebRequest $request) {
-        if (!$request->isMethod(sfWebRequest::POST)) {
-            throw new sfException("NO POST");
-        }
         $this->parcellaire = $this->getRoute()->getParcellaire();
-        $this->etablissement = $this->parcellaire->getEtablissementObject();
-        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->parcellaire->isPapier()));
 
-        $this->parcellaireTypeProprietaireForm = new ParcellaireExploitationTypeProprietaireForm($this->parcellaire);
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaireTypeProprietaireForm->bind($request->getParameter($this->parcellaireTypeProprietaireForm->getName()));
-        if (!$this->parcellaireTypeProprietaireForm->isValid()) {
-            throw new sfException("form no valid");
-        }
-        $this->parcellaireTypeProprietaireForm->save();
-
+        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PROPRIETE));
         $this->parcellaire->save();
+
+        $this->form = new ParcellaireTypeProprietaireForm($this->parcellaire);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
         $this->firstAppellation = $this->parcellaire->getFirstAppellation();
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->firstAppellation));
     }
 
     public function executeParcelles(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
+
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+
+        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES));
+        $this->parcellaire->save();
+
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
@@ -109,13 +150,18 @@ class parcellaireActions extends sfActions {
 
             if ($this->form->isValid()) {
                 $this->form->save();
-                return $this->redirect('parcellaire_validation',$this->parcellaire);
+                return $this->redirect('parcellaire_acheteurs',$this->parcellaire);
             }
         }
     }
 
     public function executeAcheteurs(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
+
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+
+        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_ACHETEURS));
+
         $this->form = new ParcellaireAcheteursForm($this->parcellaire);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -131,8 +177,6 @@ class parcellaireActions extends sfActions {
         }
 
         $this->form->update();
-        /*print_r($this->parcellaire->acheteurs->toArray(true, false));
-        exit;*/
         $this->form->save();
 
         return $this->redirect('parcellaire_validation', $this->parcellaire);
@@ -141,7 +185,7 @@ class parcellaireActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
-      //  $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
         $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION));
         $this->parcellaire->save();
@@ -186,6 +230,26 @@ class parcellaireActions extends sfActions {
             return $etape;
         }
         return ($parcellaireEtapes->isLt($parcellaire->etape, $etape)) ? $etape : $parcellaire->etape;
+    }
+
+    protected function secure($droits, $doc) {
+        if (!ParcellaireSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function secureEtablissement($droits, $etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
+
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
     }
 
 }

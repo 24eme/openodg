@@ -124,7 +124,6 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION));
-
         $this->drev->save();
 
         $this->etablissement = $this->drev->getEtablissementObject();
