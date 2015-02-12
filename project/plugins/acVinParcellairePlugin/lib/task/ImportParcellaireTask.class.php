@@ -1,6 +1,6 @@
 <?php
 
-class CompteArchivageTask extends sfBaseTask
+class ImportParcellaireTask extends sfBaseTask
 {
 
     protected function configure()
@@ -16,8 +16,8 @@ class CompteArchivageTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace = 'parcellaire';
-        $this->name = 'importFromCSV';
+        $this->namespace = 'import';
+        $this->name = 'Parcellaire';
         $this->briefDescription = "Importe le parcellaire depuis le CSV d'une annee";
         $this->detailedDescription = <<<EOF
 EOF;
@@ -55,6 +55,7 @@ EOF;
                 $p->add('declarant')->add('telephone', $csv[13]);
                 $p->add('declarant')->add('email', $csv[14]);
             }
+
             $hash = $p->getConfiguration()->identifyProduct($convert[$csv[0]], $csv[2], $csv[5]);
             if (isset($hash['error'])) {
                 print("ERROR: ligne $i: Pas de produit pour $csv[0] / $csv[2] / $csv[5]\n");
@@ -63,11 +64,16 @@ EOF;
             $produit = $p->getOrAdd($hash['hash']);
             $produit->getLibelleComplet();
 
+
+
             $parcelle = $produit->add('detail')->add(KeyInflector::slugify($csv[1].'_'.$csv[3].'_'.$csv[4]));
             $parcelle->commune = strtoupper($csv[1]);
             $parcelle->section = $csv[3];
             $parcelle->numero_parcelle = $csv[4];
             $parcelle->superficie = str_replace(',', '.', $csv[6]) * 1;
+            if($parcelle->getCepage()->getConfig()->hasLieuEditable()) {
+                $parcelle->lieu = trim($csv[2]);
+            }
             $isNew = $p->isNew();
             try{
                 $p->validation = true;
