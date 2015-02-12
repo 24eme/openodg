@@ -96,13 +96,21 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesBylieux;
     }
 
-    public function getAppellationNodeFromAppellationKey($appellationKey) {
+    public function getAppellationNodeFromAppellationKey($appellationKey,$autoAddAppellation = false) {
         $appellations = $this->declaration->getAppellations();
         $appellationNode = null;
         foreach ($appellations as $key => $appellation) {
             if ('appellation_' . $appellationKey == $key) {
                 $appellationNode = $appellation;
                 break;
+            }
+        }
+        if(!$appellationNode && $autoAddAppellation){
+            foreach ($this->getConfiguration()->getDeclaration()->getNoeudAppellations() as $key => $appellation) {                
+                if ('appellation_' . $appellationKey == $key) {
+                    $appellationNode = $this->addAppellation($appellation->getHash()); 
+                    break;
+                }
             }
         }
         return $appellationNode;
@@ -112,7 +120,7 @@ class Parcellaire extends BaseParcellaire {
         $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
         
         if ($appellationNode) {
-            $appellationNodeHash = $appellation->getHash();
+            $appellationNodeHash = $appellationNode->getHash();
             $this->remove($appellationNodeHash);
             $this->getOrAdd($appellationNodeHash);
             foreach ($produits as $cepageKey => $parcelle) {
@@ -182,8 +190,9 @@ class Parcellaire extends BaseParcellaire {
         }
 
         $acheteur = $this->acheteurs->add($cvi);
+        var_dump($cvi); 
         $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$cvi, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement) {
+        if(!$etablissement) { exit;
             throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-'.$cvi));
         }
 

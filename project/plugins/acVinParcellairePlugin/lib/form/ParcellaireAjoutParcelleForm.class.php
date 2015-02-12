@@ -51,7 +51,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
     }
 
     public function getProduits() {
-        $appellationNode = $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey);
+        $appellationNode = $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey,true);
         $this->allCepagesAppellation = array();
         foreach ($appellationNode->getConfig()->getProduits() as $key => $cepage) {
             $keyCepage = str_replace('/', '-', $key);

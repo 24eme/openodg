@@ -61,7 +61,7 @@ class ParcellaireTypeProprietaireForm extends acCouchdbObjectForm {
         foreach($acheteurs_to_delete as $cvi) {
             $this->getObject()->acheteurs->remove($cvi);
         }
-
+        
         foreach($values_acheteurs as $cvi) {
             $this->getObject()->addAcheteurNode($cvi);
         }
