@@ -145,8 +145,13 @@ class drevActions extends sfActions {
         $this->form->save();
 
         $this->drev->storeDeclarant();
-
         $this->drev->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
+        }
+
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
         }
