@@ -176,7 +176,6 @@ class parcellaireActions extends sfActions {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->appellation = $request->getParameter('appellation');
 
-
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
@@ -199,6 +198,7 @@ class parcellaireActions extends sfActions {
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
         $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_ACHETEURS));
+        $this->parcellaire->save();
 
         $this->form = new ParcellaireAcheteursForm($this->parcellaire);
 

@@ -118,7 +118,6 @@ class Parcellaire extends BaseParcellaire {
 
     public function updateParcellesForAppellation($appellationKey, $produits) {
         $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
-
         if ($appellationNode) {
             $appellationNodeHash = $appellationNode->getHash();
             $this->remove($appellationNodeHash);
@@ -134,7 +133,6 @@ class Parcellaire extends BaseParcellaire {
                 $this->addProduitParcelle($hashCepage, $parcelleKey, $parcelle["commune"], $parcelle["section"], $parcelle["numero_parcelle"], $parcelle["superficie"], $parcelle["lieu"]);
             }
         }
-        //$nouveauNoeudAppellation->getParent()->reorderByConf();
     }
 
     public function addProduit($hash, $add_appellation = true) {
@@ -142,6 +140,7 @@ class Parcellaire extends BaseParcellaire {
         if ($add_appellation) {
             $this->addAppellation($config->getAppellation()->getHash());
         }
+
         $produit = $this->getOrAdd($config->getHash());
         $produit->getLibelle();
 
@@ -151,7 +150,7 @@ class Parcellaire extends BaseParcellaire {
     public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu = null) {
         $produit = $this->getOrAdd($hash);
 
-        $this->addProduit($produit->getProduitHash());
+        $this->addProduit($produit->getHash());
 
         return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
     }
@@ -168,17 +167,6 @@ class Parcellaire extends BaseParcellaire {
     public function addAppellation($hash) {
         $config = $this->getConfiguration()->get($hash);
         $appellation = $this->getOrAdd($config->hash);
-//        $config_produits = $appellation->getConfigProduits();
-//        if (count($config_produits) == 1) {
-//            reset($config_produits);
-//            $this->addProduitCepage(key($config_produits), null, false);
-//        } else {
-//            foreach ($config_produits as $hash => $config_produit) {
-//                if ($config_produit->isAutoDRev()) {
-//                    $this->addProduitCepage($hash, null, false);
-//                }
-//            }
-//        }
 
         return $appellation;
     }

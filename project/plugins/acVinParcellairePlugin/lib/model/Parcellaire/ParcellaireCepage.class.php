@@ -15,11 +15,6 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->getParent();
     }
 
-    public function getProduitHash() {
-
-        return $this->getCouleur()->getProduitHash();
-    }
-
     public function getProduits($onlyActive = false) {
         if ($onlyActive && !$this->isActive()) {
 
@@ -47,7 +42,7 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $detail->numero_parcelle = $numero_parcelle;
         $detail->superficie = $superficie;
         $detail->lieu = $lieu;
-        
+
         return $detail;
     }
     

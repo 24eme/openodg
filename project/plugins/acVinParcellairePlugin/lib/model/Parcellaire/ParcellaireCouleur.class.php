@@ -27,14 +27,4 @@ class ParcellaireCouleur extends BaseParcellaireCouleur {
         return $this->getMention()->getAppellation();
     }   
     
-    public function getProduitHash() {
-        if(!$this->getMention()->getConfig()->hasManyNoeuds()) {
-
-            return $this->getHash();
-        }
-
-
-        return $this->getMention()->getHash()."/lieu/".$this->getKey();
-    }
-    
 }
