@@ -24,6 +24,11 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function getLieuLibelle() {
+        if($this->lieu) {
+
+            return $this->lieu;
+        }
+
         return $this->getLieuNode()->getLibelle();
     }
 

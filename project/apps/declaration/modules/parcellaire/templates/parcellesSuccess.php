@@ -6,9 +6,9 @@
 
 <ul class="nav nav-tabs">
     <?php foreach ($parcellaireAppellations as $appellationKey => $appellationName) : 
-        $styleOpacity = ($parcellaire->hasParcelleForAppellationKey($appellationKey))? '' : 'style="opacity: 0.5;"';
+        $styleOpacity = ($appellation == $appellationKey || $parcellaire->hasParcelleForAppellationKey($appellationKey))? '' : 'style="opacity: 0.5;"';
         ?>
-        <li role="presentation"  <?php echo ($appellation == $appellationKey) ? 'class="active"' : '' ?> <?php echo $styleOpacity; ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>"><?php echo $appellationName; ?></a></li>
+        <li role="presentation" class="<?php echo ($appellation == $appellationKey) ? 'active' : '' ?>" <?php echo $styleOpacity; ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
     <?php endforeach; ?>
 </ul>
 
