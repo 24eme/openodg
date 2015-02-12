@@ -2,24 +2,6 @@
 
 class parcellaireActions extends sfActions {
 
-    public function executeIndex(sfWebRequest $request) {
-        $this->getUser()->signOutEtablissement();
-        $this->form = new LoginForm();
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
-        if (!$request->isMethod(sfWebRequest::POST)) {
-            return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-
-        return $this->redirect('home');
-    }
-
     public function executeDelete(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
 

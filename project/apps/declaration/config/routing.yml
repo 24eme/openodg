@@ -570,11 +570,6 @@ degustation_tournee:
     sf_method: [get]
 
 # Parcellaire
-parcellaire:
-  url: /parcellaire
-  param: { module: parcellaire, action: index }
-  requirements:
-    sf_method: [get]
 
 parcellaire_delete:
   url: /parcellaire/supprimer/:id
