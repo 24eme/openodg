@@ -20,7 +20,7 @@ class ParcellaireTypeProprietaireForm extends acCouchdbObjectForm {
 
         $this->setWidget('type_proprietaire', new sfWidgetFormChoice(array('multiple' => true, 'expanded' => true, 'choices' => $typesProprietaire)));
         $this->getWidget('type_proprietaire')->setLabel("type_proprietaire", "Type proprietaire:");
-        $this->setValidator('type_proprietaire', new sfValidatorChoice(array('required' => true, 'multiple' => true, 'choices' => array_keys($typesProprietaire)), array('required' => "Aucun type de propriétaire n'a été choisi.")));
+        $this->setValidator('type_proprietaire', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($typesProprietaire)), array('required' => "Aucun type de propriétaire n'a été choisi.")));
 
 
         $this->setWidget('acheteurs_select', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $vendeurs)));
