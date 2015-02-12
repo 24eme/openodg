@@ -30,4 +30,16 @@ class ParcellaireLieu extends BaseParcellaireLieu {
     {
         return $this->filter('^couleur');
     }
+    
+    public function getAcheteurs() {
+        $acheteursArray = array();
+        foreach ($this->getDocument()->getAcheteurs() as $cvi => $acheteur) {
+            foreach ($acheteur->produits as $hashKey => $produitLieu) {
+                if($produitLieu->hash_produit == $this->getHash()){
+                    $acheteursArray[$cvi] = $acheteur;
+                }
+            }
+        }
+        return $acheteursArray;
+    }
 }
