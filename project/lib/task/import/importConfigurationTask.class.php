@@ -75,6 +75,8 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_ALSACEBLANC = $certifications->genre->appellation_ALSACEBLANC;
         @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->relations->lots = "appellation_ALSACE";
 
+        @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->mention->lieu->couleur->cepage_MU->libelle = "Muscat";
+
         $configurationJson->declaration->certification->genre->appellation_PINOTNOIR = $certifications->genre->appellation_PINOTNOIR;
         @$configurationJson->declaration->certification->genre->appellation_PINOTNOIR->relations->lots = "appellation_ALSACE";
 
@@ -101,6 +103,8 @@ EOF;
         @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->relations->lots = "appellation_ALSACE";
         @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->relations->lots = "couleur";
         @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->relations->lots = "couleur";
+
+        @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc->cepage_MU->libelle = "Muscat";
 
         $configurationJson->declaration->certification->genre->appellation_GRDCRU = $certifications->genre->appellation_GRDCRU;
 

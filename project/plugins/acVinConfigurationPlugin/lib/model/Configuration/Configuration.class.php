@@ -96,7 +96,7 @@ class Configuration extends BaseConfiguration {
   $libelle = self::normalizeLibelle($lieu);
   foreach($appellation_obj->getLieux() as $lieu_key => $lieu_obj) {
     if ($lieu_key == 'lieu')
-      break;
+      continue;
     if ($libelle == self::normalizeLibelle($lieu_obj->getLibelle())) {
       $lieuid=$lieu_key;
       break;
@@ -104,7 +104,7 @@ class Configuration extends BaseConfiguration {
   }
       }
       if ($lieuid == 'lieu') {
-  if (!$appellation_obj->getLieux()->exist('lieu'))
+  if ($appellation_obj->hasManyLieu())
     return array("error" => $appellation.' / '.$lieu);
       }
 

@@ -639,12 +639,6 @@ degustation_affectation:
 
 # Parcellaire
 
-parcellaire:
-  url: /parcellaire
-  param: { module: parcellaire, action: index }
-  requirements:
-    sf_method: [get]
-
 parcellaire_delete:
   url: /parcellaire/supprimer/:id
   param: { module: parcellaire, action: delete }
@@ -653,7 +647,7 @@ parcellaire_delete:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [post]
+    sf_method: [get]
 
 parcellaire_visualisation:
   url: /parcellaire/visualisation/:id
@@ -705,7 +699,7 @@ parcellaire_exploitation:
   requirements:
     sf_method: [get, post]
 
-parcellaire_choix_propriete:
+parcellaire_propriete:
   url: /parcellaire/propriete/:id
   param: { module: parcellaire, action: propriete }
   class: ParcellaireRoute
@@ -713,8 +707,7 @@ parcellaire_choix_propriete:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [post]
-
+    sf_method: [get, post]
 
 parcellaire_parcelles:
   url: /parcellaire/parcelles/:id/:appellation
@@ -726,6 +719,15 @@ parcellaire_parcelles:
   requirements:
     sf_method: [get,post]
 
+parcellaire_parcelle_ajout:
+  url: /parcellaire/ajout-parcelle/:id/:appellation
+  param: { module: parcellaire, action: ajoutParcelle }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [post]
 
 parcellaire_acheteurs:
   url: /parcellaire/acheteurs/:id
@@ -737,7 +739,6 @@ parcellaire_acheteurs:
   requirements:
     sf_method: [get,post]
 
-
 parcellaire_validation:
   url: /parcellaire/validation/:id
   param: { module: parcellaire, action: validation }
@@ -746,7 +747,17 @@ parcellaire_validation:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [get,post] 
+    sf_method: [get,post]
+    
+parcellaire_confirmation:
+  url: /parcellaire/confirmation/:id
+  param: { module: parcellaire, action: confirmation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get,post]
 
 parcellaire_export_pdf:
   url: /parcellaire/pdf/:id
@@ -756,7 +767,17 @@ parcellaire_export_pdf:
     model:    Parcellaire
     type:     object
   requirements:
-    sf_method: [get] 
+    sf_method: [get]
+
+drevmarc_visualisation:
+  url: /parcellaire/visualisation/:id
+  param: { module: parcellaire, action: visualisation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
 
 default_index:
   url:   /:module

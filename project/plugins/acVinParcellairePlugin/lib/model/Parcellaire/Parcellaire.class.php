@@ -60,10 +60,14 @@ class Parcellaire extends BaseParcellaire {
         }
     }
 
-    private function importProduitsFromLastParcellaire() {
+    private function getParcellaireLastCampagne() {
         $campagnePrec = $this->campagne - 1;
         $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
-        $parcellairePrev = ParcellaireClient::getInstance()->find($parcellairePrevId);
+        return ParcellaireClient::getInstance()->find($parcellairePrevId);
+    }
+    
+    private function importProduitsFromLastParcellaire() {
+        $parcellairePrev = $this->getParcellaireLastCampagne();
         if (!$parcellairePrev) {
             return;
         }
@@ -96,19 +100,30 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesBylieux;
     }
 
-    public function updateParcellesForAppellation($appellationKey, $produits) {
+    public function getAppellationNodeFromAppellationKey($appellationKey, $autoAddAppellation = false) {
         $appellations = $this->declaration->getAppellations();
         $appellationNode = null;
-        $appellationNodeHash = null;
         foreach ($appellations as $key => $appellation) {
             if ('appellation_' . $appellationKey == $key) {
                 $appellationNode = $appellation;
-                $appellationNodeHash = $appellation->getHash();
                 break;
             }
         }
+        if (!$appellationNode && $autoAddAppellation) {
+            foreach ($this->getConfiguration()->getDeclaration()->getNoeudAppellations() as $key => $appellation) {
+                if ('appellation_' . $appellationKey == $key) {
+                    $appellationNode = $this->addAppellation($appellation->getHash());
+                    break;
+                }
+            }
+        }
+        return $appellationNode;
+    }
 
+    public function updateParcellesForAppellation($appellationKey, $produits) {
+        $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
         if ($appellationNode) {
+            $appellationNodeHash = $appellationNode->getHash();
             $this->remove($appellationNodeHash);
             $this->getOrAdd($appellationNodeHash);
             foreach ($produits as $cepageKey => $parcelle) {
@@ -119,10 +134,9 @@ class Parcellaire extends BaseParcellaire {
                 }
                 $hashCepage = str_replace('-', '/', $parcelle["cepage"]);
                 $parcelleKey = $cepageKeyMatches[2];
-                $this->addProduitParcelle($hashCepage, $parcelleKey, $parcelle["commune"], $parcelle["section"], $parcelle["numero_parcelle"], $parcelle["superficie"]);
+                $this->addProduitParcelle($hashCepage, $parcelleKey, $parcelle["commune"], $parcelle["section"], $parcelle["numero_parcelle"], $parcelle["superficie"], $parcelle["lieu"]);
             }
         }
-        //$nouveauNoeudAppellation->getParent()->reorderByConf();
     }
 
     public function addProduit($hash, $add_appellation = true) {
@@ -130,54 +144,70 @@ class Parcellaire extends BaseParcellaire {
         if ($add_appellation) {
             $this->addAppellation($config->getAppellation()->getHash());
         }
+
         $produit = $this->getOrAdd($config->getHash());
         $produit->getLibelle();
 
         return $produit;
     }
 
-    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie) {
+    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu = null) {
         $produit = $this->getOrAdd($hash);
 
-        $this->addProduit($produit->getProduitHash());
+        $this->addProduit($produit->getHash());
 
-        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie);
+        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
+    }
+
+    public function addParcelleForAppellation($appellation, $commune, $section, $numero_parcelle, $cepage, $superficie = 0, $lieu = null) {
+        $hash = str_replace('-', '/', $cepage);
+        $commune = KeyInflector::slugify($commune);
+        $section = KeyInflector::slugify($section);
+        $numero_parcelle = KeyInflector::slugify($numero_parcelle);
+        $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
+        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
     }
 
     public function addAppellation($hash) {
         $config = $this->getConfiguration()->get($hash);
         $appellation = $this->getOrAdd($config->hash);
-//        $config_produits = $appellation->getConfigProduits();
-//        if (count($config_produits) == 1) {
-//            reset($config_produits);
-//            $this->addProduitCepage(key($config_produits), null, false);
-//        } else {
-//            foreach ($config_produits as $hash => $config_produit) {
-//                if ($config_produit->isAutoDRev()) {
-//                    $this->addProduitCepage($hash, null, false);
-//                }
-//            }
-//        }
 
         return $appellation;
     }
 
     public function addAcheteurNode($cvi) {
-        if($this->acheteurs->exist($cvi)) {
+        if ($this->acheteurs->exist($cvi)) {
 
             return $this->acheteurs->get($cvi);
         }
 
         $acheteur = $this->acheteurs->add($cvi);
-        $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$cvi, acCouchdbClient::HYDRATE_JSON);
-        if(!$etablissement) {
-            throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-'.$cvi));
+        var_dump($cvi);
+        $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-' . $cvi, acCouchdbClient::HYDRATE_JSON);
+        if (!$etablissement) {
+            exit;
+            throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-' . $cvi));
         }
 
         $acheteur->nom = $etablissement->raison_sociale;
         $acheteur->cvi = $cvi;
 
         return $acheteur;
+    }
+
+    public function hasParcelleForAppellationKey($appellationKey) {
+        $allParcelles = $this->getAllParcellesByAppellations();
+        foreach ($allParcelles as $hash => $appellation) {
+            if ($appellation->appellation->getKey() == 'appellation_' . $appellationKey) {
+                foreach ($appellation->appellation->getMentions() as $mention) {
+                    if (!count($mention->getLieux())) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getParcellesByCommunes() {
@@ -210,12 +240,19 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesByCommunes;
     }
 
+    public function getParcellesByCommunesLastCampagne() {
+        $parcellairePrev = $this->getParcellaireLastCampagne();
+         if (!$parcellairePrev) {
+            return array();
+        }
+        return $parcellairePrev->getParcellesByCommunes();
+    }
+    
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
         $allParcellesByLieux = $this->getAllParcellesByLieux();
         $config = $this->getConfiguration();
         foreach ($allParcellesByLieux as $lieu_hash => $lieuNode) {
-
             $configAppellationLibelle = $config->get($lieu_hash)->getAppellation()->getLibelle();
             $configLieuLibelle = $config->get($lieu_hash)->getLibelle();
 
@@ -225,7 +262,9 @@ class Parcellaire extends BaseParcellaire {
                 $parcellesByLieux[$lieu_hash]->appellation_libelle = $configAppellationLibelle;
                 $parcellesByLieux[$lieu_hash]->lieu_libelle = $configLieuLibelle;
                 $parcellesByLieux[$lieu_hash]->parcelles = array();
+                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteurs();
             }
+
             $parcelaireCouleurs = $this->get($lieu_hash)->getCouleurs();
             foreach ($parcelaireCouleurs as $parcelaireCouleur) {
                 foreach ($parcelaireCouleur->getCepages() as $parcelaireCepage) {
@@ -242,8 +281,18 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesByLieux;
     }
 
-    public function getFirstAppellation() {
-        return 'LIEUDIT';
+    public function validate($date = null) {
+        if (is_null($date)) {
+            $date = date('Y-m-d');
+        }
+
+        $this->declaration->cleanNode();
+        $this->validation = $date;
+        $this->validateOdg();
+    }
+
+    public function validateOdg() {
+        $this->validation_odg = date('Y-m-d');
     }
 
 }

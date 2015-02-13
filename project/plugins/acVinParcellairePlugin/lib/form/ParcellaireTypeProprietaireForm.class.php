@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class ParcellaireExploitationTypeProprietaireForm extends acCouchdbObjectForm {
+class ParcellaireTypeProprietaireForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->disableCSRFProtection();
@@ -20,7 +20,7 @@ class ParcellaireExploitationTypeProprietaireForm extends acCouchdbObjectForm {
 
         $this->setWidget('type_proprietaire', new sfWidgetFormChoice(array('multiple' => true, 'expanded' => true, 'choices' => $typesProprietaire)));
         $this->getWidget('type_proprietaire')->setLabel("type_proprietaire", "Type proprietaire:");
-        $this->setValidator('type_proprietaire', new sfValidatorChoice(array('required' => true, 'multiple' => true, 'choices' => array_keys($typesProprietaire)), array('required' => "Aucun type de propriétaire n'a été choisi.")));
+        $this->setValidator('type_proprietaire', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($typesProprietaire)), array('required' => "Aucun type de propriétaire n'a été choisi.")));
 
 
         $this->setWidget('acheteurs_select', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $vendeurs)));
@@ -50,8 +50,10 @@ class ParcellaireExploitationTypeProprietaireForm extends acCouchdbObjectForm {
         parent::doUpdateObject($values);
 
         $acheteurs_to_delete = array();
+        $values_acheteurs = (isset($values['acheteurs_select']) && is_array($values['acheteurs_select'])) ? $values['acheteurs_select'] : array();
+
         foreach($this->getObject()->acheteurs as $acheteur) {
-            if(!in_array($acheteur->getKey(), $values['acheteurs_select']) && !count($acheteur->produits)) {
+            if(!in_array($acheteur->getKey(), $values_acheteurs) && !count($acheteur->produits)) {
                 $acheteurs_to_delete[] = $acheteur->getKey();
             }
         }
@@ -59,8 +61,8 @@ class ParcellaireExploitationTypeProprietaireForm extends acCouchdbObjectForm {
         foreach($acheteurs_to_delete as $cvi) {
             $this->getObject()->acheteurs->remove($cvi);
         }
-
-        foreach($values['acheteurs_select'] as $cvi) {
+        
+        foreach($values_acheteurs as $cvi) {
             $this->getObject()->addAcheteurNode($cvi);
         }
     }

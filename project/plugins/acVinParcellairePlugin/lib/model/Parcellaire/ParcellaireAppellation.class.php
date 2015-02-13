@@ -22,5 +22,34 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
 
         return $this->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
     }
+    
+    public function getNextAppellationKey() {
+        $appellationsKeys = array_keys(ParcellaireClient::getInstance()->getAppellationsKeys());
+        $onAppellation = false;
+        foreach ($appellationsKeys as $key) {  
+            if($onAppellation){
+                return $key;
+            }
+            if($this->getKey() == 'appellation_'.$key){
+                $onAppellation = true;
+            }
+        }
+        return false;
+    }
+    
+    public function getPreviousAppellationKey() {
+        $appellationsKeys = array_reverse(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys()));
+        $onAppellation = false;
+        foreach ($appellationsKeys as $key) {  
+            if($onAppellation){
+                return $key;
+            }
+            if($this->getKey() == 'appellation_'.$key){
+                $onAppellation = true;
+            }
+        }
+        return false;
+    }
+    
 
 }

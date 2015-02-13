@@ -2,6 +2,7 @@
 class ParcellaireEtapes
 {
 	const ETAPE_EXPLOITATION = 'exploitation';
+	const ETAPE_PROPRIETE = 'propriete';
 	const ETAPE_PARCELLES = 'parcelles';
 	const ETAPE_ACHETEURS = 'acheteurs';
 	const ETAPE_VALIDATION = 'validation';
@@ -10,6 +11,7 @@ class ParcellaireEtapes
 	
 	public static $etapes = array(
             self::ETAPE_EXPLOITATION,
+            self::ETAPE_PROPRIETE,
             self::ETAPE_PARCELLES,
             self::ETAPE_ACHETEURS,
             self::ETAPE_VALIDATION,

@@ -69,9 +69,13 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getAppellationsKeys() {
         return array('COMMUNALE' => 'Communale',
-                     'LIEUDIT' => 'Lieux dits',
-                     'GRD_CRU' => 'Grand Crus',
-                     'CREMANT' => 'Crémant');
+            'LIEUDIT' => 'Lieux dits',
+            'GRDCRU' => 'Grand Crus',
+            'CREMANT' => 'Crémant');
+    }
+
+    public function getFirstAppellation() {
+        return 'COMMUNALE';
     }
 
 }

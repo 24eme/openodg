@@ -21,10 +21,11 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->setWidgets(array(
+            'lieu' => new sfWidgetFormInputHidden(),
             'commune' => new sfWidgetFormInputHidden(),
             'section' => new sfWidgetFormInputHidden(),
             'numero_parcelle' => new sfWidgetFormInputHidden(),
-            'superficie' => new sfWidgetFormInputFloat(),
+            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
             'cepage' => new sfWidgetFormChoice(array('multiple' => false, 'expanded' => false, 'choices' => $this->getCepagesForLieu(),
         ))));
         $this->widgetSchema->setLabels(array(
@@ -32,6 +33,7 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
             'cepage' => 'Cepage'
         ));
         $this->setValidators(array(
+            'lieu' => new sfValidatorPass(),
             'commune' => new sfValidatorPass(),
             'section' => new sfValidatorPass(),
             'numero_parcelle' => new sfValidatorPass(),
@@ -49,7 +51,7 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
     }
 
     public function getCepagesForLieu() {
-        $this->allCepagesLieu = array();
+        $this->allCepagesAppellation = array();
         foreach ($this->getObject()->getLieuNode()->getConfig()->getProduits() as $key => $cepage) {
             $keyCepage = str_replace('/', '-', $key);
             $libelle = $cepage->getLibelle();

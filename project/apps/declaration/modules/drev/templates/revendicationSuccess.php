@@ -110,7 +110,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                     <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
                         <?php echo $embedForm['volume_revendique']->renderError() ?>
                         <div class="col-xs-10 col-xs-offset-1">
-                            <?php echo $embedForm['volume_revendique']->render(array('class' => 'disabled form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "hl")) ?>
+                            <?php echo $embedForm['volume_revendique']->render(array('class' => 'disabled form-control text-right input-rounded num_float' . $global_error_class, 'placeholder' => "hl")) ?>
                         </div>
                     </div>
                     <?php else: ?>
