@@ -28,29 +28,29 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             'commune' => new sfWidgetFormInput(),
             'section' => new sfWidgetFormInput(),
             'numero_parcelle' => new sfWidgetFormInput(),
-            'cepage' => new sfWidgetFormChoice(array('choices' => $produits)),
-            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
+//            'cepage' => new sfWidgetFormChoice(array('choices' => $produits)),
+//            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
         ));
         $this->widgetSchema->setLabels(array(
             'commune' => 'Commune :',
             'section' => 'Section :',
             'numero_parcelle' => 'Numéro parcelle :',
-            'cepage' => 'Lieu/cépage :',
-            'superficie' => 'Superficie (ares):',
+//            'cepage' => 'Lieu/cépage :',
+//            'superficie' => 'Superficie (ares):',
         ));
 
         $this->setValidators(array(
             'commune' => new sfValidatorString(array('required' => true), array('required' => "Aucune commune saisie.")),
             'section' => new sfValidatorString(array('required' => true), array('required' => "Aucune section saisie.")),
             'numero_parcelle' => new sfValidatorString(array('required' => true), array('required' => "Aucun numéro de parcelle saisi.")),
-            'cepage' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")),
-            'superficie' => new sfValidatorNumber(array('required' => false)),
+//            'cepage' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")),
+//            'superficie' => new sfValidatorNumber(array('required' => false)),
         ));
-
-        if($appellationNode->getConfig()->hasLieuEditable()) {
-           $this->setWidget('lieu', new sfWidgetFormInput());
-           $this->setValidator('lieu', new sfValidatorString(array('required' => true), array('required' => "Aucune lieu-dit saisi")));
-        }
+//
+//        if($appellationNode->getConfig()->hasLieuEditable()) {
+//           $this->setWidget('lieu', new sfWidgetFormInput());
+//           $this->setValidator('lieu', new sfValidatorString(array('required' => true), array('required' => "Aucune lieu-dit saisi")));
+//        }
 
         $this->widgetSchema->setNameFormat('parcellaire_ajout_parcelle[%s]');
     }
@@ -77,24 +77,19 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
     }
 
     protected function doUpdateObject($values) {
+        
         if ((!isset($values['commune']) || empty($values['commune'])) ||
                 (!isset($values['section']) || empty($values['section'])) ||
-                (!isset($values['numero_parcelle']) || empty($values['numero_parcelle'])) ||
-                (!isset($values['cepage']) || empty($values['cepage']))
+                (!isset($values['numero_parcelle']) || empty($values['numero_parcelle'])) 
         ) {
             return;
         }
-
+        
         $commune = $values['commune'];
         $section = $values['section'];
         $numero_parcelle = $values['numero_parcelle'];
-        $cepage = $values['cepage'];
-        $superficie = (!isset($values['superficie']) || $values['superficie'])? $values['superficie'] : 0;
-        $lieu = null;
-        if(isset($values['lieu'])) {
-            $lieu = $values['lieu'];
-        }
-        $this->getObject()->addParcelleForAppellation($this->appellationKey, $commune, $section, $numero_parcelle, $cepage, $superficie, $lieu);
+        
+        $this->getObject()->addParcelleForAppellation($this->appellationKey, $commune, $section, $numero_parcelle);
     }
 
 }

@@ -22,8 +22,8 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="col-xs-4">Lieu-dit</th>      
                             <th class="col-xs-3">Identifiant parcelle</th>        
+                            <th class="col-xs-4">Lieu-dit</th>      
                             <th class="col-xs-3">Cépage</th>        
                             <th class="col-xs-3">Superficie</th>                 
                         </tr>
@@ -32,8 +32,8 @@
                         <?php foreach ($parcelles as $key => $parcelle):
                             ?>
                             <tr>
-                                <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                 <td><?php echo $parcelle->getParcelleIdentifiant(); ?></td>           
+                                <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                 <td><?php echo $form['produits'][$parcelle->getHashForKey()]['cepage']->render(array('class' => 'form-control')); ?></td>        
                                 <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float")); ?></td>                 
                             </tr>
@@ -42,7 +42,7 @@
                 </table>
             </div>
             <div class="text-left">
-                <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
+                <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
         </div>
     </div>

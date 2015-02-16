@@ -36,42 +36,42 @@
 						<?php echo $form['numero_parcelle']->render(array("placeholder" => "Saisissez un numéro de parcelle", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
-                    <span class="error"><?php echo $form['cepage']->renderError() ?></span>
+<!--                                        <span class="error"><?php // echo $form['cepage']->renderError() ?></span>
 					<div class="form-group row">
                                             <div class="col-xs-4">
-						<?php echo $form['cepage']->renderLabel(); ?>
+						<?php // echo $form['cepage']->renderLabel(); ?>
 						</div>
 						<div class="col-xs-8">
-						<?php echo $form['cepage']->render(array("placeholder" => "Saisissez un lieu/cépage", "class" => "form-control", "required" => true)) ?>
+						<?php // echo $form['cepage']->render(array("placeholder" => "Saisissez un lieu/cépage", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
 
-					<?php if(isset($form['lieu'])): ?>
-					<span class="error"><?php echo $form['lieu']->renderError() ?></span>
+					<?php // if(isset($form['lieu'])): ?>
+					<span class="error"><?php // echo $form['lieu']->renderError() ?></span>
 					<div class="form-group row">
                                             <div class="col-xs-4">
-						<?php echo $form['lieu']->renderLabel("Lieu-dit"); ?>
+						<?php // echo $form['lieu']->renderLabel("Lieu-dit"); ?>
 						</div>
 						<div class="col-xs-8">
-						<?php echo $form['lieu']->render(array("placeholder" => "Saisissez un lieu-dit", "class" => "form-control", "required" => true)) ?>
+						<?php // echo $form['lieu']->render(array("placeholder" => "Saisissez un lieu-dit", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
-					<?php endif; ?>
+					<?php // endif; ?>
 
-                    <span class="error"><?php echo $form['superficie']->renderError() ?></span>
+                    <span class="error"><?php // echo $form['superficie']->renderError() ?></span>
 					<div class="form-group row">
                                             <div class="col-xs-4">
-						<?php echo $form['superficie']->renderLabel(); ?>
+						<?php // echo $form['superficie']->renderLabel(); ?>
 						</div>
 						<div class="col-xs-8">
-						<?php echo $form['superficie']->render(array("placeholder" => "Saisissez une superficie", "class" => "form-control", "required" => true)) ?>
+						<?php // echo $form['superficie']->render(array("placeholder" => "Saisissez une superficie", "class" => "form-control", "required" => true)) ?>
 						</div>
-					</div>
+					</div>-->
                                         
 				</div>
 				<div class="modal-footer">
 					<a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>
-					<button type="submit" class="btn btn-default btn pull-right">Ajouter le produit</button>
+					<button type="submit" class="btn btn-default btn pull-right">Ajouter la parcelle</button>
 				</div>
 			</form>
 		</div>

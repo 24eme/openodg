@@ -79,6 +79,20 @@ Parcellaire:
                           inheritance: _ParcellaireDeclarationNoeud
                           definition:
                             fields:
+                              parcelles:                                                        
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*': 
+                                      type: collection
+                                      class: ParcellaireAppellationParcelle
+                                      definition:
+                                        fields:
+                                          superficie: { type: float }
+                                          commune: { }
+                                          code_postal: { }
+                                          section: { }
+                                          numero_parcelle: { } 
                               libelle: { }
                               # ------- MENTION ----------
                               'mention':
@@ -116,13 +130,14 @@ Parcellaire:
                                                         type: collection
                                                         definition:
                                                           fields:
-                                                            '*': #commune_section_numeroparcelle
+                                                            '*': 
                                                               type: collection
                                                               class: ParcellaireCepageDetail
                                                               definition:
                                                                 fields:
                                                                   superficie: { type: float }
                                                                   commune: { }
+                                                                  code_postal: { }
                                                                   section: { }
                                                                   numero_parcelle: { }
                                                                   lieu: {  }

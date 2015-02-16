@@ -51,5 +51,12 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
         return false;
     }
     
-
+    public function addParcelle($parcelleKey,$commune,$section,$numero_parcelle) {
+       $parcelle = $this->parcelles->add($parcelleKey);
+       $parcelle->commune = $commune;
+       $parcelle->section = $section;
+       $parcelle->numero_parcelle = $numero_parcelle;
+       return $parcelle;
+    }
+    
 }
