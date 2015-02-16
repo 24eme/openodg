@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class ParcellaireTypeProprietaireForm extends acCouchdbForm {
+class ParcellaireDestinationForm extends acCouchdbForm {
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
 
@@ -21,8 +21,7 @@ class ParcellaireTypeProprietaireForm extends acCouchdbForm {
     }
 
     public function configure() {
-        //$typesProprietaire = $this->getTypesProprietaire();
-        $vendeurs = $this->getAllVendeurs(ParcellaireClient::DESTINATION_ADHERENT_CAVE_COOP);
+        
 
         foreach(ParcellaireClient::$destinations_libelles as $destination_key => $destination_libelle) {
             $form = new BaseForm();
@@ -30,9 +29,11 @@ class ParcellaireTypeProprietaireForm extends acCouchdbForm {
             $form->setValidator('declarant', new sfValidatorBoolean());
             $form->widgetSchema->setLabel('declarant', $destination_libelle);
 
-            $form->setWidget('acheteurs', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $vendeurs)));
-            $form->setValidator('acheteurs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($vendeurs)), array()));
-
+            if($destination_key != ParcellaireClient::DESTINATION_SUR_PLACE) {
+                $acheteurs = $this->getAcheteurs($destination_key);
+                $form->setWidget('acheteurs', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $acheteurs)));
+                $form->setValidator('acheteurs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($acheteurs)), array()));
+            }
             $this->embedForm($destination_key, $form);
         }
 
@@ -76,6 +77,10 @@ class ParcellaireTypeProprietaireForm extends acCouchdbForm {
             return;
         }
 
+        if($type == ParcellaireClient::DESTINATION_SUR_PLACE) { 
+            $values["acheteurs"] = array($this->getDocument()->identifiant);
+        }
+
         $noeud = $this->getDocument()->acheteurs->add($type);
 
         foreach($noeud as $acheteur) {
@@ -94,21 +99,22 @@ class ParcellaireTypeProprietaireForm extends acCouchdbForm {
         }
 
         foreach($values["acheteurs"] as $cvi) {
-            $this->getDocument()->getDocument()->addAcheteurNode($type, $cvi);
+            $this->getDocument()->getDocument()->addAcheteur($type, $cvi);
         }
+
+        
     }
 
     public function getTypesProprietaire() {
         return ParcellaireClient::$type_proprietaire_libelles;
     }
 
-    public function getAllVendeurs($type) {
-        $types_vendeurs = array(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT,
-            CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE);
+    public function getAcheteurs($type) {
+        $types_acheteurs = array($type);
 
         $query = "statut:ACTIF AND (";
-        foreach ($types_vendeurs as $type_vendeurs) {
-            $query .="infos.attributs." . $type_vendeurs . ":\"" . CompteClient::getInstance()->getAttributLibelle($type_vendeurs) . "\" OR ";
+        foreach ($types_acheteurs as $type_acheteurs) {
+            $query .="infos.attributs." . $type_acheteurs . ":\"" . CompteClient::getInstance()->getAttributLibelle($type_acheteurs) . "\" OR ";
         }
         $query = substr($query, 0, strlen($query) - 4) . ")";
 

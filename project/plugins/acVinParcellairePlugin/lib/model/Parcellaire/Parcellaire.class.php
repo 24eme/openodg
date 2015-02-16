@@ -179,13 +179,22 @@ class Parcellaire extends BaseParcellaire {
         return $appellation;
     }
 
-    public function addAcheteurNode($type, $cvi) {
+    public function addAcheteur($type, $cvi) {
         if ($this->acheteurs->add($type)->exist($cvi)) {
 
             return $this->acheteurs->add($type)->get($cvi);
         }
 
         $acheteur = $this->acheteurs->add($type)->add($cvi);
+
+        if($cvi == $this->identifiant) {
+            $acheteur->nom = "Sur place";
+            $acheteur->cvi = $cvi;
+            $acheteur->commune = null;
+
+            return $acheteur;
+        }
+
         $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-' . $cvi, acCouchdbClient::HYDRATE_JSON);
         
         if (!$etablissement) {
@@ -194,23 +203,9 @@ class Parcellaire extends BaseParcellaire {
 
         $acheteur->nom = $etablissement->raison_sociale;
         $acheteur->cvi = $cvi;
+        $acheteur->commune = $etablissement->commune;
 
         return $acheteur;
-    }
-
-    public function cleanAcheteurNode() {
-        $node_to_delete = array();
-        foreach($this->acheteurs as $type => $acheteurs) {
-            if(!count($acheteurs)) {
-                continue;
-            }
-
-            $node_to_delete[] = $type;
-        }
-
-        foreach($node_to_delete as $key) {
-            $this->acheteurs->remove($key);
-        }
     }
 
     public function hasParcelleForAppellationKey($appellationKey) {

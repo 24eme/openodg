@@ -6,13 +6,13 @@ class ParcellaireClient extends acCouchdbClient {
     const TYPE_COUCHDB = "PARCELLAIRE";
     
     const DESTINATION_SUR_PLACE = "SUR_PLACE";
-    const DESTINATION_ADHERENT_CAVE_COOP = "ADHERENT_CAVE_COOP";
-    const DESTINATION_VENDEUR_RAISIN = "VENDEUR_RAISIN";
+    const DESTINATION_CAVE_COOPERATIVE = EtablissementClient::FAMILLE_CAVE_COOPERATIVE;
+    const DESTINATION_NEGOCIANT = EtablissementClient::FAMILLE_NEGOCIANT;
 
     public static $destinations_libelles = array(
         self::DESTINATION_SUR_PLACE => "Viticulteur - Récoltant",
-        self::DESTINATION_ADHERENT_CAVE_COOP => "Adhérent Cave Coopérative",
-        self::DESTINATION_VENDEUR_RAISIN => "Vendeur de raisin",
+        self::DESTINATION_CAVE_COOPERATIVE => "Adhérent Cave Coopérative",
+        self::DESTINATION_NEGOCIANT => "Vendeur de raisin",
     );
 
     public static function getInstance() {

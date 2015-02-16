@@ -13,6 +13,7 @@ Parcellaire:
       papier: { required: false, type: integer }
       type_proprietaire:
         type: collection
+        require: false
         definition:
           fields:
             '*': { }
@@ -30,16 +31,7 @@ Parcellaire:
                       fields:
                         cvi : { }
                         nom : { }
-                        produits:
-                          type: collection
-                          definition:
-                            fields:
-                              '*':
-                                type: collection
-                                definition:
-                                  fields:
-                                    hash_produit: { }
-                                    libelle: { }
+                        commune: { }
       declarant:
         type: collection
         definition:
@@ -87,7 +79,7 @@ Parcellaire:
                                 type: collection
                                 definition:
                                   fields:
-                                    '*': 
+                                    '*':
                                       type: collection
                                       class: ParcellaireAppellationParcelle
                                       definition:
@@ -96,7 +88,7 @@ Parcellaire:
                                           commune: { }
                                           code_postal: { }
                                           section: { }
-                                          numero_parcelle: { } 
+                                          numero_parcelle: { }
                               libelle: { }
                               # ------- MENTION ----------
                               'mention':
@@ -130,11 +122,26 @@ Parcellaire:
                                                   definition:
                                                     fields:
                                                       libelle: { }
+                                                      acheteurs:
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*':
+                                                              type: collection
+                                                              definition:
+                                                                fields:
+                                                                  '*':
+                                                                    type: collection
+                                                                    definition:
+                                                                      fields:
+                                                                        cvi : { }
+                                                                        nom : { }
+                                                                        commune: { }
                                                       detail:                                                        
                                                         type: collection
                                                         definition:
                                                           fields:
-                                                            '*': 
+                                                            '*':
                                                               type: collection
                                                               class: ParcellaireCepageDetail
                                                               definition:

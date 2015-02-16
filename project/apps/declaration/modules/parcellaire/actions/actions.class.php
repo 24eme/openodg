@@ -97,7 +97,7 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PROPRIETE));
         $this->parcellaire->save();
 
-        $this->form = new ParcellaireTypeProprietaireForm($this->parcellaire);
+        $this->form = new ParcellaireDestinationForm($this->parcellaire);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

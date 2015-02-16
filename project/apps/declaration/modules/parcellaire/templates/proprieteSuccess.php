@@ -14,16 +14,18 @@
             <div class="form-group">
                 <?php echo $formDestination["declarant"]->renderError(); ?>
                 <label class="col-xs-12">
-                    <?php echo $formDestination["declarant"]->render(array("class" => null)); ?>
+                    <?php echo $formDestination["declarant"]->render(array("class" => "checkbox-relation", "data-relation" => "#autocomplete_acheteurs_".$key)); ?>
                     <?php echo $formDestination["declarant"]->renderLabelName(); ?>
                 </label>
             </div>
-            <div class="form-group">
+            <?php if(isset($formDestination["acheteurs"])): ?>
+            <div id="autocomplete_acheteurs_<?php echo $key ?>" class="form-group <?php if(!$formDestination["declarant"]->getValue()): ?>hidden<?php endif; ?>">
                 <?php echo $formDestination["acheteurs"]->renderError(); ?>
                 <div class="col-xs-12">
                     <?php echo $formDestination["acheteurs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Selectionner des acheteurs")); ?>
                 </div>
             </div>
+            <?php endif; ?>
             <?php endforeach; ?>
         </div>
     </div>
