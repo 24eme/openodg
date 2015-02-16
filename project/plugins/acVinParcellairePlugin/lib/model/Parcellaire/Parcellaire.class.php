@@ -151,12 +151,12 @@ class Parcellaire extends BaseParcellaire {
         return $produit;
     }
 
-    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu = null) {
+    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu = null) {
         $produit = $this->getOrAdd($hash);
 
         $this->addProduit($produit->getHash());
 
-        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
+        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
     public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle) {
@@ -166,9 +166,8 @@ class Parcellaire extends BaseParcellaire {
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
         //$appellation = $this->getAppellationNodeFromAppellationKey($appellationKey);
-        //return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);
-
-        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
+        //return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);        
+         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle);
     }
 
     public function addAppellation($hash) {
@@ -235,7 +234,7 @@ class Parcellaire extends BaseParcellaire {
                     $parcellesByCommunes[$parcelle->commune]->total_superficie = 0;
                     $parcellesByCommunes[$parcelle->commune]->produits = array();
                 }
-                $key_produit = $parcelle->commune . '-' . $parcelle->section . '-' . $parcelle->numero_parcelle;
+                $key_produit = $key;
                 $parcellesByCommunes[$parcelle->commune]->produits[$key_produit] = new stdClass();
 
                 $configLieuLibelle = $config->get($parcelle->getCepage()->getCouleur()->getLieu()->getHash())->getLibelle();
@@ -274,7 +273,7 @@ class Parcellaire extends BaseParcellaire {
                 $parcellesByLieux[$lieu_hash]->appellation_libelle = $configAppellationLibelle;
                 $parcellesByLieux[$lieu_hash]->lieu_libelle = $configLieuLibelle;
                 $parcellesByLieux[$lieu_hash]->parcelles = array();
-                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteurs();
+                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteursNode();
             }
 
             $parcelaireCouleurs = $this->get($lieu_hash)->getCouleurs();

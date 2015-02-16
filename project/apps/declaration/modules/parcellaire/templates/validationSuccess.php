@@ -12,7 +12,7 @@
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     <?php if ($validation->hasPoints()): ?>
-        <?php //include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
+        <?php include_partial('parcellaire/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
     <?php endif; ?>
     <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire,'parcellesByCommunes' => $parcellesByCommunes, 'parcellesByCommunesLastCampagne' => $parcellesByCommunesLastCampagne)); ?>
 

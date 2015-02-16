@@ -31,9 +31,13 @@ EOF;
 
         $convert = array('COMMUNALE' => "AOC Alsace Communale", 'LIEUDIT' => 'aoc alsace lieudit', 'GRDCRU' => 'aoc alsace grand cru ', 'CREMANT' => 'aoc cremant dalsace');
         $i = 0;
+        $sep = '';
         foreach(file($arguments['csv']) as $line) {
+            if (!$sep) {
+                $sep = (count(split('/,/', $line)) > count(split('/;/', $line))) ? ',' : ';';
+            }
+            $csv = str_getcsv($line, $sep);
             $i++;
-            $csv = str_getcsv($line);
             if ($csv[0] == 'ORIGINE') {
                 continue;
             }

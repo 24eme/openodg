@@ -34,24 +34,24 @@
         </td></tr></table>
 <br /> 
 <?php if (count($parcellesByLieu->acheteurs)): ?>
-    <div><span class="h3">&nbsp;Acheteurs&nbsp;</span></div>
-    <table class="table" border="1" cellspacing=2 cellpadding=0 style="text-align: right;">   
-        <tr>
-            <th class="td" style="border-top: none; text-align: left; width: 637px; vertical-align: middle;"><?php echo tdStart() ?>
-                <?php
-                $list_acheteur = '';
-                foreach ($parcellesByLieu->acheteurs as $cvi => $acheteur) :
-                    ?>
-                    <?php $list_acheteur.= '&nbsp;' . $acheteur->nom . ','; ?>
-                <?php
-                endforeach;
-                $list_acheteur = substr($list_acheteur, 0, strlen($list_acheteur) - 1);
-                ?>
-    <?php echo $list_acheteur; ?> 
-            </th>
-        </tr>
-    </table>
-    <br />
+    <br /> 
+    <span class="h3Alt">&nbsp;Destination des raisins&nbsp;</span><br/>
+    <table class="tableAlt"><tr><td>
+        <table border="0">
+            <?php foreach($parcellesByLieu->acheteurs as $type => $acheteurs): ?>
+                    <tr>
+                        <td>☒&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
+                <?php $i = 0; ?>
+                <?php foreach($acheteurs as $acheteur): ?>
+                    <?php if($acheteur->cvi == $parcellaire->identifiant): ?><?php break; endif; ?>
+                    <?php if($i === 0): ?> : <?php endif; ?>
+                    <strong><?php echo $acheteur->nom ?></strong><?php $i++; ?><?php if($i < count($acheteurs)): ?>, <?php endif; ?>
+                <?php endforeach; ?>
+                        </td>
+                    </tr>
+            <?php endforeach; ?>
+        </table>
+    </td></tr></table>
     <br />
 <?php endif; ?>
 <div><span class="h3">&nbsp;<?php echo $parcellesByLieu->appellation_libelle; ?>&nbsp;-&nbsp;<?php echo $parcellesByLieu->lieu_libelle; ?>&nbsp;</span></div>
