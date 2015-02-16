@@ -108,6 +108,7 @@ class parcellaireActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->form->update();
         $this->form->save();
 
         if ($request->isXmlHttpRequest()) {

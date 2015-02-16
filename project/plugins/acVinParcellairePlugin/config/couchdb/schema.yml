@@ -24,18 +24,22 @@ Parcellaire:
               type: collection
               definition:
                 fields:
-                  cvi : { }
-                  nom : { }
-                  produits:
+                  '*':
                     type: collection
                     definition:
                       fields:
-                        '*':
+                        cvi : { }
+                        nom : { }
+                        produits:
                           type: collection
                           definition:
                             fields:
-                              hash_produit: { }
-                              libelle: { }
+                              '*':
+                                type: collection
+                                definition:
+                                  fields:
+                                    hash_produit: { }
+                                    libelle: { }
       declarant:
         type: collection
         definition:

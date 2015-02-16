@@ -11,59 +11,90 @@
  *
  * @author mathurin
  */
-class ParcellaireTypeProprietaireForm extends acCouchdbObjectForm {
+class ParcellaireTypeProprietaireForm extends acCouchdbForm {
 
-    public function configure() {
-        $this->disableCSRFProtection();
-        $typesProprietaire = $this->getTypesProprietaire();
-        $vendeurs = $this->getAllVendeurs();
+    public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
 
-        $this->setWidget('type_proprietaire', new sfWidgetFormChoice(array('multiple' => true, 'expanded' => true, 'choices' => $typesProprietaire)));
-        $this->getWidget('type_proprietaire')->setLabel("type_proprietaire", "Type proprietaire:");
-        $this->setValidator('type_proprietaire', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($typesProprietaire)), array('required' => "Aucun type de propriétaire n'a été choisi.")));
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
 
-
-        $this->setWidget('acheteurs_select', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $vendeurs)));
-        $this->getWidget('acheteurs_select')->setLabel("acheteurs_select");
-        $this->setValidator('acheteurs_select', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($vendeurs)), array()));
-
-        $this->widgetSchema->setNameFormat('parcellaire_type_proprietaire[%s]');
+        $this->setDefaults(array_merge($this->getDefaults(), $this->getDefaultsAcheteurs()));
     }
 
-    protected function updateDefaultsFromObject() {
-        parent::updateDefaultsFromObject();
+    public function configure() {
+        //$typesProprietaire = $this->getTypesProprietaire();
+        $vendeurs = $this->getAllVendeurs(ParcellaireClient::DESTINATION_ADHERENT_CAVE_COOP);
 
-        $this->widgetSchema['acheteurs_select']->setDefault(array_keys($this->getDefaultsAcheteurs()));
+        foreach(ParcellaireClient::$destinations_libelles as $destination_key => $destination_libelle) {
+            $form = new BaseForm();
+            $form->setWidget('declarant', new sfWidgetFormInputCheckbox());
+            $form->setValidator('declarant', new sfValidatorBoolean());
+            $form->widgetSchema->setLabel('declarant', $destination_libelle);
+
+            $form->setWidget('acheteurs', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $vendeurs)));
+            $form->setValidator('acheteurs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($vendeurs)), array()));
+
+            $this->embedForm($destination_key, $form);
+        }
+
+        $this->widgetSchema->setNameFormat('parcellaire_type_proprietaire[%s]');
     }
 
     public function getDefaultsAcheteurs() {
         $default_acheteurs = array();
         
-        foreach($this->getObject()->acheteurs as $acheteur) {
-            $default_acheteurs[$acheteur->getKey()] = sprintf("%s (%s)", $acheteur->nom, $acheteur->cvi);
+        foreach($this->getDocument()->acheteurs as $type => $acheteurs) {
+            $default_acheteurs[$type]['declarant'] = true;
+            foreach($acheteurs as $acheteur) {
+                $default_acheteurs[$type]['acheteurs'][] = $acheteur->getKey();
+            }
         }
 
         return $default_acheteurs;
     }
 
-    public function doUpdateObject($values) {
-        parent::doUpdateObject($values);
+    public function update() {
+        foreach($this->values as $key => $value) {
+            if(!is_array($value)) {
+                continue;
+            }
+            $this->updateAcheteurs($key, $value);
+        }
+        //$this->getDocument()->cleanAcheteurNode();
+    }
 
+    public function save() {
+
+        $this->getDocument()->save();
+    }
+
+    public function updateAcheteurs($type, $values) {
         $acheteurs_to_delete = array();
-        $values_acheteurs = (isset($values['acheteurs_select']) && is_array($values['acheteurs_select'])) ? $values['acheteurs_select'] : array();
 
-        foreach($this->getObject()->acheteurs as $acheteur) {
-            if(!in_array($acheteur->getKey(), $values_acheteurs) && !count($acheteur->produits)) {
+        if(!isset($values["declarant"]) || !$values["declarant"]) {
+
+            $this->getDocument()->acheteurs->remove($type);
+            return;
+        }
+
+        $noeud = $this->getDocument()->acheteurs->add($type);
+
+        foreach($noeud as $acheteur) {
+            if(!in_array($acheteur->getKey(), $values) && !count($acheteur->produits)) {
                 $acheteurs_to_delete[] = $acheteur->getKey();
             }
         }
 
         foreach($acheteurs_to_delete as $cvi) {
-            $this->getObject()->acheteurs->remove($cvi);
+            $noeud->remove($cvi);
         }
-        
-        foreach($values_acheteurs as $cvi) {
-            $this->getObject()->addAcheteurNode($cvi);
+
+        if(!isset($values["acheteurs"]) || !is_array($values["acheteurs"])) {
+
+            return;
+        }
+
+        foreach($values["acheteurs"] as $cvi) {
+            $this->getDocument()->getDocument()->addAcheteurNode($type, $cvi);
         }
     }
 
@@ -71,7 +102,7 @@ class ParcellaireTypeProprietaireForm extends acCouchdbObjectForm {
         return ParcellaireClient::$type_proprietaire_libelles;
     }
 
-    public function getAllVendeurs() {
+    public function getAllVendeurs($type) {
         $types_vendeurs = array(CompteClient::ATTRIBUT_ETABLISSEMENT_NEGOCIANT,
             CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE);
 
@@ -94,10 +125,10 @@ class ParcellaireTypeProprietaireForm extends acCouchdbObjectForm {
         $list = array();
         foreach ($results as $res) {
             $data = $res->getData();
-            $list[$data['cvi']] = $data['nom_a_afficher'];
+            $list[$data['cvi']] = sprintf("%s - %s - %s", $data['nom_a_afficher'], $data['cvi'], $data['commune']);
         }
 
-        return $list + $this->getDefaultsAcheteurs();
+        return $list;
     }
 
 }
