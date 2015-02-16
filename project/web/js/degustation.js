@@ -32,7 +32,7 @@
                 if($(this).hasClass('list-group-item-container')) {
                     heure = $(this).attr('data-value');
                 } else {
-                    $(this).find('input').val(heure);
+                    $(this).find('input.input-heure').val(heure);
                 }
             });
         }
@@ -208,11 +208,13 @@
 
     $.addItem = function(ligne) {
         ligne.attr('data-state', $('.nav-filter.active').attr('data-state'));
+        ligne.find('input.input-tournee').val($('.nav-filter.active').attr('data-state'));
         $.updateItem(ligne);
     }
 
     $.removeItem = function(ligne) {
         ligne.attr('data-state', '');
+        ligne.find('input.input-tournee').val("");
         $.updateItem(ligne);
     }
 

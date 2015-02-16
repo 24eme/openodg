@@ -178,6 +178,27 @@ class degustationActions extends sfActions {
         }
         $this->heures["24:00"] = "24";
         $this->prelevements = $this->degustation->getPrelevementsOrderByHour();
+        $this->agents_couleur = array();
+        $i = 0;
+        foreach($this->degustation->agents as $agent) {
+            $this->agents_couleur[$agent->getKey()] = $this->couleurs[$i];
+            $i++;
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $values = $request->getParameter("prelevements", array());
+
+        foreach($values as $key => $value) {
+            $this->degustation->prelevements->get($key)->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
+            $this->degustation->prelevements->get($key)->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+            $this->degustation->prelevements->get($key)->heure = $value["heure"];
+        }
+
+        $this->degustation->save();
     }
 
     public function executeValidation(sfWebRequest $request) {
