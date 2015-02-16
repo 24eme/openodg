@@ -13,12 +13,15 @@
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
                 <table class="table table-striped">
-                    <tr>
-                        <th></th>
-                        <?php foreach($form->getAcheteurs() as $libelle): ?>           
-                        <th><?php echo $libelle ?></th>
-                        <?php endforeach; ?>  
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <?php foreach($form->getAcheteurs() as $libelle): ?>           
+                            <th class="text-center"><?php echo $libelle ?></th>
+                            <?php endforeach; ?>  
+                        </tr>
+                    </thead>
+                    <tbody>
                     <?php foreach($form as $key => $field) : ?>
                     <?php if($field->isHidden()) { continue; } ?>
                     <tr>
@@ -27,10 +30,11 @@
                             <?php echo $field->renderError() ?>
                         </td>
                         <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>            
-                        <td><input type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> /></td>
+                        <td class="text-center"><input type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> /></td>
                         <?php endforeach; ?>
                     </tr>
                     <?php endforeach; ?>
+                    </tbody>
                 </table>
             </div>
 
