@@ -226,7 +226,7 @@ class Parcellaire extends BaseParcellaire {
                     $parcellesByCommunes[$parcelle->commune]->total_superficie = 0;
                     $parcellesByCommunes[$parcelle->commune]->produits = array();
                 }
-                $key_produit = $parcelle->commune . '-' . $parcelle->section . '-' . $parcelle->numero_parcelle;
+                $key_produit = $key;
                 $parcellesByCommunes[$parcelle->commune]->produits[$key_produit] = new stdClass();
 
                 $configLieuLibelle = $config->get($parcelle->getCepage()->getCouleur()->getLieu()->getHash())->getLibelle();
