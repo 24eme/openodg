@@ -5,10 +5,16 @@
 </div>
 
 <ul class="nav nav-tabs">
-    <?php foreach ($parcellaireAppellations as $appellationKey => $appellationName) : 
+    <?php 
+    $selectedAppellationName = "";
+    foreach ($parcellaireAppellations as $appellationKey => $appellationName) : 
         $styleOpacity = ($appellation == $appellationKey || $parcellaire->hasParcelleForAppellationKey($appellationKey))? '' : 'style="opacity: 0.5;"';
+        $isSelectedAppellation = ($appellation == $appellationKey);
+        if(!$selectedAppellationName && $isSelectedAppellation){
+            $selectedAppellationName = $appellationName;
+        }
         ?>
-        <li role="presentation" class="<?php echo ($appellation == $appellationKey) ? 'active' : '' ?>" <?php echo $styleOpacity; ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
+        <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>" <?php echo $styleOpacity; ?> ><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
     <?php endforeach; ?>
 </ul>
 
@@ -19,11 +25,14 @@
     <div class="row">       
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
+                <?php if(count($parcelles)) : ?>
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="col-xs-3">Identifiant parcelle</th>        
-                            <th class="col-xs-4">Lieu-dit</th>      
+                            <th class="col-xs-3">Commune</th>        
+                            <th class="col-xs-1">Section</th>        
+                            <th class="col-xs-1">Numéro</th>        
+                            <th class="col-xs-2">Lieu-dit</th>      
                             <th class="col-xs-3">Cépage</th>        
                             <th class="col-xs-3">Superficie</th>                 
                         </tr>
@@ -32,15 +41,20 @@
                         <?php foreach ($parcelles as $key => $parcelle):
                             ?>
                             <tr>
-                                <td><?php echo $parcelle->getParcelleIdentifiant(); ?></td>           
+                                <td><?php echo $parcelle->getCommune(); ?></td>         
+                                <td><?php echo $parcelle->getSection(); ?></td>         
+                                <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
                                 <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
-                                <td><?php echo $form['produits'][$parcelle->getHashForKey()]['cepage']->render(array('class' => 'form-control')); ?></td>        
+                                <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
                                 <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float")); ?></td>                 
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
+            <?php else : ?>
+            <p>Vous n'avez aucunes parcelles pour les <?php echo $selectedAppellationName; ?></p><br/>
+            <?php endif; ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>

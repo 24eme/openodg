@@ -16,7 +16,7 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
     private $allCepagesAppellation;
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
-        parent::__construct($object, $options, $CSRFSecret);        
+        parent::__construct($object, $options, $CSRFSecret);
     }
 
     public function configure() {
@@ -25,20 +25,17 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
             'commune' => new sfWidgetFormInputHidden(),
             'section' => new sfWidgetFormInputHidden(),
             'numero_parcelle' => new sfWidgetFormInputHidden(),
-            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
-            'cepage' => new sfWidgetFormChoice(array('multiple' => false, 'expanded' => false, 'choices' => $this->getCepagesForLieu(),
-        ))));
+            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f'))
+        ));
         $this->widgetSchema->setLabels(array(
-            'superficie' => 'Superficie (ares):',
-            'cepage' => 'Cepage'
+            'superficie' => 'Superficie (ares):'
         ));
         $this->setValidators(array(
             'lieu' => new sfValidatorPass(),
             'commune' => new sfValidatorPass(),
             'section' => new sfValidatorPass(),
             'numero_parcelle' => new sfValidatorPass(),
-            'superficie' => new sfValidatorNumber(array('required' => false)),
-            'cepage' => new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getCepagesForLieu())))
+            'superficie' => new sfValidatorNumber(array('required' => false))
         ));
 
 
@@ -50,19 +47,11 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
         parent::doUpdateObject($values);
     }
 
-    public function getCepagesForLieu() {
-        $this->allCepagesAppellation = array();
-        foreach ($this->getObject()->getLieuNode()->getConfig()->getProduits() as $key => $cepage) {
-            $keyCepage = str_replace('/', '-', $key);
-            $libelle = $cepage->getLibelle();
-            $this->allCepagesAppellation[$keyCepage] = $libelle;
-        }
-        return $this->allCepagesAppellation;
-    }
-
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        $this->setDefault('cepage', $this->getObject()->getCepage()->getHashForKey());
+        if (!$this->getObject()->exist('superficie') || !$this->getObject()->superficie) {
+            $this->setDefault('superficie', '0.0000');
+        }
     }
 
 }

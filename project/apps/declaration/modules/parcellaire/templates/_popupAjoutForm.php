@@ -36,16 +36,16 @@
 						<?php echo $form['numero_parcelle']->render(array("placeholder" => "Saisissez un numéro de parcelle", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
-<!--                                        <span class="error"><?php // echo $form['cepage']->renderError() ?></span>
+                                       <span class="error"><?php echo $form['cepage']->renderError() ?></span>
 					<div class="form-group row">
                                             <div class="col-xs-4">
-						<?php // echo $form['cepage']->renderLabel(); ?>
+						<?php echo $form['cepage']->renderLabel(); ?>
 						</div>
 						<div class="col-xs-8">
-						<?php // echo $form['cepage']->render(array("placeholder" => "Saisissez un lieu/cépage", "class" => "form-control", "required" => true)) ?>
+						<?php echo $form['cepage']->render(array("placeholder" => "Saisissez un lieu/cépage", "class" => "form-control", "required" => true)) ?>
 						</div>
 					</div>
-
+<!-- 
 					<?php // if(isset($form['lieu'])): ?>
 					<span class="error"><?php // echo $form['lieu']->renderError() ?></span>
 					<div class="form-group row">
