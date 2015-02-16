@@ -1,30 +1,32 @@
 <?php include_partial('parcellaire/step', array('step' => 'propriete', 'parcellaire' => $parcellaire)) ?>
 
 <div class="page-header">
-    <h2>Type de propriété</h2>
+    <h2>Destination des raisins</h2>
 </div>
 
 <form action="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" method="post" class="form-horizontal ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     <div class="row">
-        <div class="row col-xs-12 ">  
-
+        <div class="col-xs-12">  
+            <?php foreach($form as $key => $formDestination): ?>
+            <?php if($formDestination->isHidden()): continue; endif; ?>
             <div class="form-group">
-                <?php echo $form["type_proprietaire"]->renderError(); ?>
-                <div class="col-xs-9">
-                    <?php echo $form["type_proprietaire"]->render(array("class" => "checkbox-inline")); ?>
+                <?php echo $formDestination["declarant"]->renderError(); ?>
+                <label class="col-xs-12">
+                    <?php echo $formDestination["declarant"]->render(array("class" => "checkbox-relation", "data-relation" => "#autocomplete_acheteurs_".$key)); ?>
+                    <?php echo $formDestination["declarant"]->renderLabelName(); ?>
+                </label>
+            </div>
+            <?php if(isset($formDestination["acheteurs"])): ?>
+            <div id="autocomplete_acheteurs_<?php echo $key ?>" class="form-group <?php if(!$formDestination["declarant"]->getValue()): ?>hidden<?php endif; ?>">
+                <?php echo $formDestination["acheteurs"]->renderError(); ?>
+                <div class="col-xs-12">
+                    <?php echo $formDestination["acheteurs"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Selectionner des acheteurs")); ?>
                 </div>
             </div>
-
-            <div class="form-group">
-                <?php echo $form["acheteurs_select"]->renderError(); ?>
-                <?php echo $form["acheteurs_select"]->renderLabel("Vos acheteurs", array("class" => "col-xs-3 control-label")); ?>
-                <div class="col-xs-9">
-                    <?php echo $form["acheteurs_select"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Selectionner des acheteurs")); ?>
-                </div>
-            </div>
-
+            <?php endif; ?>
+            <?php endforeach; ?>
         </div>
     </div>
 

@@ -70,6 +70,15 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
+    public function getAcheteursNode() {
+        $acheteurs = array();
+        foreach($this->getProduits() as $produit) {
+            $acheteurs = array_merge($acheteurs, $produit->getAcheteursNode());
+        }
+
+        return $acheteurs;
+    }
+
     public function hasVtsgn() {
         foreach ($this->getProduitsCepage() as $produit) {
             if ($produit->hasVtsgn()) {

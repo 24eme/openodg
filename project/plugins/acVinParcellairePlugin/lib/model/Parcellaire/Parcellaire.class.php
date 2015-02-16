@@ -178,22 +178,31 @@ class Parcellaire extends BaseParcellaire {
         return $appellation;
     }
 
-    public function addAcheteurNode($cvi) {
-        if ($this->acheteurs->exist($cvi)) {
+    public function addAcheteur($type, $cvi) {
+        if ($this->acheteurs->add($type)->exist($cvi)) {
 
-            return $this->acheteurs->get($cvi);
+            return $this->acheteurs->add($type)->get($cvi);
         }
 
-        $acheteur = $this->acheteurs->add($cvi);
-        var_dump($cvi);
+        $acheteur = $this->acheteurs->add($type)->add($cvi);
+
+        if($cvi == $this->identifiant) {
+            $acheteur->nom = "Sur place";
+            $acheteur->cvi = $cvi;
+            $acheteur->commune = null;
+
+            return $acheteur;
+        }
+
         $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-' . $cvi, acCouchdbClient::HYDRATE_JSON);
+        
         if (!$etablissement) {
-            exit;
             throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-' . $cvi));
         }
 
         $acheteur->nom = $etablissement->raison_sociale;
         $acheteur->cvi = $cvi;
+        $acheteur->commune = $etablissement->commune;
 
         return $acheteur;
     }
@@ -265,7 +274,7 @@ class Parcellaire extends BaseParcellaire {
                 $parcellesByLieux[$lieu_hash]->appellation_libelle = $configAppellationLibelle;
                 $parcellesByLieux[$lieu_hash]->lieu_libelle = $configLieuLibelle;
                 $parcellesByLieux[$lieu_hash]->parcelles = array();
-                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteurs();
+                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteursNode();
             }
 
             $parcelaireCouleurs = $this->get($lieu_hash)->getCouleurs();

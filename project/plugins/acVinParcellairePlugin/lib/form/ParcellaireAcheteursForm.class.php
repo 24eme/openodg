@@ -9,12 +9,10 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
 
     public function configure() {
         
-        foreach($this->getDocument()->declaration->getAppellations() as $appelation) {
-            foreach($appelation->mention->getLieux() as $lieu) {
-                $this->setWidget($lieu->getHash(), new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
-                $this->setValidator($lieu->getHash(), new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
-                $this->getWidget($lieu->getHash())->setLabel($lieu->getLibelleComplet());             
-            }
+        foreach($this->getDocument()->declaration->getProduits() as $cepage) {
+            $this->setWidget($cepage->getHash(), new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
+            $this->setValidator($cepage->getHash(), new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
+            $this->getWidget($cepage->getHash())->setLabel($cepage->getLibelleComplet());             
         }
 
         $this->widgetSchema->setNameFormat('parcellaire_acheteurs[%s]');
@@ -23,12 +21,14 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
     public function getDefaultsByDoc($doc) {
         $defaults = array();
 
-        foreach($doc->acheteurs as $acheteur) {
-            foreach($acheteur->produits as $produit) {
-                if(!array_key_exists($produit->hash_produit, $defaults)) {
-                    $defaults[$produit->hash_produit] = array();
+        foreach($doc->getProduits() as $hash => $produit) {
+            foreach($produit->acheteurs as $type => $acheteurs) {
+                foreach($acheteurs as $acheteur) {
+                    if(!isset($defaults[$hash])) {
+                        $defaults[$hash] = array();
+                    }
+                    $defaults[$hash] = array_merge($defaults[$hash], array(str_replace($hash, "", $acheteur->getHash())));
                 }
-                $defaults[$produit->hash_produit] = array_merge($defaults[$produit->hash_produit], array($acheteur->getKey()));
             }
         }
 
@@ -37,28 +37,30 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
 
     public function getAcheteurs() {
         $acheteurs = array();
-        foreach($this->getDocument()->acheteurs as $acheteur) {
-            $acheteurs[$acheteur->getKey()] = sprintf("%s", $acheteur->nom);
+
+        foreach($this->getDocument()->acheteurs as $achs) {
+            foreach($achs as $acheteur) {
+                $acheteurs[$acheteur->getHash()] = sprintf("%s", $acheteur->nom);
+            }
         }
 
         return $acheteurs;
     }
 
     public function update() {
-        foreach($this->getDocument()->acheteurs as $acheteur) {
-            $acheteur->remove('produits');
-            $acheteur->add('produits');
+        foreach($this->getDocument()->getProduits() as $produit) {
+                $produit->remove('acheteurs');
+                $produit->add('acheteurs');
         }
-
-        foreach($this->values as $hash => $cvis) {
-            if(!is_array($cvis)) {
+        foreach($this->values as $hash_produit => $hash_acheteurs) {
+            if(!is_array($hash_acheteurs)) {
                 continue;
             }
-            foreach($cvis as $cvi) {
-                $acheteur = $this->getDocument()->addAcheteurNode($cvi);
-                $produit = $acheteur->produits->add(str_replace("/", "-", $hash));
-                $produit->hash_produit = $hash;
-                $produit->libelle = $this->getDocument()->get($hash)->getLibelleComplet();
+            
+            foreach($hash_acheteurs as $hash_acheteur) {
+                $produit = $this->getDocument()->get($hash_produit);
+                $acheteur = $this->getDocument()->get($hash_acheteur);
+                $produit->addAcheteurFromNode($acheteur);
             }
         }
     }
