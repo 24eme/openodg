@@ -41,6 +41,9 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
 
         if ($parcellaire->exist('etape') && $parcellaire->etape) {
+            if($parcellaire->etape == ParcellaireEtapes::ETAPE_PARCELLES){
+                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id , 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation()));
+            }
             return $this->redirect('parcellaire_' . $parcellaire->etape, $parcellaire);
         }
 
@@ -135,9 +138,8 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
-        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
-        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation);
-
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation); 
+        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation,true);   
         $allParcellesByAppellations = $this->parcellaire->getAllParcellesByAppellations();
         $this->parcelles = array();
         foreach ($allParcellesByAppellations as $appellation) {
