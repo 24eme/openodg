@@ -23,40 +23,45 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
     public function configure() {
         $appellationNode = $this->getAppellationNode();
 
+        $hasLieuEditable = $appellationNode->getConfig()->hasLieuEditable();
         $produits = $this->getProduits();
-        
         $this->setWidget('commune', new sfWidgetFormInput());
         $this->setWidget('section', new sfWidgetFormInput());
         $this->setWidget('numero_parcelle', new sfWidgetFormInput());
-        $this->setWidget('cepage', new sfWidgetFormChoice(array('choices' => $produits)));
 
-        $this->widgetSchema->setLabels(array(
-            'commune' => 'Commune :',
-            'section' => 'Section :',
-            'numero_parcelle' => 'Numéro parcelle :',
-            'cepage' => 'Lieu/cépage :',
-//            'superficie' => 'Superficie (ares):',
-        ));
+        if (!$hasLieuEditable) {
+            $this->setWidget('lieuCepage', new sfWidgetFormChoice(array('choices' => $produits)));
+        } else {
+            $this->setWidget('cepage', new sfWidgetFormChoice(array('choices' => $produits)));
+            $this->setWidget('lieuDit', new sfWidgetFormInput());
+        }
 
-        $this->setValidators(array(
-            'commune' => new sfValidatorString(array('required' => true), array('required' => "Aucune commune saisie.")),
-            'section' => new sfValidatorString(array('required' => true), array('required' => "Aucune section saisie.")),
-            'numero_parcelle' => new sfValidatorString(array('required' => true), array('required' => "Aucun numéro de parcelle saisi.")),
-            'cepage' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")),
-//            'superficie' => new sfValidatorNumber(array('required' => false)),
-        ));
-//
-//        if($appellationNode->getConfig()->hasLieuEditable()) {
-//           $this->setWidget('lieu', new sfWidgetFormInput());
-//           $this->setValidator('lieu', new sfValidatorString(array('required' => true), array('required' => "Aucune lieu-dit saisi")));
-//        }
+        $this->widgetSchema->setLabel('commune', 'Commune :');
+        $this->widgetSchema->setLabel('section', 'Section :');
+        $this->widgetSchema->setLabel('numero_parcelle', 'Numéro parcelle :');
+        if (!$hasLieuEditable) {
+            $this->widgetSchema->setLabel('lieuCepage', 'Lieu/cépage :');
+        } else {
+            $this->widgetSchema->setLabel('lieuDit', 'Lieu Dit:');
+            $this->widgetSchema->setLabel('cepage', 'Cépage :');
+        }
 
+        $this->setValidator('commune', new sfValidatorString(array('required' => true), array('required' => "Aucune commune saisie.")));
+        $this->setValidator('section', new sfValidatorString(array('required' => true), array('required' => "Aucune section saisie.")));
+        $this->setValidator('numero_parcelle', new sfValidatorString(array('required' => true), array('required' => "Aucun numéro de parcelle saisi.")));
+
+        if (!$hasLieuEditable) {
+            $this->setValidator('lieuCepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")));
+        } else {
+            $this->setValidator('cepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")));
+            $this->setValidator('lieuDit', new sfValidatorString(array('required' => true)));
+        }
         $this->widgetSchema->setNameFormat('parcellaire_ajout_parcelle[%s]');
     }
 
     public function getAppellationNode() {
 
-        return $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey,true);
+        return $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey, true);
     }
 
     public function getProduits() {
@@ -65,30 +70,35 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $this->allCepagesAppellation = array();
         foreach ($appellationNode->getConfig()->getProduits() as $key => $cepage) {
             $keyCepage = str_replace('/', '-', $key);
-            $libelleCepage = $cepage->getLibelle();
+            $libelleCepage = $cepage->getLibelleLong();
             $couleur = $cepage->getCouleur();
             $libelleCouleur = $couleur->getLibelle();
             $lieu = $couleur->getLieu();
             $libelleLieu = $lieu->getLibelle();
-            $this->allCepagesAppellation[$keyCepage] = $libelleLieu.' '.$libelleCouleur.' '.$libelleCepage;
+            $this->allCepagesAppellation[$keyCepage] = $libelleLieu . ' ' . $libelleCouleur . ' ' . $libelleCepage;
         }
         return $this->allCepagesAppellation;
     }
 
     protected function doUpdateObject($values) {
-        
+
         if ((!isset($values['commune']) || empty($values['commune'])) ||
                 (!isset($values['section']) || empty($values['section'])) ||
-                (!isset($values['numero_parcelle']) || empty($values['numero_parcelle'])) 
+                (!isset($values['numero_parcelle']) || empty($values['numero_parcelle']))
         ) {
             return;
         }
-        
+
         $commune = $values['commune'];
         $section = $values['section'];
         $numero_parcelle = $values['numero_parcelle'];
-        $cepage = $values['cepage'];
-        $this->getObject()->addParcelleForAppellation($this->appellationKey,$cepage, $commune, $section, $numero_parcelle);
+        if (!$this->getAppellationNode()->getConfig()->hasLieuEditable()) {
+            $cepage = $values['lieuCepage'];
+        } else {
+            $cepage = $values['cepage'];
+        }
+        
+        $this->getObject()->addParcelleForAppellation($this->appellationKey, $cepage, $commune, $section, $numero_parcelle);
     }
 
 }

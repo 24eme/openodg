@@ -46,7 +46,7 @@
                                 <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
                                 <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                 <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
-                                <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float")); ?></td>                 
+                                <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float num_float4")); ?></td>                 
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
