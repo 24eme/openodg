@@ -151,12 +151,12 @@ class Parcellaire extends BaseParcellaire {
         return $produit;
     }
 
-    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu = null) {
+    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu = null) {
         $produit = $this->getOrAdd($hash);
 
         $this->addProduit($produit->getHash());
 
-        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
+        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
     public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle) {
@@ -168,7 +168,7 @@ class Parcellaire extends BaseParcellaire {
         //$appellation = $this->getAppellationNodeFromAppellationKey($appellationKey);
         //return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);
         
-         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
+         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle);
     }
 
     public function addAppellation($hash) {
