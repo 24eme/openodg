@@ -34,7 +34,8 @@
                             <th class="col-xs-1">Numéro</th>        
                             <th class="col-xs-2">Lieu-dit</th>      
                             <th class="col-xs-3">Cépage</th>        
-                            <th class="col-xs-3">Superficie</th>                 
+                            <th class="col-xs-3">Superficie</th>           
+                            <th class="col-xs-1"></th>           
                         </tr>
                     </thead>
                     <tbody>
@@ -47,6 +48,7 @@
                                 <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                 <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
                                 <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float num_float4")); ?></td>                 
+                                <td><a href="<?php echo url_for('parcellaire_parcelle_delete' , array('id' => $parcellaire->_id, 'appellation' => $appellation,'parcelle' => $parcelle->getHashForKey())); ?>" >suppr.</a></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

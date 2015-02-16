@@ -65,7 +65,7 @@ class Parcellaire extends BaseParcellaire {
         $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
         return ParcellaireClient::getInstance()->find($parcellairePrevId);
     }
-    
+
     private function importProduitsFromLastParcellaire() {
         $parcellairePrev = $this->getParcellaireLastCampagne();
         if (!$parcellairePrev) {
@@ -124,7 +124,7 @@ class Parcellaire extends BaseParcellaire {
         $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
         if ($appellationNode) {
             $appellationNodeHash = $appellationNode->getHash();
-           // $this->remove($appellationNodeHash);
+            // $this->remove($appellationNodeHash);
             $this->getOrAdd($appellationNodeHash);
             foreach ($produits as $cepageKey => $parcelle) {
                 $cepageKeyMatches = array();
@@ -167,8 +167,8 @@ class Parcellaire extends BaseParcellaire {
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
         //$appellation = $this->getAppellationNodeFromAppellationKey($appellationKey);
         //return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);
-        
-         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
+
+        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
     public function addAppellation($hash) {
@@ -186,7 +186,7 @@ class Parcellaire extends BaseParcellaire {
 
         $acheteur = $this->acheteurs->add($type)->add($cvi);
 
-        if($cvi == $this->identifiant) {
+        if ($cvi == $this->identifiant) {
             $acheteur->nom = "Sur place";
             $acheteur->cvi = $cvi;
             $acheteur->commune = null;
@@ -195,7 +195,7 @@ class Parcellaire extends BaseParcellaire {
         }
 
         $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-' . $cvi, acCouchdbClient::HYDRATE_JSON);
-        
+
         if (!$etablissement) {
             throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-' . $cvi));
         }
@@ -254,12 +254,12 @@ class Parcellaire extends BaseParcellaire {
 
     public function getParcellesByCommunesLastCampagne() {
         $parcellairePrev = $this->getParcellaireLastCampagne();
-         if (!$parcellairePrev) {
+        if (!$parcellairePrev) {
             return array();
         }
         return $parcellairePrev->getParcellesByCommunes();
     }
-    
+
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
         $allParcellesByLieux = $this->getAllParcellesByLieux();

@@ -24,7 +24,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function getLieuLibelle() {
-        if($this->lieu) {
+        if ($this->lieu) {
 
             return $this->lieu;
         }
@@ -33,7 +33,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function getParcelleIdentifiant() {
-        return $this->commune . ' ' . $this->section . ' ' . $this->numero_parcelle;
+        return $this->commune . '-' . $this->section . '-' . $this->numero_parcelle;
     }
 
     public function getAppellation() {
@@ -44,7 +44,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
 
         return $this->getParent()->getParent();
     }
-    
+
     public function getCepageLibelle() {
 
         return $this->getCepage()->getLibelle();
@@ -54,8 +54,8 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
 
         return $this->getCepage()->getCouleur();
     }
-    
-     public function isCleanable() {        
+
+    public function isCleanable() {
         return !$this->superficie;
     }
 

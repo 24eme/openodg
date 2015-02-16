@@ -41,8 +41,8 @@ class parcellaireActions extends sfActions {
         $parcellaire = $this->getRoute()->getParcellaire();
 
         if ($parcellaire->exist('etape') && $parcellaire->etape) {
-            if($parcellaire->etape == ParcellaireEtapes::ETAPE_PARCELLES){
-                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id , 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation()));
+            if ($parcellaire->etape == ParcellaireEtapes::ETAPE_PARCELLES) {
+                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation()));
             }
             return $this->redirect('parcellaire_' . $parcellaire->etape, $parcellaire);
         }
@@ -138,8 +138,8 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
-        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation); 
-        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation,true);   
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
+        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
         $allParcellesByAppellations = $this->parcellaire->getAllParcellesByAppellations();
         $this->parcelles = array();
         foreach ($allParcellesByAppellations as $appellation) {
@@ -149,7 +149,7 @@ class parcellaireActions extends sfActions {
             }
         }
 
-        $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
+        $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);     
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -195,6 +195,20 @@ class parcellaireActions extends sfActions {
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
     }
 
+    public function executeDeleteParcelle(sfWebRequest $request) {
+        $parcellaire = $this->getRoute()->getParcellaire();
+        $appellation = $request->getParameter('appellation');        
+        $parcelleKey = $request->getParameter('parcelle');
+        
+        preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
+        
+        $parcellaire->get(str_replace('-','/', $parcelleKeyMatches[1]))->detail->remove($parcelleKeyMatches[2]);            
+        $parcellaire->save();
+        $this->getUser()->setFlash("notice", 'La parcelle a été supprimée avec succès.');
+        
+        return $this->redirect('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation));
+    }
+
     public function executeAcheteurs(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
@@ -237,16 +251,16 @@ class parcellaireActions extends sfActions {
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
-        
+
         $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION));
         $this->parcellaire->save();
 
-        
+
         $this->validation = new ParcellaireValidation($this->parcellaire);
-        
-        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();        
+
+        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
         $this->parcellesByCommunesLastCampagne = $this->parcellaire->getParcellesByCommunesLastCampagne();
-        
+
         $this->form = new ParcellaireValidationForm($this->parcellaire);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
@@ -265,19 +279,18 @@ class parcellaireActions extends sfActions {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
     }
-    
-    
-     public function executeVisualisation(sfWebRequest $request) {
+
+    public function executeVisualisation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
-         $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();      
+        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
     }
 
     public function executePDF(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
-        
+
         $this->parcellaire->declaration->cleanNode();
-        
+
         $this->document = new ExportParcellairePDF($this->parcellaire, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 

@@ -652,7 +652,7 @@ parcellaire_parcelles:
     sf_method: [get,post]
 
 parcellaire_parcelle_ajout:
-  url: /parcellaire/ajout-parcelle/:id/:appellation
+  url: /parcellaire/ajoutParcelle/:id/:appellation
   param: { module: parcellaire, action: ajoutParcelle }
   class: ParcellaireRoute
   options:
@@ -660,6 +660,16 @@ parcellaire_parcelle_ajout:
     type:     object
   requirements:
     sf_method: [post]
+    
+parcellaire_parcelle_delete:
+  url: /parcellaire/deleteParcelle/:id/:appellation/:parcelle
+  param: { module: parcellaire, action: deleteParcelle }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
 
 parcellaire_acheteurs:
   url: /parcellaire/acheteurs/:id
