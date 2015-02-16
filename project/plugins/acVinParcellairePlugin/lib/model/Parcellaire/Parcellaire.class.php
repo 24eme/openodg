@@ -124,7 +124,7 @@ class Parcellaire extends BaseParcellaire {
         $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
         if ($appellationNode) {
             $appellationNodeHash = $appellationNode->getHash();
-            $this->remove($appellationNodeHash);
+           // $this->remove($appellationNodeHash);
             $this->getOrAdd($appellationNodeHash);
             foreach ($produits as $cepageKey => $parcelle) {
                 $cepageKeyMatches = array();
@@ -132,7 +132,7 @@ class Parcellaire extends BaseParcellaire {
                 if (count($cepageKeyMatches) != 3) {
                     throw new sfException("La hash produit " . $cepageKey . " n'est pas conforme");
                 }
-                $hashCepage = str_replace('-', '/', $parcelle["cepage"]);
+                $hashCepage = str_replace('-', '/', $cepageKeyMatches[1]);
                 $parcelleKey = $cepageKeyMatches[2];
                 $this->addProduitParcelle($hashCepage, $parcelleKey, $parcelle["commune"], $parcelle["section"], $parcelle["numero_parcelle"], $parcelle["superficie"], $parcelle["lieu"]);
             }
@@ -159,17 +159,16 @@ class Parcellaire extends BaseParcellaire {
         return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
     }
 
-    public function addParcelleForAppellation($appellationKey, $commune, $section, $numero_parcelle) {
-      //  $hash = str_replace('-', '/', $cepage);
+    public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle) {
+        $hash = str_replace('-', '/', $cepage);
         $commune = KeyInflector::slugify($commune);
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
-        $appellation = $this->getAppellationNodeFromAppellationKey($appellationKey);
-        return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);
+        //$appellation = $this->getAppellationNodeFromAppellationKey($appellationKey);
+        //return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);
         
-        
-       // $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
+         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
     public function addAppellation($hash) {

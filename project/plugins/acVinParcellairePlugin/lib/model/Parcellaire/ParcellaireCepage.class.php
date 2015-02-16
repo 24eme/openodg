@@ -59,7 +59,6 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $detail->numero_parcelle = $numero_parcelle;
         $detail->superficie = $superficie;
         $detail->lieu = $lieu;
-
         return $detail;
     }
     

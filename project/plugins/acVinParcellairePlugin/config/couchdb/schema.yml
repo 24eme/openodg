@@ -75,20 +75,6 @@ Parcellaire:
                           inheritance: _ParcellaireDeclarationNoeud
                           definition:
                             fields:
-                              parcelles:                                                        
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      type: collection
-                                      class: ParcellaireAppellationParcelle
-                                      definition:
-                                        fields:
-                                          superficie: { type: float }
-                                          commune: { }
-                                          code_postal: { }
-                                          section: { }
-                                          numero_parcelle: { }
                               libelle: { }
                               # ------- MENTION ----------
                               'mention':

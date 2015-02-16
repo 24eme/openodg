@@ -24,18 +24,17 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $appellationNode = $this->getAppellationNode();
 
         $produits = $this->getProduits();
-        $this->setWidgets(array(
-            'commune' => new sfWidgetFormInput(),
-            'section' => new sfWidgetFormInput(),
-            'numero_parcelle' => new sfWidgetFormInput(),
-//            'cepage' => new sfWidgetFormChoice(array('choices' => $produits)),
-//            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f')),
-        ));
+        
+        $this->setWidget('commune', new sfWidgetFormInput());
+        $this->setWidget('section', new sfWidgetFormInput());
+        $this->setWidget('numero_parcelle', new sfWidgetFormInput());
+        $this->setWidget('cepage', new sfWidgetFormChoice(array('choices' => $produits)));
+
         $this->widgetSchema->setLabels(array(
             'commune' => 'Commune :',
             'section' => 'Section :',
             'numero_parcelle' => 'Numéro parcelle :',
-//            'cepage' => 'Lieu/cépage :',
+            'cepage' => 'Lieu/cépage :',
 //            'superficie' => 'Superficie (ares):',
         ));
 
@@ -43,7 +42,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             'commune' => new sfValidatorString(array('required' => true), array('required' => "Aucune commune saisie.")),
             'section' => new sfValidatorString(array('required' => true), array('required' => "Aucune section saisie.")),
             'numero_parcelle' => new sfValidatorString(array('required' => true), array('required' => "Aucun numéro de parcelle saisi.")),
-//            'cepage' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")),
+            'cepage' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")),
 //            'superficie' => new sfValidatorNumber(array('required' => false)),
         ));
 //
@@ -88,8 +87,8 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $commune = $values['commune'];
         $section = $values['section'];
         $numero_parcelle = $values['numero_parcelle'];
-        
-        $this->getObject()->addParcelleForAppellation($this->appellationKey, $commune, $section, $numero_parcelle);
+        $cepage = $values['cepage'];
+        $this->getObject()->addParcelleForAppellation($this->appellationKey,$cepage, $commune, $section, $numero_parcelle);
     }
 
 }

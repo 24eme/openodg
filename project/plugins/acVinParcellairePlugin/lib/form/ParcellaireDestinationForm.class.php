@@ -60,7 +60,6 @@ class ParcellaireDestinationForm extends acCouchdbForm {
             }
             $this->updateAcheteurs($key, $value);
         }
-        //$this->getDocument()->cleanAcheteurNode();
     }
 
     public function save() {
