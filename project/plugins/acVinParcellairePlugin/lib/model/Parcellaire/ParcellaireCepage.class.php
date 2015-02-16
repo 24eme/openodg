@@ -28,6 +28,18 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->getCouleur()->getAppellation();
     }
 
+    public function getAcheteursNode($type = null) {
+        $acheteurs = array();
+
+        foreach($this->acheteurs as $type => $achs) {
+            foreach($achs as $acheteur) {
+                $acheteurs[$type][$acheteur->getKey()] = $acheteur;
+            }
+        }
+
+        return $acheteurs;
+    }
+
     public function addAcheteur($type, $cvi) {
         $a = $this->getDocument()->addAcheteur($type, $cvi);
         $acheteur = $this->acheteurs->add($type)->add($cvi);

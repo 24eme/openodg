@@ -274,7 +274,7 @@ class Parcellaire extends BaseParcellaire {
                 $parcellesByLieux[$lieu_hash]->appellation_libelle = $configAppellationLibelle;
                 $parcellesByLieux[$lieu_hash]->lieu_libelle = $configLieuLibelle;
                 $parcellesByLieux[$lieu_hash]->parcelles = array();
-                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteurs();
+                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteursNode();
             }
 
             $parcelaireCouleurs = $this->get($lieu_hash)->getCouleurs();
