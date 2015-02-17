@@ -37,16 +37,24 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
         return false;
     }
     
-    public function getDetailsSortedByParcelle() {
+    public function getDetailsSortedByParcelle($byfullkey = true) {
         $parcelles = $this->getProduitsCepageDetails();
-        usort($parcelles, 'ParcellaireAppellation::sortParcellesByDetail');
+        if ($byfullkey) {
+            usort($parcelles, 'ParcellaireAppellation::sortParcellesByFullKey');
+        }else{
+            usort($parcelles, 'ParcellaireAppellation::sortParcellesByCommune');
+        }
         return $parcelles;
     }
     
-    static function sortParcellesByDetail($detail0, $detail1) {
+    static function sortParcellesByFullKey($detail0, $detail1) {
         return strcmp($detail0->getLibelleComplet().' '.$detail0->getParcelleIdentifiant(),
         $detail1->getLibelleComplet().' '.$detail1->getParcelleIdentifiant());
-        
+    }
+    
+    static function sortParcellesByCommune($detail0, $detail1) {
+        return strcmp($detail0->getParcelleIdentifiant().' '.$detail0->getLibelleComplet(),
+        $detail1->getParcelleIdentifiant().' '.$detail1->getLibelleComplet());
     }
     
     public function getPreviousAppellationKey() {

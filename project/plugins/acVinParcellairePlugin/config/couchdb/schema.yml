@@ -10,6 +10,7 @@ Parcellaire:
       etape: { }
       validation: { }
       validation_odg: { }
+      autorisation_acheteur: { }
       papier: { required: false, type: integer }
       type_proprietaire:
         type: collection

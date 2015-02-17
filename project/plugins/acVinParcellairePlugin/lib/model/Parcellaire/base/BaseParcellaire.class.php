@@ -12,6 +12,7 @@
  * @property string $etape
  * @property string $validation
  * @property string $validation_odg
+ * @property string $autorisation_acheteur
  * @property integer $papier
  * @property acCouchdbJson $type_proprietaire
  * @property acCouchdbJson $acheteurs
@@ -34,6 +35,8 @@
  * @method string setValidation()
  * @method string getValidationOdg()
  * @method string setValidationOdg()
+ * @method string getAutorisationAcheteur()
+ * @method string setAutorisationAcheteur()
  * @method integer getPapier()
  * @method integer setPapier()
  * @method acCouchdbJson getTypeProprietaire()

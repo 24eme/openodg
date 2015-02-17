@@ -26,6 +26,9 @@ if (isset($diff) && $diff) {
             $stylesuperficie = (!$detail->superficie)? 'border-style: solid; border-width: 1px; border-color: darkred' : 'border-style: solid; border-width: 1px; border-color: darkorange';
         }
     }
+    if (! $detail->getSuperficie()) {
+        $stylesuperficie = 'border-style: solid; border-width: 1px; border-color: darkred';
+    }
 }
 ?>
                             <tr style="<?php echo $styleline;?>">

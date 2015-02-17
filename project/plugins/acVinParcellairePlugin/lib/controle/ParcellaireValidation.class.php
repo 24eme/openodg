@@ -16,7 +16,7 @@ class ParcellaireValidation extends DocumentValidation
   		 * Warning
   		 */
         $this->addControle(self::TYPE_WARNING, 'parcellaire_complantation', 'Parcelle complantée');
-        $this->addControle(self::TYPE_WARNING, 'suppression_produit', 'Parcelle supprimée');
+        $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
 
 
         /*
@@ -36,13 +36,13 @@ class ParcellaireValidation extends DocumentValidation
             }
             array_push($parcelles[$pid], $detailk);
             if (!$detailv->superficie) {
-                $this->addPoint(self::TYPE_WARNING, 'suppression_produit', $detailv->section.' '.$detailv->numero_parcelle.' à '.$detailv->commune.' contenant '.$detailv->getCepage()->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => $detailv->getAppellation()->getKey())));
+                $this->addPoint(self::TYPE_ERROR, 'surface_vide', 'parcelle n°'.$detailv->section.' '.$detailv->numero_parcelle.' à '.$detailv->commune.' contenant '.$detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => $detailv->getAppellation()->getKey())));
             }
         }
         foreach($parcelles as $pid => $phashes) {
             if (count($phashes) > 1) {
                 $detail = $this->document->get($phashes[0]);
-                $this->addPoint(self::TYPE_WARNING, 'parcellaire_complantation', 'La parcelle '.$detail->section.' '.$detail->numero_parcelle.' à '.$detail->commune.' est déclarée en '.$detail->getCepage()->getLibelleComplet().' et '.$this->document->get($phashes[1])->getCepage()->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => $detail->getAppellation()->getKey())));
+                $this->addPoint(self::TYPE_WARNING, 'parcellaire_complantation', 'La parcelle '.$detail->section.' '.$detail->numero_parcelle.' à '.$detail->commune.' est déclarée en '.$detail->getLibelleComplet().' et '.$this->document->get($phashes[1])->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => $detail->getAppellation()->getKey())));
                 $detail->numero_parcelle .=  ' (complantation)';
                 $this->document->get($phashes[1])->numero_parcelle .= ' (complantation)';
             }
