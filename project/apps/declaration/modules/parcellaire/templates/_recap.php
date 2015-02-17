@@ -8,6 +8,7 @@ function sortlieucepage(& $a, & $b) {
 }
     foreach ($parcellaire->declaration->getAppellations() as $kappellation => $appellation):
             ?><h3><strong> <?php echo "Appellation " . $appellation->getLibelleComplet(); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' (ares)'; ?></span></h3>
+<?php if (! $appellation->getSuperficieTotale()) {echo "<i>Vous n'avez pas déclaré de produit pour cette appellation</i>"; } ?>
             <table class="table table-striped table-condensed">
                 <tbody>
 <?php
