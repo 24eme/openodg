@@ -37,6 +37,18 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
         return false;
     }
     
+    public function getDetailsSortedByParcelle() {
+        $parcelles = $this->getProduitsCepageDetails();
+        usort($parcelles, 'ParcellaireAppellation::sortParcellesByDetail');
+        return $parcelles;
+    }
+    
+    static function sortParcellesByDetail($detail0, $detail1) {
+        return strcmp($detail0->getLibelleComplet().' '.$detail0->getParcelleIdentifiant(),
+        $detail1->getLibelleComplet().' '.$detail1->getParcelleIdentifiant());
+        
+    }
+    
     public function getPreviousAppellationKey() {
         $appellationsKeys = array_reverse(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys()));
         $onAppellation = false;
