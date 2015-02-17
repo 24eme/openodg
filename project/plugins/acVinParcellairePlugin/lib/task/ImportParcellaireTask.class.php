@@ -62,7 +62,7 @@ EOF;
 
             $hash = $p->getConfiguration()->identifyProduct($convert[$csv[0]], $csv[2], $csv[5]);
             if (isset($hash['error'])) {
-                print("ERROR: ligne $i: Pas de produit pour $csv[0] / $csv[2] / $csv[5]\n");
+                print("ERROR: ligne $i: Pas de produit pour $csv[0] / $csv[2] / $csv[5] (".$hash['error'].")\n");
                 continue;
             }
             $produit = $p->getOrAdd($hash['hash']);
