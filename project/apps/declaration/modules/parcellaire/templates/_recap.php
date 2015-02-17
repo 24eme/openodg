@@ -45,6 +45,20 @@ if (isset($diff) && $diff) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+    <h4>Destination de ces produits</h4>
+    <ul>
+<?php
+    $libelledestination = array('SUR_PLACE' => 'Sur place', 'CAVE_COOPERATIVE' => 'Cave(s) coopérative(s)', 'NEGOCIANT' => 'Négociant(s)');
+    foreach ($appellation->getAcheteursNode() as $type => $acheteurs) {
+                        echo "<li><strong class='text-muted'>".$libelledestination[$type]."</strong>";
+                        if ($type != 'SUR_PLACE')  {
+                        echo "&nbsp;: ";
+                        foreach($acheteurs as $cvi => $a) {
+                            print $a->nom." ";
+                        }}
+                        echo "</li>";
+                    }?>
+</ul>
         <?php endforeach; ?>
 
     </div>
