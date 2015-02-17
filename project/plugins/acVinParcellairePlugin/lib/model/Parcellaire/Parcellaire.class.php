@@ -155,19 +155,17 @@ class Parcellaire extends BaseParcellaire {
         $produit = $this->getOrAdd($hash);
 
         $this->addProduit($produit->getHash());
-
+        
         return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
-    public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle) {
+    public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu = null) {
         $hash = str_replace('-', '/', $cepage);
         $commune = KeyInflector::slugify($commune);
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
-        //$appellation = $this->getAppellationNodeFromAppellationKey($appellationKey);
-        //return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);        
-         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle);
+        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle,$lieu);
     }
 
     public function addAppellation($hash) {
