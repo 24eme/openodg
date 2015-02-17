@@ -42,13 +42,13 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for("parcellaire_parcelles", array('sf_subject' => $parcellaire, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation())) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
+            <a href="<?php echo url_for("parcellaire_parcelles", array('sf_subject' => $parcellaire, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation())) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireEtapes::ETAPE_VALIDATION): ?>
-                <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span> Retourner <small>à la validation</small>&nbsp;&nbsp;</button>
+                <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Retourner <small>à la validation</small></button>
             <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la validation</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+                <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php endif; ?>
         </div>
     </div>

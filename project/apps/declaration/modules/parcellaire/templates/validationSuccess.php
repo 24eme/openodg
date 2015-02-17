@@ -18,7 +18,7 @@
 
      <div class="row row-margin row-button">
         <div class="col-xs-4">
-            <a href="<?php echo url_for("parcellaire_parcelles", array('id' => $parcellaire->_id,'appellation' => 'LIEUDIT')); ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
+            <a href="<?php echo url_for("parcellaire_acheteurs", $parcellaire); ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
         </div>
         <div class="col-xs-4 text-center">
             <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>" class="btn btn-warning btn-lg">

@@ -43,11 +43,14 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function storeEtape($etape) {
-        $isGt = ParcellaireEtapes::getInstance()->isGt($this->etape, $etape, true);
-        if ($isGt) {
+        if($etape == $this->etape) {
+            
             return false;
         }
+
         $this->add('etape', $etape);
+
+        return true;
     }
 
     public function isPapier() {
