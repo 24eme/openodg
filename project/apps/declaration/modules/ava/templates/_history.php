@@ -1,5 +1,7 @@
+<?php if(count($history) > 0): ?>
+<h2>Historique des déclarations</h2>
+    <div class="row">
     <div class="col-xs-4">
-        <?php if(count($history) > 0): ?>  	
         <div class="block_declaration panel panel-primary equal-height">
             <div class="panel-heading">
                 <h3>Historique</h3>
@@ -18,5 +20,6 @@
             <?php endforeach; ?>
             </ul>
         </div>
-        <?php endif; ?>
     </div>
+</div>
+<?php endif; ?>
