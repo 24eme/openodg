@@ -39,6 +39,10 @@ class ParcellaireDestinationsValidator extends sfValidatorSchema {
         }
 
         foreach($destinations as $key => $destination) {
+            if(!is_array($destination['acheteurs'])) {
+                continue;
+            }
+
             if(count($destination['acheteurs']) == 0) {
                 
                 throw new sfValidatorErrorSchema($this, array(new sfValidatorError($this, 'required_acheteurs')));
