@@ -128,25 +128,6 @@ class Parcellaire extends BaseParcellaire {
         return $appellationNode;
     }
 
-    public function updateParcellesForAppellation($appellationKey, $produits) {
-        $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
-        if ($appellationNode) {
-            $appellationNodeHash = $appellationNode->getHash();
-            // $this->remove($appellationNodeHash);
-            $this->getOrAdd($appellationNodeHash);
-            foreach ($produits as $cepageKey => $parcelle) {
-                $cepageKeyMatches = array();
-                preg_match('/^(.*)-detail-(.*)$/', $cepageKey, $cepageKeyMatches);
-                if (count($cepageKeyMatches) != 3) {
-                    throw new sfException("La hash produit " . $cepageKey . " n'est pas conforme");
-                }
-                $hashCepage = str_replace('-', '/', $cepageKeyMatches[1]);
-                $parcelleKey = $cepageKeyMatches[2];
-                $this->addProduitParcelle($hashCepage, $parcelleKey, $parcelle["commune"], $parcelle["section"], $parcelle["numero_parcelle"], $parcelle["superficie"], $parcelle["lieu"]);
-            }
-        }
-    }
-
     public function addProduit($hash, $add_appellation = true) {
         $config = $this->getConfiguration()->get($hash);
         if ($add_appellation) {
