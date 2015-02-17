@@ -47,8 +47,8 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         }
 
         $this->setValidator('commune', new sfValidatorString(array('required' => true), array('required' => "Aucune commune saisie.")));
-        $this->setValidator('section', new sfValidatorString(array('required' => true), array('required' => "Aucune section saisie.")));
-        $this->setValidator('numero_parcelle', new sfValidatorString(array('required' => true), array('required' => "Aucun numéro de parcelle saisi.")));
+        $this->setValidator('section', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9A-Z]+$/"), array("invalid" => "La section doit être composée de numéro et lettres en majuscules")));
+        $this->setValidator('numero_parcelle',new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]+$/"), array("invalid" => "Le numéro doit être un nombre")));
 
         if (!$hasLieuEditable) {
             $this->setValidator('lieuCepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")));

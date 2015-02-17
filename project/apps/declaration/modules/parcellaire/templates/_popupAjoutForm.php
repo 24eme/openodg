@@ -26,7 +26,7 @@
                             <?php echo $form['section']->renderLabel(); ?>
                         </div>
                         <div class="col-xs-8">
-                            <?php echo $form['section']->render(array("placeholder" => "Saisissez une section", "class" => "form-control", "required" => true)) ?>
+                            <?php echo $form['section']->render(array("placeholder" => "Saisissez une section", "class" => "form-control", "required" => true, 'pattern'=> "[0-9A-Z]+", "title" => "Votre section doit etre composé de lettres en majuscules et de chiffres")) ?>
                         </div>
                     </div>
                     <span class="error"><?php echo $form['numero_parcelle']->renderError() ?></span>
@@ -35,7 +35,7 @@
                             <?php echo $form['numero_parcelle']->renderLabel(); ?>
                         </div>
                         <div class="col-xs-8">
-                            <?php echo $form['numero_parcelle']->render(array("placeholder" => "Saisissez un numéro de parcelle", "class" => "form-control", "required" => true)) ?>
+                            <?php echo $form['numero_parcelle']->render(array("placeholder" => "Saisissez un numéro de parcelle", "class" => "form-control", "required" => true, 'pattern'=> "[0-9]+" ,"title" => "Votre numéro de parcelle doit etre un nombre")) ?>
                         </div>
                     </div>                    
                     <h3>Identification du produit</h3>
