@@ -3,8 +3,8 @@
 class ParcellaireAcheteursForm extends acCouchdbForm {
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
-        $defaults = $this->getDefaultsByDoc($doc);
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
+        $this->updateDefaults($doc);
     }
 
     public function configure() {
@@ -20,10 +20,17 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         $this->widgetSchema->setNameFormat('parcellaire_acheteurs[%s]');
     }
 
-    public function getDefaultsByDoc($doc) {
-        $defaults = array();
+    public function updateDefaults() {
+        $defaults = $this->getDefaults();
 
-        foreach($doc->getProduits() as $hash => $produit) {
+        if(count($this->getAcheteurs()) == 1) {
+            $key_acheteur = key($this->getAcheteurs());
+            foreach($this->getDocument()->getProduits() as $hash => $produit) {
+                $defaults[$hash] = array($key_acheteur);
+            }
+        }
+
+        foreach($this->getDocument()->getProduits() as $hash => $produit) {
             foreach($produit->acheteurs as $type => $acheteurs) {
                 foreach($acheteurs as $acheteur) {
                     if(!isset($defaults[$hash])) {
@@ -34,7 +41,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
             }
         }
 
-        return $defaults;
+        $this->setDefaults($defaults);
     }
 
     public function getAcheteurs() {
