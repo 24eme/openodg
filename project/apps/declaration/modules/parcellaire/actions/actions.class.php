@@ -149,7 +149,7 @@ class parcellaireActions extends sfActions {
             }
         }
 
-        $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);     
+        $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
 
@@ -184,28 +184,28 @@ class parcellaireActions extends sfActions {
 
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+            return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
+        } else {
+
+            $this->ajoutForm->save();
+
+            $this->getUser()->setFlash("notice", 'La parcelle a été ajoutée avec succès.');
 
             return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
         }
-
-        $this->ajoutForm->save();
-
-        $this->getUser()->setFlash("notice", 'La parcelle a été ajoutée avec succès.');
-
-        return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
     }
 
     public function executeDeleteParcelle(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
-        $appellation = $request->getParameter('appellation');        
+        $appellation = $request->getParameter('appellation');
         $parcelleKey = $request->getParameter('parcelle');
-        
+
         preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
-        
-        $parcellaire->get(str_replace('-','/', $parcelleKeyMatches[1]))->detail->remove($parcelleKeyMatches[2]);            
+
+        $parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->remove($parcelleKeyMatches[2]);
         $parcellaire->save();
         $this->getUser()->setFlash("notice", 'La parcelle a été supprimée avec succès.');
-        
+
         return $this->redirect('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation));
     }
 
