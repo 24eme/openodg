@@ -13,7 +13,7 @@ Parcellaire:
       papier: { required: false, type: integer }
       type_proprietaire:
         type: collection
-        require: false
+        required: false
         definition:
           fields:
             '*': { }
