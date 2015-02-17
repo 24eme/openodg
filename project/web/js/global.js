@@ -210,17 +210,19 @@
 
     $.initSelect2PermissifNoAjax = function ()
     {
-        $('.select2permissifNoAjax').select2({
-            data: JSON.parse($('.select2permissifNoAjax').attr('data-choices')),
-            createSearchChoice: function (term, data) {
-                if ($(data).filter(function () {
-                    return this.text.localeCompare(term) === 0;
-                }).length === 0) {
-                    return {id: term, text: term + ' (nouveau)'};
-                }
-            },
-            multiple: false
-        });
+        if ($('.select2permissifNoAjax').length) {
+            $('.select2permissifNoAjax').select2({
+                data: JSON.parse($('.select2permissifNoAjax').attr('data-choices')),
+                createSearchChoice: function (term, data) {
+                    if ($(data).filter(function () {
+                        return this.text.localeCompare(term) === 0;
+                    }).length === 0) {
+                        return {id: term, text: term + ' (nouveau)'};
+                    }
+                },
+                multiple: false
+            });
+        }
     }
 
 
