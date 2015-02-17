@@ -24,7 +24,7 @@ $steps = array(
             <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_PROPRIETE)): ?>
             <a href="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" class="<?php if($stepNum <= 1): ?>ajax<?php endif; ?>">Destination des raisins</a>
             <?php else: ?>
-            <span>Type de propriété</span>
+            <span>Destination des raisins</span>
             <?php endif; ?>
         </div>
     </li>

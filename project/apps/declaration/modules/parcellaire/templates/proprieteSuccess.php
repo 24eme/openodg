@@ -6,7 +6,11 @@
 
 <form action="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" method="post" class="form-horizontal ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
-    <?php echo $form->renderGlobalErrors() ?>
+    <?php if($form->hasGlobalErrors()): ?>
+    <div class="alert alert-danger">
+    <?php echo $form->renderGlobalErrors(array("class" => "text-left")) ?>
+    </div>
+    <?php endif; ?>
     <div class="row">
         <div class="col-xs-12">  
             <?php foreach($form as $key => $formDestination): ?>
