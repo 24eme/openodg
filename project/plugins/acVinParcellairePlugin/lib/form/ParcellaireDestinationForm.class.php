@@ -22,7 +22,6 @@ class ParcellaireDestinationForm extends acCouchdbForm {
                 $form->setWidget('acheteurs', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $acheteurs)));
                 $form->setValidator('acheteurs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($acheteurs)), array()));
             }
-            //$form->validatorSchema->setPostValidator(new ParcellaireDestinationValidator());
             $this->embedForm($destination_key, $form);
         }
 
