@@ -246,15 +246,18 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeValidation(sfWebRequest $request) {
+        set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION));
-        $this->parcellaire->save();
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION))) {
+            $this->parcellaire->save();
+        }
 
-
+        if (!$request->isMethod(sfWebRequest::POST)) {
         $this->validation = new ParcellaireValidation($this->parcellaire);
+        }
 
         $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
         $this->parcellesByCommunesLastCampagne = $this->parcellaire->getParcellesByCommunesLastCampagne();
@@ -285,6 +288,7 @@ class parcellaireActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
+        set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->parcellaire->declaration->cleanNode();
