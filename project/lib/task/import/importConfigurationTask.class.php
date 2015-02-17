@@ -59,6 +59,9 @@ EOF;
 
         unset($configurationJson->_rev);
 
+        $configurationJson->campagne = $arguments['campagne'];
+        $configurationJson->_id = "CONFIGURATION-".$arguments['campagne'];
+
         if(isset($configurationJson->recolte)) {
             $configurationJson->declaration = $configurationJson->recolte;
             unset($configurationJson->recolte);
