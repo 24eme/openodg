@@ -258,9 +258,6 @@ class parcellaireActions extends sfActions {
 
         $this->validation = new ParcellaireValidation($this->parcellaire);
 
-        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
-        $this->parcellesByCommunesLastCampagne = $this->parcellaire->getParcellesByCommunesLastCampagne();
-
         $this->form = new ParcellaireValidationForm($this->parcellaire);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));

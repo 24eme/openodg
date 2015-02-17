@@ -23,6 +23,10 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return array($this->getHash() => $this);
     }
 
+    public function getLibelleComplet() {
+        return $this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle().' '.$this->getCepageLibelle();
+    }
+    
     public function getLieuLibelle() {
         if ($this->lieu) {
 
@@ -33,7 +37,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function getParcelleIdentifiant() {
-        return $this->commune . '-' . $this->section . '-' . $this->numero_parcelle;
+        return sprintf('%s %03s %03s', $this->commune, $this->section, $this->numero_parcelle);
     }
 
     public function getAppellation() {

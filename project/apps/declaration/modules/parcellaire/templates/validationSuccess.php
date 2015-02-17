@@ -14,7 +14,7 @@
     <?php if ($validation->hasPoints()): ?>
         <?php include_partial('parcellaire/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire,'parcellesByCommunes' => $parcellesByCommunes, 'parcellesByCommunesLastCampagne' => $parcellesByCommunesLastCampagne)); ?>
+    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire)); ?>
 
      <div class="row row-margin row-button">
         <div class="col-xs-4">
