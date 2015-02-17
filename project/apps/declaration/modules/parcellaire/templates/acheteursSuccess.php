@@ -1,7 +1,7 @@
 <?php include_partial('step', array('parcellaire' => $parcellaire, 'step' => 'acheteurs', 'identifiant' => 'XXX')); ?>
 
 <div class="page-header">
-    <h2>Saisie des acheteurs</h2>
+    <h2>Saisie des acheteurs&nbsp;<small>Les parcelles sont à ventiler en fonction de vos acheteurs.</small></h2>
 </div>
 
 

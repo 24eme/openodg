@@ -1,9 +1,11 @@
 <?php include_partial('parcellaire/step', array('step' => 'propriete', 'parcellaire' => $parcellaire)) ?>
 
 <div class="page-header">
-    <h2>Destination des raisins</h2>
+    <h2>Destination des raisins&nbsp;<small>Merci de bien vouloir préciser la ou les destination(s) des raisins.</small>
+        <br/><small>La répartition de vos parcelles affectées en fonction de vos acheteurs se fera un peu plus loin.</small></h2>
 </div>
-
+<h4></h4>
+<br/>
 <form action="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" method="post" class="form-horizontal ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
     <?php if($form->hasGlobalErrors()): ?><div class="alert alert-danger"><?php echo $form->renderGlobalErrors(array("class" => "text-left")) ?></div><?php endif; ?>
