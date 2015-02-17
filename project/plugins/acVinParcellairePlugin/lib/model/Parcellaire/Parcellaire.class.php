@@ -106,17 +106,6 @@ class Parcellaire extends BaseParcellaire {
         return $parcelles;
     }
 
-    public function getAllParcellesByLieux() {
-        $lieux = $this->declaration->getLieux();
-        $parcellesBylieux = array();
-        foreach ($lieux as $lieu) {
-            $parcellesBylieux[$lieu->getHash()] = new stdClass();
-            $parcellesBylieux[$lieu->getHash()]->lieu = $lieu;
-            $parcellesBylieux[$lieu->getHash()]->parcelles = $lieu->getProduitsCepageDetails();
-        }
-        return $parcellesBylieux;
-    }
-
     public function getAppellationNodeFromAppellationKey($appellationKey, $autoAddAppellation = false) {
         $appellations = $this->declaration->getAppellations();
         $appellationNode = null;
@@ -216,74 +205,24 @@ class Parcellaire extends BaseParcellaire {
         return false;
     }
 
-    public function getParcellesByCommunes() {
-        $parcellesByCommunes = array();
-        $allParcellesByAppellations = $this->getAllParcellesByAppellations();
-        $config = $this->getConfiguration();
-        foreach ($allParcellesByAppellations as $appellation_key => $parcellesNodes) {
-            $configAppellationLibelle = $config->get($appellation_key)->getLibelle();
-            foreach ($parcellesNodes->parcelles as $key => $parcelle) {
-                if (!array_key_exists($parcelle->commune, $parcellesByCommunes)) {
-                    $parcellesByCommunes[$parcelle->commune] = new stdClass();
-                    $parcellesByCommunes[$parcelle->commune]->commune = $parcelle->commune;
-                    $parcellesByCommunes[$parcelle->commune]->total_superficie = 0;
-                    $parcellesByCommunes[$parcelle->commune]->produits = array();
-                }
-                $key_produit = $key;
-                $parcellesByCommunes[$parcelle->commune]->produits[$key_produit] = new stdClass();
-
-                $configLieuLibelle = $config->get($parcelle->getCepage()->getCouleur()->getLieu()->getHash())->getLibelle();
-                $configCepageLibelle = $config->get($parcelle->getCepage()->getHash())->getLibelle();
-
-                $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->appellation_libelle = $configAppellationLibelle;
-                $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->lieu_libelle = $configLieuLibelle;
-                $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->cepage_libelle = $configCepageLibelle;
-                $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->num_parcelle = $parcelle->section . ' ' . $parcelle->numero_parcelle;
-                $parcellesByCommunes[$parcelle->commune]->produits[$key_produit]->superficie = $parcelle->superficie;
-                $parcellesByCommunes[$parcelle->commune]->total_superficie += $parcelle->superficie;
-            }
-        }
-        return $parcellesByCommunes;
-    }
-
-    public function getParcellesByCommunesLastCampagne() {
-        $parcellairePrev = $this->getParcellaireLastCampagne();
-        if (!$parcellairePrev) {
-            return array();
-        }
-        return $parcellairePrev->getParcellesByCommunes();
-    }
-
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
-        $allParcellesByLieux = $this->getAllParcellesByLieux();
-        $config = $this->getConfiguration();
-        foreach ($allParcellesByLieux as $lieu_hash => $lieuNode) {
-            $configAppellationLibelle = $config->get($lieu_hash)->getAppellation()->getLibelle();
-            $configLieuLibelle = $config->get($lieu_hash)->getLibelle();
-
-            if (!array_key_exists($lieu_hash, $parcellesByLieux)) {
-                $parcellesByLieux[$lieu_hash] = new stdClass();
-                $parcellesByLieux[$lieu_hash]->total_superficie = 0;
-                $parcellesByLieux[$lieu_hash]->appellation_libelle = $configAppellationLibelle;
-                $parcellesByLieux[$lieu_hash]->lieu_libelle = $configLieuLibelle;
-                $parcellesByLieux[$lieu_hash]->parcelles = array();
-                $parcellesByLieux[$lieu_hash]->acheteurs = $this->get($lieu_hash)->getAcheteursNode();
-            }
-
-            $parcelaireCouleurs = $this->get($lieu_hash)->getCouleurs();
-            foreach ($parcelaireCouleurs as $parcelaireCouleur) {
-                foreach ($parcelaireCouleur->getCepages() as $parcelaireCepage) {
-                    foreach ($parcelaireCepage->detail as $parcelle) {
-                        $configCepageLibelle = $config->get($parcelle->getCepage()->getHash())->getLibelleLong();
-                        $parcellesByLieux[$lieu_hash]->parcelles[$parcelle->gethash()] = new stdClass();
-                        $parcellesByLieux[$lieu_hash]->parcelles[$parcelle->gethash()]->cepage_libelle = $configCepageLibelle;
-                        $parcellesByLieux[$lieu_hash]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
-                        $parcellesByLieux[$lieu_hash]->total_superficie += $parcelle->superficie;
-                    }
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+                $keyLieu = $parcelle->getLibelleComplet();
+                if (!array_key_exists($keyLieu, $parcellesByLieux)) {
+                    $parcellesByLieux[$keyLieu] = new stdClass();
+                    $parcellesByLieux[$keyLieu]->total_superficie = 0;
+                    $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
+                    $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
+                    $parcellesByLieux[$keyLieu]->parcelles = array();
+                    $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getCepage()->getAcheteursNode();
                 }
+                
+                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
+                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->cepage_libelle = $parcelle->getCepageLibelle();
+                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
+                $parcellesByLieux[$keyLieu]->total_superficie += $parcelle->superficie;
             }
-        }
         return $parcellesByLieux;
     }
 

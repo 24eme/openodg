@@ -276,7 +276,6 @@ class parcellaireActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
-        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
     }
 
     public function executePDF(sfWebRequest $request) {
