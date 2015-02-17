@@ -264,8 +264,8 @@ class parcellaireActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
 
-                $this->parcellaire->validate();
-                $this->parcellaire->save();
+                
+                $this->form->save();
                 $this->sendParcellaireValidation($this->parcellaire);
 
                 return $this->redirect('parcellaire_confirmation', $this->parcellaire);
