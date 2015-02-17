@@ -146,6 +146,7 @@ class parcellaireActions extends sfActions {
 
         $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
         if ($request->isMethod(sfWebRequest::POST)) {
+
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if ($this->form->isValid()) {
