@@ -43,6 +43,10 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function storeEtape($etape) {
+        $isGt = ParcellaireEtapes::getInstance()->isGt($this->etape, $etape, true);
+        if ($isGt) {
+            return false;
+        }
         $this->add('etape', $etape);
     }
 
@@ -89,6 +93,33 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesByAppellations;
     }
 
+    public function getAllParcellesByAppellationSortedByCommunes($appellationHash) {
+        $parcelles = $this->getAllParcellesByAppellation($appellationHash);
+        usort($parcelles, 'Parcellaire::sortParcellesByCommune');
+        return $parcelles;
+    }
+    
+    static function sortParcellesByCommune($parcelle_0, $parcelle_1) {
+        if ($parcelle_0->getKey() == $parcelle_1->getKey()) {
+
+            return 0;
+        }
+        return ($parcelle_0->getKey() > $parcelle_1->getKey()) ? +1 : -1;
+    }
+    
+    public function getAllParcellesByAppellation($appellationHash) {
+       $allParcellesByAppellations = $this->getAllParcellesByAppellations();
+        $parcelles = array();
+
+        foreach ($allParcellesByAppellations as $appellation) {
+            $appellationKey = str_replace('appellation_', '', $appellation->appellation->getKey());
+            if ($appellationKey == $appellationHash) {
+                $parcelles = $appellation->parcelles;
+            }
+        }
+        return $parcelles;
+    }
+
     public function getAllParcellesByLieux() {
         $lieux = $this->declaration->getLieux();
         $parcellesBylieux = array();
@@ -120,25 +151,6 @@ class Parcellaire extends BaseParcellaire {
         return $appellationNode;
     }
 
-    public function updateParcellesForAppellation($appellationKey, $produits) {
-        $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
-        if ($appellationNode) {
-            $appellationNodeHash = $appellationNode->getHash();
-            // $this->remove($appellationNodeHash);
-            $this->getOrAdd($appellationNodeHash);
-            foreach ($produits as $cepageKey => $parcelle) {
-                $cepageKeyMatches = array();
-                preg_match('/^(.*)-detail-(.*)$/', $cepageKey, $cepageKeyMatches);
-                if (count($cepageKeyMatches) != 3) {
-                    throw new sfException("La hash produit " . $cepageKey . " n'est pas conforme");
-                }
-                $hashCepage = str_replace('-', '/', $cepageKeyMatches[1]);
-                $parcelleKey = $cepageKeyMatches[2];
-                $this->addProduitParcelle($hashCepage, $parcelleKey, $parcelle["commune"], $parcelle["section"], $parcelle["numero_parcelle"], $parcelle["superficie"], $parcelle["lieu"]);
-            }
-        }
-    }
-
     public function addProduit($hash, $add_appellation = true) {
         $config = $this->getConfiguration()->get($hash);
         if ($add_appellation) {
@@ -153,9 +165,8 @@ class Parcellaire extends BaseParcellaire {
 
     public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu = null) {
         $produit = $this->getOrAdd($hash);
-
         $this->addProduit($produit->getHash());
-        
+
         return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
@@ -165,7 +176,7 @@ class Parcellaire extends BaseParcellaire {
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
-        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle,$lieu);
+        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
     public function addAppellation($hash) {

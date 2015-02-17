@@ -132,25 +132,21 @@ class parcellaireActions extends sfActions {
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES));
-        $this->parcellaire->save();
+        $saveEtape = $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES));
+        if ($saveEtape) {
+            $this->parcellaire->save();
+        }
 
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
-        $allParcellesByAppellations = $this->parcellaire->getAllParcellesByAppellations();
-        $this->parcelles = array();
-        foreach ($allParcellesByAppellations as $appellation) {
-            $appellationKey = str_replace('appellation_', '', $appellation->appellation->getKey());
-            if ($this->appellation == $appellationKey) {
-                $this->parcelles = $appellation->parcelles;
-            }
-        }
+        $this->parcelles = $this->parcellaire->getAllParcellesByAppellationSortedByCommunes($this->appellation);
 
         $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
         if ($request->isMethod(sfWebRequest::POST)) {
+
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if ($this->form->isValid()) {

@@ -21,24 +21,14 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->setWidgets(array(
-            'lieu' => new sfWidgetFormInputHidden(),
-            'commune' => new sfWidgetFormInputHidden(),
-            'section' => new sfWidgetFormInputHidden(),
-            'numero_parcelle' => new sfWidgetFormInputHidden(),
             'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f'))
         ));
         $this->widgetSchema->setLabels(array(
             'superficie' => 'Superficie (ares):'
         ));
         $this->setValidators(array(
-            'lieu' => new sfValidatorPass(),
-            'commune' => new sfValidatorPass(),
-            'section' => new sfValidatorPass(),
-            'numero_parcelle' => new sfValidatorPass(),
             'superficie' => new sfValidatorNumber(array('required' => false))
         ));
-
-
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
