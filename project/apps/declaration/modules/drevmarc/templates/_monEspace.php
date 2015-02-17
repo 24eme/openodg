@@ -11,6 +11,7 @@
                 </div>
                 <div class="panel-body">
                     <?php if ($drevmarc && $drevmarc->validation): ?>
+                        <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer a été validée pour cette année.</p>
                         <p>
                             <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('drevmarc_visualisation', $drevmarc) ?>">Visualiser</a>
                         </p>
@@ -20,6 +21,7 @@
                         </p>
                         <?php endif; ?>
                     <?php elseif ($drevmarc): ?>
+                        <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer a été débutée pour cette année mais n'a pas été validée.</p>
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drevmarc_edit', $drevmarc) ?>">Continuer</a>
                         </p>
@@ -27,6 +29,7 @@
                             <a class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('drevmarc_delete', $drevmarc) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                         </p>
                     <?php else: ?>
+                        <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer n'a pas été validée pour cette année.</p>
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drevmarc_create', $etablissement) ?>">Démarrer</a>
                         </p>

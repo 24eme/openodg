@@ -15,7 +15,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
             $this->getWidget($cepage->getHash())->setLabel($cepage->getLibelleComplet());             
         }
 
-        $this->validatorSchema->setPostValidator(new ParcellaireAcheteursValidator());
+        $this->validatorSchema->setPostValidator(new ParcellaireAcheteursValidator(null, array("acheteurs" => $this->getAcheteurs())));
 
         $this->widgetSchema->setNameFormat('parcellaire_acheteurs[%s]');
     }

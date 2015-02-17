@@ -143,7 +143,7 @@ class parcellaireActions extends sfActions {
         $this->appellation = $request->getParameter('appellation');
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
-        $this->parcelles = $this->parcellaire->getAllParcellesByAppellationSortedByCommunes($this->appellation);
+        $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle();
 
         $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -246,18 +246,18 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeValidation(sfWebRequest $request) {
+        set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION));
-        $this->parcellaire->save();
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION))) {
+            $this->parcellaire->save();
+        }
 
-
+        if (!$request->isMethod(sfWebRequest::POST)) {
         $this->validation = new ParcellaireValidation($this->parcellaire);
-
-        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
-        $this->parcellesByCommunesLastCampagne = $this->parcellaire->getParcellesByCommunesLastCampagne();
+        }
 
         $this->form = new ParcellaireValidationForm($this->parcellaire);
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -281,10 +281,10 @@ class parcellaireActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
-        $this->parcellesByCommunes = $this->parcellaire->getParcellesByCommunes();
     }
 
     public function executePDF(sfWebRequest $request) {
+        set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->parcellaire->declaration->cleanNode();

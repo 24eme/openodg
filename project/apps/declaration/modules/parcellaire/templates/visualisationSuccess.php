@@ -3,8 +3,7 @@
     <h2>Visualisation de votre parcellaire <?php echo $parcellaire->campagne; ?></h2>
 </div>
 
-    <?php include_partial('parcellaire/recapComplet', array('parcellaire' => $parcellaire,'parcellesByCommunes' => $parcellesByCommunes)); ?>
-
+<?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire)); ?>
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
