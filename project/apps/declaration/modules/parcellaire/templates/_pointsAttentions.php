@@ -4,7 +4,7 @@
         <ul>
             <?php foreach ($validation->getPoints(DrevValidation::TYPE_ERROR) as $controle): ?>
                 <li>
-                    <strong><?php echo $controle->getRawValue()->getMessage(); ?>&nbps;</strong>
+                    <strong><?php echo $controle->getRawValue()->getMessage(); ?>&nbsp;:</strong>
                     <?php if ($controle->getRawValue()->getLien()) : ?>
                                 <a class="alert-link" href="<?php echo $controle->getRawValue()->getLien() ?>">
                     <?php endif;?>
