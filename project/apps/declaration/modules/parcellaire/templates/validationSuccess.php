@@ -14,7 +14,7 @@
     <?php if ($validation->hasPoints()): ?>
         <?php include_partial('parcellaire/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire)); ?>
+    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire, 'diff'=> 1)); ?>
 
      <div class="row row-margin row-button">
         <div class="col-xs-4">
