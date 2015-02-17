@@ -143,7 +143,7 @@ class parcellaireActions extends sfActions {
         $this->appellation = $request->getParameter('appellation');
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
-        $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle();
+        $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
 
         $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
         if ($request->isMethod(sfWebRequest::POST)) {
