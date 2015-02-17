@@ -5,7 +5,7 @@ $last = $parcellaire->getParcellaireLastCampagne();
         <?php
     foreach ($parcellaire->declaration->getAppellations() as $kappellation => $appellation):
             ?><h3><strong> <?php echo "Appellation " . $appellation->getLibelleComplet(); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' (ares)'; ?></span></h3>
-<?php if (! $appellation->getSuperficieTotale()) {echo "<i>Vous n'avez pas déclaré de produit pour cette appellation</i>"; } ?>
+<?php if (! $appellation->getSuperficieTotale()) {echo "<i>Vous n'avez pas déclaré de produit pour cette appellation</i>"; continue;} ?>
             <table class="table table-striped table-condensed">
                 <tbody>
 <?php
@@ -45,21 +45,27 @@ if (isset($diff) && $diff) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-    <h4>Destination de ces produits</h4>
-    <ul>
-<?php
-    $libelledestination = array('SUR_PLACE' => 'Sur place', 'CAVE_COOPERATIVE' => 'Cave(s) coopérative(s)', 'NEGOCIANT' => 'Négociant(s)');
-    foreach ($appellation->getAcheteursNode() as $type => $acheteurs) {
-                        echo "<li><strong class='text-muted'>".$libelledestination[$type]."</strong>";
+    <p>Ces produits sont destinés à être vignifiés <?php
+    $libelledestination = array('SUR_PLACE' => 'sur place', 'CAVE_COOPERATIVE' => 'en caves coopératives', 'NEGOCIANT' => 'par des négociants');
+    $acheteurs = $appellation->getAcheteursNode();
+    $i = 0;
+    foreach ($acheteurs as $type => $acheteurs) {
+          if ($i > 0) if ($i == count($acheteurs))
+              echo ' et ';
+          else
+              echo ', ';
+          $i++;
+                        echo $libelledestination[$type]." ";
                         if ($type != 'SUR_PLACE')  {
-                        echo "&nbsp;: ";
+                        echo "(";
+                        $y = 0;
                         foreach($acheteurs as $cvi => $a) {
-                            print $a->nom." ";
-                        }}
-                        echo "</li>";
-                    }?>
-</ul>
+                            if ($y) echo ", ";
+                            print $a->nom;
+                            $y = 1;
+                        }
+                        echo ")";}
+                    }?>.</p>
         <?php endforeach; ?>
-
     </div>
 </div>
