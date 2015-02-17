@@ -1,16 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of ParcellaireExploitationTypeProprietaireForm
- *
- * @author mathurin
- */
 class ParcellaireDestinationForm extends acCouchdbForm {
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
@@ -22,7 +11,6 @@ class ParcellaireDestinationForm extends acCouchdbForm {
 
     public function configure() {
         
-
         foreach(ParcellaireClient::$destinations_libelles as $destination_key => $destination_libelle) {
             $form = new BaseForm();
             $form->setWidget('declarant', new sfWidgetFormInputCheckbox());
@@ -34,10 +22,13 @@ class ParcellaireDestinationForm extends acCouchdbForm {
                 $form->setWidget('acheteurs', new sfWidgetFormChoice(array('multiple' => true, 'choices' => $acheteurs)));
                 $form->setValidator('acheteurs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($acheteurs)), array()));
             }
+            //$form->validatorSchema->setPostValidator(new ParcellaireDestinationValidator());
             $this->embedForm($destination_key, $form);
         }
 
-        $this->widgetSchema->setNameFormat('parcellaire_type_proprietaire[%s]');
+        $this->validatorSchema->setPostValidator(new ParcellaireDestinationsValidator());
+
+        $this->widgetSchema->setNameFormat('parcellaire_destination[%s]');
     }
 
     public function getDefaultsAcheteurs() {
@@ -82,6 +73,13 @@ class ParcellaireDestinationForm extends acCouchdbForm {
 
         $noeud = $this->getDocument()->acheteurs->add($type);
 
+        $values_acheteurs = array();
+
+        if(isset($values["acheteurs"]) && is_array($values["acheteurs"])) {
+
+           $values_acheteurs = $values["acheteurs"];
+        }
+
         foreach($noeud as $acheteur) {
             if(!in_array($acheteur->getKey(), $values) && !count($acheteur->produits)) {
                 $acheteurs_to_delete[] = $acheteur->getKey();
@@ -92,19 +90,14 @@ class ParcellaireDestinationForm extends acCouchdbForm {
             $noeud->remove($cvi);
         }
 
-        if(!isset($values["acheteurs"]) || !is_array($values["acheteurs"])) {
-
-            return;
-        }
-
         foreach($values["acheteurs"] as $cvi) {
             $this->getDocument()->getDocument()->addAcheteur($type, $cvi);
         }
-
         
     }
 
     public function getTypesProprietaire() {
+        
         return ParcellaireClient::$type_proprietaire_libelles;
     }
 
