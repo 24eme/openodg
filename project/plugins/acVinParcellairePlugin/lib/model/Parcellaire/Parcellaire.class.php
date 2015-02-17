@@ -93,9 +93,32 @@ class Parcellaire extends BaseParcellaire {
         return $parcellesByAppellations;
     }
 
-//    public function getAllParcellesByAppellation($appellationKey) {
-//       
-//    }
+    public function getAllParcellesByAppellationSortedByCommunes($appellationHash) {
+        $parcelles = $this->getAllParcellesByAppellation($appellationHash);
+        usort($parcelles, 'Parcellaire::sortParcellesByCommune');
+        return $parcelles;
+    }
+    
+    static function sortParcellesByCommune($parcelle_0, $parcelle_1) {
+        if ($parcelle_0->getKey() == $parcelle_1->getKey()) {
+
+            return 0;
+        }
+        return ($parcelle_0->getKey() > $parcelle_1->getKey()) ? +1 : -1;
+    }
+    
+    public function getAllParcellesByAppellation($appellationHash) {
+       $allParcellesByAppellations = $this->getAllParcellesByAppellations();
+        $parcelles = array();
+
+        foreach ($allParcellesByAppellations as $appellation) {
+            $appellationKey = str_replace('appellation_', '', $appellation->appellation->getKey());
+            if ($appellationKey == $appellationHash) {
+                $parcelles = $appellation->parcelles;
+            }
+        }
+        return $parcelles;
+    }
 
     public function getAllParcellesByLieux() {
         $lieux = $this->declaration->getLieux();
