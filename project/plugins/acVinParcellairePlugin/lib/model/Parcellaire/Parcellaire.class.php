@@ -43,6 +43,10 @@ class Parcellaire extends BaseParcellaire {
     }
 
     public function storeEtape($etape) {
+        $isGt = ParcellaireEtapes::getInstance()->isGt($this->etape, $etape, true);
+        if ($isGt) {
+            return false;
+        }
         $this->add('etape', $etape);
     }
 
@@ -88,6 +92,10 @@ class Parcellaire extends BaseParcellaire {
         }
         return $parcellesByAppellations;
     }
+
+//    public function getAllParcellesByAppellation($appellationKey) {
+//       
+//    }
 
     public function getAllParcellesByLieux() {
         $lieux = $this->declaration->getLieux();
@@ -153,9 +161,8 @@ class Parcellaire extends BaseParcellaire {
 
     public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu = null) {
         $produit = $this->getOrAdd($hash);
-
         $this->addProduit($produit->getHash());
-        
+
         return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
@@ -165,7 +172,7 @@ class Parcellaire extends BaseParcellaire {
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
-        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle,$lieu);
+        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
     public function addAppellation($hash) {

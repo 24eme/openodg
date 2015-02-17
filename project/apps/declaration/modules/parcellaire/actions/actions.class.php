@@ -132,8 +132,10 @@ class parcellaireActions extends sfActions {
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES));
-        $this->parcellaire->save();
+        $saveEtape = $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES));
+        if ($saveEtape) {
+            $this->parcellaire->save();
+        }
 
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
@@ -142,6 +144,7 @@ class parcellaireActions extends sfActions {
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
         $allParcellesByAppellations = $this->parcellaire->getAllParcellesByAppellations();
         $this->parcelles = array();
+
         foreach ($allParcellesByAppellations as $appellation) {
             $appellationKey = str_replace('appellation_', '', $appellation->appellation->getKey());
             if ($this->appellation == $appellationKey) {

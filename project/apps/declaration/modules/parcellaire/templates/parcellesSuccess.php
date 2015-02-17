@@ -34,7 +34,7 @@
                             <th class="col-xs-1">Numéro</th>        
                             <th class="col-xs-2">Lieu-dit</th>      
                             <th class="col-xs-3">Cépage</th>        
-                            <th class="col-xs-3">Superficie</th>           
+                            <th class="col-xs-3">Superficie en ares</th>           
                             <th class="col-xs-1"></th>           
                         </tr>
                     </thead>
