@@ -65,7 +65,7 @@ class Parcellaire extends BaseParcellaire {
         $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
         return ParcellaireClient::getInstance()->find($parcellairePrevId);
     }
-    
+
     private function importProduitsFromLastParcellaire() {
         $parcellairePrev = $this->getParcellaireLastCampagne();
         if (!$parcellairePrev) {
@@ -124,7 +124,7 @@ class Parcellaire extends BaseParcellaire {
         $appellationNode = $this->getAppellationNodeFromAppellationKey($appellationKey);
         if ($appellationNode) {
             $appellationNodeHash = $appellationNode->getHash();
-           // $this->remove($appellationNodeHash);
+            // $this->remove($appellationNodeHash);
             $this->getOrAdd($appellationNodeHash);
             foreach ($produits as $cepageKey => $parcelle) {
                 $cepageKeyMatches = array();
@@ -151,24 +151,21 @@ class Parcellaire extends BaseParcellaire {
         return $produit;
     }
 
-    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu = null) {
+    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu = null) {
         $produit = $this->getOrAdd($hash);
 
         $this->addProduit($produit->getHash());
-
-        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $superficie, $lieu);
+        
+        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu);
     }
 
-    public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle) {
+    public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu = null) {
         $hash = str_replace('-', '/', $cepage);
         $commune = KeyInflector::slugify($commune);
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
-        //$appellation = $this->getAppellationNodeFromAppellationKey($appellationKey);
-        //return $appellation->addParcelle($parcelleKey,$commune,$section,$numero_parcelle);
-        
-         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu);
+        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle,$lieu);
     }
 
     public function addAppellation($hash) {
@@ -186,7 +183,7 @@ class Parcellaire extends BaseParcellaire {
 
         $acheteur = $this->acheteurs->add($type)->add($cvi);
 
-        if($cvi == $this->identifiant) {
+        if ($cvi == $this->identifiant) {
             $acheteur->nom = "Sur place";
             $acheteur->cvi = $cvi;
             $acheteur->commune = null;
@@ -195,7 +192,7 @@ class Parcellaire extends BaseParcellaire {
         }
 
         $etablissement = EtablissementClient::getInstance()->find('ETABLISSEMENT-' . $cvi, acCouchdbClient::HYDRATE_JSON);
-        
+
         if (!$etablissement) {
             throw new sfException(sprintf("L'acheteur %s n'a pas été trouvé", 'ETABLISSEMENT-' . $cvi));
         }
@@ -235,7 +232,7 @@ class Parcellaire extends BaseParcellaire {
                     $parcellesByCommunes[$parcelle->commune]->total_superficie = 0;
                     $parcellesByCommunes[$parcelle->commune]->produits = array();
                 }
-                $key_produit = $parcelle->commune . '-' . $parcelle->section . '-' . $parcelle->numero_parcelle;
+                $key_produit = $key;
                 $parcellesByCommunes[$parcelle->commune]->produits[$key_produit] = new stdClass();
 
                 $configLieuLibelle = $config->get($parcelle->getCepage()->getCouleur()->getLieu()->getHash())->getLibelle();
@@ -254,12 +251,12 @@ class Parcellaire extends BaseParcellaire {
 
     public function getParcellesByCommunesLastCampagne() {
         $parcellairePrev = $this->getParcellaireLastCampagne();
-         if (!$parcellairePrev) {
+        if (!$parcellairePrev) {
             return array();
         }
         return $parcellairePrev->getParcellesByCommunes();
     }
-    
+
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
         $allParcellesByLieux = $this->getAllParcellesByLieux();

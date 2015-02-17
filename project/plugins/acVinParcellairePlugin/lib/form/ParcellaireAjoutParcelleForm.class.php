@@ -92,13 +92,35 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $commune = $values['commune'];
         $section = $values['section'];
         $numero_parcelle = $values['numero_parcelle'];
+        $lieu = null;
         if (!$this->getAppellationNode()->getConfig()->hasLieuEditable()) {
             $cepage = $values['lieuCepage'];
         } else {
             $cepage = $values['cepage'];
+            $lieu = $values['lieuDit'];
         }
-        
-        $this->getObject()->addParcelleForAppellation($this->appellationKey, $cepage, $commune, $section, $numero_parcelle);
+
+        $this->getObject()->addParcelleForAppellation($this->appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu);
     }
+
+    public function getLieuDetailForAutocomplete() {
+        $lieuxDetail = array();
+        foreach ($this->getAppellationNode()->getProduits() as $cepageKey => $cepage) {
+            foreach ($cepage->detail as $keyDetail => $detail) {
+                if ($detail->exist('lieu') && $detail->lieu) {
+                    $entry = new stdClass();
+                    $entry->id = trim($detail->lieu);
+                    $entry->text = trim($detail->lieu);                    
+                    $lieuxDetail[] = $entry;
+                }
+            }
+        }
+        return $lieuxDetail;
+    }
+
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+    }
+    
 
 }

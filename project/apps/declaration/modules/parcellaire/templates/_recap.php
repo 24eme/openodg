@@ -9,58 +9,40 @@
             <table class="table table-striped">
                 <tbody>
                     <?php foreach ($parcelles->produits as $parcelleKey => $parcelle): ?>
-                        <?php if (!array_key_exists($commune_key, $parcellesByCommunesLastCampagne->getRawValue()) || !array_key_exists($parcelleKey, $parcellesByCommunesLastCampagne[$commune_key]->produits->getRawValue())):
-                            ?>
-                            <tr style=" border-style: solid; border-width: 1px; border-color: darkgreen">
-                                <td class="col-xs-6">
+<?php
+$styleline = '';
+$styleproduit = '';
+$styleparcelle = '';
+$stylesuperficie = '';
+if (!array_key_exists($commune_key, $parcellesByCommunesLastCampagne->getRawValue()) || !array_key_exists($parcelleKey, $parcellesByCommunesLastCampagne[$commune_key]->produits->getRawValue())) {
+    $styleline = 'border-style: solid; border-width: 1px; border-color: darkgreen;';
+}else {
+    if ($parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->appellation_libelle != $parcelle->appellation_libelle || $parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->lieu_libelle != $parcelle->lieu_libelle || $parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->cepage_libelle != $parcelle->cepage_libelle) {
+        $styleproduit = 'border-style: solid; border-width: 1px; border-color: darkorange;';
+    }
+    if ($parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->num_parcelle != $parcelle->num_parcelle) {
+        $styleparcelle = 'border-style: solid; border-width: 1px; border-color: darkorange;';
+    }
+    if ($parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->superficie != $parcelle->superficie) {
+        $styleline = (!$parcelle->superficie)? 'text-decoration: line-through; border-style: solid; border-width: 1px; border-color: darkred' : '';
+        $stylesuperficie = (!$parcelle->superficie)? 'border-style: solid; border-width: 1px; border-color: darkred' : 'border-style: solid; border-width: 1px; border-color: darkorange';
+    }
+}
+if (!$styleline && !$styleproduit && !$styleparcelle && !$stylesuperficie) {
+    continue;
+}
+?>
+                            <tr style="<?php echo $styleline;?>">
+                                <td class="col-xs-6" style="<?php echo $styleproduit; ?>">
                                     <?php echo $parcelle->appellation_libelle . ' ' . $parcelle->lieu_libelle . ' - ' . $parcelle->cepage_libelle; ?>
                                 </td>   
-                                <td class="col-xs-3" style="text-align: right;">
+                                <td class="col-xs-3" style="text-align: right; <?php echo $styleparcelle; ?>">
                                     <?php echo 'parcelle ' . $parcelle->num_parcelle; ?>
                                 </td>   
-                                <td class="col-xs-3" style="text-align: right;">
+                                <td class="col-xs-3" style="text-align: right; <?php echo $stylesuperficie;?>">
                                     <?php echo $parcelle->superficie . ' (ares)'; ?>
                                 </td>   
                             </tr> 
-                            <?php continue; ?>
-                        <?php endif; ?>
-
-                        <?php
-                        if ($parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->appellation_libelle != $parcelle->appellation_libelle ||
-                                $parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->lieu_libelle != $parcelle->lieu_libelle ||
-                                $parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->cepage_libelle != $parcelle->cepage_libelle
-                        ):
-                            ?>
-                            <tr>
-                                <td class="col-xs-6 " style="border-style: solid; border-width: 1px; border-color: darkorange">
-                                    <?php echo $parcelle->appellation_libelle . ' ' . $parcelle->lieu_libelle . ' - ' . $parcelle->cepage_libelle; ?>
-                                </td>   
-                                <td class="col-xs-3" style="text-align: right;">
-                                    <?php echo 'parcelle ' . $parcelle->num_parcelle; ?>
-                                </td>   
-                                <td class="col-xs-3" style="text-align: right; ">
-                                    <?php echo $parcelle->superficie . ' (ares)'; ?>
-                                </td>   
-                            </tr> 
-                            <?php continue; ?>
-                        <?php endif; ?>
-                        <?php if ($parcellesByCommunesLastCampagne[$commune_key]->produits[$parcelleKey]->superficie != $parcelle->superficie):
-                            $styleBarre = (!$parcelle->superficie)? 'style="text-decoration: line-through"' : '';
-                        $colorBorder = (!$parcelle->superficie)? 'darkred' : 'darkorange';
-                            ?>
-                            <tr <?php echo $styleBarre; ?> >
-                                <td class="col-xs-6">
-                                    <?php echo $parcelle->appellation_libelle . ' ' . $parcelle->lieu_libelle . ' - ' . $parcelle->cepage_libelle; ?>
-                                </td>   
-                                <td class="col-xs-3" style="text-align: right;">
-                                    <?php echo 'parcelle ' . $parcelle->num_parcelle; ?>
-                                </td>   
-                                <td class="col-xs-3 borders" style="text-align: right;  border-style: solid; border-width: 1px; border-color: <?php echo $colorBorder; ?>">
-                                    <?php echo $parcelle->superficie . ' (ares)'; ?>
-                                </td>   
-                            </tr> 
-                            <?php continue; ?>
-                        <?php endif; ?>                 
                     <?php endforeach; ?>
                 </tbody>
             </table>
