@@ -34,7 +34,7 @@ EOF;
         $sep = '';
         foreach(file($arguments['csv']) as $line) {
             if (!$sep) {
-                $sep = (count(split('/,/', $line)) > count(split('/;/', $line))) ? ',' : ';';
+                $sep = (count(explode(',', $line)) > count(explode(';', $line))) ? ',' : ';';
             }
             $csv = str_getcsv($line, $sep);
             $i++;
