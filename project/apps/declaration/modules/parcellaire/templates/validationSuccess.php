@@ -4,8 +4,8 @@
 </div>
 
 <div class="row col-xs-12">
-    <h3>Voici les changements de parcelles sur l'année <?php echo $parcellaire->campagne; ?></h3>
-    <p>Le Pdf vous fourni une version complète de votre parcellaire</p>
+    <h3>Merci de vérifier la déclaration d'affectation parcellaire que vous vous appretez à valider pour <?php echo $parcellaire->campagne; ?></h3>
+    <p>Les modifications que vous avez effectuées par rapport à l'année précédente sont mises en valeurs. Une vesion PDF vous est téléchargeable en bas de cet écran.</p>
 </div>
 
 <form role="form" action="<?php echo url_for("parcellaire_validation", $parcellaire) ?>" method="post">
@@ -14,7 +14,7 @@
     <?php if ($validation->hasPoints()): ?>
         <?php include_partial('parcellaire/pointsAttentions', array('parcellaire' => $parcellaire, 'validation' => $validation)); ?>
     <?php endif; ?>
-    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire,'parcellesByCommunes' => $parcellesByCommunes, 'parcellesByCommunesLastCampagne' => $parcellesByCommunesLastCampagne)); ?>
+    <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire, 'diff'=> 1)); ?>
 
      <div class="row row-margin row-button">
         <div class="col-xs-4">

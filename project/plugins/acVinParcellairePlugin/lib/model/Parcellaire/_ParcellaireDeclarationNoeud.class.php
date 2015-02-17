@@ -70,6 +70,14 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
+    public function getSuperficieTotale() {
+        $superficie = 0;
+        foreach ($this->getProduitsCepageDetails() as $detail) {
+            $superficie += $detail->superficie;
+        }
+        return $superficie;
+    }
+    
     public function getAcheteursNode() {
         $acheteurs = array();
         foreach($this->getProduits() as $produit) {

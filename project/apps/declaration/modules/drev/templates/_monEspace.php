@@ -10,6 +10,7 @@
                 </div>
                 <div class="panel-body">
                     <?php if ($drev && $drev->validation): ?>
+                        <p>Votre déclaration de revendication viticole a été validée pour cette année.</p>
                         <p>
                             <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser</a>
                         </p>
@@ -19,6 +20,7 @@
                         </p>
                         <?php endif; ?>
                     <?php elseif ($drev): ?>
+                        <p>Votre déclaration de revendication viticole a été débutée pour cette année sans avoir été validée.</p>
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drev_edit', $drev) ?>">Continuer</a>
                         </p>
@@ -26,6 +28,7 @@
                             <a class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('drev_delete', $drev) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                         </p>
                     <?php else: ?>
+                        <p>Votre déclaration de revendication viticole pour cette année n'a pas encore été déclarée.</p>
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drev_create', $etablissement) ?>">Démarrer</a>
                         </p>
