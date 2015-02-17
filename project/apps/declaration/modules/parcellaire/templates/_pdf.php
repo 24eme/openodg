@@ -67,9 +67,9 @@
 <?php foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->commune ?>&nbsp;</td>        
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->section ?>&nbsp;</td>       
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->numero_parcelle ?>&nbsp;</td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage_libelle ?>&nbsp;</td>
+            <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->section ?>&nbsp;</td>       
+            <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->numero_parcelle ?>&nbsp;</td>
+            <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage_libelle ?>&nbsp;</td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->superficie ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
         </tr>
 <?php endforeach; ?>
