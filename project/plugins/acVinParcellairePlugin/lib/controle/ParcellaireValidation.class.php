@@ -36,13 +36,13 @@ class ParcellaireValidation extends DocumentValidation
             }
             array_push($parcelles[$pid], $detailk);
             if (!$detailv->superficie) {
-                $this->addPoint(self::TYPE_ERROR, 'surface_vide', 'parcelle n°'.$detailv->section.' '.$detailv->numero_parcelle.' à '.$detailv->commune.' contenant '.$detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => $detailv->getAppellation()->getKey())));
+                $this->addPoint(self::TYPE_ERROR, 'surface_vide', 'parcelle n°'.$detailv->section.' '.$detailv->numero_parcelle.' à '.$detailv->commune.' contenant '.$detailv->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()))));
             }
         }
         foreach($parcelles as $pid => $phashes) {
             if (count($phashes) > 1) {
                 $detail = $this->document->get($phashes[0]);
-                $this->addPoint(self::TYPE_WARNING, 'parcellaire_complantation', 'La parcelle '.$detail->section.' '.$detail->numero_parcelle.' à '.$detail->commune.' est déclarée en '.$detail->getLibelleComplet().' et '.$this->document->get($phashes[1])->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => $detail->getAppellation()->getKey())));
+                $this->addPoint(self::TYPE_WARNING, 'parcellaire_complantation', 'La parcelle '.$detail->section.' '.$detail->numero_parcelle.' à '.$detail->commune.' est déclarée en '.$detail->getLibelleComplet().' et '.$this->document->get($phashes[1])->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id, 'appellation' => preg_replace('/appellation_/', '', $detail->getAppellation()->getKey()))));
                 $detail->numero_parcelle .=  ' (complantation)';
                 $this->document->get($phashes[1])->numero_parcelle .= ' (complantation)';
             }
