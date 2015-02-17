@@ -58,7 +58,7 @@
                         </div>
                         <div class="col-xs-8">
                             <?php echo $form['lieuDit']->render(array("placeholder" => "Saisissez un lieu dit", "class" => "form-control select2 select2-offscreen select2permissifNoAjax", 
-                                "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
+                            "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
                                 "required" => true)) ?>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                             <?php echo $form['cepage']->renderLabel(); ?>
                         </div>
                         <div class="col-xs-8">
-                            <?php echo $form['cepage']->render(array("placeholder" => "Saisissez cépage", "class" => "form-control", "required" => true)) ?>
+                            <?php echo $form['cepage']->render(array("placeholder" => "Saisissez cépage", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
                         </div>
                     </div>
                     <?php endif; ?>                  

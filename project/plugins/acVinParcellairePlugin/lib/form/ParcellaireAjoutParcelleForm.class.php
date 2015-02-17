@@ -109,14 +109,18 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         foreach ($this->getAppellationNode()->getProduits() as $cepageKey => $cepage) {
             foreach ($cepage->detail as $keyDetail => $detail) {
                 if ($detail->exist('lieu') && $detail->lieu) {
-                    $entry = new stdClass();
-                    $entry->id = trim($detail->lieu);
-                    $entry->text = trim($detail->lieu);                    
-                    $lieuxDetail[] = $entry;
+                    $lieuxDetail[] = $detail->lieu;
                 }
             }
         }
-        return $lieuxDetail;
+        $entries = array();
+        foreach(array_unique($lieuxDetail) as $lieu) {
+            $entry = new stdClass();
+            $entry->id = trim($lieu);
+            $entry->text = trim($lieu);                    
+            $entries[] = $entry;
+        }
+        return $entries;
     }
 
     protected function updateDefaultsFromObject() {
