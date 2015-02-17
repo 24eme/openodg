@@ -50,7 +50,7 @@ EOF;
         /*
          * Parsing de la configuration Civa
          */
-        $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/'.$arguments['campagne'].'.json');
+        $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/2014.json');
         
         if (!$configurationJson) {
         	throw new sfCommandException("Le fichier de configuration n'est pas existant dans l'arborescence ".sfConfig::get('sf_data_dir') . '/import/configuration/');
@@ -128,7 +128,10 @@ EOF;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge = $communaleRougeCepages;
         $configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->libelle = 'Rouge';
         @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->couleurRouge->relations->lots = "couleur";
-        
+
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieuKLEV->couleurBlanc->cepage_KL->libelle = "Savagnin Rose";
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieuKLEV->couleurBlanc->cepage_KL->libelle_long = "Savagnin Rose";
+
         /*
          * Modification des libelles pour le Pinot
          */
