@@ -55,8 +55,9 @@ class parcellaireActions extends sfActions {
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_EXPLOITATION));
-        $this->parcellaire->save();
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_EXPLOITATION))) {
+            $this->parcellaire->save();
+        }
 
         $this->etablissement = $this->parcellaire->getEtablissementObject();
         $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->parcellaire->isPapier()));
@@ -94,8 +95,9 @@ class parcellaireActions extends sfActions {
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PROPRIETE));
-        $this->parcellaire->save();
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PROPRIETE))) {
+            $this->parcellaire->save();
+        }
 
         $this->form = new ParcellaireDestinationForm($this->parcellaire);
 
@@ -132,8 +134,7 @@ class parcellaireActions extends sfActions {
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $saveEtape = $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES));
-        if ($saveEtape) {
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES))) {
             $this->parcellaire->save();
         }
 
@@ -210,8 +211,9 @@ class parcellaireActions extends sfActions {
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_ACHETEURS));
-        $this->parcellaire->save();
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_ACHETEURS))) {
+            $this->parcellaire->save();
+        }
 
         $this->form = new ParcellaireAcheteursForm($this->parcellaire);
 
@@ -244,15 +246,18 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeValidation(sfWebRequest $request) {
+        set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
-        $this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION));
-        $this->parcellaire->save();
+        if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_VALIDATION))) {
+            $this->parcellaire->save();
+        }
 
-
+        if (!$request->isMethod(sfWebRequest::POST)) {
         $this->validation = new ParcellaireValidation($this->parcellaire);
+        }
 
         $this->form = new ParcellaireValidationForm($this->parcellaire);
         if ($request->isMethod(sfWebRequest::POST)) {
@@ -279,6 +284,7 @@ class parcellaireActions extends sfActions {
     }
 
     public function executePDF(sfWebRequest $request) {
+        set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->parcellaire->declaration->cleanNode();

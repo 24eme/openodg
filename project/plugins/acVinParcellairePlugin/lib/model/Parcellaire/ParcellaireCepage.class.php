@@ -7,6 +7,7 @@
 class ParcellaireCepage extends BaseParcellaireCepage {
 
     public function getChildrenNode() {
+        
         return $this->detail;
     }
 
