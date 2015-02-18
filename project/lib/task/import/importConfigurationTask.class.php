@@ -302,30 +302,6 @@ EOF;
         return $noeud->{$cepage_key};
     }
     
-    protected function getCepages($appellation, $noeudCouleur = 'couleur') 
-    {
-    	$cepages = new stdClass();
-    	foreach ($appellation as $m => $mention) {
-    		if (preg_match('/^mention/', $m)) {
-    			foreach ($mention as $l => $lieu) {
-    				if (preg_match('/^lieu/', $l)) {
-    					foreach ($lieu as $co => $couleur) {
-    						if (preg_match('/^'.$noeudCouleur.'/', $co)) {
-    							foreach ($couleur as $c => $cepage) {
-    								if (preg_match('/^cepage/', $c)) {
-    									if (!isset($cepages->{$c})) {
-    										$cepages->{$c} = $cepage;
-    									}
-    								}		
-    							}		
-    						}
-    					}	
-    				}	
-    			}		
-    		}
-    	}
-    	return $cepages;
-
     public function getConfigurationCommunes($configurationJson) {
         $communes = array("Albé" => "67",
             "Ammerschwihr" => "68",
@@ -447,7 +423,7 @@ EOF;
             "Zimmerbach" => "68");
         $configurationJson->communes = null;
         foreach ($communes as $communeName => $dpt) {
-            $configurationJson->communes->$communeName = $dpt;
+            @$configurationJson->communes->$communeName = $dpt;
         }
     }
 
