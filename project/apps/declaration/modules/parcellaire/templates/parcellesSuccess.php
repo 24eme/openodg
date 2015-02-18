@@ -18,6 +18,10 @@
 <?php endforeach; ?>
 </ul>
 
+<?php if ($sf_user->hasFlash('notice')): ?>
+    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+<?php endif; ?>
+
 <form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal ajaxForm">
     <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>

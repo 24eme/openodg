@@ -198,10 +198,12 @@ class parcellaireActions extends sfActions {
         $parcelleKey = $request->getParameter('parcelle');
 
         preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
+        $detail = $parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
+
+        $this->getUser()->setFlash("notice", sprintf('La parcelle a bien été supprimée (%s, %.4f ares, %s, %s).', $detail->getParcelleIdentifiant(), $detail->superficie, $detail->getLieuLibelle(), $detail->getCepageLibelle()));
 
         $parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->remove($parcelleKeyMatches[2]);
         $parcellaire->save();
-        $this->getUser()->setFlash("notice", 'La parcelle a été supprimée avec succès.');
 
         return $this->redirect('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation));
     }
