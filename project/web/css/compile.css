@@ -7228,6 +7228,10 @@ input[type="radio"] {
 .block_declaration .panel-bottom {
   padding: 0 20px;
 }
+.tooltip {
+  z-index: 10000;
+  opacity: 1;
+}
 /**
  * Images
  ******************************************/
