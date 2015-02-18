@@ -58,7 +58,7 @@ class ParcellaireCepage extends BaseParcellaireCepage {
     }
 
 
-    public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null) {
+    public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
         $detail = $this->getDetailNode($key);
         if($detail) {
 
@@ -70,6 +70,7 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
         $detail->lieu = $lieu;
+        $detail->departement = $dpt;
         return $detail;
     }
     
