@@ -18,8 +18,8 @@
 <?php endforeach; ?>
 </ul>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+<?php if ($sf_user->hasFlash('warning')): ?>
+    <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
 <?php endif; ?>
 
 <form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal ajaxForm">
