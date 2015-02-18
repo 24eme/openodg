@@ -198,6 +198,27 @@ EOF;
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
         @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
 
+        /* Ajout du cépage Pinot noir Raisin */
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin = new stdClass();
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->libelle = "Pinot Noir";
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+
+        /* Configuration des produits pour le parcellaire */
+        @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIR->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_ALSACE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_BLRS->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_RB->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PN->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_BN->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+
     	if ($options['import'] == 'couchdb') {
     		
     		if ($doc = acCouchdbManager::getClient()->find($configurationJson->_id, acCouchdbClient::HYDRATE_JSON)) {
