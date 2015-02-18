@@ -14,7 +14,7 @@
 class ParcellaireAcheteursValidator extends sfValidatorSchema {
 
     public function configure($options = array(), $messages = array()) {
-        $this->setMessage('required', 'Vous devez séléctionner une destination pour chacun des produits');
+        $this->setMessage('required', 'Vous devez sélectionner une destination pour chacun des produits');
         $this->addMessage('required_acheteur', "Vous n'avez pas déclaré de produit pour la destination : %acheteur%");
         $this->addOption('acheteurs', array());
     }
