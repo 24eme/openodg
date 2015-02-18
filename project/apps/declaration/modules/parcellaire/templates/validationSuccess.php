@@ -4,8 +4,8 @@
 </div>
 
 <div class="row col-xs-12">
-    <h3>Merci de vérifier la déclaration d'affectation parcellaire que vous vous appretez à valider pour <?php echo $parcellaire->campagne; ?></h3>
-    <p class="text-muted">Les modifications que vous avez effectuées par rapport à l'année précédente sont mises en valeurs. Une vesion PDF vous est téléchargeable en bas de cet écran.</p>
+    <h3>Merci de vérifier votre déclaration d'affectation parcellaire <?php echo $parcellaire->campagne; ?></h3>
+    <p class="text-muted">Les modifications que vous avez effectuées par rapport à l'année précédente sont mises en valeurs. Une version PDF est téléchargeable en bas de cet écran.</p>
 </div>
 
 <?php if ($validation->hasPoints()): ?>
