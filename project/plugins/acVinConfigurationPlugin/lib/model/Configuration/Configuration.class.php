@@ -67,8 +67,10 @@ class Configuration extends BaseConfiguration {
       $libelle = str_ireplace('SAINT-', 'saint ', $libelle);
       $libelle = preg_replace('/&nbsp;/', '', strtolower($libelle));
       $libelle = str_replace(array('é', 'è', 'ê'), 'e', $libelle);
+      $libelle = str_replace(array('ô'), 'o', $libelle);
       $libelle = preg_replace('/[^a-z ]/', '', preg_replace('/  */', ' ', preg_replace('/&([a-z])[^;]+;/i', '\1', $libelle)));
       $libelle = preg_replace('/^\s+/', '', preg_replace('/\s+$/', '', $libelle));
+      $libelle = trim(str_replace(' ', '', $libelle));
 
       return $libelle;
     }
@@ -78,12 +80,12 @@ class Configuration extends BaseConfiguration {
       return $this->getDeclaration();
     }
 
-    public function identifyProduct($appellation, $lieu, $cepage) {
+    public function identifyProduct($appellation, $lieu, $cepage, $type_declaration = null) {
       $appid = null;
       $lieuid = 'lieu';
       $cepageid = null;
       $libelle = self::normalizeLibelle($appellation);
-      foreach ($this->getRecolte()->getNoeudAppellations()->getAppellations() as $appellation_key => $appellation_obj) {
+      foreach ($this->getRecolte()->getNoeudAppellations()->getChildrenFilter($type_declaration) as $appellation_key => $appellation_obj) {
   if ($libelle == self::normalizeLibelle($appellation_obj->getLibelle())) {
     $appid=$appellation_key;
     break;
@@ -94,9 +96,9 @@ class Configuration extends BaseConfiguration {
 
       if ($lieu) {
   $libelle = self::normalizeLibelle($lieu);
-  foreach($appellation_obj->getLieux() as $lieu_key => $lieu_obj) {
+  foreach($appellation_obj->mention->getChildrenFilter($type_declaration) as $lieu_key => $lieu_obj) {
     if ($lieu_key == 'lieu')
-      continue;
+      break;
     if ($libelle == self::normalizeLibelle($lieu_obj->getLibelle())) {
       $lieuid=$lieu_key;
       break;
@@ -104,17 +106,19 @@ class Configuration extends BaseConfiguration {
   }
       }
       if ($lieuid == 'lieu') {
-  if ($appellation_obj->hasManyLieu())
-    return array("error" => $appellation.' / '.$lieu);
+        if ($appellation_obj->hasManyLieu())
+          return array("error" => $appellation.' / '.$lieu);
       }
 
       $libelle = self::normalizeLibelle($cepage);
       $prodhash = '';
       $evalhash = '';
       $eval = null;
-      foreach($appellation_obj->getLieux()->get($lieuid)->getCepages() as $cepage_key => $cepage_obj) {
+      foreach($appellation_obj->getLieux()->get($lieuid)->getProduitsFilter($type_declaration) as $cepage_obj) {
   $cepage_libelle = self::normalizeLibelle($cepage_obj->getLibelle());
+  $cepage_key = $cepage_obj->getKey();
   if ($libelle == $cepage_libelle) {
+
     $cepageid = $cepage_key;
     $prodhash = $cepage_obj->getHash();
     break;

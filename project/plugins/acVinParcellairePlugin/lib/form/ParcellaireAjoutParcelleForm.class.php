@@ -69,14 +69,12 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $appellationNode = $this->getAppellationNode();
 
         $this->allCepagesAppellation = array();
-        foreach ($appellationNode->getConfig()->getProduits() as $key => $cepage) {
+        foreach ($appellationNode->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE) as $key => $cepage) {
             $keyCepage = str_replace('/', '-', $key);
             $libelleCepage = $cepage->getLibelleLong();
-            $couleur = $cepage->getCouleur();
-            $libelleCouleur = $couleur->getLibelle();
-            $lieu = $couleur->getLieu();
+            $lieu = $cepage->getCouleur()->getLieu();
             $libelleLieu = $lieu->getLibelle();
-            $this->allCepagesAppellation[$keyCepage] = $libelleLieu . ' ' . $libelleCouleur . ' ' . $libelleCepage;
+            $this->allCepagesAppellation[$keyCepage] = trim($libelleLieu . ' ' . $libelleCepage);
         }
         
         asort($this->allCepagesAppellation);

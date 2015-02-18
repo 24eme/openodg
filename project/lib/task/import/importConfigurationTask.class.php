@@ -195,13 +195,10 @@ EOF;
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
         @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
 
-        /* Ajout du cépage Pinot noir Raisin */
-        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin = new stdClass();
-        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->libelle = "Pinot Noir";
-        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
-        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
-        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
-        @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        /* Ajout de cépage pour le parcellaire */
+        $this->addCepageForParcellaire($configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur, "cepage_PNRaisin", "Pinot noir");
+        $this->addCepageForParcellaire($configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur, "cepage_AU", "Auxerrois");
+        $this->addCepageForParcellaire($configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc, "cepage_KL", "Savagnin Rose");
 
         /* Configuration des produits pour le parcellaire */
         @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
@@ -295,6 +292,16 @@ EOF;
         return $cepages;
     }
 
+    public function addCepageForParcellaire($noeud, $cepage_key, $cepage_libelle) {
+        @$noeud->{$cepage_key} = new stdClass();
+        @$noeud->{$cepage_key}->libelle = $cepage_libelle;
+        @$noeud->{$cepage_key}->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        @$noeud->{$cepage_key}->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
+        @$noeud->{$cepage_key}->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+
+        return $noeud->{$cepage_key};
+    }
+    
     public function getConfigurationCommunes($configurationJson) {
         $communes = array("Albé" => "67",
             "Ammerschwihr" => "68",
@@ -416,7 +423,7 @@ EOF;
             "Zimmerbach" => "68");
         $configurationJson->communes = null;
         foreach ($communes as $communeName => $dpt) {
-            $configurationJson->communes->$communeName = $dpt;
+            @$configurationJson->communes->$communeName = $dpt;
         }
     }
 
