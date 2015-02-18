@@ -85,7 +85,7 @@ EOF;
                 $p->validation = true;
                 $p->validation_odg = true;
 
-                //$p->save();
+                $p->save();
             }catch(sfException $e) {
                 print "ERROR: ligne $i: ".$e->getMessage()."\n";
                 continue;
