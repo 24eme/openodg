@@ -8,18 +8,18 @@
                 <?php echo $form->renderGlobalErrors() ?>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Validation de votre parcellaire</h4>
+                    <h4 class="modal-title" id="myModalLabel">Validation de votre déclaration d'affectation parcellaire</h4>
                 </div>               
 
                 <div class="modal-body">
                     <div class="row form-group">
                         <label style="font-weight: normal">
                             <input id="" type="checkbox" checked="checked" name="<?php echo $form['autorisation_acheteur']->getName(); ?>">
-                            Je souhaites transmettre à mes acheteurs les données de cette déclaration pour les lieux qui les concernent
+                            Je souhaite transmettre à mes acheteurs les données de cette déclaration pour les lieux dits qui les concernent
                         </label>
 
                     </div>
-                    <p>Confirmez-vous la validation de votre déclaration d'affectation de parcellaire ?</p>
+                    <p>Confirmez-vous la validation de votre déclaration d'affectation parcellaire ?</p>
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>

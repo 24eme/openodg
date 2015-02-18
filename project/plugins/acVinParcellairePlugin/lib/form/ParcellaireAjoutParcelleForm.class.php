@@ -25,7 +25,8 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
 
         $hasLieuEditable = $appellationNode->getConfig()->hasLieuEditable();
         $produits = $this->getProduits();
-        $this->setWidget('commune', new sfWidgetFormInput());
+        $communes = $this->getCommunes();
+        $this->setWidget('commune', new sfWidgetFormChoice(array('choices' => $communes)));
         $this->setWidget('section', new sfWidgetFormInput());
         $this->setWidget('numero_parcelle', new sfWidgetFormInput());
 
@@ -38,7 +39,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
 
         $this->widgetSchema->setLabel('commune', 'Commune :');
         $this->widgetSchema->setLabel('section', 'Section :');
-        $this->widgetSchema->setLabel('numero_parcelle', 'Numéro parcelle :');
+        $this->widgetSchema->setLabel('numero_parcelle', 'Numéro :');
         if (!$hasLieuEditable) {
             $this->widgetSchema->setLabel('lieuCepage', 'Lieu/cépage :');
         } else {
@@ -46,7 +47,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             $this->widgetSchema->setLabel('cepage', 'Cépage :');
         }
 
-        $this->setValidator('commune', new sfValidatorString(array('required' => true), array('required' => "Aucune commune saisie.")));
+        $this->setValidator('commune', new sfValidatorChoice(array('required' => true,'choices' => array_keys($communes)), array('required' => "Aucune commune saisie.")));
         $this->setValidator('section', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9A-Z]+$/"), array("invalid" => "La section doit être composée de numéro et lettres en majuscules")));
         $this->setValidator('numero_parcelle',new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]+$/"), array("invalid" => "Le numéro doit être un nombre")));
 
@@ -79,6 +80,15 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         return $this->allCepagesAppellation;
     }
 
+    public function getCommunes() {
+       $config = $this->getObject()->getConfiguration();
+       $communes = array();
+       foreach($config->communes as $communeName => $dpt) {
+       $communes[$communeName] = $communeName;           
+       }
+       return array_merge(array('' => ''), $communes);
+    }
+    
     protected function doUpdateObject($values) {
 
         if ((!isset($values['commune']) || empty($values['commune'])) ||
@@ -88,18 +98,21 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             return;
         }
 
+       $config = $this->getObject()->getConfiguration();
         $commune = $values['commune'];
         $section = $values['section'];
         $numero_parcelle = $values['numero_parcelle'];
         $lieu = null;
+        $dpt = $config->communes[$commune]; 
+        
         if (!$this->getAppellationNode()->getConfig()->hasLieuEditable()) {
             $cepage = $values['lieuCepage'];
         } else {
             $cepage = $values['cepage'];
             $lieu = $values['lieuDit'];
         }
-
-        $this->getObject()->addParcelleForAppellation($this->appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu);
+       
+       $this->getObject()->addParcelleForAppellation($this->appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
     }
 
     public function getLieuDetailForAutocomplete() {
