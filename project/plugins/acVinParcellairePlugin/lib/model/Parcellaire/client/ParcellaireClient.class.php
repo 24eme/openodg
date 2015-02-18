@@ -70,7 +70,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getAppellationsKeys() {
         return array(
-            'GRDCRU' => 'Grand Crus',
+            'GRDCRU' => 'Grand Cru',
             'COMMUNALE' => 'Communale',
             'LIEUDIT' => 'Lieux dits',
             'CREMANT' => 'Crémant');

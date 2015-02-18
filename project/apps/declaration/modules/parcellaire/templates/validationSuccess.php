@@ -1,6 +1,6 @@
 <?php include_partial('parcellaire/step', array('step' => 'validation', 'parcellaire' => $parcellaire)) ?>
 <div class="page-header">
-    <h2>Validation de votre parcellaire</h2>
+    <h2>Validation de votre déclaration d'affectation parcellaire</h2>
 </div>
 
 <div class="row col-xs-12">

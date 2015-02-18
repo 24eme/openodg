@@ -2,7 +2,7 @@
 
 <br/>
 <div class="page-header">
-    <h2>Confirmation de validation de votre parcellaire</h2>
+    <h2>Confirmation de la validation de votre déclaration d'affectation parcellaire</h2>
 </div>
 <div class="row">
     <div class="col-xs-12">

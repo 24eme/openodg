@@ -39,7 +39,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
 
         $this->widgetSchema->setLabel('commune', 'Commune :');
         $this->widgetSchema->setLabel('section', 'Section :');
-        $this->widgetSchema->setLabel('numero_parcelle', 'Numéro parcelle :');
+        $this->widgetSchema->setLabel('numero_parcelle', 'Numéro :');
         if (!$hasLieuEditable) {
             $this->widgetSchema->setLabel('lieuCepage', 'Lieu/cépage :');
         } else {
@@ -88,7 +88,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
        foreach($config->communes as $communeName => $dpt) {
        $communes[$communeName] = $communeName;           
        }
-       return $communes;
+       return array_merge(array('' => ''), $communes);
     }
     
     protected function doUpdateObject($values) {
