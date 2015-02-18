@@ -60,16 +60,18 @@ EOF;
                 $p->add('declarant')->add('email', $csv[14]);
             }
 
-            $hash = $p->getConfiguration()->identifyProduct($convert[$csv[0]], $csv[2], $csv[5]);
+            $hash = $p->getConfiguration()->identifyProduct($convert[$csv[0]], $csv[2], $csv[5], _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
             if (isset($hash['error'])) {
                 print("ERROR: ligne $i: Pas de produit pour $csv[0] / $csv[2] / $csv[5] (".$hash['error'].")\n");
                 continue;
             }
             $produit = $p->getOrAdd($hash['hash']);
             $produit->getLibelleComplet();
-
-
-
+            if($produit->getConfig()->hasLieuEditable()) {
+                print("SUCCESS: ligne $i: $csv[0] / $csv[5] (".$hash['hash'].")\n");
+            } else {
+                print("SUCCESS: ligne $i: $csv[0] / $csv[2] / $csv[5] (".$hash['hash'].")\n");
+            }
             $parcelle = $produit->add('detail')->add(KeyInflector::slugify($csv[1].'_'.$csv[3].'_'.$csv[4]));
             $parcelle->commune = strtoupper($csv[1]);
             $parcelle->section = $csv[3];
@@ -82,7 +84,8 @@ EOF;
             try{
                 $p->validation = true;
                 $p->validation_odg = true;
-                $p->save();
+
+                //$p->save();
             }catch(sfException $e) {
                 print "ERROR: ligne $i: ".$e->getMessage()."\n";
                 continue;

@@ -198,15 +198,10 @@ EOF;
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
         @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
 
-        /* Ajout du cépage Pinot noir Raisin */
-        $this->addCepagePNRaisin($configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur);
-        $this->addCepagePNRaisin($configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge);
-
-        foreach($configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention as $lieu_c) {
-            if(isset($lieu_c->couleurRouge)) {
-                $this->addCepagePNRaisin($lieu_c->couleurRouge);
-            }
-        }
+        /* Ajout de cépage pour le parcellaire */
+        $this->addCepageForParcellaire($configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur, "cepage_PNRaisin", "Pinot noir");
+        $this->addCepageForParcellaire($configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur, "cepage_AU", "Auxerrois");
+        $this->addCepageForParcellaire($configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurBlanc, "cepage_KL", "Savagnin Rose");
 
         /* Configuration des produits pour le parcellaire */
         @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
@@ -215,14 +210,6 @@ EOF;
         @$configurationJson->declaration->certification->genre->appellation_ALSACE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
         @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
         @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
-
-        foreach($configurationJson->declaration->certification->genre->appellation_COMMUNALE->mention as $lieu_c) {
-            if(isset($lieu_c->couleurRouge->cepage_PR)) {
-                @$lieu_c->couleurRouge->cepage_PR->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
-            }
-        }
-
-        @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->mention->lieu->couleurRouge->cepage_PR->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
 
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_BLRS->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_RB->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
@@ -284,12 +271,14 @@ EOF;
     	return $appellations;
     }
 
-    public function addCepagePNRaisin($noeud) {
-        @$noeud->cepage_PNRaisin = new stdClass();
-        @$noeud->cepage_PNRaisin->libelle = "Pinot Noir";
-        @$noeud->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
-        @$noeud->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
-        @$noeud->cepage_PNRaisin->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+    public function addCepageForParcellaire($noeud, $cepage_key, $cepage_libelle) {
+        @$noeud->{$cepage_key} = new stdClass();
+        @$noeud->{$cepage_key}->libelle = $cepage_libelle;
+        @$noeud->{$cepage_key}->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        @$noeud->{$cepage_key}->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
+        @$noeud->{$cepage_key}->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+
+        return $noeud->{$cepage_key};
     }
     
     protected function getCepages($appellation, $noeudCouleur = 'couleur') 
