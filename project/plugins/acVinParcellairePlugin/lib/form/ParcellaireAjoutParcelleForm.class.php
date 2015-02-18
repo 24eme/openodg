@@ -76,6 +76,8 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
             $libelleLieu = $lieu->getLibelle();
             $this->allCepagesAppellation[$keyCepage] = trim($libelleLieu . ' ' . $libelleCepage);
         }
+        
+        asort($this->allCepagesAppellation);
         $this->allCepagesAppellation = array_merge(array('' => ''), $this->allCepagesAppellation);
         return $this->allCepagesAppellation;
     }

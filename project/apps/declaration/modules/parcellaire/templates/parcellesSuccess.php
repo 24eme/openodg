@@ -59,7 +59,7 @@
                     </table>
                 </div>
             <?php else : ?>
-                <p class="text-muted">Vous n'avez déclaré aucune parcelle pour cette appellation.</p><br/>
+                <p class="text-muted">Vous n'avez affecté aucune parcelle pour cette appellation.</p><br/>
 <?php endif; ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
