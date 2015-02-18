@@ -5,7 +5,7 @@ $last = $parcellaire->getParcellaireLastCampagne();
         <?php
     foreach ($parcellaire->declaration->getAppellations() as $kappellation => $appellation):
             ?><h3><strong> <?php echo "Appellation " . $appellation->getLibelleComplet(); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' (ares)'; ?></span></h3>
-<?php if (! $appellation->getSuperficieTotale()) {echo "<i>Vous n'avez pas déclaré de produit pour cette appellation</i>"; continue;} ?>
+<?php if (! $appellation->getSuperficieTotale()) {echo "<i>Vous n'avez pas affecté de parcelles pour cette appellation</i>"; continue;} ?>
             <table class="table table-striped table-condensed">
                 <tbody>
 <?php
@@ -56,7 +56,7 @@ if (isset($diff) && $diff) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-    <p class="text-muted">Ces produits sont destinés à être vignifiés <?php
+    <p class="text-muted">Ces raisins sont destinés à être vinifiés <?php
     $libelledestination = array('SUR_PLACE' => 'sur place', 'CAVE_COOPERATIVE' => 'en caves coopératives', 'NEGOCIANT' => 'par des négociants');
     $acheteurs = $appellation->getAcheteursNode();
     $i = 0;
