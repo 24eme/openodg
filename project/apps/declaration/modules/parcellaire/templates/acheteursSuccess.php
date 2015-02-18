@@ -29,7 +29,9 @@
                             <?php echo $field->renderError() ?>
                         </td>
                         <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>            
-                        <td class="text-center"><input type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> /></td>
+                        <td class="text-center tdAcheteur" >
+                            <input class="acheteur_checkbox" type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> />
+                        </td>
                         <?php endforeach; ?>
                     </tr>
                     <?php endforeach; ?>
