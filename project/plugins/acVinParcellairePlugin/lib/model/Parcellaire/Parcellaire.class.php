@@ -222,8 +222,9 @@ class Parcellaire extends BaseParcellaire {
 
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
+        $appellationsPos = array_flip(array_keys(ParcellaireClient::getAppellationsKeys()));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
-            $keyLieu = sprintf("%s %s", $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
+            $keyLieu = sprintf("%s. %s %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
             if (!array_key_exists($keyLieu, $parcellesByLieux)) {
                 $parcellesByLieux[$keyLieu] = new stdClass();
                 $parcellesByLieux[$keyLieu]->total_superficie = 0;
