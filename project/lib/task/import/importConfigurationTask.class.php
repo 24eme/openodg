@@ -386,7 +386,7 @@ EOF;
             "Kintzheim" => "67",
             "Kirchheim" => "67",
             "Kuttolsheim" => "67",
-            "Leibach" => "68",
+            "Leimbach" => "68",
             "Marlenheim" => "67",
             "Mittelbergheim" => "67",
             "Mittelwihr" => "68",
