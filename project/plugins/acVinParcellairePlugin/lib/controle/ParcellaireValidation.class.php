@@ -38,7 +38,7 @@ class ParcellaireValidation extends DocumentValidation
             if (!$detailv->superficie) {
                 $this->addPoint(self::TYPE_ERROR,
                         'surface_vide',
-                        'parcelle n°'.$detailv->section.' '.$detailv->numero_parcelle.' à '.$detailv->commune.' contenant '.$detailv->getLibelleComplet(),
+                        'parcelle n°'.$detailv->section.' '.$detailv->numero_parcelle.' à '.$detailv->commune.' déclarée en '.$detailv->getLibelleComplet(),
                         $this->generateUrl('parcellaire_parcelles',
                                 array('id' => $this->document->_id,
                                     'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),
