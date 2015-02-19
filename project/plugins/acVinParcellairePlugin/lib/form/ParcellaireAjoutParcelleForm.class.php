@@ -86,7 +86,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
        $config = $this->getObject()->getConfiguration();
        $communes = array();
        foreach($config->communes as $communeName => $dpt) {
-       $communes[$communeName] = $communeName;           
+       $communes[strtoupper($communeName)] = $communeName;           
        }
        return array_merge(array('' => ''), $communes);
     }
@@ -102,8 +102,8 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
 
        $config = $this->getObject()->getConfiguration();
         $commune = $values['commune'];
-        $section = $values['section'];
-        $numero_parcelle = $values['numero_parcelle'];
+        $section = preg_replace('/^0*/','',$values['section']);
+        $numero_parcelle = preg_replace('/^0*/','',$values['numero_parcelle']);
         $lieu = null;
         $dpt = $config->communes[$commune]; 
         
