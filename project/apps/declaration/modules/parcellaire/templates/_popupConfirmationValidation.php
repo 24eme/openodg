@@ -13,7 +13,7 @@
 
                 <div class="modal-body">
                     <div class="row form-group">
-                        <label style="font-weight: normal">
+                        <label style="font-weight: normal; padding-left:10px">
                             <input id="" type="checkbox" checked="checked" name="<?php echo $form['autorisation_acheteur']->getName(); ?>">
                             Je souhaite transmettre à mes acheteurs les données de cette déclaration pour les lieux dits qui les concernent
                         </label>
