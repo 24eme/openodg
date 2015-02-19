@@ -213,7 +213,11 @@ EOF;
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_PN->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur->cepage_BN->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
 
-
+        $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_COMMUNALE, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
+        $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_GRDCRU, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
+        $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_LIEUDIT, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
+        $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_CREMANT, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
+        
         $this->getConfigurationCommunes($configurationJson);
 
         if ($options['import'] == 'couchdb') {
@@ -300,6 +304,27 @@ EOF;
         @$noeud->{$cepage_key}->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
 
         return $noeud->{$cepage_key};
+    }
+
+    public function setNoAccesForCepageByAppellation($appellation, $cepage_key, $acces) {
+        foreach($appellation->mention as $key_lieu => $lieu) {
+            if (!preg_match('/^lieu/', $key_lieu)) {
+                continue;
+            }
+            foreach($lieu as $couleur_key => $couleur) {
+                if (!preg_match('/^couleur/', $couleur_key)) {
+                    continue;
+                }
+                foreach($couleur as $c_key => $cepage) {
+                    if (!preg_match('/^cepage/', $c_key)) {
+                        continue;
+                    }
+                    if($c_key == $cepage_key) {
+                        @$cepage->no_acces->{$acces} = 1;
+                    }
+                }
+            }
+        }
     }
     
     public function getConfigurationCommunes($configurationJson) {
