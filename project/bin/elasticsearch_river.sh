@@ -13,7 +13,7 @@ echo "{
 },
 \"index\" : {
 \"index\" : \"$ESINDEXGLOBAL\",
-\"type\" : \"compte\",
+\"type\" : \"$ESINDEXTYPE\",
 \"bulk_size\" : \"100\",
 \"bulk_timeout\" : \"10ms\"
 }
