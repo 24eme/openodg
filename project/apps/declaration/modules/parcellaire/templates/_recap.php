@@ -72,6 +72,7 @@ if ($last) {
                         <?php
                     endforeach;
 
+                    if(array_key_exists($appellation->gethash(), $lastParcellesKeysByAppellations)):
                     foreach ($lastParcellesKeysByAppellations[$appellation->gethash()] as $hashDetail => $detail):
                         if (!array_key_exists($hashDetail, $detailsHashes)):
                             ?>
@@ -92,6 +93,7 @@ if ($last) {
                             <?php
                         endif;
                     endforeach;
+                    endif;
                     ?>
                 </tbody>
             </table>
