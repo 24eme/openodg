@@ -61,6 +61,24 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
+    public function getProduitsWithLieuEditable() 
+    {
+        $produits = array();
+        foreach($this->getProduits() as $hash => $produit) {
+            $lieu_editable = $produit->getLieuxEditable();
+            if(!count($lieu_editable)) {
+
+                $produits[$hash] = $produit;
+            }
+            
+            foreach($produit->getLieuxEditable() as $lieu) {
+                $produits[str_replace("/lieu/", "/lieu".$lieu."/", $hash)] = $produit;
+            }
+        }
+
+        return $produits;
+    }
+
     public function getProduitsCepageDetails() {
         $produits = array();
         foreach ($this->getChildrenNode() as $key => $item) {
@@ -78,10 +96,10 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         return $superficie;
     }
     
-    public function getAcheteursNode() {
+    public function getAcheteursNode($lieu = null) {
         $acheteurs = array();
         foreach($this->getProduits() as $produit) {
-            $acheteurs = array_merge($acheteurs, $produit->getAcheteursNode());
+            $acheteurs = array_merge($acheteurs, $produit->getAcheteursNode($lieu));
         }
 
         return $acheteurs;

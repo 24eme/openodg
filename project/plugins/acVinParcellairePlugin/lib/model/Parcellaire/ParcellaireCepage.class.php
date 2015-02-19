@@ -29,21 +29,28 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->getCouleur()->getAppellation();
     }
 
-    public function getAcheteursNode($type = null) {
+    public function getAcheteursNode($lieu = null) {
         $acheteurs = array();
-
-        foreach($this->acheteurs as $type => $achs) {
-            foreach($achs as $acheteur) {
-                $acheteurs[$type][$acheteur->getKey()] = $acheteur;
+        foreach($this->acheteurs as $acheteurs_lieu => $acheteurs_type) {
+            foreach($acheteurs_type as $type => $achs) {
+                foreach($achs as $acheteur) {
+                    if($lieu && $acheteurs_lieu != $lieu) {
+                        continue;
+                    }
+                    $acheteurs[$type][$acheteur->getKey()] = $acheteur;
+                }
             }
         }
 
         return $acheteurs;
     }
 
-    public function addAcheteur($type, $cvi) {
+    public function addAcheteur($type, $cvi, $lieu = null) {
         $a = $this->getDocument()->addAcheteur($type, $cvi);
-        $acheteur = $this->acheteurs->add($type)->add($cvi);
+        if(!$lieu) {
+            $lieu = $this->getCouleur()->getLieu()->getKey();
+        }
+        $acheteur = $this->acheteurs->add($lieu)->add($type)->add($cvi);
         $acheteur->nom = $a->nom;
         $acheteur->cvi = $a->cvi;
         $acheteur->commune = $a->commune;
@@ -52,11 +59,22 @@ class ParcellaireCepage extends BaseParcellaireCepage {
     }
 
 
-    public function addAcheteurFromNode($acheteur) {
+    public function addAcheteurFromNode($acheteur, $lieu = null) {
         
-        return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey());
+        return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
+    public function getLieuxEditable() {
+        $lieux = array();
+        foreach($this->detail as $detail) {
+            if(!$detail->lieu) {
+                continue;
+            }
+            $lieux[$detail->lieu] = $detail->lieu;
+        }
+
+        return $lieux;
+    }
 
     public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
         $detail = $this->getDetailNode($key);

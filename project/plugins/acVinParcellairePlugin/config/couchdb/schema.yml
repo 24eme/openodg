@@ -121,9 +121,13 @@ Parcellaire:
                                                                     type: collection
                                                                     definition:
                                                                       fields:
-                                                                        cvi : { }
-                                                                        nom : { }
-                                                                        commune: { }
+                                                                        '*':
+                                                                          type: collection
+                                                                          definition:
+                                                                            fields:
+                                                                              cvi : { }
+                                                                              nom : { }
+                                                                              commune: { }
                                                       detail:                                                        
                                                         type: collection
                                                         definition:
@@ -139,4 +143,4 @@ Parcellaire:
                                                                   section: { }
                                                                   numero_parcelle: { }
                                                                   lieu: {  }
-                                                                  departement: {  }
+                                                                  departement: {  }co

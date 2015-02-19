@@ -9,10 +9,23 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
 
     public function configure() {
         
-        foreach($this->getDocument()->declaration->getProduits() as $cepage) {
-            $this->setWidget($cepage->getHash(), new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
-            $this->setValidator($cepage->getHash(), new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
-            $this->getWidget($cepage->getHash())->setLabel($cepage->getLibelleComplet());             
+        $produits = $this->getDocument()->declaration->getProduitsWithLieuEditable();
+        ksort($produits);
+
+        foreach($produits as $hash => $cepage) {
+            $lieu_libelle = $cepage->getCouleur()->getLieu()->getLibelle();
+            if($cepage->getConfig()->hasLieuEditable()) {
+                $lieu_libelle = preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash);
+            }
+            $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
+            $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
+            $this->getWidget($hash)->setLabel(
+                sprintf("%s - %s - %s", 
+                    $cepage->getCouleur()->getLieu()->getAppellation()->libelle,
+                    $lieu_libelle,
+                    $cepage->libelle
+                )
+            );
         }
 
         $this->validatorSchema->setPostValidator(new ParcellaireAcheteursValidator(null, array("acheteurs" => $this->getAcheteurs())));
@@ -23,20 +36,30 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
     public function updateDefaults() {
         $defaults = $this->getDefaults();
 
+        $produits = $this->getDocument()->declaration->getProduitsWithLieuEditable();
+
         if(count($this->getAcheteurs()) == 1) {
             $key_acheteur = key($this->getAcheteurs());
-            foreach($this->getDocument()->getProduits() as $hash => $produit) {
+            foreach($produits as $hash => $produit) {
                 $defaults[$hash] = array($key_acheteur);
             }
         }
 
-        foreach($this->getDocument()->getProduits() as $hash => $produit) {
-            foreach($produit->acheteurs as $type => $acheteurs) {
+        foreach($produits as $hash => $produit) {
+            $lieu_key = null;
+            if($produit->getConfig()->hasLieuEditable()) {
+                $lieu_key = preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash);
+            }
+            foreach($produit->getAcheteursNode($lieu_key) as $type => $acheteurs) {
                 foreach($acheteurs as $acheteur) {
                     if(!isset($defaults[$hash])) {
                         $defaults[$hash] = array();
                     }
-                    $defaults[$hash] = array_merge($defaults[$hash], array(str_replace($hash, "", $acheteur->getHash())));
+                    $key = sprintf("/acheteurs/%s/%s", $acheteur->getParent()->getKey(), $acheteur->getKey());
+                    if(in_array($key, $defaults[$hash])) {
+                        continue;
+                    }
+                    $defaults[$hash] = array_merge($defaults[$hash], array($key));
                 }
             }
         }
@@ -61,15 +84,23 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
                 $produit->remove('acheteurs');
                 $produit->add('acheteurs');
         }
-        foreach($this->values as $hash_produit => $hash_acheteurs) {
+
+        $produits = $this->getDocument()->declaration->getProduitsWithLieuEditable();
+
+        foreach($this->values as $hash_produit_value => $hash_acheteurs) {
             if(!is_array($hash_acheteurs)) {
                 continue;
             }
             
             foreach($hash_acheteurs as $hash_acheteur) {
+                $hash_produit = $produits[$hash_produit_value]->getHash();
                 $produit = $this->getDocument()->get($hash_produit);
                 $acheteur = $this->getDocument()->get($hash_acheteur);
-                $produit->addAcheteurFromNode($acheteur);
+                $lieu = null;
+                if($produit->getConfig()->hasLieuEditable()) {
+                    $lieu = preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash_produit_value);
+                }
+                $produit->addAcheteurFromNode($acheteur, $lieu);
             }
         }
     }

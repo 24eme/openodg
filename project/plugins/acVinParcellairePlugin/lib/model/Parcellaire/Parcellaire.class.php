@@ -211,21 +211,24 @@ class Parcellaire extends BaseParcellaire {
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
-                $keyLieu = $parcelle->getLibelleComplet();
-                if (!array_key_exists($keyLieu, $parcellesByLieux)) {
-                    $parcellesByLieux[$keyLieu] = new stdClass();
-                    $parcellesByLieux[$keyLieu]->total_superficie = 0;
-                    $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
-                    $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
-                    $parcellesByLieux[$keyLieu]->parcelles = array();
-                    $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getCepage()->getAcheteursNode();
-                }
-                
-                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
-                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->cepage_libelle = $parcelle->getCepageLibelle();
-                $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
-                $parcellesByLieux[$keyLieu]->total_superficie += $parcelle->superficie;
+            $keyLieu = sprintf("%s %s", $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
+            if (!array_key_exists($keyLieu, $parcellesByLieux)) {
+                $parcellesByLieux[$keyLieu] = new stdClass();
+                $parcellesByLieux[$keyLieu]->total_superficie = 0;
+                $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
+                $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
+                $parcellesByLieux[$keyLieu]->parcelles = array();
+                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode($parcelle->getLieuKey());
             }
+            
+            $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
+            $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->cepage_libelle = $parcelle->getCepageLibelle();
+            $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
+            $parcellesByLieux[$keyLieu]->total_superficie += $parcelle->superficie;
+        }
+
+        ksort($parcellesByLieux);
+
         return $parcellesByLieux;
     }
 
