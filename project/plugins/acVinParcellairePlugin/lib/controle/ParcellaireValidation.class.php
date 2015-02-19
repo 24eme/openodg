@@ -15,7 +15,7 @@ class ParcellaireValidation extends DocumentValidation
   		/*
   		 * Warning
   		 */
-        $this->addControle(self::TYPE_WARNING, 'parcellaire_complantation', '');
+        $this->addControle(self::TYPE_WARNING, 'parcellaire_complantation', 'Attention');
         $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
 
 
@@ -50,11 +50,12 @@ class ParcellaireValidation extends DocumentValidation
                 $detail = $this->document->get($phashes[0]);
                 $this->addPoint(self::TYPE_WARNING,
                         'parcellaire_complantation',
-                        $this->generateUrl('parcellaire_parcelles', array(
+                        '<a href="'.$this->generateUrl('parcellaire_parcelles', array(
                             'id' => $this->document->_id,
-                            'appellation' => 'La parcelle '.$detail->section.' '.$detail->numero_parcelle.' à '.$detail->commune.' a été déclarée avec plusieurs cépages. ',
-                            'attention' => $detail->getHashForKey())
-                                ." S’il ne s’agit pas d’une erreur de saisie de votre part, ne tenez pas compte de ce point de vigilance."));
+                            'appellation' => preg_replace('/appellation_/', '', $detail->getAppellation()->getKey()),
+                            'attention' => $detail->getHashForKey()))."\" class='alert-link' >La parcelle ".$detail->section.' '.$detail->numero_parcelle.' à '.$detail->commune." a été déclarée avec plusieurs cépages. </a>"
+                        . "&nbsp;S’il ne s’agit pas d’une erreur de saisie de votre part, ne tenez pas compte de ce point de vigilance.",
+                        '');
                 $detail->numero_parcelle .=  ' (complantation)';
                 $this->document->get($phashes[1])->numero_parcelle .= ' (complantation)';
             }

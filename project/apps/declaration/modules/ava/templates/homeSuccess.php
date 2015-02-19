@@ -1,7 +1,7 @@
 <?php use_javascript("main.js", "last") ?>
 
 <div class="page-header">
-    <h2><?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>Confirmation de votre e-mail<?php else: ?>Déclarations <?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?><?php endif; ?></h2>
+    <h2><?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>Confirmation de votre e-mail<?php else: ?>Eléments declaratifs<?php endif; ?></h2>
 </div>
 <?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>
     <form action="<?php echo url_for("home") ?>" method="post" class="form-horizontal">

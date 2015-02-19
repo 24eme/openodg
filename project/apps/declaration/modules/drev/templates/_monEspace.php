@@ -6,7 +6,7 @@
         <?php if (!$drev_non_ouverte): ?>
             <div class="block_declaration panel <?php if ($drev && $drev->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
                 <div class="panel-heading">
-                    <h3>Revendication des appellations viticoles</h3>
+                    <h3>Revendication des appellations viticoles <?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?></h3>
                 </div>
                 <?php if ($drev && $drev->validation): ?>
                     <div class="panel-body">
