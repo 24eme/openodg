@@ -42,6 +42,6 @@
                     <?php endif; ?>
             </div>
         <?php else: ?>
-            <?php include_partial('parcellaireNonOuvert', array('date_ouverture_parcellaire' => $date_ouverture_parcellaire)); ?>
+            <?php include_partial('parcellaire/parcellaireNonOuvert', array('date_ouverture_parcellaire' => $date_ouverture_parcellaire)); ?>
         <?php endif; ?>
 </div>

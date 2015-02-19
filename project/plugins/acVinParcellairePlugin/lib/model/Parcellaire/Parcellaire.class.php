@@ -31,10 +31,10 @@ class Parcellaire extends BaseParcellaire {
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function initDoc($identifiant, $campagne) {
+    public function initDoc($identifiant, $campagne,$cremant = false) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
-        $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne));
+        $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne,$cremant));
         $this->storeDeclarant();
     }
 
@@ -85,6 +85,18 @@ class Parcellaire extends BaseParcellaire {
         return $this->declaration->getProduits($onlyActive = false);
     }
 
+    public function getAllParcellesKeysByAppellations() {
+        $appellations = $this->declaration->getAppellations();
+        $parcellesByAppellations = array();
+        foreach ($appellations as $appellation) {
+            $parcellesByAppellations[$appellation->getHash()] = array();
+            foreach ($appellation->getProduitsCepageDetails() as $detail) {                
+            $parcellesByAppellations[$appellation->getHash()][$detail->getHash()] = $detail;
+            }
+        }
+        return $parcellesByAppellations;
+    }
+    
     public function getAllParcellesByAppellations() {
         $appellations = $this->declaration->getAppellations();
         $parcellesByAppellations = array();
