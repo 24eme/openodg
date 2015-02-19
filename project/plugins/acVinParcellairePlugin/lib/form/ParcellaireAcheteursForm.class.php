@@ -21,7 +21,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
             $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
             $this->getWidget($hash)->setLabel(
                 sprintf("%s - %s - %s", 
-                    $cepage->getCouleur()->getLieu()->getAppellation()->libelle,
+                    str_replace("AOC Alsace ", "", $cepage->getCouleur()->getLieu()->getAppellation()->libelle),
                     $lieu_libelle,
                     $cepage->libelle
                 )
