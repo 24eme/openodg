@@ -231,7 +231,7 @@ class Parcellaire extends BaseParcellaire {
                 $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
                 $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
                 $parcellesByLieux[$keyLieu]->parcelles = array();
-                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode($parcelle->getLieuKey());
+                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null);
             }
             
             $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();

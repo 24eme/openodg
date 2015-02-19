@@ -36,15 +36,6 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $this->getLieuNode()->getLibelle();
     }
 
-    public function getLieuKey() {
-        if ($this->lieu) {
-
-            return $this->lieu;
-        }
-
-        return $this->getLieuNode()->getKey();
-    }
-
     public function getParcelleIdentifiant() {
         return sprintf('%s %03s %03s', $this->commune, $this->section, $this->numero_parcelle);
     }
