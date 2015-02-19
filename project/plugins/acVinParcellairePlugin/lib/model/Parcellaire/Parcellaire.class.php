@@ -31,10 +31,10 @@ class Parcellaire extends BaseParcellaire {
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function initDoc($identifiant, $campagne) {
+    public function initDoc($identifiant, $campagne,$cremant = false) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
-        $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne));
+        $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne,$cremant));
         $this->storeDeclarant();
     }
 

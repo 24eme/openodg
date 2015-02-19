@@ -611,6 +611,16 @@ parcellaire_create:
   requirements:
     sf_method: [get]
 
+parcellaire_cremant_create:
+  url: /parcellaireCremant/creation/:id
+  param: { module: parcellaireCremant, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaire_edit:
   url: /parcellaire/edition/:id
   param: { module: parcellaire, action: edit }
@@ -711,7 +721,7 @@ parcellaire_export_pdf:
   requirements:
     sf_method: [get]
 
-drevmarc_visualisation:
+parcellaire_visualisation:
   url: /parcellaire/visualisation/:id
   param: { module: parcellaire, action: visualisation }
   class: ParcellaireRoute
@@ -720,7 +730,7 @@ drevmarc_visualisation:
     type:     object
   requirements:
     sf_method: [get]
-
+    
 default_index:
   url:   /:module
   param: { action: index }

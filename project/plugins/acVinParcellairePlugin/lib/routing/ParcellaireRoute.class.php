@@ -4,7 +4,6 @@ class ParcellaireRoute extends sfObjectRoute {
     protected $parcellaire = null;
 
     protected function getObjectForParameters($parameters) {
-
         $this->parcellaire = ParcellaireClient::getInstance()->find($parameters['id']);
         if (!$this->parcellaire) {
 

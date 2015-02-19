@@ -30,41 +30,43 @@ class ParcellaireClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findOrCreateFromEtablissement($etablissement, $campagne) {
-        return $this->findOrCreate($etablissement->identifiant, $campagne);
+    public function findOrCreateFromEtablissement($etablissement, $campagne, $cremant = false) {
+        return $this->findOrCreate($etablissement->identifiant, $campagne,$cremant);
     }
 
-    public function findOrCreate($cvi, $campagne) {
+    public function findOrCreate($cvi, $campagne,$cremant) {
         if (strlen($cvi) != 10) {
             throw new sfException("Le CVI doit avoir 10 caractères : $cvi");
         }
         if (strlen($campagne) != 4)
             throw new sfException("La campagne doit être une année et non " . $campagne);
-        $parcellaire = $this->find($this->buildId($cvi, $campagne));
+        $parcellaire = $this->find($this->buildId($cvi, $campagne,$cremant));
         if (is_null($parcellaire)) {
-            $parcellaire = $this->createDoc($cvi, $campagne);
+            $parcellaire = $this->createDoc($cvi, $campagne,$cremant);
         }
 
         return $parcellaire;
     }
 
-    public function buildId($identifiant, $campagne) {
-        return sprintf("PARCELLAIRE-%s-%s", $identifiant, $campagne);
+    public function buildId($identifiant, $campagne,$cremant = false) {
+        $id = (!$cremant)?  "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
+        return sprintf($id, $identifiant, $campagne);
     }
 
-    public function createDoc($identifiant, $campagne) {
+    public function createDoc($identifiant, $campagne,$cremant = false) {
         $parcellaire = new Parcellaire();
-        $parcellaire->initDoc($identifiant, $campagne);
+        $parcellaire->initDoc($identifiant, $campagne,$cremant);
 
         return $parcellaire;
     }
 
-    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getHistory($identifiant,$cremant =false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
         $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) . "";
 
-        return $this->startkey(sprintf("PARCELLAIRE-%s-%s", $identifiant, $campagne_from))
-                        ->endkey(sprintf("PARCELLAIRE-%s-%s", $identifiant, $campagne_to))
+        $id = (!$cremant)?  "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
+        return $this->startkey(sprintf($id, $identifiant, $campagne_from))
+                        ->endkey(sprintf($id, $identifiant, $campagne_to))
                         ->execute($hydrate);
     }
 
@@ -73,7 +75,8 @@ class ParcellaireClient extends acCouchdbClient {
             'GRDCRU' => 'Grand Cru',
             'COMMUNALE' => 'Communale',
             'LIEUDIT' => 'Lieux dits',
-            'CREMANT' => 'Crémant');
+          //  'CREMANT' => 'Crémant'
+            );
     }
 
     public function getFirstAppellation() {
