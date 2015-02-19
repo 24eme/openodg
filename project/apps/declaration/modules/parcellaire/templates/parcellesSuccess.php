@@ -15,7 +15,7 @@
         }
         ?>
         <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?> <span class="badge"><?php echo $nb ?></span></a></li>
-<?php endforeach; ?>
+    <?php endforeach; ?>
 </ul>
 
 <?php if ($sf_user->hasFlash('warning')): ?>
@@ -24,12 +24,12 @@
 
 <form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal ajaxForm">
     <?php echo $form->renderHiddenFields(); ?>
-<?php echo $form->renderGlobalErrors(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
 
     <div class="row">       
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
-<?php if (count($parcelles)) : ?>
+                <?php if (count($parcelles)) : ?>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -43,24 +43,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($parcelles as $key => $parcelle):
+                            <?php
+                            foreach ($parcelles as $key => $parcelle):
+                                $attention_ret = ($attention && ($attention == $parcelle->getHashForKey()));
+                                $erreur_ret = ($erreur && ($erreur == $parcelle->getHashForKey()));
+                                $class = ($erreur_ret || $attention_ret) ? 'error_field_to_focused' : '';
+                                $styleErr = ($attention_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkorange;"' : "";
+                                $styleWar = ($erreur_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkred;"' : "";
                                 ?>
-                                <tr>
+                                <tr <?php echo $styleErr.$styleWar; ?> >
                                     <td><?php echo $parcelle->getCommune(); ?></td>         
                                     <td><?php echo $parcelle->getSection(); ?></td>         
                                     <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
                                     <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
-                                    <td><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float num_float4")); ?></td>                 
+                                    <td <?php echo ($erreur_ret) ? 'class="has-error"' : '' ?> ><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float num_float4 " . $class)); ?></td>                 
                                     <td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a></td>
                                 </tr>
-    <?php endforeach; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
             <?php else : ?>
                 <p class="text-muted">Vous n'avez affecté aucune parcelle pour cette appellation.</p><br/>
-<?php endif; ?>
+            <?php endif; ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
@@ -79,9 +85,9 @@
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Retourner <small>à la validation</small></button>
             <?php elseif ($appellationNode->getNextAppellationKey()): ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-                <?php else: ?>
+            <?php else: ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper btn-default">Continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-        <?php endif; ?>
+                <?php endif; ?>
         </div>
     </div>
 </form>

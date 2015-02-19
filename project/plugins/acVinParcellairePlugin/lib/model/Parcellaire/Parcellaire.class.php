@@ -85,6 +85,18 @@ class Parcellaire extends BaseParcellaire {
         return $this->declaration->getProduits($onlyActive = false);
     }
 
+    public function getAllParcellesKeysByAppellations() {
+        $appellations = $this->declaration->getAppellations();
+        $parcellesByAppellations = array();
+        foreach ($appellations as $appellation) {
+            $parcellesByAppellations[$appellation->getHash()] = array();
+            foreach ($appellation->getProduitsCepageDetails() as $detail) {                
+            $parcellesByAppellations[$appellation->getHash()][$detail->getHash()] = $detail;
+            }
+        }
+        return $parcellesByAppellations;
+    }
+    
     public function getAllParcellesByAppellations() {
         $appellations = $this->declaration->getAppellations();
         $parcellesByAppellations = array();
