@@ -69,18 +69,6 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function getLieuxEditable() {
-        $lieux = array();
-        foreach($this->detail as $detail) {
-            if(!$detail->lieu) {
-                continue;
-            }
-            $lieux[$detail->lieu] = $detail->lieu;
-        }
-
-        return $lieux;
-    }
-
     public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
         $detail = $this->getDetailNode($key);
         if($detail) {

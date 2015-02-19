@@ -71,8 +71,8 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
                 $produits[$hash] = $produit;
             }
             
-            foreach($produit->getLieuxEditable() as $lieu) {
-                $produits[str_replace("/lieu/", "/lieu".KeyInflector::slugify(trim($lieu))."/", $hash)] = $produit;
+            foreach($produit->getLieuxEditable() as $lieu_key => $lieu) {
+                $produits[str_replace("/lieu/", "/lieu".$lieu_key."/", $hash)] = $produit;
             }
         }
 
