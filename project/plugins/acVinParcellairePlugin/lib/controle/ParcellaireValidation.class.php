@@ -56,8 +56,6 @@ class ParcellaireValidation extends DocumentValidation
                             'attention' => $detail->getHashForKey()))."\" class='alert-link' >La parcelle ".$detail->section.' '.$detail->numero_parcelle.' à '.$detail->commune." a été déclarée avec plusieurs cépages. </a>"
                         . "&nbsp;S’il ne s’agit pas d’une erreur de saisie de votre part, ne tenez pas compte de ce point de vigilance.",
                         '');
-                $detail->numero_parcelle .=  ' (complantation)';
-                $this->document->get($phashes[1])->numero_parcelle .= ' (complantation)';
             }
         }
     }
