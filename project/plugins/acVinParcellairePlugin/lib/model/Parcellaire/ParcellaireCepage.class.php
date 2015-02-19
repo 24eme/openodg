@@ -31,6 +31,9 @@ class ParcellaireCepage extends BaseParcellaireCepage {
 
     public function getAcheteursNode($lieu = null) {
         $acheteurs = array();
+        if($lieu) {
+            $lieu = KeyInflector::slugify(trim($lieu));
+        }
         foreach($this->acheteurs as $acheteurs_lieu => $acheteurs_type) {
             foreach($acheteurs_type as $type => $achs) {
                 foreach($achs as $acheteur) {
@@ -49,6 +52,8 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $a = $this->getDocument()->addAcheteur($type, $cvi);
         if(!$lieu) {
             $lieu = $this->getCouleur()->getLieu()->getKey();
+        } else {
+            $lieu = KeyInflector::slugify(trim($lieu));
         }
         $acheteur = $this->acheteurs->add($lieu)->add($type)->add($cvi);
         $acheteur->nom = $a->nom;

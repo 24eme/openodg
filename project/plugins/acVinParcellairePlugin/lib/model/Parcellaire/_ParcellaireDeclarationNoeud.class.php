@@ -72,7 +72,7 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
             }
             
             foreach($produit->getLieuxEditable() as $lieu) {
-                $produits[str_replace("/lieu/", "/lieu".$lieu."/", $hash)] = $produit;
+                $produits[str_replace("/lieu/", "/lieu".KeyInflector::slugify(trim($lieu))."/", $hash)] = $produit;
             }
         }
 
@@ -86,6 +86,20 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         }
 
         return $produits;
+    }
+
+    public function getLieuxEditable() {
+        $lieux = array();
+
+        foreach ($this->getProduitsCepageDetails() as $detail) {
+            if(!$detail->lieu) {
+                continue;
+            }
+
+            $lieux[KeyInflector::slugify(trim($detail->lieu))] = $detail->lieu;
+        }
+
+        return $lieux;
     }
 
     public function getSuperficieTotale() {
