@@ -18,12 +18,12 @@
                                 <?php echo $form['lieuCepage']->renderLabel(); ?>
                             </div>
                             <div class="col-xs-1">
-                                <a class="btn-tooltip btn btn-lg" data-toggle="tooltip" data-placement="auto" title="" data-original-title="Le choix du Lieu/cépage peut se faire en recherchant directement dans le champs" >
+                                <a class="btn-tooltip btn btn-lg" data-toggle="tooltip" data-placement="auto" title="" data-original-title="Le choix du lieu-dit/cépage peut se faire en recherchant directement dans le champ" >
                                     <span class="glyphicon glyphicon-question-sign"></span>
                                 </a>
                             </div>
                             <div class="col-xs-8">
-                                <?php echo $form['lieuCepage']->render(array("placeholder" => "Saisissez un lieu/cépage", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+                                <?php echo $form['lieuCepage']->render(array("placeholder" => "Saisissez un lieu-dit/cépage", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
                             </div>
                         </div>
                     <?php else: ?>

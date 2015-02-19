@@ -41,7 +41,7 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('section', 'Section :');
         $this->widgetSchema->setLabel('numero_parcelle', 'Numéro :');
         if (!$hasLieuEditable) {
-            $this->widgetSchema->setLabel('lieuCepage', 'Lieu/cépage :');
+            $this->widgetSchema->setLabel('lieuCepage', 'Lieu-dit/cépage :');
         } else {
             $this->widgetSchema->setLabel('lieuDit', 'Lieu Dit:');
             $this->widgetSchema->setLabel('cepage', 'Cépage :');
