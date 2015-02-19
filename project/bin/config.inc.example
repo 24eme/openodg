@@ -6,3 +6,4 @@ ESDOMAIN=localhost
 ESPORT=9200
 ESINDEXRIVER=_river
 ESINDEXGLOBAL=teledeclaration
+ESINDEXTYPE=compte
