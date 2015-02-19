@@ -14,7 +14,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th class="col-xs-5"></th>
                             <?php foreach($form->getAcheteurs() as $libelle): ?>           
                             <th class="text-center"><?php echo $libelle ?></th>
                             <?php endforeach; ?>  
@@ -25,7 +25,7 @@
                     <?php if($field->isHidden()) { continue; } ?>
                     <tr>
                         <td>
-                            <?php echo $field->renderLabel() ?>
+                            <?php echo $field->renderLabel(null, array('style' => 'font-weight: normal')) ?>
                             <?php echo $field->renderError() ?>
                         </td>
                         <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>            
