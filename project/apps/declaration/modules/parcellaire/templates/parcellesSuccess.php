@@ -58,7 +58,7 @@
                                     <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
                                     <td <?php echo ($erreur_ret) ? 'class="has-error"' : '' ?> ><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float num_float4 " . $class)); ?></td>                 
-                                    <td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a></td>
+                                    <td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton ajax"><span class="glyphicon glyphicon-remove"></span></a></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

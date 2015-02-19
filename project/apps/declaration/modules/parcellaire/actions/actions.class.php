@@ -32,6 +32,7 @@ class parcellaireActions extends sfActions {
 
         $etablissement = $this->getRoute()->getEtablissement();
         $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaire->save();
 
         return $this->redirect('parcellaire_edit', $this->parcellaire);
@@ -131,14 +132,12 @@ class parcellaireActions extends sfActions {
 
     public function executeParcelles(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
-
         $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
 
         if ($this->parcellaire->storeEtape($this->getEtape($this->parcellaire, ParcellaireEtapes::ETAPE_PARCELLES))) {
             $this->parcellaire->save();
         }
 
-        $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
         $this->appellation = $request->getParameter('appellation');
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
