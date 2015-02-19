@@ -7,7 +7,7 @@
         <?php if (!$drevmarc_non_ouverte): ?>
             <div class="block_declaration panel <?php if ($drevmarc && $drevmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
                 <div class="panel-heading">
-                    <h3>Revendication Marc d'Alsace&nbsp;GW&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?></h3>
+                    <h3>Revendication Marc&nbsp;d'Alsace&nbsp;Gw&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?></h3>
                 </div>
                 <?php if ($drevmarc && $drevmarc->validation): ?>
                     <div class="panel-body">

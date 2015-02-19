@@ -2,7 +2,7 @@
         <?php if (!$parcellaire_cremant_non_ouverte): ?>
             <div class="block_declaration panel <?php if ($parcellaireCremant && $parcellaireCremant->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
                 <div class="panel-heading">
-                <h3>Affectation&nbsp;parcellaire crémant<br/>&nbsp;</h3>
+                <h3>Affectation&nbsp;parcellaire Crémant <?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()+1; ?><br/>&nbsp;</h3>
                 </div>
                     <?php if ($parcellaireCremant && $parcellaireCremant->validation): ?>
                 <div class="panel-body">
