@@ -670,7 +670,7 @@ parcellaire_parcelle_ajout:
     type:     object
   requirements:
     sf_method: [post]
-    
+
 parcellaire_parcelle_delete:
   url: /parcellaire/deleteParcelle/:id/:appellation/:parcelle
   param: { module: parcellaire, action: deleteParcelle }
@@ -700,7 +700,7 @@ parcellaire_validation:
     type:     object
   requirements:
     sf_method: [get,post]
-    
+
 parcellaire_confirmation:
   url: /parcellaire/confirmation/:id
   param: { module: parcellaire, action: confirmation }
@@ -730,7 +730,7 @@ parcellaire_visualisation:
     type:     object
   requirements:
     sf_method: [get]
-    
+
 default_index:
   url:   /:module
   param: { action: index }
