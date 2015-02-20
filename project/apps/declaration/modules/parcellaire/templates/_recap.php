@@ -31,7 +31,7 @@ if ($last) {
                         $classsuperficie = '';
                         $stylesuperficie = '';
                         if (isset($diff) && $diff) {
-                            if (!$last->exist($detail->getHash())) {
+                            if ($last && !$last->exist($detail->getHash())) {
                                 $classline = 'success';
                                 $styleline = 'border-style: solid; border-width: 1px; border-color: darkgreen;';
                             } else {
