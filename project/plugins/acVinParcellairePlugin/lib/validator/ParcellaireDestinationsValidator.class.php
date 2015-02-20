@@ -14,7 +14,7 @@
 class ParcellaireDestinationsValidator extends sfValidatorSchema {
 
     public function configure($options = array(), $messages = array()) {
-        $this->setMessage('required', 'Vous devez séléctionner au moins une destination');
+        $this->setMessage('required', 'Vous devez sélectionner au moins une destination');
         $this->addMessage('required_acheteurs', 'Vous devez sélectionner au moins un destinataire pour chacune des cases cochées');
     }
 
