@@ -179,8 +179,4 @@ class Email {
 
         return get_partial($templateName, $vars);
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> e0c49fe323a20dbee4a179b93aa643e3f57f27b7
 }
