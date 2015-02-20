@@ -21,6 +21,11 @@ Configuration:
         definition:
           fields:
             '*': {  }
+      communes:
+        type: collection
+        definition:
+          fields:
+            '*': {  }
       motif_non_recolte:
         type: collection
         definition:

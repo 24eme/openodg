@@ -12,6 +12,7 @@ class adminComponents extends sfComponents {
         $this->lists = array();
         $this->lists["DRev2014"] = $this->getList("DRev", "2014");
         $this->lists["DRevMarc2014"] = $this->getList("DRevMarc", "2014");
+        $this->lists["Parcellaire2014"] = $this->getList("Parcellaire", "2014");
     }
 
     protected function getList($type, $campagne) {

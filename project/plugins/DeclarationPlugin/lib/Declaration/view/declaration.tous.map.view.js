@@ -1,6 +1,6 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "DRevMarc") {
+    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire") {
         
         return;
     }

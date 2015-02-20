@@ -24,6 +24,16 @@ class CampagneManager {
         return $this->getCampagneByDate(date('Y-m-d'));
     }
 
+    public function getCurrentPrevious() {
+
+        return $this->getPrevious($this->getCurrent());
+    }
+
+    public function getCurrentNext() {
+
+        return $this->getNext($this->getCurrent());
+    }
+
     public function getDateDebutByCampagne($campagne) {
         $campagne = $this->formatCampagneInput($campagne);
 

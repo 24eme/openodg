@@ -70,7 +70,7 @@ class drevmarcActions extends sfActions {
 
         $this->drevmarc->storeDeclarant();
         $this->drevmarc->save();
-
+        
         return $this->redirect('drevmarc_revendication', $this->drevmarc);
     }
 

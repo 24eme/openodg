@@ -6,6 +6,7 @@
     var _doc = $(document);
 
     var ajax_post_url = null;
+    var in_post = false;
 
     $.initAjaxPost = function() 
     {
@@ -82,6 +83,9 @@
         var form_id = $(this).attr('id');
         $('.ajax').each(function() {
             $(this).click(function(e) {
+                if(in_post) {
+                    return false;
+                }
                 ajax_post_url = $(this).attr('href');
                 formPost(form);
                 e.preventDefault()
@@ -92,6 +96,7 @@
     
     var formPost = function(form)
     {
+        in_post = true;
         $.ajax({
             url: $(form).attr('action'),
             type: "POST",
@@ -102,9 +107,11 @@
                 if (ajax_post_url) {
                     document.location.href = ajax_post_url;
                 }
+                in_post = false;
             },
             error: function(textStatus) {
                 form.submit();
+                in_post = false;
             }
         });
     };
