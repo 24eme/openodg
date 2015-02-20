@@ -7,7 +7,7 @@
                     <?php if ($parcellaireCremant && $parcellaireCremant->validation): ?>
                 <div class="panel-body">
                         <p>Vous avez déjà validé votre déclaration d'affectation parcellaire crémant pour cette année.</p>
-                    </div>
+                </div>
                 <div class="panel-bottom">
                         <p>
                             <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('parcellaire_visualisation', $parcellaireCremant) ?>">Visualiser</a>
@@ -16,12 +16,12 @@
                         <p>
                             <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('parcellaire_devalidation', $parcellaireCremant) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
                         </p>
-                </div>
                         <?php endif; ?>
+                </div>
                     <?php elseif ($parcellaireCremant):  ?>
                 <div class="panel-body">
                         <p>Vous avez déjà débuté votre déclaration d'affectation parcellaire crémant pour cette année sans la valider.</p>
-                       </div>
+                </div>
                 <div class="panel-bottom">
                     <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_edit', $parcellaireCremant) ?>">Continuer</a>
@@ -29,11 +29,11 @@
                         <p>
                             <a class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('parcellaire_delete', $parcellaireCremant) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                         </p>
-                        </div>
+                </div>
                     <?php else:  ?> 
                 <div class="panel-body">
                         <p>Aucune déclaration d'affectation parcellaire crémant n'a été débutée vous concernant cette année</p>
-                         </div>
+                </div>
                 <div class="panel-bottom">
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_cremant_create', $etablissement) ?>">Démarrer</a>
