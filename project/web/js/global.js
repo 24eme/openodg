@@ -280,6 +280,7 @@
     $.fn.saisieNum = function(float, callbackKeypress, callbackBlur)
     {
         var champ = $(this);
+        var float4 = champ.hasClass('num_float4');
         // A chaque touche pressée
         champ.keypress(function(e)
         {
@@ -306,7 +307,11 @@
                 if (touche == 44 && ponctuationPresente)
                     e.preventDefault();
                 // 2 décimales
-                if (val.match(/[\.\,][0-9][0-9]/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 3)
+                if (!float4 && val.match(/[\.\,][0-9][0-9]/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 3)
+                    e.preventDefault();
+                
+                // 4 décimales
+                if (float4 && val.match(/[\.\,][0-9]{4}/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 5)
                     e.preventDefault();
             }
             // Champ nombre entier
@@ -335,7 +340,6 @@
         // A chaque fois que l'on quitte le champ
         champ.blur(function()
         {
-            console.log('blur');
             $(this).nettoyageChamps();
             if (callbackBlur)
                 callbackBlur();
@@ -351,7 +355,6 @@
         var val = champ.val();
         var float = champ.hasClass('num_float');
         var float4 = champ.hasClass('num_float4');
-        console.log(val);
         // Si quelque chose a été saisi
         if (val)
         {
