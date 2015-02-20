@@ -35,11 +35,11 @@ if ($last) {
                                 $classline = 'success';
                                 $styleline = 'border-style: solid; border-width: 1px; border-color: darkgreen;';
                             } else {
-                                if ($detail->getParcelleIdentifiant() != $last->get($detail->getHash())->getParcelleIdentifiant()) {
+                                if ($last && $detail->getParcelleIdentifiant() != $last->get($detail->getHash())->getParcelleIdentifiant()) {
                                     $styleparcelle = 'border-style: solid; border-width: 1px; border-color: darkorange;';
                                     $classparcelle = 'warning';
                                 }
-                                if ($detail->getSuperficie() != $last->get($detail->getHash())->getSuperficie()) {
+                                if ($last && $detail->getSuperficie() != $last->get($detail->getHash())->getSuperficie()) {
                                     $styleline = (!$detail->superficie) ? 'text-decoration: line-through; border-style: solid; border-width: 1px; border-color: darkred' : '';
                                     $classline = (!$detail->superficie) ? 'danger' : '';
                                     $stylesuperficie = (!$detail->superficie) ? 'border-style: solid; border-width: 1px; border-color: darkred' : 'border-style: solid; border-width: 1px; border-color: darkorange';
