@@ -119,15 +119,11 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
 
     public function getLieuDetailForAutocomplete() {
         $lieuxDetail = array();
-        foreach ($this->getAppellationNode()->getProduits() as $cepageKey => $cepage) {
-            foreach ($cepage->detail as $keyDetail => $detail) {
-                if ($detail->exist('lieu') && $detail->lieu) {
-                    $lieuxDetail[] = $detail->lieu;
-                }
-            }
+        foreach ($this->getAppellationNode()->getLieuxEditable() as $libelle) {
+            $lieuxDetail[] = $libelle;
         }
         $entries = array();
-        foreach(array_unique($lieuxDetail) as $lieu) {
+        foreach($lieuxDetail as $lieu) {
             $entry = new stdClass();
             $entry->id = trim($lieu);
             $entry->text = trim($lieu);                    

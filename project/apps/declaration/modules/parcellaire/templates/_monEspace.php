@@ -2,7 +2,7 @@
         <?php if (!$parcellaire_non_ouverte): ?>
             <div class="block_declaration panel <?php if ($parcellaire && $parcellaire->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
                 <div class="panel-heading">
-                <h3>Affectation&nbsp;parcellaire&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()+1; ?><br/>&nbsp;</h3>
+                <h3>Affectation&nbsp;parcellaire&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(); ?><br/>&nbsp;</h3>
                 </div>
                     <?php if ($parcellaire && $parcellaire->validation): ?>
                 <div class="panel-body">

@@ -215,6 +215,7 @@
             $('.select2permissifNoAjax').select2({
                 data: JSON.parse($('.select2permissifNoAjax').attr('data-choices')),
                 multiple: false,
+                placeholder: true,
                 createSearchChoice: function(term, data) {
                     if ($(data).filter(function() {
                         return this.text.localeCompare(term) === 0;

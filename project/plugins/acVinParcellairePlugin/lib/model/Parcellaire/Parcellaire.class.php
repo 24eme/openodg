@@ -70,7 +70,15 @@ class Parcellaire extends BaseParcellaire {
     public function getParcellaireLastCampagne() {
         $campagnePrec = $this->campagne - 1;
         $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
-        return ParcellaireClient::getInstance()->find($parcellairePrevId);
+        $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
+
+        if(!$parcellaire) {
+            $campagnePrec = $this->campagne - 2;
+            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
+            $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
+        }
+
+        return $parcellaire;
     }
 
     private function importProduitsFromLastParcellaire() {
@@ -222,7 +230,7 @@ class Parcellaire extends BaseParcellaire {
 
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
-        $appellationsPos = array_flip(array_keys(ParcellaireClient::getAppellationsKeys()));
+        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys()));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             $keyLieu = sprintf("%s. %s %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
             if (!array_key_exists($keyLieu, $parcellesByLieux)) {
@@ -231,7 +239,7 @@ class Parcellaire extends BaseParcellaire {
                 $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
                 $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
                 $parcellesByLieux[$keyLieu]->parcelles = array();
-                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode($parcelle->getLieuKey());
+                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null);
             }
             
             $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();

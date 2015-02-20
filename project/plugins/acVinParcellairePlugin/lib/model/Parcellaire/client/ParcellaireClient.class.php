@@ -34,7 +34,7 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->findOrCreate($etablissement->identifiant, $campagne,$cremant);
     }
 
-    public function findOrCreate($cvi, $campagne,$cremant) {
+    public function findOrCreate($cvi, $campagne,$cremant = false) {
         if (strlen($cvi) != 10) {
             throw new sfException("Le CVI doit avoir 10 caractères : $cvi");
         }
@@ -53,16 +53,16 @@ class ParcellaireClient extends acCouchdbClient {
         return sprintf($id, $identifiant, $campagne);
     }
 
-    public function createDoc($identifiant, $campagne,$cremant = false) {
+    public function createDoc($identifiant, $campagne, $cremant = false) {
         $parcellaire = new Parcellaire();
-        $parcellaire->initDoc($identifiant, $campagne,$cremant);
+        $parcellaire->initDoc($identifiant, $campagne, $cremant);
 
         return $parcellaire;
     }
 
-    public function getHistory($identifiant,$cremant =false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getHistory($identifiant, $cremant = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) . "";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()) . "";
 
         $id = (!$cremant)?  "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
         return $this->startkey(sprintf($id, $identifiant, $campagne_from))

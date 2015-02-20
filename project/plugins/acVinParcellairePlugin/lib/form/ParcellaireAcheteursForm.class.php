@@ -12,10 +12,12 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         $produits = $this->getDocument()->declaration->getProduitsWithLieuEditable();
         ksort($produits);
 
+        $lieux_editable = $this->getDocument()->declaration->getLieuxEditable();
+
         foreach($produits as $hash => $cepage) {
             $lieu_libelle = $cepage->getCouleur()->getLieu()->getLibelle();
             if($cepage->getConfig()->hasLieuEditable()) {
-                $lieu_libelle = preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash);
+                $lieu_libelle = $lieux_editable[preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash)];
             }
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
             $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   

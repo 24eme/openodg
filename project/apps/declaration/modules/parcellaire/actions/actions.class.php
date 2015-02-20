@@ -31,7 +31,7 @@ class parcellaireActions extends sfActions {
     public function executeCreate(sfWebRequest $request) {
 
         $etablissement = $this->getRoute()->getEtablissement();
-        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaire->save();
 

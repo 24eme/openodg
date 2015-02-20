@@ -147,7 +147,7 @@ class Email {
     
     public function sendParcellaireValidation($parcellaire) 
     {
-      	if (!$drev->declarant->email) {
+      	if (!$parcellaire->declarant->email) {
       		  
             return;
       	}
@@ -161,7 +161,6 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/plain');
-
 		    return $this->getMailer()->send($message);
     }
     
