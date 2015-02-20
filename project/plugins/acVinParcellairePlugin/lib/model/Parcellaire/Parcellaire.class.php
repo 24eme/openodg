@@ -70,7 +70,15 @@ class Parcellaire extends BaseParcellaire {
     public function getParcellaireLastCampagne() {
         $campagnePrec = $this->campagne - 1;
         $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
-        return ParcellaireClient::getInstance()->find($parcellairePrevId);
+        $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
+
+        if(!$parcellaire) {
+            $campagnePrec = $this->campagne - 2;
+            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
+            $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
+        }
+
+        return $parcellaire;
     }
 
     private function importProduitsFromLastParcellaire() {

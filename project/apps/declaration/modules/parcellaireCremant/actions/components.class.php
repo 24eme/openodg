@@ -11,7 +11,7 @@ class parcellaireCremantComponents extends sfComponents {
             }
         }
         $this->etablissement = $this->getUser()->getEtablissement();
-        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext();
         $this->parcellaireCremant = ParcellaireClient::getInstance()->find('PARCELLAIRECEMANT-' . $this->etablissement->cvi . '-' . $campagne);
         $this->parcellairesCremantHistory = ParcellaireClient::getInstance()->getHistory($this->etablissement->identifiant,true);
     }

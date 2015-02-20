@@ -62,7 +62,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getHistory($identifiant, $cremant = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) . "";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()) . "";
 
         $id = (!$cremant)?  "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
         return $this->startkey(sprintf($id, $identifiant, $campagne_from))
