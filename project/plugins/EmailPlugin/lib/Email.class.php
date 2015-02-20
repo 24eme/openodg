@@ -161,8 +161,6 @@ class Email {
   					->setSubject($subject)
   					->setBody($body)
   					->setContentType('text/plain');
-
-        exit;
 		    return $this->getMailer()->send($message);
     }
     
