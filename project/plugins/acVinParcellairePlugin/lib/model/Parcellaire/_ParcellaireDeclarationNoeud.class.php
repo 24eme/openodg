@@ -65,8 +65,12 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
     {
         $produits = array();
         foreach($this->getProduits() as $hash => $produit) {
+            if(!count($produit->detail)) {
+                continue;
+            }
+
             $lieu_editable = $produit->getLieuxEditable();
-            if(!count($lieu_editable) && count($produit->detail) > 0) {
+            if(!count($lieu_editable)) {
 
                 $produits[$hash] = $produit;
             }
