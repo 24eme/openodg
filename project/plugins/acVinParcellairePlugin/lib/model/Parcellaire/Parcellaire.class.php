@@ -86,6 +86,13 @@ class Parcellaire extends BaseParcellaire {
         if (!$parcellairePrev) {
             return;
         }
+
+        foreach($parcellairePrev->declaration->getProduitsCepageDetails() as $detail) {
+            if(preg_match("/^[0-9]+\.[0-9]{3,}$/", $detail->superficie) || ($detail->superficie < 2 && $detail->getAppellation()->getKey() == "appellation_GRDCRU")) {
+                $detail->superficie = $detail->superficie * 100;
+            }
+        }
+
         $this->declaration = $parcellairePrev->declaration;
     }
 
