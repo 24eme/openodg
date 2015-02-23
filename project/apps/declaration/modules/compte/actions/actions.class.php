@@ -181,7 +181,7 @@ class compteActions extends sfActions {
     }
 
     public function executeRechercheCsv(sfWebRequest $request) {
-        ini_set('memory_limit', '128M');
+        ini_set('memory_limit', '256M');
         $this->setLayout(false);
         $q = $this->initSearch($request);
         $q->setLimit(10000);
