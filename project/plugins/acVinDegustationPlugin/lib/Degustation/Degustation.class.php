@@ -11,10 +11,20 @@ class Degustation extends BaseDegustation {
         $this->set('_id', sprintf("%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant));
     }
 
+     public function getConfiguration() {
+
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration("2014");
+    }
+
     public function setDate($date) {
         $this->date_prelevement_fin = $date;
         
         return $this->_set('date', $date);
+    }
+
+    public function getProduits() {
+
+        return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
     public function getPrelevementsOrderByHour() {

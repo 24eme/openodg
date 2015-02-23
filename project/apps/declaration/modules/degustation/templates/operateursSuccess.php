@@ -14,10 +14,9 @@
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div id="recap_cepages" class="btn-group">
-            <button class="btn btn-default btn-default-step" data-cepage="-declaration-certification-genre-appellation_ALSACE-mention-lieu-couleur-cepage_RI">Riesling <span class="badge" style="color: white">0</span></button>
-                <button class="btn btn-default btn-default-step" data-cepage="-declaration-certification-genre-appellation_ALSACE-mention-lieu-couleur-cepage_CH">Chasselas <span class="badge" style="color: white">0</span></button>
-                <button class="btn btn-default btn-default-step" data-cepage="Pinot Gris">Pinot Gris <span class="badge" style="color: white">0</span></button>
-                <button class="btn btn-default btn-default-step" data-cepage="Gewurztraminer">Gewurztraminer <span class="badge" style="color: white">0</span></button>
+            <?php foreach($degustation->getProduits() as $produit): ?>
+            <button class="btn btn-default btn-default-step disabled btn-sm" data-cepage="<?php echo $produit->getHashForKey() ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></button>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="col-xs-12" style="padding-bottom: 15px;">
