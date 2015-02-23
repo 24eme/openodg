@@ -199,6 +199,8 @@ class degustationActions extends sfActions {
         }
 
         $this->degustation->save();
+
+        return $this->redirect('degustation_prelevements', $this->degustation);
     }
 
     public function executeValidation(sfWebRequest $request) {

@@ -147,8 +147,10 @@
         for(key in points) {
             var point = points[key];
             var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + point[0] + "," + point[1] + '"]');
+            var color = ligne.find('.glyphicon-map-marker').css('color');
             var marker = L.marker(point, {title: ligne.attr('data-title'), icon: defaultIcon});
             marker.addTo(map);
+            $(marker._icon).find('.marker-inner').css('color', color);
 
             marker.on('click', function(m) {
                 var ligne = $('#listes_operateurs .list-group-item-item[data-point="' + m.latlng.lat + "," + m.latlng.lng + '"]');
@@ -263,7 +265,7 @@
 
             if(ligne.attr('data-point')) {
                 $(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', '#e2e2e2');
-                ligne.find('.glyphicon-map-marker').css('color', '#c2c2c2');
+                ligne.find('.glyphicon-map-marker').css('color', '#e2e2e2');
             }
             
         }
