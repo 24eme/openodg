@@ -96,6 +96,16 @@ class Parcellaire extends BaseParcellaire {
         $this->declaration = $parcellairePrev->declaration;
     }
 
+    public function fixSuperficeHa() {
+        foreach($this->declaration->getProduitsCepageDetails() as $detail) {
+            if(preg_match("/^[0-9]+\.[0-9]{3,}$/", $detail->superficie) || ($detail->superficie < 2 && $detail->getAppellation()->getKey() == "appellation_GRDCRU")) {
+                $old_superficie = $detail->superficie;
+                $detail->superficie = $detail->superficie * 100;
+                echo "REWRITE SUPERFICIE;".$this->_doc.";".$detail->getLibelleComplet().";".$old_superficie.";".$detail->superfice."\n";
+            }
+        }
+    }
+
     public function getProduits($onlyActive = false) {
         return $this->declaration->getProduits($onlyActive = false);
     }
