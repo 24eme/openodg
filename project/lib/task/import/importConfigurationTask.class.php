@@ -217,6 +217,19 @@ EOF;
         $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_GRDCRU, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
         $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_LIEUDIT, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
         $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_CREMANT, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
+
+        if($configurationJson->campagne >= "2015") {
+            $lieu02 = $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu02->couleur;
+
+            $this->addCepageForParcellaire($lieu02, "cepage_CH", "Chasselas")->no_vtsgn = 1;
+            $this->addCepageForParcellaire($lieu02, "cepage_PB", "Pinot Blanc")->no_vtsgn = 1;
+            $this->addCepageForParcellaire($lieu02, "cepage_MU", "Muscat");
+            $this->addCepageForParcellaire($lieu02, "cepage_MO", "Muscat Ottonel");
+            $this->addCepageForParcellaire($lieu02, "cepage_BN", "Pinot Noir")->no_vtsgn = 1;
+
+            $lieu51 = $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu51->couleur;
+            $this->addCepageForParcellaire($lieu51, "cepage_MU", "Muscat");
+        }
         
         $this->getConfigurationCommunes($configurationJson);
 
