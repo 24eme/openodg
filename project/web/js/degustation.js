@@ -44,6 +44,10 @@
             return false;
         });
 
+        $("#listes_operateurs .list-group-item-item select").change(function() {
+            $.updateRecapCepages();
+         });
+
         $("#listes_operateurs .list-group-item-item .glyphicon-map-marker").hover(
             function() {
                 var ligne = $(this).parents(".list-group-item-item");
