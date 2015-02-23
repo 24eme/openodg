@@ -101,7 +101,7 @@ class Parcellaire extends BaseParcellaire {
             if(preg_match("/^[0-9]+\.[0-9]{3,}$/", $detail->superficie) || ($detail->superficie < 2 && $detail->getAppellation()->getKey() == "appellation_GRDCRU")) {
                 $old_superficie = $detail->superficie;
                 $detail->superficie = $detail->superficie * 100;
-                echo "REWRITE SUPERFICIE;".$this->_doc.";".$detail->getLibelleComplet().";".$old_superficie.";".$detail->superfice."\n";
+                echo "REWRITE SUPERFICIE;".$this->_id.";".$detail->getLibelleComplet().";".$old_superficie.";".$detail->superfice."\n";
             }
         }
     }
