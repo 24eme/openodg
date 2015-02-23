@@ -25,6 +25,8 @@ all:
   date_ouverture:
     drev: "YYYY-mm-dd"
     drevmarc: "YYYY-mm-dd"
+    parcellaire: "YYYY-mm-dd"
+    parcellaire_cremant: "YYYY-mm-dd"
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"

@@ -105,25 +105,4 @@ curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXGLOBAL/" -d '{
     }
 }'
 
-#creation de la river
-
-echo "{
-\"type\" : \"couchdb\",
-\"couchdb\" : {
-\"host\" : \"$COUCHDBDOMAIN\",
-\"port\" : \"$COUCHDBPORT\",
-\"db\" : \"$COUCHDBBASE\",
-\"filter\" : \"app/type\",
-\"filter_params\" : {
-\"type\" : \"Compte\"
-}
-},
-\"index\" : {
-\"index\" : \"$ESINDEXGLOBAL\",
-\"type\" : \"compte\",
-\"bulk_size\" : \"100\",
-\"bulk_timeout\" : \"10ms\"
-}
-}" > "$TMPDIR/esriver.compte.json"
-
-curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXRIVER/compte/_meta" -d "@$TMPDIR/esriver.compte.json"
+bash bin/elasticsearch_river.sh

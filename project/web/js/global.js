@@ -10,7 +10,7 @@
 /* =================================================================================== */
 /* JQUERY CONTEXT */
 /* =================================================================================== */
-(function ($)
+(function($)
 {
     /* =================================================================================== */
     /* GLOBAL VARS */
@@ -53,11 +53,11 @@
     /**
      * Equal heights
      ******************************************/
-    $.fn.equalHeights = function ()
+    $.fn.equalHeights = function()
     {
         var maxHeight = 0,
                 $this = $(this);
-        $this.each(function () {
+        $this.each(function() {
             var height = $(this).innerHeight();
             if (height > maxHeight) {
                 maxHeight = height;
@@ -70,20 +70,20 @@
      * qui ont la classe .equal-height sur chaque ligne
      * $.initEqualHeight();
      ******************************************/
-    $.initEqualHeight = function ()
+    $.initEqualHeight = function()
     {
         if ($('.equal-height').length > 0)
         {
-            $('.row').each(function ()
+            $('.row').each(function()
             {
                 $(this).find('.equal-height').equalHeights();
             });
         }
     };
-    $.initDatePickers = function ()
+    $.initDatePickers = function()
     {
         var datePickers = $('.date-picker');
-        datePickers.each(function ()
+        datePickers.each(function()
         {
             var currentDp = $(this);
             hasValue = currentDp.find('input').val();
@@ -98,13 +98,13 @@
                 currentDp.find('input').val('');
             }
 
-            currentDp.on('focus', 'input', function ()
+            currentDp.on('focus', 'input', function()
             {
                 currentDp.data('DateTimePicker').show();
             });
         });
         var datePickers = $('.date-picker-all-days');
-        datePickers.each(function ()
+        datePickers.each(function()
         {
             var currentDp = $(this);
             currentDp.datetimepicker
@@ -112,7 +112,7 @@
                         language: 'fr',
                         pickTime: false
                     });
-            currentDp.on('focus', 'input', function ()
+            currentDp.on('focus', 'input', function()
             {
                 currentDp.data('DateTimePicker').show();
             });
@@ -132,49 +132,49 @@
             });
         });
     };
-    $.initSelect2Autocomplete = function ()
+    $.initSelect2Autocomplete = function()
     {
         $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
     }
 
-    $.initSelect2AutocompleteRemote = function ()
+    $.initSelect2AutocompleteRemote = function()
     {
         $('.select2autocompleteremote').select2({
-                allowClear: true,
-                placeholder: true,
-                minimumInputLength: 3,
-                ajax: { // instead of writing the function to execute the request we use Select2's convenient helper
-                    url: $('.select2autocompleteremote').data('url'),
-                    dataType: 'json',
-                    quietMillis: 250,
-                    data: function (term, page) {
-                        return {
-                            q: term,
-                        };
-                    },
-                    results: function (data, page) {
-                        return { results: data };
-                    },
-                    cache: true
+            allowClear: true,
+            placeholder: true,
+            minimumInputLength: 3,
+            ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
+                url: $('.select2autocompleteremote').data('url'),
+                dataType: 'json',
+                quietMillis: 250,
+                data: function(term, page) {
+                    return {
+                        q: term,
+                    };
                 },
-                formatResult: function(item) {
-                    if(item.text_html) {
+                results: function(data, page) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            formatResult: function(item) {
+                if (item.text_html) {
 
-                        return item.text_html;
-                    }
-
-                    return item.text;
+                    return item.text_html;
                 }
+
+                return item.text;
+            }
         });
     }
 
-    $.initSelect2AutocompletePermissif = function ()
+    $.initSelect2AutocompletePermissif = function()
     {
 
         $('.select2autocompletepermissif').select2({
-            tags:[],
+            tags: [],
             tokenSeparators: [','],
-            createSearchChoice: function (term) {
+            createSearchChoice: function(term) {
                 return {
                     id: $.trim(term),
                     text: $.trim(term) + ' (nouveau tag)'
@@ -183,18 +183,18 @@
             ajax: {
                 url: $('.select2autocompletepermissif').data('url'),
                 dataType: 'json',
-                data: function (term, page) {
+                data: function(term, page) {
                     return {
                         q: term
                     };
                 },
-                results: function (data, page) {
+                results: function(data, page) {
                     return {
                         results: data
                     };
                 }
             },
-            initSelection: function (element, callback) {
+            initSelection: function(element, callback) {
                 var data = [];
                 function splitVal(string, separator) {
                     var val, i, l;
@@ -206,7 +206,7 @@
                     return val;
                 }
 
-                $(splitVal(element.val(), ",")).each(function () {
+                $(splitVal(element.val(), ",")).each(function() {
                     data.push({
                         id: this,
                         text: this
@@ -215,25 +215,54 @@
 
 
 
-                callback($.map(element.val().split(','), function (id) {
+                callback($.map(element.val().split(','), function(id) {
                     return {id: id, text: id};
                 }));
             }
         });
     }
 
-    $.initCheckboxRelations = function ()
+    $.initSelect2PermissifNoAjax = function()
     {
-        $('.checkbox-relation').click(function () {
+        if ($('.select2permissifNoAjax').length) {
+            var lastValue = null;
+            $('.select2permissifNoAjax').select2({
+                data: JSON.parse($('.select2permissifNoAjax').attr('data-choices')),
+                multiple: false,
+                placeholder: true,
+                createSearchChoice: function(term, data) {
+                    if ($(data).filter(function() {
+                        return this.text.localeCompare(term) === 0;
+                    }).length === 0) {
+                        return {id: term, text: term + ' (nouveau)'};
+                    }
+                }
+            }).on("select2-close", function() {
+                var old_choices = JSON.parse($('input.select2permissifNoAjax').attr('data-choices'));
+                old_choices.push({ id:  lastValue, text : lastValue + ' (nouveau)'});
+                console.log($('.select2permissifNoAjax'));
+                $('input.select2permissifNoAjax').select2("val",lastValue);
+                $('input.select2permissifNoAjax').val(lastValue);
+                $('.select2permissifNoAjax .select2-chosen').text(lastValue);
+            }).on("select2-highlight", function(e) {
+                lastValue = e.val;
+            })
+        }
+    }
+
+
+    $.initCheckboxRelations = function()
+    {
+        $('.checkbox-relation').click(function() {
             $($(this).attr('data-relation')).toggleClass("hidden");
         })
 
     }
 
-    $.initCollectionAddTemplate = function (element, regexp_replace, callback)
+    $.initCollectionAddTemplate = function(element, regexp_replace, callback)
     {
 
-        $(element).click(function ()
+        $(element).click(function()
         {
             var bloc_html = $($(this).attr('data-template')).html().replace(regexp_replace, UUID.generate());
 
@@ -263,11 +292,12 @@
      * un champ
      * $(s).saisieNum(float, callbackKeypress);
      ******************************************/
-    $.fn.saisieNum = function (float, callbackKeypress, callbackBlur)
+    $.fn.saisieNum = function(float, callbackKeypress, callbackBlur)
     {
         var champ = $(this);
+        var float4 = champ.hasClass('num_float4');
         // A chaque touche pressée
-        champ.keypress(function (e)
+        champ.keypress(function(e)
         {
             var val = $(this).val();
             var touche = e.which;
@@ -277,7 +307,7 @@
             // touche "entrer"
             if (touche == 13)
                 return e;
-           if (touche == 0)
+            if (touche == 0)
                 return e;
             // Champ nombre décimal
             if (float)
@@ -292,7 +322,11 @@
                 if (touche == 44 && ponctuationPresente)
                     e.preventDefault();
                 // 2 décimales
-                if (val.match(/[\.\,][0-9][0-9]/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 3)
+                if (!float4 && val.match(/[\.\,][0-9][0-9]/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 3)
+                    e.preventDefault();
+                
+                // 4 décimales
+                if (float4 && val.match(/[\.\,][0-9]{4}/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 5)
                     e.preventDefault();
             }
             // Champ nombre entier
@@ -307,7 +341,7 @@
             return e;
         });
         // A chaque touche pressée
-        champ.keyup(function (e)
+        champ.keyup(function(e)
         {
             var touche = e.which;
             // touche "retour"
@@ -319,9 +353,8 @@
             }
         });
         // A chaque fois que l'on quitte le champ
-        champ.blur(function ()
+        champ.blur(function()
         {
-            console.log('blur');
             $(this).nettoyageChamps();
             if (callbackBlur)
                 callbackBlur();
@@ -331,12 +364,12 @@
      * Nettoie les champs après la saisie
      * $(champ).nettoyageChamps();
      ******************************************/
-    $.fn.nettoyageChamps = function ()
+    $.fn.nettoyageChamps = function()
     {
         var champ = $(this);
         var val = champ.val();
         var float = champ.hasClass('num_float');
-        console.log(val);
+        var float4 = champ.hasClass('num_float4');
         // Si quelque chose a été saisi
         if (val)
         {
@@ -351,8 +384,14 @@
             if (val.indexOf('0') == 0 && val.length > 1)
                 val = val.substring(1);
             // Comparaison nombre entier / flottant
-            if (float || parseInt(val) != parseFloat(val))
-                val = parseFloat(val).toFixed(2);
+            if (float || parseInt(val) != parseFloat(val)) {
+                if (float4) {
+                    val = parseFloat(val).toFixed(4);
+                } else {
+                    val = parseFloat(val).toFixed(2);
+                }
+
+            }
             else
                 val = parseInt(val);
         }
@@ -379,23 +418,24 @@
             L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                    'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+                        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
                 id: 'examples.map-i875mjb7'
             }).addTo(map);
 
-            L.marker(JSON.parse("["+$(this).attr('data-point')+"]"), {title: $(this).attr('data-title')}).addTo(map);
+            L.marker(JSON.parse("[" + $(this).attr('data-point') + "]"), {title: $(this).attr('data-title')}).addTo(map);
         });
-    };  
+    };
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
-    _doc.ready(function ()
+    _doc.ready(function()
     {
         $.initDatePickers();
         $.initSelect2Autocomplete();
         $.initSelect2AutocompleteRemote();
         $.initSelect2AutocompletePermissif();
+        $.initSelect2PermissifNoAjax();
         $.initCheckboxRelations();
         $.initCarte();
         $('input.num_float').saisieNum(true);
