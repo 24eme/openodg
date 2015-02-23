@@ -191,6 +191,9 @@ class Parcellaire extends BaseParcellaire {
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
+        if($lieu){
+            $parcelleKey.='-'.KeyInflector::slugify($lieu);
+        }
         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
     }
 

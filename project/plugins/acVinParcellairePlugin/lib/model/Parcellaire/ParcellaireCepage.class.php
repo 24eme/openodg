@@ -80,6 +80,9 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $detail->commune = $commune;
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
+        if($lieu){
+           $lieu = strtoupper($lieu);
+        }
         $detail->lieu = $lieu;
         $detail->departement = $dpt;
         return $detail;
