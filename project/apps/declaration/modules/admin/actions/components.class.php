@@ -10,9 +10,9 @@ class adminComponents extends sfComponents {
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "valide" => "Validé", "brouillon" => "En cours de saisie");
         $this->lists = array();
-        $this->lists["DRev2014"] = $this->getList("DRev", "2014");
-        $this->lists["DRevMarc2014"] = $this->getList("DRevMarc", "2014");
-        $this->lists["Parcellaire2014"] = $this->getList("Parcellaire", "2014");
+        $this->lists["DRev2014"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->lists["DRevMarc2014"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->lists["Parcellaire2014"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
     }
 
     protected function getList($type, $campagne) {
