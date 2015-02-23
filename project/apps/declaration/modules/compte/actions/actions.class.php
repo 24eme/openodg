@@ -181,7 +181,7 @@ class compteActions extends sfActions {
     }
 
     public function executeRechercheCsv(sfWebRequest $request) {
-        ini_set('memory_limit', '128M');
+        ini_set('memory_limit', '256M');
         $this->setLayout(false);
         $q = $this->initSearch($request);
         $q->setLimit(10000);
@@ -195,11 +195,15 @@ class compteActions extends sfActions {
     }
     
     public function executeRechercheJson($request) {
+        if($request->getParameter('q')) {
+            $request->setParameter('q', "*".$request->getParameter('q')."*");
+        }
 
         $q = $this->initSearch($request);
 
         $q->setLimit(60);
         $index = acElasticaManager::getType('compte');
+
         $resset = $index->search($q);
         $results = $resset->getResults();
 
@@ -228,6 +232,7 @@ class compteActions extends sfActions {
         if (!$this->q) {
             $this->q = $query = '*';
         }
+
         $this->tags = $request->getParameter('tags', array());
         $this->all = $request->getParameter('all', 0);
         if (!$this->all) {
@@ -245,6 +250,7 @@ class compteActions extends sfActions {
         $qs = new acElasticaQueryQueryString($query);
         $q = new acElasticaQuery();
         $q->setQuery($qs);
+
         $this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
         return $q;
     }

@@ -25,8 +25,13 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
        $appellations = $this->getAppellations();
        
        $appellationOrdered = array();
+
+        if(!$appellations) {
+            return $appellationOrdered;
+        }
+
        foreach (ParcellaireClient::getInstance()->getAppellationsKeys() as $app_key => $app_name) {
-           if(array_key_exists( 'appellation_'.$app_key, $appellations->toArray(1,0))){
+           if(array_key_exists('appellation_'.$app_key, $appellations->toArray(1,0))){
                $appellationOrdered['appellation_'.$app_key] = $appellations['appellation_'.$app_key];
            }      
        }
