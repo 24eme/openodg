@@ -12,7 +12,7 @@ class adminComponents extends sfComponents {
         $this->lists = array();
         $this->lists["DRev2014"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->lists["DRevMarc2014"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $this->lists["Parcellaire2014"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
+        $this->lists["Parcellaire2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
     }
 
     protected function getList($type, $campagne) {
