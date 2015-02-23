@@ -96,7 +96,7 @@ class Parcellaire extends BaseParcellaire {
         $this->declaration = $parcellairePrev->declaration;
     }
 
-    public function fixSuperficeHa() {
+    public function fixSuperficiesHa() {
         foreach($this->declaration->getProduitsCepageDetails() as $detail) {
             if(preg_match("/^[0-9]+\.[0-9]{3,}$/", $detail->superficie) || ($detail->superficie < 2 && $detail->getAppellation()->getKey() == "appellation_GRDCRU")) {
                 $old_superficie = $detail->superficie;
