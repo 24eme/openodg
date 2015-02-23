@@ -44,13 +44,15 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('degustation_operateurs', $this->degustation);
+        return $this->redirect('degustation_operateurs', array('sf_subject' => $this->degustation, 'nb_a_prelever' => $this->form->getValue('nombre_operateurs_a_prelever')));
     }
 
     public function executeOperateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
 
         $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+
+        $this->nb_a_prelever = $request->getParameter('nb_a_prelever', 0);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -200,11 +202,11 @@ class degustationActions extends sfActions {
 
         $this->degustation->save();
 
-        return $this->redirect('degustation_prelevements', $this->degustation);
+        return $this->redirect('degustation_validation', $this->degustation);
     }
 
     public function executeValidation(sfWebRequest $request) {
- 
+        $this->degustation = $this->getRoute()->getDegustation();
     }
 
     public function executeTournee(sfWebRequest $request) {

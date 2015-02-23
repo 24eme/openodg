@@ -118,9 +118,11 @@
             $.initCarteDegustation();
         }
 
-    	for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
-    		//$.addItem($("#listes_operateurs .list-group-item-item").eq(i));
-    	}
+        if($('#nb_a_prelever').length > 0) {
+    	   for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
+    		  $.addItem($("#listes_operateurs .list-group-item-item").eq(i));
+    	   }
+        }
 
     });
 
@@ -295,7 +297,7 @@
         $('#recap_cepages span.badge').text("0");
 
         $("#listes_operateurs .list-group-item-item select option:selected").each(function(index, value) {
-            var item = $('#recap_cepages button[data-cepage="'+$(value).html()+'"] .badge');
+            var item = $('#recap_cepages button[data-cepage="'+$(value).val()+'"] .badge');
             item.html(parseInt(item.html()) + 1);
         });
 

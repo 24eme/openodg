@@ -1,4 +1,4 @@
-<?php include_partial('degustation/step', array('active' => 'validation')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'validation')); ?>
 
 <div class="page-header no-border">
     <h2>Validation</h2>
@@ -70,10 +70,10 @@
 </div>
 <div class="row row-margin row-button">
     <div class="col-xs-6">
-        <a href="<?php echo url_for('degustation_prelevements') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
+        <a href="<?php echo url_for('degustation_prelevements', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
-        <a href="<?php echo url_for('degustation_validation') ?>" class="btn btn-default btn-lg btn-upper">Valider</a>
+        <a href="<?php echo url_for('degustation_validation', $degustation) ?>" class="btn btn-default btn-lg btn-upper">Valider</a>
     </div>
 </div>
 

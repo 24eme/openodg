@@ -597,12 +597,6 @@ degustation_prelevements:
   requirements:
     sf_method: [get, post]
 
-degustation_validation:
-  url: /degustation/validation
-  param: { module: degustation, action: validation }
-  requirements:
-    sf_method: [get]
-
 degustation_agents:
   url: /degustation/agents/:id
   param: { module: degustation, action: agents }
@@ -613,11 +607,9 @@ degustation_agents:
   requirements:
     sf_method: [get, post]
 
-degustation_prelevements:
-  url: /degustation/prelevements/:id
-  param: { module: degustation, action: prelevements }
-  requirements:
-    sf_method: [get]
+degustation_validation:
+  url: /degustation/validation/:id
+  param: { module: degustation, action: validation }
   class: DegustationRoute
   options:
     model:    DegustationRoute

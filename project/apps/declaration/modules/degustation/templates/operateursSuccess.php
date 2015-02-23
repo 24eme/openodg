@@ -7,15 +7,15 @@
     <h2>Choix des Opérateurs</h2>
 </div>
 
-<form id="form_degustation_choix_operateurs" action="" method="post" class="form-horizontal">
+<form id="form_degustation_choix_operateurs" action="<?php echo url_for('degustation_operateurs', $degustation) ?>" method="post" class="form-horizontal">
 
-<input type="hidden" id="nb_a_prelever" value="20"/>
+<input type="hidden" id="nb_a_prelever" value="<?php echo $nb_a_prelever ?>"/>
 
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div id="recap_cepages" class="btn-group">
-            <button class="btn btn-default btn-default-step" data-cepage="Riesling">Riesling <span class="badge" style="color: white">0</span></button>
-                <button class="btn btn-default btn-default-step" data-cepage="Chasselas">Chasselas <span class="badge" style="color: white">0</span></button>
+            <button class="btn btn-default btn-default-step" data-cepage="-declaration-certification-genre-appellation_ALSACE-mention-lieu-couleur-cepage_RI">Riesling <span class="badge" style="color: white">0</span></button>
+                <button class="btn btn-default btn-default-step" data-cepage="-declaration-certification-genre-appellation_ALSACE-mention-lieu-couleur-cepage_CH">Chasselas <span class="badge" style="color: white">0</span></button>
                 <button class="btn btn-default btn-default-step" data-cepage="Pinot Gris">Pinot Gris <span class="badge" style="color: white">0</span></button>
                 <button class="btn btn-default btn-default-step" data-cepage="Gewurztraminer">Gewurztraminer <span class="badge" style="color: white">0</span></button>
         </div>

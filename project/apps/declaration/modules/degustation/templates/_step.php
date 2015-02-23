@@ -21,7 +21,7 @@
     </li>
     <li class="<?php if ($active == 'validation'): ?>active<?php endif; ?>">
         <div class="step">
-            <a href="<?php echo url_for("degustation_validation") ?>">Validation</a>
+            <a href="<?php echo url_for("degustation_validation", $degustation) ?>">Validation</a>
         </div>
     </li>
 </ol>
