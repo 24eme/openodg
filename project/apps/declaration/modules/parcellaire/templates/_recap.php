@@ -89,7 +89,7 @@ if ($last) {
             <?php echo $detail->getParcelleIdentifiant().' (supprimé)'; ?>
                                 </td>   
                                 <td class="col-xs-2" style="text-align: right; text-decoration: line-through;">
-            <?php echo $detail->superficie . '&nbsp;ares'; ?>
+<?php printf("%0.2f", $detail->superficie) . '&nbsp;ares'; ?>
                                 </td>   
                             </tr>    
                             <?php
