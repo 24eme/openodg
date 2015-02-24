@@ -152,7 +152,7 @@ class Email {
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($parcellaire->declarant->email);
-        $subject = 'Validation de votre Parcellaire';
+        $subject = "Validation de votre déclaration d'affectation parcellaire";
         $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)

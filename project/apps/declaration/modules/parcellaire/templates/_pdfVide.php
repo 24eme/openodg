@@ -34,9 +34,6 @@
         </td></tr></table>
 <br /> 
 <br />
-<i>
-Aucune parcelle n'a été déclarée pour cette année en AOC Alsace Grands Crus, AOC Alsace Lieu-dit et AOC Alsace Communale.
-</i>
-
+<i>Aucune parcelle n'a été déclarée pour cette année en AOC Alsace Grand Cru, AOC Alsace Lieu-dit et AOC Alsace Communale.</i>
 <br />
 <br />

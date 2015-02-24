@@ -71,6 +71,6 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     public function cleanNode() {
 
         return false;
-    }
-
+    }  
+    
 }
