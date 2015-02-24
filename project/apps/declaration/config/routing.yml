@@ -620,8 +620,12 @@ degustation_validation:
 degustation_tournee:
   url: /degustation/tournee
   param: { module: degustation, action: tournee }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 degustation_affectation:
   url: /degustation/affectation

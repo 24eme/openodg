@@ -27,6 +27,10 @@ class Degustation extends BaseDegustation {
         return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
+    public function getPrelevementsByTournee($agent_id, $date) {
+
+    }
+
     public function getPrelevementsOrderByHour() {
         $prelevements = array();
         foreach($this->prelevements as $prelevement) {

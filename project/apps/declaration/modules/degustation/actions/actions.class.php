@@ -210,7 +210,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeTournee(sfWebRequest $request) {
-
+        $this->degustation = $this->getRoute()->getDegustation();
     }
 
     public function executeAffectation(sfWebRequest $request) {

@@ -75,4 +75,11 @@ class DegustationClient extends acCouchdbClient {
         return $degustateurs_result;
     }
 
+    public function getDegustations($hydrate = acCouchdbClient::HYDRATE_JSON) {
+
+        return $this->startkey("DEGUSTATION-00000000-AAAAAAAAA")
+                    ->endkey("DEGUSTATION-999999999-ZZZZZZZZZZ")
+                    ->execute($hydrate);
+    }
+
 }
