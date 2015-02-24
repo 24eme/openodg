@@ -68,7 +68,7 @@ if ($last) {
                                 <?php echo $detail->getParcelleIdentifiant(); ?>
                             </td>   
                             <td class="col-xs-2 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
-<?php echo printf("%0.2f&nbsp;ares", $detail->superficie); ?>
+<?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                             </td>   
                         </tr> 
                         <?php
