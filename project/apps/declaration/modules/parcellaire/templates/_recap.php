@@ -68,7 +68,7 @@ if ($last) {
                                 <?php echo $detail->getParcelleIdentifiant(); ?>
                             </td>   
                             <td class="col-xs-2 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
-                                <?php echo $detail->superficie . '&nbsp;ares'; ?>
+<?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                             </td>   
                         </tr> 
                         <?php
@@ -89,7 +89,7 @@ if ($last) {
             <?php echo $detail->getParcelleIdentifiant().' (supprimé)'; ?>
                                 </td>   
                                 <td class="col-xs-2" style="text-align: right; text-decoration: line-through;">
-            <?php echo $detail->superficie . '&nbsp;ares'; ?>
+<?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                                 </td>   
                             </tr>    
                             <?php
