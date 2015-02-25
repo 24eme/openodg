@@ -43,7 +43,7 @@ class parcellaireActions extends sfActions {
 
         if ($parcellaire->exist('etape') && $parcellaire->etape) {
             if ($parcellaire->etape == ParcellaireEtapes::ETAPE_PARCELLES) {
-                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation()));
+                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation($parcellaire->isParcellaireCremant())));
             }
             return $this->redirect('parcellaire_' . $parcellaire->etape, $parcellaire);
         }
@@ -126,7 +126,7 @@ class parcellaireActions extends sfActions {
             return $this->redirect('parcellaire_validation', $this->parcellaire);
         }
 
-        $this->firstAppellation = ParcellaireClient::getInstance()->getFirstAppellation();
+        $this->firstAppellation = ParcellaireClient::getInstance()->getFirstAppellation($this->parcellaire->isParcellaireCremant());
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->firstAppellation));
     }
 
@@ -138,7 +138,7 @@ class parcellaireActions extends sfActions {
             $this->parcellaire->save();
         }
 
-        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
+        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys($this->parcellaire->isParcellaireCremant());
         $this->appellation = $request->getParameter('appellation');
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);

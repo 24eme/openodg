@@ -24,7 +24,7 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
     }
     
     public function getNextAppellationKey() {
-        $appellationsKeys = array_keys(ParcellaireClient::getInstance()->getAppellationsKeys());
+        $appellationsKeys = array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->getDocument()->isParcellaireCremant()));
         $onAppellation = false;
         foreach ($appellationsKeys as $key) {  
             if($onAppellation){
@@ -58,7 +58,7 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
     }
     
     public function getPreviousAppellationKey() {
-        $appellationsKeys = array_reverse(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys()));
+        $appellationsKeys = array_reverse(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->getDocument()->isParcellaireCremant())));
         $onAppellation = false;
         foreach ($appellationsKeys as $key) {  
             if($onAppellation){
