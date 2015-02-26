@@ -1,7 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php use_javascript("degustation.js", "last") ?>
 
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'agents')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_AGENTS)); ?>
 
 <div class="page-header">
     <h2>Choix des agents de prélevements</h2>

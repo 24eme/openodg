@@ -5,10 +5,11 @@ Degustation:
       _id: { }
       _rev: { }
       type: { }
-      etape: { required: false }
+      etape: { }
       identifiant: { }
       date: { }
       appellation: { }
+      appellation_libelle: { }
       date_prelevement_debut: { }
       date_prelevement_fin: { }
       nombre_commissions: { type: integer }

@@ -23,8 +23,23 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_creation', $this->degustation);
     }
 
+    public function executeEdit(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+
+        if ($degustation->exist('etape') && $degustation->etape) {
+
+            return $this->redirect('degustation_' . strtolower($degustation->etape), $degustation);
+        }
+
+        return $this->redirect('degustation_creation', $degustation);
+    }
+
     public function executeCreation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_CREATION))) {
+            $this->degustation->save();
+        }
 
         $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
 
@@ -49,6 +64,10 @@ class degustationActions extends sfActions {
 
     public function executeOperateurs(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_OPERATEURS))) {
+            $this->degustation->save();
+        }
 
         $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
 
@@ -85,6 +104,10 @@ class degustationActions extends sfActions {
 
     public function executeDegustateursType(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
+            $this->degustation->save();
+        }
 
         $this->types = CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR);
 
@@ -141,6 +164,10 @@ class degustationActions extends sfActions {
     public function executeAgents(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
 
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_AGENTS))) {
+            $this->degustation->save();
+        }
+
         $this->agents = DegustationClient::getInstance()->getAgents();
 
         $this->jours = array();
@@ -173,6 +200,11 @@ class degustationActions extends sfActions {
 
     public function executePrelevements(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
+            $this->degustation->save();
+        }
+
         $this->couleurs = array("#91204d", "#fa6900",  "#1693a5", "#e05d6f", "#7ab317",  "#ffba06", "#907860");
         $this->heures = array();
         for($i = 8; $i <= 18; $i++) {
@@ -207,6 +239,10 @@ class degustationActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+
+        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
+            $this->degustation->save();
+        }
     }
 
     public function executeTournee(sfWebRequest $request) {
@@ -219,5 +255,13 @@ class degustationActions extends sfActions {
 
     public function executeDegustation(sfWebRequest $request) {
         
+    }
+
+    protected function getEtape($doc, $etape) {
+        $etapes = DegustationEtapes::getInstance();
+        if (!$doc->exist('etape')) {
+            return $etape;
+        }
+        return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
     }
 }

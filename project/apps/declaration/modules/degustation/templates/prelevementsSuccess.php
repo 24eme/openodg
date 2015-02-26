@@ -5,7 +5,7 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'prelevements')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
 
 <div class="page-header">
     <h2>Affectation des prélevements</h2>

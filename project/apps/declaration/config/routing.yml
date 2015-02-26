@@ -521,6 +521,16 @@ degustation:
   requirements:
     sf_method: [get]
 
+degustation_edit:
+  url: /degustation/edit/:id
+  param: { module: degustation, action: edit }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_creation:
   url: /degustation/creation/:id
   param: { module: degustation, action: creation }

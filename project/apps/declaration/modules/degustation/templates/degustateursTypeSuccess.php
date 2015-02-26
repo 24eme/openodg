@@ -1,6 +1,6 @@
 <?php use_javascript("degustation.js", "last") ?>
 
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'degustateurs')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_DEGUSTATEURS)); ?>
 
 <div class="page-header">
     <h2>Choix des dégustateurs</h2>

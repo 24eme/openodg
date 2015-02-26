@@ -1,7 +1,7 @@
 <?php use_javascript("degustation.js", "last") ?>
 <?php use_helper("Date") ?>
 
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'operateurs')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_OPERATEURS)); ?>
 
 <div class="page-header">
     <h2>Choix des Opérateurs</h2>

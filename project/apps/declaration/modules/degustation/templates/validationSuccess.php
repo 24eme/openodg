@@ -1,4 +1,4 @@
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'validation')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_VALIDATION)); ?>
 
 <div class="page-header no-border">
     <h2>Validation</h2>

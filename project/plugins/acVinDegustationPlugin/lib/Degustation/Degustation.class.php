@@ -11,7 +11,7 @@ class Degustation extends BaseDegustation {
         $this->set('_id', sprintf("%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant));
     }
 
-     public function getConfiguration() {
+    public function getConfiguration() {
 
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration("2014");
     }
@@ -43,6 +43,17 @@ class Degustation extends BaseDegustation {
         }
 
         return $prelevements;
+    }
+
+    public function storeEtape($etape) {
+        if($etape == $this->etape) {
+            
+            return false;
+        }
+
+        $this->add('etape', $etape);
+
+        return true;
     }
 
 }
