@@ -286,5 +286,5 @@ class Parcellaire extends BaseParcellaire {
     public function validateOdg() {
         $this->validation_odg = date('Y-m-d');
     }
-
+    
 }

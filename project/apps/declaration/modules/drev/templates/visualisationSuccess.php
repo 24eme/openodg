@@ -1,7 +1,6 @@
 <?php use_helper('Date') ?>
 
 <div class="page-header no-border">
-
     <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
     <?php if($drev->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>

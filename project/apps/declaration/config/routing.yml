@@ -611,6 +611,16 @@ parcellaire_create:
   requirements:
     sf_method: [get]
 
+parcellaire_create_papier:
+  url: /parcellaire/creation-papier/:id
+  param: { module: parcellaire, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 parcellaire_cremant_create:
   url: /parcellaireCremant/creation/:id
   param: { module: parcellaireCremant, action: create }

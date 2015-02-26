@@ -29,9 +29,24 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeCreate(sfWebRequest $request) {
-
         $etablissement = $this->getRoute()->getEtablissement();
+
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
+
         $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
+        $this->parcellaire->initProduitFromLastParcellaire();
+        $this->parcellaire->save();
+
+        return $this->redirect('parcellaire_edit', $this->parcellaire);
+    }
+
+    public function executeCreatePapier(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
+
+        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
+        $this->parcellaire->add('papier', 1);
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaire->save();
 
@@ -40,6 +55,8 @@ class parcellaireActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
+
+        $this->secure(ParcellaireSecurity::EDITION, $parcellaire);
 
         if ($parcellaire->exist('etape') && $parcellaire->etape) {
             if ($parcellaire->etape == ParcellaireEtapes::ETAPE_PARCELLES) {
@@ -259,22 +276,33 @@ class parcellaireActions extends sfActions {
             $this->parcellaire->save();
         }
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
-        $this->validation = new ParcellaireValidation($this->parcellaire);
-        }
-
         $this->form = new ParcellaireValidationForm($this->parcellaire);
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {
 
-                
-                $this->form->save();
-                $this->sendParcellaireValidation($this->parcellaire);
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            $this->validation = new ParcellaireValidation($this->parcellaire);
 
-                return $this->redirect('parcellaire_confirmation', $this->parcellaire);
-            }
+            return sfView::SUCCESS;
         }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if ($this->form->isValid()) {
+            return sfView::SUCCESS;
+        } 
+
+        if($this->parcellaire->isPapier()) {
+            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+
+            $this->parcellaire->validate($this->form->getValue("date"));
+            $this->parcellaire->save();
+
+            return $this->redirect('parcellaire_visualisation', $this->parcellaire);
+        }
+
+        $this->form->save();
+        $this->sendParcellaireValidation($this->parcellaire);
+
+        return $this->redirect('parcellaire_confirmation', $this->parcellaire);
     }
 
     public function executeConfirmation(sfWebRequest $request) {
