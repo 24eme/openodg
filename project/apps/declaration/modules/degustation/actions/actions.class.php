@@ -79,13 +79,11 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("operateurs", array());
-        var_dump($values);exit;
         foreach($values as $key => $value) {
             $p = $this->prelevements[$key];
             $prelevement = $this->degustation->prelevements->add($p->identifiant);
             $prelevement->raison_sociale = $p->raison_sociale;
             $prelevement->commune = $p->commune;
-            $prelevement->email = $p->email;
             $prelevement->remove("lots");
             $prelevement->add("lots");
             $lot = $prelevement->lots->add($value);
