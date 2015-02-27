@@ -118,6 +118,8 @@ class degustationActions extends sfActions {
             return $this->forward404(sprintf("Le type de dégustateur \"%s\" est introuvable", $request->getParameter('type', null)));
         }
 
+        $this->noeud = $this->degustation->degustateurs->add($this->type);
+
         $this->degustateurs = DegustationClient::getInstance()->getDegustateurs($this->type);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -129,8 +131,9 @@ class degustationActions extends sfActions {
 
         foreach($values as $key => $value) {
             $d = $this->degustateurs[$key];
-            $degustation = $this->degustation->degustateurs->add($d->_id);
+            $degustation = $this->noeud->add($d->_id);
             $degustation->nom = $d->nom_a_afficher;
+            $degustation->email = $d->email;
         }
 
         $this->degustation->save(); 
@@ -141,7 +144,8 @@ class degustationActions extends sfActions {
     public function executeDegustateursTypePrecedent(sfWebRequest $request) {
         $prev_key = null;
         foreach(CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR) as $type_key => $type_libelle) {
-            if($type_key == $request->getParameter('type', null)) { $prev_key = $type_key; continue; } 
+            if($type_key != $request->getParameter('type', null)) { $prev_key = $type_key; continue; } 
+            if(!$prev_key) { continue; }
 
             return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => $prev_key));
         }
@@ -150,12 +154,12 @@ class degustationActions extends sfActions {
     }
 
     public function executeDegustateursTypeSuivant(sfWebRequest $request) {
+        $find = false;
         foreach(CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR) as $type_key => $type_libelle) {
-            if($type_key != $request->getParameter('type', null)) { continue; }
-            if(key($this->types)) {
+            if(!$find && $type_key != $request->getParameter('type', null)) { continue; }
+            if($type_key == $request->getParameter('type', null)) { $find = true; continue; }
                 
-                return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => key($this->types)));
-            }
+            return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => $type_key));
         }
 
         return $this->redirect('degustation_agents', $this->getRoute()->getDegustation());
@@ -246,6 +250,11 @@ class degustationActions extends sfActions {
     }
 
     public function executeTournee(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        //$this->prelevements = $this->degustation->getTournee($agent, )
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
     }
 
