@@ -251,7 +251,7 @@ class degustationActions extends sfActions {
 
     public function executeTournee(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        //$this->prelevements = $this->degustation->getTournee($agent, )
+        $this->prelevements = $this->degustation->getTourneePrelevements($request->getParameter('agent'), $request->getParameter('date'));
     }
 
     public function executeVisualisation(sfWebRequest $request) {
