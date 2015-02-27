@@ -11,11 +11,15 @@
  * @property string $identifiant
  * @property string $date
  * @property string $appellation
+ * @property string $appellation_libelle
  * @property string $date_prelevement_debut
  * @property string $date_prelevement_fin
  * @property integer $nombre_commissions
  * @property string $heure
  * @property string $lieu
+ * @property acCouchdbJson $prelevements
+ * @property acCouchdbJson $degustateurs
+ * @property acCouchdbJson $agents
 
  * @method string get_id()
  * @method string set_id()
@@ -31,6 +35,8 @@
  * @method string setDate()
  * @method string getAppellation()
  * @method string setAppellation()
+ * @method string getAppellationLibelle()
+ * @method string setAppellationLibelle()
  * @method string getDatePrelevementDebut()
  * @method string setDatePrelevementDebut()
  * @method string getDatePrelevementFin()
@@ -41,6 +47,12 @@
  * @method string setHeure()
  * @method string getLieu()
  * @method string setLieu()
+ * @method acCouchdbJson getPrelevements()
+ * @method acCouchdbJson setPrelevements()
+ * @method acCouchdbJson getDegustateurs()
+ * @method acCouchdbJson setDegustateurs()
+ * @method acCouchdbJson getAgents()
+ * @method acCouchdbJson setAgents()
  
  */
  

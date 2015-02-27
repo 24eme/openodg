@@ -79,12 +79,13 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("operateurs", array());
-
+        var_dump($values);exit;
         foreach($values as $key => $value) {
             $p = $this->prelevements[$key];
             $prelevement = $this->degustation->prelevements->add($p->identifiant);
             $prelevement->raison_sociale = $p->raison_sociale;
             $prelevement->commune = $p->commune;
+            $prelevement->email = $p->email;
             $prelevement->remove("lots");
             $prelevement->add("lots");
             $lot = $prelevement->lots->add($value);
@@ -194,6 +195,7 @@ class degustationActions extends sfActions {
             $agent = $this->degustation->agents->add($key);
             $a = $this->agents[$key];
             $agent->nom = sprintf("%s %s.", $a->prenom, substr($a->nom, 0, 1));
+            $agent->email = $a->email;
             $agent->dates = $value;
         }
 
@@ -229,11 +231,11 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("prelevements", array());
-
         foreach($values as $key => $value) {
             $this->degustation->prelevements->get($key)->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
             $this->degustation->prelevements->get($key)->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
             $this->degustation->prelevements->get($key)->heure = $value["heure"];
+            $this->buildPrelevementNode($key);
         }
 
         $this->degustation->save();
@@ -272,5 +274,15 @@ class degustationActions extends sfActions {
             return $etape;
         }
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
+    }
+    
+    protected function buildPrelevementNode($key) {       
+            $compte = CompteClient::getInstance()->findByIdentifiant("E".$key);
+            $this->degustation->prelevements->get($key)->email = $compte->email;
+           // A récuperer du chai!
+            $this->degustation->prelevements->get($key)->code_postal = $compte->code_postal;
+            $this->degustation->prelevements->get($key)->adresse = $compte->adresse;     
+//            $this->degustation->prelevements->get($key)->lat = $compte->lat;            
+//            $this->degustation->prelevements->get($key)->lng = $compte->lon;
     }
 }
