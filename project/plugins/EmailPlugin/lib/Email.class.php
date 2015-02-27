@@ -164,6 +164,22 @@ class Email {
         return $this->getMailer()->send($message);
     }
 
+    public function sendDegustationOperateursMails($degustation) {
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        foreach ($degustation->prelevements as $key => $prelevement) {
+        $to = array($prelevement->email);
+        $subject = "L'Ava vient pour un prélévement";
+        $body = $this->getBodyFromPartial('send_degustation_operateur', array('prelevement' => $prelevement));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
+        }
+        return $this->getMailer()->send($message);
+    }
+    
     protected function getMailer() {
         return $this->_context->getMailer();
     }
