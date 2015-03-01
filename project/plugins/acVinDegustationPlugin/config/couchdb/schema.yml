@@ -27,6 +27,7 @@ Degustation:
                   adresse: { }
                   commune: { }
                   code_postal: { }
+                  email: { }
                   lat: { }
                   lng: { }
                   date: { }
@@ -66,6 +67,7 @@ Degustation:
               definition:
                 fields:
                   nom: { }
+                  email: { }
                   dates:
                     type: array_collection
                     definition:
