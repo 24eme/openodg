@@ -252,6 +252,24 @@ class degustationActions extends sfActions {
     public function executeTournee(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->prelevements = $this->degustation->getTourneePrelevements($request->getParameter('agent'), $request->getParameter('date'));
+        $this->setLayout('layoutResponsive');
+    }
+
+    public function executeTourneeJson(sfWebRequest $request) {
+        $json = array();
+
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->prelevements = $this->degustation->getTourneePrelevements($request->getParameter('agent'), $request->getParameter('date'));
+
+        foreach($this->prelevements as $prelevement) {
+            $prelevementA = $prelevement->toArray(true, false);
+            $prelevementA['prelevements'] = array_merge(array_values($prelevement->lots->toArray(true, false)), array_values($prelevement->lots->toArray(true, false)));
+            $json[$prelevement->getKey()] = $prelevementA;
+        }
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode($json));
     }
 
     public function executeVisualisation(sfWebRequest $request) {
