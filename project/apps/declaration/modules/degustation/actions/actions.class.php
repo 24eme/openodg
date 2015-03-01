@@ -83,6 +83,8 @@ class degustationActions extends sfActions {
             $p = $this->prelevements[$key];
             $prelevement = $this->degustation->prelevements->add($p->identifiant);
             $prelevement->raison_sociale = $p->raison_sociale;
+            $prelevement->adresse = $p->adresse;
+            $prelevement->code_postal = $p->code_postal;
             $prelevement->commune = $p->commune;
             $prelevement->remove("lots");
             $prelevement->add("lots");
@@ -90,6 +92,7 @@ class degustationActions extends sfActions {
             $lot->hash_produit = $p->lots[$value]->hash_produit;
             $lot->libelle = $p->lots[$value]->libelle;
             $lot->nb = $p->lots[$value]->nb;
+            $this->buildPrelevementNode($p->identifiant);
         }
         $this->degustation->save();
 
@@ -243,7 +246,6 @@ class degustationActions extends sfActions {
             $this->degustation->prelevements->get($key)->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
             $this->degustation->prelevements->get($key)->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
             $this->degustation->prelevements->get($key)->heure = $value["heure"];
-            $this->buildPrelevementNode($key);
         }
 
         $this->degustation->save();
@@ -311,8 +313,8 @@ class degustationActions extends sfActions {
         $compte = CompteClient::getInstance()->findByIdentifiant("E" . $key);
         $this->degustation->prelevements->get($key)->email = $compte->email;
         // A récuperer du chai!
-        $this->degustation->prelevements->get($key)->code_postal = $compte->code_postal;
-        $this->degustation->prelevements->get($key)->adresse = $compte->adresse;
+        //$this->degustation->prelevements->get($key)->code_postal = $compte->code_postal;
+        //$this->degustation->prelevements->get($key)->adresse = $compte->adresse;
 //            $this->degustation->prelevements->get($key)->lat = $compte->lat;            
 //            $this->degustation->prelevements->get($key)->lng = $compte->lon;
     }
