@@ -39,7 +39,8 @@ class Degustation extends BaseDegustation {
             if (!$prelevement->heure) {
                 $heure = "24:00";
             }
-            $prelevements[$heure][sprintf('%05d', $prelevement->position)] = $prelevement;
+            $prelevements[$heure][sprintf('%05d', $prelevement->position).$prelevement->getKey()] = $prelevement;
+            ksort($prelevements[$heure]);
         }
 
         return $prelevements;
