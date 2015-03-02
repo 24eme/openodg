@@ -5,7 +5,9 @@ $lastParcellesKeysByAppellations = null;
 if ($last) {
     $lastParcellesKeysByAppellations = $last->getAllParcellesKeysByAppellations()->getRawValue();
 }
-?><div class="row">
+?>
+<?php if(count($parcellaire->declaration->getAppellationsOrderParcellaire()) > 0): ?>
+<div class="row">
     <div class="col-xs-12">
         <?php
         foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation):
@@ -66,7 +68,7 @@ if ($last) {
                                 <?php echo $detail->getParcelleIdentifiant(); ?>
                             </td>   
                             <td class="col-xs-2 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
-                                <?php echo $detail->superficie . '&nbsp;ares'; ?>
+<?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                             </td>   
                         </tr> 
                         <?php
@@ -87,7 +89,7 @@ if ($last) {
             <?php echo $detail->getParcelleIdentifiant().' (supprimé)'; ?>
                                 </td>   
                                 <td class="col-xs-2" style="text-align: right; text-decoration: line-through;">
-            <?php echo $detail->superficie . '&nbsp;ares'; ?>
+<?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                                 </td>   
                             </tr>    
                             <?php
@@ -125,3 +127,12 @@ if ($last) {
 <?php endforeach; ?>
     </div>
 </div>
+<?php else: ?>
+<div class="row">
+    <div class="col-xs-12">
+        <p class="text-muted">
+            Aucune parcelle n'a été déclarée pour cette année en AOC Alsace Grand Cru, AOC Alsace Lieu-dit et AOC Alsace Communale.
+        </p>
+    </div>
+</div>
+<?php endif; ?>

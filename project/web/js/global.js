@@ -422,8 +422,12 @@
                         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
                 id: 'examples.map-i875mjb7'
             }).addTo(map);
-
-            L.marker(JSON.parse("[" + $(this).attr('data-point') + "]"), {title: $(this).attr('data-title')}).addTo(map);
+            var points = JSON.parse($(this).attr('data-point'));
+            for(point_key in points) {
+                console.log(point_key);
+                L.marker(points[point_key]).addTo(map);
+            }
+            map.fitBounds(points, {padding: [10, 10], maxZoom: 13});
         });
     };
     /* =================================================================================== */

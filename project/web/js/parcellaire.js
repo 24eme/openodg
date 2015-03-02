@@ -5,8 +5,12 @@ $(document).ready(function()
         $("#parcellaire_infos_modification").show();
     });
 
-    $(".deleteButton").click(function() {
-        return confirm("Êtes vous sûr de vouloir supprimer cette parcelle?");
+    $(".deleteButton").click(function(e) {
+        if(confirm("Êtes vous sûr de vouloir supprimer cette parcelle?")) {
+            $(this).next('.fakeDeleteButton').click();
+        }
+
+        return false;
     });
 
     $(".tdAcheteur").click(function(evt) {

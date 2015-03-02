@@ -86,7 +86,18 @@ class Parcellaire extends BaseParcellaire {
         if (!$parcellairePrev) {
             return;
         }
+
         $this->declaration = $parcellairePrev->declaration;
+    }
+
+    public function fixSuperficiesHa() {
+        foreach($this->declaration->getProduitsCepageDetails() as $detail) {
+            if(preg_match("/^[0-9]+\.[0-9]{3,}$/", $detail->superficie) || ($detail->superficie < 2 && $detail->getAppellation()->getKey() == "appellation_GRDCRU")) {
+                $old_superficie = $detail->superficie;
+                $detail->superficie = $detail->superficie * 100;
+                echo "REWRITE SUPERFICIE;".$this->_id.";".$detail->getLibelleComplet().";".$old_superficie.";".$detail->superficie."\n";
+            }
+        }
     }
 
     public function getProduits($onlyActive = false) {
@@ -174,6 +185,9 @@ class Parcellaire extends BaseParcellaire {
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
+        if($lieu){
+            $parcelleKey.='-'.KeyInflector::slugify($lieu);
+        }
         $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
     }
 
