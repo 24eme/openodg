@@ -414,7 +414,7 @@
     $.initCarte = function()
     {
         $('.carte').each(function() {
-            var map = L.map($(this).attr('id'), {minZoom: 7, zoom: 10, }).setView([48.100901, 7.361051], 9);
+            var map = L.map($(this).attr('id'), {minZoom: 6, zoom: 10, }).setView([48.100901, 7.361051], 9);
             L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
