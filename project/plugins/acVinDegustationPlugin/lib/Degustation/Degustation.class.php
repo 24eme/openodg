@@ -45,6 +45,42 @@ class Degustation extends BaseDegustation {
         return $prelevements;
     }
 
+    public function getTournees() {
+        $tournees = array();
+        foreach($this->prelevements as $prelevement) {
+            if(!$prelevement->date) {
+                continue;
+            }
+
+            if(!$prelevement->agent) {
+                continue;
+            }
+
+            $tournees[$prelevement->date.$prelevement->agent] = $prelevement->agent;
+        }
+
+        return $tournees;
+    }
+
+    public function getTourneePrelevements($agent, $date) {
+        $prelevements = array();
+        foreach($this->prelevements as $prelevement) {
+            if($prelevement->agent != $agent) {
+
+                continue;
+            }
+
+            if($prelevement->date != $date) {
+
+                continue;
+            }
+
+            $prelevements[$prelevement->getKey()] = $prelevement;
+        }
+
+        return $prelevements;
+    }
+
     public function storeEtape($etape) {
         if($etape == $this->etape) {
             

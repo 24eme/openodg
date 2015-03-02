@@ -79,11 +79,12 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("operateurs", array());
-
-        foreach($values as $key => $value) {
+        foreach ($values as $key => $value) {
             $p = $this->prelevements[$key];
             $prelevement = $this->degustation->prelevements->add($p->identifiant);
             $prelevement->raison_sociale = $p->raison_sociale;
+            $prelevement->adresse = $p->adresse;
+            $prelevement->code_postal = $p->code_postal;
             $prelevement->commune = $p->commune;
             $prelevement->remove("lots");
             $prelevement->add("lots");
@@ -91,6 +92,7 @@ class degustationActions extends sfActions {
             $lot->hash_produit = $p->lots[$value]->hash_produit;
             $lot->libelle = $p->lots[$value]->libelle;
             $lot->nb = $p->lots[$value]->nb;
+            $this->buildPrelevementNode($p->identifiant);
         }
         $this->degustation->save();
 
@@ -113,7 +115,7 @@ class degustationActions extends sfActions {
 
         $this->type = $request->getParameter('type', null);
 
-        if(!array_key_exists($this->type, $this->types)) {
+        if (!array_key_exists($this->type, $this->types)) {
 
             return $this->forward404(sprintf("Le type de dégustateur \"%s\" est introuvable", $request->getParameter('type', null)));
         }
@@ -129,23 +131,28 @@ class degustationActions extends sfActions {
 
         $values = $request->getParameter("degustateurs", array());
 
-        foreach($values as $key => $value) {
+        foreach ($values as $key => $value) {
             $d = $this->degustateurs[$key];
             $degustation = $this->noeud->add($d->_id);
             $degustation->nom = $d->nom_a_afficher;
             $degustation->email = $d->email;
         }
 
-        $this->degustation->save(); 
+        $this->degustation->save();
 
         return $this->redirect('degustation_degustateurs_type_suivant', array('sf_subject' => $this->degustation, 'type' => $this->type));
     }
 
     public function executeDegustateursTypePrecedent(sfWebRequest $request) {
         $prev_key = null;
-        foreach(CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR) as $type_key => $type_libelle) {
-            if($type_key != $request->getParameter('type', null)) { $prev_key = $type_key; continue; } 
-            if(!$prev_key) { continue; }
+        foreach (CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR) as $type_key => $type_libelle) {
+            if ($type_key != $request->getParameter('type', null)) {
+                $prev_key = $type_key;
+                continue;
+            }
+            if (!$prev_key) {
+                continue;
+            }
 
             return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => $prev_key));
         }
@@ -155,10 +162,15 @@ class degustationActions extends sfActions {
 
     public function executeDegustateursTypeSuivant(sfWebRequest $request) {
         $find = false;
-        foreach(CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR) as $type_key => $type_libelle) {
-            if(!$find && $type_key != $request->getParameter('type', null)) { continue; }
-            if($type_key == $request->getParameter('type', null)) { $find = true; continue; }
-                
+        foreach (CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR) as $type_key => $type_libelle) {
+            if (!$find && $type_key != $request->getParameter('type', null)) {
+                continue;
+            }
+            if ($type_key == $request->getParameter('type', null)) {
+                $find = true;
+                continue;
+            }
+
             return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => $type_key));
         }
 
@@ -178,7 +190,7 @@ class degustationActions extends sfActions {
         $date = new DateTime($this->degustation->date);
         $date->modify('-7 days');
 
-        for($i=1; $i <= 7; $i++) {
+        for ($i = 1; $i <= 7; $i++) {
             $this->jours[] = $date->format('Y-m-d');
             $date->modify('+ 1 day');
         }
@@ -190,10 +202,11 @@ class degustationActions extends sfActions {
 
         $values = $request->getParameter("agents", array());
 
-        foreach($values as $key => $value) {
+        foreach ($values as $key => $value) {
             $agent = $this->degustation->agents->add($key);
             $a = $this->agents[$key];
             $agent->nom = sprintf("%s %s.", $a->prenom, substr($a->nom, 0, 1));
+            $agent->email = $a->email;
             $agent->dates = $value;
         }
 
@@ -209,16 +222,16 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
 
-        $this->couleurs = array("#91204d", "#fa6900",  "#1693a5", "#e05d6f", "#7ab317",  "#ffba06", "#907860");
+        $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860");
         $this->heures = array();
-        for($i = 8; $i <= 18; $i++) {
+        for ($i = 8; $i <= 18; $i++) {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
         $this->heures["24:00"] = "24";
         $this->prelevements = $this->degustation->getPrelevementsOrderByHour();
         $this->agents_couleur = array();
         $i = 0;
-        foreach($this->degustation->agents as $agent) {
+        foreach ($this->degustation->agents as $agent) {
             $this->agents_couleur[$agent->getKey()] = $this->couleurs[$i];
             $i++;
         }
@@ -229,8 +242,7 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("prelevements", array());
-
-        foreach($values as $key => $value) {
+        foreach ($values as $key => $value) {
             $this->degustation->prelevements->get($key)->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
             $this->degustation->prelevements->get($key)->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
             $this->degustation->prelevements->get($key)->heure = $value["heure"];
@@ -247,11 +259,30 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
+        $this->sendMailsOperateurs();
     }
 
     public function executeTournee(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        //$this->prelevements = $this->degustation->getTournee($agent, )
+        $this->prelevements = $this->degustation->getTourneePrelevements($request->getParameter('agent'), $request->getParameter('date'));
+        $this->setLayout('layoutResponsive');
+    }
+
+    public function executeTourneeJson(sfWebRequest $request) {
+        $json = array();
+
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->prelevements = $this->degustation->getTourneePrelevements($request->getParameter('agent'), $request->getParameter('date'));
+
+        foreach($this->prelevements as $prelevement) {
+            $prelevementA = $prelevement->toArray(true, false);
+            $prelevementA['prelevements'] = array_merge(array_values($prelevement->lots->toArray(true, false)), array_values($prelevement->lots->toArray(true, false)));
+            $json[$prelevement->getKey()] = $prelevementA;
+        }
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode($json));
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -259,7 +290,7 @@ class degustationActions extends sfActions {
     }
 
     public function executeAffectation(sfWebRequest $request) {
-
+        
     }
 
     public function executeDegustation(sfWebRequest $request) {
@@ -273,4 +304,19 @@ class degustationActions extends sfActions {
         }
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
     }
+
+    protected function sendMailsOperateurs() {
+        $emailManager = Email::getInstance()->sendDegustationOperateursMails($this->degustation);
+    }
+
+    protected function buildPrelevementNode($key) {
+        $compte = CompteClient::getInstance()->findByIdentifiant("E" . $key);
+        $this->degustation->prelevements->get($key)->email = $compte->email;
+        // A récuperer du chai!
+        //$this->degustation->prelevements->get($key)->code_postal = $compte->code_postal;
+        //$this->degustation->prelevements->get($key)->adresse = $compte->adresse;
+//            $this->degustation->prelevements->get($key)->lat = $compte->lat;            
+//            $this->degustation->prelevements->get($key)->lng = $compte->lon;
+    }
+
 }
