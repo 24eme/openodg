@@ -26,6 +26,13 @@ class ExportParcellairePDF extends ExportPDF {
 
     public function create() {
         $this->parcellesByLieux = $this->parcellaire->getParcellesByLieux();
+
+        if(count($this->parcellesByLieux) == 0) {
+            $this->printable_document->addPage($this->getPartial('parcellaire/pdfVide', array('parcellaire' => $this->parcellaire)));
+
+            return;
+        }
+
         foreach ($this->parcellesByLieux as $lieuHash => $parcellesByLieu) {
             $this->printable_document->addPage($this->getPartial('parcellaire/pdf', array('parcellaire' => $this->parcellaire, 'parcellesByLieu' => $parcellesByLieu)));
         }

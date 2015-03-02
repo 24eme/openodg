@@ -262,7 +262,19 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
-            $this->sendMailsDegustation();
+        if (!$request->isMethod(sfWebRequest::POST)) {
+        $this->validation = new DegustationValidation($this->degustation);
+        }
+        $this->form = new DegustationValidationForm($this->degustation);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {                
+                $this->form->save();
+                $this->sendMailsDegustation();
+
+                return $this->redirect('degustation_confirmation', $this->degustation);
+            }
+        }
     }
 
     public function executeTournee(sfWebRequest $request) {

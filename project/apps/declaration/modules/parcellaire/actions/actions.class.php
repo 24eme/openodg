@@ -202,7 +202,7 @@ class parcellaireActions extends sfActions {
         preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
         $detail = $parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
 
-        $this->getUser()->setFlash("warning", sprintf('La parcelle %s, %.4f ares, %s, %s a bien été supprimée.', $detail->getParcelleIdentifiant(), $detail->superficie, $detail->getLieuLibelle(), $detail->getCepageLibelle()));
+        $this->getUser()->setFlash("warning", sprintf('La parcelle %s, %.2f ares, %s, %s a bien été supprimée.', $detail->getParcelleIdentifiant(), $detail->superficie, $detail->getLieuLibelle(), $detail->getCepageLibelle()));
 
         $parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->remove($parcelleKeyMatches[2]);
         $parcellaire->save();

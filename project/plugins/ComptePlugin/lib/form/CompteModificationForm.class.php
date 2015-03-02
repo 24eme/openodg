@@ -87,8 +87,17 @@ class CompteModificationForm extends acCouchdbObjectForm {
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
 
-        $this->getObject()->updateCoordonneesLongLat();
+        
         parent::save($con);
+    }
+
+    protected function doSave($con = null) {
+        if (null === $con) {
+            $con = $this->getConnection();
+        }
+
+        $this->updateObject();
+        $this->object->getCouchdbDocument()->save(true, true);
     }
 
     private function initDefaultAttributs() {
