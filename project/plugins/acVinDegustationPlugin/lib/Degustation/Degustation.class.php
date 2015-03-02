@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Model for Degustation
  *
  */
-
 class Degustation extends BaseDegustation {
-    
+
     public function constructId() {
         $this->identifiant = sprintf("%s-%s", str_replace("-", "", $this->date), $this->appellation);
         $this->set('_id', sprintf("%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant));
@@ -18,7 +18,7 @@ class Degustation extends BaseDegustation {
 
     public function setDate($date) {
         $this->date_prelevement_fin = $date;
-        
+
         return $this->_set('date', $date);
     }
 
@@ -28,18 +28,18 @@ class Degustation extends BaseDegustation {
     }
 
     public function getPrelevementsByTournee($agent_id, $date) {
-
+        
     }
 
     public function getPrelevementsOrderByHour() {
         $prelevements = array();
-        foreach($this->prelevements as $prelevement) {
+        foreach ($this->prelevements as $prelevement) {
             $heure = $prelevement->heure;
 
-            if(!$prelevement->heure) {
-                $heure = "24:00"; 
+            if (!$prelevement->heure) {
+                $heure = "24:00";
             }
-            $prelevements[$heure][$prelevement->getKey()] = $prelevement;
+            $prelevements[$heure][sprintf('%05d', $prelevement->position)] = $prelevement;
         }
 
         return $prelevements;
@@ -47,30 +47,37 @@ class Degustation extends BaseDegustation {
 
     public function getTournees() {
         $tournees = array();
-        foreach($this->prelevements as $prelevement) {
-            if(!$prelevement->date) {
+        foreach ($this->prelevements as $prelevement) {
+            if (!$prelevement->date) {
                 continue;
             }
 
-            if(!$prelevement->agent) {
+            if (!$prelevement->agent) {
                 continue;
             }
-
-            $tournees[$prelevement->date.$prelevement->agent] = $prelevement->agent;
+            if (!array_key_exists($prelevement->date . $prelevement->agent, $tournees)) {
+                $tournees[$prelevement->date . $prelevement->agent] = new stdClass();
+                $tournees[$prelevement->date . $prelevement->agent]->prelevements = array();
+                $agents = $this->agents->toArray();
+                $tournees[$prelevement->date . $prelevement->agent]->id_agent = $prelevement->agent;
+                $tournees[$prelevement->date . $prelevement->agent]->nom_agent = $agents[$prelevement->agent]->nom;
+                $tournees[$prelevement->date . $prelevement->agent]->date = $prelevement->date;
+            }
+            $tournees[$prelevement->date . $prelevement->agent]->prelevements[$prelevement->getKey()] = $prelevement;
         }
-
+        ksort($tournees);
         return $tournees;
     }
 
     public function getTourneePrelevements($agent, $date) {
         $prelevements = array();
-        foreach($this->prelevements as $prelevement) {
-            if($prelevement->agent != $agent) {
+        foreach ($this->prelevements as $prelevement) {
+            if ($prelevement->agent != $agent) {
 
                 continue;
             }
 
-            if($prelevement->date != $date) {
+            if ($prelevement->date != $date) {
 
                 continue;
             }
@@ -82,8 +89,8 @@ class Degustation extends BaseDegustation {
     }
 
     public function storeEtape($etape) {
-        if($etape == $this->etape) {
-            
+        if ($etape == $this->etape) {
+
             return false;
         }
 

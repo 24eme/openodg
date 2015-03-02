@@ -7,3 +7,8 @@ function getHeurePlus($prelevement,$heureplus) {
 function getAdresseChai($prelevement){
     return $prelevement->adresse ." ". $prelevement->code_postal . " " .$prelevement->commune;
 }
+
+function getDatesPrelevements($degustation){
+    setlocale(LC_ALL, 'fr_FR');
+    return 'Du '.format_date($degustation->date_prelevement_debut, "D", "fr_FR").' au '.format_date($degustation->date_prelevement_fin, "D", "fr_FR");
+}

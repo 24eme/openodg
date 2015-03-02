@@ -205,6 +205,7 @@
     $.attributeTournee = function(themarkers, tournees) {
 	var mymarkers = $.extend({}, themarkers);
 	i = 0;
+	$('li.operateur .input-heure').each(function() {$(this).val('')});
 	while(Object.keys(mymarkers).length > 0) {
 	    min = 100000000;
 	    minkey = '';
@@ -303,7 +304,11 @@
 
     $.removeItem = function(ligne) {
         ligne.attr('data-state', '');
-        ligne.find('input.input-tournee').val("");
+	if ($.isTournee()) {
+            ligne.find('input.input-tournee').val("");
+            ligne.find('input.input-heure').val("");
+	    ligne.detach().insertAfter($('#listes_operateurs li:last-child'));
+	}
         $.updateItem(ligne);
     }
 

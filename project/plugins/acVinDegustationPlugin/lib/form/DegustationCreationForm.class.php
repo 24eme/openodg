@@ -24,4 +24,12 @@ class DegustationCreationForm extends acCouchdbObjectForm
             "GRDCRU" => "Grands Crus"
         );
     }
+    
+     public function doUpdateObject($values) 
+    {
+        parent::doUpdateObject($values);
+        $appellationsWithLibelle = $this->getAppellationChoices();
+        $appellation = $values["appellation"];
+        $this->getObject()->appellation_libelle = $appellationsWithLibelle[$appellation];
+    }
 }

@@ -242,10 +242,13 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("prelevements", array());
+        $i = 0;
         foreach ($values as $key => $value) {
-            $this->degustation->prelevements->get($key)->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
-            $this->degustation->prelevements->get($key)->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
-            $this->degustation->prelevements->get($key)->heure = $value["heure"];
+            $prelevement = $this->degustation->prelevements->get($key);
+            $prelevement->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
+            $prelevement->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+            $prelevement->heure = $value["heure"];
+            $prelevement->position = $i++;
         }
 
         $this->degustation->save();
@@ -259,8 +262,19 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
-        
-        $this->sendMailsDegustation();
+        if (!$request->isMethod(sfWebRequest::POST)) {
+        $this->validation = new DegustationValidation($this->degustation);
+        }
+        $this->form = new DegustationValidationForm($this->degustation);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {                
+                $this->form->save();
+                $this->sendMailsDegustation();
+
+                return $this->redirect('degustation_confirmation', $this->degustation);
+            }
+        }
     }
 
     public function executeTournee(sfWebRequest $request) {
