@@ -1,15 +1,15 @@
 <?php include_partial('step', array('parcellaire' => $parcellaire, 'step' => 'acheteurs', 'identifiant' => 'XXX')); ?>
 
 <div class="page-header">
-    <h2>Saisie des acheteurs&nbsp;<small>Les parcelles sont à ventiler en fonction de vos acheteurs.</small></h2>
+    <h2>Répartition des acheteurs&nbsp;<small>Les parcelles sont à ventiler en fonction de vos acheteurs.</small></h2>
 </div>
-
 
 <form action="<?php echo url_for("parcellaire_acheteurs", $parcellaire) ?>" method="post" class="ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
     <?php if($form->hasGlobalErrors()): ?><div class="alert alert-danger"><?php echo $form->renderGlobalErrors(array("class" => "text-left")) ?></div><?php endif; ?>
     <div class="row">       
         <div class="col-xs-12">
+            <?php if($form->hasProduits()): ?>
             <div id="listes_cepages" class="list-group">
                 <table class="table table-striped">
                     <thead>
@@ -38,7 +38,9 @@
                     </tbody>
                 </table>
             </div>
-
+            <?php else: ?>
+                <p class="text-muted">Vous n'avez affecté aucune parcelle, vous n'avez donc aucune répartition à effectuer, vous pouvez ignorer cet étape.</p>
+            <?php endif; ?>
         </div>
     </div>
 

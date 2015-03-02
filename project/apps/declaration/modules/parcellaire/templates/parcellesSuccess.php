@@ -38,7 +38,7 @@
                                 <th class="col-xs-1">Numéro</th>        
                                 <th class="col-xs-2">Lieu-dit</th>      
                                 <th class="col-xs-3">Cépage</th>        
-                                <th class="col-xs-3">Superficie en ares</th>           
+                                <th class="col-xs-3">Superficie <strong>en ares</strong></th>           
                                 <th class="col-xs-1"></th>           
                             </tr>
                         </thead>
@@ -57,8 +57,8 @@
                                     <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
                                     <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
-                                    <td <?php echo ($erreur_ret) ? 'class="has-error"' : '' ?> ><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float num_float4 " . $class)); ?></td>                 
-                                    <td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton ajax"><span class="glyphicon glyphicon-remove"></span></a></td>
+                                    <td <?php echo ($erreur_ret) ? 'class="has-error"' : '' ?> ><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float " . $class)); ?></td>                 
+                                    <td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a><a class="ajax fakeDeleteButton hidden" href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"></a></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

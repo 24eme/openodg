@@ -30,9 +30,16 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
             );
         }
 
-        $this->validatorSchema->setPostValidator(new ParcellaireAcheteursValidator(null, array("acheteurs" => $this->getAcheteurs())));
+        if($this->hasProduits() > 0) {
+            $this->validatorSchema->setPostValidator(new ParcellaireAcheteursValidator(null, array("acheteurs" => $this->getAcheteurs())));
+        }
 
         $this->widgetSchema->setNameFormat('parcellaire_acheteurs[%s]');
+    }
+
+    public function hasProduits() {
+
+        return count($this->getDocument()->declaration->getProduitsWithLieuEditable()) > 0;
     }
 
     public function updateDefaults() {

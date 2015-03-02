@@ -21,7 +21,7 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->setWidgets(array(
-            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.4f'))
+            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.2f'))
         ));
         $this->widgetSchema->setLabels(array(
             'superficie' => 'Superficie (ares):'
