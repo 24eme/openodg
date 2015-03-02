@@ -75,9 +75,9 @@ class Email {
         $partial = 'send_drev_rappel_documents';
         $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication";
 
-        if($drev->exist('documents_rappels') && count($drev->documents_rappels->toArray(true, false)) > 0) {
-          $partial = 'send_drev_rappel_documents_second';
-          $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
+        if ($drev->exist('documents_rappels') && count($drev->documents_rappels->toArray(true, false)) > 0) {
+            $partial = 'send_drev_rappel_documents_second';
+            $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
         }
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
@@ -138,7 +138,7 @@ class Email {
 
         return $this->getMailer()->send($message);
     }
-    
+
     public function sendParcellaireValidation($parcellaire) {
         if (!$parcellaire->declarant->email) {
 
@@ -167,19 +167,39 @@ class Email {
     public function sendDegustationOperateursMails($degustation) {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         foreach ($degustation->prelevements as $key => $prelevement) {
-        $to = array($prelevement->email);
-        $subject = "L'Ava vient pour un prélévement";
-        $body = $this->getBodyFromPartial('send_degustation_operateur', array('prelevement' => $prelevement));
-        $message = Swift_Message::newInstance()
-                ->setFrom($from)
-                ->setTo($to)
-                ->setSubject($subject)
-                ->setBody($body)
-                ->setContentType('text/plain');
+            $to = $prelevement->email;
+            $subject = "Prélèvement(s) de l'Ava le ".Date::francizeDate($prelevement->date);
+            $body = $this->getBodyFromPartial('send_degustation_operateur', array('prelevement' => $prelevement));
+
+            $message = Swift_Message::newInstance()
+                    ->setFrom($from)
+                    ->setTo($to)
+                    ->setSubject($subject)
+                    ->setBody($body);
+            // $this->getMailer()->send($message);
         }
-        return $this->getMailer()->send($message);
+        return true;
     }
-    
+
+    public function sendDegustationDegustateursMails($degustation) {
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
+            foreach ($comptes as $id_compte => $degustateur_node) {
+                $to = $degustateur_node->email;
+                $subject = "L'Ava vous invite à une dégustation le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
+                $body = $this->getBodyFromPartial('send_degustation_degustateur', array('degustation' => $degustation));
+                $message = Swift_Message::newInstance()
+                        ->setFrom($from)
+                        ->setTo($to)
+                        ->setSubject($subject)
+                        ->setBody($body)
+                        ->setContentType('text/plain');
+               // $this->getMailer()->send($message);
+            }
+        }
+        return true;
+    }
+
     protected function getMailer() {
         return $this->_context->getMailer();
     }
@@ -195,4 +215,5 @@ class Email {
 
         return get_partial($templateName, $vars);
     }
+
 }
