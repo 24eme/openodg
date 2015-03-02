@@ -184,19 +184,22 @@
 
             markers[key] = marker;
         }
-
-	$.attributeTournee(markers);
+	$.updateNbFilter();
+	tournees = [];
+	nbattributed = 0;
+	$('.agent').each(function() {
+	    tournees[tournees.length] = {point: L.latLng($(this).attr('data-point').split(',')), id: $(this).attr('data-state'), lastPoint: L.latLng($(this).attr('data-point').split(','))};
+	    nbattributed += $(this).find('.badge').html()*1;
+	});
+	if (nbattributed == 0)
+	    $.attributeTournee(markers, tournees);
 	
         //map.fitBounds(points, {padding: [10, 10]});
 
     }
 
-    $.attributeTournee = function(themarkers) {
+    $.attributeTournee = function(themarkers, tournees) {
 	var mymarkers = $.extend({}, themarkers);
-	tournees = [];
-	$('.agent').each(function() {
-	    tournees[tournees.length] = {point: L.latLng($(this).attr('data-point').split(',')), id: $(this).attr('data-state'), lastPoint: L.latLng($(this).attr('data-point').split(','))};
-	});
 	i = 0;
 	while(Object.keys(mymarkers).length > 0) {
 	    min = 100000000;
@@ -215,6 +218,33 @@
     }
     $.latlngToLigne = function(ll) {
 	return $('#listes_operateurs .list-group-item-item[data-point="' + ll.lat + "," + ll.lng + '"]');
+    }
+    $.getTourneeDiv = function(tournee) {
+	return $('.nav-filter[data-state='+tournee+']');
+    }
+    $.tourneeToColor = function(tournee) {
+	return $.getTourneeDiv(tournee).attr('data-color');
+    }
+    $.tourneeToHour = function(tournee) {
+	return $.getTourneeDiv(tournee).attr('data-hour');
+    }
+    $.tourneeToPerHour = function(tournee) {
+	return $.getTourneeDiv(tournee).attr('data-perhour')*1;
+    }
+    $.tourneeToNextHour = function(tournee) {
+	next = $.tourneeToHour(tournee).split(':')[0]*1+1;
+	if (next == 13 || next == 14) {
+	    next = 15;
+	}
+	if (next > 9) {
+	    return next+':00';
+	}else{
+	    return '0'+next+':00';
+	}
+    }
+    
+    $.tourneeToNextHourDiv = function(tournee) {
+	return $('li.hour[data-value="'+$.tourneeToNextHour(tournee)+'"]');
     }
     
     $.toggleMarkerHover = function(marker, ligne, withMarkerOpacity, withLigneOpacity) {
@@ -248,10 +278,20 @@
 	tournee = $('.nav-filter.active').attr('data-state');
 	$.addItemToTournee(ligne, tournee);
     }
+    $.updateHourTournee = function(tournee) {
+	if ($('li.operateur[data-state='+tournee+'] .input-heure[value="'+$.tourneeToHour(tournee)+'"]').length >= $.tourneeToPerHour(tournee)) {
+	    $.getTourneeDiv(tournee).attr('data-hour', $.tourneeToNextHour(tournee));
+	}
+    }
     
     $.addItemToTournee = function(ligne, tournee) {
+	hourDiv = $.tourneeToNextHourDiv(tournee);
+	ligne.detach().insertBefore(hourDiv);
+	ligne.attr('data-color', $.tourneeToColor(tournee));
         ligne.attr('data-state', tournee);
         ligne.find('input.input-tournee').val(tournee);
+        ligne.find('input.input-heure').val($.tourneeToHour(tournee));
+	$.updateHourTournee(tournee);
         $.updateItem(ligne);
     }
 

@@ -28,6 +28,8 @@
                    data-color="<?php echo $agents_couleur[$agent->getKey()] ?>" 
                    style="color: <?php echo $agents_couleur[$agent->getKey()] ?>" 
                    data-filter="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>"
+                   data-hour="09:00"
+                   data-perhour="4"
                    data-point="<?php  echo (rand(47859760, 48504231) / 1000000) ?>,<?php  echo (rand(7151756, 7529755) / 1000000) ?>">
                     <span class="glyphicon glyphicon-map-marker"></span> <?php echo $agent->nom ?><br /><small class="text-muted"><?php echo format_date($date, "dddd dd MMMM") ?></small> <span class="badge" style="color: #fff">0</span>
                 </a>
@@ -38,11 +40,11 @@
     <div class="col-xs-6">
         <ul id="listes_operateurs" class="list-group sortable">
                 <?php foreach($heures as $key_heure => $libelle_heure): ?>
-                    <li data-value="<?php echo $key_heure ?>" class="list-group-item col-xs-12 list-group-item-info list-group-item-container text-center"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small></li>
+                    <li data-value="<?php echo $key_heure ?>" class="hour list-group-item col-xs-12 list-group-item-info list-group-item-container text-center"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small></li>
                     <?php if(!isset($prelevements[$key_heure])): continue; endif; ?>
                     <?php foreach($prelevements[$key_heure] as $prelevement): ?>
                         <?php $exist = ($prelevement->agent && $prelevement->date); ?>
-                        <li data-state="<?php echo ($prelevement->agent && $prelevement->date) ? sprintf("%s-%s", $prelevement->agent, $prelevement->date) : null ?>" data-value="<?php echo $prelevement->getKey() ?>" data-title="<?php echo $prelevement->raison_sociale ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
+                        <li data-state="<?php echo ($prelevement->agent && $prelevement->date) ? sprintf("%s-%s", $prelevement->agent, $prelevement->date) : null ?>" data-value="<?php echo $prelevement->getKey() ?>" data-title="<?php echo $prelevement->raison_sociale ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="operateur list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                             <input type="hidden" class="input-heure" name="prelevements[<?php echo $prelevement->getKey() ?>][heure]" value="<?php echo sprintf("%s", $prelevement->heure) ?>" />
                             <input type="hidden" class="input-tournee" name="prelevements[<?php echo $prelevement->getKey() ?>][tournee]" value="<?php echo sprintf("%s-%s", $prelevement->agent, $prelevement->date) ?>" />
                             <div class="col-xs-12">
