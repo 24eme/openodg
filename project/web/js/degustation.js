@@ -118,7 +118,7 @@
             return false;
         });
 
-        if($('#carte').length > 0) {
+        if($.isTournee()) {
             $.initCarteDegustation();
         }
 
@@ -191,13 +191,17 @@
 	    tournees[tournees.length] = {point: L.latLng($(this).attr('data-point').split(',')), id: $(this).attr('data-state'), lastPoint: L.latLng($(this).attr('data-point').split(','))};
 	    nbattributed += $(this).find('.badge').html()*1;
 	});
-	if (nbattributed == 0)
+//	if (nbattributed == 0)
 	    $.attributeTournee(markers, tournees);
 	
         //map.fitBounds(points, {padding: [10, 10]});
 
     }
 
+    $.isTournee = function() {
+	return ($('#carte').length > 0);
+    }
+    
     $.attributeTournee = function(themarkers, tournees) {
 	var mymarkers = $.extend({}, themarkers);
 	i = 0;
@@ -205,13 +209,13 @@
 	    min = 100000000;
 	    minkey = '';
 	    for(m in mymarkers) {
-		distance = tournees[i % 2].lastPoint.distanceTo(mymarkers[m].getLatLng());
+		distance = tournees[i % tournees.length].lastPoint.distanceTo(mymarkers[m].getLatLng());
 		if (distance < min) {
 		    min = distance;
 		    minkey = m;
 		}
 	    }
-	    $.addItemToTournee($.latlngToLigne(mymarkers[minkey].getLatLng()), tournees[i%2].id);
+	    $.addItemToTournee($.latlngToLigne(mymarkers[minkey].getLatLng()), tournees[i % tournees.length].id);
 	    delete mymarkers[minkey];
 	    i++;
 	}
@@ -285,13 +289,15 @@
     }
     
     $.addItemToTournee = function(ligne, tournee) {
-	hourDiv = $.tourneeToNextHourDiv(tournee);
-	ligne.detach().insertBefore(hourDiv);
-	ligne.attr('data-color', $.tourneeToColor(tournee));
         ligne.attr('data-state', tournee);
         ligne.find('input.input-tournee').val(tournee);
-        ligne.find('input.input-heure').val($.tourneeToHour(tournee));
-	$.updateHourTournee(tournee);
+	if ($.isTournee()) {
+	    hourDiv = $.tourneeToNextHourDiv(tournee);
+	    ligne.detach().insertBefore(hourDiv);
+	    ligne.attr('data-color', $.tourneeToColor(tournee));
+            ligne.find('input.input-heure').val($.tourneeToHour(tournee));
+	    $.updateHourTournee(tournee);
+	}
         $.updateItem(ligne);
     }
 
