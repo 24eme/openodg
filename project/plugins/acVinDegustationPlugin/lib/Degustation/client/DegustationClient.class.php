@@ -3,8 +3,8 @@
 class DegustationClient extends acCouchdbClient {
         
     const TYPE_MODEL = "Degustation"; 
-    const TYPE_COUCHDB = "DEGUSTATION";
-
+    const TYPE_COUCHDB = "DEGUSTATION";   
+    
     public static function getInstance()
     {
         
@@ -81,5 +81,5 @@ class DegustationClient extends acCouchdbClient {
                     ->endkey("DEGUSTATION-999999999-ZZZZZZZZZZ")
                     ->execute($hydrate);
     }
-
+    
 }
