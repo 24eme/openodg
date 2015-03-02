@@ -259,7 +259,7 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
-        $this->sendMailsOperateurs();
+        //$this->sendMailsOperateurs();
     }
 
     public function executeTournee(sfWebRequest $request) {
