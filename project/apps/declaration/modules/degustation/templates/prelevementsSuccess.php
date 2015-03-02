@@ -23,11 +23,12 @@
             </a>
             <?php foreach($degustation->agents as $agent): ?>
                 <?php foreach($agent->dates as $date): ?>
-                <a href="" class="btn btn-default btn-default-step nav-filter"
+                <a href="" class="btn btn-default btn-default-step nav-filter agent"
                    data-state="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>" 
                    data-color="<?php echo $agents_couleur[$agent->getKey()] ?>" 
                    style="color: <?php echo $agents_couleur[$agent->getKey()] ?>" 
-                   data-filter="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>">
+                   data-filter="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>"
+                   data-point="<?php  echo (rand(47859760, 48504231) / 1000000) ?>,<?php  echo (rand(7151756, 7529755) / 1000000) ?>">
                     <span class="glyphicon glyphicon-map-marker"></span> <?php echo $agent->nom ?><br /><small class="text-muted"><?php echo format_date($date, "dddd dd MMMM") ?></small> <span class="badge" style="color: #fff">0</span>
                 </a>
                 <?php endforeach; ?>
@@ -73,5 +74,4 @@
         <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer</button>
     </div>
 </div>
-
 </form>
