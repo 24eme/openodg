@@ -259,7 +259,8 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
-        //$this->sendMailsOperateurs();
+        
+        $this->sendMailsDegustation();
     }
 
     public function executeTournee(sfWebRequest $request) {
@@ -305,8 +306,10 @@ class degustationActions extends sfActions {
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
     }
 
-    protected function sendMailsOperateurs() {
-        $emailManager = Email::getInstance()->sendDegustationOperateursMails($this->degustation);
+    protected function sendMailsDegustation() {
+        $emailManager = Email::getInstance();
+        $emailManager->sendDegustationOperateursMails($this->degustation);
+        $emailManager->sendDegustationDegustateursMails($this->degustation);
     }
 
     protected function buildPrelevementNode($key) {
@@ -315,7 +318,7 @@ class degustationActions extends sfActions {
         // A récuperer du chai!
         //$this->degustation->prelevements->get($key)->code_postal = $compte->code_postal;
         //$this->degustation->prelevements->get($key)->adresse = $compte->adresse;
-//            $this->degustation->prelevements->get($key)->lat = $compte->lat;            
+//      $this->degustation->prelevements->get($key)->lat = $compte->lat;            
 //            $this->degustation->prelevements->get($key)->lng = $compte->lon;
     }
 
