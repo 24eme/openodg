@@ -242,10 +242,13 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("prelevements", array());
+        $i = 0;
         foreach ($values as $key => $value) {
-            $this->degustation->prelevements->get($key)->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
-            $this->degustation->prelevements->get($key)->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
-            $this->degustation->prelevements->get($key)->heure = $value["heure"];
+            $prelevement = $this->degustation->prelevements->get($key);
+            $prelevement->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
+            $prelevement->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+            $prelevement->heure = $value["heure"];
+            $prelevement->position = $i++;
         }
 
         $this->degustation->save();

@@ -32,6 +32,7 @@ Degustation:
                   lng: { }
                   date: { }
                   heure: { }
+                  position: { required: true }
                   agent: { }
                   lots:
                     type: collection
