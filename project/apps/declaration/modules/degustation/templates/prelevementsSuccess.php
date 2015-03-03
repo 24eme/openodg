@@ -44,7 +44,7 @@
                     <?php if(!isset($operateurs[$key_heure])): continue; endif; ?>
                     <?php foreach($operateurs[$key_heure] as $operateur): ?>
                         <?php $exist = ($operateur->agent && $operateur->date); ?>
-                        <li data-state="<?php echo ($operateur->agent && $operateur->date) ? sprintf("%s-%s", $operateur->agent, $operateur->date) : null ?>" data-value="<?php echo $operateur->getKey() ?>" data-title="<?php echo $operateur->raison_sociale ?>" data-point="<?php echo (rand(47859760, 48504231) / 1000000) ?>,<?php echo (rand(7151756, 7529755) / 1000000) ?>" class="operateur list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
+                        <li data-state="<?php echo ($operateur->agent && $operateur->date) ? sprintf("%s-%s", $operateur->agent, $operateur->date) : null ?>" data-value="<?php echo $operateur->getKey() ?>" data-title="<?php echo $operateur->raison_sociale ?>" data-point="<?php echo $operateur->lat ?>,<?php echo $operateur->lon ?>" class="operateur list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                             <input type="hidden" class="input-heure" name="operateurs[<?php echo $operateur->getKey() ?>][heure]" value="<?php echo sprintf("%s", $operateur->heure) ?>" />
                             <input type="hidden" class="input-tournee" name="operateurs[<?php echo $operateur->getKey() ?>][tournee]" value="<?php echo sprintf("%s-%s", $operateur->agent, $operateur->date) ?>" />
                             <div class="col-xs-12">

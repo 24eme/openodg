@@ -328,12 +328,22 @@ class degustationActions extends sfActions {
 
     protected function buildPrelevementNode($key) {
         $compte = CompteClient::getInstance()->findByIdentifiant("E" . $key);
-        $this->degustation->operateurs->get($key)->email = $compte->email;
-        // A récuperer du chai!
-        //$this->degustation->operateurs->get($key)->code_postal = $compte->code_postal;
-        //$this->degustation->operateurs->get($key)->adresse = $compte->adresse;
-//      $this->degustation->operateurs->get($key)->lat = $compte->lat;            
-//            $this->degustation->operateurs->get($key)->lng = $compte->lon;
+        $operateur = $this->degustation->operateurs->get($key);
+        $operateur->email = $compte->email;
+        $chai = $compte->findChai($operateur->adresse, $operateur->commune, $operateur->code_postal);
+
+        if($chai) {
+            $operateur->lat = $chai->lat;
+            $operateur->lon = $chai->lon;
+        }
+
+        if(!$operateur->lat || !$operateur->lon) {
+            $coordonnees = $compte->calculCoordonnees($operateur->adresse, $operateur->commune);
+            if($coordonnees) {
+                $operateur->lat = $coordonnees["lat"];
+                $operateur->lon = $coordonnees["lon"];
+            }
+        }
     }
 
 }

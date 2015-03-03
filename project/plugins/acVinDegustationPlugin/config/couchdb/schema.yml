@@ -29,7 +29,8 @@ Degustation:
                   code_postal: { }
                   email: { }
                   lat: { }
-                  lng: { }
+                  lon: { }
+                  lng: { required: false }
                   date: { }
                   heure: { }
                   position: { required: true }

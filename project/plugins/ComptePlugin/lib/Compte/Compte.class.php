@@ -298,6 +298,19 @@ class Compte extends BaseCompte {
         return $points;
     }
 
+    public function findChai($adresse, $commune, $code_postal) {
+        foreach($this->chais as $chai) {
+            if(KeyInflector::slugify(str_replace(" ", "", $chai->adresse.$chai->commune.$chai->code_postal)) != KeyInflector::slugify(str_replace(" ", "", $adresse.$commune.$code_postal))) {
+
+                continue;
+            }
+
+            return $chai;
+        }
+
+        return null;
+    }
+
     public function archiver() {
         $this->statut = CompteClient::STATUT_INACTIF;
         $this->date_archivage = date('Y-m-d');
