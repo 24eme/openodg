@@ -15,7 +15,7 @@ Degustation:
       nombre_commissions: { type: integer }
       heure: { }
       lieu: { }
-      prelevements:
+      operateurs:
         type: collection
         definition:
           fields:

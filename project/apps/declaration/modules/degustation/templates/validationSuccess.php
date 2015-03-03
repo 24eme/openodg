@@ -3,7 +3,7 @@
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_VALIDATION)); ?>
 
 <div class="page-header no-border">
-    <h2><?php echo $degustation->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($degustation); ?></span>&nbsp;<div class="btn btn-info btn-sm active"><?php echo count($degustation->prelevements) ?>&nbsp;opérateurs sélectionnés</div></h2>
+    <h2><?php echo $degustation->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($degustation); ?></span>&nbsp;<div class="btn btn-info btn-sm active"><?php echo count($degustation->operateurs) ?>&nbsp;opérateurs sélectionnés</div></h2>
 
 </div>
 <?php if ($validation->hasPoints()): ?>

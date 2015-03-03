@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Nombre d'opérateurs concernés</strong>
-                <div class="col-xs-6"><span><?php echo count($prelevements) ?></span></div>
+                <div class="col-xs-6"><span><?php echo count($operateurs) ?></span></div>
             </div>
             <div class="form-group <?php if($form["nombre_operateurs_a_prelever"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["nombre_operateurs_a_prelever"]->renderError(); ?>

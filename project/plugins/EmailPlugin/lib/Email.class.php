@@ -166,10 +166,10 @@ class Email {
 
     public function sendDegustationOperateursMails($degustation) {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-        foreach ($degustation->prelevements as $key => $prelevement) {
-            $to = $prelevement->email;
-            $subject = "Prélèvement(s) de l'Ava le ".Date::francizeDate($prelevement->date);
-            $body = $this->getBodyFromPartial('send_degustation_operateur', array('prelevement' => $prelevement));
+        foreach ($degustation->operateurs as $key => $operateur) {
+            $to = $operateur->email;
+            $subject = "Prélèvement(s) de l'Ava le ".Date::francizeDate($operateur->date);
+            $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
 
             $message = Swift_Message::newInstance()
                     ->setFrom($from)

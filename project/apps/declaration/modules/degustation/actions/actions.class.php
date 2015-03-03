@@ -41,7 +41,7 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
 
-        $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+        $this->operateurs = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
 
         $this->form = new DegustationCreationFinForm($this->degustation);
 
@@ -69,7 +69,7 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
 
-        $this->prelevements = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+        $this->operateurs = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
 
         $this->nb_a_prelever = $request->getParameter('nb_a_prelever', 0);
 
@@ -80,15 +80,15 @@ class degustationActions extends sfActions {
 
         $values = $request->getParameter("operateurs", array());
         foreach ($values as $key => $value) {
-            $p = $this->prelevements[$key];
-            $prelevement = $this->degustation->prelevements->add($p->identifiant);
-            $prelevement->raison_sociale = $p->raison_sociale;
-            $prelevement->adresse = $p->adresse;
-            $prelevement->code_postal = $p->code_postal;
-            $prelevement->commune = $p->commune;
-            $prelevement->remove("lots");
-            $prelevement->add("lots");
-            $lot = $prelevement->lots->add($value);
+            $p = $this->operateurs[$key];
+            $operateur = $this->degustation->operateurs->add($p->identifiant);
+            $operateur->raison_sociale = $p->raison_sociale;
+            $operateur->adresse = $p->adresse;
+            $operateur->code_postal = $p->code_postal;
+            $operateur->commune = $p->commune;
+            $operateur->remove("lots");
+            $operateur->add("lots");
+            $lot = $operateur->lots->add($value);
             $lot->hash_produit = $p->lots[$value]->hash_produit;
             $lot->libelle = $p->lots[$value]->libelle;
             $lot->nb = $p->lots[$value]->nb;
@@ -228,7 +228,7 @@ class degustationActions extends sfActions {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
         $this->heures["24:00"] = "24";
-        $this->prelevements = $this->degustation->getPrelevementsOrderByHour();
+        $this->operateurs = $this->degustation->getOperateursOrderByHour();
         $this->agents_couleur = array();
         $i = 0;
         foreach ($this->degustation->agents as $agent) {
@@ -241,14 +241,14 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $values = $request->getParameter("prelevements", array());
+        $values = $request->getParameter("operateurs", array());
         $i = 0;
         foreach ($values as $key => $value) {
-            $prelevement = $this->degustation->prelevements->get($key);
-            $prelevement->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
-            $prelevement->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
-            $prelevement->heure = $value["heure"];
-            $prelevement->position = $i++;
+            $operateur = $this->degustation->operateurs->get($key);
+            $operateur->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
+            $operateur->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+            $operateur->heure = $value["heure"];
+            $operateur->position = $i++;
         }
 
         $this->degustation->save();
@@ -279,7 +279,7 @@ class degustationActions extends sfActions {
 
     public function executeTournee(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->prelevements = $this->degustation->getTourneePrelevements($request->getParameter('agent'), $request->getParameter('date'));
+        $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
         $this->setLayout('layoutResponsive');
     }
 
@@ -287,12 +287,12 @@ class degustationActions extends sfActions {
         $json = array();
 
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->prelevements = $this->degustation->getTourneePrelevements($request->getParameter('agent'), $request->getParameter('date'));
+        $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
-        foreach($this->prelevements as $prelevement) {
-            $prelevementA = $prelevement->toArray(true, false);
-            $prelevementA['prelevements'] = array_merge(array_values($prelevement->lots->toArray(true, false)), array_values($prelevement->lots->toArray(true, false)));
-            $json[$prelevement->getKey()] = $prelevementA;
+        foreach($this->operateurs as $operateur) {
+            $operateurA = $operateur->toArray(true, false);
+            $operateurA['operateurs'] = array_merge(array_values($operateur->lots->toArray(true, false)), array_values($operateur->lots->toArray(true, false)));
+            $json[$operateur->getKey()] = $operateurA;
         }
 
         $this->response->setContentType('application/json');
@@ -328,12 +328,12 @@ class degustationActions extends sfActions {
 
     protected function buildPrelevementNode($key) {
         $compte = CompteClient::getInstance()->findByIdentifiant("E" . $key);
-        $this->degustation->prelevements->get($key)->email = $compte->email;
+        $this->degustation->operateurs->get($key)->email = $compte->email;
         // A récuperer du chai!
-        //$this->degustation->prelevements->get($key)->code_postal = $compte->code_postal;
-        //$this->degustation->prelevements->get($key)->adresse = $compte->adresse;
-//      $this->degustation->prelevements->get($key)->lat = $compte->lat;            
-//            $this->degustation->prelevements->get($key)->lng = $compte->lon;
+        //$this->degustation->operateurs->get($key)->code_postal = $compte->code_postal;
+        //$this->degustation->operateurs->get($key)->adresse = $compte->adresse;
+//      $this->degustation->operateurs->get($key)->lat = $compte->lat;            
+//            $this->degustation->operateurs->get($key)->lng = $compte->lon;
     }
 
 }

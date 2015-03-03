@@ -27,66 +27,62 @@ class Degustation extends BaseDegustation {
         return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
-    public function getPrelevementsByTournee($agent_id, $date) {
-        
-    }
+    public function getOperateursOrderByHour() {
+        $operateurs = array();
+        foreach ($this->operateurs as $operateur) {
+            $heure = $operateur->heure;
 
-    public function getPrelevementsOrderByHour() {
-        $prelevements = array();
-        foreach ($this->prelevements as $prelevement) {
-            $heure = $prelevement->heure;
-
-            if (!$prelevement->heure) {
+            if (!$operateur->heure) {
                 $heure = "24:00";
             }
-            $prelevements[$heure][sprintf('%05d', $prelevement->position).$prelevement->getKey()] = $prelevement;
-            ksort($prelevements[$heure]);
+            $operateurs[$heure][sprintf('%05d', $operateur->position).$operateur->getKey()] = $operateur;
+            ksort($operateurs[$heure]);
         }
 
-        return $prelevements;
+        return $operateurs;
     }
 
     public function getTournees() {
         $tournees = array();
-        foreach ($this->prelevements as $prelevement) {
-            if (!$prelevement->date) {
+        foreach ($this->operateurs as $operateur) {
+            if (!$operateur->date) {
                 continue;
             }
 
-            if (!$prelevement->agent) {
+            if (!$operateur->agent) {
                 continue;
             }
-            if (!array_key_exists($prelevement->date . $prelevement->agent, $tournees)) {
-                $tournees[$prelevement->date . $prelevement->agent] = new stdClass();
-                $tournees[$prelevement->date . $prelevement->agent]->prelevements = array();
+            if (!array_key_exists($operateur->date . $operateur->agent, $tournees)) {
+                $tournees[$operateur->date . $operateur->agent] = new stdClass();
+                $tournees[$operateur->date . $operateur->agent]->operateurs = array();
                 $agents = $this->agents->toArray();
-                $tournees[$prelevement->date . $prelevement->agent]->id_agent = $prelevement->agent;
-                $tournees[$prelevement->date . $prelevement->agent]->nom_agent = $agents[$prelevement->agent]->nom;
-                $tournees[$prelevement->date . $prelevement->agent]->date = $prelevement->date;
+                $tournees[$operateur->date . $operateur->agent]->id_agent = $operateur->agent;
+                $tournees[$operateur->date . $operateur->agent]->nom_agent = $agents[$operateur->agent]->nom;
+                $tournees[$operateur->date . $operateur->agent]->date = $operateur->date;
             }
-            $tournees[$prelevement->date . $prelevement->agent]->prelevements[$prelevement->getKey()] = $prelevement;
+            $tournees[$operateur->date . $operateur->agent]->operateurs[$operateur->getKey()] = $operateur;
         }
         ksort($tournees);
         return $tournees;
     }
 
-    public function getTourneePrelevements($agent, $date) {
-        $prelevements = array();
-        foreach ($this->prelevements as $prelevement) {
-            if ($prelevement->agent != $agent) {
+    public function getTourneeOperateurs($agent, $date) {
+        $operateurs = array();
+        foreach ($this->operateurs as $operateur) {
+            if ($operateur->agent != $agent) {
 
                 continue;
             }
 
-            if ($prelevement->date != $date) {
+            if ($operateur->date != $date) {
 
                 continue;
             }
 
-            $prelevements[$prelevement->getKey()] = $prelevement;
+            $operateurs[$operateur->getKey()] = $operateur;
         }
 
-        return $prelevements;
+        return $operateurs;
     }
 
     public function storeEtape($etape) {

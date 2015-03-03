@@ -11,7 +11,7 @@
                 <?php echo $d->appellation; ?>
                 </span>
                 <span class="col-xs-6 text-muted">
-                <?php echo count((array) $d->prelevements); ?> opérateurs, <?php echo count((array) $d->degustateurs); ?> dégustateurs et <?php echo count((array) $d->agents); ?> tournées
+                <?php echo count((array) $d->operateurs); ?> opérateurs, <?php echo count((array) $d->degustateurs); ?> dégustateurs et <?php echo count((array) $d->agents); ?> tournées
                 </span>
                 <span class="col-xs-2 text-muted text-right">
                     <span class="label label-default">Saisie</span>
