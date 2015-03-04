@@ -17,7 +17,8 @@ class Degustation extends BaseDegustation {
     }
 
     public function setDate($date) {
-        $this->date_prelevement_fin = $date;
+        $dateObject = new DateTime($date);
+        $this->date_prelevement_fin = $dateObject->modify("-5 days")->format('Y-m-d');
 
         return $this->_set('date', $date);
     }

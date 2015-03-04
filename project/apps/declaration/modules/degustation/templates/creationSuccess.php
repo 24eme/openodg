@@ -1,3 +1,4 @@
+<?php use_helper('Date') ?>
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => false)); ?>
 
 <div class="page-header">
@@ -21,7 +22,7 @@
             <h3>Prélévements</h3>
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Date de prélevement</strong>
-                <div class="col-xs-6"><span>du <?php echo $degustation->date_prelevement_debut ?> au <?php echo $degustation->date_prelevement_fin ?></span></div>
+                <div class="col-xs-6"><span>du <?php echo format_date($degustation->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($degustation->date_prelevement_fin, "D", "fr_FR") ?></span></div>
             </div>
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Nombre d'opérateurs concernés</strong>
@@ -41,7 +42,7 @@
             <h3>Dégustation</h3>
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Date de la dégustation</strong>
-                <div class="col-xs-6"><span>01/03/2014</span></div>
+                <div class="col-xs-6"><span><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?></span></div>
             </div>
             <div class="form-group <?php if($form["nombre_commissions"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["nombre_commissions"]->renderError(); ?>
@@ -61,10 +62,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <strong  class="col-xs-6 text-right">Lieu</strong>
-                <div class="col-xs-6">Colmar</div>
             </div>
             <?php if(isset($form['lieu'])): ?>
             <div class="form-group <?php if($form["lieu"]->hasError()): ?>has-error<?php endif; ?>">
