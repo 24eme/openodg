@@ -1,0 +1,85 @@
+#Degustation
+Degustation:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      etape: { }
+      identifiant: { }
+      date: { }
+      appellation: { }
+      appellation_libelle: { }
+      date_prelevement_debut: { }
+      date_prelevement_fin: { }
+      nombre_commissions: { type: integer }
+      heure: { }
+      lieu: { }
+      operateurs:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  raison_sociale: { }
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
+                  email: { }
+                  lat: { }
+                  lon: { }
+                  lng: { required: false }
+                  date: { }
+                  heure: { }
+                  position: { required: true }
+                  agent: { }
+                  lots:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              hash_produit: { }
+                              libelle: { }
+                              nb: { }
+      degustateurs:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    type: collection
+                    definition:
+                      fields:
+                        nom: { }
+                        email: { }
+                        adresse: { }
+                        commune: { }
+                        code_postal: { }
+      agents:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  nom: { }
+                  email: { }
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
+                  lat: { }
+                  lon: { }
+                  dates:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

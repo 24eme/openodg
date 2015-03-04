@@ -15,7 +15,7 @@ class Compte extends BaseCompte {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
     }
 
-    public function save($synchro_etablissement = true) {
+    public function save($synchro_etablissement = true, $update_coodronnees = false) {
         if ($this->isNew() && !$this->identifiant) {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
             $this->statut = CompteClient::STATUT_ACTIF;
@@ -35,6 +35,9 @@ class Compte extends BaseCompte {
         $this->updateNomAAfficher();
         $this->updateInfosTagsAutomatiques();
         $this->updateTags();
+        if($update_coodronnees) {
+            $this->updateCoordonneesLongLat();
+        }
         parent::save();
     }
     
@@ -129,7 +132,6 @@ class Compte extends BaseCompte {
         }
     }
     
-
     public function updateInfosTagsManuels($infos_manuels = array()) {
         $this->removeInfosTagsNode('manuels');
         foreach ($infos_manuels as $info_manuel) {
@@ -211,26 +213,53 @@ class Compte extends BaseCompte {
         $this->tags->$nodeType->add(null, $value);
     }
 
-    public function updateCoordonneesLongLat() {
-       
-        $serviceOSM = sfConfig::get('app_osm_url_search');
-        $format = "format=".sfConfig::get('app_osm_return_format');
+    public function calculCoordonnees($adresse, $commune) {
+        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
+
+        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune);
         
-        $postalCode = "postalcode=".$this->getCodePostal();
-        $city = "city=".$this->getCommune();
-        $adresse = preg_replace('/(B.P. [0-9]*|BP [0-9]*|B.P [0-9]*|BP. [0-9]*)(.*)/', "$2", trim($this->getAdresse()));
-        $requet = "q=".urlencode($adresse)."&".urlencode($city)."&".urlencode($postalCode)."&".$format;
-        
-        $url = utf8_decode($serviceOSM."?".$requet);
         $file = file_get_contents($url);
 
-        $result_requet = json_decode($file);
-        
-        if(!count($result_requet)){
+        $result = json_decode($file);
+
+        if(!count($result)){
             return false;
         }
-        $this->setLat($result_requet[0]->lat);
-        $this->setLon($result_requet[0]->lon);
+
+        if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
+            echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
+        }
+
+        return array("lat" => $result->response->docs[0]->lat, "lon" => $result->response->docs[0]->lng);
+    }
+
+    public function updateCoordonneesLongLatByNoeud($noeud) {
+        $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune);
+
+        if(!$coordonnees) {
+
+            return false;
+        }
+
+        $noeud->lon = $coordonnees["lon"];
+        $noeud->lat = $coordonnees["lat"];
+
+        return true;
+    }
+
+    public function updateCoordonneesLongLat() {
+        $this->updateCoordonneesLongLatByNoeud($this);
+
+        foreach($this->chais as $chai) {
+            if($chai->adresse == $this->adresse && $chai->commune == $this->commune) {
+                $chai->lon = $this->lon;
+                $chai->lat = $this->lat;
+                continue;
+            }
+
+            $this->updateCoordonneesLongLatByNoeud($chai);
+        }
+
         return true;
     }
 
@@ -249,6 +278,37 @@ class Compte extends BaseCompte {
         }
         $this->remove("chais");
         $this->add("chais", $newChais);
+    }
+
+    public function getCoordonneesLatLon() {
+
+        $points = array();
+
+        if($this->lat && $this->lon) {
+            $points[$this->lat.$this->lon] = array($this->lat, $this->lon);
+        }
+
+        foreach($this->chais as $chai) {
+            if(!$chai->lat && $chai->lon) {
+                continue;
+            }
+            $points[$chai->lat.$chai->lon] = array($chai->lat, $chai->lon);
+        }
+
+        return $points;
+    }
+
+    public function findChai($adresse, $commune, $code_postal) {
+        foreach($this->chais as $chai) {
+            if(KeyInflector::slugify(str_replace(" ", "", $chai->adresse.$chai->commune.$chai->code_postal)) != KeyInflector::slugify(str_replace(" ", "", $adresse.$commune.$code_postal))) {
+
+                continue;
+            }
+
+            return $chai;
+        }
+
+        return null;
     }
 
     public function archiver() {

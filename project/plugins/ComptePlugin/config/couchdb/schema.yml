@@ -55,6 +55,8 @@ Compte:
                   adresse: { }
                   commune: { }
                   code_postal: { }
+                  lat: { }
+                  lon: { }
                   attributs:
                     type: collection
                     definition:

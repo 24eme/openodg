@@ -117,6 +117,20 @@
                 currentDp.data('DateTimePicker').show();
             });
         });
+        var datePickers = $('.date-picker-time');
+        datePickers.each(function ()
+        {
+            var currentDp = $(this);
+            currentDp.datetimepicker
+                    ({
+                        language: 'fr',
+                        pickDate: false,
+                    });
+            currentDp.on('focus', 'input', function ()
+            {
+                currentDp.data('DateTimePicker').show();
+            });
+        });
     };
     $.initSelect2Autocomplete = function()
     {
@@ -400,7 +414,7 @@
     $.initCarte = function()
     {
         $('.carte').each(function() {
-            var map = L.map($(this).attr('id'), {minZoom: 7, zoom: 10, }).setView([48.100901, 7.361051], 9);
+            var map = L.map($(this).attr('id'), {minZoom: 6, zoom: 10, }).setView([48.100901, 7.361051], 9);
             L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -408,8 +422,12 @@
                         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
                 id: 'examples.map-i875mjb7'
             }).addTo(map);
-
-            L.marker(JSON.parse("[" + $(this).attr('data-point') + "]"), {title: $(this).attr('data-title')}).addTo(map);
+            var points = JSON.parse($(this).attr('data-point'));
+            for(point_key in points) {
+                console.log(point_key);
+                L.marker(points[point_key]).addTo(map);
+            }
+            map.fitBounds(points, {padding: [10, 10], maxZoom: 13});
         });
     };
     /* =================================================================================== */
