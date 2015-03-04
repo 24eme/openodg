@@ -255,8 +255,10 @@ class degustationActions extends sfActions {
         $this->agents_couleur = array();
         $i = 0;
         foreach ($this->degustation->agents as $agent) {
-            $this->agents_couleur[$agent->getKey()] = $this->couleurs[$i];
-            $i++;
+            foreach($agent->dates as $date) {
+                $this->agents_couleur[$agent->getKey().$date] = $this->couleurs[$i];
+                $i++;
+            }
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {

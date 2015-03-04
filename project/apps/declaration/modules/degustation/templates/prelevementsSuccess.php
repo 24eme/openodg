@@ -25,8 +25,8 @@
                 <?php foreach($agent->dates as $date): ?>
                 <a href="" class="btn btn-default btn-default-step nav-filter agent ajax"
                    data-state="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>" 
-                   data-color="<?php echo $agents_couleur[$agent->getKey()] ?>" 
-                   style="color: <?php echo $agents_couleur[$agent->getKey()] ?>" 
+                   data-color="<?php echo $agents_couleur[$agent->getKey().$date] ?>" 
+                   style="color: <?php echo $agents_couleur[$agent->getKey().$date] ?>" 
                    data-filter="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>"
                    data-hour="09:00"
                    data-perhour="4"
@@ -54,7 +54,7 @@
                                 </div>
                                 <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
                                     <span class="glyphicon glyphicon-resize-vertical" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
-                                    <span class="glyphicon glyphicon-map-marker" style="<?php if($exist): ?>color: <?php echo $agents_couleur[$operateur->agent] ?>;<?php else: ?>color: #e2e2e2;<?php endif; ?> font-size: 24px;"></span>
+                                    <span class="glyphicon glyphicon-map-marker" style="<?php if($exist): ?>color: <?php echo $agents_couleur[$operateur->agent.$operateur->date] ?>;<?php else: ?>color: #e2e2e2;<?php endif; ?> font-size: 24px;"></span>
                                 </div>
                                 <?php echo $operateur->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $operateur->commune ?></small>
                             </div>
