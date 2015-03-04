@@ -29,7 +29,7 @@
                    style="color: <?php echo $agents_couleur[$agent->getKey().$date] ?>" 
                    data-filter="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>"
                    data-hour="09:00"
-                   data-perhour="4"
+                   data-perhour="3"
                    data-point="<?php echo $agent->lat*1 ?>,<?php echo $agent->lon*1 ?>">
                     <span class="glyphicon glyphicon-map-marker"></span> <?php echo $agent->nom ?><br /><small class="text-muted"><?php echo format_date($date, "dddd dd MMMM") ?></small> <span class="badge" style="color: #fff">0</span>
                 </a>
