@@ -133,9 +133,12 @@ class degustationActions extends sfActions {
 
         foreach ($values as $key => $value) {
             $d = $this->degustateurs[$key];
-            $degustation = $this->noeud->add($d->_id);
-            $degustation->nom = $d->nom_a_afficher;
-            $degustation->email = $d->email;
+            $degustateur = $this->noeud->add($d->_id);
+            $degustateur->nom = $d->nom_a_afficher;
+            $degustateur->email = $d->email;
+            $degustateur->adresse = $d->adresse;
+            $degustateur->commune = $d->commune;
+            $degustateur->code_postal = $d->code_postal;
         }
 
         $this->degustation->save();

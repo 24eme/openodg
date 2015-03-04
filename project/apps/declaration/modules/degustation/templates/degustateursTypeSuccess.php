@@ -26,7 +26,7 @@
                 <?php $exist = $noeud->exist($degustateur->_id); ?>
                 <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                     <input <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> type="hidden" name="degustateurs[<?php echo $degustateur->_id ?>]" value="1" />
-                    <div class="col-xs-5"><?php echo $degustateur->nom_a_afficher ?></div>
+                    <div class="col-xs-5"><?php echo $degustateur->nom_a_afficher ?> <small class="text-muted">à <?php echo $degustateur->commune ?></small></div>
                     <div class="col-xs-3 text-left"><!--<small class="text-muted">Venu en</small> 2012, 2014--></div>
                     <div class="col-xs-3">
                         <!--<small class="text-muted">Formé en</small> 2013, 2014-->

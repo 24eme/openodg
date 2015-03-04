@@ -60,6 +60,9 @@ Degustation:
                       fields:
                         nom: { }
                         email: { }
+                        adresse: { }
+                        commune: { }
+                        code_postal: { }
       agents:
         type: collection
         definition:
