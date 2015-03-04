@@ -18,12 +18,12 @@
         <div class="btn-group btn-group-justified" style="margin-bottom: 15px;">
             <a data-filter="" 
                 href="" 
-                class="btn btn-default btn-default-step nav-filter active">
+                class="btn btn-default btn-default-step nav-filter active ajax">
                 Tous <span class="badge" style="color: #fff;"><?php echo count($degustation->operateurs) ?></span>
             </a>
             <?php foreach($degustation->agents as $agent): ?>
                 <?php foreach($agent->dates as $date): ?>
-                <a href="" class="btn btn-default btn-default-step nav-filter agent"
+                <a href="" class="btn btn-default btn-default-step nav-filter agent ajax"
                    data-state="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>" 
                    data-color="<?php echo $agents_couleur[$agent->getKey()] ?>" 
                    style="color: <?php echo $agents_couleur[$agent->getKey()] ?>" 
