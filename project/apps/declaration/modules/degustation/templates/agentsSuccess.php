@@ -7,7 +7,7 @@
     <h2>Choix des agents de prélevements</h2>
 </div>
 
-<form id="form_degustation_choix_operateurs" action="" method="post" class="form-horizontal">
+<form id="form_degustation_choix_operateurs" action="" method="post" class="form-horizontal ajaxForm">
 
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">

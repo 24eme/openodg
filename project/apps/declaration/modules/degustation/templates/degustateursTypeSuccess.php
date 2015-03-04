@@ -8,11 +8,11 @@
 
 <ul class="nav nav-tabs">
     <?php foreach($types as $type_key => $libelle): ?>
-        <li role="presentation" class="<?php if($type == $type_key): ?>active<?php endif; ?>"><a href="<?php echo url_for('degustation_degustateurs_type', array('sf_subject' => $degustation, 'type' => $type_key)) ?>"><?php echo $libelle ?> <?php if($type != $type_key): ?><span class="badge"><?php echo ($degustation->degustateurs->exist($type_key)) ? count($degustation->degustateurs->get($type_key)) : 0 ?></span><?php endif; ?></a></li>
+        <li role="presentation" class="<?php if($type == $type_key): ?>active<?php endif; ?>"><a href="<?php echo url_for('degustation_degustateurs_type', array('sf_subject' => $degustation, 'type' => $type_key)) ?>" class="ajax"><?php echo $libelle ?> <?php if($type != $type_key): ?><span class="badge"><?php echo ($degustation->degustateurs->exist($type_key)) ? count($degustation->degustateurs->get($type_key)) : 0 ?></span><?php endif; ?></a></li>
     <?php endforeach; ?>
 </ul>
 
-<form action="" method="post" class="form-horizontal">
+<form action="" method="post" class="form-horizontal ajaxForm">
     <div class="row">
         <div class="col-xs-12" style="padding-bottom: 15px;">
             <div class="btn-group">

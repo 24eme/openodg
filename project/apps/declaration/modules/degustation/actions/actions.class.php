@@ -96,6 +96,11 @@ class degustationActions extends sfActions {
         }
         $this->degustation->save();
 
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
+
         return $this->redirect('degustation_degustateurs', $this->degustation);
     }
 
@@ -142,6 +147,11 @@ class degustationActions extends sfActions {
         }
 
         $this->degustation->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
 
         return $this->redirect('degustation_degustateurs_type_suivant', array('sf_subject' => $this->degustation, 'type' => $this->type));
     }
@@ -220,6 +230,11 @@ class degustationActions extends sfActions {
 
         $this->degustation->save();
 
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
+
         return $this->redirect('degustation_prelevements', $this->degustation);
     }
 
@@ -260,6 +275,12 @@ class degustationActions extends sfActions {
         }
 
         $this->degustation->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+        }
+
 
         return $this->redirect('degustation_validation', $this->degustation);
     }

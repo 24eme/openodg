@@ -11,7 +11,7 @@
     <h2>Affectation des prélevements</h2>
 </div>
 
-<form id="form_degustation_operateurs" action="" method="post" class="form-horizontal">
+<form id="form_degustation_operateurs" action="" method="post" class="form-horizontal ajaxForm">
 
 <div class="row">
     <div class="col-xs-12">

@@ -7,7 +7,7 @@
     <h2>Choix des Opérateurs</h2>
 </div>
 
-<form id="form_degustation_choix_operateurs" action="<?php echo url_for('degustation_operateurs', $degustation) ?>" method="post" class="form-horizontal">
+<form id="form_degustation_choix_operateurs" action="<?php echo url_for('degustation_operateurs', $degustation) ?>" method="post" class="form-horizontal ajaxForm">
 
 <input type="hidden" id="nb_a_prelever" value="<?php echo $nb_a_prelever ?>"/>
 
@@ -22,7 +22,7 @@
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
             <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge"><?php echo count($operateurs) ?></span></a>
-            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">À preléver <span class="badge"><?php echo count($degustation->operateurs) ?></span></a>
+            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">À prélever <span class="badge"><?php echo count($degustation->operateurs) ?></span></a>
         </div>
     </div>
     <div class="col-xs-12">
