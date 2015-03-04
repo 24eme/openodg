@@ -303,7 +303,7 @@ class degustationActions extends sfActions {
                 $this->form->save();
                 $this->sendMailsDegustation();
 
-                return $this->redirect('degustation_confirmation', $this->degustation);
+                return $this->redirect('degustation_visualisation', $this->degustation);
             }
         }
     }
