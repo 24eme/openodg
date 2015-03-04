@@ -216,6 +216,7 @@
 		    minkey = m;
 		}
 	    }
+
 	    $.addItemToTournee($.latlngToLigne(mymarkers[minkey].getLatLng()), tournees[i % tournees.length].id);
 	    delete mymarkers[minkey];
 	    i++;

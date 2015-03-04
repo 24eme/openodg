@@ -73,6 +73,11 @@ Degustation:
                 fields:
                   nom: { }
                   email: { }
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
+                  lat: { }
+                  lon: { }
                   dates:
                     type: array_collection
                     definition:

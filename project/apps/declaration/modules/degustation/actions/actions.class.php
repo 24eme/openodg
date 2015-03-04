@@ -210,6 +210,11 @@ class degustationActions extends sfActions {
             $a = $this->agents[$key];
             $agent->nom = sprintf("%s %s.", $a->prenom, substr($a->nom, 0, 1));
             $agent->email = $a->email;
+            $agent->adresse = $a->adresse;
+            $agent->commune = $a->commune;
+            $agent->code_postal = $a->code_postal;
+            $agent->lat = $a->lat;
+            $agent->lon = $a->lon;
             $agent->dates = $value;
         }
 
