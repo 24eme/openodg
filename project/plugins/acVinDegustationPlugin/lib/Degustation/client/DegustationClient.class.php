@@ -55,7 +55,7 @@ class DegustationClient extends acCouchdbClient {
         return $agents_result;
     }
 
-    public function getDegustateurs($attribut = null) {
+    public function getDegustateurs($attribut = null, $produit = null) {
 
         $degustateurs = CompteClient::getInstance()->getAllComptesPrefixed("D");
         $degustateurs_result = array();
@@ -66,6 +66,10 @@ class DegustationClient extends acCouchdbClient {
             }
 
             if($attribut && !isset($degustateur->infos->attributs->{$attribut})) {
+                continue;
+            }
+
+            if($produit && !isset($degustateur->infos->produits->{str_replace("/", "-", $produit)})) {
                 continue;
             }
             

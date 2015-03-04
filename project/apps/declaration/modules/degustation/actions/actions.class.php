@@ -122,7 +122,7 @@ class degustationActions extends sfActions {
 
         $this->noeud = $this->degustation->degustateurs->add($this->type);
 
-        $this->degustateurs = DegustationClient::getInstance()->getDegustateurs($this->type);
+        $this->degustateurs = DegustationClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_ALSACE");
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

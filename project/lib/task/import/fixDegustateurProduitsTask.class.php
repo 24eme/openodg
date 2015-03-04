@@ -46,24 +46,27 @@ EOF;
             }
 
             if(trim($data[self::CSV_EXPERT_ALSACE]) == "x") {
-                echo sprintf("INFO;Expert alsace;%s", $line);
+                $compte->infos->produits->add("-declaration-certification-genre-appellation_ALSACE", "AOC Alsace");
+                echo sprintf("INFO;Expert alsace;%s\n", $line);
             }
 
             if(trim($data[self::CSV_EXPERT_CREMANT])) {
-                echo sprintf("INFO;Expert crémant;%s", $line);
+                echo sprintf("INFO;Expert crémant;%s\n", $line);
             }
 
             if(trim($data[self::CSV_EXPERT_VT_SGN])) {
-                echo sprintf("INFO;Expert vt sgn;%s", $line);
+                echo sprintf("INFO;Expert vt sgn;%s\n", $line);
             }
 
             if(trim($data[self::CSV_EXPERT_MAGW])) {
-                echo sprintf("INFO;Expert marc de gewurtz;%s", $line);
+                echo sprintf("INFO;Expert marc de gewurtz;%s\n", $line);
             }
 
             if(trim($data[self::CSV_EXPERT_GC])) {
-                echo sprintf("INFO;Expert grand gru;%s", $line);
+                echo sprintf("INFO;Expert grand gru;%s\n", $line);
             }
+
+            $compte->save();
         }
     }
 }
