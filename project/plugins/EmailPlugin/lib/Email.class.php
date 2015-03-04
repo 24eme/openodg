@@ -168,7 +168,7 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
             $to = $operateur->email;
-            $subject = "Prélèvement(s) de l'Ava le ".Date::francizeDate($operateur->date);
+            $subject = "Prélèvement(s) de l'AVA le ".Date::francizeDate($operateur->date);
             $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
 
             $message = Swift_Message::newInstance()
@@ -176,7 +176,7 @@ class Email {
                     ->setTo($to)
                     ->setSubject($subject)
                     ->setBody($body);
-            // $this->getMailer()->send($message);
+            $this->getMailer()->send($message);
         }
         return true;
     }
@@ -186,7 +186,7 @@ class Email {
         foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
             foreach ($comptes as $id_compte => $degustateur_node) {
                 $to = $degustateur_node->email;
-                $subject = "L'Ava vous invite à une dégustation le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
+                $subject = "L'AVA vous invite à une dégustation le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
                 $body = $this->getBodyFromPartial('send_degustation_degustateur', array('degustation' => $degustation));
                 $message = Swift_Message::newInstance()
                         ->setFrom($from)
@@ -194,7 +194,7 @@ class Email {
                         ->setSubject($subject)
                         ->setBody($body)
                         ->setContentType('text/plain');
-               // $this->getMailer()->send($message);
+               $this->getMailer()->send($message);
             }
         }
         return true;
