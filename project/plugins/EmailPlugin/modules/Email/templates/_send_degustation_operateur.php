@@ -1,9 +1,10 @@
 <?php use_helper('Degustation') ?>
+<?php use_helper('Date') ?>
 Madame, Monsieur,
 
 Un agent de l'ODG-AVA viendra prélever un échantillon du Millésime 2014 à votre chai situé au <?php echo getAdresseChai($operateur) ?> :
 
-Le <?php echo Date::francizeDate($operateur->date); ?> entre <?php echo Date::francizeHeure($operateur->heure); ?> et <?php echo Date::francizeHeure(getHeurePlus($operateur, 2)); ?>
+Le <?php echo format_date($operateur->date, "D", "fr_FR") ?> entre <?php echo Date::francizeHeure($operateur->heure); ?> et <?php echo Date::francizeHeure(getHeurePlus($operateur, 2)); ?>
 
 
 NB :
