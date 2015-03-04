@@ -213,10 +213,10 @@ class Compte extends BaseCompte {
         $this->tags->$nodeType->add(null, $value);
     }
 
-    public function calculCoordonnees($adresse, $commune) {
+    public function calculCoordonnees($adresse, $commune, $code_postal) {
         $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
 
-        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune);
+        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
         
         $file = file_get_contents($url);
 
@@ -234,7 +234,7 @@ class Compte extends BaseCompte {
     }
 
     public function updateCoordonneesLongLatByNoeud($noeud) {
-        $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune);
+        $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
 
         if(!$coordonnees) {
 

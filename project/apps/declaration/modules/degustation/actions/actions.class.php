@@ -367,7 +367,7 @@ class degustationActions extends sfActions {
         }
 
         if(!$operateur->lat || !$operateur->lon) {
-            $coordonnees = $compte->calculCoordonnees($operateur->adresse, $operateur->commune);
+            $coordonnees = $compte->calculCoordonnees($operateur->adresse, $operateur->commune, $operateur->code_postal);
             if($coordonnees) {
                 $operateur->lat = $coordonnees["lat"];
                 $operateur->lon = $coordonnees["lon"];
