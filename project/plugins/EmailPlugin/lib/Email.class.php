@@ -168,6 +168,9 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
+            if(!$operateur->email) {
+                continue;
+            }
             $to = $operateur->email;
             $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le ".Date::francizeDate($operateur->date);
             $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
@@ -188,6 +191,9 @@ class Email {
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
             foreach ($comptes as $id_compte => $degustateur_node) {
+                if(!$degustateur_node->email) {
+                continue;
+                }
                 $to = $degustateur_node->email;
                 $subject = "L'AVA vous invite à une dégustation conseil le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
                 $body = $this->getBodyFromPartial('send_degustation_degustateur', array('degustation' => $degustation));
