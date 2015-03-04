@@ -18,7 +18,7 @@
                 </span>
             </a>
         <?php endforeach; ?>
-            <a href="" class="list-group-item col-xs-12">
+            <!--<a href="" class="list-group-item col-xs-12">
                 <span class="col-xs-2 text-muted">
                 <?php echo $d->date; ?>
                 </span>
@@ -87,6 +87,6 @@
                 <span class="col-xs-2 text-muted text-right">
                     <span class="label label-success">Terminé</span>
                 </span>
-            </a>
+            </a>-->
         </div>
 </div>
