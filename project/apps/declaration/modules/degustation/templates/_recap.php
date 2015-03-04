@@ -11,7 +11,7 @@
             </tr>
             <?php foreach ($degustation->getTournees() as $date_compteid => $tournee):  ?>
              <tr>
-                 <td><?php echo format_date($tournee->date, "D", "fr_FR")." journée"; ?></td>
+                 <td><?php if(str_replace("-", "", $tournee->date)) { echo format_date($tournee->date, "D", "fr_FR")." journée"; }; ?></td>
                  <td><a href="<?php echo url_for('degustation_tournee', array('id' => $degustation->_id, 'agent' => $tournee->id_agent, 'date' => $tournee->date)); ?>">
                      <?php echo "Tournée ".$tournee->nom_agent." (".count($tournee->operateurs)." visites)"; ?></a></td> 
             </tr>
