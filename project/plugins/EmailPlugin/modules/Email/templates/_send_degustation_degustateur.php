@@ -1,13 +1,15 @@
 Bonjour,
 
-Les services de L'Ava vous invitent à venir à la prochaine dégustation le <?php echo Date::francizeDate($degustation->date).' à '.$degustation->heure; ?> qui se tiendra à l'adresse suivante :
+En votre qualité de dégustateur expert, nous vous invitons à venir participer à une dégustation conseil :
 
-Association des Viticulteurs d'Alsace
-12 avenue de la Foire Aux Vins
-BP 91 225
-68012 Colmar Cedex
+Le <?php echo Date::francizeDate($degustation->date).' à '.$degustation->heure; ?>
 
-Merci de confirmer votre présence par retour de mail.
+A la Maison des Vins d’Alsace, 12 avenue de la Foire Aux Vins à Colmar
+
+Nous vous rappelons l’importance de votre présence pour la bonne tenue des commissions de dégustation.
+
+Merci de bien vouloir nous confirmer votre présence ou votre absence par retour de mail.
+
 Bien cordialement,
 
-Le service de dégustation de l'Ava
+Le service Appui technique de l'AVA

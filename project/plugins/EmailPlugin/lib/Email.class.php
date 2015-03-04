@@ -166,13 +166,15 @@ class Email {
 
     public function sendDegustationOperateursMails($degustation) {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
             $to = $operateur->email;
-            $subject = "Prélèvement(s) de l'AVA le ".Date::francizeDate($operateur->date);
+            $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le ".Date::francizeDate($operateur->date);
             $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
 
             $message = Swift_Message::newInstance()
                     ->setFrom($from)
+                    ->setReplyTo($reply_to)
                     ->setTo($to)
                     ->setSubject($subject)
                     ->setBody($body);
@@ -183,13 +185,15 @@ class Email {
 
     public function sendDegustationDegustateursMails($degustation) {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
             foreach ($comptes as $id_compte => $degustateur_node) {
                 $to = $degustateur_node->email;
-                $subject = "L'AVA vous invite à une dégustation le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
+                $subject = "L'AVA vous invite à une dégustation conseil le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
                 $body = $this->getBodyFromPartial('send_degustation_degustateur', array('degustation' => $degustation));
                 $message = Swift_Message::newInstance()
                         ->setFrom($from)
+                        ->setReplyTo($reply_to)
                         ->setTo($to)
                         ->setSubject($subject)
                         ->setBody($body)
