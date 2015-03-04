@@ -22,7 +22,7 @@
     </div>
     <div class="col-xs-6 text-right">
         
-        <button type="submit" class="btn btn-default btn-lg btn-upper">Valider&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
+        <button type="submit" class="btn btn-default btn-lg btn-upper">Valider et envoyer les mails&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
     </div>
 </div>
 </form>
