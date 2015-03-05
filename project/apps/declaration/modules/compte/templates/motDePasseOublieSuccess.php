@@ -4,8 +4,8 @@
 </div>
 <div class="row">
     <div class="col-xs-12">
-        <p>La demande de mot de passe oublié s'effectue sur l'espace professionel du CIVA.<br /><br />
-        En continuant vous allez automatiquement être rediriger <a class="btn-link" href="<?php echo $url ?>">vers l'espace professionel du CIVA</a>.<br /><br />
+        <p>La demande de mot de passe oublié s'effectue sur l'espace professionnel du CIVA.<br /><br />
+        En continuant, vous allez être redirigé automatiquement <a class="btn-link" href="<?php echo $url ?>">vers l'espace professionnel du CIVA</a>.<br /><br />
         Une fois votre mot de passe modifié, vous pourrez directement vous connecter sur le portail de l'AVA.</p>
     </div>
 </div>
