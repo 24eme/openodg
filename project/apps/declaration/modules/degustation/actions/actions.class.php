@@ -270,8 +270,13 @@ class degustationActions extends sfActions {
         $i = 0;
         foreach ($values as $key => $value) {
             $operateur = $this->degustation->operateurs->get($key);
-            $operateur->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
-            $operateur->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+            if(!str_replace("-", "", $value["tournee"])) {
+                $operateur->agent = null;
+                $operateur->date = null;
+            } else {
+                $operateur->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
+                $operateur->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+            }
             $operateur->heure = $value["heure"];
             $operateur->position = $i++;
         }

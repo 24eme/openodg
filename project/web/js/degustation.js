@@ -191,8 +191,8 @@
 	    tournees[tournees.length] = {point: L.latLng($(this).attr('data-point').split(',')), id: $(this).attr('data-state'), lastPoint: L.latLng($(this).attr('data-point').split(','))};
 	    nbattributed += $(this).find('.badge').html()*1;
 	});
-	if (nbattributed == 0)
-	    $.attributeTournee(markers, tournees);
+	/*if (nbattributed == 0)
+	    $.attributeTournee(markers, tournees);*/
 	
         //map.fitBounds(points, {padding: [10, 10]});
 
@@ -345,7 +345,9 @@
             }
         } else {
             ligne.find('button.btn-danger, select').addClass('hidden');
-            ligne.find('input, select').attr('disabled', 'disabled');
+            if(!$.isTournee()) {
+                ligne.find('input, select').attr('disabled', 'disabled');
+            }
             ligne.removeClass('list-group-item-success');
             if($('.nav-filter.active').attr('data-state')) {
                 ligne.addClass('clickable');
