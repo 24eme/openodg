@@ -92,7 +92,7 @@ class degustationActions extends sfActions {
             $lot->hash_produit = $p->lots[$value]->hash_produit;
             $lot->libelle = $p->lots[$value]->libelle;
             $lot->nb = $p->lots[$value]->nb;
-            $this->buildPrelevementNode($p->identifiant);
+            $this->buildOperateurNode($p->identifiant);
         }
         $this->degustation->save();
 
@@ -323,12 +323,11 @@ class degustationActions extends sfActions {
         $json = array();
 
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->degustation->generatePrelevements();
         $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
         foreach($this->operateurs as $operateur) {
-            $operateurA = $operateur->toArray(true, false);
-            $operateurA['operateurs'] = array_merge(array_values($operateur->lots->toArray(true, false)), array_values($operateur->lots->toArray(true, false)));
-            $json[$operateur->getKey()] = $operateurA;
+            $json[$operateur->getKey()] = $operateur->toJson();
         }
 
         $this->response->setContentType('application/json');
@@ -362,7 +361,7 @@ class degustationActions extends sfActions {
         $emailManager->sendDegustationDegustateursMails($this->degustation);
     }
 
-    protected function buildPrelevementNode($key) {
+    protected function buildOperateurNode($key) {
         $compte = CompteClient::getInstance()->findByIdentifiant("E" . $key);
         $operateur = $this->degustation->operateurs->get($key);
         $operateur->email = $compte->email;

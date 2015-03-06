@@ -86,6 +86,21 @@ class Degustation extends BaseDegustation {
         return $operateurs;
     }
 
+    public function generatePrelevements() {
+        $j = 10;
+        foreach ($this->operateurs as $operateur) {
+            foreach($operateur->lots as $lot) {
+                for($i=0; $i < $lot->nb; $i++) {
+                    $prelevement = $operateur->prelevements->add();
+                    $prelevement->hash_produit = $lot->hash_produit;
+                    $prelevement->libelle = $lot->libelle;
+                    $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", "RI", $j, $j);
+                    $j++;
+                }
+            }
+        }
+    }
+
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
 

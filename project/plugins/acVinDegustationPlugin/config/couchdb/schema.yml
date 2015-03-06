@@ -35,6 +35,19 @@ Degustation:
                   heure: { }
                   position: { required: true }
                   agent: { }
+                  prelevements:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              hash_produit: { }
+                              libelle: { }
+                              anonymat_prelevement: { }
+                              anonymat_degustation: { }
+                              cuve: { }
                   lots:
                     type: collection
                     definition:

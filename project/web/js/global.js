@@ -240,7 +240,6 @@
             }).on("select2-close", function() {
                 var old_choices = JSON.parse($('input.select2permissifNoAjax').attr('data-choices'));
                 old_choices.push({ id:  lastValue, text : lastValue + ' (nouveau)'});
-                console.log($('.select2permissifNoAjax'));
                 $('input.select2permissifNoAjax').select2("val",lastValue);
                 $('input.select2permissifNoAjax').val(lastValue);
                 $('.select2permissifNoAjax .select2-chosen').text(lastValue);
@@ -424,7 +423,6 @@
             }).addTo(map);
             var points = JSON.parse($(this).attr('data-point'));
             for(point_key in points) {
-                console.log(point_key);
                 L.marker(points[point_key]).addTo(map);
             }
             map.fitBounds(points, {padding: [10, 10], maxZoom: 13});
