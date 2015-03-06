@@ -80,8 +80,10 @@ class Degustation extends BaseDegustation {
                 continue;
             }
 
-            $operateurs[$operateur->getKey()] = $operateur;
+            $operateurs[sprintf('%05d', $operateur->position) . $operateur->getKey()] = $operateur;
         }
+
+        ksort($operateurs);
 
         return $operateurs;
     }
@@ -95,6 +97,7 @@ class Degustation extends BaseDegustation {
                     $prelevement->hash_produit = $lot->hash_produit;
                     $prelevement->libelle = $lot->libelle;
                     $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", "RI", $j, $j);
+                    $prelevement->saisie = 1;
                     $j++;
                 }
             }

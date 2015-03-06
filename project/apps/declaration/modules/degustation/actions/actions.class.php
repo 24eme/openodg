@@ -326,8 +326,8 @@ class degustationActions extends sfActions {
         $this->degustation->generatePrelevements();
         $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
-        foreach($this->operateurs as $operateur) {
-            $json[$operateur->getKey()] = $operateur->toJson();
+        foreach($this->operateurs as $key => $operateur) {
+            $json[$key] = $operateur->toJson();
         }
 
         $this->response->setContentType('application/json');

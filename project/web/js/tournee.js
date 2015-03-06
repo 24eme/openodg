@@ -26,6 +26,7 @@ var myApp = angular.module('myApp',[]);
 
 myApp.controller('tourneeCtrl', ['$scope', function($scope) {
     $scope.prelevements = [];
+    $scope.active = 'recap';
     $.getJSON("/degustation/tournee/DEGUSTATION-20150311-ALSACE/COMPTE-A008482/2015-03-09.json", 
         function(data) {
             $scope.operateurs = data;
@@ -38,6 +39,18 @@ myApp.controller('tourneeCtrl', ['$scope', function($scope) {
             $scope.$apply();
         }
     );
+
+    $scope.updateActive = function(key) {
+        $scope.active = key;
+    }
+
+    $scope.precedent = function() {
+        $scope.updateActive('recap');
+    }
+
+    $scope.terminer = function() {
+        $scope.updateActive('recap');
+    }
 }]);
 
 
