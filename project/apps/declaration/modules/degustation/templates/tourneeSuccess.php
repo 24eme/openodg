@@ -1,12 +1,13 @@
+<?php use_helper("Date"); ?>
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('tournee.js'); ?>
-<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="/declaration_dev.php/degustation/tournee/DEGUSTATION-20150311-ALSACE/COMPTE-A008482/2015-03-09.json"'>
+<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $degustation, 'agent' => $agent->getKey(), 'date' => $date)) ?>"'>
 <div ng-controller="tourneeCtrl">
     <section ng-class="{'hidden': active != 'recap' }" id="mission" style="page-break-after: always;">
         <div style="padding-left: 10px;" class="page-header">
-            <h2>Mission du lundi 9 mars 2015 <small>Sabrina M.</small></h2>
+            <h2>Mission du <?php echo ucfirst(format_date($date, "P", "fr_FR")) ?> <small><?php echo $agent->nom ?></small></h2>
         </div>
 
         <div class="row">
@@ -30,7 +31,7 @@
         </div>
         <div class="row row-margin hidden-print">
             <div class="col-xs-6">
-                <a href="<?php echo url_for('degustation') ?>" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
+                <a href="<?php echo url_for('degustation_visualisation', $degustation) ?>" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
             </div>
             <div class="col-xs-6">
                 <a href="" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
@@ -56,19 +57,21 @@
         </div>
         <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ key }}_{{ prelevement_key }}">
             <div style="padding-left: 10px;" class="page-header">
-                <h2><input id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" />&nbsp;&nbsp;&nbsp;Lot <span ng-if="prelevement.hash_produit">n°{{ prelevement_key + 1 }}</span> <span ng-if="prelevement.hash_produit" ng-show="!prelevement.show_produit"> - {{ prelevement.libelle }}</span> <span ng-if="!prelevement.hash_produit">de : </span> 
-                <select ng-show="prelevement.show_produit" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
-                <small><a ng-show="!prelevement.show_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="#">(changer)</a></small>
-                
+                <h2 ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" />&nbsp;&nbsp;&nbsp;Lot <span ng-if="prelevement.hash_produit">n°{{ prelevement_key + 1 }} - </span> <span ng-show="!prelevement.show_produit && prelevement.hash_produit">{{ prelevement.libelle }}</span> <span ng-if="!prelevement.hash_produit">de : </span> 
+                <select ng-show="prelevement.show_produit || !prelevement.hash_produit" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
+                <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="#">(changer)</a></small>
                 </h2>
             </div>
             <div ng-class="{ 'hidden': !prelevement.preleve }" class="row" >
                 <div class="col-xs-12">
                     <div class="form-horizontal">
-                        <div ng-class="{ 'hidden': !operateur.prelevements.erreurs['cuve'] }" class="alert alert-danger">
+                        <div ng-class="{ 'hidden': !prelevement.erreurs['hash_produit'] }" class="alert alert-danger">
+                        Vous devez séléctionner un cépage
+                        </div>
+                        <div ng-class="{ 'hidden': !prelevement.erreurs['cuve'] }" class="alert alert-danger">
                         Vous devez saisir le(s) numéro(s) de cuve(s)
                         </div>
-                        <div ng-class="{ 'has-error': operateur.prelevements.erreurs['cuve'] }" class="form-group" >
+                        <div ng-class="{ 'has-error': prelevement.erreurs['cuve'] }" class="form-group" >
                             <div class="col-xs-6">
                                 <label class="control-label lead" for="preleve_{{ key }}_{{ prelevement_key }}"><strong>N° d'anonymat</strong> : {{ prelevement.anonymat_prelevement }}</label></span>
                             </div>
@@ -87,10 +90,10 @@
         </div>
         <div class="row row-margin hidden-print">
             <div class="col-xs-6">
-                <a href="" ng-click="precedent()" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Précédent</a>
+                <a href="" ng-click="precedent(operateur)" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Précédent</a>
             </div>
             <div class="col-xs-6 pull-right">
-                <a href="" ng-click="valide(key)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
+                <a href="" ng-click="terminer(operateur)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
             </div>
         </div>
     </section>

@@ -315,6 +315,8 @@ class degustationActions extends sfActions {
 
     public function executeTournee(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->agent = $this->degustation->agents->get($request->getParameter('agent'));
+        $this->date = $request->getParameter('date');
         $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
         $this->produits = array();
         foreach($this->degustation->getProduits() as $produit) {

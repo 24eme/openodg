@@ -40,7 +40,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', function($scope, $rootS
         $scope.active = key;
     }
 
-    $scope.precedent = function() {
+    $scope.precedent = function(operateur) {
         $scope.updateActive('recap');
     }
 
@@ -49,21 +49,32 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', function($scope, $rootS
         var code_cepage = prelevement.hash_produit.substr(-2);
         prelevement.anonymat_prelevement = code_cepage + prelevement.anonymat_prelevement.substr(2, prelevement.anonymat_prelevement.length);
         prelevement.show_produit = false;
+        prelevement.preleve = 1;
     }
 
-    $scope.valide = function(key) {
+    $scope.terminer = function(operateur) {
+        $scope.valide(operateur);
+        
+        if(operateur.erreurs) {
 
-        var operateur = $scope.operateurs[key];
+            return;
+        }
 
+        $scope.precedent(operateur);
+    }
+
+    $scope.valide = function(operateur) {
         operateur.termine = false;
         operateur.erreurs = false;
-        operateur.prelevements.erreurs = [];
-
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
-
+            prelevement.erreurs = [];
             if(prelevement.preleve && !prelevement.cuve) {
-                operateur.prelevements.erreurs['cuve'] = true;
+                prelevement.erreurs['cuve'] = true;
+                operateur.erreurs = true;
+            }
+            if(prelevement.preleve && !prelevement.hash_produit) {
+                prelevement.erreurs['hash_produit'] = true;
                 operateur.erreurs = true;
             }
         }
@@ -74,8 +85,6 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', function($scope, $rootS
         }
 
         operateur.termine = true;
-
-        $scope.updateActive('recap');
     }
 }]);
 
