@@ -24,20 +24,14 @@
 })(jQuery);
 var myApp = angular.module('myApp',[]);
 
-myApp.controller('tourneeCtrl', ['$scope', function($scope) {
+myApp.controller('tourneeCtrl', ['$scope', '$rootScope', function($scope, $rootScope) {
     $scope.prelevements = [];
     $scope.active = 'recap';
     $scope.erreurs = [];
 
-    $.getJSON("/declaration_dev.php/degustation/tournee/DEGUSTATION-20150311-ALSACE/COMPTE-A008482/2015-03-09.json", 
+    $.getJSON($rootScope.url_json, 
         function(data) {
             $scope.operateurs = data;
-            /*for(key in $scope.operateurs) {
-                var operateur = $scope.operateurs[key];
-                operateur.prelevements.push({});
-                operateur.prelevements.push({});
-                operateur.prelevements.push({});
-            }*/
             $scope.$apply();
         }
     );
@@ -50,24 +44,32 @@ myApp.controller('tourneeCtrl', ['$scope', function($scope) {
         $scope.updateActive('recap');
     }
 
+    $scope.updateProduit = function(prelevement) {
+        prelevement.libelle = $rootScope.produits[prelevement.hash_produit];
+        var code_cepage = prelevement.hash_produit.substr(-2);
+        prelevement.anonymat_prelevement = code_cepage + prelevement.anonymat_prelevement.substr(2, prelevement.anonymat_prelevement.length);
+        prelevement.show_produit = false;
+    }
+
     $scope.valide = function(key) {
 
         var operateur = $scope.operateurs[key];
 
-        $scope.erreurs[key] = [];
+        operateur.termine = false;
+        operateur.erreurs = false;
+        operateur.prelevements.erreurs = [];
 
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
 
             if(prelevement.preleve && !prelevement.cuve) {
-                if(!$scope.erreurs[key][prelevement_key]) {
-                    $scope.erreurs[key][prelevement_key] = [];
-                }
-                $scope.erreurs[key][prelevement_key]['cuve'] = 1;
+                operateur.prelevements.erreurs['cuve'] = true;
+                operateur.erreurs = true;
             }
         }
 
-        if($scope.erreurs[key].length) {
+        if(operateur.erreurs) {
+
             return;
         }
 

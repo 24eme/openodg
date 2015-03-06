@@ -106,10 +106,10 @@ class Degustation extends BaseDegustation {
                     $prelevement->preleve = 1;
                     $j++;
                 }
-                for($i=1; $i < 2; $i++) {
+                for($i=1; $i <= 2; $i++) {
                     $prelevement = $operateur->prelevements->add();
                     $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", "__", $j, $j);
-                    $prelevement->preleve = 1;
+                    $prelevement->preleve = 0;
                     $j++;
                 }
             }
