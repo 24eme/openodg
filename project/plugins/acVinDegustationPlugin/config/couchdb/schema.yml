@@ -24,6 +24,7 @@ Degustation:
               definition:
                 fields:
                   raison_sociale: { }
+                  cvi: { }
                   adresse: { }
                   commune: { }
                   code_postal: { }
@@ -35,6 +36,9 @@ Degustation:
                   heure: { }
                   position: { required: true }
                   agent: { }
+                  telephone_bureau: { }
+                  telephone_prive: { }
+                  telephone_mobile: { }
                   prelevements:
                     type: array_collection
                     definition:
@@ -48,7 +52,7 @@ Degustation:
                               anonymat_prelevement: { }
                               anonymat_degustation: { }
                               cuve: { }
-                              saisie: { }
+                              preleve: { }
                   lots:
                     type: collection
                     definition:

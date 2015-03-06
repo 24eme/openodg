@@ -27,7 +27,9 @@ var myApp = angular.module('myApp',[]);
 myApp.controller('tourneeCtrl', ['$scope', function($scope) {
     $scope.prelevements = [];
     $scope.active = 'recap';
-    $.getJSON("/degustation/tournee/DEGUSTATION-20150311-ALSACE/COMPTE-A008482/2015-03-09.json", 
+    $scope.erreurs = [];
+
+    $.getJSON("/declaration_dev.php/degustation/tournee/DEGUSTATION-20150311-ALSACE/COMPTE-A008482/2015-03-09.json", 
         function(data) {
             $scope.operateurs = data;
             /*for(key in $scope.operateurs) {
@@ -48,7 +50,29 @@ myApp.controller('tourneeCtrl', ['$scope', function($scope) {
         $scope.updateActive('recap');
     }
 
-    $scope.terminer = function() {
+    $scope.valide = function(key) {
+
+        var operateur = $scope.operateurs[key];
+
+        $scope.erreurs[key] = [];
+
+        for(prelevement_key in operateur.prelevements) {
+            var prelevement = operateur.prelevements[prelevement_key];
+
+            if(prelevement.preleve && !prelevement.cuve) {
+                if(!$scope.erreurs[key][prelevement_key]) {
+                    $scope.erreurs[key][prelevement_key] = [];
+                }
+                $scope.erreurs[key][prelevement_key]['cuve'] = 1;
+            }
+        }
+
+        if($scope.erreurs[key].length) {
+            return;
+        }
+
+        operateur.termine = true;
+
         $scope.updateActive('recap');
     }
 }]);

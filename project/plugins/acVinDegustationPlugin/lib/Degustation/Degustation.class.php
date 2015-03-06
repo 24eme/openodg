@@ -91,13 +91,25 @@ class Degustation extends BaseDegustation {
     public function generatePrelevements() {
         $j = 10;
         foreach ($this->operateurs as $operateur) {
+            $operateur->cvi = $operateur->getKey();
+            $compte = CompteClient::getInstance()->findByIdentifiant("E" . $operateur->cvi);
+            $operateur->telephone_bureau = $compte->telephone_bureau;
+            $operateur->telephone_prive = $compte->telephone_prive;
+            $operateur->telephone_mobile = $compte->telephone_mobile;
             foreach($operateur->lots as $lot) {
                 for($i=0; $i < $lot->nb; $i++) {
                     $prelevement = $operateur->prelevements->add();
                     $prelevement->hash_produit = $lot->hash_produit;
                     $prelevement->libelle = $lot->libelle;
-                    $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", "RI", $j, $j);
-                    $prelevement->saisie = 1;
+                    $code_cepage = substr($lot->hash_produit, -2);
+                    $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", $code_cepage, $j, $j);
+                    $prelevement->preleve = 1;
+                    $j++;
+                }
+                for($i=1; $i < 2; $i++) {
+                    $prelevement = $operateur->prelevements->add();
+                    $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", "__", $j, $j);
+                    $prelevement->preleve = 1;
                     $j++;
                 }
             }

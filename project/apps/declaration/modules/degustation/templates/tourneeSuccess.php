@@ -6,13 +6,13 @@
 <div ng-app="myApp" ng-controller="tourneeCtrl">
     <section ng-class="{'hidden': active != 'recap' }" id="mission" style="page-break-after: always;">
         <div style="padding-left: 10px;" class="page-header">
-            <h2>Mission du 23 Janvier 2015 <small>Vicky CHAN</small></h2>
+            <h2>Mission du lundi 9 mars 2015 <small>Sabrina M.</small></h2>
         </div>
 
         <div class="row">
             <div class="col-xs-12">
                 <div class="list-group">
-                    <a ng-repeat="(key, operateur) in operateurs" href="" ng-click="updateActive(key)" class="list-group-item col-xs-12 link-to-section">
+                    <a ng-repeat="(key, operateur) in operateurs" href="" ng-click="updateActive(key)" ng-class="{ 'list-group-item-success': operateur.termine }" class="list-group-item col-xs-12 link-to-section">
                         <div class="col-xs-2">
                             <strong style="font-size: 32px;">{{ operateur.heure }}</strong>
                         </div>
@@ -21,7 +21,8 @@
                         {{ operateur.adresse }}, {{ operateur.code_postal }} {{ operateur.commune }}
                         </div>
                         <div class="col-xs-1">
-                            <span class="glyphicon glyphicon-unchecked" style="font-size: 40px; margin-top: 5px;"></span>
+                            <span ng-if="!operateur.termine" class="glyphicon glyphicon-unchecked" style="font-size: 40px; margin-top: 5px;"></span>
+                            <span ng-if="operateur.termine" class="glyphicon glyphicon-check" style="font-size: 40px; margin-top: 5px;"></span>
                         </div>
                     </a>
                 </div>
@@ -44,12 +45,12 @@
         <div class="row">
             <div class="col-xs-6">
                 <address>
-                  <span class="lead text-muted"><strong>{{ operateur.raison_sociale }}</strong></span><br />
+                  <span class="lead text-muted"><strong>{{ operateur.raison_sociale }}</strong> ({{ operateur.cvi }})</span><br />
                   <span class="lead">{{ operateur.adresse }}</span><br />
                   <span class="lead">{{ operateur.code_postal }} {{ operateur.commune }}</span><br /><br />
-                  <abbr>Bureau</abbr> : 0389201627<br />
-                  <abbr>Privé</abbr> : 0389201627<br />
-                  <abbr>Mobile</abbr> : 0689201627<br />
+                  <span ng-if="operateur.telephone_bureau"><abbr>Bureau</abbr> : {{ operateur.telephone_bureau }}<br /></span>
+                  <span ng-if="operateur.telephone_prive"><abbr>Privé</abbr> : {{ operateur.telephone_prive }}<br /></span>
+                  <span ng-if="operateur.telephone_mobile"><abbr>Mobile</abbr> : {{ operateur.telephone_mobile }}<br /></span>
                 </address>
             </div>
             <div class="col-xs-6">
@@ -58,21 +59,26 @@
         </div>
         <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ key }}_{{ prelevement_key }}">
             <div style="padding-left: 10px;" class="page-header">
-                <h2>Lot n°{{ prelevement_key + 1 }} - {{ prelevement.libelle }} <small><a class="text-warning hidden-print" href="#">(changer)</a></small>
+                <h2>Lot <span ng-if="prelevement.hash_produit">n°{{ prelevement_key + 1 }}</span> <span ng-if="prelevement.hash_produit"> - {{ prelevement.libelle }}</span> <span ng-if="!prelevement.hash_produit">de : </span> <small><a ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="#">(changer)</a></small>
                 </h2>
             </div>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="form-horizontal">
-                        <div class="form-group">
+                        <div ng-class="{ 'has-error': erreurs[key][prelevement_key]['cuve'] }" class="form-group" >
                             <div class="col-xs-6">
-                                <input id="saisie_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.saisie" type="checkbox" ng-true-value="1" ng-false-value="0" />&nbsp;&nbsp;&nbsp;
-                                <span class="lead"><label for="saisie_{{ key }}_{{ prelevement_key }}">N° d'anonymat</label> : {{ prelevement.anonymat_prelevement }}</span>
+                                <input id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" />&nbsp;&nbsp;&nbsp;
+                                <label class="control-label lead" for="preleve_{{ key }}_{{ prelevement_key }}"><strong>N° d'anonymat</strong> : {{ prelevement.anonymat_prelevement }}</label></span>
                             </div>
                             <div class="col-xs-6">
-                                <input ng-class="{ 'invisible': !prelevement.saisie }" ng-model="prelevement.cuve" type="text" class="form-control" placeholder="Saisir le numéro de cuve" />
+                                <label for="inputEmail3" class="col-xs-4 control-label">N°&nbsp;Cuve : </label>
+                                <div class="col-xs-8">
+                                    <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-class="{ 'invisible': !prelevement.preleve }" ng-model="prelevement.cuve" type="text" class="form-control" />
+                                </div>
                             </div>
                         </div>
+                        <span ng-if="!prelevement.hash_produit" class="text-muted">Veuillez préfixer le numéro d'anonymat avec le code du cépage :<br />
+                        Chasselas: <strong>CH</strong>, Sylvaner: <strong>SY</strong>, Auxerrois: <strong>AU</strong>, Pinot Blanc: <strong>PB</strong>, Pinot: <strong>PI</strong>, Assemblage: <strong>ED</strong>, Riesling: <strong>RI</strong>, Pinot Gris: <strong>PG</strong>, Muscat: <strong>MU</strong>, Muscat Ottonel: <strong>MO</strong>, Gewurzt.: <strong>GW</strong>, Pinot Noir Rosé: <strong>PN</strong>, Pinot Noir Rouge: <strong>PR</strong>, Savagnin Rose: <strong>KL</strong></span>
                     </div>
                 </div>
             </div>
@@ -82,7 +88,7 @@
                 <a href="" ng-click="precedent()" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Précédent</a>
             </div>
             <div class="col-xs-6 pull-right">
-                <a href="" ng-click="precedent()" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
+                <a href="" ng-click="valide(key)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
             </div>
         </div>
     </section>
