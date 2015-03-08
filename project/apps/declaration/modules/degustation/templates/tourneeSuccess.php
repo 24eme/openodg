@@ -2,14 +2,13 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
-<?php use_javascript('tournee.js'); ?>
+<?php use_javascript('tournee.js?201503082105'); ?>
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $degustation, 'agent' => $agent->getKey(), 'date' => $date)) ?>"'>
 <div ng-controller="tourneeCtrl">
     <section ng-show="active == 'recap'" class="visible-print-block" id="mission" style="page-break-after: always;">
         <div class="text-center" class="page-header">
             <h2>Tournée du<span class="hidden-sm hidden-md hidden-lg"><br /></span><span class="hidden-xs">&nbsp;</span><?php echo ucfirst(format_date($date, "P", "fr_FR")) ?><br /><small><?php echo $agent->nom ?></small></h2>
         </div>
-
         <div class="row">
             <div class="col-xs-12">
                 <div class="list-group">
