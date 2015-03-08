@@ -38,6 +38,7 @@
         </div>
     </section>
     <section ng-repeat="(key, operateur) in operateurs" id="detail_mission_{{ key }}" ng-show="active == key" class="visible-print-block" style="page-break-after: always;">
+    <button ng-click="precedent(operateur)" class="btn btn-default btn-default-step btn-upper pull-right btn-sm"><span class="eleganticon arrow_carrot-left"></span></button>
         <div class="page-header text-center">
             <h2>Mission de {{ operateur.heure }}</h2>
         </div>
