@@ -2,7 +2,7 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
-<?php use_javascript('tournee.js?201503082105'); ?>
+<?php use_javascript('tournee.js?201503082151'); ?>
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $degustation, 'agent' => $agent->getKey(), 'date' => $date)) ?>"'>
 <div ng-controller="tourneeCtrl">
     <section ng-show="active == 'recap'" class="visible-print-block" id="mission" style="page-break-after: always;">
@@ -38,7 +38,7 @@
         </div>
     </section>
     <section ng-repeat="(key, operateur) in operateurs" id="detail_mission_{{ key }}" ng-show="active == key" class="visible-print-block" style="page-break-after: always;">
-    <button ng-click="precedent(operateur)" class="btn btn-default btn-default-step btn-upper pull-right btn-sm"><span class="eleganticon arrow_carrot-left"></span></button>
+    <button ng-click="precedent(operateur)" class="btn btn-default btn-default-step btn-upper pull-left btn-sm"><span class="eleganticon arrow_carrot-left"></span></button>
         <div class="page-header text-center">
             <h2>Mission de {{ operateur.heure }}</h2>
         </div>
@@ -82,7 +82,7 @@
                                     <label for="cuve_{{ key }}_{{ prelevement_key }}" class="col-xs-5 control-label">N°&nbsp;Cuves&nbsp;:</label>
                                     <div class="col-xs-7">
                                         <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg" />
-                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-lg hidden-xs" />
+                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" />
                                     </div>
                                 </div>
                             </div>

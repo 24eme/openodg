@@ -18,7 +18,6 @@
             return false;
         });
 
-
     });
 
 })(jQuery);
@@ -85,6 +84,14 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', function($scope, $rootS
         }
 
         operateur.termine = true;
+    }
+
+    $scope.blurOnEnter = function(event) {
+        if (event.keyCode != 13) {
+            return
+        }
+        
+        event.target.blur();    
     }
 
     $scope.togglePreleve = function(prelevement) {
