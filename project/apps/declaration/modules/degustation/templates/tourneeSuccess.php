@@ -1,11 +1,12 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript('lib/angular.min.js') ?>
+<?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('tournee.js?201503082155'); ?>
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $degustation, 'agent' => $agent->getKey(), 'date' => $date)) ?>"'>
 <div ng-controller="tourneeCtrl">
-    <section ng-show="active == 'recap'" class="visible-print-block" id="mission" style="page-break-after: always;">
+    <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
         <div class="text-center" class="page-header">
             <h2>Tournée du<span class="hidden-sm hidden-md hidden-lg"><br /></span><span class="hidden-xs">&nbsp;</span><?php echo ucfirst(format_date($date, "P", "fr_FR")) ?><br /><small><?php echo $agent->nom ?></small></h2>
         </div>
@@ -58,7 +59,7 @@
         <div class="row">
             <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ key }}_{{ prelevement_key }}" ng-class="{ 'opacity_50': !prelevement.preleve }" class="col-xs-12">
                 <div class="page-header form-inline">
-                    <h3 ng-style="!prelevement.preleve && {'opacity': '0.8'}" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" /><span ng-click="togglePreleve(prelevement)">&nbsp;&nbsp;Lot de </span><span ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
+                    <h3 ng-style="!prelevement.preleve && {'opacity': '0.8'}" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input ng-click="updatePreleve(prelevement)" id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" /><span ng-click="togglePreleve(prelevement)">&nbsp;&nbsp;Lot de </span><span ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
                     <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
                     <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="">(changer)</a></small>
                     <small><a ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit" ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href="">(définir)</a></small>
@@ -81,8 +82,8 @@
                                 <div ng-class="{ 'has-error': prelevement.erreurs['cuve'] }" class="form-group col-xs-12 col-sm-6 lead">
                                     <label for="cuve_{{ key }}_{{ prelevement_key }}" class="col-xs-5 control-label">N°&nbsp;Cuves&nbsp;:</label>
                                     <div class="col-xs-7">
-                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" />
-                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" />
+                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-lg hidden-xs" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                                     </div>
                                 </div>
                             </div>
