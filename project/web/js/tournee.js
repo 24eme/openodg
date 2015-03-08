@@ -86,6 +86,14 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', function($scope, $rootS
 
         operateur.termine = true;
     }
+
+    $scope.togglePreleve = function(prelevement) {
+        if(prelevement.preleve) {
+            prelevement.preleve=0;
+        } else {
+            prelevement.preleve=1;
+        }
+    }
 }]);
 
 
