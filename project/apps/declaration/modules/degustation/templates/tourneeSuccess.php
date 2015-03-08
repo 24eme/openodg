@@ -49,9 +49,9 @@
                   <span class="lead"><strong>{{ operateur.raison_sociale }}</strong> ({{ operateur.cvi }})</span><br />
                   <span class="lead">{{ operateur.adresse }}</span><br />
                   <span class="lead">{{ operateur.code_postal }} {{ operateur.commune }}</span><br /><br />
-                  <span ng-if="operateur.telephone_bureau"><abbr>Bureau</abbr> : {{ operateur.telephone_bureau }}<br /></span>
-                  <span ng-if="operateur.telephone_prive"><abbr>Privé</abbr> : {{ operateur.telephone_prive }}<br /></span>
-                  <span ng-if="operateur.telephone_mobile"><abbr>Mobile</abbr> : {{ operateur.telephone_mobile }}<br /></span>
+                  <span ng-if="operateur.telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_bureau }}">{{ operateur.telephone_bureau }}</a><br /></span>
+                  <span ng-if="operateur.telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_prive }}">{{ operateur.telephone_prive }}</a><br /></span>
+                  <span ng-if="operateur.telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_mobile }}">{{ operateur.telephone_mobile }}</a><br /></span>
                 </address>
             </div>
         </div>
