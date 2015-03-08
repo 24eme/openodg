@@ -60,8 +60,8 @@
                 <div class="page-header form-inline">
                     <h3 ng-style="!prelevement.preleve && {'opacity': '0.8'}" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" /><span ng-click="togglePreleve(prelevement)">&nbsp;&nbsp;Lot de </span><span ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
                     <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
-                    <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="#">(changer)</a></small>
-                    <small><a ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit" ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href="#">(définir)</a></small>
+                    <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="">(changer)</a></small>
+                    <small><a ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit" ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href="">(définir)</a></small>
                     </h3>
                 </div>
                 <div ng-show="prelevement.preleve" class="visible-print-block" class="row">
