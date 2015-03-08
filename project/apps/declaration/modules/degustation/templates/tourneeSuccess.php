@@ -7,23 +7,23 @@
 <div ng-controller="tourneeCtrl">
     <section ng-show="active == 'recap'" class="visible-print-block" id="mission" style="page-break-after: always;">
         <div class="text-center" class="page-header">
-            <h2>Mission du <?php echo ucfirst(format_date($date, "P", "fr_FR")) ?> <small><?php echo $agent->nom ?></small></h2>
+            <h2>Tournée du<span class="hidden-sm hidden-md hidden-lg"><br /></span><span class="hidden-xs">&nbsp;</span><?php echo ucfirst(format_date($date, "P", "fr_FR")) ?><br /><small><?php echo $agent->nom ?></small></h2>
         </div>
 
         <div class="row">
             <div class="col-xs-12">
                 <div class="list-group">
-                    <a ng-repeat="(key, operateur) in operateurs" href="" ng-click="updateActive(key)" ng-class="{ 'list-group-item-success': operateur.termine, 'list-group-item-danger': (operateur.erreurs)}" class="list-group-item col-xs-12 link-to-section">
-                        <div class="col-xs-2">
-                            <strong style="font-size: 32px;">{{ operateur.heure }}</strong>
+                    <a ng-repeat="(key, operateur) in operateurs" href="" ng-click="updateActive(key)" ng-class="{ 'list-group-item-success': operateur.termine, 'list-group-item-danger': (operateur.erreurs)}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
+                        <div class="col-xs-2 col-sm-1 text-left">
+                            <strong class="lead" style="font-weight: bold;">{{ operateur.heure }}</strong>
                         </div>
-                        <div class="col-xs-9">
+                        <div class="col-xs-8 col-sm-10">
                         <strong class="lead">{{ operateur.raison_sociale }}</strong><br />
                         {{ operateur.adresse }}, {{ operateur.code_postal }} {{ operateur.commune }}
                         </div>
-                        <div class="col-xs-1">
-                            <span ng-if="!operateur.termine" class="glyphicon glyphicon-unchecked" style="font-size: 40px; margin-top: 5px;"></span>
-                            <span ng-if="operateur.termine" class="glyphicon glyphicon-check" style="font-size: 40px; margin-top: 5px;"></span>
+                        <div class="col-xs-2 col-sm-1 text-right">
+                            <span ng-if="!operateur.termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 5px;"></span>
+                            <span ng-if="operateur.termine" class="glyphicon glyphicon-check" style="font-size: 28px; margin-top: 5px;"></span>
                         </div>
                     </a>
                 </div>
@@ -46,7 +46,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <address>
-                  <span class="lead text-muted"><strong>{{ operateur.raison_sociale }}</strong> ({{ operateur.cvi }})</span><br />
+                  <span class="lead"><strong>{{ operateur.raison_sociale }}</strong> ({{ operateur.cvi }})</span><br />
                   <span class="lead">{{ operateur.adresse }}</span><br />
                   <span class="lead">{{ operateur.code_postal }} {{ operateur.commune }}</span><br /><br />
                   <span ng-if="operateur.telephone_bureau"><abbr>Bureau</abbr> : {{ operateur.telephone_bureau }}<br /></span>
@@ -55,35 +55,40 @@
                 </address>
             </div>
         </div>
-        <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ key }}_{{ prelevement_key }}" ng-class="{ 'opacity_50': !prelevement.preleve }" class="row col-xs-12">
-            <div class="page-header form-inline">
-                <h2 ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input type="checkbox" class="visible-print-inline" /><input id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" />&nbsp;&nbsp;Lot <span ng-if="prelevement.hash_produit">n°{{ prelevement_key + 1 }} - </span> <span ng-show="!prelevement.show_produit && prelevement.hash_produit">{{ prelevement.libelle }}</span> <span ng-if="!prelevement.hash_produit">de : </span> 
-                <select class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
-                <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="#">(changer)</a></small>
-                </h2>
-            </div>
-            <div ng-show="prelevement.preleve" class="visible-print-block" class="row">
-                <div class="col-xs-12">
-                    <div class="form-horizontal">
-                        <div ng-class="{ 'hidden': !prelevement.erreurs['hash_produit'] }" class="alert alert-danger">
-                        Vous devez séléctionner un cépage
-                        </div>
-                        <div ng-class="{ 'hidden': !prelevement.erreurs['cuve'] }" class="alert alert-danger">
-                        Vous devez saisir le(s) numéro(s) de cuve(s)
-                        </div>
-                        <div ng-class="{ 'has-error': prelevement.erreurs['cuve'] }" class="form-group" >
-                            <div class="col-xs-6">
-                                <label class="control-label lead" for="preleve_{{ key }}_{{ prelevement_key }}"><strong>N° d'anonymat</strong> : {{ prelevement.anonymat_prelevement }}</label></span>
+        <div class="row">
+            <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ key }}_{{ prelevement_key }}" ng-class="{ 'opacity_50': !prelevement.preleve }" class="col-xs-12">
+                <div class="page-header form-inline">
+                    <h3 style="font-size: 21px;" ng-style="!prelevement.preleve && {'opacity': '0.8'}" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input id="preleve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" /><span ng-click="prelevement.preleve = 1">&nbsp;&nbsp;Lot de <span ng-show="!prelevement.show_produit && prelevement.hash_produit">{{ prelevement.libelle }}</span></span>
+                    <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
+                    <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="#">(changer)</a></small>
+                    <small><a ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit" ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href="#">(définir)</a></small>
+                    </h3>
+                </div>
+                <div ng-show="prelevement.preleve" class="visible-print-block" class="row">
+                    <div class="col-xs-12">
+                        <div class="form-horizontal">
+                            <div ng-class="{ 'hidden': !prelevement.erreurs['hash_produit'] }" class="alert alert-danger">
+                            Vous devez séléctionner un cépage
                             </div>
-                            <div  class="col-xs-6">
-                                <label for="inputEmail3" class="col-xs-4 control-label">N°&nbsp;Cuves : </label>
-                                <div class="col-xs-8">
-                                    <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control" />
+                            <div ng-class="{ 'hidden': !prelevement.erreurs['cuve'] }" class="alert alert-danger">
+                                Vous devez saisir le(s) numéro(s) de cuve(s)
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-6 lead" >
+                                    <label class="control-label col-xs-5 col-sm-7 col-md-5" for="preleve_{{ key }}_{{ prelevement_key }}"><strong>N°&nbsp;d'anonymat</strong>&nbsp;:</label>
+                                    <span class="control-label col-xs-7 col-sm-5 col-md-7" style="font-weight: normal; text-align: left;">{{ prelevement.anonymat_prelevement }}</span>
+                                </div>
+                                <div ng-class="{ 'has-error': prelevement.erreurs['cuve'] }" class="form-group col-xs-12 col-sm-6 lead">
+                                    <label for="cuve_{{ key }}_{{ prelevement_key }}" class="col-xs-5 control-label">N°&nbsp;Cuves&nbsp;:</label>
+                                    <div class="col-xs-7">
+                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg" />
+                                        <input id="cuve_{{ key }}_{{ prelevement_key }}" ng-model="prelevement.cuve" type="text" class="form-control input-lg hidden-xs" />
+                                    </div>
                                 </div>
                             </div>
+                            <!--<small ng-show="!prelevement.hash_produit" class="hidden visible-print-block">Veuillez préfixer le numéro d'anonymat avec le code du cépage :<br />
+                            Chasselas: <strong>CH</strong>, Sylvaner: <strong>SY</strong>, Auxerrois: <strong>AU</strong>, Pinot Blanc: <strong>PB</strong>, Pinot: <strong>PI</strong>, Assemblage: <strong>ED</strong>, Riesling: <strong>RI</strong>, Pinot Gris: <strong>PG</strong>, Muscat: <strong>MU</strong>, Muscat Ottonel: <strong>MO</strong>, Gewurzt.: <strong>GW</strong>, Pinot Noir Rosé: <strong>PN</strong>, Pinot Noir Rouge: <strong>PR</strong>, Savagnin Rose: <strong>KL</strong></small>-->
                         </div>
-                        <small ng-show="!prelevement.hash_produit">Veuillez préfixer le numéro d'anonymat avec le code du cépage :<br />
-                        Chasselas: <strong>CH</strong>, Sylvaner: <strong>SY</strong>, Auxerrois: <strong>AU</strong>, Pinot Blanc: <strong>PB</strong>, Pinot: <strong>PI</strong>, Assemblage: <strong>ED</strong>, Riesling: <strong>RI</strong>, Pinot Gris: <strong>PG</strong>, Muscat: <strong>MU</strong>, Muscat Ottonel: <strong>MO</strong>, Gewurzt.: <strong>GW</strong>, Pinot Noir Rosé: <strong>PN</strong>, Pinot Noir Rouge: <strong>PR</strong>, Savagnin Rose: <strong>KL</strong></small>
                     </div>
                 </div>
             </div>
