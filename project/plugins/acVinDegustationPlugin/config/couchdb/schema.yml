@@ -53,6 +53,7 @@ Degustation:
                               anonymat_degustation: { }
                               cuve: { }
                               preleve: { }
+                              commission: { type: integer }
                   lots:
                     type: collection
                     definition:

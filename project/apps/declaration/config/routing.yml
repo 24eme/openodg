@@ -672,8 +672,25 @@ degustation_tournee_json:
     sf_method: [get, post]
 
 degustation_affectation:
-  url: /degustation/affectation
+  url: /degustation/affectation/:id
   param: { module: degustation, action: affectation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_affectation_json:
+  url: /degustation/affectation/:id.json
+  param: { module: degustation, action: affectationJson }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 
 # Parcellaire
 

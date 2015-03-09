@@ -168,4 +168,99 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 }]);
 
 
+myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStorageService', '$filter', function($scope, $rootScope, $http, localStorageService, $filter) {
 
+    $scope.active = 'recapitulatif';
+    $scope.transmission = false;
+    $scope.transmission_progress = false;
+    $scope.state = true;
+    $scope.error_ajout = false;
+    $scope.query = null;
+    $scope.prelevement = null;
+    $scope.affectation = null;
+    $scope.friends = [{name:'John', phone:'555-1276'},
+                      {name:'Mary', phone:'800-BIG-MARY'},
+                      {name:'Mike', phone:'555-4321'},
+                      {name:'Adam', phone:'555-5678'},
+                      {name:'Julie', phone:'555-8765'},
+                      {name:'Juliette', phone:'555-5678'}];
+    
+    var local_storage_name = $rootScope.url_json;
+
+    var localSave = function() {
+        localStorageService.set(local_storage_name, angular.toJson($scope.affectation));
+    }
+
+    var remoteSave = function(callBack) {
+        $http.post($rootScope.url_json, angular.toJson($scope.affectation))
+        .success(function(data){
+            callBack(data.success);
+        }).error(function(data) {
+            callBack(false);
+        });
+    }
+
+    $scope.testState = function() {
+        $http.get($rootScope.url_state).success(function(data){
+            $scope.state = data.authenticated;
+        });
+    }
+
+    var intervalState = setInterval(function() {
+        $scope.testState();
+    }, 200000);
+
+    $scope.affectation = localStorageService.get(local_storage_name);
+   
+    if(!$scope.affectation) {
+        $http.get($rootScope.url_json)
+        .success(function(data){
+            $scope.affectation = data;
+        });
+    }
+
+    $scope.showAjout = function(commission) {
+        $scope.commission = commission;
+        $scope.prelevement = null;
+        $scope.query = null;
+        $scope.active = 'ajout';
+    }
+
+    $scope.showAjoutValidation = function(prelevement) {
+        $scope.prelevement = prelevement;
+        $scope.active = 'ajout_validation';
+    }
+
+    $scope.ajouter = function(prelevement) {
+        $scope.error_ajout = false;
+
+        if(!prelevement) {
+            $scope.error_ajout = true;
+            return;
+        }
+        
+        $scope.showAjoutValidation(prelevement);
+    }
+
+    $scope.terminer = function() {
+        $scope.active = 'recapitulatif';
+    }
+
+    $scope.remove = function(prelevement) {
+        prelevement.commission = null;
+    }
+
+    $scope.blurOnEnter = function(event) {
+        if (event.keyCode != 13) {
+            return
+        }
+
+        event.target.blur();    
+    }
+
+    $scope.validation = function(prelevement, commission) {
+        prelevement.commission = commission;
+        $scope.showAjout(commission);
+    }
+
+}]);
