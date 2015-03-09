@@ -3,7 +3,7 @@
          <div class="list-group">
         <?php foreach($degustations as $degustation): ?>
             <?php $d = $degustation->getRawValue(); ?>
-             <a href="<?php echo url_for('degustation_edit', $degustation) ?>" class="list-group-item col-xs-12">
+             <a href="<?php echo url_for('degustation_affectation', $degustation) ?>" class="list-group-item col-xs-12">
                 <span class="col-xs-2 text-muted">
                 <?php echo $d->date; ?>
                 </span>
@@ -46,7 +46,7 @@
                     <span class="label label-default">Saisie</span>
                 </span>
             </a>
-            <a href="<?php echo url_for('degustation_affectation') ?>" class="list-group-item col-xs-12">
+            <a href="<?php //echo url_for('degustation_affectation') ?>" class="list-group-item col-xs-12">
                 <span class="col-xs-2 text-muted">
                 20/02/2014
                 </span>

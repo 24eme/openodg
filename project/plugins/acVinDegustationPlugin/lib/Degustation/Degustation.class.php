@@ -88,6 +88,48 @@ class Degustation extends BaseDegustation {
         return $operateurs;
     }
 
+    public function cleanPrelevements() {
+        $hash_to_delete = array();
+
+        foreach($this->operateurs as $operateur) {
+            foreach($operateur->prelevements as $prelevement) {
+                if($prelevement->preleve && $prelevement->cuve && $prelevement->hash_produit) {
+                    continue;
+                }
+                $hash_to_delete[$prelevement->getHash()] = $prelevement->getHash();
+            }
+        }
+
+        krsort($hash_to_delete);
+
+        foreach($hash_to_delete as $hash) {
+            $this->remove($hash);
+        }
+    }
+
+    public function getPrelevementsByNumeroPrelevement() {
+        $prelevements = array();
+
+        foreach($this->operateurs as $operateur) {
+            foreach($operateur->prelevements as $prelevement) {
+                $prelevements[$prelevement->anonymat_prelevement] = $prelevement;
+            }
+        }
+
+        return $prelevements;
+    }
+
+    public function generateNumeroDegustation() {
+        $prelevements = $this->getPrelevementsByNumeroPrelevement();
+        shuffle($prelevements);
+
+        $i = 1;
+        foreach($prelevements as $prelevement) {
+            $prelevement->anonymat_degustation = $i;
+            $i++;
+        }
+    }
+
     public function generatePrelevements() {
         $j = 10;
 
