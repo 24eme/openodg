@@ -26,18 +26,29 @@ var myApp = angular.module('myApp',['LocalStorageModule']);
 myApp.config(function (localStorageServiceProvider) {
   localStorageServiceProvider
     .setPrefix('AVA')
-    .setStorageType('sessionStorage')
+    .setStorageType('localStorage')
     .setNotify(true, true)
 });
 
 myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageService', function($scope, $rootScope, $http, localStorageService) {
 
     $scope.active = 'recapitulatif';
+    $scope.transmission = false;
+    $scope.transmission_progress = false;
+    
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
         localStorageService.set(local_storage_name, angular.toJson($scope.operateurs));
-        console.log(localSave);
+    }
+
+    var remoteSave = function(callBack) {
+        $http.post($rootScope.url_json, angular.toJson($scope.operateurs))
+        .success(function(data){
+            callBack(data.success);
+        }).error(function(data) {
+            callBack(false);
+        });
     }
 
     $scope.operateurs = localStorageService.get(local_storage_name);
@@ -51,6 +62,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     $scope.updateActive = function(key) {
         $scope.active = key;
+        $scope.transmission = false;
     }
 
     $scope.precedent = function() {
@@ -66,6 +78,16 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         localSave();
     }
 
+    $scope.transmettre = function() {
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        remoteSave(function(success) {
+            $scope.transmission = true;
+            $scope.transmission_result = success;
+            $scope.transmission_progress = false;
+        });
+    }
+
     $scope.terminer = function(operateur) {
         $scope.valide(operateur);
         
@@ -77,6 +99,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.precedent(operateur);
 
         localSave();
+        remoteSave();
     }
 
     $scope.valide = function(operateur) {

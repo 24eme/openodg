@@ -637,6 +637,16 @@ degustation_visualisation:
   requirements:
     sf_method: [get, post]
 
+degustation_tournees_generate:
+  url: /degustation/tournees-generation/:id
+  param: { module: degustation, action: tourneesGenerate }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_tournee:
   url: /degustation/tournee/:id/:agent/:date
   param: { module: degustation, action: tournee }

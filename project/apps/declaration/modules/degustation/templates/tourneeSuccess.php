@@ -29,12 +29,19 @@
                 </div>
             </div>
         </div>
+        <div ng-show="transmission && !transmission_result" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
+        La transmission a échoué :-( <small>(vous n'avez peut être pas de connexion internet, veuillez réessayer plus tard)</small>
+        </div>
+        <div ng-show="transmission && transmission_result" class="alert alert-success col-xs-12" style="margin-top: 10px;">
+        La transmission a réussi :-)
+        </div>
         <div class="row row-margin hidden-print">
             <div class="col-xs-6">
                 <a href="<?php echo url_for('degustation_visualisation', $degustation) ?>" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
             </div>
             <div class="col-xs-6">
-                <a href="" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
+                <a href="" ng-show="!transmission_progress" ng-click="transmettre()" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
+                <small ng-show="transmission_progress">Transmission en cours...</small>
             </div>
         </div>
     </section>

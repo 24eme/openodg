@@ -90,6 +90,13 @@ class Degustation extends BaseDegustation {
 
     public function generatePrelevements() {
         $j = 10;
+
+        foreach($this->operateurs as $operateur) {
+            if(count($operateur->prelevements) > 0) {
+                return false;
+            }
+        }
+
         foreach ($this->operateurs as $operateur) {
             $operateur->cvi = $operateur->getKey();
             $compte = CompteClient::getInstance()->findByIdentifiant("E" . $operateur->cvi);
@@ -114,6 +121,8 @@ class Degustation extends BaseDegustation {
                 }
             }
         }
+
+        return true;
     }
 
     public function storeEtape($etape) {

@@ -313,6 +313,15 @@ class degustationActions extends sfActions {
         }
     }
 
+    public function executeTourneesGenerate(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        if($this->degustation->generatePrelevements()) {
+            $this->degustation->save();
+        }
+        
+        return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
     public function executeTournee(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->agent = $this->degustation->agents->get($request->getParameter('agent'));
@@ -329,16 +338,44 @@ class degustationActions extends sfActions {
         $json = array();
 
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->generatePrelevements();
         $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
         foreach($this->operateurs as $key => $operateur) {
             $json[$key] = $operateur->toJson();
         }
 
+        if(!$request->isMethod(sfWebRequest::POST)) {
+            $this->response->setContentType('application/json');
+
+            return $this->renderText(json_encode($json));
+        }
+
+        $json = json_decode($request->getContent());
+
+        foreach($json as $key => $operateur) {
+            if(!$this->degustation->operateurs->exist($operateur->cvi)) {
+                continue;
+            }
+            $o = $this->degustation->operateurs->get($operateur->cvi);
+            foreach($operateur->prelevements as $prelevement_key => $prelevement) {
+                if($o->prelevements->exist($prelevement_key)) {
+                    $p = $o->prelevements->get($prelevement_key);
+                } else {
+                    $p = $o->prelevements->add();
+                }
+                $p->cuve = $prelevement->cuve;                
+                $p->anonymat_prelevement = $prelevement->anonymat_prelevement;                
+                $p->hash_produit = $prelevement->hash_produit;                
+                $p->libelle = $prelevement->libelle;                
+                $p->preleve = $prelevement->preleve;
+            }
+        }
+
+        $this->degustation->save();
+
         $this->response->setContentType('application/json');
 
-        return $this->renderText(json_encode($json));
+        return $this->renderText(json_encode(array("success" => true)));
     }
 
     public function executeVisualisation(sfWebRequest $request) {
