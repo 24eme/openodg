@@ -35,6 +35,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.active = 'recapitulatif';
     $scope.transmission = false;
     $scope.transmission_progress = false;
+    $scope.state = true;
     
     var local_storage_name = $rootScope.url_json;
 
@@ -50,6 +51,16 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             callBack(false);
         });
     }
+
+    $scope.testState = function() {
+        $http.get($rootScope.url_state).success(function(data){
+            $scope.state = data.authenticated;
+        });
+    }
+
+    var intervalState = setInterval(function() {
+        $scope.testState();
+    }, 200000);
 
     $scope.operateurs = localStorageService.get(local_storage_name);
 
@@ -86,6 +97,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             $scope.transmission_result = success;
             $scope.transmission_progress = false;
         });
+        $scope.testState();
     }
 
     $scope.terminer = function(operateur) {

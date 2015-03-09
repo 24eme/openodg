@@ -11,6 +11,10 @@ auth_logout:
   url: /logout
   param: { module: auth, action: logout }
 
+auth_state:
+  url: /auth/state
+  param: { module: auth, action: state }
+
 home:
   url: /
   param: { module: ava, action: home }
