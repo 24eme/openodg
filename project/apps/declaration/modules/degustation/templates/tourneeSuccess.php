@@ -3,7 +3,7 @@
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
-<?php use_javascript('tournee.js?201503082155'); ?>
+<?php use_javascript('tournee.js?201503090247'); ?>
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $degustation, 'agent' => $agent->getKey(), 'date' => $date)) ?>"; url_state="<?php echo url_for('auth_state') ?>"'>
 <div ng-controller="tourneeCtrl">
     <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
