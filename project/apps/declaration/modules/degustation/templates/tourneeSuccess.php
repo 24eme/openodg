@@ -39,10 +39,7 @@
         La transmission a réussi :-)
         </div>
         <div class="row row-margin hidden-print">
-            <div class="col-xs-6">
-                
-            </div>
-            <div class="col-xs-6">
+            <div class="col-xs-12">
                 <a href="" ng-show="!transmission_progress" ng-click="transmettre()" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
                 <small ng-show="transmission_progress">Transmission en cours...</small>
             </div>
