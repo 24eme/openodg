@@ -40,7 +40,7 @@
         </div>
         <div class="row row-margin hidden-print">
             <div class="col-xs-6">
-                <a href="<?php echo url_for('degustation_visualisation', $degustation) ?>" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
+                
             </div>
             <div class="col-xs-6">
                 <a href="" ng-show="!transmission_progress" ng-click="transmettre()" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
