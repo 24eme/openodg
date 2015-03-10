@@ -35,6 +35,17 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         });
     }
 
+    $scope.transmettre = function() {
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        remoteSave(function(success) {
+            $scope.transmission = true;
+            $scope.transmission_result = success;
+            $scope.transmission_progress = false;
+        });
+        $scope.testState();
+    }
+
     var intervalState = setInterval(function() {
         $scope.testState();
     }, 200000);
@@ -64,17 +75,6 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         prelevement.show_produit = false;
         prelevement.preleve = 1;
         localSave();
-    }
-
-    $scope.transmettre = function() {
-        $scope.transmission = false;
-        $scope.transmission_progress = true;
-        remoteSave(function(success) {
-            $scope.transmission = true;
-            $scope.transmission_result = success;
-            $scope.transmission_progress = false;
-        });
-        $scope.testState();
     }
 
     $scope.terminer = function(operateur) {
@@ -174,6 +174,17 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         });
     }
 
+    $scope.transmettre = function() {
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        remoteSave(function(success) {
+            $scope.transmission = true;
+            $scope.transmission_result = success;
+            $scope.transmission_progress = false;
+        });
+        $scope.testState();
+    }
+
     var intervalState = setInterval(function() {
         $scope.testState();
     }, 200000);
@@ -216,6 +227,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.remove = function(prelevement) {
         prelevement.commission = null;
+        localSave();
     }
 
     $scope.blurOnEnter = function(event) {
@@ -228,6 +240,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.validation = function(prelevement, commission) {
         prelevement.commission = commission;
+        localSave();
         $scope.showAjout(commission);
     }
 
@@ -243,11 +256,11 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
-        localStorageService.set(local_storage_name, angular.toJson($scope.affectation));
+        localStorageService.set(local_storage_name, angular.toJson($scope.degustation));
     }
 
     var remoteSave = function(callBack) {
-        $http.post($rootScope.url_json, angular.toJson($scope.affectation))
+        $http.post($rootScope.url_json, angular.toJson($scope.degustation))
         .success(function(data){
             callBack(data.success);
         }).error(function(data) {
@@ -259,6 +272,17 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $http.get($rootScope.url_state).success(function(data){
             $scope.state = data.authenticated;
         });
+    }
+
+    $scope.transmettre = function() {
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        remoteSave(function(success) {
+            $scope.transmission = true;
+            $scope.transmission_result = success;
+            $scope.transmission_progress = false;
+        });
+        $scope.testState();
     }
 
     var intervalState = setInterval(function() {
@@ -301,15 +325,15 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             }
         }
 
-        if(prelevement.erreurs) {
+        
 
+        if(prelevement.erreurs) {
+            localSave();
             return;
         }
 
-        console.log(prelevement);
-
         prelevement.termine = true;
-
+        localSave();
         $scope.showRecap();
     }
 

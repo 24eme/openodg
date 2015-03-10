@@ -415,6 +415,10 @@ class degustationActions extends sfActions {
 
             return $this->renderText(json_encode($json));
         }
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode(array("success" => true)));
     }
 
     public function executeDegustation(sfWebRequest $request) {
@@ -447,6 +451,10 @@ class degustationActions extends sfActions {
 
             return $this->renderText(json_encode($json));
         }
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode(array("success" => true)));
     }
 
     protected function getEtape($doc, $etape) {

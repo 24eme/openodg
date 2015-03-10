@@ -25,12 +25,19 @@
                     </div>
                 </div>
             </div>
-            <div class="row row-margin">
-                <div class="col-xs-6">
-                    <a href="<?php echo url_for('degustation') ?>" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
-                </div>
-                <div class="col-xs-6">
-                    <a href="#commissions" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
+            <div ng-show="!state" class="alert alert-warning col-xs-12" style="margin-top: 10px;">
+            Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_affectation", array('sf_subject' => $degustation)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
+            </div>
+            <div ng-show="transmission && !transmission_result" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
+            La transmission a échoué :-( <small>(vous n'avez peut être pas de connexion internet, veuillez réessayer plus tard)</small>
+            </div>
+            <div ng-show="transmission && transmission_result" class="alert alert-success col-xs-12" style="margin-top: 10px;">
+            La transmission a réussi :-)
+            </div>
+            <div class="row row-margin hidden-print">
+                <div class="col-xs-12">
+                    <a href="" ng-show="!transmission_progress" ng-click="transmettre()" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
+                    <small ng-show="transmission_progress">Transmission en cours...</small>
                 </div>
             </div>
         </section>
