@@ -1,168 +1,124 @@
-<?php use_javascript('tournee.js'); ?>
-
-<section id="commissions">
-    <div class="page-header">
-        <h2>Dégustation du 23/02/2014</h2>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="list-group">
-                <?php $nb_validee = 1; ?>
-                <?php for($i=1; $i <= 3; $i++): ?>
-                <a href="#degustateurs_<?php echo $i ?>" class="list-group-item <?php if($nb_validee >= $i): ?>list-group-item-success<?php endif; ?> col-xs-12 link-to-section">
-                    <div class="col-xs-1">
-                        <strong style="font-size: 32px;"><?php echo $i ?></strong>
-                    </div>
-                    <div class="col-xs-10">
-                    <strong class="lead">Commission</strong><br />
-                    12 dégustateurs et 10 vins à déguster
-                    </div>
-                    
-                    <div class="col-xs-1">
-                        <span class="<?php if($nb_validee >= $i): ?>glyphicon glyphicon-check<?php else: ?>glyphicon glyphicon-unchecked<?php endif; ?>" style="font-size: 40px; margin-top: 5px;"></span>
-                    </div>
-                </a>
-                <?php endfor; ?>
+<?php use_helper("Date"); ?>
+<?php use_javascript('lib/angular.min.js') ?>
+<?php use_javascript('lib/angular-local-storage.min.js') ?>
+<?php use_javascript('tournee.js?201503100031'); ?>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $degustation, 'commission' => 1)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
+    <div ng-controller="degustationCtrl">
+        <!--<section>
+            <div class="page-header">
+                <h2>Dégustateurs présents<br /><small>Commission 1</small></h2>
             </div>
-        </div>
-    </div>
-    <div class="row row-margin">
-        <div class="col-xs-6">
-            <a href="<?php echo url_for('degustation') ?>" class="btn btn-default btn-default-step btn-lg btn-upper btn-block">Retour</a>
-        </div>
-        <div class="col-xs-6">
-            <a href="#commissions" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
-        </div>
-    </div>
-</section>
-<?php for($i=1; $i <= 3; $i++): ?>
-<section id="degustateurs_<?php echo $i ?>" class="hidden">
-    <div class="page-header">
-        <h2>Dégustateurs présents<br /><small>Commission <?php echo $i ?></small></h2>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="list-group">
-                <?php for($j=1; $j <= 20; $j++): ?>
-                <?php $checked = (rand(1,3) == 3) ?>
-                <a href="#" class="list-group-item <?php if($checked): ?>list-group-item-success<?php endif; ?> col-xs-12">
-                    <div class="col-xs-11">
-                        <span class="lead">Dégustateur <?php echo $j ?></span>
-                    </div>
-                    <div class="col-xs-1 text-right">
-                        <span style="font-size: 26px;" class="glyphicon glyphicon-check glyphicon <?php if($checked): ?>glyphicon-check<?php else: ?>glyphicon-unchecked<?php endif; ?>"></span>
-                    </div>
-                </a>
-                <?php endfor; ?>
-            </div>
-        </div>
-    </div>
-    <div class="row row-margin">
-        <div class="col-xs-6">
-            <a href="#commissions" class="btn btn-default btn-default-step btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
-        </div>
-        <div class="col-xs-6">
-            <a href="#vins_<?php echo $i ?>" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Démarrer</a>
-        </div>
-    </div>
-</section>
-
-<section id="vins_<?php echo $i ?>" class="hidden">
-    <div class="page-header">
-        <h2>Vins à déguster<br /><small>Commission <?php echo $i ?></small></h2>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="list-group">
-                <?php $nb_validee = 2; ?>
-                <?php for($j=1; $j <= 12; $j++): ?>
-                <?php $checked = ($j <= $nb_validee) ?>
-                <a href="#vin_<?php echo $i ?>_<?php echo $j ?>" class="list-group-item <?php if($checked): ?>list-group-item-success<?php endif; ?> col-xs-12 link-to-section">
-                    <div class="col-xs-1">
-                        <strong style="font-size: 32px;"><?php echo $j ?></strong>
-                    </div>
-                    <div class="col-xs-5">
-                        <span class="lead">Cépage <?php echo $j ?></span>
-                    </div>
-                    <div class="col-xs-5 text-right">
-                        <?php if($checked): ?>
-                            <span>Qualité technique : <span><?php echo rand(0,5) ?></span></span><br />
-                            <span>Matière : <span><?php echo rand(0,5) ?></span></span><br />
-                            <span>Typicité : <span><?php echo rand(0,5) ?></span></span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="col-xs-1">
-                        <span class="<?php if($checked >= $i): ?>glyphicon glyphicon-check<?php else: ?>glyphicon glyphicon-unchecked<?php endif; ?>" style="font-size: 40px; margin-top: 5px;"></span>
-                    </div>
-                </a>
-                <?php endfor; ?>
-            </div>
-        </div>
-    </div>
-    <div class="row row-margin">
-        <div class="col-xs-6">
-            <a href="#degustateurs_<?php echo $i ?>" class="btn btn-default btn-default-step btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
-        </div>
-        <div class="col-xs-6">
-            <a href="#commissions" class="btn btn-warning btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
-        </div>
-    </div>
-</section>
-
-<?php for($j=1; $j <= 12; $j++): ?>
-<section id="vin_<?php echo $i ?>_<?php echo $j ?>" class="hidden">
-    <div class="page-header">
-        <h2>Lot n° <?php echo $j ?> de Cépage<br /><small>Commission <?php echo $i ?></small></h2>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-           <form class="form-horizontal">
-                <?php $controles = array("Qualité technique", "Matière", "Typicité", "Concentration", "Équilibre"); ?>
-                <?php foreach($controles as $controle): ?>
-                <div class="form-group form-group-lg">
-                    <div class="col-xs-12">
-                        <label class="col-xs-3 control-label lead"><?php echo $controle ?></label>
-                        <div class="col-xs-2">
-                            <select class="form-control input-lg">
-                                <option>Note</option>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-                        <div class="col-xs-7">
-                           <select multiple="multiple" data-placeholder="Séléction de défaut(s)" class="form-control input-lg select2 select2-offscreen select2autocomplete">
-                            <option></option>
-                            <option>Bouchonné</option>
-                            <option>Vert</option>
-                            <option>Liquoreux</option>
-                        </select>
-                        </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item col-xs-12">
+                            <div class="col-xs-11">
+                                <span class="lead">Dégustateur</span>
+                            </div>
+                            <div class="col-xs-1 text-right">
+                                <span style="font-size: 26px;" class="glyphicon glyphicon-check glyphicon"></span>
+                            </div>
+                        </a>
                     </div>
                 </div>
-                <?php endforeach; ?>
-                <div class="form-group form-group-lg" style="padding-top: 20px;">
-                    <label class="col-xs-3 control-label lead text-muted">Appréciations</label>
-                    <div class="col-xs-9">
-                        <div class="col-xs-12">
-                            <textarea placeholder="Saisissez vos appréciations" class="form-control input-lg"></textarea>
-                        </div>
+            </div>
+            <div class="row row-margin">
+                <div class="col-xs-6">
+                    <a href="#commissions" class="btn btn-default btn-default-step btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
+                </div>
+                <div class="col-xs-6">
+                    <a href="#vins_<?php echo $i ?>" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Démarrer</a>
+                </div>
+            </div>
+        </section>-->
+
+        <section ng-show="active == 'recapitulatif'">
+            <div class="page-header text-center">
+                <h2>Commission {{ degustation.commission }}</small></h2>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="list-group">
+                        <a href="" ng-repeat="prelevement in degustation.prelevements" class="list-group-item col-xs-12 link-to-section" ng-click="showCepage(prelevement)" ng-class="{ 'list-group-item-success': prelevement.termine, 'list-group-item-danger': (prelevement.erreurs)}">
+                            <div class="col-xs-1">
+                                <strong style="font-size: 32px;">{{ prelevement.anonymat_degustation }}</strong>
+                            </div>
+                            <div class="col-xs-4">
+                                <span class="lead">{{ prelevement.libelle }}</span>
+                            </div>
+                            <div class="col-xs-5 text-right">
+                                <span ng-show="prelevement.termine" ng-repeat="(key_note, note) in prelevement.notes"><span>{{ degustation.notes[key_note] }} : <span>{{ note.note }}</span></span><br /></span>
+                            </div>
+                            <div class="col-xs-2 text-right">
+                                <span ng-show="!prelevement.termine" class="glyphicon glyphicon-unchecked" style="font-size: 32px; margin-top: 6px;"></span>
+                                <span ng-show="prelevement.termine" class="glyphicon glyphicon-check" style="font-size: 32px; margin-top: 6px;"></span>
+                            </div>
+                        </a>
                     </div>
                 </div>
-            </form>
-        </div>
+            </div>
+            <div class="row row-margin">
+                <div class="col-xs-6">
+                    <a href="" class="btn btn-default btn-default-step btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
+                </div>
+                <div class="col-xs-6">
+                    <a href="" class="btn btn-warning btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
+                </div>
+            </div>
+        </section>
+
+        <section ng-repeat="prelevement in degustation.prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
+            <div class="page-header text-center">
+                <h2>Lot n°{{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                   <form class="form-horizontal">
+                        <?php foreach(DegustationClient::$note_type_libelles as $key_note_type => $note_type_libelle): ?>
+                        <div class="form-group form-group-lg" ng-class="{ 'has-error': prelevement.notes.<?php echo $key_note_type ?>.erreurs }">
+                            <div class="col-xs-12">
+                                <label class="col-xs-3 control-label lead"><?php echo $note_type_libelle ?></label>
+                                <div class="col-xs-2">
+                                    <select ng-model="prelevement.notes.<?php echo $key_note_type ?>.note" class="form-control input-lg">
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-7">
+                                   <select multiple="multiple" data-placeholder="Séléction de défaut(s)" class="form-control input-lg select2 select2-offscreen" ng-class="{ 'select2autocomplete': true }" ng-model="prelevement.notes.<?php echo $key_note_type ?>.defauts">
+                                    <?php foreach(DegustationClient::$note_type_defaults[$key_note_type] as $defaut): ?>
+                                    <option value="<?php echo $defaut ?>"><?php echo $defaut ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                        <div ng-show="prelevement.erreurs" class="alert alert-danger text-center">
+                            Vous devez saisir toutes les notes
+                        </div>
+                        <div class="form-group form-group-lg" style="padding-top: 20px;">
+                            <label class="col-xs-3 control-label lead text-muted">Appréciations</label>
+                            <div class="col-xs-9">
+                                <div class="col-xs-12">
+                                    <textarea placeholder="Saisissez vos appréciations" class="form-control" ng-model="prelevement.appreciations"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row row-margin">
+                <div class="col-xs-6">
+                    <a href="" ng-click="precedent()" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
+                </div>
+                <div class="col-xs-6">
+                    <a href="" ng-click="valider(prelevement)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Valider</a>
+                </div>
+            </div>
+        </section>
     </div>
-    <div class="row row-margin">
-        <div class="col-xs-6">
-            <a href="#vins_<?php echo $i ?>" class="btn btn-default btn-default-step btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
-        </div>
-        <div class="col-xs-6">
-            <a href="#vins_<?php echo $i ?>" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Valider</a>
-        </div>
-    </div>
-</section>
-<?php endfor; ?>
-<?php endfor; ?>
+</div>

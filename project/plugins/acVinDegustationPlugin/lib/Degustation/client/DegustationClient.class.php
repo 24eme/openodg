@@ -3,7 +3,29 @@
 class DegustationClient extends acCouchdbClient {
         
     const TYPE_MODEL = "Degustation"; 
-    const TYPE_COUCHDB = "DEGUSTATION";   
+    const TYPE_COUCHDB = "DEGUSTATION";
+
+    const NOTE_TYPE_QUALITE_TECHNIQUE = "QUALITE_TECHNIQUE"; 
+    const NOTE_TYPE_MATIERE = "MATIERE"; 
+    const NOTE_TYPE_TYPICITE = "TYPICITE"; 
+    const NOTE_TYPE_CONCENTRATION = "CONCENTRATION"; 
+    const NOTE_TYPE_EQUILIBRE = "EQUILIBRE";
+
+    public static $note_type_libelles = array(
+        self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
+        self::NOTE_TYPE_MATIERE => "Matière",
+        self::NOTE_TYPE_TYPICITE => "Typicité",
+        self::NOTE_TYPE_CONCENTRATION => "Concentration",
+        self::NOTE_TYPE_EQUILIBRE => "Équilibre",
+    );
+
+    public static $note_type_defaults = array(
+        self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Defaut 1"),
+        self::NOTE_TYPE_MATIERE => array("Defaut 1"),
+        self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
+        self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
+        self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
+    );
     
     public static function getInstance()
     {

@@ -555,12 +555,6 @@ degustation_operateurs:
   requirements:
     sf_method: [get, post]
 
-degustation_degustation:
-  url: /degustation/degustation
-  param: { module: degustation, action: degustation }
-  requirements:
-    sf_method: [get]
-
 degustation_degustateurs:
   url: /degustation/degustateurs/:id
   param: { module: degustation, action: degustateurs }
@@ -684,6 +678,26 @@ degustation_affectation:
 degustation_affectation_json:
   url: /degustation/affectation/:id.json
   param: { module: degustation, action: affectationJson }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustation:
+  url: /degustation/degustation/:id/:commission
+  param: { module: degustation, action: degustation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustation_json:
+  url: /degustation/degustation/:id/:commission.json
+  param: { module: degustation, action: degustationJson }
   class: DegustationRoute
   options:
     model:    DegustationRoute
