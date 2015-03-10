@@ -203,6 +203,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.prelevement = null;
         $scope.query = null;
         $scope.active = 'ajout';
+        $scope.transmission = false;
     }
 
     $scope.showAjoutValidation = function(prelevement) {
@@ -308,6 +309,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.showCepage = function(prelevement) {
         $scope.active = 'cepage_' + prelevement.anonymat_degustation;
+        $scope.transmission = false;
         if(!$('.select2-input').length) {
             console.log('init');
             $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
