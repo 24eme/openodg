@@ -382,6 +382,15 @@ class degustationActions extends sfActions {
         return $this->renderText(json_encode(array("success" => true)));
     }
 
+    public function executeAffectationGenerate(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->degustation->cleanPrelevements();
+        $this->degustation->generateNumeroDegustation();
+        $this->degustation->save();
+
+        return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
     public function executeAffectation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->setLayout('layoutResponsive');
@@ -389,8 +398,7 @@ class degustationActions extends sfActions {
 
     public function executeAffectationJson(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->cleanPrelevements();
-        $this->degustation->generateNumeroDegustation();
+
         $this->prelevements = $this->degustation->getPrelevementsByNumeroPrelevement();
         $json = new stdClass();
 

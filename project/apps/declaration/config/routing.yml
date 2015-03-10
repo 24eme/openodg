@@ -665,6 +665,16 @@ degustation_tournee_json:
   requirements:
     sf_method: [get, post]
 
+degustation_affectation_generate:
+  url: /degustation/affectation-generation/:id
+  param: { module: degustation, action: affectationGenerate }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_affectation:
   url: /degustation/affectation/:id
   param: { module: degustation, action: affectation }
