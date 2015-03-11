@@ -87,11 +87,9 @@
                                 <label class="col-xs-3 control-label lead"><?php echo $note_type_libelle ?></label>
                                 <div class="col-xs-2">
                                     <select ng-model="prelevement.notes.<?php echo $key_note_type ?>.note" class="form-control input-lg">
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
+                                        <?php foreach(DegustationClient::$note_type_notes[$key_note_type] as $key_note_note => $libelle_note_note): ?>
+                                        <option value="<?php echo $key_note_note ?>"><?php echo $libelle_note_note ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                 </div>
                                 <div class="col-xs-7">

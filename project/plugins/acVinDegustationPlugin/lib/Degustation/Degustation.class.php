@@ -119,11 +119,14 @@ class Degustation extends BaseDegustation {
         return $prelevements;
     }
 
-    public function getPrelevementsByNumeroDegustation() {
+    public function getPrelevementsByNumeroDegustation($commission) {
         $prelevements = array();
 
         foreach($this->operateurs as $operateur) {
             foreach($operateur->prelevements as $prelevement) {
+                if($prelevement->commission != $commission) {
+                    continue;
+                }
                 $prelevements[$prelevement->anonymat_degustation] = $prelevement;
             }
         }

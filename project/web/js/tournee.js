@@ -311,7 +311,6 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.active = 'cepage_' + prelevement.anonymat_degustation;
         $scope.transmission = false;
         if(!$('.select2-input').length) {
-            console.log('init');
             $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
         }
     }
@@ -321,13 +320,11 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         for(key_note in prelevement.notes) {
             var note = prelevement.notes[key_note];
             note.erreurs = false;
-            if(!note.note) {
+            if(note.note === null) {
                 note.erreurs = true;
                 prelevement.erreurs = true;
             }
         }
-
-        
 
         if(prelevement.erreurs) {
             localSave();

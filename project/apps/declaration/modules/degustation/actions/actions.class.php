@@ -457,7 +457,7 @@ class degustationActions extends sfActions {
         $json->prelevements = array();
         $json->notes = DegustationClient::$note_type_libelles;
 
-        $prelevements = $this->degustation->getPrelevementsByNumeroDegustation();
+        $prelevements = $this->degustation->getPrelevementsByNumeroDegustation($json->commission);
 
         foreach($prelevements as $prelevement) {
             $p = $json->prelevements[] = new stdClass();

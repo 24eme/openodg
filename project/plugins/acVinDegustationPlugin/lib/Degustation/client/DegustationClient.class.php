@@ -14,14 +14,22 @@ class DegustationClient extends acCouchdbClient {
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",
-        self::NOTE_TYPE_TYPICITE => "Typicité",
+        /*self::NOTE_TYPE_TYPICITE => "Typicité",
         self::NOTE_TYPE_CONCENTRATION => "Concentration",
-        self::NOTE_TYPE_EQUILIBRE => "Équilibre",
+        self::NOTE_TYPE_EQUILIBRE => "Équilibre",*/
     );
 
     public static $note_type_defaults = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Defaut 1"),
         self::NOTE_TYPE_MATIERE => array("Defaut 1"),
+        self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
+        self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
+        self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
+    );
+
+    public static $note_type_notes = array(
+        self::NOTE_TYPE_QUALITE_TECHNIQUE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
+        self::NOTE_TYPE_MATIERE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité inssufisante"),
         self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
         self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
         self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
