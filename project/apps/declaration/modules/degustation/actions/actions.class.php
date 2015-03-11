@@ -445,18 +445,20 @@ class degustationActions extends sfActions {
 
     public function executeDegustation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->commission = $request->getParameter('commission');
         $this->setLayout('layoutResponsive');
     }
 
     public function executeDegustationJson(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
+        $this->commission = $request->getParameter('commission');
 
         $json = new stdClass();
-        $json->commission = 1;
+        $json->commission = $this->commission;
         $json->prelevements = array();
         $json->notes = DegustationClient::$note_type_libelles;
 
-        $prelevements = $this->degustation->getPrelevementsByNumeroDegustation($json->commission);
+        $prelevements = $this->degustation->getPrelevementsByNumeroDegustation($this->commission);
 
         foreach($prelevements as $prelevement) {
             $p = $json->prelevements[] = new stdClass();
@@ -481,7 +483,7 @@ class degustationActions extends sfActions {
             $prelevement->appreciations = $p->appreciations;
         }
 
-        $this->degustation->save();
+        //$this->degustation->save();
 
         $this->response->setContentType('application/json');
 

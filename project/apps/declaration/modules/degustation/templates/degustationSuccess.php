@@ -2,7 +2,7 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201503100031'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $degustation, 'commission' => 1)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $degustation, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
     <div ng-controller="degustationCtrl">
         <!--<section>
             <div class="page-header">
