@@ -60,7 +60,7 @@
                     <span class="label label-warning">Affectation des vins</span>
                 </span>
             </a>
-            <a href="<?php echo url_for('degustation_degustation') ?>" class="list-group-item col-xs-12">
+            <a href="<?php //echo url_for('degustation_degustation') ?>" class="list-group-item col-xs-12">
                 <span class="col-xs-2 text-muted">
                 20/02/2014
                 </span>

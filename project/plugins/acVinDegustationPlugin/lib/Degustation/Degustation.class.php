@@ -119,6 +119,23 @@ class Degustation extends BaseDegustation {
         return $prelevements;
     }
 
+    public function getPrelevementsByNumeroDegustation($commission) {
+        $prelevements = array();
+
+        foreach($this->operateurs as $operateur) {
+            foreach($operateur->prelevements as $prelevement) {
+                if($prelevement->commission != $commission) {
+                    continue;
+                }
+                $prelevements[$prelevement->anonymat_degustation] = $prelevement;
+            }
+        }
+
+        ksort($prelevements);
+
+        return $prelevements;
+    }
+
     public function generateNumeroDegustation() {
         $prelevements = $this->getPrelevementsByNumeroPrelevement();
         shuffle($prelevements);
@@ -126,6 +143,9 @@ class Degustation extends BaseDegustation {
         $i = 1;
         foreach($prelevements as $prelevement) {
             $prelevement->anonymat_degustation = $i;
+            foreach(DegustationClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
+                $prelevement->notes->add($key_type_note);
+            }
             $i++;
         }
     }

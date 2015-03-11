@@ -2,10 +2,6 @@
 
 class degustationActions extends sfActions {
 
-    public function executeDegustation(sfWebRequest $request) {
-        
-    }
-
     public function executeIndex(sfWebRequest $request) {
         $this->degustation = new Degustation();
         $this->form = new DegustationCreationForm($this->degustation);
@@ -386,6 +382,15 @@ class degustationActions extends sfActions {
         return $this->renderText(json_encode(array("success" => true)));
     }
 
+    public function executeAffectationGenerate(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->degustation->cleanPrelevements();
+        $this->degustation->generateNumeroDegustation();
+        $this->degustation->save();
+
+        return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
     public function executeAffectation(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->setLayout('layoutResponsive');
@@ -393,8 +398,7 @@ class degustationActions extends sfActions {
 
     public function executeAffectationJson(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->cleanPrelevements();
-        $this->degustation->generateNumeroDegustation();
+
         $this->prelevements = $this->degustation->getPrelevementsByNumeroPrelevement();
         $json = new stdClass();
 
@@ -414,11 +418,65 @@ class degustationActions extends sfActions {
             $p->commission = $prelevement->commission;
         }
 
+
         if(!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
         }
+
+        $json = json_decode($request->getContent());
+
+        foreach($json->prelevements as $prelevement) {
+            if(!isset($this->prelevements[$prelevement->anonymat_prelevement])) {
+                continue;
+            }
+
+            $p = $this->prelevements[$prelevement->anonymat_prelevement];
+            $p->commission = $prelevement->commission;
+        }
+
+        $this->degustation->save();
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode(array("success" => true)));
+    }
+
+    public function executeDegustation(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->setLayout('layoutResponsive');
+    }
+
+    public function executeDegustationJson(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->degustation->cleanPrelevements();
+        $this->degustation->generateNumeroDegustation();
+        $json = new stdClass();
+        $json->commission = 1;
+        $json->prelevements = array();
+        $json->notes = DegustationClient::$note_type_libelles;
+
+        $prelevements = $this->degustation->getPrelevementsByNumeroDegustation($json->commission);
+
+        foreach($prelevements as $prelevement) {
+            $p = $json->prelevements[] = new stdClass();
+            $p->anonymat_degustation = $prelevement->anonymat_degustation;
+            $p->hash_produit = $prelevement->hash_produit;
+            $p->libelle = $prelevement->libelle;
+            $p->notes = $prelevement->notes->toArray(true, false);
+            $p->appreciations = $prelevement->appreciations;
+        }
+
+        if(!$request->isMethod(sfWebRequest::POST)) {
+            $this->response->setContentType('application/json');
+
+            return $this->renderText(json_encode($json));
+        }
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode(array("success" => true)));
     }
 
     protected function getEtape($doc, $etape) {

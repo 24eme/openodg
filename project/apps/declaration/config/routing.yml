@@ -555,12 +555,6 @@ degustation_operateurs:
   requirements:
     sf_method: [get, post]
 
-degustation_degustation:
-  url: /degustation/degustation
-  param: { module: degustation, action: degustation }
-  requirements:
-    sf_method: [get]
-
 degustation_degustateurs:
   url: /degustation/degustateurs/:id
   param: { module: degustation, action: degustateurs }
@@ -671,6 +665,16 @@ degustation_tournee_json:
   requirements:
     sf_method: [get, post]
 
+degustation_affectation_generate:
+  url: /degustation/affectation-generation/:id
+  param: { module: degustation, action: affectationGenerate }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get]
+
 degustation_affectation:
   url: /degustation/affectation/:id
   param: { module: degustation, action: affectation }
@@ -691,6 +695,25 @@ degustation_affectation_json:
   requirements:
     sf_method: [get, post]
 
+degustation_degustation:
+  url: /degustation/degustation/:id/:commission
+  param: { module: degustation, action: degustation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustation_json:
+  url: /degustation/degustation/:id/:commission.json
+  param: { module: degustation, action: degustationJson }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 # Parcellaire
 

@@ -54,6 +54,21 @@ Degustation:
                               cuve: { }
                               preleve: { }
                               commission: { type: integer }
+                              appreciations: { }
+                              notes:
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*':
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          note: { type: integer }
+                                          defauts:
+                                            type: array_collection
+                                            definition:
+                                              fields:
+                                                '*': { }
                   lots:
                     type: collection
                     definition:

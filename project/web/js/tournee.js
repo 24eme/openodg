@@ -1,26 +1,3 @@
-/* =================================================================================== */
-/* JQUERY CONTEXT */
-/* =================================================================================== */
-(function($)
-{
-    var _doc = $(document);
-
-    /* =================================================================================== */
-    /* FUNCTIONS CALL */
-    /* =================================================================================== */
-    _doc.ready(function()
-    {
-        /*$('a.link-to-section').on('click', function() {
-            $($(this).attr('href')).removeClass('hidden');
-            $(this).closest('section').addClass('hidden');
-            $(document).scrollTo($(this).attr('href'));
-
-            return false;
-        });*/
-
-    });
-
-})(jQuery);
 var myApp = angular.module('myApp',['LocalStorageModule']);
 
 myApp.config(function (localStorageServiceProvider) {
@@ -58,6 +35,17 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         });
     }
 
+    $scope.transmettre = function() {
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        remoteSave(function(success) {
+            $scope.transmission = true;
+            $scope.transmission_result = success;
+            $scope.transmission_progress = false;
+        });
+        $scope.testState();
+    }
+
     var intervalState = setInterval(function() {
         $scope.testState();
     }, 200000);
@@ -87,17 +75,6 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         prelevement.show_produit = false;
         prelevement.preleve = 1;
         localSave();
-    }
-
-    $scope.transmettre = function() {
-        $scope.transmission = false;
-        $scope.transmission_progress = true;
-        remoteSave(function(success) {
-            $scope.transmission = true;
-            $scope.transmission_result = success;
-            $scope.transmission_progress = false;
-        });
-        $scope.testState();
     }
 
     $scope.terminer = function(operateur) {
@@ -167,24 +144,15 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     }
 }]);
 
-
 myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStorageService', '$filter', function($scope, $rootScope, $http, localStorageService, $filter) {
 
     $scope.active = 'recapitulatif';
     $scope.transmission = false;
     $scope.transmission_progress = false;
     $scope.state = true;
-    $scope.error_ajout = false;
     $scope.query = null;
     $scope.prelevement = null;
     $scope.affectation = null;
-    $scope.friends = [{name:'John', phone:'555-1276'},
-                      {name:'Mary', phone:'800-BIG-MARY'},
-                      {name:'Mike', phone:'555-4321'},
-                      {name:'Adam', phone:'555-5678'},
-                      {name:'Julie', phone:'555-8765'},
-                      {name:'Juliette', phone:'555-5678'}];
-    
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
@@ -206,6 +174,17 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         });
     }
 
+    $scope.transmettre = function() {
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        remoteSave(function(success) {
+            $scope.transmission = true;
+            $scope.transmission_result = success;
+            $scope.transmission_progress = false;
+        });
+        $scope.testState();
+    }
+
     var intervalState = setInterval(function() {
         $scope.testState();
     }, 200000);
@@ -224,6 +203,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.prelevement = null;
         $scope.query = null;
         $scope.active = 'ajout';
+        $scope.transmission = false;
     }
 
     $scope.showAjoutValidation = function(prelevement) {
@@ -248,6 +228,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.remove = function(prelevement) {
         prelevement.commission = null;
+        localSave();
     }
 
     $scope.blurOnEnter = function(event) {
@@ -260,7 +241,99 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.validation = function(prelevement, commission) {
         prelevement.commission = commission;
+        localSave();
         $scope.showAjout(commission);
+    }
+
+}]);
+
+myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStorageService', '$filter', function($scope, $rootScope, $http, localStorageService, $filter) {
+
+    $scope.active = 'recapitulatif';
+    $scope.transmission = false;
+    $scope.transmission_progress = false;
+    $scope.state = true;
+    
+    var local_storage_name = $rootScope.url_json;
+
+    var localSave = function() {
+        localStorageService.set(local_storage_name, angular.toJson($scope.degustation));
+    }
+
+    var remoteSave = function(callBack) {
+        $http.post($rootScope.url_json, angular.toJson($scope.degustation))
+        .success(function(data){
+            callBack(data.success);
+        }).error(function(data) {
+            callBack(false);
+        });
+    }
+
+    $scope.testState = function() {
+        $http.get($rootScope.url_state).success(function(data){
+            $scope.state = data.authenticated;
+        });
+    }
+
+    $scope.transmettre = function() {
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        remoteSave(function(success) {
+            $scope.transmission = true;
+            $scope.transmission_result = success;
+            $scope.transmission_progress = false;
+        });
+        $scope.testState();
+    }
+
+    var intervalState = setInterval(function() {
+        $scope.testState();
+    }, 200000);
+
+    $scope.degustation = localStorageService.get(local_storage_name);
+   
+    if(!$scope.degustation) {
+        $http.get($rootScope.url_json)
+        .success(function(data){
+            $scope.degustation = data;
+        });
+    }
+
+    $scope.precedent = function() {
+        $scope.showRecap();
+    }
+
+    $scope.showRecap = function() {
+        $scope.active = 'recapitulatif';
+    }
+
+    $scope.showCepage = function(prelevement) {
+        $scope.active = 'cepage_' + prelevement.anonymat_degustation;
+        $scope.transmission = false;
+        if(!$('.select2-input').length) {
+            $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
+        }
+    }
+
+    $scope.valider = function(prelevement) {
+        prelevement.erreurs = false;
+        for(key_note in prelevement.notes) {
+            var note = prelevement.notes[key_note];
+            note.erreurs = false;
+            if(note.note === null) {
+                note.erreurs = true;
+                prelevement.erreurs = true;
+            }
+        }
+
+        if(prelevement.erreurs) {
+            localSave();
+            return;
+        }
+
+        prelevement.termine = true;
+        localSave();
+        $scope.showRecap();
     }
 
 }]);
