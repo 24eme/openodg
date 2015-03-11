@@ -450,8 +450,7 @@ class degustationActions extends sfActions {
 
     public function executeDegustationJson(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->cleanPrelevements();
-        $this->degustation->generateNumeroDegustation();
+
         $json = new stdClass();
         $json->commission = 1;
         $json->prelevements = array();
