@@ -477,11 +477,11 @@ class degustationActions extends sfActions {
 
         $json = json_decode($request->getContent());
 
-        foreach($json as $p) {
+        /*foreach($json as $p) {
             $prelevement = $prelevements[$p->anonymat_degustation];
             $prelevement->notes = $p->notes;
             $prelevement->appreciations = $p->appreciations;
-        }
+        }*/
 
         //$this->degustation->save();
 
