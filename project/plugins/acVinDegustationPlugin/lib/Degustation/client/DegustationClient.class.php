@@ -20,8 +20,8 @@ class DegustationClient extends acCouchdbClient {
     );
 
     public static $note_type_defaults = array(
-        self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Defaut 1"),
-        self::NOTE_TYPE_MATIERE => array("Defaut 1"),
+        self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Acescence","Acétate d'éthyl","Acétique","Acide","Acidité volatile","Aigre-doux","Alcooleux","Alliacé","Amande amère","Amer","Amylique","Apre","Asséchant","Astringent","Bactérien","Bock","Botrytis","Bouchonné","Bourbes","Brunissement","Butyrique","Caoutchouc","Cassé","Champignon","Ciment","Couleur altérée","Créosote","Croupi","Cuit","Cuivre","Décoloré","Désagréable","Déséquilibré","Douceureux","Ecurie","Eventé","Evolué","Fatigué","Fermentaire","Filant","Foxé","Gazeux","Géranium","Gouache","Goudron","Goût de bois sec","Goût de colle","Grêle","Grossier","H2S","Herbacé","Huileux","Hydrocarbures","Insuffisant","Iodé","Lactique","Levure","Lie","Logement","Lourd","Madérisé","Malpropre","Manque de finesse","Manque de fruit","Manque de structure","Mauvais boisé","Mauvais goût","Mauvaise odeur","Mercaptans","Métallique","Moisi","Mou","Oignon","Oxydé","Papier","Pas net","Pharmaceutique","Phéniqué","Phénolé","Piqué","Plastique","Plat","Plombé","Poivron","Pourri","Pourriture grise","Poussiéreux","Punaise","Putride","Rafle","Rance","Réduit","Résinique","Sale","Savonneux","Sec","Serpilière","Sirupeux","SO2","Solvant","Souris","Squelettique","Styrène","Taché","Tannique","Tartre sec","Terreux","Trop boisé","Trouble","Tuilé","Usé","Végétal","Vert","Vin non terminé"),
+        self::NOTE_TYPE_MATIERE => array("Champignon","Court","Creux","Dilué","Insuffisant","Maigre","Manque de corps","Manque de fruit","Manque de matière","Manque de puissance","Manque de structure","Manque de typicité dans le cépage","Pourri","Pourriture grise","Végétal","Vert"),
         self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
         self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
         self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
@@ -29,7 +29,7 @@ class DegustationClient extends acCouchdbClient {
 
     public static $note_type_notes = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
-        self::NOTE_TYPE_MATIERE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité inssufisante"),
+        self::NOTE_TYPE_MATIERE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
         self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
         self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
         self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
