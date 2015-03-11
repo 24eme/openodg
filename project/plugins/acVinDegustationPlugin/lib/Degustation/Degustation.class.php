@@ -134,7 +134,13 @@ class Degustation extends BaseDegustation {
 
         ksort($prelevements);
 
-        return $prelevements;
+        $prelevements_return = array();
+
+        foreach($prelevements as $prelevement) {
+            $prelevements_return[$prelevement->anonymat_degustation] = $prelevement;
+        }
+
+        return $prelevements_return;
     }
 
     public function generateNumeroDegustation() {

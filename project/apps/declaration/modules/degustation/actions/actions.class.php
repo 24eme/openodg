@@ -473,6 +473,16 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode($json));
         }
 
+        $json = json_decode($request->getContent());
+
+        foreach($json as $p) {
+            $prelevement = $prelevements[$p->anonymat_degustation];
+            $prelevement->notes = $p->notes;
+            $prelevement->appreciations = $p->appreciations;
+        }
+
+        $this->degustation->save();
+
         $this->response->setContentType('application/json');
 
         return $this->renderText(json_encode(array("success" => true)));
