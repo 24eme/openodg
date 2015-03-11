@@ -127,7 +127,8 @@ class Degustation extends BaseDegustation {
                 if($prelevement->commission != $commission) {
                     continue;
                 }
-                $prelevements[$prelevement->anonymat_degustation] = $prelevement;
+                $cepage_key = substr($prelevement->hash_produit, -2);
+                $prelevements[DegustationClient::$ordre_cepages[$cepage_key].$prelevement->anonymat_degustation.""] = $prelevement;
             }
         }
 

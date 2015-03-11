@@ -34,6 +34,18 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
         self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
     );
+
+    public static $ordre_cepages = array(
+        'SY' => '01',
+        'AU' => '02',
+        'PB' => '03',
+        'RI' => '04',
+        'MU' => '05',
+        'PG' => '06',
+        'GW' => '07',
+        'PN' => '08',
+        'PR' => '09',
+    );
     
     public static function getInstance()
     {
