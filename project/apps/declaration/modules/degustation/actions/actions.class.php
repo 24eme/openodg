@@ -418,11 +418,25 @@ class degustationActions extends sfActions {
             $p->commission = $prelevement->commission;
         }
 
+
         if(!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
         }
+
+        $json = json_decode($request->getContent());
+
+        foreach($json->prelevements as $prelevement) {
+            if(!isset($this->prelevements[$prelevement->anonymat_prelevement])) {
+                continue;
+            }
+
+            $p = $this->prelevements[$prelevement->anonymat_prelevement];
+            $p->commission = $prelevement->commission;
+        }
+
+        $this->degustation->save();
 
         $this->response->setContentType('application/json');
 
