@@ -63,7 +63,7 @@ Degustation:
                                       type: collection
                                       definition:
                                         fields:
-                                          note: { type: integer }
+                                          note: { }
                                           defauts:
                                             type: array_collection
                                             definition:

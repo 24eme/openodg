@@ -140,7 +140,7 @@ class Degustation extends BaseDegustation {
             $prelevements_return[$prelevement->anonymat_degustation] = $prelevement;
         }
 
-        return $prelevements;
+        return $prelevements_return;
     }
 
     public function generateNumeroDegustation() {

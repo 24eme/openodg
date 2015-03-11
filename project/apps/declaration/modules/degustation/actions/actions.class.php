@@ -477,9 +477,14 @@ class degustationActions extends sfActions {
 
         $json = json_decode($request->getContent());
 
-        foreach($json as $p) {
+        foreach($json->prelevements as $p) {
             $prelevement = $prelevements[$p->anonymat_degustation];
-            $prelevement->notes = $p->notes;
+            $prelevement->notes = array();
+            foreach($p->notes as $key_note => $note) {
+                $n = $prelevement->notes->add($key_note);
+                $n->note = $note->note;
+                $n->defauts = $note->defauts;
+            }
             $prelevement->appreciations = $p->appreciations;
         }
 
