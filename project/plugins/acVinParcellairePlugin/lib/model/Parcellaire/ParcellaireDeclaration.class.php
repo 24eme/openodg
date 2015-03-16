@@ -22,15 +22,21 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
     }
     
     public function getAppellationsOrderParcellaire() {
-       $appellations = $this->getAppellations();
+        $appellations = $this->getAppellations();
        
-       $appellationOrdered = array();
-       foreach (ParcellaireClient::getInstance()->getAppellationsKeys($this->getDocument()->isParcellaireCremant()) as $app_key => $app_name) {
-           if(array_key_exists( 'appellation_'.$app_key, $appellations->toArray(1,0))){
+        $appellationOrdered = array();
+
+        if(!$appellations) {
+            return $appellationOrdered;
+        }
+
+        foreach (ParcellaireClient::getInstance()->getAppellationsKeys($this->getDocument()->isParcellaireCremant()) as $app_key => $app_name) {
+           if(array_key_exists('appellation_'.$app_key, $appellations->toArray(1,0))){
                $appellationOrdered['appellation_'.$app_key] = $appellations['appellation_'.$app_key];
            }      
-       }
-       return $appellationOrdered;
+        }
+        
+        return $appellationOrdered;
     }
     
     public function getLieux() {

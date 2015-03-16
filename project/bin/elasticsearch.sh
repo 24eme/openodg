@@ -37,7 +37,7 @@ curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXGLOBAL/" -d '{
               "francais":{
                 "type":"custom",
                 "tokenizer":"standard",
-                "filter":["lowercase", "fr_stemmer", "stop_francais", "asciifolding", "elision"]
+                "filter":["lowercase", "asciifolding", "elision"]
               }
             },
             "filter":{

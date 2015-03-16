@@ -16,8 +16,8 @@
                         <p>
                             <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('parcellaire_devalidation', $parcellaire) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
                         </p>
-                </div>
                         <?php endif; ?>
+                </div>
                     <?php elseif ($parcellaire):  ?>
                 <div class="panel-body">
                         <p>Vous avez déjà débuté votre déclaration d'affectation parcellaire pour cette année sans la valider.</p>
@@ -38,6 +38,12 @@
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_create', $etablissement) ?>">Démarrer</a>
                         </p>
+
+                        <?php if ($sf_user->isAdmin()): ?>
+                            <p>
+                                <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('parcellaire_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                            </p>
+                        <?php endif; ?>
                 </div>
                     <?php endif; ?>
             </div>

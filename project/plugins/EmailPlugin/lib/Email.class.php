@@ -75,9 +75,9 @@ class Email {
         $partial = 'send_drev_rappel_documents';
         $subject = "Rappel - Documents à envoyer pour votre déclaration de Revendication";
 
-        if (count($drev->exist('documents_rappels') && $drev->documents_rappels->toArray(true, false)) > 0) {
-            $partial = 'send_drev_rappel_documents_second';
-            $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
+        if($drev->exist('documents_rappels') && count($drev->documents_rappels->toArray(true, false)) > 0) {
+          $partial = 'send_drev_rappel_documents_second';
+          $subject = "2ème Rappel - Documents à envoyer pour la validation définitive de votre déclaration de Revendication";
         }
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
@@ -138,7 +138,7 @@ class Email {
 
         return $this->getMailer()->send($message);
     }
-
+    
     public function sendParcellaireValidation($parcellaire) {
         if (!$parcellaire->declarant->email) {
 
@@ -152,7 +152,7 @@ class Email {
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($parcellaire->declarant->email);
-        $subject = 'Validation de votre Parcellaire';
+        $subject = "Validation de votre déclaration d'affectation parcellaire";
         $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
@@ -179,5 +179,4 @@ class Email {
 
         return get_partial($templateName, $vars);
     }
-
 }

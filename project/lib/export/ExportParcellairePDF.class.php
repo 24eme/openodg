@@ -26,19 +26,26 @@ class ExportParcellairePDF extends ExportPDF {
 
     public function create() {
         $this->parcellesByLieux = $this->parcellaire->getParcellesByLieux();
+
+        if(count($this->parcellesByLieux) == 0) {
+            $this->printable_document->addPage($this->getPartial('parcellaire/pdfVide', array('parcellaire' => $this->parcellaire)));
+
+            return;
+        }
+
         foreach ($this->parcellesByLieux as $lieuHash => $parcellesByLieu) {
             $this->printable_document->addPage($this->getPartial('parcellaire/pdf', array('parcellaire' => $this->parcellaire, 'parcellesByLieu' => $parcellesByLieu)));
         }
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaire->campagne+1);
+        return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaire->campagne);
     }
 
     protected function getHeaderSubtitle() {
         $header_subtitle = sprintf("%s\n\n", $this->parcellaire->declarant->nom);
         if (!$this->parcellaire->isPapier()) {
-            if ($this->parcellaire->validation && $this->parcellaire->campagne >= "2014") {
+            if ($this->parcellaire->validation && $this->parcellaire->campagne >= "2015") {
                 $date = new DateTime($this->parcellaire->validation);
                 $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
             }else{
