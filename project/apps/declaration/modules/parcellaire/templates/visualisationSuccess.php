@@ -1,6 +1,6 @@
 <?php use_helper('Date') ?>
 
-<div class="page-header">
+<div class="page-header no-border">
     <h2>Visualisation de votre parcellaire <?php echo $parcellaire->campagne; ?>
     <?php if($parcellaire->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaire->validation && $parcellaire->validation !== true): ?> reçue le <?php echo format_date($parcellaire->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
@@ -9,6 +9,10 @@
     <?php endif; ?>
     </h2>
 </div>
+
+<?php if ($sf_user->hasFlash('notice')): ?>
+    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
+<?php endif; ?>
 
 <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire)); ?>
 
