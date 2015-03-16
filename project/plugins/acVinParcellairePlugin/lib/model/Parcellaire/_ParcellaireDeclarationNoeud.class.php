@@ -117,9 +117,8 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
     public function getAcheteursNode($lieu = null) {
         $acheteurs = array();
         foreach($this->getProduits() as $produit) {
-            $acheteurs = array_merge($acheteurs, $produit->getAcheteursNode($lieu));
+            $acheteurs = array_merge_recursive($acheteurs, $produit->getAcheteursNode($lieu));
         }
-
         return $acheteurs;
     }
 

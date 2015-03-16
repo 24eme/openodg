@@ -11,6 +11,10 @@ auth_logout:
   url: /logout
   param: { module: auth, action: logout }
 
+auth_state:
+  url: /auth/state
+  param: { module: auth, action: state }
+
 home:
   url: /
   param: { module: ava, action: home }
@@ -516,58 +520,200 @@ compte_desarchiver:
 # Dégustation
 
 degustation:
-  url: /desgustation
+  url: /degustation
   param: { module: degustation, action: index }
   requirements:
     sf_method: [get]
 
-degustation_creation:
-  url: /desgustation/creation
-  param: { module: degustation, action: creation }
+degustation_edit:
+  url: /degustation/edit/:id
+  param: { module: degustation, action: edit }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
+
+degustation_creation:
+  url: /degustation/creation/:id
+  param: { module: degustation, action: creation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 degustation_operateurs:
-  url: /desgustation/operateurs
+  url: /degustation/operateurs/:id
   param: { module: degustation, action: operateurs }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
-
-degustation_degustation:
-  url: /desgustation/degustation
-  param: { module: degustation, action: degustation }
-  requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 degustation_degustateurs:
-  url: /desgustation/degustateurs
+  url: /degustation/degustateurs/:id
   param: { module: degustation, action: degustateurs }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
-degustation_validation:
-  url: /desgustation/validation
-  param: { module: degustation, action: validation }
+degustation_degustateurs_type:
+  url: /degustation/degustateurs/:id/:type
+  param: { module: degustation, action: degustateursType }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
-degustation_agents:
-  url: /desgustation/agents
-  param: { module: degustation, action: agents }
+degustation_degustateurs_type_precedent:
+  url: /degustation/degustateurs/:id/:type/precedent
+  param: { module: degustation, action: degustateursTypePrecedent }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
+
+degustation_degustateurs_type_suivant:
+  url: /degustation/degustateurs/:id/:type/suivant
+  param: { module: degustation, action: degustateursTypeSuivant }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 degustation_prelevements:
-  url: /desgustation/prelevements
+  url: /degustation/prelevements/:id
   param: { module: degustation, action: prelevements }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_agents:
+  url: /degustation/agents/:id
+  param: { module: degustation, action: agents }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_validation:
+  url: /degustation/validation/:id
+  param: { module: degustation, action: validation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_visualisation:
+  url: /degustation/visualisation/:id
+  param: { module: degustation, action: visualisation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_tournees_generate:
+  url: /degustation/tournees-generation/:id
+  param: { module: degustation, action: tourneesGenerate }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
     sf_method: [get]
 
 degustation_tournee:
-  url: /desgustation/tournee
+  url: /degustation/tournee/:id/:agent/:date
   param: { module: degustation, action: tournee }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_tournee_json:
+  url: /degustation/tournee/:id/:agent/:date.json
+  param: { module: degustation, action: tourneeJson }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_affectation_generate:
+  url: /degustation/affectation-generation/:id
+  param: { module: degustation, action: affectationGenerate }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
   requirements:
     sf_method: [get]
+
+degustation_affectation:
+  url: /degustation/affectation/:id
+  param: { module: degustation, action: affectation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_affectation_json:
+  url: /degustation/affectation/:id.json
+  param: { module: degustation, action: affectationJson }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustation:
+  url: /degustation/degustation/:id/:commission
+  param: { module: degustation, action: degustation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_degustation_json:
+  url: /degustation/degustation/:id/:commission.json
+  param: { module: degustation, action: degustationJson }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 # Parcellaire
 

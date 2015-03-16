@@ -17,6 +17,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('DeclarationPlugin');
         $this->enablePlugins('acVinDRevPlugin');
         $this->enablePlugins('acVinDRevMarcPlugin');
+        $this->enablePlugins('acVinDegustationPlugin');
         $this->enablePlugins('acVinDocumentPlugin');
         $this->enablePlugins('acVinParcellairePlugin');
         $this->enablePlugins('EtablissementPlugin');
