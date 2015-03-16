@@ -40,7 +40,8 @@ EOF;
             return;
         }
 
-        $compte->save();
+        $compte->save(false, false);
+
         echo sprintf("SUCCESS;COMPTE %s position update\n", $arguments['doc_id']);
     }
 }

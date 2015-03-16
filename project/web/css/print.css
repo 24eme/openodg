@@ -8,7 +8,10 @@
  * Copyright: Actualys
 /* =================================================================================== */
 
-@page {size: 21.0cm 29.7cm portrait;}
+@page {size: 21.0cm 29.7cm portrait; margin-top:1.5cm;
+        margin-bottom:1cm;
+        margin-left:0.5cm;
+        margin-right:0.5cm}
 
 /* ============================================================= */
 /* ELEMENTS GENERIQUES */
@@ -18,6 +21,11 @@
 	color: #000 !important;
 	box-shadow: none !important;
 	text-shadow: none !important;
+}
+
+body {
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 abbr[title]:after
@@ -80,3 +88,30 @@ body
 /* FONDS / COULEURS */
 /* ============================================================= */
 body { background: 0 !important; }
+
+.ng-hide.visible-print-block {
+    display: block !important;
+}
+
+.hidden.visible-print-block {
+    display: block !important;
+}
+
+.hidden.visible-print-inline {
+    display: inline !important;
+}
+
+.ng-hide.visible-print-inline {
+    display: block !important;
+}
+
+.opacity_50 {
+    opacity: 0.60;
+}
+
+section.container-fluid {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+

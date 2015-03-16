@@ -40,4 +40,11 @@ class authActions extends sfActions
 
         return $this->redirect($urlBack);
     }
+
+    public function executeState(sfWebRequest $request)
+    {
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode(array("authenticated" => $this->getUser()->isAuthenticated())));
+    }
 }
