@@ -71,6 +71,8 @@ class degustationActions extends sfActions {
 
         $this->operateurs = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
 
+        $this->previous_degustation = 
+
         $this->nb_a_prelever = $request->getParameter('nb_a_prelever', 0);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -79,6 +81,7 @@ class degustationActions extends sfActions {
         }
 
         $values = $request->getParameter("operateurs", array());
+        $operateurs_existant = array();
         foreach ($values as $key => $value) {
             $p = $this->operateurs[$key];
             $operateur = $this->degustation->operateurs->add($p->identifiant);
@@ -93,7 +96,19 @@ class degustationActions extends sfActions {
             $lot->libelle = $p->lots[$value]->libelle;
             $lot->nb = $p->lots[$value]->nb;
             $this->buildOperateurNode($p->identifiant);
+            $operateurs_existant[$p->identifiant] = true;
         }
+        $operateurs_to_delete = array();
+        foreach($this->degustation->operateurs as $operateur) {
+            if(!array_key_exists($operateur->getKey(), $operateurs_existant)) {
+                $operateurs_to_delete[] = $operateur->getKey();
+            }
+        }
+
+        foreach($operateurs_to_delete as $key_operateur_to_delete) {
+            $this->degustation->operateurs->remove($key_operateur_to_delete);
+        }
+        
         $this->degustation->save();
 
         if ($request->isXmlHttpRequest()) {
