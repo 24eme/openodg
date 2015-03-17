@@ -123,9 +123,18 @@
         }
 
         if($('#nb_a_prelever').length > 0) {
-    	   for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
-    		  $.addItem($("#listes_operateurs .list-group-item-item").eq(i));
-    	   }
+
+            var lignes_a_prelever = new Array();
+
+            $("#listes_operateurs .list-group-item-item").each(function() {
+                lignes_a_prelever.push($(this));
+            });
+
+            arrayShuffle(lignes_a_prelever);
+
+    	    for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
+    		  $.addItem(lignes_a_prelever[i]);
+    	    }
         }
 
         $.updateRecapCepages();
