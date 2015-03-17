@@ -76,7 +76,8 @@ class ExportParcellairePDF extends ExportPDF {
 
     public static function buildFileName($parcellaire, $with_rev = false) {
         
-        $filename = sprintf("PARCELLAIRE_%s_%s", $parcellaire->identifiant, $parcellaire->campagne);
+        $prefixName = ($parcellaire->isParcellaireCremant())? "PARCELLAIRE_CREMANT_%s_%s" :"PARCELLAIRE_%s_%s";
+        $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
 
         $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
         $filename .= '_' . $declarant_nom;

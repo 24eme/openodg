@@ -12,20 +12,39 @@
                 </div>               
 
                 <div class="modal-body">
+                    <?php if(isset($form["autorisation_acheteur"])): ?>
                     <div class="row form-group">
                         <label style="font-weight: normal; padding-left:10px">
                             <div class="row">
                                 <div class="col-xs-1" style="padding-left:20px; padding-top:10px;" >
-                                    <input id="" type="checkbox" checked="checked" name="<?php echo $form['autorisation_acheteur']->getName(); ?>">
+                                    <input id="" type="checkbox" checked="checked" name="<?php echo $form['autorisation_acheteur']->renderName(); ?>" />
                                 </div>
                                 <div class="col-xs-10">
                                     Je souhaite transmettre à mes acheteurs les données de cette déclaration pour les lieux dits qui les concernent
                                 </div>
                             </div>
                         </label>
-
                     </div>
-                    <p>Confirmez la validation de votre déclaration d'affectation parcellaire<?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?> ?</p>
+                    <?php endif; ?>
+                    <?php if(isset($form["date"])): ?>
+                        <div class="row">
+                            <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
+                                <?php if ($form["date"]->hasError()): ?>                            
+                                    <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
+                                <?php endif; ?>
+                                <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-6 control-label")); ?>
+                                <div class="col-xs-6">
+                                    <div class="input-group date-picker-all-days">
+                                        <?php echo $form["date"]->render(array("class" => "form-control", "required" => "required")); ?>
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                     <p>Confirmez la validation de votre déclaration d'affectation parcellaire<?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?> ?</p>                  
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>

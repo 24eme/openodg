@@ -285,21 +285,20 @@ class parcellaireActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-        
-        if ($this->form->isValid()) {
+
+        if (!$this->form->isValid()) {
+
             return sfView::SUCCESS;
-        } 
+        }
+
+        $this->form->save();
 
         if($this->parcellaire->isPapier()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
-            $this->parcellaire->validate($this->form->getValue("date"));
-            $this->parcellaire->save();
-
             return $this->redirect('parcellaire_visualisation', $this->parcellaire);
         }
-
-        $this->form->save();
+        
         $this->sendParcellaireValidation($this->parcellaire);
 
         return $this->redirect('parcellaire_confirmation', $this->parcellaire);
