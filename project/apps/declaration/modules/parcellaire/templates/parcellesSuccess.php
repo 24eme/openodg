@@ -1,7 +1,7 @@
 <?php include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire)); ?>
 
 <div class="page-header">
-    <h2>Saisie des parcelles</h2>
+    <h2>Saisie des parcelles<?php echo ($parcellaire->isParcellaireCremant())? ' de Crémant' : ''; ?></h2>
 </div>
 
 <ul class="nav nav-tabs">

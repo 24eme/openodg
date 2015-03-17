@@ -39,6 +39,9 @@ class ExportParcellairePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
+        if($this->parcellaire->isParcellaireCremant()){
+            return sprintf("Déclaration d'affectation parcellaire crémant %s", $this->parcellaire->campagne);
+        }
         return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaire->campagne);
     }
 
