@@ -333,6 +333,19 @@ class parcellaireActions extends sfActions {
 
         return $this->renderText($this->document->output());
     }
+    
+    public function executeExportCsvParcellaire(sfWebRequest $request) {     
+        $parcellaire = $this->getRoute()->getParcellaire();        
+        ini_set('memory_limit', '2048M');
+        set_time_limit(0);
+        $this->exportCsv = new ExportParcellaireCSV(null,$parcellaire);
+        $this->setLayout(false);
+        $filename = $this->exportCsv->getFileName();
+        $attachement = "attachment; filename=" . $filename . ".csv";
+
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition', $attachement);
+    }
 
     public function sendParcellaireValidation($parcellaire) {
         $pdf = new ExportParcellairePdf($parcellaire, 'pdf', true);
@@ -356,7 +369,7 @@ class parcellaireActions extends sfActions {
             return $this->forwardSecure();
         }
     }
-
+    
     protected function secureEtablissement($droits, $etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
 
