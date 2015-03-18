@@ -69,12 +69,12 @@ class Parcellaire extends BaseParcellaire {
 
     public function getParcellaireLastCampagne() {
         $campagnePrec = $this->campagne - 1;
-        $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
+        $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->isParcellaireCremant());
         $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
 
         if(!$parcellaire) {
             $campagnePrec = $this->campagne - 2;
-            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
+            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->isParcellaireCremant());
             $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
         }
 
