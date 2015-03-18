@@ -21,6 +21,7 @@ Degustation:
           fields:
             '*':
               type: collection
+              class: DegustationOperateur
               definition:
                 fields:
                   raison_sociale: { }
@@ -39,6 +40,7 @@ Degustation:
                   telephone_bureau: { }
                   telephone_prive: { }
                   telephone_mobile: { }
+                  date_demande: { }
                   prelevements:
                     type: array_collection
                     definition:
@@ -80,6 +82,7 @@ Degustation:
                               hash_produit: { }
                               libelle: { }
                               nb: { }
+                              prelevement: { type: integer }
       degustateurs:
         type: collection
         definition:

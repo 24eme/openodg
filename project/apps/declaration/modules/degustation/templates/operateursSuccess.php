@@ -8,7 +8,8 @@
 </div>
 
 <form id="form_degustation_choix_operateurs" action="<?php echo url_for('degustation_operateurs', $degustation) ?>" method="post" class="form-horizontal ajaxForm">
-
+<?php echo $form->renderHiddenFields(); ?>
+<?php echo $form->renderGlobalErrors(); ?>
 <input type="hidden" id="nb_a_prelever" value="<?php echo $nb_a_prelever ?>"/>
 
 <div class="row">
@@ -21,23 +22,31 @@
     </div>
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
-            <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge"><?php echo count($operateurs) ?></span></a>
-            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">À prélever <span class="badge"><?php echo count($degustation->operateurs) ?></span></a>
+            <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge"><?php echo count($degustation->operateurs) ?></span></a>
+            <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">À prélever <span class="badge"><?php echo count($degustation->getOperateursPrelevement()) ?></span></a>
         </div>
     </div>
     <div class="col-xs-12">
         <div id="listes_operateurs" class="list-group">
-            <?php foreach($operateurs as $id => $prelevement): ?>
-            <?php $exist = $degustation->operateurs->exist($prelevement->identifiant); ?>
-            <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
-                <div class="col-xs-4"><?php echo $prelevement->raison_sociale ?> <small class="text-muted">à <?php echo $prelevement->commune ?></small></div>
-                <div class="col-xs-3 text-left"><small class="text-muted">Pour le </small><?php echo format_date($prelevement->date, "D", "fr_FR") ?><!--<small class="text-muted">Prélevé le</small> 2012, 2014--></div>
+            <?php foreach($form as $key => $field): ?>
+                <?php if($field->isHidden()): continue; endif; ?>
+                <?php $operateur = $degustation->operateurs->get($key); ?>
+                <?php $exist = count($operateur->getLotsPrelevement()) > 0; ?>
+                <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
+                <div class="col-xs-4"><?php echo $operateur->raison_sociale ?> <small class="text-muted">à <?php echo $operateur->commune ?></small></div>
+                <div class="col-xs-3 text-left"><small class="text-muted">Pour le </small><?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><!--<small class="text-muted">Prélevé le</small> 2012, 2014--></div>
                 <div class="col-xs-4">
-                    <select <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> name="operateurs[<?php echo $id ?>]" data-auto="true" data-placeholder="Sélectionner" class="form-control input-sm <?php if(!$exist): ?>hidden<?php endif; ?>">
+                    <?php $attrs = array("class" => "form-control input-sm", "data-auto" => "true", "data-placeholder" => "Sélectionné un lot") ?>
+                    <?php if(!$exist): ?>
+                        <?php $attrs["class"] .= " hidden"; ?>
+                        <?php $attrs["disabled"] = "disabled"; ?>
+                    <?php endif; ?>
+                    <?php echo $field->render($attrs); ?>
+                    <!--<select <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> name="operateurs[<?php echo $id ?>]" data-auto="true" data-placeholder="Sélectionner" class="form-control input-sm <?php if(!$exist): ?>hidden<?php endif; ?>">
                         <?php foreach($prelevement->lots as $lot_key => $lot): ?>
                         <option <?php if($exist && $degustation->operateurs->get($prelevement->identifiant)->lots->exist($lot_key)): ?>selected="selected"<?php endif; ?> value="<?php echo $lot_key ?>"><?php echo $lot->libelle ?> - <?php echo $lot->nb ?> lot(s)</option>
                         <?php endforeach; ?>
-                    </select>
+                    </select>-->
                 </div>
                 <div class="col-xs-1">
                     <button class="btn btn-success btn-sm pull-right <?php if($exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>

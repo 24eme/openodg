@@ -69,9 +69,9 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
 
-        $this->operateurs = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+        $this->degustation->updateOperateursFromDRev();
 
-        $this->previous_degustation = 
+        $this->form = new DegustationOperateursForm($this->degustation);
 
         $this->nb_a_prelever = $request->getParameter('nb_a_prelever', 0);
 
@@ -80,34 +80,14 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $values = $request->getParameter("operateurs", array());
-        $operateurs_existant = array();
-        foreach ($values as $key => $value) {
-            $p = $this->operateurs[$key];
-            $operateur = $this->degustation->operateurs->add($p->identifiant);
-            $operateur->raison_sociale = $p->raison_sociale;
-            $operateur->adresse = $p->adresse;
-            $operateur->code_postal = $p->code_postal;
-            $operateur->commune = $p->commune;
-            $operateur->remove("lots");
-            $operateur->add("lots");
-            $lot = $operateur->lots->add($value);
-            $lot->hash_produit = $p->lots[$value]->hash_produit;
-            $lot->libelle = $p->lots[$value]->libelle;
-            $lot->nb = $p->lots[$value]->nb;
-            $this->buildOperateurNode($p->identifiant);
-            $operateurs_existant[$p->identifiant] = true;
-        }
-        $operateurs_to_delete = array();
-        foreach($this->degustation->operateurs as $operateur) {
-            if(!array_key_exists($operateur->getKey(), $operateurs_existant)) {
-                $operateurs_to_delete[] = $operateur->getKey();
-            }
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
         }
 
-        foreach($operateurs_to_delete as $key_operateur_to_delete) {
-            $this->degustation->operateurs->remove($key_operateur_to_delete);
-        }
+        $this->form->update();
         
         $this->degustation->save();
 
@@ -522,26 +502,6 @@ class degustationActions extends sfActions {
         $emailManager = Email::getInstance();
         $emailManager->sendDegustationOperateursMails($this->degustation);
         $emailManager->sendDegustationDegustateursMails($this->degustation);
-    }
-
-    protected function buildOperateurNode($key) {
-        $compte = CompteClient::getInstance()->findByIdentifiant("E" . $key);
-        $operateur = $this->degustation->operateurs->get($key);
-        $operateur->email = $compte->email;
-        $chai = $compte->findChai($operateur->adresse, $operateur->commune, $operateur->code_postal);
-
-        if($chai) {
-            $operateur->lat = $chai->lat;
-            $operateur->lon = $chai->lon;
-        }
-
-        if(!$operateur->lat || !$operateur->lon) {
-            $coordonnees = $compte->calculCoordonnees($operateur->adresse, $operateur->commune, $operateur->code_postal);
-            if($coordonnees) {
-                $operateur->lat = $coordonnees["lat"];
-                $operateur->lon = $coordonnees["lon"];
-            }
-        }
     }
 
 }

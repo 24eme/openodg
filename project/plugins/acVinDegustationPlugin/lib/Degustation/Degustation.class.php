@@ -194,6 +194,20 @@ class Degustation extends BaseDegustation {
         return true;
     }
 
+    public function getOperateursPrelevement() {
+        $operateurs = array();
+
+        foreach($this->operateurs as $operateur) {
+            if(!count($operateur->getLotsPrelevement())) {
+                continue;                
+            }
+
+            $operateurs[$operateur->getKey()] = $operateur;
+        }
+
+        return $operateurs;
+    }
+
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
 
@@ -203,6 +217,30 @@ class Degustation extends BaseDegustation {
         $this->add('etape', $etape);
 
         return true;
+    }
+
+    public function updateOperateursFromDRev() {
+        $prelevements = DegustationClient::getInstance()->getPrelevements($this->date_prelevement_debut, $this->date_prelevement_fin);
+
+        foreach($prelevements as $prelevement) {
+            $this->addOperateurFromDRev($prelevement);
+        }
+    }
+
+    public function addOperateurFromDRev($prelevement) {
+        $operateur = $this->operateurs->add($prelevement->identifiant);
+        $operateur->cvi = $prelevement->identifiant;
+        $operateur->raison_sociale = $prelevement->raison_sociale;
+        $operateur->adresse = $prelevement->adresse;
+        $operateur->code_postal = $prelevement->code_postal;
+        $operateur->commune = $prelevement->commune;
+        $operateur->date_demande = $prelevement->date;
+        foreach($prelevement->lots as $l_key => $l) {
+            $lot = $operateur->lots->add($l_key);
+            $lot->hash_produit = $l->hash_produit;
+            $lot->libelle = $l->libelle;
+            $lot->nb = $l->nb;
+        }
     }
 
 }
