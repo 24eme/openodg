@@ -316,7 +316,9 @@ class degustationActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {                
                 $this->form->save();
-                $this->sendMailsDegustation();
+
+                Email::getInstance()->sendDegustationOperateursMails($this->degustation);
+                Email::getInstance()->sendDegustationDegustateursMails($this->degustation);
 
                 return $this->redirect('degustation_visualisation', $this->degustation);
             }
@@ -511,12 +513,6 @@ class degustationActions extends sfActions {
             return $etape;
         }
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
-    }
-
-    protected function sendMailsDegustation() {
-        $emailManager = Email::getInstance();
-        $emailManager->sendDegustationOperateursMails($this->degustation);
-        $emailManager->sendDegustationDegustateursMails($this->degustation);
     }
 
 }
