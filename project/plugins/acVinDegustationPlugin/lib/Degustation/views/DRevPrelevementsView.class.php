@@ -6,9 +6,11 @@ class DRevPrelevementsView extends acCouchdbView
     const KEY_DATE = 1;
     const KEY_IDENTIFIANT = 2;
     const KEY_RAISON_SOCIALE = 3;
-    const KEY_COMMUNE = 4;
-    const KEY_PRODUIT_HASH = 5;
-    const KEY_PRODUIT_LIBELLE = 6;
+    const KEY_ADRESSE = 4;
+    const KEY_CODE_POSTAL = 5;
+    const KEY_COMMUNE = 6;
+    const KEY_PRODUIT_HASH = 7;
+    const KEY_PRODUIT_LIBELLE = 8;
 
     public static function getInstance() {
 
@@ -36,10 +38,13 @@ class DRevPrelevementsView extends acCouchdbView
                 $item->lots = array();
             }
 
+            $item->_id = $row->id;
             $item->date = $row->key[self::KEY_DATE];
             $item->appellation = $row->key[self::KEY_APPELLATION];
             $item->identifiant = $row->key[self::KEY_IDENTIFIANT];
             $item->raison_sociale = $row->key[self::KEY_RAISON_SOCIALE];
+            $item->adresse = $row->key[self::KEY_ADRESSE];
+            $item->code_postal = $row->key[self::KEY_CODE_POSTAL];
             $item->commune = $row->key[self::KEY_COMMUNE];
             $key_hash = str_replace("/", "-", $row->key[self::KEY_PRODUIT_HASH]);
             $item->lots[$key_hash] = new stdClass();

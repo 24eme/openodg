@@ -7,6 +7,7 @@
 class ParcellaireCepage extends BaseParcellaireCepage {
 
     public function getChildrenNode() {
+        
         return $this->detail;
     }
 
@@ -28,8 +29,47 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->getCouleur()->getAppellation();
     }
 
-    public function addDetailNode($key, $commune, $section , $numero_parcelle, $superficie = null, $lieu = null) {
+    public function getAcheteursNode($lieu = null) {
+        $acheteurs = array();
+        if($lieu) {
+            $lieu = KeyInflector::slugify(trim($lieu));
+        }
+        foreach($this->acheteurs as $acheteurs_lieu => $acheteurs_type) {
+            foreach($acheteurs_type as $type => $achs) {
+                foreach($achs as $acheteur) {
+                    if($lieu && $acheteurs_lieu != $lieu) {
+                        continue;
+                    }
+                    $acheteurs[$type][$acheteur->getKey()] = $acheteur;
+                }
+            }
+        }
 
+        return $acheteurs;
+    }
+
+    public function addAcheteur($type, $cvi, $lieu = null) {
+        $a = $this->getDocument()->addAcheteur($type, $cvi);
+        if(!$lieu) {
+            $lieu = $this->getCouleur()->getLieu()->getKey();
+        } else {
+            $lieu = KeyInflector::slugify(trim($lieu));
+        }
+        $acheteur = $this->acheteurs->add($lieu)->add($type)->add($cvi);
+        $acheteur->nom = $a->nom;
+        $acheteur->cvi = $a->cvi;
+        $acheteur->commune = $a->commune;
+
+        return $acheteur;
+    }
+
+
+    public function addAcheteurFromNode($acheteur, $lieu = null) {
+        
+        return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
+    }
+
+    public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
         $detail = $this->getDetailNode($key);
         if($detail) {
 
@@ -40,9 +80,11 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $detail->commune = $commune;
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
-        $detail->superficie = $superficie;
+        if($lieu){
+           $lieu = strtoupper($lieu);
+        }
         $detail->lieu = $lieu;
-
+        $detail->departement = $dpt;
         return $detail;
     }
     

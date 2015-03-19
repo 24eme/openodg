@@ -37,6 +37,26 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
         return false;
     }
     
+    public function getDetailsSortedByParcelle($byfullkey = true) {
+        $parcelles = $this->getProduitsCepageDetails();
+        if ($byfullkey) {
+            usort($parcelles, 'ParcellaireAppellation::sortParcellesByFullKey');
+        }else{
+            usort($parcelles, 'ParcellaireAppellation::sortParcellesByCommune');
+        }
+        return $parcelles;
+    }
+    
+    static function sortParcellesByFullKey($detail0, $detail1) {
+        return strcmp($detail0->getLibelleComplet().' '.$detail0->getParcelleIdentifiant(),
+        $detail1->getLibelleComplet().' '.$detail1->getParcelleIdentifiant());
+    }
+    
+    static function sortParcellesByCommune($detail0, $detail1) {
+        return strcmp($detail0->getParcelleIdentifiant().' '.$detail0->getLibelleComplet(),
+        $detail1->getParcelleIdentifiant().' '.$detail1->getLibelleComplet());
+    }
+    
     public function getPreviousAppellationKey() {
         $appellationsKeys = array_reverse(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys()));
         $onAppellation = false;
@@ -51,5 +71,12 @@ class ParcellaireAppellation extends BaseParcellaireAppellation {
         return false;
     }
     
-
+    public function addParcelle($parcelleKey,$commune,$section,$numero_parcelle) {
+       $parcelle = $this->parcelles->add($parcelleKey);
+       $parcelle->commune = $commune;
+       $parcelle->section = $section;
+       $parcelle->numero_parcelle = $numero_parcelle;
+       return $parcelle;
+    }
+    
 }

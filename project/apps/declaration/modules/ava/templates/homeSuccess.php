@@ -1,7 +1,7 @@
 <?php use_javascript("main.js", "last") ?>
 
 <div class="page-header">
-    <h2><?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>Confirmation de votre e-mail<?php else: ?>Déclaration de Revendication<?php endif; ?></h2>
+    <h2><?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>Confirmation de votre e-mail<?php else: ?>Eléments declaratifs<?php endif; ?></h2>
 </div>
 <?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>
     <form action="<?php echo url_for("home") ?>" method="post" class="form-horizontal">
@@ -14,12 +14,14 @@
         </div>
     </form>
 <?php else: ?>
+        <h4>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</h4>
     <div class="row">
-      <?php include_component('drev', 'monEspace'); ?>
-      <?php include_component('drevmarc', 'monEspace'); ?>
-      <?php include_component('parcellaire', 'monEspace'); ?>
-      <?php include_component('ava', 'history'); ?>
-    </div>
+        <?php include_component('drev', 'monEspace'); ?>
+        <?php include_component('drevmarc', 'monEspace'); ?>
+        <?php include_component('parcellaire', 'monEspace'); ?>
+        <?php include_component('parcellaireCremant', 'monEspace'); ?>
+    </div>                                                                                                     
+    <?php include_component('ava', 'history'); ?>
 <?php endif; ?>
 
 

@@ -5,32 +5,73 @@ Degustation:
       _id: { }
       _rev: { }
       type: { }
-      etape: { required: false }
+      etape: { }
       identifiant: { }
       date: { }
       appellation: { }
+      appellation_libelle: { }
       date_prelevement_debut: { }
       date_prelevement_fin: { }
       nombre_commissions: { type: integer }
       heure: { }
       lieu: { }
-      prelevements:
+      operateurs:
         type: collection
         definition:
           fields:
             '*':
               type: collection
+              class: DegustationOperateur
               definition:
                 fields:
                   raison_sociale: { }
+                  cvi: { }
                   adresse: { }
                   commune: { }
                   code_postal: { }
+                  email: { }
                   lat: { }
-                  lng: { }
+                  lon: { }
+                  lng: { required: false }
                   date: { }
                   heure: { }
+                  position: { required: true }
                   agent: { }
+                  telephone_bureau: { }
+                  telephone_prive: { }
+                  telephone_mobile: { }
+                  date_demande: { }
+                  reporte: { type: integer }
+                  prelevements:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              hash_produit: { }
+                              libelle: { }
+                              anonymat_prelevement: { }
+                              anonymat_degustation: { }
+                              cuve: { }
+                              preleve: { }
+                              commission: { type: integer }
+                              appreciations: { }
+                              notes:
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*':
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          note: { }
+                                          defauts:
+                                            type: array_collection
+                                            definition:
+                                              fields:
+                                                '*': { }
                   lots:
                     type: collection
                     definition:
@@ -42,6 +83,7 @@ Degustation:
                               hash_produit: { }
                               libelle: { }
                               nb: { }
+                              prelevement: { type: integer }
       degustateurs:
         type: collection
         definition:
@@ -50,7 +92,15 @@ Degustation:
               type: collection
               definition:
                 fields:
-                  nom: { }
+                  '*':
+                    type: collection
+                    definition:
+                      fields:
+                        nom: { }
+                        email: { }
+                        adresse: { }
+                        commune: { }
+                        code_postal: { }
       agents:
         type: collection
         definition:
@@ -60,6 +110,12 @@ Degustation:
               definition:
                 fields:
                   nom: { }
+                  email: { }
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
+                  lat: { }
+                  lon: { }
                   dates:
                     type: array_collection
                     definition:

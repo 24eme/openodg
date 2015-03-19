@@ -16,6 +16,8 @@ all:
   email_plugin:
     from_adresse: email@email.fr
     from_name: "From name"
+    reply_to_adresse: "email@email.fr"
+    reply_to_name: "Reply to name"
   url:
     civa: "https://url_civa"
     compte_mot_de_passe: "https://url_compte_civa_pour_modifier_mdp"
@@ -26,6 +28,7 @@ all:
     drev: "YYYY-mm-dd"
     drevmarc: "YYYY-mm-dd"
     parcellaire: "YYYY-mm-dd"
+    parcellaire_cremant: "YYYY-mm-dd"
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"

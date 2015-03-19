@@ -61,6 +61,28 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
+    public function getProduitsWithLieuEditable() 
+    {
+        $produits = array();
+        foreach($this->getProduits() as $hash => $produit) {
+            if(!count($produit->detail)) {
+                continue;
+            }
+
+            $lieu_editable = $produit->getLieuxEditable();
+            if(!count($lieu_editable)) {
+
+                $produits[$hash] = $produit;
+            }
+            
+            foreach($produit->getLieuxEditable() as $lieu_key => $lieu) {
+                $produits[str_replace("/lieu/", "/lieu".$lieu_key."/", $hash)] = $produit;
+            }
+        }
+
+        return $produits;
+    }
+
     public function getProduitsCepageDetails() {
         $produits = array();
         foreach ($this->getChildrenNode() as $key => $item) {
@@ -68,6 +90,36 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         }
 
         return $produits;
+    }
+
+    public function getLieuxEditable() {
+        $lieux = array();
+
+        foreach ($this->getProduitsCepageDetails() as $detail) {
+            if(!$detail->lieu) {
+                continue;
+            }
+
+            $lieux[KeyInflector::slugify(trim($detail->lieu))] = $detail->lieu;
+        }
+
+        return $lieux;
+    }
+
+    public function getSuperficieTotale() {
+        $superficie = 0;
+        foreach ($this->getProduitsCepageDetails() as $detail) {
+            $superficie += $detail->superficie;
+        }
+        return $superficie;
+    }
+    
+    public function getAcheteursNode($lieu = null) {
+        $acheteurs = array();
+        foreach($this->getProduits() as $produit) {
+            $acheteurs = array_merge_recursive($acheteurs, $produit->getAcheteursNode($lieu));
+        }
+        return $acheteurs;
     }
 
     public function hasVtsgn() {

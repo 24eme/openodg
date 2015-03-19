@@ -22,9 +22,9 @@ $steps = array(
     <li class="<?php if($stepNum == 2): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_PROPRIETE)): ?>visited<?php endif; ?>">
         <div class="step">
             <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_PROPRIETE)): ?>
-            <a href="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" class="<?php if($stepNum <= 1): ?>ajax<?php endif; ?>">Type de propriété</a>
+            <a href="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" class="<?php if($stepNum <= 1): ?>ajax<?php endif; ?>">Destination des raisins</a>
             <?php else: ?>
-            <span>Type de propriété</span>
+            <span>Destination des raisins</span>
             <?php endif; ?>
         </div>
     </li>

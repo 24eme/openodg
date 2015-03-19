@@ -6,17 +6,23 @@
 
  * @property float $superficie
  * @property string $commune
+ * @property string $code_postal
  * @property string $section
  * @property string $numero_parcelle
+ * @property string $lieu
 
  * @method float getSuperficie()
  * @method float setSuperficie()
  * @method string getCommune()
  * @method string setCommune()
+ * @method string getCodePostal()
+ * @method string setCodePostal()
  * @method string getSection()
  * @method string setSection()
  * @method string getNumeroParcelle()
  * @method string setNumeroParcelle()
+ * @method string getLieu()
+ * @method string setLieu()
  
  */
 

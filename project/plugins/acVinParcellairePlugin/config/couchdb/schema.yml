@@ -10,9 +10,11 @@ Parcellaire:
       etape: { }
       validation: { }
       validation_odg: { }
+      autorisation_acheteur: { }
       papier: { required: false, type: integer }
       type_proprietaire:
         type: collection
+        required: false
         definition:
           fields:
             '*': { }
@@ -24,18 +26,13 @@ Parcellaire:
               type: collection
               definition:
                 fields:
-                  cvi : { }
-                  nom : { }
-                  produits:
+                  '*':
                     type: collection
                     definition:
                       fields:
-                        '*':
-                          type: collection
-                          definition:
-                            fields:
-                              hash_produit: { }
-                              libelle: { }
+                        cvi : { }
+                        nom : { }
+                        commune: { }
       declarant:
         type: collection
         definition:
@@ -112,17 +109,38 @@ Parcellaire:
                                                   definition:
                                                     fields:
                                                       libelle: { }
+                                                      acheteurs:
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*':
+                                                              type: collection
+                                                              definition:
+                                                                fields:
+                                                                  '*':
+                                                                    type: collection
+                                                                    definition:
+                                                                      fields:
+                                                                        '*':
+                                                                          type: collection
+                                                                          definition:
+                                                                            fields:
+                                                                              cvi : { }
+                                                                              nom : { }
+                                                                              commune: { }
                                                       detail:                                                        
                                                         type: collection
                                                         definition:
                                                           fields:
-                                                            '*': #commune_section_numeroparcelle
+                                                            '*':
                                                               type: collection
                                                               class: ParcellaireCepageDetail
                                                               definition:
                                                                 fields:
                                                                   superficie: { type: float }
                                                                   commune: { }
+                                                                  code_postal: { }
                                                                   section: { }
                                                                   numero_parcelle: { }
                                                                   lieu: {  }
+                                                                  departement: {  }co

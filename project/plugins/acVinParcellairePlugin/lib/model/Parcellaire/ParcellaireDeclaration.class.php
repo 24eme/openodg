@@ -20,7 +20,24 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         }
         return $this->getChildrenNodeDeep(2)->getAppellations();
     }
+    
+    public function getAppellationsOrderParcellaire() {
+       $appellations = $this->getAppellations();
+       
+       $appellationOrdered = array();
 
+        if(!$appellations) {
+            return $appellationOrdered;
+        }
+
+       foreach (ParcellaireClient::getInstance()->getAppellationsKeys() as $app_key => $app_name) {
+           if(array_key_exists('appellation_'.$app_key, $appellations->toArray(1,0))){
+               $appellationOrdered['appellation_'.$app_key] = $appellations['appellation_'.$app_key];
+           }      
+       }
+       return $appellationOrdered;
+    }
+    
     public function getLieux() {
         if (!$this->exist('certification')) {
             return array();

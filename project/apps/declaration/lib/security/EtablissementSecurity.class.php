@@ -3,6 +3,7 @@
 class EtablissementSecurity implements SecurityInterface {
 
     const DECLARANT_DREV = 'DECLARANT_DREV';
+    const DECLARANT_PARCELLAIRE = 'DECLARANT_PARCELLAIRE';
 
     protected $user;
     protected $etablissement;

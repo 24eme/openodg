@@ -5,10 +5,13 @@
  * Base model for ParcellaireCepage
 
  * @property string $libelle
+ * @property acCouchdbJson $acheteurs
  * @property acCouchdbJson $detail
 
  * @method string getLibelle()
  * @method string setLibelle()
+ * @method acCouchdbJson getAcheteurs()
+ * @method acCouchdbJson setAcheteurs()
  * @method acCouchdbJson getDetail()
  * @method acCouchdbJson setDetail()
  

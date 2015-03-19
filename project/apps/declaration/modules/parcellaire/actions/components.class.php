@@ -11,7 +11,7 @@ class parcellaireComponents extends sfComponents {
             }
         }
         $this->etablissement = $this->getUser()->getEtablissement();
-        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext();
         $this->parcellaire = ParcellaireClient::getInstance()->find('PARCELLAIRE-' . $this->etablissement->cvi . '-' . $campagne);
         $this->parcellairesHistory = ParcellaireClient::getInstance()->getHistory($this->etablissement->identifiant);
     }

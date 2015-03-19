@@ -1,13 +1,13 @@
 <?php use_helper('Date'); ?>
 <?php use_javascript("degustation.js", "last") ?>
 
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => 'agents')); ?>
+<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_AGENTS)); ?>
 
 <div class="page-header">
     <h2>Choix des agents de prélevements</h2>
 </div>
 
-<form id="form_degustation_choix_operateurs" action="" method="post" class="form-horizontal">
+<form id="form_degustation_choix_operateurs" action="" method="post" class="form-horizontal ajaxForm">
 
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">
@@ -21,8 +21,8 @@
             <?php foreach($agents as $agent): ?>
             <?php $exist = $degustation->agents->exist($agent->_id); ?>
             <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
-                <div class="col-xs-4"><?php echo $agent->nom_a_afficher ?></div>
-                <div class="col-xs-7">
+                <div class="col-xs-5"><?php echo $agent->nom_a_afficher ?> <br /><small class="text-muted"><?php echo $agent->adresse ?> <?php echo $agent->commune ?></small></div>
+                <div class="col-xs-6">
                     <select name="agents[<?php echo $agent->_id ?>][]" <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> multiple="multiple" data-placeholder="Sélectionner des dates" class="form-control select2 select2-offscreen select2autocomplete <?php if(!$exist): ?>hidden<?php endif; ?>">
                         <option></option>
                         <?php foreach($jours as $jour): ?>

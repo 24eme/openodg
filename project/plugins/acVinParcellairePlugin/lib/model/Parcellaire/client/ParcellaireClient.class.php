@@ -4,14 +4,15 @@ class ParcellaireClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Parcellaire";
     const TYPE_COUCHDB = "PARCELLAIRE";
-    const TYPE_PROPRIETAIRE_VITICULTEUR = "VITICULTEUR";
-    const TYPE_PROPRIETAIRE_ADHERENT_CAVE_COOP = "ADHERENT_CAVE_COOP";
-    const TYPE_PROPRIETAIRE_VENDEUR_RAISIN = "VENDEUR_RAISIN";
+    
+    const DESTINATION_SUR_PLACE = "SUR_PLACE";
+    const DESTINATION_CAVE_COOPERATIVE = EtablissementClient::FAMILLE_CAVE_COOPERATIVE;
+    const DESTINATION_NEGOCIANT = EtablissementClient::FAMILLE_NEGOCIANT;
 
-    public static $type_proprietaire_libelles = array(
-        self::TYPE_PROPRIETAIRE_VITICULTEUR => "Viticulteur - manipulant",
-        self::TYPE_PROPRIETAIRE_ADHERENT_CAVE_COOP => "Adhérent Cave Coop",
-        self::TYPE_PROPRIETAIRE_VENDEUR_RAISIN => "Vendeur de raisin",
+    public static $destinations_libelles = array(
+        self::DESTINATION_SUR_PLACE => "Viticulteur - Récoltant",
+        self::DESTINATION_CAVE_COOPERATIVE => "Adhérent Cave Coopérative",
+        self::DESTINATION_NEGOCIANT => "Vendeur de raisin",
     );
 
     public static function getInstance() {
@@ -29,53 +30,57 @@ class ParcellaireClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findOrCreateFromEtablissement($etablissement, $campagne) {
-        return $this->findOrCreate($etablissement->identifiant, $campagne);
+    public function findOrCreateFromEtablissement($etablissement, $campagne, $cremant = false) {
+        return $this->findOrCreate($etablissement->identifiant, $campagne,$cremant);
     }
 
-    public function findOrCreate($cvi, $campagne) {
+    public function findOrCreate($cvi, $campagne,$cremant = false) {
         if (strlen($cvi) != 10) {
             throw new sfException("Le CVI doit avoir 10 caractères : $cvi");
         }
         if (strlen($campagne) != 4)
             throw new sfException("La campagne doit être une année et non " . $campagne);
-        $parcellaire = $this->find($this->buildId($cvi, $campagne));
+        $parcellaire = $this->find($this->buildId($cvi, $campagne,$cremant));
         if (is_null($parcellaire)) {
-            $parcellaire = $this->createDoc($cvi, $campagne);
+            $parcellaire = $this->createDoc($cvi, $campagne,$cremant);
         }
 
         return $parcellaire;
     }
 
-    public function buildId($identifiant, $campagne) {
-        return sprintf("PARCELLAIRE-%s-%s", $identifiant, $campagne);
+    public function buildId($identifiant, $campagne,$cremant = false) {
+        $id = (!$cremant)?  "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
+        return sprintf($id, $identifiant, $campagne);
     }
 
-    public function createDoc($identifiant, $campagne) {
+    public function createDoc($identifiant, $campagne, $cremant = false) {
         $parcellaire = new Parcellaire();
-        $parcellaire->initDoc($identifiant, $campagne);
+        $parcellaire->initDoc($identifiant, $campagne, $cremant);
 
         return $parcellaire;
     }
 
-    public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getHistory($identifiant, $cremant = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) . "";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()) . "";
 
-        return $this->startkey(sprintf("PARCELLAIRE-%s-%s", $identifiant, $campagne_from))
-                        ->endkey(sprintf("PARCELLAIRE-%s-%s", $identifiant, $campagne_to))
+        $id = (!$cremant)?  "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
+        return $this->startkey(sprintf($id, $identifiant, $campagne_from))
+                        ->endkey(sprintf($id, $identifiant, $campagne_to))
                         ->execute($hydrate);
     }
 
     public function getAppellationsKeys() {
-        return array('COMMUNALE' => 'Communale',
+        return array(
+            'GRDCRU' => 'Grand Cru',
+            'COMMUNALE' => 'Communale',
             'LIEUDIT' => 'Lieux dits',
-            'GRDCRU' => 'Grand Crus',
-            'CREMANT' => 'Crémant');
+          //  'CREMANT' => 'Crémant'
+            );
     }
 
     public function getFirstAppellation() {
-        return 'COMMUNALE';
+        return 'GRDCRU';
     }
 
 }

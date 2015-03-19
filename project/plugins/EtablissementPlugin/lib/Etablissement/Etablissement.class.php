@@ -65,7 +65,13 @@ class Etablissement extends BaseEtablissement {
         $this->commune = $compte->commune;
         $this->compte_id = $compte->identifiant;
         $this->familles = $compte->infos->attributs->toArray(true, false);
-        $this->chais = $compte->chais->toArray(true, false);
+        $chais = $compte->chais->toArray(true, false);
+        foreach($chais as $key => $chai) {
+            unset($chais[$key]['lat']);
+            unset($chais[$key]['lon']);
+        }
+        
+        $this->chais = $chais;
     }
 
     public function updateCompte() {
@@ -83,10 +89,9 @@ class Etablissement extends BaseEtablissement {
         $compte->email = $this->email;
 
         if($compte->adresse != $this->adresse || $compte->commune != $this->commune || $compte->code_postal != $this->code_postal) {
-            $compte->updateCoordonneesLongLat();
         }
 
-        $compte->save(false);
+        $compte->save(false, true);
     }
 
 }
