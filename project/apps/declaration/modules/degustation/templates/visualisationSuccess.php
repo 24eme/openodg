@@ -6,3 +6,4 @@
 </div>
 
 <?php include_partial('degustation/recap', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/notes', array('degustation' => $degustation)); ?>
