@@ -1,15 +1,16 @@
+<?php use_helper("Date"); ?>
 <?php include_partial('admin/menu', array('active' => 'tournees')); ?>
 
 <form action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <div class="row">
-        <div class="col-xs-8">
+        <div class="col-xs-10">
             <div class="form-group <?php if($form["date"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date_prelevement_debut"]->renderError(); ?>
-                <?php echo $form["date_prelevement_debut"]->renderLabel("Date de début de prélévement", array("class" => "col-xs-6 control-label")); ?>
+                <?php echo $form["date_prelevement_debut"]->renderLabel("Date de début de demande des prélévements", array("class" => "col-xs-6 control-label")); ?>
                 <div class="col-xs-6">
-                    <div class="input-group date-picker-all-days">
+                    <div class="input-group date-picker">
                         <?php echo $form["date_prelevement_debut"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>
@@ -21,7 +22,7 @@
                 <?php echo $form["date"]->renderError(); ?>
                 <?php echo $form["date"]->renderLabel("Date de dégustation", array("class" => "col-xs-6 control-label")); ?>
                 <div class="col-xs-6">
-                    <div class="input-group date-picker-all-days">
+                    <div class="input-group date-picker">
                         <?php echo $form["date"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>

@@ -43,6 +43,8 @@ class degustationActions extends sfActions {
 
         $this->operateurs = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
 
+        $this->nb_reports = count($this->degustation->getPrevious()->getOperateursReporte());
+
         $this->form = new DegustationCreationFinForm($this->degustation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -59,7 +61,9 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('degustation_operateurs', array('sf_subject' => $this->degustation, 'nb_a_prelever' => $this->form->getValue('nombre_operateurs_a_prelever')));
+        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever') + $this->nb_reports;
+
+        return $this->redirect('degustation_operateurs', array('sf_subject' => $this->degustation, 'nb_a_prelever' => $nb_a_prelever));
     }
 
     public function executeOperateurs(sfWebRequest $request) {

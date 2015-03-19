@@ -6,4 +6,10 @@ class DegustationValidationForm extends acCouchdbObjectForm {
         $this->widgetSchema->setNameFormat('degustation_validation[%s]');
     }
 
+    protected function doUpdateObject($values) {
+        parent::doUpdateObject($values);
+
+        $this->getObject()->validation = date('Y-m-d');
+    }
+
 }

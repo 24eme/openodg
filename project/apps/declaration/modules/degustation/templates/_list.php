@@ -3,18 +3,33 @@
          <div class="list-group">
         <?php foreach($degustations as $degustation): ?>
             <?php $d = $degustation->getRawValue(); ?>
-             <a href="<?php echo url_for('degustation_affectation', $degustation) ?>" class="list-group-item col-xs-12">
-                <span class="col-xs-2 text-muted">
-                <?php echo $d->date; ?>
+            <?php $nb_operateurs = count((array) $d->operateurs); ?>
+            <?php $nb_degustateurs = 0; foreach($d->degustateurs as $degustateurs_type): $nb_degustateurs += count((array) $degustateurs_type); endforeach; ?>
+            <?php $nb_tournees = 0; foreach($d->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
+            <?php $nb_degustations = 0; foreach($d->operateurs as $operateur): $nb_degustations += count((array) $operateur->prelevements); endforeach; ?>
+            <a href="<?php if(!$degustation->validation): ?><?php echo url_for('degustation_edit', $degustation) ?><?php else: ?><?php echo url_for('degustation_visualisation', $degustation) ?><?php endif; ?>" class="list-group-item col-xs-12">
+                <span class="col-xs-3 text-muted">
+                <?php echo ucfirst(format_date($d->date, "P", "fr_FR")) ?>
                 </span>
                 <span class="col-xs-2 text-muted">
                 <?php echo $d->appellation; ?>
                 </span>
-                <span class="col-xs-6 text-muted">
-                <?php echo count((array) $d->operateurs); ?> opérateurs, <?php echo count((array) $d->degustateurs); ?> dégustateurs et <?php echo count((array) $d->agents); ?> tournées
+                <span class="col-xs-5 text-muted">
+
+                <?php if($degustation->date > date('Y-m-d')): ?>
+                    <?php echo $nb_operateurs ?> opérateurs, <?php echo $nb_degustateurs ?> dégustateurs et <?php echo count((array) $d->agents); ?> tournées
+                <?php else: ?>
+                    <?php echo $nb_degustations ?> vins dégustés
+                <?php endif; ?>
                 </span>
                 <span class="col-xs-2 text-muted text-right">
+                    <?php if(!$degustation->validation): ?>
                     <span class="label label-default">Saisie</span>
+                    <?php elseif($degustation->date < date('Y-m-d')): ?>
+                    <span class="label label-danger">Terminé</span>
+                    <?php else: ?>
+                    <span class="label label-info">Tournée</span>
+                    <?php endif; ?>
                 </span>
             </a>
         <?php endforeach; ?>

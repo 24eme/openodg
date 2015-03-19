@@ -18,22 +18,23 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-8">
+        <div class="col-xs-10">
             <h3>Prélévements</h3>
             <div class="form-group">
-                <strong  class="col-xs-6 text-right">Date de prélevement</strong>
-                <div class="col-xs-6"><span>du <?php echo format_date($degustation->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($degustation->date_prelevement_fin, "D", "fr_FR") ?></span></div>
+                <strong  class="col-xs-5 text-right">Date de prélevement</strong>
+                <div class="col-xs-7"><span>du <?php echo format_date($degustation->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($degustation->date_prelevement_fin, "D", "fr_FR") ?></span></div>
             </div>
             <div class="form-group">
-                <strong  class="col-xs-6 text-right">Nombre d'opérateurs concernés</strong>
-                <div class="col-xs-6"><span><?php echo count($operateurs) ?></span></div>
+                <strong  class="col-xs-5 text-right">Nombre d'opérateurs concernés</strong>
+                <div class="col-xs-7"><span><?php echo count($operateurs) ?></span> <small class="text-muted">(hors reports de la précédente tournée)</small></div>
             </div>
             <div class="form-group <?php if($form["nombre_operateurs_a_prelever"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["nombre_operateurs_a_prelever"]->renderError(); ?>
-                <?php echo $form["nombre_operateurs_a_prelever"]->renderLabel("Nombre d'opérateurs à prélever", array("class" => "col-xs-6 control-label")); ?>
+                <?php echo $form["nombre_operateurs_a_prelever"]->renderLabel("Nombre d'opérateurs à prélever", array("class" => "col-xs-5 control-label")); ?>
                 <div class="col-xs-2">
                     <?php echo $form["nombre_operateurs_a_prelever"]->render(array("class" => "form-control")); ?>
                 </div>
+                <label class="control-label text-muted" style="font-weight: normal;"> + <strong><?php echo $nb_reports ?></strong> reports de la précédente tournée</label>
             </div>
         </div>
     </div>

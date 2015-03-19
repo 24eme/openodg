@@ -15,6 +15,7 @@ Degustation:
       nombre_commissions: { type: integer }
       heure: { }
       lieu: { }
+      validation: { }
       operateurs:
         type: collection
         definition:

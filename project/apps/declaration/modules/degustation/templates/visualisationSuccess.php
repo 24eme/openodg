@@ -2,7 +2,7 @@
 <?php use_helper('Degustation') ?>
 
 <div class="page-header no-border">
-    <h2><?php echo $degustation->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($degustation); ?></span>&nbsp;<div class="btn btn-info btn-sm active"><?php echo count($degustation->operateurs) ?>&nbsp;opérateurs sélectionnés</div></h2>
+    <h2><?php echo $degustation->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($degustation); ?></span>&nbsp;<div class="btn btn-default btn-sm"><?php echo count($degustation->operateurs) ?>&nbsp;Opérateurs</div></h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -10,4 +10,20 @@
 <?php endif; ?>
 
 <?php include_partial('degustation/recap', array('degustation' => $degustation)); ?>
+
+<?php if($degustation->date < date('Y-m-d')): ?>
 <?php include_partial('degustation/notes', array('degustation' => $degustation)); ?>
+<?php endif; ?>
+
+<div class="row row-margin">
+    <div class="col-xs-6 text-left">
+    <?php if($degustation->validation && $degustation->date > date('Y-m-d')): ?>
+        <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation') ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+    <?php endif; ?>
+    </div>
+    <div class="col-xs-6 text-right">
+    <?php if($degustation->validation && $degustation->date > date('Y-m-d')): ?>
+        <a class="btn btn-warning btn-lg" href=""><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier l'organisation des tournées</a>
+    <?php endif; ?>
+    </div>
+</div>
