@@ -1,7 +1,5 @@
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_PRELEVEMENTS)); ?>
-
 <div class="page-header">
-    <h2>Affectation des prélevements</h2>
+    <h2>Organisation des tournées</h2>
 </div>
 
 <form id="form_degustation_operateurs" action="" method="post" class="form-horizontal ajaxForm">
@@ -10,10 +8,10 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('degustation_agents', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
+            <a href="<?php echo url_for('degustation_visualisation', $degustation) ?>" class="btn btn-primary btn-lg btn-upper">Retour</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer</button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper">Valider</button>
         </div>
     </div>
 </form>

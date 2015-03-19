@@ -259,6 +259,30 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
 
+        $result = $this->organisation($request);
+
+        if($result !== true) {
+
+            return $result;
+        }
+
+        return $this->redirect('degustation_validation', $this->degustation);
+    }
+
+    public function executeOrganisation(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+
+        $result = $this->organisation($request);
+
+        if($result !== true) {
+
+            return $result;
+        }
+
+        return $this->redirect('degustation_visualisation', $this->degustation);
+    }
+
+    protected function organisation(sfWebRequest $request) {
         $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860");
         $this->heures = array();
         for ($i = 8; $i <= 18; $i++) {
@@ -302,8 +326,7 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
         }
 
-
-        return $this->redirect('degustation_validation', $this->degustation);
+        return true;
     }
 
     public function executeValidation(sfWebRequest $request) {

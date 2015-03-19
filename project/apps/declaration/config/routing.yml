@@ -605,6 +605,16 @@ degustation_prelevements:
   requirements:
     sf_method: [get, post]
 
+degustation_organisation:
+  url: /degustation/organisation/:id
+  param: { module: degustation, action: organisation }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_agents:
   url: /degustation/agents/:id
   param: { module: degustation, action: agents }
