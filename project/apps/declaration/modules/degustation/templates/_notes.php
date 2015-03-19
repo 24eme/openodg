@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 <?php $notes = $degustation->getNotes(); ?>
-<h2>Notes obtenues&nbsp;<div class="btn btn-info btn-sm active"><?php echo count($notes); ?>&nbsp;vins dégustés</div></h2>
+<h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($notes); ?>&nbsp;vins dégustés</div></h2>
 
 <div class="row">    
     <div class="col-xs-12">        
