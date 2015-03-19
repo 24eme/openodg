@@ -221,6 +221,38 @@ class Degustation extends BaseDegustation {
 
         return $operateurs;
     }
+    
+    public function getOperateursDegustes() {
+        $operateurs = array();
+
+        foreach($this->operateurs as $operateur) {
+            if(!$operateur->isDeguste()) {
+                continue;
+            }
+
+            $operateurs[$operateur->getKey()] = $operateur;
+        }
+
+        return $operateurs;
+    }
+    
+    public function getNotes() {
+        
+        $notes = array();
+
+        foreach($this->getOperateursDegustes() as $operateurDeguste) {
+           
+            
+            foreach ($operateurDeguste->prelevements as $prelevement) {
+                if($prelevement->anonymat_degustation){
+                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation] = new stdClass();
+                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
+                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
+                }
+            }
+        }
+        return $notes;
+    }
 
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
