@@ -12,18 +12,27 @@ class DegustationValidation extends DocumentValidation {
         /*
          * Warning
          */
-        $this->addControle(self::TYPE_WARNING, 'degustateur_no_email', 'Attention');
+        $this->addControle(self::TYPE_WARNING, 'degustateur_no_email', "Cet dégustateur ne possède pas d'email");
+        $this->addControle(self::TYPE_WARNING, 'operateur_no_email', "Cet opérateur ne possède pas d'email");
 
     }
 
-    public function controle() {        
+    public function controle() {
+        foreach ($this->document->operateurs as $operateur) {
+            if (!$operateur->email) {
+                $this->addPoint(self::TYPE_WARNING, 'operateur_no_email', sprintf("%s (%s, %s)", $operateur->raison_sociale, $operateur->cvi, $operateur->commune));
+            }
+        }
+
         foreach ($this->document->degustateurs as $degustateur_type => $degustateurs) {
-            foreach ($degustateurs as $compte_id => $infos_compte) {
-                if (!$infos_compte->email) {
-                    $this->addPoint(self::TYPE_WARNING, 'degustateur_no_email', 'le dégustateur ' . $infos_compte->nom . ' ne possède pas d\'email');
+            foreach ($degustateurs as $compte_id => $degustateur) {
+                if (!$degustateur->email) {
+                    $this->addPoint(self::TYPE_WARNING, 'degustateur_no_email', sprintf("%s (%s)", $degustateur->nom, $degustateur->commune));
                 }
             }
         }
+
+
     }
 
 }
