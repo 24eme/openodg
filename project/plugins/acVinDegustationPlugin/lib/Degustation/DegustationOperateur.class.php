@@ -59,4 +59,14 @@ class DegustationOperateur extends BaseDegustationOperateur {
 
         return false;
     }
+    
+    public function isDeguste() {
+          foreach($this->prelevements as $prelevement) {
+            if(!is_null($prelevement->anonymat_degustation)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

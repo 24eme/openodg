@@ -142,6 +142,20 @@ class degustationActions extends sfActions {
             $degustateur->code_postal = $d->code_postal;
         }
 
+        $degustateurs_to_delete = array();
+
+        foreach($this->noeud as $degustateur) {
+            if(array_key_exists($degustateur->getKey(), $values)) {
+               continue; 
+            }
+
+            $degustateurs_to_delete[] = $degustateur->getKey();
+        }
+
+        foreach($degustateurs_to_delete as $degustateur_key) {
+            $this->noeud->remove($degustateur_key);
+        }
+
         $this->degustation->save();
 
         if ($request->isXmlHttpRequest()) {
@@ -302,7 +316,11 @@ class degustationActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {                
                 $this->form->save();
-                $this->sendMailsDegustation();
+
+                Email::getInstance()->sendDegustationOperateursMails($this->degustation);
+                Email::getInstance()->sendDegustationDegustateursMails($this->degustation);
+
+                $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
 
                 return $this->redirect('degustation_visualisation', $this->degustation);
             }
@@ -497,12 +515,6 @@ class degustationActions extends sfActions {
             return $etape;
         }
         return ($etapes->isLt($doc->etape, $etape)) ? $etape : $doc->etape;
-    }
-
-    protected function sendMailsDegustation() {
-        $emailManager = Email::getInstance();
-        $emailManager->sendDegustationOperateursMails($this->degustation);
-        $emailManager->sendDegustationDegustateursMails($this->degustation);
     }
 
 }

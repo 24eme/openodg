@@ -168,12 +168,15 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
-            if(!$operateur->email) {
-                continue;
-            }
             $to = $operateur->email;
             $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le ".Date::francizeDate($operateur->date);
             $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
+
+            if(!$operateur->email) {
+                $to = $reply_to;
+                $subject = "[$operateur->raison_sociale : EMAIL NON ENVOYE] ".$subject;
+                $body .= sprintf("%s (%s), fiche contact : %s \n\n --------------------------- \n\n%s",$operateur->raison_sociale, $operateur->cvi, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => "COMPTE-E".$operateur->getKey()), true), $body);
+            }
 
             $message = Swift_Message::newInstance()
                     ->setFrom($from)
@@ -183,6 +186,7 @@ class Email {
                     ->setBody($body);
             $this->getMailer()->send($message);
         }
+
         return true;
     }
 
@@ -191,12 +195,16 @@ class Email {
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
             foreach ($comptes as $id_compte => $degustateur_node) {
-                if(!$degustateur_node->email) {
-                continue;
-                }
                 $to = $degustateur_node->email;
                 $subject = "L'AVA vous invite à une dégustation conseil le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
                 $body = $this->getBodyFromPartial('send_degustation_degustateur', array('degustation' => $degustation));
+
+                if(!$degustateur_node->email) {
+                    $to = $reply_to;
+                    $subject = "[$degustateur_node->nom : EMAIL NON ENVOYE] ".$subject;
+                    $body .= sprintf("%s, fiche contact : %s \n\n --------------------------- \n\n%s",$degustateur_node->nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $degustateur_node->getKey()), true), $body);
+                }
+
                 $message = Swift_Message::newInstance()
                         ->setFrom($from)
                         ->setReplyTo($reply_to)
@@ -207,6 +215,7 @@ class Email {
                $this->getMailer()->send($message);
             }
         }
+
         return true;
     }
 
@@ -215,7 +224,13 @@ class Email {
     }
 
     protected function getBodyFromPartial($partial, $vars = null) {
-        return $this->_context->getController()->getAction('Email', 'main')->getPartial('Email/' . $partial, $vars);
+        
+        return $this->getAction()->getPartial('Email/' . $partial, $vars);
+    }
+
+    protected function getAction() {
+
+        return $this->_context->getController()->getAction('Email', 'main');
     }
 
     public function getPartial($templateName, $vars = null) {
