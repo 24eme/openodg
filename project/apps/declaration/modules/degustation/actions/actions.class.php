@@ -320,6 +320,8 @@ class degustationActions extends sfActions {
                 Email::getInstance()->sendDegustationOperateursMails($this->degustation);
                 Email::getInstance()->sendDegustationDegustateursMails($this->degustation);
 
+                $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
+
                 return $this->redirect('degustation_visualisation', $this->degustation);
             }
         }
