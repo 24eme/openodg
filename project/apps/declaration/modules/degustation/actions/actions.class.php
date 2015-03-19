@@ -142,6 +142,20 @@ class degustationActions extends sfActions {
             $degustateur->code_postal = $d->code_postal;
         }
 
+        $degustateurs_to_delete = array();
+
+        foreach($this->noeud as $degustateur) {
+            if(array_key_exists($degustateur->getKey(), $values)) {
+               continue; 
+            }
+
+            $degustateurs_to_delete[] = $degustateur->getKey();
+        }
+
+        foreach($degustateurs_to_delete as $degustateur_key) {
+            $this->noeud->remove($degustateur_key);
+        }
+
         $this->degustation->save();
 
         if ($request->isXmlHttpRequest()) {
