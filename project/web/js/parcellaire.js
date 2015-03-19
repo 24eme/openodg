@@ -19,6 +19,11 @@ $(document).ready(function()
             input.prop("checked", !input.prop("checked"));
             return false;
         }
+    });   
+    
+    $("form.parcellaireForm").each(function(){
+        $(this).find("td input").click(function(){
+            $(this).select();
+        });
     });
-
 });
