@@ -41,6 +41,7 @@ Degustation:
                   telephone_prive: { }
                   telephone_mobile: { }
                   date_demande: { }
+                  reporte: { type: integer }
                   prelevements:
                     type: array_collection
                     definition:

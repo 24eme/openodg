@@ -24,7 +24,11 @@ class DegustationOperateursForm extends acCouchdbForm {
     }
 
     public function configure() {
-        foreach($this->getDocument()->operateurs as $operateur) {
+        $operateurs = $this->getDocument()->operateurs->toArray();
+
+        usort($operateurs, 'DegustationOperateursForm::sortOperateursByDatePrelevement');
+
+        foreach($operateurs as $operateur) {
             $choices = array();
 
             foreach($operateur->lots as $lot_key => $lot) {
@@ -33,9 +37,15 @@ class DegustationOperateursForm extends acCouchdbForm {
 
             $this->setWidget($operateur->getKey(), new sfWidgetFormChoice(array("choices" => $choices)));
             $this->setValidator($operateur->getKey(), new sfValidatorChoice(array("choices" =>array_keys($choices), "required" => false)));
+
         }
 
         $this->widgetSchema->setNameFormat('operateurs[%s]');
+    }
+
+    public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
+
+        return $operateur_a->date_demande > $operateur_b->date_demande;
     }
 
     public function update() {

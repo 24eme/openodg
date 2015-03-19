@@ -38,6 +38,7 @@ class DRevPrelevementsView extends acCouchdbView
                 $item->lots = array();
             }
 
+            $item->_id = $row->id;
             $item->date = $row->key[self::KEY_DATE];
             $item->appellation = $row->key[self::KEY_APPELLATION];
             $item->identifiant = $row->key[self::KEY_IDENTIFIANT];

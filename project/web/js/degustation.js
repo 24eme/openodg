@@ -125,14 +125,17 @@
         if($('#nb_a_prelever').length > 0) {
 
             var lignes_a_prelever = new Array();
+            var nb_a_prelever = $('#nb_a_prelever').val();
 
-            $("#listes_operateurs .list-group-item-item").each(function() {
+            $("#listes_operateurs .list-group-item-item[data-state!=active]").each(function() {
                 lignes_a_prelever.push($(this));
             });
 
             arrayShuffle(lignes_a_prelever);
 
-    	    for(i = 0 ; i < $('#nb_a_prelever').val() ; i++) {
+            nb_a_prelever = nb_a_prelever - $("#listes_operateurs .list-group-item-item[data-state=active]").length;
+            console.log(nb_a_prelever);
+    	    for(i = 0 ; i < nb_a_prelever ; i++) {
     		  $.addItem(lignes_a_prelever[i]);
     	    }
         }

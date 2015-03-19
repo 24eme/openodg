@@ -33,9 +33,9 @@
                 <?php $operateur = $degustation->operateurs->get($key); ?>
                 <?php $exist = count($operateur->getLotsPrelevement()) > 0; ?>
                 <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
-                <div class="col-xs-4"><?php echo $operateur->raison_sociale ?> <small class="text-muted">à <?php echo $operateur->commune ?></small></div>
-                <div class="col-xs-3 text-left"><small class="text-muted">Pour le </small><?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><!--<small class="text-muted">Prélevé le</small> 2012, 2014--></div>
-                <div class="col-xs-4">
+                <div class="col-xs-5"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><br /><?php echo $operateur->commune ?></small></div>
+                <div class="col-xs-3 text-left"><small class="text-muted">Pour le </small><?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><!--<small class="text-muted">Prélevé le</small> 2012, 2014--><?php if($operateur->reporte): ?><br /><span class="label label-warning">Reporté</span><?php endif; ?></div>
+                <div class="col-xs-3">
                     <?php $attrs = array("class" => "form-control input-sm", "data-auto" => "true", "data-placeholder" => "Sélectionné un lot") ?>
                     <?php if(!$exist): ?>
                         <?php $attrs["class"] .= " hidden"; ?>

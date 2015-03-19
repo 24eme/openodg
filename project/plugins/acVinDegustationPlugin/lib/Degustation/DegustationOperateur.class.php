@@ -47,4 +47,16 @@ class DegustationOperateur extends BaseDegustationOperateur {
             }
         }
     }
+
+    public function isPrelever() {
+
+        foreach($this->prelevements as $prelevement) {
+            if($prelevement->cuve) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

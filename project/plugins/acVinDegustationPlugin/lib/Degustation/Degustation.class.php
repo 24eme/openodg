@@ -208,6 +208,20 @@ class Degustation extends BaseDegustation {
         return $operateurs;
     }
 
+    public function getOperateursReporte() {
+        $operateurs = array();
+
+        foreach($this->operateurs as $operateur) {
+            if($operateur->isPrelever()) {
+                continue;
+            }
+
+            $operateurs[$operateur->getKey()] = $operateur;
+        }
+
+        return $operateurs;
+    }
+
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
 
@@ -219,28 +233,92 @@ class Degustation extends BaseDegustation {
         return true;
     }
 
-    public function updateOperateursFromDRev() {
-        $prelevements = DegustationClient::getInstance()->getPrelevements($this->date_prelevement_debut, $this->date_prelevement_fin);
+    public function updateOperateursFromPrevious() {
+        $previous = $this->getPrevious();
 
-        foreach($prelevements as $prelevement) {
-            $this->addOperateurFromDRev($prelevement);
+        if(!$previous) {
+
+            return null;
+        }
+
+        foreach($previous->getOperateursReporte() as $o) {
+            $operateur = $this->addOperateurFromDRev("DREV-".$o->getKey()."-".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+
+            if(!$operateur) {
+                continue;
+            }
+
+            $operateur->reporte = 1;
+
+            if(count($operateur->getLotsPrelevement()) > 0) {
+
+                continue;
+            }
+
+            foreach($o->lots as $lot) {
+                $lot_key = str_replace("-", "_", $lot->getKey());
+                if(!$operateur->lots->exist($lot_key)) {
+
+                    continue;
+                }
+                $operateur->lots->get($lot_key)->prelevement = 1;
+            }
         }
     }
 
-    public function addOperateurFromDRev($prelevement) {
-        $operateur = $this->operateurs->add($prelevement->identifiant);
-        $operateur->cvi = $prelevement->identifiant;
-        $operateur->raison_sociale = $prelevement->raison_sociale;
-        $operateur->adresse = $prelevement->adresse;
-        $operateur->code_postal = $prelevement->code_postal;
-        $operateur->commune = $prelevement->commune;
+    public function updateOperateursFromDRev() {
+        $prelevements = DegustationClient::getInstance()->getPrelevements($this->date_prelevement_debut, $this->date_prelevement_fin);
+
+        $previous = $this->getPrevious();
+
+        foreach($prelevements as $prelevement) {
+            $operateur = $this->addOperateurFromDRev($prelevement->_id);
+
+            if($previous->operateurs->exist($operateur->cvi) && $previous->operateurs->get($operateur->cvi)->isPrelever()) {
+                $this->operateurs->remove($operateur->cvi);
+            }
+        }
+    }
+
+    public function addOperateurFromDRev($drev_id) {
+        $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_JSON);
+        
+        if(!$drev) {
+
+            return null;
+        }
+
+        if(!$drev->validation) {
+            
+            return null;
+        }
+
+        $operateur = $this->operateurs->add($drev->identifiant);
+        $operateur->cvi = $drev->declarant->cvi;
+        $operateur->raison_sociale = $drev->declarant->raison_sociale;
+        $operateur->adresse = $drev->chais->cuve_->adresse;
+        $operateur->code_postal = $drev->chais->cuve_->code_postal;
+        $operateur->commune = $drev->chais->cuve_->commune;
+
+        $prelevement = $drev->prelevements->cuve_ALSACE;
         $operateur->date_demande = $prelevement->date;
+
         foreach($prelevement->lots as $l_key => $l) {
+            if(!$l->nb_hors_vtsgn) {
+                continue;
+            }
             $lot = $operateur->lots->add($l_key);
             $lot->hash_produit = $l->hash_produit;
             $lot->libelle = $l->libelle;
-            $lot->nb = $l->nb;
+            $lot->nb = $l->nb_hors_vtsgn;
         }
+
+        return $operateur;
+    }
+
+    public function getPrevious() {
+
+        return DegustationClient::getInstance()->getPrevious($this->_id);
     }
 
 }

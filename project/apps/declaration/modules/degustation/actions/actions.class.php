@@ -69,6 +69,7 @@ class degustationActions extends sfActions {
             $this->degustation->save();
         }
 
+        $this->degustation->updateOperateursFromPrevious();
         $this->degustation->updateOperateursFromDRev();
 
         $this->form = new DegustationOperateursForm($this->degustation);
