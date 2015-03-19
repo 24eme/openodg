@@ -4,6 +4,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Parcellaire";
     const TYPE_COUCHDB = "PARCELLAIRE";
+    const TYPE_COUCHDB_PARCELLAIRE_CREMANT = "PARCELLAIRECREMANT";
     
     const DESTINATION_SUR_PLACE = "SUR_PLACE";
     const DESTINATION_CAVE_COOPERATIVE = EtablissementClient::FAMILLE_CAVE_COOPERATIVE;
@@ -70,7 +71,10 @@ class ParcellaireClient extends acCouchdbClient {
                         ->execute($hydrate);
     }
 
-    public function getAppellationsKeys() {
+    public function getAppellationsKeys($parcellaireCremant = false) {
+        if($parcellaireCremant) {
+            return array('CREMANT' => 'Crémant');
+        }
         return array(
             'GRDCRU' => 'Grand Cru',
             'COMMUNALE' => 'Communale',
@@ -79,7 +83,10 @@ class ParcellaireClient extends acCouchdbClient {
             );
     }
 
-    public function getFirstAppellation() {
+    public function getFirstAppellation($parcellaireCremant = false) {
+        if($parcellaireCremant) {
+            return 'CREMANT';
+        }
         return 'GRDCRU';
     }
 

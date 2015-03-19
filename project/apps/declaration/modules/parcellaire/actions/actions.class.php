@@ -60,7 +60,7 @@ class parcellaireActions extends sfActions {
 
         if ($parcellaire->exist('etape') && $parcellaire->etape) {
             if ($parcellaire->etape == ParcellaireEtapes::ETAPE_PARCELLES) {
-                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation()));
+                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation($parcellaire->isParcellaireCremant())));
             }
             return $this->redirect('parcellaire_' . $parcellaire->etape, $parcellaire);
         }
@@ -143,7 +143,7 @@ class parcellaireActions extends sfActions {
             return $this->redirect('parcellaire_validation', $this->parcellaire);
         }
 
-        $this->firstAppellation = ParcellaireClient::getInstance()->getFirstAppellation();
+        $this->firstAppellation = ParcellaireClient::getInstance()->getFirstAppellation($this->parcellaire->isParcellaireCremant());
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->firstAppellation));
     }
 
@@ -155,7 +155,7 @@ class parcellaireActions extends sfActions {
             $this->parcellaire->save();
         }
 
-        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys();
+        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys($this->parcellaire->isParcellaireCremant());
         $this->appellation = $request->getParameter('appellation');
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
@@ -333,6 +333,19 @@ class parcellaireActions extends sfActions {
 
         return $this->renderText($this->document->output());
     }
+    
+    public function executeExportCsvParcellaire(sfWebRequest $request) {     
+        $parcellaire = $this->getRoute()->getParcellaire();        
+        ini_set('memory_limit', '2048M');
+        set_time_limit(0);
+        $this->exportCsv = new ExportParcellaireCSV(null,$parcellaire);
+        $this->setLayout(false);
+        $filename = $this->exportCsv->getFileName();
+        $attachement = "attachment; filename=" . $filename . ".csv";
+
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition', $attachement);
+    }
 
     public function sendParcellaireValidation($parcellaire) {
         $pdf = new ExportParcellairePdf($parcellaire, 'pdf', true);
@@ -356,7 +369,7 @@ class parcellaireActions extends sfActions {
             return $this->forwardSecure();
         }
     }
-
+    
     protected function secureEtablissement($droits, $etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
 

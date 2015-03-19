@@ -69,12 +69,12 @@ class Parcellaire extends BaseParcellaire {
 
     public function getParcellaireLastCampagne() {
         $campagnePrec = $this->campagne - 1;
-        $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
+        $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->isParcellaireCremant());
         $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
 
         if(!$parcellaire) {
             $campagnePrec = $this->campagne - 2;
-            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec);
+            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->isParcellaireCremant());
             $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
         }
 
@@ -244,7 +244,7 @@ class Parcellaire extends BaseParcellaire {
 
     public function getParcellesByLieux() {
         $parcellesByLieux = array();
-        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys()));
+        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             $keyLieu = sprintf("%s. %s %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
             if (!array_key_exists($keyLieu, $parcellesByLieux)) {
@@ -281,4 +281,8 @@ class Parcellaire extends BaseParcellaire {
         $this->validation_odg = date('Y-m-d');
     }
     
+    public function isParcellaireCremant(){
+        return substr($this->_id, 0, strlen(ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT)) === ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT;
+    }
+
 }

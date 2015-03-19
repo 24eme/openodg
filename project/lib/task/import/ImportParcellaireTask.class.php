@@ -14,6 +14,7 @@ class ImportParcellaireTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('cremant', null, sfCommandOption::PARAMETER_OPTIONAL, 'Cremant', '0'),
         ));
 
         $this->namespace = 'import';
@@ -25,10 +26,11 @@ EOF;
 
     protected function execute($arguments = array(), $options = array())
     {
+        
         // initialize the database connection
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-
+        $isCremant = isset($options['cremant']) && $options['cremant'];
         $convert = array('COMMUNALE' => "AOC Alsace Communale", 'LIEUDIT' => 'aoc alsace lieudit', 'GRDCRU' => 'aoc alsace grand cru ', 'CREMANT' => 'aoc cremant dalsace');
         $i = 0;
         $sep = '';
@@ -42,7 +44,7 @@ EOF;
                 continue;
             }
             try {
-                $p = ParcellaireClient::getInstance()->findOrCreate($csv[8], $arguments['annee']);
+                $p = ParcellaireClient::getInstance()->findOrCreate($csv[8], $arguments['annee'],$isCremant);
             }catch(sfException $e) {
                 print "ERROR: ligne $i: ".$e->getMessage()."\n";
                 continue;

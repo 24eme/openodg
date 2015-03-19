@@ -727,15 +727,6 @@ parcellaire_delete:
   requirements:
     sf_method: [get]
 
-parcellaire_visualisation:
-  url: /parcellaire/visualisation/:id
-  param: { module: parcellaire, action: visualisation }
-  class: ParcellaireRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get, post]
 
 parcellaire_devalidation:
   url: /parcellaire/devalidation/:id
@@ -880,6 +871,16 @@ parcellaire_export_pdf:
 parcellaire_visualisation:
   url: /parcellaire/visualisation/:id
   param: { module: parcellaire, action: visualisation }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaire_export_csv_document:
+  url: /parcellaire/export-csv/:id
+  param: { module: parcellaire, action: exportCsvParcellaire }
   class: ParcellaireRoute
   options:
     model:    Parcellaire

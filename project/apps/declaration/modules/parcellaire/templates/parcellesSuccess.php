@@ -1,7 +1,7 @@
 <?php include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire)); ?>
 
 <div class="page-header">
-    <h2>Saisie des parcelles</h2>
+    <h2>Saisie des parcelles<?php echo ($parcellaire->isParcellaireCremant())? ' de Crémant' : ''; ?></h2>
 </div>
 
 <ul class="nav nav-tabs">
@@ -22,7 +22,7 @@
     <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
 <?php endif; ?>
 
-<form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal ajaxForm">
+<form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal ajaxForm parcellaireForm">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -44,6 +44,7 @@
                         </thead>
                         <tbody>
                             <?php
+                            $tabindex =1;
                             foreach ($parcelles as $key => $parcelle):
                                 $attention_ret = ($attention && ($attention == $parcelle->getHashForKey()));
                                 $erreur_ret = ($erreur && ($erreur == $parcelle->getHashForKey()));
@@ -57,10 +58,12 @@
                                     <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
                                     <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
-                                    <td <?php echo ($erreur_ret) ? 'class="has-error"' : '' ?> ><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float " . $class)); ?></td>                 
+                                    <td <?php echo ($erreur_ret) ? 'class="has-error"' : '' ?> ><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float " . $class, 'tabindex' => $tabindex)); ?></td>                 
                                     <td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a><a class="ajax fakeDeleteButton hidden" href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"></a></td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php 
+                            $tabindex++;
+                            endforeach; ?>
                         </tbody>
                     </table>
                 </div>
