@@ -19,7 +19,7 @@
                 <?php if($degustation->date > date('Y-m-d')): ?>
                     <?php echo $nb_operateurs ?> opérateurs, <?php echo $nb_degustateurs ?> dégustateurs et <?php echo count((array) $d->agents); ?> tournées
                 <?php else: ?>
-                    <?php echo $nb_degustations ?> vins dégustés
+                    <?php //echo $nb_degustations ?>28 vins dégustés
                 <?php endif; ?>
                 </span>
                 <span class="col-xs-2 text-muted text-right">
