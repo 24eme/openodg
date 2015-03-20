@@ -1,5 +1,5 @@
 <?php use_helper('Date'); ?>
-<?php use_javascript("degustation.js", "last") ?>
+<?php use_javascript("degustation.js?201503201907", "last") ?>
 
 <?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_AGENTS)); ?>
 
