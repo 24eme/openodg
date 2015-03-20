@@ -286,11 +286,10 @@ class Degustation extends BaseDegustation {
 
                 continue;
             }
-
+            
             foreach($o->lots as $lot) {
-                $lot_key = str_replace("-", "_", $lot->getKey());
+                $lot_key = str_replace("cepage-", "cepage_", str_replace("appellation-ALSACE", "appellation_ALSACE", str_replace("_", "-", $lot->getKey())));
                 if(!$operateur->lots->exist($lot_key)) {
-
                     continue;
                 }
                 $operateur->lots->get($lot_key)->prelevement = 1;
@@ -354,7 +353,7 @@ class Degustation extends BaseDegustation {
             if(!$l->nb_hors_vtsgn) {
                 continue;
             }
-            $lot = $operateur->lots->add($l_key);
+            $lot = $operateur->lots->add(str_replace("/", "-", $l->hash_produit));
             $lot->hash_produit = $l->hash_produit;
             $lot->libelle = $l->libelle;
             $lot->nb = $l->nb_hors_vtsgn;

@@ -400,7 +400,6 @@
     $.updateRecapCepages = function()
     {
         $('#recap_cepages span.badge').text("0");
-
         $("#listes_operateurs .list-group-item-item select:visible option:selected").each(function(index, value) {
             var item = $('#recap_cepages button[data-cepage="'+$(value).val()+'"] .badge');
             item.html(parseInt(item.html()) + 1);
