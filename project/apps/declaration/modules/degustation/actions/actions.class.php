@@ -335,6 +335,8 @@ class degustationActions extends sfActions {
         if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
             $this->degustation->save();
         }
+
+        $this->degustation->cleanOperateurs();
         if (!$request->isMethod(sfWebRequest::POST)) {
         $this->validation = new DegustationValidation($this->degustation);
         }

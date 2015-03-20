@@ -312,6 +312,21 @@ class Degustation extends BaseDegustation {
         }
     }
 
+    public function cleanOperateurs() {
+        $operateurs_to_remove = array();
+        foreach($this->operateurs as $operateur) {
+            if($operateur->date && $operateur->agent) {
+                continue;
+            }
+
+            $operateurs_to_remove[] = $operateur->getKey();
+        }
+
+        foreach($operateurs_to_remove as $key) {
+            $this->operateurs->remove($key);
+        }
+    }
+
     public function addOperateurFromDRev($drev_id) {
         $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_JSON);
         
