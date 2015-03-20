@@ -337,11 +337,13 @@ class degustationActions extends sfActions {
         }
 
         $this->degustation->cleanOperateurs();
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
-        $this->validation = new DegustationValidation($this->degustation);
+            $this->validation = new DegustationValidation($this->degustation);
         }
+
         $this->form = new DegustationValidationForm($this->degustation);
+        
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {                
