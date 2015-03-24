@@ -5,17 +5,11 @@
     <h2><?php echo $degustation->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($degustation); ?></span>&nbsp;<div class="btn btn-default btn-sm"><?php echo count($degustation->operateurs) ?>&nbsp;Opérateurs</div></h2>
 </div>
 
-<?php if ($sf_user->hasFlash('notice')): ?>
-    <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
-<?php endif; ?>
-
-<?php include_partial('degustation/recap', array('degustation' => $degustation)); ?>
-
 <?php if ($degustation->date < date('Y-m-d')): ?>
     <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($degustation->getNotes()); ?>&nbsp;vins dégustés</div>
-        <a class="pull-right btn btn-default btn-sm btn-upper" href="<?php echo url_for('degustation_courriers', $degustation); ?>">Créer courriers<span class="eleganticon arrow_carrot-right"></span></a>
+        <a class="pull-right btn btn-default btn-sm btn-upper" href="<?php echo url_for('degustation_courriers', $degustation); ?>">Enregistrer type courrier<span class="eleganticon arrow_carrot-right"></span></a>
     </h2> 
-    <?php include_partial('degustation/notes', array('degustation' => $degustation)); ?>
+    <?php include_partial('degustation/notes', array('degustation' => $degustation,'form' => $form)); ?>
 <?php endif; ?>
 
 <div class="row row-margin">

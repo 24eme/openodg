@@ -540,6 +540,11 @@ class degustationActions extends sfActions {
 
         return $this->renderText(json_encode(array("success" => true)));
     }
+    
+    public function executeCourrier(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->form = new DegustationCourrierForm($this->degustation);
+    }
 
     protected function getEtape($doc, $etape) {
         $etapes = DegustationEtapes::getInstance();

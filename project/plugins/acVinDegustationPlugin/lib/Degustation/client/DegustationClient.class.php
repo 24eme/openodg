@@ -10,7 +10,18 @@ class DegustationClient extends acCouchdbClient {
     const NOTE_TYPE_TYPICITE = "TYPICITE"; 
     const NOTE_TYPE_CONCENTRATION = "CONCENTRATION"; 
     const NOTE_TYPE_EQUILIBRE = "EQUILIBRE";
+    
+    const COURRIER_TYPE_OPE = "OPE" ;
+    const COURRIER_TYPE_OK = "OK" ;
+    const COURRIER_TYPE_VISITE = "VISITE" ;
 
+    public static $types_courrier_libelle = array(
+        self::COURRIER_TYPE_OPE => "OPE",
+        self::COURRIER_TYPE_OK => "OK",
+             self::COURRIER_TYPE_VISITE => "Visite"
+    );
+    
+    
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",

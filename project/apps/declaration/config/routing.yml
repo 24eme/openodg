@@ -724,6 +724,16 @@ degustation_degustation_json:
     type:     object
   requirements:
     sf_method: [get, post]
+    
+degustation_courriers:
+  url: /degustation/courrier/:id
+  param: { module: degustation, action: courrier }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]  
 
 # Parcellaire
 
