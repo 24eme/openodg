@@ -36,7 +36,7 @@ class Degustation extends BaseDegustation {
             if (!$operateur->heure) {
                 $heure = "24:00";
             }
-            $operateurs[$heure][sprintf('%05d', $operateur->position).$operateur->getKey()] = $operateur;
+            $operateurs[$heure][sprintf('%05d', $operateur->position) . $operateur->getKey()] = $operateur;
             ksort($operateurs[$heure]);
         }
 
@@ -91,9 +91,9 @@ class Degustation extends BaseDegustation {
     public function cleanPrelevements() {
         $hash_to_delete = array();
 
-        foreach($this->operateurs as $operateur) {
-            foreach($operateur->prelevements as $prelevement) {
-                if($prelevement->preleve && $prelevement->cuve && $prelevement->hash_produit) {
+        foreach ($this->operateurs as $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if ($prelevement->preleve && $prelevement->cuve && $prelevement->hash_produit) {
                     continue;
                 }
                 $hash_to_delete[$prelevement->getHash()] = $prelevement->getHash();
@@ -102,7 +102,7 @@ class Degustation extends BaseDegustation {
 
         krsort($hash_to_delete);
 
-        foreach($hash_to_delete as $hash) {
+        foreach ($hash_to_delete as $hash) {
             $this->remove($hash);
         }
     }
@@ -110,9 +110,23 @@ class Degustation extends BaseDegustation {
     public function getPrelevementsByNumeroPrelevement() {
         $prelevements = array();
 
-        foreach($this->operateurs as $operateur) {
-            foreach($operateur->prelevements as $prelevement) {
+        foreach ($this->operateurs as $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
                 $prelevements[$prelevement->anonymat_prelevement] = $prelevement;
+            }
+        }
+
+        return $prelevements;
+    }
+
+    public function getPrelevementsReadyForCourrier() {
+        $prelevements = array();
+
+        foreach ($this->operateurs as $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) {
+                    $prelevements[$prelevement->getHash()] = $prelevement;
+                }
             }
         }
 
@@ -122,13 +136,13 @@ class Degustation extends BaseDegustation {
     public function getPrelevementsByNumeroDegustation($commission) {
         $prelevements = array();
 
-        foreach($this->operateurs as $operateur) {
-            foreach($operateur->prelevements as $prelevement) {
-                if($prelevement->commission != $commission) {
+        foreach ($this->operateurs as $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if ($prelevement->commission != $commission) {
                     continue;
                 }
                 $cepage_key = substr($prelevement->hash_produit, -2);
-                $prelevements["P".DegustationClient::$ordre_cepages[$cepage_key].sprintf("%03d", $prelevement->anonymat_degustation)] = $prelevement;
+                $prelevements["P" . DegustationClient::$ordre_cepages[$cepage_key] . sprintf("%03d", $prelevement->anonymat_degustation)] = $prelevement;
             }
         }
 
@@ -136,7 +150,7 @@ class Degustation extends BaseDegustation {
 
         $prelevements_return = array();
 
-        foreach($prelevements as $prelevement) {
+        foreach ($prelevements as $prelevement) {
             $prelevements_return[$prelevement->anonymat_degustation] = $prelevement;
         }
 
@@ -148,9 +162,9 @@ class Degustation extends BaseDegustation {
         shuffle($prelevements);
 
         $i = 1;
-        foreach($prelevements as $prelevement) {
+        foreach ($prelevements as $prelevement) {
             $prelevement->anonymat_degustation = $i;
-            foreach(DegustationClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
+            foreach (DegustationClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
                 $prelevement->notes->add($key_type_note);
             }
             $i++;
@@ -160,8 +174,8 @@ class Degustation extends BaseDegustation {
     public function generatePrelevements() {
         $j = 10;
 
-        foreach($this->operateurs as $operateur) {
-            if(count($operateur->prelevements) > 0) {
+        foreach ($this->operateurs as $operateur) {
+            if (count($operateur->prelevements) > 0) {
                 return false;
             }
         }
@@ -172,8 +186,8 @@ class Degustation extends BaseDegustation {
             $operateur->telephone_bureau = $compte->telephone_bureau;
             $operateur->telephone_prive = $compte->telephone_prive;
             $operateur->telephone_mobile = $compte->telephone_mobile;
-            foreach($operateur->lots as $lot) {
-                for($i=0; $i < $lot->nb; $i++) {
+            foreach ($operateur->lots as $lot) {
+                for ($i = 0; $i < $lot->nb; $i++) {
                     $prelevement = $operateur->prelevements->add();
                     $prelevement->hash_produit = $lot->hash_produit;
                     $prelevement->libelle = $lot->libelle;
@@ -182,7 +196,7 @@ class Degustation extends BaseDegustation {
                     $prelevement->preleve = 1;
                     $j++;
                 }
-                for($i=1; $i <= 2; $i++) {
+                for ($i = 1; $i <= 2; $i++) {
                     $prelevement = $operateur->prelevements->add();
                     $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", "__", $j, $j);
                     $prelevement->preleve = 0;
@@ -197,9 +211,9 @@ class Degustation extends BaseDegustation {
     public function getOperateursPrelevement() {
         $operateurs = array();
 
-        foreach($this->operateurs as $operateur) {
-            if(!count($operateur->getLotsPrelevement())) {
-                continue;                
+        foreach ($this->operateurs as $operateur) {
+            if (!count($operateur->getLotsPrelevement())) {
+                continue;
             }
 
             $operateurs[$operateur->getKey()] = $operateur;
@@ -211,8 +225,8 @@ class Degustation extends BaseDegustation {
     public function getOperateursReporte() {
         $operateurs = array();
 
-        foreach($this->operateurs as $operateur) {
-            if($operateur->isPrelever()) {
+        foreach ($this->operateurs as $operateur) {
+            if ($operateur->isPrelever()) {
                 continue;
             }
 
@@ -221,12 +235,12 @@ class Degustation extends BaseDegustation {
 
         return $operateurs;
     }
-    
+
     public function getOperateursDegustes() {
         $operateurs = array();
 
-        foreach($this->operateurs as $operateur) {
-            if(!$operateur->isDeguste()) {
+        foreach ($this->operateurs as $operateur) {
+            if (!$operateur->isDeguste()) {
                 continue;
             }
 
@@ -235,19 +249,33 @@ class Degustation extends BaseDegustation {
 
         return $operateurs;
     }
-    
+
+    public function getOperateursCourriers() {
+        $operateurs = array();
+
+        foreach ($this->operateurs as $operateur) {
+            if (!$operateur->isReadyForCourrier()) {
+                continue;
+            }
+
+            $operateurs[$operateur->getKey()] = $operateur;
+        }
+
+        return $operateurs;
+    }
+
     public function getNotes() {
-        
+
         $notes = array();
 
-        foreach($this->getOperateursDegustes() as $operateurDeguste) {
-           
-            
+        foreach ($this->getOperateursDegustes() as $operateurDeguste) {
+
+
             foreach ($operateurDeguste->prelevements as $prelevement) {
-                if($prelevement->anonymat_degustation){
-                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation] = new stdClass();
-                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
-                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
+                if ($prelevement->anonymat_degustation) {
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation] = new stdClass();
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->operateur = $operateurDeguste;
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->prelevement = $prelevement;
                 }
             }
         }
@@ -268,28 +296,28 @@ class Degustation extends BaseDegustation {
     public function updateOperateursFromPrevious() {
         $previous = $this->getPrevious();
 
-        if(!$previous) {
+        if (!$previous) {
 
             return null;
         }
 
-        foreach($previous->getOperateursReporte() as $o) {
-            $operateur = $this->addOperateurFromDRev("DREV-".$o->getKey()."-".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        foreach ($previous->getOperateursReporte() as $o) {
+            $operateur = $this->addOperateurFromDRev("DREV-" . $o->getKey() . "-" . ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
 
-            if(!$operateur) {
+            if (!$operateur) {
                 continue;
             }
 
             $operateur->reporte = 1;
 
-            if(count($operateur->getLotsPrelevement()) > 0) {
+            if (count($operateur->getLotsPrelevement()) > 0) {
 
                 continue;
             }
-            
-            foreach($o->lots as $lot) {
+
+            foreach ($o->lots as $lot) {
                 $lot_key = str_replace("cepage-", "cepage_", str_replace("appellation-ALSACE", "appellation_ALSACE", str_replace("_", "-", $lot->getKey())));
-                if(!$operateur->lots->exist($lot_key)) {
+                if (!$operateur->lots->exist($lot_key)) {
                     continue;
                 }
                 $operateur->lots->get($lot_key)->prelevement = 1;
@@ -302,10 +330,10 @@ class Degustation extends BaseDegustation {
 
         $previous = $this->getPrevious();
 
-        foreach($prelevements as $prelevement) {
+        foreach ($prelevements as $prelevement) {
             $operateur = $this->addOperateurFromDRev($prelevement->_id);
 
-            if($previous->operateurs->exist($operateur->cvi) && $previous->operateurs->get($operateur->cvi)->isPrelever()) {
+            if ($previous->operateurs->exist($operateur->cvi) && $previous->operateurs->get($operateur->cvi)->isPrelever()) {
                 $this->operateurs->remove($operateur->cvi);
             }
         }
@@ -313,29 +341,29 @@ class Degustation extends BaseDegustation {
 
     public function cleanOperateurs() {
         $operateurs_to_remove = array();
-        foreach($this->operateurs as $operateur) {
-            if($operateur->date && $operateur->agent) {
+        foreach ($this->operateurs as $operateur) {
+            if ($operateur->date && $operateur->agent) {
                 continue;
             }
 
             $operateurs_to_remove[] = $operateur->getKey();
         }
 
-        foreach($operateurs_to_remove as $key) {
+        foreach ($operateurs_to_remove as $key) {
             $this->operateurs->remove($key);
         }
     }
 
     public function addOperateurFromDRev($drev_id) {
         $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_JSON);
-        
-        if(!$drev) {
+
+        if (!$drev) {
 
             return null;
         }
 
-        if(!$drev->validation) {
-            
+        if (!$drev->validation) {
+
             return null;
         }
 
@@ -349,8 +377,8 @@ class Degustation extends BaseDegustation {
         $prelevement = $drev->prelevements->cuve_ALSACE;
         $operateur->date_demande = $prelevement->date;
 
-        foreach($prelevement->lots as $l_key => $l) {
-            if(!$l->nb_hors_vtsgn) {
+        foreach ($prelevement->lots as $l_key => $l) {
+            if (!$l->nb_hors_vtsgn) {
                 continue;
             }
             $lot = $operateur->lots->add(str_replace("/", "-", $l->hash_produit));

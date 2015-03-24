@@ -1,13 +1,13 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 <?php $notes = $degustation->getNotes(); ?>
+<?php $hasForm = isset($form) && $form; ?>
 
-<?php if (isset($form) && $form): ?>
-    <form action="" method="post" class="form-horizontal">
+<?php if ($hasForm): ?>
+    <form action="<?php echo url_for('degustation_courriers', $degustation); ?>" method="post" class="form-horizontal">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
     <?php endif; ?>
-
     <div class="row">    
         <div class="col-xs-12">        
 
@@ -18,9 +18,7 @@
                     <th>Libellé produit</th> 
                     <th>Notes</th> 
                     <th>Appreciation</th> 
-                    <?php if (isset($form) && $form): ?>
-                        <th>Type courrier</th> 
-                    <?php endif; ?>
+                    <th>Type courrier</th> 
                 </tr>
                 <?php foreach ($degustation->getNotes() as $note): ?>
                     <tr>
@@ -52,17 +50,36 @@
                             </ul>
                         </td> 
                         <td><?php echo $note->prelevement->appreciations; ?></td> 
-                        <?php if (isset($form) && $form): ?>
-                            <td>
+                        <td class="text-center">
+                        <?php if ($hasForm): ?>
                                 <?php echo $form[$note->prelevement->getHashForKey()]->renderError(); ?>
                                 <?php echo $form[$note->prelevement->getHashForKey()]->render(array('class' => 'form-control select2')); ?>
+                        <?php else: ?>
+                                <?php echo getTypeCourrier($note->prelevement); ?>
+                                <?php endif; ?>
                             </td>
-                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </table>
         </div>
     </div>
-    <?php if (isset($form) && $form): ?>
+    <div class="row row-margin">
+        <div class="col-xs-6 text-left">
+            <?php if ($hasForm): ?>
+                <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation') ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+            <?php else : ?>
+                <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation_visualisation', $degustation) ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+            <?php endif; ?>
+        </div>             
+        <div class="col-xs-6 text-right">
+            <?php if ($degustation->validation && $degustation->date > date('Y-m-d')): ?>
+                <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_organisation', $degustation) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier l'organisation des tournées</a>
+            <?php endif; ?>
+            <?php if ($hasForm): ?>
+                <button type="submit" class="pull-right btn btn-default btn-md btn-upper" >Enregistrer type courrier<span class="eleganticon arrow_carrot-right"></span></button>
+                <?php endif; ?>
+        </div>
+    </div>
+    <?php if ($hasForm): ?>
     </form>
 <?php endif; ?>

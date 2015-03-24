@@ -68,5 +68,5 @@ class DegustationOperateur extends BaseDegustationOperateur {
         }
 
         return false;
-    }
+    }   
 }

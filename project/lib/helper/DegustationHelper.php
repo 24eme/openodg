@@ -12,3 +12,10 @@ function getDatesPrelevements($degustation){
     setlocale(LC_ALL, 'fr_FR');
     return 'Du '.format_date($degustation->date_prelevement_debut, "D", "fr_FR").' au '.format_date($degustation->date_prelevement_fin, "D", "fr_FR");
 }
+
+function getTypeCourrier($prelevement){
+    if(!$prelevement->exist('type_courrier') || ! $prelevement->type_courrier){
+        return "<span class='glyphicon glyphicon-ban-circle' ></span>";
+    }
+    return DegustationClient::$types_courrier_libelle[$prelevement->type_courrier];
+}

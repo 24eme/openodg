@@ -13,7 +13,8 @@
 
 <?php if ($degustation->date < date('Y-m-d')): ?>
     <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($degustation->getNotes()); ?>&nbsp;vins dégustés</div>
-        <a class="pull-right btn btn-default btn-sm btn-upper" href="<?php echo url_for('degustation_courriers', $degustation); ?>">Créer courriers<span class="eleganticon arrow_carrot-right"></span></a>
+        <a class="btn btn-warning btn-sm btn-upper" href="<?php echo url_for('degustation_generation_courriers', $degustation); ?>"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Générer les courriers</a>
+        <a class="pull-right btn btn-default btn-sm btn-upper" href="<?php echo url_for('degustation_courriers', $degustation); ?>">Choisir types courriers<span class="eleganticon arrow_carrot-right"></span></a>
     </h2> 
     <?php include_partial('degustation/notes', array('degustation' => $degustation)); ?>
 <?php endif; ?>

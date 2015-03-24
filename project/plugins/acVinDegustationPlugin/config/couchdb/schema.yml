@@ -59,6 +59,7 @@ Degustation:
                               preleve: { }
                               commission: { type: integer }
                               appreciations: { }
+                              type_courrier: { required: false }
                               notes:
                                 type: collection
                                 definition:

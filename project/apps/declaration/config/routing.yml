@@ -735,6 +735,16 @@ degustation_courriers:
   requirements:
     sf_method: [get, post]  
 
+degustation_generation_courriers:
+  url: /degustation/generation-courrier/:id
+  param: { module: degustation, action: generationCourrier }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]  
+
 # Parcellaire
 
 parcellaire_delete:
