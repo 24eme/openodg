@@ -11,9 +11,9 @@
             <a data-filter="" 
                 href="" 
                 class="btn btn-default btn-default-step nav-filter active ajax">
-                Tous <span class="badge" style="color: #fff;"><?php echo count($degustation->operateurs) ?></span>
+                Tous <span class="badge" style="color: #fff;"><?php echo count($tournee->operateurs) ?></span>
             </a>
-            <?php foreach($degustation->agents as $agent): ?>
+            <?php foreach($tournee->agents as $agent): ?>
                 <?php foreach($agent->dates as $date): ?>
                 <a href="" class="btn btn-default btn-default-step nav-filter agent ajax"
                    data-state="<?php echo sprintf("%s-%s", $agent->getKey(), $date) ?>" 

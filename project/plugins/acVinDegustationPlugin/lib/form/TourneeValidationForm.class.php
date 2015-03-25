@@ -1,9 +1,9 @@
 <?php
 
-class DegustationValidationForm extends acCouchdbObjectForm {
+class TourneeValidationForm extends acCouchdbObjectForm {
 
     public function configure() {
-        $this->widgetSchema->setNameFormat('degustation_validation[%s]');
+        $this->widgetSchema->setNameFormat('tournee_validation[%s]');
     }
 
     protected function doUpdateObject($values) {

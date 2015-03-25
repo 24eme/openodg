@@ -1,6 +1,6 @@
 <?php
 
-class DegustationOperateursForm extends acCouchdbForm {
+class TourneeOperateursForm extends acCouchdbForm {
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
@@ -26,7 +26,7 @@ class DegustationOperateursForm extends acCouchdbForm {
     public function configure() {
         $operateurs = $this->getDocument()->operateurs->toArray();
 
-        usort($operateurs, 'DegustationOperateursForm::sortOperateursByDatePrelevement');
+        usort($operateurs, 'TourneeOperateursForm::sortOperateursByDatePrelevement');
 
         foreach($operateurs as $operateur) {
             $choices = array();
@@ -40,7 +40,7 @@ class DegustationOperateursForm extends acCouchdbForm {
 
         }
 
-        $this->widgetSchema->setNameFormat('operateurs[%s]');
+        $this->widgetSchema->setNameFormat('tournee_operateurs[%s]');
     }
 
     public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
@@ -62,6 +62,7 @@ class DegustationOperateursForm extends acCouchdbForm {
                 $operateursToDelete[] = $key;
                 continue;
             }
+
             $operateur = $this->getDocument()->operateurs->get($key);
             $operateur->resetLotsPrelevement();
             $lot = $operateur->lots->get($value);
@@ -70,7 +71,7 @@ class DegustationOperateursForm extends acCouchdbForm {
         }
 
         foreach($operateursToDelete as $key) {
-           $this->getDocument()->operateurs->remove($key); 
+           //$this->getDocument()->operateurs->remove($key); 
         }
     }
 

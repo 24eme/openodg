@@ -28,6 +28,7 @@ class DegustationOperateur extends BaseDegustationOperateur {
 
     public function consoliderInfos() {
         $compte = CompteClient::getInstance()->findByIdentifiant("E" . $this->getKey());
+        
         $this->email = $compte->email;
         $this->telephone_bureau = $compte->telephone_bureau;
         $this->telephone_prive = $compte->telephone_prive;

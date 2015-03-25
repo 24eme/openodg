@@ -1,5 +1,5 @@
-#Degustation
-Degustation:
+#Tournee
+Tournee:
   definition:
     fields:
       _id: { }
@@ -122,3 +122,70 @@ Degustation:
                     definition:
                       fields:
                         '*': { }
+
+DegustationOperateur:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      raison_sociale: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }
+      lng: { required: false }
+      date: { }
+      heure: { }
+      position: { required: true }
+      agent: { }
+      telephone_bureau: { }
+      telephone_prive: { }
+      telephone_mobile: { }
+      date_demande: { }
+      reporte: { type: integer }
+      prelevements:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  anonymat_prelevement: { }
+                  anonymat_degustation: { }
+                  cuve: { }
+                  preleve: { }
+                  commission: { type: integer }
+                  appreciations: { }
+                  notes:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              note: { }
+                              defauts:
+                                type: array_collection
+                                definition:
+                                  fields:
+                                    '*': { }
+      lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  nb: { }
+                  prelevement: { type: integer }
