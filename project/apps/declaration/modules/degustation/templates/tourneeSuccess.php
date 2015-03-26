@@ -49,7 +49,7 @@
         </div>
     </section>
     <section ng-repeat="operateur in operateurs" id="detail_mission_{{ operateur._id }}" ng-show="active == operateur._id" class="visible-print-block" style="page-break-after: always;">
-    <button ng-click="precedent(operateur)" class="btn btn-default btn-default-step btn-upper pull-left btn-sm"><span class="eleganticon arrow_carrot-left"></span></button>
+        <div href="" ng-click="precedent(operateur)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
         <div class="page-header text-center">
             <h2>Mission de {{ operateur.heure }}</h2>
         </div>
@@ -57,7 +57,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <address>
-                  <span class="lead"><strong>{{ operateur.raison_sociale }}</strong> ({{ operateur.cvi }})</span><br />
+                  <span class="lead"><strong>{{ operateur.raison_sociale }}</strong> {{ operateur.cvi }}</span><br />
                   <span class="lead">{{ operateur.adresse }}</span><br />
                   <span class="lead">{{ operateur.code_postal }} {{ operateur.commune }}</span><br /><br />
                   <span ng-if="operateur.telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_bureau }}">{{ operateur.telephone_bureau }}</a><br /></span>
@@ -69,7 +69,7 @@
         <div class="row">
             <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ operateur._id }}_{{ prelevement_key }}" ng-class="{ 'opacity_50': !prelevement.preleve }" class="col-xs-12">
                 <div class="page-header form-inline">
-                    <h3 ng-style="!prelevement.preleve && {'opacity': '0.8'}" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input ng-click="updatePreleve(prelevement)" id="preleve_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" /><span ng-click="togglePreleve(prelevement)">&nbsp;&nbsp;Lot de </span><span ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
+                    <h3 ng-style="!prelevement.preleve" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input ng-click="updatePreleve(prelevement)" id="preleve_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" /><span ng-click="togglePreleve(prelevement)">&nbsp;&nbsp;Lot de </span><span ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
                     <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
                     <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="">(changer)</a></small>
                     <small><a ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit" ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href="">(définir)</a></small>
@@ -86,7 +86,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-group col-xs-12 col-sm-6 lead" >
-                                    <label class="control-label col-xs-5 col-sm-7 col-md-5" for="preleve_{{ operateur._id }}_{{ prelevement_key }}"><strong>N°&nbsp;d'anonymat</strong>&nbsp;:</label>
+                                    <label class="control-label col-xs-5 col-sm-7 col-md-5" for="preleve_{{ operateur._id }}_{{ prelevement_key }}"><strong>N°&nbsp;d'anon.</strong>&nbsp;:</label>
                                     <span class="control-label col-xs-7 col-sm-5 col-md-7" style="font-weight: normal; text-align: left;">{{ prelevement.anonymat_prelevement }}</span>
                                 </div>
                                 <div ng-class="{ 'has-error': prelevement.erreurs['cuve'] }" class="form-group col-xs-12 col-sm-6 lead">
