@@ -18,8 +18,8 @@
                             <strong class="lead" style="font-weight: bold;">{{ operateur.heure }}</strong>
                         </div>
                         <div class="col-xs-8 col-sm-10">
-                        <strong class="lead">{{ operateur.raison_sociale }}</strong><br />
-                        {{ operateur.adresse }}, {{ operateur.code_postal }} {{ operateur.commune }}
+                        <strong class="lead">{{ operateur.raison_sociale }}</strong><span class="text-muted hidden-xs"> {{ operateur.cvi }}</span><br />
+                        {{ operateur.adresse }}, {{ operateur.code_postal }} {{ operateur.commune }}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (operateur.telephone_mobile) ? operateur.telephone_mobile : operateur.telephone_bureau }}</span>
                         </div>
                         <div class="col-xs-2 col-sm-1 text-right">
                             <span ng-if="!operateur.termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 5px;"></span>
@@ -29,9 +29,9 @@
                 </div>
             </div>
         </div>
-        <!--<div class="alert alert-warning col-xs-12" style="margin-top: 10px;">
+        <div class="alert alert-warning col-xs-12" style="margin-top: 10px;">
         Votre version n'est plus à jour <a href="" ng-click="reload()">Recharger les données</a></a>
-        </div>-->
+        </div>
         <div ng-show="!state" class="alert alert-warning col-xs-12" style="margin-top: 10px;">
         Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_tournee", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
         </div>
@@ -67,12 +67,14 @@
             </div>
         </div>
         <div class="row">
-            <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ operateur._id }}_{{ prelevement_key }}" ng-class="{ 'opacity_50': !prelevement.preleve }" class="col-xs-12">
+            <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-12">
                 <div class="page-header form-inline">
-                    <h3 ng-style="!prelevement.preleve" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }"><input ng-click="updatePreleve(prelevement)" id="preleve_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" /><span ng-click="togglePreleve(prelevement)">&nbsp;&nbsp;Lot de </span><span ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
+                    <h3 ng-style="!prelevement.preleve" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }">
+                    <span class="ng-hide visible-print-inline"><span class="glyphicon glyphicon-unchecked" style="font-size: 20px;"></span></span><a ng-show="prelevement.preleve" class="text-muted" href="" ng-click="togglePreleve(prelevement)"><span class="glyphicon glyphicon-check hidden-print" style="font-size: 20px;"></span>&nbsp;</a><a ng-show="!prelevement.preleve" class="text-muted" href="" ng-click="togglePreleve(prelevement)"><span class="glyphicon glyphicon-unchecked hidden-print" style="font-size: 20px;"></span>&nbsp;</a>
+                    <!--<input ng-click="updatePreleve(prelevement)" id="preleve_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.preleve" type="checkbox" ng-true-value="1" ng-false-value="0" class="hidden-print" />--><span ng-show="!prelevement.show_produit && prelevement.hash_produit" class="lead" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
                     <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
-                    <small><a ng-show="!prelevement.show_produit && prelevement.hash_produit" ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href="">(changer)</a></small>
-                    <small><a ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit" ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href="">(définir)</a></small>
+                    <small ng-show="!prelevement.show_produit && prelevement.hash_produit">&nbsp;&nbsp;<a ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href=""><span class="glyphicon glyphicon-pencil"></span>&nbsp;Changer</a></small>
+                    <small ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit">&nbsp;<a ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href=""><span class="glyphicon glyphicon-pencil"></span>&nbsp;Définir</a></small>
                     </h3>
                 </div>
                 <div ng-show="prelevement.preleve" class="visible-print-block" class="row">
