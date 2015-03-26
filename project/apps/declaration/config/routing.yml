@@ -744,6 +744,17 @@ degustation_generation_courriers:
     type:     object
   requirements:
     sf_method: [get, post]  
+    
+    
+degustation_courrier_prelevement:
+  url: /degustation/prelevement-courrier/:id/:hash_prelevement
+  param: { module: degustation, action: courrierPrelevement }
+  class: DegustationRoute
+  options:
+    model:    DegustationRoute
+    type:     object
+  requirements:
+    sf_method: [get, post] 
 
 # Parcellaire
 

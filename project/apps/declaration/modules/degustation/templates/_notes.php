@@ -51,13 +51,19 @@
                         </td> 
                         <td><?php echo $note->prelevement->appreciations; ?></td> 
                         <td class="text-center">
-                        <?php if ($hasForm): ?>
+                            <?php if ($hasForm): ?>
                                 <?php echo $form[$note->prelevement->getHashForKey()]->renderError(); ?>
                                 <?php echo $form[$note->prelevement->getHashForKey()]->render(array('class' => 'form-control select2')); ?>
-                        <?php else: ?>
-                                <?php echo getTypeCourrier($note->prelevement); ?>
+                            <?php else: ?>        
+                                <?php if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier): ?>
+                                    <a href="<?php echo url_for('degustation_courrier_prelevement', array('id' => $degustation->_id, 'hash_prelevement' => $note->prelevement->getHashForKey())) ?>">
+                                    <?php endif; ?>
+                                        <?php echo getTypeCourrier($note->prelevement); ?>
+                                    <?php if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier): ?>
+                                    </a>
                                 <?php endif; ?>
-                            </td>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </table>

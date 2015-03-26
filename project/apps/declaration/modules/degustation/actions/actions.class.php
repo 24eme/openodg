@@ -553,14 +553,34 @@ class degustationActions extends sfActions {
             }
         }
     }
-    
+
     public function executeGenerationCourrier(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
         $courriers = $this->degustation->getPrelevementsReadyForCourrier();
         foreach ($courriers as $hash => $prelevement) {
-            var_dump($hash,$prelevement->type_courrier); 
+            var_dump($hash, $prelevement->type_courrier);
         }
         exit;
+    }
+
+    public function executeCourrierPrelevement(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $hash_prelevement = $request['hash_prelevement'];
+        $prelevement = $degustation->get(str_replace('-', '/', $hash_prelevement));
+        $operateur = $prelevement->getParent()->getParent();
+         $this->document = new ExportDegustationPDF($degustation,$operateur,$prelevement, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+
+        $this->document->generate();
+
+        $this->document->addHeaders($this->getResponse());
+
+        return $this->renderText($this->document->output());
+        
     }
 
     protected function getEtape($doc, $etape) {
