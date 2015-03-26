@@ -378,6 +378,7 @@ class degustationActions extends sfActions {
         $this->agent = $this->tournee->agents->get($request->getParameter('agent'));
         $this->date = $request->getParameter('date');
         $this->operateurs = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
+        $this->reload = $request->getParameter('reload', 0);
         $this->produits = array();
         foreach($this->tournee->getProduits() as $produit) {
             $this->produits[$produit->getHash()] = $produit->getLibelleLong();

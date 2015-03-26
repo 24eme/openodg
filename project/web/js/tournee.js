@@ -13,6 +13,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.transmission = false;
     $scope.transmission_progress = false;
     $scope.state = true;
+    $scope.loaded = false;
     
     var local_storage_name = $rootScope.url_json;
 
@@ -58,21 +59,25 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.testState();
     }
 
-    $scope.reload = function() {
-        localDelete();
-        document.location.reload();
-    }
-
     var intervalState = setInterval(function() {
         $scope.testState();
     }, 200000);
 
+    if($scope.reload) {
+        localDelete();
+    }
+
     $scope.operateurs = localStorageService.get(local_storage_name);
+
+    if($scope.operateurs) {
+        $scope.loaded = true;
+    }
 
     if(!$scope.operateurs) {
         $http.get($rootScope.url_json)
         .success(function(data){
             $scope.operateurs = data;
+            $scope.loaded = true;
         });
     }
 
@@ -105,7 +110,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.precedent(operateur);
 
         localSave();
-        transmettre();
+        $scope.transmettre();
     }
 
     $scope.valide = function(operateur) {
@@ -158,6 +163,10 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     $scope.updatePreleve = function(prelevement) {
         localSave();    
+    }
+
+    $scope.print = function() {
+        window.print();
     }
 }]);
 

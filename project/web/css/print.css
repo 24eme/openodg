@@ -118,11 +118,17 @@ section.container-fluid {
     padding: 0 !important;
 }
 
-.page-header {
-    margin-top: 0 !important;
+.print-page-header {
+    margin-top: 0px !important;
+    margin-bottom: 6px !important;
 }
 
 h2, h3 {
     margin-top: 0 !important;
+}
+
+.print-list-group-condensed a {
+    padding-top: 2px;
+    padding-bottom: 3px;
 }
 
