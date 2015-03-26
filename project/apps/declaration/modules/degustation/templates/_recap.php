@@ -12,7 +12,7 @@
             <?php foreach ($tournee->getTournees() as $date_compteid => $t):  ?>
              <tr>
                  <td><?php if(str_replace("-", "", $t->date)) { echo ucfirst(format_date($t->date, "P", "fr_FR")); }; ?></td>
-                 <td><a href="<?php echo url_for('degustation_tournee', array('id' => $t->_id, 'agent' => $t->id_agent, 'date' => $t->date)); ?>">
+                 <td><a href="<?php echo url_for('degustation_tournee', array('sf_subject' => $tournee, 'agent' => $t->id_agent, 'date' => $t->date)); ?>">
                      <?php echo "Tournée ".$t->nom_agent." (".count($t->operateurs)." visites)"; ?></a></td> 
             </tr>
             <?php endforeach; ?>

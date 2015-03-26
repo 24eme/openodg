@@ -7,19 +7,26 @@
  * @property string $_id
  * @property string $_rev
  * @property string $type
- * @property string $etape
- * @property string $identifiant
+ * @property string $raison_sociale
+ * @property string $cvi
+ * @property string $adresse
+ * @property string $commune
+ * @property string $code_postal
+ * @property string $email
+ * @property string $lat
+ * @property string $lon
+ * @property string $lng
  * @property string $date
- * @property string $appellation
- * @property string $appellation_libelle
- * @property string $date_prelevement_debut
- * @property string $date_prelevement_fin
- * @property integer $nombre_commissions
  * @property string $heure
- * @property string $lieu
- * @property acCouchdbJson $operateurs
- * @property acCouchdbJson $degustateurs
- * @property acCouchdbJson $agents
+ * @property string $position
+ * @property string $agent
+ * @property string $telephone_bureau
+ * @property string $telephone_prive
+ * @property string $telephone_mobile
+ * @property string $date_demande
+ * @property integer $reporte
+ * @property acCouchdbJson $prelevements
+ * @property acCouchdbJson $lots
 
  * @method string get_id()
  * @method string set_id()
@@ -27,32 +34,46 @@
  * @method string set_rev()
  * @method string getType()
  * @method string setType()
- * @method string getEtape()
- * @method string setEtape()
- * @method string getIdentifiant()
- * @method string setIdentifiant()
+ * @method string getRaisonSociale()
+ * @method string setRaisonSociale()
+ * @method string getCvi()
+ * @method string setCvi()
+ * @method string getAdresse()
+ * @method string setAdresse()
+ * @method string getCommune()
+ * @method string setCommune()
+ * @method string getCodePostal()
+ * @method string setCodePostal()
+ * @method string getEmail()
+ * @method string setEmail()
+ * @method string getLat()
+ * @method string setLat()
+ * @method string getLon()
+ * @method string setLon()
+ * @method string getLng()
+ * @method string setLng()
  * @method string getDate()
  * @method string setDate()
- * @method string getAppellation()
- * @method string setAppellation()
- * @method string getAppellationLibelle()
- * @method string setAppellationLibelle()
- * @method string getDatePrelevementDebut()
- * @method string setDatePrelevementDebut()
- * @method string getDatePrelevementFin()
- * @method string setDatePrelevementFin()
- * @method integer getNombreCommissions()
- * @method integer setNombreCommissions()
  * @method string getHeure()
  * @method string setHeure()
- * @method string getLieu()
- * @method string setLieu()
- * @method acCouchdbJson getOperateurs()
- * @method acCouchdbJson setOperateurs()
- * @method acCouchdbJson getDegustateurs()
- * @method acCouchdbJson setDegustateurs()
- * @method acCouchdbJson getAgents()
- * @method acCouchdbJson setAgents()
+ * @method string getPosition()
+ * @method string setPosition()
+ * @method string getAgent()
+ * @method string setAgent()
+ * @method string getTelephoneBureau()
+ * @method string setTelephoneBureau()
+ * @method string getTelephonePrive()
+ * @method string setTelephonePrive()
+ * @method string getTelephoneMobile()
+ * @method string setTelephoneMobile()
+ * @method string getDateDemande()
+ * @method string setDateDemande()
+ * @method integer getReporte()
+ * @method integer setReporte()
+ * @method acCouchdbJson getPrelevements()
+ * @method acCouchdbJson setPrelevements()
+ * @method acCouchdbJson getLots()
+ * @method acCouchdbJson setLots()
  
  */
  

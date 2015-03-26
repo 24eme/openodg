@@ -70,4 +70,19 @@ class DegustationOperateur extends BaseDegustationOperateur {
 
         return false;
     }
+
+    public function updateDegustation($degustation) {
+        $datas = $this->toArray(true, false);
+        foreach($datas as $key => $data) {
+            if($key == 'degustation') {
+                continue;
+            }
+            $degustation->set($key, $data);
+        }
+    }
+
+    public function getDegustationObject() {
+
+        return DegustationClient::getInstance()->find($this->degustation);
+    }
 }

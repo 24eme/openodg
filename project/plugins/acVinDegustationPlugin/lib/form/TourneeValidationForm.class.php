@@ -10,6 +10,8 @@ class TourneeValidationForm extends acCouchdbObjectForm {
         parent::doUpdateObject($values);
 
         $this->getObject()->validation = date('Y-m-d');
+        $this->getObject()->generatePrelevements();
+        $this->getObject()->generateDegustations();
     }
 
 }

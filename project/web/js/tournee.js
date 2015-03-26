@@ -20,10 +20,14 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         localStorageService.set(local_storage_name, angular.toJson($scope.operateurs));
     }
 
+    var localDelete = function() {
+        localStorageService.remove(local_storage_name);
+    }
+
     var remoteSave = function(callBack) {
         $http.post($rootScope.url_json, angular.toJson($scope.operateurs))
         .success(function(data){
-            callBack(data.success);
+            callBack(data);
         }).error(function(data) {
             callBack(false);
         });
@@ -38,12 +42,25 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.transmettre = function() {
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        remoteSave(function(success) {
+        $scope.transmission_result = true;
+        remoteSave(function(data) {
+            for(id_degustation in data) {
+                var revision = data[id_degustation];
+                if(!revision && $scope.transmission_result) {
+                    $scope.transmission_result = false;
+                } else {
+                    $scope.operateurs[id_degustation]._rev = revision;
+                }
+            }
             $scope.transmission = true;
-            $scope.transmission_result = success;
             $scope.transmission_progress = false;
         });
         $scope.testState();
+    }
+
+    $scope.reload = function() {
+        localDelete();
+        document.location.reload();
     }
 
     var intervalState = setInterval(function() {
@@ -88,7 +105,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.precedent(operateur);
 
         localSave();
-        remoteSave();
+        transmettre();
     }
 
     $scope.valide = function(operateur) {

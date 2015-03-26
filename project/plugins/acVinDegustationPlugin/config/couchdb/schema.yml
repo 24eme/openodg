@@ -25,6 +25,7 @@ Tournee:
               class: DegustationOperateur
               definition:
                 fields:
+                  degustation: { }
                   raison_sociale: { }
                   cvi: { }
                   adresse: { }
@@ -123,12 +124,15 @@ Tournee:
                       fields:
                         '*': { }
 
-DegustationOperateur:
+Degustation:
   definition:
     fields:
       _id: {  }
       _rev: {  }
       type: {  }
+      appellation: { }
+      date_degustation: { }
+      identifiant: { }
       raison_sociale: { }
       cvi: { }
       adresse: { }

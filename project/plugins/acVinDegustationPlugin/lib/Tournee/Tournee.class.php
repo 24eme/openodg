@@ -158,36 +158,44 @@ class Tournee extends BaseTournee {
     }
 
     public function generatePrelevements() {
-        $j = 10;
-
         foreach($this->operateurs as $operateur) {
             if(count($operateur->prelevements) > 0) {
                 return false;
             }
         }
 
+        $j = 1;
+        
         foreach ($this->operateurs as $operateur) {
             $operateur->cvi = $operateur->getKey();
             $compte = CompteClient::getInstance()->findByIdentifiant("E" . $operateur->cvi);
             $operateur->telephone_bureau = $compte->telephone_bureau;
             $operateur->telephone_prive = $compte->telephone_prive;
             $operateur->telephone_mobile = $compte->telephone_mobile;
+            $operateur->remove('prelevements');
+            $operateur->add('prelevements');
+            if(count($operateur->prelevements) > 0) {
+                continue;
+            }
             foreach($operateur->lots as $lot) {
+                if(!$lot->prelevement) {
+                    continue;
+                }
                 for($i=0; $i < $lot->nb; $i++) {
                     $prelevement = $operateur->prelevements->add();
                     $prelevement->hash_produit = $lot->hash_produit;
                     $prelevement->libelle = $lot->libelle;
                     $code_cepage = substr($lot->hash_produit, -2);
-                    $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", $code_cepage, $j, $j);
+                    $prelevement->anonymat_prelevement = sprintf("%s%03d%03X", $code_cepage, $j, $j + 2560);
                     $prelevement->preleve = 1;
                     $j++;
                 }
-                for($i=1; $i <= 2; $i++) {
-                    $prelevement = $operateur->prelevements->add();
-                    $prelevement->anonymat_prelevement = sprintf("%s%03d%02X", "__", $j, $j);
-                    $prelevement->preleve = 0;
-                    $j++;
-                }
+            }
+            for($i=1; $i <= 2; $i++) {
+                $prelevement = $operateur->prelevements->add();
+                $prelevement->anonymat_prelevement = sprintf("%s%03d%03X", "__", $j, $j + 2560);
+                $prelevement->preleve = 0;
+                $j++;
             }
         }
 
@@ -323,6 +331,15 @@ class Tournee extends BaseTournee {
 
         foreach($operateurs_to_remove as $key) {
             $this->operateurs->remove($key);
+        }
+    }
+
+    public function generateDegustations() {
+        foreach($this->operateurs as $operateur) {
+            $degustation = DegustationClient::getInstance()->findOrCreate($operateur->cvi, $this->date, $this->appellation);
+            $operateur->updateDegustation($degustation);
+            $degustation->save();
+            $operateur->degustation = $degustation->_id;
         }
     }
 
