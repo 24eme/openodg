@@ -35,11 +35,11 @@ class ExportDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        
+        return "Association des viticulteurs d'alsace";
     }
 
     protected function getHeaderSubtitle() {
-        
+        return "Le syndicat général de défense des Appellations";
     }
 
     public function getFileName($with_rev = false) {

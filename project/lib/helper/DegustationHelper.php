@@ -42,8 +42,8 @@ function getExplicationsPDF($prelevement) {
          case DegustationClient::COURRIER_TYPE_OPE:
             return "<p>Votre vin a fait l'objet d'une évaluation qui a mis en évidence une non-conformité. N'hésitez pas à nous solliciter si vous avez besoin d'une appui technique. Ceci dans le but de vous aider à déterminer l'origine de cette non-conformité ou simplement pour vous apporter un éclairage sur le cahier des charges.</p>";
          case DegustationClient::COURRIER_TYPE_VISITE:
-            return "<p>Afin de dicuter avec vous des remarques attribuées à votre échantillon, nous vous proposons de vous rencontrer à votre chai</p>
-<p class='font-weight: bold;'>Le date entre X et X</p><br/>
+            return "<p>Afin de discuter avec vous des remarques attribuées à votre échantillon, nous vous proposons de vous rencontrer à votre chai</p>
+<p><strong>Le Vendredi 27 Mars 2015 entre 9h et 10h</strong></p><br/>
 <p>En cas d'empêchement, merci de nous le faire savoir au 03.89.20.16.58 (Martine Parisot).</p>";
         default:
             break;
