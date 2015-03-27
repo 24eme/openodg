@@ -74,14 +74,15 @@
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <div style="border-bottom: 0;" class="page-header print-page-header">
+                <div style="border-bottom: 0;" class="page-header">
                     <h3 style="margin-top: 15px" class="text-warning">
                     <a class="text-warning" href="" ng-click="toggleAucunPrelevement(operateur)">
-                    <span ng-show="!operateur.aucun_prelevement" class="glyphicon glyphicon-unchecked hidden-print" style="font-size: 20px;"></span><span ng-show="operateur.aucun_prelevement" class="glyphicon glyphicon-check hidden-print" style="font-size: 20px;"></span>&nbsp;&nbsp;<strong class="lead text-warning">Aucun prélèvement</strong>
+                    <span class="ng-hide visible-print-inline"><span class="glyphicon glyphicon-unchecked" style="font-size: 20px;"></span></span>
+                    <span ng-show="!operateur.aucun_prelevement" class="glyphicon glyphicon-unchecked hidden-print" style="font-size: 20px;"></span><span ng-show="operateur.aucun_prelevement" class="glyphicon glyphicon-check hidden-print" style="font-size: 20px;"></span>&nbsp;&nbsp;<strong class="lead text-warning">Aucun prélèvement</strong><span class="ng-hide visible-print-inline lead"> : Report - Plus de vin - Soucis</span>
                     </a>
                     </h3>
                 </div>
-                <div ng-show="operateur.aucun_prelevement" class="form-horizontal">
+                <div ng-show="operateur.aucun_prelevement" class="form-horizontal hidden-print">
                     <div class="form-group col-xs-12" >
                         <label class="control-label col-xs-3 lead" for="motif_preleve_{{ operateur._id }">Motif :</label>
                         <div class="col-xs-9">
