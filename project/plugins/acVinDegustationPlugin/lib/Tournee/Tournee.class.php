@@ -185,15 +185,14 @@ class Tournee extends BaseTournee {
                     $prelevement = $operateur->prelevements->add();
                     $prelevement->hash_produit = $lot->hash_produit;
                     $prelevement->libelle = $lot->libelle;
-                    $code_cepage = substr($lot->hash_produit, -2);
-                    $prelevement->anonymat_prelevement = sprintf("%s%03d%03X", $code_cepage, $j, $j + 2560);
+                    $prelevement->anonymat_prelevement = $j;
                     $prelevement->preleve = 1;
                     $j++;
                 }
             }
             for($i=1; $i <= 2; $i++) {
                 $prelevement = $operateur->prelevements->add();
-                $prelevement->anonymat_prelevement = sprintf("%s%03d%03X", "__", $j, $j + 2560);
+                $prelevement->anonymat_prelevement = $j;
                 $prelevement->preleve = 0;
                 $j++;
             }

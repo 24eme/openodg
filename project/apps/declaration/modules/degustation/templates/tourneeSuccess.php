@@ -116,7 +116,7 @@
                             <div class="row">
                                 <div class="form-group col-xs-12 col-sm-6 lead" >
                                     <label class="control-label col-xs-5 col-sm-7 col-md-5" for="preleve_{{ operateur._id }}_{{ prelevement_key }}"><strong>N°&nbsp;d'anon.</strong>&nbsp;:</label>
-                                    <span class="control-label col-xs-7 col-sm-5 col-md-7" style="font-weight: normal; text-align: left;">{{ prelevement.anonymat_prelevement }}</span>
+                                    <span class="control-label col-xs-7 col-sm-5 col-md-7" style="font-weight: normal; text-align: left;">{{ prelevement.anonymat_prelevement_complet }}</span>
                                 </div>
                                 <div ng-class="{ 'has-error': prelevement.erreurs['cuve'] }" class="form-group col-xs-12 col-sm-6 lead">
                                     <label for="cuve_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-5 control-label">N°&nbsp;Cuves&nbsp;:</label>

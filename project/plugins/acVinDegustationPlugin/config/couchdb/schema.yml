@@ -51,12 +51,14 @@ Tournee:
                       fields:
                         '*':
                           type: collection
+                          class: DegustationPrelevement
                           definition:
                             fields:
                               hash_produit: { }
                               libelle: { }
                               anonymat_prelevement: { }
                               anonymat_degustation: { }
+                              anonymat_prelevement_complet: { }
                               cuve: { }
                               preleve: { }
                               commission: { type: integer }
@@ -164,6 +166,7 @@ Degustation:
                   hash_produit: { }
                   libelle: { }
                   anonymat_prelevement: { }
+                  anonymat_prelevement_complet: { }
                   anonymat_degustation: { }
                   cuve: { }
                   preleve: { }

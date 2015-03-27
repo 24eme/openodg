@@ -25,6 +25,17 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         localStorageService.remove(local_storage_name);
     }
 
+    var getOperateurById = function(id) {
+        for(key in $scope.operateurs) {
+            if($scope.operateurs[key]._id == id) {
+
+                return $scope.operateurs[key];
+            }
+        }
+
+        return null;
+    }
+
     var remoteSave = function(callBack) {
         $http.post($rootScope.url_json, angular.toJson($scope.operateurs))
         .success(function(data){
@@ -50,7 +61,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
                 if(!revision && $scope.transmission_result) {
                     $scope.transmission_result = false;
                 } else {
-                    $scope.operateurs[id_degustation]._rev = revision;
+                    getOperateurById(id_degustation)._rev = revision;
                 }
             }
             $scope.transmission = true;
@@ -108,7 +119,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.updateProduit = function(prelevement) {
         prelevement.libelle = $rootScope.produits[prelevement.hash_produit];
         var code_cepage = prelevement.hash_produit.substr(-2);
-        prelevement.anonymat_prelevement = code_cepage + prelevement.anonymat_prelevement.substr(2, prelevement.anonymat_prelevement.length);
+        prelevement.anonymat_prelevement_complet = code_cepage + prelevement.anonymat_prelevement_complet.substr(2, prelevement.anonymat_prelevement_complet.length);
         prelevement.show_produit = false;
         prelevement.preleve = 1;
         localSave();

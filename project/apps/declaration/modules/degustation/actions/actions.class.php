@@ -394,7 +394,7 @@ class degustationActions extends sfActions {
 
         foreach($this->operateurs as $operateur) {
             $degustation = $operateur->getDegustationObject();
-            $json[$degustation->_id] = $degustation->toJson();
+            $json[] = $degustation->toJson();
         }
 
         if(!$request->isMethod(sfWebRequest::POST)) {
@@ -407,7 +407,7 @@ class degustationActions extends sfActions {
 
         $json_return = array();
 
-        foreach($json as $key => $json_degustation) {
+        foreach($json as $json_degustation) {
             if(!$this->tournee->operateurs->exist($json_degustation->cvi)) {
                 continue;
             }
@@ -433,7 +433,6 @@ class degustationActions extends sfActions {
                 $p->hash_produit = $prelevement->hash_produit;                
                 $p->libelle = $prelevement->libelle;                
                 $p->preleve = $prelevement->preleve;
-
             }
 
             $degustation->save();
