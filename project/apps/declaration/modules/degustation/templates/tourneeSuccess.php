@@ -17,7 +17,7 @@
         <div class="row" ng-show="loaded">
             <div class="col-xs-12">
                 <div class="list-group print-list-group-condensed">
-                    <a ng-repeat="operateur in operateurs" href="" ng-click="updateActive(operateur._id)" ng-class="{ 'list-group-item-success': operateur.termine && !operateur.motif_non_prelevement, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && operateur.motif_non_prelevement}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
+                    <a ng-repeat="operateur in operateurs | orderBy: position" href="" ng-click="updateActive(operateur._id)" ng-class="{ 'list-group-item-success': operateur.termine && !operateur.motif_non_prelevement, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && operateur.motif_non_prelevement}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                         <div class="col-xs-2 col-sm-1 text-left">
                             <strong class="lead" style="font-weight: bold;">{{ operateur.heure }}</strong>
                         </div>
@@ -101,7 +101,7 @@
                     <span ng-show="!prelevement.show_produit && prelevement.hash_produit" class="lead" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
                     <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
                     <small ng-show="!prelevement.show_produit && prelevement.hash_produit">&nbsp;&nbsp;<a ng-click="prelevement.show_produit = true" ng-if="prelevement.hash_produit" class="text-warning hidden-print" href=""><span class="glyphicon glyphicon-pencil"></span>&nbsp;Changer</a></small>
-                    <small ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit">&nbsp;<a ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href=""><span class="glyphicon glyphicon-pencil"></span>&nbsp;Définir</a></small>
+                    <small ng-show="!prelevement.show_produit && !prelevement.preleve && !prelevement.hash_produit">&nbsp;<a ng-click="prelevement.show_produit = 1" class="text-warning hidden-print" href=""><span class="glyphicon glyphicon-pencil"></span>&nbsp;Définir le cépage</a></small>
                     </h3>
                 </div>
                 <div ng-show="prelevement.preleve" class="visible-print-block" class="row">

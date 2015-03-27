@@ -419,17 +419,21 @@ class degustationActions extends sfActions {
                 continue;
             }
 
+            $degustation->motif_non_prelevement = ($json_degustation->motif_non_prelevement) ? $json_degustation->motif_non_prelevement : null;
+
             foreach($json_degustation->prelevements as $prelevement_key => $prelevement) {
                 if($degustation->prelevements->exist($prelevement_key)) {
                     $p = $degustation->prelevements->get($prelevement_key);
                 } else {
                     $p = $degustation->prelevements->add();
                 }
+
                 $p->cuve = $prelevement->cuve;  
                 $p->anonymat_prelevement = $prelevement->anonymat_prelevement;                
                 $p->hash_produit = $prelevement->hash_produit;                
                 $p->libelle = $prelevement->libelle;                
                 $p->preleve = $prelevement->preleve;
+
             }
 
             $degustation->save();

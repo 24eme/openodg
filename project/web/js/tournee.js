@@ -77,6 +77,21 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $http.get($rootScope.url_json)
         .success(function(data){
             $scope.operateurs = data;
+            for(operateur_key in $scope.operateurs) {
+                var operateur = $scope.operateurs[operateur_key];
+                var termine = false;
+                if(operateur.motif_non_prelevement) {
+                    termine = true;
+                    operateur.aucun_prelevement = true;
+                }
+                for(prelevement_key in operateur.prelevements) {
+                    var prelevement = operateur.prelevements[prelevement_key];
+                    if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
+                        termine = true;
+                    }
+                }
+                operateur.termine = termine;
+            }
             $scope.loaded = true;
         });
     }

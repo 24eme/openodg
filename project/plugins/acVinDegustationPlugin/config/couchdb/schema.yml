@@ -43,7 +43,8 @@ Tournee:
                   telephone_prive: { }
                   telephone_mobile: { }
                   date_demande: { }
-                  reporte: { type: integer }
+                  reporte: { type: integer, required: false }
+                  motif_non_prelevement: { }
                   prelevements:
                     type: array_collection
                     definition:
@@ -150,7 +151,8 @@ Degustation:
       telephone_prive: { }
       telephone_mobile: { }
       date_demande: { }
-      reporte: { type: integer }
+      reporte: { type: integer, required: false }
+      motif_non_prelevement: { }
       prelevements:
         type: array_collection
         definition:
