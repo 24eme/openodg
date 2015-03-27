@@ -102,7 +102,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.terminer = function(operateur) {
         $scope.valide(operateur);
         
-        if(operateur.erreurs) {
+        if(operateur.has_erreurs) {
 
             return;
         }
@@ -115,23 +115,38 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     $scope.valide = function(operateur) {
         operateur.termine = false;
-        operateur.erreurs = false;
+        operateur.has_erreurs = false;
+        operateur.erreurs = [];
+        var nb = 0;
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
             prelevement.erreurs = [];
             if(prelevement.preleve && !prelevement.cuve) {
                 prelevement.erreurs['cuve'] = true;
-                operateur.erreurs = true;
+                operateur.has_erreurs = true;
             }
             if(prelevement.preleve && !prelevement.hash_produit) {
                 prelevement.erreurs['hash_produit'] = true;
-                operateur.erreurs = true;
+                operateur.has_erreurs = true;
             }
+            if(prelevement.preleve) {
+                nb++;
+            }
+        }
+
+        if(!nb && !operateur.aucun_prelevement) {
+            operateur.has_erreurs = true;
+            operateur.erreurs["aucun_prelevement"] = true;
+        }
+
+        if(operateur.aucun_prelevement && !operateur.motif_non_prelevement) {
+            operateur.has_erreurs = true;
+            operateur.erreurs["motif"] = true;
         }
 
         localSave();
 
-        if(operateur.erreurs) {
+        if(operateur.has_erreurs) {
 
             return;
         }
@@ -153,16 +168,44 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     $scope.togglePreleve = function(prelevement) {
         if(prelevement.preleve) {
-            prelevement.preleve=0;
+            prelevement.preleve = 0;
         } else {
-            prelevement.preleve=1;
+            prelevement.preleve = 1;
         }
 
-        updatePreleve(prelevement);
+        $scope.updatePreleve(prelevement);
+    }
+
+    $scope.toggleAucunPrelevement = function(operateur) {
+        if(operateur.erreurs) {
+            operateur.erreurs["aucun_prelevement"] = false;
+        }
+        if(operateur.aucun_prelevement) {
+            operateur.aucun_prelevement = 0;
+            for(prelevement_key in operateur.prelevements) {
+                if(operateur.prelevements[prelevement_key].cuve) {
+                    operateur.prelevements[prelevement_key].preleve = 1;
+                }
+            }
+            operateur.motif_non_prelevement = null;
+        } else {
+            operateur.aucun_prelevement = 1;
+            for(prelevement_key in operateur.prelevements) {
+                operateur.prelevements[prelevement_key].preleve = 0;
+            }
+        }
+        localSave();    
+    }
+
+    $scope.updateMotif = function(operateur) {
+        if(operateur.erreurs) {
+            operateur.erreurs["motif"] = false;
+        }
+        localSave();
     }
 
     $scope.updatePreleve = function(prelevement) {
-        localSave();    
+        localSave();
     }
 
     $scope.print = function() {

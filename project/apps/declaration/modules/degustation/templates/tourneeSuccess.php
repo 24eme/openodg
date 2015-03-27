@@ -4,7 +4,7 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('tournee.js?201503090248'); ?>
-<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"'>
+<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
 <div ng-controller="tourneeCtrl">
     
     <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
@@ -17,13 +17,15 @@
         <div class="row" ng-show="loaded">
             <div class="col-xs-12">
                 <div class="list-group print-list-group-condensed">
-                    <a ng-repeat="operateur in operateurs" href="" ng-click="updateActive(operateur._id)" ng-class="{ 'list-group-item-success': operateur.termine, 'list-group-item-danger': (operateur.erreurs)}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
+                    <a ng-repeat="operateur in operateurs" href="" ng-click="updateActive(operateur._id)" ng-class="{ 'list-group-item-success': operateur.termine && !operateur.motif_non_prelevement, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && operateur.motif_non_prelevement}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                         <div class="col-xs-2 col-sm-1 text-left">
                             <strong class="lead" style="font-weight: bold;">{{ operateur.heure }}</strong>
                         </div>
                         <div class="col-xs-8 col-sm-10">
-                        <strong class="lead">{{ operateur.raison_sociale }}</strong><span class="text-muted hidden-xs"> {{ operateur.cvi }}</span><br />
-                        {{ operateur.adresse }}, {{ operateur.code_postal }} {{ operateur.commune }}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (operateur.telephone_mobile) ? operateur.telephone_mobile : operateur.telephone_bureau }}</span>
+                            <strong class="lead">{{ operateur.raison_sociale }}</strong><span class="text-muted hidden-xs"> {{ operateur.cvi }}</span>
+                            <button ng-show="motifs[operateur.motif_non_prelevement]" class="btn btn-xs btn-warning">{{ motifs[operateur.motif_non_prelevement] }}</button>
+                            <br />
+                            {{ operateur.adresse }}, {{ operateur.code_postal }} {{ operateur.commune }}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (operateur.telephone_mobile) ? operateur.telephone_mobile : operateur.telephone_bureau }}</span>
                         </div>
                         <div class="col-xs-2 col-sm-1 text-right">
                             <span ng-if="!operateur.termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
@@ -71,9 +73,29 @@
             </div>
         </div>
         <div class="row">
-            <div ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-12">
-                <div class="page-header form-inline print-page-header">
-                    <h3 ng-style="!prelevement.preleve" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }">
+            <div class="col-xs-12">
+                <div style="border-bottom: 0;" class="page-header print-page-header">
+                    <h3 style="margin-top: 15px" class="text-warning">
+                    <a class="text-warning" href="" ng-click="toggleAucunPrelevement(operateur)">
+                    <span ng-show="!operateur.aucun_prelevement" class="glyphicon glyphicon-unchecked hidden-print" style="font-size: 20px;"></span><span ng-show="operateur.aucun_prelevement" class="glyphicon glyphicon-check hidden-print" style="font-size: 20px;"></span>&nbsp;&nbsp;<strong class="lead text-warning">Aucun prélèvement</strong>
+                    </a>
+                    </h3>
+                </div>
+                <div ng-show="operateur.aucun_prelevement" class="form-horizontal">
+                    <div class="form-group col-xs-12" >
+                        <label class="control-label col-xs-3 lead" for="motif_preleve_{{ operateur._id }">Motif :</label>
+                        <div class="col-xs-9">
+                            <select ng-change="updateMotif(operateur)" ng-model="operateur.motif_non_prelevement" id="motif_preleve_{{ operateur._id }}" class="form-control" ng-options="key as value for (key , value) in motifs"></select>
+                        </div>
+                    </div>
+                    <div ng-class="{ 'hidden': !operateur.erreurs['motif'] }" class="alert alert-danger col-xs-12">
+                        Vous devez saisir un motif de non prélevement
+                    </div>
+                </div>
+            </div>
+            <div ng-show="!operateur.aucun_prelevement" ng-repeat="(prelevement_key, prelevement) in operateur.prelevements" id="saisie_mission_{{ operateur._id }}_{{ prelevement_key }}" class="col-xs-12">
+                <div class="page-header form-inline print-page-header" style="margin-top: 5px">
+                    <h3 style="margin-top: 15px" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }">
                     <span class="ng-hide visible-print-inline"><span class="glyphicon glyphicon-unchecked" style="font-size: 20px;"></span></span><a ng-show="prelevement.preleve" class="text-muted" href="" ng-click="togglePreleve(prelevement)"><span class="glyphicon glyphicon-check hidden-print" style="font-size: 20px;"></span>&nbsp;</a><a ng-show="!prelevement.preleve" class="text-muted" href="" ng-click="togglePreleve(prelevement)"><span class="glyphicon glyphicon-unchecked hidden-print" style="font-size: 20px;"></span>&nbsp;</a>
                     <span ng-show="!prelevement.show_produit && prelevement.hash_produit" class="lead" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle }}</span>
                     <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-show="prelevement.show_produit || (!prelevement.hash_produit && prelevement.preleve)" ng-change="updateProduit(prelevement)" ng-model="prelevement.hash_produit" ng-options="key as value for (key , value) in produits"></select>
@@ -107,6 +129,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div ng-class="{ 'hidden': !operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger">
+            Vous n'avez saisi aucun lot<br /><small>Vous pouvez cocher "Aucun prélèvement" si il n'y a aucun prélèvement pour cet opérateur</small>
         </div>
         <div class="row row-margin hidden-print">
             <div class="col-xs-6">
