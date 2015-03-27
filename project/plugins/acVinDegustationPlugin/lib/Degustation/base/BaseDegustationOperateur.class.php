@@ -21,6 +21,7 @@
  * @property string $telephone_prive
  * @property string $telephone_mobile
  * @property string $date_demande
+ * @property integer $reporte
  * @property acCouchdbJson $prelevements
  * @property acCouchdbJson $lots
 
@@ -58,6 +59,8 @@
  * @method string setTelephoneMobile()
  * @method string getDateDemande()
  * @method string setDateDemande()
+ * @method integer getReporte()
+ * @method integer setReporte()
  * @method acCouchdbJson getPrelevements()
  * @method acCouchdbJson setPrelevements()
  * @method acCouchdbJson getLots()

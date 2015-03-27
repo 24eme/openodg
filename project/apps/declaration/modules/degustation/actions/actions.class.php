@@ -87,13 +87,13 @@ class degustationActions extends sfActions {
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
-        if(!$this->form->isValid()) {
+        if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
 
         $this->form->update();
-        
+
         $this->degustation->save();
 
         if ($request->isXmlHttpRequest()) {
@@ -148,15 +148,15 @@ class degustationActions extends sfActions {
 
         $degustateurs_to_delete = array();
 
-        foreach($this->noeud as $degustateur) {
-            if(array_key_exists($degustateur->getKey(), $values)) {
-               continue; 
+        foreach ($this->noeud as $degustateur) {
+            if (array_key_exists($degustateur->getKey(), $values)) {
+                continue;
             }
 
             $degustateurs_to_delete[] = $degustateur->getKey();
         }
 
-        foreach($degustateurs_to_delete as $degustateur_key) {
+        foreach ($degustateurs_to_delete as $degustateur_key) {
             $this->noeud->remove($degustateur_key);
         }
 
@@ -260,8 +260,7 @@ class degustationActions extends sfActions {
         }
 
         $result = $this->organisation($request);
-
-        if($result !== true) {
+        if ($result !== true) {
 
             return $result;
         }
@@ -274,7 +273,7 @@ class degustationActions extends sfActions {
 
         $result = $this->organisation($request);
 
-        if($result !== true) {
+        if ($result !== true) {
 
             return $result;
         }
@@ -293,8 +292,8 @@ class degustationActions extends sfActions {
         $this->agents_couleur = array();
         $i = 0;
         foreach ($this->degustation->agents as $agent) {
-            foreach($agent->dates as $date) {
-                $this->agents_couleur[$agent->getKey().$date] = $this->couleurs[$i];
+            foreach ($agent->dates as $date) {
+                $this->agents_couleur[$agent->getKey() . $date] = $this->couleurs[$i];
                 $i++;
             }
         }
@@ -308,7 +307,7 @@ class degustationActions extends sfActions {
         $i = 0;
         foreach ($values as $key => $value) {
             $operateur = $this->degustation->operateurs->get($key);
-            if(!str_replace("-", "", $value["tournee"])) {
+            if (!str_replace("-", "", $value["tournee"])) {
                 $operateur->agent = null;
                 $operateur->date = null;
             } else {
@@ -343,10 +342,10 @@ class degustationActions extends sfActions {
         }
 
         $this->form = new DegustationValidationForm($this->degustation);
-        
+
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {                
+            if ($this->form->isValid()) {
                 $this->form->save();
 
                 Email::getInstance()->sendDegustationOperateursMails($this->degustation);
@@ -365,10 +364,10 @@ class degustationActions extends sfActions {
 
     public function executeTourneesGenerate(sfWebRequest $request) {
         $this->degustation = $this->getRoute()->getDegustation();
-        if($this->degustation->generatePrelevements()) {
+        if ($this->degustation->generatePrelevements()) {
             $this->degustation->save();
         }
-        
+
         return $this->redirect('degustation_visualisation', $this->degustation);
     }
 
@@ -378,7 +377,7 @@ class degustationActions extends sfActions {
         $this->date = $request->getParameter('date');
         $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
         $this->produits = array();
-        foreach($this->degustation->getProduits() as $produit) {
+        foreach ($this->degustation->getProduits() as $produit) {
             $this->produits[$produit->getHash()] = $produit->getLibelleLong();
         }
         $this->setLayout('layoutResponsive');
@@ -390,11 +389,11 @@ class degustationActions extends sfActions {
         $this->degustation = $this->getRoute()->getDegustation();
         $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
-        foreach($this->operateurs as $key => $operateur) {
+        foreach ($this->operateurs as $key => $operateur) {
             $json[$key] = $operateur->toJson();
         }
 
-        if(!$request->isMethod(sfWebRequest::POST)) {
+        if (!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
@@ -402,21 +401,21 @@ class degustationActions extends sfActions {
 
         $json = json_decode($request->getContent());
 
-        foreach($json as $key => $operateur) {
-            if(!$this->degustation->operateurs->exist($operateur->cvi)) {
+        foreach ($json as $key => $operateur) {
+            if (!$this->degustation->operateurs->exist($operateur->cvi)) {
                 continue;
             }
             $o = $this->degustation->operateurs->get($operateur->cvi);
-            foreach($operateur->prelevements as $prelevement_key => $prelevement) {
-                if($o->prelevements->exist($prelevement_key)) {
+            foreach ($operateur->prelevements as $prelevement_key => $prelevement) {
+                if ($o->prelevements->exist($prelevement_key)) {
                     $p = $o->prelevements->get($prelevement_key);
                 } else {
                     $p = $o->prelevements->add();
                 }
-                $p->cuve = $prelevement->cuve;  
-                $p->anonymat_prelevement = $prelevement->anonymat_prelevement;                
-                $p->hash_produit = $prelevement->hash_produit;                
-                $p->libelle = $prelevement->libelle;                
+                $p->cuve = $prelevement->cuve;
+                $p->anonymat_prelevement = $prelevement->anonymat_prelevement;
+                $p->hash_produit = $prelevement->hash_produit;
+                $p->libelle = $prelevement->libelle;
                 $p->preleve = $prelevement->preleve;
             }
         }
@@ -448,24 +447,24 @@ class degustationActions extends sfActions {
         $this->prelevements = $this->degustation->getPrelevementsByNumeroPrelevement();
         $json = new stdClass();
 
-        for($i=1; $i<=$this->degustation->nombre_commissions; $i++) {
-            $json->commissions[]=$i;
+        for ($i = 1; $i <= $this->degustation->nombre_commissions; $i++) {
+            $json->commissions[] = $i;
         }
 
         $json->prelevements = array();
 
-        foreach($this->prelevements as $key => $prelevement) {
+        foreach ($this->prelevements as $key => $prelevement) {
             $p = $json->prelevements[] = new stdClass();
             $p->hash_produit = $prelevement->hash_produit;
             $p->libelle = $prelevement->libelle;
-            $p->anonymat_degustation= $prelevement->anonymat_degustation;
+            $p->anonymat_degustation = $prelevement->anonymat_degustation;
             $p->anonymat_prelevement = $prelevement->anonymat_prelevement;
             $p->cuve = $prelevement->cuve;
             $p->commission = $prelevement->commission;
         }
 
 
-        if(!$request->isMethod(sfWebRequest::POST)) {
+        if (!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
@@ -473,8 +472,8 @@ class degustationActions extends sfActions {
 
         $json = json_decode($request->getContent());
 
-        foreach($json->prelevements as $prelevement) {
-            if(!isset($this->prelevements[$prelevement->anonymat_prelevement])) {
+        foreach ($json->prelevements as $prelevement) {
+            if (!isset($this->prelevements[$prelevement->anonymat_prelevement])) {
                 continue;
             }
 
@@ -506,7 +505,7 @@ class degustationActions extends sfActions {
 
         $prelevements = $this->degustation->getPrelevementsByNumeroDegustation($this->commission);
 
-        foreach($prelevements as $prelevement) {
+        foreach ($prelevements as $prelevement) {
             $p = $json->prelevements[] = new stdClass();
             $p->anonymat_degustation = $prelevement->anonymat_degustation;
             $p->hash_produit = $prelevement->hash_produit;
@@ -515,7 +514,7 @@ class degustationActions extends sfActions {
             $p->appreciations = $prelevement->appreciations;
         }
 
-        if(!$request->isMethod(sfWebRequest::POST)) {
+        if (!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
@@ -523,10 +522,10 @@ class degustationActions extends sfActions {
 
         $json = json_decode($request->getContent());
 
-        foreach($json->prelevements as $p) {
+        foreach ($json->prelevements as $p) {
             $prelevement = $prelevements[$p->anonymat_degustation];
             $prelevement->notes = array();
-            foreach($p->notes as $key_note => $note) {
+            foreach ($p->notes as $key_note => $note) {
                 $n = $prelevement->notes->add($key_note);
                 $n->note = $note->note;
                 $n->defauts = $note->defauts;
@@ -539,6 +538,49 @@ class degustationActions extends sfActions {
         $this->response->setContentType('application/json');
 
         return $this->renderText(json_encode(array("success" => true)));
+    }
+
+    public function executeCourrier(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $this->form = new DegustationCourrierForm($this->degustation);
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+
+            if ($this->form->isValid()) {
+                $this->form->update();
+                $this->form->getObject()->save();
+                return $this->redirect('degustation_visualisation', $this->degustation);
+            }
+        }
+    }
+
+    public function executeGenerationCourrier(sfWebRequest $request) {
+        $this->degustation = $this->getRoute()->getDegustation();
+        $courriers = $this->degustation->getPrelevementsReadyForCourrier();
+        foreach ($courriers as $hash => $prelevement) {
+            var_dump($hash, $prelevement->type_courrier);
+        }
+        exit;
+    }
+
+    public function executeCourrierPrelevement(sfWebRequest $request) {
+        $degustation = $this->getRoute()->getDegustation();
+        $hash_prelevement = $request['hash_prelevement'];
+        $prelevement = $degustation->get(str_replace('-', '/', $hash_prelevement));
+        $operateur = $prelevement->getParent()->getParent();
+         $this->document = new ExportDegustationPDF($degustation,$operateur,$prelevement, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+
+        $this->document->generate();
+
+        $this->document->addHeaders($this->getResponse());
+
+        return $this->renderText($this->document->output());
+        
     }
 
     protected function getEtape($doc, $etape) {

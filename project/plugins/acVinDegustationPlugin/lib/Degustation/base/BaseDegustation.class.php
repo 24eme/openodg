@@ -17,6 +17,7 @@
  * @property integer $nombre_commissions
  * @property string $heure
  * @property string $lieu
+ * @property string $validation
  * @property acCouchdbJson $operateurs
  * @property acCouchdbJson $degustateurs
  * @property acCouchdbJson $agents
@@ -47,6 +48,8 @@
  * @method string setHeure()
  * @method string getLieu()
  * @method string setLieu()
+ * @method string getValidation()
+ * @method string setValidation()
  * @method acCouchdbJson getOperateurs()
  * @method acCouchdbJson setOperateurs()
  * @method acCouchdbJson getDegustateurs()
