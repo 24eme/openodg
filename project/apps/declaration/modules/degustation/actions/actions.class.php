@@ -395,10 +395,9 @@ class degustationActions extends sfActions {
         $json = array();
 
         $this->tournee = $this->getRoute()->getTournee();
-        $this->operateurs = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
+        $this->degustations = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
-        foreach($this->operateurs as $operateur) {
-            $degustation = $operateur;
+        foreach($this->degustations as $degustation) {
             $json[] = $degustation->toJson();
         }
 

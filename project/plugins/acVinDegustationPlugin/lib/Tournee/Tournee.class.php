@@ -108,12 +108,17 @@ class Tournee extends BaseTournee {
                 continue;
             }
 
-            $operateurs[sprintf('%05d', $operateur->position) . $operateur->getIdentifiant()] = $operateur;
+            $operateurs[$operateur->getIdentifiant()] = $operateur;
         }
 
-        ksort($operateurs);
+        usort($operateurs, 'Tournee::sortDegustationsByPosition');
 
         return $operateurs;
+    }
+
+    public static function sortDegustationsByPosition($degustation_a, $degustation_b) {
+
+        return $degustation_a->position > $degustation_b->position;
     }
 
     public function cleanPrelevements() {

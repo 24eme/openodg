@@ -17,7 +17,7 @@
         <div class="row" ng-show="loaded">
             <div class="col-xs-12">
                 <div class="list-group print-list-group-condensed">
-                    <a ng-repeat="operateur in operateurs | orderBy: position" href="" ng-click="updateActive(operateur._id)" ng-class="{ 'list-group-item-success': operateur.termine && !operateur.motif_non_prelevement, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && operateur.motif_non_prelevement}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
+                    <a ng-repeat="operateur in operateurs | orderBy: ['position']" href="" ng-click="updateActive(operateur._id)" ng-class="{ 'list-group-item-success': operateur.termine && !operateur.motif_non_prelevement, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && operateur.motif_non_prelevement}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                         <div class="col-xs-2 col-sm-1 text-left">
                             <strong class="lead" style="font-weight: bold;">{{ operateur.heure }}</strong>
                         </div>
