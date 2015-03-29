@@ -5,7 +5,7 @@ class degustationActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         $this->tournee = new Tournee();
         $this->form = new TourneeCreationForm($this->tournee);
-
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -74,7 +74,7 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        $this->tournee->updateOperateursFromPrevious();
+        //$this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
 
         $this->form = new TourneeOperateursForm($this->tournee);
@@ -96,11 +96,14 @@ class degustationActions extends sfActions {
         $this->form->update();
         
         $this->tournee->save();
+        $this->tournee->saveDegustations();
 
         if ($request->isXmlHttpRequest()) {
 
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tournee->_id, "revision" => $this->tournee->_rev))));
         }
+
+
 
         return $this->redirect('degustation_degustateurs', $this->tournee);
     }
@@ -308,19 +311,20 @@ class degustationActions extends sfActions {
         $values = $request->getParameter("operateurs", array());
         $i = 0;
         foreach ($values as $key => $value) {
-            $operateur = $this->tournee->operateurs->get($key);
+            $degustation = $this->tournee->getDegustationObject($key);
             if(!str_replace("-", "", $value["tournee"])) {
-                $operateur->agent = null;
-                $operateur->date = null;
+                $degustation->agent = null;
+                $degustation->date = null;
             } else {
-                $operateur->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
-                $operateur->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+                $degustation->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
+                $degustation->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
             }
-            $operateur->heure = $value["heure"];
-            $operateur->position = $i++;
+            $degustation->heure = $value["heure"];
+            $degustation->position = $i++;
         }
 
         $this->tournee->save();
+        $this->tournee->saveDegustations();
 
         if ($request->isXmlHttpRequest()) {
 
@@ -337,21 +341,22 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        $this->tournee->cleanOperateurs();
-
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->validation = new TourneeValidation($this->tournee);
+            $this->tournee->cleanOperateurs(false);
         }
 
         $this->form = new TourneeValidationForm($this->tournee);
         
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {              
-                $this->form->save();
+            if ($this->form->isValid()) {            
+                $this->tournee->validate();
+                $this->tournee->save();
+                $this->tournee->saveDegustations();
 
-                Email::getInstance()->sendDegustationOperateursMails($this->tournee);
-                Email::getInstance()->sendDegustationDegustateursMails($this->tournee);
+                //Email::getInstance()->sendDegustationOperateursMails($this->tournee);
+                //Email::getInstance()->sendDegustationDegustateursMails($this->tournee);
 
                 $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
 
@@ -393,7 +398,7 @@ class degustationActions extends sfActions {
         $this->operateurs = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
         foreach($this->operateurs as $operateur) {
-            $degustation = $operateur->getDegustationObject();
+            $degustation = $operateur;
             $json[] = $degustation->toJson();
         }
 

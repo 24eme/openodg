@@ -16,6 +16,11 @@ Tournee:
       heure: { }
       lieu: { }
       validation: { }
+      degustations:
+        type: collection
+        definition:
+          fields:
+            '*': { }
       operateurs:
         type: collection
         definition:
@@ -136,6 +141,7 @@ Degustation:
       appellation: { }
       date_degustation: { }
       identifiant: { }
+      drev: { }
       raison_sociale: { }
       cvi: { }
       adresse: { }
@@ -153,7 +159,7 @@ Degustation:
       telephone_prive: { }
       telephone_mobile: { }
       date_demande: { }
-      reporte: { type: integer, required: false }
+      reporte: { type: integer }
       motif_non_prelevement: { }
       prelevements:
         type: array_collection

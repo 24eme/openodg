@@ -11,7 +11,7 @@ class TourneeCreationForm extends acCouchdbObjectForm
 
         $this->setWidget('appellation', new sfWidgetFormChoice(array('choices' => $this->getAppellationChoices())));
         $this->setValidator('appellation', new sfValidatorChoice(array('choices' => array_keys($this->getAppellationChoices()))));
-
+        
         $this->widgetSchema->setNameFormat('tournee_creation[%s]');
     }
 
