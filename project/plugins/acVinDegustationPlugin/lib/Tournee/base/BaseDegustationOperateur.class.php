@@ -4,6 +4,7 @@
  * 
  * Base model for DegustationOperateur
 
+ * @property string $degustation
  * @property string $raison_sociale
  * @property string $cvi
  * @property string $adresse
@@ -21,9 +22,13 @@
  * @property string $telephone_prive
  * @property string $telephone_mobile
  * @property string $date_demande
+ * @property integer $reporte
+ * @property string $motif_non_prelevement
  * @property acCouchdbJson $prelevements
  * @property acCouchdbJson $lots
 
+ * @method string getDegustation()
+ * @method string setDegustation()
  * @method string getRaisonSociale()
  * @method string setRaisonSociale()
  * @method string getCvi()
@@ -58,6 +63,10 @@
  * @method string setTelephoneMobile()
  * @method string getDateDemande()
  * @method string setDateDemande()
+ * @method integer getReporte()
+ * @method integer setReporte()
+ * @method string getMotifNonPrelevement()
+ * @method string setMotifNonPrelevement()
  * @method acCouchdbJson getPrelevements()
  * @method acCouchdbJson setPrelevements()
  * @method acCouchdbJson getLots()
@@ -68,7 +77,7 @@
 abstract class BaseDegustationOperateur extends acCouchdbDocumentTree {
                 
     public function configureTree() {
-       $this->_root_class_name = 'Degustation';
+       $this->_root_class_name = 'Tournee';
        $this->_tree_class_name = 'DegustationOperateur';
     }
                 

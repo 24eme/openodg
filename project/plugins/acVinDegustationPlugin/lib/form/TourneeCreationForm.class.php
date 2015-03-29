@@ -1,6 +1,6 @@
 <?php
 
-class DegustationCreationForm extends acCouchdbObjectForm
+class TourneeCreationForm extends acCouchdbObjectForm
 {
     public function configure() {
         $this->setWidget('date_prelevement_debut', new sfWidgetFormInput(array(), array()));
@@ -11,8 +11,8 @@ class DegustationCreationForm extends acCouchdbObjectForm
 
         $this->setWidget('appellation', new sfWidgetFormChoice(array('choices' => $this->getAppellationChoices())));
         $this->setValidator('appellation', new sfValidatorChoice(array('choices' => array_keys($this->getAppellationChoices()))));
-
-        $this->widgetSchema->setNameFormat('degustation_creation[%s]');
+        
+        $this->widgetSchema->setNameFormat('tournee_creation[%s]');
     }
 
     public function getAppellationChoices() {

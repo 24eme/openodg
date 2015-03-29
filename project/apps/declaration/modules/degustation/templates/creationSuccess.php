@@ -1,5 +1,5 @@
 <?php use_helper('Date') ?>
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => false)); ?>
+<?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => false)); ?>
 
 <div class="page-header">
     <h2>Fin de la création</h2>
@@ -13,7 +13,7 @@
             <h3>Appellation / Mention</h3>
             <div class="form-group">
                 <strong class="col-xs-4 text-right"></strong>
-                <div class="col-xs-8"><span><?php echo $degustation->appellation ?></span></div>
+                <div class="col-xs-8"><span><?php echo $tournee->appellation ?></span></div>
             </div>
         </div>
     </div>
@@ -22,7 +22,7 @@
             <h3>Prélévements</h3>
             <div class="form-group">
                 <strong  class="col-xs-5 text-right">Date de prélevement</strong>
-                <div class="col-xs-7"><span>du <?php echo format_date($degustation->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($degustation->date_prelevement_fin, "D", "fr_FR") ?></span></div>
+                <div class="col-xs-7"><span>du <?php echo format_date($tournee->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($tournee->date_prelevement_fin, "D", "fr_FR") ?></span></div>
             </div>
             <div class="form-group">
                 <strong  class="col-xs-5 text-right">Nombre d'opérateurs concernés</strong>
@@ -43,7 +43,7 @@
             <h3>Dégustation</h3>
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Date de la dégustation</strong>
-                <div class="col-xs-6"><span><?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?></span></div>
+                <div class="col-xs-6"><span><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span></div>
             </div>
             <div class="form-group <?php if($form["nombre_commissions"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["nombre_commissions"]->renderError(); ?>

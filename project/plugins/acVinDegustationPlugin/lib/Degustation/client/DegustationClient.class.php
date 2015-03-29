@@ -1,7 +1,7 @@
 <?php
 
 class DegustationClient extends acCouchdbClient {
-        
+    
     const TYPE_MODEL = "Degustation"; 
     const TYPE_COUCHDB = "DEGUSTATION";
 
@@ -11,12 +11,22 @@ class DegustationClient extends acCouchdbClient {
     const NOTE_TYPE_CONCENTRATION = "CONCENTRATION"; 
     const NOTE_TYPE_EQUILIBRE = "EQUILIBRE";
 
+    const MOTIF_NON_PRELEVEMENT_REPORT = "REPORT";
+    const MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN = "PLUS_DE_VIN";
+    const MOTIF_NON_PRELEVEMENT_SOUCIS = "SOUCIS";
+
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",
         /*self::NOTE_TYPE_TYPICITE => "Typicité",
         self::NOTE_TYPE_CONCENTRATION => "Concentration",
         self::NOTE_TYPE_EQUILIBRE => "Équilibre",*/
+    );
+
+    public static $motif_non_prelevement_libelles = array(
+        self::MOTIF_NON_PRELEVEMENT_REPORT => "Report",
+        self::MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN => "Plus de vin",
+        self::MOTIF_NON_PRELEVEMENT_SOUCIS => "Soucis",
     );
 
     public static $note_type_defaults = array(
@@ -46,7 +56,7 @@ class DegustationClient extends acCouchdbClient {
         'PN' => '08',
         'PR' => '09',
     );
-    
+
     public static function getInstance()
     {
         
@@ -64,84 +74,18 @@ class DegustationClient extends acCouchdbClient {
         return $doc;
     }
 
+    public function findOrCreate($identifiant, $date, $appellation) {
+        $degustation = $this->find(sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $date), $appellation));
+        if($degustation) {
 
-    public function createDoc($date) {
+            return $degustation;
+        }
+
         $degustation = new Degustation();
-        $degustation->date = $date;
+        $degustation->identifiant = $identifiant;
+        $degustation->date_degustation = $date;
+        $degustation->appellation = $appellation;
 
         return $degustation;
     }
-
-    public function getPrelevements($date_from, $date_to) {
-        
-        return DRevPrelevementsView::getInstance()->getPrelevements($date_from, $date_to);
-    }
-
-    public function getAgents($attribut = null) {
-
-        $agents = CompteClient::getInstance()->getAllComptesPrefixed("A");
-        $agents_result = array();
-
-        foreach($agents as $agent) {
-            if($agent->statut == CompteClient::STATUT_INACTIF) {
-                continue;
-            }
-
-            if($attribut && !isset($agent->infos->attributs->{$attribut})) {
-                continue;
-            }
-            
-            $agents_result[$agent->_id] = $agent;
-        }
-
-        return $agents_result;
-    }
-
-    public function getDegustateurs($attribut = null, $produit = null) {
-
-        $degustateurs = CompteClient::getInstance()->getAllComptesPrefixed("D");
-        $degustateurs_result = array();
-
-        foreach($degustateurs as $degustateur) {
-            if($degustateur->statut == CompteClient::STATUT_INACTIF) {
-                continue;
-            }
-
-            if($attribut && !isset($degustateur->infos->attributs->{$attribut})) {
-                continue;
-            }
-
-            if($produit && !isset($degustateur->infos->produits->{str_replace("/", "-", $produit)})) {
-                continue;
-            }
-            
-            $degustateurs_result[$degustateur->_id] = $degustateur;
-        }
-
-        return $degustateurs_result;
-    }
-
-    public function getDegustations($hydrate = acCouchdbClient::HYDRATE_JSON) {
-
-        return $this->startkey("DEGUSTATION-999999999-ZZZZZZZZZZ")
-                    ->endkey("DEGUSTATION-00000000-AAAAAAAAA")
-                    ->descending(true)
-                    ->execute($hydrate);
-    }
-
-    public function getPrevious($degustation_id) {
-        $degustations = $this->getDegustations();
-
-        $finded = false;
-        foreach($degustations as $row) {
-            if($row->_id == $degustation_id) { $finded = true; continue; }
-
-            if(!$finded) { continue; }
-
-            return $this->find($row->_id);
-        }
-
-        return null;
-    }
-    
 }

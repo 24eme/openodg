@@ -1,6 +1,6 @@
 <?php
 
-class DegustationCreationFinForm extends acCouchdbObjectForm
+class TourneeCreationFinForm extends acCouchdbObjectForm
 {
     public function configure() {
         $this->setWidget('nombre_operateurs_a_prelever', new sfWidgetFormInput());
@@ -15,7 +15,7 @@ class DegustationCreationFinForm extends acCouchdbObjectForm
         $this->setWidget('lieu', new sfWidgetFormInput());
         $this->setValidator('lieu', new sfValidatorString());
 
-        $this->widgetSchema->setNameFormat('degustation_creation_fin[%s]');
+        $this->widgetSchema->setNameFormat('tournee_creation_fin[%s]');
     }
 
 }

@@ -1,5 +1,5 @@
-#Degustation
-Degustation:
+#Tournee
+Tournee:
   definition:
     fields:
       _id: { }
@@ -16,15 +16,21 @@ Degustation:
       heure: { }
       lieu: { }
       validation: { }
+      degustations:
+        type: collection
+        definition:
+          fields:
+            '*': { }
       operateurs:
         type: collection
+        required: false
         definition:
           fields:
             '*':
               type: collection
-              class: DegustationOperateur
               definition:
                 fields:
+                  degustation: { require: false }
                   raison_sociale: { }
                   cvi: { }
                   adresse: { }
@@ -42,7 +48,8 @@ Degustation:
                   telephone_prive: { }
                   telephone_mobile: { }
                   date_demande: { }
-                  reporte: { type: integer }
+                  reporte: { type: integer, required: false }
+                  motif_non_prelevement: { }
                   prelevements:
                     type: array_collection
                     definition:
@@ -55,6 +62,7 @@ Degustation:
                               libelle: { }
                               anonymat_prelevement: { }
                               anonymat_degustation: { }
+                              anonymat_prelevement_complet: { }
                               cuve: { }
                               preleve: { }
                               commission: { type: integer }
@@ -122,3 +130,78 @@ Degustation:
                     definition:
                       fields:
                         '*': { }
+
+Degustation:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      appellation: { }
+      date_degustation: { }
+      identifiant: { }
+      drev: { }
+      raison_sociale: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }
+      lng: { required: false }
+      date: { required: false }
+      date_prelevement: { }
+      heure: { }
+      position: { required: true }
+      agent: { }
+      telephone_bureau: { }
+      telephone_prive: { }
+      telephone_mobile: { }
+      date_demande: { }
+      reporte: { type: integer }
+      motif_non_prelevement: { }
+      prelevements:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: DegustationPrelevement
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  anonymat_prelevement: { type: integer }
+                  anonymat_prelevement_complet: { }
+                  anonymat_degustation: { type: integer }
+                  cuve: { }
+                  preleve: { }
+                  commission: { type: integer }
+                  appreciations: { }
+                  notes:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              note: { }
+                              defauts:
+                                type: array_collection
+                                definition:
+                                  fields:
+                                    '*': { }
+      lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  nb: { }
+                  prelevement: { type: integer }
