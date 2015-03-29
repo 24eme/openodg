@@ -23,14 +23,14 @@ Tournee:
             '*': { }
       operateurs:
         type: collection
+        required: false
         definition:
           fields:
             '*':
               type: collection
-              class: DegustationOperateur
               definition:
                 fields:
-                  degustation: { }
+                  degustation: { require: false }
                   raison_sociale: { }
                   cvi: { }
                   adresse: { }
@@ -56,7 +56,6 @@ Tournee:
                       fields:
                         '*':
                           type: collection
-                          class: DegustationPrelevement
                           definition:
                             fields:
                               hash_produit: { }
@@ -151,7 +150,8 @@ Degustation:
       lat: { }
       lon: { }
       lng: { required: false }
-      date: { }
+      date: { required: false }
+      date_prelevement: { }
       heure: { }
       position: { required: true }
       agent: { }
@@ -167,13 +167,14 @@ Degustation:
           fields:
             '*':
               type: collection
+              class: DegustationPrelevement
               definition:
                 fields:
                   hash_produit: { }
                   libelle: { }
-                  anonymat_prelevement: { }
+                  anonymat_prelevement: { type: integer }
                   anonymat_prelevement_complet: { }
-                  anonymat_degustation: { }
+                  anonymat_degustation: { type: integer }
                   cuve: { }
                   preleve: { }
                   commission: { type: integer }

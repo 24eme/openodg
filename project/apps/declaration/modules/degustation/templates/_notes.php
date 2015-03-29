@@ -1,6 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
-<?php $notes = $degustation->getNotes(); ?>
+<?php $notes = $tournee->getNotes(); ?>
 <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($notes); ?>&nbsp;vins dégustés</div></h2>
 
 <div class="row">    
@@ -14,7 +14,7 @@
                 <th>Notes</th> 
                 <th>Appreciation</th> 
             </tr>
-            <?php foreach ($degustation->getNotes() as $note): ?>
+            <?php foreach ($tournee->getNotes() as $note): ?>
                 <tr>
                     <td><?php echo $note->prelevement->anonymat_degustation; ?></td>
                     <td><?php echo $note->operateur->raison_sociale; ?></td> 

@@ -3,10 +3,10 @@
          <div class="list-group">
         <?php foreach($tournees as $tournee): ?>
             <?php $d = $tournee->getRawValue(); ?>
-            <?php $nb_operateurs = count((array) $d->operateurs); ?>
+            <?php $nb_operateurs = count((array) $d->degustations); ?>
             <?php $nb_degustateurs = 0; foreach($d->degustateurs as $degustateurs_type): $nb_degustateurs += count((array) $degustateurs_type); endforeach; ?>
             <?php $nb_tournees = 0; foreach($d->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
-            <?php $nb_degustations = 0; foreach($d->operateurs as $operateur): $nb_degustations += count((array) $operateur->prelevements); endforeach; ?>
+            <?php $nb_degustations = 0; foreach($d->degustations as $degustations): $nb_degustations += 1; endforeach; ?>
             <a href="<?php if(!$tournee->validation): ?><?php echo url_for('degustation_edit', $tournee) ?><?php else: ?><?php echo url_for('degustation_visualisation', $tournee) ?><?php endif; ?>" class="list-group-item col-xs-12">
                 <span class="col-xs-3 text-muted">
                 <?php echo ucfirst(format_date($d->date, "P", "fr_FR")) ?>

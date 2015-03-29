@@ -5,7 +5,6 @@
  */
 
 class DegustationPrelevement extends BaseDegustationPrelevement {
-
     public function generateAnonymatPrelevementComplet() {
         if(!$this->anonymat_prelevement) {
             $this->anonymat_prelevement_complet = null;

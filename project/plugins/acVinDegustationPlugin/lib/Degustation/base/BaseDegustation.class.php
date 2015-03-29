@@ -7,6 +7,10 @@
  * @property string $_id
  * @property string $_rev
  * @property string $type
+ * @property string $appellation
+ * @property string $date_degustation
+ * @property string $identifiant
+ * @property string $drev
  * @property string $raison_sociale
  * @property string $cvi
  * @property string $adresse
@@ -17,6 +21,7 @@
  * @property string $lon
  * @property string $lng
  * @property string $date
+ * @property string $date_prelevement
  * @property string $heure
  * @property string $position
  * @property string $agent
@@ -25,6 +30,7 @@
  * @property string $telephone_mobile
  * @property string $date_demande
  * @property integer $reporte
+ * @property string $motif_non_prelevement
  * @property acCouchdbJson $prelevements
  * @property acCouchdbJson $lots
 
@@ -34,6 +40,14 @@
  * @method string set_rev()
  * @method string getType()
  * @method string setType()
+ * @method string getAppellation()
+ * @method string setAppellation()
+ * @method string getDateDegustation()
+ * @method string setDateDegustation()
+ * @method string getIdentifiant()
+ * @method string setIdentifiant()
+ * @method string getDrev()
+ * @method string setDrev()
  * @method string getRaisonSociale()
  * @method string setRaisonSociale()
  * @method string getCvi()
@@ -54,6 +68,8 @@
  * @method string setLng()
  * @method string getDate()
  * @method string setDate()
+ * @method string getDatePrelevement()
+ * @method string setDatePrelevement()
  * @method string getHeure()
  * @method string setHeure()
  * @method string getPosition()
@@ -70,6 +86,8 @@
  * @method string setDateDemande()
  * @method integer getReporte()
  * @method integer setReporte()
+ * @method string getMotifNonPrelevement()
+ * @method string setMotifNonPrelevement()
  * @method acCouchdbJson getPrelevements()
  * @method acCouchdbJson setPrelevements()
  * @method acCouchdbJson getLots()

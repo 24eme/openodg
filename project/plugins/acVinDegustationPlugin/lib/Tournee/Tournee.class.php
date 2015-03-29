@@ -48,22 +48,22 @@ class Tournee extends BaseTournee {
     public function getTournees() {
         $tournees = array();
         foreach ($this->operateurs as $operateur) {
-            if (!$operateur->date) {
+            if (!$operateur->date_prelevement) {
                 continue;
             }
 
             if (!$operateur->agent) {
                 continue;
             }
-            if (!array_key_exists($operateur->date . $operateur->agent, $tournees)) {
-                $tournees[$operateur->date . $operateur->agent] = new stdClass();
-                $tournees[$operateur->date . $operateur->agent]->operateurs = array();
+            if (!array_key_exists($operateur->date_prelevement . $operateur->agent, $tournees)) {
+                $tournees[$operateur->date_prelevement . $operateur->agent] = new stdClass();
+                $tournees[$operateur->date_prelevement . $operateur->agent]->operateurs = array();
                 $agents = $this->agents->toArray();
-                $tournees[$operateur->date . $operateur->agent]->id_agent = $operateur->agent;
-                $tournees[$operateur->date . $operateur->agent]->nom_agent = $agents[$operateur->agent]->nom;
-                $tournees[$operateur->date . $operateur->agent]->date = $operateur->date;
+                $tournees[$operateur->date_prelevement . $operateur->agent]->id_agent = $operateur->agent;
+                $tournees[$operateur->date_prelevement . $operateur->agent]->nom_agent = $agents[$operateur->agent]->nom;
+                $tournees[$operateur->date_prelevement . $operateur->agent]->date = $operateur->date_prelevement;
             }
-            $tournees[$operateur->date . $operateur->agent]->operateurs[$operateur->getIdentifiant()] = $operateur;
+            $tournees[$operateur->date_prelevement . $operateur->agent]->operateurs[$operateur->getIdentifiant()] = $operateur;
         }
         ksort($tournees);
         return $tournees;
@@ -103,7 +103,7 @@ class Tournee extends BaseTournee {
                 continue;
             }
 
-            if ($operateur->date != $date) {
+            if ($operateur->date_prelevement != $date) {
 
                 continue;
             }
@@ -251,17 +251,17 @@ class Tournee extends BaseTournee {
     }
     
     public function getOperateursDegustes() {
-        $operateurs = array();
+        $degustations = array();
 
-        foreach($this->operateurs as $operateur) {
-            if(!$operateur->isDeguste()) {
+        foreach($this->getDegustationsObject() as $degustation) {
+            if(!$degustation->isDeguste()) {
                 continue;
             }
 
-            $operateurs[$operateur->getKey()] = $operateur;
+            $degustations[$degustation->getIdentifiant()] = $degustation;
         }
 
-        return $operateurs;
+        return $degustations;
     }
     
     public function getNotes() {
@@ -270,12 +270,11 @@ class Tournee extends BaseTournee {
 
         foreach($this->getOperateursDegustes() as $operateurDeguste) {
            
-            
             foreach ($operateurDeguste->prelevements as $prelevement) {
                 if($prelevement->anonymat_degustation){
-                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation] = new stdClass();
-                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
-                    $notes[$operateurDeguste->getKey().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
+                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation] = new stdClass();
+                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
+                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
                 }
             }
         }
@@ -342,7 +341,7 @@ class Tournee extends BaseTournee {
     public function cleanOperateurs($save = true) {
         $degustations_to_remove = array();
         foreach($this->getDegustationsObject() as $degustation) {
-            if($degustation->date && $degustation->agent) {
+            if($degustation->date_prelevement && $degustation->agent) {
                 continue;
             }
 
