@@ -36,8 +36,37 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         return null;
     }
 
-    var remoteSave = function(callBack) {
-        $http.post($rootScope.url_json, angular.toJson($scope.operateurs))
+    var getOperateurKeyById = function(id) {
+        for(key in $scope.operateurs) {
+            if($scope.operateurs[key]._id == id) {
+
+                return key;
+            }
+        }
+
+        return null;
+    }
+
+    var getOperateursToTransmettre = function() {
+        var operateursToTransmettre = [];
+
+        for(operateur_key in $scope.operateurs) {
+            var operateur = $scope.operateurs[operateur_key];
+            if(operateur.transmission_needed) {
+               operateursToTransmettre.push(operateur); 
+            }
+        }
+
+        return operateursToTransmettre;
+    }
+
+    var remoteSave = function(operateurs, callBack) {
+        if(operateurs.length == 0) {
+            callBack(true);
+            return;
+        }
+
+        $http.post($rootScope.url_json, angular.toJson(operateurs))
         .success(function(data){
             callBack(data);
         }).error(function(data) {
@@ -51,28 +80,94 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         });
     }
 
-    $scope.transmettre = function() {
+    $scope.transmettre = function(auto) {
+        if($scope.transmission_progress) {
+
+            return;
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
         $scope.transmission_result = true;
-        remoteSave(function(data) {
+
+        remoteSave(getOperateursToTransmettre(), function(data) {
+            if(!auto) {
+            $scope.transmission = true;
+            }
+            $scope.transmission_progress = false;
+
+            if(!data) {
+               $scope.transmission_result = false;
+               return;
+            }
+
             for(id_degustation in data) {
                 var revision = data[id_degustation];
+                var operateur = getOperateurById(id_degustation);
+                operateur.transmission_needed = false;
                 if(!revision && $scope.transmission_result) {
                     $scope.transmission_result = false;
+                    operateur.transmission_collision = true;
                 } else {
-                    getOperateurById(id_degustation)._rev = revision;
+                    operateur._rev = revision;
                 }
             }
-            $scope.transmission = true;
-            $scope.transmission_progress = false;
+            
+            localSave();
         });
-        $scope.testState();
     }
 
-    var intervalState = setInterval(function() {
+    var updateOperateurFromLoad = function(operateur) {
+        var termine = false;
+        if(operateur.motif_non_prelevement) {
+            termine = true;
+            operateur.aucun_prelevement = true;
+        }
+        for(prelevement_key in operateur.prelevements) {
+            var prelevement = operateur.prelevements[prelevement_key];
+            if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
+                termine = true;
+            }
+        }
+        operateur.termine = termine;
+    }
+
+    $scope.loadOrUpdateOperateurs = function() {
+        $http.get($rootScope.url_json)
+        .success(function(data){
+            for(key_data in data) {
+                var operateurRemote = data[key_data];
+                var operateur = getOperateurById(operateurRemote._id);
+                if(operateur && operateurRemote._rev == operateur._rev) {
+
+                } else if(operateur && operateur.transmission_needed) {
+                
+                } else if(operateur && operateur.transmission_collision) {
+
+                } else if(operateur && operateurRemote._rev != operateur._rev) {
+                    $scope.operateurs[getOperateurKeyById(operateurRemote._id)] = operateurRemote;
+                    updateOperateurFromLoad(operateurRemote);
+                } else {
+                    $scope.operateurs.push(operateurRemote);
+                    updateOperateurFromLoad(operateurRemote);
+                }
+            }
+            $scope.loaded = true;
+            localSave();
+        });
+    }
+
+    setInterval(function() {
         $scope.testState();
     }, 200000);
+
+    setInterval(function() {
+        $scope.transmettre(true);
+    }, 60000);
+
+    setInterval(function() {
+        $scope.loadOrUpdateOperateurs();
+    }, 90000);
 
     if($scope.reload) {
         localDelete();
@@ -85,27 +180,10 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     }
 
     if(!$scope.operateurs) {
-        $http.get($rootScope.url_json)
-        .success(function(data){
-            $scope.operateurs = data;
-            for(operateur_key in $scope.operateurs) {
-                var operateur = $scope.operateurs[operateur_key];
-                var termine = false;
-                if(operateur.motif_non_prelevement) {
-                    termine = true;
-                    operateur.aucun_prelevement = true;
-                }
-                for(prelevement_key in operateur.prelevements) {
-                    var prelevement = operateur.prelevements[prelevement_key];
-                    if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
-                        termine = true;
-                    }
-                }
-                operateur.termine = termine;
-            }
-            $scope.loaded = true;
-        });
+        $scope.operateurs = [];
     }
+
+    $scope.loadOrUpdateOperateurs();
 
     $scope.updateActive = function(key) {
         $scope.active = key;
@@ -136,7 +214,8 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.precedent(operateur);
 
         localSave();
-        $scope.transmettre();
+        operateur.transmission_needed = true;
+        $scope.transmettre(true);
     }
 
     $scope.valide = function(operateur) {

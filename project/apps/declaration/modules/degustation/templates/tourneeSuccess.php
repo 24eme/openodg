@@ -3,7 +3,7 @@
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
-<?php use_javascript('tournee.js?201503300123'); ?>
+<?php use_javascript('tournee.js?201503300328'); ?>
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
 <div ng-controller="tourneeCtrl">
     
@@ -20,6 +20,7 @@
                     <a ng-repeat="operateur in operateurs | orderBy: ['position']" href="" ng-click="updateActive(operateur._id)" ng-class="{ 'list-group-item-success': operateur.termine && !operateur.motif_non_prelevement, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && operateur.motif_non_prelevement}" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                         <div class="col-xs-2 col-sm-1 text-left">
                             <strong class="lead" style="font-weight: bold;">{{ operateur.heure }}</strong>
+                            <label ng-show="operateur.transmission_collision" class="btn btn-xs btn-danger">Collision</label>
                         </div>
                         <div class="col-xs-8 col-sm-10">
                             <strong class="lead">{{ operateur.raison_sociale }}</strong><span class="text-muted hidden-xs"> {{ operateur.cvi }}</span>
@@ -49,7 +50,7 @@
                 <a href="" ng-click="print()" class="btn btn-default-step btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-print"></span>&nbsp;&nbsp;Imprimer</a>
             </div>
             <div class="col-xs-12 col-sm-6 text-center">
-                <a href="" ng-show="!transmission_progress" ng-click="transmettre()" class="btn btn-warning btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;Transmettre</a>
+                <a href="" ng-show="!transmission_progress" ng-click="transmettre(false)" class="btn btn-warning btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;Transmettre</a>
                 <span class="text-muted-alt" ng-show="transmission_progress">Transmission en cours...</span>
             </div>
         </div>

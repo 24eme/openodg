@@ -412,11 +412,12 @@ class degustationActions extends sfActions {
         $json_return = array();
 
         foreach($json as $json_degustation) {
-            if(!$this->tournee->operateurs->exist($json_degustation->cvi)) {
+            if(!$this->tournee->degustations->exist($json_degustation->identifiant)) {
+                $json_return[$json_degustation->_id] = false;
                 continue;
             }
 
-            $degustation = $this->tournee->operateurs->get($json_degustation->cvi)->getDegustationObject();
+            $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
 
             if($degustation->_rev != $json_degustation->_rev) {
                 $json_return[$degustation->_id] = false;
