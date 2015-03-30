@@ -35,10 +35,10 @@
                     <li data-value="<?php echo $key_heure ?>" class="hour list-group-item col-xs-12 list-group-item-info list-group-item-container text-center"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small></li>
                     <?php if(!isset($operateurs[$key_heure])): continue; endif; ?>
                     <?php foreach($operateurs[$key_heure] as $operateur): ?>
-                        <?php $exist = ($operateur->agent && $operateur->date); ?>
-                        <li data-state="<?php echo ($operateur->agent && $operateur->date) ? sprintf("%s-%s", $operateur->agent, $operateur->date) : null ?>" data-value="<?php echo $operateur->getIdentifiant() ?>" data-title="<?php echo $operateur->raison_sociale ?>" data-point="<?php echo $operateur->lat*1 ?>,<?php echo $operateur->lon*1 ?>" class="operateur list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
+                        <?php $exist = ($operateur->agent && $operateur->date_prelevement); ?>
+                        <li data-state="<?php echo ($operateur->agent && $operateur->date_prelevement) ? sprintf("%s-%s", $operateur->agent, $operateur->date_prelevement) : null ?>" data-value="<?php echo $operateur->getIdentifiant() ?>" data-title="<?php echo $operateur->raison_sociale ?>" data-point="<?php echo $operateur->lat*1 ?>,<?php echo $operateur->lon*1 ?>" class="operateur list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                             <input type="hidden" class="input-heure" name="operateurs[<?php echo $operateur->getIdentifiant() ?>][heure]" value="<?php echo sprintf("%s", $operateur->heure) ?>" />
-                            <input type="hidden" class="input-tournee" name="operateurs[<?php echo $operateur->getIdentifiant() ?>][tournee]" value="<?php echo sprintf("%s-%s", $operateur->agent, $operateur->date) ?>" />
+                            <input type="hidden" class="input-tournee" name="operateurs[<?php echo $operateur->getIdentifiant() ?>][tournee]" value="<?php echo sprintf("%s-%s", $operateur->agent, $operateur->date_prelevement) ?>" />
                             <div class="col-xs-12">
                                 <div class="pull-right">
                                     <button class="btn btn-success btn-xs hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
@@ -46,7 +46,7 @@
                                 </div>
                                 <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
                                     <span class="glyphicon glyphicon-resize-vertical" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
-                                    <span class="glyphicon glyphicon-map-marker" style="<?php if($exist): ?>color: <?php echo $agents_couleur[$operateur->agent.$operateur->date] ?>;<?php else: ?>color: #e2e2e2;<?php endif; ?> font-size: 24px;"></span>
+                                    <span class="glyphicon glyphicon-map-marker" style="<?php if($exist): ?>color: <?php echo $agents_couleur[$operateur->agent.$operateur->date_prelevement] ?>;<?php else: ?>color: #e2e2e2;<?php endif; ?> font-size: 24px;"></span>
                                 </div>
                                 <?php echo $operateur->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $operateur->commune ?></small>
                             </div>
