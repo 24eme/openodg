@@ -248,10 +248,11 @@ class Email {
                 $pdf->generate();
                 $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
                 $message->attach($pdfAttachment);
+               // $degustation->getOrAdd($hash)->add('courrier_envoye', true);
             }
             $message->setContentType('text/plain');
             $this->getMailer()->send($message);
-            $degustation->add('courrier_envoye', true);
+            
             return $degustation;
         }
     }
