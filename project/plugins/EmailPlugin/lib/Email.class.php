@@ -250,7 +250,9 @@ class Email {
                 $message->attach($pdfAttachment);
             }
             $message->setContentType('text/plain');
-          //  $this->getMailer()->send($message);
+            $this->getMailer()->send($message);
+            $degustation->add('courrier_envoye', true);
+            return $degustation;
         }
     }
 
