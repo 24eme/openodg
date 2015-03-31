@@ -26,6 +26,14 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
             if ($this->getObject()->get($note->prelevement->getHash())->exist('type_courrier')) {
                 $this->setDefault($note->prelevement->getHashForKey(), $this->getObject()->get($note->prelevement->getHash())->type_courrier);
             }
+            if ($this->getObject()->get($note->prelevement->getHash())->exist('visite_date') && $this->getObject()->get($note->prelevement->getHash())->visite_date) {
+                $dateArr = explode('-', $this->getObject()->get($note->prelevement->getHash())->visite_date);
+                $date = $dateArr[2].'/'.$dateArr[1].'/'.$dateArr[0];
+                $this->setDefault('visite_date_'.$note->prelevement->getHashForKey(), $date);
+            }
+             if ($this->getObject()->get($note->prelevement->getHash())->exist('visite_heure')) {
+                $this->setDefault('visite_heure_'.$note->prelevement->getHashForKey(), $this->getObject()->get($note->prelevement->getHash())->visite_heure);
+            }
         }
     }
 
@@ -39,7 +47,15 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
             if (preg_match('/^\-operateurs.*/', $key) && $value) {
                 $realKey = str_replace('-', '/', $key);
                 $this->getObject()->getOrAdd($realKey)->add('type_courrier', $value);
-            }
+                if($value == DegustationClient::COURRIER_TYPE_VISITE){
+                    $this->getObject()->getOrAdd($realKey)->add('visite_date', $values['visite_date_'.$key]);
+                    $this->getObject()->getOrAdd($realKey)->add('visite_heure', $values['visite_heure_'.$key]);
+                }else{
+                    $this->getObject()->getOrAdd($realKey)->add('visite_date', null);
+                    $this->getObject()->getOrAdd($realKey)->add('visite_heure', null);
+                }
+                $this->getObject()->getOrAdd($realKey)->add('courrier_envoye', false);
+            }            
         }
     }
 

@@ -120,17 +120,22 @@ class Degustation extends BaseDegustation {
     }
 
     public function getPrelevementsReadyForCourrier() {
-        $prelevements = array();
+        $prelevementsByOperateurs = array();
 
-        foreach ($this->operateurs as $operateur) {
+        foreach ($this->operateurs as $cvi => $operateur) {
             foreach ($operateur->prelevements as $prelevement) {
                 if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) {
-                    $prelevements[$prelevement->getHash()] = $prelevement;
+                    if (!array_key_exists($cvi, $prelevementsByOperateurs)) {
+                        $prelevementsByOperateurs[$cvi] = new stdClass();
+                        $prelevementsByOperateurs[$cvi]->prelevements = array();
+                        $prelevementsByOperateurs[$cvi]->operateur = $operateur;
+                    }
+                    $prelevementsByOperateurs[$cvi]->prelevements[$prelevement->getHash()] = $prelevement;
                 }
             }
         }
 
-        return $prelevements;
+        return $prelevementsByOperateurs;
     }
 
     public function getPrelevementsByNumeroDegustation($commission) {
@@ -276,8 +281,7 @@ class Degustation extends BaseDegustation {
                     $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation] = new stdClass();
                     $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->operateur = $operateurDeguste;
                     $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->prelevement = $prelevement;
-                $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->key = $key;
-                    
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->key = $key;
                 }
             }
         }
@@ -395,6 +399,16 @@ class Degustation extends BaseDegustation {
     public function getPrevious() {
 
         return DegustationClient::getInstance()->getPrevious($this->_id);
+    }
+
+    public function hasAllTypeCourrier() {
+        $notes = $this->getNotes();
+        foreach ($notes as $note) {
+            if (!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -60,6 +60,9 @@ Degustation:
                               commission: { type: integer }
                               appreciations: { }
                               type_courrier: { required: false }
+                              visite_date: { required: false }
+                              visite_heure: { required: false }
+                              courrier_envoye: { required: false }
                               notes:
                                 type: collection
                                 definition:

@@ -555,12 +555,8 @@ class degustationActions extends sfActions {
     }
 
     public function executeGenerationCourrier(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $courriers = $this->degustation->getPrelevementsReadyForCourrier();
-        foreach ($courriers as $hash => $prelevement) {
-            var_dump($hash, $prelevement->type_courrier);
-        }
-        exit;
+        $degustation = $this->getRoute()->getDegustation();
+        Email::getInstance()->sendDegustationNoteCourrier($degustation);
     }
 
     public function executeCourrierPrelevement(sfWebRequest $request) {
@@ -568,7 +564,7 @@ class degustationActions extends sfActions {
         $hash_prelevement = $request['hash_prelevement'];
         $prelevement = $degustation->get(str_replace('-', '/', $hash_prelevement));
         $operateur = $prelevement->getParent()->getParent();
-         $this->document = new ExportDegustationPDF($degustation,$operateur,$prelevement, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportDegustationPDF($degustation, $operateur, $prelevement, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {
@@ -580,7 +576,6 @@ class degustationActions extends sfActions {
         $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
-        
     }
 
     protected function getEtape($doc, $etape) {
