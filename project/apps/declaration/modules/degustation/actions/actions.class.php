@@ -453,8 +453,8 @@ class degustationActions extends sfActions {
     public function executeAffectationGenerate(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
         $this->tournee->cleanPrelevements();
-        $this->tournee->generateNumeroDegustation();
         $this->tournee->save();
+        $this->tournee->saveDegustations();
 
         return $this->redirect('degustation_visualisation', $this->tournee);
     }
@@ -476,15 +476,23 @@ class degustationActions extends sfActions {
 
         $json->prelevements = array();
 
+        $json->anonymat_degustation_courant = 0;
+
         foreach($this->prelevements as $key => $prelevement) {
             $p = $json->prelevements[] = new stdClass();
             $p->hash_produit = $prelevement->hash_produit;
             $p->libelle = $prelevement->libelle;
             $p->anonymat_degustation= $prelevement->anonymat_degustation;
             $p->anonymat_prelevement = $prelevement->anonymat_prelevement;
+            $p->anonymat_prelevement_complet = $prelevement->anonymat_prelevement_complet;
             $p->cuve = $prelevement->cuve;
             $p->commission = $prelevement->commission;
+            if($p->anonymat_degustation > $json->anonymat_degustation_courant) {
+                $json->anonymat_degustation_courant = $p->anonymat_degustation;
+            }
         }
+
+        $json->anonymat_degustation_courant++; 
 
 
         if(!$request->isMethod(sfWebRequest::POST)) {

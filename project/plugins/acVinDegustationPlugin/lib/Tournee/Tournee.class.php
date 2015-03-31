@@ -124,8 +124,8 @@ class Tournee extends BaseTournee {
     public function cleanPrelevements() {
         $hash_to_delete = array();
 
-        foreach($this->operateurs as $operateur) {
-            foreach($operateur->prelevements as $prelevement) {
+        foreach($this->getDegustationsObject() as $degustation) {
+            foreach($degustation->prelevements as $prelevement) {
                 if($prelevement->preleve && $prelevement->cuve && $prelevement->hash_produit) {
                     continue;
                 }
@@ -136,7 +136,7 @@ class Tournee extends BaseTournee {
         krsort($hash_to_delete);
 
         foreach($hash_to_delete as $hash) {
-            $this->remove($hash);
+            $degustation->remove($hash);
         }
     }
 
@@ -176,13 +176,11 @@ class Tournee extends BaseTournee {
         return $prelevements_return;
     }
 
-    public function generateNumeroDegustation() {
+    public function generateDegustation() {
         $prelevements = $this->getPrelevementsByNumeroPrelevement();
-        shuffle($prelevements);
 
         $i = 1;
         foreach($prelevements as $prelevement) {
-            $prelevement->anonymat_degustation = $i;
             foreach(TourneeClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
                 $prelevement->notes->add($key_type_note);
             }
@@ -197,7 +195,7 @@ class Tournee extends BaseTournee {
             }
         }
 
-        $j = 1;
+        $j = 100;
         
         foreach ($this->getDegustationsObject() as $degustation) {
             if(count($degustation->prelevements) > 0) {

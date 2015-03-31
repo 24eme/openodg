@@ -327,6 +327,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.query = null;
     $scope.prelevement = null;
     $scope.affectation = null;
+
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
@@ -363,7 +364,8 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.testState();
     }, 200000);
 
-    $scope.affectation = localStorageService.get(local_storage_name);
+    //$scope.affectation = localStorageService.get(local_storage_name);
+    $scope.affectation = null;
    
     if(!$scope.affectation) {
         $http.get($rootScope.url_json)
@@ -397,8 +399,13 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.terminer = function() {
+        $scope.precedent();
+    }
+
+    $scope.precedent = function() {
         $scope.active = 'recapitulatif';
     }
+
 
     $scope.remove = function(prelevement) {
         prelevement.commission = null;
@@ -415,6 +422,8 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.validation = function(prelevement, commission) {
         prelevement.commission = commission;
+        prelevement.anonymat_degustation = $scope.affectation.anonymat_degustation_courant;
+        $scope.affectation.anonymat_degustation_courant++;
         localSave();
         $scope.showAjout(commission);
     }

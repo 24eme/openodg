@@ -1,8 +1,8 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
-<?php use_javascript('tournee.js?201503100031'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $degustation)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
+<?php use_javascript('tournee.js?201503311151'); ?>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
     <div ng-controller="affectationCtrl">
         <section ng-show="active == 'recapitulatif'" id="commissions">
             <div class="page-header text-center">
@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div ng-show="!state" class="alert alert-warning col-xs-12" style="margin-top: 10px;">
-            Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_affectation", array('sf_subject' => $degustation)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
+            Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_affectation", array('sf_subject' => $tournee)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
             </div>
             <div ng-show="transmission && !transmission_result" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
             La transmission a échoué :-( <small>(vous n'avez peut être pas de connexion internet, veuillez réessayer plus tard)</small>
@@ -42,6 +42,7 @@
             </div>
         </section>
         <section ng-show="active == 'ajout'">
+            <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
                 <h2>Commission n° {{ commission }}</h2>
             </div>
@@ -49,12 +50,12 @@
                 <div class="col-xs-12 form-horizontal">
                     <div class="form-group">
                         <div class="col-xs-12">
-                            <input ng-show="prelevements_filter.length > 0" type="number" placeholder="Rechecher par numéro de prélévement" class="form-control input-lg" ng-keypress="blurOnEnter($event)" ng-model="query.anonymat_prelevement" />
+                            <input ng-show="(affectation.prelevements | filter: { commission: null }).length > 0" type="tel" placeholder="Rechecher par numéro de prélévement" class="form-control input-lg" ng-keypress="blurOnEnter($event)" ng-change="" ng-model="query.anonymat_prelevement_complet" />
                         </div>
                     </div>
                     <div class="list-group">
-                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (affectation.prelevements | filter: { commission: null } | filter:query)" ng-click="ajouter(prelevement)"><span class="text-muted">{{ prelevement.anonymat_prelevement.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement.substr(3, 3) }} <span class="text-muted">{{ prelevement.anonymat_prelevement.substr(-2) }}</span></a>
-                        <li class="list-group-item list-group-item-success lead" href="" ng-repeat="prelevement in affectation.prelevements | filter: { commission: commission } | filter:query">N° {{ prelevement.anonymat_degustation }} - {{ prelevement.libelle }} <small>(<span class="text-muted">{{ prelevement.anonymat_prelevement.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement.substr(3, 3) }} <span class="text-muted">{{ prelevement.anonymat_prelevement.substr(-2) }}</span>)</small>
+                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (affectation.prelevements | filter: { commission: null } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' })" ng-click="ajouter(prelevement)"><span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span></a>
+                        <li class="list-group-item list-group-item-success lead" href="" ng-repeat="prelevement in affectation.prelevements | filter: { commission: commission } | filter: query">N° {{ prelevement.anonymat_degustation }} - {{ prelevement.libelle }} <small>(<span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span>)</small>
                         <a ng-click="remove(prelevement)" class="btn btn-danger btn-sm pull-right" href=""><span class="glyphicon glyphicon-trash"></span></a></li>       
                     </div>
                 </div>
@@ -74,9 +75,9 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <p class="text-center"><span  style="font-size: 36px;" class="text-muted">N° </span><strong style="font-size: 40px;">{{ prelevement.anonymat_degustation }}</strong></p>
+                    <p class="text-center"><span  style="font-size: 36px;" class="text-muted">N° </span><strong style="font-size: 40px;">{{ affectation.anonymat_degustation_courant }}</strong></p>
 
-                    <p class="text-muted text-center lead"> {{ prelevement.libelle }} - {{ prelevement.anonymat_prelevement.substr(0, 2) }} {{ prelevement.anonymat_prelevement.substr(3, 3) }} {{ prelevement.anonymat_prelevement.substr(-2) }}</p>
+                    <p class="text-muted text-center lead"> {{ prelevement.libelle }} - {{ prelevement.anonymat_prelevement_complet }} </p>
                 </div>
             </div>
             <div class="row row-margin">
