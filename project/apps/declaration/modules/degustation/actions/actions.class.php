@@ -557,7 +557,7 @@ class degustationActions extends sfActions {
     public function executeGenerationCourrier(sfWebRequest $request) {
         $degustation = $this->getRoute()->getDegustation();
         $degustation = Email::getInstance()->sendDegustationNoteCourrier($degustation);
-        $degustation->save();
+    //    $degustation->save();
         return $this->redirect('degustation_visualisation', $degustation);
     }
 

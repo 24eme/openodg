@@ -227,11 +227,13 @@ class Email {
         foreach ($courriers as $cvi => $courrier) {
             $subject = "Rapport de note de l'AVA suite à la dégustation conseil du " . Date::francizeDate($degustation->date) . ' à ' . $degustation->heure;
             $body = $this->getBodyFromPartial('send_degustation_note_degustateur', array('degustation' => $degustation));
-
+            $to = "";
             if (!$courrier->operateur->email) {
                 $to = $reply_to;
                 $subject = "[$courrier->operateur->nom : EMAIL NON ENVOYE] " . $subject;
                 $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $courrier->operateur->nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $courrier->operateur->getKey()), true), $body);
+            } else {
+                $to = $courrier->operateur->email;
             }
 
             $message = Swift_Message::newInstance()
@@ -243,16 +245,16 @@ class Email {
 
 
             foreach ($courrier->prelevements as $hash => $prelevement) {
-                $pdf = new ExportDegustationPDF($degustation,$courrier->operateur,$prelevement);
+                $pdf = new ExportDegustationPDF($degustation, $courrier->operateur, $prelevement);
                 $pdf->setPartialFunction(array($this, 'getPartial'));
                 $pdf->generate();
                 $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
                 $message->attach($pdfAttachment);
-               // $degustation->getOrAdd($hash)->add('courrier_envoye', true);
+                // $degustation->getOrAdd($hash)->add('courrier_envoye', true);
             }
             $message->setContentType('text/plain');
             $this->getMailer()->send($message);
-            
+
             return $degustation;
         }
     }
