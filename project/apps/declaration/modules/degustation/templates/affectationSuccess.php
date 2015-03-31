@@ -2,23 +2,23 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201503311151'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee)) ?>"; url_state="<?php echo url_for('auth_state') ?>";nombre_commissions=<?php echo $tournee->nombre_commissions ?>'>
     <div ng-controller="affectationCtrl">
         <section ng-show="active == 'recapitulatif'" id="commissions">
             <div class="page-header text-center">
                 <h2>Affectation des vins<br /><small>Dégustation du 23/02/2014</small></h2>
             </div>
-            <p class="lead"><span class="text-muted">Encore </span>{{ (affectation.prelevements | filter: { commission: null }).length }} vin(s)<span class="text-muted"> à répartir</span></p>
+            <p class="lead"><span class="text-muted">Encore </span>{{ (prelevements | filter: { commission: null }).length }} vin(s)<span class="text-muted"> à répartir</span></p>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="list-group">
-                        <a ng-repeat="n in affectation.commissions" ng-click="showAjout(n)" href="" class="list-group-item col-xs-12">
+                        <a ng-repeat="n in commissions" ng-click="showAjout(n)" href="" class="list-group-item col-xs-12">
                             <div class="col-xs-10">
                             <strong class="lead">Commission {{ n }}</strong><br />
                             </div>
                             
                             <div class="col-xs-2 text-right">
-                                <span style="font-size: 26px;" class="lead">{{ (affectation.prelevements | filter: { commission: n }).length }}</span>
+                                <span style="font-size: 26px;" class="lead">{{ (prelevements | filter: { commission: n }).length }}</span>
                                 <small>vins</small>
                             </div>
                         </a>
@@ -42,7 +42,7 @@
             </div>
         </section>
         <section ng-show="active == 'ajout'">
-            <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
+            <div href="" ng-click="terminer()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
                 <h2>Commission n° {{ commission }}</h2>
             </div>
@@ -50,13 +50,13 @@
                 <div class="col-xs-12 form-horizontal">
                     <div class="form-group">
                         <div class="col-xs-12">
-                            <input ng-show="(affectation.prelevements | filter: { commission: null }).length > 0" type="tel" placeholder="Rechecher par numéro de prélévement" class="form-control input-lg" ng-keypress="blurOnEnter($event)" ng-change="" ng-model="query.anonymat_prelevement_complet" />
+                            <input ng-show="(prelevements | filter: { commission: null }).length > 0" type="tel" placeholder="Rechecher par numéro de prélévement" class="form-control input-lg" ng-keypress="blurOnEnter($event)" ng-change="" ng-model="query.anonymat_prelevement_complet" />
                         </div>
                     </div>
                     <div class="list-group">
-                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (affectation.prelevements | filter: { commission: null } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' })" ng-click="ajouter(prelevement)"><span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span></a>
-                        <li class="list-group-item list-group-item-success lead" href="" ng-repeat="prelevement in affectation.prelevements | filter: { commission: commission } | filter: query">N° {{ prelevement.anonymat_degustation }} - {{ prelevement.libelle }} <small>(<span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span>)</small>
-                        <a ng-click="remove(prelevement)" class="btn btn-danger btn-sm pull-right" href=""><span class="glyphicon glyphicon-trash"></span></a></li>       
+                        <li class="list-group-item list-group-item-success lead" href="" ng-repeat="prelevement in prelevements | filter: { commission: commission } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' } | orderBy: ['anonymat_degustation']">N° {{ prelevement.anonymat_degustation }} - {{ prelevement.libelle }} <small>(<span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span>)</small>
+                        <a ng-click="remove(prelevement)" class="btn btn-danger btn-sm pull-right" href=""><span class="glyphicon glyphicon-trash"></span></a></li> 
+                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (prelevements | filter: { commission: null } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' })" ng-click="ajouter(prelevement)"><span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span></a>
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <p class="text-center"><span  style="font-size: 36px;" class="text-muted">N° </span><strong style="font-size: 40px;">{{ affectation.anonymat_degustation_courant }}</strong></p>
+                    <p class="text-center"><span  style="font-size: 36px;" class="text-muted">N° </span><strong style="font-size: 40px;">{{ anonymat_degustation }}</strong></p>
 
                     <p class="text-muted text-center lead"> {{ prelevement.libelle }} - {{ prelevement.anonymat_prelevement_complet }} </p>
                 </div>

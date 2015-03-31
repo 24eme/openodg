@@ -326,16 +326,24 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.state = true;
     $scope.query = null;
     $scope.prelevement = null;
-    $scope.affectation = null;
+    $scope.prelevements = [];
+    $scope.degustations = [];
+    $scope.degustations = [];
+    $scope.anonymat_degustation = 1;
+
+    $scope.commissions = [];
+    for (var i = 1; i <= $scope.nombre_commissions; i++) {
+        $scope.commissions.push(i);
+    };
 
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
-        localStorageService.set(local_storage_name, angular.toJson($scope.affectation));
+        localStorageService.set(local_storage_name, angular.toJson($scope.degustations));
     }
 
     var remoteSave = function(callBack) {
-        $http.post($rootScope.url_json, angular.toJson($scope.affectation))
+        $http.post($rootScope.url_json, angular.toJson($scope.degustations))
         .success(function(data){
             callBack(data.success);
         }).error(function(data) {
@@ -365,13 +373,27 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }, 200000);
 
     //$scope.affectation = localStorageService.get(local_storage_name);
-    $scope.affectation = null;
    
-    if(!$scope.affectation) {
+    if(!$scope.degustations.length) {
         $http.get($rootScope.url_json)
         .success(function(data){
-            $scope.affectation = data;
+            $scope.degustations = data;
+            updatePrelevements();
         });
+    }
+
+    var updatePrelevements = function() {
+        $scope.prelevements = [];
+        for(degustation_key in $scope.degustations) {
+            var degustation = $scope.degustations[degustation_key];
+            for(prelevement_key in degustation.prelevements) {
+                var prelevement = degustation.prelevements[prelevement_key];
+                if($scope.anonymat_degustation < (prelevement.anonymat_degustation + 1)) {
+                    $scope.anonymat_degustation = prelevement.anonymat_degustation + 1;
+                }
+                $scope.prelevements.push($scope.degustations[degustation_key].prelevements[prelevement_key]);
+            }
+        } 
     }
 
     $scope.showAjout = function(commission) {
@@ -422,8 +444,8 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.validation = function(prelevement, commission) {
         prelevement.commission = commission;
-        prelevement.anonymat_degustation = $scope.affectation.anonymat_degustation_courant;
-        $scope.affectation.anonymat_degustation_courant++;
+        prelevement.anonymat_degustation = $scope.anonymat_degustation;
+        $scope.anonymat_degustation++;
         localSave();
         $scope.showAjout(commission);
     }
