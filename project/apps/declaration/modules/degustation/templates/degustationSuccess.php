@@ -24,7 +24,7 @@
                             </div>
                             <div class="col-xs-5 text-left">
                                 <span ng-show="prelevement.termine" ng-repeat="note_key in notes_key"><span>{{ notes[note_key] }} : <span>{{ prelevement.notes[note_key].note }}</span> <small>({{ prelevement.notes[note_key].defauts.join(', ') }})</small></span><br /></span>
-                                <div ng-show="prelevement.appreciations"><small><i>{{ prelevement.appreciations }}</i></small></div>
+                                <div ng-show="prelevement.appreciations "><small><i>{{ prelevement.appreciations }}</i></small></div>
                             </div>
                             <div class="col-xs-2 text-right">
                                 <span ng-show="!prelevement.termine" class="glyphicon glyphicon-unchecked" style="font-size: 32px; margin-top: 6px;"></span>
@@ -62,7 +62,10 @@
                         <?php foreach(DegustationClient::$note_type_libelles as $key_note_type => $note_type_libelle): ?>
                         <div class="form-group form-group-lg" ng-class="{ 'has-error': prelevement.notes.<?php echo $key_note_type ?>.erreurs }">
                             <div class="col-xs-12">
-                                <label class="col-xs-3 control-label lead"><?php echo $note_type_libelle ?></label>
+                                <div class="col-xs-3 text-right">
+                                <label class="control-label lead"><?php echo $note_type_libelle ?></label>
+                                <?php if(isset(DegustationClient::$note_type_libelles_help[$key_note_type])): ?><div class="text-muted"><?php echo DegustationClient::$note_type_libelles_help[$key_note_type] ?></div><?php endif; ?>
+                                </div>
                                 <div class="col-xs-2">
                                     <select ng-model="prelevement.notes.<?php echo $key_note_type ?>.note" class="form-control input-lg">
                                         <?php foreach(DegustationClient::$note_type_notes[$key_note_type] as $key_note_note => $libelle_note_note): ?>

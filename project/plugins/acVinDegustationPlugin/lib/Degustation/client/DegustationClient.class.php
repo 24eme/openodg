@@ -23,6 +23,11 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_EQUILIBRE => "Équilibre",*/
     );
 
+    public static $note_type_libelles_help = array(
+        self::NOTE_TYPE_QUALITE_TECHNIQUE => "Maîtrise de la vinification",
+        self::NOTE_TYPE_MATIERE => null,
+    );
+
     public static $motif_non_prelevement_libelles = array(
         self::MOTIF_NON_PRELEVEMENT_REPORT => "Report",
         self::MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN => "Plus de vin",
