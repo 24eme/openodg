@@ -408,7 +408,6 @@ class degustationActions extends sfActions {
         }
 
         $json = json_decode($request->getContent());
-
         $json_return = array();
 
         foreach($json as $json_degustation) {
@@ -506,6 +505,7 @@ class degustationActions extends sfActions {
         }
 
         $json = json_decode($request->getContent());
+        $json_return = array();
 
         foreach($json as $json_degustation) {
             if(!$this->tournee->degustations->exist($json_degustation->identifiant)) {
@@ -542,6 +542,17 @@ class degustationActions extends sfActions {
 
     public function executeDegustations(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
+
+        if($this->tournee->statut == TourneeClient::STATUT_AFFECTATION && $this->tournee->isAffectationTerminee()) {
+            $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
+            $this->tournee->save();
+        }
+
+        if($this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS) {
+
+            return $this->forward404("La tournée n'est pas prête à être dégusté");
+        }
+
         $this->setLayout('layoutResponsive');
     }
 
@@ -555,20 +566,10 @@ class degustationActions extends sfActions {
         $this->tournee = $this->getRoute()->getTournee();
         $this->commission = $request->getParameter('commission');
 
-        $json = new stdClass();
-        $json->commission = $this->commission;
-        $json->prelevements = array();
-        $json->notes = TourneeClient::$note_type_libelles;
+        $json = array();
 
-        $prelevements = $this->tournee->getPrelevementsByNumeroDegustation($this->commission);
-
-        foreach($prelevements as $prelevement) {
-            $p = $json->prelevements[] = new stdClass();
-            $p->anonymat_degustation = $prelevement->anonymat_degustation;
-            $p->hash_produit = $prelevement->hash_produit;
-            $p->libelle = $prelevement->libelle;
-            $p->notes = $prelevement->notes->toArray(true, false);
-            $p->appreciations = $prelevement->appreciations;
+        foreach($this->tournee->getDegustationsObjectByCommission($this->commission) as $degustation) {
+            $json[$degustation->_id] = $degustation->toJson();
         }
 
         if(!$request->isMethod(sfWebRequest::POST)) {
@@ -578,23 +579,48 @@ class degustationActions extends sfActions {
         }
 
         $json = json_decode($request->getContent());
+        $json_return = array();
 
-        foreach($json->prelevements as $p) {
-            $prelevement = $prelevements[$p->anonymat_degustation];
-            $prelevement->notes = array();
-            foreach($p->notes as $key_note => $note) {
-                $n = $prelevement->notes->add($key_note);
-                $n->note = $note->note;
-                $n->defauts = $note->defauts;
+        foreach($json as $json_degustation) {
+            if(!$this->tournee->degustations->exist($json_degustation->identifiant)) {
+                $json_return[$json_degustation->_id] = false;
+                continue;
             }
-            $prelevement->appreciations = $p->appreciations;
-        }
 
-        $this->tournee->save();
+            $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
+
+            /*if($degustation->_rev != $json_degustation->_rev) {
+                $json_return[$degustation->_id] = false;
+                continue;
+            }*/
+
+            foreach($json_degustation->prelevements as $json_prelevement) {
+                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation);
+                if(!$prelevement) {
+                    continue;
+                }
+
+                if($prelevement->commission != $this->commission) {
+                    continue;
+                }
+
+                $prelevement->notes = array();
+                foreach($json_prelevement->notes as $key_note => $json_note) {
+                    $note = $prelevement->notes->add($key_note);
+                    $note->note = $json_note->note;
+                    $note->defauts = $json_note->defauts;
+                }
+                $prelevement->appreciations = $json_prelevement->appreciations;
+            }
+            
+            $degustation->save();
+
+            $json_return[$degustation->_id] = $degustation->_rev;
+        }
 
         $this->response->setContentType('application/json');
 
-        return $this->renderText(json_encode(array("success" => true)));
+        return $this->renderText(json_encode($json_return));
     }
 
     protected function getEtape($doc, $etape) {

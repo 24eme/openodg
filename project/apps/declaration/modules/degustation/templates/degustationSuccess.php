@@ -2,44 +2,19 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201503100031'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::$note_type_libelles) ?>;'>
     <div ng-controller="degustationCtrl">
-        <!--<section>
-            <div class="page-header">
-                <h2>Dégustateurs présents<br /><small>Commission 1</small></h2>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="list-group">
-                        <a href="#" class="list-group-item col-xs-12">
-                            <div class="col-xs-11">
-                                <span class="lead">Dégustateur</span>
-                            </div>
-                            <div class="col-xs-1 text-right">
-                                <span style="font-size: 26px;" class="glyphicon glyphicon-check glyphicon"></span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="row row-margin">
-                <div class="col-xs-6">
-                    <a href="#commissions" class="btn btn-default btn-default-step btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
-                </div>
-                <div class="col-xs-6">
-                    <a href="#vins_<?php echo $i ?>" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Démarrer</a>
-                </div>
-            </div>
-        </section>-->
-
         <section ng-show="active == 'recapitulatif'">
             <div class="page-header text-center">
-                <h2>Commission {{ degustation.commission }}</small></h2>
+                <h2>Commission {{ commission }}</small></h2>
+            </div>
+            <div ng-show="!loaded" class="row">
+                <div class="col-xs-12 text-center lead text-muted-alt" style="padding-top: 30px;">Chargement en cours ...</div>
             </div>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="list-group">
-                        <a href="" ng-repeat="prelevement in degustation.prelevements" class="list-group-item col-xs-12 link-to-section" ng-click="showCepage(prelevement)" ng-class="{ 'list-group-item-success': prelevement.termine, 'list-group-item-danger': (prelevement.erreurs)}">
+                        <a href="" ng-repeat="prelevement in prelevements | orderBy: ['anonymat_degustation']" class="list-group-item col-xs-12 link-to-section" ng-click="showCepage(prelevement)" ng-class="{ 'list-group-item-success': prelevement.termine, 'list-group-item-danger': (prelevement.erreurs)}">
                             <div class="col-xs-1">
                                 <strong style="font-size: 32px;">{{ prelevement.anonymat_degustation }}</strong>
                             </div>
@@ -47,7 +22,7 @@
                                 <span class="lead">{{ prelevement.libelle }}</span>
                             </div>
                             <div class="col-xs-5 text-right">
-                                <span ng-show="prelevement.termine" ng-repeat="(key_note, note) in prelevement.notes"><span>{{ degustation.notes[key_note] }} : <span>{{ note.note }}</span></span><br /></span>
+                                <span ng-show="prelevement.termine" ng-repeat="(key_note, note) in prelevement.notes"><span>{{ notes[key_note] }} : <span>{{ note.note }}</span></span><br /></span>
                             </div>
                             <div class="col-xs-2 text-right">
                                 <span ng-show="!prelevement.termine" class="glyphicon glyphicon-unchecked" style="font-size: 32px; margin-top: 6px;"></span>
@@ -68,13 +43,13 @@
             </div>
             <div class="row row-margin hidden-print">
                 <div class="col-xs-12">
-                    <a href="" ng-show="!transmission_progress" ng-click="transmettre()" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
+                    <a href="" ng-show="!transmission_progress" ng-click="transmettre(false)" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
                     <small ng-show="transmission_progress">Transmission en cours...</small>
                 </div>
             </div>
         </section>
 
-        <section ng-repeat="prelevement in degustation.prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
+        <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
             <div class="page-header text-center">
                 <h2>Lot n°{{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
             </div>

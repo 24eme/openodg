@@ -95,6 +95,18 @@ class Tournee extends BaseTournee {
         return $this->degustations_object;
     }
 
+    public function getDegustationsObjectByCommission($commission) {
+        $degustations = array();
+        foreach($this->getDegustationsObject() as $degustation) {
+            if(!$degustation->isInCommission($commission)) {
+                continue;
+            }
+            $degustations[$degustation->getIdentifiant()] = $degustation;
+        }
+
+        return $degustations;
+    }
+
     public function getTourneeOperateurs($agent, $date) {
         $operateurs = array();
         foreach ($this->operateurs as $operateur) {
@@ -125,30 +137,6 @@ class Tournee extends BaseTournee {
         foreach($this->getDegustationsObject() as $degustation) {
             $degustation->cleanPrelevements();
         }
-    }
-
-    public function getPrelevementsByNumeroDegustation($commission) {
-        $prelevements = array();
-
-        foreach($this->operateurs as $operateur) {
-            foreach($operateur->prelevements as $prelevement) {
-                if($prelevement->commission != $commission) {
-                    continue;
-                }
-                $cepage_key = substr($prelevement->hash_produit, -2);
-                $prelevements["P".TourneeClient::$ordre_cepages[$cepage_key].sprintf("%03d", $prelevement->anonymat_degustation)] = $prelevement;
-            }
-        }
-
-        ksort($prelevements);
-
-        $prelevements_return = array();
-
-        foreach($prelevements as $prelevement) {
-            $prelevements_return[$prelevement->anonymat_degustation] = $prelevement;
-        }
-
-        return $prelevements_return;
     }
 
     public function generateNotes() {

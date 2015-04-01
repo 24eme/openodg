@@ -88,6 +88,17 @@ class Degustation extends BaseDegustation {
         return null;
     }
 
+    public function getPrelevementsByAnonymatDegustation($anonymat_degustation) {
+        foreach($this->prelevements as $prelevement) {
+            if($prelevement->anonymat_degustation == $anonymat_degustation) {
+
+                return $prelevement;
+            }
+        }
+
+        return null;
+    }
+
     public function cleanPrelevements() {
         $hash_to_delete = array();
 
@@ -139,6 +150,17 @@ class Degustation extends BaseDegustation {
         }
 
         return true;
+    }
+
+    public function isInCommission($commission) {
+        foreach($this->prelevements as $prelevement) {
+            if($prelevement->commission == $commission) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getCompte() {
