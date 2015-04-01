@@ -130,6 +130,17 @@ class Degustation extends BaseDegustation {
         return false;
     }
 
+    public function isAffectationTerminee() {
+        foreach($this->prelevements as $prelevement) {
+            if(!$prelevement->isAffectationTerminee()) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function getCompte() {
 
         return CompteClient::getInstance()->findByIdentifiant("E" . $this->getIdentifiant());

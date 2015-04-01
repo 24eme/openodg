@@ -2,7 +2,7 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201503100031'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $degustation, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>";'>
     <div ng-controller="degustationCtrl">
         <!--<section>
             <div class="page-header">
@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div ng-show="!state" class="alert alert-warning col-xs-12" style="margin-top: 10px;">
-            Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_affectation", array('sf_subject' => $degustation)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
+            Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_degustation", array('sf_subject' => $tournee, 'commission' => $commission)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
             </div>
             <div ng-show="transmission && !transmission_result" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
             La transmission a échoué :-( <small>(vous n'avez peut être pas de connexion internet, veuillez réessayer plus tard)</small>

@@ -36,4 +36,9 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
         return $this->preleve && $this->hash_produit && $this->cuve;
     }
+
+    public function isAffectationTerminee() {
+
+        return $this->commission && $this->anonymat_degustation;
+    }
 }

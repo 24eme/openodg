@@ -6,7 +6,7 @@
     <div ng-controller="affectationCtrl">
         <section ng-show="active == 'recapitulatif'" id="commissions">
             <div class="page-header text-center">
-                <h2>Affectation des vins<br /><small>Dégustation du 23/02/2014</small></h2>
+                <h2>Affectation des vins<br /><small>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></small></h2>
             </div>
             <div ng-show="!loaded" class="row">
                 <div class="col-xs-12 text-center lead text-muted-alt" style="padding-top: 30px;">Chargement en cours ...</div>

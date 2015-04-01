@@ -540,6 +540,11 @@ class degustationActions extends sfActions {
         return $this->renderText(json_encode($json_return));
     }
 
+    public function executeDegustations(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+        $this->setLayout('layoutResponsive');
+    }
+
     public function executeDegustation(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
         $this->commission = $request->getParameter('commission');
