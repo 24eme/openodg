@@ -327,7 +327,6 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.query = null;
     $scope.prelevement = null;
     $scope.prelevements = [];
-    $scope.degustations = [];
     $scope.anonymat_degustation = 1;
     $scope.loaded = false;
 
@@ -356,7 +355,6 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     var updatePrelevements = function() {
-        console.log('update');
         $scope.prelevements = [];
         for(degustation_key in $scope.degustations) {
             var degustation = $scope.degustations[degustation_key];
@@ -462,19 +460,19 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     setInterval(function() {
         $scope.transmettre(true);
-    }, 60000);
+    }, 30000);
 
     setInterval(function() {
         $scope.loadOrUpdateDegustations();
-    }, 10000);
+    }, 60000);
 
     $scope.degustations = localStorageService.get(local_storage_name);
-    
+
     if($scope.degustations) {
         updatePrelevements();
         $scope.loaded = true;
     } else {
-        $scope.degustations = [];
+        $scope.degustations = {};    
     }
 
     $scope.loadOrUpdateDegustations();
