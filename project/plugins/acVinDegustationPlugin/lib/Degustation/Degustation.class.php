@@ -77,6 +77,17 @@ class Degustation extends BaseDegustation {
         }
     }
 
+    public function getPrelevementsByAnonymatPrelevement($anonymat_prelevement) {
+        foreach($this->prelevements as $prelevement) {
+            if($prelevement->anonymat_prelevement == $anonymat_prelevement) {
+
+                return $prelevement;
+            }
+        }
+
+        return null;
+    }
+
     public function getCompte() {
 
         return CompteClient::getInstance()->findByIdentifiant("E" . $this->getIdentifiant());

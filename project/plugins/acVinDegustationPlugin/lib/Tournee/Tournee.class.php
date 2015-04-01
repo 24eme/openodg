@@ -140,18 +140,6 @@ class Tournee extends BaseTournee {
         }
     }
 
-    public function getPrelevementsByNumeroPrelevement() {
-        $prelevements = array();
-
-        foreach($this->operateurs as $operateur) {
-            foreach($operateur->prelevements as $prelevement) {
-                $prelevements[$prelevement->anonymat_prelevement] = $prelevement;
-            }
-        }
-
-        return $prelevements;
-    }
-
     public function getPrelevementsByNumeroDegustation($commission) {
         $prelevements = array();
 
@@ -189,14 +177,8 @@ class Tournee extends BaseTournee {
     }
 
     public function generatePrelevements() {
-        foreach($this->getDegustationsObject() as $degustation) {
-            if(count($degustation->prelevements) > 0) {
-                return false;
-            }
-        }
-
+        foreach($this->getDegustationsObject() as $degustation) { if(count($degustation->prelevements) > 0) { return false; } }
         $j = 100;
-        
         foreach ($this->getDegustationsObject() as $degustation) {
             if(count($degustation->prelevements) > 0) {
                 continue;
