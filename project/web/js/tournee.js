@@ -163,7 +163,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     setInterval(function() {
         $scope.transmettre(true);
-    }, 60000);
+    }, 30000);
 
     setInterval(function() {
         $scope.loadOrUpdateOperateurs();

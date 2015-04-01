@@ -419,10 +419,10 @@ class degustationActions extends sfActions {
 
             $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
 
-            if($degustation->_rev != $json_degustation->_rev) {
+            /*if($degustation->_rev != $json_degustation->_rev) {
                 $json_return[$degustation->_id] = false;
                 continue;
-            }
+            }*/
 
             $degustation->motif_non_prelevement = ($json_degustation->motif_non_prelevement) ? $json_degustation->motif_non_prelevement : null;
 
@@ -489,10 +489,10 @@ class degustationActions extends sfActions {
 
             $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
 
-            if($degustation->_rev != $json_degustation->_rev) {
+            /*if($degustation->_rev != $json_degustation->_rev) {
                 $json_return[$degustation->_id] = false;
                 continue;
-            }
+            }*/
 
             foreach($json_degustation->prelevements as $json_prelevement) {
                 $prelevement = $degustation->getPrelevementsByAnonymatPrelevement($json_prelevement->anonymat_prelevement);
