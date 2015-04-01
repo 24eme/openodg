@@ -460,11 +460,11 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     setInterval(function() {
         $scope.transmettre(true);
-    }, 30000);
+    }, 15000);
 
     setInterval(function() {
         $scope.loadOrUpdateDegustations();
-    }, 60000);
+    }, 30000);
 
     $scope.degustations = localStorageService.get(local_storage_name);
 
