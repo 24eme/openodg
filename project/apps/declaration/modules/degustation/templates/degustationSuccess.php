@@ -5,6 +5,7 @@
 <div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::$note_type_libelles) ?>;'>
     <div ng-controller="degustationCtrl">
         <section ng-show="active == 'recapitulatif'">
+            <a href="<?php echo url_for("degustation_degustations", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
             <div class="page-header text-center">
                 <h2>Commission {{ commission }}</small></h2>
             </div>
@@ -21,8 +22,9 @@
                             <div class="col-xs-4">
                                 <span class="lead">{{ prelevement.libelle }}</span>
                             </div>
-                            <div class="col-xs-5 text-right">
-                                <span ng-show="prelevement.termine" ng-repeat="(key_note, note) in prelevement.notes"><span>{{ notes[key_note] }} : <span>{{ note.note }}</span></span><br /></span>
+                            <div class="col-xs-5 text-left">
+                                <span ng-show="prelevement.termine" ng-repeat="note_key in notes_key"><span>{{ notes[note_key] }} : <span>{{ prelevement.notes[note_key].note }}</span> <small>({{ prelevement.notes[note_key].defauts.join(', ') }})</small></span><br /></span>
+                                <div ng-show="prelevement.appreciations"><small><i>{{ prelevement.appreciations }}</i></small></div>
                             </div>
                             <div class="col-xs-2 text-right">
                                 <span ng-show="!prelevement.termine" class="glyphicon glyphicon-unchecked" style="font-size: 32px; margin-top: 6px;"></span>
@@ -50,6 +52,7 @@
         </section>
 
         <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
+            <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
                 <h2>Lot n°{{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
             </div>

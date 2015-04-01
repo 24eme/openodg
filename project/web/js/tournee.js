@@ -564,11 +564,12 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.state = true;
     $scope.prelevements = [];
     $scope.loaded = false;
+    $scope.notes_key = Object.keys($scope.notes);
 
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
-        localStorageService.set(local_storage_name, angular.toJson($scope.degustation));
+        localStorageService.set(local_storage_name, angular.toJson($scope.degustations));
     }
 
     var localDelete = function() {
@@ -715,14 +716,14 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.degustations = localStorageService.get(local_storage_name);
 
-    $scope.loadOrUpdateDegustations();
-
     if($scope.degustations) {
         updatePrelevements();
         $scope.loaded = true;
     } else {
         $scope.degustations = {};    
     }
+
+    $scope.loadOrUpdateDegustations();
 
     $scope.precedent = function() {
         $scope.showRecap();

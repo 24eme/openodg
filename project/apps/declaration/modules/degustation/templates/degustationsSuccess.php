@@ -13,10 +13,10 @@
                         <strong class="lead">Commission <?php echo $i ?></strong><br />
                         </div>
                         
-                        <div class="col-xs-2 text-right">
+                        <!--<div class="col-xs-2 text-right">
                             <span style="font-size: 26px;" class="lead"></span>
                             <small>vins</small>
-                        </div>
+                        </div>-->
                     </a>
                     <?php endfor; ?>
                 </div>
