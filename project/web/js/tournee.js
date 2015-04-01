@@ -603,9 +603,11 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
                 } else if(degustation && degustationRemote._rev != degustation._rev) {
                     $scope.degustations[degustationRemote._id] = degustationRemote;
+                    updateDegustationFromLoad(degustationRemote);
                     modified = true;
                 } else {
                     $scope.degustations[degustationRemote._id] = degustationRemote;
+                    updateDegustationFromLoad(degustationRemote);
                     modified = true;
                 }
             }
@@ -617,7 +619,21 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         });
     }
 
-     var updatePrelevements = function() {
+    var updateDegustationFromLoad = function(degustation) {
+        for(prelevement_key in degustation.prelevements) {
+            var prelevement = degustation.prelevements[prelevement_key];
+            var termine = true;
+            for(note_key in prelevement.notes) {
+                var note = prelevement.notes[note_key];
+                if(!note.note) {
+                    termine = false;
+                }
+            }
+            prelevement.termine = termine;
+        }
+    }
+
+    var updatePrelevements = function() {
         $scope.prelevements = [];
         for(degustation_key in $scope.degustations) {
             var degustation = $scope.degustations[degustation_key];
