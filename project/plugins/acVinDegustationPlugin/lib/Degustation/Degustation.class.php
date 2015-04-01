@@ -88,6 +88,48 @@ class Degustation extends BaseDegustation {
         return null;
     }
 
+    public function cleanPrelevements() {
+        $hash_to_delete = array();
+
+        foreach($this->prelevements as $prelevement) {
+            if($prelevement->isPreleve()) {
+                continue;
+            }
+            $hash_to_delete[$prelevement->getHash()] = $prelevement->getHash();
+        }
+
+        krsort($hash_to_delete);
+
+        foreach($hash_to_delete as $hash) {
+            $this->remove($hash);
+        }
+    }
+
+    public function generateNotes() {
+         foreach($this->prelevements as $prelevement) {
+            foreach(DegustationClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
+                    $prelevement->notes->add($key_type_note);
+            }
+        }
+    }
+
+    public function isTourneeTerminee() {
+        if($this->motif_non_prelevement)  {
+
+            return true;
+        }
+
+        foreach($this->prelevements as $prelevement) {
+
+            if($prelevement->isPreleve()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getCompte() {
 
         return CompteClient::getInstance()->findByIdentifiant("E" . $this->getIdentifiant());

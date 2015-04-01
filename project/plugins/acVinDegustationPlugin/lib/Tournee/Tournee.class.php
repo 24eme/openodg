@@ -122,21 +122,8 @@ class Tournee extends BaseTournee {
     }
 
     public function cleanPrelevements() {
-        $hash_to_delete = array();
-
         foreach($this->getDegustationsObject() as $degustation) {
-            foreach($degustation->prelevements as $prelevement) {
-                if($prelevement->preleve && $prelevement->cuve && $prelevement->hash_produit) {
-                    continue;
-                }
-                $hash_to_delete[$prelevement->getHash()] = $prelevement->getHash();
-            }
-        }
-
-        krsort($hash_to_delete);
-
-        foreach($hash_to_delete as $hash) {
-            $degustation->remove($hash);
+            $degustation->cleanPrelevements();
         }
     }
 
@@ -164,15 +151,9 @@ class Tournee extends BaseTournee {
         return $prelevements_return;
     }
 
-    public function generateDegustation() {
-        $prelevements = $this->getPrelevementsByNumeroPrelevement();
-
-        $i = 1;
-        foreach($prelevements as $prelevement) {
-            foreach(TourneeClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
-                $prelevement->notes->add($key_type_note);
-            }
-            $i++;
+    public function generateNotes() {
+        foreach($this->getDegustationsObject() as $degustation) {
+            $degustation->generateNotes();
         }
     }
 
@@ -273,6 +254,16 @@ class Tournee extends BaseTournee {
         }
 
         $this->add('etape', $etape);
+
+        return true;
+    }
+
+    public function isTourneeTerminee() {
+        foreach($this->getDegustationsObject() as $degustation) {
+            if(!$degustation->isTourneeTerminee()) {
+                return false;
+            }
+        }
 
         return true;
     }

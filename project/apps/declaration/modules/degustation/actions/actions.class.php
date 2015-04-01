@@ -452,15 +452,41 @@ class degustationActions extends sfActions {
 
     public function executeAffectationGenerate(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
+
+        if($this->tournee->statut != TourneeClient::STATUT_TOURNEES) {
+
+            return $this->forward404("L'affectation a déjà eu lieu");
+        }
+
+        if(!$this->tournee->isTourneeTerminee()) {
+
+            return $this->forward404("Les tournées ne sont pas terminées");
+        }
+
+        $this->tournee->statut = TourneeClient::STATUT_AFFECTATION;
         $this->tournee->cleanPrelevements();
+        $this->tournee->generateNotes();
         $this->tournee->save();
         $this->tournee->saveDegustations();
 
-        return $this->redirect('degustation_visualisation', $this->tournee);
+        return $this->redirect('degustation_affectation', $this->tournee);
     }
 
     public function executeAffectation(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
+
+        if($this->tournee->statut == TourneeClient::STATUT_TOURNEES) {
+
+            return $this->redirect('degustation_affectation_generate', $this->tournee);
+        }
+
+        if($this->tournee->statut != TourneeClient::STATUT_AFFECTATION) {
+
+            return $this->forward404("L'affectation est terminée");
+        }
+
+        $this->reload = $request->getParameter('reload', 0);
+
         $this->setLayout('layoutResponsive');
     }
 

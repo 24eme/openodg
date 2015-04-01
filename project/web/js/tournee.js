@@ -341,6 +341,10 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         localStorageService.set(local_storage_name, angular.toJson($scope.degustations));
     }
 
+    var localDelete = function() {
+        localStorageService.remove(local_storage_name);
+    }
+
     var getDegustationsToTransmettre = function() {
         var degustationsToTransmettre = [];
 
@@ -361,12 +365,20 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             for(prelevement_key in degustation.prelevements) {
                 var prelevement = degustation.prelevements[prelevement_key];
                 prelevement.degustation_id = degustation._id;
-                if($scope.anonymat_degustation < (prelevement.anonymat_degustation + 1)) {
-                    $scope.anonymat_degustation = prelevement.anonymat_degustation + 1;
-                }
                 $scope.prelevements.push($scope.degustations[degustation_key].prelevements[prelevement_key]);
             }
         } 
+        calculAnonymatDegustation();
+    }
+
+    var calculAnonymatDegustation = function() {
+        $scope.anonymat_degustation = 1;
+        for(prelevement_key in $scope.prelevements) {
+            var prelevement = $scope.prelevements[prelevement_key];
+            if($scope.anonymat_degustation < (prelevement.anonymat_degustation + 1)) {
+                $scope.anonymat_degustation = prelevement.anonymat_degustation + 1;
+            }
+        }
     }
 
     $scope.loadOrUpdateDegustations = function() {
@@ -460,11 +472,15 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     setInterval(function() {
         $scope.transmettre(true);
-    }, 15000);
+    }, 30000);
 
     setInterval(function() {
         $scope.loadOrUpdateDegustations();
-    }, 30000);
+    }, 60000);
+
+    if($scope.reload) {
+        localDelete();
+    }
 
     $scope.degustations = localStorageService.get(local_storage_name);
 
@@ -513,6 +529,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.remove = function(prelevement) {
         prelevement.commission = null;
         prelevement.anonymat_degustation = null;
+        calculAnonymatDegustation();
         $scope.degustations[prelevement.degustation_id].transmission_needed = true;
         $scope.transmettre(true);
         localSave();

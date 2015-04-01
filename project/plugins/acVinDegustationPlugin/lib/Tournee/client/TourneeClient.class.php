@@ -4,6 +4,11 @@ class TourneeClient extends acCouchdbClient {
         
     const TYPE_MODEL = "Tournee"; 
     const TYPE_COUCHDB = "TOURNEE";
+
+    const STATUT_ORGANISATION = 'ORGANISATION';
+    const STATUT_TOURNEES = 'TOURNEES';
+    const STATUT_AFFECTATION = 'AFFECTATION';
+    const STATUT_DEGUSTATION = 'DEGUSTATION';
     
     public static function getInstance()
     {

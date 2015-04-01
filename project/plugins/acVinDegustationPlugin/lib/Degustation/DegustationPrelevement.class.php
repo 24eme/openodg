@@ -31,4 +31,9 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
         return substr($this->hash_produit, -2);
     }
+
+    public function isPreleve() {
+
+        return $this->preleve && $this->hash_produit && $this->cuve;
+    }
 }
