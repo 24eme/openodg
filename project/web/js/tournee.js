@@ -565,6 +565,11 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.prelevements = [];
     $scope.loaded = false;
     $scope.notes_key = Object.keys($scope.notes);
+    $scope.ajout_defaut = {
+        query: null,
+        prelevement: null,
+        note: null
+    }
 
     var local_storage_name = $rootScope.url_json;
 
@@ -739,6 +744,38 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         if(!$('.select2-input').length) {
             $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
         }
+    }
+
+    $scope.showAjoutDefaut = function(prelevement, note_key) {
+        $scope.active = 'ajout_defaut';
+        $scope.ajout_defaut.query = "";
+        $scope.ajout_defaut.prelevement = prelevement;
+        $scope.ajout_defaut.note_key = note_key;
+    }
+
+    $scope.removeDefaut = function(prelevement, note_key, defaut) {
+
+        if (!confirm("Etes vous sûr de vouloir supprimer ce défaut") == true) {
+            
+            return;
+        }
+
+        var indexDefaut = prelevement.notes[note_key].defauts.indexOf(defaut);
+
+        if(indexDefaut === -1) {
+            return;
+        }
+
+        prelevement.notes[note_key].defauts.splice(indexDefaut, 1);
+        localSave();
+    }
+
+    $scope.ajouterDefaut = function(prelevement, note_key, defaut) {
+        if(prelevement.notes[note_key].defauts.indexOf(defaut) === -1) {
+            prelevement.notes[note_key].defauts.push(defaut);
+        }
+        $scope.showCepage(prelevement);
+        localSave();
     }
 
     $scope.isNonSaisie = function(prelevement) {

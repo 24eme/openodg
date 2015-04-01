@@ -2,7 +2,7 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201503100031'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::$note_type_libelles) ?>;'>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::$note_type_libelles) ?>; defauts=<?php echo json_encode(DegustationClient::$note_type_defauts, JSON_HEX_APOS) ?>;'>
     <div ng-controller="degustationCtrl">
         <section ng-show="active == 'recapitulatif'">
             <a href="<?php echo url_for("degustation_degustations", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
@@ -23,7 +23,7 @@
                                 <span class="lead">{{ prelevement.libelle }}</span>
                             </div>
                             <div class="col-xs-5 text-left">
-                                <span ng-show="prelevement.termine" ng-repeat="note_key in notes_key"><span>{{ notes[note_key] }} : <span>{{ prelevement.notes[note_key].note }}</span> <small>({{ prelevement.notes[note_key].defauts.join(', ') }})</small></span><br /></span>
+                                <span ng-show="prelevement.termine" ng-repeat="note_key in notes_key"><span>{{ notes[note_key] }} : <span>{{ prelevement.notes[note_key].note }}</span> <small ng-show="prelevement.notes[note_key].defauts.length">({{ prelevement.notes[note_key].defauts.join(', ') }})</small></span><br /></span>
                                 <div ng-show="prelevement.appreciations "><small><i>{{ prelevement.appreciations }}</i></small></div>
                             </div>
                             <div class="col-xs-2 text-right">
@@ -58,26 +58,31 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                   <form class="form-horizontal">
+                   <form class="form-horizontal form-group-lg">
+                        <div class="col-xs-12">
+                            <div class="col-xs-3 col-md-3 col-lg-2 text-right"></div>
+                            <div class="col-xs-2 col-md-3 col-lg-3 text-muted-alt lead text-center">Note</div>
+                            <div class="col-xs-7 col-md-6 col-lg-7 text-muted-alt lead text-center">Défauts</div>
+                        </div>
                         <?php foreach(DegustationClient::$note_type_libelles as $key_note_type => $note_type_libelle): ?>
                         <div class="form-group form-group-lg" ng-class="{ 'has-error': prelevement.notes.<?php echo $key_note_type ?>.erreurs }">
                             <div class="col-xs-12">
-                                <div class="col-xs-3 text-right">
+                                <div class="col-xs-3 col-md-3 col-lg-2 text-right">
                                 <label class="control-label lead"><?php echo $note_type_libelle ?></label>
                                 <?php if(isset(DegustationClient::$note_type_libelles_help[$key_note_type])): ?><div class="text-muted"><?php echo DegustationClient::$note_type_libelles_help[$key_note_type] ?></div><?php endif; ?>
                                 </div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-2 col-md-3 col-lg-3">
                                     <select ng-model="prelevement.notes.<?php echo $key_note_type ?>.note" class="form-control input-lg">
                                         <?php foreach(DegustationClient::$note_type_notes[$key_note_type] as $key_note_note => $libelle_note_note): ?>
                                         <option value="<?php echo $key_note_note ?>"><?php echo $libelle_note_note ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div class="col-xs-7">
-                                   <select multiple="multiple" data-placeholder="Séléction de défaut(s)" class="form-control input-lg select2 select2-offscreen" ng-class="{ 'select2autocomplete': true }" ng-model="prelevement.notes.<?php echo $key_note_type ?>.defauts">
-                                    <?php foreach(DegustationClient::$note_type_defaults[$key_note_type] as $defaut): ?>
-                                    <option value="<?php echo $defaut ?>"><?php echo $defaut ?></option>
-                                    <?php endforeach; ?>
+                                <div class="col-xs-7 col-md-6 col-lg-7">
+                                    <button ng-click="showAjoutDefaut(prelevement, '<?php echo $key_note_type ?>')" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                    <div class="btn-group">
+                                    <button class="btn btn-default btn-default-step btn-lg" confirm="Etes vous sûr de vouloir supprimer ce défaut ?" ng-repeat="defaut in prelevement.notes.<?php echo $key_note_type ?>.defauts" ng-click="removeDefaut(prelevement, '<?php echo $key_note_type ?>', defaut)" >{{ defaut }}&nbsp;&nbsp;</button>
+                                    </div>
                                 </select>
                                 </div>
                             </div>
@@ -103,6 +108,35 @@
                 </div>
                 <div class="col-xs-6">
                     <a href="" ng-click="valider(prelevement)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Valider</a>
+                </div>
+            </div>
+        </section>
+        
+        <section ng-show="active == 'ajout_defaut'">
+            <div href="" ng-click="showCepage(ajout_defaut.prelevement)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
+            <div class="page-header text-center">
+                <h2>Ajouter un défaut</h2>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 form-horizontal">
+                    <div class="form-group">
+                        <div class="col-xs-12">
+                            <input type="search" placeholder="Rechercher ou saisir un défaut" class="form-control input-lg" ng-keypress="blurOnEnter($event)" ng-change="" ng-model="ajout_defaut.query" />
+                        </div>
+                    </div>
+                    <div class="list-group">
+                        <a class="list-group-item lead" href="" ng-repeat="defaut in defauts_filter = (defauts[ajout_defaut.note_key] | filter: ajout_defaut.query)" ng-click="ajouterDefaut(ajout_defaut.prelevement, ajout_defaut.note_key, defaut)">{{ defaut }}</a>
+                        <a ng-show="!defauts_filter.length" class="list-group-item lead" href="" ng-click="ajouterDefaut(ajout_defaut.prelevement, ajout_defaut.note_key, ajout_defaut.query)">{{ ajout_defaut.query }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row row-margin">
+                <div class="col-xs-6">
+                    <a href="" ng-click="showCepage(ajout_defaut.prelevement)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Annuler</a>
+                </div>
+                <div class="col-xs-6">
+                    <a ng-show="defauts_filter.length > 1" ng-disabled="defauts_filter.length != 1" ng-click="ajouterDefaut(ajout_defaut.prelevement, ajout_defaut.note_key, defauts_filter[0])" href="" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Ajouter</a>
+                    <a ng-show="!defauts_filter.length" ng-click="ajouterDefaut(ajout_defaut.prelevement, ajout_defaut.note_key, ajout_defaut.query)" href="" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Ajouter</a>
                 </div>
             </div>
         </section>

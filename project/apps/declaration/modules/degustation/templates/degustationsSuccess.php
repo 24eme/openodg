@@ -2,7 +2,7 @@
 <div>
     <section id="commissions">
         <div class="page-header text-center">
-            <h2>Affectation des vins<br /><small>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></small></h2>
+            <h2>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></h2>
         </div> 
         <div class="row">
             <div class="col-xs-12">
