@@ -266,6 +266,17 @@ class Tournee extends BaseTournee {
         return true;
     }
 
+    public function isDegustationTerminee() {
+        return true;
+        foreach($this->getDegustationsObject() as $degustation) {
+            if(!$degustation->isDegustationTerminee()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     /*public function updateOperateursFromPrevious() {
         $previous = $this->getPrevious();
 

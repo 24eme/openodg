@@ -41,4 +41,14 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
         return $this->commission && $this->anonymat_degustation;
     }
+
+    public function isDegustationTerminee() {
+        foreach($this->notes as $note) {
+            if(!$note->note) {
+                return false;
+            }
+        }
+
+        return false;
+    }
 }

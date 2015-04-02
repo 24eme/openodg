@@ -1,6 +1,7 @@
 <?php use_helper("Date"); ?>
 <div>
     <section id="commissions">
+        <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
         <div class="page-header text-center">
             <h2>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></h2>
         </div> 

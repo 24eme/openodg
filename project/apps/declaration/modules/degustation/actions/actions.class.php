@@ -103,8 +103,6 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tournee->_id, "revision" => $this->tournee->_rev))));
         }
 
-
-
         return $this->redirect('degustation_degustateurs', $this->tournee);
     }
 
@@ -548,7 +546,7 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        if($this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS) {
+        if(!in_array($this->tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_TERMINE))) {
 
             return $this->forward404("La tournée n'est pas prête à être dégusté");
         }
@@ -621,6 +619,41 @@ class degustationActions extends sfActions {
         $this->response->setContentType('application/json');
 
         return $this->renderText(json_encode($json_return));
+    }
+
+    public function executeLeverAnonymat(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if($this->tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $this->tournee->isDegustationTerminee()) {
+            $this->tournee->statut = TourneeClient::STATUT_TERMINE;
+            $this->tournee->save();
+        }
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
+    }
+
+    public function executeDegustateursPresence(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        $this->form = new DegustateursPresenceForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->update();
+
+        $this->tournee->save();
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     protected function getEtape($doc, $etape) {

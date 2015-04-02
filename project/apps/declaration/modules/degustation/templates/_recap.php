@@ -18,7 +18,10 @@
             <?php endforeach; ?>
             <tr>
                 <td><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR"))." à ".Date::francizeHeure($tournee->heure); ?></td>
-                <td><?php echo "Dégustation (".$tournee->nombre_commissions." commissions, ".count($tournee->degustateurs->PORTEUR_MEMOIRES)." porteurs de mémoires, ".count($tournee->degustateurs->TECHNICIEN_PRODUIT)." techniciens du produit, ".count($tournee->degustateurs->USAGER_PRODUIT)." usagers du produit)"; ?></td> 
+                <td>
+                    <a href="<?php echo url_for('degustation_degustations', $tournee) ?>"><?php echo "Dégustation (".$tournee->nombre_commissions." commissions, ".count($tournee->degustateurs->PORTEUR_MEMOIRES)." porteurs de mémoires, ".count($tournee->degustateurs->TECHNICIEN_PRODUIT)." techniciens du produit, ".count($tournee->degustateurs->USAGER_PRODUIT)." usagers du produit)"; ?></a>
+                    <a class="btn btn-xs btn-warning" href="<?php echo url_for('degustation_degustateurs_presence', $tournee) ?>"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Présences des dégustateurs</a>
+                </td> 
             </tr>
         </table>
     </div>

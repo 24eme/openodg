@@ -663,7 +663,7 @@ degustation_tournee:
     model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post]
+    sf_method: [get]
 
 degustation_tournee_json:
   url: /tournee/tournee/:id/:agent/:date.json
@@ -693,7 +693,7 @@ degustation_affectation:
     model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post]
+    sf_method: [get]
 
 degustation_affectation_json:
   url: /tournee/affectation/:id.json
@@ -723,11 +723,31 @@ degustation_degustation:
     model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post]
+    sf_method: [get]
 
 degustation_degustation_json:
   url: /tournee/degustation/:id/:commission.json
   param: { module: degustation, action: degustationJson }
+  class: TourneeRoute
+  options:
+    model:    TourneeRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_lever_anonymat:
+  url: /tournee/lever-anonymat/:id
+  param: { module: degustation, action: leverAnonymat }
+  class: TourneeRoute
+  options:
+    model:    TourneeRoute
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_degustateurs_presence:
+  url: /tournee/degustateurs-presence/:id
+  param: { module: degustation, action: degustateursPresence }
   class: TourneeRoute
   options:
     model:    TourneeRoute

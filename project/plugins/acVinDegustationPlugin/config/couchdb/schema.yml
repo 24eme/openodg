@@ -111,6 +111,7 @@ Tournee:
                         adresse: { }
                         commune: { }
                         code_postal: { }
+                        presence: { type: integer }
       agents:
         type: collection
         definition:

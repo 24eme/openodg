@@ -152,6 +152,17 @@ class Degustation extends BaseDegustation {
         return true;
     }
 
+    public function isDegustationTerminee() {
+        foreach($this->prelevements as $prelevement) {
+            if(!$prelevement->isDegustationTerminee()) {
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function isInCommission($commission) {
         foreach($this->prelevements as $prelevement) {
             if($prelevement->commission == $commission) {
