@@ -3,7 +3,7 @@
          <div class="list-group">
         <?php foreach($tournees as $tournee): ?>
             <?php $t = $tournee->getRawValue(); ?>
-            <?php $nb_operateurs = count((array) $t->degustation); ?>
+            <?php $nb_operateurs = count((array) $t->degustations); ?>
             <?php $nb_degustateurs = 0; foreach($t->degustateurs as $degustateursType): $nb_degustateurs += count((array) $degustateursType); endforeach; ?>
             <?php $nb_tournees = 0; foreach($t->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
             <?php $nb_prelevements = 0; ?>
@@ -20,7 +20,7 @@
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
                     <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
-                    <span class="col-xs-5 text-muted"><?php echo $nb_operateurs ?> opérateurs, <?php echo $nb_degustateurs ?> dégustateurs et <?php echo count((array) $tournee->agents); ?> tournées</span>
+                    <span class="col-xs-5 text-muted"><?php echo $nb_operateurs ?> opérateurs, <?php echo $nb_degustateurs ?> dégustateurs et <?php echo count((array) $nb_tournees); ?> tournées</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-info">Tournées</span>
                     </span>
