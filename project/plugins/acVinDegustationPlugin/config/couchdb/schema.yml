@@ -14,6 +14,7 @@ Tournee:
       date_prelevement_debut: { }
       date_prelevement_fin: { }
       nombre_commissions: { type: integer }
+      nombre_prelevements: { type: integer }
       heure: { }
       lieu: { }
       validation: { }
@@ -22,78 +23,6 @@ Tournee:
         definition:
           fields:
             '*': { }
-      operateurs:
-        type: collection
-        required: false
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  degustation: { require: false }
-                  raison_sociale: { }
-                  cvi: { }
-                  adresse: { }
-                  commune: { }
-                  code_postal: { }
-                  email: { }
-                  lat: { }
-                  lon: { }
-                  lng: { required: false }
-                  date: { }
-                  heure: { }
-                  position: { required: true }
-                  agent: { }
-                  telephone_bureau: { }
-                  telephone_prive: { }
-                  telephone_mobile: { }
-                  date_demande: { }
-                  reporte: { type: integer, required: false }
-                  motif_non_prelevement: { }
-                  prelevements:
-                    type: array_collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          definition:
-                            fields:
-                              hash_produit: { }
-                              libelle: { }
-                              anonymat_prelevement: { }
-                              anonymat_degustation: { }
-                              anonymat_prelevement_complet: { }
-                              cuve: { }
-                              preleve: { }
-                              commission: { type: integer }
-                              appreciations: { }
-                              notes:
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          note: { }
-                                          defauts:
-                                            type: array_collection
-                                            definition:
-                                              fields:
-                                                '*': { }
-                  lots:
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          definition:
-                            fields:
-                              hash_produit: { }
-                              libelle: { }
-                              nb: { }
-                              prelevement: { type: integer }
       degustateurs:
         type: collection
         definition:

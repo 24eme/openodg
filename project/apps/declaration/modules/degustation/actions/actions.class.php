@@ -463,6 +463,7 @@ class degustationActions extends sfActions {
         $this->tournee->statut = TourneeClient::STATUT_AFFECTATION;
         $this->tournee->cleanPrelevements();
         $this->tournee->generateNotes();
+        $this->tournee->updateNombrePrelevements();
         $this->tournee->save();
         $this->tournee->saveDegustations();
 

@@ -404,4 +404,11 @@ class Tournee extends BaseTournee {
         }
     }
 
+    public function updateNombrePrelevements() {
+        $this->nombre_prelevements = 0;
+        foreach($this->getDegustationsObject() as $degustation) {
+            $this->nombre_prelevements += count($degustation->prelevements);
+        }
+    }
+
 }
