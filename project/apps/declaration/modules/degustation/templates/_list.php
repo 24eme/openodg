@@ -47,7 +47,7 @@
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
                     <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
-                    <span class="col-xs-5 text-muted"><?php echo $tournee->nombre_prelevements ?> vins dégusté</span>
+                    <span class="col-xs-5 text-muted"><?php echo $tournee->nombre_prelevements ?> vins dégustés</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-success">Terminé</span>
                     </span>
