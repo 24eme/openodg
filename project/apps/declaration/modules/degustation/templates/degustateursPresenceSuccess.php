@@ -3,7 +3,7 @@
 <form id="form_degustateurs_presence" action="" method="post" class="form-horizontal">
     <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
     <div class="page-header text-center">
-        <h2>Liste de présence des dégusteurs<br /><small>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></small></h2>
+        <h2>Liste de présence des dégustateurs<br /><small>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></small></h2>
     </div> 
     <div class="row">
         <div class="col-xs-12">

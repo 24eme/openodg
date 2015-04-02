@@ -25,7 +25,7 @@
         <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_degustations', $tournee) ?>"><span class="glyphicon glyphicon-glass"></span>&nbsp;&nbsp;Saisir les dégustations</a>
     <?php elseif($tournee->statut == TourneeClient::STATUT_AFFECTATION || ($tournee->statut == TourneeClient::STATUT_TOURNEES && $tournee->isTourneeTerminee())): ?>
         <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_affectation', $tournee) ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Anonymé les prélévements</a>
-    <?php else: ?>
+    <?php elseif($tournee->statut != TourneeClient::STATUT_TERMINE): ?>
         <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_organisation', $tournee) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier l'organisation des tournées</a>
     <?php endif; ?>
     </div>
