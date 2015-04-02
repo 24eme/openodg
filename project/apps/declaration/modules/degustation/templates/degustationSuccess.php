@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
-<?php use_javascript('tournee.js?201503100031'); ?>
+<?php use_javascript('tournee.js?201504020331'); ?>
 <div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::$note_type_libelles) ?>; defauts=<?php echo json_encode(DegustationClient::$note_type_defauts, JSON_HEX_APOS) ?>;'>
     <div ng-controller="degustationCtrl">
         <section ng-show="active == 'recapitulatif'">

@@ -1,5 +1,5 @@
 <?php use_helper("Date"); ?>
-<?php use_javascript("degustation.js?201503201907", "last") ?>
+<?php use_javascript("degustation.js?201504020331", "last") ?>
 <form id="form_degustateurs_presence" action="" method="post" class="form-horizontal">
     <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
     <div class="page-header text-center">
