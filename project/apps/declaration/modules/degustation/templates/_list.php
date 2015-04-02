@@ -2,9 +2,10 @@
     <div class="col-xs-12">
          <div class="list-group">
         <?php foreach($tournees as $tournee): ?>
-            <?php $nb_operateurs = count((array) $tournee->operateurs); ?>
-            <?php $nb_degustateurs = 0; foreach($tournee->degustateurs as $degustateursType): $nb_degustateurs += count((array) $degustateursType); endforeach; ?>
-            <?php $nb_tournees = 0; foreach($tournee->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
+            <?php $t = $tournee->getRawValue(); ?>
+            <?php $nb_operateurs = count((array) $t->degustation); ?>
+            <?php $nb_degustateurs = 0; foreach($t->degustateurs as $degustateursType): $nb_degustateurs += count((array) $degustateursType); endforeach; ?>
+            <?php $nb_tournees = 0; foreach($t->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
             <?php $nb_prelevements = 0; ?>
             <?php if($tournee->statut == TourneeClient::STATUT_ORGANISATION): ?>
                 <a href="<?php echo url_for('degustation_edit', $tournee) ?>" class="list-group-item col-xs-12">
