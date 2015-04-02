@@ -267,7 +267,6 @@ class Tournee extends BaseTournee {
     }
 
     public function isDegustationTerminee() {
-        return true;
         foreach($this->getDegustationsObject() as $degustation) {
             if(!$degustation->isDegustationTerminee()) {
                 return false;
