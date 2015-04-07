@@ -12,21 +12,21 @@
     _doc.ready(function()
     {
 
-        if($('#form_degustateurs_presence').length > 0) {
+        if ($('#form_degustateurs_presence').length > 0) {
             $('#form_degustateurs_presence .btn-presence').click(function() {
                 $(this).parent().find('.btn-presence').removeClass("btn-danger");
                 $(this).parent().find('.btn-presence').removeClass("btn-info");
                 $(this).parent().find('.btn-presence').addClass("btn-default");
                 $(this).parent().find('.btn-presence').addClass("btn-default-step");
-                if($(this).hasClass('non-present')) {
+                if ($(this).hasClass('non-present')) {
                     $(this).addClass('btn-danger');
                     $(this).removeClass('btn-default');
                     $(this).removeClass('btn-default-step');
                 }
-                if($(this).hasClass('present')) {
+                if ($(this).hasClass('present')) {
                     $(this).removeClass('btn-default-step');
                 }
-                if($(this).hasClass('ne-sais-pas')) {
+                if ($(this).hasClass('ne-sais-pas')) {
                     $(this).addClass('btn-info');
                     $(this).removeClass('btn-default');
                     $(this).removeClass('btn-default-step');

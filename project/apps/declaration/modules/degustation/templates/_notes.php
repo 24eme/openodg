@@ -1,4 +1,4 @@
-<?php use_javascript("tournee.js", "last") ?>
+<?php use_javascript("degustation.js", "last") ?>
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 
@@ -56,7 +56,7 @@
                                    
                                         <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->renderError(); ?>
                                         <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->render(array('class' => 'form-control select2')); ?>
-                                    <div id="<?php echo 'visite_date_tournee_courrier_' . $note->prelevement->getHashForKey(); ?>" style="<?php echo ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier == DegustationClient::COURRIER_TYPE_VISITE)? '' : 'display:none;' ?>" >
+                                    <div id="<?php echo 'visite_date_degustation_courrier_' . $note->operateur->cvi.$note->prelevement->getHashForKey(); ?>" style="<?php echo ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier == DegustationClient::COURRIER_TYPE_VISITE)? '' : 'display:none;' ?>" >
                                     <div style="padding-top: 10px;" class="input-group date-picker" >
                                             <?php echo $form['visite_date_' . $note->operateur->cvi.$note->prelevement->getHashForKey()]->renderError(); ?>
                                             <?php echo $form['visite_date_' . $note->operateur->cvi.$note->prelevement->getHashForKey()]->render(array('class' => 'form-control')); ?>
