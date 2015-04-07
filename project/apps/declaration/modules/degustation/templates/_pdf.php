@@ -63,14 +63,14 @@
         <td>Cuve : <?php echo $prelevement->cuve; ?></td>
     </tr>
     <tr>
-        <td>Objet : Gestion locale : dégustation conseil <?php echo $degustation->appellation_libelle . ' ' . substr($degustation->validation, 0, 4); ?></td>
+        <td>Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . substr($degustation->validation, 0, 4); ?></td>
     </tr>
 </table>
 <br/>
 <br/>
 <p>Madame, Monsieur,</p>
 <br/>
-<p>Vous avez présenter vos vins à la degustation conseil de la Gestion locale du <strong><?php echo $degustation->appellation_libelle . ' ' . $prelevement->libelle; ?></strong>. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($operateur->date, "P", "fr_FR")); ?></strong>.</p>
+<p>Vous avez présenté un échantillon d'<strong><?php echo $degustation->appellation_libelle . ' ' . $prelevement->libelle; ?></strong> à une dégustation conseil organisée par l'ODG-AVA. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($operateur->date, "P", "fr_FR")); ?></strong>.</p>
 <p>Les experts dégustateurs ont fait les commentaires suivants  sur votre vin : </p>
 
 <div><span class="h3">&nbsp;Rapport de notes&nbsp;</span></div>
@@ -78,18 +78,18 @@
     <tr>
         <th class="th" style="text-align: left; width: 350px; font-weight: bold;">&nbsp;Produit</th>    
         <th class="th" style="text-align: center; width: 140px; font-weight: bold;">Lot N°</th>  
-        <th class="th" style="text-align: center; width: 140px; font-weight: bold;">N° Ech</th>
+        <th class="th" style="text-align: center; width: 140px; font-weight: bold;">N° de pélèvement</th>
     </tr>
     <tr>
         <td class="td" style="text-align:left; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->libelle; ?></td>
         <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->getKey() + 1; ?></td>        
-        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->anonymat_degustation; ?></td>
+        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->anonymat_prelevement; ?></td>
 
     </tr>    
     <?php foreach ($prelevement->notes as $type_note => $note): ?>
         <tr>
-            <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo getLibelleTypeNote($type_note) ?></td>
-            <td class="td" style="text-align:left; font-weight: bold;" colspan="2"><?php echo tdStart() ?>&nbsp;<?php echo $note->note ?></td>        
+            <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo getLibelleTypeNote($type_note) ?></td>
+            <td class="td" style="text-align:center; font-weight: bold;" colspan="2"><?php echo tdStart() ?>&nbsp;<?php echo $note->note ?></td>        
         </tr>
         <?php
         $defaults = "";
@@ -103,8 +103,8 @@
         }
         ?>
         <tr>
-            <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;Remarque (s) :</td>
-            <td class="td" style="text-align:left; font-weight: bold;" colspan="2"><?php echo tdStart() ?>&nbsp;<?php echo $defaults ?></td>
+            <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;Remarque (s) :</td>
+            <td class="td" style="text-align:center; font-weight: bold;" colspan="2"><?php echo tdStart() ?>&nbsp;<?php echo $defaults ?></td>
 
         </tr>
     <?php endforeach; ?>
@@ -112,10 +112,11 @@
 <br/>
 <?php echo getExplicationsPDF($prelevement); ?>
 <br/>
-<p>A votre disposition pour tout complément d'information, nous vous prions d'agréer, Madame, Monsieur, nos cordiales salutations.</p>
+<p>A votre disposition pour tout complément d'information, nous vous prions d'agréer, Madame, Monsieur, nos plus cordiales salutations.</p>
 
 <br/>
-<p style="width: 350px; font-size: 11pt; font-weight: bold; font-style: italic; text-align: right;">L'Appui Technique de l'Ava</p>
+<p style="width: 350px; font-size: 11pt; font-weight: bold; font-style: italic; text-align: right;">Vicky Chan Fook Tin</p>
+<p style="width: 350px; font-size: 11pt; font-weight: bold; font-style: italic; text-align: right;">Responsable de l'Appui Technique de l'Ava</p>
 <br/>
 <br/>
 <p style="width: 350px; font-weight: bold; font-style: italic">Rappel du barème des notes :</p>

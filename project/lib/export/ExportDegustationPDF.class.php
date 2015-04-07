@@ -24,7 +24,7 @@ class ExportDegustationPDF extends ExportPDF {
         if (!$filename) {
             $filename = $this->getFileName(true, true);
         }
-
+        
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
@@ -35,7 +35,7 @@ class ExportDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return "Association des viticulteurs d'alsace";
+        return "Association des viticulteurs d'Alsace";
     }
 
     protected function getHeaderSubtitle() {
