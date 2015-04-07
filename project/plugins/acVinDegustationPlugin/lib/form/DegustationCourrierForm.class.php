@@ -23,16 +23,16 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
 
     protected function updateDefaults() {
         foreach ($this->getObject()->getNotes() as $note) {
-            if ($this->getObject()->get($note->prelevement->getHash())->exist('type_courrier')) {
-                $this->setDefault($note->prelevement->getHashForKey(), $this->getObject()->get($note->prelevement->getHash())->type_courrier);
+            if ($note->prelevement->exist('type_courrier')) {
+                $this->setDefault($note->prelevement->getHashForKey(), $note->prelevement->type_courrier);
             }
-            if ($this->getObject()->get($note->prelevement->getHash())->exist('visite_date') && $this->getObject()->get($note->prelevement->getHash())->visite_date) {
-                $dateArr = explode('-', $this->getObject()->get($note->prelevement->getHash())->visite_date);
+            if ($note->prelevement->exist('visite_date') && $note->prelevement->get('visite_date')) {
+                $dateArr = explode('-', $note->prelevement->visite_date);
                 $date = $dateArr[2].'/'.$dateArr[1].'/'.$dateArr[0];
                 $this->setDefault('visite_date_'.$note->prelevement->getHashForKey(), $date);
             }
-             if ($this->getObject()->get($note->prelevement->getHash())->exist('visite_heure')) {
-                $this->setDefault('visite_heure_'.$note->prelevement->getHashForKey(), $this->getObject()->get($note->prelevement->getHash())->visite_heure);
+             if ($note->prelevement->visite_heure) {
+                $this->setDefault('visite_heure_'.$note->prelevement->getHashForKey(), $note->prelevement->visite_heure);
             }
         }
     }
