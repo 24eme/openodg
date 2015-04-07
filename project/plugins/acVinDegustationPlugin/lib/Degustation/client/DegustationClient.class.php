@@ -15,6 +15,10 @@ class DegustationClient extends acCouchdbClient {
     const MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN = "PLUS_DE_VIN";
     const MOTIF_NON_PRELEVEMENT_SOUCIS = "SOUCIS";
 
+    const COURRIER_TYPE_OPE = "OPE" ;
+    const COURRIER_TYPE_OK = "OK" ;
+    const COURRIER_TYPE_VISITE = "VISITE" ;
+
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",
@@ -48,18 +52,6 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
         self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
         self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
-    );
-
-    public static $ordre_cepages = array(
-        'SY' => '01',
-        'AU' => '02',
-        'PB' => '03',
-        'RI' => '04',
-        'MU' => '05',
-        'PG' => '06',
-        'GW' => '07',
-        'PN' => '08',
-        'PR' => '09',
     );
 
     public static function getInstance()
