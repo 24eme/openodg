@@ -174,6 +174,10 @@ class Degustation extends BaseDegustation {
         return false;
     }
 
+    public function generateCourrier() {
+        
+    }
+
     public function getCompte() {
 
         return CompteClient::getInstance()->findByIdentifiant("E" . $this->getIdentifiant());
