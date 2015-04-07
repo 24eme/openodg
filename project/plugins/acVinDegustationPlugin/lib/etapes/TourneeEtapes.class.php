@@ -1,6 +1,6 @@
 <?php
 
-class DegustationEtapes {
+class TourneeEtapes {
 
     const ETAPE_CREATION = 'CREATION';
     const ETAPE_OPERATEURS = 'OPERATEURS';
@@ -21,7 +21,7 @@ class DegustationEtapes {
 
     public static function getInstance() {
         if (is_null(self::$_instance)) {
-            self::$_instance = new DegustationEtapes();
+            self::$_instance = new TourneeEtapes();
         }
         return self::$_instance;
     }

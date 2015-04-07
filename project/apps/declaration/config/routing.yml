@@ -520,207 +520,237 @@ compte_desarchiver:
 # Dégustation
 
 degustation:
-  url: /degustation
+  url: /tournee
   param: { module: degustation, action: index }
   requirements:
     sf_method: [get]
 
 degustation_edit:
-  url: /degustation/edit/:id
+  url: /tournee/edit/:id
   param: { module: degustation, action: edit }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_creation:
-  url: /degustation/creation/:id
+  url: /tournee/creation/:id
   param: { module: degustation, action: creation }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_operateurs:
-  url: /degustation/operateurs/:id
+  url: /tournee/operateurs/:id
   param: { module: degustation, action: operateurs }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_degustateurs:
-  url: /degustation/degustateurs/:id
+  url: /tournee/degustateurs/:id
   param: { module: degustation, action: degustateurs }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_degustateurs_type:
-  url: /degustation/degustateurs/:id/:type
+  url: /tournee/degustateurs/:id/:type
   param: { module: degustation, action: degustateursType }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_degustateurs_type_precedent:
-  url: /degustation/degustateurs/:id/:type/precedent
+  url: /tournee/degustateurs/:id/:type/precedent
   param: { module: degustation, action: degustateursTypePrecedent }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_degustateurs_type_suivant:
-  url: /degustation/degustateurs/:id/:type/suivant
+  url: /tournee/degustateurs/:id/:type/suivant
   param: { module: degustation, action: degustateursTypeSuivant }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_prelevements:
-  url: /degustation/prelevements/:id
+  url: /tournee/prelevements/:id
   param: { module: degustation, action: prelevements }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_organisation:
-  url: /degustation/organisation/:id
+  url: /tournee/organisation/:id
   param: { module: degustation, action: organisation }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_agents:
-  url: /degustation/agents/:id
+  url: /tournee/agents/:id
   param: { module: degustation, action: agents }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_validation:
-  url: /degustation/validation/:id
+  url: /tournee/validation/:id
   param: { module: degustation, action: validation }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_visualisation:
-  url: /degustation/visualisation/:id
+  url: /tournee/visualisation/:id
   param: { module: degustation, action: visualisation }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_tournees_generate:
-  url: /degustation/tournees-generation/:id
+  url: /tournee/tournees-generation/:id
   param: { module: degustation, action: tourneesGenerate }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get]
 
 degustation_tournee:
-  url: /degustation/tournee/:id/:agent/:date
+  url: /tournee/tournee/:id/:agent/:date
   param: { module: degustation, action: tournee }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post]
+    sf_method: [get]
 
 degustation_tournee_json:
-  url: /degustation/tournee/:id/:agent/:date.json
+  url: /tournee/tournee/:id/:agent/:date.json
   param: { module: degustation, action: tourneeJson }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
 degustation_affectation_generate:
-  url: /degustation/affectation-generation/:id
+  url: /tournee/affectation-generation/:id
   param: { module: degustation, action: affectationGenerate }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get]
 
 degustation_affectation:
-  url: /degustation/affectation/:id
+  url: /tournee/affectation/:id
   param: { module: degustation, action: affectation }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post]
+    sf_method: [get]
 
 degustation_affectation_json:
-  url: /degustation/affectation/:id.json
+  url: /tournee/affectation/:id.json
   param: { module: degustation, action: affectationJson }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
+
+degustation_degustations:
+  url: /tournee/degustations/:id
+  param: { module: degustation, action: degustations }
+  class: TourneeRoute
+  options:
+    model:    TourneeRoute
+    type:     object
+  requirements:
+    sf_method: [get]
 
 degustation_degustation:
-  url: /degustation/degustation/:id/:commission
+  url: /tournee/degustation/:id/:commission
   param: { module: degustation, action: degustation }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_degustation_json:
+  url: /tournee/degustation/:id/:commission.json
+  param: { module: degustation, action: degustationJson }
+  class: TourneeRoute
+  options:
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]
 
-degustation_degustation_json:
-  url: /degustation/degustation/:id/:commission.json
-  param: { module: degustation, action: degustationJson }
-  class: DegustationRoute
+degustation_lever_anonymat:
+  url: /tournee/lever-anonymat/:id
+  param: { module: degustation, action: leverAnonymat }
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
+    type:     object
+  requirements:
+    sf_method: [get]
+
+degustation_degustateurs_presence:
+  url: /tournee/degustateurs-presence/:id
+  param: { module: degustation, action: degustateursPresence }
+  class: TourneeRoute
+  options:
+    model:    TourneeRoute
     type:     object
   requirements:
     sf_method: [get, post]

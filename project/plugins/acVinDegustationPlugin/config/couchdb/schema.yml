@@ -1,5 +1,5 @@
-#Degustation
-Degustation:
+#Tournee
+Tournee:
   definition:
     fields:
       _id: { }
@@ -7,88 +7,22 @@ Degustation:
       type: { }
       etape: { }
       identifiant: { }
+      statut: { }
       date: { }
       appellation: { }
       appellation_libelle: { }
       date_prelevement_debut: { }
       date_prelevement_fin: { }
       nombre_commissions: { type: integer }
+      nombre_prelevements: { type: integer }
       heure: { }
       lieu: { }
       validation: { }
-      operateurs:
+      degustations:
         type: collection
         definition:
           fields:
-            '*':
-              type: collection
-              class: DegustationOperateur
-              definition:
-                fields:
-                  raison_sociale: { }
-                  cvi: { }
-                  adresse: { }
-                  commune: { }
-                  code_postal: { }
-                  email: { }
-                  lat: { }
-                  lon: { }
-                  lng: { required: false }
-                  date: { }
-                  heure: { }
-                  position: { required: true }
-                  agent: { }
-                  telephone_bureau: { }
-                  telephone_prive: { }
-                  telephone_mobile: { }
-                  date_demande: { }
-                  reporte: { type: integer }
-                  prelevements:
-                    type: array_collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          definition:
-                            fields:
-                              hash_produit: { }
-                              libelle: { }
-                              anonymat_prelevement: { }
-                              anonymat_degustation: { }
-                              cuve: { }
-                              preleve: { }
-                              commission: { type: integer }
-                              appreciations: { }
-                              type_courrier: { required: false }
-                              visite_date: { required: false }
-                              visite_heure: { required: false }
-                              courrier_envoye: { required: false }
-                              notes:
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          note: { }
-                                          defauts:
-                                            type: array_collection
-                                            definition:
-                                              fields:
-                                                '*': { }
-                  lots:
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          definition:
-                            fields:
-                              hash_produit: { }
-                              libelle: { }
-                              nb: { }
-                              prelevement: { type: integer }
+            '*': { }
       degustateurs:
         type: collection
         definition:
@@ -106,6 +40,7 @@ Degustation:
                         adresse: { }
                         commune: { }
                         code_postal: { }
+                        presence: { type: integer }
       agents:
         type: collection
         definition:
@@ -126,3 +61,78 @@ Degustation:
                     definition:
                       fields:
                         '*': { }
+
+Degustation:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      appellation: { }
+      date_degustation: { }
+      identifiant: { }
+      drev: { }
+      raison_sociale: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }
+      lng: { required: false }
+      date: { required: false }
+      date_prelevement: { }
+      heure: { }
+      position: { required: true }
+      agent: { }
+      telephone_bureau: { }
+      telephone_prive: { }
+      telephone_mobile: { }
+      date_demande: { }
+      reporte: { type: integer }
+      motif_non_prelevement: { }
+      prelevements:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: DegustationPrelevement
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  anonymat_prelevement: { type: integer }
+                  anonymat_prelevement_complet: { }
+                  anonymat_degustation: { type: integer }
+                  cuve: { }
+                  preleve: { }
+                  commission: { type: integer }
+                  appreciations: { }
+                  notes:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields:
+                              note: { }
+                              defauts:
+                                type: array_collection
+                                definition:
+                                  fields:
+                                    '*': { }
+      lots:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  hash_produit: { }
+                  libelle: { }
+                  nb: { }
+                  prelevement: { type: integer }

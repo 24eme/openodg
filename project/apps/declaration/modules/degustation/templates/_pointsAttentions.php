@@ -2,7 +2,7 @@
     <h3>Points de vigilance</h3>
     <div class="alert alert-warning" role="alert">
         <ul>
-            <?php foreach ($validation->getPoints(DegustationValidation::TYPE_WARNING) as $controle): ?>
+            <?php foreach ($validation->getPoints(TourneeValidation::TYPE_WARNING) as $controle): ?>
                 <li>
                     <strong><?php echo $controle->getMessage(); ?>&nbsp;:</strong>
                     <?php if ($controle->getLien()) : ?>

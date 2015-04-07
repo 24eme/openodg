@@ -1,6 +1,6 @@
 <?php
 
-class DegustationValidation extends DocumentValidation {
+class TourneeValidation extends DocumentValidation {
 
     const TYPE_WARNING = 'vigilance';
 

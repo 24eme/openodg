@@ -1,6 +1,6 @@
-<?php use_javascript("degustation.js", "last") ?>
+<?php use_javascript("degustation.js?201503201907", "last") ?>
 
-<?php include_partial('degustation/step', array('degustation' => $degustation, 'active' => DegustationEtapes::ETAPE_DEGUSTATEURS)); ?>
+<?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_DEGUSTATEURS)); ?>
 
 <div class="page-header">
     <h2>Choix des dégustateurs</h2>
@@ -8,7 +8,7 @@
 
 <ul class="nav nav-tabs">
     <?php foreach($types as $type_key => $libelle): ?>
-        <li role="presentation" class="<?php if($type == $type_key): ?>active<?php endif; ?>"><a href="<?php echo url_for('degustation_degustateurs_type', array('sf_subject' => $degustation, 'type' => $type_key)) ?>" class="ajax"><?php echo $libelle ?> <?php if($type != $type_key): ?><span class="badge"><?php echo ($degustation->degustateurs->exist($type_key)) ? count($degustation->degustateurs->get($type_key)) : 0 ?></span><?php endif; ?></a></li>
+        <li role="presentation" class="<?php if($type == $type_key): ?>active<?php endif; ?>"><a href="<?php echo url_for('degustation_degustateurs_type', array('sf_subject' => $tournee, 'type' => $type_key)) ?>" class="ajax"><?php echo $libelle ?> <?php if($type != $type_key): ?><span class="badge"><?php echo ($tournee->degustateurs->exist($type_key)) ? count($tournee->degustateurs->get($type_key)) : 0 ?></span><?php endif; ?></a></li>
     <?php endforeach; ?>
 </ul>
 
@@ -43,7 +43,7 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-             <a href="<?php echo url_for('degustation_degustateurs_type_precedent', array('sf_subject' => $degustation, 'type' => $type)) ?>" class="btn btn-primary btn-primary-step btn-lg btn-upper">Précédent</a>
+             <a href="<?php echo url_for('degustation_degustateurs_type_precedent', array('sf_subject' => $tournee, 'type' => $type)) ?>" class="btn btn-primary btn-primary-step btn-lg btn-upper">Précédent</a>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer</button>

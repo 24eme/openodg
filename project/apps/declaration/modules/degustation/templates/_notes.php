@@ -1,17 +1,19 @@
 <?php use_javascript("degustation.js", "last") ?>
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
-<?php $notes = $degustation->getNotes(); ?>
-<?php $hasForm = isset($form) && $form; ?>
 
-<?php if ($hasForm): ?>
+<?php $notes = $tournee->getNotes(); ?>
+<?php $hasForm = isset($form) && $form; ?>
+<h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($notes); ?>&nbsp;vins dégustés</div></h2>
+
+
+    <?php if ($hasForm): ?>
     <form action="<?php echo url_for('degustation_courriers', $degustation); ?>" method="post" class="form-horizontal">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
     <?php endif; ?>
     <div class="row">    
         <div class="col-xs-12">        
-
             <table class="table table-striped">
                 <tr>
                     <th>N° Anon.</th>            
@@ -21,7 +23,7 @@
                     <th>Appreciation</th> 
                     <th>Type courrier</th> 
                 </tr>
-                <?php foreach ($degustation->getNotes() as $note): ?>
+                <?php foreach ($tournee->getNotes() as $note): ?>
                     <tr>
                         <td><?php echo $note->prelevement->anonymat_degustation; ?></td>
                         <td><?php echo $note->operateur->raison_sociale; ?></td> 

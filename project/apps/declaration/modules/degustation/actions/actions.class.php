@@ -3,9 +3,9 @@
 class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $this->degustation = new Degustation();
-        $this->form = new DegustationCreationForm($this->degustation);
-
+        $this->tournee = new Tournee();
+        $this->form = new TourneeCreationForm($this->tournee);
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -20,11 +20,11 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('degustation_creation', $this->degustation);
+        return $this->redirect('degustation_creation', $this->tournee);
     }
 
     public function executeEdit(sfWebRequest $request) {
-        $degustation = $this->getRoute()->getDegustation();
+        $degustation = $this->getRoute()->getTournee();
 
         if ($degustation->exist('etape') && $degustation->etape) {
 
@@ -35,17 +35,18 @@ class degustationActions extends sfActions {
     }
 
     public function executeCreation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_CREATION))) {
-            $this->degustation->save();
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_CREATION))) {
+            $this->tournee->save();
         }
 
-        $this->operateurs = DegustationClient::getInstance()->getPrelevements($this->degustation->date_prelevement_debut, $this->degustation->date_prelevement_fin);
+        $this->operateurs = TourneeClient::getInstance()->getPrelevements($this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
 
-        $this->nb_reports = count($this->degustation->getPrevious()->getOperateursReporte());
 
-        $this->form = new DegustationCreationFinForm($this->degustation);
+        $this->nb_reports = $this->tournee->getPrevious() ? count($this->tournee->getPrevious()->getOperateursReporte()) : 0;
+
+        $this->form = new TourneeCreationFinForm($this->tournee);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -63,20 +64,20 @@ class degustationActions extends sfActions {
 
         $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever') + $this->nb_reports;
 
-        return $this->redirect('degustation_operateurs', array('sf_subject' => $this->degustation, 'nb_a_prelever' => $nb_a_prelever));
+        return $this->redirect('degustation_operateurs', array('sf_subject' => $this->tournee, 'nb_a_prelever' => $nb_a_prelever));
     }
 
     public function executeOperateurs(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_OPERATEURS))) {
-            $this->degustation->save();
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_OPERATEURS))) {
+            $this->tournee->save();
         }
 
-        $this->degustation->updateOperateursFromPrevious();
-        $this->degustation->updateOperateursFromDRev();
+        //$this->tournee->updateOperateursFromPrevious();
+        $this->tournee->updateOperateursFromDRev();
 
-        $this->form = new DegustationOperateursForm($this->degustation);
+        $this->form = new TourneeOperateursForm($this->tournee);
 
         $this->nb_a_prelever = $request->getParameter('nb_a_prelever', 0);
 
@@ -93,27 +94,28 @@ class degustationActions extends sfActions {
         }
 
         $this->form->update();
-
-        $this->degustation->save();
+        
+        $this->tournee->save();
+        $this->tournee->saveDegustations();
 
         if ($request->isXmlHttpRequest()) {
 
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tournee->_id, "revision" => $this->tournee->_rev))));
         }
 
-        return $this->redirect('degustation_degustateurs', $this->degustation);
+        return $this->redirect('degustation_degustateurs', $this->tournee);
     }
 
     public function executeDegustateurs(sfWebRequest $request) {
 
-        return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => CompteClient::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES));
+        return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getTournee(), 'type' => CompteClient::ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES));
     }
 
     public function executeDegustateursType(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_DEGUSTATEURS))) {
-            $this->degustation->save();
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_DEGUSTATEURS))) {
+            $this->tournee->save();
         }
 
         $this->types = CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR);
@@ -125,9 +127,9 @@ class degustationActions extends sfActions {
             return $this->forward404(sprintf("Le type de dégustateur \"%s\" est introuvable", $request->getParameter('type', null)));
         }
 
-        $this->noeud = $this->degustation->degustateurs->add($this->type);
+        $this->noeud = $this->tournee->degustateurs->add($this->type);
 
-        $this->degustateurs = DegustationClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_ALSACE");
+        $this->degustateurs = TourneeClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_ALSACE");
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -160,14 +162,14 @@ class degustationActions extends sfActions {
             $this->noeud->remove($degustateur_key);
         }
 
-        $this->degustation->save();
+        $this->tournee->save();
 
         if ($request->isXmlHttpRequest()) {
 
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tournee->_id, "revision" => $this->tournee->_rev))));
         }
 
-        return $this->redirect('degustation_degustateurs_type_suivant', array('sf_subject' => $this->degustation, 'type' => $this->type));
+        return $this->redirect('degustation_degustateurs_type_suivant', array('sf_subject' => $this->tournee, 'type' => $this->type));
     }
 
     public function executeDegustateursTypePrecedent(sfWebRequest $request) {
@@ -181,10 +183,10 @@ class degustationActions extends sfActions {
                 continue;
             }
 
-            return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => $prev_key));
+            return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getTournee(), 'type' => $prev_key));
         }
 
-        return $this->redirect('degustation_operateurs', $this->getRoute()->getDegustation());
+        return $this->redirect('degustation_operateurs', $this->getRoute()->getTournee());
     }
 
     public function executeDegustateursTypeSuivant(sfWebRequest $request) {
@@ -198,26 +200,26 @@ class degustationActions extends sfActions {
                 continue;
             }
 
-            return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getDegustation(), 'type' => $type_key));
+            return $this->redirect('degustation_degustateurs_type', array('sf_subject' => $this->getRoute()->getTournee(), 'type' => $type_key));
         }
 
-        return $this->redirect('degustation_agents', $this->getRoute()->getDegustation());
+        return $this->redirect('degustation_agents', $this->getRoute()->getTournee());
     }
 
     public function executeAgents(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_AGENTS))) {
-            $this->degustation->save();
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_AGENTS))) {
+            $this->tournee->save();
         }
 
-        $this->agents = DegustationClient::getInstance()->getAgents();
+        $this->agents = TourneeClient::getInstance()->getAgents();
 
         $this->jours = array();
-        $date = new DateTime($this->degustation->date);
+        $date = new DateTime($this->tournee->date);
         $date->modify('-7 days');
 
-        for ($i = 1; $i <= 7; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
             $this->jours[] = $date->format('Y-m-d');
             $date->modify('+ 1 day');
         }
@@ -230,7 +232,7 @@ class degustationActions extends sfActions {
         $values = $request->getParameter("agents", array());
 
         foreach ($values as $key => $value) {
-            $agent = $this->degustation->agents->add($key);
+            $agent = $this->tournee->agents->add($key);
             $a = $this->agents[$key];
             $agent->nom = sprintf("%s %s.", $a->prenom, substr($a->nom, 0, 1));
             $agent->email = $a->email;
@@ -242,21 +244,21 @@ class degustationActions extends sfActions {
             $agent->dates = $value;
         }
 
-        $this->degustation->save();
+        $this->tournee->save();
 
         if ($request->isXmlHttpRequest()) {
 
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tournee->_id, "revision" => $this->tournee->_rev))));
         }
 
-        return $this->redirect('degustation_prelevements', $this->degustation);
+        return $this->redirect('degustation_prelevements', $this->tournee);
     }
 
     public function executePrelevements(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_PRELEVEMENTS))) {
-            $this->degustation->save();
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_PRELEVEMENTS))) {
+            $this->tournee->save();
         }
 
         $result = $this->organisation($request);
@@ -265,11 +267,11 @@ class degustationActions extends sfActions {
             return $result;
         }
 
-        return $this->redirect('degustation_validation', $this->degustation);
+        return $this->redirect('degustation_validation', $this->tournee);
     }
 
     public function executeOrganisation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
         $result = $this->organisation($request);
 
@@ -278,7 +280,7 @@ class degustationActions extends sfActions {
             return $result;
         }
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     protected function organisation(sfWebRequest $request) {
@@ -288,12 +290,13 @@ class degustationActions extends sfActions {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
         $this->heures["24:00"] = "24";
-        $this->operateurs = $this->degustation->getOperateursOrderByHour();
+        $this->operateurs = $this->tournee->getOperateursOrderByHour();
         $this->agents_couleur = array();
         $i = 0;
-        foreach ($this->degustation->agents as $agent) {
-            foreach ($agent->dates as $date) {
-                $this->agents_couleur[$agent->getKey() . $date] = $this->couleurs[$i];
+
+        foreach ($this->tournee->agents as $agent) {
+            foreach($agent->dates as $date) {
+                $this->agents_couleur[$agent->getKey().$date] = $this->couleurs[$i];
                 $i++;
             }
         }
@@ -306,78 +309,82 @@ class degustationActions extends sfActions {
         $values = $request->getParameter("operateurs", array());
         $i = 0;
         foreach ($values as $key => $value) {
-            $operateur = $this->degustation->operateurs->get($key);
-            if (!str_replace("-", "", $value["tournee"])) {
-                $operateur->agent = null;
-                $operateur->date = null;
+            $degustation = $this->tournee->getDegustationObject($key);
+            if(!str_replace("-", "", $value["tournee"])) {
+                $degustation->agent = null;
+                $degustation->date = null;
             } else {
-                $operateur->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
-                $operateur->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+                $degustation->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
+                $degustation->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
             }
-            $operateur->heure = $value["heure"];
-            $operateur->position = $i++;
+            $degustation->heure = $value["heure"];
+            $degustation->position = $i++;
         }
 
-        $this->degustation->save();
+        $this->tournee->save();
+        $this->tournee->saveDegustations();
 
         if ($request->isXmlHttpRequest()) {
 
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->degustation->_id, "revision" => $this->degustation->_rev))));
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tournee->_id, "revision" => $this->tournee->_rev))));
         }
 
         return true;
     }
 
     public function executeValidation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        if ($this->degustation->storeEtape($this->getEtape($this->degustation, DegustationEtapes::ETAPE_VALIDATION))) {
-            $this->degustation->save();
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_VALIDATION))) {
+            $this->tournee->save();
         }
-
-        $this->degustation->cleanOperateurs();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-            $this->validation = new DegustationValidation($this->degustation);
+            $this->validation = new TourneeValidation($this->tournee);
+            $this->tournee->cleanOperateurs(false);
         }
 
-        $this->form = new DegustationValidationForm($this->degustation);
-
+        $this->form = new TourneeValidationForm($this->tournee);
+        
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {
-                $this->form->save();
+            if ($this->form->isValid()) {            
+                $this->tournee->validate();
+                $this->tournee->save();
+                $this->tournee->saveDegustations();
 
-                Email::getInstance()->sendDegustationOperateursMails($this->degustation);
-                Email::getInstance()->sendDegustationDegustateursMails($this->degustation);
+
+                Email::getInstance()->sendDegustationOperateursMails($this->tournee);
+                Email::getInstance()->sendDegustationDegustateursMails($this->tournee);
 
                 $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
 
-                return $this->redirect('degustation_visualisation', $this->degustation);
+                return $this->redirect('degustation_visualisation', $this->tournee);
             }
         }
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
     }
 
     public function executeTourneesGenerate(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        if ($this->degustation->generatePrelevements()) {
-            $this->degustation->save();
+        $this->tournee = $this->getRoute()->getTournee();
+        if($this->tournee->generatePrelevements()) {
+            $this->tournee->save();
         }
-
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     public function executeTournee(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->agent = $this->degustation->agents->get($request->getParameter('agent'));
+        $this->tournee = $this->getRoute()->getTournee();
+        $this->agent = $this->tournee->agents->get($request->getParameter('agent'));
         $this->date = $request->getParameter('date');
-        $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
+        $this->operateurs = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
+        $this->reload = $request->getParameter('reload', 0);
         $this->produits = array();
-        foreach ($this->degustation->getProduits() as $produit) {
+        foreach($this->tournee->getProduits() as $produit) {
             $this->produits[$produit->getHash()] = $produit->getLibelleLong();
         }
         $this->setLayout('layoutResponsive');
@@ -386,11 +393,11 @@ class degustationActions extends sfActions {
     public function executeTourneeJson(sfWebRequest $request) {
         $json = array();
 
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->operateurs = $this->degustation->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
+        $this->tournee = $this->getRoute()->getTournee();
+        $this->degustations = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
 
-        foreach ($this->operateurs as $key => $operateur) {
-            $json[$key] = $operateur->toJson();
+        foreach($this->degustations as $degustation) {
+            $json[] = $degustation->toJson();
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -400,69 +407,96 @@ class degustationActions extends sfActions {
         }
 
         $json = json_decode($request->getContent());
+        $json_return = array();
 
-        foreach ($json as $key => $operateur) {
-            if (!$this->degustation->operateurs->exist($operateur->cvi)) {
+        foreach($json as $json_degustation) {
+            if(!$this->tournee->degustations->exist($json_degustation->identifiant)) {
+                $json_return[$json_degustation->_id] = false;
                 continue;
             }
-            $o = $this->degustation->operateurs->get($operateur->cvi);
-            foreach ($operateur->prelevements as $prelevement_key => $prelevement) {
-                if ($o->prelevements->exist($prelevement_key)) {
-                    $p = $o->prelevements->get($prelevement_key);
+
+            $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
+
+            /*if($degustation->_rev != $json_degustation->_rev) {
+                $json_return[$degustation->_id] = false;
+                continue;
+            }*/
+
+            $degustation->motif_non_prelevement = ($json_degustation->motif_non_prelevement) ? $json_degustation->motif_non_prelevement : null;
+
+            foreach($json_degustation->prelevements as $prelevement_key => $prelevement) {
+                if($degustation->prelevements->exist($prelevement_key)) {
+                    $p = $degustation->prelevements->get($prelevement_key);
                 } else {
-                    $p = $o->prelevements->add();
+                    $p = $degustation->prelevements->add();
                 }
-                $p->cuve = $prelevement->cuve;
-                $p->anonymat_prelevement = $prelevement->anonymat_prelevement;
-                $p->hash_produit = $prelevement->hash_produit;
-                $p->libelle = $prelevement->libelle;
+
+                $p->cuve = $prelevement->cuve;  
+                $p->hash_produit = $prelevement->hash_produit;                
+                $p->anonymat_prelevement = $prelevement->anonymat_prelevement;                
+                $p->libelle = $prelevement->libelle;                
                 $p->preleve = $prelevement->preleve;
             }
-        }
 
-        $this->degustation->save();
+            $degustation->save();
+
+            $json_return[$degustation->_id] = $degustation->_rev;
+        }
 
         $this->response->setContentType('application/json');
 
-        return $this->renderText(json_encode(array("success" => true)));
+        return $this->renderText(json_encode($json_return));
     }
 
     public function executeAffectationGenerate(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->degustation->cleanPrelevements();
-        $this->degustation->generateNumeroDegustation();
-        $this->degustation->save();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        return $this->redirect('degustation_visualisation', $this->degustation);
+        if($this->tournee->statut != TourneeClient::STATUT_TOURNEES) {
+
+            return $this->forward404("L'affectation a déjà eu lieu");
+        }
+
+        if(!$this->tournee->isTourneeTerminee()) {
+
+            return $this->forward404("Les tournées ne sont pas terminées");
+        }
+
+        $this->tournee->statut = TourneeClient::STATUT_AFFECTATION;
+        $this->tournee->cleanPrelevements();
+        $this->tournee->generateNotes();
+        $this->tournee->updateNombrePrelevements();
+        $this->tournee->save();
+        $this->tournee->saveDegustations();
+
+        return $this->redirect('degustation_affectation', $this->tournee);
     }
 
     public function executeAffectation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if($this->tournee->statut == TourneeClient::STATUT_TOURNEES) {
+
+            return $this->redirect('degustation_affectation_generate', $this->tournee);
+        }
+
+        if($this->tournee->statut != TourneeClient::STATUT_AFFECTATION) {
+
+            return $this->forward404("L'affectation est terminée");
+        }
+
+        $this->reload = $request->getParameter('reload', 0);
+
         $this->setLayout('layoutResponsive');
     }
 
     public function executeAffectationJson(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
 
-        $this->prelevements = $this->degustation->getPrelevementsByNumeroPrelevement();
-        $json = new stdClass();
+        $json = array();
 
-        for ($i = 1; $i <= $this->degustation->nombre_commissions; $i++) {
-            $json->commissions[] = $i;
+        foreach($this->tournee->getDegustationsObject() as $degustation) {
+            $json[$degustation->_id] = $degustation->toJson();
         }
-
-        $json->prelevements = array();
-
-        foreach ($this->prelevements as $key => $prelevement) {
-            $p = $json->prelevements[] = new stdClass();
-            $p->hash_produit = $prelevement->hash_produit;
-            $p->libelle = $prelevement->libelle;
-            $p->anonymat_degustation = $prelevement->anonymat_degustation;
-            $p->anonymat_prelevement = $prelevement->anonymat_prelevement;
-            $p->cuve = $prelevement->cuve;
-            $p->commission = $prelevement->commission;
-        }
-
 
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
@@ -471,47 +505,71 @@ class degustationActions extends sfActions {
         }
 
         $json = json_decode($request->getContent());
+        $json_return = array();
 
-        foreach ($json->prelevements as $prelevement) {
-            if (!isset($this->prelevements[$prelevement->anonymat_prelevement])) {
+        foreach($json as $json_degustation) {
+            if(!$this->tournee->degustations->exist($json_degustation->identifiant)) {
+                $json_return[$json_degustation->_id] = false;
                 continue;
             }
 
-            $p = $this->prelevements[$prelevement->anonymat_prelevement];
-            $p->commission = $prelevement->commission;
-        }
+            $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
 
-        $this->degustation->save();
+            /*if($degustation->_rev != $json_degustation->_rev) {
+                $json_return[$degustation->_id] = false;
+                continue;
+            }*/
+
+            foreach($json_degustation->prelevements as $json_prelevement) {
+                $prelevement = $degustation->getPrelevementsByAnonymatPrelevement($json_prelevement->anonymat_prelevement);
+                if(!$prelevement) {
+                    continue;
+                }
+
+                $prelevement->anonymat_degustation = $json_prelevement->anonymat_degustation;
+                $prelevement->commission = $json_prelevement->commission;
+            }
+            
+            $degustation->save();
+
+            $json_return[$degustation->_id] = $degustation->_rev;
+        }
 
         $this->response->setContentType('application/json');
 
-        return $this->renderText(json_encode(array("success" => true)));
+        return $this->renderText(json_encode($json_return));
+    }
+
+    public function executeDegustations(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if($this->tournee->statut == TourneeClient::STATUT_AFFECTATION && $this->tournee->isAffectationTerminee()) {
+            $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
+            $this->tournee->save();
+        }
+
+        if(!in_array($this->tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_TERMINE))) {
+
+            return $this->forward404("La tournée n'est pas prête à être dégusté");
+        }
+
+        $this->setLayout('layoutResponsive');
     }
 
     public function executeDegustation(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
         $this->commission = $request->getParameter('commission');
         $this->setLayout('layoutResponsive');
     }
 
     public function executeDegustationJson(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
+        $this->tournee = $this->getRoute()->getTournee();
         $this->commission = $request->getParameter('commission');
 
-        $json = new stdClass();
-        $json->commission = $this->commission;
-        $json->prelevements = array();
-        $json->notes = DegustationClient::$note_type_libelles;
+        $json = array();
 
-        $prelevements = $this->degustation->getPrelevementsByNumeroDegustation($this->commission);
-
-        foreach ($prelevements as $prelevement) {
-            $p = $json->prelevements[] = new stdClass();
-            $p->anonymat_degustation = $prelevement->anonymat_degustation;
-            $p->hash_produit = $prelevement->hash_produit;
-            $p->libelle = $prelevement->libelle;
-            $p->notes = $prelevement->notes->toArray(true, false);
-            $p->appreciations = $prelevement->appreciations;
+        foreach($this->tournee->getDegustationsObjectByCommission($this->commission) as $degustation) {
+            $json[$degustation->_id] = $degustation->toJson();
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -521,23 +579,83 @@ class degustationActions extends sfActions {
         }
 
         $json = json_decode($request->getContent());
+        $json_return = array();
 
-        foreach ($json->prelevements as $p) {
-            $prelevement = $prelevements[$p->anonymat_degustation];
-            $prelevement->notes = array();
-            foreach ($p->notes as $key_note => $note) {
-                $n = $prelevement->notes->add($key_note);
-                $n->note = $note->note;
-                $n->defauts = $note->defauts;
+        foreach($json as $json_degustation) {
+            if(!$this->tournee->degustations->exist($json_degustation->identifiant)) {
+                $json_return[$json_degustation->_id] = false;
+                continue;
             }
-            $prelevement->appreciations = $p->appreciations;
-        }
 
-        $this->degustation->save();
+            $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
+
+            /*if($degustation->_rev != $json_degustation->_rev) {
+                $json_return[$degustation->_id] = false;
+                continue;
+            }*/
+
+            foreach($json_degustation->prelevements as $json_prelevement) {
+                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation);
+                if(!$prelevement) {
+                    continue;
+                }
+
+                if($prelevement->commission != $this->commission) {
+                    continue;
+                }
+
+                $prelevement->notes = array();
+                foreach($json_prelevement->notes as $key_note => $json_note) {
+                    $note = $prelevement->notes->add($key_note);
+                    $note->note = $json_note->note;
+                    $note->defauts = $json_note->defauts;
+                }
+                $prelevement->appreciations = $json_prelevement->appreciations;
+            }
+            
+            $degustation->save();
+
+            $json_return[$degustation->_id] = $degustation->_rev;
+        }
 
         $this->response->setContentType('application/json');
 
-        return $this->renderText(json_encode(array("success" => true)));
+        return $this->renderText(json_encode($json_return));
+    }
+
+    public function executeLeverAnonymat(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if($this->tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $this->tournee->isDegustationTerminee()) {
+            $this->tournee->statut = TourneeClient::STATUT_TERMINE;
+            $this->tournee->save();
+        }
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
+    }
+
+    public function executeDegustateursPresence(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        $this->form = new DegustateursPresenceForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->update();
+
+        $this->tournee->save();
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     public function executeCourrier(sfWebRequest $request) {
@@ -581,7 +699,7 @@ class degustationActions extends sfActions {
     }
 
     protected function getEtape($doc, $etape) {
-        $etapes = DegustationEtapes::getInstance();
+        $etapes = TourneeEtapes::getInstance();
         if (!$doc->exist('etape')) {
             return $etape;
         }
