@@ -69,6 +69,7 @@ Degustation:
       _rev: {  }
       type: {  }
       appellation: { }
+      appellation_libelle: { }
       date_degustation: { }
       identifiant: { }
       drev: { }

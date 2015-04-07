@@ -2,6 +2,7 @@
 class DegustationPrelevementRoute extends sfObjectRoute {
 
     protected $degustation = null;
+    protected $prelevement = null;
 
     protected function getObjectForParameters($parameters) {
 
@@ -14,14 +15,14 @@ class DegustationPrelevementRoute extends sfObjectRoute {
         $hash_prelevement = str_replace('-', '/', $parameters['hash_prelevement']);
         
 
-        if(!$degustation->exist($hash_prelevement)) {
+        if(!$this->degustation->exist($hash_prelevement)) {
 
             throw new sfError404Exception(sprintf('No Prelevement found with the id "%s" and hash "%s".', $parameters['id'], $hash_prelevement));
         }
 
-        $prelevement = $degustation->get($hash_prelevement);
+        $this->prelevement = $this->degustation->get($hash_prelevement);
 
-        return $prelevement;
+        return $this->prelevement;
     }
 
     protected function doConvertObjectToArray($object) {  

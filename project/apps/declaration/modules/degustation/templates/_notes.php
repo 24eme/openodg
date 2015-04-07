@@ -76,7 +76,7 @@
                                 </div>
                             <?php else: ?>        
                                 <?php if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier): ?>
-                                    <a href="<?php echo url_for('degustation_courrier_prelevement', array('id' => $tournee->_id, 'hash_prelevement' => $note->prelevement->getHashForKey())) ?>">
+                                    <a href="<?php echo url_for('degustation_courrier_prelevement', $note->prelevement) ?>">
                                     <?php endif; ?>
                                     <?php echo getTypeCourrier($note->prelevement); ?>
                                     <?php if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier): ?>

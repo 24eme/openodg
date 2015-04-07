@@ -35,6 +35,19 @@ class Degustation extends BaseDegustation {
         }
     }
 
+    public function getAppellationLibelle() {
+        if(!$this->appellation) {
+            return null;
+        }
+
+        if(!$this->_get('appellation_libelle')) {
+            $appellationsWithLibelle = TourneeCreationForm::getAppellationChoices();
+            $this->_set("appellation_libelle", $appellationsWithLibelle[$this->appellation]);
+        }
+
+        return $this->_get('appellation_libelle');
+    }
+
     public function isPrelever() {
 
         foreach($this->prelevements as $prelevement) {

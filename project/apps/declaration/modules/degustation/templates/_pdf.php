@@ -57,13 +57,13 @@
             ?></td>
     </tr>
     <tr>
-        <td>Clé Identité : <?php echo $operateur->cvi; ?></td>
+        <td>Clé Identité : <?php echo $degustation->cvi; ?></td>
     </tr>
     <tr>
         <td>Cuve : <?php echo $prelevement->cuve; ?></td>
     </tr>
     <tr>
-        <td>Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . substr($degustation->validation, 0, 4); ?></td>
+        <td>Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . ((int)substr($degustation->date_degustation, 0, 4) - 1); ?></td>
     </tr>
 </table>
 <br/>
