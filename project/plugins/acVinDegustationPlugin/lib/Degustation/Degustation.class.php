@@ -201,35 +201,4 @@ class Degustation extends BaseDegustation {
             }
         }
     }
-
-    public function getPrelevementsReadyForCourrier() {
-        $prelevementsByOperateurs = array();
-
-        foreach ($this->operateurs as $cvi => $operateur) {
-            foreach ($operateur->prelevements as $prelevement) {
-                if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) {
-                    if (!array_key_exists($cvi, $prelevementsByOperateurs)) {
-                        $prelevementsByOperateurs[$cvi] = new stdClass();
-                        $prelevementsByOperateurs[$cvi]->prelevements = array();
-                        $prelevementsByOperateurs[$cvi]->operateur = $operateur;
-                    }
-                    $prelevementsByOperateurs[$cvi]->prelevements[$prelevement->getHash()] = $prelevement;
-                }
-            }
-        }
-
-        return $prelevementsByOperateurs;
-    }
-
-    public function hasAllTypeCourrier() {
-        $notes = $this->getNotes();
-        foreach ($notes as $note) {
-            if (!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
 }
