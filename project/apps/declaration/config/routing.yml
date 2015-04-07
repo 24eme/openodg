@@ -754,37 +754,36 @@ degustation_degustateurs_presence:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 degustation_courriers:
   url: /degustation/courrier/:id
   param: { module: degustation, action: courrier }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post]  
+    sf_method: [get, post]
 
 degustation_generation_courriers:
   url: /degustation/generation-courrier/:id
   param: { module: degustation, action: generationCourrier }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post]  
-    
-    
+    sf_method: [get, post]
+
 degustation_courrier_prelevement:
   url: /degustation/prelevement-courrier/:id/:hash_prelevement
   param: { module: degustation, action: courrierPrelevement }
-  class: DegustationRoute
+  class: TourneeRoute
   options:
-    model:    DegustationRoute
+    model:    TourneeRoute
     type:     object
   requirements:
-    sf_method: [get, post] 
+    sf_method: [get, post]
 
 # Parcellaire
 

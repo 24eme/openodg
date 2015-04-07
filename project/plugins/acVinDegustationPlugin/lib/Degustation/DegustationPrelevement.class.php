@@ -44,11 +44,11 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
     public function isDegustationTerminee() {
         foreach($this->notes as $note) {
-            if(!$note->note) {
+            if($note->note === null) {
                 return false;
             }
         }
 
-        return false;
+        return true;
     }
 }

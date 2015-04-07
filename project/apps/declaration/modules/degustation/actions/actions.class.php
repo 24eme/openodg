@@ -659,32 +659,32 @@ class degustationActions extends sfActions {
     }
 
     public function executeCourrier(sfWebRequest $request) {
-        $this->degustation = $this->getRoute()->getDegustation();
-        $this->form = new DegustationCourrierForm($this->degustation);
+        $this->tournee = $this->getRoute()->getTournee();
+        $this->form = new DegustationCourrierForm($this->tournee);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if ($this->form->isValid()) {
                 $this->form->update();
                 $this->form->getObject()->save();
-                return $this->redirect('degustation_visualisation', $this->degustation);
+                return $this->redirect('degustation_visualisation', $this->tournee);
             }
         }
     }
 
     public function executeGenerationCourrier(sfWebRequest $request) {
-        $degustation = $this->getRoute()->getDegustation();
-        $degustation = Email::getInstance()->sendDegustationNoteCourrier($degustation);
+        $tournee = $this->getRoute()->getTournee();
+        $tournee = Email::getInstance()->sendDegustationNoteCourrier($tournee);
     //    $degustation->save();
-        return $this->redirect('degustation_visualisation', $degustation);
+        return $this->redirect('degustation_visualisation', $tournee);
     }
 
     public function executeCourrierPrelevement(sfWebRequest $request) {
-        $degustation = $this->getRoute()->getDegustation();
+        $tournee = $this->getRoute()->getTournee();
         $hash_prelevement = $request['hash_prelevement'];
         $prelevement = $degustation->get(str_replace('-', '/', $hash_prelevement));
         $operateur = $prelevement->getParent()->getParent();
-        $this->document = new ExportDegustationPDF($degustation, $operateur, $prelevement, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document = new ExportDegustationPDF($tournee, $operateur, $prelevement, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {

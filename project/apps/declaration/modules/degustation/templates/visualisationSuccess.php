@@ -9,12 +9,12 @@
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
-<?php include_partial('degustation/recap', array('degustation' => $degustation)); ?>
+<?php include_partial('degustation/recap', array('tournee' => $tournee)); ?>
 
 <?php if($tournee->statut == TourneeClient::STATUT_TERMINE): ?>
-    <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($degustation->getNotes()); ?>&nbsp;vins dégustés</div>
-        <a class="btn btn-warning btn-sm btn-upper" <?php echo (!$degustation->hasAllTypeCourrier())? "disabled='disabled'" : ""; ?> href="<?php echo url_for('degustation_generation_courriers', $degustation); ?>"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Envoyer les emails</a>
-        <a class="pull-right btn btn-default btn-sm btn-upper" href="<?php echo url_for('degustation_courriers', $degustation); ?>">Choisir types courriers<span class="eleganticon arrow_carrot-right"></span></a>
+    <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->getNotes()); ?>&nbsp;vins dégustés</div>
+        <a class="btn btn-warning btn-sm btn-upper" <?php echo (!$tournee->hasAllTypeCourrier())? "disabled='disabled'" : ""; ?> href="<?php echo url_for('degustation_generation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Envoyer les emails</a>
+        <a class="pull-right btn btn-default btn-sm btn-upper" href="<?php echo url_for('degustation_courriers', $tournee); ?>">Choisir types courriers<span class="eleganticon arrow_carrot-right"></span></a>
     </h2> 
     <?php include_partial('degustation/notes', array('tournee' => $tournee)); ?>
 <?php endif; ?>

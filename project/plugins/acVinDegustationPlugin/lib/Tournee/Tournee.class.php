@@ -217,23 +217,6 @@ class Tournee extends BaseTournee {
 
         return $degustations;
     }
-    
-    public function getNotes() {
-        
-        $notes = array();
-
-        foreach($this->getOperateursDegustes() as $operateurDeguste) {
-           
-            foreach ($operateurDeguste->prelevements as $prelevement) {
-                if($prelevement->anonymat_degustation){
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation] = new stdClass();
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
-                }
-            }
-        }
-        return $notes;
-    }
 
     public function storeEtape($etape) {
         if ($etape == $this->etape) {
@@ -269,6 +252,7 @@ class Tournee extends BaseTournee {
     public function isDegustationTerminee() {
         foreach($this->getDegustationsObject() as $degustation) {
             if(!$degustation->isDegustationTerminee()) {
+
                 return false;
             }
         }
@@ -442,18 +426,16 @@ class Tournee extends BaseTournee {
     }
 
     public function getNotes() {
-
+        
         $notes = array();
 
-        foreach ($this->getOperateursDegustes() as $operateurDeguste) {
-
-
-            foreach ($operateurDeguste->prelevements as $key => $prelevement) {
-                if ($prelevement->anonymat_degustation) {
-                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation] = new stdClass();
-                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->operateur = $operateurDeguste;
-                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->prelevement = $prelevement;
-                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->key = $key;
+        foreach($this->getOperateursDegustes() as $operateurDeguste) {
+           
+            foreach ($operateurDeguste->prelevements as $prelevement) {
+                if($prelevement->anonymat_degustation){
+                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation] = new stdClass();
+                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
+                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
                 }
             }
         }
