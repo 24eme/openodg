@@ -54,6 +54,12 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
     );
 
+    public static $types_courrier_libelle = array(
+        self::COURRIER_TYPE_OPE => "OPE",
+        self::COURRIER_TYPE_OK => "OK",
+             self::COURRIER_TYPE_VISITE => "Visite"
+    );
+
     public static function getInstance()
     {
         
