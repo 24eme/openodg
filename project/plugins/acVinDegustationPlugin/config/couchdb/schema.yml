@@ -110,6 +110,10 @@ Degustation:
                   preleve: { }
                   commission: { type: integer }
                   appreciations: { }
+                  type_courrier: { }
+                  visite_date: { }
+                  visite_heure: { }
+                  courrier_envoye: { }
                   notes:
                     type: collection
                     definition:
