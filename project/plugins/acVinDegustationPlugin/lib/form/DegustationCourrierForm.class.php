@@ -65,6 +65,7 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
                     $degustation->get($realKeyPrelevement)->add('visite_heure', null);
                 }
                 $degustation->get($realKeyPrelevement)->add('courrier_envoye', false);
+                $degustation->save();
             }
         }
     }
