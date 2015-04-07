@@ -410,7 +410,7 @@ class Tournee extends BaseTournee {
         }
     }
 
-    
+
     public function getPrelevementsReadyForCourrier() {
         $prelevementsByOperateurs = array();
 
@@ -439,6 +439,25 @@ class Tournee extends BaseTournee {
         }
         
         return true;
+    }
+
+    public function getNotes() {
+
+        $notes = array();
+
+        foreach ($this->getOperateursDegustes() as $operateurDeguste) {
+
+
+            foreach ($operateurDeguste->prelevements as $key => $prelevement) {
+                if ($prelevement->anonymat_degustation) {
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation] = new stdClass();
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->operateur = $operateurDeguste;
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->prelevement = $prelevement;
+                    $notes[$operateurDeguste->getKey() . '-' . $prelevement->anonymat_degustation]->key = $key;
+                }
+            }
+        }
+        return $notes;
     }
 
 }
