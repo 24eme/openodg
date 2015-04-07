@@ -13,21 +13,21 @@
     <tr>
         <td style="width: 350px;" >&nbsp;</td>
         <td style="width: 200px; padding-right: 40px; font-weight: bolder; ">
-            <?php echo $operateur->raison_sociale ?>
+            <?php echo $degustation->raison_sociale ?>
         </td>
         <td style="width: 150px;">&nbsp;</td>
     </tr>
     <tr>
         <td style="width: 350px;" >&nbsp;</td>
         <td style="width: 200px; padding-right: 40px; font-weight: bolder; ">
-            <?php echo $operateur->adresse; ?>
+            <?php echo $degustation->adresse; ?>
         </td>
         <td style="width: 150px;">&nbsp;</td>
     </tr>
     <tr>
         <td style="width: 350px;" >&nbsp;</td>
         <td style="width: 200px; padding-right: 40px; font-weight: bolder; ">
-            <?php echo $operateur->code_postal . ' ' . $operateur->commune; ?>
+            <?php echo $degustation->code_postal . ' ' . $degustation->commune; ?>
         </td>
         <td style="width: 150px; ">&nbsp;</td>
     </tr>
@@ -40,7 +40,7 @@
     <tr>
         <td style="width: 350px;" >&nbsp;</td>
         <td style="width: 350px; padding-right: 40px; font-weight: bolder; ">            
-            <?php echo $degustation->lieu . ', le ' . ucfirst(format_date(date('Y-m-d'), "P", "fr_FR")); ?>
+            <?php echo 'Colmar, le ' . ucfirst(format_date(date('Y-m-d'), "P", "fr_FR")); ?>
         </td>
     </tr>
 </table>
@@ -52,7 +52,7 @@
 <table>
     <tr>
         <td>N/Réf.: <?php
-            echo str_replace('-', '', $degustation->date) . '/' . $prelevement->anonymat_degustation;
+            echo str_replace('-', '', $degustation->date_degustation) . '/' . $prelevement->anonymat_degustation;
             echo ($prelevement->type_courrier == DegustationClient::COURRIER_TYPE_OPE) ? '/OPE' : '';
             ?></td>
     </tr>
@@ -70,7 +70,7 @@
 <br/>
 <p>Madame, Monsieur,</p>
 <br/>
-<p>Vous avez présenté un échantillon d'<strong><?php echo $degustation->appellation_libelle . ' ' . $prelevement->libelle; ?></strong> à une dégustation conseil organisée par l'ODG-AVA. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($operateur->date, "P", "fr_FR")); ?></strong>.</p>
+<p>Vous avez présenté un échantillon d'<strong><?php echo $degustation->appellation_libelle . ' ' . $prelevement->libelle; ?></strong> à une dégustation conseil organisée par l'ODG-AVA. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($degustation->date_degustation, "P", "fr_FR")); ?></strong>.</p>
 <p>Les experts dégustateurs ont fait les commentaires suivants  sur votre vin : </p>
 
 <div><span class="h3">&nbsp;Rapport de notes&nbsp;</span></div>

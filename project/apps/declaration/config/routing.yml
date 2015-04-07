@@ -778,9 +778,9 @@ degustation_generation_courriers:
 degustation_courrier_prelevement:
   url: /degustation/prelevement-courrier/:id/:hash_prelevement
   param: { module: degustation, action: courrierPrelevement }
-  class: TourneeRoute
+  class: DegustationPrelevementRoute
   options:
-    model:    TourneeRoute
+    model:    Degustation
     type:     object
   requirements:
     sf_method: [get, post]

@@ -680,11 +680,10 @@ class degustationActions extends sfActions {
     }
 
     public function executeCourrierPrelevement(sfWebRequest $request) {
-        $tournee = $this->getRoute()->getTournee();
-        $hash_prelevement = $request['hash_prelevement'];
-        $prelevement = $degustation->get(str_replace('-', '/', $hash_prelevement));
-        $operateur = $prelevement->getParent()->getParent();
-        $this->document = new ExportDegustationPDF($tournee, $operateur, $prelevement, $this->getRequestParameter('output', 'pdf'), false);
+        $prelevement = $this->getRoute()->getPrelevement();
+        $degustation = $this->getRoute()->getDegustation();
+
+        $this->document = new ExportDegustationPDF($degustation, $prelevement, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {
