@@ -249,12 +249,11 @@ class Email {
                 $pdf->generate();
                 $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
                 $message->attach($pdfAttachment);
+                //TODO enregistrer départ mail
                 // $degustation->getOrAdd($hash)->add('courrier_envoye', true);
             $message->setContentType('text/plain');
-            //$this->getMailer()->send($message);
-            var_dump($to,$body);
+            $this->getMailer()->send($message);
             }
-            exit;
             return true;
     }
 
