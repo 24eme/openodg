@@ -47,8 +47,7 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
     public function update() {
         $values = $this->values;
         foreach ($values as $key => $value) {
-            $matches = array();
-            if (preg_match('/^([0-9]{10})-(.*)/', $key, $matches) && $value) {
+            if (preg_match('/^([0-9]{10})-(.*)/', $key, $matches)) {
                 $cvi_operateur = $matches[1];
                 $id_degustation = 'DEGUSTATION-' . $cvi_operateur . '-' . $this->getObject()->identifiant;
                 $degustation = DegustationClient::getInstance()->find($id_degustation);
@@ -57,6 +56,9 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
                     throw new sfException("La degustation ".$id_degustation." n'existe pas");
                 }
                 $degustation->get($realKeyPrelevement)->add('type_courrier', $value);
+                if(!$value){
+                    $degustation->get($realKeyPrelevement)->type_courrier = null;
+                } 
                 if ($value == DegustationClient::COURRIER_TYPE_VISITE) {
                     $degustation->get($realKeyPrelevement)->add('visite_date', $values['visite_date_' . $key]);
                     $degustation->get($realKeyPrelevement)->add('visite_heure', $values['visite_heure_' . $key]);

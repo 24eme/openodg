@@ -424,6 +424,17 @@ class Tournee extends BaseTournee {
         
         return true;
     }
+    
+    public function hasAllCourrierSended() {
+        $notes = $this->getNotes();
+        foreach ($notes as $note) {
+            if (!$note->prelevement->exist('courrier_envoye') || !$note->prelevement->courrier_envoye) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
 
     public function getNotes() {
         
