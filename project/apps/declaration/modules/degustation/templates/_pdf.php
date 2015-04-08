@@ -115,8 +115,8 @@
 <br/>
 <p style="width: 350px; font-size: 10pt; font-weight: bold; font-style: italic; text-align: right;"><?php echo sfConfig::get('app_degustation_courrier_responsable'); ?>, Responsable de l'Appui Technique de l'Ava</p>
 <br/>
-<p style="width: 350px; font-weight: bold; font-style: italic">Rappel du barème des notes :</p>
-
+<span style="width: 350px; font-style: italic; font-size: 9pt;">Rappel du barème des notes :</span>
+<br /><br />
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php
     foreach (DegustationClient::$note_type_libelles as $noteType => $noteLibelle):
