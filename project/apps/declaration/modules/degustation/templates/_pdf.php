@@ -2,6 +2,7 @@
 <?php use_helper('Degustation') ?>
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
+<?php $adresse_ava = sfConfig::get('app_degustation_courrier_adresse'); ?>
 <style>
 <?php echo styleDegustation(); ?>
 </style>
@@ -11,25 +12,22 @@
 <br/>
 <table border="0">
     <tr>
-        <td style="width: 350px;" >&nbsp;</td>
-        <td style="width: 200px; padding-right: 40px; font-weight: bolder; ">
+        <td style="width: 300px;" >&nbsp;</td>
+        <td style="width: 400px; padding-right: 40px; font-weight: bolder; ">
             <?php echo $degustation->raison_sociale ?>
         </td>
-        <td style="width: 150px;">&nbsp;</td>
     </tr>
     <tr>
-        <td style="width: 350px;" >&nbsp;</td>
-        <td style="width: 200px; padding-right: 40px; font-weight: bolder; ">
+        <td style="width: 300px;" >&nbsp;</td>
+        <td style="width: 400px; padding-right: 40px; font-weight: bolder; ">
             <?php echo $degustation->adresse; ?>
         </td>
-        <td style="width: 150px;">&nbsp;</td>
     </tr>
     <tr>
-        <td style="width: 350px;" >&nbsp;</td>
-        <td style="width: 200px; padding-right: 40px; font-weight: bolder; ">
+        <td style="width: 300px;" >&nbsp;</td>
+        <td style="width: 400px; padding-right: 40px; font-weight: bolder; ">
             <?php echo $degustation->code_postal . ' ' . $degustation->commune; ?>
         </td>
-        <td style="width: 150px; ">&nbsp;</td>
     </tr>
 </table>
 <br/>
@@ -57,13 +55,13 @@
             ?></td>
     </tr>
     <tr>
-        <td>Clé Identité : <?php echo $degustation->cvi; ?></td>
+        <td>N° CVI : <?php echo $degustation->cvi; ?></td>
     </tr>
     <tr>
         <td>Cuve : <?php echo $prelevement->cuve; ?></td>
     </tr>
     <tr>
-        <td>Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . ((int)substr($degustation->date_degustation, 0, 4) - 1); ?></td>
+        <td>Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . ((int) substr($degustation->date_degustation, 0, 4) - 1); ?></td>
     </tr>
 </table>
 <br/>
@@ -115,12 +113,10 @@
 <p>A votre disposition pour tout complément d'information, nous vous prions d'agréer, Madame, Monsieur, nos plus cordiales salutations.</p>
 
 <br/>
-<p style="width: 350px; font-size: 11pt; font-weight: bold; font-style: italic; text-align: right;">Vicky Chan Fook Tin</p>
-<p style="width: 350px; font-size: 11pt; font-weight: bold; font-style: italic; text-align: right;">Responsable de l'Appui Technique de l'Ava</p>
-<br/>
+<p style="width: 350px; font-size: 10pt; font-weight: bold; font-style: italic; text-align: right;"><?php echo sfConfig::get('app_degustation_courrier_responsable'); ?>, Responsable de l'Appui Technique de l'Ava</p>
 <br/>
 <p style="width: 350px; font-weight: bold; font-style: italic">Rappel du barème des notes :</p>
-<br/>
+
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php
     foreach (DegustationClient::$note_type_libelles as $noteType => $noteLibelle):
@@ -137,3 +133,12 @@
         </tr>            
     <?php endforeach; ?>
 </table>
+
+<br/>
+<br/>
+<small style=""><?php echo $adresse_ava['raison_sociale']; ?><br/>
+    <?php echo $adresse_ava['adresse']; ?><br/>
+    <?php echo $adresse_ava['cp_ville']; ?><br/>
+    <?php echo $adresse_ava['telephone']; ?><br/>
+    <?php echo $adresse_ava['email']; ?>
+</small>
