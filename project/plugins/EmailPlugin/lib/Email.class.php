@@ -224,14 +224,14 @@ class Email {
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($courrier->prelevements as $prelevement) {
             $degustation = $prelevement->getDocument();
-            $subject = "Rapport de note de l'AVA suite à la dégustation conseil du " . Date::francizeDate($degustation->date_degustation) ;
+            $subject = "Rapport de note de l'AVA suite à la dégustation conseil du " . Date::francizeDate($degustation->date_degustation);
             $body = $this->getBodyFromPartial('send_degustation_note_degustateur', array('degustation' => $degustation));
             $to = "";
             if (!$courrier->operateur->email) {
                 $to = $reply_to;
-                $nom = $courrier->operateur->nom;
+                $nom = $courrier->operateur->raison_sociale;
                 $subject = "[ $nom: EMAIL NON ENVOYE] " . $subject;
-                $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $courrier->operateur->nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $courrier->operateur->getKey()), true), $body);
+                $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $courrier->operateur->getKey()), true), $body);
             } else {
                 $to = $courrier->operateur->email;
             }
@@ -242,18 +242,19 @@ class Email {
                     ->setTo($to)
                     ->setSubject($subject)
                     ->setBody($body);
-
-
-                $pdf = new ExportDegustationPDF($degustation, $prelevement);
-                $pdf->setPartialFunction(array($this, 'getPartial'));
-                $pdf->generate();
-                $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
-                $message->attach($pdfAttachment);
-            }
-                // $degustation->getOrAdd($hash)->add('courrier_envoye', true);
+            
+            $pdf = new ExportDegustationPDF($degustation, $prelevement);
+            $pdf->setPartialFunction(array($this, 'getPartial'));
+            $pdf->generate();
+            $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+            $message->attach($pdfAttachment);
+            
+            $prelevement->add('courrier_envoye', true);
             $message->setContentType('text/plain');
             $this->getMailer()->send($message);
-            return $degustation;
+            $degustation->save();
+        }
+        return true;
     }
 
     protected function getMailer() {

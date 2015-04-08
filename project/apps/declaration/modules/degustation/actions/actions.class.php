@@ -673,12 +673,9 @@ class degustationActions extends sfActions {
     }
 
     public function executeGenerationCourrier(sfWebRequest $request) {
-        $tournee = $this->getRoute()->getTournee(); 
-        
+        $tournee = $this->getRoute()->getTournee();         
         foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
-        $degustation = Email::getInstance()->sendDegustationNoteCourrier($courrier);
-        
-    //    $degustation->save();
+            Email::getInstance()->sendDegustationNoteCourrier($courrier);   
         }
         return $this->redirect('degustation_visualisation', $tournee);
     }

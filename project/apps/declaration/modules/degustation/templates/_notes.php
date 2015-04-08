@@ -19,6 +19,7 @@
                     <th>Notes</th> 
                     <th>Appreciation</th> 
                     <th>Type courrier</th> 
+                    <th>Envoyé</th> 
                 </tr>
                 <?php foreach ($tournee->getNotes() as $note): ?>
                     <tr>
@@ -83,6 +84,10 @@
                                     </a>
                                 <?php endif; ?>
                             <?php endif; ?>
+                        </td>
+                        <td class="text-center">
+                            <?php echo ($note->prelevement->exist('courrier_envoye') && $note->prelevement->courrier_envoye)? 
+                            '<span class="glyphicon glyphicon-ok-circle"></span>' : '<span class="glyphicon glyphicon-remove-circle"></span>'; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
