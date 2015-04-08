@@ -49,7 +49,7 @@ function getExplicationsPDF($prelevement) {
                 $heurePlus = (int) format_date($prelevement->visite_heure, "H", "fr_FR") + 2;
                 return "<p>Afin de discuter avec vous des remarques attribuées à votre échantillon, nous vous proposons de vous rencontrer à votre chai</p>
 <p><strong>Le " . ucfirst(format_date($prelevement->visite_date, "P", "fr_FR")) . " entre " . format_date($prelevement->visite_heure, "H", "fr_FR") . "h et " . $heurePlus . "h.</strong></p><br/>
-<p>En cas d'empêchement, merci de nous le faire savoir au 03.89.20.16.58 (Martine Parisot).</p>";
+<p>En cas d'empêchement, merci de nous le faire savoir au ".sfConfig::get('app_degustation_courrier_visitetel')." (".sfConfig::get('app_degustation_courrier_visiteorga').").</p>";
             }
         default:
             break;

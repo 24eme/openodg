@@ -32,3 +32,13 @@ all:
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"
+  degustation_courrier:
+    responsable: "Responsable technique"
+    visitetel: "00.00.00.00.00"
+    visiteorga: "Nom Prenom"
+    adresse:
+      raison_sociale: "Raison sociale"
+      adresse: "Adresse"
+      cp_ville: "CP Ville"
+      telephone: "Téléphone 00 00 00 00 00 - Fax 01 01 01 01 01"
+      email: "Email : mail@mailer.fr"
