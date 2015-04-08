@@ -11,7 +11,7 @@ class ParcellaireExportCsvTask extends sfBaseTask
 
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
-            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
@@ -29,11 +29,18 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         $p = ParcellaireClient::getInstance()->find($arguments['doc_id']);
+
         if(!$p) {
+            
             return;
         }
 
-        $export = new ExportParcellaireCSV($p);
+        if(!$p->validation) {
+
+            return;
+        }
+
+        $export = new ExportParcellaireCSV($p, false);
 
         echo $export->export();
     }

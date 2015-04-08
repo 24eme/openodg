@@ -14,9 +14,16 @@
 class ExportParcellaireCSV {
 
     protected $parcellaire = null;
+    protected $header = false;
 
-    public function __construct($parcellaire) {
+    public function getHeaderCsv() {
+
+        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom\n";
+    }
+
+    public function __construct($parcellaire, $header = true) {
         $this->parcellaire = $parcellaire;
+        $this->header = $header;
     }
 
     public function getFileName() {
@@ -30,32 +37,35 @@ class ExportParcellaireCSV {
     }
 
     private function parcellaireExport() {
-        $export = "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom\n";
-        foreach ($this->parcellaire->getAllParcellesByAppellations() as $parcellesByAppellation) {
-            foreach ($parcellesByAppellation->parcelles as $parcelle) {
-                $export.=$this->exportParcelleByAcheteurs($parcellesByAppellation, $parcelle);
-            }
+        $export = "";
+        if($this->header) { 
+            $export = $this->getHeaderCsv();
         }
+        
+        foreach ($this->parcellaire->declaration->getProduitsCepageDetails() as $parcelle) {
+            $export .= $this->exportParcelleByAcheteurs($parcelle);
+        }
+
         return $export;
     }
 
-    private function exportParcelleByAcheteurs($parcellesByAppellation, $parcelle) {
-        $exportParcelleByAcheteurs = "";
+    private function exportParcelleByAcheteurs($parcelle) {
+        $export = "";
         foreach ($parcelle->getCepage()->acheteurs as $lieu_acheteurs) {
             foreach ($lieu_acheteurs as $typeAcheteur => $acheteurs) {
                 if ($typeAcheteur == ParcellaireClient::DESTINATION_SUR_PLACE) {
-                    $exportParcelleByAcheteurs.=$this->exportParcelle($parcellesByAppellation, $parcelle);
+                    $export .= $this->exportParcelle($parcelle);
                 }
                 if (($typeAcheteur == ParcellaireClient::DESTINATION_CAVE_COOPERATIVE) || ($typeAcheteur == ParcellaireClient::DESTINATION_NEGOCIANT)) {
-                    $exportParcelleByAcheteurs.=$this->exportParcelle($parcellesByAppellation, $parcelle, $acheteurs);
+                    $export .= $this->exportParcelle($parcelle, $acheteurs);
                 }
             }
         }
 
-        return $exportParcelleByAcheteurs;
+        return $export;
     }
 
-    private function exportParcelle($parcellesByAppellation, $parcelle, $acheteurs = null) {
+    private function exportParcelle($parcelle, $acheteurs = null) {
         $export = "";
         if (!$acheteurs) {
             $export.=$parcelle->commune . ";";
