@@ -21,7 +21,7 @@ class ExportDegustationPDF extends ExportPDF {
         $this->degustation = $degustation;
         $this->prelevement = $prelevement;
         if (!$filename) {
-            $filename = $this->getFileName(true, true);
+            $filename = $this->getFileName(true);
         }
         
         parent::__construct($type, $use_cache, $file_dir, $filename);
