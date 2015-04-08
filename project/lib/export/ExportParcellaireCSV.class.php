@@ -14,31 +14,23 @@
 class ExportParcellaireCSV {
 
     protected $parcellaire = null;
-    protected $campagne = null;
 
-    public function __construct($campagne = null, $parcellaire = null) {
-        $this->campagne = $campagne;
+    public function __construct($parcellaire) {
         $this->parcellaire = $parcellaire;
     }
 
     public function getFileName() {
-        if ($this->isParcellaireExport()) {
-            return 'exportCsv_Parcellaire_' . $this->parcellaire->declarant->cvi . '_' . date('Ymd');
-        }
-        if ($this->isCampagneExport()) {
-            return 'exportCsv_Parcellaire_' . $this->campagne . '_' . date('Ymd');
-        }
+        
+        return $this->parcellaire->_id . '_' . $this->parcellaire->_rev . '.csv';
     }
 
     public function export() {
-        if ($this->isParcellaireExport()) {
-            return $this->parcellaireExport();
-        }
-        return "";
+        
+        return $this->parcellaireExport();
     }
 
     private function parcellaireExport() {
-        $export = "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Cépage;Supérficie;CVI;Nom;Adresse;Code postal;Commune;Téléphone;Parcelle partagée;Acheteur CVI;Acheteur Nom\n";
+        $export = "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom\n";
         foreach ($this->parcellaire->getAllParcellesByAppellations() as $parcellesByAppellation) {
             foreach ($parcellesByAppellation->parcelles as $parcelle) {
                 $export.=$this->exportParcelleByAcheteurs($parcellesByAppellation, $parcelle);
@@ -49,12 +41,14 @@ class ExportParcellaireCSV {
 
     private function exportParcelleByAcheteurs($parcellesByAppellation, $parcelle) {
         $exportParcelleByAcheteurs = "";
-        foreach ($parcelle->getCepage()->acheteurs->lieu as $typeAcheteur => $acheteurs) {
-            if ($typeAcheteur == ParcellaireClient::DESTINATION_SUR_PLACE) {
-                $exportParcelleByAcheteurs.=$this->exportParcelle($parcellesByAppellation, $parcelle);
-            }
-            if (($typeAcheteur == ParcellaireClient::DESTINATION_CAVE_COOPERATIVE) || ($typeAcheteur == ParcellaireClient::DESTINATION_NEGOCIANT)) {
-                $exportParcelleByAcheteurs.=$this->exportParcelle($parcellesByAppellation, $parcelle, $acheteurs);
+        foreach ($parcelle->getCepage()->acheteurs as $lieu_acheteurs) {
+            foreach ($lieu_acheteurs as $typeAcheteur => $acheteurs) {
+                if ($typeAcheteur == ParcellaireClient::DESTINATION_SUR_PLACE) {
+                    $exportParcelleByAcheteurs.=$this->exportParcelle($parcellesByAppellation, $parcelle);
+                }
+                if (($typeAcheteur == ParcellaireClient::DESTINATION_CAVE_COOPERATIVE) || ($typeAcheteur == ParcellaireClient::DESTINATION_NEGOCIANT)) {
+                    $exportParcelleByAcheteurs.=$this->exportParcelle($parcellesByAppellation, $parcelle, $acheteurs);
+                }
             }
         }
 
@@ -67,15 +61,15 @@ class ExportParcellaireCSV {
             $export.=$parcelle->commune . ";";
             $export.=$parcelle->section . ";";
             $export.=$parcelle->numero_parcelle . ";";
-            $export.=$parcellesByAppellation->appellation->getKey() . ";";
-            $export.=$parcelle->getCepageLibelle() . ";";
+            $export.= $parcelle->getAppellation()->getLibelle() . ";";
+            $export.= $parcelle->getLieuLibelle() . ";";
+            $export.= $parcelle->getCepageLibelle() . ";";
             $export.=sprintf("%01.02f", $parcelle->superficie) . ";";
             $export.=$this->parcellaire->declarant->cvi . ";";
             $export.= $this->parcellaire->declarant->nom . ";";
             $export.=$this->parcellaire->declarant->adresse . ";";
             $export.=$this->parcellaire->declarant->code_postal . ";";
             $export.=$this->parcellaire->declarant->commune . ";";
-            $export.=$this->parcellaire->declarant->telephone.";";
             $export.=";;";
             $export.="\n";
         } else {
@@ -83,15 +77,15 @@ class ExportParcellaireCSV {
                 $export.=$parcelle->commune . ";";
                 $export.=$parcelle->section . ";";
                 $export.=$parcelle->numero_parcelle . ";";
-                $export.=$parcellesByAppellation->appellation->getKey() . ";";
-                $export.=$parcelle->getCepageLibelle() . ";";
+                $export.= $parcelle->getAppellation()->getLibelle() . ";";
+                $export.= $parcelle->getLieuLibelle() . ";";
+                $export.= $parcelle->getCepageLibelle() . ";";
                 $export.=sprintf("%01.02f", $parcelle->superficie) . ";";
                 $export.=$this->parcellaire->declarant->cvi . ";";
                 $export.= $this->parcellaire->declarant->nom . ";";
                 $export.=$this->parcellaire->declarant->adresse . ";";
                 $export.=$this->parcellaire->declarant->code_postal . ";";
                 $export.=$this->parcellaire->declarant->commune . ";";
-                $export.=$this->parcellaire->declarant->telephone.";";
                 $export.= (count($acheteurs) == 1) ? "NON;" : "OUI;";
                 $export.=$acheteur->cvi . ";";
                 $export.=$acheteur->nom;
@@ -99,14 +93,6 @@ class ExportParcellaireCSV {
             }
         }
         return $export;
-    }
-
-    private function isParcellaireExport() {
-        return boolval($this->parcellaire);
-    }
-
-    private function isCampagneExport() {
-        return boolval($this->campagne);
     }
 
 }
