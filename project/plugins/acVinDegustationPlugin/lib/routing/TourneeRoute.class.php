@@ -1,16 +1,16 @@
 <?php
-class DegustationRoute extends sfObjectRoute {
+class TourneeRoute extends sfObjectRoute {
 
-    protected $degustation = null;
+    protected $tournee = null;
 
     protected function getObjectForParameters($parameters) {
 
-        $this->degustation = DegustationClient::getInstance()->find($parameters['id']);
-        if (!$this->degustation) {
+        $this->tournee = TourneeClient::getInstance()->find($parameters['id']);
+        if (!$this->tournee) {
 
             throw new sfError404Exception(sprintf('No Degustation found with the id "%s".', $parameters['id']));
         }
-        return $this->degustation;
+        return $this->tournee;
     }
 
     protected function doConvertObjectToArray($object) {  
@@ -18,11 +18,11 @@ class DegustationRoute extends sfObjectRoute {
         return $parameters;
     }
 
-    public function getDegustation() {
-        if (!$this->degustation) {
+    public function getTournee() {
+        if (!$this->tournee) {
             $this->getObject();
         }
-        return $this->degustation;
+        return $this->tournee;
     }
 
 }

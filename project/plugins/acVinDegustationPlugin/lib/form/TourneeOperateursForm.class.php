@@ -1,6 +1,6 @@
 <?php
 
-class DegustationOperateursForm extends acCouchdbForm {
+class TourneeOperateursForm extends acCouchdbForm {
 
     public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
@@ -17,16 +17,16 @@ class DegustationOperateursForm extends acCouchdbForm {
             }
 
             foreach($lots as $lot) {
-                $this->setDefault($operateur->getKey(), $lot->getKey());
+                $this->setDefault($operateur->getIdentifiant(), $lot->getKey());
                 break;
             }
         }
     }
 
     public function configure() {
-        $operateurs = $this->getDocument()->operateurs->toArray();
+        $operateurs = $this->getDocument()->operateurs;
 
-        usort($operateurs, 'DegustationOperateursForm::sortOperateursByDatePrelevement');
+        usort($operateurs, 'TourneeOperateursForm::sortOperateursByDatePrelevement');
 
         foreach($operateurs as $operateur) {
             $choices = array();
@@ -35,12 +35,12 @@ class DegustationOperateursForm extends acCouchdbForm {
                 $choices[$lot_key] = sprintf("%s - %s lot(s)", $lot->libelle, $lot->nb);
             }
 
-            $this->setWidget($operateur->getKey(), new sfWidgetFormChoice(array("choices" => $choices)));
-            $this->setValidator($operateur->getKey(), new sfValidatorChoice(array("choices" =>array_keys($choices), "required" => false)));
+            $this->setWidget($operateur->identifiant, new sfWidgetFormChoice(array("choices" => $choices)));
+            $this->setValidator($operateur->identifiant, new sfValidatorChoice(array("choices" =>array_keys($choices), "required" => false)));
 
         }
 
-        $this->widgetSchema->setNameFormat('operateurs[%s]');
+        $this->widgetSchema->setNameFormat('tournee_operateurs[%s]');
     }
 
     public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
@@ -62,15 +62,16 @@ class DegustationOperateursForm extends acCouchdbForm {
                 $operateursToDelete[] = $key;
                 continue;
             }
-            $operateur = $this->getDocument()->operateurs->get($key);
-            $operateur->resetLotsPrelevement();
-            $lot = $operateur->lots->get($value);
+
+            $degustation = $this->getDocument()->getDegustationObject($key);
+            $degustation->resetLotsPrelevement();
+            $lot = $degustation->lots->get($value);
             $lot->prelevement = 1;
-            $operateur->consoliderInfos();
+            $degustation->updateFromCompte();
         }
 
         foreach($operateursToDelete as $key) {
-           $this->getDocument()->operateurs->remove($key); 
+           $this->getDocument()->removeDegustation($key); 
         }
     }
 

@@ -13,6 +13,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.transmission = false;
     $scope.transmission_progress = false;
     $scope.state = true;
+    $scope.loaded = false;
     
     var local_storage_name = $rootScope.url_json;
 
@@ -20,10 +21,54 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         localStorageService.set(local_storage_name, angular.toJson($scope.operateurs));
     }
 
-    var remoteSave = function(callBack) {
-        $http.post($rootScope.url_json, angular.toJson($scope.operateurs))
+    var localDelete = function() {
+        localStorageService.remove(local_storage_name);
+    }
+
+    var getOperateurById = function(id) {
+        for(key in $scope.operateurs) {
+            if($scope.operateurs[key]._id == id) {
+
+                return $scope.operateurs[key];
+            }
+        }
+
+        return null;
+    }
+
+    var getOperateurKeyById = function(id) {
+        for(key in $scope.operateurs) {
+            if($scope.operateurs[key]._id == id) {
+
+                return key;
+            }
+        }
+
+        return null;
+    }
+
+    var getOperateursToTransmettre = function() {
+        var operateursToTransmettre = [];
+
+        for(operateur_key in $scope.operateurs) {
+            var operateur = $scope.operateurs[operateur_key];
+            if(operateur.transmission_needed) {
+               operateursToTransmettre.push(operateur); 
+            }
+        }
+
+        return operateursToTransmettre;
+    }
+
+    var remoteSave = function(operateurs, callBack) {
+        if(operateurs.length == 0) {
+            callBack(true);
+            return;
+        }
+
+        $http.post($rootScope.url_json, angular.toJson(operateurs))
         .success(function(data){
-            callBack(data.success);
+            callBack(data);
         }).error(function(data) {
             callBack(false);
         });
@@ -35,29 +80,110 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         });
     }
 
-    $scope.transmettre = function() {
+    $scope.transmettre = function(auto) {
+        if($scope.transmission_progress) {
+
+            return;
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        remoteSave(function(success) {
-            $scope.transmission = true;
-            $scope.transmission_result = success;
+        $scope.transmission_result = true;
+
+        remoteSave(getOperateursToTransmettre(), function(data) {
+            if(!auto) {
+                $scope.transmission = true;
+            }
             $scope.transmission_progress = false;
+
+            if(!data) {
+               $scope.transmission_result = false;
+               return;
+            }
+
+            for(id_degustation in data) {
+                var revision = data[id_degustation];
+                var operateur = getOperateurById(id_degustation);
+                operateur.transmission_needed = false;
+                if(!revision && $scope.transmission_result) {
+                    $scope.transmission_result = false;
+                    operateur.transmission_collision = true;
+                } else {
+                    operateur._rev = revision;
+                }
+            }
+            
+            localSave();
         });
-        $scope.testState();
     }
 
-    var intervalState = setInterval(function() {
+    var updateOperateurFromLoad = function(operateur) {
+        var termine = false;
+        if(operateur.motif_non_prelevement) {
+            termine = true;
+            operateur.aucun_prelevement = true;
+        }
+        for(prelevement_key in operateur.prelevements) {
+            var prelevement = operateur.prelevements[prelevement_key];
+            if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
+                termine = true;
+            }
+        }
+        operateur.termine = termine;
+    }
+
+    $scope.loadOrUpdateOperateurs = function() {
+        $http.get($rootScope.url_json)
+        .success(function(data){
+            for(key_data in data) {
+                var operateurRemote = data[key_data];
+                var operateur = getOperateurById(operateurRemote._id);
+                if(operateur && operateurRemote._rev == operateur._rev) {
+
+                } else if(operateur && operateur.transmission_needed) {
+                
+                } else if(operateur && operateur.transmission_collision) {
+
+                } else if(operateur && operateurRemote._rev != operateur._rev) {
+                    $scope.operateurs[getOperateurKeyById(operateurRemote._id)] = operateurRemote;
+                    updateOperateurFromLoad(operateurRemote);
+                } else {
+                    $scope.operateurs.push(operateurRemote);
+                    updateOperateurFromLoad(operateurRemote);
+                }
+            }
+            $scope.loaded = true;
+            localSave();
+        });
+    }
+
+    setInterval(function() {
         $scope.testState();
     }, 200000);
 
+    setInterval(function() {
+        $scope.transmettre(true);
+    }, 30000);
+
+    setInterval(function() {
+        $scope.loadOrUpdateOperateurs();
+    }, 60000);
+
+    if($scope.reload) {
+        localDelete();
+    }
+
     $scope.operateurs = localStorageService.get(local_storage_name);
 
-    if(!$scope.operateurs) {
-        $http.get($rootScope.url_json)
-        .success(function(data){
-            $scope.operateurs = data;
-        });
+    if($scope.operateurs) {
+        $scope.loaded = true;
     }
+
+    if(!$scope.operateurs) {
+        $scope.operateurs = [];
+    }
+
+    $scope.loadOrUpdateOperateurs();
 
     $scope.updateActive = function(key) {
         $scope.active = key;
@@ -71,7 +197,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.updateProduit = function(prelevement) {
         prelevement.libelle = $rootScope.produits[prelevement.hash_produit];
         var code_cepage = prelevement.hash_produit.substr(-2);
-        prelevement.anonymat_prelevement = code_cepage + prelevement.anonymat_prelevement.substr(2, prelevement.anonymat_prelevement.length);
+        prelevement.anonymat_prelevement_complet = code_cepage + prelevement.anonymat_prelevement_complet.substr(2, prelevement.anonymat_prelevement_complet.length);
         prelevement.show_produit = false;
         prelevement.preleve = 1;
         localSave();
@@ -80,7 +206,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.terminer = function(operateur) {
         $scope.valide(operateur);
         
-        if(operateur.erreurs) {
+        if(operateur.has_erreurs) {
 
             return;
         }
@@ -88,28 +214,45 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.precedent(operateur);
 
         localSave();
-        remoteSave();
+
+        operateur.transmission_needed = true;
+        $scope.transmettre(true);
     }
 
     $scope.valide = function(operateur) {
         operateur.termine = false;
-        operateur.erreurs = false;
+        operateur.has_erreurs = false;
+        operateur.erreurs = [];
+        var nb = 0;
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
             prelevement.erreurs = [];
             if(prelevement.preleve && !prelevement.cuve) {
                 prelevement.erreurs['cuve'] = true;
-                operateur.erreurs = true;
+                operateur.has_erreurs = true;
             }
             if(prelevement.preleve && !prelevement.hash_produit) {
                 prelevement.erreurs['hash_produit'] = true;
-                operateur.erreurs = true;
+                operateur.has_erreurs = true;
             }
+            if(prelevement.preleve) {
+                nb++;
+            }
+        }
+
+        if(!nb && !operateur.aucun_prelevement) {
+            operateur.has_erreurs = true;
+            operateur.erreurs["aucun_prelevement"] = true;
+        }
+
+        if(operateur.aucun_prelevement && !operateur.motif_non_prelevement) {
+            operateur.has_erreurs = true;
+            operateur.erreurs["motif"] = true;
         }
 
         localSave();
 
-        if(operateur.erreurs) {
+        if(operateur.has_erreurs) {
 
             return;
         }
@@ -131,16 +274,48 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     $scope.togglePreleve = function(prelevement) {
         if(prelevement.preleve) {
-            prelevement.preleve=0;
+            prelevement.preleve = 0;
         } else {
-            prelevement.preleve=1;
+            prelevement.preleve = 1;
         }
 
-        updatePreleve(prelevement);
+        $scope.updatePreleve(prelevement);
+    }
+
+    $scope.toggleAucunPrelevement = function(operateur) {
+        if(operateur.erreurs) {
+            operateur.erreurs["aucun_prelevement"] = false;
+        }
+        if(operateur.aucun_prelevement) {
+            operateur.aucun_prelevement = 0;
+            for(prelevement_key in operateur.prelevements) {
+                if(operateur.prelevements[prelevement_key].cuve) {
+                    operateur.prelevements[prelevement_key].preleve = 1;
+                }
+            }
+            operateur.motif_non_prelevement = null;
+        } else {
+            operateur.aucun_prelevement = 1;
+            for(prelevement_key in operateur.prelevements) {
+                operateur.prelevements[prelevement_key].preleve = 0;
+            }
+        }
+        localSave();    
+    }
+
+    $scope.updateMotif = function(operateur) {
+        if(operateur.erreurs) {
+            operateur.erreurs["motif"] = false;
+        }
+        localSave();
     }
 
     $scope.updatePreleve = function(prelevement) {
-        localSave();    
+        localSave();
+    }
+
+    $scope.print = function() {
+        window.print();
     }
 }]);
 
@@ -152,17 +327,99 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.state = true;
     $scope.query = null;
     $scope.prelevement = null;
-    $scope.affectation = null;
+    $scope.prelevements = [];
+    $scope.anonymat_degustation = 1;
+    $scope.loaded = false;
+
+    $scope.commissions = [];
+    for (var i = 1; i <= $scope.nombre_commissions; i++) {
+        $scope.commissions.push(i);
+    };
+
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
-        localStorageService.set(local_storage_name, angular.toJson($scope.affectation));
+        localStorageService.set(local_storage_name, angular.toJson($scope.degustations));
     }
 
-    var remoteSave = function(callBack) {
-        $http.post($rootScope.url_json, angular.toJson($scope.affectation))
+    var localDelete = function() {
+        localStorageService.remove(local_storage_name);
+    }
+
+    var getDegustationsToTransmettre = function() {
+        var degustationsToTransmettre = [];
+
+        for(degustation_key in $scope.degustations) {
+            var degustation = $scope.degustations[degustation_key];
+            if(degustation.transmission_needed) {
+               degustationsToTransmettre.push(degustation); 
+            }
+        }
+
+        return degustationsToTransmettre;
+    }
+
+    var updatePrelevements = function() {
+        $scope.prelevements = [];
+        for(degustation_key in $scope.degustations) {
+            var degustation = $scope.degustations[degustation_key];
+            for(prelevement_key in degustation.prelevements) {
+                var prelevement = degustation.prelevements[prelevement_key];
+                prelevement.degustation_id = degustation._id;
+                $scope.prelevements.push($scope.degustations[degustation_key].prelevements[prelevement_key]);
+            }
+        } 
+        calculAnonymatDegustation();
+    }
+
+    var calculAnonymatDegustation = function() {
+        $scope.anonymat_degustation = 1;
+        for(prelevement_key in $scope.prelevements) {
+            var prelevement = $scope.prelevements[prelevement_key];
+            if($scope.anonymat_degustation < (prelevement.anonymat_degustation + 1)) {
+                $scope.anonymat_degustation = prelevement.anonymat_degustation + 1;
+            }
+        }
+    }
+
+    $scope.loadOrUpdateDegustations = function() {
+        $http.get($rootScope.url_json)
         .success(function(data){
-            callBack(data.success);
+            var modified = false;
+            for(key_data in data) {
+                var degustationRemote = data[key_data];
+                var degustation = $scope.degustations[degustationRemote._id];
+                if(degustation && degustationRemote._rev == degustation._rev) {
+
+                } else if(degustation && degustation.transmission_needed) {
+                
+                } else if(degustation && degustation.transmission_collision) {
+
+                } else if(degustation && degustationRemote._rev != degustation._rev) {
+                    $scope.degustations[degustationRemote._id] = degustationRemote;
+                    modified = true;
+                } else {
+                    $scope.degustations[degustationRemote._id] = degustationRemote;
+                    modified = true;
+                }
+            }
+            $scope.loaded = true;
+            localSave();
+            if(modified) {
+                updatePrelevements();
+            }
+        });
+    }
+
+    var remoteSave = function(degustations, callBack) {
+        if(degustations.length == 0) {
+            callBack(true);
+            return;
+        }
+
+        $http.post($rootScope.url_json, angular.toJson(degustations))
+        .success(function(data){
+            callBack(data);
         }).error(function(data) {
             callBack(false);
         });
@@ -174,29 +431,68 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         });
     }
 
-    $scope.transmettre = function() {
+    $scope.transmettre = function(auto) {
+        if($scope.transmission_progress) {
+
+            return;
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        remoteSave(function(success) {
-            $scope.transmission = true;
-            $scope.transmission_result = success;
+        $scope.transmission_result = true;
+        remoteSave(getDegustationsToTransmettre(), function(data) {
+            if(!auto) {
+                $scope.transmission = true;
+            }
             $scope.transmission_progress = false;
+
+            if(!data) {
+               $scope.transmission_result = false;
+               return;
+            }
+
+            for(id_degustation in data) {
+                var revision = data[id_degustation];
+                var degustation = $scope.degustations[id_degustation];
+                degustation.transmission_needed = false;
+                if(!revision && $scope.transmission_result) {
+                    $scope.transmission_result = false;
+                    degustation.transmission_collision = true;
+                } else {
+                    degustation._rev = revision;
+                }
+            }
+            
+            localSave();
         });
-        $scope.testState();
     }
 
     var intervalState = setInterval(function() {
         $scope.testState();
     }, 200000);
 
-    $scope.affectation = localStorageService.get(local_storage_name);
-   
-    if(!$scope.affectation) {
-        $http.get($rootScope.url_json)
-        .success(function(data){
-            $scope.affectation = data;
-        });
+    setInterval(function() {
+        $scope.transmettre(true);
+    }, 30000);
+
+    setInterval(function() {
+        $scope.loadOrUpdateDegustations();
+    }, 60000);
+
+    if($scope.reload) {
+        localDelete();
     }
+
+    $scope.degustations = localStorageService.get(local_storage_name);
+
+    if($scope.degustations) {
+        updatePrelevements();
+        $scope.loaded = true;
+    } else {
+        $scope.degustations = {};    
+    }
+
+    $scope.loadOrUpdateDegustations();
 
     $scope.showAjout = function(commission) {
         $scope.commission = commission;
@@ -223,11 +519,20 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.terminer = function() {
+        $scope.precedent();
+    }
+
+    $scope.precedent = function() {
         $scope.active = 'recapitulatif';
     }
 
+
     $scope.remove = function(prelevement) {
         prelevement.commission = null;
+        prelevement.anonymat_degustation = null;
+        calculAnonymatDegustation();
+        $scope.degustations[prelevement.degustation_id].transmission_needed = true;
+        $scope.transmettre(true);
         localSave();
     }
 
@@ -241,7 +546,11 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.validation = function(prelevement, commission) {
         prelevement.commission = commission;
+        prelevement.anonymat_degustation = $scope.anonymat_degustation;
+        $scope.degustations[prelevement.degustation_id].transmission_needed = true;
+        $scope.anonymat_degustation++;
         localSave();
+        $scope.transmettre(true);
         $scope.showAjout(commission);
     }
 
@@ -253,17 +562,103 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.transmission = false;
     $scope.transmission_progress = false;
     $scope.state = true;
-    
+    $scope.prelevements = [];
+    $scope.loaded = false;
+    $scope.notes_key = Object.keys($scope.notes);
+    $scope.ajout_defaut = {
+        query: null,
+        prelevement: null,
+        note: null
+    }
+
     var local_storage_name = $rootScope.url_json;
 
     var localSave = function() {
-        localStorageService.set(local_storage_name, angular.toJson($scope.degustation));
+        localStorageService.set(local_storage_name, angular.toJson($scope.degustations));
     }
 
-    var remoteSave = function(callBack) {
-        $http.post($rootScope.url_json, angular.toJson($scope.degustation))
+    var localDelete = function() {
+        localStorageService.remove(local_storage_name);
+    }
+
+    var getDegustationsToTransmettre = function() {
+        var degustationsToTransmettre = [];
+
+        for(degustation_key in $scope.degustations) {
+            var degustation = $scope.degustations[degustation_key];
+            if(degustation.transmission_needed) {
+               degustationsToTransmettre.push(degustation); 
+            }
+        }
+
+        return degustationsToTransmettre;
+    }
+
+    $scope.loadOrUpdateDegustations = function() {
+        $http.get($rootScope.url_json)
         .success(function(data){
-            callBack(data.success);
+            var modified = false;
+            for(key_data in data) {
+                var degustationRemote = data[key_data];
+                var degustation = $scope.degustations[degustationRemote._id];
+                if(degustation && degustationRemote._rev == degustation._rev) {
+
+                } else if(degustation && degustation.transmission_needed) {
+                
+                } else if(degustation && degustation.transmission_collision) {
+
+                } else if(degustation && degustationRemote._rev != degustation._rev) {
+                    $scope.degustations[degustationRemote._id] = degustationRemote;
+                    updateDegustationFromLoad(degustationRemote);
+                    modified = true;
+                } else {
+                    $scope.degustations[degustationRemote._id] = degustationRemote;
+                    updateDegustationFromLoad(degustationRemote);
+                    modified = true;
+                }
+            }
+            $scope.loaded = true;
+            localSave();
+            if(modified) {
+                updatePrelevements();
+            }
+        });
+    }
+
+    var updateDegustationFromLoad = function(degustation) {
+        for(prelevement_key in degustation.prelevements) {
+            var prelevement = degustation.prelevements[prelevement_key];
+            if($scope.isNonSaisie(prelevement)) {
+                prelevement.termine = false;
+            } else {
+                $scope.isValide(prelevement);
+            }
+        }
+    }
+
+    var updatePrelevements = function() {
+        $scope.prelevements = [];
+        for(degustation_key in $scope.degustations) {
+            var degustation = $scope.degustations[degustation_key];
+            for(prelevement_key in degustation.prelevements) {
+                var prelevement = degustation.prelevements[prelevement_key];
+                if(prelevement.commission == $scope.commission) {
+                    prelevement.degustation_id = degustation._id;
+                    $scope.prelevements.push($scope.degustations[degustation_key].prelevements[prelevement_key]);
+                }
+            }
+        } 
+    }
+
+    var remoteSave = function(degustations, callBack) {
+        if(degustations.length == 0) {
+            callBack(true);
+            return;
+        }
+
+        $http.post($rootScope.url_json, angular.toJson(degustations))
+        .success(function(data){
+            callBack(data);
         }).error(function(data) {
             callBack(false);
         });
@@ -275,29 +670,65 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         });
     }
 
-    $scope.transmettre = function() {
+
+    $scope.transmettre = function(auto) {
+        if($scope.transmission_progress) {
+
+            return;
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        remoteSave(function(success) {
-            $scope.transmission = true;
-            $scope.transmission_result = success;
+        $scope.transmission_result = true;
+        remoteSave(getDegustationsToTransmettre(), function(data) {
+            if(!auto) {
+                $scope.transmission = true;
+            }
             $scope.transmission_progress = false;
+
+            if(!data) {
+               $scope.transmission_result = false;
+               return;
+            }
+
+            for(id_degustation in data) {
+                var revision = data[id_degustation];
+                var degustation = $scope.degustations[id_degustation];
+                degustation.transmission_needed = false;
+                if(!revision && $scope.transmission_result) {
+                    $scope.transmission_result = false;
+                    degustation.transmission_collision = true;
+                } else {
+                    degustation._rev = revision;
+                }
+            }
+            
+            localSave();
         });
-        $scope.testState();
     }
 
-    var intervalState = setInterval(function() {
-        $scope.testState();
-    }, 200000);
+    setInterval(function() {
+        $scope.transmettre(true);
+    }, 30000);
 
-    $scope.degustation = localStorageService.get(local_storage_name);
-   
-    if(!$scope.degustation) {
-        $http.get($rootScope.url_json)
-        .success(function(data){
-            $scope.degustation = data;
-        });
+    setInterval(function() {
+        $scope.loadOrUpdateDegustations();
+    }, 60000);
+
+    if($scope.reload) {
+        localDelete();
     }
+
+    $scope.degustations = localStorageService.get(local_storage_name);
+
+    if($scope.degustations) {
+        updatePrelevements();
+        $scope.loaded = true;
+    } else {
+        $scope.degustations = {};    
+    }
+
+    $scope.loadOrUpdateDegustations();
 
     $scope.precedent = function() {
         $scope.showRecap();
@@ -315,7 +746,50 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         }
     }
 
-    $scope.valider = function(prelevement) {
+    $scope.showAjoutDefaut = function(prelevement, note_key) {
+        $scope.active = 'ajout_defaut';
+        $scope.ajout_defaut.query = "";
+        $scope.ajout_defaut.prelevement = prelevement;
+        $scope.ajout_defaut.note_key = note_key;
+    }
+
+    $scope.removeDefaut = function(prelevement, note_key, defaut) {
+
+        if (!confirm("Etes vous sûr de vouloir supprimer ce défaut") == true) {
+            
+            return;
+        }
+
+        var indexDefaut = prelevement.notes[note_key].defauts.indexOf(defaut);
+
+        if(indexDefaut === -1) {
+            return;
+        }
+
+        prelevement.notes[note_key].defauts.splice(indexDefaut, 1);
+        localSave();
+    }
+
+    $scope.ajouterDefaut = function(prelevement, note_key, defaut) {
+        if(prelevement.notes[note_key].defauts.indexOf(defaut) === -1) {
+            prelevement.notes[note_key].defauts.push(defaut);
+        }
+        $scope.showCepage(prelevement);
+        localSave();
+    }
+
+    $scope.isNonSaisie = function(prelevement) {
+        for(key_note in prelevement.notes) {
+            var note = prelevement.notes[key_note];
+            if(note.note !== null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    $scope.isValide = function(prelevement) {
         prelevement.erreurs = false;
         for(key_note in prelevement.notes) {
             var note = prelevement.notes[key_note];
@@ -327,12 +801,24 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         }
 
         if(prelevement.erreurs) {
-            localSave();
+            
             return;
         }
 
         prelevement.termine = true;
+    }
+
+    $scope.valider = function(prelevement) {
+        $scope.isValide(prelevement);
+
+        if(prelevement.erreurs) {
+            localSave();
+            return;
+        }
+        
+        $scope.degustations[prelevement.degustation_id].transmission_needed = true;
         localSave();
+        $scope.transmettre(true);
         $scope.showRecap();
     }
 
