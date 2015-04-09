@@ -179,7 +179,7 @@ class Tournee extends BaseTournee {
     public function getOperateursPrelevement() {
         $operateurs = array();
 
-        foreach($this->operateur as $operateur) {
+        foreach($this->operateurs as $operateur) {
             if(!count($operateur->getLotsPrelevement())) {
                 continue;                
             }
@@ -191,17 +191,17 @@ class Tournee extends BaseTournee {
     }
 
     public function getOperateursReporte() {
-        $operateurs = array();
+        $degustations = array();
 
-        foreach($this->operateurs as $operateur) {
-            if($operateur->isPrelever()) {
+        foreach($this->getDegustationsObject() as $degustation) {
+            if($degustation->motif_non_prelevement != DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
                 continue;
             }
 
-            $operateurs[$operateur->getKey()] = $operateur;
+            $degustations[$degustation->getIdentifiant()] = $degustation;
         }
 
-        return $operateurs;
+        return $degustations;
     }
     
     public function getOperateursDegustes() {
