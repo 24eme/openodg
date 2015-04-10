@@ -691,9 +691,9 @@ class degustationActions extends sfActions {
         $this->files = array();
         foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
             foreach ($courrier->prelevements as $prelevement) {
-                // if($prelevement->courrier_envoye) {
-                //     continue;
-                // }
+                if($prelevement->courrier_envoye) {
+                     continue;
+                }
                 $document = new ExportDegustationPDF($courrier->operateur, $prelevement, $this->getRequestParameter('output', 'pdf'));
                 $document->setPartialFunction(array($this, 'getPartial'));
                 $document->generate();

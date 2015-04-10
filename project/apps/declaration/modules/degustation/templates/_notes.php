@@ -3,6 +3,10 @@
 <?php use_helper('Degustation') ?>
 
 <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->getNotes()); ?>&nbsp;vins dégustés</div>
+
+<?php if($tournee->statut == TourneeClient::STATUT_TERMINE): ?>
+<a class="pull-right btn btn-link" href="<?php echo url_for("degustation_courriers_papier", $tournee) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Courriers papiers à envoyer</a>
+<?php endif; ?>
     </h2>
 
 <?php $notes = $tournee->getNotes(); ?>
