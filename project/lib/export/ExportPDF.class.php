@@ -35,6 +35,11 @@ abstract class ExportPDF {
         return ($this->printable_document->isCached());
     }
 
+    public function getFile() {
+
+        return $this->printable_document->getFile();
+    }
+
     public function removeCache() {
         
         return $this->printable_document->removeCache();

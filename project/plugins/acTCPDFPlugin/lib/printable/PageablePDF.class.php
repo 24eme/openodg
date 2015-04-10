@@ -75,6 +75,11 @@ class PageablePDF extends PageableOutput {
         return true;
     }
 
+    public function getFile() {
+
+        return $this->pdf_file;
+    }
+
     public function addHeaders($response) {
         $response->setHttpHeader('Content-Type', 'application/pdf');
         $response->setHttpHeader('Content-disposition', 'attachment; filename="' . basename($this->filename) . '"');

@@ -686,13 +686,37 @@ class degustationActions extends sfActions {
     }
 
     public function executeCourriersPapier(sfWebRequest $request) {
-        $tournee = $this->getRoute()->getTournee();         
+        set_time_limit(180);
+        $tournee = $this->getRoute()->getTournee();
+        $this->files = array();
         foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
             foreach ($courrier->prelevements as $prelevement) {
-                //$prelevement->add('courrier_envoye', date('Y-m-d'));
+                // if($prelevement->courrier_envoye) {
+                //     continue;
+                // }
+                $document = new ExportDegustationPDF($courrier->operateur, $prelevement, $this->getRequestParameter('output', 'pdf'));
+                $document->setPartialFunction(array($this, 'getPartial'));
+                $document->generate();
+                $this->files[] = $document->getFile();
             }
         }
 
+        if(!count($this->files)) {
+            return $this->redirect('degustation_visualisation', $tournee);
+        }
+
+        $file_cache = sfConfig::get('sf_cache_dir')."/pdf/degustation_courriers_papier_" . str_replace("-", "", $tournee->date) . ".pdf";
+
+        exec("pdftk ". implode(" ", $this->files) ." cat output ".$file_cache);
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+        $this->getResponse()->setHttpHeader('Content-disposition', 'attachment; filename="courriers_papier_' . str_replace("-", "", $tournee->date) . '.pdf"');
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText(file_get_contents($file_cache));
     }
 
     public function executeCourrierPrelevement(sfWebRequest $request) {
