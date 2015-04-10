@@ -19,9 +19,9 @@ function getTypeCourrier($prelevement) {
     }
     $type_courrier_libelle = DegustationClient::$types_courrier_libelle[$prelevement->type_courrier];
     if ($prelevement->type_courrier == DegustationClient::COURRIER_TYPE_VISITE) {
-        $type_courrier_libelle .= ' le ' . ucfirst(format_date($prelevement->visite_date, "P", "fr_FR")) . ' à ' . $prelevement->visite_heure;
+        $type_courrier_libelle .= '<br /><small>' . ucfirst(format_date($prelevement->visite_date, "P", "fr_FR")) . ' à ' . $prelevement->visite_heure.'</small>';
     }
-    return $type_courrier_libelle;
+    return "<span class='glyphicon glyphicon-file'></span>&nbsp;".$type_courrier_libelle;
 }
 
 function getLibelleTypeNote($type_note) {

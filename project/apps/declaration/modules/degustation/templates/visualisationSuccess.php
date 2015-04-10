@@ -20,13 +20,11 @@
             <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation') ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
     <div class="col-xs-8 text-right">
-        <?php if (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS)) && $tournee->hasAllTypeCourrier()): ?>
+        <?php if (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS))): ?>
             <div class="btn-group">
             <a class="btn btn-default btn-default-step btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Modifier les types courriers</a>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_generation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Envoyer les courriers</a>
             </div>
-        <?php elseif (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS))): ?>
-            <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Choisir les types courriers</a>
         <?php elseif ($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $tournee->isDegustationTerminee()): ?>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_lever_anonymat', $tournee) ?>"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Lever l'anonymat</a>
         <?php elseif ($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS || ($tournee->statut == TourneeClient::STATUT_AFFECTATION && $tournee->isAffectationTerminee())): ?>
