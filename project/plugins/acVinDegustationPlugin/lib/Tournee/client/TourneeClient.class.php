@@ -9,6 +9,7 @@ class TourneeClient extends acCouchdbClient {
     const STATUT_TOURNEES = 'TOURNEES';
     const STATUT_AFFECTATION = 'AFFECTATION';
     const STATUT_DEGUSTATIONS = 'DEGUSTATIONS';
+    const STATUT_COURRIERS = 'COURRIERS';
     const STATUT_TERMINE = 'TERMINE';
     
     public static function getInstance()

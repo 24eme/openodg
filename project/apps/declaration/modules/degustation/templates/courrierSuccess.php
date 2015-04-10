@@ -5,8 +5,16 @@
     <h2><?php echo $tournee->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($tournee); ?></span>&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->operateurs) ?>&nbsp;Opérateurs</div></h2>
 </div>
 
-<?php if ($tournee->date < date('Y-m-d')): ?>
-    <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->getNotes()); ?>&nbsp;vins dégustés</div></h2> 
-    <?php include_partial('degustation/notes', array('tournee' => $tournee, 'form' => $form)); ?>
-<?php endif; ?>
-
+<form action="<?php echo url_for('degustation_courriers', $tournee); ?>" method="post" class="form-horizontal">
+        <?php echo $form->renderHiddenFields(); ?>
+        <?php echo $form->renderGlobalErrors(); ?>
+<?php include_partial('degustation/notes', array('tournee' => $tournee, 'form' => $form)); ?>
+<div class="row row-margin">
+    <div class="col-xs-6 text-left">
+            <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation_visualisation', $tournee) ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+    </div>             
+    <div class="col-xs-6 text-right">
+        <button type="submit" class="pull-right btn btn-default btn-md btn-upper">Enregistrer type courrier<span class="eleganticon arrow_carrot-right"></span></button>
+    </div>
+</div>
+</form>
