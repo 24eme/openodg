@@ -12,8 +12,8 @@
 <br/>
 <table border="0">
     <tr>
-        <td style="width: 304px; font-size: 7pt;"><?php echo $adresse_ava['raison_sociale']; ?><br/><?php echo $adresse_ava['adresse']; ?><br/><?php echo $adresse_ava['cp_ville']; ?><br/><?php echo $adresse_ava['telephone']; ?><br/>
-    <?php echo $adresse_ava['email']; ?>
+        <td style="width: 304px; font-size: 7pt;"><!--<?php echo $adresse_ava['raison_sociale']; ?><br/><?php echo $adresse_ava['adresse']; ?><br/><?php echo $adresse_ava['cp_ville']; ?><br/><?php echo $adresse_ava['telephone']; ?><br/>
+    <?php echo $adresse_ava['email']; ?>-->
         </td>
         <td style="width: 324px; font-weight: bold;"><?php echo $degustation->raison_sociale ?><br/>
             <?php echo $degustation->adresse ?><br/>
@@ -51,8 +51,8 @@ Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' mi
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 250px; font-weight: bold;">&nbsp;Produit</th>    
-        <th class="th" style="text-align: center; width: 70px; font-weight: bold;">Lot N°</th>  
-        <th class="th" style="text-align: center; width: 150px; font-weight: bold;">Cuve</th>  
+        <th class="th" style="text-align: center; width: 60px; font-weight: bold;">Lot N°</th>  
+        <th class="th" style="text-align: center; width: 160px; font-weight: bold;">Cuve</th>  
         <th class="th" style="text-align: center; width: 150px; font-weight: bold;">N° de Prélèvement</th>
     </tr>
     <tr>

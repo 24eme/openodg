@@ -34,11 +34,11 @@ class ExportDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return "Association des viticulteurs d'Alsace";
+        return "AVA - Organisme de Défense et de Gestion des Appellations";
     }
 
     protected function getHeaderSubtitle() {
-        return "Le syndicat général de défense des Appellations";
+        return "Maison des Vins d'Alsace - 12, Avenue de la Foire aux Vins\nB.P. 91225 - 68012 COLMAR Cedex\nTéléphone : 03 89 20 16 50 - Fax : 03 89 20 16 60 - Email : info@ava-aoc.fr";
     }
 
     public function getFileName($with_rev = false) {
