@@ -22,7 +22,7 @@
     <div class="col-xs-8 text-right">
         <?php if (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS))): ?>
             <div class="btn-group">
-            <a class="btn btn-default btn-default-step btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Modifier les types courriers</a>
+            <a class="btn btn-default btn-default-step btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Affetcter les types courriers</a>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_generation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Envoyer les courriers</a>
             </div>
         <?php elseif ($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $tournee->isDegustationTerminee()): ?>

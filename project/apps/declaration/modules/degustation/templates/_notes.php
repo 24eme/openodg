@@ -56,7 +56,7 @@
                         <i class="text-muted"><?php echo $note->prelevement->appreciations; ?></i>
                     </td> 
                     <td class="text-center">
-                        <?php if ($hasForm): ?>
+                        <?php if ($hasForm && isset($form[$note->operateur->cvi.$note->prelevement->getHashForKey()])): ?>
                             <div class="type_courrier_for_visite" id="<?php echo $note->operateur->cvi.$note->prelevement->getHashForKey(); ?>">
                                
                                     <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->renderError(); ?>

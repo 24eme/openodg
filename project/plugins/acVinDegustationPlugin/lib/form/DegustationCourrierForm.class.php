@@ -12,6 +12,7 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
             if($note->prelevement->courrier_envoye) {
                 continue;
             }
+
             $keyForNote = $this->constructKeyForNote($note);
 
             $this->setWidget($keyForNote, new sfWidgetFormChoice(array('choices' => $this->getTypesCourrier())));
@@ -77,7 +78,7 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
                     $degustation->get($realKeyPrelevement)->add('visite_date', null);
                     $degustation->get($realKeyPrelevement)->add('visite_heure', null);
                 }
-                //$degustation->get($realKeyPrelevement)->add('courrier_envoye', false);
+
                 $degustation->save();
             }
         }

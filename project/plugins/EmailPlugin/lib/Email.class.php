@@ -223,11 +223,11 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($courrier->prelevements as $prelevement) {
-            if (!$courrier->operateur->email) {
-               continue;
+            if(!is_null($prelevement->courrier_envoye)) {
+                continue;
             }
 
-            if($prelevement->exist('courrier_envoye') && $prelevement->courrier_envoye) {
+            if (!$courrier->operateur->email) {
                 continue;
             }
 

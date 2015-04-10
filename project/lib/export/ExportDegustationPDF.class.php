@@ -34,11 +34,15 @@ class ExportDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return "AVA - Organisme de Défense et de Gestion des Appellations";
+        $ava_contact = sfConfig::get('app_degustation_courrier_adresse');
+
+        return $ava_contact['raison_sociale'];
     }
 
     protected function getHeaderSubtitle() {
-        return "Maison des Vins d'Alsace - 12, Avenue de la Foire aux Vins\nB.P. 91225 - 68012 COLMAR Cedex\nTéléphone : 03 89 20 16 50 - Fax : 03 89 20 16 60 - Email : info@ava-aoc.fr";
+        $ava_contact = sfConfig::get('app_degustation_courrier_adresse');
+
+        return $ava_contact['adresse']."\n".$ava_contact['cp_ville']."\n".$ava_contact['telephone']." - ".$ava_contact['email'];
     }
 
     public function getFileName($with_rev = false) {
