@@ -444,12 +444,16 @@ class Tournee extends BaseTournee {
            
             foreach ($operateurDeguste->prelevements as $prelevement) {
                 if($prelevement->anonymat_degustation){
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation] = new stdClass();
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
+                    $key = sprintf("%03d-%s", $prelevement->anonymat_degustation, $operateurDeguste->getIdentifiant());
+                    $notes[$key] = new stdClass();
+                    $notes[$key]->operateur = $operateurDeguste;
+                    $notes[$key]->prelevement = $prelevement;
                 }
             }
         }
+
+        ksort($notes);
+
         return $notes;
     }
 

@@ -91,4 +91,10 @@ class DegustationClient extends acCouchdbClient {
 
         return $degustation;
     }
+
+    public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
+
+        return $operateur_a->date_demande > $operateur_b->date_demande;
+    }
+
 }
