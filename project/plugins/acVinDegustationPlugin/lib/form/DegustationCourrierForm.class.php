@@ -26,6 +26,11 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
     protected function updateDefaults() {
         foreach ($this->getObject()->getNotes() as $note) {
             $keyForNote = $this->constructKeyForNote($note);
+
+            if((!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) && !$note->prelevement->hasMauvaiseNote()) {
+                $note->prelevement->add('type_courrier', DegustationClient::COURRIER_TYPE_OK);
+            }
+
             if ($note->prelevement->exist('type_courrier')) {
                 $this->setDefault($keyForNote, $note->prelevement->type_courrier);
             }

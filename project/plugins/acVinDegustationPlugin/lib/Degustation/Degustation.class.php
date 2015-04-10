@@ -48,18 +48,6 @@ class Degustation extends BaseDegustation {
         return $this->_get('appellation_libelle');
     }
 
-    public function isPrelever() {
-
-        foreach($this->prelevements as $prelevement) {
-            if($prelevement->cuve) {
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function isDeguste() {
           foreach($this->prelevements as $prelevement) {
             if(!is_null($prelevement->anonymat_degustation)) {

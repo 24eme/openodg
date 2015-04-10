@@ -179,7 +179,7 @@ class Tournee extends BaseTournee {
     public function getOperateursPrelevement() {
         $operateurs = array();
 
-        foreach($this->operateur as $operateur) {
+        foreach($this->operateurs as $operateur) {
             if(!count($operateur->getLotsPrelevement())) {
                 continue;                
             }
@@ -191,17 +191,17 @@ class Tournee extends BaseTournee {
     }
 
     public function getOperateursReporte() {
-        $operateurs = array();
+        $degustations = array();
 
-        foreach($this->operateurs as $operateur) {
-            if($operateur->isPrelever()) {
+        foreach($this->getDegustationsObject() as $degustation) {
+            if($degustation->motif_non_prelevement != DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
                 continue;
             }
 
-            $operateurs[$operateur->getKey()] = $operateur;
+            $degustations[$degustation->getIdentifiant()] = $degustation;
         }
 
-        return $operateurs;
+        return $degustations;
     }
     
     public function getOperateursDegustes() {
@@ -444,12 +444,16 @@ class Tournee extends BaseTournee {
            
             foreach ($operateurDeguste->prelevements as $prelevement) {
                 if($prelevement->anonymat_degustation){
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation] = new stdClass();
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
+                    $key = sprintf("%03d-%s", $prelevement->anonymat_degustation, $operateurDeguste->getIdentifiant());
+                    $notes[$key] = new stdClass();
+                    $notes[$key]->operateur = $operateurDeguste;
+                    $notes[$key]->prelevement = $prelevement;
                 }
             }
         }
+
+        ksort($notes);
+
         return $notes;
     }
 

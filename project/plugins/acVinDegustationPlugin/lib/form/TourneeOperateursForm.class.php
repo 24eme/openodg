@@ -26,7 +26,7 @@ class TourneeOperateursForm extends acCouchdbForm {
     public function configure() {
         $operateurs = $this->getDocument()->operateurs;
 
-        usort($operateurs, 'TourneeOperateursForm::sortOperateursByDatePrelevement');
+        usort($operateurs, 'DegustationClient::sortOperateursByDatePrelevement');
 
         foreach($operateurs as $operateur) {
             $choices = array();
@@ -41,11 +41,6 @@ class TourneeOperateursForm extends acCouchdbForm {
         }
 
         $this->widgetSchema->setNameFormat('tournee_operateurs[%s]');
-    }
-
-    public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
-
-        return $operateur_a->date_demande > $operateur_b->date_demande;
     }
 
     public function update() {

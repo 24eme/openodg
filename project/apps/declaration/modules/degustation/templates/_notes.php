@@ -11,20 +11,22 @@
     <?php endif; ?>
     <div class="row">    
         <div class="col-xs-12">        
-            <table class="table table-striped">
+            <table class="table table-striped table-condensed">
                 <tr>
-                    <th>N° Anon.</th>            
-                    <th>Opérateur</th> 
-                    <th>Libellé produit</th> 
-                    <th>Notes</th> 
-                    <th>Appreciation</th> 
-                    <th>Type courrier</th> 
-                    <th>Envoyé</th> 
+                    <th style="width: 0;">N°</th>            
+                    <th class="col-xs-3">Opérateur</th> 
+                    <th class="col-xs-2">Produit</th> 
+                    <th class="col-xs-4">Notes et Appreciation</th> 
+                    <th class="col-xs-2">Courrier</th> 
+                    <th style="width: 0;">Envoyé</th> 
                 </tr>
                 <?php foreach ($tournee->getNotes() as $note): ?>
                     <tr>
                         <td><?php echo $note->prelevement->anonymat_degustation; ?></td>
-                        <td><?php echo $note->operateur->raison_sociale; ?></td> 
+                        <td><?php echo $note->operateur->raison_sociale; ?><br />
+                        <small class="text-muted"><?php echo $note->operateur->cvi ?></small><br />
+                        <small class="text-muted"><?php echo $note->operateur->commune ?></small>
+                        </td> 
                         <td><?php echo $note->prelevement->libelle; ?></td> 
                         <td>
                             <ul style="margin: 0; padding: 0" >
@@ -39,18 +41,21 @@
                                     endforeach;
                                     ?>
                                     <li>
+                                        <span class="<?php echo ($noteQualifie->isMauvaiseNote()) ? "bg-danger text-danger" : ""; ?>">
                                         <?php
-                                        $class = (count($noteQualifie->defauts)) ? "text-danger" : "text-success";
-                                        echo DegustationClient::$note_type_libelles[$noteType] . ' : <strong class="pull-right ' . $class . ' ">' . $noteQualifie->note . '</strong>';
+                                        echo DegustationClient::$note_type_libelles[$noteType] . ' : <strong class="pull-right">' . $noteQualifie->note . '</strong>';
                                         if (count($noteQualifie->defauts)):
                                             echo "<br/><small class='text-muted'>" . $defautsStr . "</small>";
+                                        else:
+                                           echo "<br/><small class='text-muted'>-</small>"; 
                                         endif;
                                         ?> 
+                                        </span>
                                     </li>                                
                                 <?php endforeach; ?>
                             </ul>
+                            <i class="text-muted"><?php echo $note->prelevement->appreciations; ?></i>
                         </td> 
-                        <td><?php echo $note->prelevement->appreciations; ?></td> 
                         <td class="text-center">
                             <?php if ($hasForm): ?>
                                 <div class="type_courrier_for_visite" id="<?php echo $note->operateur->cvi.$note->prelevement->getHashForKey(); ?>">
