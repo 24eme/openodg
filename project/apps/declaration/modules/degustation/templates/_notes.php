@@ -13,7 +13,7 @@
         <div class="col-xs-12">        
             <table class="table table-striped table-condensed">
                 <tr>
-                    <th style="width: 0;">N° Anon.</th>            
+                    <th style="width: 0;">N°</th>            
                     <th class="col-xs-3">Opérateur</th> 
                     <th class="col-xs-2">Produit</th> 
                     <th class="col-xs-4">Notes et Appreciation</th> 
