@@ -8,6 +8,7 @@
  * @property string $_rev
  * @property string $type
  * @property string $appellation
+ * @property string $appellation_libelle
  * @property string $date_degustation
  * @property string $identifiant
  * @property string $drev
@@ -42,6 +43,8 @@
  * @method string setType()
  * @method string getAppellation()
  * @method string setAppellation()
+ * @method string getAppellationLibelle()
+ * @method string setAppellationLibelle()
  * @method string getDateDegustation()
  * @method string setDateDegustation()
  * @method string getIdentifiant()

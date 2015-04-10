@@ -121,6 +121,7 @@ Degustation:
                       fields:
                         '*':
                           type: collection
+                          class: DegustationNote
                           definition:
                             fields:
                               note: { }

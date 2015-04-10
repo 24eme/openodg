@@ -13,6 +13,10 @@
  * @property string $preleve
  * @property integer $commission
  * @property string $appreciations
+ * @property string $type_courrier
+ * @property string $visite_date
+ * @property string $visite_heure
+ * @property string $courrier_envoye
  * @property acCouchdbJson $notes
 
  * @method string getHashProduit()
@@ -33,6 +37,14 @@
  * @method integer setCommission()
  * @method string getAppreciations()
  * @method string setAppreciations()
+ * @method string getTypeCourrier()
+ * @method string setTypeCourrier()
+ * @method string getVisiteDate()
+ * @method string setVisiteDate()
+ * @method string getVisiteHeure()
+ * @method string setVisiteHeure()
+ * @method string getCourrierEnvoye()
+ * @method string setCourrierEnvoye()
  * @method acCouchdbJson getNotes()
  * @method acCouchdbJson setNotes()
  

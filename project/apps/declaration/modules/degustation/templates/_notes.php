@@ -38,13 +38,16 @@
                                     endforeach;
                                     ?>
                                     <li>
+                                        <span class="<?php echo ($noteQualifie->isMauvaiseNote()) ? "bg-danger text-danger" : ""; ?>">
                                         <?php
-                                        $class = (count($noteQualifie->defauts)) ? "text-danger" : "text-success";
-                                        echo DegustationClient::$note_type_libelles[$noteType] . ' : <strong class="pull-right ' . $class . ' ">' . $noteQualifie->note . '</strong>';
+                                        echo DegustationClient::$note_type_libelles[$noteType] . ' : <strong class="pull-right">' . $noteQualifie->note . '</strong>';
                                         if (count($noteQualifie->defauts)):
                                             echo "<br/><small class='text-muted'>" . $defautsStr . "</small>";
+                                        else:
+                                           echo "<br/><small class='text-muted'>-</small>"; 
                                         endif;
                                         ?> 
+                                        </span>
                                     </li>                                
                                 <?php endforeach; ?>
                             </ul>
