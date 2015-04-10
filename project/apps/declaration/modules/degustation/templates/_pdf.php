@@ -84,11 +84,13 @@ Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' mi
 
         </tr>
     <?php endforeach; ?>
+    <?php if($prelevement->appreciations): ?>
     <tr>
-            <td class="td" style="text-align:center; border-top: 1px solid #fff;"><?php echo tdStart() ?>&nbsp;Appréciation(s)</td>
-            <td class="td" style="text-align:center; border-top: 1px solid #fff;" colspan="3"><?php echo tdStart() ?>&nbsp;<?php if($prelevement->appreciations): ?><?php echo $prelevement->appreciations ?><?php else: ?><i><small>Aucune</small></i><?php endif; ?></td>
+        <td class="td" style="text-align:center; border-top: 1px solid #fff;"><?php echo tdStart() ?>&nbsp;Appréciation(s)</td>
+        <td class="td" style="text-align:center; border-top: 1px solid #fff;" colspan="3"><?php echo tdStart() ?>&nbsp;<?php if($prelevement->appreciations): ?><?php echo $prelevement->appreciations ?><?php else: ?><i><small>Aucune</small></i><?php endif; ?></td>
 
-        </tr>
+    </tr>
+    <?php endif; ?>
 </table>
 <p></p>
 <?php echo getExplicationsPDF($prelevement); ?>

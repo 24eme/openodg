@@ -23,7 +23,10 @@
                 <?php foreach ($tournee->getNotes() as $note): ?>
                     <tr>
                         <td><?php echo $note->prelevement->anonymat_degustation; ?></td>
-                        <td><?php echo $note->operateur->raison_sociale; ?></td> 
+                        <td><?php echo $note->operateur->raison_sociale; ?><br />
+                        <small class="text-muted"><?php echo $note->operateur->cvi ?></small><br />
+                        <small class="text-muted"><?php echo $note->operateur->commune ?></small>
+                        </td> 
                         <td><?php echo $note->prelevement->libelle; ?></td> 
                         <td>
                             <ul style="margin: 0; padding: 0" >
