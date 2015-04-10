@@ -228,11 +228,11 @@ class Email {
             $body = $this->getBodyFromPartial('send_degustation_note_degustateur', array('degustation' => $degustation));
             $to = "";
             if (!$courrier->operateur->email) {
-               return;
+               continue;
             }
 
             if($prelevement->exist('courrier_envoye') && $prelevement->courrier_envoye) {
-                return;
+                continue;
             }
 
             $message = Swift_Message::newInstance()

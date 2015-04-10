@@ -682,6 +682,8 @@ class degustationActions extends sfActions {
         $tournee->statut = TourneeClient::STATUT_TERMINE;
         $tournee->save();
 
+        $this->getUser()->setFlash("notice", "Les courriers ont bien été envoyés par mail. Vous pouvez télécharger les courriers a envoyer par voie postale.");
+
         return $this->redirect('degustation_visualisation', $tournee);
     }
 
@@ -691,9 +693,9 @@ class degustationActions extends sfActions {
         $this->files = array();
         foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
             foreach ($courrier->prelevements as $prelevement) {
-                // if($prelevement->courrier_envoye) {
-                //     continue;
-                // }
+                if($prelevement->courrier_envoye) {
+                     continue;
+                }
                 $document = new ExportDegustationPDF($courrier->operateur, $prelevement, $this->getRequestParameter('output', 'pdf'));
                 $document->setPartialFunction(array($this, 'getPartial'));
                 $document->generate();
@@ -702,6 +704,8 @@ class degustationActions extends sfActions {
         }
 
         if(!count($this->files)) {
+            $this->getUser()->setFlash("notice", "Aucun courrier n'est à envoyer par voie postale.");
+
             return $this->redirect('degustation_visualisation', $tournee);
         }
 
