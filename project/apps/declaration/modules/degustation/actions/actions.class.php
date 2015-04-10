@@ -707,7 +707,7 @@ class degustationActions extends sfActions {
 
         $file_cache = sfConfig::get('sf_cache_dir')."/pdf/degustation_courriers_papier_" . str_replace("-", "", $tournee->date) . ".pdf";
 
-        exec("pdftk ". implode(" ", $this->files) ." cat output ".$file_cache);
+        shell_exec("pdftk ". implode(" ", $this->files) ." cat output ".$file_cache);
 
         $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
         $this->getResponse()->setHttpHeader('Content-disposition', 'attachment; filename="courriers_papier_' . str_replace("-", "", $tournee->date) . '.pdf"');
