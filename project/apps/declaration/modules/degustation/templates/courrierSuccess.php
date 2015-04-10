@@ -14,7 +14,7 @@
             <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation_visualisation', $tournee) ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>             
     <div class="col-xs-6 text-right">
-        <button type="submit" class="pull-right btn btn-default btn-md btn-upper">Enregistrer type courrier<span class="eleganticon arrow_carrot-right"></span></button>
+        <button type="submit" class="pull-right btn btn-default btn-lg btn-upper">Valider</button>
     </div>
 </div>
 </form>

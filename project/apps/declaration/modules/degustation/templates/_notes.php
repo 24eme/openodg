@@ -4,10 +4,8 @@
 
 <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->getNotes()); ?>&nbsp;vins dégustés</div>
 
-<?php if($tournee->statut == TourneeClient::STATUT_TERMINE): ?>
-<a class="pull-right btn btn-link" href="<?php echo url_for("degustation_courriers_papier", $tournee) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Courriers postals à envoyer</a>
-<?php endif; ?>
-    </h2>
+<a class="pull-right btn btn-link" href="<?php echo url_for("degustation_courriers_papier", $tournee) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Courriers non envoyés par mail</a>
+</h2>
 
 <?php $notes = $tournee->getNotes(); ?>
 <?php $hasForm = isset($form) && $form; ?>
@@ -15,15 +13,15 @@
     <div class="col-xs-12">        
         <table class="table table-striped table-condensed">
             <tr>
-                <th style="col-xs-1">N°</th>            
-                <th class="col-xs-3">Opérateur</th> 
+                <th style="width: 0">N°</th>            
+                <th class="col-xs-4">Opérateur</th> 
                 <th class="col-xs-2">Produit</th> 
                 <th class="col-xs-4">Notes et Appreciation</th> 
                 <th class="col-xs-2">Courrier</th> 
             </tr>
             <?php foreach ($tournee->getNotes() as $note): ?>
                 <tr>
-                    <td><?php echo $note->prelevement->anonymat_degustation; ?></td>
+                    <td><?php echo $note->prelevement->anonymat_degustation; ?><?php if($note->prelevement->courrier_envoye): ?><br /><span class="glyphicon glyphicon-send"></span><?php endif; ?></td>
                     <td><?php echo $note->operateur->raison_sociale; ?><br />
                     <small class="text-muted"><?php echo $note->operateur->cvi ?></small><br />
                     <small class="text-muted"><?php echo $note->operateur->commune ?></small>
@@ -58,7 +56,7 @@
                         <i class="text-muted"><?php echo $note->prelevement->appreciations; ?></i>
                     </td> 
                     <td class="text-center">
-                        <?php if ($hasForm): ?>
+                        <?php if ($hasForm && isset($form[$note->operateur->cvi.$note->prelevement->getHashForKey()])): ?>
                             <div class="type_courrier_for_visite" id="<?php echo $note->operateur->cvi.$note->prelevement->getHashForKey(); ?>">
                                
                                     <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->renderError(); ?>

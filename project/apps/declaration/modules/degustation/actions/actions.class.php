@@ -679,10 +679,12 @@ class degustationActions extends sfActions {
             Email::getInstance()->sendDegustationNoteCourrier($courrier);   
         }
 
-        $tournee->statut = TourneeClient::STATUT_TERMINE;
-        $tournee->save();
+        if($tournee->hasAllTypeCourrier()) {
+            $tournee->statut = TourneeClient::STATUT_TERMINE;
+            $tournee->save();
+        }
 
-        $this->getUser()->setFlash("notice", "Les courriers ont bien été envoyés par mail. Vous pouvez télécharger les courriers a envoyer par voie postale.");
+        $this->getUser()->setFlash("notice", "Les courriers ont bien été envoyés par mail. Vous pouvez télécharger les courriers à envoyer par voie postale.");
 
         return $this->redirect('degustation_visualisation', $tournee);
     }
@@ -694,7 +696,7 @@ class degustationActions extends sfActions {
         foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
             foreach ($courrier->prelevements as $prelevement) {
                 if($prelevement->courrier_envoye) {
-                     continue;
+                    continue;
                 }
                 $document = new ExportDegustationPDF($courrier->operateur, $prelevement, $this->getRequestParameter('output', 'pdf'));
                 $document->setPartialFunction(array($this, 'getPartial'));

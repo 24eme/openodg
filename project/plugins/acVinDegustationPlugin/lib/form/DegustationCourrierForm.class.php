@@ -9,6 +9,10 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
 
     public function configure() {
         foreach ($this->getObject()->getNotes() as $note) {
+            if($note->prelevement->courrier_envoye) {
+                continue;
+            }
+
             $keyForNote = $this->constructKeyForNote($note);
 
             $this->setWidget($keyForNote, new sfWidgetFormChoice(array('choices' => $this->getTypesCourrier())));
@@ -25,6 +29,9 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
 
     protected function updateDefaults() {
         foreach ($this->getObject()->getNotes() as $note) {
+            if($note->prelevement->courrier_envoye) {
+                continue;
+            }
             $keyForNote = $this->constructKeyForNote($note);
 
             if((!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) && !$note->prelevement->hasMauvaiseNote()) {
@@ -71,7 +78,7 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
                     $degustation->get($realKeyPrelevement)->add('visite_date', null);
                     $degustation->get($realKeyPrelevement)->add('visite_heure', null);
                 }
-                $degustation->get($realKeyPrelevement)->add('courrier_envoye', false);
+
                 $degustation->save();
             }
         }

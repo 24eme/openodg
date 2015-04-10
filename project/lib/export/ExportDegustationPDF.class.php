@@ -34,11 +34,15 @@ class ExportDegustationPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return "Association des viticulteurs d'Alsace";
+        $ava_contact = sfConfig::get('app_degustation_courrier_adresse');
+
+        return $ava_contact['raison_sociale'];
     }
 
     protected function getHeaderSubtitle() {
-        return "Le syndicat général de défense des Appellations";
+        $ava_contact = sfConfig::get('app_degustation_courrier_adresse');
+
+        return $ava_contact['adresse']."\n".$ava_contact['cp_ville']."\n".$ava_contact['telephone']." - ".$ava_contact['email'];
     }
 
     public function getFileName($with_rev = false) {
