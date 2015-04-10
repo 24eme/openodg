@@ -682,6 +682,8 @@ class degustationActions extends sfActions {
         $tournee->statut = TourneeClient::STATUT_TERMINE;
         $tournee->save();
 
+        $this->getUser()->setFlash("Les courriers ont bien été envoyés par mail. Vous pouvez télécharger les courriers a envoyer par voie postale.");
+
         return $this->redirect('degustation_visualisation', $tournee);
     }
 
@@ -702,6 +704,8 @@ class degustationActions extends sfActions {
         }
 
         if(!count($this->files)) {
+            $this->getUser()->setFlash("Aucun courrier ne sont à envoyer par voie postale.");
+
             return $this->redirect('degustation_visualisation', $tournee);
         }
 
