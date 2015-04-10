@@ -1,9 +1,9 @@
 <?php echo use_helper("Date"); ?>
 
 <ul class="nav nav-tabs">
-    <?php foreach($lists as $list): ?>
-    <li role="presentation" <?php if ($list['type'] == $type && $list['campagne'] == $campagne): ?>class="active"<?php endif ?>>
-        <a href="<?php echo url_for('admin', array("doc_type" => $list['type'], 'doc_campagne' => $list['campagne'])) ?>"><?php echo $list['type'] ?> <?php echo  $list['campagne'] ?>
+    <?php foreach($lists as $key_list => $list): ?>
+    <li role="presentation" <?php if ($key_list == $current_key_list): ?>class="active"<?php endif ?>>
+        <a href="<?php echo url_for('admin', array("docs" => $key_list)) ?>"><?php echo $key_list ?><br />
             &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $list['stats']['global']['nb_teledeclares'] ?>
             &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['global']['nb_papiers'] ?>
             <?php if($list['stats']['global']['nb_can_be_validate']): ?>
@@ -14,14 +14,14 @@
 </ul>
 
 <ul class="nav nav-pills">
-    <?php foreach ($lists[$type.$campagne]["statuts"] as $key => $list): ?>
-        <li <?php if ($key == $statut): ?>class="active"<?php endif; ?>><a href="<?php echo url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $key)) ?>"><?php echo $statuts_libelle[$key] ?>
-            &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $lists[$type.$campagne]['stats'][$key]['nb_teledeclares'] ?>
-            <?php if($lists[$type.$campagne]['stats'][$key]['nb_papiers']): ?>
-            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $lists[$type.$campagne]['stats'][$key]['nb_papiers'] ?>
+    <?php foreach ($lists[$current_key_list]["statuts"] as $key => $list): ?>
+        <li <?php if ($key == $statut): ?>class="active"<?php endif; ?>><a href="<?php echo url_for('admin', array("docs" => $current_key_list, 'doc_statut' => $key)) ?>"><?php echo $statuts_libelle[$key] ?>
+            &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $lists[$current_key_list]['stats'][$key]['nb_teledeclares'] ?>
+            <?php if($lists[$current_key_list]['stats'][$key]['nb_papiers']): ?>
+            &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $lists[$current_key_list]['stats'][$key]['nb_papiers'] ?>
             <?php endif; ?>
-            <?php if($lists[$type.$campagne]['stats'][$key]['nb_can_be_validate']): ?>
-            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $lists[$type.$campagne]['stats'][$key]['nb_can_be_validate'] ?></span>
+            <?php if($lists[$current_key_list]['stats'][$key]['nb_can_be_validate']): ?>
+            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $lists[$current_key_list]['stats'][$key]['nb_can_be_validate'] ?></span>
             <?php endif; ?>
             </a></li>
     <?php endforeach; ?>
@@ -29,10 +29,10 @@
 
 <div class="row" style="margin-top: 20px;">
     <di class="col-xs-12">
-        <?php if (count($lists[$type.$campagne]['statuts'][$statut]) > 0): ?>
+        <?php if (count($lists[$current_key_list]['statuts'][$statut]) > 0): ?>
             <div class="list-group">
-                <?php foreach ($lists[$type.$campagne]['statuts'][$statut] as $doc): ?>
-                            <a class="list-group-item col-xs-12 <?php if ($doc->key[2] && !$doc->key[3] && !$doc->key[6]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("doc_type" => $type, 'doc_campagne' => $campagne, 'doc_statut' => $statut)))) ?>">
+                <?php foreach ($lists[$current_key_list]['statuts'][$statut] as $doc): ?>
+                            <a class="list-group-item col-xs-12 <?php if ($doc->key[2] && !$doc->key[3] && !$doc->key[6]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("docs" => $key_list, 'doc_statut' => $statut)))) ?>">
                             <span class="col-xs-2 text-muted">
                                 <?php if ($doc->key[2]): ?>
                                     <?php echo format_date($doc->key[2], "dd/MM/yyyy", "fr_FR"); ?><br />
