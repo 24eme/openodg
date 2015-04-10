@@ -4,7 +4,7 @@ class adminComponents extends sfComponents {
 
     public function executeList(sfWebRequest $request) {
 
-        $this->current_key_list = $request->getParameter('docs', 'DRev2014');
+        $this->current_key_list = $request->getParameter('docs', 'DRev 2014');
         $this->statut = $request->getParameter('doc_statut', "a_valider");
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "valide" => "Validé", "brouillon" => "En cours de saisie");
