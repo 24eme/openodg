@@ -548,7 +548,7 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        if(!in_array($this->tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_TERMINE))) {
+        if(!in_array($this->tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_COURRIERS, TourneeClient::STATUT_TERMINE))) {
 
             return $this->forward404("La tournée n'est pas prête à être dégusté");
         }
@@ -627,7 +627,7 @@ class degustationActions extends sfActions {
         $this->tournee = $this->getRoute()->getTournee();
 
         if($this->tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $this->tournee->isDegustationTerminee()) {
-            $this->tournee->statut = TourneeClient::STATUT_TERMINE;
+            $this->tournee->statut = TourneeClient::STATUT_COURRIERS;
             $this->tournee->save();
         }
 
@@ -673,11 +673,26 @@ class degustationActions extends sfActions {
     }
 
     public function executeGenerationCourrier(sfWebRequest $request) {
+        set_time_limit(180);
         $tournee = $this->getRoute()->getTournee();         
         foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
             Email::getInstance()->sendDegustationNoteCourrier($courrier);   
         }
+
+        $tournee->statut = TourneeClient::STATUT_TERMINE;
+        $tournee->save();
+
         return $this->redirect('degustation_visualisation', $tournee);
+    }
+
+    public function executeCourriersPapier(sfWebRequest $request) {
+        $tournee = $this->getRoute()->getTournee();         
+        foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
+            foreach ($courrier->prelevements as $prelevement) {
+                //$prelevement->add('courrier_envoye', date('Y-m-d'));
+            }
+        }
+
     }
 
     public function executeCourrierPrelevement(sfWebRequest $request) {

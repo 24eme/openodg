@@ -228,12 +228,11 @@ class Email {
             $body = $this->getBodyFromPartial('send_degustation_note_degustateur', array('degustation' => $degustation));
             $to = "";
             if (!$courrier->operateur->email) {
-                $to = $reply_to;
-                $nom = $courrier->operateur->raison_sociale;
-                $subject = "[ $nom: EMAIL NON ENVOYE] " . $subject;
-                $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $courrier->operateur->getKey()), true), $body);
-            } else {
-                $to = $courrier->operateur->email;
+               return;
+            }
+
+            if($prelevement->exist('courrier_envoye') && $prelevement->courrier_envoye) {
+                return;
             }
 
             $message = Swift_Message::newInstance()
@@ -249,9 +248,10 @@ class Email {
             $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
             $message->attach($pdfAttachment);
             
-            $prelevement->add('courrier_envoye', true);
             $message->setContentType('text/plain');
-            $this->getMailer()->send($message);
+            if($this->getMailer()->send($message)) {
+                $prelevement->add('courrier_envoye', date('Y-m-d'));
+            }
             $degustation->save();
         }
         return true;

@@ -11,30 +11,29 @@
 
 <?php include_partial('degustation/recap', array('tournee' => $tournee)); ?>
 
-<?php if ($tournee->statut == TourneeClient::STATUT_TERMINE): ?>
-    <h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->getNotes()); ?>&nbsp;vins dégustés</div>
-        <?php if(!$tournee->hasAllCourrierSended()): ?>
-        <a class="btn btn-warning btn-sm btn-upper" <?php echo (!$tournee->hasAllTypeCourrier()) ? "disabled='disabled'" : ""; ?> href="<?php echo url_for('degustation_generation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Envoyer les emails</a>
-        <a class="pull-right btn btn-default btn-sm btn-upper" href="<?php echo url_for('degustation_courriers', $tournee); ?>">Choisir types courriers<span class="eleganticon arrow_carrot-right"></span></a>
-        <?php endif; ?>
-    </h2> 
+<?php if (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS, TourneeClient::STATUT_TERMINE))): ?>
     <?php include_partial('degustation/notes', array('tournee' => $tournee)); ?>
 <?php endif; ?>
 
 <div class="row row-margin">
-    <div class="col-xs-6 text-left">
-        <?php if ($tournee->statut != TourneeClient::STATUT_TERMINE): ?>
+    <div class="col-xs-4 text-left">
             <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation') ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
-        <?php endif; ?>
     </div>
-    <div class="col-xs-6 text-right">
-        <?php if ($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $tournee->isDegustationTerminee()): ?>
+    <div class="col-xs-8 text-right">
+        <?php if (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS)) && $tournee->hasAllTypeCourrier()): ?>
+            <div class="btn-group">
+            <a class="btn btn-default btn-default-step btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Modifier les types courriers</a>
+            <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_generation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Envoyer les courriers</a>
+            </div>
+        <?php elseif (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS))): ?>
+            <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Choisir les types courriers</a>
+        <?php elseif ($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $tournee->isDegustationTerminee()): ?>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_lever_anonymat', $tournee) ?>"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Lever l'anonymat</a>
         <?php elseif ($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS || ($tournee->statut == TourneeClient::STATUT_AFFECTATION && $tournee->isAffectationTerminee())): ?>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_degustations', $tournee) ?>"><span class="glyphicon glyphicon-glass"></span>&nbsp;&nbsp;Saisir les dégustations</a>
         <?php elseif ($tournee->statut == TourneeClient::STATUT_AFFECTATION || ($tournee->statut == TourneeClient::STATUT_TOURNEES && $tournee->isTourneeTerminee())): ?>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_affectation', $tournee) ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Anonymer les prélèvements</a>
-        <?php elseif ($tournee->statut != TourneeClient::STATUT_TERMINE): ?>
+        <?php elseif (!in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS, TourneeClient::STATUT_TERMINE))): ?>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_organisation', $tournee) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier l'organisation des tournées</a>
         <?php endif; ?>
     </div>

@@ -43,6 +43,15 @@
                         <span class="label label-danger">Dégustations</span>
                     </span>
                 </a>
+            <?php elseif($tournee->statut == TourneeClient::STATUT_COURRIERS): ?>
+                <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
+                    <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-5 text-muted"><?php echo $tournee->nombre_prelevements ?> vins dégustés</span>
+                    <span class="col-xs-2 text-muted text-right">
+                        <span class="label label-success"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Courriers à envoyer</span>
+                    </span>
+                </a>
             <?php elseif($tournee->statut == TourneeClient::STATUT_TERMINE): ?>
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
