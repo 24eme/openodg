@@ -1,6 +1,6 @@
 <?php
 
-class ParcellaireExportCsvTask extends sfBaseTask
+class DRevExportCsvTask extends sfBaseTask
 {
 
     protected function configure()
@@ -11,13 +11,13 @@ class ParcellaireExportCsvTask extends sfBaseTask
 
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
-            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace = 'parcellaire';
+        $this->namespace = 'drev';
         $this->name = 'export-csv';
-        $this->briefDescription = "Export CSV d'un parcellaire";
+        $this->briefDescription = "Export CSV d'un DRev";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -28,20 +28,20 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $p = ParcellaireClient::getInstance()->find($arguments['doc_id']);
-
-        if(!$p) {
+        $drev = DRevClient::getInstance()->find($arguments['doc_id']);
+        
+        if(!$drev) {
             
             return;
         }
 
-        if(!$p->validation) {
+        if(!$drev->validation) {
 
             return;
         }
 
-        $export = new ExportParcellaireCSV($p, false);
+        $export = new ExportDRevCSV($drev, false);
 
-        echo $export->export();
+        $export->export();
     }
 }
