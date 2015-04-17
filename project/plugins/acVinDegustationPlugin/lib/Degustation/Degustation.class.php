@@ -13,7 +13,7 @@ class Degustation extends BaseDegustation {
         if(!$drev) {
             $drev = DRevClient::getInstance()->find($this->drev, acCouchdbClient::HYDRATE_JSON);
         }
-
+        $this->drev = $drev->_id;
         $this->cvi = $drev->declarant->cvi;
         $this->raison_sociale = $drev->declarant->raison_sociale;
         $this->adresse = $drev->chais->cuve_->adresse;
@@ -33,6 +33,15 @@ class Degustation extends BaseDegustation {
             $lot->libelle = $l->libelle;
             $lot->nb = $l->nb_hors_vtsgn;
         }
+    }
+
+    public function getDrev() {
+        if($this->_get('drev')) {
+
+            return $this->_get('drev');
+        }
+
+        return "DREV-".$this->getIdentifiant()."-2014";
     }
 
     public function getAppellationLibelle() {

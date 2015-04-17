@@ -92,6 +92,22 @@ class DegustationClient extends acCouchdbClient {
         return $degustation;
     }
 
+    public function getDegustationsByDRev($drev_id) {
+        
+    }
+
+    public function getDegustationsByIdentifiant($cvi) {
+
+        return $this->startkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "00000000", "ALSACE"))
+                    ->endkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "99999999", "ALSACE"))
+                    ->execute($hydrate);
+    }
+
+    public function getDoc($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+
+        
+    }
+
     public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
 
         return $operateur_a->date_demande > $operateur_b->date_demande;
