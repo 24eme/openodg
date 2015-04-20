@@ -16,7 +16,7 @@ class ExportDRevCSV {
     protected $drev = null;
     protected $header = false;
 
-    public function getHeaderCsv() {
+    public static function getHeaderCsv() {
 
         return "Campagne;CVI Vinificateur;Nom Vinificateur;Type de ligne;Produit;Superficie revendiqué;Volume revendiqué;prelevement à partir du;nombre de lots;Adresse du chai;Code postal du Chai;Commune du Chai\n";
     }
@@ -34,7 +34,7 @@ class ExportDRevCSV {
     public function export() {
         $csv = "";
         if($this->header) {
-            $csv .= $this->getHeaderCsv();
+            $csv .= self::getHeaderCsv();
         }
 
         foreach($this->drev->declaration->getProduits() as $produit) {

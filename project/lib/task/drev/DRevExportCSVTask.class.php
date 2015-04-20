@@ -29,6 +29,10 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        if($options["header"]) {
+                echo ExportDRevCSV::getHeaderCsv();
+        }
+
         foreach($arguments['docs_id'] as $doc_id) {
             $drev = DRevClient::getInstance()->find($doc_id);
             
@@ -42,8 +46,9 @@ EOF;
                 continue;
             }
 
-            $export = new ExportDRevCSV($drev, $options["header"]);
 
+            $export = new ExportDRevCSV($drev, false);
+         
             echo $export->export();
         }
     }
