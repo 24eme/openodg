@@ -29,7 +29,7 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        for($i=0;$i < 1000;$i++) {
+        for($i=0;$i < 800;$i++) {
             $drev = DRevClient::getInstance()->find($arguments['doc_id']);
             
             if(!$drev) {

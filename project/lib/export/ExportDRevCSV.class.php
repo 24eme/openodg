@@ -38,22 +38,21 @@ class ExportDRevCSV {
         }
 
         foreach($this->drev->declaration->getProduits() as $produit) {
-            $csv .= sprintf("%s;%s;%s;Revendication;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, trim($produit->getLibelleComplet()), $produit->superficie_revendique, $produit->volume_revendique);
+            $libelle_complet = $produit->getLibelleComplet();
+            $csv .= sprintf("%s;%s;%s;Revendication;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, trim($libelle_complet), $produit->superficie_revendique, $produit->volume_revendique);
             foreach($produit->getProduitsCepage() as $detail) {
-                $csv .= sprintf("%s;%s;%s;Revendication;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, trim($produit->getLibelleComplet())." ".trim($detail->getLibelle()), $detail->superficie_revendique_total, $detail->volume_revendique_total);
+                $csv .= sprintf("%s;%s;%s;Revendication;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, trim($libelle_complet)." ".trim($detail->getLibelle()), $detail->superficie_revendique_total, $detail->volume_revendique_total);
             }
         }
 
-        foreach($this->drev->getPrelevementsOrdered() as $prelevementsOrdered) {
-            foreach ($prelevementsOrdered->prelevements as $prelevement) {
-                $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $prelevement->getChai()->adresse, $prelevement->getChai()->commune, $prelevement->getChai()->code_postal);
-                foreach($prelevement->lots as $lot) {
-                    $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $prelevement->date, $lot->nb_hors_vtsgn, $prelevement->getChai()->adresse, $prelevement->getChai()->commune, $prelevement->getChai()->code_postal);
-                }
+        foreach ($drev->prelevements as $prelevement) {
+            $chai = $prelevement->getChai();
+            $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $chai->adresse, $chai->commune, $chai->code_postal);
+            foreach($prelevement->lots as $lot) {
+                $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $prelevement->date, $lot->nb_hors_vtsgn, $chai->adresse, $chai->commune, $chai->code_postal);
             }
         }
 
         return $csv;
     }
-
 }
