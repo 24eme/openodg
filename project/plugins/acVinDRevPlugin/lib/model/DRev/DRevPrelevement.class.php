@@ -26,6 +26,11 @@ class DRevPrelevement extends BaseDRevPrelevement {
         }
     }
 
+    public function getChai() {
+
+        return $this->getDocument()->chais->get($this->getKeyType());
+    }
+
     public function hasLots($vtsgn = false, $horsvtsgn = false) {
         foreach ($this->lots as $lot) {
             if ($lot->hasLots($vtsgn, $horsvtsgn)) {
