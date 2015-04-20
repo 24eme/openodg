@@ -16,7 +16,7 @@ class ExportParcellaireCSV {
     protected $parcellaire = null;
     protected $header = false;
 
-    public function getHeaderCsv() {
+    public static function getHeaderCsv() {
 
         return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom\n";
     }
@@ -39,7 +39,7 @@ class ExportParcellaireCSV {
     private function parcellaireExport() {
         $export = "";
         if($this->header) { 
-            $export = $this->getHeaderCsv();
+            $export = self::getHeaderCsv();
         }
         
         foreach ($this->parcellaire->declaration->getProduitsCepageDetails() as $parcelle) {

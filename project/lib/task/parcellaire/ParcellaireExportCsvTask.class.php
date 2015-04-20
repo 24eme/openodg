@@ -6,7 +6,7 @@ class ParcellaireExportCsvTask extends sfBaseTask
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Document id")
+            new sfCommandArgument('docs_id', sfCommandArgument::IS_ARRAY, "Documents id"),
         ));
 
         $this->addOptions(array(
@@ -29,20 +29,26 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $p = ParcellaireClient::getInstance()->find($arguments['doc_id']);
-
-        if(!$p) {
-            
-            return;
+        if($options["header"]) {
+            echo ExportParcellaireCSV::getHeaderCsv();
         }
 
-        if(!$p->validation) {
+        foreach($arguments['docs_id'] as $doc_id) {
+            $p = ParcellaireClient::getInstance()->find($doc_id);
 
-            return;
+            if(!$p) {
+                
+                continue;
+            }
+
+            if(!$p->validation) {
+
+                continue;
+            }
+
+            $export = new ExportParcellaireCSV($p, false);
+
+            echo $export->export();
         }
-
-        $export = new ExportParcellaireCSV($p, $options["header"]);
-
-        echo $export->export();
     }
 }

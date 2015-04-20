@@ -6,7 +6,7 @@ class DRevExportCsvTask extends sfBaseTask
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('docs_id', sfCommandArgument::IS_ARRAY, "Documents id")
+            new sfCommandArgument('docs_id', sfCommandArgument::IS_ARRAY, "Documents id"),
         ));
 
         $this->addOptions(array(
@@ -30,7 +30,7 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         if($options["header"]) {
-                echo ExportDRevCSV::getHeaderCsv();
+            echo ExportDRevCSV::getHeaderCsv();
         }
 
         foreach($arguments['docs_id'] as $doc_id) {
