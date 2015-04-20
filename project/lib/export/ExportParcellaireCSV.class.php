@@ -18,7 +18,7 @@ class ExportParcellaireCSV {
 
     public static function getHeaderCsv() {
 
-        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom\n";
+        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;Campagne;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom;Autorisation de transmission\n";
     }
 
     public function __construct($parcellaire, $header = true) {
@@ -51,7 +51,11 @@ class ExportParcellaireCSV {
 
     private function exportParcelleByAcheteurs($parcelle) {
         $export = "";
+        if(!count($parcelle->getCepage()->acheteurs)) {
+            return $this->exportParcelle($parcelle);
+        }
         foreach ($parcelle->getCepage()->acheteurs as $lieu_acheteurs) {
+
             foreach ($lieu_acheteurs as $typeAcheteur => $acheteurs) {
                 if ($typeAcheteur == ParcellaireClient::DESTINATION_SUR_PLACE) {
                     $export .= $this->exportParcelle($parcelle);
@@ -75,12 +79,13 @@ class ExportParcellaireCSV {
             $export.= $parcelle->getLieuLibelle() . ";";
             $export.= $parcelle->getCepageLibelle() . ";";
             $export.=sprintf("%01.02f", $parcelle->superficie) . ";";
+            $export.=$this->parcellaire->campagne . ";";
             $export.=$this->parcellaire->declarant->cvi . ";";
             $export.= $this->parcellaire->declarant->nom . ";";
             $export.=$this->parcellaire->declarant->adresse . ";";
             $export.=$this->parcellaire->declarant->code_postal . ";";
             $export.=$this->parcellaire->declarant->commune . ";";
-            $export.=";;";
+            $export.=";;;";
             $export.="\n";
         } else {
             foreach ($acheteurs as $cviAcheteur => $acheteur) {
@@ -91,6 +96,7 @@ class ExportParcellaireCSV {
                 $export.= $parcelle->getLieuLibelle() . ";";
                 $export.= $parcelle->getCepageLibelle() . ";";
                 $export.=sprintf("%01.02f", $parcelle->superficie) . ";";
+                $export.=$this->parcellaire->campagne . ";";
                 $export.=$this->parcellaire->declarant->cvi . ";";
                 $export.= $this->parcellaire->declarant->nom . ";";
                 $export.=$this->parcellaire->declarant->adresse . ";";
@@ -98,7 +104,8 @@ class ExportParcellaireCSV {
                 $export.=$this->parcellaire->declarant->commune . ";";
                 $export.= (count($acheteurs) == 1) ? "NON;" : "OUI;";
                 $export.=$acheteur->cvi . ";";
-                $export.=$acheteur->nom;
+                $export.=$acheteur->nom . ";";
+                $export.=($this->parcellaire->autorisation_acheteur) ? "OUI" : "NON";
                 $export.="\n";
             }
         }
