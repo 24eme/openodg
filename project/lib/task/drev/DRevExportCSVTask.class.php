@@ -29,20 +29,22 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $drev = DRevClient::getInstance()->find($arguments['doc_id']);
-        
-        if(!$drev) {
+        for($i=0;$i < 1000;$i++) {
+            $drev = DRevClient::getInstance()->find($arguments['doc_id']);
             
-            return;
+            if(!$drev) {
+                
+                return;
+            }
+
+            if(!$drev->validation) {
+
+                return;
+            }
+
+            $export = new ExportDRevCSV($drev, $options["header"]);
+
+            echo $export->export();
         }
-
-        if(!$drev->validation) {
-
-            return;
-        }
-
-        $export = new ExportDRevCSV($drev, $options["header"]);
-
-        echo $export->export();
     }
 }
