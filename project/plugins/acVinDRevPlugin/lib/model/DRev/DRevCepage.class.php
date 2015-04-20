@@ -39,6 +39,7 @@ class DRevCepage extends BaseDRevCepage {
 
         $detail = $this->detail->add();
         $detail->lieu = $lieu;
+        $detail->getLibelle();
 
         return $detail;
     }
