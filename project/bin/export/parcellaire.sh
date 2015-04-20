@@ -9,4 +9,4 @@ if ! test "$CAMPAGNE"; then
     exit;
 fi
 
-php symfony parcellaire:export-csv $(curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous | grep "PARCELLAIRE" | grep "\-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//g' | sort | tr "\n" " ")
+php symfony parcellaire:export-csv $(curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous | grep "PARCELLAIRE" | grep "\-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//g' | sort -t ";" -k 9,9 | tr "\n" " ")

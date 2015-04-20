@@ -18,7 +18,7 @@ class ExportParcellaireCSV {
 
     public static function getHeaderCsv() {
 
-        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;Campagne;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation;Type de transmission\n";
+        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;Campagne;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission\n";
     }
 
     public function __construct($parcellaire, $header = true) {
@@ -87,7 +87,7 @@ class ExportParcellaireCSV {
             $export.=$this->parcellaire->declarant->commune . ";";
             $export.=";;;;";
             $export.= $this->parcellaire->validation.";";
-            $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TELEDECLARATION";
+            $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
             $export.="\n";
         } else {
             foreach ($acheteurs as $cviAcheteur => $acheteur) {
@@ -104,10 +104,10 @@ class ExportParcellaireCSV {
                 $export.=$this->parcellaire->declarant->adresse . ";";
                 $export.=$this->parcellaire->declarant->code_postal . ";";
                 $export.=$this->parcellaire->declarant->commune . ";";
-                $export.= (count($acheteurs) == 1) ? ";DEDIÉE" : "PARTAGÉE;";
+                $export.= (count($acheteurs) == 1) ? "DEDIÉE;" : "PARTAGÉE;";
                 $export.=$acheteur->cvi . ";";
                 $export.=$acheteur->nom . ";";
-                $export.= (($this->parcellaire->autorisation_acheteur) ? "AUTORISÉE" : "REFUSÉE").";";
+                $export.= (!$this->parcellaire->isPapier() ? (($this->parcellaire->autorisation_acheteur) ? "AUTORISÉE" : "REFUSÉE") : "").";";
                 $export.= $this->parcellaire->validation.";";
                 $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
                 $export.="\n";
