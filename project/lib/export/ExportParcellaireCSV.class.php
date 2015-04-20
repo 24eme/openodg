@@ -105,7 +105,7 @@ class ExportParcellaireCSV {
                 $export.= (count($acheteurs) == 1) ? "NON;" : "OUI;";
                 $export.=$acheteur->cvi . ";";
                 $export.=$acheteur->nom . ";";
-                $export.=($this->parcellaire->autorisation_acheteur) ? "OUI" : "NON";
+                $export.=($this->parcellaire->autorisation_acheteur) ? "AUTORISE" : "NON AUTORISE";
                 $export.="\n";
             }
         }
