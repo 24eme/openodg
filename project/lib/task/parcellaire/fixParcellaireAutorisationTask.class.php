@@ -1,12 +1,12 @@
 <?php
 
-class FixParcellaireTask extends sfBaseTask
+class FixParcellaireAutorisationTask extends sfBaseTask
 {
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('parcellaireid', sfCommandArgument::REQUIRED, "Donnees au format CSV")
+            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Document ID")
         ));
 
         $this->addOptions(array(
@@ -16,8 +16,8 @@ class FixParcellaireTask extends sfBaseTask
         ));
 
         $this->namespace = 'fix';
-        $this->name = 'parcellaire';
-        $this->briefDescription = "Corrige le parcellaire passé en parametre";
+        $this->name = 'parcellaire-autorisation';
+        $this->briefDescription = "Corrige l'autorisation de transmission du parcellaire'";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -28,8 +28,22 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $p = ParcellaireClient::getInstance()->find($arguments['parcellaireid']);
-        $p->fixSuperficiesHa();
+        $p = ParcellaireClient::getInstance()->find($arguments['doc_id']);
+        if(!$p) {
+            return;
+        }
+        if(!$p->validation) {
+            return;
+        }
+        if($p->isPapier()) {
+            return;
+        }
+        if($p->autorisation_acheteur) {
+            return;
+        }
+        $p->autorisation_acheteur = true;
         $p->save();
+
+        echo sprintf("CORRIGÉE;%s\n", $p->_id);
     }
 }
