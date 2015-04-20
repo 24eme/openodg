@@ -13,6 +13,7 @@ class DRevExportCsvTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
         ));
 
         $this->namespace = 'drev';
@@ -40,8 +41,8 @@ EOF;
             return;
         }
 
-        $export = new ExportDRevCSV($drev, false);
+        $export = new ExportDRevCSV($drev, $options["header"]);
 
-        $export->export();
+        echo $export->export();
     }
 }

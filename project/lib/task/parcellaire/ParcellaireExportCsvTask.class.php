@@ -13,6 +13,7 @@ class ParcellaireExportCsvTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
         ));
 
         $this->namespace = 'parcellaire';
@@ -40,7 +41,7 @@ EOF;
             return;
         }
 
-        $export = new ExportParcellaireCSV($p, false);
+        $export = new ExportParcellaireCSV($p, $options["header"]);
 
         echo $export->export();
     }
