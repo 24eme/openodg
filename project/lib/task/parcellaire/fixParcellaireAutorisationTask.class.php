@@ -35,6 +35,9 @@ EOF;
         if(!$p->validation) {
             return;
         }
+        if($p->validation > "2015-03-16") {
+            return;
+        }
         if($p->isPapier()) {
             return;
         }
