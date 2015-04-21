@@ -69,6 +69,12 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
         return false;
     }
 
+    public function getLieuLibelle() {
+        if($this->lieu) {
+            $this->lieu;
+        }
+    }
+
     public function getLibelle() {
         if(!$this->_get('libelle')) {
             $cepage_libelle = sprintf("%s", $this->getCepage()->getLibelle());
