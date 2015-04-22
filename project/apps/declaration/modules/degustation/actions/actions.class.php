@@ -74,7 +74,6 @@ class degustationActions extends sfActions {
         if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_OPERATEURS))) {
             $this->tournee->save();
         }
-
         //$this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
 
