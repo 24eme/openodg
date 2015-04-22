@@ -184,6 +184,7 @@ class compteActions extends sfActions {
         ini_set('memory_limit', '256M');
         $this->setLayout(false);
         $q = $this->initSearch($request);
+        $q->setLimit(99999);
         
         $index = acElasticaManager::getType('compte');
         $resset = $index->search($q);

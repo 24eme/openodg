@@ -184,7 +184,7 @@ class Tournee extends BaseTournee {
                 continue;                
             }
 
-            $operateurs[$operateur->getKey()] = $operateur;
+            $operateurs[$operateur->getIdentifiant()] = $operateur;
         }
 
         return $operateurs;
@@ -260,7 +260,7 @@ class Tournee extends BaseTournee {
         return true;
     }
 
-    /*public function updateOperateursFromPrevious() {
+    public function updateOperateursFromPrevious() {
         $previous = $this->getPrevious();
 
         if(!$previous) {
@@ -268,34 +268,27 @@ class Tournee extends BaseTournee {
             return null;
         }
 
-        foreach($previous->getOperateursReporte() as $o) {
-            $operateur = $this->addOperateurFromDRev("DREV-".$o->getKey()."-".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        foreach($previous->getOperateursReporte() as $degustation_previous) {
+            $degustation = $this->addOperateurFromDRev($degustation_previous->drev);
 
-            if(!$operateur) {
+            if(!$degustation) {
                 continue;
             }
 
-            $operateur->reporte = 1;
-
-            if(count($operateur->getLotsPrelevement()) > 0) {
-
-                continue;
-            }
-            
-            foreach($o->lots as $lot) {
-                $lot_key = str_replace("cepage-", "cepage_", str_replace("appellation-ALSACE", "appellation_ALSACE", str_replace("_", "-", $lot->getKey())));
-                if(!$operateur->lots->exist($lot_key)) {
+            foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
+                if(!$degustation->lots->exist($lot_key)) {
                     continue;
                 }
-                $operateur->lots->get($lot_key)->prelevement = 1;
+
+                $degustation->lots->get($lot_key)->prelevement = 1;
             }
         }
-    }*/
+    }
 
     public function updateOperateursFromDRev() {
-        $prelevements = TourneeClient::getInstance()->getPrelevements($this->date_prelevement_debut, $this->date_prelevement_fin);
+        $prelevements = TourneeClient::getInstance()->getPrelevements($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
 
-        $previous = $this->getPrevious();
+        //$previous = $this->getPrevious();
 
         foreach($prelevements as $prelevement) {
             $operateur = $this->addOperateurFromDRev($prelevement->_id);
@@ -337,7 +330,6 @@ class Tournee extends BaseTournee {
 
     public function addDegustationFromDRev($drev_id) {
         $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_JSON);
-        
         if(!$drev) {
 
             return null;
@@ -348,8 +340,9 @@ class Tournee extends BaseTournee {
             return null;
         }
 
-        $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->appellation, $this->date);
-        $degustation->drev = $drev->_id;
+        //var_dump(DegustationClient::getInstance()->getDegustationsByIdentifiant($drev->identifiant));
+
+        $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->date, $this->appellation);
 
         $degustation->updateFromDRev($drev);
         $degustation->constructId();

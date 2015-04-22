@@ -1,6 +1,6 @@
 <?php
 
-class ParcellaireExportCsvTask extends sfBaseTask
+class DRevExportCsvTask extends sfBaseTask
 {
 
     protected function configure()
@@ -11,14 +11,14 @@ class ParcellaireExportCsvTask extends sfBaseTask
 
         $this->addOptions(array(
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
-            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+            new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
         ));
 
-        $this->namespace = 'parcellaire';
+        $this->namespace = 'drev';
         $this->name = 'export-csv';
-        $this->briefDescription = "Export CSV d'un parcellaire";
+        $this->briefDescription = "Export CSV d'un DRev";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -30,24 +30,25 @@ EOF;
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
         if($options["header"]) {
-            echo ExportParcellaireCSV::getHeaderCsv();
+            echo ExportDRevCSV::getHeaderCsv();
         }
 
         foreach($arguments['docs_id'] as $doc_id) {
-            $p = ParcellaireClient::getInstance()->find($doc_id);
-
-            if(!$p) {
+            $drev = DRevClient::getInstance()->find($doc_id);
+            
+            if(!$drev) {
                 
                 continue;
             }
 
-            if(!$p->validation) {
+            if(!$drev->validation) {
 
                 continue;
             }
 
-            $export = new ExportParcellaireCSV($p, false);
 
+            $export = new ExportDRevCSV($drev, false);
+         
             echo $export->export();
         }
     }

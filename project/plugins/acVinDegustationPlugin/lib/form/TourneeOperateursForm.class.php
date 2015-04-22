@@ -32,7 +32,8 @@ class TourneeOperateursForm extends acCouchdbForm {
             $choices = array();
 
             foreach($operateur->lots as $lot_key => $lot) {
-                $choices[$lot_key] = sprintf("%s - %s lot(s)", $lot->libelle, $lot->nb);
+                //$choices[$lot_key] = sprintf("%s - %s lot(s)", $lot->libelle, $lot->nb);
+                $choices[$lot_key] = sprintf("%s", $lot->libelle, $lot->nb);
             }
 
             $this->setWidget($operateur->identifiant, new sfWidgetFormChoice(array("choices" => $choices)));

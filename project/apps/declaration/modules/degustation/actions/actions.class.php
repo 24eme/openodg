@@ -4,6 +4,7 @@ class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $this->tournee = new Tournee();
+        $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
         $this->form = new TourneeCreationForm($this->tournee);
         
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -41,10 +42,10 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        $this->operateurs = TourneeClient::getInstance()->getPrelevements($this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
+        $this->operateurs = TourneeClient::getInstance()->getPrelevements($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
 
-
-        $this->nb_reports = $this->tournee->getPrevious() ? count($this->tournee->getPrevious()->getOperateursReporte()) : 0;
+        $this->nb_reports = 0;
+        /*$this->nb_reports = $this->tournee->getPrevious() ? count($this->tournee->getPrevious()->getOperateursReporte()) : 0;*/
 
         $this->form = new TourneeCreationFinForm($this->tournee);
 
@@ -73,7 +74,6 @@ class degustationActions extends sfActions {
         if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_OPERATEURS))) {
             $this->tournee->save();
         }
-
         //$this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
 
@@ -129,7 +129,7 @@ class degustationActions extends sfActions {
 
         $this->noeud = $this->tournee->degustateurs->add($this->type);
 
-        $this->degustateurs = TourneeClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_ALSACE");
+        $this->degustateurs = TourneeClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_".$this->tournee->appellation);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -312,10 +312,10 @@ class degustationActions extends sfActions {
             $degustation = $this->tournee->getDegustationObject($key);
             if(!str_replace("-", "", $value["tournee"])) {
                 $degustation->agent = null;
-                $degustation->date = null;
+                $degustation->date_prelevement = null;
             } else {
                 $degustation->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
-                $degustation->date = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+                $degustation->date_prelevement = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
             }
             $degustation->heure = $value["heure"];
             $degustation->position = $i++;

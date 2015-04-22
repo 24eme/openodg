@@ -66,6 +66,25 @@ class DegustationClient extends acCouchdbClient {
         return acCouchdbManager::getClient("Degustation");
     }
 
+    public function create($data, $force_return_ls = false) {
+        if (!isset($data->type)) {
+            
+            throw new acCouchdbException('Property "type" ($data->type)');
+        }
+        if (!class_exists($data->type)) {
+            
+            throw new acCouchdbException('Class "' . $data->type . '" not found');
+        }
+        
+        $doc = new $data->type();
+        $doc->loadFromCouchdb($data);
+
+        if($doc->getType() == "LS" && $force_return_ls == false )
+          return $this->find($doc->getPointeur());
+        
+        return $doc;
+    }
+
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
 
@@ -90,6 +109,17 @@ class DegustationClient extends acCouchdbClient {
         $degustation->appellation = $appellation;
 
         return $degustation;
+    }
+
+    public function getDegustationsByDRev($drev_id) {
+        
+    }
+
+    public function getDegustationsByIdentifiant($cvi) {
+
+        return $this->startkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "00000000", "ALSACE"))
+                    ->endkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "99999999", "ALSACE"))
+                    ->execute($hydrate);
     }
 
     public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
