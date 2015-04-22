@@ -13,15 +13,21 @@ class Degustation extends BaseDegustation {
         if(!$drev) {
             $drev = DRevClient::getInstance()->find($this->drev, acCouchdbClient::HYDRATE_JSON);
         }
-
+        $this->drev = $drev->_id;
         $this->cvi = $drev->declarant->cvi;
         $this->raison_sociale = $drev->declarant->raison_sociale;
         $this->adresse = $drev->chais->cuve_->adresse;
         $this->code_postal = $drev->chais->cuve_->code_postal;
         $this->commune = $drev->chais->cuve_->commune;
         
+        $lot = $this->lots->add("-declaration-tous");
+        $lot->hash_produit = "/declaration/tous";
+        $lot->libelle = "Tous";
+        $lot->nb = 1;
+        $prelevement = $drev->prelevements->{"cuve_".$this->appellation};
+        $this->date_demande = $prelevement->date;
 
-        $prelevement = $drev->prelevements->cuve_ALSACE;
+        /*$prelevement = $drev->prelevements->cuve_ALSACE;
         $this->date_demande = $prelevement->date;
 
         foreach($prelevement->lots as $l_key => $l) {
@@ -32,7 +38,16 @@ class Degustation extends BaseDegustation {
             $lot->hash_produit = $l->hash_produit;
             $lot->libelle = $l->libelle;
             $lot->nb = $l->nb_hors_vtsgn;
+        }*/
+    }
+
+    public function getDrev() {
+        if($this->_get('drev')) {
+
+            return $this->_get('drev');
         }
+
+        return "DREV-".$this->getIdentifiant()."-2014";
     }
 
     public function getAppellationLibelle() {

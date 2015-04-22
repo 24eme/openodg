@@ -15,9 +15,9 @@
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div id="recap_cepages" class="btn-group">
-            <?php foreach($tournee->getProduits() as $produit): ?>
+            <!--<?php foreach($tournee->getProduits() as $produit): ?>
             <button class="btn btn-default btn-default-step btn-sm disabled" data-cepage="<?php echo $produit->getHashForKey() ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></button>
-            <?php endforeach; ?>
+            <?php endforeach; ?>-->
         </div>
     </div>
     <div class="col-xs-12" style="padding-bottom: 15px;">

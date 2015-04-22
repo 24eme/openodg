@@ -4,7 +4,7 @@ Madame, Monsieur,
 
 Un agent de l'ODG-AVA viendra prélever un échantillon du Millésime 2014 à votre chai situé au <?php echo getAdresseChai($operateur) ?> :
 
-Le <?php echo ucfirst(format_date($operateur->date, "P", "fr_FR")) ?> entre <?php echo Date::francizeHeure($operateur->heure); ?> et <?php echo Date::francizeHeure(getHeurePlus($operateur, 2)); ?>
+Le <?php echo ucfirst(format_date($operateur->date_prelevement, "P", "fr_FR")) ?> entre <?php echo Date::francizeHeure($operateur->heure); ?> et <?php echo Date::francizeHeure(getHeurePlus($operateur, 2)); ?>
 
 
 NB :
