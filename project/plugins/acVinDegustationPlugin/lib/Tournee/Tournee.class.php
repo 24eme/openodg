@@ -286,9 +286,9 @@ class Tournee extends BaseTournee {
     }
 
     public function updateOperateursFromDRev() {
-        $prelevements = TourneeClient::getInstance()->getPrelevements($this->date_prelevement_debut, $this->date_prelevement_fin);
+        $prelevements = TourneeClient::getInstance()->getPrelevements($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
 
-        $previous = $this->getPrevious();
+        //$previous = $this->getPrevious();
 
         foreach($prelevements as $prelevement) {
             $operateur = $this->addOperateurFromDRev($prelevement->_id);
@@ -342,7 +342,7 @@ class Tournee extends BaseTournee {
 
         //var_dump(DegustationClient::getInstance()->getDegustationsByIdentifiant($drev->identifiant));
 
-        $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->appellation, $this->date);
+        $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->date, $this->appellation);
 
         $degustation->updateFromDRev($drev);
         $degustation->constructId();

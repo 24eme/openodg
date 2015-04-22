@@ -37,9 +37,9 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
-    public function getPrelevements($date_from, $date_to) {
+    public function getPrelevements($produit, $date_from, $date_to) {
         
-        return DRevPrelevementsView::getInstance()->getPrelevements($date_from, $date_to);
+        return DRevPrelevementsView::getInstance()->getPrelevements($produit, $date_from, $date_to);
     }
 
     public function getAgents($attribut = null) {

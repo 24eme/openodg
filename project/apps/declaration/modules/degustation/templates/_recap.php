@@ -20,7 +20,9 @@
                 <td><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR"))." à ".Date::francizeHeure($tournee->heure); ?></td>
                 <td>
                     <a href="<?php if($tournee->statut == TourneeClient::STATUT_AFFECTATION): ?><?php echo url_for('degustation_affectation', $tournee); ?><?php elseif(in_array($tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_COURRIERS, TourneeClient::STATUT_TERMINE))): ?><?php echo url_for('degustation_degustations', $tournee); ?><?php endif; ?>"><?php echo "Dégustation (".$tournee->nombre_commissions." commissions, ".count($tournee->degustateurs->PORTEUR_MEMOIRES)." porteurs de mémoires, ".count($tournee->degustateurs->TECHNICIEN_PRODUIT)." techniciens du produit, ".count($tournee->degustateurs->USAGER_PRODUIT)." usagers du produit)"; ?></a>
+                    <?php if($tournee->statut != TourneeClient::STATUT_ORGANISATION): ?>
                     <a class="btn btn-xs btn-warning" href="<?php echo url_for('degustation_degustateurs_presence', $tournee) ?>"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Présences des dégustateurs</a>
+                    <?php endif; ?>
                 </td> 
             </tr>
         </table>
