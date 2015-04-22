@@ -169,7 +169,7 @@ class Email {
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
             $to = $operateur->email;
-            $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le " . Date::francizeDate($operateur->date);
+            $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le " . Date::francizeDate($operateur->date_prelevement);
             $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
 
             if (!$operateur->email) {

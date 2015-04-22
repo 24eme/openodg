@@ -17,10 +17,11 @@ class DRevPrelevementsView extends acCouchdbView
         return acCouchdbManager::getView('drev', 'prelevements', 'DRev');
     }
 
-    public function getPrelevements($date_from, $date_to) {
-        
-        return $this->viewToJson($this->client->startkey(array("cuve_ALSACE", $date_from))
-                            ->endkey(array("cuve_ALSACE", $date_to, array()))
+    public function getPrelevements($produit, $date_from, $date_to) {
+
+        return $this->viewToJson($this->client
+                            ->startkey(array("cuve_".$produit, $date_from))
+                            ->endkey(array("cuve_".$produit, $date_to, array()))
                             ->reduce(false)
                             ->getView($this->design, $this->view)->rows);;
     }
