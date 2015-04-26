@@ -360,6 +360,7 @@ class Tournee extends BaseTournee {
 
     public function validate() {
         $this->validation = date('Y-m-d');
+        $this->statut = TourneeClient::STATUT_TOURNEES;
         $this->cleanOperateurs();
         $this->generatePrelevements();
     }
