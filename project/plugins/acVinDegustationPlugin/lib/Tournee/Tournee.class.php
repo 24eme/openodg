@@ -27,7 +27,7 @@ class Tournee extends BaseTournee {
 
     public function getProduits() {
 
-        return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
     }
 
     public function getOperateursOrderByHour() {

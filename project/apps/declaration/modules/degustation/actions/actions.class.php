@@ -385,7 +385,26 @@ class degustationActions extends sfActions {
         $this->reload = $request->getParameter('reload', 0);
         $this->produits = array();
         foreach($this->tournee->getProduits() as $produit) {
-            $this->produits[$produit->getHash()] = $produit->getLibelleLong();
+            if(!$produit->hasVtsgn()) {
+                continue;
+            }
+            $produit_vt = new stdClass();
+            $produit_sgn = new stdClass();
+            $produit_vt->hash_produit = $produit->getHash();
+            $produit_vt->vtsgn = "VT";
+            $produit_vt->trackby = $produit->getHash().$produit_vt->vtsgn;
+            $produit_vt->libelle = $produit->getLibelleLong() . " VT";
+            $produit_vt->libelle_produit = $produit->getParent()->getLibelleComplet();
+            $produit_vt->libelle_complet = $produit_vt->libelle_produit." ".$produit_vt->libelle;
+            $produit_sgn->hash_produit = $produit->getHash();
+            $produit_sgn->vtsgn = "SGN";
+            $produit_sgn->trackby = $produit->getHash().$produit_sgn->vtsgn;
+            $produit_sgn->libelle = $produit->getLibelleLong() . " SGN";
+            $produit_sgn->libelle_produit = $produit->getParent()->getLibelleComplet();
+            $produit_sgn->libelle_complet = $produit_sgn->libelle_produit." ".$produit_sgn->libelle;
+
+            $this->produits[] = $produit_vt;
+            $this->produits[] = $produit_sgn;
         }
         $this->setLayout('layoutResponsive');
     }
@@ -436,6 +455,7 @@ class degustationActions extends sfActions {
                 $p->hash_produit = $prelevement->hash_produit;                
                 $p->anonymat_prelevement = $prelevement->anonymat_prelevement;                
                 $p->libelle = $prelevement->libelle;                
+                $p->libelle_produit = $prelevement->libelle_produit;                
                 $p->preleve = $prelevement->preleve;
             }
 
