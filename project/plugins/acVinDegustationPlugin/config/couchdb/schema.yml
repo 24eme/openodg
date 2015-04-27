@@ -104,6 +104,10 @@ Degustation:
                 fields:
                   hash_produit: { }
                   libelle: { }
+                  libelle_complet: { required: false }
+                  libelle_produit: { }
+                  vtsgn: { }
+                  volume_revendique: { type: float }
                   anonymat_prelevement: { type: integer }
                   anonymat_prelevement_complet: { }
                   anonymat_degustation: { type: integer }
@@ -132,6 +136,7 @@ Degustation:
                                     '*': { }
       lots:
         type: collection
+        class: DegustationLot
         definition:
           fields:
             '*':
@@ -140,5 +145,8 @@ Degustation:
                 fields:
                   hash_produit: { }
                   libelle: { }
+                  libelle_produit: { }
+                  volume_revendique: { type: float }
+                  vtsgn: { }
                   nb: { }
                   prelevement: { type: integer }

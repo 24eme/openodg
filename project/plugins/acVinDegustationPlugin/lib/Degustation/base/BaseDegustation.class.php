@@ -33,7 +33,7 @@
  * @property integer $reporte
  * @property string $motif_non_prelevement
  * @property acCouchdbJson $prelevements
- * @property acCouchdbJson $lots
+ * @property DegustationLot $lots
 
  * @method string get_id()
  * @method string set_id()
@@ -93,8 +93,8 @@
  * @method string setMotifNonPrelevement()
  * @method acCouchdbJson getPrelevements()
  * @method acCouchdbJson setPrelevements()
- * @method acCouchdbJson getLots()
- * @method acCouchdbJson setLots()
+ * @method DegustationLot getLots()
+ * @method DegustationLot setLots()
  
  */
  

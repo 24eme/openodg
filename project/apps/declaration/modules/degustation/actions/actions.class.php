@@ -432,6 +432,7 @@ class degustationActions extends sfActions {
                 }
 
                 $p->cuve = $prelevement->cuve;  
+                $p->volume_revendique = $prelevement->volume_revendique;  
                 $p->hash_produit = $prelevement->hash_produit;                
                 $p->anonymat_prelevement = $prelevement->anonymat_prelevement;                
                 $p->libelle = $prelevement->libelle;                
