@@ -14,8 +14,21 @@ class parcellaireCremantActions extends sfActions {
         return $this->redirect('parcellaire_edit', $this->parcellaireCremant);
     }
 
+    public function executeCreatePapier(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        
+        $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
+        
+        $this->parcellaireCremant = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), true);
+        $this->parcellaireCremant->add('papier', 1);
+        $this->parcellaireCremant->initProduitFromLastParcellaire();
+        $this->parcellaireCremant->save();
+        
+        return $this->redirect('parcellaire_edit', $this->parcellaireCremant);
+    }
+
     
-        protected function secureEtablissement($droits, $etablissement) {
+    protected function secureEtablissement($droits, $etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
 
             return $this->forwardSecure();
