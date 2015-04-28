@@ -27,7 +27,7 @@ class Tournee extends BaseTournee {
 
     public function getProduits() {
 
-        return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
     }
 
     public function getOperateursOrderByHour() {
@@ -157,11 +157,8 @@ class Tournee extends BaseTournee {
                     continue;
                 }
                 for($i=0; $i < $lot->nb; $i++) {
-                    $prelevement = $degustation->prelevements->add();
-                    $prelevement->hash_produit = $lot->hash_produit;
-                    $prelevement->libelle = $lot->libelle;
+                    $prelevement = $degustation->addPrelevementFromLot($lot);
                     $prelevement->anonymat_prelevement = $j;
-                    $prelevement->preleve = 1;
                     $j++;
                 }
             }
@@ -329,7 +326,7 @@ class Tournee extends BaseTournee {
     }
 
     public function addDegustationFromDRev($drev_id) {
-        $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_JSON);
+        $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_DOCUMENT);
         if(!$drev) {
 
             return null;
@@ -360,6 +357,7 @@ class Tournee extends BaseTournee {
 
     public function validate() {
         $this->validation = date('Y-m-d');
+        $this->statut = TourneeClient::STATUT_TOURNEES;
         $this->cleanOperateurs();
         $this->generatePrelevements();
     }

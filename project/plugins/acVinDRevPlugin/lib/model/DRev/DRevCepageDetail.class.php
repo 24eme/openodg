@@ -32,6 +32,11 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
         return $this->getCouleur()->getLieu();
     }
 
+    public function getAppellation() {
+
+        return $this->getLieuNode()->getAppellation();
+    }
+
     public function resetRevendique() {
         $this->superficie_revendique_total = null;
         $this->superficie_revendique = null;
@@ -70,9 +75,17 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     }
 
     public function getLieuLibelle() {
-        if($this->lieu) {
-            $this->lieu;
+        if ($this->lieu) {
+
+            return $this->lieu;
         }
+
+        return $this->getLieuNode()->getLibelle();
+    }
+
+    public function getCepageLibelle() {
+
+        return $this->getCepage()->getLibelle();
     }
 
     public function getLibelle() {
@@ -90,6 +103,11 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
         }
 
         return $this->_get('libelle');
+    }
+
+    public function getProduitLibelleComplet() {
+        
+        return trim($this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle());
     }
 
 }

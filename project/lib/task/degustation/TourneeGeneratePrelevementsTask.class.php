@@ -1,12 +1,12 @@
 <?php
 
-class DegustationGeneratePrelevementsTask extends sfBaseTask
+class TourneeGeneratePrelevementsTask extends sfBaseTask
 {
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Degustation ID")
+            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Tournée doc id")
         ));
 
         $this->addOptions(array(
@@ -15,7 +15,7 @@ class DegustationGeneratePrelevementsTask extends sfBaseTask
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
         ));
 
-        $this->namespace = 'degustation';
+        $this->namespace = 'tournee';
         $this->name = 'generate-prelevements';
         $this->briefDescription = "Corrige le parcellaire passé en parametre";
         $this->detailedDescription = <<<EOF
@@ -28,15 +28,15 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $degustation = DegustationClient::getInstance()->find($arguments['doc_id']);
+        $tournee = TourneeClient::getInstance()->find($arguments['doc_id']);
 
-        $degustation->updateFromDRev();
-
-        $degustation->prelevements = array();
-        foreach($degustation->lots as $lot) {
-            $degustation->addPrelevementFromLot($lot);
+        foreach($tournee->getDegustationsObject() as $degustation) {
+            $degustation->updateFromDRev();
+            $degustation->prelevements = array();
         }
-        //$degustation->generatePrelevements();
-        $degustation->save();
+
+        $tournee->generatePrelevements();
+        $tournee->saveDegustations();
+        $tournee->save();
     }
 }

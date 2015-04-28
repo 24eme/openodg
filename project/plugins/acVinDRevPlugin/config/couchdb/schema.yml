@@ -157,7 +157,10 @@ DRev:
                               nb_vtsgn: {   }
                               nb_hors_vtsgn: {  }
                               libelle: {  }
+                              libelle_produit: { required: false }
                               hash_produit: {  }
+                              vtsgn: { }
+                              volume_revendique: { type: float }
                               no_vtsgn: { type: integer, required: false }
       documents:
         required: false

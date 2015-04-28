@@ -128,6 +128,8 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
                 termine = true;
             }
+
+            prelevement.produit = { trackby: prelevement.hash_produit + prelevement.vtsgn };
         }
         operateur.termine = termine;
     }
@@ -195,9 +197,17 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     }
 
     $scope.updateProduit = function(prelevement) {
-        prelevement.libelle = $rootScope.produits[prelevement.hash_produit];
+        prelevement.libelle = prelevement.produit.libelle;
+        prelevement.libelle_produit = prelevement.produit.libelle_produit;
+        prelevement.hash_produit = prelevement.produit.hash_produit;
+        prelevement.vtsgn = prelevement.produit.vtsgn;
+
         var code_cepage = prelevement.hash_produit.substr(-2);
-        prelevement.anonymat_prelevement_complet = code_cepage + prelevement.anonymat_prelevement_complet.substr(2, prelevement.anonymat_prelevement_complet.length);
+
+        if(prelevement.vtsgn) {
+            code_cepage += prelevement.vtsgn;
+        }
+        prelevement.anonymat_prelevement_complet = prelevement.anonymat_prelevement_complet.replace(new RegExp("^[a-zA-Z0-9_]+ "), code_cepage + " ");
         prelevement.show_produit = false;
         prelevement.preleve = 1;
         localSave();

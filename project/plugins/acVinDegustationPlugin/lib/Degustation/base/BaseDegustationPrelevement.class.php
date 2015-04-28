@@ -6,6 +6,7 @@
 
  * @property string $hash_produit
  * @property string $libelle
+ * @property string $libelle_complet
  * @property integer $anonymat_prelevement
  * @property string $anonymat_prelevement_complet
  * @property integer $anonymat_degustation
@@ -23,6 +24,8 @@
  * @method string setHashProduit()
  * @method string getLibelle()
  * @method string setLibelle()
+ * @method string getLibelleComplet()
+ * @method string setLibelleComplet()
  * @method integer getAnonymatPrelevement()
  * @method integer setAnonymatPrelevement()
  * @method string getAnonymatPrelevementComplet()
