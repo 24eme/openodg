@@ -3,7 +3,7 @@ Installation
 
 Récupération du projet
 
- > git clone git@gitorious.org:ava/ava.git
+ > git clone https://github.com/24eme/ava.git
 
 Aller dans le dossier ava/project/
 
@@ -65,9 +65,3 @@ Récupération des données :
 Import de la configuration :
 
 > php symfony import:Configuration
-
-Import des etablissements :
-
-> bash bin/import/operateur.sh
-
-L'etablissement de test est le : 723700100
