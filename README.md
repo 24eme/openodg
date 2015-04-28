@@ -6,7 +6,7 @@ Projet de dématérialisation informatique des activités de l'Association des V
 License utilisée
 ----------------
 
-Ce logiciel est mis à disposition sur en licence AGPL.
+Ce logiciel est mis à disposition en licence AGPL.
 
 Projet déployé
 ---------------
