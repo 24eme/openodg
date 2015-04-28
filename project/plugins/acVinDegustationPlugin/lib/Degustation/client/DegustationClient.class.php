@@ -29,8 +29,8 @@ class DegustationClient extends acCouchdbClient {
 
     public static $note_type_by_appellation = array(
         'ALSACE' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE),
-        'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_TYPICITE),
-        'GRDCRU' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_CONCENTRATION),
+        'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_CONCENTRATION, self::NOTE_TYPE_EQUILIBRE),
+        'GRDCRU' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_TYPICITE),
     );
 
     public static $note_type_libelles_help = array(
@@ -55,9 +55,9 @@ class DegustationClient extends acCouchdbClient {
     public static $note_type_notes = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
         self::NOTE_TYPE_MATIERE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
-        self::NOTE_TYPE_TYPICITE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
-        self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
-        self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
+        self::NOTE_TYPE_TYPICITE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
+        self::NOTE_TYPE_CONCENTRATION => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
+        self::NOTE_TYPE_EQUILIBRE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
     );
 
     public static $types_courrier_libelle = array(
