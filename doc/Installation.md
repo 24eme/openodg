@@ -3,7 +3,7 @@ Installation
 
 Récupération du projet
 
- > git clone git@gitorious.org:ava/ava.git
+ > git clone https://github.com/24eme/ava.git
 
 Aller dans le dossier ava/project/
 
