@@ -63,7 +63,6 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $acheteur;
     }
 
-
     public function addAcheteurFromNode($acheteur, $lieu = null) {
         
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
