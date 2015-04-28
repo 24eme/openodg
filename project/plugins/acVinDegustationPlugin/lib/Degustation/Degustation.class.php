@@ -150,7 +150,8 @@ class Degustation extends BaseDegustation {
 
     public function generateNotes() {
          foreach($this->prelevements as $prelevement) {
-            foreach(DegustationClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
+            $prelevement->notes = array();
+            foreach(DegustationClient::getInstance()->getNotesTypeByAppellation($this->appellation) as $key_type_note => $libelle_type_note) {
                     $prelevement->notes->add($key_type_note);
             }
         }

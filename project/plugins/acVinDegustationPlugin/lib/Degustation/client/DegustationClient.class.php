@@ -22,9 +22,15 @@ class DegustationClient extends acCouchdbClient {
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",
-        /*self::NOTE_TYPE_TYPICITE => "Typicité",
+        self::NOTE_TYPE_TYPICITE => "Typicité",
         self::NOTE_TYPE_CONCENTRATION => "Concentration",
-        self::NOTE_TYPE_EQUILIBRE => "Équilibre",*/
+        self::NOTE_TYPE_EQUILIBRE => "Équilibre",
+    );
+
+    public static $note_type_by_appellation = array(
+        'ALSACE' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE),
+        'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_TYPICITE),
+        'GRDCRU' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_CONCENTRATION),
     );
 
     public static $note_type_libelles_help = array(
@@ -49,7 +55,7 @@ class DegustationClient extends acCouchdbClient {
     public static $note_type_notes = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
         self::NOTE_TYPE_MATIERE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
-        self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
+        self::NOTE_TYPE_TYPICITE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
         self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
         self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
     );
@@ -57,7 +63,7 @@ class DegustationClient extends acCouchdbClient {
     public static $types_courrier_libelle = array(
         self::COURRIER_TYPE_OPE => "OPE",
         self::COURRIER_TYPE_OK => "OK",
-             self::COURRIER_TYPE_VISITE => "Visite"
+        self::COURRIER_TYPE_VISITE => "Visite"
     );
 
     public static function getInstance()
@@ -125,6 +131,21 @@ class DegustationClient extends acCouchdbClient {
     public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
 
         return $operateur_a->date_demande > $operateur_b->date_demande;
+    }
+
+    public function getNotesTypeByAppellation($appellation) {
+        if(!isset(self::$note_type_by_appellation[$appellation])) {
+
+            return array();
+        }
+
+        $note_types = array();
+
+        foreach(self::$note_type_by_appellation[$appellation] as $note_type) {
+            $note_types[$note_type] = self::$note_type_libelles[$note_type];
+        }
+
+        return $note_types;
     }
 
 }
