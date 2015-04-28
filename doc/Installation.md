@@ -65,9 +65,3 @@ Récupération des données :
 Import de la configuration :
 
 > php symfony import:Configuration
-
-Import des etablissements :
-
-> bash bin/import/operateur.sh
-
-L'etablissement de test est le : 723700100
