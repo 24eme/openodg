@@ -512,6 +512,26 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.transmission = false;
     }
 
+    $scope.getCodeCepageNumero = function(numero) {
+
+        return numero.replace(/ .+ .+$/, "");
+    }
+
+    $scope.getIncrementalNumero = function(numero) {
+
+        return numero.replace(/^.+ (.+) .+$/, '$1');
+    }
+
+    $scope.getCodeVerifNumero = function(numero) {
+
+        return numero.replace(/^.+ (.+) /, "");
+    }
+
+    $scope.getMoyennePrelevements = function() {
+
+        return (Math.round($scope.prelevements.length/$scope.commissions.length*10)/10)
+    }
+
     $scope.showAjoutValidation = function(prelevement) {
         $scope.prelevement = prelevement;
         $scope.active = 'ajout_validation';
