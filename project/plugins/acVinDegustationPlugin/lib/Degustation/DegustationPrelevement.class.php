@@ -60,6 +60,11 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
         return $this->commission && $this->anonymat_degustation;
     }
+    
+    public function getCuveNettoye() {
+
+        return trim(str_replace('/', '', $this->cuve));
+    }
 
     public function hasMauvaiseNote() {
         foreach($this->notes as $note) {
