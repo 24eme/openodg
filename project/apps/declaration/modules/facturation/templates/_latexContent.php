@@ -33,14 +33,14 @@
 \def\EMETTEUR_VILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEUR_CONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUR_EMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\FACTURE_DATE{Colmar, le <?php $date = new DateTime($facture->emetteur->date_emission); echo $date->format('dd/mm/YYYY'); ?>}
+\def\FACTURE_DATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('dd/mm/YYYY'); ?>}
 \def\FACTURE_DECLARANT_RS{<?php echo $facture->declarant->raison_sociale; ?>}
 \def\FACTURE_DECLARANT_ADRESSE{<?php echo $facture->declarant->adresse; ?>}
 \def\FACTURE_DECLARANT_CP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTURE_DECLARANT_COMMUNE{<?php echo $facture->declarant->commune; ?>}
 \def\FACTURE_TOTAL_HT{<?php echo $facture->total_ht; ?>}
 \def\FACTURE_TOTAL_TVA{<?php echo $facture->total_taxe; ?>}
-\def\FACTURE_TOTAL_TTC{<?php echo $facture->facture->total_ttc; ?>}
+\def\FACTURE_TOTAL_TTC{<?php echo $facture->total_ttc; ?>}
 
 \newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt},%
 linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}

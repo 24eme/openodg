@@ -24,7 +24,4 @@ class facturationActions extends sfActions
 	    	}
         }
     }
-
-    
-
 }

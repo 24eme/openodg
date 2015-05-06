@@ -179,6 +179,27 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
+    public function createFactureByCompte($template, $compte_id) {
+        
+        $generation = new Generation();
+        $generation->date_emission = date('Y-m-d-H:i');
+        $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
+        $generation->documents = array();
+        $generation->somme = 0;
+        $cpt = 0;
+
+        $compte = CompteClient::getInstance()->find($compte_id);
+        $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
+        $f = FactureClient::getInstance()->createDoc($cotisations, $compte);
+        $f->save();
+
+        $generation->somme += $f->total_ttc;
+        $generation->add('documents')->add($cpt, $f->_id);
+        $cpt++;
+
+        return $generation;
+    }
+
 
     public function createFacturesBySoc($generationFactures, $date_facturation, $message_communication = null) {
         
