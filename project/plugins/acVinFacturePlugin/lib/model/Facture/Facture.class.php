@@ -83,7 +83,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
             return $this->_get('numero_ava');
         }
 
-        return preg_replace('/^\d{2}(\d{2}).*/', '$1', $this->date_facturation) . '/' . $this->getPrefixForRegion() . '-' . $this->numero_archive;
+        return preg_replace('/^\d{2}(\d{2}).*/', '$1', $this->date_facturation) . $this->numero_archive;
     }
 
     public function getNumeroReference() {
