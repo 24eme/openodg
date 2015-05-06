@@ -33,7 +33,7 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\FACTUREDATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('dd/mm/YYYY'); ?>}
+\def\FACTUREDATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo $facture->declarant->raison_sociale; ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo $facture->declarant->adresse; ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
@@ -63,7 +63,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 		\small{
 		\EMETTEURLIBELLE \\
 		\EMETTEURADRESSE \\
-		\EMETTEURCP EMETTEURVILLE \\
+		\EMETTEURCP~\EMETTEURVILLE \\
 		\EMETTEURCONTACT \\
 		Email : \EMETTEUREMAIL
 		}
@@ -78,7 +78,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 		\hspace{1.8cm}\FACTUREDECLARANTRS \\
 		\hspace{1.8cm}\FACTUREDECLARANTADRESSE \\
 		\vspace{2mm}
-		\hspace{1.8cm}\FACTUREDECLARANTCP \FACTUREDECLARANTCOMMUNE
+		\hspace{1.8cm}\FACTUREDECLARANTCP~\FACTUREDECLARANTCOMMUNE
 		\end{flushleft}
 	\end{minipage}
 	
