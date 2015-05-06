@@ -506,7 +506,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
             $this->versement_comptable = 0;
         }
 
-        //$this->archivage_document->preSave();
+        $this->archivage_document->preSave();
         $this->numero_ava = $this->getNumeroInterloire();
     }
 
