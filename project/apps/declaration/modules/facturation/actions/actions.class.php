@@ -18,10 +18,25 @@ class facturationActions extends sfActions
 	    		$this->values = $this->form->getValues();
 	       		$compte = CompteClient::getInstance()->findByIdentifiant($this->values['declarant']);
 	       		$templateFacture = TemplateFactureClient::getInstance()->find($this->values['template_facture']);
-	       		$cotisations = $templateFacture->generateCotisations($compte->cvi, $templateFacture->campagne);
-            	$facture = FactureClient::getInstance()->createDoc($cotisations, $compte);
-            	$facture->save();
+	       		$generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $compte->_id);
+                $generation->save();
+
+                return $this->redirect('facturation');
 	    	}
         }
+    }
+
+    public function executeLatex(sfWebRequest $request) {
+        
+        $this->setLayout(false);
+        $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+        $this->forward404Unless($this->facture);
+        $latex = new FactureLatex($this->facture);
+        $latex->echoWithHTTPHeader($request->getParameter('type'));
+        exit;
+    }
+        
+    private function getLatexTmpPath() {
+            return "/tmp/";
     }
 }
