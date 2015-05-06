@@ -1,6 +1,6 @@
 <?php
 
-class FactureRoute extends sfRequestRoute implements InterfaceSocieteRoute {
+class FactureRoute extends sfRequestRoute {
 
 	protected $facture = null;
 
