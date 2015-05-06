@@ -18,3 +18,7 @@ Exemple d'ajout du plugin couchdb :
 ### Pousser les mises à jour effectuées
 
  > git subtree push --prefix=project/plugins/acVinConfigurationPlugin project/plugins/acVinConfigurationPlugin ava
+
+### Passer un dossier existant dans un nouveau repository et le mettre subtree
+
+https://lostechies.com/johnteague/2014/04/04/using-git-subtrees-to-split-a-repository/
