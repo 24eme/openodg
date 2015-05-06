@@ -25,22 +25,22 @@
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
-\def\NUM_FACTURE{<?php echo $facture->numero_facture; ?>}
-\def\NUM_ADHERENT{<?php echo $facture->numero_adherent; ?>}
-\def\EMETTEUR_LIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
-\def\EMETTEUR_ADRESSE{<?php echo $facture->emetteur->adresse; ?>}
-\def\EMETTEUR_CP{<?php echo $facture->emetteur->code_postal; ?>}
-\def\EMETTEUR_VILLE{<?php echo $facture->emetteur->ville; ?>}
-\def\EMETTEUR_CONTACT{<?php echo $facture->emetteur->telephone; ?>}
-\def\EMETTEUR_EMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\FACTURE_DATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('dd/mm/YYYY'); ?>}
-\def\FACTURE_DECLARANT_RS{<?php echo $facture->declarant->raison_sociale; ?>}
-\def\FACTURE_DECLARANT_ADRESSE{<?php echo $facture->declarant->adresse; ?>}
-\def\FACTURE_DECLARANT_CP{<?php echo $facture->declarant->code_postal; ?>}
-\def\FACTURE_DECLARANT_COMMUNE{<?php echo $facture->declarant->commune; ?>}
-\def\FACTURE_TOTAL_HT{<?php echo $facture->total_ht; ?>}
-\def\FACTURE_TOTAL_TVA{<?php echo $facture->total_taxe; ?>}
-\def\FACTURE_TOTAL_TTC{<?php echo $facture->total_ttc; ?>}
+\def\NUMFACTURE{<?php echo $facture->numero_facture; ?>}
+\def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
+\def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
+\def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
+\def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
+\def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
+\def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
+\def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
+\def\FACTUREDATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('dd/mm/YYYY'); ?>}
+\def\FACTUREDECLARANTRS{<?php echo $facture->declarant->raison_sociale; ?>}
+\def\FACTUREDECLARANTADRESSE{<?php echo $facture->declarant->adresse; ?>}
+\def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
+\def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
+\def\FACTURETOTALHT{<?php echo $facture->total_ht; ?>}
+\def\FACTURETOTALTVA{<?php echo $facture->total_taxe; ?>}
+\def\FACTURETOTALTTC{<?php echo $facture->total_ttc; ?>}
 
 \newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt},%
 linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
@@ -49,36 +49,36 @@ linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
 \renewcommand{\headrulewidth}{0cm}
 \renewcommand\sfdefault{phv}
 \renewcommand{\familydefault}{\sfdefault}
-\fancyhead[L]{\includegraphics[scale=0.5]{LOGO}}
+\fancyhead[L]{\includegraphics[scale=0.5]{\LOGO}}
 \fancyhead[R]{
 \colorbox{vertclair}{\LARGE{\textbf{\textcolor{vertfonce}{FACTURE}}}} \\ 
 \vspace{5mm}
-N° facture : \textbf{NUM_FACTURE} \\
-N° adhérent : \textbf{NUM_ADHERENT}
+N° facture : \textbf{\NUMFACTURE} \\
+N° adhérent : \textbf{\NUMADHERENT}
 }
 \fancyfoot[C]{\thepage / \pageref{LastPage}}
 
 \begin{document}
 	\begin{minipage}{0.5\textwidth}
 		\small{
-		EMETTEUR_LIBELLE \\
-		EMETTEUR_ADRESSE \\
-		EMETTEUR_CP EMETTEUR_VILLE \\
-		EMETTEUR_CONTACT \\
-		Email : EMETTEUR_EMAIL
+		\EMETTEURLIBELLE \\
+		\EMETTEURADRESSE \\
+		\EMETTEURCP EMETTEURVILLE \\
+		\EMETTEURCONTACT \\
+		Email : \EMETTEUREMAIL
 		}
 	\end{minipage}
 	\begin{minipage}{0.5\textwidth}
 		\begin{flushright}
 		\vspace{-2mm}
-		FACTURE_DATE
+		\FACTUREDATE
 		\end{flushright}
 		\begin{flushleft}
 		\vspace{7mm}
-		\hspace{1.8cm}FACTURE_DECLARANT_RS \\
-		\hspace{1.8cm}FACTURE_DECLARANT_ADRESSE \\
+		\hspace{1.8cm}\FACTUREDECLARANTRS \\
+		\hspace{1.8cm}\FACTUREDECLARANTADRESSE \\
 		\vspace{2mm}
-		\hspace{1.8cm}FACTURE_DECLARANT_CP FACTURE_DECLARANT_COMMUNE
+		\hspace{1.8cm}\FACTUREDECLARANTCP \FACTUREDECLARANTCOMMUNE
 		\end{flushleft}
 	\end{minipage}
 	
@@ -93,9 +93,9 @@ N° adhérent : \textbf{NUM_ADHERENT}
   <?php echo $detail->quantite; ?> & <?php echo $detail->libelle; ?> & <?php echo $detail->prix_unitaire; ?> & <?php echo $detail->montant_ht; ?> \\
   	<?php endforeach; ?>
   <?php endforeach; ?>
-  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total}}}} & \textbf{\textcolor{vertfonce}{FACTURE_TOTAL_HT €}} \\
-  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{tva}}}} & \textbf{\textcolor{vertfonce}{FACTURE_TOTAL_TVA €}} \\
-  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total ttc à payer}}}} & \textbf{\textcolor{vertfonce}{FACTURE_TOTAL_TTC €}} \\
+  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total}}}} & \textbf{\textcolor{vertfonce}{\FACTURETOTALHT €}} \\
+  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{tva}}}} & \textbf{\textcolor{vertfonce}{\FACTURETOTALTVA €}} \\
+  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total ttc à payer}}}} & \textbf{\textcolor{vertfonce}{\FACTURETOTALTTC €}} \\
 \end{tabular}	
 \end{center}
 
@@ -136,7 +136,7 @@ N° adhérent : \textbf{NUM_ADHERENT}
 			\begin{tabularx}{\linewidth}{X c c}
 			\rowcolor{vertclair} \multicolumn{3}{c}{\textbf{\textcolor{vertfonce}{\textsc{partie à joindre au règlement}}}} \\
 			\textsc{n° facture} & \textsc{n° adhérent} & \textsc{montant ttc} \rule[-7pt]{0pt}{20pt} \\
-			\textbf{NUM_FACTURE} & \textbf{NUM_ADHERENT} & \textbf{FACTURE_TOTAL_TTC €} \\
+			\textbf{\NUMFACTURE} & \textbf{\NUMADHERENT} & \textbf{\FACTURETOTALTTC €} \\
 			\end{tabularx}
 		\end{beamerframe}
 	\end{minipage}
