@@ -8,7 +8,7 @@ Facture:
       identifiant: {}
       code_comptable_client: {}
       numero_facture: {}
-      numero_interloire: {}
+      numero_ava: {}
       date_emission: {}
       date_facturation: {}
       campagne: {}
@@ -48,37 +48,26 @@ Facture:
           fields:
             '*':
               class: FactureLignes
-              type: array_collection
+              type: collection
               definition:
                 fields:
-                  '*':
-                    class: FactureLigne
-                    type: collection
+                  libelle: {  }
+                  montant_tva: {type: float}
+                  montant_ht: {type: float}
+                  details:
+                    type: array_collection
                     definition:
                       fields:
-                        origine_type: {}
-                        origine_identifiant: {}
-                        origine_libelle: {}
-                        origine_date: {}
-                        id_origine: {}
-                        produit_type: {}
-                        produit_libelle: {}
-                        produit_hash: {}
-                        produit_identifiant_analytique: {}
-                        contrat_identifiant: {}
-                        echeance_code: {}
-                        volume: {type: float}
-                        cotisation_taux: {type: float}
-                        montant_ht: {type: float}
-                        origine_mouvements:
+                        '*': 
+                          class: FactureLigne
                           type: collection
                           definition:
                             fields:
-                              '*':
-                                type: array_collection
-                                definition:
-                                  fields:
-                                    '*': { }
+                              libelle: {}
+                              quantite: {type: float}
+                              prix_unitaire: {type: float}
+                              montant_tva: {type: float}
+                              montant_ht: {type: float}
       echeances:
         type: array_collection
         definition:

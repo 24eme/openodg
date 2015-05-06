@@ -62,4 +62,9 @@ class EtablissementClient extends acCouchdbClient {
 
         return $doc;
     }
+
+    public static function getPrefixForRegion($region){
+    	        $prefixs = array(CompteClient::REGION_VITICOLE => '1');
+        return $prefixs[$region];
+    }
 }

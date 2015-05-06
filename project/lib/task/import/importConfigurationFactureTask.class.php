@@ -45,24 +45,41 @@ EOF;
         /*
          * Parsing de la configuration Civa
          */
-        $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/facture'.$arguments['campagne'].'.json');
+        $configurationAocJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/factureaoc'.$arguments['campagne'].'.json');
+        $configurationMarcJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/facturemarc'.$arguments['campagne'].'.json');
 
-        if (!$configurationJson) {
-            throw new sfCommandException("Le fichier de configuration facture n'est pas existant dans l'arborescence " . sfConfig::get('sf_data_dir') . '/import/configuration/');
+        if (!$configurationAocJson) {
+            throw new sfCommandException("Le fichier de configuration facture aoc n'est pas existant dans l'arborescence " . sfConfig::get('sf_data_dir') . '/import/configuration/');
         }
-        $configurationJson = json_decode($configurationJson);
+    	if (!$configurationMarcJson) {
+            throw new sfCommandException("Le fichier de configuration facture marc n'est pas existant dans l'arborescence " . sfConfig::get('sf_data_dir') . '/import/configuration/');
+        }
+        $configurationAocJson = json_decode($configurationAocJson);
+        $configurationMarcJson = json_decode($configurationMarcJson);
 
         if ($options['import'] == 'couchdb') {
 
-            if ($doc = acCouchdbManager::getClient()->find($configurationJson->_id, acCouchdbClient::HYDRATE_JSON)) {
+            if ($doc = acCouchdbManager::getClient()->find($configurationAocJson->_id, acCouchdbClient::HYDRATE_JSON)) {
                 acCouchdbManager::getClient()->deleteDoc($doc);
             }
-            $doc = acCouchdbManager::getClient()->createDocumentFromData($configurationJson);
+            $doc = acCouchdbManager::getClient()->createDocumentFromData($configurationAocJson);
             $doc->save();
-            $this->logSection('configuration', 'Configuration importée avec succès');
+            $this->logSection('configuration', 'Configuration aoc importée avec succès');
+            
+            if ($doc = acCouchdbManager::getClient()->find($configurationMarcJson->_id, acCouchdbClient::HYDRATE_JSON)) {
+                acCouchdbManager::getClient()->deleteDoc($doc);
+            }
+            $doc = acCouchdbManager::getClient()->createDocumentFromData($configurationMarcJson);
+            $doc->save();
+            $this->logSection('configuration', 'Configuration marc importée avec succès');
+            
         } else {
             echo '{"docs":';
-            echo json_encode($configurationJson);
+            echo json_encode($configurationAocJson);
+            echo '}';
+            echo "\n";
+            echo '{"docs":';
+            echo json_encode($configurationMarcJson);
             echo '}';
             echo "\n";
         }

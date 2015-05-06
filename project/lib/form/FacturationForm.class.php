@@ -1,32 +1,41 @@
 <?php
 
 class FacturationForm extends BaseForm {
-
-    /**
-     * 
-     */
-	static public $choices = array(
-		'AOC_ALSACE' => "AOC Alsace",
-		'MARC_GEWURZTRAMINER' => "Marc d'Alsace Gewurztraminer",
-		'REVUE' => "Abonnement revue",
-	);
+	
+	protected $templatesFactures;
+	
+	public function __construct($templatesFactures, $defaults = array(), $options = array(), $CSRFSecret = null)
+  	{
+  		$this->templatesFactures = $templatesFactures;
+    	parent::__construct($defaults, $options, $CSRFSecret);
+  	}
 	
     public function configure() {
+    	$choices = $this->getChoices();
         $this->setWidgets(array(
                 'declarant'   => new sfWidgetFormInput(),
-                'type_facture'   => new sfWidgetFormChoice(array('choices' => self::$choices)),
+                'template_facture'   => new sfWidgetFormChoice(array('choices' => $choices)),
         ));
 
         $this->widgetSchema->setLabels(array(
                 'declarant'  => 'Déclarant : ',
-                'type_facture'  => 'Type de facture : ',
+                'template_facture'  => 'Template de facture : ',
         ));
 
         $this->setValidators(array(
                 'declarant' => new sfValidatorString(array("required" => true)),
-                'type_facture' => new sfValidatorChoice(array('choices' => array_keys(self::$choices), 'multiple' => false, 'required' => true)),
+                'template_facture' => new sfValidatorChoice(array('choices' => array_keys($choices), 'multiple' => false, 'required' => true)),
         ));
         $this->widgetSchema->setNameFormat('facturation[%s]');
+    }
+    
+    public function getChoices()
+    {
+    	$choices = array();
+    	foreach ($this->templatesFactures as $templateFacture) {
+    		$choices[$templateFacture->_id] = $templateFacture->libelle;
+    	}
+    	return $choices;
     }
 
 }

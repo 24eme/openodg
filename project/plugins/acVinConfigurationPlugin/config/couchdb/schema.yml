@@ -16,6 +16,12 @@ Configuration:
       campagne: {}
       virtual : {required: false}
       dr_non_editable: {required: false}
+      factures:
+        required: false
+        type: collection
+        definition:
+          fields:
+            '*': {  }
       intitule:
         type: array_collection
         definition:
@@ -308,60 +314,4 @@ Configuration:
                                                       no_dr: { type: integer, required: false }
                                                       no_ds: { type: integer, required: false }
                                                       auto_drev: { type: integer, required: false }
-
-ConfigurationFacture:
-  definition:
-    fields:
-      _id: {  }
-      _rev: {  }
-      type: {}
-      campagne: {}
-      types:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  libelle: {  }
-                  docs:
-                    type: array_collection
-                    definition:
-                      fields:
-                        '*': {  }
-                  cotisations:
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          class: ConfigurationFactureCotisation
-                          definition:
-                            fields:
-                              modele: {  }
-                              callback: { required: false }
-                              libelle: {  }
-                              details:
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      type: collection
-                                      class: ConfigurationFactureCotisationDetail
-                                      definition:
-                                        fields:
-                                          modele: {  }
-                                          callback: { required: false }
-                                          prix: { required: false }
-                                          variable: { required: false }
-                                          tranche: { required: false }
-                                          reference: { required: false }
-                                          libelle: {  }
-                                          complement_libelle: { required: false }
-                                          docs:
-                                            type: array_collection
-                                            definition:
-                                              fields:
-                                                '*': {  }
 

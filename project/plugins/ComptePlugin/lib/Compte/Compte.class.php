@@ -5,7 +5,7 @@
  *
  */
 class Compte extends BaseCompte {
-
+	
     public function __construct($type_compte = null) {
         parent::__construct();
         $this->setTypeCompte($type_compte);
@@ -319,6 +319,10 @@ class Compte extends BaseCompte {
     public function desarchiver() {
         $this->statut = CompteClient::STATUT_ACTIF;
         $this->date_archivage = null;
+    }
+    
+    public function getRegionViticole() {
+    	return CompteClient::REGION_VITICOLE;
     }
 
 }

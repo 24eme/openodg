@@ -40,22 +40,19 @@ class FactureClient extends acCouchdbClient {
         return $this->startkey('FACTURE-'.$idClient.'-'.$date.'00')->endkey('FACTURE-'.$idClient.'-'.$date.'99')->execute($hydrate);        
     }
 
-    public function createDoc($mvts, $societe, $date_facturation = null, $message_communication = null) {
+    public function createDoc($cotisations, $doc, $date_facturation = null, $message_communication = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
-        $facture->constructIds($societe);        
+        $facture->constructIds($doc);        
         $facture->storeEmetteur();
-        $facture->storeDeclarant();
-        $facture->storeLignes($mvts, $societe->famille);     
-        $facture->updateTotalHT();
-        $facture->updateAvoir();
+        $facture->storeDeclarant($doc);
+        $facture->storeLignes($cotisations);
         $facture->updateTotaux();
-        $facture->storeOrigines();
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
         return $facture;
-    }  
+    }
     
     private $documents_origine = array();
     public function getDocumentOrigine($id) {

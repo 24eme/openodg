@@ -1,6 +1,6 @@
 <?php
 
-class DRevClient extends acCouchdbClient {
+class DRevClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "DRev"; 
     const TYPE_COUCHDB = "DREV";
@@ -20,6 +20,10 @@ class DRevClient extends acCouchdbClient {
         }
 
         return $doc;
+    }
+    
+    public function findFacturable($identifiant, $campagne) {
+    	return $this->find('DREV-'.$identifiant.'-'.$campagne);
     }
 
     public function createDoc($identifiant, $campagne, $papier = false) 

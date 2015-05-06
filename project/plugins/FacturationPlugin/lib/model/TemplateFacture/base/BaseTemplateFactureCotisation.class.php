@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseConfigurationFactureCotisation
+ * BaseTemplateFactureCotisation
  * 
- * Base model for ConfigurationFactureCotisation
+ * Base model for TemplateFactureCotisation
 
  * @property string $modele
  * @property string $callback
@@ -20,11 +20,11 @@
  
  */
 
-abstract class BaseConfigurationFactureCotisation extends acCouchdbDocumentTree {
+abstract class BaseTemplateFactureCotisation extends acCouchdbDocumentTree {
                 
     public function configureTree() {
-       $this->_root_class_name = 'ConfigurationFacture';
-       $this->_tree_class_name = 'ConfigurationFactureCotisation';
+       $this->_root_class_name = 'TemplateFacture';
+       $this->_tree_class_name = 'TemplateFactureCotisation';
     }
                 
 }
