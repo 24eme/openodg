@@ -24,7 +24,7 @@
 \definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
-\def\LOGO{<?php echo echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
+\def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
 \def\NUM_FACTURE{<?php echo $facture->numero_facture; ?>}
 \def\NUM_ADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\EMETTEUR_LIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
