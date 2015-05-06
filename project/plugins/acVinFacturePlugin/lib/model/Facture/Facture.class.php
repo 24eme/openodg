@@ -511,6 +511,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     }
 
     public function storeDeclarant($doc) {
+    	$this->numero_adherent = $doc->identifiant_interne;
         $declarant = $this->declarant;
         $declarant->nom = $doc->nom_a_afficher;
         //$declarant->num_tva_intracomm = $this->societe->no_tva_intracommunautaire;
