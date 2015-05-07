@@ -2,7 +2,7 @@
 \usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
-\usepackage[top=3.5cm, bottom=1.5cm, left=1cm, right=1cm, headheight=4cm, headsep=5mm, marginparwidth=0cm]{geometry}
+\usepackage[top=3cm, bottom=1.5cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
 \usepackage{fancyhdr}
 \usepackage{lastpage}
 \usepackage{graphicx}
@@ -18,6 +18,7 @@
 \usepackage{truncate}
 \usepackage{colortbl} 
 \usepackage{tabularx}
+\usepackage{multirow}
 \usepackage[style=1]{mdframed}
 
 \definecolor{vertclair}{rgb}{0.70,0.79,0.32}
@@ -56,10 +57,11 @@ linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
 N° facture : \textbf{\NUMFACTURE} \\
 N° adhérent : \textbf{\NUMADHERENT}
 }
-\fancyfoot[C]{\thepage / \pageref{LastPage}}
+\fancyfoot[C]{}
 
 \begin{document}
 	\begin{minipage}{0.5\textwidth}
+	    \vspace{-1cm}
 		\small{
 		\EMETTEURLIBELLE \\
 		\EMETTEURADRESSE \\
@@ -69,76 +71,90 @@ N° adhérent : \textbf{\NUMADHERENT}
 		}
 	\end{minipage}
 	\begin{minipage}{0.5\textwidth}
-		\begin{flushright}
-		\vspace{-2mm}
-		\FACTUREDATE
-		\end{flushright}
 		\begin{flushleft}
-		\vspace{7mm}
+		\vspace{1.6cm}
 		\hspace{1.8cm}\FACTUREDECLARANTRS \\
 		\hspace{1.8cm}\FACTUREDECLARANTADRESSE \\
 		\vspace{2mm}
 		\hspace{1.8cm}\FACTUREDECLARANTCP~\FACTUREDECLARANTCOMMUNE
 		\end{flushleft}
 	\end{minipage}
+		\begin{flushleft}
+		\vspace{3mm}
+		\FACTUREDATE
+		\end{flushleft}
 	
-\vspace{1.5cm}
+\vspace{5mm}
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
 \arrayrulecolor{vertclair}
-\begin{tabular}{r p{13.5cm} c|c}
+\begin{tabular}{|>{\raggedleft}m{2cm}|m{8.8cm}|>{\centering}m{2cm}|>{\centering}m{2cm}|>{\centering}m{2cm}|}
+  \hline
+  Quantité & Libellés & Prix (€) & Sous-Total & Total \rule[-7pt]{0pt}{20pt} \tabularnewline
+  \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-  \rowcolor{vertclair} \multicolumn{3}{l}{\textbf{\textcolor{vertfonce}{<?php echo $ligne->libelle; ?>}}} & \textbf{\textcolor{vertfonce}{<?php echo $ligne->montant_ht; ?> €}} \rule[-7pt]{0pt}{20pt} \\
+  & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{20pt} & & & \textbf{<?php echo $ligne->montant_ht; ?> €} \rule[7pt]{0pt}{20pt} \tabularnewline
   	<?php foreach ($ligne->details as $detail): ?>
-  <?php echo $detail->quantite; ?> & <?php echo $detail->libelle; ?> & <?php echo $detail->prix_unitaire; ?> & <?php echo $detail->montant_ht; ?> \\
+  	    \small{\textit{<?php echo $detail->quantite; ?>}} & \small{\textit{<?php echo $detail->libelle; ?>}} & \small{\textit{<?php echo $detail->prix_unitaire; ?>}} & \small{\textit{<?php echo $detail->montant_ht; ?>}} &  \tabularnewline
   	<?php endforeach; ?>
   <?php endforeach; ?>
-  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total}}}} & \textbf{\textcolor{vertfonce}{\FACTURETOTALHT €}} \\
-  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{tva}}}} & \textbf{\textcolor{vertfonce}{\FACTURETOTALTVA €}} \\
-  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total ttc à payer}}}} & \textbf{\textcolor{vertfonce}{\FACTURETOTALTTC €}} \\
+  \hline
+  \end{tabular}
+\begin{center}
+\vspace{0.3cm}
+\end{center}
+\begin{tabular}{|>{\centering}p{10.7cm} >{\raggedleft}p{5cm}|>{\centering}p{2cm}|}
+  \hline
+  \multirow{4}{*} {\begin{minipage}{6cm}Paiement sous 30 jours à réception \newline de facture, net et sans escompte\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT €} \rule[-5pt]{0pt}{18pt} \tabularnewline
+   & \textbf{TVA} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTVA €} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  & \textbf{TOTAL TTC A PAYER} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTTC €} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  \hline
 \end{tabular}	
 \end{center}
-
+\begin{center}
+\small{
+SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
+}
+\end{center}
 	\vspace{1.5cm}
 	\begin{minipage}{0.5\textwidth}
 		\begin{beamerframe}
 		\begin{center}
+			\vspace{3mm}
 			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
-			Organisme de Défense et de Gestion des Appellations \\
-			\small{Maison des Vins d'Alsace \\
-			12 avenue de la Foire aux Vins - B.P. 91225 \\
-			68012 COLMAR Cedex \\
-			Téléphone 03 89 20 16 50 - Télécopie 03 89 20 16 60 \\
-			Email : info@ava-aoc.fr} \\
-			\vspace{2mm}
+			Maison des Vins d'Alsace - Colmar \\
+			\vspace{8mm}
 			\textbf{\large{CARTE DE MEMBRE}} \\
-			\textbf{\large{Année 2014}} \\
+			\vspace{1mm}
+			\textbf{\large{Année 2015}} \\
 		\end{center}
-		\vspace{6mm}
+		\vspace{8mm}
 		\begin{tabular}{r l}
 			NOM : & EARL WEBER Bernard \\
 			Adresse : & 49 rue de Saverne \\
 			Commune : & MOLSHEIM \\
 			N° adhérent : & 523 \\
 		\end{tabular}
+		\vspace{1mm}
 		\end{beamerframe}
 	\end{minipage}
 	\begin{minipage}{0.5\textwidth}
-		\vspace{1.4cm}
+		\vspace{1.2cm}
 		\begin{center}
 			\textsc{Crédit Agricole Colmar Entreprises} \\
-			17206 00770 49124390010 72 \\
 			IBAN : FR76 1720 6007 7049 1243 9001 072 \\
 			BIC : AGRIFRPP872
 		\end{center}
-		\vspace{1.4cm}
+		\vspace{1.2cm}
 		\begin{beamerframe}
+		    \vspace{1mm}
 			\begin{tabularx}{\linewidth}{X c c}
 			\rowcolor{vertclair} \multicolumn{3}{c}{\textbf{\textcolor{vertfonce}{\textsc{partie à joindre au règlement}}}} \\
 			\textsc{n° facture} & \textsc{n° adhérent} & \textsc{montant ttc} \rule[-7pt]{0pt}{20pt} \\
 			\textbf{\NUMFACTURE} & \textbf{\NUMADHERENT} & \textbf{\FACTURETOTALTTC €} \\
 			\end{tabularx}
+		    \vspace{1mm}
 		\end{beamerframe}
 	\end{minipage}
 
-\end{document} 
+\end{document}
