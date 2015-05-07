@@ -1,4 +1,4 @@
-<div class="row" style="margin-top: 20px;">
+<div class="row row-margin">
     <div class="col-xs-12">
          <div class="list-group">
         <?php foreach($tournees as $tournee): ?>

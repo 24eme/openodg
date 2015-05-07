@@ -44,5 +44,6 @@
             </div>
         </div>
     </div>
-    <?php include_component('degustation', 'list'); ?>
 </form>
+
+<?php include_component('degustation', 'list'); ?>
