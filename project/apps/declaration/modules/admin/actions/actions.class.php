@@ -55,7 +55,7 @@ class adminActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id, "service" => $request->getParameter("service")));
         }
 
-        if($doc_type == "PARCELLAIRE") {
+        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id, "service" => $request->getParameter("service")));
         }

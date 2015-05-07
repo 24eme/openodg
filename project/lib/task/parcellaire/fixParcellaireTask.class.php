@@ -16,7 +16,7 @@ class FixParcellaireTask extends sfBaseTask
         ));
 
         $this->namespace = 'fix';
-        $this->name = 'Parcellaire';
+        $this->name = 'parcellaire';
         $this->briefDescription = "Corrige le parcellaire passé en parametre";
         $this->detailedDescription = <<<EOF
 EOF;

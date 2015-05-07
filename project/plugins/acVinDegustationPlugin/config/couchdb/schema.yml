@@ -69,6 +69,7 @@ Degustation:
       _rev: {  }
       type: {  }
       appellation: { }
+      appellation_libelle: { }
       date_degustation: { }
       identifiant: { }
       drev: { }
@@ -103,6 +104,10 @@ Degustation:
                 fields:
                   hash_produit: { }
                   libelle: { }
+                  libelle_complet: { required: false }
+                  libelle_produit: { }
+                  vtsgn: { }
+                  volume_revendique: { type: float }
                   anonymat_prelevement: { type: integer }
                   anonymat_prelevement_complet: { }
                   anonymat_degustation: { type: integer }
@@ -110,12 +115,17 @@ Degustation:
                   preleve: { }
                   commission: { type: integer }
                   appreciations: { }
+                  type_courrier: { }
+                  visite_date: { }
+                  visite_heure: { }
+                  courrier_envoye: { }
                   notes:
                     type: collection
                     definition:
                       fields:
                         '*':
                           type: collection
+                          class: DegustationNote
                           definition:
                             fields:
                               note: { }
@@ -126,6 +136,7 @@ Degustation:
                                     '*': { }
       lots:
         type: collection
+        class: DegustationLot
         definition:
           fields:
             '*':
@@ -134,5 +145,8 @@ Degustation:
                 fields:
                   hash_produit: { }
                   libelle: { }
+                  libelle_produit: { }
+                  volume_revendique: { type: float }
+                  vtsgn: { }
                   nb: { }
                   prelevement: { type: integer }

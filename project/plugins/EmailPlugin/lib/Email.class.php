@@ -169,13 +169,13 @@ class Email {
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($degustation->operateurs as $key => $operateur) {
             $to = $operateur->email;
-            $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le ".Date::francizeDate($operateur->date);
+            $subject = "Avis de passage en vue d'une dégustation conseil ODG-AVA le " . Date::francizeDate($operateur->date_prelevement);
             $body = $this->getBodyFromPartial('send_degustation_operateur', array('operateur' => $operateur));
 
-            if(!$operateur->email) {
+            if (!$operateur->email) {
                 $to = $reply_to;
-                $subject = "[$operateur->raison_sociale : EMAIL NON ENVOYE] ".$subject;
-                $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s (%s)\n\nFiche contact : %s\n\n----------------------------------\n\n%s",$operateur->raison_sociale, $operateur->cvi, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => "COMPTE-E".$operateur->getKey()), true), $body);
+                $subject = "[$operateur->raison_sociale : EMAIL NON ENVOYE] " . $subject;
+                $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s (%s)\n\nFiche contact : %s\n\n----------------------------------\n\n%s", $operateur->raison_sociale, $operateur->cvi, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => "COMPTE-E" . $operateur->getKey()), true), $body);
             }
 
             $message = Swift_Message::newInstance()
@@ -196,13 +196,13 @@ class Email {
         foreach ($degustation->degustateurs as $types_degustateur => $comptes) {
             foreach ($comptes as $id_compte => $degustateur_node) {
                 $to = $degustateur_node->email;
-                $subject = "L'AVA vous invite à une dégustation conseil le ".Date::francizeDate($degustation->date).' à '.$degustation->heure;
+                $subject = "L'AVA vous invite à une dégustation conseil le " . Date::francizeDate($degustation->date) . ' à ' . $degustation->heure;
                 $body = $this->getBodyFromPartial('send_degustation_degustateur', array('degustation' => $degustation));
 
-                if(!$degustateur_node->email) {
+                if (!$degustateur_node->email) {
                     $to = $reply_to;
-                    $subject = "[$degustateur_node->nom : EMAIL NON ENVOYE] ".$subject;
-                    $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s",$degustateur_node->nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $degustateur_node->getKey()), true), $body);
+                    $subject = "[$degustateur_node->nom : EMAIL NON ENVOYE] " . $subject;
+                    $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $degustateur_node->nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $degustateur_node->getKey()), true), $body);
                 }
 
                 $message = Swift_Message::newInstance()
@@ -212,10 +212,48 @@ class Email {
                         ->setSubject($subject)
                         ->setBody($body)
                         ->setContentType('text/plain');
-               $this->getMailer()->send($message);
+                $this->getMailer()->send($message);
             }
         }
 
+        return true;
+    }
+
+    public function sendDegustationNoteCourrier($courrier) {
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
+        foreach ($courrier->prelevements as $prelevement) {
+            if(!is_null($prelevement->courrier_envoye)) {
+                continue;
+            }
+
+            if (!$courrier->operateur->email) {
+                continue;
+            }
+
+            $subject = "Rapport de note de l'AVA suite à la dégustation conseil du " . Date::francizeDate($courrier->operateur->date_degustation);
+            $body = $this->getBodyFromPartial('send_degustation_note_degustateur', array('degustation' => $courrier->operateur));
+            $to = $courrier->operateur->email;
+
+            $message = Swift_Message::newInstance()
+                    ->setFrom($from)
+                    ->setReplyTo($reply_to)
+                    ->setTo($to)
+                    ->setSubject($subject)
+                    ->setBody($body);
+            
+            $pdf = new ExportDegustationPDF($courrier->operateur, $prelevement);
+            $pdf->setPartialFunction(array($this, 'getPartial'));
+            $pdf->generate();
+            $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+            $message->attach($pdfAttachment);
+            
+            $message->setContentType('text/plain');
+            if($this->getMailer()->send($message)) {
+                $prelevement->courrier_envoye = date('Y-m-d');
+            }
+            $courrier->operateur->save();
+        }
         return true;
     }
 
@@ -224,7 +262,7 @@ class Email {
     }
 
     protected function getBodyFromPartial($partial, $vars = null) {
-        
+
         return $this->getAction()->getPartial('Email/' . $partial, $vars);
     }
 

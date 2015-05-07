@@ -1,3 +1,0 @@
-[submodule "project/data"]
-	path = project/data
-	url = git@gitlab.actualys.com:ava/ava-data.git

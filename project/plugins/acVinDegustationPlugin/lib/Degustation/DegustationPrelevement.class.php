@@ -13,7 +13,7 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
         $code_cepage = $this->getCodeCepage();
 
         if(!$code_cepage) {
-            $code_cepage = '__';
+            $code_cepage = $this->getCodeCepageEmpty();
         }
 
         $this->anonymat_prelevement_complet = sprintf("%s %03d %03X", $code_cepage, $this->anonymat_prelevement, $this->anonymat_prelevement + 2560);
@@ -27,9 +27,28 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
         return $return;
     }
 
+    public function getCodeCepageEmpty() {
+        $code_cepage = '__';
+
+        if($this->vtsgn) {
+            $code_cepage .= '__';
+        }
+
+        return $code_cepage;
+    }
+
     public function getCodeCepage() {
 
-        return substr($this->hash_produit, -2);
+        $code_cepage = substr($this->hash_produit, -2);
+        if(!$code_cepage) {
+
+            return;
+        }
+        if($this->vtsgn) {
+            $code_cepage .= $this->vtsgn;
+        }
+
+        return $code_cepage;
     }
 
     public function isPreleve() {
@@ -41,14 +60,29 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
         return $this->commission && $this->anonymat_degustation;
     }
+    
+    public function getCuveNettoye() {
 
-    public function isDegustationTerminee() {
+        return trim(str_replace('/', '', $this->cuve));
+    }
+
+    public function hasMauvaiseNote() {
         foreach($this->notes as $note) {
-            if(!$note->note) {
-                return false;
+            if($note->isMauvaiseNote()) {
+                return true;
             }
         }
 
         return false;
+    }
+
+    public function isDegustationTerminee() {
+        foreach($this->notes as $note) {
+            if($note->note === null) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

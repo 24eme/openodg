@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
-<?php use_javascript('tournee.js?201504020331'); ?>
+<?php use_javascript('tournee.js?201504281909'); ?>
 <div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee)) ?>"; url_state="<?php echo url_for('auth_state') ?>";nombre_commissions=<?php echo $tournee->nombre_commissions ?>; reload=<?php echo $reload ?>;'>
     <div ng-controller="affectationCtrl">
         <section ng-show="active == 'recapitulatif'" id="commissions">
@@ -50,7 +50,7 @@
         <section ng-show="active == 'ajout'">
             <div href="" ng-click="terminer()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Commission n° {{ commission }}</h2>
+                <h2>Commission n° {{ commission }}<br /><button class="btn btn-xs btn-default">{{ (prelevements | filter: { commission: commission }).length }} prélèvements</button>  <button class="btn btn-xs btn-default-step">{{ getMoyennePrelevements() }} en moyenne</button></h2>
             </div>
             <div class="row">
                 <div class="col-xs-12 form-horizontal">
@@ -60,9 +60,9 @@
                         </div>
                     </div>
                     <div class="list-group">
-                        <li class="list-group-item list-group-item-success lead" href="" ng-repeat="prelevement in prelevements | filter: { commission: commission } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' } | orderBy: ['anonymat_degustation']">N° {{ prelevement.anonymat_degustation }} - {{ prelevement.libelle }} <small>(<span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span>) <label ng-show="degustations[prelevement.degustation_id].transmission_collision" class="btn btn-xs btn-danger">Collision</label></small>
-                        <a ng-click="remove(prelevement)" class="btn btn-danger btn-sm pull-right" href=""><span class="glyphicon glyphicon-trash"></span></a></li> 
-                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (prelevements | filter: { commission: null } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' })" ng-click="ajouter(prelevement)"><span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(0, 2) }}</span> {{ prelevement.anonymat_prelevement_complet.substr(3, 3) }} <span class="text-muted-alt">{{ prelevement.anonymat_prelevement_complet.substr(-3) }}</span> <label ng-show="degustations[prelevement.degustation_id].transmission_collision" class="btn btn-xs btn-danger">Collision</label></a>
+                        <li class="list-group-item list-group-item-success lead" href="" ng-repeat="prelevement in prelevements | filter: { commission: commission } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' } | orderBy: ['anonymat_degustation']"><a ng-click="remove(prelevement)" class="btn btn-danger btn-sm pull-right" href=""><span class="glyphicon glyphicon-trash"></span></a>N° {{ prelevement.anonymat_degustation }} - {{ prelevement.libelle }} <small>({{ prelevement.anonymat_prelevement_complet }}) <label ng-show="degustations[prelevement.degustation_id].transmission_collision" class="btn btn-xs btn-danger">Collision</label></small>
+                        </li> 
+                        <a class="list-group-item lead" href="" ng-repeat="prelevement in prelevements_filter = (prelevements | filter: { commission: null } | filter: { anonymat_prelevement_complet: (query.anonymat_prelevement_complet) ? query.anonymat_prelevement_complet : '' })" ng-click="ajouter(prelevement)"><span class="text-muted-alt">{{ getCodeCepageNumero(prelevement.anonymat_prelevement_complet) }}</span> {{ getIncrementalNumero(prelevement.anonymat_prelevement_complet) }} <span class="text-muted-alt">{{ getCodeVerifNumero(prelevement.anonymat_prelevement_complet) }}</span> <label ng-show="degustations[prelevement.degustation_id].transmission_collision" class="btn btn-xs btn-danger">Collision</label></a>
                     </div>
                 </div>
             </div>

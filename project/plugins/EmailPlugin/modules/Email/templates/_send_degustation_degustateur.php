@@ -1,7 +1,7 @@
 <?php use_helper('Date') ?>
 Bonjour,
 
-En votre qualité de dégustateur expert, nous vous invitons à venir participer à une dégustation conseil :
+En votre qualité de dégustateur expert <?php echo $degustation->appellation_libelle ?>, nous vous invitons à venir participer à une dégustation conseil :
 
 Le <?php echo ucfirst(format_date($degustation->date, "P", "fr_FR")) ?> à <?php echo Date::francizeHeure($degustation->heure); ?>
 

@@ -15,12 +15,22 @@ class DegustationClient extends acCouchdbClient {
     const MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN = "PLUS_DE_VIN";
     const MOTIF_NON_PRELEVEMENT_SOUCIS = "SOUCIS";
 
+    const COURRIER_TYPE_OPE = "OPE" ;
+    const COURRIER_TYPE_OK = "OK" ;
+    const COURRIER_TYPE_VISITE = "VISITE" ;
+
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",
-        /*self::NOTE_TYPE_TYPICITE => "Typicité",
+        self::NOTE_TYPE_TYPICITE => "Typicité",
         self::NOTE_TYPE_CONCENTRATION => "Concentration",
-        self::NOTE_TYPE_EQUILIBRE => "Équilibre",*/
+        self::NOTE_TYPE_EQUILIBRE => "Équilibre",
+    );
+
+    public static $note_type_by_appellation = array(
+        'ALSACE' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE),
+        'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_CONCENTRATION, self::NOTE_TYPE_EQUILIBRE),
+        'GRDCRU' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_TYPICITE),
     );
 
     public static $note_type_libelles_help = array(
@@ -38,34 +48,47 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Acescence", "Acétate d'éthyl","Acétique","Acide","Acidité volatile","Aigre-doux","Alcooleux","Alliacé","Amande amère","Amer","Amylique","Apre","Asséchant","Astringent","Bactérien","Bock","Botrytis","Bouchonné","Bourbes","Brunissement","Butyrique","Caoutchouc","Cassé","Champignon","Ciment","Couleur altérée","Créosote","Croupi","Cuit","Cuivre","Décoloré","Désagréable","Déséquilibré","Douceureux","Ecurie","Eventé","Evolué","Fatigué","Fermentaire","Filant","Foxé","Gazeux","Géranium","Gouache","Goudron","Goût de bois sec","Goût de colle","Grêle","Grossier","H2S","Herbacé","Huileux","Hydrocarbures","Insuffisant","Iodé","Lactique","Levure","Lie","Logement","Lourd","Madérisé","Malpropre","Manque de finesse","Manque de fruit","Manque de structure","Mauvais boisé","Mauvais goût","Mauvaise odeur","Mercaptans","Métallique","Moisi","Mou","Oignon","Oxydé","Papier","Pas net","Pharmaceutique","Phéniqué","Phénolé","Piqué","Plastique","Plat","Plombé","Poivron","Pourri","Pourriture grise","Poussiéreux","Punaise","Putride","Rafle","Rance","Réduit","Résinique","Sale","Savonneux","Sec","Serpilière","Sirupeux","SO2","Solvant","Souris","Squelettique","Styrène","Taché","Tannique","Tartre sec","Terreux","Trop boisé","Trouble","Tuilé","Usé","Végétal","Vert","Vin non terminé"),
         self::NOTE_TYPE_MATIERE => array("Champignon","Court","Creux","Dilué","Insuffisant","Maigre","Manque de corps","Manque de fruit","Manque de matière","Manque de puissance","Manque de structure","Manque de typicité dans le cépage","Pourri","Pourriture grise","Végétal","Vert", "Acide", "Lourd", "Moisi", "Mou", "Poivron", "Poussiéreux", "Herbacé"),
         self::NOTE_TYPE_TYPICITE => array(),
-        self::NOTE_TYPE_CONCENTRATION => array(),
-        self::NOTE_TYPE_EQUILIBRE => array(),
+        self::NOTE_TYPE_CONCENTRATION => array("Court","Creux","Dilué","Insuffisant","Maigre","Manque de corps","Manque de fruit","Manque de matière","Manque de puissance","Manque de structure"),
+        self::NOTE_TYPE_EQUILIBRE => array("Aigre-doux","Alcooleux","Désagréable","Déséquilibré","Douceureux","Lourd"),
     );
 
     public static $note_type_notes = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
         self::NOTE_TYPE_MATIERE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
-        self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
-        self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
-        self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
+        self::NOTE_TYPE_TYPICITE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
+        self::NOTE_TYPE_CONCENTRATION => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
+        self::NOTE_TYPE_EQUILIBRE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
     );
 
-    public static $ordre_cepages = array(
-        'SY' => '01',
-        'AU' => '02',
-        'PB' => '03',
-        'RI' => '04',
-        'MU' => '05',
-        'PG' => '06',
-        'GW' => '07',
-        'PN' => '08',
-        'PR' => '09',
+    public static $types_courrier_libelle = array(
+        self::COURRIER_TYPE_OPE => "OPE",
+        self::COURRIER_TYPE_OK => "OK",
+        self::COURRIER_TYPE_VISITE => "Visite"
     );
 
     public static function getInstance()
     {
         
         return acCouchdbManager::getClient("Degustation");
+    }
+
+    public function create($data, $force_return_ls = false) {
+        if (!isset($data->type)) {
+            
+            throw new acCouchdbException('Property "type" ($data->type)');
+        }
+        if (!class_exists($data->type)) {
+            
+            throw new acCouchdbException('Class "' . $data->type . '" not found');
+        }
+        
+        $doc = new $data->type();
+        $doc->loadFromCouchdb($data);
+
+        if($doc->getType() == "LS" && $force_return_ls == false )
+          return $this->find($doc->getPointeur());
+        
+        return $doc;
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -93,4 +116,36 @@ class DegustationClient extends acCouchdbClient {
 
         return $degustation;
     }
+
+    public function getDegustationsByDRev($drev_id) {
+        
+    }
+
+    public function getDegustationsByIdentifiant($cvi) {
+
+        return $this->startkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "00000000", "ALSACE"))
+                    ->endkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "99999999", "ALSACE"))
+                    ->execute($hydrate);
+    }
+
+    public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
+
+        return $operateur_a->date_demande > $operateur_b->date_demande;
+    }
+
+    public function getNotesTypeByAppellation($appellation) {
+        if(!isset(self::$note_type_by_appellation[$appellation])) {
+
+            return array();
+        }
+
+        $note_types = array();
+
+        foreach(self::$note_type_by_appellation[$appellation] as $note_type) {
+            $note_types[$note_type] = self::$note_type_libelles[$note_type];
+        }
+
+        return $note_types;
+    }
+
 }

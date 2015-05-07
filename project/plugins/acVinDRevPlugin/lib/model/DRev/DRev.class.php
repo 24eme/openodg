@@ -119,7 +119,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $csv->getCsvAcheteur($this->identifiant);
     }
 
-    public function updateFromCSV() {
+    public function updateFromCSVAndInit() {
         $csv = $this->getCSV();
         $this->updatePrelevementsFromRevendication();
         $this->resetDetail();
@@ -130,6 +130,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->updateCepageFromCSV($csv);
         $this->updatePrelevementsFromRevendication();
         $this->updateLotsFromCepage();
+        $this->declaration->reorderByConf();
+    }
+
+    public function updateFromCSV() {
+        $csv = $this->getCSV();
+        $this->resetDetail();
+        $this->updateDetailFromCSV($csv);
+        $this->updateDetail();
+        $this->resetCepage();
+        $this->updateCepageFromCSV($csv);
         $this->declaration->reorderByConf();
     }
 
@@ -536,6 +546,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             }
 
             $detail->updateTotal();
+            $detail->getLibelle();
         }
     }
 

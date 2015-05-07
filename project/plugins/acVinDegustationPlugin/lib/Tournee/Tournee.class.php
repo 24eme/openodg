@@ -27,7 +27,7 @@ class Tournee extends BaseTournee {
 
     public function getProduits() {
 
-        return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
+        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
     }
 
     public function getOperateursOrderByHour() {
@@ -157,11 +157,8 @@ class Tournee extends BaseTournee {
                     continue;
                 }
                 for($i=0; $i < $lot->nb; $i++) {
-                    $prelevement = $degustation->prelevements->add();
-                    $prelevement->hash_produit = $lot->hash_produit;
-                    $prelevement->libelle = $lot->libelle;
+                    $prelevement = $degustation->addPrelevementFromLot($lot);
                     $prelevement->anonymat_prelevement = $j;
-                    $prelevement->preleve = 1;
                     $j++;
                 }
             }
@@ -179,29 +176,29 @@ class Tournee extends BaseTournee {
     public function getOperateursPrelevement() {
         $operateurs = array();
 
-        foreach($this->operateur as $operateur) {
+        foreach($this->operateurs as $operateur) {
             if(!count($operateur->getLotsPrelevement())) {
                 continue;                
             }
 
-            $operateurs[$operateur->getKey()] = $operateur;
+            $operateurs[$operateur->getIdentifiant()] = $operateur;
         }
 
         return $operateurs;
     }
 
     public function getOperateursReporte() {
-        $operateurs = array();
+        $degustations = array();
 
-        foreach($this->operateurs as $operateur) {
-            if($operateur->isPrelever()) {
+        foreach($this->getDegustationsObject() as $degustation) {
+            if($degustation->motif_non_prelevement != DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
                 continue;
             }
 
-            $operateurs[$operateur->getKey()] = $operateur;
+            $degustations[$degustation->getIdentifiant()] = $degustation;
         }
 
-        return $operateurs;
+        return $degustations;
     }
     
     public function getOperateursDegustes() {
@@ -216,23 +213,6 @@ class Tournee extends BaseTournee {
         }
 
         return $degustations;
-    }
-    
-    public function getNotes() {
-        
-        $notes = array();
-
-        foreach($this->getOperateursDegustes() as $operateurDeguste) {
-           
-            foreach ($operateurDeguste->prelevements as $prelevement) {
-                if($prelevement->anonymat_degustation){
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation] = new stdClass();
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->operateur = $operateurDeguste;
-                    $notes[$operateurDeguste->getIdentifiant().'-'.$prelevement->anonymat_degustation]->prelevement = $prelevement;
-                }
-            }
-        }
-        return $notes;
     }
 
     public function storeEtape($etape) {
@@ -269,6 +249,7 @@ class Tournee extends BaseTournee {
     public function isDegustationTerminee() {
         foreach($this->getDegustationsObject() as $degustation) {
             if(!$degustation->isDegustationTerminee()) {
+
                 return false;
             }
         }
@@ -276,7 +257,7 @@ class Tournee extends BaseTournee {
         return true;
     }
 
-    /*public function updateOperateursFromPrevious() {
+    public function updateOperateursFromPrevious() {
         $previous = $this->getPrevious();
 
         if(!$previous) {
@@ -284,34 +265,27 @@ class Tournee extends BaseTournee {
             return null;
         }
 
-        foreach($previous->getOperateursReporte() as $o) {
-            $operateur = $this->addOperateurFromDRev("DREV-".$o->getKey()."-".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        foreach($previous->getOperateursReporte() as $degustation_previous) {
+            $degustation = $this->addOperateurFromDRev($degustation_previous->drev);
 
-            if(!$operateur) {
+            if(!$degustation) {
                 continue;
             }
 
-            $operateur->reporte = 1;
-
-            if(count($operateur->getLotsPrelevement()) > 0) {
-
-                continue;
-            }
-            
-            foreach($o->lots as $lot) {
-                $lot_key = str_replace("cepage-", "cepage_", str_replace("appellation-ALSACE", "appellation_ALSACE", str_replace("_", "-", $lot->getKey())));
-                if(!$operateur->lots->exist($lot_key)) {
+            foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
+                if(!$degustation->lots->exist($lot_key)) {
                     continue;
                 }
-                $operateur->lots->get($lot_key)->prelevement = 1;
+
+                $degustation->lots->get($lot_key)->prelevement = 1;
             }
         }
-    }*/
+    }
 
     public function updateOperateursFromDRev() {
-        $prelevements = TourneeClient::getInstance()->getPrelevements($this->date_prelevement_debut, $this->date_prelevement_fin);
+        $prelevements = TourneeClient::getInstance()->getPrelevements($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
 
-        $previous = $this->getPrevious();
+        //$previous = $this->getPrevious();
 
         foreach($prelevements as $prelevement) {
             $operateur = $this->addOperateurFromDRev($prelevement->_id);
@@ -352,8 +326,7 @@ class Tournee extends BaseTournee {
     }
 
     public function addDegustationFromDRev($drev_id) {
-        $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_JSON);
-        
+        $drev = DRevClient::getInstance()->find($drev_id, acCouchdbClient::HYDRATE_DOCUMENT);
         if(!$drev) {
 
             return null;
@@ -364,8 +337,9 @@ class Tournee extends BaseTournee {
             return null;
         }
 
-        $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->appellation, $this->date);
-        $degustation->drev = $drev->_id;
+        //var_dump(DegustationClient::getInstance()->getDegustationsByIdentifiant($drev->identifiant));
+
+        $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->date, $this->appellation);
 
         $degustation->updateFromDRev($drev);
         $degustation->constructId();
@@ -383,6 +357,7 @@ class Tournee extends BaseTournee {
 
     public function validate() {
         $this->validation = date('Y-m-d');
+        $this->statut = TourneeClient::STATUT_TOURNEES;
         $this->cleanOperateurs();
         $this->generatePrelevements();
     }
@@ -408,6 +383,58 @@ class Tournee extends BaseTournee {
         foreach($this->getDegustationsObject() as $degustation) {
             $this->nombre_prelevements += count($degustation->prelevements);
         }
+    }
+
+
+    public function getPrelevementsReadyForCourrier() {
+        $prelevementsByOperateurs = array();
+
+        foreach ($this->operateurs as $cvi => $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) {
+                    if (!array_key_exists($cvi, $prelevementsByOperateurs)) {
+                        $prelevementsByOperateurs[$cvi] = new stdClass();
+                        $prelevementsByOperateurs[$cvi]->prelevements = array();
+                        $prelevementsByOperateurs[$cvi]->operateur = $operateur;
+                    }
+                    $prelevementsByOperateurs[$cvi]->prelevements[$prelevement->getHash()] = $prelevement;
+                }
+            }
+        }
+
+        return $prelevementsByOperateurs;
+    }
+
+    public function hasAllTypeCourrier() {
+        $notes = $this->getNotes();
+        foreach ($notes as $note) {
+            if (!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    public function getNotes() {
+        
+        $notes = array();
+
+        foreach($this->getOperateursDegustes() as $operateurDeguste) {
+           
+            foreach ($operateurDeguste->prelevements as $prelevement) {
+                if($prelevement->anonymat_degustation){
+                    $key = sprintf("%03d-%s", $prelevement->anonymat_degustation, $operateurDeguste->getIdentifiant());
+                    $notes[$key] = new stdClass();
+                    $notes[$key]->operateur = $operateurDeguste;
+                    $notes[$key]->prelevement = $prelevement;
+                }
+            }
+        }
+
+        ksort($notes);
+
+        return $notes;
     }
 
 }

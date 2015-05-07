@@ -113,7 +113,7 @@ class drevActions extends sfActions {
         file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
         $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
 
-        $this->drev->updateFromCSV();
+        $this->drev->updateFromCSVAndInit();
         $this->drev->save();
 
         return $this->redirect($this->generateUrl('drev_revendication', $this->drev));

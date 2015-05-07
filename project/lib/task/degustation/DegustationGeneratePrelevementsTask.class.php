@@ -6,7 +6,7 @@ class DegustationGeneratePrelevementsTask extends sfBaseTask
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('tournee_id', sfCommandArgument::REQUIRED, "Tournee ID")
+            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Degustation ID")
         ));
 
         $this->addOptions(array(
@@ -28,15 +28,15 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        $tournee = TourneeClient::getInstance()->find($arguments['tournee_id']);
+        $degustation = DegustationClient::getInstance()->find($arguments['doc_id']);
 
-        if(!$tournee) {
+        $degustation->updateFromDRev();
 
-            throw new sfException("Tournee introuvable");
+        $degustation->prelevements = array();
+        foreach($degustation->lots as $lot) {
+            $degustation->addPrelevementFromLot($lot);
         }
-
-        $tournee->generatePrelevements();
-        $tournee->saveDegustations();
-        $tournee->save();
+        //$degustation->generatePrelevements();
+        $degustation->save();
     }
 }

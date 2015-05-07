@@ -9,6 +9,7 @@ class TourneeClient extends acCouchdbClient {
     const STATUT_TOURNEES = 'TOURNEES';
     const STATUT_AFFECTATION = 'AFFECTATION';
     const STATUT_DEGUSTATIONS = 'DEGUSTATIONS';
+    const STATUT_COURRIERS = 'COURRIERS';
     const STATUT_TERMINE = 'TERMINE';
     
     public static function getInstance()
@@ -36,9 +37,9 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
-    public function getPrelevements($date_from, $date_to) {
+    public function getPrelevements($produit, $date_from, $date_to) {
         
-        return DRevPrelevementsView::getInstance()->getPrelevements($date_from, $date_to);
+        return DRevPrelevementsView::getInstance()->getPrelevements($produit, $date_from, $date_to);
     }
 
     public function getAgents($attribut = null) {

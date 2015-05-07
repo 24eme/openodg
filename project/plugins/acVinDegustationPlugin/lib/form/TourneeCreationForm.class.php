@@ -15,7 +15,7 @@ class TourneeCreationForm extends acCouchdbObjectForm
         $this->widgetSchema->setNameFormat('tournee_creation[%s]');
     }
 
-    public function getAppellationChoices() {
+    public static function getAppellationChoices() {
 
         return array(
             "" => "",
@@ -28,7 +28,7 @@ class TourneeCreationForm extends acCouchdbObjectForm
      public function doUpdateObject($values) 
     {
         parent::doUpdateObject($values);
-        $appellationsWithLibelle = $this->getAppellationChoices();
+        $appellationsWithLibelle = self::getAppellationChoices();
         $appellation = $values["appellation"];
         $this->getObject()->appellation_libelle = $appellationsWithLibelle[$appellation];
     }

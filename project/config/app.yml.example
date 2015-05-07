@@ -41,3 +41,13 @@ all:
         service_facturation: "Maison des Vins d'Alsace"
         telephone: "Téléphone 03 89 20 16 50 - Télécopie 03 89 20 16 60"
         email: "info@ava-aoc.fr"
+  degustation_courrier:
+    responsable: "Responsable technique"
+    visitetel: "00.00.00.00.00"
+    visiteorga: "Nom Prenom"
+    adresse:
+      raison_sociale: "Raison sociale"
+      adresse: "Adresse"
+      cp_ville: "CP Ville"
+      telephone: "Téléphone 00 00 00 00 00 - Fax 01 01 01 01 01"
+      email: "Email : mail@mailer.fr"

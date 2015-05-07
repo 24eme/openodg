@@ -8,6 +8,7 @@
  * @property string $_rev
  * @property string $type
  * @property string $appellation
+ * @property string $appellation_libelle
  * @property string $date_degustation
  * @property string $identifiant
  * @property string $drev
@@ -32,7 +33,7 @@
  * @property integer $reporte
  * @property string $motif_non_prelevement
  * @property acCouchdbJson $prelevements
- * @property acCouchdbJson $lots
+ * @property DegustationLot $lots
 
  * @method string get_id()
  * @method string set_id()
@@ -42,6 +43,8 @@
  * @method string setType()
  * @method string getAppellation()
  * @method string setAppellation()
+ * @method string getAppellationLibelle()
+ * @method string setAppellationLibelle()
  * @method string getDateDegustation()
  * @method string setDateDegustation()
  * @method string getIdentifiant()
@@ -90,8 +93,8 @@
  * @method string setMotifNonPrelevement()
  * @method acCouchdbJson getPrelevements()
  * @method acCouchdbJson setPrelevements()
- * @method acCouchdbJson getLots()
- * @method acCouchdbJson setLots()
+ * @method DegustationLot getLots()
+ * @method DegustationLot setLots()
  
  */
  

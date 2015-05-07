@@ -18,6 +18,16 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $this->filter('^mention');
     }
 
+    public function addAcheteur($acheteur) {
+        
+        return $this->getCepage()->addAcheteurFromNode($acheteur, $this->lieu);
+    }
+
+    public function getAcheteurs() {
+
+        return $this->getCepage()->getAcheteursNode($this->lieu);
+    }
+
     public function getProduitsCepageDetails() {
 
         return array($this->getHash() => $this);

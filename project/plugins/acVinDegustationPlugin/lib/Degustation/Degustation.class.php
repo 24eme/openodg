@@ -11,40 +11,72 @@ class Degustation extends BaseDegustation {
 
     public function updateFromDRev($drev = null) {
         if(!$drev) {
-            $drev = DRevClient::getInstance()->find($this->drev, acCouchdbClient::HYDRATE_JSON);
+            $drev = DRevClient::getInstance()->find($this->drev);
         }
-
+        $this->drev = $drev->_id;
         $this->cvi = $drev->declarant->cvi;
         $this->raison_sociale = $drev->declarant->raison_sociale;
         $this->adresse = $drev->chais->cuve_->adresse;
         $this->code_postal = $drev->chais->cuve_->code_postal;
         $this->commune = $drev->chais->cuve_->commune;
         
-
-        $prelevement = $drev->prelevements->cuve_ALSACE;
+        $prelevement = $drev->prelevements->{"cuve_".$this->appellation};
         $this->date_demande = $prelevement->date;
+        $this->lots = array();
+
+        $vtsgn_items = array("vt" => "VT", "sgn" => "SGN");
+
+        foreach($drev->declaration->getProduitsCepage() as $detail) {
+            foreach($vtsgn_items as $vtsgn_key => $vtsgn_libelle) {
+                if(!$detail->get("volume_revendique_".$vtsgn_key)) {
+                    continue;
+                }
+
+                $lot = $prelevement->lots->add(str_replace("/", "-", $detail->getHash()."-".$vtsgn_key));
+                $lot->libelle = sprintf("%s %s", $detail->getCepageLibelle(), $vtsgn_libelle);
+                $lot->add('libelle_produit', sprintf("%s", $detail->getProduitLibelleComplet()));
+                $lot->hash_produit = $detail->getCepage()->getHash();
+                $lot->volume_revendique = $detail->get("volume_revendique_".$vtsgn_key);
+                $lot->nb_hors_vtsgn = 1;
+                $lot->vtsgn = $vtsgn_libelle;
+            }
+        }
 
         foreach($prelevement->lots as $l_key => $l) {
             if(!$l->nb_hors_vtsgn) {
                 continue;
             }
-            $lot = $this->lots->add(str_replace("/", "-", $l->hash_produit));
+            $lot = $this->lots->add($l_key);
             $lot->hash_produit = $l->hash_produit;
             $lot->libelle = $l->libelle;
+            $lot->libelle_produit = $l->libelle_produit;
             $lot->nb = $l->nb_hors_vtsgn;
+            $lot->vtsgn = $l->vtsgn;
+            $lot->volume_revendique = $l->volume_revendique;
+            $lot->prelevement = 1;
         }
     }
 
-    public function isPrelever() {
+    public function getDrev() {
+        if($this->_get('drev')) {
 
-        foreach($this->prelevements as $prelevement) {
-            if($prelevement->cuve) {
-
-                return true;
-            }
+            return $this->_get('drev');
         }
 
-        return false;
+        return "DREV-".$this->getIdentifiant()."-2014";
+    }
+
+    public function getAppellationLibelle() {
+        if(!$this->appellation) {
+            return null;
+        }
+
+        if(!$this->_get('appellation_libelle')) {
+            $appellationsWithLibelle = TourneeCreationForm::getAppellationChoices();
+            $this->_set("appellation_libelle", $appellationsWithLibelle[$this->appellation]);
+        }
+
+        return $this->_get('appellation_libelle');
     }
 
     public function isDeguste() {
@@ -118,10 +150,23 @@ class Degustation extends BaseDegustation {
 
     public function generateNotes() {
          foreach($this->prelevements as $prelevement) {
-            foreach(DegustationClient::$note_type_libelles as $key_type_note => $libelle_type_note) {
+            foreach(DegustationClient::getInstance()->getNotesTypeByAppellation($this->appellation) as $key_type_note => $libelle_type_note) {
                     $prelevement->notes->add($key_type_note);
             }
         }
+    }
+
+    public function addPrelevementFromLot($lot) {
+        $prelevement = $this->prelevements->add();
+        $prelevement->hash_produit = $lot->hash_produit;
+        $prelevement->libelle = $lot->libelle;
+        $prelevement->libelle_produit = $lot->libelle_produit;
+        $prelevement->vtsgn = $lot->vtsgn;
+        $prelevement->volume_revendique = $lot->volume_revendique;
+        
+        $prelevement->preleve = 1;
+
+        return $prelevement;
     }
 
     public function isTourneeTerminee() {
@@ -172,6 +217,10 @@ class Degustation extends BaseDegustation {
         }
 
         return false;
+    }
+
+    public function generateCourrier() {
+        
     }
 
     public function getCompte() {
