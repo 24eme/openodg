@@ -1,6 +1,18 @@
 Installation
 ============
 
+# Dépendances
+
+Pour Symfony :
+
+$ sudo aptitude install couchdb libapache2-mod-php5 php5-cli php5-curl
+
+Pour la génération des pdf en latex :
+
+$ sudo aptitude install texlive-fonts-recommended texlive-latex-extra pdflatex pdftk texlive-lang-french texlive-lang-greek
+
+# Récupération
+
 Récupération du projet
 
  > git clone https://github.com/24eme/ava.git
@@ -8,6 +20,8 @@ Récupération du projet
 Aller dans le dossier ava/project/
 
  > cd ava/project
+
+# Configuration
 
 Copier le fichier de configuration bin/config.inc
 
