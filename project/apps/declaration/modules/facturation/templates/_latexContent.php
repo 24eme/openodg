@@ -84,7 +84,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 		\FACTUREDATE
 		\end{flushleft}
 	
-\vspace{5mm}
+\vspace{2mm}
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
 \arrayrulecolor{vertclair}
@@ -93,7 +93,7 @@ N° adhérent : \textbf{\NUMADHERENT}
   Quantité & Libellés & Prix (€) & Sous-Total & Total \rule[-7pt]{0pt}{20pt} \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-  & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{20pt} & & & \textbf{<?php echo $ligne->montant_ht; ?> €} \rule[7pt]{0pt}{20pt} \tabularnewline
+  & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{12pt} & & & \textbf{<?php echo $ligne->montant_ht; ?> €} \rule[7pt]{0pt}{12pt} \tabularnewline
   	<?php foreach ($ligne->details as $detail): ?>
   	    \small{\textit{<?php echo $detail->quantite; ?>}} & \small{\textit{<?php echo $detail->libelle; ?>}} & \small{\textit{<?php echo $detail->prix_unitaire; ?>}} & \small{\textit{<?php echo $detail->montant_ht; ?>}} &  \tabularnewline
   	<?php endforeach; ?>
