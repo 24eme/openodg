@@ -946,6 +946,22 @@ facturation_pdf:
   requirements:
     sf_method: [get]
 
+#Génération
+
+generation_view:
+  url: /generation/:type_document/:date_emission
+  param: { module: generation, action: view }
+  requirements:
+    sf_method: [get]
+
+generation_delete:
+  url: /generation/:type_document/:date_emission/delete
+  param: { module: generation, action: delete }
+  requirements:
+    sf_method: [get]
+
+#Défaut
+
 default_index:
   url:   /:module
   param: { action: index }

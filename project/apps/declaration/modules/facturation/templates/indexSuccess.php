@@ -1,3 +1,7 @@
+<?php include_partial('admin/menu', array('active' => 'facturation')); ?>
+
+<?php include_partial('generation/list', array('generations' => $generations)); ?>
+
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal col-lg-6">
         <?php echo $form->renderHiddenFields(); ?>
