@@ -626,5 +626,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	}
     	return $complete;
     }
-
+    
+    /*
+     * Facture
+     */
+	public function getSurfaceFacturable()
+	{
+		return $this->declaration->getTotalTotalSuperficie();
+	}
+	
+	public function getVolumeFacturable()
+	{
+		return $this->declaration->getTotalVolumeRevendique();
+	}
 }

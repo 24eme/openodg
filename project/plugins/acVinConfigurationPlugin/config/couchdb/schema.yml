@@ -16,6 +16,12 @@ Configuration:
       campagne: {}
       virtual : {required: false}
       dr_non_editable: {required: false}
+      factures:
+        required: false
+        type: collection
+        definition:
+          fields:
+            '*': {  }
       intitule:
         type: array_collection
         definition:

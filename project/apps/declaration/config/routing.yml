@@ -979,6 +979,40 @@ parcellaire_export_csv_document:
   requirements:
     sf_method: [get]
 
+#Facturation
+
+facturation:
+  url: /facturation
+  param: { module: facturation, action: index }
+  requirements:
+    sf_method: [get, post]
+
+facturation_pdf:
+  url: /facturation/pdf/:id
+  param: { module: facturation, action: latex }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get]
+
+#Génération
+
+generation_view:
+  url: /generation/:type_document/:date_emission
+  param: { module: generation, action: view }
+  requirements:
+    sf_method: [get]
+
+generation_delete:
+  url: /generation/:type_document/:date_emission/delete
+  param: { module: generation, action: delete }
+  requirements:
+    sf_method: [get]
+
+#Défaut
+
 default_index:
   url:   /:module
   param: { action: index }

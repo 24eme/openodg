@@ -35,6 +35,9 @@ class CompteClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
     const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
     const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
+    
+    
+    const REGION_VITICOLE = 'ALSACE';
 
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_APPORTEUR => 'Producteur en structure collective',
