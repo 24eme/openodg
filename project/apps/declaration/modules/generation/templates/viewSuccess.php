@@ -1,5 +1,6 @@
 <?php use_helper("Generation"); ?>
 <?php use_helper("Date"); ?>
+<?php use_helper("Float"); ?>
 
 <?php include_partial('admin/menu', array('active' => 'facturation')); ?>
 
@@ -22,7 +23,7 @@
 
 <p class="text-center lead">
     <?php echo $generation->nb_documents; ?> <?php echo strtolower($type); ?><?php if(count($generation->nb_documents) > 1): ?>s<?php endif; ?>
-    <small class="text-muted">(<?php echo $generation->somme ?> €)</small>
+    <small class="text-muted">(<?php echo echoFloat($generation->somme) ?> €)</small>
 </p>
 
 <p class="text-center lead">

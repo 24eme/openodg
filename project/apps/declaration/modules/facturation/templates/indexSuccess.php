@@ -1,25 +1,29 @@
 <?php include_partial('admin/menu', array('active' => 'facturation')); ?>
 
-<?php include_partial('generation/list', array('generations' => $generations)); ?>
-
-<div class="row row-margin">
-    <form method="post" action="" role="form" class="form-horizontal col-lg-6">
-        <?php echo $form->renderHiddenFields(); ?>
-        <?php echo $form->renderGlobalErrors(); ?>
-        <div class="form-group">
-    		<?php echo $form["declarant"]->renderLabel() ?>
-    		<p class="text-danger"><?php echo $form["declarant"]->renderError() ?></p>
-    		<?php echo $form["declarant"]->render(array("class" => "form-control input-lg")); ?>
-  		</div>
-  		<div class="form-group">
-    		<?php echo $form["template_facture"]->renderLabel() ?>
-    		<p class="text-danger"><?php echo $form["template_facture"]->renderError() ?></p>
-    		<?php echo $form["template_facture"]->render(array("class" => "form-control input-lg")); ?>
-  		</div>
-        <button class="btn btn-default btn-lg" type="submit">Editer facture</button>
-
-    </form>  
-    <div class="col-lg-12">
-    <?php if (count($values) > 0): ?><p class="text-success">Facture générée</p><?php endif; ?>
+<form method="post" action="" role="form" class="form-horizontal">
+    <?php echo $form->renderHiddenFields(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
+    <div class="row">
+        <div class="col-xs-6 col-xs-offset-3">
+            <div class="form-group <?php if($form["declarant"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["declarant"]->renderError() ?>
+        		<?php echo $form["declarant"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote",
+                                "placeholder" => "Séléctionnez un opérateur",
+                                "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
+                                )); ?>
+      		</div>
+      		<div class="form-group <?php if($form["template_facture"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["template_facture"]->renderError() ?>
+        		<?php echo $form["template_facture"]->render(array("class" => "form-control input-lg")); ?>
+      		</div>
+            <div class="form-group text-right">
+                <div class="col-xs-6 col-xs-offset-6">
+                    <button class="btn btn-default btn-lg btn-block btn-upper" type="submit">Générer la facture</button>
+                </div>
+            </div>
+            
+        </div>
     </div>
-</div>
+</form>  
+
+<?php include_partial('generation/list', array('generations' => $generations)); ?>

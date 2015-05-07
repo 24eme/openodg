@@ -17,12 +17,11 @@ class facturationActions extends sfActions
 	    	if($this->form->isValid()) {
 
 	    		$this->values = $this->form->getValues();
-	       		$compte = CompteClient::getInstance()->findByIdentifiant($this->values['declarant']);
+	       		$compte = CompteClient::getInstance()->find($this->values['declarant']);
 	       		$templateFacture = TemplateFactureClient::getInstance()->find($this->values['template_facture']);
 	       		$generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $compte->_id);
                 $generation->save();
-
-                return $this->redirect('facturation');
+                return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
 	    	}
         }
     }
