@@ -15,7 +15,7 @@ class Cotisation
 		$this->prix = $datas->prix;
 		$this->tva = $datas->tva;
 		$this->libelle = $datas->libelle;
-		$this->complementLibelle = (isset($datas->complement_libelle))? $datas->complement_libelle : null;
+		$this->complementLibelle = $datas->complement_libelle;
 	}
 	
 	public function getQuantite()
@@ -25,7 +25,7 @@ class Cotisation
 	
 	public function getPrix()
 	{
-		return round($this->prix, self::PRECISION);
+		return round($this->prix, self::PRECISION + 1);
 	}
 	
 	public function getTva()

@@ -84,7 +84,6 @@ N° adhérent : \textbf{\NUMADHERENT}
 		\FACTUREDATE
 		\end{flushleft}
 	
-\vspace{2mm}
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
 \arrayrulecolor{vertclair}
@@ -93,7 +92,7 @@ N° adhérent : \textbf{\NUMADHERENT}
   Quantité & Libellés & Prix (€) & Sous-Total & Total \rule[-7pt]{0pt}{20pt} \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-  & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{12pt} & & & \textbf{<?php echo $ligne->montant_ht; ?> €} \rule[7pt]{0pt}{12pt} \tabularnewline
+  & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{11pt} & & & \textbf{<?php echo $ligne->montant_ht; ?> €} \rule[7pt]{0pt}{11pt} \tabularnewline
   	<?php foreach ($ligne->details as $detail): ?>
   	    \small{\textit{<?php echo $detail->quantite; ?>}} & \small{\textit{<?php echo $detail->libelle; ?>}} & \small{\textit{<?php echo $detail->prix_unitaire; ?>}} & \small{\textit{<?php echo $detail->montant_ht; ?>}} &  \tabularnewline
   	<?php endforeach; ?>
@@ -101,13 +100,18 @@ N° adhérent : \textbf{\NUMADHERENT}
   \hline
   \end{tabular}
 \begin{center}
-\vspace{0.3cm}
 \end{center}
-\begin{tabular}{|>{\centering}p{10.7cm} >{\raggedleft}p{5cm}|>{\centering}p{2cm}|}
+\begin{tabular}{|>{\centering}p{9.7cm} >{\raggedleft}p{6cm}|>{\centering}p{2cm}|}
   \hline
-  \multirow{4}{*} {\begin{minipage}{6cm}Paiement sous 30 jours à réception \newline de facture, net et sans escompte\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT €} \rule[-5pt]{0pt}{18pt} \tabularnewline
-   & \textbf{TVA} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTVA €} \rule[-5pt]{0pt}{18pt} \tabularnewline
-  & \textbf{TOTAL TTC A PAYER} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTTC €} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  \multirow{4}{*} {\begin{minipage}{6cm}Paiement sous 30 jours à réception \newline de facture, net et sans escompte\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  <?php foreach ($facture->lignes as $ligne): ?>
+  	<?php foreach ($ligne->details as $detail): ?>
+  	<?php if ($detail->taux_tva): ?>
+  	    & \textbf{TVA <?php echo $detail->taux_tva * 100; ?>\% sur <?php echo $ligne->libelle; ?>} \rule[-5pt]{0pt}{18pt} & \textbf{<?php echo $detail->montant_tva; ?> €} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  	<?php endif; ?>
+  	<?php endforeach; ?>
+  <?php endforeach; ?>
+  & \textbf{TOTAL TTC A PAYER} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTTC~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
   \hline
 \end{tabular}	
 \end{center}
@@ -116,7 +120,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
-	\vspace{1.5cm}
+	\vspace{8mm}
 	\begin{minipage}{0.5\textwidth}
 		\begin{beamerframe}
 		\begin{center}
@@ -130,10 +134,10 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 		\end{center}
 		\vspace{8mm}
 		\begin{tabular}{r l}
-			NOM : & EARL WEBER Bernard \\
-			Adresse : & 49 rue de Saverne \\
-			Commune : & MOLSHEIM \\
-			N° adhérent : & 523 \\
+			NOM : & \FACTUREDECLARANTRS \\
+			Adresse : & \FACTUREDECLARANTADRESSE \\
+			Commune : & \FACTUREDECLARANTCOMMUNE \\
+			N° adhérent : & \NUMADHERENT \\
 		\end{tabular}
 		\vspace{1mm}
 		\end{beamerframe}
@@ -151,7 +155,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			\begin{tabularx}{\linewidth}{X c c}
 			\rowcolor{vertclair} \multicolumn{3}{c}{\textbf{\textcolor{vertfonce}{\textsc{partie à joindre au règlement}}}} \\
 			\textsc{n° facture} & \textsc{n° adhérent} & \textsc{montant ttc} \rule[-7pt]{0pt}{20pt} \\
-			\textbf{\NUMFACTURE} & \textbf{\NUMADHERENT} & \textbf{\FACTURETOTALTTC €} \\
+			\textbf{\NUMFACTURE} & \textbf{\NUMADHERENT} & \textbf{\FACTURETOTALTTC~€} \\
 			\end{tabularx}
 		    \vspace{1mm}
 		\end{beamerframe}

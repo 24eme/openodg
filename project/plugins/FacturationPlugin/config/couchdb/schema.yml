@@ -42,7 +42,7 @@ TemplateFacture:
                               tranche: { required: false }
                               reference: { required: false }
                               callback: { required: false }
-                              complement_libelle: { required: false }
+                              complement_libelle: { }
                               docs:
                                 type: array_collection
                                 definition:
