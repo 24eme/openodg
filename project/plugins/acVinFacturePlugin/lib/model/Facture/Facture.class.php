@@ -181,6 +181,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     			$d->libelle = $detail["libelle"];
                 $d->quantite = $detail["quantite"];
                 $d->prix_unitaire = $detail["prix"];
+                $d->taux_tva = $detail["taux"];
                 $d->montant_tva = $detail["tva"];
                 $d->montant_ht = $detail["total"];
                 $total += $detail["total"];
@@ -461,7 +462,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     public function getNbLignesMouvements() {
       $nbLigne = 0 ;
         foreach ($this->lignes as $lignesType) {
-            $nbLigne += count($lignesType) + 1;
+            $nbLigne += count($lignesType->details) + 1;
         }
         return $nbLigne;
     }

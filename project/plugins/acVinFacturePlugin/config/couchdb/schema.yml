@@ -66,6 +66,7 @@ Facture:
                             fields:
                               libelle: {}
                               quantite: {type: float}
+                              taux_tva: {type: float}
                               prix_unitaire: {type: float}
                               montant_tva: {type: float}
                               montant_ht: {type: float}
