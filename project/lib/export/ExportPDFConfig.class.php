@@ -10,7 +10,7 @@ class ExportPDFConfig extends acTCPDFConfig
         $this->subject = 'Teledeclaration';
         $this->keywords = 'AVA, Teledeclaration';
 
-        $this->font_name = 'dejavusans';
+        $this->font_name = 'helvetica';
         $this->margin_bottom = $this->margin_footer;
 
         $this->path_images = sfConfig::get('sf_web_dir').'/images/pdf/';

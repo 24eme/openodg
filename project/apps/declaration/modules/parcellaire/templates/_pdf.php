@@ -40,7 +40,7 @@
         <table border="0">
             <?php foreach($parcellesByLieu->acheteurs as $type => $acheteurs): ?>
                     <tr>
-                        <td>☒&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
+                        <td><span style="font-family: Dejavusans">☒</span>&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
                 <?php $i = 0; ?>
                 <?php foreach($acheteurs as $acheteur): ?>
                     <?php if($acheteur->cvi == $parcellaire->identifiant): ?><?php break; endif; ?>
