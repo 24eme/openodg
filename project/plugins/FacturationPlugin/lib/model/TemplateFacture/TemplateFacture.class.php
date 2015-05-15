@@ -12,6 +12,9 @@ class TemplateFacture extends BaseTemplateFacture
 		$cotisations = array();
 		foreach ($this->docs as $doc) {
 			$document = $this->getDocumentFacturable($doc, $identifiant, $campagne);
+			if(!$document) {
+				throw new sfException(sprintf("Document not find %s-%s-%s", strtoupper($doc), $identifiant, $campagne));
+			}
 			foreach ($this->cotisations as $key => $cotisation) {
 				if (!in_array($cotisation->libelle, array_keys($cotisations))) {
 					$cotisations[$key] = array();

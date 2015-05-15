@@ -114,7 +114,11 @@ class GenerationPDF {
 
   public function generatePDF() {
     if (!$this->generation) 
-      throw new sfException('Object generation should not be null');    
+      throw new sfException('Object generation should not be null');
+
+    $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS);
+    $this->generation->save();
+
     $pdfs = array();
     if (!count($this->generation->documents) || $this->generation->exist('pregeneration_needed')) {
       $this->generation->add('pregeneration_needed',1);
@@ -156,8 +160,6 @@ class GenerationPDF {
     throw new sfException('should be called from the parent class');
   }
 
-  function preGeneratePDF() {
-    
-  }
+  function preGeneratePDF() { }
 
 }

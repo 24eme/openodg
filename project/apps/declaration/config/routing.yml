@@ -987,6 +987,12 @@ facturation:
   requirements:
     sf_method: [get, post]
 
+facturation_massive:
+  url: /facturation_massive
+  param: { module: facturation, action: massive }
+  requirements:
+    sf_method: [get, post]
+
 facturation_pdf:
   url: /facturation/pdf/:id
   param: { module: facturation, action: latex }
