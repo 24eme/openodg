@@ -28,11 +28,16 @@ class facturationActions extends sfActions
 
     public function executeMassive(sfWebRequest $request) 
     {
-        
         $this->generation = new Generation();
         $this->generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
-        
-        $this->form = new FacturationMassiveForm($this->generation, array(), array('modeles' => ConfigurationClient::getConfiguration('2014')->getTemplatesFactures()));
+            
+
+        $defaults = array();
+        if($request->getParameter('q')) {
+            $defaults['requete'] = $request->getParameter('q');
+        }
+
+        $this->form = new FacturationMassiveForm($this->generation, $defaults, array('modeles' => ConfigurationClient::getConfiguration('2014')->getTemplatesFactures()));
         
         if (!$request->isMethod(sfWebRequest::POST)) {
 

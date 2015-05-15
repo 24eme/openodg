@@ -165,8 +165,6 @@ class FactureClient extends acCouchdbClient {
           $ids[] = $compte->_id;
         }
 
-        print_r($ids);
-
         return $ids;
     }
 

@@ -7,10 +7,7 @@
         <div class="col-xs-8 col-xs-offset-2">
             <div class="form-group <?php if($form["requete"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["requete"]->renderError() ?>
-                <?php echo $form["requete"]->renderLabel("Reqêtes de comptes", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-8">
-                    <?php echo $form["requete"]->render(array("class" => "form-control input-lg")); ?>
-                </div>
+                <?php echo $form["requete"]->render(array("class" => "form-control input-lg")); ?>
             </div>
             <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["modele"]->renderError() ?>

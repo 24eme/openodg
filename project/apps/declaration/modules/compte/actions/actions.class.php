@@ -140,8 +140,8 @@ class compteActions extends sfActions {
         $from = $res_by_page * ($page - 1);
         $q->setLimit($res_by_page);
         $q->setFrom($from);
-        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels');
-        $this->facets_libelle = array('automatiques' => 'Par type', 'attributs' => 'Par attributs', 'manuels' => 'Par mots clés');
+        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels', 'syndicats' => 'tags.syndicats');
+        $this->facets_libelle = array('automatiques' => 'Par types', 'attributs' => 'Par attributs', 'manuels' => 'Par mots clés', 'syndicats' => 'Par syndicats');
         foreach ($facets as $nom => $f) {
             $elasticaFacet = new acElasticaFacetTerms($nom);
             $elasticaFacet->setField($f);
@@ -228,31 +228,40 @@ class compteActions extends sfActions {
         return $this->renderText(json_encode($list));
     }
 
-    private function initSearch(sfWebRequest $request) {
-        $this->q = $query = $request->getParameter('q', '*');
-        if (!$this->q) {
-            $this->q = $query = '*';
+    public static function convertArgumentsToQuery($arguments) {
+        $query = isset($arguments['q']) ? $arguments['q'] : array();
+        if (!$query) {
+            $query = '*';
         }
 
-        $this->tags = $request->getParameter('tags', array());
-        $this->all = $request->getParameter('all', 0);
-        if (!$this->all) {
+        $tags = isset($arguments['tags']) ? $arguments['tags'] : array();
+        $all = isset($arguments['all']) ? $arguments['all'] : 0;
+
+        if (!$all) {
             $query .= " statut:ACTIF";
         }
-        foreach ($this->tags as $tag) {
+        foreach ($tags as $tag) {
             $explodeTag = explode(':', $tag);
             $query .= ' tags.' . $explodeTag[0] . ':"' . html_entity_decode($explodeTag[1], ENT_QUOTES) . '"';
         }
-        $this->type_compte = $request->getParameter('type_compte', null);
-        if($this->type_compte) {
-            $query .= " type_compte:".$this->type_compte;
-        }
 
-        $qs = new acElasticaQueryQueryString($query);
-        $q = new acElasticaQuery();
-        $q->setQuery($qs);
+        return $query;
+    }
+
+    private function initSearch(sfWebRequest $request) {
+        $this->q = $request->getParameter('q', '*');
+        if (!$this->q) {
+            $this->q = '*';
+        }
+        $this->tags = $request->getParameter('tags', array());
+        $this->all = $request->getParameter('all', 0);
 
         $this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
+
+        $qs = new acElasticaQueryQueryString(self::convertArgumentsToQuery($this->args));
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        
         return $q;
     }
 
