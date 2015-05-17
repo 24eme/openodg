@@ -324,5 +324,14 @@ class Compte extends BaseCompte {
     public function getRegionViticole() {
     	return CompteClient::REGION_VITICOLE;
     }
+    
+    public function getSyndicatsViticole() {
+    	$result = array();
+    	if ($syndicats = $this->infos->syndicats) {
+    		$result = array_keys($syndicats->toArray());
+    	}
+    	return $result;
+    	
+    }
 
 }

@@ -16,12 +16,17 @@ class TemplateFacture extends BaseTemplateFacture
 				throw new sfException(sprintf("Document not find %s-%s-%s", strtoupper($doc), $identifiant, $campagne));
 			}
 			foreach ($this->cotisations as $key => $cotisation) {
+				
+				$modele = $cotisation->modele;
+				$object = new $modele(CompteClient::getInstance()->findByIdentifiant('E'.$identifiant), $cotisation->callback);
+				$details = $object->getDetails($cotisation->details);
+				
 				if (!in_array($cotisation->libelle, array_keys($cotisations))) {
 					$cotisations[$key] = array();
 					$cotisations[$key]["libelle"] = $cotisation->libelle;
 					$cotisations[$key]["details"] = array();
 				}
-				foreach ($cotisation->details as $type => $detail) {
+				foreach ($details as $type => $detail) {
 					$docs = $detail->docs->toArray();
 					if (in_array($document->type, $docs)) {
 						$modele = $detail->modele;

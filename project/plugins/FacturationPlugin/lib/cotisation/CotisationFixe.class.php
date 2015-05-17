@@ -1,5 +1,5 @@
 <?php
-class CotisationFixe extends Cotisation
+class CotisationFixe extends CotisationBase
 {
 	public function getTotal()
 	{
