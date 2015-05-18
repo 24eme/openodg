@@ -61,7 +61,7 @@
     </div>
 </div>
 
-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENATTENTE): ?>
+<?php if(in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_ENATTENTE, GenerationClient::GENERATION_STATUT_ENCOURS))): ?>
 <script type="text/javascript">window.setTimeout("window.location.reload()", 30000);</script>
 <?php endif; ?>
  
