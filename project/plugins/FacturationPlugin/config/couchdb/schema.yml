@@ -52,8 +52,11 @@ TemplateFacture:
                                 definition:
                                   fields:
                                     '*':
-                                      prix: {  }
-                                      variable: {  }
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          prix: {  }
+                                          variable: {  }
                               docs:
                                 type: array_collection
                                 definition:
