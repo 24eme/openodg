@@ -51,6 +51,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+        //$this->mouvement_document = new MouvementDocument($this);
     }
 
     public function constructId() {
@@ -93,7 +94,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function isPapier() { 
+        
         return $this->exist('papier') && $this->get('papier');
+    }
+
+    public function isAutomatique() { 
+        
+        return $this->exist('automatique') && $this->get('automatique');
     }
 
     public function hasDR() {
@@ -133,8 +140,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->declaration->reorderByConf();
     }
 
-    public function updateFromCSV() {
-        $csv = $this->getCSV();
+    public function updateFromCSV($csv = null) {
+        if(is_null($csv)) {
+            $csv = $this->getCSV();
+        }
         $this->resetDetail();
         $this->updateDetailFromCSV($csv);
         $this->updateDetail();
@@ -467,7 +476,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
-    protected function updateRevendiqueFromDetail() {
+    public function updateRevendiqueFromDetail() {
         foreach ($this->declaration->getProduits() as $produit) {
             $produit->updateRevendiqueFromDetail();
         }
@@ -639,4 +648,52 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 	{
 		return $this->declaration->getTotalVolumeRevendique();
 	}
+
+    /**** MOUVEMENTS ****/
+
+    /*public function getMouvements() {
+
+        return $this->_get('mouvements');
+    }
+
+    public function getMouvementsCalcule() {
+
+        return $this->declaration->getMouvements();
+    }
+
+    public function getMouvementsCalculeByIdentifiant($identifiant) {
+
+       return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+    }
+    
+    public function generateMouvements() {
+
+        return $this->mouvement_document->generateMouvements();
+    }    
+    
+    public function findMouvement($cle, $id = null){
+      return $this->mouvement_document->findMouvement($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvements(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }*/
+
+    /**** FIN DES MOUVEMENTS ****/
 }
