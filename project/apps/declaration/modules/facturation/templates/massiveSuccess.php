@@ -18,7 +18,7 @@
             </div>
             <div class="form-group <?php if($form["date_facturation"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date_facturation"]->renderError(); ?>
-                <?php echo $form["date_facturation"]->renderLabel("Date de dégustation", array("class" => "col-xs-4 control-label")); ?>
+                <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <div class="input-group date-picker">
                         <?php echo $form["date_facturation"]->render(array("class" => "form-control input-lg", "placeholder" => "Date de facturation")); ?>
