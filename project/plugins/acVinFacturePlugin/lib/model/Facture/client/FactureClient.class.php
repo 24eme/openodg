@@ -48,6 +48,7 @@ class FactureClient extends acCouchdbClient {
         $facture->storeDeclarant($doc);
         $facture->storeLignes($cotisations);
         $facture->updateTotaux();
+        $facture->storeOrigines();
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }

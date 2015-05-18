@@ -45,22 +45,31 @@ Facture:
       total_taxe: {type: float}
       lignes:
         type: collection
+        class: FactureLignes
         definition:
           fields:
             '*':
-              class: FactureLignes
+              class: FactureLigne
               type: collection
               definition:
                 fields:
                   libelle: {  }
                   montant_tva: {type: float}
                   montant_ht: {type: float}
+                  origine_mouvements:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: array_collection
+                          definition:
+                            fields:
+                              '*': { }
                   details:
                     type: array_collection
                     definition:
                       fields:
-                        '*': 
-                          class: FactureLigne
+                        '*':
                           type: collection
                           definition:
                             fields:
