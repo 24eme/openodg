@@ -10,7 +10,7 @@ class CotisationTranche extends CotisationVariable
 		parent::__construct($template, $document, $datas);
 		$this->tranche = $datas->tranche;
 		$this->depart = $datas->depart;
-		$this->complement = round($datas->complement, self::PRECISION);
+		$this->complement = $datas->complement;
 	}
 	
 	public function getQuantite()
