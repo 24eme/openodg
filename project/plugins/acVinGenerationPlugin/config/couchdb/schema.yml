@@ -9,7 +9,7 @@ Generation:
       date_emission: {}
       date_maj: {}
       nb_documents: {}
-      type_document: {}      
+      type_document: {}
       somme: {}
       statut: {}
       pregeneration_needed: {required: false}

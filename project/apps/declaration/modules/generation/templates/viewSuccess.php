@@ -35,8 +35,8 @@
 </p>
 
 <?php if ($generation->message) : ?>
-    <div class="alert alert-danger" style="max-height: 200px; overflow: auto">
-        <?php echo $generation->message; ?>
+    <div class="alert alert-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?>" style="max-height: 200px; overflow: auto">
+        <?php echo nl2br($generation->message); ?>
     </div>
 <?php endif; ?>
 
