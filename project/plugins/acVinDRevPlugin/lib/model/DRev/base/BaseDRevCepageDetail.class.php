@@ -4,15 +4,17 @@
  * 
  * Base model for DRevCepageDetail
 
- * @property string $vtsgn
  * @property float $volume_revendique_vt
  * @property float $volume_revendique_sgn
  * @property float $volume_revendique
  * @property float $volume_revendique_total
+ * @property float $superficie_revendique
+ * @property float $superficie_revendique_vt
+ * @property float $superficie_revendique_sgn
+ * @property float $superficie_revendique_total
  * @property string $lieu
+ * @property string $libelle
 
- * @method string getVtsgn()
- * @method string setVtsgn()
  * @method float getVolumeRevendiqueVt()
  * @method float setVolumeRevendiqueVt()
  * @method float getVolumeRevendiqueSgn()
@@ -21,8 +23,18 @@
  * @method float setVolumeRevendique()
  * @method float getVolumeRevendiqueTotal()
  * @method float setVolumeRevendiqueTotal()
+ * @method float getSuperficieRevendique()
+ * @method float setSuperficieRevendique()
+ * @method float getSuperficieRevendiqueVt()
+ * @method float setSuperficieRevendiqueVt()
+ * @method float getSuperficieRevendiqueSgn()
+ * @method float setSuperficieRevendiqueSgn()
+ * @method float getSuperficieRevendiqueTotal()
+ * @method float setSuperficieRevendiqueTotal()
  * @method string getLieu()
  * @method string setLieu()
+ * @method string getLibelle()
+ * @method string setLibelle()
  
  */
 

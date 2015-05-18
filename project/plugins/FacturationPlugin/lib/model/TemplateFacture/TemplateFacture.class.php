@@ -16,6 +16,16 @@ class TemplateFacture extends BaseTemplateFacture
 			if(!$document) {
 				throw new sfException(sprintf("Document not find %s-%s-%s", strtoupper($doc), $identifiant, $campagne));
 			}
+
+			if(!count($document->mouvements)) {
+				$document->generateMouvements();
+				$document->save();
+			}
+
+			if($document->isFactures()) {
+				continue;
+			}
+
 			foreach ($this->cotisations as $key => $cotisation) {
 				
 				$modele = $cotisation->modele;

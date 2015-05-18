@@ -198,3 +198,19 @@ DRev:
                   adresse: { }
                   commune: { }
                   code_postal: { }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: DRevMouvement
+                    inheritance: Mouvement
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
