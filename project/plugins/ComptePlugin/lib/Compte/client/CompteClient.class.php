@@ -209,6 +209,18 @@ class CompteClient extends acCouchdbClient {
         return $this->libelles_chais_attributs[$attribut];
     }
 
+    public function getComptes($query) {
+        $qs = new acElasticaQueryQueryString($query);
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        $q->setLimit(99999);
+        
+        $index = acElasticaManager::getType('compte');
+        $resset = $index->search($q);
+        
+        return $resset->getResults();
+    }
+
     public function getAllTypesCompte() {
         return array(
             self::TYPE_COMPTE_ETABLISSEMENT => self::TYPE_COMPTE_ETABLISSEMENT,

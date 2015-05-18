@@ -117,7 +117,12 @@
     </div>
     <div class="col-xs-3">
         <p class="text-muted"><i><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></i></p>
-        <p><a href="<?php echo url_for("compte_recherche_csv", $args->getRawValue()) ?>" class="btn btn-default btn-default-step"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a></p>
+        <p>
+        <a href="<?php echo url_for("compte_recherche_csv", $args->getRawValue()) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
+        <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+        <a href="<?php echo url_for("facturation_massive", array("q" => compteActions::convertArgumentsToQuery($args->getRawValue()))) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-euro"></span>&nbsp;&nbsp;Facturer</a>
+        <?php endif; ?>
+        </p>
         <div style="<?php if($q == '*'): echo "opacity: 0.8"; endif; ?>">
             <h4>Affiner la recherche</h4>
             <?php if(!isset($args['all']) || !$args['all']): ?>
@@ -136,7 +141,7 @@
             <?php foreach ($facets as $type => $ftype): ?>
                 <?php if (count($ftype['terms'])): ?>
                     <h5><small><?php echo $facets_libelle[$type] ?></small></h5>
-                    <div class="list-group">
+                    <div class="list-group" style="max-height: 200px; overflow: auto;">
                         <?php
                         foreach ($ftype['terms'] as $f):
                             $tag = $type . ':' . $f['term'];

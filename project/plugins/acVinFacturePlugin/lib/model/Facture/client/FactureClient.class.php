@@ -157,6 +157,17 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
+    public function getComptesIdFilterWithParameters($arguments) {
+        $comptes = CompteClient::getInstance()->getComptes($arguments['requete']);
+
+        $ids = array();
+        foreach($comptes as $compte) {
+          $ids[] = $compte->_id;
+        }
+
+        return $ids;
+    }
+
     private function getGreatestDate($dates){
         if(is_string($dates)) return $dates;
         if(is_array($dates)){

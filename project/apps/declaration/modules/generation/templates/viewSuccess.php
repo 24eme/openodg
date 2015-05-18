@@ -22,7 +22,7 @@
 <?php endif; ?>
 
 <p class="text-center lead">
-    <?php echo $generation->nb_documents; ?> <?php echo strtolower($type); ?><?php if(count($generation->nb_documents) > 1): ?>s<?php endif; ?>
+    <?php echo $generation->nb_documents; ?> <?php echo strtolower($type); ?><?php if($generation->nb_documents > 1): ?>s<?php endif; ?>
     <small class="text-muted">(<?php echo echoFloat($generation->somme) ?> €)</small>
 </p>
 

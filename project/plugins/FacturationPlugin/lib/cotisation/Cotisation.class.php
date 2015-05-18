@@ -1,45 +1,18 @@
 <?php
 class Cotisation
 {
-	protected $document;
-	protected $prix;
-	protected $tva;
-	protected $libelle;
-	protected $complementLibelle;
+	protected $doc;
+	protected $callback;
 	
-	const PRECISION = 2;
-	
-	public function __construct($document, $datas)
+	public function __construct($doc, $callback)
 	{
-		$this->document = $document;
-		$this->prix = $datas->prix;
-		$this->tva = $datas->tva;
-		$this->libelle = $datas->libelle;
-		$this->complementLibelle = $datas->complement_libelle;
+		$this->doc = $doc;
+		$this->callback = $callback;
 	}
 	
-	public function getQuantite()
+	public function getDetails($details)
 	{
-		return 1;
-	}
-	
-	public function getPrix()
-	{
-		return round($this->prix, self::PRECISION + 1);
-	}
-	
-	public function getTva()
-	{
-		return ($this->tva)? round($this->tva * $this->getTotal(), self::PRECISION) : 0;
-	}
-	
-	public function getLibelle()
-	{
-		return str_replace('%complement_libelle%', $this->complementLibelle, $this->libelle);
-	}
-	
-	public function getTotal() {
-		return null;
+		return $details;
 	}
 	
 }
