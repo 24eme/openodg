@@ -33,7 +33,11 @@ class TemplateFacture extends BaseTemplateFacture
 					if (in_array($document->type, $docs)) {
 						$modele = $detail->modele;
 						$object = new $modele($template, $document, $detail);
-						$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getPrix(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => $object->getQuantite());
+						if ($key == 'syndicat_viticole') {
+							$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getTotal(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => 1);
+						} else {
+							$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getPrix(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => $object->getQuantite());
+						}
 						$cotisations[$key]["origines"][$document->_id] = array($this->_id);
 					}
 				}
