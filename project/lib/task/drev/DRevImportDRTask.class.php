@@ -82,13 +82,10 @@ EOF;
             if($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)) {
                 echo sprintf("WARNING;L'établissement est un vinificateur;%s\n", $etablisement_id);
 
-                return;
             }
 
             if(!$etablissement->hasFamille(EtablissementClient::FAMILLE_PRODUCTEUR)) {
                 echo sprintf("WARNING;L'établissement n'est pas un producteur;%s\n", $etablisement_id);
-
-                return;
             }
 
             $drev->storeDeclarant();
