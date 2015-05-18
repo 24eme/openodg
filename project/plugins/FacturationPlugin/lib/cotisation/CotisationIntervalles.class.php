@@ -20,6 +20,7 @@ class CotisationIntervalles extends CotisationVariable
 				} else {
 					$total = $prix->prix;
 				}
+				break;
 			}
 		}
 		return round($total, self::PRECISION);
