@@ -20,7 +20,15 @@ class facturationActions extends sfActions
 	       		$compte = CompteClient::getInstance()->find($this->values['declarant']);
 	       		$templateFacture = TemplateFactureClient::getInstance()->find($this->values['template_facture']);
 	       		$generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $compte->_id);
+                
+                if(!$generation) {
+                    $this->getUser()->setFlash("notice", "Cet opérateur a déjà été facturé.");
+
+                    return $this->redirect('facturation');
+                }
+
                 $generation->save();
+
                 return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
 	    	}
         }
