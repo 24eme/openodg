@@ -1,3 +1,4 @@
+<?php use_helper('TemplatingFacture'); ?>
 \documentclass[a4paper, 10pt]{letter}
 \usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc}
@@ -39,9 +40,9 @@
 \def\FACTUREDECLARANTADRESSE{<?php echo $facture->declarant->adresse; ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
-\def\FACTURETOTALHT{<?php echo $facture->total_ht; ?>}
-\def\FACTURETOTALTVA{<?php echo $facture->total_taxe; ?>}
-\def\FACTURETOTALTTC{<?php echo $facture->total_ttc; ?>}
+\def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht); ?>}
+\def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe); ?>}
+\def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc); ?>}
 
 \newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt},%
 linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
@@ -87,21 +88,21 @@ N° adhérent : \textbf{\NUMADHERENT}
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|>{\raggedleft}m{2cm}|m{8.8cm}|>{\centering}m{2cm}|>{\centering}m{2cm}|>{\centering}m{2cm}|}
+\begin{tabular}{|>{\raggedleft}m{2cm}|m{8.8cm}|>{\raggedleft}m{2cm}|>{\raggedleft}m{2cm}|>{\raggedleft}m{2cm}|}
   \hline
   Quantité & Libellés & Prix (€) & Sous-Total & Total \rule[-7pt]{0pt}{20pt} \tabularnewline
   \hline
   <?php foreach ($facture->lignes as $ligne): ?>
-  & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{11pt} & & & \textbf{<?php echo $ligne->montant_ht; ?> €} \rule[7pt]{0pt}{11pt} \tabularnewline
+  & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{11pt} & & & \textbf{<?php echo formatFloat($ligne->montant_ht); ?> €} \rule[7pt]{0pt}{11pt} \tabularnewline
   	<?php foreach ($ligne->details as $detail): ?>
-  	    \small{\textit{<?php echo $detail->quantite; ?>}} & \small{\textit{<?php echo $detail->libelle; ?>}} & \small{\textit{<?php echo $detail->prix_unitaire; ?>}} & \small{\textit{<?php echo $detail->montant_ht; ?>}} &  \tabularnewline
+  	    \small{\textit{<?php echo $detail->quantite; ?>}} & \small{\textit{<?php echo $detail->libelle; ?>}} & \small{\textit{<?php echo formatFloat($detail->prix_unitaire); ?>}} & \small{\textit{<?php echo formatFloat($detail->montant_ht); ?>}} &  \tabularnewline
   	<?php endforeach; ?>
   <?php endforeach; ?>
   \hline
   \end{tabular}
 \begin{center}
 \end{center}
-\begin{tabular}{|>{\centering}p{9.7cm} >{\raggedleft}p{6cm}|>{\centering}p{2cm}|}
+\begin{tabular}{|>{\centering}p{9.7cm} >{\raggedleft}p{6cm}|>{\raggedleft}p{2cm}|}
   \hline
   \multirow{4}{*} {\begin{minipage}{6cm}Paiement sous 30 jours à réception \newline de facture, net et sans escompte\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
   <?php foreach ($facture->lignes as $ligne): ?>
