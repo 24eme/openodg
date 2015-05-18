@@ -2,9 +2,9 @@
 
 abstract class Mouvement extends acCouchdbDocumentTree
 {
-    const TYPE_HASH_CONTRAT_VRAC = 'vrac_details';
+    /*const TYPE_HASH_CONTRAT_VRAC = 'vrac_details';
     const TYPE_HASH_CONTRAT_RAISIN = VracClient::TYPE_TRANSACTION_RAISINS;
-    const TYPE_HASH_CONTRAT_MOUT = VracClient::TYPE_TRANSACTION_MOUTS;
+    const TYPE_HASH_CONTRAT_MOUT = VracClient::TYPE_TRANSACTION_MOUTS;*/
 
     public function setProduitHash($value) {
         $this->_set('produit_hash',  $value);
@@ -38,7 +38,7 @@ abstract class Mouvement extends acCouchdbDocumentTree
             return true;
         }
 
-        return !$this->facture;
+        return (bool) $this->facture;
     }
 
     public function isNonFacture() {

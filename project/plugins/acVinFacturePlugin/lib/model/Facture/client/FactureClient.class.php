@@ -48,6 +48,7 @@ class FactureClient extends acCouchdbClient {
         $facture->storeDeclarant($doc);
         $facture->storeLignes($cotisations);
         $facture->updateTotaux();
+        $facture->storeOrigines();
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
@@ -191,7 +192,6 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function createFactureByCompte($template, $compte_id) {
-        
         $generation = new Generation();
         $generation->date_emission = date('Y-m-d-H:i');
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
@@ -201,6 +201,11 @@ class FactureClient extends acCouchdbClient {
 
         $compte = CompteClient::getInstance()->find($compte_id);
         $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
+
+        if(!count($cotisations)) {
+          return null;
+        }
+
         $f = FactureClient::getInstance()->createDoc($cotisations, $compte);
         $f->save();
 

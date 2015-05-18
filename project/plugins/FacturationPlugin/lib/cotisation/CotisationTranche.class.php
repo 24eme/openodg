@@ -3,12 +3,14 @@ class CotisationTranche extends CotisationVariable
 {
 	protected $tranche;
 	protected $depart;
+	protected $complement;
 	
-	public function __construct($document, $datas)
+	public function __construct($template, $document, $datas)
 	{
-		parent::__construct($document, $datas);
+		parent::__construct($template, $document, $datas);
 		$this->tranche = $datas->tranche;
 		$this->depart = $datas->depart;
+		$this->complement = round($datas->complement, self::PRECISION);
 	}
 	
 	public function getQuantite()
@@ -18,7 +20,7 @@ class CotisationTranche extends CotisationVariable
 	
 	public function getTotal()
 	{
-		return round($this->prix * $this->getQuantite(), self::PRECISION);
+		return round(($this->prix * $this->getQuantite()) + $this->complement, self::PRECISION);
 	}
 	
 	public function getLibelle()

@@ -46,6 +46,11 @@ class GenerationFacturePDF extends GenerationPDF {
             }
 
             $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
+            
+            if(!count($cotisations)) {
+                continue;
+            }
+
             $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $arguments['date_facturation'],$message_communication);
             $facture->save();
             $this->generation->somme += $facture->total_ttc;

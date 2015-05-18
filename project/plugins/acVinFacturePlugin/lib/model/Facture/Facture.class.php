@@ -174,6 +174,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     	foreach ($cotisations as $key => $cotisation) {
     		$ligne = $this->lignes->add($key);
     		$ligne->libelle = $cotisation["libelle"];
+            $ligne->origine_mouvements = $cotisation["origines"];
     		$total = 0;
     		$totalTva = 0;
     		foreach ($cotisation["details"] as $detail) {
@@ -420,12 +421,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     }
 
     public function storeOrigines() {
-        foreach ($this->getLignes() as $lignesType) {
-            foreach ($lignesType as $ligne) {
-                foreach ($ligne->origine_mouvements as $idorigine => $null) {
-                    if (!array_key_exists($idorigine, $this->origines))
-                        $this->origines->add($idorigine, $idorigine);
-                }
+        foreach ($this->getLignes() as $ligne) {
+            foreach ($ligne->origine_mouvements as $idorigine => $null) {
+                if (!array_key_exists($idorigine, $this->origines))
+                    $this->origines->add($idorigine, $idorigine);
             }
         }
     }
@@ -502,7 +501,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     }
 
     protected function preSave() {
-        
+        if ($this->isNew() && $this->statut != FactureClient::STATUT_REDRESSEE) {
+            $this->facturerMouvements();
+            $this->storeOrigines();
+        }
+
         if (!$this->versement_comptable) {
             $this->versement_comptable = 0;
         }

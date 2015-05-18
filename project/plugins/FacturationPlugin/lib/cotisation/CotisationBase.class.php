@@ -2,6 +2,7 @@
 class CotisationBase
 {
 	protected $document;
+	protected $template;
 	protected $prix;
 	protected $tva;
 	protected $libelle;
@@ -9,8 +10,9 @@ class CotisationBase
 	
 	const PRECISION = 2;
 	
-	public function __construct($document, $datas)
+	public function __construct($template, $document, $datas)
 	{
+		$this->template = $template;
 		$this->document = $document;
 		$this->prix = $datas->prix;
 		$this->tva = $datas->tva;
