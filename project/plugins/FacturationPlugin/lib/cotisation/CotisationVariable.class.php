@@ -3,9 +3,9 @@ class CotisationVariable extends CotisationFixe
 {
 	protected $callback;
 	
-	public function __construct($document, $datas)
+	public function __construct($template, $document, $datas)
 	{
-		parent::__construct($document, $datas);
+		parent::__construct($template, $document, $datas);
 		$this->callback = $datas->callback;
 	}
 	

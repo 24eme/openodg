@@ -9,6 +9,7 @@ class TemplateFacture extends BaseTemplateFacture
 	
 	public function generateCotisations($identifiant, $campagne)
 	{
+		$template = $this;
 		$cotisations = array();
 		foreach ($this->docs as $doc) {
 			$document = $this->getDocumentFacturable($doc, $identifiant, $campagne);
@@ -30,7 +31,7 @@ class TemplateFacture extends BaseTemplateFacture
 					$docs = $detail->docs->toArray();
 					if (in_array($document->type, $docs)) {
 						$modele = $detail->modele;
-						$object = new $modele($document, $detail);
+						$object = new $modele($template, $document, $detail);
 						$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getPrix(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => $object->getQuantite());
 					}
 				}

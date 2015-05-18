@@ -43,7 +43,17 @@ TemplateFacture:
                               reference: { required: false }
                               callback: { required: false }
                               depart: { required: false }
+                              minimum: { required: false }
+                              complement: { required: false }
                               complement_libelle: { }
+                              intervalles:
+                                required: false
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*':
+                                      prix: {  }
+                                      variable: {  }
                               docs:
                                 type: array_collection
                                 definition:
