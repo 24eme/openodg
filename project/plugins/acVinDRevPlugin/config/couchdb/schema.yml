@@ -183,6 +183,7 @@ DRev:
           fields:
             '*': { }
       facturable:
+        required: false
         type: collection
         definition:
           fields:

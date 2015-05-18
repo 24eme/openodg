@@ -26,8 +26,10 @@ class GenerationFacturePDF extends GenerationPDF {
 
         $comptes_id = FactureClient::getInstance()->getComptesIdFilterWithParameters($this->generation->arguments->toArray());
 
-        $message_communication = (array_key_exists('message_communication', $arguments))? $arguments['message_communication'] : null;
+        //$message_communication = (array_key_exists('message_communication', $arguments))? $arguments['message_communication'] : null;
         
+        $message_communication = null;
+
         if(!$this->generation->exist('somme')) {
           $this->generation->somme = 0;
         }
@@ -51,7 +53,7 @@ class GenerationFacturePDF extends GenerationPDF {
                 continue;
             }
 
-            $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $arguments['date_facturation'],$message_communication);
+            $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $this->generation->arguments['date_facturation'],$message_communication);
             $facture->save();
             $this->generation->somme += $facture->total_ttc;
             $this->generation->documents->add($cpt, $facture->_id);
