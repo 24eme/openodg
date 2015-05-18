@@ -26,6 +26,7 @@ class TemplateFacture extends BaseTemplateFacture
 					$cotisations[$key] = array();
 					$cotisations[$key]["libelle"] = $cotisation->libelle;
 					$cotisations[$key]["details"] = array();
+					$cotisations[$key]["origines"] = array();
 				}
 				foreach ($details as $type => $detail) {
 					$docs = $detail->docs->toArray();
@@ -33,6 +34,7 @@ class TemplateFacture extends BaseTemplateFacture
 						$modele = $detail->modele;
 						$object = new $modele($template, $document, $detail);
 						$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getPrix(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => $object->getQuantite());
+						$cotisations[$key]["origines"][$document->_id] = array($this->_id);
 					}
 				}
 			}

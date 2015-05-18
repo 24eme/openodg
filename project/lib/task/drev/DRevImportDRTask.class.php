@@ -30,10 +30,72 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
+        if(!file_exists($arguments['csv'])) {
+            echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['doc_id']);
+
+            return;
+        }
+
+        if(!file_exists($arguments['pdf'])) {
+            echo sprintf("ERROR;Le fichier PDF n'existe pas;%s\n", $arguments['doc_id']);
+
+            return;
+        }
+
         $drev = DRevClient::getInstance()->find($arguments['doc_id']);
         
         if(!$drev) {
-            echo sprintf("WARNING;La DREV n'existe pas;%s\n", $arguments['doc_id']);
+            $etablisement_id = preg_replace("/^DREV-([0-9]+)-[0-9]+$/", 'ETABLISSEMENT-\1', $arguments['doc_id']);
+            $etablissement = EtablissementClient::getInstance()->find($etablisement_id);
+
+            if(!$etablissement) {
+                echo sprintf("ERROR;L'établissement n'existe pas;%s\n", $etablisement_id);
+
+                return;
+            }
+
+            $campagne = preg_replace("/^DREV-[0-9]+-([0-9]+)$/", '\1', $arguments['doc_id']);
+
+            $drev = new DRev();
+            $drev->initDoc($etablissement->identifiant, $campagne);
+            $csv = new DRCsvFile($arguments['csv']);
+
+            $drev->updateFromCSV($csv->getCsvAcheteur($drev->identifiant));
+            $drev->updateRevendiqueFromDetail();
+            $drev->updateProduitsFromCepage();
+            $drev->add('automatique', 1);
+            $drev->add('non_vinificateur', 1);
+            $drev->add('non_conditionneur', 1);
+
+            if($drev->declaration->getTotalVolumeRevendique() > 0) {
+                echo sprintf("ERROR;La DR a du volume sur place;%s\n", $etablisement_id);
+
+                return;
+            }
+
+            if(!$drev->declaration->getTotalTotalSuperficie()) {
+                echo sprintf("ERROR;La DR n'a pas de superficie totale;%s\n", $etablisement_id);
+
+                return;
+            }
+
+            if($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)) {
+                echo sprintf("WARNING;L'établissement est un vinificateur;%s\n", $etablisement_id);
+
+            }
+
+            if(!$etablissement->hasFamille(EtablissementClient::FAMILLE_PRODUCTEUR)) {
+                echo sprintf("WARNING;L'établissement n'est pas un producteur;%s\n", $etablisement_id);
+            }
+
+            $drev->storeDeclarant();
+            $drev->validation = true;
+            $drev->validation_odg = true;
+            $drev->save();
+        }
+
+        if($drev->hasDR()) {
+            echo sprintf("WARNING;La DR a déjà été importée;%s\n", $drev->_id);
 
             return;
         }
@@ -50,25 +112,7 @@ EOF;
             return;
         }
 
-        if(!file_exists($arguments['csv'])) {
-            echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $drev->_id);
-
-            return;
-        }
-
-        if(!file_exists($arguments['pdf'])) {
-            echo sprintf("ERROR;Le fichier PDF n'existe pas;%s\n", $drev->_id);
-
-            return;
-        }
-
-        if($drev->hasDR()) {
-            echo sprintf("WARNING;La DR a déjà été importée;%s\n", $drev->_id);
-
-            return;
-        }
-
-        if(!$drev->isPapier()) {
+        if(!$drev->isAutomatique() && !$drev->isPapier()) {
             echo sprintf("WARNING;La DREV n'est pas une déclaration papier;%s\n", $drev->_id);
 
             return;
@@ -81,7 +125,5 @@ EOF;
         $drev->save();
 
         echo sprintf("SUCCESS;La DR a bien été importée;%s\n", $drev->_id);
-
-
     }
 }

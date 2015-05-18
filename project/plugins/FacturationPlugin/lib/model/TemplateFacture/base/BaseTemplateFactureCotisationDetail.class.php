@@ -12,6 +12,7 @@
  * @property string $tranche
  * @property string $reference
  * @property string $callback
+ * @property string $depart
  * @property string $complement_libelle
  * @property acCouchdbJson $docs
 
@@ -31,6 +32,8 @@
  * @method string setReference()
  * @method string getCallback()
  * @method string setCallback()
+ * @method string getDepart()
+ * @method string setDepart()
  * @method string getComplementLibelle()
  * @method string setComplementLibelle()
  * @method acCouchdbJson getDocs()
