@@ -83,7 +83,10 @@ class CompteModificationForm extends acCouchdbObjectForm {
             $tagsManuelsValuesSplited = explode(",",$tagsManuelsValues);
             $tagsManuels = array();
             foreach ($tagsManuelsValuesSplited as $manuel) {
-                $manuel_key = str_replace('-', '_',strtoupper(KeyInflector::slugify( $manuel)));
+                $manuel_key = str_replace('-', '_',strtoupper(KeyInflector::slugify($manuel)));
+                if(!$manuel_key && !$manuel) {
+                    continue;
+                }
                 $tagsManuels[$manuel_key] = $manuel;
             }
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
