@@ -122,6 +122,7 @@ class Compte extends BaseCompte {
     public function removeInfosTagsNode($node) {
         if ($this->exist('infos') && $this->infos->exist($node)) {
             $this->infos->remove($node);
+            $this->infos->add($node);
         }
     }
     

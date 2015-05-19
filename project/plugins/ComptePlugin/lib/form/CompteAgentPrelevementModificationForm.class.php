@@ -49,7 +49,8 @@ class CompteAgentPrelevementModificationForm extends CompteModificationForm {
         }
         return $this->syndicats;
     }
-        public function initDefaultSyndicats() {
+    
+    public function initDefaultSyndicats() {
         $default_syndicats = array();
         foreach ($this->getObject()->getInfosSyndicats() as $syndicats_key => $syndicats_libelle) {
             $default_syndicats[] = $syndicats_key;
@@ -59,9 +60,11 @@ class CompteAgentPrelevementModificationForm extends CompteModificationForm {
     
 
     public function save($con = null) {
-        if ($syndicats = $this->values['syndicats']) {
+        if (array_key_exists('syndicats', $this->values)) {
+            $syndicats = ($this->values['syndicats']) ? $this->values['syndicats'] : array();
             $this->getObject()->updateLocalSyndicats($syndicats);
         }
+
         parent::save($con);
     }
 

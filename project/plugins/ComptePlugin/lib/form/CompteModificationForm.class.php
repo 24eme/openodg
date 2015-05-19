@@ -73,10 +73,12 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }   
     
     public function save($con = null) {
-        if (isset($this->values['attributs']) && $attributs = $this->values['attributs']) {
-            $this->getObject()->updateInfosTagsAttributs($attributs);
+        if (array_key_exists('attributs', $this->values)) {
+            $attributs = ($this->values['attributs']) ? $this->values['attributs'] : array();
+            $this->getObject()->updateInfosTagsAttributs($this->values['attributs']);
         }
-        if (isset($this->values['manuels'])) {
+
+        if (array_key_exists('manuels', $this->values)) {
             $tagsManuelsValues = $this->values['manuels'];
             $tagsManuelsValuesSplited = explode(",",$tagsManuelsValues);
             $tagsManuels = array();
@@ -86,7 +88,6 @@ class CompteModificationForm extends acCouchdbObjectForm {
             }
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
-
         
         parent::save($con);
     }

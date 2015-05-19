@@ -66,12 +66,16 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
     }
 
     public function save($con = null) {
-        if ($produits = $this->values['produits']) {
+        if (array_key_exists('produits', $this->values)) {
+            $produits = ($this->values['produits']) ? $this->values['produits'] : array();
             $this->getObject()->updateLocalTagsProduits($produits);
         }
-        if ($syndicats = $this->values['syndicats']) {
+
+        if (array_key_exists('syndicats', $this->values)) {
+            $syndicats = ($this->values['syndicats']) ? $this->values['syndicats'] : array();
             $this->getObject()->updateLocalSyndicats($syndicats);
         }
+
         parent::save($con);
     }
 
@@ -83,7 +87,7 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         $this->widgetSchema['produits']->setDefault($default_produits);
     }
     
-        public function initDefaultSyndicats() {
+    public function initDefaultSyndicats() {
         $default_syndicats = array();
         foreach ($this->getObject()->getInfosSyndicats() as $syndicats_key => $syndicats_libelle) {
             $default_syndicats[] = $syndicats_key;

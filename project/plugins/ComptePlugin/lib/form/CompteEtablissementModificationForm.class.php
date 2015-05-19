@@ -87,9 +87,11 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
     }
 
     public function save($con = null) {
-        if ($syndicats = $this->values['syndicats']) {
+        if (array_key_exists('syndicats', $this->values)) {
+            $syndicats = ($this->values['syndicats']) ? $this->values['syndicats'] : array();
             $this->getObject()->updateLocalSyndicats($syndicats);
         }
+        
         parent::save($con);
     }
 
