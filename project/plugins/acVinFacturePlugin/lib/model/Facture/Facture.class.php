@@ -117,7 +117,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         return ($this->statut != FactureClient::STATUT_REDRESSEE && $this->statut != FactureClient::STATUT_NONREDRESSABLE);
     }
 
-    public function getEcheances() {
+    public function getEcheancesArray() {
         $e = $this->_get('echeances')->toArray();
         usort($e, 'Facture::triEcheanceDate');
         return $e;
