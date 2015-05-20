@@ -7,6 +7,7 @@ class CotisationBase
 	protected $tva;
 	protected $libelle;
 	protected $complementLibelle;
+	protected $callback;
 	
 	const PRECISION = 2;
 	
@@ -18,6 +19,7 @@ class CotisationBase
 		$this->tva = $datas->tva;
 		$this->libelle = $datas->libelle;
 		$this->complementLibelle = $datas->complement_libelle;
+		$this->callback = $datas->callback;
 	}
 	
 	public function getQuantite()

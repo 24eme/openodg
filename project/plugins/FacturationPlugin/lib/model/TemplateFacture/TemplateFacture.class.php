@@ -24,7 +24,7 @@ class TemplateFacture extends BaseTemplateFacture
 			}
 
 			if($document->isFactures()) {
-				continue;
+				//continue;
 			}
 
 			foreach ($this->cotisations as $key => $cotisation) {
@@ -44,6 +44,9 @@ class TemplateFacture extends BaseTemplateFacture
 					if (in_array($document->type, $docs)) {
 						$modele = $detail->modele;
 						$object = new $modele($template, $document, $detail);
+						if ($object->getCallbackValue() == CotisationFixe::SQUEEZE) {
+							continue;
+						}
 						if ($key == 'syndicat_viticole') {
 							$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getTotal(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => 1);
 						} else {

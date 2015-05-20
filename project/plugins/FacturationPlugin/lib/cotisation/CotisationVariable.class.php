@@ -1,17 +1,11 @@
 <?php
 class CotisationVariable extends CotisationFixe
 {
-	protected $callback;
-	
-	public function __construct($template, $document, $datas)
-	{
-		parent::__construct($template, $document, $datas);
-		$this->callback = $datas->callback;
-	}
 	
 	public function getQuantite()
 	{
-		return round($this->getCallbackValue(), self::PRECISION);
+		$quantite = round($this->getCallbackValue(), self::PRECISION);
+		return ($quantite >= 0)? $quantite : 0;
 	}
 	
 	public function getTotal()
