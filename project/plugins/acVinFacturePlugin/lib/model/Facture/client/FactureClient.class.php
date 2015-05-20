@@ -200,6 +200,7 @@ class FactureClient extends acCouchdbClient {
         $cpt = 0;
 
         $compte = CompteClient::getInstance()->find($compte_id);
+
         $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
 
         if(!count($cotisations)) {

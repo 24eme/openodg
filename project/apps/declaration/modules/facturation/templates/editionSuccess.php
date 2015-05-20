@@ -1,3 +1,5 @@
+<?php use_helper('Float'); ?>
+
 <?php include_partial('admin/menu', array('active' => 'facturation')); ?>
 
 <form action="" method="post" class="form-horizontal">
@@ -23,9 +25,10 @@
                 <?php echo $f_ligne['libelle']->renderError() ?>
                 <?php echo $f_ligne['libelle']->render(array('class' => 'form-control input-lg')); ?>
                 </div>
-                <div class="col-xs-2 col-xs-offset-1">
-                <?php echo $f_ligne['montant_ht']->renderError() ?>
-                <?php echo $f_ligne['montant_ht']->render(array('class' => 'form-control input-lg text-right')); ?>
+                <div class="col-xs-2 col-xs-offset-1 text-right">
+                <strong class="lead"><?php echoFloat($f_ligne['montant_ht']->getValue()); ?></strong>
+                <?php //echo $f_ligne['montant_ht']->renderError() ?>
+                <?php //echo $f_ligne['montant_ht']->render(array('class' => 'form-control input-lg text-right')); ?>
                 </div>
                 <div class="col-xs-2 col-xs-offset-1">
                 <?php echo $f_ligne['montant_tva']->renderError() ?>
@@ -35,7 +38,7 @@
                 <div class="form-group">
                     <div class="col-xs-12">
                     <?php foreach($f_ligne['details'] as $f_detail): ?>
-                        <div class="form-group">
+                        <div class="form-group" style="<?php echo (!$f_detail['libelle']->getValue()) ? "opacity: 0.5" : null ?>">
                             <div class="col-xs-1">
                                 <?php echo $f_detail['quantite']->renderError() ?>
                                 <?php echo $f_detail['quantite']->render(array('class' => 'form-control text-right')); ?>
