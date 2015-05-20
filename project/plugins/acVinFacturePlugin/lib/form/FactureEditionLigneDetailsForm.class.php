@@ -5,7 +5,6 @@ class FactureEditionLigneDetailsForm extends acCouchdbObjectForm {
     public function configure()
     {
         foreach($this->getObject() as $detail) {
-
             $this->embedForm($detail->getKey(), new FactureEditionLigneDetailForm($detail));
         }
 

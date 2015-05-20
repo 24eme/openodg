@@ -79,7 +79,8 @@ class facturationActions extends sfActions
         }
 
         $this->form->save();
-        exit;
+        
+        return $this->redirect('facturation_edition', array("id" => $this->facture->_id));
     }
 
     public function executeLatex(sfWebRequest $request) {

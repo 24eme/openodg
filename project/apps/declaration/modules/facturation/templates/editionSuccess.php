@@ -1,6 +1,7 @@
 <?php include_partial('admin/menu', array('active' => 'facturation')); ?>
 
 <form action="" method="post" class="form-horizontal">
+
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     
