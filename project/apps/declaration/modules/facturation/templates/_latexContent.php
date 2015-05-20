@@ -1,4 +1,5 @@
 <?php use_helper('TemplatingFacture'); ?>
+<?php use_helper('Display'); ?>
 \documentclass[a4paper, 10pt]{letter}
 \usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc}
@@ -36,8 +37,8 @@
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
 \def\FACTUREDATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('d/m/Y'); ?>}
-\def\FACTUREDECLARANTRS{<?php echo $facture->declarant->raison_sociale; ?>}
-\def\FACTUREDECLARANTADRESSE{<?php echo $facture->declarant->adresse; ?>}
+\def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
+\def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
 \def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht); ?>}
@@ -95,7 +96,7 @@ N° adhérent : \textbf{\NUMADHERENT}
   <?php foreach ($facture->lignes as $ligne): ?>
   & \textbf{<?php echo $ligne->libelle; ?>} \rule[7pt]{0pt}{11pt} & & & \textbf{<?php echo formatFloat($ligne->montant_ht); ?> €} \rule[7pt]{0pt}{11pt} \tabularnewline
   	<?php foreach ($ligne->details as $detail): ?>
-  	    \small{\textit{<?php echo $detail->quantite; ?>}} & \small{\textit{<?php echo $detail->libelle; ?>}} & \small{\textit{<?php echo formatFloat($detail->prix_unitaire); ?>}} & \small{\textit{<?php echo formatFloat($detail->montant_ht); ?>}} &  \tabularnewline
+  	    \small{\textit{<?php echo formatQuantite($detail->quantite); ?>}} & \small{\textit{<?php echo $detail->libelle; ?>}} & \small{\textit{<?php echo formatFloat($detail->prix_unitaire); ?>}} & \small{\textit{<?php echo formatFloat($detail->montant_ht); ?>}} &  \tabularnewline
   	<?php endforeach; ?>
   <?php endforeach; ?>
   \hline
@@ -108,7 +109,7 @@ N° adhérent : \textbf{\NUMADHERENT}
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>
   	<?php if ($detail->taux_tva): ?>
-  	    & \textbf{TVA <?php echo $detail->taux_tva * 100; ?>\% sur <?php echo $ligne->libelle; ?>} \rule[-5pt]{0pt}{18pt} & \textbf{<?php echo $detail->montant_tva; ?> €} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  	    & \textbf{TVA <?php echo $detail->taux_tva * 100; ?>\% sur <?php echo strtolower($ligne->libelle); ?>} \rule[-5pt]{0pt}{18pt} & \textbf{<?php echo $detail->montant_tva; ?> €} \rule[-5pt]{0pt}{18pt} \tabularnewline
   	<?php endif; ?>
   	<?php endforeach; ?>
   <?php endforeach; ?>
@@ -121,7 +122,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
-	\vspace{8mm}
+	\vspace{1mm}
 	\begin{minipage}{0.5\textwidth}
 		\begin{beamerframe}
 		\begin{center}
