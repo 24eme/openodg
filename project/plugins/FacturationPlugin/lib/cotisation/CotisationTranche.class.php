@@ -15,7 +15,8 @@ class CotisationTranche extends CotisationVariable
 	
 	public function getQuantite()
 	{
-		return (ceil((round($this->getCallbackValue(), self::PRECISION)) / $this->tranche) - $this->depart);
+		$quantite = (ceil((round($this->getCallbackValue(), self::PRECISION)) / $this->tranche) - $this->depart);
+		return ($quantite >= 0)? $quantite : 0;
 	}
 	
 	public function getTotal()
