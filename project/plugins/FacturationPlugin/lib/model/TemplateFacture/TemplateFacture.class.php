@@ -44,7 +44,7 @@ class TemplateFacture extends BaseTemplateFacture
 					if (in_array($document->type, $docs)) {
 						$modele = $detail->modele;
 						$object = new $modele($template, $document, $detail);
-						if ($object->getCallbackValue() == CotisationFixe::SQUEEZE) {
+						if ($object->getCallbackValue() === CotisationFixe::SQUEEZE) {
 							continue;
 						}
 						if ($key == 'syndicat_viticole') {
