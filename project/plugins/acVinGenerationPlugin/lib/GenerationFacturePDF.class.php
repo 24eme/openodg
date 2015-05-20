@@ -26,9 +26,8 @@ class GenerationFacturePDF extends GenerationPDF {
 
         $comptes_id = FactureClient::getInstance()->getComptesIdFilterWithParameters($this->generation->arguments->toArray());
 
-        //$message_communication = (array_key_exists('message_communication', $arguments))? $arguments['message_communication'] : null;
-        
-        $message_communication = null;
+        $message_communication = $this->generation->arguments->exist('message_communication') ? $this->generation->arguments->get('message_communication') : null;
+        $date_facturation = $this->generation->arguments->exist('date_facturation') ? $this->generation->arguments->get('date_facturation') : null;
 
         if(!$this->generation->exist('somme')) {
           $this->generation->somme = 0;
@@ -46,20 +45,33 @@ class GenerationFacturePDF extends GenerationPDF {
             if(!$compte->cvi) {
                 throw new sfException(sprintf("Le compte %s n'a pas de numéro CVI", $compte_id));
             }
-
-            $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
-            
+            try {
+              $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
+            } catch (Exception $e) {
+              $this->generation->message .= sprintf("%s (%s) : %s\n", $compte->nom_a_afficher, $compte->_id, $e->getMessage());
+              $this->generation->save();
+              continue;
+            }
             if(!count($cotisations)) {
                 continue;
             }
 
-            $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $this->generation->arguments['date_facturation'],$message_communication);
+            $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, $message_communication);
             $facture->save();
             $this->generation->somme += $facture->total_ttc;
             $this->generation->documents->add($cpt, $facture->_id);
             $this->generation->save();
             $cpt++;
         }
+    }
+
+    public function regenerate() {
+        foreach($this->generation->documents as $document) {
+            $document->defacturer();
+            $document->save();
+        }
+
+        $this->generation->regenerate();
     }
     
     /*public function preGeneratePDF() {

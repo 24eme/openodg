@@ -1003,6 +1003,16 @@ facturation_pdf:
   requirements:
     sf_method: [get]
 
+facturation_edition:
+  url: /facturation/edition/:id
+  param: { module: facturation, action: edition }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 #Génération
 
 generation_view:

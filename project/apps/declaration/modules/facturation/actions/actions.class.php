@@ -5,7 +5,6 @@ class facturationActions extends sfActions
 	
     public function executeIndex(sfWebRequest $request) 
     {
-    	
     	$this->values = array();
     	$this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
     	$this->form = new FacturationForm($this->templatesFactures);
@@ -62,6 +61,26 @@ class facturationActions extends sfActions
         $this->generation->save();
 
         return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $this->generation->date_emission));
+    }
+
+    public function executeEdition(sfWebRequest $request) {
+        $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+        $this->form = new FactureEditionForm($this->facture);
+
+         if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+            
+        if(!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+        
+        return $this->redirect('facturation_edition', array("id" => $this->facture->_id));
     }
 
     public function executeLatex(sfWebRequest $request) {

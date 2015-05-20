@@ -23,7 +23,18 @@ class Generation extends BaseGeneration {
   }
 
   public function setStatut($statut) {
-    $this->message = "";
+    if($statut == GenerationClient::GENERATION_STATUT_ENATTENTE) {
+      $this->message = "";
+    }
+
+    if($statut == GenerationClient::GENERATION_STATUT_ENCOURS) {
+      $this->message = "";
+    }
+
+    if($statut == GenerationClient::GENERATION_STATUT_ENERREUR) {
+      $this->message = "";
+    }
+    
     return $this->_set('statut', $statut);
   }
   

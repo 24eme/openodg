@@ -14,8 +14,8 @@ class TemplateFacture extends BaseTemplateFacture
 		foreach ($this->docs as $doc) {
 			$document = $this->getDocumentFacturable($doc, $identifiant, $campagne);
 			if(!$document) {
-				continue;
-				throw new sfException(sprintf("Document not find %s-%s-%s", strtoupper($doc), $identifiant, $campagne));
+
+				throw new sfException(sprintf("Le document %s du compte %s n'a pas été trouvé (%s-%s-%s)", strtoupper($doc), $identifiant, strtoupper($doc), $identifiant, $campagne));
 			}
 
 			if(!count($document->mouvements)) {

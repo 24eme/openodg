@@ -73,20 +73,24 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }   
     
     public function save($con = null) {
-        if (isset($this->values['attributs']) && $attributs = $this->values['attributs']) {
-            $this->getObject()->updateInfosTagsAttributs($attributs);
+        if (array_key_exists('attributs', $this->values)) {
+            $attributs = ($this->values['attributs']) ? $this->values['attributs'] : array();
+            $this->getObject()->updateInfosTagsAttributs($this->values['attributs']);
         }
-        if (isset($this->values['manuels'])) {
+
+        if (array_key_exists('manuels', $this->values)) {
             $tagsManuelsValues = $this->values['manuels'];
             $tagsManuelsValuesSplited = explode(",",$tagsManuelsValues);
             $tagsManuels = array();
             foreach ($tagsManuelsValuesSplited as $manuel) {
-                $manuel_key = str_replace('-', '_',strtoupper(KeyInflector::slugify( $manuel)));
+                $manuel_key = str_replace('-', '_',strtoupper(KeyInflector::slugify($manuel)));
+                if(!$manuel_key && !$manuel) {
+                    continue;
+                }
                 $tagsManuels[$manuel_key] = $manuel;
             }
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
-
         
         parent::save($con);
     }
