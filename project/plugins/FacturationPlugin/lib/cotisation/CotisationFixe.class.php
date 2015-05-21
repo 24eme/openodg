@@ -1,21 +1,19 @@
 <?php
 class CotisationFixe extends CotisationBase
 {
-	const SQUEEZE = 'SQUEEZE';
-	
 	public function getTotal()
 	{
-		return $this->getPrix();
+		return round($this->prix * $this->getQuantite(), self::PRECISION);
 	}
 
-	
-	public function getCallbackValue()
-	{
-		$document = $this->document;
+	public function getQuantite() {
 		$callback = $this->callback;
-		if ($this->callback && round($document->$callback(), self::PRECISION) <= 0) {
-			return self::SQUEEZE;
+
+		if($callback && round($this->document->$callback(), self::PRECISION) <= 0) {
+
+			return 0;
 		}
-		return round($document->$callback(), self::PRECISION);
+
+		return parent::getQuantite();
 	}
 }
