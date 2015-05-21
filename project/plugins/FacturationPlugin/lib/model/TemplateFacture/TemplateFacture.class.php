@@ -24,7 +24,7 @@ class TemplateFacture extends BaseTemplateFacture
 			}
 
 			if($document->isFactures()) {
-				//continue;
+				continue;
 			}
 
 			foreach ($this->cotisations as $key => $cotisation) {
