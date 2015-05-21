@@ -8,19 +8,38 @@
     _doc.ready(function()
     {
         $('.data-sum-element').change(function() {
-            var sumElement = $($(this).attr('data-sum-element'));
-
-            var sum = 0;
             try {
-                sum = eval(sumElement.attr('data-sum').replace(/(#[0-9a-zA-Z_-]+)/g, 'parseFloat(($("$1").val()) ? $("$1").val() : 0)'));
+                var elements = JSON.parse($(this).attr('data-sum-element'));
             } catch (e) {
 
             }
 
-            sumElement.val(sum);
+            if(!elements) {
+                sumElement($($(this).attr('data-sum-element')));
+                return;
+            }
 
-            sumElement.change();
+            for(keyElement in elements) {
+                console.log($(elements[keyElement]));
+                sumElement($(elements[keyElement]));
+            }
         });
 
+       
+
     });
+
+    var sumElement = function(element) {
+        var sum = 0;
+        try {
+            var expression = element.attr('data-sum').replace(/(#[0-9a-zA-Z_-]+)/g, 'parseFloat(($("$1").val()) ? $("$1").val() : 0)');
+            sum = eval(element.attr('data-sum').replace(/(#[0-9a-zA-Z_-]+)/g, 'parseFloat(($("$1").val()) ? $("$1").val() : 0)'));
+        } catch (e) {
+
+        }
+
+        element.val(sum);
+
+        element.change();
+    }
 })(jQuery);

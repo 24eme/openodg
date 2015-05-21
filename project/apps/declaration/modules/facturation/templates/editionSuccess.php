@@ -30,6 +30,10 @@
                 <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_ht[] = "#".$f_detail['montant_ht']->renderId(); endforeach; ?>
                 <?php echo $f_ligne['montant_ht']->renderError(); ?>
                 <?php echo $f_ligne['montant_ht']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_ht), "readonly" => "readonly", 'data-sum-element' => "#montant_ht")); ?>
+                <?php $ids_montant_tva = array(); ?>
+                <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_tva[] = "#".$f_detail['montant_tva']->renderId(); endforeach; ?>
+                <?php echo $f_ligne['montant_tva']->renderError(); ?>
+                <?php echo $f_ligne['montant_tva']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_tva), "readonly" => "readonly", 'data-sum-element' => "#montant_tva", 'readonly' => 'readonly', 'type' => 'hidden')); ?>
                 </div>
             </div>
                 <div class="form-group">
@@ -50,11 +54,17 @@
                             </div>
                             <div class="col-xs-2 text-right">
                                 <?php echo $f_detail['montant_ht']->renderError() ?>
-                                <?php echo $f_detail['montant_ht']->render(array('class' => 'form-control text-right data-sum-element', 'data-sum' => sprintf("#%s * #%s", $f_detail['quantite']->renderId(), $f_detail['prix_unitaire']->renderId()), 'data-sum-element' => "#".$f_ligne['montant_ht']->renderId(), "readonly" => "readonly")); ?>
+                                <?php echo $f_detail['montant_ht']->render(
+                                    array('class' => 'form-control text-right data-sum-element', 
+                                          'data-sum' => sprintf("#%s * #%s", $f_detail['quantite']->renderId(), $f_detail['prix_unitaire']->renderId()), 
+                                          'data-sum-element' => json_encode(array("#".$f_detail['montant_tva']->renderId(), "#".$f_ligne['montant_ht']->renderId())),
+                                          "readonly" => "readonly")); ?>
                             </div>
                             <div class="col-xs-1">
                                 <?php echo $f_detail['taux_tva']->renderError() ?>
-                                <?php echo $f_detail['taux_tva']->render(array('class' => 'form-control text-right data-sum-element', 'data-sum-element' => "#".$f_ligne['montant_tva']->renderId())); ?>
+                                <?php echo $f_detail['taux_tva']->render(array('class' => 'form-control text-right data-sum-element', 'data-sum-element' => "#".$f_detail['montant_tva']->renderId())); ?>
+                                <?php echo $f_detail['montant_tva']->renderError() ?>
+                                <?php echo $f_detail['montant_tva']->render(array('class' => 'form-control text-right data-sum-element' , 'data-sum' => sprintf("#%s * #%s", $f_detail['montant_ht']->renderId(), $f_detail['taux_tva']->renderId()), 'data-sum-element' => '#'.$f_ligne['montant_tva']->renderId(), 'readonly' => 'readonly', 'type' => 'hidden')); ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -69,13 +79,15 @@
                 <div class="col-xs-2 text-center"><label class="control-label">Montant HT</label></div>
                 <?php $ids_total_ht = array(); ?>
                 <?php foreach($form['lignes'] as $f_ligne): $ids_total_ht[] = "#".$f_ligne['montant_ht']->renderId(); endforeach; ?>
-                <div class="col-xs-2 text-center"><strong><input id="montant_ht" type="text" class="form-control input-lg text-right data-sum-element" data-sum="<?php echo implode(" + ", $ids_total_ht) ?>" readonly="readonly" value="<?php echo $facture->total_ht ?>" /></strong></div>
+                <div class="col-xs-2 text-center"><strong><input id="montant_ht" type="text" class="form-control input-lg text-right" data-sum="<?php echo implode(" + ", $ids_total_ht) ?>" readonly="readonly" value="<?php echo $facture->total_ht ?>" /></strong></div>
             </div>
             <div class="form-group form-group-lg">
                 <div class="col-xs-2 text-center"></div>
                 <div class="col-xs-5 text-center"></div>
                 <div class="col-xs-2 text-center"><label class="control-label">Montant TVA</label></div>
-                <div class="col-xs-2 text-center"><strong><input id="montant_ht" type="text" class="form-control input-lg text-right" readonly="readonly" value="<?php echo $facture->total_taxe ?>" /></strong></div>
+                <?php $ids_total_tva = array(); ?>
+                <?php foreach($form['lignes'] as $f_ligne): $ids_total_tva[] = "#".$f_ligne['montant_tva']->renderId(); endforeach; ?>
+                <div class="col-xs-2 text-center"><strong><input id="montant_tva" type="text" class="form-control input-lg text-right" data-sum="<?php echo implode(" + ", $ids_total_tva) ?>" readonly="readonly" value="<?php echo $facture->total_taxe ?>" /></strong></div>
             </div>
             <div class="form-group form-group-lg">
                 <div class="col-xs-2 text-center"></div>
