@@ -14,7 +14,7 @@ class FactureEditionLigneForm extends acCouchdbObjectForm {
         $this->setWidget("montant_ht", new sfWidgetFormInputFloat());
         $this->setValidator("montant_ht", new sfValidatorNumber(array('required' => false)));
 
-        $this->getObject()->details->add();
+        //$this->getObject()->details->add();
         $this->embedForm('details', new FactureEditionLigneDetailsForm($this->getObject()->details));
 
         $this->widgetSchema->setNameFormat('facture_edition_ligne[%s]');
