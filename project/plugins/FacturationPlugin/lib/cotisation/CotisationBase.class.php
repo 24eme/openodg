@@ -45,5 +45,4 @@ class CotisationBase
 	public function getTotal() {
 		return null;
 	}
-	
 }

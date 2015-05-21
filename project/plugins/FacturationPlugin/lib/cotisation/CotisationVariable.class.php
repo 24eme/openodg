@@ -5,12 +5,8 @@ class CotisationVariable extends CotisationFixe
 	public function getQuantite()
 	{
 		$quantite = round($this->getCallbackValue(), self::PRECISION);
-		return ($quantite >= 0)? $quantite : 0;
-	}
-	
-	public function getTotal()
-	{
-		return round($this->prix * $this->getQuantite(), self::PRECISION);
+		
+		return ($quantite >= 0) ? $quantite : 0;
 	}
 	
 	public function getLibelle()
