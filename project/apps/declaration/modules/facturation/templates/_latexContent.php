@@ -89,7 +89,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
 \arrayrulecolor{vertclair}
-\begin{tabular}{|>{\raggedleft}m{2cm}|m{8.8cm}|>{\raggedleft}m{2cm}|>{\raggedleft}m{2cm}|>{\raggedleft}m{2cm}|}
+\begin{tabular}{|>{\raggedleft}m{1.9cm}|m{8.8cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{1.9cm}|>{\raggedleft}m{2.3cm}|}
   \hline
   Quantité & Libellés & Prix (€) & Sous-Total & Total \rule[-7pt]{0pt}{20pt} \tabularnewline
   \hline
@@ -103,13 +103,13 @@ N° adhérent : \textbf{\NUMADHERENT}
   \end{tabular}
 \begin{center}
 \end{center}
-\begin{tabular}{|>{\centering}p{9.7cm} >{\raggedleft}p{6cm}|>{\raggedleft}p{2cm}|}
+\begin{tabular}{|>{\centering}p{9.4cm} >{\raggedleft}p{6cm}|>{\raggedleft}p{2.3cm}|}
   \hline
   \multirow{4}{*} {\begin{minipage}{6cm}Paiement sous 30 jours à réception \newline de facture, net et sans escompte\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>
   	<?php if ($detail->taux_tva): ?>
-  	    & \textbf{TVA <?php echo $detail->taux_tva * 100; ?>\% sur <?php echo strtolower($ligne->libelle); ?>} \rule[-5pt]{0pt}{18pt} & \textbf{<?php echo $detail->montant_tva; ?> €} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  	    & \textbf{TVA <?php echo $detail->taux_tva * 100; ?>\% sur <?php echo strtolower($ligne->libelle); ?>} \rule[-5pt]{0pt}{18pt} & \textbf{<?php echo formatFloat($detail->montant_tva); ?> €} \rule[-5pt]{0pt}{18pt} \tabularnewline
   	<?php endif; ?>
   	<?php endforeach; ?>
   <?php endforeach; ?>
