@@ -8,7 +8,7 @@ class facturationActions extends sfActions
     	$this->values = array();
     	$this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
     	$this->form = new FacturationForm($this->templatesFactures);
-        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,10);
+        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,100);
     	
     	if ($request->isMethod(sfWebRequest::POST)) {
     		$this->form->bind($request->getParameter($this->form->getName()));
