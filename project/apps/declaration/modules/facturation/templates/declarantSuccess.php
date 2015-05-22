@@ -47,6 +47,7 @@
 
 <div class="row row-margin">
     <div class="col-xs-12">
+        <?php if(count($factures)): ?>
         <div class="list-group">
             <?php foreach ($factures as $facture) : ?>
                 <li class="list-group-item col-xs-12">
@@ -64,5 +65,8 @@
                 </li>
             <?php endforeach; ?>
         </div>
+        <?php else: ?>
+        <p class="text-center text-muted"><i>Aucune Facture</i></p>
+        <?php endif; ?>
     </div>
 </div>
