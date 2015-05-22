@@ -5,39 +5,27 @@ class facturationActions extends sfActions
 	
     public function executeIndex(sfWebRequest $request) 
     {
-    	$this->values = array();
-    	$this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
-    	$this->form = new FacturationForm($this->templatesFactures);
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,100);
-    	
-    	if ($request->isMethod(sfWebRequest::POST)) {
-    		$this->form->bind($request->getParameter($this->form->getName()));
-    		
-	    	if($this->form->isValid()) {
 
-	    		$this->values = $this->form->getValues();
-	       		$compte = CompteClient::getInstance()->find($this->values['declarant']);
-	       		$templateFacture = TemplateFactureClient::getInstance()->find($this->values['template_facture']);
-	       		
-                try {
-                    $generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $compte->_id);
-                } catch (Exception $e) {
-                    $this->getUser()->setFlash("error", $e->getMessage());
+        $this->getUser()->signOutEtablissement();
+        
+        $this->form = new LoginForm();
+        
+        if (!$request->isMethod(sfWebRequest::POST)) {
 
-                    return $this->redirect('facturation');
-                }
-
-                if(!$generation) {
-                    $this->getUser()->setFlash("notice", "Cet opérateur a déjà été facturé.");
-
-                    return $this->redirect('facturation');
-                }
-
-                $generation->save();
-
-                return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
-	    	}
+            return sfView::SUCCESS;
         }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if(!$this->form->isValid()) {
+            
+            return sfView::SUCCESS;
+        }
+
+        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
+
+        return $this->redirect('facturation_declarant', $this->getUser()->getEtablissement()->getCompte()); 
     }
 
     public function executeMassive(sfWebRequest $request) 
@@ -86,8 +74,10 @@ class facturationActions extends sfActions
         }
 
         $this->form->save();
+
+        $this->getUser()->setFlash("notice", "La facture a été modifiée.");
         
-        return $this->redirect('facturation_edition', array("id" => $this->facture->_id));
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
     public function executeLatex(sfWebRequest $request) {
@@ -99,8 +89,50 @@ class facturationActions extends sfActions
         $latex->echoWithHTTPHeader($request->getParameter('type'));
         exit;
     }
+
+    public function executeDeclarant(sfWebRequest $request) {
+        $this->compte = $this->getRoute()->getCompte();
+        $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $this->values = array();
+        $this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
+        $this->form = new FacturationDeclarantForm($this->templatesFactures);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->bind($request->getParameter($this->form->getName()));
+            
+        if(!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->values = $this->form->getValues();
+        $templateFacture = TemplateFactureClient::getInstance()->find($this->values['modele']);
+        
+        try {
+            $generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $this->compte->_id);
+        } catch (Exception $e) {
+            $this->getUser()->setFlash("error", $e->getMessage());
+
+            return $this->redirect('facturation_declarant', $this->compte);
+        }
+
+        if(!$generation) {
+            $this->getUser()->setFlash("error", "Cet opérateur a déjà été facturé pour ce type de facture.");
+
+            return $this->redirect('facturation_declarant', $this->compte);
+        }
+
+        $generation->save();
+
+        return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
+    }
         
     private function getLatexTmpPath() {
             return "/tmp/";
     }
+
 }

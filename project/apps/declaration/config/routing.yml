@@ -1013,6 +1013,17 @@ facturation_edition:
   requirements:
     sf_method: [get, post]
 
+facturation_declarant:
+  url: /facturation/declarant/:id
+  param: { module: facturation, action: declarant }
+  class: CompteRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+
 #Génération
 
 generation_view:

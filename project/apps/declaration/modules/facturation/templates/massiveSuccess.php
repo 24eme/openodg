@@ -11,7 +11,7 @@
             </div>
             <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["modele"]->renderError() ?>
-                <?php echo $form["date_facturation"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
+                <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                 <?php echo $form["modele"]->render(array("class" => "form-control input-lg")); ?>
                 </div>

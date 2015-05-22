@@ -19,10 +19,3 @@
         </div>
     </div>
 </div>
-
-<!--
-<div class="historique_generation_ds" style="padding:10px;">
-    <span>Consulter l'historique des générations de factures</span>
-    <a href="<?php echo url_for('generation_list',array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES)); ?>" id="historique_generation" class="btn_majeur">Consulter</a>
-</div>
--->

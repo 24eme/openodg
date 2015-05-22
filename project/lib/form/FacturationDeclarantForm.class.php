@@ -1,6 +1,6 @@
 <?php
 
-class FacturationForm extends BaseForm {
+class FacturationDeclarantForm extends BaseForm {
 	
 	protected $templatesFactures;
 	
@@ -12,21 +12,23 @@ class FacturationForm extends BaseForm {
 	
     public function configure() {
     	$choices = $this->getChoices();
+
         $this->setWidgets(array(
-                'declarant'   => new sfWidgetFormInput(),
-                'template_facture'   => new sfWidgetFormChoice(array('choices' => $choices)),
+                'modele'   => new sfWidgetFormChoice(array('choices' => $choices)),
+                'date_facturation'   => new sfWidgetFormInput(array('default' => date('d/m/Y'))),
         ));
 
         $this->widgetSchema->setLabels(array(
-                'declarant'  => 'Déclarant : ',
-                'template_facture'  => 'Template de facture : ',
+                'modele'  => 'Template de facture',
+                'date_facturation'  => 'Date de facturation',
         ));
 
         $this->setValidators(array(
-                'declarant' => new sfValidatorString(array("required" => true)),
-                'template_facture' => new sfValidatorChoice(array('choices' => array_keys($choices), 'multiple' => false, 'required' => true)),
+                'modele' => new sfValidatorChoice(array('choices' => array_keys($choices), 'multiple' => false, 'required' => true)),
+                'date_facturation' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)),
         ));
-        $this->widgetSchema->setNameFormat('facturation[%s]');
+
+        $this->widgetSchema->setNameFormat('facturation_declarant[%s]');
     }
     
     public function getChoices()
