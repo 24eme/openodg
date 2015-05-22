@@ -197,7 +197,7 @@ class compteActions extends sfActions {
     
     public function executeRechercheJson($request) {
         if($request->getParameter('q')) {
-            $request->setParameter('q', "*".$request->getParameter('q')."*");
+            $request->setParameter('q', "*".$request->getParameter('q')."* type_compte:ETABLISSEMENT");
         }
 
         $q = $this->initSearch($request);
