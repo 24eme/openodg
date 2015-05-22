@@ -322,6 +322,22 @@ class FactureClient extends acCouchdbClient {
       $f->save();
       return $avoir;
     }
+
+    public function getFacturesByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $ids = $this->startkey(sprintf("FACTURE-%s-%s", $identifiant, "0000000000"))
+                    ->endkey(sprintf("FACTURE-%s-%s", $identifiant, "9999999999"))
+                    ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+
+        $factures = array();            
+
+        foreach($ids as $id) {
+            $factures[$id] = FactureClient::getInstance()->find($id, $hydrate);
+        }
+
+        krsort($factures);
+
+        return $factures;
+    }
     
     public function getDateCreation($id) {
         $d = substr($id, -10,8);
