@@ -7,15 +7,21 @@
 class TemplateFacture extends BaseTemplateFacture 
 {
 	
-	public function generateCotisations($identifiant, $campagne, $force = false)
+	public function generateCotisations($identifiant_or_compte, $campagne, $force = false)
 	{
 		$template = $this;
+		$compte = $identifiant_or_compte;
+		
+		if(is_string($compte)) {
+			$compte = CompteClient::getInstance()->findByIdentifiant('E'.$identifiant_or_compte);
+		}
+		
 		$cotisations = array();
 		foreach ($this->docs as $doc) {
-			$document = $this->getDocumentFacturable($doc, $identifiant, $campagne);
+			$document = $this->getDocumentFacturable($doc, $compte->cvi, $campagne);
 			if(!$document) {
 
-				throw new sfException(sprintf("Le document %s du compte %s n'a pas été trouvé (%s-%s-%s)", strtoupper($doc), $identifiant, strtoupper($doc), $identifiant, $campagne));
+				throw new sfException(sprintf("Le document %s n'a pas été trouvé (%s-%s-%s)", strtoupper($doc), strtoupper($doc), $compte->cvi, $campagne));
 			}
 
 			if(!count($document->mouvements)) {
@@ -30,7 +36,8 @@ class TemplateFacture extends BaseTemplateFacture
 			foreach ($this->cotisations as $key => $cotisation) {
 				
 				$modele = $cotisation->modele;
-				$object = new $modele(CompteClient::getInstance()->findByIdentifiant('E'.$identifiant), $cotisation->callback);
+
+				$object = new $modele($compte, $cotisation->callback);
 				$details = $object->getDetails($cotisation->details);
 				
 				if (!in_array($cotisation->libelle, array_keys($cotisations))) {

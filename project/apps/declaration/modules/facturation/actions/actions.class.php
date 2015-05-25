@@ -32,7 +32,7 @@ class facturationActions extends sfActions
     {
         $this->generation = new Generation();
         $this->generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
-            
+        $this->generation->somme = 0;
 
         $defaults = array();
         if($request->getParameter('q')) {

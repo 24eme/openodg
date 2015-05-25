@@ -1014,7 +1014,7 @@ facturation_edition:
     sf_method: [get, post]
 
 facturation_regenerate:
-  url: /facturation/regnerer/:id
+  url: /facturation/regenerer/:id
   param: { module: facturation, action: regenerate }
   class: FactureRoute
   options:
@@ -1045,6 +1045,12 @@ generation_view:
 generation_delete:
   url: /generation/:type_document/:date_emission/delete
   param: { module: generation, action: delete }
+  requirements:
+    sf_method: [get]
+
+generation_regenerate:
+  url: /generation/:type_document/:date_emission/regenerer
+  param: { module: generation, action: regenerate }
   requirements:
     sf_method: [get]
 
