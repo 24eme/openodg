@@ -28,6 +28,13 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group <?php if($form["libelle"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["libelle"]->renderError() ?>
+                <?php echo $form["libelle"]->renderLabel("Libelle", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                <?php echo $form["libelle"]->render(array("class" => "form-control input-lg")); ?>
+                </div>
+            </div>
             <div class="form-group text-right">
                 <div class="col-xs-8 col-xs-offset-4">
                     <button class="btn btn-default btn-lg btn-block btn-upper" type="submit">Générer</button>
