@@ -57,7 +57,7 @@
                     <span class="col-xs-2"><span class="label label-warning">Paiement non reçu</span></span>
                     <span class="col-xs-4 text-right">
                         <div class="btn-group">
-                        <!--<a href="" class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Regénerer</a>-->
+                        <a href="<?php echo url_for("facturation_regenerate", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Regénerer</a>
                         <a href="<?php echo url_for("facturation_edition", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Modifier</a>
                         <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                         </div>

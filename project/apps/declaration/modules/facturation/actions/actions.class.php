@@ -90,6 +90,17 @@ class facturationActions extends sfActions
         exit;
     }
 
+    public function executeRegenerate(sfWebRequest $request) {
+        $facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        $f = FactureClient::getInstance()->regenerate($facture);
+        $f->save();
+
+        $this->getUser()->setFlash("notice", "La facture a été regénérée.");
+
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$f->identifiant));
+    }
+
     public function executeDeclarant(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_JSON);
