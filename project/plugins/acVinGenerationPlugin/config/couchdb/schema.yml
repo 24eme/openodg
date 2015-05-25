@@ -12,6 +12,7 @@ Generation:
       type_document: {}
       somme: {}
       statut: {}
+      libelle: {}
       pregeneration_needed: {required: false}
       message: {required: false;}
       fichiers:

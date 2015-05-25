@@ -13,6 +13,12 @@
     <h2>Génération N° <?php echo $generation->identifiant; ?><small> créé le <?php echo GenerationClient::getInstance()->getDateFromIdGeneration($generation->date_maj); ?></small></h2>
 </div>
 
+<?php if($generation->libelle): ?>
+<p class="text-center lead">
+    <?php echo $generation->libelle; ?>
+</p>
+<?php endif; ?>
+
 <?php if(count($generation->arguments) > 0): ?>
 <p class="text-center text-muted">
     <?php foreach ($generation->arguments as $key => $argument) : ?>

@@ -212,6 +212,7 @@ class FactureClient extends acCouchdbClient {
 
         $generation->somme += $f->total_ttc;
         $generation->add('documents')->add($cpt, $f->_id);
+        $generation->libelle = $compte->nom_a_afficher;
         $cpt++;
 
         return $generation;

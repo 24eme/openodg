@@ -13,6 +13,7 @@ class GenerationClient extends acCouchdbClient {
     const HISTORY_VALUES_DOCUMENTS = 1;
     const HISTORY_VALUES_SOMME = 2;
     const HISTORY_VALUES_STATUT = 3;
+    const HISTORY_VALUES_LIBELLE = 4;
     const GENERATION_STATUT_ENATTENTE = "EN ATTENTE";
     const GENERATION_STATUT_ENCOURS = "EN COURS";
     const GENERATION_STATUT_GENERE = "GENERE";
