@@ -500,6 +500,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         }
     }
 
+    public function getTemplates() {
+        $templates = array("TEMPLATE-FACTURE-AOC-2014");
+        /*foreach($this->origines as $origine) {
+            $templates[$origine] = true;
+        }*/
+
+        return $templates;
+    }
+
     protected function preSave() {
         if ($this->isNew() && $this->statut != FactureClient::STATUT_REDRESSEE) {
             $this->facturerMouvements();
@@ -532,6 +541,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
 
     public function getSociete() {
         return SocieteClient::getInstance()->find($this->identifiant);
+    }
+
+    public function getCompte() {
+
+        return CompteClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
     public function getPrefixForRegion() {
@@ -585,4 +599,5 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     }
 
     /*     * * FIN ARCHIVAGE ** */
+
 }

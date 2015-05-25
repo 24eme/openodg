@@ -7,7 +7,7 @@
 class TemplateFacture extends BaseTemplateFacture 
 {
 	
-	public function generateCotisations($identifiant, $campagne)
+	public function generateCotisations($identifiant, $campagne, $force = false)
 	{
 		$template = $this;
 		$cotisations = array();
@@ -23,7 +23,7 @@ class TemplateFacture extends BaseTemplateFacture
 				$document->save();
 			}
 
-			if($document->isFactures()) {
+			if($document->isFactures() && !$force) {
 				continue;
 			}
 

@@ -1013,6 +1013,16 @@ facturation_edition:
   requirements:
     sf_method: [get, post]
 
+facturation_regenerate:
+  url: /facturation/regnerer/:id
+  param: { module: facturation, action: regenerate }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get]
+
 facturation_declarant:
   url: /facturation/declarant/:id
   param: { module: facturation, action: declarant }

@@ -54,6 +54,30 @@ class FactureClient extends acCouchdbClient {
         }
         return $facture;
     }
+
+      public function regenerate($facture) {
+        /*if($facture->isPayee()) {
+
+            throw new sfException(sprintf("La factures %s a déjà été payé", $facture->_id));
+        }*/
+
+        $templates = $facture->getTemplates();
+
+        foreach($templates as $template_id) {
+          $template = TemplateFactureClient::getInstance()->find($template_id);
+          $cotisations = $template->generateCotisations(str_replace("E", "", $facture->identifiant), $template->campagne, true);
+        }
+
+        $f = $this->createDoc($cotisations, $facture->getCompte(), $facture->date_facturation);
+
+        $f->_id = $facture->_id;
+        $f->_rev = $facture->_rev;
+        $f->numero_facture = $facture->numero_facture;
+        $f->numero_ava = $facture->numero_ava;
+        $f->numero_archive = $facture->numero_archive;
+
+        return $f;
+    }
     
     private $documents_origine = array();
     public function getDocumentOrigine($id) {
@@ -217,7 +241,6 @@ class FactureClient extends acCouchdbClient {
 
         return $generation;
     }
-
 
     public function createFacturesBySoc($generationFactures, $date_facturation, $message_communication = null) {
         
