@@ -37,6 +37,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         self::BOUTEILLE_GRDCRU,
         self::BOUTEILLE_VTSGN,
     );
+    
     protected $declarant_document = null;
     protected $mouvement_document = null;
 

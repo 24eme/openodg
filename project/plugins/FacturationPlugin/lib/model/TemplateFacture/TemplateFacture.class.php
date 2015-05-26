@@ -13,12 +13,12 @@ class TemplateFacture extends BaseTemplateFacture
 		$compte = $identifiant_or_compte;
 		
 		if(is_string($compte)) {
-			$compte = CompteClient::getInstance()->findByIdentifiant('E'.$identifiant_or_compte);
+			$compte = CompteClient::getInstance()->findByIdentifiant($identifiant_or_compte);
 		}
 		
 		$cotisations = array();
 		foreach ($this->docs as $doc) {
-			$document = $this->getDocumentFacturable($doc, $compte->cvi, $campagne);
+			$document = $this->getDocumentFacturable($doc, $compte->identifiant, $campagne);
 			if(!$document) {
 
 				throw new sfException(sprintf("Le document %s n'a pas été trouvé (%s-%s-%s)", strtoupper($doc), strtoupper($doc), $compte->cvi, $campagne));

@@ -93,7 +93,7 @@ class GenerationFacturePDF extends GenerationPDF {
               $facture->save();
             } catch (Exception $e) {
               $this->generation->message .= sprintf("%s (%s) : %s\n", $compte->nom_a_afficher, $compte->_id, $e->getMessage());
-              $this->generation->documents->add($cpt, $facture->_id);
+              $this->generation->documents->add($cpt, $f->_id);
               $this->generation->save();
               $cpt++;
               continue;

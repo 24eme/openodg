@@ -72,7 +72,7 @@ class FactureClient extends acCouchdbClient {
 
         foreach($facture->getTemplates() as $template_id) {
           $template = TemplateFactureClient::getInstance()->find($template_id);
-          $cotisations = $cotisations + $template->generateCotisations(str_replace("E", "", $facture->identifiant), $template->campagne, true);
+          $cotisations = $cotisations + $template->generateCotisations($facture->identifiant, $template->campagne, true);
         }
 
         $f = $this->createDoc($cotisations, $facture->getCompte(), $facture->date_facturation);
@@ -222,7 +222,7 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
-    public function createFactureByCompte($template, $compte_id) {
+    public function createFactureByCompte($template, $compte_or_id) {
         $generation = new Generation();
         $generation->date_emission = date('Y-m-d-H:i');
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
@@ -230,9 +230,13 @@ class FactureClient extends acCouchdbClient {
         $generation->somme = 0;
         $cpt = 0;
 
-        $compte = CompteClient::getInstance()->find($compte_id);
+        $compte = $compte_or_id;
 
-        $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
+        if(is_string($compte)) {
+            $compte = CompteClient::getInstance()->find($compte_or_id);
+        }
+
+        $cotisations = $template->generateCotisations($compte, $template->campagne);
 
         if(!count($cotisations)) {
           return null;

@@ -103,7 +103,7 @@ class facturationActions extends sfActions
 
     public function executeDeclarant(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
-        $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte, acCouchdbClient::HYDRATE_JSON);
         $this->values = array();
         $this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
         $this->form = new FacturationDeclarantForm($this->templatesFactures);
