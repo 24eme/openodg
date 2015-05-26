@@ -14,7 +14,7 @@ class adminComponents extends sfComponents {
         $this->lists["Parcellaire 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
         $this->lists["Parcellaire Crémant 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
 
-        if(!$this->lists[$this->current_key_list]['statuts']['a_valider']) {
+        if(!($this->statut || $this->statut = "a_valider") && !$this->lists[$this->current_key_list]['statuts']['a_valider']) {
             $this->statut = "valide";
         }
     }
