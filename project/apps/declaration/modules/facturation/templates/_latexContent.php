@@ -144,7 +144,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			\FACTUREMEMBRECOMMUNE \\
 			N° adhérent : \NUMADHERENT \\
 		\end{center}
-		\vspace{1mm}
+		\vspace{3mm}
 		\end{beamerframe}
 	\end{minipage}
 	\begin{minipage}{0.5\textwidth}
