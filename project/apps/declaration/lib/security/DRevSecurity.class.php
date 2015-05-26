@@ -22,6 +22,11 @@ class DRevSecurity extends DocumentSecurity implements SecurityInterface {
             return false;
         }
 
+         if(in_array(self::DEVALIDATION, $droits) && $this->doc->isFactures()) {
+
+            return false;
+        }
+
         if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->doc->hasCompleteDocuments()) {
 
             return false;
