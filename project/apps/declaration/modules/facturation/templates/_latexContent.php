@@ -37,8 +37,8 @@
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
 \def\FACTUREDATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('d/m/Y'); ?>}
-\def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
-\def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
+\def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 50, "\\\\\hspace{1.8cm}"); ?>}
+\def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 50, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
 \def\FACTUREDECLARANTCOMMUNE{<?php echo $facture->declarant->commune; ?>}
 \def\FACTURETOTALHT{<?php echo formatFloat($facture->total_ht); ?>}
@@ -124,6 +124,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 \end{center}
 	\vspace{1mm}
 	\begin{minipage}{0.5\textwidth}
+        \begin{beamerframe}
 		\begin{center}
 			\vspace{3mm}
 			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
@@ -133,13 +134,14 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			\vspace{1mm}
 			\textbf{\large{Année 2015}} \\
 		\end{center}
-		\vspace{8mm}
+		\vspace{7mm}
 		\begin{center}
 			\FACTUREDECLARANTRS \\
 			\FACTUREDECLARANTADRESSE \\
 			\FACTUREDECLARANTCOMMUNE \\
 			N° adhérent : \NUMADHERENT \\
 		\end{center}
+        \end{beamerframe}
 		\vspace{1mm}
 	\end{minipage}
 	\begin{minipage}{0.5\textwidth}
