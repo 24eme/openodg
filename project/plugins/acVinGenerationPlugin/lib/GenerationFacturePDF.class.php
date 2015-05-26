@@ -49,7 +49,7 @@ class GenerationFacturePDF extends GenerationPDF {
                     throw new sfException(sprintf("Ce compte n'a pas de numéro CVI"));
                 }
 
-              $cotisations = $template->generateCotisations($compte->cvi, $template->campagne);
+              $cotisations = $template->generateCotisations($compte, $template->campagne);
             } catch (Exception $e) {
               $this->generation->message .= sprintf("%s (%s) : %s\n", $compte->nom_a_afficher, $compte->_id, $e->getMessage());
               $this->generation->save();
