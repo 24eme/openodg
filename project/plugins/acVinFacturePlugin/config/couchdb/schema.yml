@@ -96,3 +96,9 @@ Facture:
           fields:
             #DRM ou SRV ID => "libelle"
             '*': {}
+      templates:
+        type: collection
+        definition:
+          fields:
+            #DRM ou SRV ID => "libelle"
+            '*': {}

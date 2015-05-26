@@ -30,3 +30,9 @@ Generation:
         definition:
           fields:
             '*': { }
+      documents_regenerate:
+        required: false
+        type: array_collection
+        definition:
+          fields:
+            '*': { }

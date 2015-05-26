@@ -1,0 +1,39 @@
+#Abonnement
+Abonnement:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: AbonnementMouvement
+                    inheritance: Mouvement
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }

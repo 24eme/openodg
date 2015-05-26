@@ -23,7 +23,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
     
     public function findFacturable($identifiant, $campagne) {
-    	return $this->find('DREV-'.$identifiant.'-'.$campagne);
+    	return $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
     }
 
     public function createDoc($identifiant, $campagne, $papier = false) 

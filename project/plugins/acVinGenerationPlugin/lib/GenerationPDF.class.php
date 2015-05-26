@@ -120,6 +120,17 @@ class GenerationPDF {
     $this->generation->save();
 
     $pdfs = array();
+
+    if($this->generation->exist('documents_regenerate') && count($this->generation->documents_regenerate)) {
+      $this->preRegeneratePDF();
+      if(count($this->generation->documents_regenerate) != count($this->generation->documents)) {
+          
+          throw new sfException("La regénération ne c'est pas bien passé");
+      }
+      $this->generation->remove('documents_regenerate');
+      $this->generation->save();
+    }
+
     if (!count($this->generation->documents) || $this->generation->exist('pregeneration_needed')) {
       $this->generation->add('pregeneration_needed',1);
       $this->preGeneratePDF();
@@ -161,5 +172,7 @@ class GenerationPDF {
   }
 
   function preGeneratePDF() { }
+
+  function preRegeneratePDF() { }
 
 }
