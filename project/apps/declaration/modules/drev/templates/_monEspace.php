@@ -16,7 +16,7 @@
                         <p>
                             <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser</a>
                         </p>
-                        <?php if ($sf_user->isAdmin()): ?>
+                        <?php if ($sf_user->isAdmin() && $drev->isNonFactures()): ?>
                             <p>
                                 <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
                             </p>
