@@ -429,6 +429,18 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         }
     }
 
+    public function storeTemplates() {
+        foreach ($this->getLignes() as $ligne) {
+            foreach ($ligne->origine_mouvements as $templates) {
+                foreach($templates as $template) {
+                    if (!array_key_exists($template, $this->templates)) {
+                        $this->templates->add($template, $template);
+                    }
+                }
+            }
+        }
+    }
+
     public function updateTotaux() {
         $this->updateTotalHT();
         $this->updateTotalTaxe();
@@ -498,15 +510,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
 	      $doc->save();
 	    }
         }
-    }
-
-    public function getTemplates() {
-        $templates = array("TEMPLATE-FACTURE-AOC-2014");
-        /*foreach($this->origines as $origine) {
-            $templates[$origine] = true;
-        }*/
-
-        return $templates;
     }
 
     protected function preSave() {

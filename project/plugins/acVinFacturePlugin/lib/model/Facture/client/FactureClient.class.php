@@ -49,6 +49,7 @@ class FactureClient extends acCouchdbClient {
         $facture->storeLignes($cotisations);
         $facture->updateTotaux();
         $facture->storeOrigines();
+        $facture->storeTemplates();
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
@@ -67,11 +68,11 @@ class FactureClient extends acCouchdbClient {
           $facture = $this->find($facture_or_id);
         }
 
-        $templates = $facture->getTemplates();
+        $cotisations = array();
 
-        foreach($templates as $template_id) {
+        foreach($facture->getTemplates() as $template_id) {
           $template = TemplateFactureClient::getInstance()->find($template_id);
-          $cotisations = $template->generateCotisations(str_replace("E", "", $facture->identifiant), $template->campagne, true);
+          $cotisations = $cotisations + $template->generateCotisations(str_replace("E", "", $facture->identifiant), $template->campagne, true);
         }
 
         $f = $this->createDoc($cotisations, $facture->getCompte(), $facture->date_facturation);
