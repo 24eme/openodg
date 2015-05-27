@@ -86,6 +86,25 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
         return $this->nbChais;
     }
 
+    protected function doUpdateObject($values) {
+        parent::doUpdateObject($values);
+
+        $newChais = array();
+        foreach ($this->getObject()->chais as $chai) {
+            if($chai->adresse && $chai->commune && $chai->code_postal){
+                $newChai = $chai->toArray(false, false);
+                $newChai['attributs'] = array();
+                foreach($chai->attributs as $key) {
+                    $newChai['attributs'][$key] = CompteClient::getInstance()->getChaiAttributLibelle($key);
+                }
+                $newChais[] = $newChai;
+            }
+            
+        }
+        $this->getObject()->remove("chais");
+        $this->getObject()->add("chais", $newChais);
+    }
+
     public function save($con = null) {
         if (array_key_exists('syndicats', $this->values)) {
             $syndicats = ($this->values['syndicats']) ? $this->values['syndicats'] : array();

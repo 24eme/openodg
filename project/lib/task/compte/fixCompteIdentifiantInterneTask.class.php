@@ -31,7 +31,7 @@ EOF;
         $compte = CompteClient::getInstance()->find($arguments['doc_id']);
 
         if(!$compte) {
-            echo sprintf("ERROR;Compte introuvable;%s\n", $p->_id);
+            echo sprintf("ERROR;Compte introuvable;%s\n", $compte->_id);
             return;
         }
 
@@ -41,6 +41,10 @@ EOF;
 
         if($compte->identifiant_interne) {
 
+            return;
+        }
+
+        if(!$compte->type_compte) {
             return;
         }
 
