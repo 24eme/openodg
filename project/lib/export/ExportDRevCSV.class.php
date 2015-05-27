@@ -48,9 +48,9 @@ class ExportDRevCSV {
         foreach($this->drev->getPrelevementsOrdered() as $prelevementsOrdered) {
             foreach ($prelevementsOrdered->prelevements as $prelevement) {
                 $chai = $prelevement->getChai();
-                $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $chai->adresse, $chai->commune, $chai->code_postal);
+                $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $chai->adresse, $chai->code_postal, $chai->commune);
                 foreach($prelevement->lots as $lot) {
-                    $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $prelevement->date, $lot->nb_hors_vtsgn, $chai->adresse, $chai->commune, $chai->code_postal);
+                    $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit)." ".$lot->libelle, $prelevement->date, $lot->nb_hors_vtsgn, $chai->adresse, $chai->code_postal, $chai->commune);
                 }
             }
         }
