@@ -118,6 +118,8 @@ EOF;
     }
 
     protected function getDateDebut($data) {
+        return "2015-01-01";
+        
         if(preg_match("/([0-9]+)$/", trim($data[self::CSV_TARIF]), $matches)) {
 
             return sprintf("2015-%02d-01", $matches[1]);
