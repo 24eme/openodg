@@ -5,7 +5,6 @@
  */
 
 class Abonnement extends BaseAbonnement {
-    protected $declarant_document = null;
     protected $mouvement_document = null;
 
     public function __construct() {
@@ -19,12 +18,12 @@ class Abonnement extends BaseAbonnement {
     }
 
     protected function initDocuments() {
-        $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementDocument($this);
     }
 
     public function constructId() {
-        $this->set('_id', 'ABONNEMENT-' . $this->identifiant . '-' . $this->campagne);
+        $this->periode = sprintf("%s-%s", str_replace("-", "", $this->date_debut), str_replace("-", "", $this->date_fin));
+        $this->set('_id', 'ABONNEMENT-' . $this->identifiant . '-' . $this->periode);
     }
 
     /**** MOUVEMENTS ****/
@@ -36,7 +35,7 @@ class Abonnement extends BaseAbonnement {
 
     public function getMouvementsCalcule() {
         
-        return array($this->getIdentifiant() => array("TEMPLATE-FACTURE-ABONNEMENT-2014" => array("facturable" => 1, "facture" => 0)));
+        return array($this->getIdentifiant() => array("TEMPLATE-FACTURE-ABONNEMENT-20150101-20151231" => array("facturable" => 1, "facture" => 0)));
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {

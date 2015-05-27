@@ -22,6 +22,7 @@ class compteActions extends sfActions {
 
     public function executeVisualisationAdmin(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
+        $this->abonnements = AbonnementClient::getInstance()->getAbonnementsByCompte($this->compte->identifiant);
     }
     
     public function executeRedirectEspaceEtablissement(sfWebRequest $request) {
