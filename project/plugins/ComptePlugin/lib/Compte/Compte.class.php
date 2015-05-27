@@ -362,6 +362,11 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     	
     }
 
+    public function isAdherentSyndicat() {
+
+        return $this->infos->exist('attributs') && $this->infos->attributs->exist(CompteClient::ATTRIBUT_ETABLISSEMENT_ADHERENT_SYNDICAT);
+    }
+
     /*** ARCHIVAGE ***/
 
     public function getNumeroArchive() {
