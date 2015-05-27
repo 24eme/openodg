@@ -5,22 +5,11 @@ Abonnement:
       _id: { }
       _rev: { }
       type: { }
-      campagne: { }
+      date_debut: { }
+      date_fin: { }
+      periode: { }
       identifiant: { }
-      declarant:
-        type: collection
-        definition:
-          fields:
-            nom: { }
-            raison_sociale: { }
-            cvi: { }
-            siret: { }
-            adresse: { }
-            commune: { }
-            code_postal: { }
-            telephone: { }
-            fax: { }
-            email: { }
+      tarif: { }
       mouvements:
         type: collection
         definition:

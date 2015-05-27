@@ -13,6 +13,11 @@ TemplateFacture:
         definition:
           fields:
             '*': {  }
+      arguments: 
+        type: collection
+        definition:
+          fields:
+            '*': {  }
       cotisations:
         type: collection
         definition:

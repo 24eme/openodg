@@ -126,8 +126,9 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
 	\vspace{1mm}
-	\begin{minipage}{0.5\textwidth}
-		\begin{beamerframe}
+    \begin{minipage}{0.5\textwidth}
+    <?php if($facture->arguments->exist('CARTE_MEMBRE') && $facture->arguments->get('CARTE_MEMBRE')): ?>
+        \begin{beamerframe}
 		\begin{center}
 			\vspace{3mm}
 			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
@@ -146,6 +147,10 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 		\end{center}
 		\vspace{3mm}
 		\end{beamerframe}
+    <?php else: ?>
+        \begin{center}
+        \end{center}
+    <?php endif; ?>
 	\end{minipage}
 	\begin{minipage}{0.5\textwidth}
 		\vspace{1.2cm}

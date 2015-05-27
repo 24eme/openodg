@@ -233,6 +233,24 @@
         </div>  
     <?php endif; ?>
 
+    <div class="row">
+            <div class="col-xs-12">
+                <div class="panel  panel-primary">
+                    <div class="panel-heading">
+                        <h3>Abonnement à la revue</h3>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item text-center">
+                        <?php foreach($abonnements as $abonnement): ?>
+                            Du <?php echo format_date($abonnement->date_debut, "dd/MM/yyyy", "fr_FR"); ?>
+                            au <?php echo format_date($abonnement->date_fin, "dd/MM/yyyy", "fr_FR"); ?> avec un tarif  <?php echo $abonnement->tarif; ?>
+                        <?php endforeach; ?>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+    </div>  
+
     <div class="row row-margin row-button">
         <div class="col-xs-4">
             <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour à la recherche</a>

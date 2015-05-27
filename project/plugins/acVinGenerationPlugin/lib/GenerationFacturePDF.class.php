@@ -45,9 +45,9 @@ class GenerationFacturePDF extends GenerationPDF {
             }
 
             try {
-                if(!$compte->cvi) {
+                /*if(!$compte->cvi) {
                     throw new sfException(sprintf("Ce compte n'a pas de numéro CVI"));
-                }
+                }*/
 
               $cotisations = $template->generateCotisations($compte, $template->campagne);
             } catch (Exception $e) {
@@ -59,7 +59,7 @@ class GenerationFacturePDF extends GenerationPDF {
                 continue;
             }
 
-            $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, $message_communication);
+            $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false));
             $facture->save();
             $this->generation->somme += $facture->total_ttc;
             $this->generation->documents->add($cpt, $facture->_id);

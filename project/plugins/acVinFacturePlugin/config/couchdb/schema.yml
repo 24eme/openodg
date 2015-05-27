@@ -19,6 +19,11 @@ Facture:
       taux_tva: {required: false}
       region: {}
       versement_comptable: {type: integer}
+      arguments: 
+        type: collection
+        definition:
+          fields:
+            '*': {  }
       message_communication: {required: false}
       emetteur:
         type: collection
