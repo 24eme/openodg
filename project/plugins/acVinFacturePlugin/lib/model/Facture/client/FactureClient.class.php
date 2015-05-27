@@ -40,7 +40,7 @@ class FactureClient extends acCouchdbClient {
         return $this->startkey('FACTURE-'.$idClient.'-'.$date.'00')->endkey('FACTURE-'.$idClient.'-'.$date.'99')->execute($hydrate);        
     }
 
-    public function createDoc($cotisations, $doc, $date_facturation = null, $message_communication = null) {
+    public function createDoc($cotisations, $doc, $date_facturation = null, $message_communication = null, $arguments = array()) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
         $facture->constructIds($doc);        
@@ -50,6 +50,7 @@ class FactureClient extends acCouchdbClient {
         $facture->updateTotaux();
         $facture->storeOrigines();
         $facture->storeTemplates();
+        $facture->arguments = $arguments;
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
@@ -75,7 +76,7 @@ class FactureClient extends acCouchdbClient {
           $cotisations = $cotisations + $template->generateCotisations($facture->identifiant, $template->campagne, true);
         }
 
-        $f = $this->createDoc($cotisations, $facture->getCompte(), $facture->date_facturation);
+        $f = $this->createDoc($cotisations, $facture->getCompte(), $facture->date_facturation, null, $template->arguments->toArray(true, false));
 
         $f->_id = $facture->_id;
         $f->_rev = $facture->_rev;
@@ -222,7 +223,7 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
-    public function createFactureByCompte($template, $compte_or_id) {
+    public function createFactureByCompte($template, $compte_or_id, $date_facturation = null) {
         $generation = new Generation();
         $generation->date_emission = date('Y-m-d-H:i');
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
@@ -242,7 +243,7 @@ class FactureClient extends acCouchdbClient {
           return null;
         }
 
-        $f = FactureClient::getInstance()->createDoc($cotisations, $compte);
+        $f = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, null, $template->toArray(true, false));
         $f->save();
 
         $generation->somme += $f->total_ttc;

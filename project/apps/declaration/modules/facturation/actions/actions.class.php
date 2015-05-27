@@ -122,7 +122,7 @@ class facturationActions extends sfActions
 
         $this->values = $this->form->getValues();
         $templateFacture = TemplateFactureClient::getInstance()->find($this->values['modele']);
-        $generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $this->compte->_id);
+        $generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $this->compte->_id, $this->value['date_facturation'], null, $templateFacture->arguments->toArray(true, false));
         try {
             
         } catch (Exception $e) {
