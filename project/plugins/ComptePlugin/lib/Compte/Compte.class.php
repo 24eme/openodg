@@ -4,15 +4,36 @@
  * Model for Compte
  *
  */
-class Compte extends BaseCompte {
+class Compte extends BaseCompte implements InterfaceArchivageDocument {
 	
+    const CAMPAGNE_ARCHIVE = 'UNIQUE';
+
+    protected $archivage_document = null;
+
     public function __construct($type_compte = null) {
         parent::__construct();
         $this->setTypeCompte($type_compte);
+        $this->initDocuments();
+    }
+
+    public function __clone() {
+        parent::__clone();
+        $this->initDocuments();
+    }
+
+    protected function initDocuments() {
+        $this->archivage_document = new ArchivageDocument($this, "%06d");
     }
 
     public function constructId() {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
+    }
+
+    public function getCampagneArchive() {
+        if(!$this->_get('campagne_archive')) {
+            $this->_set('campagne_archive', self::CAMPAGNE_ARCHIVE);
+        }
+        return $this->_get('campagne_archive');
     }
 
     public function save($synchro_etablissement = true, $update_coodronnees = false) {
@@ -38,9 +59,15 @@ class Compte extends BaseCompte {
         if($update_coodronnees) {
             $this->updateCoordonneesLongLat();
         }
+
         parent::save();
     }
-    
+
+    protected function preSave() {
+        $this->archivage_document->preSave();
+        $this->identifiant_interne = $this->numero_archive;
+    }
+
     public function updateNomAAfficher() {
         $this->nom_a_afficher = "";
 
@@ -325,7 +352,7 @@ class Compte extends BaseCompte {
     public function getRegionViticole() {
     	return CompteClient::REGION_VITICOLE;
     }
-    
+
     public function getSyndicatsViticole() {
     	$result = array();
     	if ($syndicats = $this->infos->syndicats) {
@@ -334,5 +361,19 @@ class Compte extends BaseCompte {
     	return $result;
     	
     }
+
+    /*** ARCHIVAGE ***/
+
+    public function getNumeroArchive() {
+
+        return $this->_get('numero_archive');
+    }
+
+    public function isArchivageCanBeSet() {
+
+        return true;
+    }
+
+    /*** FIN ARCHIVAGE ***/
 
 }

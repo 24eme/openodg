@@ -33,6 +33,8 @@ Compte:
       etablissement: { }
       commentaires: { }
       statut: { }
+      numero_archive: { }
+      campagne_archive: { }
       date_archivage: { }
       date_creation: { }
       no_accises: { }
