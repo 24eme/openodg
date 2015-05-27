@@ -33,7 +33,7 @@ class FacturationDeclarantForm extends BaseForm {
     
     public function getChoices()
     {
-    	$choices = array();
+    	$choices = array("" => "");
     	foreach ($this->templatesFactures as $templateFacture) {
     		$choices[$templateFacture->_id] = $templateFacture->libelle;
     	}
