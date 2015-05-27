@@ -243,7 +243,7 @@ class FactureClient extends acCouchdbClient {
           return null;
         }
 
-        $f = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, null, $template->toArray(true, false));
+        $f = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, null, $template->arguments->toArray(true, false));
         $f->save();
 
         $generation->somme += $f->total_ttc;
