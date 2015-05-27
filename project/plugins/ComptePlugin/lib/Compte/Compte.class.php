@@ -297,7 +297,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
             if($chai->adresse && $chai->commune && $chai->code_postal){
                 $newChai = $chai->toArray(false, false);
                 $newChai['attributs'] = array();
-                foreach($chai->attributs as $key) {
+                foreach($chai->attributs as $key => $libelle) {
                     $newChai['attributs'][$key] = CompteClient::getInstance()->getChaiAttributLibelle($key);
                 }
                 $newChais[] = $newChai;
