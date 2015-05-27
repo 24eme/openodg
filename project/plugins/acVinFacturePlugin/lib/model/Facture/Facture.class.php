@@ -190,6 +190,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     		}
     		$ligne->montant_tva = round($totalTva, 2);
     		$ligne->montant_ht = round($total, 2);
+
+            if(!$ligne->montant_ht) {
+                $this->lignes->remove($key);
+            } 
     	}
     }
 
@@ -566,12 +570,21 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
                 ($this->total_ht < 0.0));
     }
     
-    /*     * * ARCHIVAGE ** */
+    /*** ARCHIVAGE ***/
 
     public function getNumeroArchive() {
 
         return $this->_get('numero_archive');
     }
+
+    public function isArchivageCanBeSet() {
+
+        return true;
+    }
+
+    /*** FIN ARCHIVAGE ***/
+
+    /*** VERSEMENT COMPTABLE ***/
 
     public function setVerseEnCompta() {
       return $this->_set('versement_comptable', 1);
@@ -581,10 +594,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
       return $this->_set('versement_comptable', 0);
     }
 
-    public function isArchivageCanBeSet() {
-
-        return true;
-    }
+    /*** VERSEMENT COMPTABLE ***/
     
     public function addOneMessageCommunication($message_communication = null) {
         $this->add('message_communication', $message_communication);
@@ -601,6 +611,5 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         return self::MESSAGE_DEFAULT;
     }
 
-    /*     * * FIN ARCHIVAGE ** */
 
 }

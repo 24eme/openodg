@@ -71,9 +71,16 @@ class FactureClient extends acCouchdbClient {
 
         $cotisations = array();
 
+        $template = null;
+
         foreach($facture->getTemplates() as $template_id) {
           $template = TemplateFactureClient::getInstance()->find($template_id);
           $cotisations = $cotisations + $template->generateCotisations($facture->identifiant, $template->campagne, true);
+        }
+
+        if(!$template) {
+
+            throw new sfException("Pas de template pour cette facture");
         }
 
         $f = $this->createDoc($cotisations, $facture->getCompte(), $facture->date_facturation, null, $template->arguments->toArray(true, false));

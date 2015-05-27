@@ -29,6 +29,12 @@
                             <?php echo $compte->nom_a_afficher; ?>
                         </div>                
                     </div>
+                    <div class="row">
+                        <label class="col-xs-6">Identifiant interne </label>    
+                        <div class="col-xs-6">
+                            <?php echo $compte->identifiant_interne; ?>
+                        </div>                
+                    </div>
                     <?php if ($compte->cvi): ?>
                         <div class="row">
                             <label class="col-xs-6">CVI </label>    
