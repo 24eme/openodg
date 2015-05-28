@@ -27,22 +27,15 @@ class GenericLatex {
 
   public function generatePDF() {
     $cmdCompileLatex = '/usr/bin/pdflatex -output-directory="'.$this->getTEXWorkingDir().'" -synctex=1 -interaction=nonstopmode "'.$this->getLatexFile().'" 2>&1';
-    $output = array();
-    exec($cmdCompileLatex, $output, $ret);
-    $output = implode(' ', $output);
+    //$output = array();
+    $output = shell_exec($cmdCompileLatex);
+
     if (!preg_match('/Transcript written/', $output) || preg_match('/Fatal error/', $output)) {
-      throw new sfException($output);
+      throw new sfException($output." : ".$cmdCompileLatex);
     }
-    if ($ret) {
-      $log = $this->getLatexFileNameWithoutExtention().'.log';
-      $grep = preg_grep('/^!/', file_get_contents($log));
-      array_unshift($grep, "/!\ Latex error\n");
-      array_unshift($grep, "Latex log $log:\n");
-      if ($grep){
-              throw new sfException(implode(' ', $grep));
-      }
-    }
+
     $pdfpath = $this->getLatexFileNameWithoutExtention().'.pdf';
+
     if (!file_exists($pdfpath)) {
       throw new sfException("pdf not created ($pdfpath): ".$output);
     }
