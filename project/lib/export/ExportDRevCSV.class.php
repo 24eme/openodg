@@ -45,7 +45,7 @@ class ExportDRevCSV {
             }
         }
 
-        foreach($this->drev->getPrelevementsOrdered() as $prelevementsOrdered) {
+        foreach($this->drev->getPrelevementsOrdered(null, true) as $prelevementsOrdered) {
             foreach ($prelevementsOrdered->prelevements as $prelevement) {
                 $chai = $prelevement->getChai();
                 $csv .= sprintf("%s;%s;%s;%s;%s;;;%s;%s;%s;%s;%s\n", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $prelevementsOrdered->libelle, trim($prelevement->libelle_produit), $prelevement->date, ($prelevement->total_lots) ? $prelevement->total_lots : "", $chai->adresse, $chai->commune, $chai->code_postal);
