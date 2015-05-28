@@ -190,10 +190,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     		}
     		$ligne->montant_tva = round($totalTva, 2);
     		$ligne->montant_ht = round($total, 2);
-
-            if(!$ligne->montant_ht) {
-                $this->lignes->remove($key);
-            } 
     	}
     }
 
