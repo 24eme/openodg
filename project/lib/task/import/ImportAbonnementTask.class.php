@@ -59,6 +59,7 @@ EOF;
         if($doc->isNew()) {
             echo sprintf("SUCCESS;%s;%s\n", "Création", $doc->_id);
         } else {
+            return;
             echo sprintf("SUCCESS;%s;%s\n", "Mise à jour", $doc->_id);
         }
 
