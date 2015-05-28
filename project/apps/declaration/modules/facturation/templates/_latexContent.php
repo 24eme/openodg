@@ -21,7 +21,7 @@
 \usepackage{colortbl} 
 \usepackage{tabularx}
 \usepackage{multirow}
-\usepackage[style=1]{mdframed}
+\usepackage[framemethod=tikz]{mdframed}
 
 \definecolor{vertclair}{rgb}{0.70,0.79,0.32}
 \definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
@@ -49,8 +49,13 @@
 \def\FACTURETOTALTVA{<?php echo formatFloat($facture->total_taxe); ?>}
 \def\FACTURETOTALTTC{<?php echo formatFloat($facture->total_ttc); ?>}
 
+\definecolor{bg-carte-membre}{RGB}{220,220,220}
+
+\newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt,fill=bg-carte-membre,fill opacity=0.5},%
+linecolor=white,backgroundcolor=none, outerlinewidth=1pt]{beamerframe}
+
 \newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt},%
-linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
+linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframetotal}
 
 \newsavebox\mysavebox
 \newenvironment{imgminipage}[1][]{%
@@ -60,9 +65,8 @@ linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
 }{%
    \end{minipage}
    \end{lrbox}%
-   \begin{beamerframe}%
-   \sbox\mysavebox{\fbox{\usebox\mysavebox}}%
-   \end{beamerframe}%
+   
+   \sbox\mysavebox{\usebox\mysavebox}%
    \mbox{\rlap{\raisebox{-\dp\mysavebox}{\imgcmd}}\usebox\mysavebox}%
 }
 
@@ -142,6 +146,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 \end{center}
 	\vspace{1mm}
     \begin{imgminipage}{0.5\textwidth}
+    \begin{beamerframe}
     <?php if($facture->arguments->exist('CARTE_MEMBRE') && $facture->arguments->get('CARTE_MEMBRE')): ?>
 		\begin{center}
 			\vspace{3mm}
@@ -159,11 +164,12 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			\FACTUREMEMBRECOMMUNE \\
 			N° adhérent : \NUMADHERENT \\
 		\end{center}
-		\vspace{3mm}
+		\vspace{1.6mm}
     <?php else: ?>
         \begin{center}
         \end{center}
     <?php endif; ?>
+    \end{beamerframe}
 	\end{imgminipage}
 	\begin{minipage}{0.5\textwidth}
 		\vspace{1.2cm}
@@ -173,7 +179,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			BIC : AGRIFRPP872
 		\end{center}
 		\vspace{1.2cm}
-		\begin{beamerframe}
+		\begin{beamerframetotal}
 		    \vspace{1mm}
 			\begin{tabularx}{\linewidth}{X c c}
 			\rowcolor{vertclair} \multicolumn{3}{c}{\textbf{\textcolor{vertfonce}{\textsc{partie à joindre au règlement}}}} \\
@@ -181,7 +187,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			\textbf{\NUMFACTURE} & \textbf{\NUMADHERENT} & \textbf{\FACTURETOTALTTC~€} \\
 			\end{tabularx}
 		    \vspace{1mm}
-		\end{beamerframe}
+		\end{beamerframetotal}
 	\end{minipage}
 
 \end{document}
