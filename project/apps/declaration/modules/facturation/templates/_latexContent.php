@@ -28,7 +28,7 @@
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
-\def\LOGOCARTEMEMBRE{<?php echo sfConfig::get('sf_web_dir'); ?>/images/pdf/logo_carte_membre.png}
+\def\LOGOCARTEMEMBRE{<?php echo sfConfig::get('sf_web_dir'); ?>/images/pdf/logo_carte_membre.jpg}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
@@ -51,7 +51,7 @@
 
 \definecolor{bg-carte-membre}{RGB}{220,220,220}
 
-\newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt,fill=bg-carte-membre,fill opacity=0.5},%
+\newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt,fill=bg-carte-membre,fill opacity=0.7},%
 linecolor=white,backgroundcolor=none, outerlinewidth=1pt]{beamerframe}
 
 \newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt},%
