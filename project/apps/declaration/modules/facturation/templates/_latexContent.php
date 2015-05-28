@@ -28,6 +28,7 @@
 \definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
 
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
+\def\LOGOCARTEMEMBRE{<?php echo sfConfig::get('sf_web_dir'); ?>/images/pdf/logo_carte_membre.png}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
@@ -50,6 +51,20 @@
 
 \newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt},%
 linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
+
+\newsavebox\mysavebox
+\newenvironment{imgminipage}[1][]{%
+   \def\imgcmd{\includegraphics[width=\wd\mysavebox,height=\dimexpr\ht\mysavebox+\dp\mysavebox\relax,#1]{\LOGOCARTEMEMBRE}}%
+   \begin{lrbox}{\mysavebox}%
+   \begin{minipage}%
+}{%
+   \end{minipage}
+   \end{lrbox}%
+   \begin{beamerframe}%
+   \sbox\mysavebox{\fbox{\usebox\mysavebox}}%
+   \end{beamerframe}%
+   \mbox{\rlap{\raisebox{-\dp\mysavebox}{\imgcmd}}\usebox\mysavebox}%
+}
 
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0cm}
@@ -126,9 +141,8 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
 	\vspace{1mm}
-    \begin{minipage}{0.5\textwidth}
+    \begin{imgminipage}{0.5\textwidth}
     <?php if($facture->arguments->exist('CARTE_MEMBRE') && $facture->arguments->get('CARTE_MEMBRE')): ?>
-        \begin{beamerframe}
 		\begin{center}
 			\vspace{3mm}
 			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
@@ -146,12 +160,11 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			N° adhérent : \NUMADHERENT \\
 		\end{center}
 		\vspace{3mm}
-		\end{beamerframe}
     <?php else: ?>
         \begin{center}
         \end{center}
     <?php endif; ?>
-	\end{minipage}
+	\end{imgminipage}
 	\begin{minipage}{0.5\textwidth}
 		\vspace{1.2cm}
 		\begin{center}
