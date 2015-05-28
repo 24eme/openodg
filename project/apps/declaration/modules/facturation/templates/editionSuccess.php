@@ -104,7 +104,7 @@
 
     <div class="row row-margin">
         <div class="col-xs-6 text-left">
-            <a class="btn btn-danger btn-lg btn-upper" href="<?php echo url_for('facturation') ?>">Annuler</a>
+            <a class="btn btn-danger btn-lg btn-upper" href="<?php echo url_for('facturation_declarant', $facture->getCompte()) ?>">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
                 <button type="submit" class="btn btn-default btn-lg btn-upper">Valider</a>
