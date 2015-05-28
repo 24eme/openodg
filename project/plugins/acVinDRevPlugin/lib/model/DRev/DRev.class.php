@@ -319,10 +319,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return str_replace("appellation_", "", $this->getConfiguration()->get($hash)->getAppellation()->getKey());
     }
 
-    public function getPrelevementsByDate($filter_key = null) {
+    public function getPrelevementsByDate($filter_key = null, $force_date = false) {
         $prelevements = array();
         foreach ($this->prelevements as $prelevement) {
-            if (!$prelevement->date) {
+            if (!$prelevement->date && !$force_date) {
 
                 continue;
             }
@@ -338,8 +338,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $prelevements;
     }
 
-    public function getPrelevementsOrdered($filter_key = null) {
-        $drev_prelevements = $this->getPrelevementsByDate();
+    public function getPrelevementsOrdered($filter_key = null, $force_date = false) {
+        $drev_prelevements = $this->getPrelevementsByDate($filter_key, $force_date);
         $ordrePrelevements = DRevClient::getInstance()->getOrdrePrelevements();
         $result = array();
         foreach ($ordrePrelevements as $type => $prelevementsOrdered) {
