@@ -37,7 +37,7 @@
 \def\EMETTEURVILLE{<?php echo $facture->emetteur->ville; ?>}
 \def\EMETTEURCONTACT{<?php echo $facture->emetteur->telephone; ?>}
 \def\EMETTEUREMAIL{<?php echo $facture->emetteur->email; ?>}
-\def\FACTUREDATE{Colmar, le <?php $date = new DateTime($facture->date_emission); echo $date->format('d/m/Y'); ?>}
+\def\FACTUREDATE{Colmar, le <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>}
 \def\FACTUREDECLARANTRS{<?php echo wordwrap(escape_string_for_latex($facture->declarant->raison_sociale), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTADRESSE{<?php echo wordwrap(escape_string_for_latex($facture->declarant->adresse), 35, "\\\\\hspace{1.8cm}"); ?>}
 \def\FACTUREDECLARANTCP{<?php echo $facture->declarant->code_postal; ?>}
@@ -145,9 +145,9 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 }
 \end{center}
 	\vspace{1mm}
+    <?php if($facture->arguments->exist('CARTE_MEMBRE') && $facture->arguments->get('CARTE_MEMBRE')): ?>
     \begin{imgminipage}{0.5\textwidth}
     \begin{beamerframe}
-    <?php if($facture->arguments->exist('CARTE_MEMBRE') && $facture->arguments->get('CARTE_MEMBRE')): ?>
 		\begin{center}
 			\vspace{3mm}
 			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
@@ -165,12 +165,15 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			N° adhérent : \NUMADHERENT \\
 		\end{center}
 		\vspace{1.6mm}
-    <?php else: ?>
-        \begin{center}
-        \end{center}
-    <?php endif; ?>
     \end{beamerframe}
-	\end{imgminipage}
+    \end{imgminipage}
+    <?php else: ?>
+    \begin{minipage}{0.5\textwidth}
+        \begin{center}
+        \vspace{3mm}
+        \end{center}
+    \end{minipage}
+    <?php endif; ?>
 	\begin{minipage}{0.5\textwidth}
 		\vspace{1.2cm}
 		\begin{center}
