@@ -172,17 +172,14 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         //$this->removeInfosTagsNode('produits');
         $allProduits = ConfigurationClient::getConfiguration()->getProduits();
         foreach ($produits_hash_array as $produits_hash) {
-            $libelle_complet = $allProduits[str_replace('-', '/', $produits_hash)]->getLibelleComplet();
-            $this->updateInfosTags('produits', $produits_hash, $libelle_complet);
+            $this->addInfoProduit($produits_hash);
         }
     }
 
     public function updateLocalSyndicats($syndicats_array = array()) {
          $this->removeInfosTagsNode('syndicats');
         foreach ($syndicats_array as $syndicatId) {
-            $syndicat = CompteClient::getInstance()->find($syndicatId);
-            $syndicat_libelle = $syndicat->nom_a_afficher;//." (".$syndicat->commune.")";
-            $this->updateInfosTags('syndicats', $syndicatId, $syndicat_libelle);
+            $this->addInfoSyndicat($syndicatId);
         }
     }
     
@@ -191,6 +188,33 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
             $this->infos->add($nodeType, null);
         }
         $this->infos->$nodeType->add($key, $value);
+    }
+
+    public function addInfo($type, $info_key) {
+        if($type == 'syndicats') {
+            return $this->addInfoSyndicat($info_key);
+        }
+
+        if($type == 'attributs') {
+            return $this->updateInfosTags($type, $info_key, CompteClient::getInstance()->getAttributLibelle($info_key));
+        }
+
+        if($type == 'produits') {
+            return $this->addInfoProduit($info_key);
+        }
+
+        throw new sfException("Type non défini");
+    }
+
+    public function addInfoSyndicat($syndicatId) {
+        $syndicat = CompteClient::getInstance()->find($syndicatId);
+        $this->updateInfosTags('syndicats', $syndicatId, $syndicat->nom_a_afficher);
+    }
+
+    public function addInfoProduit($produit_hash) {
+        $allProduits = ConfigurationClient::getConfiguration()->getProduits();
+        $libelle_complet = $allProduits[str_replace('-', '/', $produit_hash)]->getLibelleComplet();
+        $this->updateInfosTags('produits', $produit_hash, $libelle_complet);
     }
     
     public function getEtablissementObj() {
