@@ -69,6 +69,9 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
             $this->syndicats = array();
             foreach ($compteClient->getAllSyndicats() as $syndicatId) {
                 $syndicat = CompteClient::getInstance()->find($syndicatId);
+                if($syndicat->date_archivage) {
+                    continue;
+                }
                 $this->syndicats[$syndicatId] = $syndicat->nom_a_afficher;
             }
         }
