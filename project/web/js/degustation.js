@@ -369,6 +369,7 @@
             ligne.detach().insertBefore($.tourneeInsertHourDiv(hour));
             ligne.attr('data-color', $.tourneeToColor(tournee));
             ligne.find('input.input-heure').val(hour);
+            ligne.find('.glyphicon-resize-vertical').removeClass('hidden');
         }
         $.updateItem(ligne);
     }
@@ -378,6 +379,7 @@
         if ($.isTournee()) {
             ligne.find('input.input-tournee').val("");
             ligne.find('input.input-heure').val("");
+            ligne.find('.glyphicon-resize-vertical').addClass('hidden');
             ligne.detach().insertAfter($('#listes_operateurs li:last-child'));
         }
         $.updateItem(ligne);

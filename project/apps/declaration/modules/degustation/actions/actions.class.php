@@ -289,7 +289,7 @@ class degustationActions extends sfActions {
         for ($i = 7; $i <= 20; $i++) {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
-        $this->heures["24:00"] = "24";
+        $this->heures[TourneeClient::HEURE_NON_REPARTI] = "";
         $this->operateurs = $this->tournee->getOperateursOrderByHour();
         $this->agents_couleur = array();
         $i = 0;
@@ -310,14 +310,15 @@ class degustationActions extends sfActions {
         $i = 0;
         foreach ($values as $key => $value) {
             $degustation = $this->tournee->getDegustationObject($key);
-            if(!str_replace("-", "", $value["tournee"])) {
+            if(!str_replace("-", "", $value["tournee"]) || $value["heure"] == TourneeClient::HEURE_NON_REPARTI || !trim($value["heure"])) {
                 $degustation->agent = null;
                 $degustation->date_prelevement = null;
+                $degustation->heure = null;
             } else {
                 $degustation->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
                 $degustation->date_prelevement = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+                $degustation->heure = $value["heure"];
             }
-            $degustation->heure = $value["heure"];
             $degustation->position = $i++;
         }
 

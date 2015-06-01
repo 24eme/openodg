@@ -11,6 +11,8 @@ class TourneeClient extends acCouchdbClient {
     const STATUT_DEGUSTATIONS = 'DEGUSTATIONS';
     const STATUT_COURRIERS = 'COURRIERS';
     const STATUT_TERMINE = 'TERMINE';
+
+    const HEURE_NON_REPARTI = '99:99';
     
     public static function getInstance()
     {

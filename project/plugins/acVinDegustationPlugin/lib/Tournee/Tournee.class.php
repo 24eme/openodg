@@ -36,7 +36,7 @@ class Tournee extends BaseTournee {
             $heure = $degustation->heure;
 
             if (!$degustation->heure) {
-                $heure = "24:00";
+                $heure = TourneeClient::HEURE_NON_REPARTI;
             }
             $operateurs[$heure][sprintf('%05d', $degustation->position).$degustation->getIdentifiant()] = $degustation;
             ksort($operateurs[$heure]);

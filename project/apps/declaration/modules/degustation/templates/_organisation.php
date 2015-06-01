@@ -32,7 +32,7 @@
     <div class="col-xs-6">
         <ul id="listes_operateurs" class="list-group sortable">
                 <?php foreach($heures as $key_heure => $libelle_heure): ?>
-                    <li data-value="<?php echo $key_heure ?>" class="hour list-group-item col-xs-12 list-group-item-info list-group-item-container text-center"><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small></li>
+                    <li data-value="<?php echo $key_heure ?>" class="hour list-group-item col-xs-12 list-group-item-info list-group-item-container text-center"><?php if($key_heure != TourneeClient::HEURE_NON_REPARTI): ?><small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small><?php else: ?><?php endif; ?></li>
                     <?php if(!isset($operateurs[$key_heure])): continue; endif; ?>
                     <?php foreach($operateurs[$key_heure] as $operateur): ?>
                         <?php $exist = ($operateur->agent && $operateur->date_prelevement); ?>
@@ -45,7 +45,7 @@
                                     <button class="btn btn-danger btn-xs <?php if(!$exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                                 </div>
                                 <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
-                                    <span class="glyphicon glyphicon-resize-vertical" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
+                                    <span class="glyphicon glyphicon-resize-vertical <?php if(!$operateur->heure): ?>hidden<?php endif; ?>" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
                                     <span class="glyphicon glyphicon-map-marker" style="<?php if($exist): ?>color: <?php echo $agents_couleur[$operateur->agent.$operateur->date_prelevement] ?>;<?php else: ?>color: #e2e2e2;<?php endif; ?> font-size: 24px;"></span>
                                 </div>
                                 <?php echo $operateur->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $operateur->commune ?></small>
@@ -56,6 +56,6 @@
         </ul>
     </div>
     <div class="col-xs-6">
-        <div class="col-xs-12" id="carte" style="height: 500px;"></div>
+        <div class="col-xs-12" id="carte" style="height: 600px;"></div>
     </div>
 </div>
