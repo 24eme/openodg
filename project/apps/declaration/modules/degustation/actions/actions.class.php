@@ -42,10 +42,9 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        $this->operateurs = TourneeClient::getInstance()->getPrelevements($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
-
-        $this->nb_reports = 0;
-        /*$this->nb_reports = $this->tournee->getPrevious() ? count($this->tournee->getPrevious()->getOperateursReporte()) : 0;*/
+        $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
+        $this->reportes =  TourneeClient::getInstance()->getReportes($this->tournee->appellation);
+        $this->nb_reports = count($this->reportes);
 
         $this->form = new TourneeCreationFinForm($this->tournee);
 
@@ -74,7 +73,8 @@ class degustationActions extends sfActions {
         if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_OPERATEURS))) {
             $this->tournee->save();
         }
-        //$this->tournee->updateOperateursFromPrevious();
+        
+        $this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
 
         $this->form = new TourneeOperateursForm($this->tournee);

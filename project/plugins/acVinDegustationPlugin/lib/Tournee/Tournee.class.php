@@ -258,19 +258,17 @@ class Tournee extends BaseTournee {
     }
 
     public function updateOperateursFromPrevious() {
-        $previous = $this->getPrevious();
+        $degustations_json = TourneeClient::getInstance()->getReportes($this->appellation);
 
-        if(!$previous) {
-
-            return null;
-        }
-
-        foreach($previous->getOperateursReporte() as $degustation_previous) {
+        foreach($degustations_json as $degustation_previous_json) {
+            $degustation_previous = DegustationClient::getInstance()->find($degustation_previous_json->_id);
             $degustation = $this->addOperateurFromDRev($degustation_previous->drev);
 
             if(!$degustation) {
                 continue;
             }
+
+            $degustation->reporte = 1;
 
             foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
                 if(!$degustation->lots->exist($lot_key)) {
@@ -283,16 +281,10 @@ class Tournee extends BaseTournee {
     }
 
     public function updateOperateursFromDRev() {
-        $prelevements = TourneeClient::getInstance()->getPrelevements($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
-
-        //$previous = $this->getPrevious();
+        $prelevements = TourneeClient::getInstance()->getPrelevementsFiltered($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
 
         foreach($prelevements as $prelevement) {
-            $operateur = $this->addOperateurFromDRev($prelevement->_id);
-
-            /*if($previous && $previous->operateurs->exist($operateur->cvi) && $previous->operateurs->get($operateur->cvi)->isPrelever()) {
-                $this->operateurs->remove($operateur->cvi);
-            }*/
+            $degustation = $this->addOperateurFromDRev($prelevement->_id);
         }
     }
 
@@ -336,8 +328,6 @@ class Tournee extends BaseTournee {
             
             return null;
         }
-
-        //var_dump(DegustationClient::getInstance()->getDegustationsByIdentifiant($drev->identifiant));
 
         $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->date, $this->appellation);
 

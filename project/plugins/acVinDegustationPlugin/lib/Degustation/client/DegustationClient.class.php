@@ -148,4 +148,8 @@ class DegustationClient extends acCouchdbClient {
         return $note_types;
     }
 
+    public function getDegustationsByAppellation($appellation) {
+
+        return DegustationTousView::getInstance()->getDegustationsByAppellation($appellation);
+    }
 }
