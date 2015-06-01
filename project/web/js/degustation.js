@@ -93,7 +93,7 @@
                 }
         );
 
-        $("#listes_operateurs .list-group-item-item.clickable").click(function() {
+        $("#listes_operateurs").on('click', '.list-group-item-item.clickable', function() {
             var ligne = $(this);
             $.addItem(ligne);
 
@@ -271,29 +271,56 @@
     $.getTourneeDiv = function(tournee) {
         return $('.nav-filter[data-state=' + tournee + ']');
     }
+    $.getTourneeItems = function(tournee) {
+        return $('#listes_operateurs .list-group-item-item.operateur.list-group-item-success[data-state=' + tournee + ']');
+    }
     $.tourneeToColor = function(tournee) {
         return $.getTourneeDiv(tournee).attr('data-color');
     }
-    $.tourneeToHour = function(tournee) {
-        return $.getTourneeDiv(tournee).attr('data-hour');
+    $.tourneeLastHour = function(tournee) {
+        var lastElement = $.getTourneeItems(tournee).last();
+
+        if(!lastElement.length) {
+            return $.getTourneeDiv(tournee).attr('data-hour');
+        }
+
+        return lastElement.find('input.input-heure').val();
     }
+
     $.tourneeToPerHour = function(tournee) {
         return $.getTourneeDiv(tournee).attr('data-perhour') * 1;
     }
-    $.tourneeToNextHour = function(tournee) {
-        next = $.tourneeToHour(tournee).split(':')[0] * 1 + 1;
+
+    $.tourneeCalculHour = function(tournee) {
+        var hour = $.tourneeLastHour(tournee);
+        if ($('li.operateur[data-state=' + tournee + '] .input-heure[value="' + hour + '"]').length >= $.tourneeToPerHour(tournee)) {
+
+            return $.tourneeNextHour(hour);
+        }
+
+        return hour;
+    }
+
+    $.tourneeNextHour = function(hour) {
+        next = hour.split(':')[0] * 1 + 1;
         if (next == 13 || next == 14) {
             next = 15;
         }
         if (next > 9) {
             return next + ':00';
-        } else {
-            return '0' + next + ':00';
-        }
+        } 
+            
+        return '0' + next + ':00';
     }
 
-    $.tourneeToNextHourDiv = function(tournee) {
-        return $('li.hour[data-value="' + $.tourneeToNextHour(tournee) + '"]');
+    $.tourneeInsertHourDiv = function(hour) {
+        var hourDiv = $('li.hour[data-value="' + $.tourneeNextHour(hour) + '"]');
+        if(!hourDiv.length) {
+
+            return $('li.hour').last();
+        }
+
+        return hourDiv;
     }
 
     $.toggleMarkerHover = function(marker, ligne, withMarkerOpacity, withLigneOpacity) {
@@ -325,23 +352,23 @@
 
     $.addItem = function(ligne) {
         tournee = $('.nav-filter.active').attr('data-state');
+        if(!tournee) {
+            return;
+        }
         $.addItemToTournee(ligne, tournee);
     }
     $.updateHourTournee = function(tournee) {
-        if ($('li.operateur[data-state=' + tournee + '] .input-heure[value="' + $.tourneeToHour(tournee) + '"]').length >= $.tourneeToPerHour(tournee)) {
-            $.getTourneeDiv(tournee).attr('data-hour', $.tourneeToNextHour(tournee));
-        }
+        
     }
 
     $.addItemToTournee = function(ligne, tournee) {
         ligne.attr('data-state', tournee);
         ligne.find('input.input-tournee').val(tournee);
         if ($.isTournee()) {
-            hourDiv = $.tourneeToNextHourDiv(tournee);
-            ligne.detach().insertBefore(hourDiv);
+            var hour = $.tourneeCalculHour(tournee);
+            ligne.detach().insertBefore($.tourneeInsertHourDiv(hour));
             ligne.attr('data-color', $.tourneeToColor(tournee));
-            ligne.find('input.input-heure').val($.tourneeToHour(tournee));
-            $.updateHourTournee(tournee);
+            ligne.find('input.input-heure').val(hour);
         }
         $.updateItem(ligne);
     }

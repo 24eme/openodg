@@ -291,7 +291,7 @@ class Tournee extends BaseTournee {
     public function cleanOperateurs($save = true) {
         $degustations_to_remove = array();
         foreach($this->getDegustationsObject() as $degustation) {
-            if($degustation->date_prelevement && $degustation->agent) {
+            if($degustation->isAffecteTournee()) {
                 continue;
             }
 
@@ -374,7 +374,6 @@ class Tournee extends BaseTournee {
             $this->nombre_prelevements += count($degustation->prelevements);
         }
     }
-
 
     public function getPrelevementsReadyForCourrier() {
         $prelevementsByOperateurs = array();

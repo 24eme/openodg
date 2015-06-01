@@ -53,11 +53,11 @@ class TourneeClient extends acCouchdbClient {
         $degustations = DegustationClient::getInstance()->getDegustationsByAppellation($appellation);
 
         foreach($degustations as $degustation)  {
-            if($degustation->statut == DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
+            if($degustation->statut != DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
 
                 continue;
             }
-            
+
             $reportes[$degustation->identifiant] = $degustation; 
         }
 

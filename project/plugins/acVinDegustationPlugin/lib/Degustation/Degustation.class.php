@@ -109,6 +109,11 @@ class Degustation extends BaseDegustation {
         }
     }
 
+    public function isAffecteTournee() {
+
+        return $this->date_prelevement && $this->heure && $this->agent;
+    }
+
     public function getPrelevementsByAnonymatPrelevement($anonymat_prelevement) {
         foreach($this->prelevements as $prelevement) {
             if($prelevement->anonymat_prelevement == $anonymat_prelevement) {

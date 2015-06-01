@@ -286,7 +286,7 @@ class degustationActions extends sfActions {
     protected function organisation(sfWebRequest $request) {
         $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860");
         $this->heures = array();
-        for ($i = 7; $i <= 18; $i++) {
+        for ($i = 7; $i <= 20; $i++) {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
         $this->heures["24:00"] = "24";
