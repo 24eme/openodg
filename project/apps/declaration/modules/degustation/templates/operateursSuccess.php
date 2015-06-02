@@ -25,6 +25,7 @@
             <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge"><?php echo count($tournee->operateurs) ?></span></a>
             <a data-state="active" data-filter="active" class="btn btn-default nav-filter"  href="">À prélever <span class="badge"><?php echo count($tournee->getOperateursPrelevement()) ?></span></a>
         </div>
+        <span class="pull-right lead text-muted"><span data-dynamic-value="nb-lots"><?php echo $tournee->getNbLots() ?></span> lot(s)</span>
     </div>
     <div class="col-xs-12">
         <div id="listes_operateurs" class="list-group">
@@ -54,10 +55,13 @@
 </div>
 
 <div class="row row-margin row-button">
-    <div class="col-xs-6">
+    <div class="col-xs-3">
         <a href="<?php echo url_for('degustation_creation', $tournee) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
-    <div class="col-xs-6 text-right">
+    <div class="col-xs-6 text-center lead text-muted">
+        <span data-dynamic-value="nb-lots"><?php echo $tournee->getNbLots() ?></span> lot(s) pour <span data-dynamic-value="nb-operateurs"><?php echo count($tournee->getOperateursPrelevement()) ?></span> opérateur(s)
+    </div>
+    <div class="col-xs-3 text-right">
         <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer</button>
     </div>
 </div>

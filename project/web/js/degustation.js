@@ -477,7 +477,8 @@
             var item = $('#recap_cepages button[data-cepage="' + $(value).val() + '"] .badge');
             item.html(parseInt(item.html()) + 1);
         });
-
+        $("[data-dynamic-value=nb-lots]").html($("#listes_operateurs .list-group-item-item select option:selected").length);
+        $("[data-dynamic-value=nb-operateurs]").html($("#listes_operateurs .list-group-item-item.list-group-item-success").length);
     }
 
     $.typeCourrierForVisiteChange = function(select)

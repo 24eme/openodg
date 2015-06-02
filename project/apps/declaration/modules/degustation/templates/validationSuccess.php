@@ -3,7 +3,8 @@
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_VALIDATION)); ?>
 
 <div class="page-header no-border">
-    <h2><?php echo $tournee->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($tournee); ?></span>&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->operateurs) ?>&nbsp;opérateurs sélectionnés</div></h2>
+    <h2><?php echo $tournee->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($tournee); ?></span>
+    </h2>
 
 </div>
 <?php if ($validation->hasPoints()): ?>
@@ -13,6 +14,11 @@
 <form action="<?php echo url_for('degustation_validation', $tournee); ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
+
+    <div class="lead text-muted">
+    <?php echo $tournee->getNbLots() ?>&nbsp;lot(s) pour <?php echo count($tournee->operateurs) ?>&nbsp;opérateur(s)
+    </div>
+
     <?php include_partial('degustation/recap', array('tournee' => $tournee)); ?>
     
 

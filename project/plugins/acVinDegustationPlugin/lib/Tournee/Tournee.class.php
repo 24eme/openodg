@@ -180,6 +180,15 @@ class Tournee extends BaseTournee {
         return true;
     }
 
+    public function getNbLots() {
+        $nb_lot = 0;
+        foreach($this->getDegustationsObject() as $degustation) {
+            $nb_lot += count($degustation->getLotsPrelevement());
+        }
+
+        return $nb_lot;
+    }
+
     public function getOperateursPrelevement() {
         $operateurs = array();
 
