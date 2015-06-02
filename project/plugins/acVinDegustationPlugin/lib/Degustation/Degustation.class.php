@@ -53,7 +53,7 @@ class Degustation extends BaseDegustation {
             $lot->nb = $l->nb_hors_vtsgn;
             $lot->vtsgn = $l->vtsgn;
             $lot->volume_revendique = $l->volume_revendique;
-            $lot->prelevement = 1;
+            $lot->prelevement = 0;
         }
     }
 
@@ -107,6 +107,11 @@ class Degustation extends BaseDegustation {
         foreach($this->lots as $lot) {
             $lot->prelevement = 0;
         }
+    }
+
+    public function isAffecteTournee() {
+
+        return $this->date_prelevement && $this->heure && $this->agent;
     }
 
     public function getPrelevementsByAnonymatPrelevement($anonymat_prelevement) {

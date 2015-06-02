@@ -42,10 +42,9 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        $this->operateurs = TourneeClient::getInstance()->getPrelevements($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
-
-        $this->nb_reports = 0;
-        /*$this->nb_reports = $this->tournee->getPrevious() ? count($this->tournee->getPrevious()->getOperateursReporte()) : 0;*/
+        $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
+        $this->reportes =  TourneeClient::getInstance()->getReportes($this->tournee->appellation);
+        $this->nb_reports = count($this->reportes);
 
         $this->form = new TourneeCreationFinForm($this->tournee);
 
@@ -74,7 +73,8 @@ class degustationActions extends sfActions {
         if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_OPERATEURS))) {
             $this->tournee->save();
         }
-        //$this->tournee->updateOperateursFromPrevious();
+        
+        $this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
 
         $this->form = new TourneeOperateursForm($this->tournee);
@@ -286,10 +286,10 @@ class degustationActions extends sfActions {
     protected function organisation(sfWebRequest $request) {
         $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860");
         $this->heures = array();
-        for ($i = 7; $i <= 18; $i++) {
+        for ($i = 7; $i <= 20; $i++) {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
-        $this->heures["24:00"] = "24";
+        $this->heures[TourneeClient::HEURE_NON_REPARTI] = "";
         $this->operateurs = $this->tournee->getOperateursOrderByHour();
         $this->agents_couleur = array();
         $i = 0;
@@ -310,14 +310,15 @@ class degustationActions extends sfActions {
         $i = 0;
         foreach ($values as $key => $value) {
             $degustation = $this->tournee->getDegustationObject($key);
-            if(!str_replace("-", "", $value["tournee"])) {
+            if(!str_replace("-", "", $value["tournee"]) || $value["heure"] == TourneeClient::HEURE_NON_REPARTI || !trim($value["heure"])) {
                 $degustation->agent = null;
                 $degustation->date_prelevement = null;
+                $degustation->heure = null;
             } else {
                 $degustation->agent = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\1', $value["tournee"]);
                 $degustation->date_prelevement = preg_replace("/(COMPTE-[A-Z0-9]+)-([0-9]+-[0-9]+-[0-9]+)/", '\2', $value["tournee"]);
+                $degustation->heure = $value["heure"];
             }
-            $degustation->heure = $value["heure"];
             $degustation->position = $i++;
         }
 
@@ -423,6 +424,10 @@ class degustationActions extends sfActions {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
+        }
+
+        if (!$this->tournee->validation) {
+            throw new sfException("La tournée n'est pas validé");
         }
 
         $json = json_decode($request->getContent());
