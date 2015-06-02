@@ -74,8 +74,15 @@ class Tournee extends BaseTournee {
         return $this->getDegustationsObject();
     }
 
-    public function getDegustationObject($cvi) {
+    public function addDegustationObject($degustation) {
+        $this->getDegustationsObject();
+        $this->degustations->add($degustation->identifiant, $degustation->_id);
+        $this->degustations_object[$degustation->identifiant] = $degustation;
+    }
 
+    public function getDegustationObject($cvi) {
+        $this->getDegustationsObject();
+        
         return $this->degustations_object[$cvi];
     }
  
@@ -261,6 +268,10 @@ class Tournee extends BaseTournee {
         $degustations_json = TourneeClient::getInstance()->getReportes($this->appellation);
 
         foreach($degustations_json as $degustation_previous_json) {
+            if($this->degustations->exist($degustation_previous_json->identifiant)) {
+                continue;
+            }
+
             $degustation_previous = DegustationClient::getInstance()->find($degustation_previous_json->_id);
             $degustation = $this->addOperateurFromDRev($degustation_previous->drev);
 
@@ -270,13 +281,13 @@ class Tournee extends BaseTournee {
 
             $degustation->reporte = 1;
 
-            foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
+            /*foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
                 if(!$degustation->lots->exist($lot_key)) {
                     continue;
                 }
 
                 $degustation->lots->get($lot_key)->prelevement = 1;
-            }
+            }*/
         }
     }
 
@@ -329,13 +340,17 @@ class Tournee extends BaseTournee {
             return null;
         }
 
+        if($this->degustations->exist($drev->identifiant)) {
+
+            return $this->getDegustationObject($drev->identifiant);
+        }
+
         $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->date, $this->appellation);
 
         $degustation->updateFromDRev($drev);
         $degustation->constructId();
 
-        $this->degustations->add($degustation->identifiant, $degustation->_id);
-        $this->degustations_object[$degustation->identifiant] = $degustation;
+        $this->addDegustationObject($degustation);
 
         return $degustation;
     }

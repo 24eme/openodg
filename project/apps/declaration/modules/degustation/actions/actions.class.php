@@ -426,6 +426,10 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode($json));
         }
 
+        if (!$this->tournee->validation) {
+            throw new sfException("La tournée n'est pas validé");
+        }
+
         $json = json_decode($request->getContent());
         $json_return = array();
 

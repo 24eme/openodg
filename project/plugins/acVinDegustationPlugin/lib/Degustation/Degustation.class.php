@@ -53,7 +53,7 @@ class Degustation extends BaseDegustation {
             $lot->nb = $l->nb_hors_vtsgn;
             $lot->vtsgn = $l->vtsgn;
             $lot->volume_revendique = $l->volume_revendique;
-            $lot->prelevement = 1;
+            $lot->prelevement = 0;
         }
     }
 

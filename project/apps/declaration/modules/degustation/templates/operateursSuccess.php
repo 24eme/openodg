@@ -13,13 +13,13 @@
 <input type="hidden" id="nb_a_prelever" value="<?php echo $nb_a_prelever ?>"/>
 
 <div class="row">
-    <div class="col-xs-12" style="padding-bottom: 15px;">
+    <!--<div class="col-xs-12" style="padding-bottom: 15px;">
         <div id="recap_cepages" class="btn-group">
-            <!--<?php foreach($tournee->getProduits() as $produit): ?>
+            <?php foreach($tournee->getProduits() as $produit): ?>
             <button class="btn btn-default btn-default-step btn-sm disabled" data-cepage="<?php echo $produit->getHashForKey() ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></button>
-            <?php endforeach; ?>-->
+            <?php endforeach; ?>
         </div>
-    </div>
+    </div>-->
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
             <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge"><?php echo count($tournee->operateurs) ?></span></a>
@@ -36,17 +36,12 @@
                 <div class="col-xs-5"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><br /><?php echo $operateur->commune ?></small></div>
                 <div class="col-xs-3 text-left"><small class="text-muted">Pour le </small><?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><!--<small class="text-muted">Prélevé le</small> 2012, 2014--><?php if($operateur->reporte): ?><br /><span class="label label-warning">Reporté</span><?php endif; ?></div>
                 <div class="col-xs-3">
-                    <?php $attrs = array("class" => "form-control input-sm", "data-auto" => "true", "data-placeholder" => "Sélectionné un lot") ?>
+                    <?php $attrs = array("class" => "form-control input-sm", "data-selection-mode" => "all", "data-placeholder" => "Sélectionné un lot") ?>
                     <?php if(!$exist): ?>
                         <?php $attrs["class"] .= " hidden"; ?>
                         <?php $attrs["disabled"] = "disabled"; ?>
                     <?php endif; ?>
                     <?php echo $field->render($attrs); ?>
-                    <!--<select <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> name="operateurs[<?php echo $id ?>]" data-auto="true" data-placeholder="Sélectionner" class="form-control input-sm <?php if(!$exist): ?>hidden<?php endif; ?>">
-                        <?php foreach($prelevement->lots as $lot_key => $lot): ?>
-                        <option <?php if($exist && $tournee->operateurs->get($prelevement->identifiant)->lots->exist($lot_key)): ?>selected="selected"<?php endif; ?> value="<?php echo $lot_key ?>"><?php echo $lot->libelle ?> - <?php echo $lot->nb ?> lot(s)</option>
-                        <?php endforeach; ?>
-                    </select>-->
                 </div>
                 <div class="col-xs-1">
                     <button class="btn btn-success btn-sm pull-right <?php if($exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>

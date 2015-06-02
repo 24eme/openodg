@@ -44,6 +44,14 @@
                         $placeholder.html(container.group.item.eq(0).html());
                     },
                     onDrop: function($item, container, _super, event) {
+                        if(!$item.prevAll(".operateur").length) {
+                            $item.remove();
+                            $item.insertAfter($('li.hour').eq(0));
+                        }
+                        if(!$item.nextAll(".operateur.list-group-item-success").length) {
+                            $item.remove();
+                            $item.insertBefore($('li.hour').eq($('li.hour').length - 2));
+                        }
                         $.setValuesBySort();
                         _super($item, container);
                     }
@@ -315,9 +323,10 @@
 
     $.tourneeInsertHourDiv = function(hour) {
         var hourDiv = $('li.hour[data-value="' + $.tourneeNextHour(hour) + '"]');
+        var nextHourDiv = $('li.hour[data-value="' + $.tourneeNextHour($.tourneeNextHour(hour)) + '"]');
         if(!hourDiv.length) {
 
-            return $('li.hour').last();
+            return $('li.hour').eq($('li.hour').length-2);
         }
 
         return hourDiv;
@@ -404,10 +413,13 @@
             ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
             ligne.find('input, select').removeAttr('disabled');
-            if (ligne.find('select[data-auto=true]').length > 0) {
+            if (ligne.find('select[data-selection-mode=auto]').length > 0) {
                 if (ligne.find('select option[selected=selected]').length == 0) {
                     $.tireAuSortCepage(ligne.find('select'));
                 }
+            }
+            if (ligne.find('select[data-selection-mode=all]').length > 0) {
+                ligne.find('select[data-selection-mode=all] option').each(function() { $(this).prop('selected', 'selected') });
             }
             if (ligne.attr('data-point')) {
                 if (ligne.attr('data-color')) {
@@ -428,6 +440,7 @@
                 ligne.removeClass('clickable');
                 ligne.find('button.btn-success').addClass('hidden');
             }
+
             ligne.find('select option[selected=selected]').removeAttr('selected');
 
             if (ligne.attr('data-point')) {
