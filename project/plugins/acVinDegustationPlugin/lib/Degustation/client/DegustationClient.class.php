@@ -13,6 +13,7 @@ class DegustationClient extends acCouchdbClient {
 
     const MOTIF_NON_PRELEVEMENT_REPORT = "REPORT";
     const MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN = "PLUS_DE_VIN";
+    const MOTIF_NON_PRELEVEMENT_DECLASSEMENT = "DECLASSEMENT";
     const MOTIF_NON_PRELEVEMENT_SOUCIS = "SOUCIS";
 
     const COURRIER_TYPE_OPE = "OPE" ;
@@ -41,6 +42,7 @@ class DegustationClient extends acCouchdbClient {
     public static $motif_non_prelevement_libelles = array(
         self::MOTIF_NON_PRELEVEMENT_REPORT => "Report",
         self::MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN => "Plus de vin",
+        self::MOTIF_NON_PRELEVEMENT_DECLASSEMENT => "Déclassement",
         self::MOTIF_NON_PRELEVEMENT_SOUCIS => "Soucis",
     );
 
