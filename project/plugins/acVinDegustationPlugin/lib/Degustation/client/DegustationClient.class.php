@@ -42,8 +42,8 @@ class DegustationClient extends acCouchdbClient {
     public static $motif_non_prelevement_libelles = array(
         self::MOTIF_NON_PRELEVEMENT_REPORT => "Report",
         self::MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN => "Plus de vin",
-        self::MOTIF_NON_PRELEVEMENT_SOUCIS => "Soucis",
         self::MOTIF_NON_PRELEVEMENT_DECLASSEMENT => "Déclassement",
+        self::MOTIF_NON_PRELEVEMENT_SOUCIS => "Soucis",
     );
 
     public static $note_type_defauts = array(
