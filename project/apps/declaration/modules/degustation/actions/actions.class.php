@@ -462,6 +462,11 @@ class degustationActions extends sfActions {
                 $p->libelle = $prelevement->libelle;                
                 $p->libelle_produit = $prelevement->libelle_produit;                
                 $p->preleve = $prelevement->preleve;
+
+                $p->motif_non_prelevement = null;
+                if($p->hash_produit) {
+                    $p->motif_non_prelevement = $prelevement->motif_non_prelevement;
+                }
             }
 
             $degustation->save();

@@ -140,6 +140,10 @@ class Degustation extends BaseDegustation {
         $hash_to_delete = array();
 
         foreach($this->prelevements as $prelevement) {
+            if($prelevement->motif_non_prelevement == DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
+                $this->add('reports')->add($prelevement->hash_produit);
+            }
+
             if($prelevement->isPreleve()) {
                 continue;
             }
