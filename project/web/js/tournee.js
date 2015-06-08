@@ -120,10 +120,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     var updateOperateurFromLoad = function(operateur) {
         var termine = false;
         var nb_prelevements = 0;
-        if(operateur.motif_non_prelevement) {
-            termine = true;
-            operateur.aucun_prelevement = true;
-        }
+        
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
             if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
@@ -139,6 +136,11 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         }
         operateur.termine = termine;
         operateur.nb_prelevements = nb_prelevements;
+
+        if(operateur.motif_non_prelevement && !operateur.nb_prelevements) {
+            operateur.termine = true;
+            operateur.aucun_prelevement = true;
+        }
     }
 
     $scope.loadOrUpdateOperateurs = function() {
