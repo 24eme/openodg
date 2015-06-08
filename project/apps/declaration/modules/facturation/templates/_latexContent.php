@@ -123,8 +123,7 @@ N° adhérent : \textbf{\NUMADHERENT}
   <?php endforeach; ?>
   \hline
   \end{tabular}
-\begin{center}
-\end{center}
+\\\vspace{6mm}
 \begin{tabular}{|>{\centering}p{9cm} >{\raggedleft}p{6.4cm}|>{\raggedleft}p{2.3cm}|}
   \hline
   \multirow{4}{*} {\begin{minipage}{6cm}Paiement sous 30 jours à réception \newline de facture, net et sans escompte\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
@@ -152,12 +151,12 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			\vspace{3mm}
 			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
 			Maison des Vins d'Alsace - Colmar \\
-			\vspace{8mm}
+			\vspace{7mm}
 			\textbf{\large{CARTE DE MEMBRE}} \\
 			\vspace{1mm}
 			\textbf{\large{Année 2015}} \\
 		\end{center}
-		\vspace{6.9mm}
+		\vspace{5.9mm}
 		\begin{center}
 			\FACTUREMEMBRERS \\
 			\FACTUREMEMBREADRESSE \\
@@ -181,7 +180,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			IBAN : FR76 1720 6007 7049 1243 9001 072 \\
 			BIC : AGRIFRPP872
 		\end{center}
-		\vspace{1.2cm}
+		\vspace{1cm}
 		\begin{beamerframetotal}
 		    \vspace{1mm}
 			\begin{tabularx}{\linewidth}{X c c}
