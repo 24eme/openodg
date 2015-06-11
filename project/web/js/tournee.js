@@ -88,17 +88,34 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        $scope.transmission_result = true;
+        $scope.transmission_result = "success";
 
-        remoteSave(getOperateursToTransmettre(), function(data) {
+        var operateurs = $scope.operateurs;
+        if(auto) {
+            var operateurs = getOperateursToTransmettre();
+        }
+
+        remoteSave(operateurs, function(data) {
             if(!auto) {
                 $scope.transmission = true;
             }
             $scope.transmission_progress = false;
 
+            if(data === true) {
+                $scope.transmission_result = "aucune_transmission";
+                return;
+            }
+
             if(!data) {
-               $scope.transmission_result = false;
+               $scope.transmission_result = "error";
+               $scope.testState();
                return;
+            }
+
+            if(typeof data !== 'object') {
+                $scope.transmission_result = "error";
+                $scope.testState();
+                return;
             }
 
             for(id_degustation in data) {
@@ -112,7 +129,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
                     operateur._rev = revision;
                 }
             }
-            
+                
             localSave();
         });
     }
@@ -337,17 +354,9 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         }
         if(operateur.aucun_prelevement) {
             operateur.aucun_prelevement = 0;
-            /*for(prelevement_key in operateur.prelevements) {
-                if(operateur.prelevements[prelevement_key].cuve) {
-                    operateur.prelevements[prelevement_key].preleve = 1;
-                }
-            }*/
             operateur.motif_non_prelevement = null;
         } else {
             operateur.aucun_prelevement = 1;
-            /*for(prelevement_key in operateur.prelevements) {
-                operateur.prelevements[prelevement_key].preleve = 0;
-            }*/
         }
         localSave();    
     }
