@@ -512,7 +512,7 @@ class degustationActions extends sfActions {
 
         if($this->tournee->statut != TourneeClient::STATUT_AFFECTATION) {
 
-            return $this->forward404("L'affectation est terminée");
+            //return $this->forward404("L'affectation est terminée");
         }
 
         $this->reload = $request->getParameter('reload', 0);
@@ -546,10 +546,10 @@ class degustationActions extends sfActions {
 
             $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
 
-            /*if($degustation->_rev != $json_degustation->_rev) {
+            if($degustation->_rev != $json_degustation->_rev) {
                 $json_return[$degustation->_id] = false;
                 continue;
-            }*/
+            }
 
             foreach($json_degustation->prelevements as $json_prelevement) {
                 $prelevement = $degustation->getPrelevementsByAnonymatPrelevement($json_prelevement->anonymat_prelevement);

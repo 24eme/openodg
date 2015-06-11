@@ -86,11 +86,19 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             return;
         }
 
+        if(!auto) {
+            if(!confirm("Êtes vous sur de vouloir transmettre les données ?")) {
+
+                return;
+            }
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
         $scope.transmission_result = "success";
 
         var operateurs = $scope.operateurs;
+        
         if(auto) {
             var operateurs = getOperateursToTransmettre();
         }
@@ -500,18 +508,45 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             return;
         }
 
+        if(!auto) {
+            if(!confirm("Êtes vous sur de vouloir transmettre les données ?")) {
+
+                return;
+            }
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        $scope.transmission_result = true;
-        remoteSave(getDegustationsToTransmettre(), function(data) {
+        $scope.transmission_result = "success";
+
+        var degustations = $scope.degustations;
+
+        if(auto) {
+            var degustations = getDegustationsToTransmettre();
+        }
+
+        remoteSave(degustations, function(data) {
             if(!auto) {
                 $scope.transmission = true;
             }
+            
             $scope.transmission_progress = false;
 
-            if(!data) {
-               $scope.transmission_result = false;
+            if(data === true) {
+                $scope.transmission_result = "aucune_transmission";
+                return;
+            }
+
+           if(!data) {
+               $scope.transmission_result = "error";
+               $scope.testState();
                return;
+            }
+
+            if(typeof data !== 'object') {
+                $scope.transmission_result = "error";
+                $scope.testState();
+                return;
             }
 
             for(id_degustation in data) {
@@ -536,11 +571,11 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     setInterval(function() {
         $scope.transmettre(true);
-    }, 30000);
+    }, 5000);
 
     setInterval(function() {
         $scope.loadOrUpdateDegustations();
-    }, 60000);
+    }, 15000);
 
     if($scope.reload) {
         localDelete();
@@ -760,18 +795,45 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             return;
         }
 
+        if(!auto) {
+            if(!confirm("Êtes vous sur de vouloir transmettre les données ?")) {
+
+                return;
+            }
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
         $scope.transmission_result = true;
-        remoteSave(getDegustationsToTransmettre(), function(data) {
+
+        var degustations = $scope.degustations;
+
+        if(auto) {
+            var degustations = getDegustationsToTransmettre();
+        }
+
+        remoteSave(degustations, function(data) {
             if(!auto) {
                 $scope.transmission = true;
             }
+
             $scope.transmission_progress = false;
 
+            if(data === true) {
+                $scope.transmission_result = "aucune_transmission";
+                return;
+            }
+
             if(!data) {
-               $scope.transmission_result = false;
+               $scope.transmission_result = "error";
+               $scope.testState();
                return;
+            }
+
+            if(typeof data !== 'object') {
+                $scope.transmission_result = "error";
+                $scope.testState();
+                return;
             }
 
             for(id_degustation in data) {
