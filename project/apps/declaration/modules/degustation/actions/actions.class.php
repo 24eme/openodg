@@ -774,6 +774,21 @@ class degustationActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
+    public function executeCloturer(sfWebRequest $request) {
+        $tournee = $this->getRoute()->getTournee();
+
+        if(!$tournee->hasAllTypeCourrier()) {
+            throw new sfException("Tous les types de courriers n'ont pas été défini");
+        }
+        
+        $tournee->statut = TourneeClient::STATUT_TERMINE;
+        $tournee->save();
+
+        $this->getUser()->setFlash("notice", "La dégustation a été cloturée.");
+
+        return $this->redirect('degustation_visualisation', $tournee);
+    }
+
     protected function getEtape($doc, $etape) {
         $etapes = TourneeEtapes::getInstance();
         if (!$doc->exist('etape')) {

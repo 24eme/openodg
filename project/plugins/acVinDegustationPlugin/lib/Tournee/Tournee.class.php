@@ -410,6 +410,7 @@ class Tournee extends BaseTournee {
                         $prelevementsByOperateurs[$cvi]->prelevements = array();
                         $prelevementsByOperateurs[$cvi]->operateur = $operateur;
                     }
+
                     $prelevementsByOperateurs[$cvi]->prelevements[$prelevement->getHash()] = $prelevement;
                 }
             }
@@ -418,15 +419,45 @@ class Tournee extends BaseTournee {
         return $prelevementsByOperateurs;
     }
 
-    public function hasAllTypeCourrier() {
-        $notes = $this->getNotes();
-        foreach ($notes as $note) {
-            if (!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) {
-                return false;
+    public function getPrelevementsCourrierToSend() {
+        $prelevements = array();
+        foreach ($this->operateurs as $cvi => $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if (!$prelevement->exist('type_courrier') || !$prelevement->type_courrier) {
+                    continue;
+                }
+                if(!is_null($prelevement->courrier_envoye)) {
+                    continue;
+                }
+
+                if (!$operateur->email) {
+                    continue;
+                }
+                $prelevements[] = $prelevement;
             }
         }
+
+        return $prelevements;
+    }
+
+    public function hasAllTypeCourrier() {
         
-        return true;
+        
+        return $this->countNotTypeCourrier() == 0;
+    }
+
+    public function countNotTypeCourrier() {
+        $notes = $this->getNotes();
+        $i = 0;
+        foreach ($notes as $note) {
+            if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier) {
+                continue;
+            }
+
+            $i++;
+        }
+        
+        return $i;
     }
 
     public function getNotes() {
