@@ -111,7 +111,7 @@
                     <a href="" ng-click="precedent()" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
                 </div>
                 <div class="col-xs-6">
-                    <a href="" ng-click="valider(prelevement)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Continuer</a>
+                    <a href="" ng-click="valider(prelevement)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Valider et Continuer</a>
                 </div>
             </div>
         </section>
