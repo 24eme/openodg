@@ -15,7 +15,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="list-group">
-                        <a href="" ng-repeat="prelevement in prelevements | orderBy: ['anonymat_degustation']" class="list-group-item col-xs-12 link-to-section" ng-click="showCepage(prelevement)" ng-class="{ 'list-group-item-success': prelevement.termine, 'list-group-item-danger': (prelevement.erreurs)}">
+                        <a href="" ng-repeat="prelevement in prelevements | orderBy: ['anonymat_degustation']" class="list-group-item col-xs-12 link-to-section" ng-click="showCepage(prelevement)" ng-class="{ 'list-group-item-success': prelevement.termine, 'list-group-item-danger': (prelevement.has_erreurs)}">
                             <div class="col-xs-1">
                                 <strong style="font-size: 32px;">{{ prelevement.anonymat_degustation }}</strong>
                             </div>
@@ -65,7 +65,7 @@
                             <div class="col-xs-7 col-md-6 col-lg-7 text-muted-alt lead text-center">Défauts</div>
                         </div>
                         <?php foreach(DegustationClient::getInstance()->getNotesTypeByAppellation($tournee->appellation) as $key_note_type => $note_type_libelle): ?>
-                        <div class="form-group form-group-lg" ng-class="{ 'has-error': prelevement.notes.<?php echo $key_note_type ?>.erreurs }">
+                        <div class="form-group form-group-lg" ng-class="{ 'has-error': prelevement.notes.<?php echo $key_note_type ?>.has_erreurs }">
                             <div class="col-xs-12">
                                 <div class="col-xs-3 col-md-3 col-lg-2 text-right">
                                 <label class="control-label lead"><?php echo $note_type_libelle ?></label>
@@ -79,17 +79,21 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-7 col-md-6 col-lg-7">
-                                    <button ng-click="showAjoutDefaut(prelevement, '<?php echo $key_note_type ?>')" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                    <button ng-class="{ 'btn-danger': prelevement.notes.<?php echo $key_note_type ?>.has_erreurs && prelevement.notes.<?php echo $key_note_type ?>.erreurs['defaut'] }" ng-click="showAjoutDefaut(prelevement, '<?php echo $key_note_type ?>')" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-plus-sign"></span></button>
                                     <div class="btn-group">
-                                    <button class="btn btn-default btn-default-step btn-lg" confirm="Etes vous sûr de vouloir supprimer ce défaut ?" ng-repeat="defaut in prelevement.notes.<?php echo $key_note_type ?>.defauts" ng-click="removeDefaut(prelevement, '<?php echo $key_note_type ?>', defaut)" >{{ defaut }}&nbsp;&nbsp;</button>
+                                        <button class="btn btn-default btn-default-step btn-lg" confirm="Etes vous sûr de vouloir supprimer ce défaut ?" ng-repeat="defaut in prelevement.notes.<?php echo $key_note_type ?>.defauts" ng-click="removeDefaut(prelevement, '<?php echo $key_note_type ?>', defaut)" >{{ defaut }}&nbsp;&nbsp;</button>
                                     </div>
                                 </select>
                                 </div>
                             </div>
+                           
                         </div>
                         <?php endforeach; ?>
-                        <div ng-show="prelevement.erreurs" class="alert alert-danger text-center">
+                        <div ng-show="prelevement.has_erreurs && prelevement.erreurs['requis']" class="alert alert-danger text-center">
                             Vous devez saisir toutes les notes
+                        </div>
+                        <div ng-show="prelevement.has_erreurs && prelevement.erreurs['defaut']" class="alert alert-danger text-center">
+                            Vous devez saisir au moins un défaut pour les notes 0, 1, 2, C ou D
                         </div>
                         <div class="form-group form-group-lg" style="padding-top: 20px;">
                             <label class="col-xs-3 control-label lead text-muted">Appréciations</label>

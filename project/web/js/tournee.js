@@ -812,6 +812,22 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.active = 'recapitulatif';
     }
 
+    $scope.showNext = function(prelevement) {
+        /*var finded = false;
+        var prelevement_sorted = $filter('orderBy', $scope.prelevements, ['anonymat_degustation']);
+        for (prelevement_key in prelevement_sorted) {
+            if(finded) {
+                $scope.showCepage(prelevement_sorteds[prelevement_key]);
+                return;
+            }
+            if(prelevement_sorted.anonymat_degustation == prelevement.anonymat_degustation) {
+                finded = true;
+            }
+        }*/
+
+        $scope.showRecap();
+    }
+
     $scope.showCepage = function(prelevement) {
         $scope.active = 'cepage_' + prelevement.anonymat_degustation;
         $scope.transmission = false;
@@ -864,17 +880,28 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.isValide = function(prelevement) {
-        prelevement.erreurs = false;
+        prelevement.has_erreurs = false;
+        prelevement.erreurs = [];
         for(key_note in prelevement.notes) {
             var note = prelevement.notes[key_note];
-            note.erreurs = false;
+            note.erreurs = [];
+            note.has_erreurs = false;
             if(note.note === null) {
-                note.erreurs = true;
-                prelevement.erreurs = true;
+                note.has_erreurs = true;
+                note.erreurs['requis'] = true;
+                prelevement.has_erreurs = true;
+                prelevement.erreurs["requis"] = true;
+            }
+
+            if(note.note.match(/[012CD]+/) && note.defauts.length == 0) {
+                note.has_erreurs = true;
+                note.erreurs["defaut"] = true;
+                prelevement.has_erreurs = true;
+                prelevement.erreurs["defaut"] = true;
             }
         }
 
-        if(prelevement.erreurs) {
+        if(prelevement.has_erreurs) {
             
             return;
         }
@@ -885,7 +912,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.valider = function(prelevement) {
         $scope.isValide(prelevement);
 
-        if(prelevement.erreurs) {
+        if(prelevement.has_erreurs) {
             localSave();
             return;
         }
@@ -893,7 +920,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.degustations[prelevement.degustation_id].transmission_needed = true;
         localSave();
         $scope.transmettre(true);
-        $scope.showRecap();
+        $scope.showNext(prelevement);
     }
 
 }]);
