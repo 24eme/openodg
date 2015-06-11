@@ -98,7 +98,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.transmission_result = "success";
 
         var operateurs = $scope.operateurs;
-        
+
         if(auto) {
             var operateurs = getOperateursToTransmettre();
         }
@@ -328,6 +328,10 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             if(!prelevement.preleve && prelevement.motif_non_prelevement == "REPORT") {
                 operateur.motif_non_prelevement = "REPORT";
             }
+        }
+
+        if(!nb_prelevements && nb && !operateur.motif_non_prelevement) {
+            operateur.motif_non_prelevement = "MIXTE"; 
         }
 
         operateur.termine = true;
