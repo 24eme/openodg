@@ -178,6 +178,13 @@ class compteActions extends sfActions {
 
         $cvis = explode("\n", preg_replace("/^\n/", "",  preg_replace("/\n$/", "", preg_replace("/([^0-9\n]+|\n\n)/", "", str_replace("\n", "\n", $this->form->getValue('cvis'))))));
 
+        foreach($cvis as $index => $cvi) {
+            $cvis[$index] = trim($cvi);
+            if(!$cvis[$index]) {
+                unset($cvis[$index]);
+            }
+        }
+
         return $this->redirect('compte_recherche', array("q" => "(cvi:" . implode(" OR cvi:", $cvis) . ")", "all" => 1));
     }
 
@@ -254,10 +261,11 @@ class compteActions extends sfActions {
         if (!$this->q) {
             $this->q = '*';
         }
+
         $this->tags = $request->getParameter('tags', array());
         $this->all = $request->getParameter('all', 0);
 
-        $this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
+        $this->args = array('q' => str_replace('"', '\"', $this->q), 'all' => $this->all, 'tags' => $this->tags);
 
         $qs = new acElasticaQueryQueryString(self::convertArgumentsToQuery($this->args));
         $q = new acElasticaQuery();
