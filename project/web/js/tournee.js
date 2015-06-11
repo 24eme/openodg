@@ -813,17 +813,21 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.showNext = function(prelevement) {
-        /*var finded = false;
-        var prelevement_sorted = $filter('orderBy', $scope.prelevements, ['anonymat_degustation']);
-        for (prelevement_key in prelevement_sorted) {
+        var finded = false;
+        var prelevements_sorted = $filter('orderBy')($scope.prelevements, ['anonymat_degustation']);
+        console.log(prelevements_sorted);
+        for (prelevement_key in prelevements_sorted) {
             if(finded) {
-                $scope.showCepage(prelevement_sorteds[prelevement_key]);
+                $scope.showCepage(prelevements_sorted[prelevement_key]);
                 return;
             }
-            if(prelevement_sorted.anonymat_degustation == prelevement.anonymat_degustation) {
+            console.log(prelevements_sorted[prelevement_key].anonymat_degustation);
+            if(prelevements_sorted[prelevement_key].anonymat_degustation == prelevement.anonymat_degustation) {
                 finded = true;
+
+                console.log('finded');
             }
-        }*/
+        }
 
         $scope.showRecap();
     }
