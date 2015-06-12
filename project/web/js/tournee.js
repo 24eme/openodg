@@ -331,6 +331,17 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         }
 
         if(!nb_prelevements && nb && !operateur.motif_non_prelevement) {
+            for(prelevement_key in operateur.prelevements) {
+               var prelevement = operateur.prelevements[prelevement_key];
+               if(operateur.motif_non_prelevement && prelevement.motif_non_prelevement != operateur.motif_non_prelevement) {
+                    operateur.motif_non_prelevement = "MIXTE"; 
+               } else {
+                    operateur.motif_non_prelevement = prelevement.motif_non_prelevement;
+               }
+            }
+        }
+
+        if(!nb_prelevements && nb && !operateur.motif_non_prelevement) {
             operateur.motif_non_prelevement = "MIXTE"; 
         }
 
