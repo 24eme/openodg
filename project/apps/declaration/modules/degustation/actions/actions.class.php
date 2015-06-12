@@ -512,12 +512,8 @@ class degustationActions extends sfActions {
             return $this->redirect('degustation_affectation_generate', $this->tournee);
         }
 
-        if($this->tournee->statut != TourneeClient::STATUT_AFFECTATION) {
-
-            //return $this->forward404("L'affectation est terminée");
-        }
-
         $this->reload = $request->getParameter('reload', 0);
+        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_AFFECTATION);
 
         $this->setLayout('layoutResponsive');
     }
@@ -535,6 +531,10 @@ class degustationActions extends sfActions {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
+        }
+
+        if(!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_AFFECTATION) {
+            throw new sfException("L'affectation n'est plus éditable");
         }
 
         $json = json_decode($request->getContent());
@@ -592,6 +592,9 @@ class degustationActions extends sfActions {
     public function executeDegustation(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
         $this->commission = $request->getParameter('commission');
+
+        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS);
+
         $this->setLayout('layoutResponsive');
     }
 
@@ -609,6 +612,11 @@ class degustationActions extends sfActions {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
+        }
+
+        if(!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS) {
+            
+            throw new sfException("La dégustation n'est plus éditable");
         }
 
         $json = json_decode($request->getContent());

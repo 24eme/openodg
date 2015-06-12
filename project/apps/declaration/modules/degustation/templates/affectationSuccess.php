@@ -2,10 +2,11 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201504281909'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee)) ?>"; url_state="<?php echo url_for('auth_state') ?>";nombre_commissions=<?php echo $tournee->nombre_commissions ?>; reload=<?php echo $reload ?>;'>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; url_state="<?php echo url_for('auth_state') ?>";nombre_commissions=<?php echo $tournee->nombre_commissions ?>; reload=<?php echo $reload ?>;'>
     <div ng-controller="affectationCtrl">
         <section ng-show="active == 'recapitulatif'" id="commissions">
             <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
+            <?php if($lock): ?><span class="pull-right"><span class="glyphicon glyphicon-lock"></span></span><?php endif; ?>
             <div class="page-header text-center">
                 <h2>Affectation des vins<br /><small>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></small></h2>
             </div>
@@ -43,9 +44,9 @@
                 Rien à transmettre
                 </div>
                 <div class="row row-margin hidden-print">
-                    <div class="col-xs-12">
-                        <a href="" ng-show="!transmission_progress" ng-click="transmettre(false)" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
-                        <small ng-show="transmission_progress">Transmission en cours...</small>
+                    <div class="col-xs-12 text-center">
+                        <a href="" ng-show="!transmission_progress" ng-click="transmettre(false)" class="btn btn-warning btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;Transmettre</a>
+                        <span class="text-muted-alt" ng-show="transmission_progress">Transmission en cours...</span>
                     </div>
                 </div>
             </div>

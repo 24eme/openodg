@@ -819,7 +819,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        $scope.transmission_result = true;
+        $scope.transmission_result = "success";
 
         var degustations = $scope.degustations;
 
