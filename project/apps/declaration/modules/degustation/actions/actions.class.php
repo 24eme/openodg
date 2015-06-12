@@ -385,6 +385,8 @@ class degustationActions extends sfActions {
         $this->operateurs = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
         $this->reload = $request->getParameter('reload', 0);
         $this->produits = array();
+        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
+
         foreach($this->tournee->getProduits() as $produit) {
             if(!$produit->hasVtsgn()) {
                 continue;
@@ -426,8 +428,8 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode($json));
         }
 
-        if (!$this->tournee->validation) {
-            throw new sfException("La tournée n'est pas validé");
+        if(!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES) {
+            throw new sfException("La tournée n'est plus éditable");
         }
 
         $json = json_decode($request->getContent());
