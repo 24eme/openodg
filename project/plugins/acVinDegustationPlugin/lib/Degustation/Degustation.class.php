@@ -49,7 +49,9 @@ class Degustation extends BaseDegustation {
             $lot = $this->lots->add($l_key);
             $lot->hash_produit = $l->hash_produit;
             $lot->libelle = $l->libelle;
-            $lot->libelle_produit = $l->libelle_produit;
+            if($l->exist('libelle_produit')) {
+                $lot->libelle_produit = $l->libelle_produit;
+            }
             $lot->nb = $l->nb_hors_vtsgn;
             $lot->vtsgn = $l->vtsgn;
             $lot->volume_revendique = $l->volume_revendique;
