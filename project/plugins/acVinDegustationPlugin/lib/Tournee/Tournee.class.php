@@ -290,13 +290,13 @@ class Tournee extends BaseTournee {
 
             $degustation->reporte = 1;
 
-            /*foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
+            foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
                 if(!$degustation->lots->exist($lot_key)) {
                     continue;
                 }
 
                 $degustation->lots->get($lot_key)->prelevement = 1;
-            }*/
+            }
         }
     }
 

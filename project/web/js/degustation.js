@@ -441,7 +441,7 @@
                 ligne.find('button.btn-success').addClass('hidden');
             }
 
-            ligne.find('select option[selected=selected]').removeAttr('selected');
+            ligne.find('select option').removeProp('selected');
 
             if (ligne.attr('data-point')) {
                 $(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', '#e2e2e2');
@@ -467,7 +467,7 @@
     $.tireAuSortCepage = function(select)
     {
         var nb_options = select.find('option').length;
-        select.find('option').eq(Math.floor((Math.random() * nb_options))).attr('selected', 'selected');
+        select.find('option').eq(Math.floor((Math.random() * nb_options))).prop('selected', 'selected');
     }
 
     $.updateRecapCepages = function()

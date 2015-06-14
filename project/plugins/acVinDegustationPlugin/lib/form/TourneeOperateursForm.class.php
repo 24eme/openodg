@@ -21,9 +21,6 @@ class TourneeOperateursForm extends acCouchdbForm {
                 $defaultLots[] = $lot->getKey();
             }
 
-            //echo $operateur->cvi."\n";
-            //print_r($operateur->toArray(true, false));
-
             $this->setDefault($operateur->getIdentifiant(), $defaultLots);
         }
     }
@@ -38,7 +35,10 @@ class TourneeOperateursForm extends acCouchdbForm {
 
             foreach($operateur->lots as $lot_key => $lot) {
                 $choices[$lot_key] = sprintf("%s - %s hl", $lot->libelle, $lot->volume_revendique);
-                //$choices[$lot_key] = sprintf("%s", $lot->libelle, $lot->nb);
+
+                if($lot->nb > 1) {
+                    $choices[$lot_key] .= sprintf(" (%s lots)", $lot->nb);
+                }
             }
 
             $this->setWidget($operateur->identifiant, new sfWidgetFormChoice(array("choices" => $choices, 'multiple' => true)));
