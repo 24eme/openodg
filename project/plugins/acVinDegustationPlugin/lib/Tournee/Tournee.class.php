@@ -25,8 +25,6 @@ class Tournee extends BaseTournee {
         return $this->_set('date', $date);
     }
 
-
-
     public function getProduits() {
         if($this->appellation == 'VTSGN') {
             return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
@@ -34,19 +32,6 @@ class Tournee extends BaseTournee {
         
         return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
-
-    
-
-    /*public function getProduits() {
-        $produits = array();
-
-        foreach($this->lots as $lot) {
-            $produits[$lot->key] = $lot->getLibelleComplet();
-        }
-
-        return $produits;
-    }*/
-
 
     public function getOperateursOrderByHour() {
         $operateurs = array();

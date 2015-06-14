@@ -44,19 +44,18 @@ class Degustation extends BaseDegustation {
         }
 
         foreach($prelevement->lots as $l_key => $l) {
-            if(!$l->nb_hors_vtsgn) {
-                continue;
+            for($i = 0; $i < $l->nb_hors_vtsgn; $i++) {
+                $lot = $this->lots->add(str_replace("/", "-", $l->hash_produit)."-".$i);
+                $lot->hash_produit = $l->hash_produit;
+                $lot->libelle = $l->libelle;
+                if($l->exist('libelle_produit')) {
+                    $lot->libelle_produit = $l->libelle_produit;
+                }
+                $lot->nb = 1;
+                $lot->vtsgn = $l->vtsgn;
+                $lot->volume_revendique = $l->volume_revendique;
+                $lot->prelevement = 0;
             }
-            $lot = $this->lots->add(str_replace("/", "-", $l->hash_produit));
-            $lot->hash_produit = $l->hash_produit;
-            $lot->libelle = $l->libelle;
-            if($l->exist('libelle_produit')) {
-                $lot->libelle_produit = $l->libelle_produit;
-            }
-            $lot->nb = $l->nb_hors_vtsgn;
-            $lot->vtsgn = $l->vtsgn;
-            $lot->volume_revendique = $l->volume_revendique;
-            $lot->prelevement = 0;
         }
     }
 
