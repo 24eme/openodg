@@ -24,21 +24,22 @@ class Degustation extends BaseDegustation {
         $this->date_demande = $prelevement->date;
         $this->lots = array();
 
-        $vtsgn_items = array("vt" => "VT", "sgn" => "SGN");
+        if($this->appellation == "VTSGN") {        
+            $vtsgn_items = array("vt" => "VT", "sgn" => "SGN");
+            foreach($drev->declaration->getProduitsCepage() as $detail) {
+                foreach($vtsgn_items as $vtsgn_key => $vtsgn_libelle) {
+                    if(!$detail->get("volume_revendique_".$vtsgn_key)) {
+                        continue;
+                    }
 
-        foreach($drev->declaration->getProduitsCepage() as $detail) {
-            foreach($vtsgn_items as $vtsgn_key => $vtsgn_libelle) {
-                if(!$detail->get("volume_revendique_".$vtsgn_key)) {
-                    continue;
+                    $lot = $prelevement->lots->add(str_replace("/", "-", $detail->getHash()."-".$vtsgn_key));
+                    $lot->libelle = sprintf("%s %s", $detail->getCepageLibelle(), $vtsgn_libelle);
+                    $lot->add('libelle_produit', sprintf("%s", $detail->getProduitLibelleComplet()));
+                    $lot->hash_produit = $detail->getCepage()->getHash();
+                    $lot->volume_revendique = $detail->get("volume_revendique_".$vtsgn_key);
+                    $lot->nb_hors_vtsgn = 1;
+                    $lot->vtsgn = $vtsgn_libelle;
                 }
-
-                $lot = $prelevement->lots->add(str_replace("/", "-", $detail->getHash()."-".$vtsgn_key));
-                $lot->libelle = sprintf("%s %s", $detail->getCepageLibelle(), $vtsgn_libelle);
-                $lot->add('libelle_produit', sprintf("%s", $detail->getProduitLibelleComplet()));
-                $lot->hash_produit = $detail->getCepage()->getHash();
-                $lot->volume_revendique = $detail->get("volume_revendique_".$vtsgn_key);
-                $lot->nb_hors_vtsgn = 1;
-                $lot->vtsgn = $vtsgn_libelle;
             }
         }
 
@@ -57,6 +58,16 @@ class Degustation extends BaseDegustation {
             $lot->volume_revendique = $l->volume_revendique;
             $lot->prelevement = 0;
         }
+    }
+
+    public function getProduits() {
+        $produits = array();
+
+        foreach($this->lots as $lot) {
+            $produits[$lot->key] = $lot->libelle;
+        }
+
+        return $produits;
     }
 
     public function getDrev() {

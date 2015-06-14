@@ -13,13 +13,16 @@
 <input type="hidden" id="nb_a_prelever" value="<?php echo $nb_a_prelever ?>"/>
 
 <div class="row">
-    <!--<div class="col-xs-12" style="padding-bottom: 15px;">
+    <?php if($tournee->appellation != 'VTSGN'): ?>
+    <div class="col-xs-12" style="padding-bottom: 15px;">
         <div id="recap_cepages" class="btn-group">
             <?php foreach($tournee->getProduits() as $produit): ?>
             <button class="btn btn-default btn-default-step btn-sm disabled" data-cepage="<?php echo $produit->getHashForKey() ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></button>
             <?php endforeach; ?>
         </div>
-    </div>-->
+    </div>
+    <?php endif; ?>
+    
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
             <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge"><?php echo count($tournee->operateurs) ?></span></a>
