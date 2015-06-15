@@ -62,7 +62,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever') + $this->nb_reports;
+        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever');
 
         return $this->redirect('degustation_operateurs', array('sf_subject' => $this->tournee, 'nb_a_prelever' => $nb_a_prelever));
     }
