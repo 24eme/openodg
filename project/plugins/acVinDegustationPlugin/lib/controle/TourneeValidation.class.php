@@ -48,7 +48,7 @@ class TourneeValidation extends DocumentValidation {
                     $conflits[$degustateur->email][] = sprintf("Le dégustateur %s : %s (%s)", $degustateur_type, $degustateur->nom, $degustateur->commune);
                 }
 
-                $conflits[KeyInflector::slugify($degustateur->nom)]][] = sprintf("Le dégustateur %s : %s (%s)", $degustateur_type, $degustateur->nom, $degustateur->commune);
+                $conflits[KeyInflector::slugify($degustateur->nom)][] = sprintf("Le dégustateur %s : %s (%s)", $degustateur_type, $degustateur->nom, $degustateur->commune);
             }
         }
 
