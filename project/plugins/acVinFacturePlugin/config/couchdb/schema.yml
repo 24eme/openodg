@@ -12,6 +12,8 @@ Facture:
       numero_adherent: {}
       date_emission: {}
       date_facturation: {}
+      date_paiement: {}
+      reglement_paiement: {}
       campagne: {}
       numero_archive: {  }
       statut: {}
