@@ -795,6 +795,17 @@ degustation_courriers_papier:
   requirements:
     sf_method: [get, post]
 
+degustation_cloturer:
+  url: /degustation/cloturer/:id
+  param: { module: degustation, action: cloturer }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+
 
 # Parcellaire
 

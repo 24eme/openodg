@@ -62,7 +62,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever') + $this->nb_reports;
+        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever');
 
         return $this->redirect('degustation_operateurs', array('sf_subject' => $this->tournee, 'nb_a_prelever' => $nb_a_prelever));
     }
@@ -343,26 +343,31 @@ class degustationActions extends sfActions {
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->validation = new TourneeValidation($this->tournee);
             $this->tournee->cleanOperateurs(false);
+
+            return sfView::SUCCESS;
         }
 
         $this->form = new TourneeValidationForm($this->tournee);
+        $this->form->bind($request->getParameter($this->form->getName()));
         
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {            
-                $this->tournee->validate();
-                $this->tournee->save();
-                $this->tournee->saveDegustations();
+        if (!$this->form->isValid()) {
+            $this->validation = new TourneeValidation($this->tournee);
+            $this->tournee->cleanOperateurs(false);
 
-
-                Email::getInstance()->sendDegustationOperateursMails($this->tournee);
-                Email::getInstance()->sendDegustationDegustateursMails($this->tournee);
-
-                $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
-
-                return $this->redirect('degustation_visualisation', $this->tournee);
-            }
+            return sfView::SUCCESS;
         }
+
+        $this->tournee->validate();
+        $this->tournee->save();
+        $this->tournee->saveDegustations();
+
+
+        Email::getInstance()->sendDegustationOperateursMails($this->tournee);
+        Email::getInstance()->sendDegustationDegustateursMails($this->tournee);
+
+        $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -385,28 +390,44 @@ class degustationActions extends sfActions {
         $this->operateurs = $this->tournee->getTourneeOperateurs($request->getParameter('agent'), $request->getParameter('date'));
         $this->reload = $request->getParameter('reload', 0);
         $this->produits = array();
-        foreach($this->tournee->getProduits() as $produit) {
-            if(!$produit->hasVtsgn()) {
-                continue;
-            }
-            $produit_vt = new stdClass();
-            $produit_sgn = new stdClass();
-            $produit_vt->hash_produit = $produit->getHash();
-            $produit_vt->vtsgn = "VT";
-            $produit_vt->trackby = $produit->getHash().$produit_vt->vtsgn;
-            $produit_vt->libelle = $produit->getLibelleLong() . " VT";
-            $produit_vt->libelle_produit = $produit->getParent()->getLibelleComplet();
-            $produit_vt->libelle_complet = $produit_vt->libelle_produit." ".$produit_vt->libelle;
-            $produit_sgn->hash_produit = $produit->getHash();
-            $produit_sgn->vtsgn = "SGN";
-            $produit_sgn->trackby = $produit->getHash().$produit_sgn->vtsgn;
-            $produit_sgn->libelle = $produit->getLibelleLong() . " SGN";
-            $produit_sgn->libelle_produit = $produit->getParent()->getLibelleComplet();
-            $produit_sgn->libelle_complet = $produit_sgn->libelle_produit." ".$produit_sgn->libelle;
+        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
 
-            $this->produits[] = $produit_vt;
-            $this->produits[] = $produit_sgn;
+        if($this->tournee->appellation == 'VTSGN') {
+            foreach($this->tournee->getProduits() as $produit) {
+                if(!$produit->hasVtsgn()) {
+                    continue;
+                }
+                $produit_vt = new stdClass();
+                $produit_sgn = new stdClass();
+                $produit_vt->hash_produit = $produit->getHash();
+                $produit_vt->vtsgn = "VT";
+                $produit_vt->trackby = $produit->getHash().$produit_vt->vtsgn;
+                $produit_vt->libelle = $produit->getLibelleLong() . " VT";
+                $produit_vt->libelle_produit = $produit->getParent()->getLibelleComplet();
+                $produit_vt->libelle_complet = $produit_vt->libelle_produit." ".$produit_vt->libelle;
+                $produit_sgn->hash_produit = $produit->getHash();
+                $produit_sgn->vtsgn = "SGN";
+                $produit_sgn->trackby = $produit->getHash().$produit_sgn->vtsgn;
+                $produit_sgn->libelle = $produit->getLibelleLong() . " SGN";
+                $produit_sgn->libelle_produit = $produit->getParent()->getLibelleComplet();
+                $produit_sgn->libelle_complet = $produit_sgn->libelle_produit." ".$produit_sgn->libelle;
+
+                $this->produits[] = $produit_vt;
+                $this->produits[] = $produit_sgn;
+            }
+        } else {
+            foreach($this->tournee->getProduits() as $p) {
+                $produit = new stdClass();
+                $produit->hash_produit = $p->getHash();
+                $produit->vtsgn = null;
+                $produit->trackby = $p->getHash();
+                $produit->libelle = $p->getLibelleLong();
+                $produit->libelle_produit = null;
+                $produit->libelle_complet = $produit->libelle;
+                $this->produits[] = $produit;
+            }
         }
+
         $this->setLayout('layoutResponsive');
     }
 
@@ -426,8 +447,8 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode($json));
         }
 
-        if (!$this->tournee->validation) {
-            throw new sfException("La tournée n'est pas validé");
+        if(!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES) {
+            throw new sfException("La tournée n'est plus éditable");
         }
 
         $json = json_decode($request->getContent());
@@ -462,6 +483,14 @@ class degustationActions extends sfActions {
                 $p->libelle = $prelevement->libelle;                
                 $p->libelle_produit = $prelevement->libelle_produit;                
                 $p->preleve = $prelevement->preleve;
+                $p->vtsgn = null;
+                if($prelevement->vtsgn) {
+                    $p->vtsgn = $prelevement->vtsgn;
+                }
+                $p->motif_non_prelevement = null;
+                if($p->hash_produit) {
+                    $p->motif_non_prelevement = $prelevement->motif_non_prelevement;
+                }
             }
 
             $degustation->save();
@@ -505,12 +534,8 @@ class degustationActions extends sfActions {
             return $this->redirect('degustation_affectation_generate', $this->tournee);
         }
 
-        if($this->tournee->statut != TourneeClient::STATUT_AFFECTATION) {
-
-            return $this->forward404("L'affectation est terminée");
-        }
-
         $this->reload = $request->getParameter('reload', 0);
+        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_AFFECTATION);
 
         $this->setLayout('layoutResponsive');
     }
@@ -530,6 +555,10 @@ class degustationActions extends sfActions {
             return $this->renderText(json_encode($json));
         }
 
+        if(!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_AFFECTATION) {
+            throw new sfException("L'affectation n'est plus éditable");
+        }
+
         $json = json_decode($request->getContent());
         $json_return = array();
 
@@ -541,10 +570,10 @@ class degustationActions extends sfActions {
 
             $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
 
-            /*if($degustation->_rev != $json_degustation->_rev) {
+            if($degustation->_rev != $json_degustation->_rev) {
                 $json_return[$degustation->_id] = false;
                 continue;
-            }*/
+            }
 
             foreach($json_degustation->prelevements as $json_prelevement) {
                 $prelevement = $degustation->getPrelevementsByAnonymatPrelevement($json_prelevement->anonymat_prelevement);
@@ -585,6 +614,9 @@ class degustationActions extends sfActions {
     public function executeDegustation(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
         $this->commission = $request->getParameter('commission');
+
+        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS);
+
         $this->setLayout('layoutResponsive');
     }
 
@@ -602,6 +634,11 @@ class degustationActions extends sfActions {
             $this->response->setContentType('application/json');
 
             return $this->renderText(json_encode($json));
+        }
+
+        if(!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS) {
+            
+            throw new sfException("La dégustation n'est plus éditable");
         }
 
         $json = json_decode($request->getContent());
@@ -767,6 +804,21 @@ class degustationActions extends sfActions {
         $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
+    }
+
+    public function executeCloturer(sfWebRequest $request) {
+        $tournee = $this->getRoute()->getTournee();
+
+        if(!$tournee->hasAllTypeCourrier()) {
+            throw new sfException("Tous les types de courriers n'ont pas été défini");
+        }
+        
+        $tournee->statut = TourneeClient::STATUT_TERMINE;
+        $tournee->save();
+
+        $this->getUser()->setFlash("notice", "La dégustation a été cloturée.");
+
+        return $this->redirect('degustation_visualisation', $tournee);
     }
 
     protected function getEtape($doc, $etape) {

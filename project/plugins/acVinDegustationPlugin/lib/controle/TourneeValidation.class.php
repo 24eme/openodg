@@ -20,7 +20,8 @@ class TourneeValidation extends DocumentValidation {
     }
 
     public function controle() {
-        $emails = array();
+        $conflits = array();
+
         foreach ($this->document->operateurs as $operateur) {
             if (!$operateur->email) {
                 $this->addPoint(self::TYPE_WARNING, 'operateur_no_email', sprintf("%s (%s, %s)", $operateur->raison_sociale, $operateur->cvi, $operateur->commune));
@@ -30,7 +31,11 @@ class TourneeValidation extends DocumentValidation {
                 $this->addPoint(self::TYPE_WARNING, 'operateur_non_affecte', sprintf("%s (%s, %s)", $operateur->raison_sociale, $operateur->cvi, $operateur->commune));
             }
 
-            $emails[$operateur->email][] = sprintf("L'opérateur : %s (%s, %s)", $operateur->raison_sociale, $operateur->cvi, $operateur->commune);
+            if($operateur->email) {
+                $conflits[$operateur->email][] = sprintf("L'opérateur : %s (%s, %s)", $operateur->raison_sociale, $operateur->cvi, $operateur->commune);
+            }
+
+            $conflits[KeyInflector::slugify($operateur->raison_sociale)][] = sprintf("L'opérateur : %s (%s, %s)", $operateur->raison_sociale, $operateur->cvi, $operateur->commune);
         }
 
         foreach ($this->document->degustateurs as $degustateur_type => $degustateurs) {
@@ -38,13 +43,16 @@ class TourneeValidation extends DocumentValidation {
                 if (!$degustateur->email) {
                     $this->addPoint(self::TYPE_WARNING, 'degustateur_no_email', sprintf("%s (%s)", $degustateur->nom, $degustateur->commune));
                 }
+                
                 if($degustateur->email) {
-                    $emails[$degustateur->email][] = sprintf("Le dégustateur %s : %s (%s)", $degustateur_type, $degustateur->nom, $degustateur->commune);
+                    $conflits[$degustateur->email][] = sprintf("Le dégustateur %s : %s (%s)", $degustateur_type, $degustateur->nom, $degustateur->commune);
                 }
+
+                $conflits[KeyInflector::slugify($degustateur->nom)][] = sprintf("Le dégustateur %s : %s (%s)", $degustateur_type, $degustateur->nom, $degustateur->commune);
             }
         }
 
-        foreach($emails as $email => $interlocuteurs) {
+        foreach($conflits as $interlocuteurs) {
             if(count($interlocuteurs) < 2) {
                 continue;
             }

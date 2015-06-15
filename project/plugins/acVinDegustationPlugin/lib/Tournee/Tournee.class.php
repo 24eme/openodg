@@ -26,8 +26,11 @@ class Tournee extends BaseTournee {
     }
 
     public function getProduits() {
-
-        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+        if($this->appellation == 'VTSGN') {
+            return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+        }
+        
+        return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
     public function getOperateursOrderByHour() {
@@ -290,13 +293,13 @@ class Tournee extends BaseTournee {
 
             $degustation->reporte = 1;
 
-            /*foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
+            foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
                 if(!$degustation->lots->exist($lot_key)) {
                     continue;
                 }
 
                 $degustation->lots->get($lot_key)->prelevement = 1;
-            }*/
+            }
         }
     }
 
@@ -410,6 +413,7 @@ class Tournee extends BaseTournee {
                         $prelevementsByOperateurs[$cvi]->prelevements = array();
                         $prelevementsByOperateurs[$cvi]->operateur = $operateur;
                     }
+
                     $prelevementsByOperateurs[$cvi]->prelevements[$prelevement->getHash()] = $prelevement;
                 }
             }
@@ -418,15 +422,45 @@ class Tournee extends BaseTournee {
         return $prelevementsByOperateurs;
     }
 
-    public function hasAllTypeCourrier() {
-        $notes = $this->getNotes();
-        foreach ($notes as $note) {
-            if (!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) {
-                return false;
+    public function getPrelevementsCourrierToSend() {
+        $prelevements = array();
+        foreach ($this->operateurs as $cvi => $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if (!$prelevement->exist('type_courrier') || !$prelevement->type_courrier) {
+                    continue;
+                }
+                if(!is_null($prelevement->courrier_envoye)) {
+                    continue;
+                }
+
+                if (!$operateur->email) {
+                    continue;
+                }
+                $prelevements[] = $prelevement;
             }
         }
+
+        return $prelevements;
+    }
+
+    public function hasAllTypeCourrier() {
         
-        return true;
+        
+        return $this->countNotTypeCourrier() == 0;
+    }
+
+    public function countNotTypeCourrier() {
+        $notes = $this->getNotes();
+        $i = 0;
+        foreach ($notes as $note) {
+            if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier) {
+                continue;
+            }
+
+            $i++;
+        }
+        
+        return $i;
     }
 
     public function getNotes() {

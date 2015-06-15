@@ -1,11 +1,12 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
-<?php use_javascript('tournee.js?201504281909'); ?>
-<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::getInstance()->getNotesTypeByAppellation($tournee->appellation)) ?>; defauts=<?php echo json_encode(DegustationClient::$note_type_defauts, JSON_HEX_APOS) ?>;'>
+<?php use_javascript('tournee.js?201505110953'); ?>
+<div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission, 'unlock' => !$lock)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::getInstance()->getNotesTypeByAppellation($tournee->appellation)) ?>; defauts=<?php echo json_encode(DegustationClient::$note_type_defauts, JSON_HEX_APOS) ?>;'>
     <div ng-controller="degustationCtrl">
         <section ng-show="active == 'recapitulatif'">
             <a href="<?php echo url_for("degustation_degustations", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
+            <?php if($lock): ?><span class="pull-right"><span class="glyphicon glyphicon-lock"></span></span><?php endif; ?>
             <div class="page-header text-center">
                 <h2>Commission {{ commission }}</small></h2>
             </div>
@@ -15,7 +16,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="list-group">
-                        <a href="" ng-repeat="prelevement in prelevements | orderBy: ['anonymat_degustation']" class="list-group-item col-xs-12 link-to-section" ng-click="showCepage(prelevement)" ng-class="{ 'list-group-item-success': prelevement.termine, 'list-group-item-danger': (prelevement.erreurs)}">
+                        <a href="" ng-repeat="prelevement in prelevements | orderBy: ['anonymat_degustation']" class="list-group-item col-xs-12 link-to-section" ng-click="showCepage(prelevement)" ng-class="{ 'list-group-item-success': prelevement.termine, 'list-group-item-danger': (prelevement.has_erreurs)}">
                             <div class="col-xs-1">
                                 <strong style="font-size: 32px;">{{ prelevement.anonymat_degustation }}</strong>
                             </div>
@@ -37,16 +38,19 @@
             <div ng-show="!state" class="alert alert-warning col-xs-12" style="margin-top: 10px;">
             Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_degustation", array('sf_subject' => $tournee, 'commission' => $commission)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
             </div>
-            <div ng-show="transmission && !transmission_result" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
+            <div ng-show="transmission && transmission_result == 'error'" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
             La transmission a échoué :-( <small>(vous n'avez peut être pas de connexion internet, veuillez réessayer plus tard)</small>
             </div>
-            <div ng-show="transmission && transmission_result" class="alert alert-success col-xs-12" style="margin-top: 10px;">
+            <div ng-show="transmission && transmission_result == 'success'" class="alert alert-success col-xs-12" style="margin-top: 10px;">
             La transmission a réussi :-)
             </div>
+            <div ng-show="transmission && transmission_result == 'aucune_transmission'" class="alert alert-success col-xs-12" style="margin-top: 10px;">
+            Rien à transmettre
+            </div>
             <div class="row row-margin hidden-print">
-                <div class="col-xs-12">
-                    <a href="" ng-show="!transmission_progress" ng-click="transmettre(false)" class="btn btn-warning btn-lg btn-upper btn-block link-to-section">Transmettre</a>
-                    <small ng-show="transmission_progress">Transmission en cours...</small>
+                <div class="col-xs-12 text-center">
+                    <a href="" ng-show="!transmission_progress" ng-click="transmettre(false)" class="btn btn-warning btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-save"></span>&nbsp;&nbsp;Transmettre</a>
+                    <span class="text-muted-alt" ng-show="transmission_progress">Transmission en cours...</span>
                 </div>
             </div>
         </section>
@@ -65,7 +69,7 @@
                             <div class="col-xs-7 col-md-6 col-lg-7 text-muted-alt lead text-center">Défauts</div>
                         </div>
                         <?php foreach(DegustationClient::getInstance()->getNotesTypeByAppellation($tournee->appellation) as $key_note_type => $note_type_libelle): ?>
-                        <div class="form-group form-group-lg" ng-class="{ 'has-error': prelevement.notes.<?php echo $key_note_type ?>.erreurs }">
+                        <div class="form-group form-group-lg" ng-class="{ 'has-error': prelevement.notes.<?php echo $key_note_type ?>.has_erreurs }">
                             <div class="col-xs-12">
                                 <div class="col-xs-3 col-md-3 col-lg-2 text-right">
                                 <label class="control-label lead"><?php echo $note_type_libelle ?></label>
@@ -79,17 +83,21 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-7 col-md-6 col-lg-7">
-                                    <button ng-click="showAjoutDefaut(prelevement, '<?php echo $key_note_type ?>')" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                    <button ng-class="{ 'btn-danger': prelevement.notes.<?php echo $key_note_type ?>.has_erreurs && prelevement.notes.<?php echo $key_note_type ?>.erreurs['defaut'] }" ng-click="showAjoutDefaut(prelevement, '<?php echo $key_note_type ?>')" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-plus-sign"></span></button>
                                     <div class="btn-group">
-                                    <button class="btn btn-default btn-default-step btn-lg" confirm="Etes vous sûr de vouloir supprimer ce défaut ?" ng-repeat="defaut in prelevement.notes.<?php echo $key_note_type ?>.defauts" ng-click="removeDefaut(prelevement, '<?php echo $key_note_type ?>', defaut)" >{{ defaut }}&nbsp;&nbsp;</button>
+                                        <button class="btn btn-default btn-default-step btn-lg" confirm="Etes vous sûr de vouloir supprimer ce défaut ?" ng-repeat="defaut in prelevement.notes.<?php echo $key_note_type ?>.defauts" ng-click="removeDefaut(prelevement, '<?php echo $key_note_type ?>', defaut)" >{{ defaut }}&nbsp;&nbsp;</button>
                                     </div>
                                 </select>
                                 </div>
                             </div>
+                           
                         </div>
                         <?php endforeach; ?>
-                        <div ng-show="prelevement.erreurs" class="alert alert-danger text-center">
+                        <div ng-show="prelevement.has_erreurs && prelevement.erreurs['requis']" class="alert alert-danger text-center">
                             Vous devez saisir toutes les notes
+                        </div>
+                        <div ng-show="prelevement.has_erreurs && prelevement.erreurs['defaut']" class="alert alert-danger text-center">
+                            Vous devez saisir au moins un défaut pour les notes 0, 1, 2, C ou D
                         </div>
                         <div class="form-group form-group-lg" style="padding-top: 20px;">
                             <label class="col-xs-3 control-label lead text-muted">Appréciations</label>
@@ -107,7 +115,7 @@
                     <a href="" ng-click="precedent()" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Retour</a>
                 </div>
                 <div class="col-xs-6">
-                    <a href="" ng-click="valider(prelevement)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Valider</a>
+                    <a href="" ng-click="valider(prelevement)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Valider et Continuer</a>
                 </div>
             </div>
         </section>

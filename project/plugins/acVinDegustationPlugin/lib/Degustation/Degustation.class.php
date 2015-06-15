@@ -24,37 +24,49 @@ class Degustation extends BaseDegustation {
         $this->date_demande = $prelevement->date;
         $this->lots = array();
 
-        $vtsgn_items = array("vt" => "VT", "sgn" => "SGN");
+        if($this->appellation == "VTSGN") {        
+            $vtsgn_items = array("vt" => "VT", "sgn" => "SGN");
+            foreach($drev->declaration->getProduitsCepage() as $detail) {
+                foreach($vtsgn_items as $vtsgn_key => $vtsgn_libelle) {
+                    if(!$detail->get("volume_revendique_".$vtsgn_key)) {
+                        continue;
+                    }
 
-        foreach($drev->declaration->getProduitsCepage() as $detail) {
-            foreach($vtsgn_items as $vtsgn_key => $vtsgn_libelle) {
-                if(!$detail->get("volume_revendique_".$vtsgn_key)) {
-                    continue;
+                    $lot = $prelevement->lots->add(str_replace("/", "-", $detail->getHash()."-".$vtsgn_key));
+                    $lot->libelle = sprintf("%s %s", $detail->getCepageLibelle(), $vtsgn_libelle);
+                    $lot->add('libelle_produit', sprintf("%s", $detail->getProduitLibelleComplet()));
+                    $lot->hash_produit = $detail->getCepage()->getHash();
+                    $lot->volume_revendique = $detail->get("volume_revendique_".$vtsgn_key);
+                    $lot->nb_hors_vtsgn = 1;
+                    $lot->vtsgn = $vtsgn_libelle;
                 }
-
-                $lot = $prelevement->lots->add(str_replace("/", "-", $detail->getHash()."-".$vtsgn_key));
-                $lot->libelle = sprintf("%s %s", $detail->getCepageLibelle(), $vtsgn_libelle);
-                $lot->add('libelle_produit', sprintf("%s", $detail->getProduitLibelleComplet()));
-                $lot->hash_produit = $detail->getCepage()->getHash();
-                $lot->volume_revendique = $detail->get("volume_revendique_".$vtsgn_key);
-                $lot->nb_hors_vtsgn = 1;
-                $lot->vtsgn = $vtsgn_libelle;
             }
         }
 
         foreach($prelevement->lots as $l_key => $l) {
-            if(!$l->nb_hors_vtsgn) {
-                continue;
+            for($i = 0; $i < $l->nb_hors_vtsgn; $i++) {
+                $lot = $this->lots->add(str_replace("/", "-", $l->hash_produit)."-".$i);
+                $lot->hash_produit = $l->hash_produit;
+                $lot->libelle = $l->libelle;
+                if($l->exist('libelle_produit')) {
+                    $lot->libelle_produit = $l->libelle_produit;
+                }
+                $lot->nb = 1;
+                $lot->vtsgn = $l->vtsgn;
+                $lot->volume_revendique = $l->volume_revendique;
+                $lot->prelevement = 0;
             }
-            $lot = $this->lots->add($l_key);
-            $lot->hash_produit = $l->hash_produit;
-            $lot->libelle = $l->libelle;
-            $lot->libelle_produit = $l->libelle_produit;
-            $lot->nb = $l->nb_hors_vtsgn;
-            $lot->vtsgn = $l->vtsgn;
-            $lot->volume_revendique = $l->volume_revendique;
-            $lot->prelevement = 0;
         }
+    }
+
+    public function getProduits() {
+        $produits = array();
+
+        foreach($this->lots as $lot) {
+            $produits[$lot->key] = $lot->libelle;
+        }
+
+        return $produits;
     }
 
     public function getDrev() {
@@ -140,6 +152,10 @@ class Degustation extends BaseDegustation {
         $hash_to_delete = array();
 
         foreach($this->prelevements as $prelevement) {
+            if($prelevement->motif_non_prelevement == DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
+                $this->add('reports')->add($prelevement->hash_produit);
+            }
+
             if($prelevement->isPreleve()) {
                 continue;
             }

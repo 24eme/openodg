@@ -111,6 +111,7 @@ Degustation:
                   anonymat_prelevement: { type: integer }
                   anonymat_prelevement_complet: { }
                   anonymat_degustation: { type: integer }
+                  motif_non_prelevement: { }
                   cuve: { }
                   preleve: { }
                   commission: { type: integer }
@@ -134,6 +135,16 @@ Degustation:
                                 definition:
                                   fields:
                                     '*': { }
+      reports:
+        type: collection
+        required: false
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
       lots:
         type: collection
         class: DegustationLot

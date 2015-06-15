@@ -16,14 +16,16 @@
 <?php endif; ?>
 
 <div class="row row-margin">
-    <div class="col-xs-4 text-left">
+    <div class="col-xs-2 text-left">
             <a class="btn btn-primary btn-lg btn-upper" href="<?php echo url_for('degustation') ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
-    <div class="col-xs-8 text-right">
+    <div class="col-xs-10 text-right">
         <?php if (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS))): ?>
+            <?php $nbCourrierToSend = count($tournee->getPrelevementsCourrierToSend()); ?>
             <div class="btn-group">
-            <a class="btn btn-default btn-default-step btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Affecter les types courriers</a>
-            <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_generation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Envoyer les courriers</a>
+            <a class="btn btn-default btn-default-step btn-lg" href="<?php echo url_for('degustation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Affecter les types courriers <span class="badge"><?php echo $tournee->countNotTypeCourrier() ?></span></a>
+            <a <?php if(!$nbCourrierToSend): ?>disabled="disabled"<?php endif; ?> onclick="return confirm('Étes vous sûr d\'envoyer les courrier restant ?')" class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_generation_courriers', $tournee); ?>"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Envoyer les courriers <span class="badge"><?php echo $nbCourrierToSend ?></span></a>
+            <a <?php if(!$tournee->hasAllTypeCourrier()): ?>disabled="disabled"<?php endif; ?> onclick="return confirm('/!\\\ Il reste des mails non envoyés ! Étes-vous sur de vouloir cloturer la dégustation ?')" class="btn btn-default btn-default-step btn-lg" href="<?php echo url_for('degustation_cloturer', $tournee) ?>"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Cloturer</span></a>
             </div>
         <?php elseif ($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS && $tournee->isDegustationTerminee()): ?>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_lever_anonymat', $tournee) ?>"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Lever l'anonymat</a>

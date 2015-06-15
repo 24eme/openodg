@@ -44,11 +44,11 @@
                         $placeholder.html(container.group.item.eq(0).html());
                     },
                     onDrop: function($item, container, _super, event) {
-                        if(!$item.prevAll(".operateur").length) {
+                        if(!$item.prevAll(".operateur").length && $item.prevAll('li.hour').length < 1) {
                             $item.remove();
                             $item.insertAfter($('li.hour').eq(0));
                         }
-                        if(!$item.nextAll(".operateur.list-group-item-success").length) {
+                        if(!$item.nextAll(".operateur.list-group-item-success").length && $item.nextAll('li.hour').length < 2) {
                             $item.remove();
                             $item.insertBefore($('li.hour').eq($('li.hour').length - 2));
                         }
@@ -441,7 +441,7 @@
                 ligne.find('button.btn-success').addClass('hidden');
             }
 
-            ligne.find('select option[selected=selected]').removeAttr('selected');
+            ligne.find('select option').removeProp('selected');
 
             if (ligne.attr('data-point')) {
                 $(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', '#e2e2e2');
@@ -467,14 +467,14 @@
     $.tireAuSortCepage = function(select)
     {
         var nb_options = select.find('option').length;
-        select.find('option').eq(Math.floor((Math.random() * nb_options))).attr('selected', 'selected');
+        select.find('option').eq(Math.floor((Math.random() * nb_options))).prop('selected', 'selected');
     }
 
     $.updateRecapCepages = function()
     {
         $('#recap_cepages span.badge').text("0");
         $("#listes_operateurs .list-group-item-item select:visible option:selected").each(function(index, value) {
-            var item = $('#recap_cepages button[data-cepage="' + $(value).val() + '"] .badge');
+            var item = $('#recap_cepages button[data-cepage="' + $(value).val().replace(/-[0-9]+$/, "") + '"] .badge');
             item.html(parseInt(item.html()) + 1);
         });
         $("[data-dynamic-value=nb-lots]").html($("#listes_operateurs .list-group-item-item select option:selected").length);

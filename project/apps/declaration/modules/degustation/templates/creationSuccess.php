@@ -47,7 +47,7 @@
             </div>
             <div class="form-group <?php if($form["nombre_commissions"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["nombre_commissions"]->renderError(); ?>
-                <?php echo $form["nombre_commissions"]->renderLabel("Nombre de commissions", array("class" => "col-xs-6 control-label")); ?>
+                <?php echo $form["nombre_commissions"]->renderLabel("Nombre de commissions estimées", array("class" => "col-xs-6 control-label")); ?>
                 <div class="col-xs-2">
                     <?php echo $form["nombre_commissions"]->render(array("class" => "form-control")); ?>
                 </div>
