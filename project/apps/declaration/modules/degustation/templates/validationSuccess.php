@@ -20,6 +20,18 @@
     </div>
 
     <?php include_partial('degustation/recap', array('tournee' => $tournee)); ?>
+
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="form-group <?php if($form["nombre_commissions"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["nombre_commissions"]->renderError(); ?>
+                <?php echo $form["nombre_commissions"]->renderLabel("Nombre de commissions", array("class" => "col-xs-7 control-label")); ?>
+                <div class="col-xs-5">
+                    <?php echo $form["nombre_commissions"]->render(array("class" => "form-control")); ?>
+                </div>
+            </div>
+        </div>
+    </div>
     
 
 <div class="row row-margin row-button">

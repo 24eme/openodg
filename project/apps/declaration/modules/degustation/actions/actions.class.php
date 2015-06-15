@@ -343,26 +343,31 @@ class degustationActions extends sfActions {
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->validation = new TourneeValidation($this->tournee);
             $this->tournee->cleanOperateurs(false);
+
+            return sfView::SUCCESS;
         }
 
         $this->form = new TourneeValidationForm($this->tournee);
+        $this->form->bind($request->getParameter($this->form->getName()));
         
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {            
-                $this->tournee->validate();
-                $this->tournee->save();
-                $this->tournee->saveDegustations();
+        if (!$this->form->isValid()) {
+            $this->validation = new TourneeValidation($this->tournee);
+            $this->tournee->cleanOperateurs(false);
 
-
-                Email::getInstance()->sendDegustationOperateursMails($this->tournee);
-                Email::getInstance()->sendDegustationDegustateursMails($this->tournee);
-
-                $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
-
-                return $this->redirect('degustation_visualisation', $this->tournee);
-            }
+            return sfView::SUCCESS;
         }
+
+        $this->tournee->validate();
+        $this->tournee->save();
+        $this->tournee->saveDegustations();
+
+
+        Email::getInstance()->sendDegustationOperateursMails($this->tournee);
+        Email::getInstance()->sendDegustationDegustateursMails($this->tournee);
+
+        $this->getUser()->setFlash("notice", "Les emails d'invitations et d'avis de passage ont bien été envoyés");
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -387,28 +392,42 @@ class degustationActions extends sfActions {
         $this->produits = array();
         $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
 
-        foreach($this->tournee->getProduits() as $produit) {
-            if(!$produit->hasVtsgn()) {
-                continue;
-            }
-            $produit_vt = new stdClass();
-            $produit_sgn = new stdClass();
-            $produit_vt->hash_produit = $produit->getHash();
-            $produit_vt->vtsgn = "VT";
-            $produit_vt->trackby = $produit->getHash().$produit_vt->vtsgn;
-            $produit_vt->libelle = $produit->getLibelleLong() . " VT";
-            $produit_vt->libelle_produit = $produit->getParent()->getLibelleComplet();
-            $produit_vt->libelle_complet = $produit_vt->libelle_produit." ".$produit_vt->libelle;
-            $produit_sgn->hash_produit = $produit->getHash();
-            $produit_sgn->vtsgn = "SGN";
-            $produit_sgn->trackby = $produit->getHash().$produit_sgn->vtsgn;
-            $produit_sgn->libelle = $produit->getLibelleLong() . " SGN";
-            $produit_sgn->libelle_produit = $produit->getParent()->getLibelleComplet();
-            $produit_sgn->libelle_complet = $produit_sgn->libelle_produit." ".$produit_sgn->libelle;
+        if($this->tournee->appellation == 'VTSGN') {
+            foreach($this->tournee->getProduits() as $produit) {
+                if(!$produit->hasVtsgn()) {
+                    continue;
+                }
+                $produit_vt = new stdClass();
+                $produit_sgn = new stdClass();
+                $produit_vt->hash_produit = $produit->getHash();
+                $produit_vt->vtsgn = "VT";
+                $produit_vt->trackby = $produit->getHash().$produit_vt->vtsgn;
+                $produit_vt->libelle = $produit->getLibelleLong() . " VT";
+                $produit_vt->libelle_produit = $produit->getParent()->getLibelleComplet();
+                $produit_vt->libelle_complet = $produit_vt->libelle_produit." ".$produit_vt->libelle;
+                $produit_sgn->hash_produit = $produit->getHash();
+                $produit_sgn->vtsgn = "SGN";
+                $produit_sgn->trackby = $produit->getHash().$produit_sgn->vtsgn;
+                $produit_sgn->libelle = $produit->getLibelleLong() . " SGN";
+                $produit_sgn->libelle_produit = $produit->getParent()->getLibelleComplet();
+                $produit_sgn->libelle_complet = $produit_sgn->libelle_produit." ".$produit_sgn->libelle;
 
-            $this->produits[] = $produit_vt;
-            $this->produits[] = $produit_sgn;
+                $this->produits[] = $produit_vt;
+                $this->produits[] = $produit_sgn;
+            }
+        } else {
+            foreach($this->tournee->getProduits() as $p) {
+                $produit = new stdClass();
+                $produit->hash_produit = $p->getHash();
+                $produit->vtsgn = null;
+                $produit->trackby = $p->getHash();
+                $produit->libelle = $p->getLibelleLong();
+                $produit->libelle_produit = null;
+                $produit->libelle_complet = $produit->libelle;
+                $this->produits[] = $produit;
+            }
         }
+
         $this->setLayout('layoutResponsive');
     }
 
