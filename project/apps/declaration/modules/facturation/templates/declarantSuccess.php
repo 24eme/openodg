@@ -54,13 +54,27 @@
                     <span class="col-xs-2">N° <?php echo $facture->numero_ava ?></span>
                     <span class="col-xs-2"><small class="text-muted">Facturé&nbsp;le&nbsp;</small><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></span>
                     <span class="col-xs-2 text-right"><?php echo echoFloat($facture->total_ttc); ?> € TTC</span>
-                    <span class="col-xs-2"><span class="label label-warning">Paiement non reçu</span></span>
-                    <span class="col-xs-4 text-right">
+                    <span class="col-xs-6 text-right">
+                        <?php if($facture->isPaye()): ?>
+
+                        <?php endif; ?>
                         <div class="btn-group">
+                        <?php if(!$facture->isPaye()): ?>
                         <a href="<?php echo url_for("facturation_regenerate", array("id" => $facture->_id)) ?>" onclick='return confirm("Étes vous sûr de vouloir regénérer la facture ?");'  class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Regénerer</a>
-                        <a href="<?php echo url_for("facturation_edition", array("id" => $facture->_id)) ?>"class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Modifier</a>
+                        <?php endif; ?>
+                        <?php if(!$facture->isPaye()): ?>
+                        <a href="<?php echo url_for("facturation_edition", array("id" => $facture->_id)) ?>"class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Modifier</a>
+                        <?php endif; ?>
+                        <?php if(!$facture->isPaye()): ?>
+                        <a href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>"  class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-euro"></span>&nbsp;Paiement</a>
+                        <?php endif; ?>
                         <a href="<?php echo url_for("facturation_pdf", array("id" => $facture->_id)) ?>" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                         </div>
+                    </span>
+                    <span class="col-xs-12">
+                         <span class="label label-success">Paiement reçu le <?php echo $facture->date_paiement; ?></span>
+
+                         <?php echo $facture->reglement_paiement ?>
                     </span>
                 </li>
             <?php endforeach; ?>

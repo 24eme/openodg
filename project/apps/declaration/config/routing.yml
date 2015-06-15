@@ -1024,6 +1024,16 @@ facturation_edition:
   requirements:
     sf_method: [get, post]
 
+facturation_paiement:
+  url: /facturation/paiement/:id
+  param: { module: facturation, action: paiement }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 facturation_regenerate:
   url: /facturation/regenerer/:id
   param: { module: facturation, action: regenerate }

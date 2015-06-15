@@ -80,6 +80,29 @@ class facturationActions extends sfActions
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
+     public function executePaiement(sfWebRequest $request) {
+        $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+        $this->form = new FacturePaiementForm($this->facture);
+
+         if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+            
+        if(!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        $this->getUser()->setFlash("notice", "Les informations de paiement de la facture ont été saisies.");
+        
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+    }
+
+
     public function executeLatex(sfWebRequest $request) {
         
         $this->setLayout(false);
@@ -103,7 +126,7 @@ class facturationActions extends sfActions
 
     public function executeDeclarant(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
-        $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_JSON);
+        $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
         $this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
         $this->form = new FacturationDeclarantForm($this->templatesFactures);
