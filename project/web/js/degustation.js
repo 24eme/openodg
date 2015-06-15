@@ -44,11 +44,11 @@
                         $placeholder.html(container.group.item.eq(0).html());
                     },
                     onDrop: function($item, container, _super, event) {
-                        if(!$item.prevAll(".operateur").length) {
+                        if(!$item.prevAll(".operateur").length && $item.prevAll('li.hour').length < 1) {
                             $item.remove();
                             $item.insertAfter($('li.hour').eq(0));
                         }
-                        if(!$item.nextAll(".operateur.list-group-item-success").length) {
+                        if(!$item.nextAll(".operateur.list-group-item-success").length && $item.nextAll('li.hour').length < 2) {
                             $item.remove();
                             $item.insertBefore($('li.hour').eq($('li.hour').length - 2));
                         }
