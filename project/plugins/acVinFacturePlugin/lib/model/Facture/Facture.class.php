@@ -538,7 +538,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
 		//$this->code_comptable_client = $this->societe->code_comptable_client;
     }
 
-    public function isPaye() {
+    public function isPayee() {
 
         return $this->date_paiement;
     }

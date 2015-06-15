@@ -13,6 +13,14 @@ class FacturePaiementForm extends acCouchdbObjectForm {
         $this->widgetSchema->setNameFormat('facture_paiement[%s]');
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        if($this->getObject()->date_paiement) {
+            $date = new DateTime($this->getObject()->date_paiement);
+            $this->setDefault('date_paiement', $date->format('d/m/Y'));
+        }
+    }
+
     protected function doUpdateObject($values) {
         parent::doUpdateObject($values);
     }

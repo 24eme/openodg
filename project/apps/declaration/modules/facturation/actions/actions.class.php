@@ -60,9 +60,20 @@ class facturationActions extends sfActions
 
     public function executeEdition(sfWebRequest $request) {
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if(!$this->facture) {
+
+            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
+        }
+
         $this->form = new FactureEditionForm($this->facture);
 
-         if (!$request->isMethod(sfWebRequest::POST)) {
+        if($this->facture->isPayee()) {
+
+            throw new sfException(sprintf("La factures %s a déjà été payée", $facture->_id));
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
@@ -82,6 +93,12 @@ class facturationActions extends sfActions
 
      public function executePaiement(sfWebRequest $request) {
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if(!$this->facture) {
+
+            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
+        }
+
         $this->form = new FacturePaiementForm($this->facture);
 
          if (!$request->isMethod(sfWebRequest::POST)) {
@@ -97,7 +114,7 @@ class facturationActions extends sfActions
 
         $this->form->save();
 
-        $this->getUser()->setFlash("notice", "Les informations de paiement de la facture ont été saisies.");
+        $this->getUser()->setFlash("notice", "Le paiement a bien été ajouté");
         
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
@@ -107,7 +124,11 @@ class facturationActions extends sfActions
         
         $this->setLayout(false);
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
-        $this->forward404Unless($this->facture);
+        if(!$this->facture) {
+
+            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
+        }
+        
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
         exit;
@@ -115,6 +136,11 @@ class facturationActions extends sfActions
 
     public function executeRegenerate(sfWebRequest $request) {
         $facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if(!$this->facture) {
+
+            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
+        }
 
         $f = FactureClient::getInstance()->regenerate($facture);
         $f->save();

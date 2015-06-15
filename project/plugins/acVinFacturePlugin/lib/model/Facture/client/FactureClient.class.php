@@ -58,15 +58,16 @@ class FactureClient extends acCouchdbClient {
     }
 
       public function regenerate($facture_or_id) {
-        /*if($facture->isPayee()) {
-
-            throw new sfException(sprintf("La factures %s a déjà été payé", $facture->_id));
-        }*/
 
         $facture = $facture_or_id;
 
         if(is_string($facture)) {
           $facture = $this->find($facture_or_id);
+        }
+
+        if($facture->isPayee()) {
+
+            throw new sfException(sprintf("La factures %s a déjà été payée", $facture->_id));
         }
 
         $cotisations = array();
