@@ -1,4 +1,4 @@
-<?php use_javascript("degustation.js?201505020539", "last") ?>
+<?php use_javascript("degustation.js?201505150308", "last") ?>
 <?php use_helper("Date") ?>
 
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_OPERATEURS)); ?>
