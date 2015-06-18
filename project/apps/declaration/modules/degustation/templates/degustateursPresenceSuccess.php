@@ -15,7 +15,7 @@
                     <?php $degustateur = $tournee->get($key); ?>
                     <div class="list-group-item col-xs-12">
                         <div class="col-xs-7">
-                        <?php echo $degustateur->nom ?> <small><?php echo $degustateur->commune ?></small>
+                        <?php echo $degustateur->nom ?> <small class="text-muted"><?php echo $degustateur->commune ?> <?php if($degustateur->email): ?>(<?php echo $degustateur->email ?>)<?php endif; ?></small> 
                         </div>
                         <div class="col-xs-5 text-right">
                             <div class="btn-group" data-toggle="buttons">

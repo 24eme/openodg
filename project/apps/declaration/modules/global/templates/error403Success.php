@@ -1,5 +1,5 @@
 <div class="page-header no-border">
-    <h2><span class="glyphicon glyphicon-minus-sign"></span>&nbsp;&nbsp;Vous n'avez pas l'autorisation pour accéder à cette page</h2>
+    <h2><span class="glyphicon glyphicon-minus-sign"></span>&nbsp;&nbsp;Vous n'avez pas l'autorisation d'accéder à cette page</h2>
 </div>
 
 <div class="row">
@@ -8,7 +8,7 @@
         Vous n'êtes pas autorisé à accéder à cette page.
         </p>
         <p>
-        Si vous provenez de la plateforme vinsalsace.pro il est possible que votre compte n'est pas encore été créé. Dans ce cas n'hésitez pas à nous contacter.
+        Si vous provenez de la plateforme vinsalsace.pro il est possible que votre compte n'ait pas encore été créé. Dans ce cas n'hésitez pas à nous contacter.
         </p>
     </div>
 </div>

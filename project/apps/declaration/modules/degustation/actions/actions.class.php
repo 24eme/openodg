@@ -62,7 +62,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever');
+        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever') + $this->nb_reports;
 
         return $this->redirect('degustation_operateurs', array('sf_subject' => $this->tournee, 'nb_a_prelever' => $nb_a_prelever));
     }
@@ -340,6 +340,8 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
+        $this->form = new TourneeValidationForm($this->tournee);
+
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->validation = new TourneeValidation($this->tournee);
             $this->tournee->cleanOperateurs(false);
@@ -347,7 +349,7 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->form = new TourneeValidationForm($this->tournee);
+        
         $this->form->bind($request->getParameter($this->form->getName()));
         
         if (!$this->form->isValid()) {
