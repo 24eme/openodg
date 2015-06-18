@@ -9,4 +9,4 @@ if ! test "$CAMPAGNE"; then
     exit;
 fi
 
-php symfony drev:export-csv $(curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous | grep "DREV\-" | grep "\-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//g' | sort | tr "\n" " ")
+php symfony drev:export-csv $(curl -s "http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_all_docs?startkey_docid=DREV-000000000000-0000&endkey_docid=DREV-99999999999-9999" | grep "\-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//g' | sort | tr "\n" " ")

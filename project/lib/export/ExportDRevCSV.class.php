@@ -18,7 +18,7 @@ class ExportDRevCSV {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;CVI Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Produit;Superficie revendiqué;Volume revendiqué;prelevement à partir du;nombre de lots;Adresse du chai;Code postal du Chai;Commune du Chai;Type de déclaration\n";
+        return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Produit;Superficie revendiqué;Volume revendiqué;prelevement à partir du;nombre de lots;Adresse du chai;Code postal du Chai;Commune du Chai;Type de déclaration\n";
     }
 
     public function __construct($drev, $header = true) {
@@ -43,7 +43,7 @@ class ExportDRevCSV {
             $mode = 'AUTOMATIQUE';
         }
 
-        $ligne_base = sprintf("%s;%s;%s;%s;%s;%s;%s", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->raison_sociale, $this->drev->declarant->adresse, $this->drev->declarant->code_postal, $this->drev->declarant->commune, $this->drev->declarant->email);
+        $ligne_base = sprintf("%s;\"%s\";\"%s\";%s;%s;\"%s\";%s;%s", $this->drev->campagne, $this->drev->declarant->cvi, $this->drev->declarant->siret, $this->drev->declarant->raison_sociale, $this->drev->declarant->adresse, $this->drev->declarant->code_postal, $this->drev->declarant->commune, $this->drev->declarant->email);
 
         foreach($this->drev->declaration->getProduits() as $produit) {
             $libelle_complet = $produit->getLibelleComplet();
