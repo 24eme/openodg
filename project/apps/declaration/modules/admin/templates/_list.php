@@ -25,6 +25,9 @@
             <?php endif; ?>
             </a></li>
     <?php endforeach; ?>
+    <li class="pull-right">
+        <a href="<?php echo url_for('admin_export', array("docs" => $current_key_list, 'doc_statut' => $statut)) ?>"><span class="glyphicon glyphicon-export"></span> Exporter la liste courante en CSV</a>
+    </li>
 </ul>
 
 <div class="row" style="margin-top: 20px;">

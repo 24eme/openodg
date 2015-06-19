@@ -35,6 +35,10 @@ admin_doc:
   url: /admin/doc
   param: { module: admin, action: doc }
 
+admin_export:
+  url: /admin/export
+  param: { module: admin, action: export }
+
 drev_index:
   url: /drev
   param: { module: drev, action: index }
