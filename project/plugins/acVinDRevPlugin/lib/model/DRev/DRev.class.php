@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDeclarantDocument {
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -103,6 +103,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function isAutomatique() { 
         
         return $this->exist('automatique') && $this->get('automatique');
+    }
+
+    public function getValidation() {
+
+        return $this->_get('validation');
+    }
+
+    public function getValidationOdg() {
+
+        return $this->_get('validation_odg');
     }
 
     public function hasDR() {
