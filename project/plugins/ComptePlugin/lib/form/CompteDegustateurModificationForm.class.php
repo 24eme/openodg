@@ -42,7 +42,7 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
         $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));
 
-        
+        $this->embedForm('formations', new CompteFormationsForm($this->getObject()->formations));
     }
 
     private function getSyndicats() {

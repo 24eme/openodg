@@ -218,6 +218,24 @@ EOF;
         $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_LIEUDIT, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
         $this->setNoAccesForCepageByAppellation($configurationJson->declaration->certification->genre->appellation_CREMANT, 'cepage_ED', _ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE);
 
+        $vtsgn = new stdClass();
+        $vtsgn->libelle = 'VT / SGN';
+        $vtsgn->no_acces = new stdClass(); 
+        $vtsgn->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        $vtsgn->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
+        $vtsgn->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        $vtsgn->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        $configurationJson->declaration->certification->genre->appellation_VTSGN = $vtsgn;
+
+        $magw = new stdClass();
+        $magw->libelle = 'Marc de Gewurztraminer';
+        $magw->no_acces = new stdClass();
+        $magw->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION} = 1;
+        $magw->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE} = 1;
+        $magw->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        $magw->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE} = 1;
+        $configurationJson->declaration->certification->genre->appellation_MARC = $magw;
+
         if($configurationJson->campagne >= "2015") {
             $lieu02 = $configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu02->couleur;
 
