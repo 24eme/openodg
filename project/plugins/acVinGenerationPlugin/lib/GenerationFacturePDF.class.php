@@ -126,4 +126,8 @@ class GenerationFacturePDF extends GenerationPDF {
       return "Factures";
     }
 
+    public static function isRegenerable() {
+
+        return true;
+    }
 }

@@ -34,6 +34,7 @@ EOF;
                     ->startkey(array('DRev', '2014', array()))
                     ->endkey(array('DRev', '2014'))
                     ->descending(true)
+                    ->reduce(false)
                     ->getView('declaration', 'tous')->rows;
 
         foreach($this->rows as $row) {

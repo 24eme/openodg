@@ -37,6 +37,7 @@ class adminComponents extends sfComponents {
                     ->startkey(array($type, $campagne, array()))
                     ->endkey(array($type, $campagne))
                     ->descending(true)
+                    ->reduce(false)
                     ->getView('declaration', 'tous')->rows;
 
         $lists = array("type" => $type,

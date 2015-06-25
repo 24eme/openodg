@@ -1079,6 +1079,20 @@ generation_regenerate:
   requirements:
     sf_method: [get]
 
+#Export
+
+export:
+  url: /export
+  param: { module: export, action: index }
+  requirements:
+    sf_method: [get, post]
+
+export_generation:
+  url: /export/generation/:id
+  param: { module: export, action: generation }
+  requirements:
+    sf_method: [get]
+
 #Défaut
 
 default_index:

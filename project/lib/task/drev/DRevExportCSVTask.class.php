@@ -18,7 +18,7 @@ class DRevExportCsvTask extends sfBaseTask
 
         $this->namespace = 'drev';
         $this->name = 'export-csv';
-        $this->briefDescription = "Export CSV d'un DRev";
+        $this->briefDescription = "Export CSV d'une DRev";
         $this->detailedDescription = <<<EOF
 EOF;
     }

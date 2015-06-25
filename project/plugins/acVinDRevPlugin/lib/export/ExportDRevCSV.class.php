@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class ExportDRevCSV {
+class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     protected $drev = null;
     protected $header = false;

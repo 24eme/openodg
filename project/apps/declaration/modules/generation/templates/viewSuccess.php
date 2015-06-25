@@ -2,11 +2,13 @@
 <?php use_helper("Date"); ?>
 <?php use_helper("Float"); ?>
 
-<?php include_partial('admin/menu', array('active' => 'facturation')); ?>
+<?php if($menuActive): ?>
+<?php include_partial('admin/menu', array('active' => $menuActive)); ?>
+<?php endif; ?>
 
 <div class="page-header no-border">
     <div class="btn-group pull-right">
-        <?php if($generation->statut == GenerationClient::GENERATION_STATUT_GENERE): ?>
+        <?php if($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && GenerationClient::getInstance()->isRegenerable($generation)): ?>
         <a href="<?php echo url_for('generation_regenerate', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>" onclick='return confirm("Étes vous sûr de vouloir regénérer les factures ?");' class="btn btn-sm btn-default btn-default-step btn-upper"><span class="glyphicon glyphicon-repeat"></span>&nbsp;&nbsp;Regénérer</a>
         <?php endif; ?>
     </div>
@@ -28,8 +30,8 @@
 <?php endif; ?>
 
 <p class="text-center lead">
-    <?php echo $generation->nb_documents; ?> <?php echo strtolower($type); ?><?php if($generation->nb_documents > 1): ?>s<?php endif; ?>
-    <small class="text-muted">(<?php echo echoFloat($generation->somme) ?> €)</small>
+    <?php echo $generation->nb_documents; ?> document<?php if($generation->nb_documents > 1): ?>s<?php endif; ?>
+    <?php if($generation->somme): ?><small class="text-muted">(<?php echo echoFloat($generation->somme) ?> €)</small><?php endif; ?>
 </p>
 
 <p class="text-center lead">
@@ -58,13 +60,19 @@
 
 <div class="row row-margin">
     <div class="col-xs-4 text-left">
-        <a class="btn btn-default btn-default-step btn-lg btn-upper" href="<?php echo url_for('facturation') ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <?php if($backUrl): ?>
+        <a class="btn btn-default btn-default-step btn-lg btn-upper" href="<?php echo $backUrl ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <?php endif; ?>
     </div>
     <?php if(in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_ENERREUR, GenerationClient::GENERATION_STATUT_GENERE)) && $generation->message): ?>
     <div class="col-xs-4 text-center">
         <a class="btn btn-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?> btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
     </div>
-    <?php elseif(in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_ENERREUR, GenerationClient::GENERATION_STATUT_GENERE)) && !$generation->message): ?>
+    <?php elseif(in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_ENERREUR)) && !$generation->message): ?>
+    <div class="col-xs-4 text-center">
+        <a class="btn btn-btn-default btn-default-step btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
+    </div>
+    <?php elseif(GenerationClient::getInstance()->isRegenerable($generation) && in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_GENERE)) && !$generation->message): ?>
     <div class="col-xs-4 text-center">
         <a class="btn btn-btn-default btn-default-step btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
     </div>    
