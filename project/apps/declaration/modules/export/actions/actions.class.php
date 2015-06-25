@@ -13,8 +13,10 @@ class exportActions extends sfActions {
             $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_CSV;
             $generation->libelle = sprintf("Export CSV %s %s", ucfirst(strtolower($typeCampagne->type)), $typeCampagne->campagne);
             $generation->arguments = array("campagne" => $typeCampagne->campagne, "type_document" => $typeCampagne->type);
-            $generations[$generation->type.$generation->libelle.implode($generation->arguments->toArray(true, false))] = $generation;
+            $generations[$typeCampagne->campagne."_".$generation->type."_".implode($generation->arguments->toArray(true, false), "_")] = $generation;
         }
+
+        krsort($generations);
 
         $this->form = new ExportGenerationForm($generations);
 

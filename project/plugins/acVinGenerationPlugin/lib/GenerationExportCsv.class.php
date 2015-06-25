@@ -26,8 +26,10 @@ class GenerationExportCsv extends GenerationAbstract
         $file = sfConfig::get('sf_web_dir').$webfile;
 
         $handle = fopen($file, 'w');
+
+        $className = DeclarationClient::getInstance()->getExportCsvClassName($this->generation->arguments->type_document);
           
-        fwrite($handle, ExportDRevCSV::getHeaderCsv());
+        fwrite($handle, $className::getHeaderCsv());
 
         $batch_size = 500;
 

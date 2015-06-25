@@ -18,7 +18,7 @@ class ExportDRevMarcCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Produit;Superficie revendiqué;Volume revendiqué;prelevement à partir du;nombre de lots;Adresse du chai;Code postal du Chai;Commune du Chai;Type de déclaration\n";
+        return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Début Distillation;Fin Distillation;Quantité de Marc (kg);Volume total obtenu (hl);Titre alcoométrique volumique (Degré);Type de déclaration\n";
     }
 
     public function __construct($drevmarc, $header = true) {
@@ -38,6 +38,8 @@ class ExportDRevMarcCSV implements InterfaceDeclarationExportCsv {
         }
 
         $mode = ($this->drevmarc->isPapier()) ? 'PAPIER' : 'TELEDECLARATION';
+
+        $csv .= sprintf("%s;\"%s\";\"%s\";%s;%s;\"%s\";%s;%s;%s;%s;%s;%s;%s;%s\n", $this->drevmarc->campagne, $this->drevmarc->declarant->cvi, $this->drevmarc->declarant->siret, $this->drevmarc->declarant->raison_sociale, $this->drevmarc->declarant->adresse, $this->drevmarc->declarant->code_postal, $this->drevmarc->declarant->commune, $this->drevmarc->declarant->email, $this->drevmarc->debut_distillation, $this->drevmarc->fin_distillation, $this->formatFloat($this->drevmarc->qte_marc), $this->formatFloat($this->drevmarc->volume_obtenu), $this->formatFloat($this->drevmarc->titre_alcool_vol), $mode);
 
         return $csv;
     }
