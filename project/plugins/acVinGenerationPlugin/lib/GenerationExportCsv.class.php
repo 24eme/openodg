@@ -46,7 +46,6 @@ class GenerationExportCsv extends GenerationAbstract
                 throw new sfException(sprintf("Document %s introuvable", $id));
             }
 
-
             if($validation && !$doc->validation) {               
                 continue;
             }
