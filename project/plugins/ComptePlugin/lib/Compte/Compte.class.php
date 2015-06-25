@@ -212,8 +212,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     }
 
     public function addInfoProduit($produit_hash) {
-        $allProduits = ConfigurationClient::getConfiguration()->getProduits();
-        $libelle_complet = $allProduits[str_replace('-', '/', $produit_hash)]->getLibelleComplet();
+        $libelle_complet = ConfigurationClient::getConfiguration()->get(str_replace('-', '/', $produit_hash))->getLibelleComplet();
         $this->updateInfosTags('produits', $produit_hash, $libelle_complet);
     }
     

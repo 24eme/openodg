@@ -188,12 +188,18 @@ EOF;
          * Identification des produits (niveau couleur) pour les lots
          */
         @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_ALSACEBLANC->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION} = 1;
         @$configurationJson->declaration->certification->genre->appellation_PINOTNOIR->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIR->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION} = 1;
         @$configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_PINOTNOIRROUGE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION} = 1;
         @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_COMMUNALE->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION} = 1;
         @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_LIEUDIT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION} = 1;
         @$configurationJson->declaration->certification->genre->appellation_CREMANT->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
         @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS} = 1;
+        @$configurationJson->declaration->certification->genre->appellation_GRDCRU->mention->lieu->no_acces->{_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION} = 1;
 
         /* Ajout de cépage pour le parcellaire */
         $this->addCepageForParcellaire($configurationJson->declaration->certification->genre->appellation_CREMANT->mention->lieu->couleur, "cepage_PNRaisin", "Pinot noir");

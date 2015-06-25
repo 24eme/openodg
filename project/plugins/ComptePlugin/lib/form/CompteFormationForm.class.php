@@ -41,7 +41,7 @@ class CompteFormationForm extends acCouchdbObjectForm {
     protected function getAllProduits() {
         $produits = array("" => "");
 
-        foreach (ConfigurationClient::getConfiguration()->declaration->getNoeudAppellations() as $hash => $produit) {
+        foreach (ConfigurationClient::getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION, 'ConfigurationAppellation') as $hash => $produit) {
             $produits[$produit->getHash()] = $produit->getLibelleComplet();
         }
 
