@@ -11,7 +11,7 @@ class exportActions extends sfActions {
         foreach(DeclarationClient::getInstance()->getTypesAndCampagne() as $typeCampagne) {
             $generation = new Generation();
             $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_CSV;
-            $generation->libelle = sprintf("Export CSV %s %s", ucfirst(strtolower($typeCampagne->type)), $typeCampagne->campagne);
+            $generation->libelle = sprintf("Export CSV %s %s", $typeCampagne->type, $typeCampagne->campagne);
             $generation->arguments = array("campagne" => $typeCampagne->campagne, "type_document" => $typeCampagne->type);
             $generations[$typeCampagne->campagne."_".$generation->type."_".implode($generation->arguments->toArray(true, false), "_")] = $generation;
         }

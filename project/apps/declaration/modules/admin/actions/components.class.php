@@ -67,22 +67,27 @@ class adminComponents extends sfComponents {
         }
 
         foreach($documents as $document) {
-            if($document->key[2] && $document->key[7]) {
+            if($document->key[DeclarationTousView::KEY_AUTOMATIQUE] && $document->key[DeclarationTousView::KEY_AUTOMATIQUE]) {
+                
+                continue;
+            }
+
+            if($document->key[DeclarationTousView::KEY_VALIDATION] && $document->key[DeclarationTousView::KEY_PAPIER]) {
                 $lists["stats"]["global"]["nb_papiers"] += 1;
             }
 
-            if($document->key[2] && !$document->key[7]) {
+            if($document->key[DeclarationTousView::KEY_VALIDATION] && !$document->key[DeclarationTousView::KEY_PAPIER]) {
                 $lists["stats"]["global"]["nb_teledeclares"] += 1;
             }
 
-            if ($document->key[2] && !$document->key[3] && !$document->key[6]) {
+            if ($document->key[DeclarationTousView::KEY_VALIDATION] && !$document->key[DeclarationTousView::KEY_VALIDATION_ODG] && !$document->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]) {
                 $lists["stats"]["global"]["nb_can_be_validate"] += 1;
             }
 
-            if($document->key[3]) {
+            if($document->key[DeclarationTousView::KEY_VALIDATION_ODG]) {
                 $lists["statuts"]["valide"][] = $document;
                 
-                if($document->key[7]) {
+                if($document->key[DeclarationTousView::KEY_PAPIER]) {
                     $lists["stats"]["valide"]["nb_papiers"] += 1;
                 } else {
                     $lists["stats"]["valide"]["nb_teledeclares"] += 1;
@@ -91,16 +96,16 @@ class adminComponents extends sfComponents {
                 continue;
             }
 
-            if($document->key[2]) {
+            if($document->key[DeclarationTousView::KEY_VALIDATION]) {
                 $lists["statuts"]["a_valider"][] = $document;
 
-                if($document->key[7]) {
+                if($document->key[DeclarationTousView::KEY_PAPIER]) {
                     $lists["stats"]["a_valider"]["nb_papiers"] += 1;
                 } else {
                     $lists["stats"]["a_valider"]["nb_teledeclares"] += 1;
                 }
 
-                if(!$document->key[6]) {
+                if(!$document->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]) {
                     $lists["stats"]["a_valider"]["nb_can_be_validate"] += 1;
                 }
 
@@ -109,7 +114,7 @@ class adminComponents extends sfComponents {
             
             $lists["statuts"]["brouillon"][] = $document;
 
-            if($document->key[7]) {
+            if($document->key[DeclarationTousView::KEY_PAPIER]) {
                     $lists["stats"]["brouillon"]["nb_papiers"] += 1;
             } else {
                     $lists["stats"]["brouillon"]["nb_teledeclares"] += 1;
