@@ -5,10 +5,6 @@ function(doc) {
         return;
     }
 
-    if(doc.automatique) {
-        return;
-    }
-
     var nb_doc_en_attente = 0;
     
     if(doc.documents) {
@@ -25,5 +21,11 @@ function(doc) {
         papier = 1;
     }
 
-    emit([doc.type, doc.campagne, doc.validation, doc.validation_odg, doc.etape, doc.identifiant, nb_doc_en_attente, papier, doc.declarant.nom, doc.declarant.email], 1);
+    var automatique = 0;
+
+    if(doc.automatique) {
+        automatique = 1;
+    }
+
+    emit([doc.type, doc.campagne, doc.validation, doc.validation_odg, doc.etape, doc.identifiant, nb_doc_en_attente, papier, automatique, doc.declarant.raison_sociale, doc.declarant.commune, doc.declarant.email], 1);
 }
