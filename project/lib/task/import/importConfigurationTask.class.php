@@ -257,6 +257,12 @@ EOF;
         
         $this->getConfigurationCommunes($configurationJson);
 
+        $factures = new stdClass();
+        $factures->AOC = "TEMPLATE-FACTURE-AOC-2014";
+        $factures->ABONNEMENT = "TEMPLATE-FACTURE-ABONNEMENT-20150101-20151231";
+
+        $configurationJson->factures = $factures; 
+
         if ($options['import'] == 'couchdb') {
 
             if ($doc = acCouchdbManager::getClient()->find($configurationJson->_id, acCouchdbClient::HYDRATE_JSON)) {

@@ -251,7 +251,7 @@
                         <li class="list-group-item text-center">
                             <span class="badge"><?php echo $annee ?></span>
                             <?php foreach($formations as $formation): ?>
-                            <span class="label label-info"><?php echo $formation->produit_libelle ?> <span class="label label-primary"><?php echo $formation->heures ?> h</span></span>
+                            <span class="label label-info"><?php echo $formation->produit_libelle ?>&nbsp;&nbsp;<span class="label label-primary"><?php echo $formation->heures ?> h</span></span>
                             <?php endforeach; ?>
                         </li>
                         <?php endforeach; ?>
