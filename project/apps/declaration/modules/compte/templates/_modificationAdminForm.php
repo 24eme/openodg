@@ -245,4 +245,40 @@
             </div>
         </div>
     <?php endif; ?>
+    <?php if (isset($form['formations'])): ?>
+        <div class="row">
+            <div class="col-xs-12" >        
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3>Formations</h3>
+                    </div>
+                    <div class="panel-body">
+                            <?php foreach ($form['formations'] as $key => $formFormation): ?>
+                                <div class="row">
+                                    <div class="col-xs-6 form-group" >
+                                        <?php echo $formFormation['produit_hash']->renderError() ?>
+                                        <div class="col-xs-12" >
+                                        <?php echo $formFormation['produit_hash']->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Sélectionner votre produit")); ?>
+                                        </div>
+                                    </div> 
+                                    <div class="col-xs-3 form-group" >
+                                        <?php echo $formFormation['annee']->renderError() ?>
+                                        <div class="col-xs-12" >
+                                        <?php echo $formFormation['annee']->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Sélectionner l'année de formation")); ?>
+                                        </div>
+                                    </div> 
+                                    <div class="col-xs-3 form-group" >
+                                        <?php echo $formFormation['heures']->renderError() ?>
+                                        <div class="col-xs-12" >
+                                        <?php echo $formFormation['heures']->render(array("class" => "form-control",  "placeholder" => "Nombre d'heures")); ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>

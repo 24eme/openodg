@@ -1,8 +1,7 @@
-<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement)->isAuthorized(EtablissementSecurity::DECLARANT_DREV)): ?>
+<?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin())): ?>
     <?php return; ?>
 <?php endif; ?>
 <div class="col-xs-4">
-    <?php if ($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)): ?>
         <?php if (!$drev_non_ouverte): ?>
             <div class="block_declaration panel <?php if ($drev && $drev->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
                 <div class="panel-heading">
@@ -16,7 +15,7 @@
                         <p>
                             <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('drev_visualisation', $drev) ?>">Visualiser</a>
                         </p>
-                        <?php if ($sf_user->isAdmin() && $drev->isNonFactures()): ?>
+                        <?php if (DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
                             <p>
                                 <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
                             </p>
@@ -54,6 +53,4 @@
     <?php else: ?>
         <?php include_partial('drevNonOuvert', array('date_ouverture_drev' => $date_ouverture_drev)); ?>
     <?php endif; ?>
-
-<?php endif; ?>
 </div>

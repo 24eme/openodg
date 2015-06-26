@@ -14,6 +14,15 @@ class generationActions extends sfActions {
   
   public function executeView(sfWebRequest $request) {
       $this->generation = $this->getGenerationFromRequest($request);
+      if($this->generation->type_document == GenerationClient::TYPE_DOCUMENT_FACTURES) {
+          $this->menuActive = 'facturation';
+          $this->backUrl = $this->generateUrl('facturation');
+      }
+
+      if($this->generation->type_document == GenerationClient::TYPE_DOCUMENT_EXPORT_CSV) {
+          $this->menuActive = 'export';
+          $this->backUrl = $this->generateUrl('export');
+      }
   }
   
   public function executeList(sfWebRequest $request) {

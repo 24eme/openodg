@@ -25,6 +25,9 @@
             <?php endif; ?>
             </a></li>
     <?php endforeach; ?>
+    <li class="pull-right">
+        <a href="<?php echo url_for('admin_export', array("docs" => $current_key_list, 'doc_statut' => $statut)) ?>"><span class="glyphicon glyphicon-export"></span> Exporter la liste courante en CSV</a>
+    </li>
 </ul>
 
 <div class="row" style="margin-top: 20px;">
@@ -32,23 +35,23 @@
         <?php if (count($lists[$current_key_list]['statuts'][$statut]) > 0): ?>
             <div class="list-group">
                 <?php foreach ($lists[$current_key_list]['statuts'][$statut] as $doc): ?>
-                            <a class="list-group-item col-xs-12 <?php if ($doc->key[2] && !$doc->key[3] && !$doc->key[6]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("docs" => $key_list, 'doc_statut' => $statut)))) ?>">
+                            <a class="list-group-item col-xs-12 <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && !$doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("docs" => $key_list, 'doc_statut' => $statut)))) ?>">
                             <span class="col-xs-2 text-muted">
-                                <?php if ($doc->key[2]): ?>
-                                    <?php echo format_date($doc->key[2], "dd/MM/yyyy", "fr_FR"); ?><br />
+                                <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION]): ?>
+                                    <?php echo format_date($doc->key[DeclarationTousView::KEY_VALIDATION], "dd/MM/yyyy", "fr_FR"); ?><br />
                                 <?php endif; ?>
                             </span>
-                            <span class="col-xs-6"><?php if($doc->key[7]): ?>
+                            <span class="col-xs-6"><?php if($doc->key[DeclarationTousView::KEY_PAPIER]): ?>
                                     <span class="glyphicon glyphicon-file"></span>
-                                <?php endif; ?><?php echo $doc->key[8] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span></span>
-                            <?php if ($doc->key[2] && !$doc->key[3] && $doc->key[6]): ?>
-                                <span class="text-warning col-xs-4 text-right"><?php echo $doc->key[6] ?>&nbsp;pièce(s) en attente</span>
+                                <?php endif; ?><?php echo $doc->key[DeclarationTousView::KEY_RAISON_SOCIALE] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span></span>
+                            <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?>
+                                <span class="text-warning col-xs-4 text-right"><?php echo $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE] ?>&nbsp;pièce(s) en attente</span>
                             <?php endif; ?>
-                            <?php if ($doc->key[3]): ?>
-                                <span class="text-success col-xs-4 text-right">Validé le <?php echo  format_date($doc->key[3], "dd/MM/yyyy", "fr_FR"); ?></span>
+                            <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION_ODG]): ?>
+                                <span class="text-success col-xs-4 text-right">Validé le <?php echo  format_date($doc->key[DeclarationTousView::KEY_VALIDATION_ODG], "dd/MM/yyyy", "fr_FR"); ?></span>
                             <?php endif; ?>
-                            <?php if (!$doc->key[2]): ?>
-                                <span class="text-warning col-xs-4 text-right">Étape <?php echo $doc->key[4] ?></span>
+                            <?php if (!$doc->key[DeclarationTousView::KEY_VALIDATION]): ?>
+                                <span class="text-warning col-xs-4 text-right">Étape <?php echo $doc->key[DeclarationTousView::KEY_ETAPE] ?></span>
                             <?php endif; ?>
                         </a>
                     <?php endforeach; ?>

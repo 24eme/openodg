@@ -4,7 +4,7 @@
  * Model for Parcellaire
  *
  */
-class Parcellaire extends BaseParcellaire {
+class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
 
     protected $declarant_document = null;
 
@@ -53,8 +53,24 @@ class Parcellaire extends BaseParcellaire {
         return true;
     }
 
-    public function isPapier() {
+    public function isPapier() { 
+        
         return $this->exist('papier') && $this->get('papier');
+    }
+
+    public function isAutomatique() { 
+        
+        return $this->exist('automatique') && $this->get('automatique');
+    }
+
+    public function getValidation() {
+
+        return $this->_get('validation');
+    }
+
+    public function getValidationOdg() {
+
+        return $this->_get('validation_odg');
     }
 
     public function hasVendeurs() {

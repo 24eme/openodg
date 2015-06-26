@@ -1,6 +1,6 @@
 <?php
 
-class GenerationPDF {
+class GenerationPDF extends GenerationAbstract {
 
     protected $generation = null;
   protected $config = null;
@@ -162,6 +162,11 @@ class GenerationPDF {
     }
     $this->cleanFiles($pages);
     $this->generation->save();
+  }
+
+  public function generate() {
+
+      $this->generatePDF();
   }
 
   protected function getDocumentName() {

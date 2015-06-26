@@ -35,6 +35,10 @@ admin_doc:
   url: /admin/doc
   param: { module: admin, action: doc }
 
+admin_export:
+  url: /admin/export
+  param: { module: admin, action: export }
+
 drev_index:
   url: /drev
   param: { module: drev, action: index }
@@ -1072,6 +1076,20 @@ generation_delete:
 generation_regenerate:
   url: /generation/:type_document/:date_emission/regenerer
   param: { module: generation, action: regenerate }
+  requirements:
+    sf_method: [get]
+
+#Export
+
+export:
+  url: /export
+  param: { module: export, action: index }
+  requirements:
+    sf_method: [get, post]
+
+export_generation:
+  url: /export/generation/:id
+  param: { module: export, action: generation }
   requirements:
     sf_method: [get]
 

@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class ExportParcellaireCSV {
+class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
     protected $parcellaire = null;
     protected $header = false;

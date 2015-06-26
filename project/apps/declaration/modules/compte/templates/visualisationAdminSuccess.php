@@ -239,6 +239,26 @@
         </div>  
     <?php endif; ?>
 
+    <?php if(count($compte->formations)): ?>
+    <div class="row">
+            <div class="col-xs-12">
+                <div class="panel  panel-primary">
+                    <div class="panel-heading">
+                        <h3>Formations</h3>
+                    </div>
+                    <ul class="list-group">
+                        <?php foreach($compte->formations as $formation): ?>
+                        <li class="list-group-item text-center">
+                            <span class="badge"><?php echo $formation->heures ?> h</span> <?php echo $formation->produit_libelle ?> <?php echo $formation->annee ?> 
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+            </div>
+        </div>
+    </div>  
+    <?php endif; ?>
+
+    <?php if(count($abonnements)): ?>
     <div class="row">
             <div class="col-xs-12">
                 <div class="panel  panel-primary">
@@ -246,16 +266,17 @@
                         <h3>Abonnement à la revue</h3>
                     </div>
                     <ul class="list-group">
-                        <li class="list-group-item text-center">
                         <?php foreach($abonnements as $abonnement): ?>
+                        <li class="list-group-item text-center">
                             Du <?php echo format_date($abonnement->date_debut, "dd/MM/yyyy", "fr_FR"); ?>
                             au <?php echo format_date($abonnement->date_fin, "dd/MM/yyyy", "fr_FR"); ?> avec un tarif  <?php echo $abonnement->tarif; ?>
-                        <?php endforeach; ?>
                         </li>
+                        <?php endforeach; ?>
                     </ul>
             </div>
         </div>
-    </div>  
+    </div>
+    <?php endif; ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">

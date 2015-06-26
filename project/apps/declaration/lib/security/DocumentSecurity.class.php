@@ -36,6 +36,11 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
+        if(in_array(self::EDITION, $droits) && $this->doc->isAutomatique() && !$this->user->isAdmin()) {
+
+            return false;
+        }
+
         if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->user->isAdmin()) {
 
             return false;
@@ -47,6 +52,11 @@ abstract class DocumentSecurity implements SecurityInterface {
         }
 
         if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin()) {
+
+            return false;
+        }
+
+        if(in_array(self::DEVALIDATION, $droits) && $this->doc instanceof InterfaceMouvementDocument && !$this->doc->isNonFactures()) {
 
             return false;
         }

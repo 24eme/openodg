@@ -1,12 +1,12 @@
 <?php
 
-class DRevExportCsvTask extends sfBaseTask
+class DeclarationExportCsvTask extends sfBaseTask
 {
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('docs_id', sfCommandArgument::IS_ARRAY, "Documents id"),
+            new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, "Document id"),
         ));
 
         $this->addOptions(array(
@@ -16,9 +16,9 @@ class DRevExportCsvTask extends sfBaseTask
             new sfCommandOption('header', null, sfCommandOption::PARAMETER_REQUIRED, 'Add header in CSV', true),
         ));
 
-        $this->namespace = 'drev';
+        $this->namespace = 'declaration';
         $this->name = 'export-csv';
-        $this->briefDescription = "Export CSV d'un DRev";
+        $this->briefDescription = "Export CSV d'une declaration";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -29,27 +29,20 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        if($options["header"]) {
-            echo ExportDRevCSV::getHeaderCsv();
-        }
+        $doc = DeclarationClient::getInstance()->find($arguments['doc_id']);
 
-        foreach($arguments['docs_id'] as $doc_id) {
-            $drev = DRevClient::getInstance()->find($doc_id);
-            
-            if(!$drev) {
+        if(!$doc) {
                 
-                continue;
-            }
-
-            if(!$drev->validation) {
-
-                continue;
-            }
-
-
-            $export = new ExportDRevCSV($drev, false);
-         
-            echo $export->export();
+            throw new sfExceptiont(sprintf("Document %s introuvable", $arguments['doc_id']));
         }
+
+        if($options["header"]) {
+            $className = DeclarationClient::getInstance()->getExportCsvClassName($doc->type);
+            echo $className::getHeaderCsv();
+        }
+
+        $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
+         
+        echo $export->export();
     }
 }

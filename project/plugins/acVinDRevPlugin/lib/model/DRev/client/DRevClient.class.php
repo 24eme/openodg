@@ -64,6 +64,24 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         return $drev;
     }
+
+    public function getIds($campagne) {
+        $ids = $this->startkey_docid(sprintf("DREV-%s-%s", "0000000000", "0000"))
+                    ->endkey_docid(sprintf("DREV-%s-%s", "9999999999", "9999"))
+                    ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+
+        $ids_campagne = array();
+
+        foreach($ids as $id) {
+            if(strpos($id, "-".$campagne) !== false) {
+                $ids_campagne[] = $id;
+            }
+        }
+
+        sort($ids_campagne);
+
+        return $ids_campagne;
+    }
     
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";

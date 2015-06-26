@@ -137,7 +137,7 @@ class facturationActions extends sfActions
     public function executeRegenerate(sfWebRequest $request) {
         $facture = FactureClient::getInstance()->find($request->getParameter('id'));
 
-        if(!$this->facture) {
+        if(!$facture) {
 
             return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
         }
