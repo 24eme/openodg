@@ -359,6 +359,21 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     	return CompteClient::REGION_VITICOLE;
     }
 
+    public function getFormationsByAnnee() {
+        $formations = array();
+
+        foreach($this->formations as $formation) {
+            if(!isset($formations[$formation->annee])) {
+                $formations[$formation->annee] = array();
+            }
+            $formations[$formation->annee][] = $formation;
+        }
+
+        krsort($formations);
+
+        return $formations;
+    }
+
     public function getSyndicatsViticole() {
     	$result = array();
     	if ($syndicats = $this->infos->syndicats) {

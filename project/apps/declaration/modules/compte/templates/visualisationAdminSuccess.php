@@ -247,9 +247,12 @@
                         <h3>Formations</h3>
                     </div>
                     <ul class="list-group">
-                        <?php foreach($compte->formations as $formation): ?>
+                        <?php foreach($compte->getFormationsByAnnee() as $annee => $formations): ?>
                         <li class="list-group-item text-center">
-                            <span class="badge"><?php echo $formation->heures ?> h</span> <?php echo $formation->produit_libelle ?> <?php echo $formation->annee ?> 
+                            <span class="badge"><?php echo $annee ?></span>
+                            <?php foreach($formations as $formation): ?>
+                            <span class="label label-info"><?php echo $formation->produit_libelle ?> <span class="label label-primary"><?php echo $formation->heures ?> h</span></span>
+                            <?php endforeach; ?>
                         </li>
                         <?php endforeach; ?>
                     </ul>
