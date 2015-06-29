@@ -165,15 +165,14 @@
                     <h3>Informations complémentaire</h3>
                 </div>
                 <div class="panel-body">
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label class="col-xs-3">Type de compte :</label> 
-                        <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
+                        <label class="col-xs-9"><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
                     </div>
-                    <br/>  
                     <?php if ($compte->hasAttributs()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Attributs :</label> 
-                            <div>                                                   
+                            <div class="col-xs-9" style="line-height: 23px;">                                                   
                                 <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
                                     <span class="label label-success"><?php echo $attribut_libelle ?></span>
                                 <?php endforeach; ?>                           
@@ -181,9 +180,9 @@
                         </div>
                     <?php endif; ?>
                     <?php if ($compte->hasProduits()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Produits :</label> 
-                            <div>                         
+                            <div class="col-xs-9" style="line-height: 23px;">                         
                                 <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
                                     <span class="label label-info"><?php echo $produit_libelle ?></span>
                                 <?php endforeach; ?>
@@ -192,11 +191,11 @@
                         </div>
                     <?php endif; ?>
                     <?php if ($compte->hasSyndicats()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Syndicats :</label> 
-                            <div>                         
+                            <div class="col-xs-9" style="line-height: 23px;">                         
                                 <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
-                                    <span class="label label-danger" style="margin: 2px;"><?php echo $syndicat_libelle ?></span>
+                                    <span class="label label-danger"><?php echo $syndicat_libelle ?></span>
                                 <?php endforeach; ?>
 
                             </div>
@@ -205,9 +204,9 @@
                     <?php if ($compte->hasManuels()): ?>
                         <div class="form-group">
                             <label class="col-xs-3">Mots clés :</label> 
-                            <div>           
+                            <div class="col-xs-9" style="line-height: 23px;">           
                                 <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
-                                    <span class="label label-default" style="margin: 2px;"><?php echo $tag_manuel ?></span>
+                                    <span class="label label-default"><?php echo $tag_manuel ?></span>
                                 <?php endforeach; ?>                               
                             </div>
                         </div>
