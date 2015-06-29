@@ -15,6 +15,7 @@ class DRevImportDRTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
+            new sfCommandOption('force', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import", false),
         ));
 
         $this->namespace = 'drev';
@@ -70,13 +71,17 @@ EOF;
             if($drev->declaration->getTotalVolumeRevendique() > 0) {
                 echo sprintf("ERROR;La DR a du volume sur place;%s\n", $etablisement_id);
 
-                return;
+                if(!$options['force']) {
+                    return;
+                }
             }
 
             if(!$drev->declaration->getTotalTotalSuperficie()) {
                 echo sprintf("ERROR;La DR n'a pas de superficie totale;%s\n", $etablisement_id);
 
-                return;
+                if(!$options['force']) {
+                    return;
+                }
             }
 
             if($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)) {

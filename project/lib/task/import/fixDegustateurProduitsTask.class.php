@@ -69,6 +69,10 @@ EOF;
                 //echo sprintf("%s\n", $data[self::CSV_EXPERT_GC]);
                 $groupes = explode("-", $data[self::CSV_EXPERT_GC]);
 
+                if(count($groupes) > 0) {
+                    $compte->infos->produits->add("-declaration-certification-genre-appellation_GRDCRU", "AOC Alsace Grands Crus");
+                }
+
                 foreach($groupes as $groupe) {
                     $grdcrus = $this->getGrdCrusByGroupe(trim($groupe));
                     foreach($grdcrus as $key => $libelle) {

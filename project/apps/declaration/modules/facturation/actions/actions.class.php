@@ -5,7 +5,7 @@ class facturationActions extends sfActions
 	
     public function executeIndex(sfWebRequest $request) 
     {
-        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,100);
+        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,200);
 
         $this->getUser()->signOutEtablissement();
         

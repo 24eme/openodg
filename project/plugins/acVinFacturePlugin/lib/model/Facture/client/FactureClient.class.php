@@ -84,7 +84,7 @@ class FactureClient extends acCouchdbClient {
             throw new sfException("Pas de template pour cette facture");
         }
 
-        $f = $this->createDoc($cotisations, $facture->getCompte(), $facture->date_facturation, null, $template->arguments->toArray(true, false));
+        $f = $this->createDoc($cotisations, $facture->getCompte(), date('Y-m-d'), null, $template->arguments->toArray(true, false));
 
         $f->_id = $facture->_id;
         $f->_rev = $facture->_rev;
