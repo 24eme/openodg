@@ -2,15 +2,15 @@
 
 class DeclarationClient
 {
-    protected $self = null;
+    protected static $self = null;
 
     public static function getInstance() {
-        if(is_null($this->self)) {
+        if(is_null(self::$self)) {
 
-            $this->self = new DeclarationClient();
+            self::$self = new DeclarationClient();
         }
 
-        return $this->self;
+        return self::$self;
     }
 
     public function find($id) {
