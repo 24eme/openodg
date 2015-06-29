@@ -4,7 +4,7 @@ class DeclarationClient
 {
     protected $self = null;
 
-    public function getInstance() {
+    public static function getInstance() {
         if(is_null($this->self)) {
 
             $this->self = new DeclarationClient();
