@@ -60,7 +60,7 @@
                 <div class="col-xs-12 form-horizontal">
                     <div class="form-group">
                         <div class="col-xs-12">
-                            <input ng-show="(prelevements | filter: { commission: null }).length > 0" type="tel" placeholder="Rechecher par numéro de prélévement" class="form-control input-lg" ng-keypress="blurOnEnter($event)" ng-change="" ng-model="query.anonymat_prelevement_complet" />
+                            <input ng-show="(prelevements | filter: { commission: null }).length > 0" type="tel" placeholder="Rechercher par numéro de prélévement" class="form-control input-lg" ng-keypress="blurOnEnter($event)" ng-change="" ng-model="query.anonymat_prelevement_complet" />
                         </div>
                     </div>
                     <div class="list-group">
