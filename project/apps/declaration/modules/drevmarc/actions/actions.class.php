@@ -129,7 +129,7 @@ class drevmarcActions extends sfActions {
 
         $this->sendDRevMarcConfirmee($this->drevmarc);
 
-        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a éyé envoyé au télédéclarant.");
+        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 
         return $this->redirect('drevmarc_visualisation', $this->drevmarc);
     }
