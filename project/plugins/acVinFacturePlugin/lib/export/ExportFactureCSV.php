@@ -3,9 +3,11 @@
 class ExportFactureCSV {
 
     const TYPE_LIGNE_LIGNE = 'LIGNE';
+    const TYPE_LIGNE_PAIEMENT = 'PAIEMENT';
     const TYPE_LIGNE_ECHEANCE = 'ECHEANCE';
     const TYPE_LIGNE_TVA = 'TVA';
     const CODE_JOURNAL_FACTURE = "VE00";
+    const CODE_JOURNAL_PAIEMENT = "5200";
 
     public function __construct() {
         
@@ -20,7 +22,7 @@ class ExportFactureCSV {
     }
 
     private static function printHeaderBase() {
-        echo "code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id";
+        echo "code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire";
     }
 
     public function printFacture($doc_or_id, $export_annee_comptable = false) {
@@ -60,8 +62,14 @@ class ExportFactureCSV {
         if ($export_annee_comptable) {
             echo $societe->siege->code_postal . ";" . $societe->siege->commune . ";" . $societe->type_societe . ";";
         }
-
         echo "\n";
+
+        if($facture->isPayee()) {
+            echo self::CODE_JOURNAL_PAIEMENT.';' . $facture->date_paiement . ';' . $facture->date_paiement . ';' . $facture->numero_interloire . ';Facture n°' . $facture->numero_interloire . ' REGLEMENT;411000;' . $facture->code_comptable_client . ';;' . $facture->date_echeance . ';CREDIT;' . $facture->total_ttc . ';;;' . $facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $facture->declarant->nom . ";" . $facture->code_comptable_client . ";;;;".$facture->reglement_paiement;
+            echo "\n";
+            echo self::CODE_JOURNAL_PAIEMENT.';' . $facture->date_paiement . ';' . $facture->date_paiement . ';' . $facture->numero_interloire . ';Facture n°' . $facture->numero_interloire . ' REGLEMENT;511100;;;' . $facture->date_echeance . ';DEBIT;' . $facture->total_ttc . ';;;' . $facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $facture->declarant->nom . ";" . $facture->code_comptable_client . ";;;;";
+            echo "\n";
+        }
     }
 
     protected function getSageCompteGeneral($facture) {
