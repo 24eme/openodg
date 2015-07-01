@@ -5,7 +5,7 @@ $verbose = shift;
 while(<STDIN>) {
     chomp;
     @field = split/;/ ;
-    next if ($field[0] ne 'VE00');
+    next if ($field[0] ne 'VE00' && $field[0] ne '5200');
     next if (!$field[10]); #si montant à 0, l'ignorer
     print "Ecriture générale;" if ($verbose);
     print "#MECG\n";
