@@ -43,6 +43,7 @@ class TemplateFacture extends BaseTemplateFacture
 				if (!in_array($cotisation->libelle, array_keys($cotisations))) {
 					$cotisations[$key] = array();
 					$cotisations[$key]["libelle"] = $cotisation->libelle;
+					$cotisations[$key]["code_comptable"] = $cotisation->code_comptable;
 					$cotisations[$key]["details"] = array();
 					$cotisations[$key]["origines"] = array();
 				}

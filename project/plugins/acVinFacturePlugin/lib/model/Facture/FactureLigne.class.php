@@ -46,6 +46,26 @@ class FactureLigne extends BaseFactureLigne {
       return $code;
     }
 
+    public function getOrigineIdentifiant() {
+        foreach($this->origine_mouvements as $docId => $origines) {
+              
+              return $docId;
+        }
+
+        return null;
+    }
+
+    public function getOrigineType() {
+      foreach($this->origine_mouvements as $origines) {
+            foreach($origines as $templateId) {
+
+                return $templateId;
+            }
+        }
+
+        return null;
+    }
+
     public function getConfProduit() {
       return ConfigurationClient::getCurrent()->get($this->produit_hash);
     }

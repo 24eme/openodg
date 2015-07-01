@@ -30,6 +30,7 @@ TemplateFacture:
                   modele: {  }
                   callback: { required: false }
                   libelle: {  }
+                  code_comptable: {  }
                   details:
                     type: collection
                     definition:

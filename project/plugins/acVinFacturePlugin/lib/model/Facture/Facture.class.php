@@ -62,6 +62,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     public function storeDatesCampagne($date_facturation = null) {
         $this->date_emission = date('Y-m-d');
         $this->date_facturation = $date_facturation;
+        $date_facturation_object = new DateTime($this->date_facturation);
+        $this->date_echeance = $date_facturation_object->modify('+30 days')->format('Y-m-d');
         if (!$this->date_facturation)
             $this->date_facturation = date('Y-m-d');
         $dateFacturation = explode('-', $this->date_facturation);
@@ -145,35 +147,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         return ($ligne_0->{$champ} > $ligne_1->{$champ}) ? -1 : +1;
     }
 
-    /*public function storeLignes($cotisations) {
-        foreach ($mvts as $lignesByType) {
-            $this->storeLigne($lignesByType, $famille);
-        }
-    }*/
-
-    /*public function storeLigne($ligneByType, $famille) {
-        $ligne = $this->lignes->add($ligneByType->key[MouvementfactureFacturationView::KEYS_MATIERE])->add();
-        $ligne->cotisation_taux = $ligneByType->value[MouvementfactureFacturationView::VALUE_CVO];
-        $ligne->volume = $ligneByType->value[MouvementfactureFacturationView::VALUE_VOLUME];
-        $ligne->origine_type = $ligneByType->key[MouvementfactureFacturationView::KEYS_ORIGIN];
-        $ligne->origine_identifiant = $ligneByType->value[MouvementfactureFacturationView::VALUE_NUMERO];
-        $ligne->contrat_identifiant = $ligneByType->key[MouvementfactureFacturationView::KEYS_CONTRAT_ID];
-        $ligne->origine_date = $ligneByType->key[MouvementfactureFacturationView::KEYS_PERIODE];
-        $ligne->produit_type = $ligneByType->key[MouvementfactureFacturationView::KEYS_MATIERE];
-        $ligne->produit_libelle = $ligneByType->value[MouvementfactureFacturationView::VALUE_PRODUIT_LIBELLE];
-        $ligne->produit_hash = $ligneByType->key[MouvementfactureFacturationView::KEYS_PRODUIT_ID];
-        $ligne->montant_ht = round($ligne->cotisation_taux * $ligne->volume * -1, 2);
-        $ligne->origine_mouvements = $this->createLigneOriginesMouvements($ligne, $ligneByType->value[MouvementfactureFacturationView::VALUE_ID_ORIGINE]);
-        $transacteur = $ligneByType->value[MouvementfactureFacturationView::VALUE_VRAC_DEST];
-        $ligne->origine_libelle = $this->createOrigineLibelle($ligne, $transacteur, $famille, $ligneByType);
-
-        $this->verifLigneAndVolumeOrigines($ligne);
-    }*/
-
     public function storeLignes($cotisations) {
     	foreach ($cotisations as $key => $cotisation) {
     		$ligne = $this->lignes->add($key);
     		$ligne->libelle = $cotisation["libelle"];
+            $ligne->produit_identifiant_analytique = $cotisation["code_comptable"];
             $ligne->origine_mouvements = $cotisation["origines"];
     		$total = 0;
     		$totalTva = 0;
@@ -483,7 +461,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
       return round($p + $p * $taux_tva, 2);
     }
     
-    public function getTauxTva() {     
+    public function getTauxTva() {  
         if($this->exist('taux_tva') && $this->_get('taux_tva')){
             return round($this->_get('taux_tva'),2);
         }
@@ -535,7 +513,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         $declarant->commune = $doc->commune;
         $declarant->code_postal = $doc->code_postal;
         $declarant->raison_sociale = $doc->raison_sociale;
-		//$this->code_comptable_client = $this->societe->code_comptable_client;
+		$this->code_comptable_client = preg_replace("/^[0]+/", "", $this->getCompte()->identifiant_interne);
     }
 
     public function isPayee() {
