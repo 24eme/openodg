@@ -27,6 +27,8 @@ class GenerationExportCsv extends GenerationAbstract
 
         $handle = fopen($file, 'w');
 
+        fwrite($handle, "\xef\xbb\xbf"); //UTF8 BOM (pour windows)
+
         $className = DeclarationClient::getInstance()->getExportCsvClassName($this->generation->arguments->type_document);
           
         fwrite($handle, $className::getHeaderCsv());
