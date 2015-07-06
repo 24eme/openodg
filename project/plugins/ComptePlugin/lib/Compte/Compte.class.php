@@ -68,6 +68,11 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         $this->identifiant_interne = $this->numero_archive;
     }
 
+    public function getCodeComptable() {
+
+        return preg_replace("/^[0]+/", "", $this->identifiant_interne);
+    }
+
     public function updateNomAAfficher() {
         $this->nom_a_afficher = "";
 

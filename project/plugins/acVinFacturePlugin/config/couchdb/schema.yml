@@ -13,6 +13,7 @@ Facture:
       date_emission: {}
       date_facturation: {}
       date_paiement: {}
+      date_echeance: {}
       reglement_paiement: {}
       campagne: {}
       numero_archive: {  }
@@ -21,6 +22,7 @@ Facture:
       taux_tva: {required: false}
       region: {}
       versement_comptable: {type: integer}
+      versement_comptable_paiement: {type: integer}
       arguments: 
         type: collection
         definition:
@@ -61,6 +63,7 @@ Facture:
               definition:
                 fields:
                   libelle: {  }
+                  produit_identifiant_analytique: {  }
                   montant_tva: {type: float}
                   montant_ht: {type: float}
                   origine_mouvements:
