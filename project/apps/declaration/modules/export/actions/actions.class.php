@@ -4,7 +4,13 @@ class exportActions extends sfActions {
     
     public function executeIndex(sfWebRequest $request) 
     {
-        $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_CSV, 100);
+        $this->generationsList = array_merge(
+            GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_CSV, 100),
+            GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE, 100)
+        );
+
+
+        uasort($this->generationsList, "GenerationClient::sortHistory");
 
         $generations = array();
 
@@ -15,6 +21,13 @@ class exportActions extends sfActions {
             $generation->arguments = array("campagne" => $typeCampagne->campagne, "type_document" => $typeCampagne->type);
             $generations[$typeCampagne->campagne."_".$generation->type."_".implode($generation->arguments->toArray(true, false), "_")] = $generation;
         }
+
+        $generation = new Generation();
+        $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE;
+        $generation->libelle = sprintf("Export SAGE");
+        $generation->arguments = array("campagne" => $typeCampagne->campagne, "type_document" => $typeCampagne->type);
+
+        $generations[GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE] = $generation;
 
         krsort($generations);
 

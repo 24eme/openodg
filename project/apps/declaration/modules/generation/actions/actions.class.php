@@ -23,6 +23,11 @@ class generationActions extends sfActions {
           $this->menuActive = 'export';
           $this->backUrl = $this->generateUrl('export');
       }
+
+      if($this->generation->type_document == GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE) {
+          $this->menuActive = 'export';
+          $this->backUrl = $this->generateUrl('export');
+      }
   }
   
   public function executeList(sfWebRequest $request) {

@@ -22,4 +22,4 @@
 </form> 
 
 
-<?php include_partial('generation/list', array('generations' => $generations)); ?>
+<?php include_partial('generation/list', array('generations' => $generationsList)); ?>

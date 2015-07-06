@@ -1,6 +1,9 @@
 <?php
 
-class ExportFactureCSV {
+class ExportFactureCSV implements InterfaceDeclarationExportCsv {
+
+    protected $facture = null;
+    protected $header = false;
 
     const TYPE_LIGNE_LIGNE = 'LIGNE';
     const TYPE_LIGNE_PAIEMENT = 'PAIEMENT';
@@ -9,67 +12,69 @@ class ExportFactureCSV {
     const CODE_JOURNAL_FACTURE = "VE00";
     const CODE_JOURNAL_PAIEMENT = "5200";
 
-    public function __construct() {
-        
-    }
-
-    public static function printHeaderAnneeComptable() {
-        echo self::printHeaderBase() . ";code postal;commune;type societe\n";
-    }
-
-    public static function printHeader() {
-        echo self::printHeaderBase() . "\n";
-    }
-
-    private static function printHeaderBase() {
-        echo "code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire";
-    }
-
-    public function printFacture($doc_or_id, $export_annee_comptable = false) {
-
+    public function __construct($doc_or_id, $header = true) {
         if ($doc_or_id instanceof Facture) {
-            $facture = $doc_or_id;
+            $this->facture = $doc_or_id;
         } else {
-            $facture = FactureClient::getInstance()->find($doc_or_id);
+            $this->facture = FactureClient::getInstance()->find($doc_or_id);
         }
 
-        if (!$facture) {
+        if (!$this->facture) {
             echo sprintf("WARNING;Le document n'existe pas %s\n", $doc_or_id);
             return;
         }
-        $societe = null;
-        if ($export_annee_comptable) {
-            $societe = SocieteClient::getInstance()->find($facture->identifiant);
+
+        $this->header = $header;
+    }
+
+    public static function getHeaderCsv() {
+
+        return "code journal;date;date de saisie;numero de facture;libelle;compte general;compte tiers;compte analytique;date echeance;sens;montant;piece;reference;id couchdb;type ligne;nom client;code comptable client;origine type;produit type;origine id;commentaire\n";
+    }
+
+    public function export() {
+        if($this->header) {
+
+            $csv .= $this->getHeaderCsv();
         }
-        foreach ($facture->lignes as $l) {
-                echo self::CODE_JOURNAL_FACTURE.';' . $facture->date_facturation . ';' . $facture->date_emission . ';' . $facture->numero_interloire . ';Facture n°' . $facture->numero_interloire . ' COTISATION;'.$l->produit_identifiant_analytique.';;;;CREDIT;' . $l->montant_ht . ';;;' . $facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $facture->declarant->nom . ";" . $facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
-                if ($export_annee_comptable) {
-                    echo $societe->siege->code_postal . ";" . $societe->siege->commune . ";" . $societe->type_societe . ";";
-                }
 
-                echo "\n";
+        $csv .= $this->exportFacture();
+        $csv .= $this->exportPaiement();
+
+        return $csv;
+    }
+
+    public function exportFacture() {
+        $csv = "";
+
+        foreach ($this->facture->lignes as $l) {
+                $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ' COTISATION;'.$l->produit_identifiant_analytique.';;;;CREDIT;' . $l->montant_ht . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
+
+                $csv .= "\n";
                 if($l->montant_tva) {
-                    echo self::CODE_JOURNAL_FACTURE.';' . $facture->date_facturation . ';' . $facture->date_emission . ';' . $facture->numero_interloire . ';Facture n°' . $facture->numero_interloire . ' TVA;445710;;;;CREDIT;' . $l->montant_tva . ';;;' . $facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $facture->declarant->nom . ";" . $facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
-                    if ($export_annee_comptable) {
-                        echo $societe->siege->code_postal . ";" . $societe->siege->commune . ";" . $societe->type_societe . ";";
-                    }
+                    $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ' TVA;445710;;;;CREDIT;' . $l->montant_tva . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
 
-                    echo "\n";
+                    $csv .= "\n";
                 }
         }
         
-        echo self::CODE_JOURNAL_FACTURE.';' . $facture->date_facturation . ';' . $facture->date_emission . ';' . $facture->numero_interloire . ';Facture n°' . $facture->numero_interloire . ' ECHEANCE;411000;' . $facture->code_comptable_client . ';;' . $facture->date_echeance . ';DEBIT;' . $facture->total_ttc . ';;;' . $facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $facture->declarant->nom . ";" . $facture->code_comptable_client . ";;;;;";
-        if ($export_annee_comptable) {
-            echo $societe->siege->code_postal . ";" . $societe->siege->commune . ";" . $societe->type_societe . ";";
-        }
-        echo "\n";
+        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ' ECHEANCE;411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->total_ttc . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;;";
+        $csv .= "\n";
 
-        if($facture->isPayee()) {
-            echo self::CODE_JOURNAL_PAIEMENT.';' . $facture->date_paiement . ';' . $facture->date_paiement . ';' . $facture->numero_interloire . ';Facture n°' . $facture->numero_interloire . ' REGLEMENT;411000;' . $facture->code_comptable_client . ';;' . $facture->date_echeance . ';CREDIT;' . $facture->total_ttc . ';;;' . $facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $facture->declarant->nom . ";" . $facture->code_comptable_client . ";;;;".$facture->reglement_paiement;
-            echo "\n";
-            echo self::CODE_JOURNAL_PAIEMENT.';' . $facture->date_paiement . ';' . $facture->date_paiement . ';' . $facture->numero_interloire . ';Facture n°' . $facture->numero_interloire . ' REGLEMENT;511100;;;' . $facture->date_echeance . ';DEBIT;' . $facture->total_ttc . ';;;' . $facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $facture->declarant->nom . ";" . $facture->code_comptable_client . ";;;;";
-            echo "\n";
-        }
+        return $csv;
+    }
+
+    public function exportPaiement() {
+        $csv = "";
+
+        if($this->facture->isPayee()) {
+            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ' REGLEMENT;411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';CREDIT;' . $this->facture->total_ttc . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;".$this->facture->reglement_paiement;
+            $csv .= "\n";
+            $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ' REGLEMENT;511150;;;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->total_ttc . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
+            $csv .= "\n";
+        } 
+
+        return $csv;
     }
 
     protected function getSageCompteGeneral($facture) {

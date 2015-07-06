@@ -36,7 +36,7 @@ class FactureLigne extends BaseFactureLigne {
     }
     
 
-    public function getProduitIdentifiantAnalytique() {
+    /*public function getProduitIdentifiantAnalytique() {
       $id = $this->_get('produit_identifiant_analytique');
       if ($id) {
 	return $id;
@@ -44,7 +44,7 @@ class FactureLigne extends BaseFactureLigne {
       $code = $this->getConfProduit()->getCodeComptable();
       $this->_set('produit_identifiant_analytique', $code);
       return $code;
-    }
+    }*/
 
     public function getOrigineIdentifiant() {
         foreach($this->origine_mouvements as $docId => $origines) {
