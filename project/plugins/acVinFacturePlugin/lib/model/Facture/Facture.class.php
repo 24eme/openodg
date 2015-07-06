@@ -490,6 +490,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         }
     }
 
+    public function getTemplate() {
+        foreach($this->templates as $template_id) {
+
+            return TemplateFactureClient::getInstance()->find($template_id);        
+        }
+
+        return null;
+    }
+
     protected function preSave() {
         if ($this->isNew() && $this->statut != FactureClient::STATUT_REDRESSEE) {
             $this->facturerMouvements();
@@ -498,6 +507,10 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
 
         if (!$this->versement_comptable) {
             $this->versement_comptable = 0;
+        }
+
+        if (!$this->versement_comptable_paiement) {
+            $this->versement_comptable_paiement = 0;
         }
 
         $this->archivage_document->preSave();
