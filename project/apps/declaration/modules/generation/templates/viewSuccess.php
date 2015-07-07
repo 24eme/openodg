@@ -52,7 +52,7 @@
 <div class="row row-margin">
 <div class="list-group col-xs-6 col-xs-offset-3">
     <?php foreach ($generation->fichiers as $chemin => $titre): ?>
-        <a href="<?php echo urldecode($chemin); ?>"  target="_blank" class="list-group-item text-center"><span class="glyphicon glyphicon-download-alt"></span>&nbsp;&nbsp;<?php echo $titre; ?></a>
+        <a download="<?php echo basename(urldecode($chemin)) ?>" href="<?php echo urldecode($chemin); ?>"  target="_blank" class="list-group-item text-center"><span class="glyphicon glyphicon-download-alt"></span>&nbsp;&nbsp;<?php echo $titre; ?></a>
     <?php endforeach; ?>
 </div>
 </div>
