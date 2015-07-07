@@ -202,7 +202,7 @@
                         </div>
                     <?php endif; ?>
                     <?php if ($compte->hasManuels()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Mots clés :</label> 
                             <div class="col-xs-9" style="line-height: 23px;">           
                                 <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>

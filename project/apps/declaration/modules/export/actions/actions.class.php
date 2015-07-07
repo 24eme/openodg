@@ -25,7 +25,7 @@ class exportActions extends sfActions {
         $generation = new Generation();
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE;
         $generation->libelle = sprintf("Export SAGE");
-        $generation->arguments = array("campagne" => $typeCampagne->campagne, "type_document" => $typeCampagne->type);
+        $generation->arguments = array();
 
         $generations[GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE] = $generation;
 
