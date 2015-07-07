@@ -18,6 +18,9 @@ class GenerationExportSage extends GenerationAbstract
         fwrite($handle_factures, ExportFactureCSV::getHeaderCsv());
         fwrite($handle_clients, ExportCompteCSV::getHeaderCsv());
 
+        $batch_size = 500;
+        $batch_i = 1;
+
         foreach(FactureEtablissementView::getInstance()->getFactureNonVerseeEnCompta() as $vfacture) {
             $facture = FactureClient::getInstance()->find($vfacture->key[FactureEtablissementView::KEYS_FACTURE_ID]);
 
@@ -51,7 +54,11 @@ class GenerationExportSage extends GenerationAbstract
             $export = new ExportCompteCSV($compte, false);
 
             fwrite($handle_clients, $export->export());
-            //$this->generation->save();
+            $batch_i++;
+            if($batch_i > $batch_size) {
+              $this->generation->save();
+              $batch_i = 1;
+            }
         }
 
         fclose($handle_factures);

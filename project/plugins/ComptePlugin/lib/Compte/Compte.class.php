@@ -168,8 +168,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     public function updateInfosTagsManuels($infos_manuels = array()) {
         $this->removeInfosTagsNode('manuels');
         foreach ($infos_manuels as $info_manuel) {
-            $info_manuel_key = str_replace(' ', '_', $info_manuel);
-            $this->updateInfosTags('manuels', $info_manuel_key, $info_manuel);
+            $this->addInfoManuel($info_manuel);
         }
     }
 
@@ -195,6 +194,39 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         $this->infos->$nodeType->add($key, $value);
     }
 
+    public function existInfo($type, $info_key) {
+        $key = $info_key;
+
+        if($type == 'manuels') {
+
+            $key = $this->getInfoManuelKey($info_key);
+        }
+
+        return $this->infos->get($type)->exist($key);
+    }
+
+    public function removeInfo($type, $info_key) {
+        $key = $info_key;
+        
+        if($type == 'manuels') {
+
+            $key = $this->getInfoManuelKey($info_key);
+        }
+
+        return $this->infos->get($type)->remove($key);
+    }
+
+    public function getInfo($type, $info_key) {
+        $key = $info_key;
+        
+        if($type == 'manuels') {
+
+            $key = $this->getInfoManuelKey($info_key);
+        }
+
+        return $this->infos->get($type)->get($key);
+    }
+
     public function addInfo($type, $info_key) {
         if($type == 'syndicats') {
             return $this->addInfoSyndicat($info_key);
@@ -208,6 +240,10 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
             return $this->addInfoProduit($info_key);
         }
 
+        if($type == 'manuels') {
+            return $this->addInfoManuel($info_key);
+        }
+
         throw new sfException("Type non défini");
     }
 
@@ -219,6 +255,15 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     public function addInfoProduit($produit_hash) {
         $libelle_complet = ConfigurationClient::getConfiguration()->get(str_replace('-', '/', $produit_hash))->getLibelleComplet();
         $this->updateInfosTags('produits', $produit_hash, $libelle_complet);
+    }
+
+    protected function getInfoManuelKey($libelle) {
+
+        return str_replace(' ', '_', $libelle);
+    }
+
+    public function addInfoManuel($info_manuel) {
+        $this->updateInfosTags('manuels', $this->getInfoManuelKey($info_manuel), $info_manuel);
     }
     
     public function getEtablissementObj() {

@@ -40,7 +40,7 @@ EOF;
         }
 
         $type_attribut = $arguments['type_attribut'];
-        $types_attribut_autorises = array('attributs', 'produits', 'syndicats');
+        $types_attribut_autorises = array('attributs', 'produits', 'syndicats', 'manuels');
 
         $attribut = trim($arguments['attribut']);
 
@@ -56,28 +56,26 @@ EOF;
             return;
         }
 
-
-
         if($action == 'add') {
-            if($compte->infos->get($type_attribut)->exist($attribut)) {
+            if($compte->existInfo($type_attribut, $attribut)) {
                 echo sprintf("WARNING;L'attribut %s existe déjà pour ce compte %s\n", $attribut, $arguments['doc_id']);
                 return;
             }
 
             @$compte->addInfo($type_attribut, $attribut);
 
-            if(!$compte->infos->get($type_attribut)->get($attribut)) {
+            if(!$compte->getInfo($type_attribut, $attribut)) {
                 echo sprintf("ERROR;L'attribut %s n'existe pas\n", $attribut, $arguments['doc_id']);
                 return;
             }
 
             echo sprintf("SUCCESS;L'attribut %s a bien été ajouté au compte %s\n", $attribut, $arguments['doc_id']);
         } elseif($action == 'remove') {
-            if(!$compte->infos->get($type_attribut)->exist($attribut)) {
+            if(!$compte->existInfo($type_attribut, $attribut)) {
                 echo sprintf("WARNING;L'attribut %s n'existe pas pour ce compte %s\n", $attribut, $arguments['doc_id']);
                 return;
             }
-            $compte->infos->get($type_attribut)->remove($attribut);
+            $compte->removeInfo($type_attribut, $attribut);
             echo sprintf("SUCCESS;L'attribut %s a bien été supprimé du compte %s\n", $attribut, $arguments['doc_id']);
         }
 
