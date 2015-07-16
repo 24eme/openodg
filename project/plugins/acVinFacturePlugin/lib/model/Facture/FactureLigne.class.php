@@ -34,6 +34,17 @@ class FactureLigne extends BaseFactureLigne {
       $this->getProduitIdentifiantAnalytique();
       return $ret;
     }
+
+    public function getTauxTva() {
+        foreach($this->details as $detail) {
+            if($detail->taux_tva) {
+
+                return $detail->taux_tva;
+            }
+        }
+
+        return 0;
+    }
     
 
     /*public function getProduitIdentifiantAnalytique() {

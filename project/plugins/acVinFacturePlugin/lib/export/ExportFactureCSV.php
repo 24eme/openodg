@@ -57,7 +57,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
                 $csv .= "\n";
                 if($l->montant_tva) {
-                    $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ';'.$this->getSageCompteGeneral($this->facture).';;;;CREDIT;' . $l->montant_tva . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
+                    $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ';'.$this->getSageCompteGeneral($l).';;;;CREDIT;' . $l->montant_tva . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
 
                     $csv .= "\n";
                 }
@@ -82,13 +82,13 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         return $csv;
     }
 
-    protected function getSageCompteGeneral($facture) {
-        if ($facture->getTauxTva() == 20.0) {
+    protected function getSageCompteGeneral($ligne) {
+        if ($ligne->getTauxTva() == 20.0) {
             
             return "445710";
         }
 
-        if ($facture->getTauxTva() == 2.10) {
+        if ($ligne->getTauxTva() == 2.10) {
 
             return "445711";
         }
