@@ -57,7 +57,7 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
                 $csv .= "\n";
                 if($l->montant_tva) {
-                    $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ';445710;;;;CREDIT;' . $l->montant_tva . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
+                    $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';Facture n°' . $this->facture->numero_interloire . ';'.$this->getSageCompteGeneral($this->facture).';;;;CREDIT;' . $l->montant_tva . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
 
                     $csv .= "\n";
                 }
@@ -85,12 +85,12 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
     protected function getSageCompteGeneral($facture) {
         if ($facture->getTauxTva() == 20.0) {
             
-            return "44570100";
+            return "445710";
         }
 
         if ($facture->getTauxTva() == 2.10) {
 
-            return "44570011";
+            return "445711";
         }
 
         throw new sfException(sprintf("Code sage du Taux de TVA introuvable : %s (%s)", $facture->getTauxTva(), $facture->_id));
