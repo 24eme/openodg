@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use Encode;
+
 $verbose = shift;
 
 while(<STDIN>) {
@@ -33,7 +35,7 @@ while(<STDIN>) {
         print "numero compte tiers contre partie;" if ($verbose);
         print "\n";
         print "intitule;" if ($verbose);
-        print substr($field[4], 0, 35)."\n";
+        print encode_utf8(substr(decode_utf8($field[4]), 0, 35))."\n";
         print "numero reglement;" if ($verbose);
         print "\n";
         print "date echeance;" if ($verbose);
