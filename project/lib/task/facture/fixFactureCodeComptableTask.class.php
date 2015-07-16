@@ -38,6 +38,7 @@ EOF;
         // Set date échéance
         $date_facturation_object = new DateTime($f->date_facturation);
         $f->date_echeance = $date_facturation_object->modify('+30 days')->format('Y-m-d');
+        $f->code_comptable_client = preg_replace("/^[0]+/", "", $f->getCompte()->identifiant_interne);
 
         // Set code comptable produit
         
