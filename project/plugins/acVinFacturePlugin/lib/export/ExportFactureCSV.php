@@ -84,14 +84,16 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
     protected function getSageCompteGeneral($facture) {
         if ($facture->getTauxTva() == 20.0) {
+            
             return "44570100";
         }
 
         if ($facture->getTauxTva() == 2.10) {
+
             return "44570011";
         }
 
-        throw new sfException(sprintf("Code sage du Taux de TVA introuvable : %s (%s)", $facture->getTauxTva(), $facture->_id);
+        throw new sfException(sprintf("Code sage du Taux de TVA introuvable : %s (%s)", $facture->getTauxTva(), $facture->_id));
     }
 
 }
