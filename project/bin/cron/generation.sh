@@ -9,6 +9,6 @@ echo $$ > /tmp/cron_generation_pdf.$PROJET.pid
 
 cd $WORKINGDIR
 
-php symfony generation:generate
+php -d memory_limit=512M symfony generation:generate
 
 rm /tmp/cron_generation_pdf.$PROJET.pid
