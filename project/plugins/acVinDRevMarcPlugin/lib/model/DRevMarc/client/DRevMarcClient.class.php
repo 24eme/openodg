@@ -56,6 +56,6 @@ class DRevMarcClient extends acCouchdbClient {
             $date = date('Y-m-d');
         }
 
-        return $this->getDateOuvertureDebut() >= $date && $this->getDateOuvertureFin() <= $date; 
+        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin(); 
     }
 }
