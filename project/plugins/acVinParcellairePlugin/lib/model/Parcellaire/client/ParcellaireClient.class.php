@@ -90,4 +90,33 @@ class ParcellaireClient extends acCouchdbClient {
         return 'GRDCRU';
     }
 
+    public function getDateOuvertureDebut($parcellaireCremant = false) {
+        if($parcellaireCremant) {
+            $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
+        } else {
+            $dates = sfConfig::get('app_dates_ouverture_parcellaire');
+        }
+
+        return $dates['debut'];
+    }
+
+    public function getDateOuvertureFin($parcellaireCremant = false) {
+        if($parcellaireCremant) {
+            $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
+        } else {
+            $dates = sfConfig::get('app_dates_ouverture_parcellaire');
+        }
+
+        return $dates['fin'];
+    }
+
+    public function isOpen($parcellaireCremant = false, $date = null) {
+        if(is_null($date)) {
+
+            $date = date('Y-m-d');
+        }
+
+        return $date >= $this->getDateOuvertureDebut($parcellaireCremant)  && $date <= $this->getDateOuvertureFin($parcellaireCremant); 
+    }
+
 }

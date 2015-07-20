@@ -37,4 +37,25 @@ class DRevMarcClient extends acCouchdbClient {
                     ->endkey(sprintf("DREVMARC-%s-%s", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
+
+    public function getDateOuvertureDebut() {
+        $dates = sfConfig::get('app_dates_ouverture_drevmarc');
+
+        return $dates['debut'];
+    }
+
+    public function getDateOuvertureFin() {
+        $dates = sfConfig::get('app_dates_ouverture_drevmarc');
+
+        return $dates['fin'];
+    }
+
+    public function isOpen($date = null) {
+        if(is_null($date)) {
+
+            $date = date('Y-m-d');
+        }
+
+        return $this->getDateOuvertureDebut() >= $date && $this->getDateOuvertureFin() <= $date; 
+    }
 }
