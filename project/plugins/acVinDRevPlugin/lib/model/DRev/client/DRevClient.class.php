@@ -82,6 +82,27 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         return $ids_campagne;
     }
+
+    public function getDateOuvertureDebut() {
+        $dates = sfConfig::get('app_dates_ouverture_drev');
+
+        return $dates['debut'];
+    }
+
+    public function getDateOuvertureFin() {
+        $dates = sfConfig::get('app_dates_ouverture_drev');
+
+        return $dates['fin'];
+    }
+
+    public function isOpen($date = null) {
+        if(is_null($date)) {
+
+            $date = date('Y-m-d');
+        }
+
+        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin(); 
+    }
     
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";

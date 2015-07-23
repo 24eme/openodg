@@ -3,8 +3,8 @@
 class avaActions extends sfActions {
 
     public function executeHome(sfWebRequest $request) {
-        $this->date_ouverture_drev = sfConfig::get('app_date_ouverture_drev');
-        $this->date_ouverture_drevmarc = sfConfig::get('app_date_ouverture_drevmarc');
+        $this->date_ouverture_drev = sfConfig::get('app_date_ouvertures_drev');
+        $this->date_ouverture_drevmarc = sfConfig::get('app_date_ouvertures_drevmarc');
         
         $this->drev_non_ouverte = false;
         $this->drevmarc_non_ouverte = false;

@@ -24,11 +24,19 @@ all:
     compte_creation: "http://url_compte_creation"
     compte_mot_de_passe_oublie: "http://url_compte_mot_de_pass_oublie"
     dr_recuperation: "http://url_autorisation/"
-  date_ouverture:
-    drev: "YYYY-mm-dd"
-    drevmarc: "YYYY-mm-dd"
-    parcellaire: "YYYY-mm-dd"
-    parcellaire_cremant: "YYYY-mm-dd"
+  dates_ouverture:
+    drev: 
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
+    drevmarc:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
+    parcellaire:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
+    parcellaire_cremant:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"
