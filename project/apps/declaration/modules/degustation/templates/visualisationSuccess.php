@@ -2,7 +2,7 @@
 <?php use_helper('Degustation') ?>
 
 <div class="page-header no-border">
-    <h2><?php echo $tournee->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($tournee); ?></span>&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->operateurs) ?>&nbsp;Opérateurs</div></h2>
+    <h2><?php echo $tournee->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($tournee); ?></span>&nbsp;<div class="btn-group"><button class="btn btn-default btn-default-step btn-sm"><?php echo count($tournee->operateurs) ?>&nbsp;opérateurs</button><button class="btn btn-default btn-default-step btn-sm"><?php echo $tournee->nombre_prelevements ?> prélevements (<?php echo $tournee->getNbLots() ?> prévus)</button></div></h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
