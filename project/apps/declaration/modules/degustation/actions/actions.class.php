@@ -723,6 +723,15 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
+    public function executeDegustateursPresenceExport(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+        $this->setLayout(false);
+
+        $attachement = sprintf("attachment; filename=degustateurs_%s_%s.csv", $this->tournee->_id, date('Ymd'));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+    }
+
     public function executeCourrier(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
         $this->form = new DegustationCourrierForm($this->tournee);
