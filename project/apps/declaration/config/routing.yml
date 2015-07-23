@@ -759,6 +759,16 @@ degustation_degustateurs_presence:
   requirements:
     sf_method: [get, post]
 
+degustation_degustateurs_presence_export:
+  url: /tournee/degustateurs-presence/:id.csv
+  param: { module: degustation, action: degustateursPresenceExport }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_courriers:
   url: /degustation/courrier/:id
   param: { module: degustation, action: courrier }
