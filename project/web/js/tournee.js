@@ -652,6 +652,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.terminer = function() {
+        $scope.transmettre(true);
         $scope.precedent();
     }
 
@@ -665,7 +666,6 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         prelevement.anonymat_degustation = null;
         calculAnonymatDegustation();
         $scope.degustations[prelevement.degustation_id].transmission_needed = true;
-        $scope.transmettre(true);
         localSave();
     }
 
@@ -683,7 +683,6 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.degustations[prelevement.degustation_id].transmission_needed = true;
         $scope.anonymat_degustation++;
         localSave();
-        $scope.transmettre(true);
         $scope.showAjout(commission);
     }
 
