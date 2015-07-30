@@ -10,6 +10,15 @@ class drevmarcActions extends sfActions {
         return $this->redirect('drevmarc_edit', $drevmarc);
     }
 
+    public function executeCreatePapier(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+
+        $drev = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true);
+        $drev->save();
+
+        return $this->redirect('drevmarc_edit', $drev);
+    }
+
     public function executeEdit(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
 
