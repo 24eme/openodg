@@ -114,18 +114,42 @@ class drevmarcActions extends sfActions {
         $this->drevmarc->save();
 
         $this->validation = new DRevMarcValidation($this->drevmarc);
+
         $this->form = new DRevMarcValidationForm($this->drevmarc);
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {
 
-                $this->drevmarc->validate();
-                $this->drevmarc->save();
-                $this->sendDRevMarcValidation($this->drevmarc);
+        if (!$request->isMethod(sfWebRequest::POST)) {
 
-                return $this->redirect('drevmarc_confirmation', $this->drevmarc);
-            }
+             return sfView::SUCCESS;
         }
+
+        if (!$this->validation->isValide()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        if($this->drevmarc->isPapier()) {
+            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+
+            $this->drevmarc->validate($this->form->getValue("date"));
+            $this->drevmarc->validateOdg();
+            $this->drevmarc->save();
+
+            return $this->redirect('drevmarc_visualisation', $this->drevmarc);
+        }
+
+        $this->drevmarc->validate();
+        $this->drevmarc->save();
+
+        $this->sendDRevMarcValidation($this->drevmarc);
+
+        return $this->redirect('drevmarc_confirmation', $this->drevmarc);
     }
 
     public function executeValidationAdmin(sfWebRequest $request) {
