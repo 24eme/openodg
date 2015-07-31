@@ -27,7 +27,7 @@
     <?php endif; ?>
 
     <?php if ($validation->hasPoints()): ?>
-        <?php //include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
+        <?php include_partial('drevmarc/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
 
     <div class="row row-margin">
