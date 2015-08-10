@@ -40,13 +40,19 @@
         <table border="0">
             <?php foreach($parcellesByLieu->acheteurs as $type => $acheteurs): ?>
                     <tr>
-                        <td>☒&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
-                <?php $i = 0; ?>
-                <?php foreach($acheteurs as $acheteur): ?>
-                    <?php if($acheteur->cvi == $parcellaire->identifiant): ?><?php break; endif; ?>
-                    <?php if($i === 0): ?> : <?php endif; ?>
-                    <strong><?php echo $acheteur->nom ?></strong><?php $i++; ?><?php if($i < count($acheteurs)): ?>, <?php endif; ?>
-                <?php endforeach; ?>
+                        <td><span style="font-family: Dejavusans">☒</span>&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
+                <?php 
+		$acheteurs_nom = array();
+		foreach($acheteurs as $acheteur){
+			if($acheteur->cvi != $parcellaire->identifiant)
+				$acheteurs_nom[] = $acheteur->nom;
+		} 
+		$acheteurs_nom = array_unique($acheteurs_nom);
+		if (count($acheteurs_nom))
+			echo ' : <strong>';
+			echo implode('</strong>, <strong>', $acheteurs_nom);
+			echo '</strong>';
+		?>
                         </td>
                     </tr>
             <?php endforeach; ?>
