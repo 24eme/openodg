@@ -8,7 +8,7 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-     <?php if(isset($form["date"])): ?>
+    <?php if(isset($form["date"])): ?>
     <div class="row">
         <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
             <?php if ($form["date"]->hasError()): ?>                            

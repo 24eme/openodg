@@ -43,9 +43,13 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclaration {
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
-    
-    public function validate() {
-        $this->validation = date('Y-m-d');
+
+    public function validate($date = null) {
+        if(is_null($date)) {
+            $date = date('Y-m-d');
+        }
+
+        $this->validation = $date;
     }
     
     public function isValide() {
@@ -70,5 +74,9 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclaration {
     public function getValidationOdg() {
 
         return $this->_get('validation_odg');
+    }
+
+    public function validateOdg() {
+        $this->validation_odg = date('Y-m-d');
     }
 }

@@ -38,6 +38,17 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         $this->storeDeclarant();
     }
 
+    public function getAcheteursByCVI() {
+        $acheteurs = array();
+        foreach($this->acheteurs as $type => $acheteurs) {
+            foreach($acheteurs as $cvi => $acheteur) {
+                $acheteurs[$cvi] = $acheteur; 
+            }
+        }
+
+        return $acheteurs;
+    }
+
     public function getConfiguration() {
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
     }

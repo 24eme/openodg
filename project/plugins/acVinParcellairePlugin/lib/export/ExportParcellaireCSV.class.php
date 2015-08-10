@@ -32,87 +32,61 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function export() {
-        
-        return $this->parcellaireExport();
-    }
-
-    private function parcellaireExport() {
         $export = "";
         if($this->header) { 
             $export = self::getHeaderCsv();
         }
+
+        if(!$this->parcellaire->validation) {
+
+            return;
+        }
+        
+        $acheteursGlobal = $this->parcellaire->getAcheteursByCVI();
         
         foreach ($this->parcellaire->declaration->getProduitsCepageDetails() as $parcelle) {
-            $export .= $this->exportParcelleByAcheteurs($parcelle);
-        }
-
-        return $export;
-    }
-
-    private function exportParcelleByAcheteurs($parcelle) {
-        $export = "";
-        if(!count($parcelle->getCepage()->acheteurs)) {
-            return $this->exportParcelle($parcelle);
-        }
-        foreach ($parcelle->getCepage()->acheteurs as $lieu_acheteurs) {
-
-            foreach ($lieu_acheteurs as $typeAcheteur => $acheteurs) {
-                if ($typeAcheteur == ParcellaireClient::DESTINATION_SUR_PLACE) {
-                    $export .= $this->exportParcelle($parcelle);
-                }
-                if (($typeAcheteur == ParcellaireClient::DESTINATION_CAVE_COOPERATIVE) || ($typeAcheteur == ParcellaireClient::DESTINATION_NEGOCIANT)) {
-                    $export .= $this->exportParcelle($parcelle, $acheteurs);
-                }
+            $acheteurs = $parcelle->getAcheteursByCVI();
+            
+            if(!count($acheteurs) && count($acheteursGlobal) > 1) {
+                //echo sprintf("ERROR pas d'acheteur : %s : %s !\n", $this->parcellaire->_id, $parcelle->getHash());
             }
-        }
 
-        return $export;
-    }
+            if(!count($acheteurs) && count($acheteursGlobal) == 0) {
+                //echo sprintf("ERROR pas d'acheteurs du tout : %s : %s !\n", $this->parcellaire->_id, $parcelle->getHash());
+            }
 
-    private function exportParcelle($parcelle, $acheteurs = null) {
-        $export = "";
-        if (!$acheteurs) {
-            $export.=$parcelle->commune . ";";
-            $export.=$parcelle->section . ";";
-            $export.=$parcelle->numero_parcelle . ";";
-            $export.= $parcelle->getAppellation()->getLibelle() . ";";
-            $export.= $parcelle->getLieuLibelle() . ";";
-            $export.= $parcelle->getCepageLibelle() . ";";
-            $export.=sprintf("%01.02f", $parcelle->superficie) . ";";
-            $export.=$this->parcellaire->campagne . ";";
-            $export.=$this->parcellaire->declarant->cvi . ";";
-            $export.= $this->parcellaire->declarant->nom . ";";
-            $export.=$this->parcellaire->declarant->adresse . ";";
-            $export.=$this->parcellaire->declarant->code_postal . ";";
-            $export.=$this->parcellaire->declarant->commune . ";";
-            $export.=";;;;";
-            $export.= $this->parcellaire->validation.";";
-            $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
-            $export.="\n";
-        } else {
-            foreach ($acheteurs as $cviAcheteur => $acheteur) {
-                $export.=$parcelle->commune . ";";
-                $export.=$parcelle->section . ";";
-                $export.=$parcelle->numero_parcelle . ";";
+            if(!count($acheteurs) && count($acheteursGlobal) == 1) {
+                $acheteurs = $acheteursGlobal;
+            }
+
+            foreach($acheteurs as $acheteur) {
+                $export.= $parcelle->commune . ";";
+                $export.= $parcelle->section . ";";
+                $export.= $parcelle->numero_parcelle . ";";
                 $export.= $parcelle->getAppellation()->getLibelle() . ";";
                 $export.= $parcelle->getLieuLibelle() . ";";
                 $export.= $parcelle->getCepageLibelle() . ";";
-                $export.=sprintf("%01.02f", $parcelle->superficie) . ";";
-                $export.=$this->parcellaire->campagne . ";";
-                $export.=$this->parcellaire->declarant->cvi . ";";
+                $export.= sprintf("%01.02f", $parcelle->superficie) . ";";
+                $export.= $this->parcellaire->campagne . ";";
+                $export.= $this->parcellaire->declarant->cvi . ";";
                 $export.= $this->parcellaire->declarant->nom . ";";
-                $export.=$this->parcellaire->declarant->adresse . ";";
-                $export.=$this->parcellaire->declarant->code_postal . ";";
-                $export.=$this->parcellaire->declarant->commune . ";";
-                $export.= (count($acheteurs) == 1) ? "DEDIÉE;" : "PARTAGÉE;";
-                $export.=$acheteur->cvi . ";";
-                $export.=$acheteur->nom . ";";
-                $export.= (!$this->parcellaire->isPapier() ? (($this->parcellaire->autorisation_acheteur) ? "AUTORISÉE" : "REFUSÉE") : "").";";
+                $export.= $this->parcellaire->declarant->adresse . ";";
+                $export.= $this->parcellaire->declarant->code_postal . ";";
+                $export.= $this->parcellaire->declarant->commune . ";";
+                if($acheteur->cvi != $this->parcellaire->identifiant) {
+                    $export.= (count($acheteurs) == 1) ? "DEDIÉE;" : "PARTAGÉE;";
+                    $export.= $acheteur->cvi . ";";
+                    $export.= $acheteur->nom . ";";
+                    $export.= (!$this->parcellaire->isPapier() ? (($this->parcellaire->autorisation_acheteur) ? "AUTORISÉE" : "REFUSÉE") : "").";";
+                } else {
+                    $export.=";;;;";
+                }
                 $export.= $this->parcellaire->validation.";";
                 $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
                 $export.="\n";
             }
         }
+
         return $export;
     }
 

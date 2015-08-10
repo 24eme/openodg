@@ -2,7 +2,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 
-<h2>Notes obtenues&nbsp;<div class="btn btn-default btn-sm"><?php echo count($tournee->getNotes()); ?>&nbsp;vins dégustés</div>
+<h2>Notes obtenues&nbsp;<div class="btn btn-default btn-default-step btn-sm"><?php echo count($tournee->getNotes()); ?>&nbsp;vins dégustés</div>
 
 <a class="pull-right btn btn-link" href="<?php echo url_for("degustation_courriers_papier", $tournee) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Courriers non envoyés par mail</a>
 </h2>

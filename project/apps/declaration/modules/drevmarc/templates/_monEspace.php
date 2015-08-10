@@ -50,6 +50,9 @@
                             <p>
                                 <a class="btn btn-lg btn-warning btn-block" href="<?php echo url_for('drevmarc_create', $etablissement) ?>">Démarrer la télédéclaration</a>
                             </p>
+                            <p>
+                                <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('drevmarc_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                            </p>
                         <?php endif; ?>
                     </div>
                 <?php else: ?>
@@ -60,6 +63,11 @@
                         <p>
                             <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drevmarc_create', $etablissement) ?>">Démarrer</a>
                         </p>
+                        <?php if ($sf_user->isAdmin()): ?>
+                            <p>
+                                <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drevmarc_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                            </p>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
             </div>

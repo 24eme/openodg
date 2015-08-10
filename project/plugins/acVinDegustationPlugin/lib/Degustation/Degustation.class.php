@@ -126,6 +126,20 @@ class Degustation extends BaseDegustation {
         return $this->date_prelevement && $this->heure && $this->agent;
     }
 
+    public function getNombrePrelevements() {
+        $nb = 0;
+        foreach($this->prelevements as $prelevement) {
+            if(!$prelevement->isPreleve()) {
+
+                continue;
+            }
+
+            $nb++;
+        }
+
+        return $nb;
+    }
+
     public function getPrelevementsByAnonymatPrelevement($anonymat_prelevement) {
         foreach($this->prelevements as $prelevement) {
             if($prelevement->anonymat_prelevement == $anonymat_prelevement) {
