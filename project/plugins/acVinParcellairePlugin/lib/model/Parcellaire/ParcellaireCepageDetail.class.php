@@ -28,6 +28,17 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $this->getCepage()->getAcheteursNode($this->lieu);
     }
 
+    public function getAcheteursByCVI() {
+        $acheteurs = array();
+        foreach($this->getAcheteurs() as $type => $acheteurs) {
+            foreach($acheteurs as $cvi => $acheteur) {
+                $acheteurs[$cvi] = $acheteur; 
+            }
+        }
+
+        return $acheteurs;
+    }
+
     public function getProduitsCepageDetails() {
 
         return array($this->getHash() => $this);
