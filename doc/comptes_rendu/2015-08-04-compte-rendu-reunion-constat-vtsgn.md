@@ -6,7 +6,7 @@ Constats VT/SGN
 
 ### Mockups
 
-Les points évoqués lors de cette réunion ont directement été mis à jour dans les mockups : https://
+Les points évoqués lors de cette réunion ont directement été mis à jour dans les mockups : https://github.com/24eme/AVA/tree/prod/doc/mokups/constats_vtsgn
 
 ### Constats - Page d'accueil
 

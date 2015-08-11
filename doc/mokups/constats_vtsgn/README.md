@@ -17,13 +17,13 @@ L'usage principal de cet écran est la prise de rendez-vous pour un chai
 
 ## Résumé de la planification d'une journée
 
-Accessible depuis la page d'acceuil cet écran récapitule la planification et la réalisation des constats pour une journée
+Accessible depuis la page d'accueil cet écran récapitule la planification et la réalisation des constats pour une journée
 
 ![Récapitulatif d'une journée](02-jour.jpg) - 
 
 ## Planification et organisation
 
-Cet écran permet d'affecter et planifier les visites de constat à des agents et des crénaux horaires.
+Cet écran permet d'affecter et planifier les rdv à des agents et des crénaux horaires.
 
 ![Organisation](03-organisation.jpg) - 
 
@@ -60,6 +60,6 @@ La visualisation d'un constat avec téléchargement PDF (accessible depuis l'esp
 
 ![Visualisation d'un constat](10-visualisation_constat.jpg) -
 
-## Rapport de constat actuel utilisé
+## Rapport de constat actuellement utilisé
 
 ![Rapport de constat papier](11-rapport_constat.jpg) -
