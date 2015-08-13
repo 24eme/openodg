@@ -57,10 +57,10 @@
                     <span class="col-xs-6 text-right">
                         <div class="btn-group">
                         <?php if(!$facture->isPayee()): ?>
-                        <a href="<?php echo url_for("facturation_regenerate", array("id" => $facture->_id)) ?>" onclick='return confirm("Étes vous sûr de vouloir regénérer la facture ?");'  class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-repeat"></span>&nbsp;Regénerer</a>
+                        <a href="<?php echo url_for("facturation_regenerate", array("id" => $facture->_id)) ?>" onclick='return confirm("Étes vous sûr de vouloir regénérer la facture ?");'  class="btn btn-sm btn-default btn-default-step"<?php if ($facture->versement_comptable) echo ' disabled="disabled"'; ?>><span class="glyphicon glyphicon-repeat"></span>&nbsp;Regénerer</a>
                         <?php endif; ?>
                         <?php if(!$facture->isPayee()): ?>
-                        <a href="<?php echo url_for("facturation_edition", array("id" => $facture->_id)) ?>"class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Modifier</a>
+                        <a href="<?php echo url_for("facturation_edition", array("id" => $facture->_id)) ?>"class="btn btn-sm btn-default btn-default-step"<?php if ($facture->versement_comptable) echo ' disabled="disabled"'; ?>><span class="glyphicon glyphicon-pencil"></span>&nbsp;Modifier</a>
                         <?php endif; ?>
                         <?php if(!$facture->isPayee()): ?>
                         <a href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>"  class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-euro"></span>&nbsp;Paiement</a>
@@ -73,8 +73,15 @@
                     </span>
                     <span class="col-xs-8 col-xs-offset-2">
                         <?php if(!$facture->isPayee()): ?>
-                            <a href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>"><span class="label label-warning">Paiement non reçu</span></a>
+                            <span class="label label-warning">Paiement non reçu</span>
                         <?php endif; ?>
+                        <?php if($facture->versement_comptable): ?>
+			    <span class="label label-success">Versé comptablement</span>
+                        <?php endif; ?>
+                        <?php if($facture->versement_comptable_paiement): ?>
+                            <span class="label label-success">Paiement versé comptablement</span>
+                        <?php endif; ?>
+
                         <?php if($facture->isPayee()): ?>
                         <span class="label label-success">Paiement&nbsp;reçu</span><small class="text-muted">&nbsp;le&nbsp;</small><?php echo format_date($facture->date_paiement, "dd/MM/yyyy", "fr_FR"); ?>
                         <span class="text-muted">(<?php echo $facture->reglement_paiement ?>)</span>
