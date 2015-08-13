@@ -24,14 +24,31 @@ all:
     compte_creation: "http://url_compte_creation"
     compte_mot_de_passe_oublie: "http://url_compte_mot_de_pass_oublie"
     dr_recuperation: "http://url_autorisation/"
-  date_ouverture:
-    drev: "YYYY-mm-dd"
-    drevmarc: "YYYY-mm-dd"
-    parcellaire: "YYYY-mm-dd"
-    parcellaire_cremant: "YYYY-mm-dd"
+  dates_ouverture:
+    drev: 
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
+    drevmarc:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
+    parcellaire:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
+    parcellaire_cremant:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"
+  facture:
+    emetteur:
+      ALSACE:
+        adresse: "12 avenue de la Foire aux Vins - B.P. 91225"
+        code_postal: "68012"
+        ville: "COLMAR Cedex"
+        service_facturation: "Maison des Vins d'Alsace"
+        telephone: "Téléphone 03 89 20 16 50 - Télécopie 03 89 20 16 60"
+        email: "info@ava-aoc.fr"
   degustation_courrier:
     responsable: "Responsable technique"
     visitetel: "00.00.00.00.00"

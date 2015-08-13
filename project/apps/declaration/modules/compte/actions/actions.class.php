@@ -22,6 +22,7 @@ class compteActions extends sfActions {
 
     public function executeVisualisationAdmin(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
+        $this->abonnements = AbonnementClient::getInstance()->getAbonnementsByCompte($this->compte->identifiant);
     }
     
     public function executeRedirectEspaceEtablissement(sfWebRequest $request) {
@@ -140,8 +141,8 @@ class compteActions extends sfActions {
         $from = $res_by_page * ($page - 1);
         $q->setLimit($res_by_page);
         $q->setFrom($from);
-        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels');
-        $this->facets_libelle = array('automatiques' => 'Par type', 'attributs' => 'Par attributs', 'manuels' => 'Par mots clés');
+        $facets = array('automatiques' => 'tags.automatiques', 'attributs' => 'tags.attributs', 'manuels' => 'tags.manuels', 'syndicats' => 'tags.syndicats', 'produits' => 'tags.produits');
+        $this->facets_libelle = array('automatiques' => 'Par types', 'attributs' => 'Par attributs', 'manuels' => 'Par mots clés', 'syndicats' => 'Par syndicats', 'produits' => 'Par produits');
         foreach ($facets as $nom => $f) {
             $elasticaFacet = new acElasticaFacetTerms($nom);
             $elasticaFacet->setField($f);
@@ -177,6 +178,13 @@ class compteActions extends sfActions {
 
         $cvis = explode("\n", preg_replace("/^\n/", "",  preg_replace("/\n$/", "", preg_replace("/([^0-9\n]+|\n\n)/", "", str_replace("\n", "\n", $this->form->getValue('cvis'))))));
 
+        foreach($cvis as $index => $cvi) {
+            $cvis[$index] = trim($cvi);
+            if(!$cvis[$index]) {
+                unset($cvis[$index]);
+            }
+        }
+
         return $this->redirect('compte_recherche', array("q" => "(cvi:" . implode(" OR cvi:", $cvis) . ")", "all" => 1));
     }
 
@@ -197,7 +205,7 @@ class compteActions extends sfActions {
     
     public function executeRechercheJson($request) {
         if($request->getParameter('q')) {
-            $request->setParameter('q', "*".$request->getParameter('q')."*");
+            $request->setParameter('q', "*".$request->getParameter('q')."* type_compte:ETABLISSEMENT");
         }
 
         $q = $this->initSearch($request);
@@ -228,31 +236,41 @@ class compteActions extends sfActions {
         return $this->renderText(json_encode($list));
     }
 
+    public static function convertArgumentsToQuery($arguments) {
+        $query = isset($arguments['q']) ? $arguments['q'] : array();
+        if (!$query) {
+            $query = '*';
+        }
+
+        $tags = isset($arguments['tags']) ? $arguments['tags'] : array();
+        $all = isset($arguments['all']) ? $arguments['all'] : 0;
+
+        if (!$all) {
+            $query .= " statut:ACTIF";
+        }
+        foreach ($tags as $tag) {
+            $explodeTag = explode(':', $tag);
+            $query .= ' tags.' . $explodeTag[0] . ':"' . html_entity_decode($explodeTag[1], ENT_QUOTES) . '"';
+        }
+
+        return $query;
+    }
+
     private function initSearch(sfWebRequest $request) {
-        $this->q = $query = $request->getParameter('q', '*');
+        $this->q = $request->getParameter('q', '*');
         if (!$this->q) {
-            $this->q = $query = '*';
+            $this->q = '*';
         }
 
         $this->tags = $request->getParameter('tags', array());
         $this->all = $request->getParameter('all', 0);
-        if (!$this->all) {
-            $query .= " statut:ACTIF";
-        }
-        foreach ($this->tags as $tag) {
-            $explodeTag = explode(':', $tag);
-            $query .= ' tags.' . $explodeTag[0] . ':"' . html_entity_decode($explodeTag[1], ENT_QUOTES) . '"';
-        }
-        $this->type_compte = $request->getParameter('type_compte', null);
-        if($this->type_compte) {
-            $query .= " type_compte:".$this->type_compte;
-        }
 
-        $qs = new acElasticaQueryQueryString($query);
+        $this->args = array('q' => str_replace('"', '\"', $this->q), 'all' => $this->all, 'tags' => $this->tags);
+
+        $qs = new acElasticaQueryQueryString(self::convertArgumentsToQuery($this->args));
         $q = new acElasticaQuery();
         $q->setQuery($qs);
-
-        $this->args = array('q' => $this->q, 'all' => $this->all, 'tags' => $this->tags);
+        
         return $q;
     }
 

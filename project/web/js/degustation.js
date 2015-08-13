@@ -44,6 +44,14 @@
                         $placeholder.html(container.group.item.eq(0).html());
                     },
                     onDrop: function($item, container, _super, event) {
+                        if(!$item.prevAll(".operateur").length && $item.prevAll('li.hour').length < 1) {
+                            $item.remove();
+                            $item.insertAfter($('li.hour').eq(0));
+                        }
+                        if(!$item.nextAll(".operateur.list-group-item-success").length && $item.nextAll('li.hour').length < 2) {
+                            $item.remove();
+                            $item.insertBefore($('li.hour').eq($('li.hour').length - 2));
+                        }
                         $.setValuesBySort();
                         _super($item, container);
                     }
@@ -93,7 +101,7 @@
                 }
         );
 
-        $("#listes_operateurs .list-group-item-item.clickable").click(function() {
+        $("#listes_operateurs").on('click', '.list-group-item-item.clickable', function() {
             var ligne = $(this);
             $.addItem(ligne);
 
@@ -271,29 +279,57 @@
     $.getTourneeDiv = function(tournee) {
         return $('.nav-filter[data-state=' + tournee + ']');
     }
+    $.getTourneeItems = function(tournee) {
+        return $('#listes_operateurs .list-group-item-item.operateur.list-group-item-success[data-state=' + tournee + ']');
+    }
     $.tourneeToColor = function(tournee) {
         return $.getTourneeDiv(tournee).attr('data-color');
     }
-    $.tourneeToHour = function(tournee) {
-        return $.getTourneeDiv(tournee).attr('data-hour');
+    $.tourneeLastHour = function(tournee) {
+        var lastElement = $.getTourneeItems(tournee).last();
+
+        if(!lastElement.length) {
+            return $.getTourneeDiv(tournee).attr('data-hour');
+        }
+
+        return lastElement.find('input.input-heure').val();
     }
+
     $.tourneeToPerHour = function(tournee) {
         return $.getTourneeDiv(tournee).attr('data-perhour') * 1;
     }
-    $.tourneeToNextHour = function(tournee) {
-        next = $.tourneeToHour(tournee).split(':')[0] * 1 + 1;
+
+    $.tourneeCalculHour = function(tournee) {
+        var hour = $.tourneeLastHour(tournee);
+        if ($('li.operateur[data-state=' + tournee + '] .input-heure[value="' + hour + '"]').length >= $.tourneeToPerHour(tournee)) {
+
+            return $.tourneeNextHour(hour);
+        }
+
+        return hour;
+    }
+
+    $.tourneeNextHour = function(hour) {
+        next = hour.split(':')[0] * 1 + 1;
         if (next == 13 || next == 14) {
             next = 15;
         }
         if (next > 9) {
             return next + ':00';
-        } else {
-            return '0' + next + ':00';
-        }
+        } 
+            
+        return '0' + next + ':00';
     }
 
-    $.tourneeToNextHourDiv = function(tournee) {
-        return $('li.hour[data-value="' + $.tourneeToNextHour(tournee) + '"]');
+    $.tourneeInsertHourDiv = function(hour) {
+        var hourDiv = $('li.hour[data-value="' + $.tourneeNextHour(hour) + '"]');
+        var nextHourDiv = $('li.hour[data-value="' + $.tourneeNextHour($.tourneeNextHour(hour)) + '"]');
+        if(!hourDiv.length) {
+
+            return $('li.hour').eq($('li.hour').length-2);
+        }
+
+        return hourDiv;
     }
 
     $.toggleMarkerHover = function(marker, ligne, withMarkerOpacity, withLigneOpacity) {
@@ -325,23 +361,24 @@
 
     $.addItem = function(ligne) {
         tournee = $('.nav-filter.active').attr('data-state');
+        if(!tournee) {
+            return;
+        }
         $.addItemToTournee(ligne, tournee);
     }
     $.updateHourTournee = function(tournee) {
-        if ($('li.operateur[data-state=' + tournee + '] .input-heure[value="' + $.tourneeToHour(tournee) + '"]').length >= $.tourneeToPerHour(tournee)) {
-            $.getTourneeDiv(tournee).attr('data-hour', $.tourneeToNextHour(tournee));
-        }
+        
     }
 
     $.addItemToTournee = function(ligne, tournee) {
         ligne.attr('data-state', tournee);
         ligne.find('input.input-tournee').val(tournee);
         if ($.isTournee()) {
-            hourDiv = $.tourneeToNextHourDiv(tournee);
-            ligne.detach().insertBefore(hourDiv);
+            var hour = $.tourneeCalculHour(tournee);
+            ligne.detach().insertBefore($.tourneeInsertHourDiv(hour));
             ligne.attr('data-color', $.tourneeToColor(tournee));
-            ligne.find('input.input-heure').val($.tourneeToHour(tournee));
-            $.updateHourTournee(tournee);
+            ligne.find('input.input-heure').val(hour);
+            ligne.find('.glyphicon-resize-vertical').removeClass('hidden');
         }
         $.updateItem(ligne);
     }
@@ -351,6 +388,7 @@
         if ($.isTournee()) {
             ligne.find('input.input-tournee').val("");
             ligne.find('input.input-heure').val("");
+            ligne.find('.glyphicon-resize-vertical').addClass('hidden');
             ligne.detach().insertAfter($('#listes_operateurs li:last-child'));
         }
         $.updateItem(ligne);
@@ -375,10 +413,13 @@
             ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
             ligne.find('input, select').removeAttr('disabled');
-            if (ligne.find('select[data-auto=true]').length > 0) {
+            if (ligne.find('select[data-selection-mode=auto]').length > 0) {
                 if (ligne.find('select option[selected=selected]').length == 0) {
                     $.tireAuSortCepage(ligne.find('select'));
                 }
+            }
+            if (ligne.find('select[data-selection-mode=all]').length > 0) {
+                ligne.find('select[data-selection-mode=all] option').each(function() { $(this).prop('selected', 'selected') });
             }
             if (ligne.attr('data-point')) {
                 if (ligne.attr('data-color')) {
@@ -399,7 +440,8 @@
                 ligne.removeClass('clickable');
                 ligne.find('button.btn-success').addClass('hidden');
             }
-            ligne.find('select option[selected=selected]').removeAttr('selected');
+
+            ligne.find('select option').removeProp('selected');
 
             if (ligne.attr('data-point')) {
                 $(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', '#e2e2e2');
@@ -425,17 +467,18 @@
     $.tireAuSortCepage = function(select)
     {
         var nb_options = select.find('option').length;
-        select.find('option').eq(Math.floor((Math.random() * nb_options))).attr('selected', 'selected');
+        select.find('option').eq(Math.floor((Math.random() * nb_options))).prop('selected', 'selected');
     }
 
     $.updateRecapCepages = function()
     {
         $('#recap_cepages span.badge').text("0");
         $("#listes_operateurs .list-group-item-item select:visible option:selected").each(function(index, value) {
-            var item = $('#recap_cepages button[data-cepage="' + $(value).val() + '"] .badge');
+            var item = $('#recap_cepages button[data-cepage="' + $(value).val().replace(/-[0-9]+$/, "") + '"] .badge');
             item.html(parseInt(item.html()) + 1);
         });
-
+        $("[data-dynamic-value=nb-lots]").html($("#listes_operateurs .list-group-item-item select option:selected").length);
+        $("[data-dynamic-value=nb-operateurs]").html($("#listes_operateurs .list-group-item-item.list-group-item-success").length);
     }
 
     $.typeCourrierForVisiteChange = function(select)

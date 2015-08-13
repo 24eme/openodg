@@ -8,6 +8,12 @@ prod:
       level:   err
       loggers: ~
 
+  mailer:
+    param:
+      delivery_strategy: spool
+      spool_class: Swift_FileSpool
+      spool_arguments: [%SF_DATA_DIR%/mails]
+
 test:
   storage:
     class: sfSessionTestStorage

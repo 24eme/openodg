@@ -156,6 +156,32 @@ class DRevPrelevement extends BaseDRevPrelevement {
         }
     }
 
+    public function updateLotsVolumeRevendique() {
+        if(!count($this->lots)) {
+            return;
+        }
+
+        foreach($this->lots as $lot) {
+            $lot->volume_revendique = 0;
+        }
+
+        foreach($this->getDocument()->declaration->getProduitsCepage() as $produit) {
+            $hash = str_replace('/', '_', $produit->getConfig()->getHashRelation('lots'));
+
+            if(!$this->lots->exist($hash)) {
+                continue;
+            }
+
+            $lot = $this->lots->get($hash);
+
+            $lot->volume_revendique += $produit->volume_revendique;
+        }
+
+        foreach($this->lots as $lot) {
+            $lot->volume_revendique = round($lot->volume_revendique, 2);
+        }
+    }
+
     public function updateTotal() {
         if($this->getKey() == DRev::BOUTEILLE_VTSGN) {
 
@@ -173,6 +199,7 @@ class DRevPrelevement extends BaseDRevPrelevement {
 
     public function updatePrelevement() {
         $this->updateTotal();
+        $this->updateLotsVolumeRevendique();
     }
 
 }

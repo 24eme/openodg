@@ -115,7 +115,7 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     {
     	$total = 0;
         foreach($this->getChildrenNode() as $key => $item) {
-            $total += $item->getTotalSuperficie();
+            $total += $item->getTotalTotalSuperficie();
         }
         return $total;
     }
@@ -124,7 +124,7 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     {
     	$total = 0;
         foreach($this->getChildrenNode() as $key => $item) {
-            $total += $item->getTotalSuperficie();
+            $total += $item->getTotalVolumeRevendique();
         }
         return $total;
     }

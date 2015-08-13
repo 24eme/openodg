@@ -21,7 +21,9 @@ DRev:
       validation_odg: { }
       non_recoltant: { required: false, type: integer }
       non_conditionneur: { required: false, type: integer }
+      non_vinificateur: { required: false, type: integer }
       papier: { required: false, type: integer }
+      automatique: { required: false, type: integer }
       declarant:
         type: collection
         definition:
@@ -180,6 +182,12 @@ DRev:
         definition:
           fields:
             '*': { }
+      facturable:
+        required: false
+        type: collection
+        definition:
+          fields:
+            '*': { }
       chais:
         type: collection
         definition:
@@ -191,3 +199,19 @@ DRev:
                   adresse: { }
                   commune: { }
                   code_postal: { }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: DRevMouvement
+                    inheritance: Mouvement
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }

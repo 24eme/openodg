@@ -1,0 +1,28 @@
+#Abonnement
+Abonnement:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      date_debut: { }
+      date_fin: { }
+      periode: { }
+      identifiant: { }
+      tarif: { }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: AbonnementMouvement
+                    inheritance: Mouvement
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }

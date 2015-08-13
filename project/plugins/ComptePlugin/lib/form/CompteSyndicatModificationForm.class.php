@@ -25,8 +25,6 @@ class CompteSyndicatModificationForm extends CompteModificationForm {
         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => true)));        
     }
 
-   
-
     public function save($con = null) {
         parent::save($con);
     }

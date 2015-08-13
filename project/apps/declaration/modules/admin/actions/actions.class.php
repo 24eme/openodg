@@ -63,4 +63,14 @@ class adminActions extends sfActions {
         return $this->forward404();
     }
 
+    public function executeExport(sfWebRequest $request) {
+        $current_key_list = $request->getParameter('docs', 'DRev 2014');
+        $statut = $request->getParameter('doc_statut', "a_valider");
+
+        $this->setLayout(false);
+        $attachement = sprintf("attachment; filename=export_%s_%s_%s.csv", str_replace("-", "_", strtolower(KeyInflector::slugify($current_key_list))), $statut, date('YmdHis'));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+    }
+
 }

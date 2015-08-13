@@ -7,6 +7,17 @@ class Configuration extends BaseConfiguration {
         return $this->declaration->getProduits();
     }
     
+    public function getTemplatesFactures()
+    {
+    	$factures = array();
+    	if ($this->exist('factures')) {
+    		foreach ($this->factures as $type => $id) {
+    			$factures[$type] = acCouchdbManager::getClient()->find($id);
+    		}
+    	}
+    	return $factures;
+    }
+    
     public function getAppellationsLieuDit()
     {
       $result = array();

@@ -13,6 +13,7 @@ class DegustationClient extends acCouchdbClient {
 
     const MOTIF_NON_PRELEVEMENT_REPORT = "REPORT";
     const MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN = "PLUS_DE_VIN";
+    const MOTIF_NON_PRELEVEMENT_DECLASSEMENT = "DECLASSEMENT";
     const MOTIF_NON_PRELEVEMENT_SOUCIS = "SOUCIS";
 
     const COURRIER_TYPE_OPE = "OPE" ;
@@ -22,9 +23,15 @@ class DegustationClient extends acCouchdbClient {
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",
-        /*self::NOTE_TYPE_TYPICITE => "Typicité",
+        self::NOTE_TYPE_TYPICITE => "Typicité",
         self::NOTE_TYPE_CONCENTRATION => "Concentration",
-        self::NOTE_TYPE_EQUILIBRE => "Équilibre",*/
+        self::NOTE_TYPE_EQUILIBRE => "Équilibre",
+    );
+
+    public static $note_type_by_appellation = array(
+        'ALSACE' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE),
+        'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_CONCENTRATION, self::NOTE_TYPE_EQUILIBRE),
+        'GRDCRU' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE, self::NOTE_TYPE_TYPICITE),
     );
 
     public static $note_type_libelles_help = array(
@@ -35,6 +42,7 @@ class DegustationClient extends acCouchdbClient {
     public static $motif_non_prelevement_libelles = array(
         self::MOTIF_NON_PRELEVEMENT_REPORT => "Report",
         self::MOTIF_NON_PRELEVEMENT_PLUS_DE_VIN => "Plus de vin",
+        self::MOTIF_NON_PRELEVEMENT_DECLASSEMENT => "Déclassement",
         self::MOTIF_NON_PRELEVEMENT_SOUCIS => "Soucis",
     );
 
@@ -42,22 +50,22 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Acescence", "Acétate d'éthyl","Acétique","Acide","Acidité volatile","Aigre-doux","Alcooleux","Alliacé","Amande amère","Amer","Amylique","Apre","Asséchant","Astringent","Bactérien","Bock","Botrytis","Bouchonné","Bourbes","Brunissement","Butyrique","Caoutchouc","Cassé","Champignon","Ciment","Couleur altérée","Créosote","Croupi","Cuit","Cuivre","Décoloré","Désagréable","Déséquilibré","Douceureux","Ecurie","Eventé","Evolué","Fatigué","Fermentaire","Filant","Foxé","Gazeux","Géranium","Gouache","Goudron","Goût de bois sec","Goût de colle","Grêle","Grossier","H2S","Herbacé","Huileux","Hydrocarbures","Insuffisant","Iodé","Lactique","Levure","Lie","Logement","Lourd","Madérisé","Malpropre","Manque de finesse","Manque de fruit","Manque de structure","Mauvais boisé","Mauvais goût","Mauvaise odeur","Mercaptans","Métallique","Moisi","Mou","Oignon","Oxydé","Papier","Pas net","Pharmaceutique","Phéniqué","Phénolé","Piqué","Plastique","Plat","Plombé","Poivron","Pourri","Pourriture grise","Poussiéreux","Punaise","Putride","Rafle","Rance","Réduit","Résinique","Sale","Savonneux","Sec","Serpilière","Sirupeux","SO2","Solvant","Souris","Squelettique","Styrène","Taché","Tannique","Tartre sec","Terreux","Trop boisé","Trouble","Tuilé","Usé","Végétal","Vert","Vin non terminé"),
         self::NOTE_TYPE_MATIERE => array("Champignon","Court","Creux","Dilué","Insuffisant","Maigre","Manque de corps","Manque de fruit","Manque de matière","Manque de puissance","Manque de structure","Manque de typicité dans le cépage","Pourri","Pourriture grise","Végétal","Vert", "Acide", "Lourd", "Moisi", "Mou", "Poivron", "Poussiéreux", "Herbacé"),
         self::NOTE_TYPE_TYPICITE => array(),
-        self::NOTE_TYPE_CONCENTRATION => array(),
-        self::NOTE_TYPE_EQUILIBRE => array(),
+        self::NOTE_TYPE_CONCENTRATION => array("Court","Creux","Dilué","Insuffisant","Maigre","Manque de corps","Manque de fruit","Manque de matière","Manque de puissance","Manque de structure"),
+        self::NOTE_TYPE_EQUILIBRE => array("Aigre-doux","Alcooleux","Désagréable","Déséquilibré","Douceureux","Lourd"),
     );
 
     public static $note_type_notes = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => array("3" => "3 - Absence de défaut", "2" => "2 - Défaut minime", "1" => "1 - Défaut important", "0" => "0 - Retrait du bénéfice de l'AOC"),
         self::NOTE_TYPE_MATIERE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
-        self::NOTE_TYPE_TYPICITE => array("Defaut 1"),
-        self::NOTE_TYPE_CONCENTRATION => array("Defaut 1"),
-        self::NOTE_TYPE_EQUILIBRE => array("Defaut 1"),
+        self::NOTE_TYPE_TYPICITE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
+        self::NOTE_TYPE_CONCENTRATION => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
+        self::NOTE_TYPE_EQUILIBRE => array("A" => "A - Remarquable", "B" => "B - Conforme", "C" => "C - Améliorations souhaitables", "D" => "D - Qualité insuffisante"),
     );
 
     public static $types_courrier_libelle = array(
         self::COURRIER_TYPE_OPE => "OPE",
         self::COURRIER_TYPE_OK => "OK",
-             self::COURRIER_TYPE_VISITE => "Visite"
+        self::COURRIER_TYPE_VISITE => "Visite"
     );
 
     public static function getInstance()
@@ -127,4 +135,23 @@ class DegustationClient extends acCouchdbClient {
         return $operateur_a->date_demande > $operateur_b->date_demande;
     }
 
+    public function getNotesTypeByAppellation($appellation) {
+        if(!isset(self::$note_type_by_appellation[$appellation])) {
+
+            return array();
+        }
+
+        $note_types = array();
+
+        foreach(self::$note_type_by_appellation[$appellation] as $note_type) {
+            $note_types[$note_type] = self::$note_type_libelles[$note_type];
+        }
+
+        return $note_types;
+    }
+
+    public function getDegustationsByAppellation($appellation) {
+
+        return DegustationTousView::getInstance()->getDegustationsByAppellation($appellation);
+    }
 }

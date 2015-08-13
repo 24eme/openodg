@@ -73,21 +73,25 @@ class CompteModificationForm extends acCouchdbObjectForm {
     }   
     
     public function save($con = null) {
-        if (isset($this->values['attributs']) && $attributs = $this->values['attributs']) {
-            $this->getObject()->updateInfosTagsAttributs($attributs);
+        if (array_key_exists('attributs', $this->values)) {
+            $attributs = ($this->values['attributs']) ? $this->values['attributs'] : array();
+            $this->getObject()->updateInfosTagsAttributs($this->values['attributs']);
         }
-        if (isset($this->values['manuels'])) {
+
+        if (array_key_exists('manuels', $this->values)) {
             $tagsManuelsValues = $this->values['manuels'];
             $tagsManuelsValuesSplited = explode(",",$tagsManuelsValues);
             $tagsManuels = array();
             foreach ($tagsManuelsValuesSplited as $manuel) {
-                $manuel_key = str_replace('-', '_',strtoupper(KeyInflector::slugify( $manuel)));
+                $manuel_key = str_replace('-', '_',strtoupper(KeyInflector::slugify($manuel)));
+                if(!$manuel_key && !$manuel) {
+                    continue;
+                }
                 $tagsManuels[$manuel_key] = $manuel;
             }
             $this->getObject()->updateInfosTagsManuels($tagsManuels);
         }
 
-        
         parent::save($con);
     }
 
@@ -97,7 +101,28 @@ class CompteModificationForm extends acCouchdbObjectForm {
         }
 
         $this->updateObject();
+
+        $this->updateAndCleanFormations();
+
         $this->object->getCouchdbDocument()->save(true, true);
+    }
+
+    protected function updateAndCleanFormations() {
+        $formation_hash_to_delete = array();
+        foreach($this->getObject()->formations as $formation) {
+            if($formation->produit_hash) {
+               $formation->produit_libelle = ConfigurationClient::getConfiguration()->get($formation->produit_hash)->getLibelleComplet(); 
+            }
+
+            if($formation->produit_hash || $formation->annee || $formation->heures) {
+                continue;
+            }
+            $formation_hash_to_delete[] = $formation->getHash();
+        }
+
+        foreach($formation_hash_to_delete as $hash) {
+            $this->getObject()->remove($hash);
+        }
     }
 
     private function initDefaultAttributs() {

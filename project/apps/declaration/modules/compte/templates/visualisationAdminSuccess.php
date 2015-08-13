@@ -29,6 +29,12 @@
                             <?php echo $compte->nom_a_afficher; ?>
                         </div>                
                     </div>
+                    <div class="row">
+                        <label class="col-xs-6">Identifiant interne </label>    
+                        <div class="col-xs-6">
+                            <?php echo $compte->identifiant_interne; ?>
+                        </div>                
+                    </div>
                     <?php if ($compte->cvi): ?>
                         <div class="row">
                             <label class="col-xs-6">CVI </label>    
@@ -159,15 +165,14 @@
                     <h3>Informations complémentaire</h3>
                 </div>
                 <div class="panel-body">
-                    <div class="form-group">
+                    <div class="form-group row">
                         <label class="col-xs-3">Type de compte :</label> 
-                        <label class="col-xs-9 "><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
+                        <label class="col-xs-9"><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?></label>
                     </div>
-                    <br/>  
                     <?php if ($compte->hasAttributs()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Attributs :</label> 
-                            <div>                                                   
+                            <div class="col-xs-9" style="line-height: 23px;">                                                   
                                 <?php foreach ($compte->getInfosAttributs() as $attribut_code => $attribut_libelle): ?>
                                     <span class="label label-success"><?php echo $attribut_libelle ?></span>
                                 <?php endforeach; ?>                           
@@ -175,9 +180,9 @@
                         </div>
                     <?php endif; ?>
                     <?php if ($compte->hasProduits()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Produits :</label> 
-                            <div>                         
+                            <div class="col-xs-9" style="line-height: 23px;">                         
                                 <?php foreach ($compte->getInfosProduits() as $produit_code => $produit_libelle): ?>
                                     <span class="label label-info"><?php echo $produit_libelle ?></span>
                                 <?php endforeach; ?>
@@ -186,22 +191,22 @@
                         </div>
                     <?php endif; ?>
                     <?php if ($compte->hasSyndicats()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Syndicats :</label> 
-                            <div>                         
+                            <div class="col-xs-9" style="line-height: 23px;">                         
                                 <?php foreach ($compte->getInfosSyndicats() as $syndicat_code => $syndicat_libelle): ?>
-                                    <span class="label label-danger" style="margin: 2px;"><?php echo $syndicat_libelle ?></span>
+                                    <span class="label label-danger"><?php echo $syndicat_libelle ?></span>
                                 <?php endforeach; ?>
 
                             </div>
                         </div>
                     <?php endif; ?>
                     <?php if ($compte->hasManuels()): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label class="col-xs-3">Mots clés :</label> 
-                            <div>           
+                            <div class="col-xs-9" style="line-height: 23px;">           
                                 <?php foreach ($compte->getInfosManuels() as $tag_manuel_code => $tag_manuel): ?>
-                                    <span class="label label-default" style="margin: 2px;"><?php echo $tag_manuel ?></span>
+                                    <span class="label label-default"><?php echo $tag_manuel ?></span>
                                 <?php endforeach; ?>                               
                             </div>
                         </div>
@@ -231,6 +236,48 @@
                 </div>
             </div>
         </div>  
+    <?php endif; ?>
+
+    <?php if(count($compte->formations)): ?>
+    <div class="row">
+            <div class="col-xs-12">
+                <div class="panel  panel-primary">
+                    <div class="panel-heading">
+                        <h3>Formations</h3>
+                    </div>
+                    <ul class="list-group">
+                        <?php foreach($compte->getFormationsByAnnee() as $annee => $formations): ?>
+                        <li class="list-group-item text-center">
+                            <span class="badge"><?php echo $annee ?></span>
+                            <?php foreach($formations as $formation): ?>
+                            <span class="label label-info"><?php echo $formation->produit_libelle ?>&nbsp;&nbsp;<span class="label label-primary"><?php echo $formation->heures ?> h</span></span>
+                            <?php endforeach; ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+            </div>
+        </div>
+    </div>  
+    <?php endif; ?>
+
+    <?php if(count($abonnements)): ?>
+    <div class="row">
+            <div class="col-xs-12">
+                <div class="panel  panel-primary">
+                    <div class="panel-heading">
+                        <h3>Abonnement à la revue</h3>
+                    </div>
+                    <ul class="list-group">
+                        <?php foreach($abonnements as $abonnement): ?>
+                        <li class="list-group-item text-center">
+                            Du <?php echo format_date($abonnement->date_debut, "dd/MM/yyyy", "fr_FR"); ?>
+                            au <?php echo format_date($abonnement->date_fin, "dd/MM/yyyy", "fr_FR"); ?> avec un tarif  <?php echo $abonnement->tarif; ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+            </div>
+        </div>
+    </div>
     <?php endif; ?>
 
     <div class="row row-margin row-button">

@@ -1,6 +1,6 @@
 <?php
 
-class DRevClient extends acCouchdbClient {
+class DRevClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "DRev"; 
     const TYPE_COUCHDB = "DREV";
@@ -20,6 +20,17 @@ class DRevClient extends acCouchdbClient {
         }
 
         return $doc;
+    }
+    
+    public function findFacturable($identifiant, $campagne) {
+    	$drev = $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
+
+        if(!$drev->validation) {
+
+            return null;
+        }
+
+        return $drev;
     }
 
     public function createDoc($identifiant, $campagne, $papier = false) 
@@ -52,6 +63,45 @@ class DRevClient extends acCouchdbClient {
         }
 
         return $drev;
+    }
+
+    public function getIds($campagne) {
+        $ids = $this->startkey_docid(sprintf("DREV-%s-%s", "0000000000", "0000"))
+                    ->endkey_docid(sprintf("DREV-%s-%s", "9999999999", "9999"))
+                    ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+
+        $ids_campagne = array();
+
+        foreach($ids as $id) {
+            if(strpos($id, "-".$campagne) !== false) {
+                $ids_campagne[] = $id;
+            }
+        }
+
+        sort($ids_campagne);
+
+        return $ids_campagne;
+    }
+
+    public function getDateOuvertureDebut() {
+        $dates = sfConfig::get('app_dates_ouverture_drev');
+
+        return $dates['debut'];
+    }
+
+    public function getDateOuvertureFin() {
+        $dates = sfConfig::get('app_dates_ouverture_drev');
+
+        return $dates['fin'];
+    }
+
+    public function isOpen($date = null) {
+        if(is_null($date)) {
+
+            $date = date('Y-m-d');
+        }
+
+        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin(); 
     }
     
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {

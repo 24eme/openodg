@@ -26,8 +26,11 @@ class Tournee extends BaseTournee {
     }
 
     public function getProduits() {
-
-        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+        if($this->appellation == 'VTSGN') {
+            return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+        }
+        
+        return $this->getConfiguration()->declaration->certification->genre->appellation_ALSACE->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_LOTS);
     }
 
     public function getOperateursOrderByHour() {
@@ -36,7 +39,7 @@ class Tournee extends BaseTournee {
             $heure = $degustation->heure;
 
             if (!$degustation->heure) {
-                $heure = "24:00";
+                $heure = TourneeClient::HEURE_NON_REPARTI;
             }
             $operateurs[$heure][sprintf('%05d', $degustation->position).$degustation->getIdentifiant()] = $degustation;
             ksort($operateurs[$heure]);
@@ -74,8 +77,15 @@ class Tournee extends BaseTournee {
         return $this->getDegustationsObject();
     }
 
-    public function getDegustationObject($cvi) {
+    public function addDegustationObject($degustation) {
+        $this->getDegustationsObject();
+        $this->degustations->add($degustation->identifiant, $degustation->_id);
+        $this->degustations_object[$degustation->identifiant] = $degustation;
+    }
 
+    public function getDegustationObject($cvi) {
+        $this->getDegustationsObject();
+        
         return $this->degustations_object[$cvi];
     }
  
@@ -173,6 +183,15 @@ class Tournee extends BaseTournee {
         return true;
     }
 
+    public function getNbLots() {
+        $nb_lot = 0;
+        foreach($this->getDegustationsObject() as $degustation) {
+            $nb_lot += count($degustation->getLotsPrelevement());
+        }
+
+        return $nb_lot;
+    }
+
     public function getOperateursPrelevement() {
         $operateurs = array();
 
@@ -258,19 +277,21 @@ class Tournee extends BaseTournee {
     }
 
     public function updateOperateursFromPrevious() {
-        $previous = $this->getPrevious();
+        $degustations_json = TourneeClient::getInstance()->getReportes($this->appellation);
 
-        if(!$previous) {
+        foreach($degustations_json as $degustation_previous_json) {
+            if($this->degustations->exist($degustation_previous_json->identifiant)) {
+                continue;
+            }
 
-            return null;
-        }
-
-        foreach($previous->getOperateursReporte() as $degustation_previous) {
+            $degustation_previous = DegustationClient::getInstance()->find($degustation_previous_json->_id);
             $degustation = $this->addOperateurFromDRev($degustation_previous->drev);
 
             if(!$degustation) {
                 continue;
             }
+
+            $degustation->reporte = 1;
 
             foreach($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
                 if(!$degustation->lots->exist($lot_key)) {
@@ -283,23 +304,17 @@ class Tournee extends BaseTournee {
     }
 
     public function updateOperateursFromDRev() {
-        $prelevements = TourneeClient::getInstance()->getPrelevements($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
-
-        //$previous = $this->getPrevious();
+        $prelevements = TourneeClient::getInstance()->getPrelevementsFiltered($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
 
         foreach($prelevements as $prelevement) {
-            $operateur = $this->addOperateurFromDRev($prelevement->_id);
-
-            /*if($previous && $previous->operateurs->exist($operateur->cvi) && $previous->operateurs->get($operateur->cvi)->isPrelever()) {
-                $this->operateurs->remove($operateur->cvi);
-            }*/
+            $degustation = $this->addOperateurFromDRev($prelevement->_id);
         }
     }
 
     public function cleanOperateurs($save = true) {
         $degustations_to_remove = array();
         foreach($this->getDegustationsObject() as $degustation) {
-            if($degustation->date_prelevement && $degustation->agent) {
+            if($degustation->isAffecteTournee()) {
                 continue;
             }
 
@@ -337,15 +352,17 @@ class Tournee extends BaseTournee {
             return null;
         }
 
-        //var_dump(DegustationClient::getInstance()->getDegustationsByIdentifiant($drev->identifiant));
+        if($this->degustations->exist($drev->identifiant)) {
+
+            return $this->getDegustationObject($drev->identifiant);
+        }
 
         $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->date, $this->appellation);
 
         $degustation->updateFromDRev($drev);
         $degustation->constructId();
 
-        $this->degustations->add($degustation->identifiant, $degustation->_id);
-        $this->degustations_object[$degustation->identifiant] = $degustation;
+        $this->addDegustationObject($degustation);
 
         return $degustation;
     }
@@ -385,7 +402,6 @@ class Tournee extends BaseTournee {
         }
     }
 
-
     public function getPrelevementsReadyForCourrier() {
         $prelevementsByOperateurs = array();
 
@@ -397,6 +413,7 @@ class Tournee extends BaseTournee {
                         $prelevementsByOperateurs[$cvi]->prelevements = array();
                         $prelevementsByOperateurs[$cvi]->operateur = $operateur;
                     }
+
                     $prelevementsByOperateurs[$cvi]->prelevements[$prelevement->getHash()] = $prelevement;
                 }
             }
@@ -405,15 +422,45 @@ class Tournee extends BaseTournee {
         return $prelevementsByOperateurs;
     }
 
-    public function hasAllTypeCourrier() {
-        $notes = $this->getNotes();
-        foreach ($notes as $note) {
-            if (!$note->prelevement->exist('type_courrier') || !$note->prelevement->type_courrier) {
-                return false;
+    public function getPrelevementsCourrierToSend() {
+        $prelevements = array();
+        foreach ($this->operateurs as $cvi => $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if (!$prelevement->exist('type_courrier') || !$prelevement->type_courrier) {
+                    continue;
+                }
+                if(!is_null($prelevement->courrier_envoye)) {
+                    continue;
+                }
+
+                if (!$operateur->email) {
+                    continue;
+                }
+                $prelevements[] = $prelevement;
             }
         }
+
+        return $prelevements;
+    }
+
+    public function hasAllTypeCourrier() {
         
-        return true;
+        
+        return $this->countNotTypeCourrier() == 0;
+    }
+
+    public function countNotTypeCourrier() {
+        $notes = $this->getNotes();
+        $i = 0;
+        foreach ($notes as $note) {
+            if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier) {
+                continue;
+            }
+
+            $i++;
+        }
+        
+        return $i;
     }
 
     public function getNotes() {

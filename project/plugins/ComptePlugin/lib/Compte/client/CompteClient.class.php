@@ -25,6 +25,7 @@ class CompteClient extends acCouchdbClient {
     const ATTRIBUT_ETABLISSEMENT_NEGOCIANT = "NEGOCIANT";
     const ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT = "VITICULTEUR_INDEPENDANT";
     const ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE = "CAVE_COOPERATIVE";
+    const ATTRIBUT_ETABLISSEMENT_ADHERENT_SYNDICAT = "ADHERENT_SYNDICAT";
     const ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT = "AGENT_PRELEVEMENTS";
     const ATTRIBUT_AGENT_PRELEVEMENT_APPUI_TECHNIQUE = "APPUI_TECHNIQUE";
     const ATTRIBUT_DEGUSTATEUR_PORTEUR_MEMOIRES = "PORTEUR_MEMOIRES";
@@ -35,6 +36,9 @@ class CompteClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
     const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
     const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
+    
+    
+    const REGION_VITICOLE = 'ALSACE';
 
     private $libelles_attributs_etablissements = array(
         self::ATTRIBUT_ETABLISSEMENT_APPORTEUR => 'Producteur en structure collective',
@@ -47,7 +51,8 @@ class CompteClient extends acCouchdbClient {
         self::ATTRIBUT_ETABLISSEMENT_METTEUR_EN_MARCHE => 'Metteur en marché',
         self::ATTRIBUT_ETABLISSEMENT_NEGOCIANT => 'Négociant',
         self::ATTRIBUT_ETABLISSEMENT_VITICULTEUR_INDEPENDANT => 'Viticulteur indépendant',
-        self::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE => 'Cave coopérative'
+        self::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE => 'Cave coopérative',
+        self::ATTRIBUT_ETABLISSEMENT_ADHERENT_SYNDICAT => 'Adhérent au syndicat'
     );
     private $libelles_attributs_agents_prelevement = array(
         self::ATTRIBUT_AGENT_PRELEVEMENT_AGENT_PRELEVEMENT => 'Agent de prélèvement',
@@ -204,6 +209,18 @@ class CompteClient extends acCouchdbClient {
     public function getChaiAttributLibelle($attribut) {
        
         return $this->libelles_chais_attributs[$attribut];
+    }
+
+    public function getComptes($query) {
+        $qs = new acElasticaQueryQueryString($query);
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        $q->setLimit(99999);
+        
+        $index = acElasticaManager::getType('compte');
+        $resset = $index->search($q);
+        
+        return $resset->getResults();
     }
 
     public function getAllTypesCompte() {

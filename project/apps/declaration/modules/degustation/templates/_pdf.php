@@ -32,33 +32,28 @@
         </td>
     </tr>
 </table>
-<br/>
 <p>
-<!--N/Réf.: <?php
-            echo str_replace('-', '', $degustation->date_degustation) . '/' . $prelevement->anonymat_degustation;
-            echo ($prelevement->type_courrier == DegustationClient::COURRIER_TYPE_OPE) ? '/OPE' : '';
-            ?><br />-->
 N° CVI : <?php echo $degustation->cvi; ?><br /><br />
 Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . ((int) substr($degustation->date_degustation, 0, 4) - 1); ?><br />
 </p>
 <p>Madame, Monsieur,</p>
 <br/>
-<p style="text-align: justify;">Vous avez présenté un échantillon d'<strong><?php echo $degustation->appellation_libelle . ' ' . $prelevement->libelle; ?></strong> à une dégustation conseil organisée par l'ODG-AVA. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($degustation->date_degustation, "P", "fr_FR")); ?></strong>.</p>
+<p style="text-align: justify;">Vous avez présenté un échantillon de <strong><?php $prelevement->libelle; ?></strong> à une dégustation conseil <?php echo $degustation->appellation_libelle ?> organisée par l'ODG-AVA. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($degustation->date_degustation, "P", "fr_FR")); ?></strong>.</p>
 <p>Les experts dégustateurs ont fait les commentaires suivants sur votre vin : </p>
 
 <div><span class="h3">&nbsp;Rapport de notes&nbsp;</span></div>
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; width: 250px; font-weight: bold;">&nbsp;Produit</th>    
+        <th class="th" style="text-align: left; width: 260px; font-weight: bold;">&nbsp;Produit</th>    
         <th class="th" style="text-align: center; width: 60px; font-weight: bold;">Lot N°</th>  
-        <th class="th" style="text-align: center; width: 160px; font-weight: bold;">Cuve</th>  
-        <th class="th" style="text-align: center; width: 150px; font-weight: bold;">N° de Prélèvement</th>
+        <th class="th" style="text-align: center; width: 160px; font-weight: bold;">Cuve / Volume</th>  
+        <th class="th" style="text-align: center; width: 140px; font-weight: bold;">N° de Prélèvement</th>
     </tr>
     <tr>
-        <td class="td" style="text-align:left; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->libelle; ?></td>
+        <td class="td" style="text-align:left; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->libelle; ?><?php if($prelevement->libelle_produit): ?><small style="font-weight: normal"><br />&nbsp;&nbsp;<?php echo str_replace("AOC ", "" , $prelevement->libelle_produit) ?></small><?php endif; ?></td>
         <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->getKey() + 1; ?></td>        
-        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->cuve; ?></td>        
+        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php if($prelevement->getCuveNettoye()): ?><?php echo $prelevement->getCuveNettoye(); ?> <?php endif; ?><?php if($prelevement->getCuveNettoye() && $prelevement->volume_revendique): ?>/ <?php endif; ?><?php if($prelevement->volume_revendique): ?><?php echoFloat($prelevement->volume_revendique) ?> <small>hl</small><?php endif; ?></td>        
         <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->anonymat_prelevement_complet; ?></td>
 
     </tr>    
@@ -92,9 +87,7 @@ Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' mi
     </tr>
     <?php endif; ?>
 </table>
-<p></p>
 <?php echo getExplicationsPDF($prelevement); ?>
-<p></p>
 <p style="text-align: justify;">A votre disposition pour tout complément d'information, nous vous prions d'agréer, Madame, Monsieur, nos plus cordiales salutations.</p>
 <br/>
 <p style="text-align: right;"><strong><?php echo sfConfig::get('app_degustation_courrier_responsable'); ?><br />Responsable de l'Appui Technique de l'AVA</strong></p>
@@ -103,7 +96,7 @@ Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' mi
 <p style="font-weight: normal; font-size: 8pt;">Rappel du barème des notes :</p>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <?php
-    foreach (DegustationClient::$note_type_libelles as $noteType => $noteLibelle):
+    foreach (DegustationClient::getInstance()->getNotesTypeByAppellation($degustation->appellation) as $noteType => $noteLibelle):
         $notesDesc = "";
         foreach (DegustationClient::$note_type_notes[$noteType] as $noteDesc):
             $notesDesc.=$noteDesc . ' / ';

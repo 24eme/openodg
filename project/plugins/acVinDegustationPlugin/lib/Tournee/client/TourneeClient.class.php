@@ -11,6 +11,8 @@ class TourneeClient extends acCouchdbClient {
     const STATUT_DEGUSTATIONS = 'DEGUSTATIONS';
     const STATUT_COURRIERS = 'COURRIERS';
     const STATUT_TERMINE = 'TERMINE';
+
+    const HEURE_NON_REPARTI = '99:99';
     
     public static function getInstance()
     {
@@ -37,9 +39,47 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
-    public function getPrelevements($produit, $date_from, $date_to) {
+    public function getPrelevements($appellation, $date_from, $date_to) {
         
-        return DRevPrelevementsView::getInstance()->getPrelevements($produit, $date_from, $date_to);
+        return DRevPrelevementsView::getInstance()->getPrelevements($appellation, $date_from, $date_to);
+    }
+
+    public function getPrelevementsFiltered($appellation, $date_from, $date_to) {
+        
+        return $this->filterPrelevements($appellation, DRevPrelevementsView::getInstance()->getPrelevements($appellation, $date_from, $date_to));
+    }
+
+    public function getReportes($appellation) {
+        $reportes = array();
+
+        $degustations = DegustationClient::getInstance()->getDegustationsByAppellation($appellation);
+
+        foreach($degustations as $degustation)  {
+            if($degustation->statut != DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
+
+                continue;
+            }
+
+            $reportes[$degustation->identifiant] = $degustation; 
+        }
+
+        return $reportes;
+    }
+
+    public function filterPrelevements($appellation, $prelevements) {
+        $degustations = DegustationClient::getInstance()->getDegustationsByAppellation($appellation);
+
+        $prelevements_filter = array();
+
+        foreach($prelevements as $key => $prelevement) {
+            if(array_key_exists($prelevement->identifiant, $degustations)) {
+                continue;
+            }
+
+            $prelevements_filter[$key] = $prelevement;
+        }
+
+        return $prelevements_filter;
     }
 
     public function getAgents($attribut = null) {

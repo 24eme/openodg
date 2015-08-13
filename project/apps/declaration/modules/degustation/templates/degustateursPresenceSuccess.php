@@ -3,6 +3,7 @@
 <form id="form_degustateurs_presence" action="" method="post" class="form-horizontal">
     <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
     <div class="page-header text-center">
+        <a href="<?php echo url_for('degustation_degustateurs_presence_export', $tournee) ?>" class="btn btn-default btn-default-step pull-right"><span class="glyphicon glyphicon-export"></span>&nbsp;Exporter en CSV</a>
         <h2>Liste de présence des dégustateurs<br /><small>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></small></h2>
     </div> 
     <div class="row">
@@ -15,7 +16,7 @@
                     <?php $degustateur = $tournee->get($key); ?>
                     <div class="list-group-item col-xs-12">
                         <div class="col-xs-7">
-                        <?php echo $degustateur->nom ?> <small><?php echo $degustateur->commune ?></small>
+                        <?php echo $degustateur->nom ?> <small class="text-muted"><?php echo $degustateur->commune ?> <?php if($degustateur->email): ?>(<?php echo $degustateur->email ?>)<?php endif; ?></small> 
                         </div>
                         <div class="col-xs-5 text-right">
                             <div class="btn-group" data-toggle="buttons">
@@ -36,10 +37,13 @@
         </div>
     </div>
     <div class="row row-margin row-button">
-        <div class="col-xs-6">
+        <div class="col-xs-4">
             <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="btn btn-danger btn-lg btn-upper">Annuler</a>
         </div>
-        <div class="col-xs-6 text-right">
+        <div class="col-xs-4 text-center">
+            <a href="" class="btn btn-default btn-default-step btn-lg btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;Exporter en CSV</a>
+        </div>
+        <div class="col-xs-4 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper">Enregistrer</button>
         </div>
     </div>

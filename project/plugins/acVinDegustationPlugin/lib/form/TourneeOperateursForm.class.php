@@ -16,10 +16,12 @@ class TourneeOperateursForm extends acCouchdbForm {
                 continue;
             }
 
+            $defaultLots = array();
             foreach($lots as $lot) {
-                $this->setDefault($operateur->getIdentifiant(), $lot->getKey());
-                break;
+                $defaultLots[] = $lot->getKey();
             }
+
+            $this->setDefault($operateur->getIdentifiant(), $defaultLots);
         }
     }
 
@@ -32,12 +34,15 @@ class TourneeOperateursForm extends acCouchdbForm {
             $choices = array();
 
             foreach($operateur->lots as $lot_key => $lot) {
-                $choices[$lot_key] = sprintf("%s - %s lot(s)", $lot->libelle, $lot->volume_revendique);
-                //$choices[$lot_key] = sprintf("%s", $lot->libelle, $lot->nb);
+                $choices[$lot_key] = sprintf("%s - %s hl", $lot->libelle, $lot->volume_revendique);
+
+                if($lot->nb > 1) {
+                    $choices[$lot_key] .= sprintf(" (%s lots)", $lot->nb);
+                }
             }
 
-            $this->setWidget($operateur->identifiant, new sfWidgetFormChoice(array("choices" => $choices)));
-            $this->setValidator($operateur->identifiant, new sfValidatorChoice(array("choices" =>array_keys($choices), "required" => false)));
+            $this->setWidget($operateur->identifiant, new sfWidgetFormChoice(array("choices" => $choices, 'multiple' => true)));
+            $this->setValidator($operateur->identifiant, new sfValidatorChoice(array("choices" =>array_keys($choices), "multiple" => true, "required" => false)));
 
         }
 
@@ -47,27 +52,44 @@ class TourneeOperateursForm extends acCouchdbForm {
     public function update() {
         $values = $this->values;
 
-        $operateursToDelete = array();
+        $operateursToKeep = array();
 
         foreach($values as $key => $value) {
             if($key == '_revision') {
                 continue;
             }
 
-            if(!$value) {
-                $operateursToDelete[] = $key;
+            if(!$value || !count($value)) {
                 continue;
             }
 
             $degustation = $this->getDocument()->getDegustationObject($key);
             $degustation->resetLotsPrelevement();
-            $lot = $degustation->lots->get($value);
-            $lot->prelevement = 1;
+            foreach($value as $hash) {
+                $lot = $degustation->lots->get($hash);
+                $lot->prelevement = 1;
+            }
             $degustation->updateFromCompte();
+
+            $operateursToKeep[$key] = true;
+        }
+
+        $operateursToDelete = array();
+        foreach($this->getDocument()->getDegustationsObject() as $key => $degustation) {
+            if(array_key_exists($key, $operateursToKeep)) {
+                continue;    
+            }
+
+            if($degustation->isAffecteTournee()) {
+                continue;
+            }
+            
+            $operateursToDelete[] = $key;
+            
         }
 
         foreach($operateursToDelete as $key) {
-           $this->getDocument()->removeDegustation($key); 
+            $this->getDocument()->removeDegustation($key);
         }
     }
 

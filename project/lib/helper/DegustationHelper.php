@@ -34,6 +34,8 @@ function getLibelleTypeNote($type_note) {
             return "Note en typicité";
         case DegustationClient::NOTE_TYPE_CONCENTRATION:
             return "Note en concentration";
+        case DegustationClient::NOTE_TYPE_EQUILIBRE:
+            return "Note en équilibre";
         default:
             break;
     }

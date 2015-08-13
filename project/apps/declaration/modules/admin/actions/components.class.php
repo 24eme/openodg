@@ -5,18 +5,31 @@ class adminComponents extends sfComponents {
     public function executeList(sfWebRequest $request) {
 
         $this->current_key_list = $request->getParameter('docs', 'DRev 2014');
-        $this->statut = $request->getParameter('doc_statut', "a_valider");
+        $this->statut = $request->getParameter('doc_statut');
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "valide" => "Validé", "brouillon" => "En cours de saisie");
+        
+        $this->buildLists();
+
+        if(!$this->statut && !$this->lists[$this->current_key_list]['statuts']['a_valider']) {
+            $this->statut = "valide";
+        } elseif(!$this->statut) {
+            $this->statut = "a_valider";
+        }
+    }
+
+    public function executeExport(sfWebRequest $request) {
+        $this->current_key_list = $request->getParameter('docs', 'DRev 2014');
+        $this->statut = $request->getParameter('doc_statut', "a_valider");
+        $this->buildLists();
+    }
+
+    protected function buildLists() {
         $this->lists = array();
         $this->lists["DRev 2014"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->lists["DRev Marc 2014"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->lists["Parcellaire 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
         $this->lists["Parcellaire Crémant 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
-
-        if(!$this->lists[$this->current_key_list]['statuts']['a_valider']) {
-            $this->statut = "valide";
-        }
     }
 
     protected function getList($type, $campagne, $filter = null) {
@@ -24,6 +37,7 @@ class adminComponents extends sfComponents {
                     ->startkey(array($type, $campagne, array()))
                     ->endkey(array($type, $campagne))
                     ->descending(true)
+                    ->reduce(false)
                     ->getView('declaration', 'tous')->rows;
 
         $lists = array("type" => $type,
@@ -53,22 +67,27 @@ class adminComponents extends sfComponents {
         }
 
         foreach($documents as $document) {
-            if($document->key[2] && $document->key[7]) {
+            if($document->key[DeclarationTousView::KEY_AUTOMATIQUE] && $document->key[DeclarationTousView::KEY_AUTOMATIQUE]) {
+                
+                continue;
+            }
+
+            if($document->key[DeclarationTousView::KEY_VALIDATION] && $document->key[DeclarationTousView::KEY_PAPIER]) {
                 $lists["stats"]["global"]["nb_papiers"] += 1;
             }
 
-            if($document->key[2] && !$document->key[7]) {
+            if($document->key[DeclarationTousView::KEY_VALIDATION] && !$document->key[DeclarationTousView::KEY_PAPIER]) {
                 $lists["stats"]["global"]["nb_teledeclares"] += 1;
             }
 
-            if ($document->key[2] && !$document->key[3] && !$document->key[6]) {
+            if ($document->key[DeclarationTousView::KEY_VALIDATION] && !$document->key[DeclarationTousView::KEY_VALIDATION_ODG] && !$document->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]) {
                 $lists["stats"]["global"]["nb_can_be_validate"] += 1;
             }
 
-            if($document->key[3]) {
+            if($document->key[DeclarationTousView::KEY_VALIDATION_ODG]) {
                 $lists["statuts"]["valide"][] = $document;
                 
-                if($document->key[7]) {
+                if($document->key[DeclarationTousView::KEY_PAPIER]) {
                     $lists["stats"]["valide"]["nb_papiers"] += 1;
                 } else {
                     $lists["stats"]["valide"]["nb_teledeclares"] += 1;
@@ -77,16 +96,16 @@ class adminComponents extends sfComponents {
                 continue;
             }
 
-            if($document->key[2]) {
+            if($document->key[DeclarationTousView::KEY_VALIDATION]) {
                 $lists["statuts"]["a_valider"][] = $document;
 
-                if($document->key[7]) {
+                if($document->key[DeclarationTousView::KEY_PAPIER]) {
                     $lists["stats"]["a_valider"]["nb_papiers"] += 1;
                 } else {
                     $lists["stats"]["a_valider"]["nb_teledeclares"] += 1;
                 }
 
-                if(!$document->key[6]) {
+                if(!$document->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]) {
                     $lists["stats"]["a_valider"]["nb_can_be_validate"] += 1;
                 }
 
@@ -95,7 +114,7 @@ class adminComponents extends sfComponents {
             
             $lists["statuts"]["brouillon"][] = $document;
 
-            if($document->key[7]) {
+            if($document->key[DeclarationTousView::KEY_PAPIER]) {
                     $lists["stats"]["brouillon"]["nb_papiers"] += 1;
             } else {
                     $lists["stats"]["brouillon"]["nb_teledeclares"] += 1;

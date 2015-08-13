@@ -86,19 +86,44 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             return;
         }
 
+        if(!auto) {
+            if(!confirm("Êtes vous sur de vouloir transmettre les données ?")) {
+
+                return;
+            }
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        $scope.transmission_result = true;
+        $scope.transmission_result = "success";
 
-        remoteSave(getOperateursToTransmettre(), function(data) {
+        var operateurs = $scope.operateurs;
+
+        if(auto) {
+            var operateurs = getOperateursToTransmettre();
+        }
+
+        remoteSave(operateurs, function(data) {
             if(!auto) {
                 $scope.transmission = true;
             }
             $scope.transmission_progress = false;
 
+            if(data === true) {
+                $scope.transmission_result = "aucune_transmission";
+                return;
+            }
+
             if(!data) {
-               $scope.transmission_result = false;
+               $scope.transmission_result = "error";
+               $scope.testState();
                return;
+            }
+
+            if(typeof data !== 'object') {
+                $scope.transmission_result = "error";
+                $scope.testState();
+                return;
             }
 
             for(id_degustation in data) {
@@ -112,26 +137,35 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
                     operateur._rev = revision;
                 }
             }
-            
+                
             localSave();
         });
     }
 
     var updateOperateurFromLoad = function(operateur) {
         var termine = false;
-        if(operateur.motif_non_prelevement) {
-            termine = true;
-            operateur.aucun_prelevement = true;
-        }
+        var nb_prelevements = 0;
+        
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
             if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
+                termine = true;
+                nb_prelevements++;
+            }
+
+            if(!prelevement.preleve && prelevement.motif_non_prelevement) {
                 termine = true;
             }
 
             prelevement.produit = { trackby: prelevement.hash_produit + prelevement.vtsgn };
         }
         operateur.termine = termine;
+        operateur.nb_prelevements = nb_prelevements;
+
+        if(operateur.motif_non_prelevement && !operateur.nb_prelevements) {
+            operateur.termine = true;
+            operateur.aucun_prelevement = true;
+        }
     }
 
     $scope.loadOrUpdateOperateurs = function() {
@@ -234,9 +268,16 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         operateur.has_erreurs = false;
         operateur.erreurs = [];
         var nb = 0;
+        var nb_prelevements = 0;
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
             prelevement.erreurs = [];
+
+            if(operateur.aucun_prelevement && operateur.motif_non_prelevement) {
+                prelevement.preleve = 0;
+                prelevement.motif_non_prelevement = null;
+            }   
+
             if(prelevement.preleve && !prelevement.cuve) {
                 prelevement.erreurs['cuve'] = true;
                 operateur.has_erreurs = true;
@@ -245,7 +286,16 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
                 prelevement.erreurs['hash_produit'] = true;
                 operateur.has_erreurs = true;
             }
+            if(!operateur.aucun_prelevement && !prelevement.preleve && prelevement.hash_produit && !prelevement.motif_non_prelevement) {
+                prelevement.erreurs['motif'] = true;
+                operateur.has_erreurs = true;
+            }
             if(prelevement.preleve) {
+                nb++;
+                nb_prelevements++;
+            }
+
+            if(!prelevement.preleve && prelevement.motif_non_prelevement) {
                 nb++;
             }
         }
@@ -260,11 +310,39 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             operateur.erreurs["motif"] = true;
         }
 
+        operateur.nb_prelevements = nb_prelevements;
+
         localSave();
 
         if(operateur.has_erreurs) {
 
             return;
+        }
+
+        if(!operateur.aucun_prelevement && operateur.motif_non_prelevement) {
+            operateur.motif_non_prelevement = null;
+        }
+
+        for(prelevement_key in operateur.prelevements) {
+            var prelevement = operateur.prelevements[prelevement_key];
+            if(!prelevement.preleve && prelevement.motif_non_prelevement == "REPORT") {
+                operateur.motif_non_prelevement = "REPORT";
+            }
+        }
+
+        if(!nb_prelevements && nb && !operateur.motif_non_prelevement) {
+            for(prelevement_key in operateur.prelevements) {
+               var prelevement = operateur.prelevements[prelevement_key];
+               if(operateur.motif_non_prelevement && prelevement.motif_non_prelevement != operateur.motif_non_prelevement) {
+                    operateur.motif_non_prelevement = "MIXTE"; 
+               } else {
+                    operateur.motif_non_prelevement = prelevement.motif_non_prelevement;
+               }
+            }
+        }
+
+        if(!nb_prelevements && nb && !operateur.motif_non_prelevement) {
+            operateur.motif_non_prelevement = "MIXTE"; 
         }
 
         operateur.termine = true;
@@ -287,28 +365,21 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             prelevement.preleve = 0;
         } else {
             prelevement.preleve = 1;
+            prelevement.motif_non_prelevement = null;
         }
 
         $scope.updatePreleve(prelevement);
     }
 
-    $scope.toggleAucunPrelevement = function(operateur) {
+    $scope.toggleOperateurAucun = function(operateur) {
         if(operateur.erreurs) {
             operateur.erreurs["aucun_prelevement"] = false;
         }
         if(operateur.aucun_prelevement) {
             operateur.aucun_prelevement = 0;
-            for(prelevement_key in operateur.prelevements) {
-                if(operateur.prelevements[prelevement_key].cuve) {
-                    operateur.prelevements[prelevement_key].preleve = 1;
-                }
-            }
             operateur.motif_non_prelevement = null;
         } else {
             operateur.aucun_prelevement = 1;
-            for(prelevement_key in operateur.prelevements) {
-                operateur.prelevements[prelevement_key].preleve = 0;
-            }
         }
         localSave();    
     }
@@ -317,6 +388,11 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         if(operateur.erreurs) {
             operateur.erreurs["motif"] = false;
         }
+        localSave();
+    }
+
+    $scope.updateMotifPrelevement = function(operateur) {
+        
         localSave();
     }
 
@@ -447,18 +523,45 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             return;
         }
 
+        if(!auto) {
+            if(!confirm("Êtes vous sur de vouloir transmettre les données ?")) {
+
+                return;
+            }
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        $scope.transmission_result = true;
-        remoteSave(getDegustationsToTransmettre(), function(data) {
+        $scope.transmission_result = "success";
+
+        var degustations = $scope.degustations;
+
+        if(auto) {
+            var degustations = getDegustationsToTransmettre();
+        }
+
+        remoteSave(degustations, function(data) {
             if(!auto) {
                 $scope.transmission = true;
             }
+            
             $scope.transmission_progress = false;
 
-            if(!data) {
-               $scope.transmission_result = false;
+            if(data === true) {
+                $scope.transmission_result = "aucune_transmission";
+                return;
+            }
+
+           if(!data) {
+               $scope.transmission_result = "error";
+               $scope.testState();
                return;
+            }
+
+            if(typeof data !== 'object') {
+                $scope.transmission_result = "error";
+                $scope.testState();
+                return;
             }
 
             for(id_degustation in data) {
@@ -483,11 +586,11 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     setInterval(function() {
         $scope.transmettre(true);
-    }, 30000);
+    }, 5000);
 
     setInterval(function() {
         $scope.loadOrUpdateDegustations();
-    }, 60000);
+    }, 15000);
 
     if($scope.reload) {
         localDelete();
@@ -510,6 +613,26 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.query = null;
         $scope.active = 'ajout';
         $scope.transmission = false;
+    }
+
+    $scope.getCodeCepageNumero = function(numero) {
+
+        return numero.replace(/ .+ .+$/, "");
+    }
+
+    $scope.getIncrementalNumero = function(numero) {
+
+        return numero.replace(/^.+ (.+) .+$/, '$1');
+    }
+
+    $scope.getCodeVerifNumero = function(numero) {
+
+        return numero.replace(/^.+ (.+) /, "");
+    }
+
+    $scope.getMoyennePrelevements = function() {
+
+        return (Math.round($scope.prelevements.length/$scope.commissions.length*10)/10)
     }
 
     $scope.showAjoutValidation = function(prelevement) {
@@ -687,18 +810,45 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             return;
         }
 
+        if(!auto) {
+            if(!confirm("Êtes vous sur de vouloir transmettre les données ?")) {
+
+                return;
+            }
+        }
+
         $scope.transmission = false;
         $scope.transmission_progress = true;
-        $scope.transmission_result = true;
-        remoteSave(getDegustationsToTransmettre(), function(data) {
+        $scope.transmission_result = "success";
+
+        var degustations = $scope.degustations;
+
+        if(auto) {
+            var degustations = getDegustationsToTransmettre();
+        }
+
+        remoteSave(degustations, function(data) {
             if(!auto) {
                 $scope.transmission = true;
             }
+
             $scope.transmission_progress = false;
 
+            if(data === true) {
+                $scope.transmission_result = "aucune_transmission";
+                return;
+            }
+
             if(!data) {
-               $scope.transmission_result = false;
+               $scope.transmission_result = "error";
+               $scope.testState();
                return;
+            }
+
+            if(typeof data !== 'object') {
+                $scope.transmission_result = "error";
+                $scope.testState();
+                return;
             }
 
             for(id_degustation in data) {
@@ -746,6 +896,26 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
 
     $scope.showRecap = function() {
         $scope.active = 'recapitulatif';
+    }
+
+    $scope.showNext = function(prelevement) {
+        var finded = false;
+        var prelevements_sorted = $filter('orderBy')($scope.prelevements, ['anonymat_degustation']);
+        console.log(prelevements_sorted);
+        for (prelevement_key in prelevements_sorted) {
+            if(finded) {
+                $scope.showCepage(prelevements_sorted[prelevement_key]);
+                return;
+            }
+            console.log(prelevements_sorted[prelevement_key].anonymat_degustation);
+            if(prelevements_sorted[prelevement_key].anonymat_degustation == prelevement.anonymat_degustation) {
+                finded = true;
+
+                console.log('finded');
+            }
+        }
+
+        $scope.showRecap();
     }
 
     $scope.showCepage = function(prelevement) {
@@ -800,17 +970,28 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.isValide = function(prelevement) {
-        prelevement.erreurs = false;
+        prelevement.has_erreurs = false;
+        prelevement.erreurs = [];
         for(key_note in prelevement.notes) {
             var note = prelevement.notes[key_note];
-            note.erreurs = false;
+            note.erreurs = [];
+            note.has_erreurs = false;
             if(note.note === null) {
-                note.erreurs = true;
-                prelevement.erreurs = true;
+                note.has_erreurs = true;
+                note.erreurs['requis'] = true;
+                prelevement.has_erreurs = true;
+                prelevement.erreurs["requis"] = true;
+            }
+
+            if(note.note.match(/[012CD]+/) && note.defauts.length == 0) {
+                note.has_erreurs = true;
+                note.erreurs["defaut"] = true;
+                prelevement.has_erreurs = true;
+                prelevement.erreurs["defaut"] = true;
             }
         }
 
-        if(prelevement.erreurs) {
+        if(prelevement.has_erreurs) {
             
             return;
         }
@@ -821,7 +1002,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.valider = function(prelevement) {
         $scope.isValide(prelevement);
 
-        if(prelevement.erreurs) {
+        if(prelevement.has_erreurs) {
             localSave();
             return;
         }
@@ -829,7 +1010,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         $scope.degustations[prelevement.degustation_id].transmission_needed = true;
         localSave();
         $scope.transmettre(true);
-        $scope.showRecap();
+        $scope.showNext(prelevement);
     }
 
 }]);

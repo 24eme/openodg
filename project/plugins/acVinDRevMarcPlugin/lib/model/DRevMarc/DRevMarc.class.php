@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRevMarc extends BaseDRevMarc {
+class DRevMarc extends BaseDRevMarc implements InterfaceDeclaration {
 
     protected $declarant_document = null;
 
@@ -53,7 +53,22 @@ class DRevMarc extends BaseDRevMarc {
     }
 
     public function isPapier() { 
-    
+        
         return $this->exist('papier') && $this->get('papier');
+    }
+
+    public function isAutomatique() { 
+        
+        return $this->exist('automatique') && $this->get('automatique');
+    }
+
+    public function getValidation() {
+
+        return $this->_get('validation');
+    }
+
+    public function getValidationOdg() {
+
+        return $this->_get('validation_odg');
     }
 }

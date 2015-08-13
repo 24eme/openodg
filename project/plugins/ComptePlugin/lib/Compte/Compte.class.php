@@ -4,15 +4,36 @@
  * Model for Compte
  *
  */
-class Compte extends BaseCompte {
+class Compte extends BaseCompte implements InterfaceArchivageDocument {
+	
+    const CAMPAGNE_ARCHIVE = 'UNIQUE';
+
+    protected $archivage_document = null;
 
     public function __construct($type_compte = null) {
         parent::__construct();
         $this->setTypeCompte($type_compte);
+        $this->initDocuments();
+    }
+
+    public function __clone() {
+        parent::__clone();
+        $this->initDocuments();
+    }
+
+    protected function initDocuments() {
+        $this->archivage_document = new ArchivageDocument($this, "%06d");
     }
 
     public function constructId() {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
+    }
+
+    public function getCampagneArchive() {
+        if(!$this->_get('campagne_archive')) {
+            $this->_set('campagne_archive', self::CAMPAGNE_ARCHIVE);
+        }
+        return $this->_get('campagne_archive');
     }
 
     public function save($synchro_etablissement = true, $update_coodronnees = false) {
@@ -22,7 +43,7 @@ class Compte extends BaseCompte {
         }
         
         if ($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement) {
-            $this->updateChais();
+            //$this->updateChais();
             $etablissement = EtablissementClient::getInstance()->createOrFind($this->cvi);
             if ($this->isNew() && !$etablissement->isNew()) {
                 throw new sfException("Pas possible de créer un etablissement avec cet Id (".$this->cvi.")");
@@ -38,9 +59,20 @@ class Compte extends BaseCompte {
         if($update_coodronnees) {
             $this->updateCoordonneesLongLat();
         }
+
         parent::save();
     }
-    
+
+    protected function preSave() {
+        $this->archivage_document->preSave();
+        $this->identifiant_interne = $this->numero_archive;
+    }
+
+    public function getCodeComptable() {
+
+        return preg_replace("/^[0]+/", "", $this->identifiant_interne);
+    }
+
     public function updateNomAAfficher() {
         $this->nom_a_afficher = "";
 
@@ -122,6 +154,7 @@ class Compte extends BaseCompte {
     public function removeInfosTagsNode($node) {
         if ($this->exist('infos') && $this->infos->exist($node)) {
             $this->infos->remove($node);
+            $this->infos->add($node);
         }
     }
     
@@ -135,8 +168,7 @@ class Compte extends BaseCompte {
     public function updateInfosTagsManuels($infos_manuels = array()) {
         $this->removeInfosTagsNode('manuels');
         foreach ($infos_manuels as $info_manuel) {
-            $info_manuel_key = str_replace(' ', '_', $info_manuel);
-            $this->updateInfosTags('manuels', $info_manuel_key, $info_manuel);
+            $this->addInfoManuel($info_manuel);
         }
     }
 
@@ -144,17 +176,14 @@ class Compte extends BaseCompte {
         //$this->removeInfosTagsNode('produits');
         $allProduits = ConfigurationClient::getConfiguration()->getProduits();
         foreach ($produits_hash_array as $produits_hash) {
-            $libelle_complet = $allProduits[str_replace('-', '/', $produits_hash)]->getLibelleComplet();
-            $this->updateInfosTags('produits', $produits_hash, $libelle_complet);
+            $this->addInfoProduit($produits_hash);
         }
     }
 
     public function updateLocalSyndicats($syndicats_array = array()) {
          $this->removeInfosTagsNode('syndicats');
         foreach ($syndicats_array as $syndicatId) {
-            $syndicat = CompteClient::getInstance()->find($syndicatId);
-            $syndicat_libelle = $syndicat->nom_a_afficher;//." (".$syndicat->commune.")";
-            $this->updateInfosTags('syndicats', $syndicatId, $syndicat_libelle);
+            $this->addInfoSyndicat($syndicatId);
         }
     }
     
@@ -163,6 +192,78 @@ class Compte extends BaseCompte {
             $this->infos->add($nodeType, null);
         }
         $this->infos->$nodeType->add($key, $value);
+    }
+
+    public function existInfo($type, $info_key) {
+        $key = $info_key;
+
+        if($type == 'manuels') {
+
+            $key = $this->getInfoManuelKey($info_key);
+        }
+
+        return $this->infos->get($type)->exist($key);
+    }
+
+    public function removeInfo($type, $info_key) {
+        $key = $info_key;
+        
+        if($type == 'manuels') {
+
+            $key = $this->getInfoManuelKey($info_key);
+        }
+
+        return $this->infos->get($type)->remove($key);
+    }
+
+    public function getInfo($type, $info_key) {
+        $key = $info_key;
+        
+        if($type == 'manuels') {
+
+            $key = $this->getInfoManuelKey($info_key);
+        }
+
+        return $this->infos->get($type)->get($key);
+    }
+
+    public function addInfo($type, $info_key) {
+        if($type == 'syndicats') {
+            return $this->addInfoSyndicat($info_key);
+        }
+
+        if($type == 'attributs') {
+            return $this->updateInfosTags($type, $info_key, CompteClient::getInstance()->getAttributLibelle($info_key));
+        }
+
+        if($type == 'produits') {
+            return $this->addInfoProduit($info_key);
+        }
+
+        if($type == 'manuels') {
+            return $this->addInfoManuel($info_key);
+        }
+
+        throw new sfException("Type non défini");
+    }
+
+    public function addInfoSyndicat($syndicatId) {
+        $syndicat = CompteClient::getInstance()->find($syndicatId);
+        $this->updateInfosTags('syndicats', $syndicatId, $syndicat->nom_a_afficher);
+    }
+
+    public function addInfoProduit($produit_hash) {
+        $libelle_complet = ConfigurationClient::getConfiguration()->get(str_replace('-', '/', $produit_hash))->getLibelleComplet();
+        $this->updateInfosTags('produits', $produit_hash, $libelle_complet);
+    }
+
+    protected function getInfoManuelKey($libelle) {
+
+        return str_replace(' ', '_', $libelle);
+    }
+
+    public function addInfoManuel($info_manuel) {
+        $this->updateInfosTags('manuels', $this->getInfoManuelKey($info_manuel), $info_manuel);
     }
     
     public function getEtablissementObj() {
@@ -263,23 +364,6 @@ class Compte extends BaseCompte {
         return true;
     }
 
-    public function updateChais() {
-        $newChais = array();
-        foreach ($this->chais as $chai) {
-            if($chai->adresse && $chai->commune && $chai->code_postal){
-                $newChai = $chai->toArray(false, false);
-                $newChai['attributs'] = array();
-                foreach($chai->attributs as $key) {
-                    $newChai['attributs'][$key] = CompteClient::getInstance()->getChaiAttributLibelle($key);
-                }
-                $newChais[] = $newChai;
-            }
-            
-        }
-        $this->remove("chais");
-        $this->add("chais", $newChais);
-    }
-
     public function getCoordonneesLatLon() {
 
         $points = array();
@@ -320,5 +404,52 @@ class Compte extends BaseCompte {
         $this->statut = CompteClient::STATUT_ACTIF;
         $this->date_archivage = null;
     }
+    
+    public function getRegionViticole() {
+    	return CompteClient::REGION_VITICOLE;
+    }
+
+    public function getFormationsByAnnee() {
+        $formations = array();
+
+        foreach($this->formations as $formation) {
+            if(!isset($formations[$formation->annee])) {
+                $formations[$formation->annee] = array();
+            }
+            $formations[$formation->annee][] = $formation;
+        }
+
+        krsort($formations);
+
+        return $formations;
+    }
+
+    public function getSyndicatsViticole() {
+    	$result = array();
+    	if ($syndicats = $this->infos->syndicats) {
+    		$result = array_keys($syndicats->toArray());
+    	}
+    	return $result;
+    	
+    }
+
+    public function isAdherentSyndicat() {
+
+        return $this->infos->exist('attributs') && $this->infos->attributs->exist(CompteClient::ATTRIBUT_ETABLISSEMENT_ADHERENT_SYNDICAT);
+    }
+
+    /*** ARCHIVAGE ***/
+
+    public function getNumeroArchive() {
+
+        return $this->_get('numero_archive');
+    }
+
+    public function isArchivageCanBeSet() {
+
+        return true;
+    }
+
+    /*** FIN ARCHIVAGE ***/
 
 }

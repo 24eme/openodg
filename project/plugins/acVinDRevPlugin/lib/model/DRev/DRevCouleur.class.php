@@ -89,7 +89,7 @@ class DRevCouleur extends BaseDRevCouleur
     
     public function getTotalTotalSuperficie()
     {
-    	return ($this->isActive())? $this->total_superficie : 0;
+    	return ($this->isActive())? $this->superficie_revendique : 0;
     }
     
     public function getTotalVolumeRevendique()

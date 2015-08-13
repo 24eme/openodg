@@ -1,0 +1,134 @@
+\documentclass[a4paper, 10pt]{letter}
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+\usepackage[francais]{babel}
+\usepackage[top=3.5cm, bottom=1.5cm, left=1cm, right=1cm, headheight=4cm, headsep=5mm, marginparwidth=0cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{units}
+\usepackage{fp}
+\usepackage{tikz}
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{lastpage}
+\usepackage{truncate}
+\usepackage{colortbl} 
+\usepackage{tabularx}
+\usepackage[style=1]{mdframed}
+
+\definecolor{vertclair}{rgb}{0.70,0.79,0.32}
+\definecolor{vertfonce}{rgb}{0.17,0.29,0.28}
+\definecolor{vertmedium}{rgb}{0.63,0.73,0.22}
+
+\newmdenv[tikzsetting={draw=vertclair,dashed,line width=1pt,dash pattern = on 10pt off 3pt},%
+linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframe}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0cm}
+\renewcommand\sfdefault{phv}
+\renewcommand{\familydefault}{\sfdefault}
+\fancyhead[L]{\includegraphics[scale=0.5]{logo_site.png}}
+\fancyhead[R]{
+\colorbox{vertclair}{\LARGE{\textbf{\textcolor{vertfonce}{FACTURE}}}} \\ 
+\vspace{5mm}
+N° facture : \textbf{2014092201} \\
+N° adhérent : \textbf{523}
+}
+\fancyfoot[C]{\thepage / \pageref{LastPage}}
+
+\begin{document}
+	\begin{minipage}{0.5\textwidth}
+		\small{
+		Maison des Vins d'Alsace \\
+		12 avenue de la Foire aux Vins - B.P. 91225 \\
+		68012 COLMAR Cedex \\
+		Téléphone 03 89 20 16 50 - Télécopie 03 89 20 16 60 \\
+		Email : info@ava-aoc.fr
+		}
+	\end{minipage}
+	\begin{minipage}{0.5\textwidth}
+		\begin{flushright}
+		\vspace{-2mm}
+		Colmar, le 22/09/2014
+		\end{flushright}
+		\begin{flushleft}
+		\vspace{7mm}
+		\hspace{1.8cm}EARL WEBER Bernard \\
+		\hspace{1.8cm}49 rue de Saverne \\
+		\vspace{2mm}
+		\hspace{1.8cm}67120 MOLSHEIM
+		\end{flushleft}
+	\end{minipage}
+	
+\vspace{1.5cm}
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\arrayrulecolor{vertclair}
+\begin{tabular}{r p{13.5cm} c|c}
+  \rowcolor{vertclair} \multicolumn{3}{l}{\textbf{\textcolor{vertfonce}{Cotisation AVA-ODG}}} & \textbf{\textcolor{vertfonce}{67,72 €}} \rule[-7pt]{0pt}{20pt} \\
+  1 & Fixe & 11,72 & 11,72 \\
+  11 & Tranches de 50 ares à partir du 51eme (606,8a) & 4,00 & 44,00 \\
+  24 & hl de vin revendiqué (Récolte 2014) & 0,50 & 12,00 \\
+  \rowcolor{vertclair} \multicolumn{3}{l}{\textbf{\textcolor{vertfonce}{Cotisation AVA-syndicale}}} & \textbf{\textcolor{vertfonce}{28,00 €}} \rule[-7pt]{0pt}{20pt} \\
+  1 & Fixe & 6,00 & 6,00 \\
+  11 & Tranches de 50 ares à partir du 51eme (606,8a) & 2,00 & 22,00 \\
+  \rowcolor{vertclair} \multicolumn{3}{l}{\textbf{\textcolor{vertfonce}{Cotisation syndicat viticole}}} & \textbf{\textcolor{vertfonce}{15,00 €}} \rule[-7pt]{0pt}{20pt} \\
+  1 & Cotisation syndicat viticole de MOLSHEIM & 15,00 & 15,00 \\
+  \rowcolor{vertclair} \multicolumn{3}{l}{\textbf{\textcolor{vertfonce}{Coût contrôle externe}}} & \textbf{\textcolor{vertfonce}{4,80 €}} \rule[-7pt]{0pt}{20pt} \\
+  24 & hl de vins revendiqué (Récolte 2014) & 0,20 & 4,80 \\
+  \rowcolor{vertclair} \multicolumn{3}{l}{\textbf{\textcolor{vertfonce}{Droits INAO 2015}}} & \textbf{\textcolor{vertfonce}{3,12 €}} \rule[-7pt]{0pt}{20pt} \\
+  24 & hl de vins revendiqué (Récolte 2014) & 0,13 & 3,12 \\
+  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total}}}} & \textbf{\textcolor{vertfonce}{118,64 €}} \\
+  5 & TVA 20\% sur contrôle externe & 0,20 & 1,00 \\
+  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{tva}}}} & \textbf{\textcolor{vertfonce}{1,00 €}} \\
+  \rowcolor{vertclair} \multicolumn{3}{r}{\textbf{\textcolor{vertfonce}{\textsc{total ttc à payer}}}} & \textbf{\textcolor{vertfonce}{119,64 €}} \\
+\end{tabular}	
+\end{center}
+
+	\vspace{1.5cm}
+	\begin{minipage}{0.5\textwidth}
+		\begin{beamerframe}
+		\begin{center}
+			\textbf{\underline{\large{\textsc{association des viticulteurs d'alsace}}}} \\
+			Organisme de Défense et de Gestion des Appellations \\
+			\small{Maison des Vins d'Alsace \\
+			12 avenue de la Foire aux Vins - B.P. 91225 \\
+			68012 COLMAR Cedex \\
+			Téléphone 03 89 20 16 50 - Télécopie 03 89 20 16 60 \\
+			Email : info@ava-aoc.fr} \\
+			\vspace{2mm}
+			\textbf{\large{CARTE DE MEMBRE}} \\
+			\textbf{\large{Année 2014}} \\
+		\end{center}
+		\vspace{6mm}
+		\begin{tabular}{r l}
+			NOM : & EARL WEBER Bernard \\
+			Adresse : & 49 rue de Saverne \\
+			Commune : & MOLSHEIM \\
+			N° adhérent : & 523 \\
+		\end{tabular}
+		\end{beamerframe}
+	\end{minipage}
+	\begin{minipage}{0.5\textwidth}
+		\vspace{1.4cm}
+		\begin{center}
+			\textsc{Crédit Agricole Colmar Entreprises} \\
+			17206 00770 49124390010 72 \\
+			IBAN : FR76 1720 6007 7049 1243 9001 072 \\
+			BIC : AGRIFRPP872
+		\end{center}
+		\vspace{1.4cm}
+		\begin{beamerframe}
+			\begin{tabularx}{\linewidth}{X c c}
+			\rowcolor{vertclair} \multicolumn{3}{c}{\textbf{\textcolor{vertfonce}{\textsc{partie à joindre au règlement}}}} \\
+			\textsc{n° facture} & \textsc{n° adhérent} & \textsc{montant ttc} \rule[-7pt]{0pt}{20pt} \\
+			\textbf{2014102201} & \textbf{523} & \textbf{119,64 €} \\
+			\end{tabularx}
+		\end{beamerframe}
+	\end{minipage}
+
+\end{document} 

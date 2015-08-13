@@ -18,7 +18,7 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
-        //$this->initDefaultProduits();
+        $this->initDefaultProduits();
         $this->initDefaultSyndicats();
     }
 
@@ -36,13 +36,13 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
 
         $this->setValidator('raison_sociale', new sfValidatorString(array("required" => false)));
         
-        /*$this->setWidget("produits", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAllProduits())));
-        $this->setValidator('produits', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAllProduits()))));*/
+        $this->setWidget("produits", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getAllProduits())));
+        $this->setValidator('produits', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($this->getAllProduits()))));
     
         $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
         $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));
 
-        
+        $this->embedForm('formations', new CompteFormationsForm($this->getObject()->formations));
     }
 
     private function getSyndicats() {
@@ -55,23 +55,37 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         }
         return $this->syndicats;
     }
-    
-    private function getAllProduits() {
-        if (!$this->produits) {
-            foreach (ConfigurationClient::getConfiguration()->getProduits() as $hash => $produitCepage) {
-                $this->produits[str_replace('/', '-', $hash)] = $produitCepage->getLibelleComplet();
+
+    protected function getAllProduits() {
+        $produits = array("" => "");
+
+        foreach (ConfigurationClient::getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION, 'ConfigurationAppellation') as $appellation) {
+            
+            if(!$appellation->exist('mention') || !$appellation->hasManyLieu()) {
+                $produits[str_replace('/', '-', $appellation->getHash())] = $appellation->getLibelleComplet();
+                continue;
+            }
+
+            foreach($appellation->getLieux() as $lieu) {
+                $produits[str_replace('/', '-', $lieu->getHash())] = $lieu->getLibelleComplet();
             }
         }
-        return $this->produits;
+
+        return $produits;
     }
 
+
     public function save($con = null) {
-        if ($produits = $this->values['produits']) {
+        if (array_key_exists('produits', $this->values)) {
+            $produits = ($this->values['produits']) ? $this->values['produits'] : array();
             $this->getObject()->updateLocalTagsProduits($produits);
         }
-        if ($syndicats = $this->values['syndicats']) {
+
+        if (array_key_exists('syndicats', $this->values)) {
+            $syndicats = ($this->values['syndicats']) ? $this->values['syndicats'] : array();
             $this->getObject()->updateLocalSyndicats($syndicats);
         }
+
         parent::save($con);
     }
 
@@ -83,7 +97,7 @@ class CompteDegustateurModificationForm extends CompteModificationForm {
         $this->widgetSchema['produits']->setDefault($default_produits);
     }
     
-        public function initDefaultSyndicats() {
+    public function initDefaultSyndicats() {
         $default_syndicats = array();
         foreach ($this->getObject()->getInfosSyndicats() as $syndicats_key => $syndicats_libelle) {
             $default_syndicats[] = $syndicats_key;
