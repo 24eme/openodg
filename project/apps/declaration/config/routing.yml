@@ -316,6 +316,16 @@ drevmarc_create:
   requirements:
     sf_method: [get]
 
+drevmarc_create_papier:
+  url: /drevmarc/creation-papier/:id
+  param: { module: drevmarc, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drevmarc_edit:
   url: /drevmarc/edition/:id
   param: { module: drevmarc, action: edit }

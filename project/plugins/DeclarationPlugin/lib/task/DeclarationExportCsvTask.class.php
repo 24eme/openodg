@@ -33,7 +33,7 @@ EOF;
 
         if(!$doc) {
                 
-            throw new sfExceptiont(sprintf("Document %s introuvable", $arguments['doc_id']));
+            throw new sfException(sprintf("Document %s introuvable", $arguments['doc_id']));
         }
 
         if($options["header"]) {

@@ -37,13 +37,10 @@
         </div>
     </div>
     <div class="row row-margin row-button">
-        <div class="col-xs-4">
+        <div class="col-xs-6">
             <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="btn btn-danger btn-lg btn-upper">Annuler</a>
         </div>
-        <div class="col-xs-4 text-center">
-            <a href="" class="btn btn-default btn-default-step btn-lg btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;Exporter en CSV</a>
-        </div>
-        <div class="col-xs-4 text-right">
+        <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper">Enregistrer</button>
         </div>
     </div>

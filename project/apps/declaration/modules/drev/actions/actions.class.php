@@ -515,10 +515,10 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
+        
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
-
         $this->drev->save();
 
         $this->drev->cleanDoc();
