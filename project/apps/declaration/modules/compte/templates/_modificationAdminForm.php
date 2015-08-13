@@ -66,6 +66,13 @@
                                 <?php echo $form["siret"]->render(array("class" => "form-control")); ?>
                             </div>
                         </div>
+                    <?php elseif($form->getObject()->siret): ?>
+                        <div class="form-group">
+                            <label class="col-xs-4 control-label">N° SIRET / SIREN</label>
+                            <div class="col-xs-8">
+                                <input disabled="disabled" value="<?php echo $form->getObject()->siret; ?>" class="form-control" />
+                            </div>
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
