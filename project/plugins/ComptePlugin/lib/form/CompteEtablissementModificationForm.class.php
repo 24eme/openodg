@@ -34,9 +34,10 @@ class CompteEtablissementModificationForm extends CompteModificationForm {
             $this->setValidator('cvi', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]{10}$/"), array("invalid" => "Le cvi doit être un nombre à 10 chiffres")));
         }
 
-        $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET / SIREN")));
-        $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^([0-9]{14})|([0-9]{9})$/"), array("invalid" => "Le SIRET doit être un nombre à 14 chiffres ou à 9 chiffres pour le SIREN")));
-
+        if($this->getObject()->cvi || $this->getObject()->isNew()) {
+            $this->setWidget("siret", new sfWidgetFormInput(array("label" => "N° SIRET / SIREN")));
+            $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^([0-9]{14})|([0-9]{9})$/"), array("invalid" => "Le SIRET doit être un nombre à 14 chiffres ou à 9 chiffres pour le SIREN")));
+        }
 
         $this->setWidget("syndicats", new sfWidgetFormChoice(array('multiple' => true, 'choices' => $this->getSyndicats())));
         $this->setValidator('syndicats', new sfValidatorChoice(array("required" => false, 'multiple' => true, 'choices' => array_keys($this->getSyndicats()))));

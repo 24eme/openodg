@@ -36,6 +36,18 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         return $this->_get('campagne_archive');
     }
 
+    protected function getIdentifiantEtablissement() {
+        if($this->cvi) {
+
+            return $this->cvi;
+        }
+
+        if($this->siren) {
+
+            return $this->siren;
+        }
+    }
+
     public function save($synchro_etablissement = true, $update_coodronnees = false) {
         if ($this->isNew() && !$this->identifiant) {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
@@ -44,7 +56,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         
         if ($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement) {
             //$this->updateChais();
-            $etablissement = EtablissementClient::getInstance()->createOrFind($this->cvi);
+            $etablissement = EtablissementClient::getInstance()->createOrFind($this->getIdentifiantEtablissement());
             if ($this->isNew() && !$etablissement->isNew()) {
                 throw new sfException("Pas possible de créer un etablissement avec cet Id (".$this->cvi.")");
             }
