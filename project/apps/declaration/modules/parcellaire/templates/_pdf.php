@@ -51,6 +51,7 @@
 		if (count($acheteurs_nom))
 			echo ' : <strong>';
 			echo implode('</strong>, <strong>', $acheteurs_nom);
+        if (count($acheteurs_nom))
 			echo '</strong>';
 		?>
                         </td>
