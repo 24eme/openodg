@@ -91,7 +91,39 @@ class facturationActions extends sfActions
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
-     public function executePaiement(sfWebRequest $request) {
+    public function executeAvoir(sfWebRequest $request) {
+        $this->baseFacture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if(!$this->baseFacture) {
+
+            return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
+        }
+
+        $this->facture = FactureClient::createAvoir($this->baseFacture);
+
+        $this->form = new FactureEditionForm($this->facture);
+
+        $this->setTemplate('edition');
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+            
+        if(!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        $this->getUser()->setFlash("notice", "La facture a été créé.");
+        
+        return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
+    }
+
+    public function executePaiement(sfWebRequest $request) {
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
 
         if(!$this->facture) {
@@ -101,7 +133,7 @@ class facturationActions extends sfActions
 
         $this->form = new FacturePaiementForm($this->facture);
 
-         if (!$request->isMethod(sfWebRequest::POST)) {
+        if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
@@ -118,7 +150,6 @@ class facturationActions extends sfActions
         
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
-
 
     public function executeLatex(sfWebRequest $request) {
         

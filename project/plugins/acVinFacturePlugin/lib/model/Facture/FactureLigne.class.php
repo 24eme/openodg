@@ -29,7 +29,7 @@ class FactureLigne extends BaseFactureLigne {
    
     public function setProduitHash($ph) {
       $ret = $this->_set('produit_hash', $ph);
-      //Remove identifiant_analytique from cache and set the new one
+
       $this->_set('produit_identifiant_analytique', null);
       $this->getProduitIdentifiantAnalytique();
       return $ret;
@@ -44,6 +44,21 @@ class FactureLigne extends BaseFactureLigne {
         }
 
         return 0;
+    }
+
+    public function updateTotaux() {
+        $this->montant_ht = 0;
+        $this->montant_tva = 0;
+        foreach($this->details as $detail) {
+            $detail->montant_ht = round($detail->quantite * $detail->prix_unitaire, 2);
+            $detail->montant_tva = round($detail->taux_tva * $detail->montant_ht, 2);
+
+            $this->montant_ht += $detail->montant_ht;
+            $this->montant_tva += $detail->montant_tva;
+        }
+
+        $this->montant_ht = round($this->montant_ht, 2);
+        $this->montant_tva = round($this->montant_tva, 2);
     }
     
 

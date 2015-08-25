@@ -1,14 +1,21 @@
 <?php use_helper('Float'); ?>
+<?php use_helper('Float'); ?>
 <?php use_javascript('facture.js'); ?>
 
 <?php include_partial('admin/menu', array('active' => 'facturation')); ?>
+
+<h2><?php if($facture->numero_ava): ?>Édition de <?php if($facture->isAvoir()): ?>l'<?php else: ?>la <?php endif; ?><?php else: ?>Création <?php if($facture->isAvoir()): ?>d'un<?php else: ?>d'une<?php endif; ?> <?php endif; ?><?php if($facture->isAvoir()): ?>Avoir <?php else: ?>Facture<?php endif; ?> <?php if($facture->numero_ava): ?>n°<?php echo $facture->numero_ava; ?><?php endif; ?> <small>(Daté du <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>)</small>
+<br />
+    <small><?php echo $facture->declarant->raison_sociale ?>
+    (<?php echo $facture->declarant->adresse ?> <?php echo $facture->declarant->code_postal ?> <?php echo $facture->declarant->commune ?>)</small>
+</h2>
 
 <form action="" method="post" class="form-horizontal">
 
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
     
-    <div class="row">
+    <div class="row row-margin">
         <div class="col-xs-12">
                 <div class="col-xs-2 text-center lead text-muted">Quantité</div>
                 <div class="col-xs-4 text-center lead text-muted">Libellé</div>
@@ -34,12 +41,13 @@
                 <?php echo $f_ligne['montant_tva']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_tva), "readonly" => "readonly", 'data-sum-element' => "#total_tva", 'readonly' => 'readonly', 'type' => 'hidden')); ?>
                 </div>
                 <div class="col-xs-1 col-xs-offset-1 text-right">
-                    <button type="button" class="btn btn-danger btn-lg hidden"><span class="glyphicon glyphicon-trash"></span></button>
+                    <!--<button type="button" class="btn btn-danger btn-lg hidden"><span class="glyphicon glyphicon-trash"></span></button>-->
                 </div>
             </div>
                 <div class="form-group">
                     <div class="col-xs-12">
                     <?php foreach($f_ligne['details'] as $f_detail): ?>
+                        <?php echo $f_detail['quantite']->renderError() ?>
                         <div id="<?php echo $f_detail->renderId() ?>" class="form-group line" style="<?php echo (!$f_detail['libelle']->getValue()) ? "opacity: 0.6" : null ?>">
                             <div class="col-xs-2">
                                 <?php echo $f_detail['quantite']->renderError() ?>

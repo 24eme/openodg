@@ -335,6 +335,45 @@ class FactureClient extends acCouchdbClient {
       return '';
     }
 
+    public function createAvoir(Facture $f) {
+      if (!$f->isRedressable()) {
+  return ;
+      }
+      $avoir = clone $f;
+
+      $avoir->constructIds($f->getCompte(), $f->region);
+
+      foreach($avoir->lignes as $ligne) {
+          foreach($ligne->details as $detail) {
+              $detail->quantite *= -1;
+              $detail->montant_ht *= -1;
+              $detail->montant_tva *= -1;
+          }
+
+          $ligne->montant_ht *= -1;
+          $ligne->montant_tva *= -1;
+      }
+
+      $avoir->total_ht *= -1;
+      $avoir->total_taxe *= -1;
+      $avoir->total_ttc *= -1;
+
+      $avoir->numero_archive = null;
+      $avoir->numero_ava = null;
+      $avoir->numero_facture = null;
+      $avoir->versement_comptable = 0;
+      $avoir->versement_comptable_paiement = 0;
+      $avoir->storeDatesCampagne(date('Y-m-d'));
+      $avoir->date_paiement = null;
+      $avoir->reglement_paiement = null;
+      $avoir->remove('arguments');
+      $avoir->add('arguments');
+
+      $avoir->statut = self::STATUT_NONREDRESSABLE;
+
+      return $avoir;
+    }
+
     public function defactureCreateAvoirAndSaveThem(Facture $f) {
       if (!$f->isRedressable()) {
 	return ;

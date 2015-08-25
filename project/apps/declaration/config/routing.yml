@@ -85,6 +85,16 @@ drev_edit:
   requirements:
     sf_method: [get]
 
+drev_edit:
+  url: /drev/edition/:id
+  param: { module: drev, action: edit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_delete:
   url: /drev/suppression/:id
   param: { module: drev, action: delete }
@@ -1041,6 +1051,16 @@ facturation_pdf:
 facturation_edition:
   url: /facturation/edition/:id
   param: { module: facturation, action: edition }
+  class: FactureRoute
+  options:
+    model:    Facture
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+facturation_avoir:
+  url: /facturation/avoir/:id
+  param: { module: facturation, action: avoir }
   class: FactureRoute
   options:
     model:    Facture

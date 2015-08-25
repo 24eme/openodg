@@ -166,8 +166,19 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
                 $total += $detail["total"];
                 $totalTva += $detail["tva"];
     		}
-    		$ligne->montant_tva = round($totalTva, 2);
-    		$ligne->montant_ht = round($total, 2);
+
+    		$totalTva = round($totalTva, 2);
+    		$total = round($total, 2);
+
+            $ligne->updateTotaux();
+
+            if($totalTva != $ligne->montant_tva) {
+                throw new sfException("Incohérence");
+            }
+
+            if($total != $ligne->montant_ht) {
+                throw new sfException("Incohérence");
+            }
     	}
     }
 
@@ -420,6 +431,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     }
 
     public function updateTotaux() {
+        $this->lignes->updateTotaux();
         $this->updateTotalHT();
         $this->updateTotalTaxe();
         $this->updateTotalTTC();
@@ -557,7 +569,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     
     public function isAvoir() {
         return (($this->exist('statut')) &&
-                ($this->statut == self::STATUT_NONREDRESSABLE) && 
+                ($this->statut == FactureClient::STATUT_NONREDRESSABLE) && 
                 ($this->exist("total_ht")) &&
                 ($this->total_ht < 0.0));
     }
