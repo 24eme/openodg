@@ -29,6 +29,7 @@
 
 \def\LOGO{<?php echo sfConfig::get('sf_web_dir'); ?>/images/logo_site.png}
 \def\LOGOCARTEMEMBRE{<?php echo sfConfig::get('sf_web_dir'); ?>/images/pdf/logo_carte_membre.jpg}
+\def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
@@ -76,9 +77,8 @@ linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframetotal}
 \renewcommand{\familydefault}{\sfdefault}
 \fancyhead[L]{\includegraphics[scale=0.5]{\LOGO}}
 \fancyhead[R]{
-\colorbox{vertclair}{\LARGE{\textbf{\textcolor{vertfonce}{FACTURE}}}} \\ 
+\colorbox{vertclair}{\LARGE{\textbf{\textcolor{vertfonce}{\TYPEFACTURE~N°~\NUMFACTURE}}}} \\ 
 \vspace{5mm}
-N° facture : \textbf{\NUMFACTURE} \\
 N° adhérent : \textbf{\NUMADHERENT}
 }
 \fancyfoot[C]{}
@@ -126,7 +126,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 \\\vspace{6mm}
 \begin{tabular}{|>{\centering}p{9cm} >{\raggedleft}p{6.4cm}|>{\raggedleft}p{2.3cm}|}
   \hline
-  \multirow{4}{*} {\begin{minipage}{6cm}Paiement sous 30 jours à réception \newline de facture, net et sans escompte\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  \multirow{4}{*} {\begin{minipage}{6cm}<?php if(!$facture->isAvoir()): ?>Paiement sous 30 jours à réception \newline de facture, net et sans escompte<?php endif; ?>\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>
   	<?php if ($detail->taux_tva): ?>
@@ -134,7 +134,7 @@ N° adhérent : \textbf{\NUMADHERENT}
   	<?php endif; ?>
   	<?php endforeach; ?>
   <?php endforeach; ?>
-  & \textbf{TOTAL TTC A PAYER} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTTC~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  & \textbf{TOTAL TTC} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTTC~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
   \hline
 \end{tabular}	
 \end{center}
@@ -173,6 +173,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
         \end{center}
     \end{minipage}
     <?php endif; ?>
+    <?php if(!$facture->isAvoir()): ?>
 	\begin{minipage}{0.5\textwidth}
 		\vspace{1.2cm}
 		\begin{center}
@@ -191,5 +192,6 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 		    \vspace{1mm}
 		\end{beamerframetotal}
 	\end{minipage}
+    <?php endif; ?>
 
 \end{document}
