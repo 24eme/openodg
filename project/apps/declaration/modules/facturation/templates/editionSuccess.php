@@ -16,7 +16,7 @@
     <?php echo $form->renderGlobalErrors() ?>
     
     <div class="row row-margin">
-        <div class="col-xs-12">
+        <div class="col-xs-12" style="border-bottom: 1px dotted #d2d2d2;">
             <div class="col-xs-7">
                 <div class="row">
                     <div class="col-xs-3 text-center lead text-muted">Quantité</div>
@@ -31,43 +31,45 @@
             </div>
             <div class="col-xs-2 text-center lead text-muted">Taux&nbsp;TVA</div>
         </div>
-        <div class="col-xs-12">
-            <?php foreach($form['lignes'] as $f_ligne): ?>
-            <div id="<?php echo $f_ligne->renderId() ?>" class="form-group line" style="<?php echo (!$f_ligne['libelle']->getValue()) ? "opacity: 0.6" : null ?>">
-                <div class="col-xs-7">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            
-                        </div>
-                        <div class="col-xs-6">
-                        <?php echo $f_ligne['libelle']->renderError() ?>
-                        <?php echo $f_ligne['libelle']->render(array('class' => 'form-control input-lg')); ?>
-                        </div>
-                        <div class="col-xs-3">
-                            <?php echo $f_ligne['produit_identifiant_analytique']->renderError() ?>
-                            <?php echo $f_ligne['produit_identifiant_analytique']->render(array('class' => 'form-control input-lg bg-info')); ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-3 text-right">
-                    <div class="row">
-                        <div class="col-xs-7 col-xs-offset-5">
-                <?php $ids_montant_ht = array(); ?>
-                <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_ht[] = "#".$f_detail['montant_ht']->renderId(); endforeach; ?>
-                <?php echo $f_ligne['montant_ht']->renderError(); ?>
-                <?php echo $f_ligne['montant_ht']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_ht), "readonly" => "readonly", 'data-sum-element' => "#total_ht")); ?>
-                <?php $ids_montant_tva = array(); ?>
-                <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_tva[] = "#".$f_detail['montant_tva']->renderId(); endforeach; ?>
-                <?php echo $f_ligne['montant_tva']->renderError(); ?>
-                <?php echo $f_ligne['montant_tva']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_tva), "readonly" => "readonly", 'data-sum-element' => "#total_tva", 'readonly' => 'readonly', 'type' => 'hidden')); ?>
+    </div>
+    <div class="row">
+        <?php foreach($form['lignes'] as $f_ligne): ?>
+            <div class="col-xs-12">
+                <div id="<?php echo $f_ligne->renderId() ?>" class="form-group line" style="<?php echo (!$f_ligne['libelle']->getValue()) ? "opacity: 0.6" : null ?>">
+                    <div class="col-xs-7">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                
+                            </div>
+                            <div class="col-xs-6">
+                            <?php echo $f_ligne['libelle']->renderError() ?>
+                            <?php echo $f_ligne['libelle']->render(array('class' => 'form-control input-lg')); ?>
+                            </div>
+                            <div class="col-xs-3">
+                                <?php echo $f_ligne['produit_identifiant_analytique']->renderError() ?>
+                                <?php echo $f_ligne['produit_identifiant_analytique']->render(array('class' => 'form-control input-lg bg-info')); ?>
+                            </div>
                         </div>
                     </div>
+                    <div class="col-xs-3 text-right">
+                        <div class="row">
+                            <div class="col-xs-7 col-xs-offset-5">
+                    <?php $ids_montant_ht = array(); ?>
+                    <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_ht[] = "#".$f_detail['montant_ht']->renderId(); endforeach; ?>
+                    <?php echo $f_ligne['montant_ht']->renderError(); ?>
+                    <?php echo $f_ligne['montant_ht']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_ht), "readonly" => "readonly", 'data-sum-element' => "#total_ht")); ?>
+                    <?php $ids_montant_tva = array(); ?>
+                    <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_tva[] = "#".$f_detail['montant_tva']->renderId(); endforeach; ?>
+                    <?php echo $f_ligne['montant_tva']->renderError(); ?>
+                    <?php echo $f_ligne['montant_tva']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_tva), "readonly" => "readonly", 'data-sum-element' => "#total_tva", 'readonly' => 'readonly', 'type' => 'hidden')); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-2">
+                        <!--<button type="button" class="btn btn-danger btn-lg hidden"><span class="glyphicon glyphicon-trash"></span></button>-->
+                    </div>
                 </div>
-                <div class="col-xs-2">
-                    <!--<button type="button" class="btn btn-danger btn-lg hidden"><span class="glyphicon glyphicon-trash"></span></button>-->
-                </div>
-            </div>
-                <div class="form-group">
+                <div class="form-group" style="border-bottom: 1px dotted #d2d2d2;">
                     <div class="col-xs-12">
                     <?php foreach($f_ligne['details'] as $f_detail): ?>
                         <?php echo $f_detail['quantite']->renderError() ?>
@@ -117,8 +119,10 @@
                     <?php endforeach; ?>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <div class="row">
         <div class="col-xs-12">
             <div class="form-group form-group-lg">
                 <div class="col-xs-2 text-center"></div>
