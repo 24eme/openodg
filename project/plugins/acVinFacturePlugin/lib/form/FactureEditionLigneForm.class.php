@@ -8,6 +8,9 @@ class FactureEditionLigneForm extends acCouchdbObjectForm {
         $this->setWidget("libelle", new sfWidgetFormInput());
         $this->setValidator("libelle", new sfValidatorString(array("required" => true)));
 
+        $this->setWidget("produit_identifiant_analytique", new sfWidgetFormInput());
+        $this->setValidator("produit_identifiant_analytique", new sfValidatorString(array('required' => true)));
+
         $this->setWidget("montant_tva", new sfWidgetFormInputFloat());
         $this->setValidator("montant_tva", new sfValidatorNumber(array('required' => false)));
 
