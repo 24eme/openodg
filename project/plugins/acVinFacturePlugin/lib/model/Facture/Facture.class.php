@@ -568,10 +568,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     }
     
     public function isAvoir() {
-        return (($this->exist('statut')) &&
-                ($this->statut == FactureClient::STATUT_NONREDRESSABLE) && 
-                ($this->exist("total_ht")) &&
-                ($this->total_ht < 0.0));
+        
+        return $this->total_ht < 0.0;
     }
     
     /*** ARCHIVAGE ***/

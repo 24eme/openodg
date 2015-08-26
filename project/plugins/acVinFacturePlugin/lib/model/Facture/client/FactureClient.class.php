@@ -10,8 +10,8 @@ class FactureClient extends acCouchdbClient {
     const FACTURE_LIGNE_PRODUIT_TYPE_RAISINS = "contrat_raisins";
     const FACTURE_LIGNE_PRODUIT_TYPE_ECART = "ecart";
     
-    const STATUT_REDRESSEE = 'redressee';
-    const STATUT_NONREDRESSABLE = 'non redressable';
+    const STATUT_REDRESSEE = 'REDRESSE';
+    const STATUT_NONREDRESSABLE = 'NON_REDRESSABLE';
 
     public static $origines = array(self::FACTURE_LIGNE_ORIGINE_TYPE_DRM, self::FACTURE_LIGNE_ORIGINE_TYPE_SV12);
 
@@ -352,15 +352,23 @@ class FactureClient extends acCouchdbClient {
 
           $ligne->montant_ht *= -1;
           $ligne->montant_tva *= -1;
+
+          $ligne->remove('origine_mouvements');
+          $ligne->add('origine_mouvements');
       }
 
       $avoir->total_ht *= -1;
       $avoir->total_taxe *= -1;
       $avoir->total_ttc *= -1;
 
+      $avoir->remove('origines');
+      $avoir->add('origines');
+
+      $avoir->remove('templates');
+      $avoir->add('templates');
+
       $avoir->numero_archive = null;
       $avoir->numero_ava = null;
-      $avoir->numero_facture = null;
       $avoir->versement_comptable = 0;
       $avoir->versement_comptable_paiement = 0;
       $avoir->storeDatesCampagne(date('Y-m-d'));
@@ -368,8 +376,6 @@ class FactureClient extends acCouchdbClient {
       $avoir->reglement_paiement = null;
       $avoir->remove('arguments');
       $avoir->add('arguments');
-
-      $avoir->statut = self::STATUT_NONREDRESSABLE;
 
       return $avoir;
     }
