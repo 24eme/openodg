@@ -8,7 +8,7 @@ class FactureEditionLigneDetailForm extends acCouchdbObjectForm {
         $this->setValidator("quantite", new sfValidatorNumber(array("required" => false)));
 
         $this->setWidget("libelle", new sfWidgetFormInput());
-        $this->setValidator("libelle", new sfValidatorString(array("required" => true)));
+        $this->setValidator("libelle", new sfValidatorString(array("required" => false)));
       
         $this->setWidget("prix_unitaire", new sfWidgetFormInput());
         $this->setValidator("prix_unitaire", new sfValidatorNumber(array('required' => false)));
@@ -23,6 +23,7 @@ class FactureEditionLigneDetailForm extends acCouchdbObjectForm {
         $this->setValidator("montant_tva", new sfValidatorNumber(array('required' => false)));
 
         $this->widgetSchema->setNameFormat('facture_edition_ligne_detail[%s]');
+        $this->validatorSchema->setPreValidator(new FactureEditionLigneDetailValidator());
     }     
 
 }

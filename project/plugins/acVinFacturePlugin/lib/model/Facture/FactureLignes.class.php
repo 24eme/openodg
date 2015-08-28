@@ -24,4 +24,19 @@ class FactureLignes extends BaseFactureLignes {
         }
     }
 
+    public function cleanLignes() {
+        $lignesToDelete = array();
+
+        foreach($this as $ligne) {
+            $ligne->cleanDetails();
+            if(!count($ligne->details)) {
+                $lignesToDelete[$ligne->getKey()] = $true;
+            }
+        }
+
+        foreach($lignesToDelete as $key => $void) {
+            $this->remove($key);
+        }
+    }
+
 }

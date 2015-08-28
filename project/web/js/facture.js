@@ -24,43 +24,60 @@
             }
         });
 
+        $('.detail input').keypress(function() {
+            stateDetail($($(this).attr('data-detail')));
+        });
+
         $('.data-clean-line').click(function() {
             if(!confirm("Étes-vous sur de vouloir supprimer cette ligne ?")) {
                 return;
             }
-            cleanLine($($(this).attr('data-clean-line')));
+            cleanDetail($($(this).attr('data-detail')));
         });
 
-        $('.line').hover(function() {
+        $('.detail').hover(function() {
             $(this).find('button').removeClass("hidden");
         }, function() {
             $(this).find('button').addClass("hidden");
         });
     });
 
-    var cleanLine = function(line) {
-        line.find('input').each(function() {
+    var stateLine = function(groupLine) {
+        var line = groupLine.find('.line');
+        if(groupLine.find('.detail.empty').length == groupLine.find('.detail').length) {
+            line.addClass('empty');
+            line.css('opacity', '0.5');
+        } else {
+            line.removeClass('empty');
+            line.css('opacity', '1');
+        }
+    }
+
+    var cleanDetail = function(detail) {
+        detail.find('input').each(function() {
             $(this).val(null);
             $(this).change();
         });
-        stateLine(line);
+        stateDetail(detail);
     }
-
-    var stateLine = function(line) {
+   
+    var stateDetail = function(detail) {
         var empty = true;
-        line.find('input').each(function() {
+        detail.find('input').each(function() {
             if($(this).val()) {
                 empty = false;
             }
         });
 
         if(empty) {
-            line.css('opacity', '0.6');
-
-            return;
+            detail.css('opacity', '0.5');
+            detail.addClass('empty');
+        } else {
+            detail.css('opacity', '1');
+            detail.removeClass('empty');
         }
 
-        line.css('opacity', '1');
+        stateLine($(detail.attr('data-line')));
     }
 
     var sumElement = function(element) {
