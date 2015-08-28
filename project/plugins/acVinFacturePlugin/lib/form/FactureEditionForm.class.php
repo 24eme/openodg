@@ -3,7 +3,7 @@
 class FactureEditionForm extends acCouchdbObjectForm {
 
     public function configure()
-    {
+    {   
         $this->getObject()->lignes->add("nouvelle");
         $this->embedForm('lignes', new FactureEditionLignesForm($this->getObject()->lignes));
         

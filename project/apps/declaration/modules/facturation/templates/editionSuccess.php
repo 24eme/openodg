@@ -10,10 +10,16 @@
     (<?php echo $facture->declarant->adresse ?> <?php echo $facture->declarant->code_postal ?> <?php echo $facture->declarant->commune ?>)</small>
 </h2>
 
-<form action="" method="post" class="form-horizontal">
+<form id="form_edition_facture" action="" method="post" class="form-horizontal">
 
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
+
+    <?php if($form->hasErrors()): ?>
+        <div class="alert alert-danger" role="alert">
+            Veuuillez compléter ou corriger les erreurs
+        </div>
+    <?php endif; ?>
     
     <div class="row row-margin">
         <div class="col-xs-12" style="border-bottom: 1px dotted #d2d2d2;">
@@ -33,34 +39,30 @@
         </div>
     </div>
     <div class="row">
-        <?php foreach($form['lignes'] as $f_ligne): ?>
+        <?php foreach($form['lignes'] as $key_ligne => $f_ligne): ?>
             <div id="<?php echo $f_ligne->renderId() ?>" class="col-xs-12">
-                <div class="form-group line <?php if(!$f_ligne['libelle']->getValue()): ?>empty<?php endif; ?>" style="<?php echo (!$f_ligne['libelle']->getValue()) ? "opacity: 0.5" : null ?>">
+                <div class="form-group line <?php if(!$f_ligne['libelle']->getValue() && !$f_ligne->hasError()): ?>empty<?php endif; ?>" style="<?php echo (!$f_ligne['libelle']->getValue() && !$f_ligne->hasError()) ? "opacity: 0.5" : null ?>">
                     <div class="col-xs-7">
                         <div class="row">
                             <div class="col-xs-3">
                                 
                             </div>
-                            <div class="col-xs-6">
-                            <?php echo $f_ligne['libelle']->renderError() ?>
+                            <div class="col-xs-6 <?php echo (($f_ligne['libelle']->hasError()) ? 'has-error' : null) ?>">
                             <?php echo $f_ligne['libelle']->render(array('class' => 'form-control input-lg', 'placeholder' => 'Libellé')); ?>
                             </div>
-                            <div class="col-xs-3">
-                                <?php echo $f_ligne['produit_identifiant_analytique']->renderError() ?>
-                                <?php echo $f_ligne['produit_identifiant_analytique']->render(array('class' => 'form-control input-lg bg-info', 'placeholder' => 'Code comptable')); ?>
+                            <div class="col-xs-3 <?php echo (($f_ligne['produit_identifiant_analytique']->hasError()) ? 'has-error' : null) ?>">
+                                <?php echo $f_ligne['produit_identifiant_analytique']->render(array('class' => 'form-control input-lg bg-info', 'placeholder' => 'Compta')); ?>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-3 text-right">
                         <div class="row">
-                            <div class="col-xs-7 col-xs-offset-5">
+                            <div class="col-xs-7 col-xs-offset-5 <?php echo (($f_ligne['montant_ht']->hasError()) ? 'has-error' : null) ?> <?php echo (($f_ligne['montant_tva']->hasError()) ? 'has-error' : null) ?>">
                     <?php $ids_montant_ht = array(); ?>
                     <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_ht[] = "#".$f_detail['montant_ht']->renderId(); endforeach; ?>
-                    <?php echo $f_ligne['montant_ht']->renderError(); ?>
                     <?php echo $f_ligne['montant_ht']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_ht), "readonly" => "readonly", 'data-sum-element' => "#total_ht")); ?>
                     <?php $ids_montant_tva = array(); ?>
                     <?php foreach($f_ligne['details'] as $f_detail): $ids_montant_tva[] = "#".$f_detail['montant_tva']->renderId(); endforeach; ?>
-                    <?php echo $f_ligne['montant_tva']->renderError(); ?>
                     <?php echo $f_ligne['montant_tva']->render(array('class' => 'form-control input-lg text-right data-sum-element', 'data-sum' => implode(" + ", $ids_montant_tva), "readonly" => "readonly", 'data-sum-element' => "#total_tva", 'readonly' => 'readonly', 'type' => 'hidden')); ?>
                             </div>
                         </div>
@@ -71,28 +73,24 @@
                 </div>
                 <div class="form-group" style="border-bottom: 1px dotted #d2d2d2;">
                     <div class="col-xs-12">
-                    <?php foreach($f_ligne['details'] as $f_detail): ?>
-                        <div data-line="#<?php echo $f_ligne->renderId() ?>" id="<?php echo $f_detail->renderId() ?>" class="form-group detail <?php if(!$f_detail['libelle']->getValue()): ?>empty<?php endif; ?>" style="<?php echo (!$f_detail['libelle']->getValue()) ? "opacity: 0.5" : null ?>">
+                    <?php foreach($f_ligne['details'] as $key_detail => $f_detail): ?>
+                        <div data-line="#<?php echo $f_ligne->renderId() ?>" id="<?php echo $f_detail->renderId() ?>" class="form-group detail <?php if(!$f_detail['libelle']->getValue() && !$f_detail->hasError()): ?>empty<?php endif; ?>" style="<?php echo (!$f_detail['libelle']->getValue() && !$f_detail->hasError()) ? "opacity: 0.5" : null ?>">
                             <div class="col-xs-7">
                                 <div class="row">
-                                    <div class="col-xs-3">
-                                        <?php echo $f_detail['quantite']->renderError() ?>
+                                    <div class="col-xs-3 <?php echo (($f_detail['quantite']->hasError()) ? 'has-error' : null) ?>">
                                         <?php echo $f_detail['quantite']->render(array('class' => 'form-control text-right data-sum-element', 'data-sum-element' => "#".$f_detail['montant_ht']->renderId(), 'data-detail' => "#".$f_detail->renderId(), 'placeholder' => 'Quantité')); ?>
                                     </div>
-                                    <div class="col-xs-9">
-                                        <?php echo $f_detail['libelle']->renderError() ?>
+                                    <div class="col-xs-9 <?php echo (($f_detail['libelle']->hasError()) ? 'has-error' : null) ?>">
                                         <?php echo $f_detail['libelle']->render(array('class' => 'form-control', 'data-detail' => "#".$f_detail->renderId(), 'placeholder' => 'Libellé')); ?>
                                     </div>  
                                 </div>
                             </div>
                             <div class="col-xs-3">
                                 <div class="row">
-                                    <div class="col-xs-5">
-                                    <?php echo $f_detail['prix_unitaire']->renderError() ?>
+                                    <div class="col-xs-5 <?php echo (($f_detail['prix_unitaire']->hasError()) ? 'has-error' : null) ?>">
                                     <?php echo $f_detail['prix_unitaire']->render(array('class' => 'form-control text-right data-sum-element', 'data-sum-element' => "#".$f_detail['montant_ht']->renderId(), 'data-detail' => "#".$f_detail->renderId(), 'placeholder' => 'Prix U.')); ?>
                                     </div>
-                                    <div class="col-xs-7">
-                                    <?php echo $f_detail['montant_ht']->renderError() ?>
+                                    <div class="col-xs-7 <?php echo (($f_detail['montant_ht']->hasError()) ? 'has-error' : null) ?>">
                                     <?php echo $f_detail['montant_ht']->render(
                                         array('class' => 'form-control text-right data-sum-element', 
                                               'data-sum' => sprintf("#%s * #%s", $f_detail['quantite']->renderId(), $f_detail['prix_unitaire']->renderId()), 
@@ -103,14 +101,16 @@
                             </div>
                             <div class="col-xs-2">
                                 <div class="row">
-                                    <div class="col-xs-7">
-                                <?php echo $f_detail['taux_tva']->renderError() ?>
-                                <?php echo $f_detail['taux_tva']->render(array('class' => 'form-control text-right data-sum-element', 'data-sum-element' => "#".$f_detail['montant_tva']->renderId(), 'data-detail' => "#".$f_detail->renderId(), 'placeholder' => 'Taux TVA')); ?>
-                                <?php echo $f_detail['montant_tva']->renderError() ?>
+                                    <div class="col-xs-7 <?php echo (($f_detail['taux_tva']->hasError()) ? 'has-error' : null) ?> <?php echo (($f_detail['montant_tva']->hasError()) ? 'has-error' : null) ?>">
+                                <?php echo $f_detail['taux_tva']->render(array('class' => 'form-control text-right data-sum-element', 'data-sum-element' => "#".$f_detail['montant_tva']->renderId(), 'data-detail' => "#".$f_detail->renderId(), 'placeholder' => 'Tx TVA')); ?>
                                 <?php echo $f_detail['montant_tva']->render(array('class' => 'form-control text-right data-sum-element' , 'data-sum' => sprintf("#%s * #%s", $f_detail['montant_ht']->renderId(), $f_detail['taux_tva']->renderId()), 'data-sum-element' => '#'.$f_ligne['montant_tva']->renderId(), 'readonly' => 'readonly', 'type' => 'hidden', 'data-detail' => "#".$f_detail->renderId())); ?>
                                     </div>
                                     <div class="col-xs-5">
+                                        <?php if($key_detail == count($f_ligne['details']) - 1): ?>
+                                        <button type="button" class="btn btn-success data-add-line hidden" data-form="#form_edition_facture" data-form-action="<?php echo isset($baseFacture) ? url_for("facturation_avoir", array('sf_subject' => $baseFacture, 'not_redirect' => true)) : url_for("facturation_edition", array('sf_subject' => $facture, 'not_redirect' => true)) ?>"><span class="glyphicon glyphicon-plus"></span></button>
+                                        <?php else: ?>
                                         <button data-detail="#<?php echo $f_detail->renderId() ?>" type="button" class="btn btn-danger data-clean-line hidden"><span class="glyphicon glyphicon-trash"></span></button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

@@ -86,8 +86,17 @@ class facturationActions extends sfActions
 
         $this->form->save();
 
-        $this->getUser()->setFlash("notice", "La facture a été modifiée.");
+        if($this->facture->isAvoir()) {
+            $this->getUser()->setFlash("notice", "La facture a été modifiée.");
+        } else {
+            $this->getUser()->setFlash("notice", "L'avoir a bien été modifié.");
+        }
         
+        if($request->getParameter("not_redirect")) {
+
+            return $this->redirect('facturation_edition', $this->facture);
+        }
+
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
@@ -118,7 +127,12 @@ class facturationActions extends sfActions
 
         $this->form->save();
 
-        $this->getUser()->setFlash("notice", "La facture a été créé.");
+        $this->getUser()->setFlash("notice", "L'avoir a été créé.");
+
+        if($request->getParameter("not_redirect")) {
+
+            return $this->redirect('facturation_edition', $this->facture);
+        }
         
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }

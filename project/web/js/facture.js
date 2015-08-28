@@ -35,7 +35,16 @@
             cleanDetail($($(this).attr('data-detail')));
         });
 
+        $('.data-add-line').click(function() {
+            var form = $($(this).attr('data-form'));
+            form.attr('action', $(this).attr('data-form-action'));
+            form.submit();
+        });
+
         $('.detail').hover(function() {
+            if($(this).hasClass('empty')) {
+                return;
+            }
             $(this).find('button').removeClass("hidden");
         }, function() {
             $(this).find('button').addClass("hidden");
@@ -75,6 +84,7 @@
         } else {
             detail.css('opacity', '1');
             detail.removeClass('empty');
+            detail.find('button').removeClass("hidden");
         }
 
         stateLine($(detail.attr('data-line')));
