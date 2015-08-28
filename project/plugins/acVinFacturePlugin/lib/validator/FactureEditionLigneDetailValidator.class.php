@@ -7,14 +7,14 @@ class FactureEditionLigneDetailValidator extends sfValidatorSchema
     }
 
     protected function doClean($values) {
-        if(empty($values['quantite']) && empty($values['libelle']) && empty($values['prix_unitaire'])) {
+        if(!is_numeric($values['quantite']) && empty($values['libelle']) && !is_numeric($values['prix_unitaire']) && !is_numeric($values['prix_unitaire'])) {
             
             return $values;
         }
 
         $errors = array();
 
-        if(empty($values['quantite'])) {
+        if(!is_numeric($values['quantite'])) {
             $errors['quantite'] = new sfValidatorError($this, 'required');
         }
 
@@ -22,8 +22,12 @@ class FactureEditionLigneDetailValidator extends sfValidatorSchema
             $errors['libelle'] = new sfValidatorError($this, 'required');
         }
 
-        if(empty($values['prix_unitaire'])) {
+        if(!is_numeric($values['prix_unitaire'])) {
             $errors['prix_unitaire'] = new sfValidatorError($this, 'required');
+        }
+
+        if(!is_numeric($values['taux_tva'])) {
+            $errors['taux_tva'] = new sfValidatorError($this, 'required');
         }
 
         if(count($errors)) {
