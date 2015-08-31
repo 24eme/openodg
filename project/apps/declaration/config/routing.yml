@@ -1024,6 +1024,13 @@ parcellaire_export_csv_document:
   requirements:
     sf_method: [get]
 
+#Constats
+constats:
+  url: /constats
+  param: { module: constats, action: index }
+  requirements:
+    sf_method: [get, post]
+
 #Facturation
 
 facturation:
