@@ -4,6 +4,9 @@ class FacturePaiementForm extends acCouchdbObjectForm {
 
     public function configure()
     {
+        $this->setWidget('montant_paiement', new sfWidgetFormInputFloat());
+        $this->setValidator('montant_paiement', new sfValidatorNumber(array('required' => true)));
+
         $this->setWidget('date_paiement', new sfWidgetFormInput(array(), array()));
         $this->setValidator('date_paiement', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
@@ -19,6 +22,8 @@ class FacturePaiementForm extends acCouchdbObjectForm {
             $date = new DateTime($this->getObject()->date_paiement);
             $this->setDefault('date_paiement', $date->format('d/m/Y'));
         }
+
+        $this->setDefault('montant_paiement', $this->getObject()->total_ttc);
     }
 
     protected function doUpdateObject($values) {

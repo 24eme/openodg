@@ -13,9 +13,21 @@
     <div class="row">
         <div class="col-xs-9">
             <div class="form-group">
-                <label class="col-xs-4 control-label">Montant TTC</label>
+                <label class="col-xs-4 control-label">Montant à payer</label>
                 <div class="col-xs-5">
                     <div class="form-control-static"><?php echo echoFloat($facture->total_ttc); ?> € TTC</div>
+                </div>
+            </div>
+            <div class="form-group <?php if($form["montant_paiement"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["montant_paiement"]->renderError(); ?>
+                <?php echo $form["montant_paiement"]->renderLabel("Montant du paiement", array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-5">
+                    <div class="input-group">
+                        <?php echo $form["montant_paiement"]->render(array("class" => "form-control num_float")); ?>
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-euro"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group <?php if($form["date_paiement"]->hasError()): ?>has-error<?php endif; ?>">

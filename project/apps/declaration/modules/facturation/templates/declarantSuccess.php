@@ -101,7 +101,7 @@
                         <?php endif; ?>
 
                         <?php if($facture->isPayee()): ?>
-                        <span class="label label-success">Paiement&nbsp;reçu&nbsp;le&nbsp;<?php echo format_date($facture->date_paiement, "dd/MM/yyyy", "fr_FR"); ?>
+                        <span class="label label-success">Paiement&nbsp;de&nbsp;<?php echo echoFloat($facture->montant_paiement); ?> €&nbsp;reçu&nbsp;le&nbsp;<?php echo format_date($facture->date_paiement, "dd/MM/yyyy", "fr_FR"); ?>
                         <?php if($facture->reglement_paiement): ?>(<?php echo $facture->reglement_paiement ?>)<?php endif; ?></span>
                         <?php endif; ?>
                     </span>
