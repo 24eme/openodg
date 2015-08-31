@@ -96,7 +96,7 @@
                         <?php if($facture->versement_comptable): ?>
 			                 <span class="label label-success">Versé comptablement</span>
                         <?php endif; ?>
-                        <?php if($facture->versement_comptable_paiement): ?>
+                        <?php if($facture->versement_comptable_paiement && !$facture->isAvoir()): ?>
                             <span class="label label-success">Paiement versé comptablement</span>
                         <?php endif; ?>
 
