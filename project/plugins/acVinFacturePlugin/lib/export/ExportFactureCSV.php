@@ -60,17 +60,17 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
         $libelle = $this->getLibelleFacture();
 
         foreach ($this->facture->lignes as $l) {
-                $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . ($l->montant_ht >= 0) ? "CREDIT" : "DEBIT" .';' . $l->montant_ht . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
+                $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';' . $l->montant_ht . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
 
                 $csv .= "\n";
                 if($l->montant_tva) {
-                    $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';'.$this->getSageCompteGeneral($l).';;;;' . ($l->montant_tva >= 0) ? "CREDIT" : "DEBIT" .';' . $l->montant_tva . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
+                    $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';'.$this->getSageCompteGeneral($l).';;;;' . (($l->montant_tva >= 0) ? "CREDIT" : "DEBIT") .';' . $l->montant_tva . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_TVA . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";".$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";";
 
                     $csv .= "\n";
                 }
         }
         
-        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . ($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT" .';' . $this->facture->total_ttc . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;;";
+        $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . $this->facture->total_ttc . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;;";
         
         $csv .= "\n";
 
