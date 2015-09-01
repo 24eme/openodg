@@ -1031,6 +1031,27 @@ constats:
   requirements:
     sf_method: [get, post]
 
+rendezvous_declarant:
+  url: /rendezvous/declarant/:id
+  param: { module: constats, action: rendezvousDeclarant }
+  class: CompteRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+rendezvous_creation:
+  url: /rendezvous/creation/:id/:idchai
+  param: { module: constats, action: rendezvousCreation }
+  class: CompteRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+
 #Facturation
 
 facturation:

@@ -1,64 +1,23 @@
-#Tournee
-Tournee:
+#Rendezvous
+Rendezvous:
   definition:
     fields:
       _id: { }
       _rev: { }
       type: { }
-      etape: { }
+      type_rendezvous: { }
+      libelle: { }
       identifiant: { }
       statut: { }
       date: { }
-      appellation: { }
-      appellation_libelle: { }
-      date_prelevement_debut: { }
-      date_prelevement_fin: { }
-      nombre_commissions: { type: integer }
-      nombre_prelevements: { type: integer }
+      idchai: { }
       heure: { }
-      lieu: { }
-      validation: { }
-      degustations:
-        type: collection
-        definition:
-          fields:
-            '*': { }
-      degustateurs:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  '*':
-                    type: collection
-                    definition:
-                      fields:
-                        nom: { }
-                        email: { }
-                        adresse: { }
-                        commune: { }
-                        code_postal: { }
-                        presence: { type: integer }
-      agents:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  nom: { }
-                  email: { }
-                  adresse: { }
-                  commune: { }
-                  code_postal: { }
-                  lat: { }
-                  lon: { }
-                  dates:
-                    type: array_collection
-                    definition:
-                      fields:
-                        '*': { }
-
+      commentaire: { }
+      raison_sociale: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }
