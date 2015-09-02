@@ -1050,6 +1050,16 @@ rendezvous_creation:
     type:     object
   requirements:
     sf_method: [get, post]
+    
+rendezvous_modification:
+  url: /rendezvous/modification/:identifiant/:dateheure
+  param: { module: constats, action: rendezvousModification }
+  class: RendezvousRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 
 #Facturation

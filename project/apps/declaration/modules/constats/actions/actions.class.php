@@ -26,10 +26,10 @@ class constatsActions extends sfActions {
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
-
+        $this->rendezvousDeclarant = RendezvousClient::getInstance()->getRendezvousByCompte($this->compte->cvi);
         $this->formsRendezVous = array();
         foreach ($this->compte->getChais() as $chaiKey => $chai) {
-            $this->formsRendezVous[$chaiKey] = new RendezvousDeclarantForm($chaiKey);
+            $this->formsRendezVous[$chaiKey] = new RendezvousDeclarantForm($chaiKey,null);
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -41,11 +41,17 @@ class constatsActions extends sfActions {
 
         // return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
     }
+    
+    public function executeRendezvousModification(sfWebRequest $request) {
+        $this->rendezvous = $this->getRoute()->getRendezvous();
+        $this->chai = $this->rendezvous->getChai();
+        $this->form = new RendezvousDeclarantForm($this->rendezvous->idchai, $this->rendezvous);
+    }
 
     public function executeRendezvousCreation(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
         $this->idchai = $request->getParameter('idchai');
-        $this->form = new RendezvousDeclarantForm($this->idchai);
+        $this->form = new RendezvousDeclarantForm($this->idchaiRendezvous,null);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;

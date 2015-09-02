@@ -14,10 +14,18 @@
 class RendezvousDeclarantForm extends sfForm {
 
     private $chaiKey = null;
+    private $rendezvous = null;
 
-    public function __construct($chaiKey, $defaults = array(), $options = array(), $CSRFSecret = null) {
+    public function __construct($chaiKey, $rendezvous = null, $defaults = array(), $options = array(), $CSRFSecret = null) {
         $this->chaiKey = $chaiKey;
+        $this->rendezvous = $rendezvous;
+        sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
         parent::__construct($defaults, $options, $CSRFSecret);
+        if($rendezvous){
+            $this->setDefault('date', format_date($this->rendezvous->date, 'dd/MM/yyyy'));
+            $this->setDefault('heure', format_date($this->rendezvous->heure, 'hh:mm'));
+            $this->setDefault('commentaire', $this->rendezvous->commentaire);
+        }
     }
 
     public function configure() {
@@ -44,6 +52,5 @@ class RendezvousDeclarantForm extends sfForm {
 
         $this->widgetSchema->setNameFormat('rendezvous_declarant_' . $this->chaiKey . '[%s]');
     }
-
 
 }
