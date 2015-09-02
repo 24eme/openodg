@@ -15,7 +15,7 @@ class GenerationExportSage extends GenerationAbstract
         $handle_factures = fopen(sfConfig::get('sf_web_dir')."/".$facturesfile, 'a');
         $handle_clients = fopen(sfConfig::get('sf_web_dir')."/".$clientsfile, 'a');
 
-        if(!count($this->documents)) {
+        if(!count($this->generation->documents)) {
             fwrite($handle_factures, ExportFactureCSV::getHeaderCsv());
             fwrite($handle_clients, ExportCompteCSV::getHeaderCsv());
         }
