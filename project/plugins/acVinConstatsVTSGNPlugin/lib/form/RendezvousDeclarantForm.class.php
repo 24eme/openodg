@@ -11,19 +11,25 @@
  *
  * @author mathurin
  */
-class RendezvousDeclarantForm extends sfForm {
+class RendezvousDeclarantForm extends acCouchdbObjectForm {
 
-    private $chaiKey = null;
     private $rendezvous = null;
+    private $oldDate = null;
+    private $oldHeure = null;
 
-    public function __construct($chaiKey, $rendezvous = null, $defaults = array(), $options = array(), $CSRFSecret = null) {
-        $this->chaiKey = $chaiKey;
+    public function __construct(Rendezvous $rendezvous = null, $options = array(), $CSRFSecret = null) {
         $this->rendezvous = $rendezvous;
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
-        parent::__construct($defaults, $options, $CSRFSecret);
-        if($rendezvous){
+        parent::__construct($rendezvous, $options, $CSRFSecret);
+        $this->oldDate = $this->rendezvous->date;
+        $this->oldHeure = $this->rendezvous->heure;
+        if ($this->rendezvous->date) {
             $this->setDefault('date', format_date($this->rendezvous->date, 'dd/MM/yyyy'));
-            $this->setDefault('heure', format_date($this->rendezvous->heure, 'hh:mm'));
+        }
+        if ($this->rendezvous->heure) {
+            $this->setDefault('heure', format_date($this->rendezvous->heure, 'HH:mm'));
+        }
+        if ($this->rendezvous->commentaire) {
             $this->setDefault('commentaire', $this->rendezvous->commentaire);
         }
     }
@@ -50,7 +56,18 @@ class RendezvousDeclarantForm extends sfForm {
         $this->setValidator('commentaire', new sfValidatorString(array("required" => false)));
 
 
-        $this->widgetSchema->setNameFormat('rendezvous_declarant_' . $this->chaiKey . '[%s]');
+        $this->widgetSchema->setNameFormat('rendezvous_declarant_' . $this->rendezvous->idchai . '[%s]');
+    }
+
+    public function updateObject($values = null) {
+        $oldId = $this->getObject()->_id;
+        parent::updateObject($values);
+        if (($this->getObject()->date != $this->oldDate) || ($this->getObject()->heure != $this->oldHeure)) {
+            $this->getObject()->constructId();
+            $this->getObject()->save();
+            $oldRdv = RendezvousClient::getInstance()->find($oldId);
+            $oldRdv->delete();
+        }
     }
 
 }

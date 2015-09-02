@@ -15,7 +15,11 @@ class Rendezvous extends BaseRendezvous {
         return str_replace('-','',$this->getDate()).str_replace(':','',$this->getHeure());
     }
     
+    public function getCompte() {
+        return CompteClient::getInstance()->findByIdentifiant($this->identifiant);
+    }
+    
     public function getChai() {
-        return CompteClient::getInstance()->findByIdentifiant($this->identifiant)->getChais()->get($this->idchai);
+        return $this->getCompte()->getChais()->get($this->idchai);
     }
 }

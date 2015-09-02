@@ -1,20 +1,32 @@
-<?php use_helper('Float'); ?>
+
 
 <div class="row row-margin">
-    <div class="col-xs-12">
-        <div class="list-group">
-            <?php foreach ($constats as $constat) : ?>
-            <?php // $documents = $constat->value[GenerationClient::HISTORY_VALUES_DOCUMENTS]; ?>
-<!--                <a href="<?php // echo url_for('generation_view', array('type_document' => $generation->key[GenerationClient::HISTORY_KEYS_TYPE_DOCUMENT], 'date_emission' => $generation->key[GenerationClient::HISTORY_KEYS_TYPE_DATE_EMISSION])) ?>" class="list-group-item col-xs-12">
-                    <span class="col-xs-3 text-muted"><?php // echo GenecrationClient::getInstance()->getDateFromIdGeneration($generation->key[GenerationClient::HISTORY_KEYS_TYPE_DATE_EMISSION]); ?></span>
-                    <span class="col-xs-3 text-muted"><?php // echo $generation->value[GenerationClient::HISTORY_VALUES_LIBELLE] ?></span>
-                    <span class="col-xs-2 text-muted text-right"><?php // echo $generation->value[GenerationClient::HISTORY_VALUES_NBDOC]; ?> document<?php // if(count($generation->value[GenerationClient::HISTORY_VALUES_NBDOC])):?>s<?php // endif; ?></span>
-                    <span class="col-xs-2 text-muted text-right">
-                    <?php // if($generation->value[GenerationClient::HISTORY_VALUES_SOMME]): ?><?php // echoFloat(($generation->value[GenerationClient::HISTORY_VALUES_SOMME]) ? $generation->value[GenerationClient::HISTORY_VALUES_SOMME]: 0);?>&nbsp;€<?php // endif; ?>
-                    </span>
-                    <span class="col-xs-2 text-muted text-right"><span class="label label-<?php // echo statutToCssClass($generation->value[GenerationClient::HISTORY_VALUES_STATUT]) ?>"><span class="<?php // echo statutToIconCssClass($generation->value[GenerationClient::HISTORY_VALUES_STATUT]) ?>"></span>&nbsp;&nbsp;<?php // echo statutToLibelle($generation->value[GenerationClient::HISTORY_VALUES_STATUT]); ?></span></span>
-                </a>-->
-            <?php  endforeach; ?>
-        </div>
-    </div>
+    <table class="table table-hover table-bordered">
+        <tr>
+            <th>Jour</th>
+            <th>Nb en attente de plannification</th>
+            <th>Plannifié</th>
+            <th>Réalisé</th>
+            <th>Nb agents</th>
+            <th></th>
+        </tr>
+
+        <?php foreach ($organisationJournee as $dateKey => $journee) : 
+            $nbRendezvousPris = (isset($journee[RendezvousClient::RENDEZVOUS_STATUT_PRIS]))? 
+                count($journee[RendezvousClient::RENDEZVOUS_STATUT_PRIS]) : '0';
+            $nbRendezvousPlanifie = (isset($journee[RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE]))? 
+                count($journee[RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE]) : '0';
+            $nbRendezvousRealise = (isset($journee[RendezvousClient::RENDEZVOUS_STATUT_REALISE]))? 
+                count($journee[RendezvousClient::RENDEZVOUS_STATUT_REALISE]) : '0';
+            ?>
+            <tr>
+                <td><?php echo $dateKey; ?></td>
+                <td><?php echo $nbRendezvousPris; ?></td>
+                <td><?php echo $nbRendezvousPlanifie; ?></td>
+                <td><?php echo $nbRendezvousRealise; ?></td>
+                <td>0</td>
+                <td>ici bouton</td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
 </div>

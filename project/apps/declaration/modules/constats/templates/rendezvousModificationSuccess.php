@@ -6,7 +6,7 @@
     <div class="col-xs-12">        
         <div class="list-group">
                 <div class="list-group-item">
-                    <?php include_partial('constats/rendezvousModification',array('chai' => $chai, 'form' => $form, 'rendezvous' => $rendezvous)); ?> 
+                    <?php include_partial('constats/rendezvousModification',array('chai' => $chai, 'form' => $form, 'rendezvous' => $rendezvous, 'creation' => false)); ?> 
                 </div>
         </div>
     </div>

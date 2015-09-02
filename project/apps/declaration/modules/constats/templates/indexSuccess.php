@@ -1,5 +1,9 @@
 <?php use_helper("Date"); ?>
 <?php include_partial('admin/menu', array('active' => 'constats')); ?>
+<div class="page-header">
+    <h2>Constats</h2>
+</div>
+<h3>Prendre un RDV ou rechercher</h3>
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">
         <?php echo $form->renderHiddenFields(); ?>
@@ -20,4 +24,4 @@
     </form>
 </div>
 
-<?php include_partial('constats/list', array('constats' => $constats)); ?>
+<?php include_partial('constats/list', array('organisationJournee' => $organisationJournee)); ?>

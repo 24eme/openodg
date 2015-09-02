@@ -1,4 +1,8 @@
-<form id="form_operateur_rendezvous" action="<?php echo url_for('rendezvous_modification', $rendezvous); ?>" method="post" class="form-horizontal" name="<?php echo $form->getName(); ?>">
+<?php
+$url = ($creation)? url_for('rendezvous_creation', array('id' => 'COMPTE-'.$rendezvous->identifiant, 'idchai' => $rendezvous->idchai)) : url_for('rendezvous_modification', $rendezvous);
+
+?>
+<form id="form_operateur_rendezvous" action="<?php echo $url; ?>" method="post" class="form-horizontal" name="<?php echo $form->getName(); ?>">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
