@@ -22,7 +22,7 @@ Tournee:
         type: collection
         definition:
           fields:
-            '*': { }
+            '*': { }      
       degustateurs:
         type: collection
         definition:

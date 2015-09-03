@@ -1,9 +1,9 @@
 <?php
 use_helper("Date");
-$nbTotalAgent = "X";
-$pourcentRealises = "0";
-$nbRaisins = "0";
-$nbVins = "0";
+$nbTotalAgent = count($tourneesJournee->tourneesJournee);
+$pourcentRealises = $tourneesJournee->pourcentTotalRealise;
+$nbRaisins = $tourneesJournee->nbTotalRdvRaisin;
+$nbVolume = $tourneesJournee->nbTotalRdvVolume;
 ?>
 <div class="page-header">
     <h2>Constats Jours</h2>    
@@ -35,10 +35,23 @@ $nbVins = "0";
         <tr>
             <th><?php echo $nbTotalAgent ?> Agents</th>
             <th><?php echo $pourcentRealises ?>% Réalisé </th>
-            <th><?php echo $nbRaisins ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;&nbsp;<?php echo $nbVins ?>&nbsp;<span class="icon-mouts size-36"></span></th>
+            <th><?php echo $nbRaisins ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;&nbsp;<?php echo $nbVolume ?>&nbsp;<span class="icon-mouts size-36"></span></th>
             <th></th>
         </tr>
-
+        <?php foreach ($tourneesJournee->tourneesJournee as $tourneeObj) : ?>
+             <tr>
+                 <td><?php echo $tourneeObj->agent->nom_a_afficher; ?></td>
+            
+                 <td><?php echo $tourneeObj->pourcentRealise; ?></td>
+             
+                 <td><?php echo $tourneeObj->nbRdvRaisin; ?>
+            
+                <?php echo $tourneeObj->nbRdvVolume; ?></td>
+            
+                 <td><?php echo $tourneeObj->tournee->getPourcentageRaisin(); ?></td>
+             </tr>
+        
+        <?php endforeach; ?>
     </table>
 </div>
 <div class="row row-margin row-button">    

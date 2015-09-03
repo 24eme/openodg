@@ -7,7 +7,7 @@ class constatsActions extends sfActions {
 
         $this->jour = $request->getParameter('jour');
 
-        $this->organisationJournee = RendezvousClient::getInstance()->buildOrganisationNbDays(2,$this->jour);
+        $this->organisationJournee = RendezvousClient::getInstance()->buildOrganisationNbDays(2, $this->jour);
         $this->form = new LoginForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -28,13 +28,30 @@ class constatsActions extends sfActions {
 
     public function executePlanificationJour(sfWebRequest $request) {
         $this->jour = $request->getParameter('jour');
-        $this->organisationJournee = RendezvousClient::getInstance()->buildOrganisationJournee($this->jour);
+        $this->rendezvousJournee = RendezvousClient::getInstance()->buildRendezvousJournee($this->jour);
+        $this->tourneesJournee = TourneeClient::getInstance()->buildTourneesJournee($this->jour);
+       
     }
-    
+
     public function executeAjoutAgentTournee(sfWebRequest $request) {
+        sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
         $this->jour = $request->getParameter('jour');
-        $this->form = new TourneeAddAgentForm();
-        
+        $this->form = new TourneeAddAgentForm(array('date' => format_date($this->jour, "dd/MM/yyyy", "fr_FR")));
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $compteAgent = CompteClient::getInstance()->find('COMPTE-' . $this->form->getValue('agent'));
+        $tournee = TourneeClient::getInstance()->findOrAddByDateAndAgent($this->form->getValue('date'), $compteAgent);
+        $this->redirect('constats_planification_jour', array('jour' => $this->jour));
     }
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {

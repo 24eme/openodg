@@ -493,5 +493,17 @@ class Tournee extends BaseTournee {
 
         return $notes;
     }
+    
+    public function getPourcentageRealise() {
+        return '10';
+    }
+    
+    public function getPourcentageRaisin() {
+        return '10';
+    }
+     public function getPourcentageVin() {
+        return '20';
+    }
+    
 
 }

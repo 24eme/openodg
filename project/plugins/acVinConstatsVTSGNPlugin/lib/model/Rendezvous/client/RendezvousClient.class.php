@@ -77,22 +77,23 @@ class RendezvousClient extends acCouchdbClient {
             $dates = array_merge($dates, array(Date::addDelaiToDate("-" . $i . " day", $dateToday), Date::addDelaiToDate("+" . $i . " day", $dateToday)));
         }
         foreach ($dates as $date) {
-            $organisationsJournee[$date] = $this->buildOrganisationJournee($date);            
+            $organisationsJournee[$date] = $this->buildRendezvousJournee($date);            
         }
         return $organisationsJournee;
     }
 
-    public function buildOrganisationJournee($date) {
-        $organisationJournee = array();
+    public function buildRendezvousJournee($date) {
+        $rendezvousJournee = array();
         $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Rendezvous', $date);
         foreach ($resultsDate as $resultDate) {
-            if (!array_key_exists($resultDate->value->statut, $organisationJournee)) {
-                $organisationJournee[$resultDate->value->statut] = array();
+            if (!array_key_exists($resultDate->value->statut, $rendezvousJournee)) {
+                $rendezvousJournee[$resultDate->value->statut] = array();
             }
-            $organisationJournee[$resultDate->value->statut][$resultDate->id] = $resultDate;
+            $rendezvousJournee[$resultDate->value->statut][$resultDate->id] = $resultDate;
         }
 
-        return $organisationJournee;
-    }
+        return $rendezvousJournee;
+    }   
+   
 
 }
