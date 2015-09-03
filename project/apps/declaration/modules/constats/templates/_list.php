@@ -25,8 +25,12 @@
                 <td><?php echo $nbRendezvousPlanifie; ?></td>
                 <td><?php echo $nbRendezvousRealise; ?></td>
                 <td>0</td>
-                <td>ici bouton</td>
+                <td><a href="<?php echo url_for('constats_planification_jour', array('jour' => $dateKey)); ?>" class="btn btn-default" >planifier</a></td>
             </tr>
         <?php endforeach; ?>
     </table>
+</div>
+
+<div class="row row-margin">
+    
 </div>

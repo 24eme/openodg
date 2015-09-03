@@ -44,7 +44,7 @@
     <tr>
         <th>Chai</th>
         <th>Infos</th>
-        <th>RDV<span class="icon-raisins size-36"></span></th>
+        <th>RDV&nbsp;<span class="icon-raisins size-36"></span></th>
         <th>RDV</th>
         <th>Résultat</th>  
     </tr>

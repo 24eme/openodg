@@ -1026,8 +1026,20 @@ parcellaire_export_csv_document:
 
 #Constats
 constats:
-  url: /constats
+  url: /constats/:jour
   param: { module: constats, action: index }
+  requirements:
+    sf_method: [get, post]
+
+constats_planification_jour:
+  url: /constats/planification/:jour
+  param: { module: constats, action: planificationJour }
+  requirements:
+    sf_method: [get]
+    
+constats_planification_ajout_agent:
+  url: /constats/ajout-agent/:jour
+  param: { module: constats, action: ajoutAgentTournee }
   requirements:
     sf_method: [get, post]
 

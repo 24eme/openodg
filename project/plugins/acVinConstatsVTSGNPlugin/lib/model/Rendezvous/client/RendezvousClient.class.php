@@ -67,4 +67,32 @@ class RendezvousClient extends acCouchdbClient {
         return $rendezvous;
     }
 
+    public function buildOrganisationNbDays($nb_days = 0, $dateToday) {
+        if (!$dateToday) {
+            $dateToday = date('Y-m-d');
+        }
+        $organisationsJournee = array();
+        $dates = array(Date::addDelaiToDate("-2 day", $dateToday));
+        for ($i = 1; $i <= $nb_days; $i++) {
+            $dates = array_merge($dates, array(Date::addDelaiToDate("-" . $i . " day", $dateToday), Date::addDelaiToDate("+" . $i . " day", $dateToday)));
+        }
+        foreach ($dates as $date) {
+            $organisationsJournee[$date] = $this->buildOrganisationJournee($date);            
+        }
+        return $organisationsJournee;
+    }
+
+    public function buildOrganisationJournee($date) {
+        $organisationJournee = array();
+        $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Rendezvous', $date);
+        foreach ($resultsDate as $resultDate) {
+            if (!array_key_exists($resultDate->value->statut, $organisationJournee)) {
+                $organisationJournee[$resultDate->value->statut] = array();
+            }
+            $organisationJournee[$resultDate->value->statut][$resultDate->id] = $resultDate;
+        }
+
+        return $organisationJournee;
+    }
+
 }
