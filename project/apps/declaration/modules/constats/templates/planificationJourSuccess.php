@@ -48,7 +48,7 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
             
                 <?php echo $tourneeObj->nbRdvVolume; ?></td>
             
-                 <td><?php echo $tourneeObj->tournee->getPourcentageRaisin(); ?></td>
+                 <td><a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default">Accéder à la tournée</a></td>
              </tr>
         
         <?php endforeach; ?>

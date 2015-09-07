@@ -32,6 +32,10 @@ class constatsActions extends sfActions {
         $this->tourneesJournee = TourneeClient::getInstance()->buildTourneesJournee($this->jour);
        
     }
+    
+    public function executeTourneeAgentRendezvous(sfWebRequest $request) {
+         $this->tournee = $this->getRoute()->getTournee();
+    }
 
     public function executeAjoutAgentTournee(sfWebRequest $request) {
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));

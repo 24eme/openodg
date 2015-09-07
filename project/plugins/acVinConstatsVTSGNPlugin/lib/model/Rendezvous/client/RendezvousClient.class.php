@@ -72,13 +72,14 @@ class RendezvousClient extends acCouchdbClient {
             $dateToday = date('Y-m-d');
         }
         $organisationsJournee = array();
-        $dates = array(Date::addDelaiToDate("-2 day", $dateToday));
+        $dates = array($dateToday);
         for ($i = 1; $i <= $nb_days; $i++) {
             $dates = array_merge($dates, array(Date::addDelaiToDate("-" . $i . " day", $dateToday), Date::addDelaiToDate("+" . $i . " day", $dateToday)));
         }
         foreach ($dates as $date) {
             $organisationsJournee[$date] = $this->buildRendezvousJournee($date);            
         }
+        ksort($organisationsJournee);
         return $organisationsJournee;
     }
 

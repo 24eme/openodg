@@ -1043,6 +1043,16 @@ constats_planification_ajout_agent:
   requirements:
     sf_method: [get, post]
 
+tournee_rendezvous_agent:
+  url: /tournee/:id/rendezvous
+  param: { module: constats, action: tourneeAgentRendezvous }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 rendezvous_declarant:
   url: /rendezvous/declarant/:id
   param: { module: constats, action: rendezvousDeclarant }
