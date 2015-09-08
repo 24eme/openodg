@@ -27,10 +27,15 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
             </div>
         </div>
     </div>
-
 </div>
 
 <div class="row row-margin">
+    <div class="col-xs-12">
+        <a href="<?php echo url_for('constats_planifications') ?>" class="btn btn-default">Planifier</a>
+    </div>
+</div>
+<div class="row row-margin">
+    <div class="col-xs-12">
     <table class="table table-hover table-bordered">
         <tr>
             <th><?php echo $nbTotalAgent ?> Agents</th>
@@ -48,11 +53,14 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
             
                 <?php echo $tourneeObj->nbRdvVolume; ?></td>
             
-                 <td><a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default">Accéder à la tournée</a></td>
+                 <td><a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default">Accéder à la tournée</a>
+                 <a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default">Plan</a>
+                 </td>
              </tr>
         
         <?php endforeach; ?>
     </table>
+    </div>
 </div>
 <div class="row row-margin row-button">    
         <a class="btn btn-default" href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour)) ?>">Ajouter un agent</a>

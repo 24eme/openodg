@@ -1025,6 +1025,13 @@ parcellaire_export_csv_document:
     sf_method: [get]
 
 #Constats
+
+constats_planifications:
+  url: /constats/planifications
+  param: { module: constats, action: planifications }
+  requirements:
+    sf_method: [get, post]
+
 constats:
   url: /constats/:jour
   param: { module: constats, action: index }
@@ -1036,7 +1043,7 @@ constats_planification_jour:
   param: { module: constats, action: planificationJour }
   requirements:
     sf_method: [get]
-    
+
 constats_planification_ajout_agent:
   url: /constats/ajout-agent/:jour
   param: { module: constats, action: ajoutAgentTournee }
@@ -1072,7 +1079,7 @@ rendezvous_creation:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 rendezvous_modification:
   url: /rendezvous/modification/:identifiant/:dateheure
   param: { module: constats, action: rendezvousModification }

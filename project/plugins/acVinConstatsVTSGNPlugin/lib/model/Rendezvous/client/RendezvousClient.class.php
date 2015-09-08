@@ -36,6 +36,16 @@ class RendezvousClient extends acCouchdbClient {
         return $rendezvous;
     }
 
+    public function getRendezvousByDate($date) {
+        $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Rendezvous', $date);
+        $rdv = array();
+        foreach($resultsDate as $item) {
+            $rdv[$item->id] = $this->find($item->id, acCouchdbClient::HYDRATE_JSON);
+        }
+
+        return $rdv;
+    }
+
     public function findOrCreate($compte, $idChai, $date, $heure, $commentaire = "") {
         $rendezvous = $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $compte->identifiant, $idChai, str_replace("-", "", $date) . str_replace(":", "", $heure)));
         if ($rendezvous) {
