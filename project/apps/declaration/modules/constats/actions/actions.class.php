@@ -35,6 +35,12 @@ class constatsActions extends sfActions {
     
     public function executeTourneeAgentRendezvous(sfWebRequest $request) {
          $this->tournee = $this->getRoute()->getTournee();
+         $rdv0 = RendezvousClient::getInstance()->find("RENDEZVOUS-6705109000-201509011620");
+         $rdv1 = RendezvousClient::getInstance()->find("RENDEZVOUS-6705109000-201509010032");
+         
+         $this->tournee->addRendezVous($rdv0,"15:20");
+         $this->tournee->addRendezVous($rdv1,"16:20");
+         $this->tournee->save();
     }
 
     public function executeAjoutAgentTournee(sfWebRequest $request) {
