@@ -521,5 +521,11 @@ class Tournee extends BaseTournee {
         
         return $rendezvousNode;
     }
+    
+    public function addRendezVousAndGenerateConstat(Rendezvous $rendezvous, $heure_reelle) {
+        $this->addRendezVous($rendezvous, $heure_reelle);
+        $constats = ConstatsClient::getInstance()->updateOrCreateConstatFromRendezVous($rendezvous);
+        $constats->save();
+    }
 
 }
