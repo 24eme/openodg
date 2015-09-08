@@ -22,7 +22,7 @@ Tournee:
         type: collection
         definition:
           fields:
-            '*': { }            
+            '*': { }
       degustateurs:
         type: collection
         definition:
@@ -69,10 +69,10 @@ Tournee:
               type: collection
               definition:
                 fields: 
-                  heure_reelle: { }     
-                  compte_identifiant: { }   
-                  compte_raison_sociale: { } 
-                  compte_commune: { } 
+                  heure_reelle: { }
+                  compte_identifiant: { }
+                  compte_raison_sociale: { }
+                  compte_commune: { }
                   compte_adresse: { }
                   compte_code_postal: { }
                   compte_lon: { }
@@ -90,7 +90,8 @@ Tournee:
                           type: collection
                           definition:
                             fields: 
-                              '*' : { }  
+                              '*' : { }
+                  position: { }
 Degustation:
   definition:
     fields:

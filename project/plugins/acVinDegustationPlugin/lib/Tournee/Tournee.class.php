@@ -1,4 +1,4 @@
-<?php
+*<?php
 
 /**
  * Model for Tournee
@@ -46,6 +46,16 @@ class Tournee extends BaseTournee {
         }
 
         return $operateurs;
+    }
+
+    public function getRendezVousOrderByHour() {
+        $rdvs = array();
+        foreach ($this->rendezvous as $id => $rendezvous) {
+            $rdvs[$rendezvous->heure_reelle][$id] = $rendezvous;
+            ksort($rdvs[$rendezvous->heure_reelle]);
+        }
+
+        return $rdvs;
     }
 
     public function getTournees() {
