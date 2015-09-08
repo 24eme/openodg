@@ -15,7 +15,6 @@
  * @property string $date_raisin
  * @property string $date_volume
  * @property string $rendezvous_report
- * @property string $constat
 
  * @method string getProduit()
  * @method string setProduit()
@@ -39,8 +38,6 @@
  * @method string setDateVolume()
  * @method string getRendezvousReport()
  * @method string setRendezvousReport()
- * @method string getConstat()
- * @method string setConstat()
  
  */
 

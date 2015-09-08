@@ -503,29 +503,42 @@ class Tournee extends BaseTournee {
      */
 
     public function addRendezVous(Rendezvous $rendezvous, $heure_reelle) {
-        $rendezvousNode = $this->getOrAdd('rendezvous')->getOrAdd($rendezvous->_id);        
+        $rendezvousNode = $this->getOrAdd('rendezvous')->getOrAdd($rendezvous->_id);
         $rendezvousNode->heure_reelle = $heure_reelle;
-        
+
         $rendezvousNode->compte_identifiant = $rendezvous->identifiant;
         $rendezvousNode->compte_raison_sociale = $rendezvous->raison_sociale;
-        $rendezvousNode->compte_adresse = $rendezvous->adresse;        
-        $rendezvousNode->compte_code_postal = $rendezvous->code_postal;        
+        $rendezvousNode->compte_adresse = $rendezvous->adresse;
+        $rendezvousNode->compte_code_postal = $rendezvous->code_postal;
         $rendezvousNode->compte_commune = $rendezvous->commune;
         $rendezvousNode->compte_lon = $rendezvous->lon;
         $rendezvousNode->compte_lat = $rendezvous->lat;
+        $rendezvousNode->compte_telephone_bureau = $rendezvous->telephone_bureau;
+        $rendezvousNode->compte_telephone_prive = $rendezvous->telephone_prive;
+        $rendezvousNode->compte_telephone_mobile = $rendezvous->telephone_mobile;
+
         $rendezvousNode->rendezvous_commentaire = $rendezvous->commentaire;
         $rendezvousNode->type_rendezvous = $rendezvous->type_rendezvous;
-        
+
         $rendezvous->setStatut(RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE);
         $rendezvous->save();
-        
+
         return $rendezvousNode;
     }
-    
+
     public function addRendezVousAndGenerateConstat(Rendezvous $rendezvous, $heure_reelle) {
-        $this->addRendezVous($rendezvous, $heure_reelle);
+        $rendezvousNode = $this->addRendezVous($rendezvous, $heure_reelle);
         $constats = ConstatsClient::getInstance()->updateOrCreateConstatFromRendezVous($rendezvous);
         $constats->save();
+        $rendezvousNode->getOrAdd('constats')->getOrAdd($constats->_id)->add($rendezvous->getDateHeure(), $rendezvous->getDateHeure());
+    }
+
+    public function getFirstAgent() {
+        $agents = $this->agents;
+        foreach ($agents as $agent) {
+            return $agent;
+        }
+        return null;
     }
 
 }

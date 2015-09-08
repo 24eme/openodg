@@ -77,9 +77,20 @@ Tournee:
                   compte_code_postal: { }
                   compte_lon: { }
                   compte_lat: { }
+                  compte_telephone_bureau: { }
+                  compte_telephone_prive: { }
+                  compte_telephone_mobile: { }
                   type_rendezvous: { }
                   rendezvous_commentaire: { }  
-                  constat: { }
+                  constats:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          definition:
+                            fields: 
+                              '*' : { }  
 Degustation:
   definition:
     fields:
