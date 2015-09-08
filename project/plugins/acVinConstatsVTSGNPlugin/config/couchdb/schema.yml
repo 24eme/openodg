@@ -20,4 +20,43 @@ Rendezvous:
       code_postal: { }
       email: { }
       lat: { }
-      lon: { }
+      lon: { }      
+#Constat
+Constats:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      identifiant: { }
+      raison_sociale: { }
+      campagne: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }      
+      constats:
+        type: collection
+        definition:
+          fields:
+             '*':
+              type: collection
+              class: Constat
+              definition:
+                fields: 
+                  produit: { }     
+                  nb_botiche: { }   
+                  degre_potentiel_raisin: { } 
+                  degre_potentiel_volume: { } 
+                  type_vtsgn: { }
+                  statut_raisin: { }
+                  statut_volume: { }
+                  date_signature: { }
+                  date_raisin: { }  
+                  date_volume: { }  
+                  rendezvous_report: { }  
+                  constat: { }
+       

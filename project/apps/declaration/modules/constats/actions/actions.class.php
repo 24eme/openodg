@@ -38,7 +38,9 @@ class constatsActions extends sfActions {
          $rdv0 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823700100-201509081131");
          
          $this->tournee->addRendezVous($rdv0,"15:20");
-         //$this->tournee->addRendezVous($rdv1,"16:20");
+         //$this->tournee->addRendezVous($rdv1,"16:20")
+         $this->tournee->addRendezVousAndGenerateConstat($rdv0,"15:20");
+         //$this->tournee->addRendezVousAndGenerateConstat($rdv1,"16:20");
          $this->tournee->save();
     }
 
