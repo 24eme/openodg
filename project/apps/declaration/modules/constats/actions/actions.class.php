@@ -30,18 +30,101 @@ class constatsActions extends sfActions {
         $this->jour = $request->getParameter('jour');
         $this->rendezvousJournee = RendezvousClient::getInstance()->buildRendezvousJournee($this->jour);
         $this->tourneesJournee = TourneeClient::getInstance()->buildTourneesJournee($this->jour);
-       
     }
-    
+
     public function executeTourneeAgentRendezvous(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
-        $rdv0 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823700100-201509081131");
-         
-        $this->tournee->addRendezVous($rdv0,"15:20");
-        //$this->tournee->addRendezVous($rdv1,"16:20")
-        $this->tournee->addRendezVousAndGenerateConstat($rdv0,"15:20");
-        //$this->tournee->addRendezVousAndGenerateConstat($rdv1,"16:20");
+
+        $this->tournee = $this->getRoute()->getTournee();
+        $rdv0 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823701610-201509081232");
+        $rdv1 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823701610-201509081709");
+        $rdv2 = RendezvousClient::getInstance()->find("RENDEZVOUS-6701000810-201509081851");
+
+        $this->tournee->addRendezVousAndGenerateConstat($rdv0, "15:20");
+        $this->tournee->addRendezVousAndGenerateConstat($rdv1, "16:20");
+        $this->tournee->addRendezVousAndGenerateConstat($rdv2, "17:20");
         $this->tournee->save();
+        $this->agent = $this->tournee->getFirstAgent();
+        $this->date = $this->tournee->getDate();
+        $this->lock = false;
+    }
+
+    public function executeTourneeAgentJsonRendezvous(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        $json = array();
+        $constats = array();
+
+        foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
+            foreach ($rendezvous->constats as $constatsDocKey => $constatNode) {
+                $constats[$constatsDocKey] = ConstatsClient::getInstance()->find($constatsDocKey);
+            }
+        }
+        foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
+            $json[$idrendezvous] = array();
+            $json[$idrendezvous]['rendezvous'] = $rendezvous->toJson();
+            foreach ($rendezvous->constats as $constatsDocKey => $constatNodes) {
+                foreach ($constatNodes as $constatNode) {
+                $json[$idrendezvous]['constats'] = $constats[$constatsDocKey]->constats->get($constatNode)->toJson();                    
+                }
+            }
+        }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+            $this->response->setContentType('application/json');
+
+            return $this->renderText(json_encode($json));
+        }
+
+        if (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS) {
+
+            throw new sfException("La dégustation n'est plus éditable");
+        }
+
+        $json = json_decode($request->getContent());
+        $json_return = array();
+
+        foreach ($json as $json_degustation) {
+            if (!$this->tournee->degustations->exist($json_degustation->identifiant)) {
+                $json_return[$json_degustation->_id] = false;
+                continue;
+            }
+
+            $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
+
+            /* if($degustation->_rev != $json_degustation->_rev) {
+              $json_return[$degustation->_id] = false;
+              continue;
+              } */
+
+            foreach ($json_degustation->prelevements as $json_prelevement) {
+                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation);
+                if (!$prelevement) {
+                    continue;
+                }
+
+                if ($prelevement->commission != $this->commission) {
+                    continue;
+                }
+
+                $prelevement->notes = array();
+                foreach ($json_prelevement->notes as $key_note => $json_note) {
+                    $note = $prelevement->notes->add($key_note);
+                    $note->note = $json_note->note;
+                    $note->defauts = $json_note->defauts;
+                }
+                $prelevement->appreciations = $json_prelevement->appreciations;
+            }
+
+            $degustation->save();
+
+            $json_return[$degustation->_id] = $degustation->_rev;
+        }
+
+        $this->response->setContentType('application/json');
+
+        return $this->renderText(json_encode($json_return));
+>>>>>>> 28d275e57def16b4430c4958004a2fd3c8dc7e22
     }
 
     public function executeAjoutAgentTournee(sfWebRequest $request) {

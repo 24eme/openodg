@@ -11,7 +11,7 @@ class TourneeClient extends acCouchdbClient {
     const STATUT_COURRIERS = 'COURRIERS';
     const STATUT_TERMINE = 'TERMINE';
     const HEURE_NON_REPARTI = '99:99';
-    const TYPE_TOURNEE = "CONSTAT_VTSGN";
+    const TYPE_TOURNEE_CONSTAT_VTSGN = "CONSTAT_VTSGN";
 
     public static function getInstance() {
 
@@ -52,7 +52,7 @@ class TourneeClient extends acCouchdbClient {
         $agentNode->lat = $agent->lat;
         $agentNode->lon = $agent->lon;
         $agentNode->dates = array();
-        $tournee->appellation_libelle = self::TYPE_TOURNEE;
+        $tournee->appellation_libelle = self::TYPE_TOURNEE_CONSTAT_VTSGN;
         $tournee->constructId();
         $tournee->save();
         return $tournee;
@@ -68,7 +68,7 @@ class TourneeClient extends acCouchdbClient {
         $nbRendezvousRealise = 0;
         foreach ($tourneesJournee as $tourneeJournee) {
             $tournee = $tourneeJournee->value;
-            if ($tournee->appellation_libelle != self::TYPE_TOURNEE) {
+            if ($tournee->appellation_libelle != self::TYPE_TOURNEE_CONSTAT_VTSGN) {
                 continue;
             }
             $tourneesObj->tourneesJournee[$tournee->appellation] = new stdClass();

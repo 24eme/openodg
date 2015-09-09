@@ -1060,6 +1060,16 @@ tournee_rendezvous_agent:
   requirements:
     sf_method: [get, post]
 
+tournee_rendezvous_agent_json:
+  url: /tournee/:id/rendezvous.json
+  param: { module: constats, action: tourneeAgentJsonRendezvous }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 rendezvous_declarant:
   url: /rendezvous/declarant/:id
   param: { module: constats, action: rendezvousDeclarant }

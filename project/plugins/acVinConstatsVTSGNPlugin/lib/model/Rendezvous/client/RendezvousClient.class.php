@@ -67,6 +67,9 @@ class RendezvousClient extends acCouchdbClient {
         $rendezvous->adresse = $compte->chais->get($idChai)->adresse;
         $rendezvous->commune = $compte->chais->get($idChai)->commune;
         $rendezvous->code_postal = $compte->chais->get($idChai)->code_postal;
+        $rendezvous->telephone_prive = $compte->telephone_prive;
+        $rendezvous->telephone_bureau = $compte->telephone_bureau;
+        $rendezvous->telephone_mobile = $compte->telephone_mobile;
         $rendezvous->date = $date;
         $rendezvous->heure = $heure;
         $rendezvous->commentaire = $commentaire;

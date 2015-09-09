@@ -20,7 +20,10 @@ Rendezvous:
       code_postal: { }
       email: { }
       lat: { }
-      lon: { }      
+      lon: { }
+      telephone_prive: { }
+      telephone_bureau: { }
+      telephone_mobile: { }
 #Constat
 Constats:
   definition:
@@ -58,5 +61,4 @@ Constats:
                   date_raisin: { }  
                   date_volume: { }  
                   rendezvous_report: { }  
-                  constat: { }
        
