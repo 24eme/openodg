@@ -45,7 +45,7 @@ class TourneeClient extends acCouchdbClient {
         $tournee = $this->createDoc($date);
         $tournee->agent_unique = $agent->identifiant;
         $agentNode = $tournee->agents->add($agent->identifiant);
-        $agentNode->nom = $agent->nom_a_afficher;
+        $agentNode->nom = sprintf("%s %s.", $agent->prenom, substr($agent->nom, 0, 1));
         $agentNode->email = $agent->email;
         $agentNode->adresse = $agent->adresse;
         $agentNode->commune = $agent->commune;
