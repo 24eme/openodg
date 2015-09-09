@@ -10,6 +10,7 @@ class Constat extends BaseConstat {
         $this->date_raisin = $rdv->getDateHeure();
         $this->statut_raisin = ConstatsClient::STATUT_NONCONSTATE;
         $this->statut_volume = ConstatsClient::STATUT_NONCONSTATE;
+        $this->rendezvous_origine = $rdv->_id;
     }
     
     public function updateConstat($jsonContent) {
@@ -18,6 +19,10 @@ class Constat extends BaseConstat {
             $this->nb_botiche = $jsonContent->nb_botiche;
             $this->type_botiche = $jsonContent->type_botiche->type_botiche;
             $this->degre_potentiel_raisin = $jsonContent->degre_potentiel_raisin;
+            if($jsonContent->statut == ConstatsClient::STATUT_APPROUVE){
+                $newRdv = RendezvousClient::getInstance()->createRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_origine);
+                $newRdv->save();
+            }
             $this->statut_raisin = $jsonContent->statut;
         }
     }

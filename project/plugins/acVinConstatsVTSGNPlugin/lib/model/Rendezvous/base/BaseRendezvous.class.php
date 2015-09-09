@@ -12,6 +12,7 @@
  * @property string $identifiant
  * @property string $statut
  * @property string $date
+ * @property string $idchai
  * @property string $heure
  * @property string $commentaire
  * @property string $raison_sociale
@@ -22,6 +23,10 @@
  * @property string $email
  * @property string $lat
  * @property string $lon
+ * @property string $telephone_prive
+ * @property string $telephone_bureau
+ * @property string $telephone_mobile
+ * @property string $id_rendezvous_origine
 
  * @method string get_id()
  * @method string set_id()
@@ -39,6 +44,8 @@
  * @method string setStatut()
  * @method string getDate()
  * @method string setDate()
+ * @method string getIdchai()
+ * @method string setIdchai()
  * @method string getHeure()
  * @method string setHeure()
  * @method string getCommentaire()
@@ -59,6 +66,14 @@
  * @method string setLat()
  * @method string getLon()
  * @method string setLon()
+ * @method string getTelephonePrive()
+ * @method string setTelephonePrive()
+ * @method string getTelephoneBureau()
+ * @method string setTelephoneBureau()
+ * @method string getTelephoneMobile()
+ * @method string setTelephoneMobile()
+ * @method string getIdRendezvousOrigine()
+ * @method string setIdRendezvousOrigine()
  
  */
  

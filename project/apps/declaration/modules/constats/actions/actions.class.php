@@ -34,16 +34,6 @@ class constatsActions extends sfActions {
 
     public function executeTourneeAgentRendezvous(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
-
-        $this->tournee = $this->getRoute()->getTournee();
-        $rdv0 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823701610-201509081232");
-        $rdv1 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823701610-201509081709");
-        $rdv2 = RendezvousClient::getInstance()->find("RENDEZVOUS-6701000810-201509081851");
-
-        $this->tournee->addRendezVousAndGenerateConstat($rdv0, "15:20");
-        $this->tournee->addRendezVousAndGenerateConstat($rdv1, "16:20");
-        $this->tournee->addRendezVousAndGenerateConstat($rdv2, "17:20");
-        $this->tournee->save();
         $this->agent = $this->tournee->getFirstAgent();
         $this->date = $this->tournee->getDate();
         $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);

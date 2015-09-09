@@ -6,6 +6,7 @@
 
  * @property string $produit
  * @property string $nb_botiche
+ * @property string $type_botiche
  * @property string $degre_potentiel_raisin
  * @property string $degre_potentiel_volume
  * @property string $type_vtsgn
@@ -14,12 +15,15 @@
  * @property string $date_signature
  * @property string $date_raisin
  * @property string $date_volume
+ * @property string $rendezvous_origine
  * @property string $rendezvous_report
 
  * @method string getProduit()
  * @method string setProduit()
  * @method string getNbBotiche()
  * @method string setNbBotiche()
+ * @method string getTypeBotiche()
+ * @method string setTypeBotiche()
  * @method string getDegrePotentielRaisin()
  * @method string setDegrePotentielRaisin()
  * @method string getDegrePotentielVolume()
@@ -36,6 +40,8 @@
  * @method string setDateRaisin()
  * @method string getDateVolume()
  * @method string setDateVolume()
+ * @method string getRendezvousOrigine()
+ * @method string setRendezvousOrigine()
  * @method string getRendezvousReport()
  * @method string setRendezvousReport()
  
