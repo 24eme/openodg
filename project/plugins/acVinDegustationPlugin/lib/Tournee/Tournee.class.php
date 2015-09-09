@@ -1,4 +1,4 @@
-*<?php
+<?php
 
 /**
  * Model for Tournee

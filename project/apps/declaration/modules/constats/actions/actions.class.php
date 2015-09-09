@@ -34,14 +34,14 @@ class constatsActions extends sfActions {
     }
     
     public function executeTourneeAgentRendezvous(sfWebRequest $request) {
-         $this->tournee = $this->getRoute()->getTournee();
-         $rdv0 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823700100-201509081131");
+        $this->tournee = $this->getRoute()->getTournee();
+        $rdv0 = RendezvousClient::getInstance()->find("RENDEZVOUS-6823700100-201509081131");
          
-         $this->tournee->addRendezVous($rdv0,"15:20");
-         //$this->tournee->addRendezVous($rdv1,"16:20")
-         $this->tournee->addRendezVousAndGenerateConstat($rdv0,"15:20");
-         //$this->tournee->addRendezVousAndGenerateConstat($rdv1,"16:20");
-         $this->tournee->save();
+        $this->tournee->addRendezVous($rdv0,"15:20");
+        //$this->tournee->addRendezVous($rdv1,"16:20")
+        $this->tournee->addRendezVousAndGenerateConstat($rdv0,"15:20");
+        //$this->tournee->addRendezVousAndGenerateConstat($rdv1,"16:20");
+        $this->tournee->save();
     }
 
     public function executeAjoutAgentTournee(sfWebRequest $request) {
@@ -66,15 +66,21 @@ class constatsActions extends sfActions {
     }
 
     public function executePlanifications(sfWebRequest $request) {
-        $this->jour = date('Y-m-d');
+        $this->jour = '2015-09-08';
         $rdvs = RendezvousClient::getInstance()->buildRendezvousJournee($this->jour);
         $this->rdvsPris = $rdvs[RendezvousClient::RENDEZVOUS_STATUT_PRIS];
         $this->tournees = TourneeClient::getInstance()->buildTourneesJournee($this->jour);
 
-        foreach($this->tournees->tourneesJournee as $tournee) {
+        $this->heures = array();
+        for ($i = 7; $i <= 20; $i++) {
+            $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
+        }
 
+        foreach($this->tournees->tourneesJournee as $tournee) {
             $this->tournee = $tournee->tournee;
         }
+
+        $this->rdvs = $this->tournee->getRendezVousOrderByHour();
 
     }
 
