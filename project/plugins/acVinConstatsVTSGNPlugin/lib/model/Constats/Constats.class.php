@@ -28,4 +28,23 @@ class Constats extends BaseConstats {
         $this->code_postal = $rendezvous->code_postal;
     }
     
+     public function getConstatIdNode($rendezvous) {
+        $dateStr = str_replace('-', '', $rendezvous->getDate());
+        $cpt = 0;
+        foreach ($this->constats as $constatKey => $constat) {
+            $matches = array();
+            if(preg_match('/^'.$dateStr.'([0-9]{3})$/', $constatKey,$matches)){
+                if($cpt < $matches[1]){
+                    $cpt = intval($matches[1]);
+                }
+            }
+        }
+        return sprintf("%s%03d",$dateStr,$cpt+1);
+    }
+    
+    public function updateConstatNodeFromJson($constatIdNode,$jsonContent) {
+        $constatNode = $this->get('constats')->get($constatIdNode)->updateConstat($jsonContent);       
+    }
+
+    
 }

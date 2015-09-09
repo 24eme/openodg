@@ -4,7 +4,10 @@ class ConstatsClient extends acCouchdbClient {
 
     const TYPE_COUCHDB = 'CONSTATS';
     const STATUT_NONCONSTATE = 'NONCONSTATE';
+    const STATUT_APPROUVE = 'APPROUVE';
     const TYPE_CONTENANT_BOTICHE = 'CONTENANT_BOTICHE';
+    const CONSTAT_TYPE_RAISIN = 'TYPE_RAISIN';
+    const CONSTAT_TYPE_VOLUME = 'TYPE_VOLUME';
     
     public static $types_botiche = array(self::TYPE_CONTENANT_BOTICHE => 'Botiche');
 
@@ -28,14 +31,17 @@ class ConstatsClient extends acCouchdbClient {
         $constats->synchroFromRendezVous($rendezvous);
 
         $constats->constructId();
-        $constats->add('constats')->getOrAdd($rendezvous->getDateHeure())->createFromRendezVous($rendezvous);
+        $constats->add('constats')->getOrAdd($constats->getConstatIdNode($rendezvous))->createFromRendezVous($rendezvous);
         return $constats;
     }
 
     public function updateConstatFromRendezVous(Rendezvous $rendezvous, Constats $constats) {
-        $constats->add('constats')->getOrAdd($rendezvous->getDateHeure())->createFromRendezVous($rendezvous);
+        //ICI update Node SI plutot que de créer si le rdv est du volume    
+        $constats->add('constats')->getOrAdd($constats->getConstatIdNode($rendezvous))->createFromRendezVous($rendezvous);
         return $constats;
     }
+    
+   
 
     public function getProduits() { 
         

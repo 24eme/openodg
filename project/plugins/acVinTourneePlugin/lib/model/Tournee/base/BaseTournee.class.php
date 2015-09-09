@@ -20,6 +20,8 @@
  * @property string $heure
  * @property string $lieu
  * @property string $validation
+ * @property string $agent_unique
+ * @property string $type_tournee
  * @property acCouchdbJson $degustations
  * @property acCouchdbJson $degustateurs
  * @property acCouchdbJson $agents
@@ -57,6 +59,10 @@
  * @method string setLieu()
  * @method string getValidation()
  * @method string setValidation()
+ * @method string getAgentUnique()
+ * @method string setAgentUnique()
+ * @method string getTypeTournee()
+ * @method string setTypeTournee()
  * @method acCouchdbJson getDegustations()
  * @method acCouchdbJson setDegustations()
  * @method acCouchdbJson getDegustateurs()
