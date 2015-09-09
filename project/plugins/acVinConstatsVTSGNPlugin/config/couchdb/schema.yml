@@ -24,6 +24,7 @@ Rendezvous:
       telephone_prive: { }
       telephone_bureau: { }
       telephone_mobile: { }
+      rendezvous_origine: { }
 #Constat
 Constats:
   definition:
@@ -61,5 +62,6 @@ Constats:
                   date_signature: { }
                   date_raisin: { }  
                   date_volume: { }  
+                  rendezvous_origine: { } 
                   rendezvous_report: { }  
        
