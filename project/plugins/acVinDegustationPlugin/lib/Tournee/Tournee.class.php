@@ -512,7 +512,12 @@ class Tournee extends BaseTournee {
      * =========================================
      */
 
-    public function addRendezVous(Rendezvous $rendezvous, $heure_reelle) {
+    public function addRendezVous($rendezvous_or_id, $heure_reelle) {
+        $rendezvous = $rendezvous_or_id;
+        if(!is_object($rendezvous_or_id)) {
+            $rendezvous = RendezvousClient::getInstance()->find($rendezvous_or_id);
+        }
+
         $rendezvousNode = $this->getOrAdd('rendezvous')->getOrAdd($rendezvous->_id);        
         $rendezvousNode->heure_reelle = $heure_reelle;
         
@@ -532,7 +537,12 @@ class Tournee extends BaseTournee {
         return $rendezvousNode;
     }
     
-    public function addRendezVousAndGenerateConstat(Rendezvous $rendezvous, $heure_reelle) {
+    public function addRendezVousAndGenerateConstat($rendezvous_or_id, $heure_reelle) {
+        $rendezvous = $rendezvous_or_id;
+        if(!is_object($rendezvous_or_id)) {
+            $rendezvous = RendezvousClient::getInstance()->find($rendezvous_or_id);
+        }
+        
         $this->addRendezVous($rendezvous, $heure_reelle);
         $constats = ConstatsClient::getInstance()->updateOrCreateConstatFromRendezVous($rendezvous);
         $constats->save();

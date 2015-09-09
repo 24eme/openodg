@@ -176,6 +176,22 @@ class constatsActions extends sfActions {
                 $this->rdvs[$rendezvous->heure_reelle][$tournee->_id][$id] = $rendezvous;
             }
         }
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $rdvValues = $request->getParameter("rdvs", array());
+        foreach ($rdvValues as $id_rdv => $values) {
+            if($values['tournee'] && $values['heure']) {
+                $tournee = $this->tournees[$values['tournee']];
+                $tournee->addRendezVousAndGenerateConstat($id_rdv, $values['heure']);
+                $tournee->save();
+            }
+        }
+
+        return $this->redirect('constats_planifications', array('date' => $this->jour));
     }
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {
