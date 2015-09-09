@@ -83,10 +83,10 @@ class TourneeClient extends acCouchdbClient {
             if ($tournee->type_tournee != self::TYPE_TOURNEE_CONSTAT_VTSGN) {
                 continue;
             }
-            $tourneesObj->tourneesJournee[$tournee->appellation] = new stdClass();
-            $tourneesObj->tourneesJournee[$tournee->appellation]->nbRdvRaisin = 0;
-            $tourneesObj->tourneesJournee[$tournee->appellation]->nbRdvVolume = 0;
-            $tourneesObj->tourneesJournee[$tournee->appellation]->agent = CompteClient::getInstance()->find('COMPTE-' . $tournee->agent_unique);
+            $tourneesObj->tourneesJournee[$tournee->agent_unique] = new stdClass();
+            $tourneesObj->tourneesJournee[$tournee->agent_unique]->nbRdvRaisin = 0;
+            $tourneesObj->tourneesJournee[$tournee->agent_unique]->nbRdvVolume = 0;
+            $tourneesObj->tourneesJournee[$tournee->agent_unique]->agent = CompteClient::getInstance()->find('COMPTE-' . $tournee->agent_unique);
             $tourneeObj = TourneeClient::getInstance()->find('TOURNEE-' . $tournee->identifiant);
 
             $nbRealise = 0;
@@ -94,11 +94,11 @@ class TourneeClient extends acCouchdbClient {
                 $rendezvous = RendezvousClient::getInstance()->find($rendezvousId);
                 $nbRendezvous++;
                 if ($rendezvous->isRendezvousRaisin()) {
-                    $tourneesObj->tourneesJournee[$tournee->appellation]->nbRdvRaisin++;
+                    $tourneesObj->tourneesJournee[$tournee->agent_unique]->nbRdvRaisin++;
                     $tourneesObj->nbTotalRdvRaisin++;
                 }
                 if ($rendezvous->isRendezvousVolume()) {
-                    $tourneesObj->tourneesJournee[$tournee->appellation]->nbRdvVolume++;
+                    $tourneesObj->tourneesJournee[$tournee->agent_unique]->nbRdvVolume++;
                     $tourneesObj->nbTotalRdvVolume++;
                 }
                 if ($rendezvous->isRealise()) {
@@ -106,8 +106,8 @@ class TourneeClient extends acCouchdbClient {
                     $nbRendezvousRealise++;
                 }
             }
-            $tourneesObj->tourneesJournee[$tournee->appellation]->pourcentRealise = (!count($tourneeObj->degustations)) ? 0 : intval(($nbRealise / count($tourneeObj->degustations)) * 100);
-            $tourneesObj->tourneesJournee[$tournee->appellation]->tournee = $tourneeObj;
+            $tourneesObj->tourneesJournee[$tournee->agent_unique]->pourcentRealise = (!count($tourneeObj->degustations)) ? 0 : intval(($nbRealise / count($tourneeObj->degustations)) * 100);
+            $tourneesObj->tourneesJournee[$tournee->agent_unique]->tournee = $tourneeObj;
         }
 
         $tourneesObj->pourcentTotalRealise = (!$nbRendezvous) ? "0" : intval(($nbRendezvousRealise / $nbRendezvous) * 100);
