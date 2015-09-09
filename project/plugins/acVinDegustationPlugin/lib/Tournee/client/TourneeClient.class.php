@@ -59,6 +59,17 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
+    public function getTourneesByDate($date) {
+        $tournees = array();
+        $tourneesRows = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Tournee', $date);
+
+        foreach ($tourneesRows as $tourneeRow) {
+            $tournees[$tourneeRow->id] = TourneeClient::getInstance()->find($tourneeRow->id);
+        }
+
+        return $tournees;
+    }
+
     public function buildTourneesJournee($date) {
         $tourneesJournee = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Tournee', $date);
         $tourneesObj = new stdClass();

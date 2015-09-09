@@ -31,7 +31,7 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 
 <div class="row row-margin">
     <div class="col-xs-12">
-        <a href="<?php echo url_for('constats_planifications') ?>" class="btn btn-default">Planifier</a>
+        <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-default">Planifier</a>
     </div>
 </div>
 <div class="row row-margin">
@@ -54,7 +54,7 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
                 <?php echo $tourneeObj->nbRdvVolume; ?></td>
             
                  <td><a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default">Accéder à la tournée</a>
-                 <a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default">Plan</a>
+                 <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-default">Planifier</a>
                  </td>
              </tr>
         
