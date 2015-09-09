@@ -46,7 +46,12 @@ class constatsActions extends sfActions {
         $this->tournee->save();
         $this->agent = $this->tournee->getFirstAgent();
         $this->date = $this->tournee->getDate();
-        $this->lock = false;
+        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
+        $this->constructProduitsList();
+        $this->constructTypesBotiche();
+        $this->constats = array();        
+        
+        $this->setLayout('layoutResponsive');
     }
 
     public function executeTourneeAgentJsonRendezvous(sfWebRequest $request) {
@@ -65,7 +70,7 @@ class constatsActions extends sfActions {
             $json[$idrendezvous]['rendezvous'] = $rendezvous->toJson();
             foreach ($rendezvous->constats as $constatsDocKey => $constatNodes) {
                 foreach ($constatNodes as $constatNode) {
-                $json[$idrendezvous]['constats'] = $constats[$constatsDocKey]->constats->get($constatNode)->toJson();                    
+                    $json[$idrendezvous]['constats'] = $constats[$constatsDocKey]->constats->get($constatNode)->toJson();
                 }
             }
         }
@@ -158,12 +163,11 @@ class constatsActions extends sfActions {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
 
-        foreach($this->tournees->tourneesJournee as $tournee) {
+        foreach ($this->tournees->tourneesJournee as $tournee) {
             $this->tournee = $tournee->tournee;
         }
 
         $this->rdvs = $this->tournee->getRendezVousOrderByHour();
-
     }
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {
@@ -229,6 +233,28 @@ class constatsActions extends sfActions {
         $rendezvous = RendezvousClient::getInstance()->findOrCreate($this->compte, $this->idchai, $date, $heure, $commentaire);
         $rendezvous->save();
         $this->redirect('rendezvous_declarant', $this->compte);
+    }
+
+    private function constructProduitsList() {
+        $this->produits = array();
+        foreach (ConstatsClient::getInstance()->getProduits() as $produit) {
+            $p = new stdClass();
+            $p->hash_produit = $produit->getHash();
+            $p->libelle = $produit->getLibelleLong();
+            $p->libelle_produit = $produit->getParent()->getLibelleComplet();
+            $p->libelle_complet = $p->libelle_produit . " " . $p->libelle;
+            $this->produits[] = $p;
+        }
+    }
+    
+    private function constructTypesBotiche() {        
+        $this->types_botiche = array();
+        foreach (ConstatsClient::$types_botiche as $type_botiche_key => $type_botiche) {
+            $b = new stdClass();
+            $b->type_botiche = $type_botiche_key;
+            $b->nom = $type_botiche;
+            $this->types_botiche[] = $b;
+        }
     }
 
 }

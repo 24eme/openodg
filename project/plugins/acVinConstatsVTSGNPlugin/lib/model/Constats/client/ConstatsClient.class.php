@@ -4,6 +4,9 @@ class ConstatsClient extends acCouchdbClient {
 
     const TYPE_COUCHDB = 'CONSTATS';
     const STATUT_NONCONSTATE = 'NONCONSTATE';
+    const TYPE_CONTENANT_BOTICHE = 'CONTENANT_BOTICHE';
+    
+    public static $types_botiche = array(self::TYPE_CONTENANT_BOTICHE => 'Botiche');
 
     public static function getInstance() {
         return acCouchdbManager::getClient("Constats");
@@ -34,4 +37,10 @@ class ConstatsClient extends acCouchdbClient {
         return $constats;
     }
 
+    public function getProduits() { 
+        
+        return ConfigurationClient::getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+        
+    }
+    
 }

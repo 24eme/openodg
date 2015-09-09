@@ -46,17 +46,17 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             return null;
         }
 
-        var getOperateursToTransmettre = function () {
-            var operateursToTransmettre = [];
+        var getConstatsToTransmettre = function () {
+            var constatsToTransmettre = [];
 
-            for (operateur_key in $scope.operateurs) {
-                var operateur = $scope.operateurs[operateur_key];
-                if (operateur.transmission_needed) {
-                    operateursToTransmettre.push(operateur);
+            for (constats_key in $scope.constats) {
+                var constat = $scope.constats[constats_key];
+                if (constat.transmission_needed) {
+                    constatsToTransmettre.push(constat);
                 }
             }
 
-            return operateursToTransmettre;
+            return constatsToTransmettre;
         }
 
         var remoteSave = function (operateurs, callBack) {
@@ -112,7 +112,11 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
                     .success(function (data) {
                         
                         $scope.loaded = true;                
-                        $scope.planification = data;
+                        $scope.planification = data;  
+                       
+                        for(var rdv in data){
+                        $scope.constats.push(data[rdv]['constats']);
+                        }
                         localSave();
                     });
         }
@@ -133,14 +137,14 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             localDelete();
         }
 
-        $scope.operateurs = localStorageService.get(local_storage_name);
-
-        if ($scope.operateurs) {
+        $scope.constats = localStorageService.get(local_storage_name);
+        
+        if ($scope.constats) {
             $scope.loaded = true;
         }
 
-        if (!$scope.operateurs) {
-            $scope.operateurs = [];
+        if (!$scope.constats) {
+            $scope.constats = [];
         }
 
         $scope.loadOrUpdatePlanification();
@@ -171,105 +175,87 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             localSave();
         }
 
-        $scope.terminer = function (operateur) {
-            $scope.valide(operateur);
+        $scope.approuver = function (constat) {
+            $scope.valide(constat);
 
-            if (operateur.has_erreurs) {
+            if (constat.has_erreurs) {
 
                 return;
             }
 
-            $scope.precedent(operateur);
+            $scope.precedent(constat);
 
             localSave();
 
-            operateur.transmission_needed = true;
+            constat.transmission_needed = true;
             $scope.transmettre(true);
         }
 
-        $scope.valide = function (operateur) {
-            operateur.termine = false;
-            operateur.has_erreurs = false;
-            operateur.erreurs = [];
-            var nb = 0;
-            var nb_prelevements = 0;
-            for (prelevement_key in operateur.prelevements) {
-                var prelevement = operateur.prelevements[prelevement_key];
-                prelevement.erreurs = [];
+$scope.transmettre = function(auto) {
+        if($scope.transmission_progress) {
 
-                if (operateur.aucun_prelevement && operateur.motif_non_prelevement) {
-                    prelevement.preleve = 0;
-                    prelevement.motif_non_prelevement = null;
-                }
+            return;
+        }        
 
-                if (prelevement.preleve && !prelevement.cuve) {
-                    prelevement.erreurs['cuve'] = true;
-                    operateur.has_erreurs = true;
-                }
-                if (prelevement.preleve && !prelevement.hash_produit) {
-                    prelevement.erreurs['hash_produit'] = true;
-                    operateur.has_erreurs = true;
-                }
-                if (!operateur.aucun_prelevement && !prelevement.preleve && prelevement.hash_produit && !prelevement.motif_non_prelevement) {
-                    prelevement.erreurs['motif'] = true;
-                    operateur.has_erreurs = true;
-                }
-                if (prelevement.preleve) {
-                    nb++;
-                    nb_prelevements++;
-                }
+        $scope.transmission = false;
+        $scope.transmission_progress = true;
+        $scope.transmission_result = "success";
 
-                if (!prelevement.preleve && prelevement.motif_non_prelevement) {
-                    nb++;
-                }
+        var constats = $scope.constats;
+        console.log($scope.constats);
+
+        if(auto) {
+            var constats = getConstatsToTransmettre();
+        }
+
+        remoteSave(constats, function(data) {
+            if(!auto) {
+                $scope.transmission = true;
             }
+            $scope.transmission_progress = false;
 
-            if (!nb && !operateur.aucun_prelevement) {
-                operateur.has_erreurs = true;
-                operateur.erreurs["aucun_prelevement"] = true;
-            }
-
-            if (operateur.aucun_prelevement && !operateur.motif_non_prelevement) {
-                operateur.has_erreurs = true;
-                operateur.erreurs["motif"] = true;
-            }
-
-            operateur.nb_prelevements = nb_prelevements;
-
-            localSave();
-
-            if (operateur.has_erreurs) {
-
+            if(data === true) {
+                $scope.transmission_result = "aucune_transmission";
                 return;
             }
 
-            if (!operateur.aucun_prelevement && operateur.motif_non_prelevement) {
-                operateur.motif_non_prelevement = null;
+            if(!data) {
+               $scope.transmission_result = "error";
+               $scope.testState();
+               return;
             }
 
-            for (prelevement_key in operateur.prelevements) {
-                var prelevement = operateur.prelevements[prelevement_key];
-                if (!prelevement.preleve && prelevement.motif_non_prelevement == "REPORT") {
-                    operateur.motif_non_prelevement = "REPORT";
+            if(typeof data !== 'object') {
+                $scope.transmission_result = "error";
+                $scope.testState();
+                return;
+            }
+
+            for(id_degustation in data) {
+                var revision = data[id_degustation];
+                var operateur = getOperateurById(id_degustation);
+                operateur.transmission_needed = false;
+                if(!revision && $scope.transmission_result) {
+                    $scope.transmission_result = false;
+                    operateur.transmission_collision = true;
+                } else {
+                    operateur._rev = revision;
                 }
             }
+                
+            localSave();
+        });
+    }
 
-            if (!nb_prelevements && nb && !operateur.motif_non_prelevement) {
-                for (prelevement_key in operateur.prelevements) {
-                    var prelevement = operateur.prelevements[prelevement_key];
-                    if (operateur.motif_non_prelevement && prelevement.motif_non_prelevement != operateur.motif_non_prelevement) {
-                        operateur.motif_non_prelevement = "MIXTE";
-                    } else {
-                        operateur.motif_non_prelevement = prelevement.motif_non_prelevement;
-                    }
-                }
-            }
+        $scope.valide = function (constat) {
+            constat.termine = false;
+            constat.has_erreurs = false;
+            constat.erreurs = [];
+            var nb = 0;
+            var nb_prelevements = 0;
+           
 
-            if (!nb_prelevements && nb && !operateur.motif_non_prelevement) {
-                operateur.motif_non_prelevement = "MIXTE";
-            }
-
-            operateur.termine = true;
+            constat.termine = true;
         }
 
         $scope.blurOnEnter = function (event) {

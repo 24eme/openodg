@@ -52,6 +52,7 @@ Constats:
                 fields: 
                   produit: { }     
                   nb_botiche: { }   
+                  type_botiche: { }
                   degre_potentiel_raisin: { } 
                   degre_potentiel_volume: { } 
                   type_vtsgn: { }
