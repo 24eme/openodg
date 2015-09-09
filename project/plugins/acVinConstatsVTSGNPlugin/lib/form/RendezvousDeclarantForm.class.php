@@ -37,7 +37,7 @@ class RendezvousDeclarantForm extends acCouchdbObjectForm {
     public function configure() {
         $this->setWidget('date', new sfWidgetFormInput(array(), array()));
         $this->setWidget('heure', new sfWidgetFormInput(array(), array()));
-        $this->setWidget('commentaire', new sfWidgetFormTextarea());
+        $this->setWidget('commentaire', new sfWidgetFormInput());
 
         $this->widgetSchema->setLabel('date', 'Date');
         $this->widgetSchema->setLabel('heure', 'Heure');

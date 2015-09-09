@@ -7,41 +7,67 @@
 
 <?php include_partial('admin/menu', array('active' => 'constats')); ?>
 
-<ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="#"><?php echo $jour ?></a></li>
-</ul>
+<div class="page-header">
+    <div class="row">
+    <div class="col-xs-8 col-xs-offset-2">
+        <div class="row">
+            <div class="col-xs-2 text-left">
+                <h2><a class="text-muted" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("-1 day", $jour))); ?>">
+                    <span class="glyphicon glyphicon-arrow-left"></span>
+                </a></h2>
+            </div>
+            <div class="col-xs-8 text-center">
+                <h2><?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></h2>
+            </div>
+            <div class="col-xs-2 text-right">
+                <h2><a class="text-muted" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("+1 day", $jour))); ?>">
+                    <span class="glyphicon glyphicon-arrow-right"></span>
+                </a></h2>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
 
 <form id="form_planification" action="" method="post" class="form-horizontal ajaxForm">
-    <div class="btn-group">
-            <btn class="active organisation-tournee btn btn-lg btn-default-step" href="">Tous</btn>
-        <?php foreach($tournees as $t): ?>
-            <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step"><?php echo $t->getFirstAgent()->nom ?></btn>
-        <?php endforeach; ?>
-    </div>
 
     <div class="row">
-        <div class="col-xs-6">
-            <h3>Liste des rendez-vous à planifier</h3>
-            <ul class="organisation-list-wait list-group">
-                <?php foreach($rdvsPris as $rdv_id => $rdv): ?>
-                    <li id="<?php echo $rdv_id ?>" data-tournee="" data-title="<?php echo $rdv->raison_sociale ?>" data-point="<?php echo $rdv->lat*1 ?>,<?php echo $rdv->lon*1 ?>" class="organisation-item list-group-item col-xs-12">
-                            <input type="hidden" class="input-hour" name="rdvs[<?php echo $rdv->_id ?>][heure]" value="" />
-                            <input type="hidden" class="input-tournee" name="rdvs[<?php echo $rdv->_id ?>][tournee]" value="" />
-                            <div class="col-xs-12">
-                                <div class="pull-right">
-                                    <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                                    <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm hidden" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
-                                </div>
-                                <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
-                                    <span class="glyphicon glyphicon-resize-vertical hidden" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
-                                    <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: #e2e2e2"></span>
-                                </div>
-                                <?php echo $rdv->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $rdv->commune ?></small>
-                            </div>
-                    </li>
+        <div class="col-xs-12">
+            <div class="btn-group">
+                    <btn class="active organisation-tournee btn btn-lg btn-default-step" href="">Tous</btn>
+                <?php foreach($tournees as $t): ?>
+                    <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step"><?php echo $t->getFirstAgent()->nom ?></btn>
                 <?php endforeach; ?>
-            </ul>
-            <h3>Liste des rendez-vous planifié</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-margin">
+        <div class="col-xs-6">
+            <div class="well" style="padding: 0 5px; margin-bottom: 5px;">
+                <h4 class="text-center" style="text-transform: uppercase;">Rendez-vous en attente de planification</h4>
+                <ul class="organisation-list-wait list-group">
+                    <?php foreach($rdvsPris as $rdv_id => $rdv): ?>
+                        <li id="<?php echo $rdv_id ?>" data-tournee="" data-title="<?php echo $rdv->raison_sociale ?>" data-point="<?php echo $rdv->lat*1 ?>,<?php echo $rdv->lon*1 ?>" class="organisation-item list-group-item col-xs-12">
+                                <input type="hidden" class="input-hour" name="rdvs[<?php echo $rdv->_id ?>][heure]" value="" />
+                                <input type="hidden" class="input-tournee" name="rdvs[<?php echo $rdv->_id ?>][tournee]" value="" />
+                                <div class="col-xs-12">
+                                    <div class="pull-right">
+                                        <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-xs hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                        <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-xs hidden" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                    </div>
+                                    <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
+                                        <span class="glyphicon glyphicon-resize-vertical hidden" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
+                                        <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: #e2e2e2"></span>
+                                    </div>
+                                    <?php echo $rdv->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $rdv->commune ?></small>
+                                </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+            <div class="well" style="padding: 0 5px; ">
+            <h4 class="text-center" style="text-transform: uppercase;">Rendez-vous Planifié</h4>
             <ul class="organisation-list list-group sortable">
                 <?php foreach($heures as $key_heure => $libelle_heure): ?>
                     <li data-value="<?php echo $key_heure ?>" class="organisation-hour list-group-item col-xs-12 disabled text-center">
@@ -55,8 +81,8 @@
                             <input type="hidden" class="input-tournee" name="rdvs[<?php echo $rdv_id ?>][tournee]" value="<?php echo $tournee_id ?>" />
                             <div class="col-xs-12">
                                 <div class="pull-right">
-                                    <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                                    <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                    <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-xs hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                    <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-xs" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
                                 </div>
                                 <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
                                     <span class="glyphicon glyphicon-resize-vertical" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
@@ -69,11 +95,15 @@
                     <?php endforeach; ?>
                 <?php endforeach; ?>
             </ul>
+            </div>
         </div>
         <div class="col-xs-6">
-            <div class="col-xs-12" id="carteOrganisation" style="height: 600px;"></div>
+            <div class="col-xs-12" id="carteOrganisation" style="height: 650px;"></div>
         </div>
     </div>
-
-    <button class="btn btn-default" type="submit">Enregistrer</button>
+    <div class="row row-margin">
+        <div class="col-xs-12 text-right">
+            <button class="btn btn-lg btn-default btn-upper" type="submit">Valider</button>
+        </div>
+    </div>
 </form>

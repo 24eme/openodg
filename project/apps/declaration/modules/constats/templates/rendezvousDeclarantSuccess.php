@@ -1,7 +1,5 @@
 <?php use_helper("Date") ?>
-<div class="page-header">
-    <h2>Constats Opérateurs</h2>    
-</div>
+<?php include_partial('admin/menu', array('active' => 'constats')); ?>
 
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">
@@ -25,7 +23,7 @@
     </form>
 </div>
 
-<h3>Prendre le 1er RDV</h3>
+<h3>Prendre le 1er rendez-vous <span class="icon-raisins size-36"></span></h3>
 <div class="row">    
     <div class="col-xs-12">        
         <div class="list-group">
@@ -38,27 +36,31 @@
         </div>
     </div>
 </div>
-<br/>
-<h3>Les RDV</h3>
-<table class="table table-hover table-bordered">
-    <tr>
-        <th>Chai</th>
-        <th>Infos</th>
-        <th>RDV&nbsp;<span class="icon-raisins size-36"></span></th>
-        <th>RDV</th>
-        <th>Résultat</th>  
-    </tr>
-<?php foreach ($rendezvousDeclarant as $rendezvous) : ?>
-        <tr>
-            <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>
-            <td><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?></td>
-            <td class="text-center">
-                <a href="<?php echo url_for('rendezvous_modification', $rendezvous); ?>">
-    <?php echo format_date($rendezvous->date, "P", "fr_FR"); ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?>
-                </a>
-            </td>
-            <td>2nd</td>
-            <td>Rés</td>
-        </tr>
-<?php endforeach; ?>
-</table>
+
+<div class="row">    
+    <div class="col-xs-12">
+        <h3>Les rendez-vous</h3>
+        <table class="table table-hover table-bordered">
+            <tr>
+                <th>Chai</th>
+                <th>Infos</th>
+                <th>RDV&nbsp;<span class="icon-raisins size-36"></span></th>
+                <th>RDV</th>
+                <th>Résultat</th>  
+            </tr>
+        <?php foreach ($rendezvousDeclarant as $rendezvous) : ?>
+                <tr>
+                    <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>
+                    <td><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?></td>
+                    <td class="text-center">
+                        <a href="<?php echo url_for('rendezvous_modification', $rendezvous); ?>">
+            <?php echo format_date($rendezvous->date, "P", "fr_FR"); ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?>
+                        </a>
+                    </td>
+                    <td>2nd</td>
+                    <td>Rés</td>
+                </tr>
+        <?php endforeach; ?>
+        </table>
+    </div>
+</div>
