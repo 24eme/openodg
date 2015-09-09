@@ -15,7 +15,7 @@
     <div class="btn-group">
             <btn class="active organisation-tournee btn btn-lg btn-default-step" href="">Tous</btn>
         <?php foreach($tournees as $t): ?>
-            <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="<?php if($t->appellation == "A003102"): ?><?php endif; ?> organisation-tournee btn btn-lg btn-default-step"><?php echo $t->appellation ?></btn>
+            <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step"><?php echo $t->agent_unique ?></btn>
         <?php endforeach; ?>
     </div>
 
