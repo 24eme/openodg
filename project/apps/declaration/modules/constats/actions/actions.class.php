@@ -124,7 +124,6 @@ class constatsActions extends sfActions {
         $this->response->setContentType('application/json');
 
         return $this->renderText(json_encode($json_return));
->>>>>>> 28d275e57def16b4430c4958004a2fd3c8dc7e22
     }
 
     public function executeAjoutAgentTournee(sfWebRequest $request) {
