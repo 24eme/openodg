@@ -49,8 +49,8 @@ class constatsActions extends sfActions {
         $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
         $this->constructProduitsList();
         $this->constructTypesBotiche();
-        $this->constats = array();        
-        
+        $this->constats = array();
+
         $this->setLayout('layoutResponsive');
     }
 
@@ -61,16 +61,15 @@ class constatsActions extends sfActions {
         $constats = array();
 
         foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
-            foreach ($rendezvous->constats as $constatsDocKey => $constatNode) {
-                $constats[$constatsDocKey] = ConstatsClient::getInstance()->find($constatsDocKey);
-            }
+            $constats[$rendezvous->constat] = ConstatsClient::getInstance()->find($rendezvous->constat);
         }
         foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
             $json[$idrendezvous] = array();
             $json[$idrendezvous]['rendezvous'] = $rendezvous->toJson();
-            foreach ($rendezvous->constats as $constatsDocKey => $constatNodes) {
-                foreach ($constatNodes as $constatNode) {
-                    $json[$idrendezvous]['constats'] = $constats[$constatsDocKey]->constats->get($constatNode)->toJson();
+            $json[$idrendezvous]['constats'] = array();
+            foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
+                if (substr($constatkey, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
+                    $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNode->toJson();
                 }
             }
         }
@@ -81,49 +80,15 @@ class constatsActions extends sfActions {
             return $this->renderText(json_encode($json));
         }
 
-        if (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS) {
-
-            throw new sfException("La dégustation n'est plus éditable");
-        }
-
         $json = json_decode($request->getContent());
         $json_return = array();
 
-        foreach ($json as $json_degustation) {
-            if (!$this->tournee->degustations->exist($json_degustation->identifiant)) {
-                $json_return[$json_degustation->_id] = false;
-                continue;
-            }
+        foreach ($json as $json_content) {
 
-            $degustation = $this->tournee->getDegustationObject($json_degustation->identifiant);
-
-            /* if($degustation->_rev != $json_degustation->_rev) {
-              $json_return[$degustation->_id] = false;
-              continue;
-              } */
-
-            foreach ($json_degustation->prelevements as $json_prelevement) {
-                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation);
-                if (!$prelevement) {
-                    continue;
-                }
-
-                if ($prelevement->commission != $this->commission) {
-                    continue;
-                }
-
-                $prelevement->notes = array();
-                foreach ($json_prelevement->notes as $key_note => $json_note) {
-                    $note = $prelevement->notes->add($key_note);
-                    $note->note = $json_note->note;
-                    $note->defauts = $json_note->defauts;
-                }
-                $prelevement->appreciations = $json_prelevement->appreciations;
-            }
-
-            $degustation->save();
-
-            $json_return[$degustation->_id] = $degustation->_rev;
+            $splitted_id = split('_', $json_content->_idNode);
+            $constat = ConstatsClient::getInstance()->find($splitted_id[0]);
+            $constat->updateConstatNodeFromJson($splitted_id[1],$json_content);
+            $constat->save();
         }
 
         $this->response->setContentType('application/json');
@@ -141,7 +106,6 @@ class constatsActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -246,8 +210,8 @@ class constatsActions extends sfActions {
             $this->produits[] = $p;
         }
     }
-    
-    private function constructTypesBotiche() {        
+
+    private function constructTypesBotiche() {
         $this->types_botiche = array();
         foreach (ConstatsClient::$types_botiche as $type_botiche_key => $type_botiche) {
             $b = new stdClass();

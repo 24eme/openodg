@@ -10,6 +10,9 @@ class Tournee extends BaseTournee {
 
     public function constructId() {
         $this->identifiant = sprintf("%s-%s", str_replace("-", "", $this->date), $this->appellation);
+        if($this->type_tournee == TourneeClient::TYPE_TOURNEE_CONSTAT_VTSGN){
+            $this->identifiant = sprintf("%s-%s", str_replace("-", "", $this->date), $this->agent_unique);
+        }
         $this->set('_id', sprintf("%s-%s", TourneeClient::TYPE_COUCHDB, $this->identifiant));
     }
 
@@ -540,7 +543,7 @@ class Tournee extends BaseTournee {
         $rendezvousNode = $this->addRendezVous($rendezvous, $heure_reelle);
         $constats = ConstatsClient::getInstance()->updateOrCreateConstatFromRendezVous($rendezvous);
         $constats->save();
-        $rendezvousNode->getOrAdd('constats')->getOrAdd($constats->_id)->add($rendezvous->getDateHeure(), $rendezvous->getDateHeure());
+        $rendezvousNode->set('constat',$constats->_id);
     }
 
     public function getFirstAgent() {

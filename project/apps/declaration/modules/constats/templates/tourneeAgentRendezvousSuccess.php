@@ -4,7 +4,7 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('tournee_vtsgn.js?201505080324'); ?>
-<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; types_botiche=<?php echo json_encode($types_botiche->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>";'>
+<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; types_botiche =<?php echo json_encode($types_botiche->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>";'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <br/>
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">        
@@ -89,74 +89,78 @@
                         </h3>
                     </div>                
                 </div>
-                <div ng-show="!operateur.aucun_prelevement" id="saisie_mission_{{ rdv['constats']._id}}_{{ rdv['constats']}}" class="col-xs-12 print-margin-bottom">
-                    <div class="page-header form-inline print-page-header" style="margin-top: 5px">
-                        <h3 style="margin-top: 15px" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }">
-                            <span ng-show="!prelevement.show_produit && prelevement.hash_produit" class="lead" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle}}<small ng-show="prelevement.libelle_produit" class="text-muted-alt"> ({{ prelevement.libelle_produit}})</small></span>
-                            <label for="" class="col-xs-5 control-label">Choix du produit:</label>  
-                            <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-model="rdv['constats'].produit" ng-options="produit.libelle_complet for produit in produits"></select>
-                        </h3>
-                    </div>
-                    <div class="visible-print-block" class="row">
-                        <div class="col-xs-12">
-                            <div class="form-horizontal">
-<!--                                <div ng-class="{ 'hidden': !prelevement.erreurs['hash_produit'] }" class="alert alert-danger">
-                                    Vous devez séléctionner un cépage
-                                </div>
-                                <div ng-class="{ 'hidden': !prelevement.erreurs['cuve'] }" class="alert alert-danger">
-                                    Vous devez saisir le(s) numéro(s) de cuve(s)
-                                </div>
-                                -->
-                                <div  class="row">                                   
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
-                                        <div class="col-xs-7">
-                                            <input id="volume_{{ operateur._id}}_{{ prelevement_key}}" ng-model="rdv['constats'].nb_botiche" type="number" class="form-control input-md hidden-sm hidden-md hidden-lg hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                                            <input id="volume_{{ operateur._id}}_{{ prelevement_key}}" ng-model="rdv['constats'].nb_botiche" type="number" class="form-control input-lg hidden-xs hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                                            <!--<input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />--> 
+                <div class="row" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
+                    <div ng-show="!operateur.aucun_prelevement" id="saisie_constat_{{ keyConstatNode}}" class="col-xs-12 print-margin-bottom">
+                        <div class="page-header form-inline print-page-header" style="margin-top: 5px">
+                            <h3 style="margin-top: 15px" ng-class="{ 'text-danger': prelevement.erreurs['hash_produit'] }">
+                                <span ng-show="!prelevement.show_produit && prelevement.hash_produit" class="lead" ng-click="togglePreleve(prelevement)">{{ prelevement.libelle}}<small ng-show="prelevement.libelle_produit" class="text-muted-alt"> ({{ prelevement.libelle_produit}})</small></span>
+                                <label for="" class="col-xs-5 control-label">Choix du produit:</label>  
+                                <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-model="constat.produit" ng-options="produit.libelle_complet for produit in produits"></select>
+                            </h3>
+                        </div>
+                        <div class="visible-print-block" class="row">
+                            <div class="col-xs-12">
+                                <div class="form-horizontal">
+                                    <!--                                <div ng-class="{ 'hidden': !prelevement.erreurs['hash_produit'] }" class="alert alert-danger">
+                                                                        Vous devez séléctionner un cépage
+                                                                    </div>
+                                                                    <div ng-class="{ 'hidden': !prelevement.erreurs['cuve'] }" class="alert alert-danger">
+                                                                        Vous devez saisir le(s) numéro(s) de cuve(s)
+                                                                    </div>
+                                    -->
+                                    <div  class="row">                                   
+                                        <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                            <div class="col-xs-7">
+                                                <input id="nb_botiche_{{ keyConstatNode}}" ng-model="constat.nb_botiche" type="number" class="form-control input-md hidden-sm hidden-md hidden-lg hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                                <input id="nb_botiche_{{ keyConstatNode}}" ng-model="constat.nb_botiche" type="number" class="form-control input-lg hidden-xs hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                                <!--<input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />--> 
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                            <div class="col-xs-7">
+                                                <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-model="constat.type_botiche" ng-options="type_botiche.nom for type_botiche in types_botiche"></select>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
-                                        <div class="col-xs-7">
-                                            <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-model="rdv['constats'].type_botiche" ng-options="type_botiche.nom for type_botiche in types_botiche"></select>
+                                    <div  class="row">                                   
+                                        <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                            <div class="col-xs-7">
+                                                <input id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                                <input id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="text" class="form-control input-lg hidden-xs hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                                                <!--<input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />--> 
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div  class="row">                                   
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
-                                        <div class="col-xs-7">
-                                            <input id="volume_{{ operateur._id}}_{{ prelevement_key}}" ng-model="rdv['constats'].degre_potentiel_raisin" type="text" class="form-control input-md hidden-sm hidden-md hidden-lg hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                                            <input id="volume_{{ operateur._id}}_{{ prelevement_key}}" ng-model="rdv['constats'].degre_potentiel_raisin" type="text" class="form-control input-lg hidden-xs hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                                            <!--<input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />--> 
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
-                                        <div class="col-xs-7">
-                                            
+                                        <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
+                                            <div class="col-xs-7">
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <div ng-class="{ 'hidden': !operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger">
+                        Vous n'avez saisi aucun lot<br /><small>Vous pouvez cocher "Aucun prélèvement" si il n'y a aucun prélèvement pour cet opérateur</small>
+                    </div>
+                    <div class="row row-margin hidden-print">
+                        <div class="col-xs-3">
+                            <a href="" ng-click="precedent(operateur)" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Précédent</a>
+                        </div>
+                        <div class="col-xs-3">
+                            <a href="" ng-click="approuver(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Approuver</a>
+                        </div>
+                        <div class="col-xs-3">
+                            <a href="" ng-click="refuser(operateur)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Refuser</a>
+                        </div>
+                        <div class="col-xs-3 pull-right">
+                            <a href="" ng-click="report(operateur)" class="btn btn-warning btn-lg col-xs-6 btn-block btn-upper link-to-section">Report</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div ng-class="{ 'hidden': !operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger">
-                Vous n'avez saisi aucun lot<br /><small>Vous pouvez cocher "Aucun prélèvement" si il n'y a aucun prélèvement pour cet opérateur</small>
-            </div>
-            <div class="row row-margin hidden-print">
-                <div class="col-xs-3">
-                    <a href="" ng-click="precedent(operateur)" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Précédent</a>
-                </div>
-                <div class="col-xs-3">
-                    <a href="" ng-click="approuver(rdv['constats'])" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Approuver</a>
-                </div>
-                <div class="col-xs-3">
-                    <a href="" ng-click="refuser(operateur)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Refuser</a>
-                </div>
-                <div class="col-xs-3 pull-right">
-                    <a href="" ng-click="report(operateur)" class="btn btn-warning btn-lg col-xs-6 btn-block btn-upper link-to-section">Report</a>
-                </div>
-            </div>
+
         </section>
     </div>
 </div>

@@ -79,7 +79,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             });
         }
 
-      
+
 
         var updateOperateurFromLoad = function (operateur) {
             var termine = false;
@@ -110,12 +110,16 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         $scope.loadOrUpdatePlanification = function () {
             $http.get($rootScope.url_json)
                     .success(function (data) {
-                        
-                        $scope.loaded = true;                
-                        $scope.planification = data;  
-                       
-                        for(var rdv in data){
-                        $scope.constats.push(data[rdv]['constats']);
+
+                        $scope.loaded = true;
+                        $scope.planification = data;
+
+                        for (var rdv in data) {
+                            for (var constatId in data[rdv]['constats']) {
+                                var constat = data[rdv]['constats'][constatId];
+                                constat._idNode = constatId;
+                                $scope.constats.push(constat);
+                            }
                         }
                         localSave();
                     });
@@ -126,7 +130,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }, 200000);
 
         setInterval(function () {
-          //  $scope.transmettre(true);
+            //  $scope.transmettre(true);
         }, 30000);
 
         setInterval(function () {
@@ -138,7 +142,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }
 
         $scope.constats = localStorageService.get(local_storage_name);
-        
+
         if ($scope.constats) {
             $scope.loaded = true;
         }
@@ -188,64 +192,64 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             localSave();
 
             constat.transmission_needed = true;
+            constat.statut = 'APPROUVE';
             $scope.transmettre(true);
         }
 
-$scope.transmettre = function(auto) {
-        if($scope.transmission_progress) {
+        $scope.transmettre = function (auto) {
+            if ($scope.transmission_progress) {
 
-            return;
-        }        
-
-        $scope.transmission = false;
-        $scope.transmission_progress = true;
-        $scope.transmission_result = "success";
-
-        var constats = $scope.constats;
-        console.log($scope.constats);
-
-        if(auto) {
-            var constats = getConstatsToTransmettre();
-        }
-
-        remoteSave(constats, function(data) {
-            if(!auto) {
-                $scope.transmission = true;
-            }
-            $scope.transmission_progress = false;
-
-            if(data === true) {
-                $scope.transmission_result = "aucune_transmission";
                 return;
             }
 
-            if(!data) {
-               $scope.transmission_result = "error";
-               $scope.testState();
-               return;
+            $scope.transmission = false;
+            $scope.transmission_progress = true;
+            $scope.transmission_result = "success";
+
+            var constats = $scope.constats;
+
+            if (auto) {
+                var constats = getConstatsToTransmettre();
             }
 
-            if(typeof data !== 'object') {
-                $scope.transmission_result = "error";
-                $scope.testState();
-                return;
-            }
-
-            for(id_degustation in data) {
-                var revision = data[id_degustation];
-                var operateur = getOperateurById(id_degustation);
-                operateur.transmission_needed = false;
-                if(!revision && $scope.transmission_result) {
-                    $scope.transmission_result = false;
-                    operateur.transmission_collision = true;
-                } else {
-                    operateur._rev = revision;
+            remoteSave(constats, function (data) {
+                if (!auto) {
+                    $scope.transmission = true;
                 }
-            }
-                
-            localSave();
-        });
-    }
+                $scope.transmission_progress = false;
+
+                if (data === true) {
+                    $scope.transmission_result = "aucune_transmission";
+                    return;
+                }
+
+                if (!data) {
+                    $scope.transmission_result = "error";
+                    $scope.testState();
+                    return;
+                }
+
+                if (typeof data !== 'object') {
+                    $scope.transmission_result = "error";
+                    $scope.testState();
+                    return;
+                }
+
+                for (id_degustation in data) {
+                    var revision = data[id_degustation];
+                    var operateur = getOperateurById(id_degustation);
+                    operateur.transmission_needed = false;
+                    if (!revision && $scope.transmission_result) {
+                        $scope.transmission_result = false;
+                        operateur.transmission_collision = true;
+                    } else {
+                        operateur._rev = revision;
+                    }
+                }
+
+                localSave();
+            });
+        }
 
         $scope.valide = function (constat) {
             constat.termine = false;
@@ -253,7 +257,7 @@ $scope.transmettre = function(auto) {
             constat.erreurs = [];
             var nb = 0;
             var nb_prelevements = 0;
-           
+
 
             constat.termine = true;
         }
