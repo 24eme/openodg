@@ -81,7 +81,7 @@ Tournee:
                   compte_telephone_prive: { }
                   compte_telephone_mobile: { }
                   type_rendezvous: { }
-                  rendezvous_commentaire: { }  
+                  rendezvous_commentaire: { }
                   constats:
                     type: collection
                     definition:

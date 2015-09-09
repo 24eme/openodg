@@ -153,11 +153,10 @@ class constatsActions extends sfActions {
     }
 
     public function executePlanifications(sfWebRequest $request) {
-        $this->jour = '2015-09-08';
+        $this->jour = $request->getParameter('date');
         $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860");
-        $rdvs = RendezvousClient::getInstance()->buildRendezvousJournee($this->jour);
-        $this->rdvsPris = $rdvs[RendezvousClient::RENDEZVOUS_STATUT_PRIS];
-        $this->tournees = TourneeClient::getInstance()->buildTourneesJournee($this->jour);
+        $this->rdvsPris = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_PRIS);
+        $this->tournees = TourneeClient::getInstance()->getTourneesByDate($this->jour);
 
         $this->heures = array();
         for ($i = 7; $i <= 20; $i++) {
@@ -166,20 +165,15 @@ class constatsActions extends sfActions {
 
         $this->tourneesCouleur = array();
         $i=0;
-        foreach($this->tournees->tourneesJournee as $tournee) {
-                $this->tourneesCouleur[$tournee->tournee->_id] = $this->couleurs[$i];
+        foreach($this->tournees as $tournee) {
+                $this->tourneesCouleur[$tournee->_id] = $this->couleurs[$i];
                 $i++;
         }
 
         $this->rdvs = array();
-        foreach($this->tournees->tourneesJournee as $tournee) {
-            foreach ($tournee->tournee->rendezvous as $id => $rendezvous) {
-                $this->rdvs[$rendezvous->heure_reelle][$id] = $rendezvous;
-                ksort($this->rdvs[$rendezvous->heure_reelle]);
-            }
-
-            if(!isset($this->tournee)) {
-                $this->tournee = $tournee->tournee;
+        foreach($this->tournees as $tournee) {
+            foreach ($tournee->rendezvous as $id => $rendezvous) {
+                $this->rdvs[$rendezvous->heure_reelle][$tournee->_id][$id] = $rendezvous;
             }
         }
     }
