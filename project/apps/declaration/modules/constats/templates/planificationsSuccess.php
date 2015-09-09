@@ -11,36 +11,37 @@
   <li role="presentation" class="active"><a href="#"><?php echo date('Y-m-d') ?></a></li>
 </ul>
 
-<ul class="nav nav-tabs">
-        <li role="presentation"><a href="#">Tous</a></li>
+<div class="btn-group">
+        <btn class="active organisation-tournee btn btn-lg btn-default-step" href="">Tous</btn>
     <?php foreach($tournees->tourneesJournee as $t): ?>
-        <li role="presentation" data-per-hour="4" data-color="#ff0000" id="<?php echo $t->tournee->_id ?>" class="active organisation-tournee"><a href="#"><?php echo $t->tournee->appellation ?></a></li>
+        <btn style="color: <?php echo $tourneesCouleur[$t->tournee->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->tournee->_id] ?>" id="<?php echo $t->tournee->_id ?>" class="<?php if($t->tournee->appellation == "A003102"): ?><?php endif; ?> organisation-tournee btn btn-lg btn-default-step"><?php echo $t->tournee->appellation ?></btn>
     <?php endforeach; ?>
-</ul>
+</div>
 
 <div class="row">
     <div class="col-xs-6">
-        <ul class="organisation-list list-group sortable">
-            <li class="list-group-item col-xs-12 list-group-item-info list-group-item-container text-center">
-                    Liste des rendez-vous à planifier
-            </li>
-            <?php foreach($rdvsPris as $rdv_id => $operateur): ?>
-                <?php $operateur = $operateur->value ?>
-                <li id="<?php echo $rdv_id ?>" data-tournee="" data-title="<?php echo $operateur->raison_sociale ?>" data-point="<?php echo $operateur->lat*1 ?>,<?php echo $operateur->lon*1 ?>" class="organisation-item list-group-item col-xs-12">
-                        <input type="hidden" class="input-hour" name="rdvs[<?php echo $operateur->_id ?>][heure]" value="<?php echo sprintf("%s", $operateur->heure_reelle) ?>" />
+        <h3>Liste des rendez-vous à planifier</h3>
+        <ul class="organisation-list-wait list-group">
+            <?php foreach($rdvsPris as $rdv_id => $rdv): ?>
+                <?php $rdv = $rdv->value ?>
+                <li id="<?php echo $rdv_id ?>" data-tournee="" data-title="<?php echo $rdv->raison_sociale ?>" data-point="<?php echo $rdv->lat*1 ?>,<?php echo $rdv->lon*1 ?>" class="organisation-item list-group-item col-xs-12">
+                        <input type="hidden" class="input-hour" name="rdvs[<?php echo $rdv->_id ?>][heure]" value="<?php echo sprintf("%s", $rdv->heure_reelle) ?>" />
                         <div class="col-xs-12">
                             <div class="pull-right">
-                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm hidden" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm hidden" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
                             </div>
                             <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
                                 <span class="glyphicon glyphicon-resize-vertical hidden" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
-                                <span class="glyphicon glyphicon-map-marker" style="font-size: 24px;"></span>
+                                <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: #e2e2e2"></span>
                             </div>
-                            <?php echo $operateur->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $operateur->commune ?></small>
+                            <?php echo $rdv->raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $rdv->commune ?></small>
                         </div>
                 </li>
             <?php endforeach; ?>
+        </ul>
+        <h3>Liste des rendez-vous planifié</h3>
+        <ul class="organisation-list list-group sortable">
             <?php foreach($heures as $key_heure => $libelle_heure): ?>
                 <li data-value="<?php echo $key_heure ?>" class="organisation-hour list-group-item col-xs-12 disabled text-center">
                     <small><span class="glyphicon glyphicon-time"></span>&nbsp;&nbsp;<?php echo $libelle_heure ?> h</small>
@@ -52,11 +53,11 @@
                         <div class="col-xs-12">
                             <div class="pull-right">
                                 <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
                             </div>
                             <div style="margin-right: 10px; margin-bottom: -5px;" class="pull-left">
                                 <span class="glyphicon glyphicon-resize-vertical" style="opacity: 0.4; font-size: 24px; margin-left: -20px;"></span>
-                                <span class="glyphicon glyphicon-map-marker" style="font-size: 24px;"></span>
+                                <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: <?php echo $tourneesCouleur[$tournee->_id] ?>"></span>
                             </div>
                             <?php echo $operateur->compte_raison_sociale ?>&nbsp;<small class="text-muted"><?php echo $operateur->compte_commune ?></small>
                         </div>

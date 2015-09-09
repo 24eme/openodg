@@ -149,6 +149,7 @@ class constatsActions extends sfActions {
 
     public function executePlanifications(sfWebRequest $request) {
         $this->jour = '2015-09-08';
+        $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860");
         $rdvs = RendezvousClient::getInstance()->buildRendezvousJournee($this->jour);
         $this->rdvsPris = $rdvs[RendezvousClient::RENDEZVOUS_STATUT_PRIS];
         $this->tournees = TourneeClient::getInstance()->buildTourneesJournee($this->jour);
@@ -158,12 +159,24 @@ class constatsActions extends sfActions {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
 
+        $this->tourneesCouleur = array();
+        $i=0;
         foreach($this->tournees->tourneesJournee as $tournee) {
-            $this->tournee = $tournee->tournee;
+                $this->tourneesCouleur[$tournee->tournee->_id] = $this->couleurs[$i];
+                $i++;
         }
 
-        $this->rdvs = $this->tournee->getRendezVousOrderByHour();
+        $this->rdvs = array();
+        foreach($this->tournees->tourneesJournee as $tournee) {
+            foreach ($tournee->tournee->rendezvous as $id => $rendezvous) {
+                $this->rdvs[$rendezvous->heure_reelle][$id] = $rendezvous;
+                ksort($this->rdvs[$rendezvous->heure_reelle]);
+            }
 
+            if(!isset($this->tournee)) {
+                $this->tournee = $tournee->tournee;
+            }
+        }
     }
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {

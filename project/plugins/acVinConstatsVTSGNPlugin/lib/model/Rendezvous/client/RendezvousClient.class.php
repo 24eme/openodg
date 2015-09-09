@@ -52,7 +52,7 @@ class RendezvousClient extends acCouchdbClient {
             return $rendezvous;
         }
 
-
+        $compte->updateCoordonneesLongLat();
 
         $rendezvous = new Rendezvous();
         $rendezvous->identifiant = $compte->identifiant;

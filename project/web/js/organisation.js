@@ -3,9 +3,10 @@
     var defaults = {
         selector: {
             list: '.organisation-list',
+            listWait: '.organisation-list-wait',
             item: '.organisation-item',
             itemMarker: '.glyphicon-map-marker',
-            itemMove: '.glyphicon-map-marker',
+            itemMove: '.glyphicon-resize-vertical',
             itemAdd: '.btn-success',
             itemRemove: '.btn-danger',
             itemInputHour: '.input-hour',
@@ -13,7 +14,8 @@
             hour: '.organisation-hour',
             tournee: '.organisation-tournee',
             tourneeActive: '.active'
-        }
+        },
+        colorEmpty: '#e2e2e2'
     };
 
     var markers = [];
@@ -21,18 +23,64 @@
 
     $.fn.organisationTournees = function() {
         initMap();
+        initTournees();
         initItems();
+        initSortable();
     };
 
-    function initItems() {
-        $(defaults.selector.list + ' ' + defaults.selector.item + ' ' + defaults.selector.itemAdd).click(function() {
-            var ligne = $($(this).attr('data-item'));
-            addItem(ligne);
+    function initTournees() {
+        $(defaults.selector.tournee).click(function() {
+            $(defaults.selector.tournee).removeClass('active');
+            $(this).addClass('active');
+            updateItems();
+
+
+            /*$("#listes_operateurs .list-group-item-item").removeClass('hidden');
+
+            if ($(this).attr('data-filter')) {
+                $("#listes_operateurs .list-group-item-item[data-state!=" + $(this).attr('data-filter') + "]").addClass('hidden');
+                $('#listes_operateurs .list-group-item-item[data-state=""]').removeClass('hidden');
+            }
+            if ($(this).attr('data-state')) {
+                $('#listes_operateurs .list-group-item-item[data-state=""] .btn-success').removeClass('hidden');
+                $('#listes_operateurs .list-group-item-item[data-state=""]').addClass('clickable');
+            } else {
+                $('#listes_operateurs .list-group-item-item').removeClass('clickable');
+                $('#listes_operateurs .list-group-item-item .btn-success').addClass('hidden');
+            }
+
+            $('#listes_operateurs .list-group-item-item').attr('data-color', null);
+
+            if ($(this).attr('data-color')) {
+                $('#listes_operateurs .list-group-item-item').attr('data-color', $(this).attr('data-color'));
+            }
+
+            if ($('#carte').length > 0) {
+                $("#listes_operateurs .list-group-item-item").each(function() {
+                    if ($(this).attr('data-point')) {
+                        $(markers[$(this).attr('data-point')]._icon).removeClass('hidden');
+                    }
+                });
+                $("#listes_operateurs .list-group-item-item.hidden").each(function() {
+                    if ($(this).attr('data-point')) {
+                        $(markers[$(this).attr('data-point')]._icon).addClass('hidden');
+                    }
+                });
+            }*/
 
             return false;
         });
+    }
 
-        $(defaults.selector.list + ' ' + defaults.selector.item + ' ' + defaults.selector.itemRemove).click(function() {
+    function initItems() {
+        $(defaults.selector.item + ' ' + defaults.selector.itemAdd).on('click', function() {
+            var ligne = $($(this).attr('data-item'));
+            addItem(ligne);
+            console.log('add');
+            return false;
+        });
+
+        $(defaults.selector.item + ' ' + defaults.selector.itemRemove).on('click', function() {
             var ligne = $($(this).attr('data-item'));
             removeItem(ligne);
             return false;
@@ -50,7 +98,7 @@
         }).addTo(map);
 
         var points = [];
-        $(defaults.selector.list + ' ' + defaults.selector.item).each(function() {
+        $(defaults.selector.item).each(function() {
             var ligne = $(this);
             var point = getLignePoint(ligne);
 
@@ -67,20 +115,20 @@
 
             marker.on('click', function(m) {
                 var ligne = latlngToLigne(m.latlng);
-                //$.toggleItem(ligne);
+                toggleItem(ligne);
                 $('#listes_operateurs').scrollTo(ligne, 200, {offset: -150, queue: false});
             });
 
             marker.on('mouseover', function(m) {
                 var ligne = latlngToLigne(m.latlng);
                 toggleMarkerHover(m.target, ligne, false, true);
-                timerHover = setTimeout(function() {
+                /*timerHover = setTimeout(function() {
                     $(defaults.selector.list).scrollTo(ligne, 200, {offset: -150, queue: false});
-                }, 600);
+                }, 600);*/
             })
 
             marker.on('mouseout', function(m) {
-                clearTimeout(timerHover);
+                //clearTimeout(timerHover);
                 var ligne = latlngToLigne(m.latlng);
                 toggleMarkerHover(m.target, ligne, false, true);
                 updateItem(ligne);
@@ -90,7 +138,51 @@
         });
     }
 
+    function initSortable() {
+        $(".sortable").sortable(
+            {
+                placeholder: '<li class="placeholder list-group-item col-xs-12"></li>',
+                pullPlaceholder: true,
+                handle: defaults.selector.itemMove,
+                afterMove: function($placeholder, container, $closestItemOrContainer) {
+                    $placeholder.html(container.group.item.eq(0).html());
+                },
+                onDrop: function($item, container, _super, event) {
+                    if(!$item.prevAll(defaults.selector.list + ' ' + defaults.selector.item).length && $item.prevAll(defaults.selector.hour).length < 1) {
+                        $item.remove();
+                        $item.insertAfter($(defaults.selector.hour).eq(0));
+                    }
+                    if(!$item.nextAll(defaults.selector.list + ' ' + defaults.selector.item).length && $item.nextAll(defaults.selector.hour).length < 2) {
+                        $item.remove();
+                        $item.insertBefore($(defaults.selector.hour).eq($(defaults.selector.hour).length - 2));
+                    }
+                    setValuesBySort();
+                    _super($item, container);
+                }
+            }
+        );
+    }
+
+    setValuesBySort = function() {
+        var heure = "";
+        $(defaults.selector.list + ' ' + defaults.selector.item + ', ' + defaults.selector.list + ' ' + defaults.selector.hour).each(function() {
+            if ($(this).filter(defaults.selector.hour).length) {
+                heure = $(this).attr('data-value');
+            } else if($(this).filter(defaults.selector.item).length) {
+                $(this).find(defaults.selector.itemInputHour).val(heure);
+            }
+        });
+    }
+
     function addItem(ligne) {
+        if(!getActiveTourneeId()) {
+            return;
+        }
+
+        if(getLigneTournee(ligne)) {
+            return;
+        }
+
         var tournee = getActiveTournee();
 
         addItemToTournee(ligne, tournee);
@@ -101,11 +193,20 @@
         ligne.find(defaults.selector.itemInputTournee).val(getTourneeId(tournee));
         var hour = tourneeCalculHour(tournee);
         ligne.detach().insertBefore(tourneeInsertHourDiv(hour));
-        ligne.attr('data-color', getTourneeColor(tournee));
+        ligne.find(defaults.selector.itemMarker).css('color', getTourneeColor(tournee));
+        console.log(ligne);
+        console.log(getLignePoint(ligne));
+        $(markers[getLignePoint(ligne)]._icon).find('.marker-inner').css('color', getTourneeColor(tournee));
         ligne.find(defaults.selector.itemInputHour).val(hour);
         ligne.find(defaults.selector.itemMove).removeClass('hidden');
        
         updateItem(ligne);
+    }
+
+    function updateItems() {
+        $(defaults.selector.item).each(function() {
+            updateItem($(this));
+        });
     }
 
     function updateItem(ligne)
@@ -113,6 +214,7 @@
         if (getLigneTournee(ligne)) {
             ligne.find(defaults.selector.itemRemove).removeClass('hidden');
             ligne.find(defaults.selector.itemAdd).addClass('hidden');
+
             //ligne.addClass('list-group-item-success');
             //ligne.find('.glyphicon-map-marker').css('color', ligne.attr('data-color'));
             //$(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', ligne.attr('data-color'));
@@ -134,20 +236,60 @@
                 ligne.find('button.btn-success').addClass('hidden');
             }*/
         }
+
+        if(getActiveTourneeId() && getLigneTournee(ligne) && getLigneTournee(ligne) != getActiveTourneeId()) {
+            hideItem(ligne);
+        } else {
+            showItem(ligne);
+        }
+
+        if(!getActiveTourneeId()) {
+            ligne.find(defaults.selector.itemAdd).addClass('hidden');
+        }
+    }
+
+    function hideItem(ligne) {
+        ligne.addClass('hidden');
+        $(markers[getLignePoint(ligne)]._icon).addClass('hidden');
+    }
+
+    function showItem(ligne) {
+        ligne.removeClass('hidden');
+        $(markers[getLignePoint(ligne)]._icon).removeClass('hidden');
     }
 
     function removeItem(ligne) {
+        if(!getLigneTournee(ligne)) {
+            return;
+        }
+
         ligne.attr('data-tournee', '');
         ligne.find(defaults.selector.itemInputTournee).val("");
         ligne.find(defaults.selector.itemInputHour).val("");
         ligne.find(defaults.selector.itemMove).addClass('hidden');
-        ligne.detach().insertBefore($(defaults.selector.list + ' li:first-child'));
+        ligne.find(defaults.selector.itemMarker).css('color', defaults.colorEmpty);
+        $(markers[getLignePoint(ligne)]._icon).find('.marker-inner').css('color', defaults.colorEmpty);
+
+        ligne.detach().appendTo($(defaults.selector.listWait));
         updateItem(ligne);
+    }
+
+    function toggleItem (ligne) {
+        if (getLigneTournee(ligne)) {
+            removeItem(ligne);
+        } else {
+            addItem(ligne);
+        }
     }
 
     function getActiveTournee() {
 
         return $(defaults.selector.tournee + defaults.selector.tourneeActive);
+    }
+
+    function getActiveTourneeId() {
+
+        return getTourneeId(getActiveTournee());
     }
 
     function getTourneePerHour(tournee) {
@@ -183,6 +325,7 @@
 
     function tourneeCalculHour(tournee) {
         var hour = tourneeLastHour(tournee);
+
         if ($(defaults.selector.list + ' ' + defaults.selector.item + '[data-tournee=' + getTourneeId(tournee) + '] ' + defaults.selector.itemInputHour + '[value="' + hour + '"]').length >= getTourneePerHour(tournee)) {
 
             return tourneeNextHour(hour);
@@ -239,7 +382,7 @@
     }
 
     function latlngToLigne(ll) {
-        return $(defaults.selector.list + ' ' + defaults.selector.item + '[data-point="' + ll.lat + "," + ll.lng + '"]');
+        return $(defaults.selector.item + '[data-point="' + ll.lat + "," + ll.lng + '"]');
     }
 
     function toggleMarkerHover(marker, ligne, withMarkerOpacity, withLigneOpacity) {
