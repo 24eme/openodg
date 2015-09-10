@@ -41,7 +41,7 @@
 
 ul.list-group-history {
     padding: 0;
-    
+
     a {
         padding-right: 0;
     }
@@ -181,7 +181,7 @@ ul {
 
 .table-striped {
     > tbody > tr:nth-child(odd),
-    > thead > tr:nth-child(odd) {
+        > thead > tr:nth-child(odd) {
         > td.striped-success,
         > th.striped-success {
             background-color: #f2ffdb;
@@ -189,7 +189,7 @@ ul {
         }
     }
     > tbody > tr:nth-child(even),
-    > thead > tr:nth-child(even) {
+        > thead > tr:nth-child(even) {
         > td.striped-success,
         > th.striped-success {
             background-color: #f8ffea;
@@ -211,7 +211,7 @@ ul {
             padding-top: 20px;
             div{
                 line-height: 30px;
-                
+
             }
         }   
     }
@@ -224,18 +224,18 @@ ul {
 }
 
 body.dragging, body.dragging * {
-  cursor: move !important;
+    cursor: move !important;
 }
 
 .dragged {
-  opacity: 0.5;
-  display: none;
+    opacity: 0.5;
+    display: none;
 }
 
 ul#listes_operateurs li.placeholder {
-  position: relative;
-  border-style: dotted;
-  opacity: 0.4;
+    position: relative;
+    border-style: dotted;
+    opacity: 0.4;
 }
 
 ul#listes_operateurs li span.glyphicon-resize-vertical:hover {
@@ -262,6 +262,36 @@ ul#listes_operateurs li span.glyphicon-map-marker:hover {
             color: #555
         }
     }
+}
+
+ul.organisation-list, ul.organisation-list-wait {
+    height: 450px; 
+    overflow-y: auto; 
+    overflow-x:hidden; 
+    padding-right: 2px; 
+    margin-top: 0;
+    margin-bottom: 0;
+
+    li.organisation-hour {
+        padding-top: 2px; 
+        padding-bottom: 2px;
+        line-height: 14px;
+        border-color: #fff; 
+        background: #e2e2e2; 
+        color: #555
+    }
+
+    li.organisation-item, li.placeholder {
+        padding: 2px 2px;
+    }
+
+    li.organisation-item .glyphicon-resize-vertical:hover {
+        cursor: move;
+    }
+}
+
+ul.organisation-list-wait {
+    height: 120px; 
 }
 
 .bloc-transparent {

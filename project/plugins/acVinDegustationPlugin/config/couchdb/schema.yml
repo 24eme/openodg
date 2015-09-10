@@ -18,6 +18,8 @@ Tournee:
       heure: { }
       lieu: { }
       validation: { }
+      agent_unique: { }
+      type_tournee: { }
       degustations:
         type: collection
         definition:
@@ -61,7 +63,30 @@ Tournee:
                     definition:
                       fields:
                         '*': { }
-
+      rendezvous:
+        type: collection
+        definition:
+          fields:
+             '*':
+              type: collection
+              definition:
+                fields: 
+                  heure_reelle: { }
+                  heure: { }
+                  compte_identifiant: { }
+                  compte_raison_sociale: { }
+                  compte_commune: { }
+                  compte_adresse: { }
+                  compte_code_postal: { }
+                  compte_lon: { }
+                  compte_lat: { }
+                  compte_telephone_bureau: { }
+                  compte_telephone_prive: { }
+                  compte_telephone_mobile: { }
+                  type_rendezvous: { }
+                  rendezvous_commentaire: { }
+                  constat: { }
+                  position: { }
 Degustation:
   definition:
     fields:

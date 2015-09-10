@@ -20,15 +20,17 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinDegustationPlugin');
         $this->enablePlugins('acVinDocumentPlugin');
         $this->enablePlugins('acVinParcellairePlugin');
+        $this->enablePlugins('acVinTourneePlugin');
+        $this->enablePlugins('acVinConstatsVTSGNPlugin');
         $this->enablePlugins('EtablissementPlugin');
         $this->enablePlugins('ComptePlugin');
         $this->enablePlugins('EmailPlugin');
         $this->enablePlugins('acExceptionNotifierPlugin');
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
-		$this->enablePlugins('FacturationPlugin');
+	$this->enablePlugins('FacturationPlugin');
         $this->enablePlugins('acVinGenerationPlugin');
-	    $this->enablePlugins('acVinAbonnementPlugin');
+	$this->enablePlugins('acVinAbonnementPlugin');
     }
 
     public static function getAppRouting()

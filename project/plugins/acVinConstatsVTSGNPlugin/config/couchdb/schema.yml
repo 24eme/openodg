@@ -1,0 +1,67 @@
+#Rendezvous
+Rendezvous:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      type_rendezvous: { }
+      libelle: { }
+      identifiant: { }
+      statut: { }
+      date: { }
+      idchai: { }
+      heure: { }
+      commentaire: { }
+      raison_sociale: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }
+      telephone_prive: { }
+      telephone_bureau: { }
+      telephone_mobile: { }
+      rendezvous_origine: { }
+#Constat
+Constats:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      identifiant: { }
+      raison_sociale: { }
+      campagne: { }
+      cvi: { }
+      adresse: { }
+      commune: { }
+      code_postal: { }
+      email: { }
+      lat: { }
+      lon: { }      
+      constats:
+        type: collection
+        definition:
+          fields:
+             '*':
+              type: collection
+              class: Constat
+              definition:
+                fields: 
+                  produit: { }     
+                  nb_botiche: { }   
+                  type_botiche: { }
+                  degre_potentiel_raisin: { } 
+                  degre_potentiel_volume: { } 
+                  type_vtsgn: { }
+                  statut_raisin: { }
+                  statut_volume: { }
+                  date_signature: { }
+                  date_raisin: { }  
+                  date_volume: { }  
+                  rendezvous_origine: { } 
+                  rendezvous_report: { }  
+       
