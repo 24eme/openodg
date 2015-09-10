@@ -151,6 +151,7 @@ class constatsActions extends sfActions {
         }
 
         $rdvValues = $request->getParameter("rdvs", array());
+        
         foreach ($rdvValues as $id_rdv => $values) {
             if ($values['tournee']) {
                 
@@ -159,7 +160,6 @@ class constatsActions extends sfActions {
                 $tournee->save();
             }
         }
-
         return $this->redirect('constats_planification_jour', array('jour' => $this->jour));
     }
 
