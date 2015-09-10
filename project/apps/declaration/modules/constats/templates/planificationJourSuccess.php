@@ -40,16 +40,16 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
         <thead>
         <tr>
             <th class="col-xs-6"><?php echo $nbTotalAgent ?> Agents</th>
-            <th class="text-center col-xs-2"><?php echo $pourcentRealises ?>% Réalisé </th>
-            <th class="text-center col-xs-2"><?php echo $nbRaisins ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;&nbsp;<?php echo $nbVolume ?>&nbsp;<span class="icon-mouts size-36"></span></th>
+            <th class="text-center col-xs-2"><?php echo $pourcentRealises ?> % Réalisé </th>
+            <th class="text-center col-xs-2"><?php if($nbRaisins): ?><?php echo $nbRaisins ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;<?php endif; ?><?php if($nbVolume): ?>&nbsp;<?php echo $nbVolume ?>&nbsp;<span class="icon-mouts size-36"></span><?php endif; ?></th>
             <th></th>
         </tr>
         </thead>
         <?php foreach ($tourneesJournee->tourneesJournee as $tourneeObj) : ?>
              <tr>
                  <td><?php echo $tourneeObj->agent->nom_a_afficher; ?></td>
-                 <td class="text-center"><?php echo $tourneeObj->pourcentRealise; ?></td>
-                 <td class="text-center"><?php echo $tourneeObj->nbRdvRaisin; ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;&nbsp;<?php echo $tourneeObj->nbRdvVolume; ?>&nbsp;<span class="icon-mouts size-36"></span></td>
+                 <td class="text-center"><?php echo $tourneeObj->pourcentRealise; ?> %</td>
+                 <td class="text-center"><?php if($tourneeObj->nbRdvRaisin): ?><?php echo $tourneeObj->nbRdvRaisin; ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;<?php endif; ?><?php if($tourneeObj->nbRdvVolume): ?>&nbsp;<?php echo $tourneeObj->nbRdvVolume; ?>&nbsp;<span class="icon-mouts"></span><?php endif; ?></td>
                 <td>
                     <a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default btn-default-step">Accéder à la tournée</a>
                 </td>
