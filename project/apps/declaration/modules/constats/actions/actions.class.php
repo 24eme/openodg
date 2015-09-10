@@ -57,9 +57,19 @@ class constatsActions extends sfActions {
             $json[$idrendezvous] = array();
             $json[$idrendezvous]['rendezvous'] = $rendezvous->toJson();
             $json[$idrendezvous]['constats'] = array();
+
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
-                if (substr($constatkey, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
-                    $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNode->toJson();
+                $constatNodeJson = $constatNode->toJson();
+                $isConstatVolume = ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_VOLUME);
+                if ($isConstatVolume) {
+                    if (substr($constatNode->date_volume, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
+                        $constatNodeJson->type_constat = 'volume';
+                        $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNodeJson;
+                    }
+                    if (substr($constatkey, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
+                        $constatNodeJson->type_constat = 'raisin';
+                        $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNodeJson;
+                    }
                 }
             }
         }
@@ -77,7 +87,7 @@ class constatsActions extends sfActions {
 
             $splitted_id = split('_', $json_content->_idNode);
             $constat = ConstatsClient::getInstance()->find($splitted_id[0]);
-            $constat->updateConstatNodeFromJson($splitted_id[1],$json_content);
+            $constat->updateConstatNodeFromJson($splitted_id[1], $json_content);
             $constat->save();
         }
 
@@ -118,14 +128,14 @@ class constatsActions extends sfActions {
         }
 
         $this->tourneesCouleur = array();
-        $i=0;
-        foreach($this->tournees as $tournee) {
-                $this->tourneesCouleur[$tournee->_id] = $this->couleurs[$i];
-                $i++;
+        $i = 0;
+        foreach ($this->tournees as $tournee) {
+            $this->tourneesCouleur[$tournee->_id] = $this->couleurs[$i];
+            $i++;
         }
 
         $this->rdvs = array();
-        foreach($this->tournees as $tournee) {
+        foreach ($this->tournees as $tournee) {
             foreach ($tournee->rendezvous as $id => $rendezvous) {
                 $this->rdvs[$rendezvous->heure_reelle][$tournee->_id][$id] = $rendezvous;
             }
@@ -138,7 +148,7 @@ class constatsActions extends sfActions {
 
         $rdvValues = $request->getParameter("rdvs", array());
         foreach ($rdvValues as $id_rdv => $values) {
-            if($values['tournee'] && $values['heure']) {
+            if ($values['tournee'] && $values['heure']) {
                 $tournee = $this->tournees[$values['tournee']];
                 $tournee->addRendezVousAndGenerateConstat($id_rdv, $values['heure']);
                 $tournee->save();

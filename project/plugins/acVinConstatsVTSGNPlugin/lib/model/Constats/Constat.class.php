@@ -37,5 +37,9 @@ class Constat extends BaseConstat {
         }
         return ConstatsClient::CONSTAT_TYPE_VOLUME;
     }
+    
+    public function isConstatVolume() {
+        return ($this->determineTypeConstat() == ConstatsClient::CONSTAT_TYPE_RAISIN) && $this->date_volume;
+    }
 
 }
