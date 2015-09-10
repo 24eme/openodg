@@ -1044,6 +1044,16 @@ constats_planification_jour:
   requirements:
     sf_method: [get]
 
+constat_pdf:
+  url: /constat/:identifiant/:campagne/:identifiantconstat
+  param: { module: constats, action: constatPdf }
+  class: ConstatsRoute
+  options:
+    model:    Constat
+    type:     object
+  requirements:
+    sf_method: [get]
+
 constats_planification_ajout_agent:
   url: /constats/ajout-agent/:jour
   param: { module: constats, action: ajoutAgentTournee }
