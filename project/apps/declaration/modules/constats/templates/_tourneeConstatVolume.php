@@ -24,11 +24,6 @@
                             <!--<input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />--> 
                         </div>
                     </div>
-                    <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">
-                        <div class="col-xs-7">
-                            <select style="display: inline-block; width: auto;" class="hidden-print form-control" ng-model="constat.type_botiche" ng-options="type_botiche.nom for type_botiche in types_botiche"></select>
-                        </div>
-                    </div>
                 </div>
                 <div  class="row">                                   
                     <div class="form-group col-xs-12 col-sm-6 col-md-4 lead">

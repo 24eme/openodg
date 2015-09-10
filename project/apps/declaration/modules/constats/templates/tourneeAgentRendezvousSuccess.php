@@ -101,20 +101,7 @@
                     <div ng-class="{ 'hidden': !operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger">
                         Vous n'avez saisi aucun lot<br /><small>Vous pouvez cocher "Aucun prélèvement" si il n'y a aucun prélèvement pour cet opérateur</small>
                     </div>
-                    <div class="row row-margin hidden-print">
-                        <div class="col-xs-3">
-                            <a href="" ng-click="precedent(operateur)" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Précédent</a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="" ng-click="approuver(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Approuver</a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="" ng-click="refuser(operateur)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Refuser</a>
-                        </div>
-                        <div class="col-xs-3 pull-right">
-                            <a href="" ng-click="report(operateur)" class="btn btn-warning btn-lg col-xs-6 btn-block btn-upper link-to-section">Report</a>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
