@@ -26,7 +26,7 @@
  * @property string $telephone_prive
  * @property string $telephone_bureau
  * @property string $telephone_mobile
- * @property string $id_rendezvous_origine
+ * @property string $rendezvous_origine
 
  * @method string get_id()
  * @method string set_id()
@@ -72,8 +72,8 @@
  * @method string setTelephoneBureau()
  * @method string getTelephoneMobile()
  * @method string setTelephoneMobile()
- * @method string getIdRendezvousOrigine()
- * @method string setIdRendezvousOrigine()
+ * @method string getRendezvousOrigine()
+ * @method string setRendezvousOrigine()
  
  */
  

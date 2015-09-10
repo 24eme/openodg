@@ -54,8 +54,8 @@ class Tournee extends BaseTournee {
     public function getRendezVousOrderByHour() {
         $rdvs = array();
         foreach ($this->rendezvous as $id => $rendezvous) {
-            $rdvs[$rendezvous->heure_reelle][$id] = $rendezvous;
-            ksort($rdvs[$rendezvous->heure_reelle]);
+            $rdvs[$rendezvous->heure][$id] = $rendezvous;
+            ksort($rdvs[$rendezvous->heure]);
         }
 
         return $rdvs;
@@ -515,15 +515,12 @@ class Tournee extends BaseTournee {
      * =========================================
      */
 
-    public function addRendezVous($rendezvous_or_id, $heure_reelle) {
+    public function addOrUpdateRendezVous($rendezvous_or_id) {
         $rendezvous = $rendezvous_or_id;
         if(!is_object($rendezvous_or_id)) {
             $rendezvous = RendezvousClient::getInstance()->find($rendezvous_or_id);
         }
-
         $rendezvousNode = $this->getOrAdd('rendezvous')->getOrAdd($rendezvous->_id);        
-        $rendezvousNode->heure_reelle = $heure_reelle;
-        
         $rendezvousNode->compte_identifiant = $rendezvous->identifiant;
         $rendezvousNode->compte_raison_sociale = $rendezvous->raison_sociale;
         $rendezvousNode->compte_adresse = $rendezvous->adresse;        
@@ -541,13 +538,12 @@ class Tournee extends BaseTournee {
         return $rendezvousNode;
     }
     
-    public function addRendezVousAndGenerateConstat($rendezvous_or_id, $heure_reelle) {
+    public function addRendezVousAndGenerateConstat($rendezvous_or_id) {
         $rendezvous = $rendezvous_or_id;
         if(!is_object($rendezvous_or_id)) {
             $rendezvous = RendezvousClient::getInstance()->find($rendezvous_or_id);
         }
-
-        $rendezvousNode = $this->addRendezVous($rendezvous, $heure_reelle);
+        $rendezvousNode = $this->addOrUpdateRendezVous($rendezvous);
         $constats = ConstatsClient::getInstance()->updateOrCreateConstatFromRendezVous($rendezvous);
         $constats->save();
         $rendezvousNode->set('constat',$constats->_id);

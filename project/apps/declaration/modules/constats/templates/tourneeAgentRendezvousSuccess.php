@@ -16,8 +16,8 @@
                     <div class="list-group print-list-group-condensed">
                         <a ng-repeat="(key,rdv) in planification | orderBy: ['position']" href="" ng-click="updateActive(key)" ng-class="{ 'list-group-item-success': operateur.termine && operateur.nb_prelevements, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && !operateur.nb_prelevements }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                             <div class="col-xs-2 col-sm-1 text-left">
-                                <strong ng-show="!rdv['rendezvous'].termine || rdv['rendezvous'].nb_prelevements" class="lead" style="font-weight: bold;">{{ rdv['rendezvous'].heure_reelle}}</strong>
-                                <strong ng-show="rdv['rendezvous'].termine && !rdv['rendezvous'].nb_prelevements" class="lead" style="text-decoration: line-through;">{{ rdv['rendezvous'].heure_reelle}}</strong><br />
+                                <strong ng-show="!rdv['rendezvous'].termine || rdv['rendezvous'].nb_prelevements" class="lead" style="font-weight: bold;">{{ rdv['rendezvous'].heure}}</strong>
+                                <strong ng-show="rdv['rendezvous'].termine && !rdv['rendezvous'].nb_prelevements" class="lead" style="text-decoration: line-through;">{{ rdv['rendezvous'].heure}}</strong><br />
                                 <label ng-show="rdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>
                             </div>
                             <div class="col-xs-8 col-sm-10">
@@ -62,7 +62,7 @@
         <section ng-repeat="(key,rdv) in planification" id="detail_mission_{{ key}}" ng-show="active == key" ng-class="" style="page-break-after: always;">
             <div href="" ng-click="precedent(rendezvous)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Constats de {{ rdv['rendezvous'].heure_reelle}}</h2>
+                <h2>Constats de {{ rdv['rendezvous'].heure}}</h2>
                 <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
             </div>
 
