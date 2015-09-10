@@ -155,7 +155,7 @@ class constatsActions extends sfActions {
             }
         }
 
-        return $this->redirect('constats_planifications', array('date' => $this->jour));
+        return $this->redirect('constats_planification_jour', array('jour' => $this->jour));
     }
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {

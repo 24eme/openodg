@@ -38,7 +38,9 @@ class TourneeAddAgentForm extends sfForm {
     
     public function getAllAgents() {
         $agents = TourneeClient::getInstance()->getAgents();
-        $result = array();
+
+        $result = array("" => "");
+
         foreach ($agents as $agent) {
             $result[$agent->identifiant] =$agent->nom_a_afficher;
         }

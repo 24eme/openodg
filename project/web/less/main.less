@@ -264,8 +264,8 @@ ul#listes_operateurs li span.glyphicon-map-marker:hover {
     }
 }
 
-ul.organisation-list {
-    height: 470px; 
+ul.organisation-list, ul.organisation-list-wait {
+    height: 450px; 
     overflow-y: auto; 
     overflow-x:hidden; 
     padding-right: 2px; 
@@ -273,21 +273,25 @@ ul.organisation-list {
     margin-bottom: 0;
 
     li.organisation-hour {
-        padding-top: 4px; 
-        padding-bottom: 4px; 
+        padding-top: 2px; 
+        padding-bottom: 2px;
+        line-height: 14px;
         border-color: #fff; 
         background: #e2e2e2; 
         color: #555
     }
+
+    li.organisation-item, li.placeholder {
+        padding: 2px 2px;
+    }
+
+    li.organisation-item .glyphicon-resize-vertical:hover {
+        cursor: move;
+    }
 }
 
 ul.organisation-list-wait {
-    height: 100px; 
-    overflow-y: auto; 
-    overflow-x:hidden; 
-    padding-right: 2px; 
-    margin-top: 0;
-    margin-bottom: 0;
+    height: 120px; 
 }
 
 .bloc-transparent {
