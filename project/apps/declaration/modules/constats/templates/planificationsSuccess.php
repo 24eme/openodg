@@ -45,7 +45,7 @@
                 <?php foreach ($tournees as $t): ?>
                     <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step"><?php echo $t->getFirstAgent()->nom ?></btn>
                 <?php endforeach; ?>
-                <a href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour,'retour' => 'planification')) ?>" class="btn btn-lg btn-default btn-default-step"><span class="glyphicon glyphicon-plus"></span> Agent</a>
+                <a href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour, 'retour' => 'planification')) ?>" class="btn btn-lg btn-default btn-default-step"><span class="glyphicon glyphicon-plus"></span> Agent</a>
             </div>
 
 
@@ -104,6 +104,9 @@
                                             <div style="padding-right: 16px; margin-top: 4px;" class="pull-right">
                                                 <span style="font-size: 20px;" class="icon-raisins"></span>                                                
                                                 <span style="font-size: 16px;"><a href="<?php echo url_for('rendezvous_modification', array('id' => $rdv_id, 'retour' => 'planification')); ?>" class="btn btn-default btn-default-step"><?php echo str_replace(":", "h", $rdv->heure) ?></a></span>
+                                            </div>
+                                            <div style="margin-right: 10px; margin-top: 9px;" class="pull-left">
+                                                <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: <?php echo $tourneesCouleur[$tournee_id] ?>"></span>
                                             </div>
                                             <?php echo $rdv->compte_raison_sociale ?> 
                                             <br /><small class="text-muted"><?php echo $rdv->compte_commune ?></small>
