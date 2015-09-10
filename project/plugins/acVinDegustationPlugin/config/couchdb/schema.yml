@@ -72,6 +72,7 @@ Tournee:
               definition:
                 fields: 
                   heure_reelle: { }
+                  heure: { }
                   compte_identifiant: { }
                   compte_raison_sociale: { }
                   compte_commune: { }
@@ -83,7 +84,7 @@ Tournee:
                   compte_telephone_prive: { }
                   compte_telephone_mobile: { }
                   type_rendezvous: { }
-                  rendezvous_commentaire: { }  
+                  rendezvous_commentaire: { }
                   constat: { }
                   position: { }
 Degustation:

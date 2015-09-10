@@ -107,7 +107,7 @@ class RendezvousClient extends acCouchdbClient {
         foreach ($dates as $date) {
             $organisationsJournee[$date] = $this->buildRendezvousJournee($date);            
         }
-        ksort($organisationsJournee);
+        krsort($organisationsJournee);
         return $organisationsJournee;
     }
 

@@ -14,7 +14,7 @@
                                     )); ?>
                 </div>
                 <div class="col-xs-2">
-                    <button class="btn btn-default btn-lg" type="submit">Se connecter</button>
+                    <button class="btn btn-default btn-lg" type="submit">Valider</button>
                 </div>
             </div>
 
@@ -37,21 +37,21 @@
             <tbody>
             <?php foreach ($organisationJournee as $dateKey => $journee) : 
                 $nbRendezvousPris = (isset($journee[RendezvousClient::RENDEZVOUS_STATUT_PRIS]))? 
-                    count($journee[RendezvousClient::RENDEZVOUS_STATUT_PRIS]) : '0';
+                    count($journee[RendezvousClient::RENDEZVOUS_STATUT_PRIS]) : '';
                 $nbRendezvousPlanifie = (isset($journee[RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE]))? 
-                    count($journee[RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE]) : '0';
+                    count($journee[RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE]) : '';
                 $nbRendezvousRealise = (isset($journee[RendezvousClient::RENDEZVOUS_STATUT_REALISE]))? 
-                    count($journee[RendezvousClient::RENDEZVOUS_STATUT_REALISE]) : '0';
+                    count($journee[RendezvousClient::RENDEZVOUS_STATUT_REALISE]) : '';
                 ?>
-                <tr class="<?php if($dateKey == date('Y-m-d')): ?>warning<?php endif; ?>">
-                    <td><?php echo ucfirst(format_date($dateKey, "P", "fr_FR")); ?></td>
-                    <td class="text-center"><?php echo $nbRendezvousPris; ?></td>
-                    <td class="text-center"><?php echo $nbRendezvousPlanifie; ?></td>
-                    <td class="text-center"><?php echo $nbRendezvousRealise; ?></td>
-                    <td class="text-center">0</td>
+                <tr class="<?php if($dateKey == date('Y-m-d')): ?>font-weight: bold<?php endif; ?>">
+                    <td class="<?php if($dateKey == date('Y-m-d')): ?>lead<?php endif ;?>"><?php if($dateKey == date('Y-m-d')): ?>Aujourd'hui<?php else: ?><?php echo ucfirst(format_date($dateKey, "P", "fr_FR")); ?><?php endif; ?></td>
+                    <td class="text-center <?php if($dateKey == date('Y-m-d')): ?>lead<?php endif ;?>"><?php echo $nbRendezvousPris; ?></td>
+                    <td class="text-center <?php if($dateKey == date('Y-m-d')): ?>lead<?php endif ;?>"><?php echo $nbRendezvousPlanifie; ?></td>
+                    <td class="text-center <?php if($dateKey == date('Y-m-d')): ?>lead<?php endif ;?>"><?php echo $nbRendezvousRealise; ?></td>
+                    <td class="text-center <?php if($dateKey == date('Y-m-d')): ?>lead<?php endif ;?>"></td>
                     <td class="text-center">
-                        <?php if($dateKey <= date('Y-m-d')): ?>
-                        <a href="<?php echo url_for('constats_planification_jour', array('jour' => $dateKey)); ?>" class="btn btn-upper btn-default <?php if($dateKey < date('Y-m-d')): ?>btn-default-step<?php endif; ?>">Planifier</a>
+                        <?php if($dateKey >= date('Y-m-d')): ?>
+                        <a href="<?php echo url_for('constats_planification_jour', array('jour' => $dateKey)); ?>" class="btn btn-upper btn-default btn-default-step <?php if($dateKey == date('Y-m-d')): ?>btn-lg<?php endif; ?>">Planifier</a>
                         <?php else: ?>
                         <a href="<?php echo url_for('constats_planification_jour', array('jour' => $dateKey)); ?>" class="btn btn-upper btn-default btn-default-step" >Voir</a>
                         <?php endif; ?>

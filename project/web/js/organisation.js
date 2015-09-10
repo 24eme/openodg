@@ -34,40 +34,6 @@
             $(this).addClass('active');
             updateItems();
 
-
-            /*$("#listes_operateurs .list-group-item-item").removeClass('hidden');
-
-            if ($(this).attr('data-filter')) {
-                $("#listes_operateurs .list-group-item-item[data-state!=" + $(this).attr('data-filter') + "]").addClass('hidden');
-                $('#listes_operateurs .list-group-item-item[data-state=""]').removeClass('hidden');
-            }
-            if ($(this).attr('data-state')) {
-                $('#listes_operateurs .list-group-item-item[data-state=""] .btn-success').removeClass('hidden');
-                $('#listes_operateurs .list-group-item-item[data-state=""]').addClass('clickable');
-            } else {
-                $('#listes_operateurs .list-group-item-item').removeClass('clickable');
-                $('#listes_operateurs .list-group-item-item .btn-success').addClass('hidden');
-            }
-
-            $('#listes_operateurs .list-group-item-item').attr('data-color', null);
-
-            if ($(this).attr('data-color')) {
-                $('#listes_operateurs .list-group-item-item').attr('data-color', $(this).attr('data-color'));
-            }
-
-            if ($('#carte').length > 0) {
-                $("#listes_operateurs .list-group-item-item").each(function() {
-                    if ($(this).attr('data-point')) {
-                        $(markers[$(this).attr('data-point')]._icon).removeClass('hidden');
-                    }
-                });
-                $("#listes_operateurs .list-group-item-item.hidden").each(function() {
-                    if ($(this).attr('data-point')) {
-                        $(markers[$(this).attr('data-point')]._icon).addClass('hidden');
-                    }
-                });
-            }*/
-
             return false;
         });
     }
@@ -76,7 +42,6 @@
         $(defaults.selector.item + ' ' + defaults.selector.itemAdd).on('click', function() {
             var ligne = $($(this).attr('data-item'));
             addItem(ligne);
-            console.log('add');
             return false;
         });
 
@@ -191,11 +156,9 @@
     function addItemToTournee(ligne, tournee) {
         ligne.attr('data-tournee', getTourneeId(tournee));
         ligne.find(defaults.selector.itemInputTournee).val(getTourneeId(tournee));
-        var hour = tourneeCalculHour(tournee);
+        var hour = tourneeCalculHour(ligne, tournee);
         ligne.detach().insertBefore(tourneeInsertHourDiv(hour));
         ligne.find(defaults.selector.itemMarker).css('color', getTourneeColor(tournee));
-        console.log(ligne);
-        console.log(getLignePoint(ligne));
         $(markers[getLignePoint(ligne)]._icon).find('.marker-inner').css('color', getTourneeColor(tournee));
         ligne.find(defaults.selector.itemInputHour).val(hour);
         ligne.find(defaults.selector.itemMove).removeClass('hidden');
@@ -323,8 +286,13 @@
         return lastElement.find(defaults.selector.itemInputHour).val();
     }
 
-    function tourneeCalculHour(tournee) {
+    function tourneeCalculHour(ligne, tournee) {
         var hour = tourneeLastHour(tournee);
+
+        if(ligne.attr('data-hour') && $(defaults.selector.hour + '[data-value="'+ ligne.attr('data-hour') + '"]').length) {
+
+            hour = ligne.attr('data-hour');
+        }
 
         if ($(defaults.selector.list + ' ' + defaults.selector.item + '[data-tournee=' + getTourneeId(tournee) + '] ' + defaults.selector.itemInputHour + '[value="' + hour + '"]').length >= getTourneePerHour(tournee)) {
 

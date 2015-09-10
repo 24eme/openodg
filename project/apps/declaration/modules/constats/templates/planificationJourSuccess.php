@@ -49,7 +49,7 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
              <tr>
                  <td><?php echo $tourneeObj->agent->nom_a_afficher; ?></td>
                  <td class="text-center"><?php echo $tourneeObj->pourcentRealise; ?></td>
-                 <td class="text-center"><?php echo $tourneeObj->nbRdvRaisin; ?>&nbsp;<span class="icon-raisins size-36">&nbsp;&nbsp;<?php echo $tourneeObj->nbRdvVolume; ?>&nbsp;<span class="icon-mouts size-36"></td>
+                 <td class="text-center"><?php echo $tourneeObj->nbRdvRaisin; ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;&nbsp;<?php echo $tourneeObj->nbRdvVolume; ?>&nbsp;<span class="icon-mouts size-36"></span></td>
                 <td>
                     <a href="<?php echo url_for('tournee_rendezvous_agent', $tourneeObj->tournee )?>" class="btn btn-default btn-default-step">Accéder à la tournée</a>
                 </td>
