@@ -90,7 +90,7 @@ class TourneeClient extends acCouchdbClient {
             $tourneeObj = TourneeClient::getInstance()->find('TOURNEE-' . $tournee->identifiant);
 
             $nbRealise = 0;
-            foreach ($tourneeObj->degustations as $rendezvousId) {
+            foreach ($tourneeObj->rendezvous as $rendezvousId => $rdv) {
                 $rendezvous = RendezvousClient::getInstance()->find($rendezvousId);
                 $nbRendezvous++;
                 if ($rendezvous->isRendezvousRaisin()) {
