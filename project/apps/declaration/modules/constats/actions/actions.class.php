@@ -61,11 +61,13 @@ class constatsActions extends sfActions {
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
                 $constatNodeJson = $constatNode->toJson();
                 $isConstatVolume = ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_VOLUME);
+                
                 if ($isConstatVolume) {
                     if (substr($constatNode->date_volume, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
                         $constatNodeJson->type_constat = 'volume';
                         $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNodeJson;
                     }
+                } else {
                     if (substr($constatkey, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
                         $constatNodeJson->type_constat = 'raisin';
                         $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNodeJson;
@@ -150,6 +152,9 @@ class constatsActions extends sfActions {
         foreach ($rdvValues as $id_rdv => $values) {
             if ($values['tournee'] && $values['heure']) {
                 $tournee = $this->tournees[$values['tournee']];
+                if($tournee->rendezvous->exist($id_rdv)) {
+                    continue;
+                }
                 $tournee->addRendezVousAndGenerateConstat($id_rdv, $values['heure']);
                 $tournee->save();
             }
