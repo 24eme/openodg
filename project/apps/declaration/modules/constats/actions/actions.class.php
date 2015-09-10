@@ -224,6 +224,24 @@ class constatsActions extends sfActions {
         $rendezvous->save();
         $this->redirect('rendezvous_declarant', $this->compte);
     }
+    public function executeConstatPdf(sfWebRequest $request) {
+        $this->constats = $this->getRoute()->getConstats();
+        $this->constatNode = $request->getParameter('identifiantconstat');
+        
+
+        $this->document = new ExportConstatPdf($this->constats,$this->constatNode, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
+
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
+
+        $this->document->generate();
+
+        $this->document->addHeaders($this->getResponse());
+
+        return $this->renderText($this->document->output());
+    }
 
     private function constructProduitsList() {
         $this->produits = array();

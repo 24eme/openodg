@@ -1045,7 +1045,7 @@ constats_planification_jour:
     sf_method: [get]
 
 constat_pdf:
-  url: /constat/:identifiant/:campagne/:identifiantconstat
+  url: /constat/:identifiant/:campagne/pdf/:identifiantconstat
   param: { module: constats, action: constatPdf }
   class: ConstatsRoute
   options:
