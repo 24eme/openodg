@@ -17,7 +17,7 @@ class RendezvousRoute extends sfObjectRoute {
 
     protected function getObjectForParameters($parameters) {
 
-        $this->rendezvous = RendezvousClient::getInstance()->findByIdentifiantAndDateHeure($parameters['identifiant'],$parameters['dateheure']);
+        $this->rendezvous = RendezvousClient::getInstance()->find($parameters['id']);
         if (!$this->rendezvous) {
 
             throw new sfError404Exception(sprintf('No rendezvous found with the identifiant "%s" and the dateheure "%s".', $parameters['identifiant'], $parameters['dateheure']));
@@ -26,7 +26,7 @@ class RendezvousRoute extends sfObjectRoute {
     }
 
     protected function doConvertObjectToArray($object) {  
-        $parameters = array("identifiant" => $object->cvi, "dateheure" => $object->getDateHeure());
+        $parameters = array("id" => $object->_id);
         return $parameters;
     }
 

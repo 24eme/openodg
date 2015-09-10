@@ -1101,7 +1101,7 @@ rendezvous_creation:
     sf_method: [get, post]
 
 rendezvous_modification:
-  url: /rendezvous/modification/:identifiant/:dateheure
+  url: /rendezvous/modification/:id
   param: { module: constats, action: rendezvousModification }
   class: RendezvousRoute
   options:
