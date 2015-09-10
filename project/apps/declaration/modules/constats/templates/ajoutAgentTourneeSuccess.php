@@ -19,20 +19,16 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xs-10 col-xs-offset-1">
             <div class="form-group <?php if ($form["agent"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["agent"]->renderError(); ?>
 
-                <div class="input-group">
-                    <?php echo $form["agent"]->render(array("class" => "form-control  select2 select2-offscreen select2autocomplete")); ?>
-                </div>
+                    <?php echo $form["agent"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Séléctionnez un agent")); ?>
             </div>
         </div>
     </div>
 
-    <div class="row row-margin row-button">    
-        <div class="col-xs-3 text-right">
+    <div class="row row-margin">    
+        <div class="col-xs-10 col-xs-offset-1 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper">Ajouter</button>
         </div>
     </div>

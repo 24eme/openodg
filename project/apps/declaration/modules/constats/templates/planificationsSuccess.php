@@ -38,7 +38,10 @@
                 <?php foreach($tournees as $t): ?>
                     <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step"><?php echo $t->getFirstAgent()->nom ?></btn>
                 <?php endforeach; ?>
+                <a href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour)) ?>" class="btn btn-lg btn-default btn-default-step"><span class="glyphicon glyphicon-plus"></span> Agent</a>
             </div>
+
+
         </div>
     </div>
 
