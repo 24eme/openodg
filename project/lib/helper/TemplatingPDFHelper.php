@@ -84,6 +84,50 @@ function styleDRevMarc() {
 ";
 }
 
+function styleConstat() {
+        return "
+    .table {
+        border: 1px solid #ff8c00;
+    }
+
+    .tableAlt {
+        border: 1px solid #ffc04d;
+    }
+
+    .th {
+        font-weight: normal; border: 1px solid #ff8c00; background-color: #ffdb9a; color: #ff8c00;
+    }
+
+    .td {
+        border: 1px solid #ff8c00; height:22px; text-align: left;
+    }
+
+    .tdAlt {
+        border: 1px solid #ff8c00; height:22px; text-align: left; background-color: #fbedf2;
+    }
+
+    .h2 {
+        text-align: left; font-size: 12pt; color: #ff8c00;
+    }
+
+    .tdH2 {
+       border-bottom: 1px solid #ff8c00; 
+    }
+    
+    .tdH2Big {
+       font-weight: bold; font-size: 24pt;
+    }
+
+    .h3 {
+        background-color: #ff8c00; color: white; font-weight: bold;
+    }
+
+    .h3Alt {
+        background-color: #ffc04d; color: #ff8c00; font-weight: bold;   
+    }
+";
+}
+
 
 function styleParcellaire() {
     return "
