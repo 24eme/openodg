@@ -152,6 +152,9 @@ class constatsActions extends sfActions {
         foreach ($rdvValues as $id_rdv => $values) {
             if ($values['tournee'] && $values['heure']) {
                 $tournee = $this->tournees[$values['tournee']];
+                if($tournee->rendezvous->exist($id_rdv)) {
+                    continue;
+                }
                 $tournee->addRendezVousAndGenerateConstat($id_rdv, $values['heure']);
                 $tournee->save();
             }
