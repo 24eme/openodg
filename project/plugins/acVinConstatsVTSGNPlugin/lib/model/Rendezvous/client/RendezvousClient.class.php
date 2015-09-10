@@ -87,7 +87,7 @@ class RendezvousClient extends acCouchdbClient {
     public function createRendezvousVolumeFromIdRendezvous($idRdvOrigine){
         $rdvOrigine = $this->find($idRdvOrigine);
         $rendezvous = clone $rdvOrigine;
-        $rendezvous->date = Date::addDelaiToDate("+2 day", $rdvOrigine->date);       
+        $rendezvous->date = Date::addDelaiToDate("+1 day", $rdvOrigine->date);       
         $rendezvous->statut = self::RENDEZVOUS_STATUT_PRIS;
         $rendezvous->type_rendezvous = self::RENDEZVOUS_TYPE_VOLUME;
         $rendezvous->rendezvous_origine = $idRdvOrigine;

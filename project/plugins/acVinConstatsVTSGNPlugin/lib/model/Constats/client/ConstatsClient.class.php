@@ -31,13 +31,13 @@ class ConstatsClient extends acCouchdbClient {
         $constats->synchroFromRendezVous($rendezvous);
 
         $constats->constructId();
-        $constats->add('constats')->getOrAdd($constats->getConstatIdNode($rendezvous))->createFromRendezVous($rendezvous);
+        $constats->add('constats')->getOrAdd($constats->getConstatIdNode($rendezvous))->createOrUpdateFromRendezVous($rendezvous);
         return $constats;
     }
 
     public function updateConstatFromRendezVous(Rendezvous $rendezvous, Constats $constats) {
-        //ICI update Node SI plutot que de créer si le rdv est du volume    
-        $constats->add('constats')->getOrAdd($constats->getConstatIdNode($rendezvous))->createFromRendezVous($rendezvous);
+        $idNodeConstat = $constats->getConstatIdNode($rendezvous);        
+        $constats->add('constats')->getOrAdd($idNodeConstat)->createOrUpdateFromRendezVous($rendezvous);
         return $constats;
     }
     
