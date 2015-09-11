@@ -89,7 +89,7 @@
                                     Saisir le constat Raisin
                                     </span>
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
-                                    {{ constat.produit_libelle }}, {{ constat.nb_botiche }} {{ constat.contenant }}, {{ constat.degre_potentiel_raisin }}°
+                                    {{ constat.produit_libelle }}, {{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="{{ constat.nb_botiche > 1 }}">s</span>, {{ constat.degre_potentiel_raisin }}°
                                     </span>
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                     {{ constat.raison_refus }}

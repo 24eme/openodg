@@ -166,10 +166,10 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
 
             $scope.mission($scope.activeRdv);
 
-            localSave();
-
-            constat.transmission_needed = true;
             constat.statut_raisin = 'APPROUVE';
+            constat.transmission_needed = true;
+
+            localSave();
             $scope.transmettre(true);
         }
 
