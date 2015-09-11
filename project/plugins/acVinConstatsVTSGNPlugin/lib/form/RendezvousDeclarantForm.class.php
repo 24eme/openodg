@@ -60,13 +60,15 @@ class RendezvousDeclarantForm extends acCouchdbObjectForm {
     }
 
     public function updateObject($values = null) {
-        $oldId = $this->getObject()->_id;
         parent::updateObject($values);
-        if (($this->getObject()->date != $this->oldDate) || ($this->getObject()->heure != $this->oldHeure)) {
-            $this->getObject()->constructId();
-            $this->getObject()->save();
-            $oldRdv = RendezvousClient::getInstance()->find($oldId);
-            $oldRdv->delete();
+        if ($this->getObject()->heure != $this->oldHeure) {
+            $tournees = TourneeClient::getInstance()->getTourneesByDate($this->getObject()->date);
+            foreach ($tournees as $tournee) {
+                if($tournee->getRendezvous()->exist($this->getObject()->_id)){
+                    $tournee->getRendezvous()->get($this->getObject()->_id)->setHeure($this->getObject()->heure);
+                    $tournee->save();
+                }
+            }
         }
     }
 

@@ -41,7 +41,7 @@ Constats:
       code_postal: { }
       email: { }
       lat: { }
-      lon: { }      
+      lon: { }
       constats:
         type: collection
         definition:
@@ -51,17 +51,16 @@ Constats:
               class: Constat
               definition:
                 fields: 
-                  produit: { }     
-                  nb_botiche: { }   
+                  produit: { }
+                  nb_botiche: { }
                   type_botiche: { }
-                  degre_potentiel_raisin: { } 
-                  degre_potentiel_volume: { } 
+                  degre_potentiel_raisin: { }
+                  degre_potentiel_volume: { }
                   type_vtsgn: { }
                   statut_raisin: { }
                   statut_volume: { }
                   date_signature: { }
-                  date_raisin: { }  
-                  date_volume: { }  
-                  rendezvous_origine: { } 
-                  rendezvous_report: { }  
-       
+                  date_raisin: { }
+                  date_volume: { }
+                  rendezvous_origine: { }
+                  rendezvous_report: { }

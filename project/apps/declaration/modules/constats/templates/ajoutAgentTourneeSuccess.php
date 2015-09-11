@@ -3,7 +3,7 @@
     <h2>Ajouter un Agent </h2>
 </div>
 
-<form id="form_ajout_agent_tournee" action="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour)); ?>" method="post" class="form-horizontal" name="<?php echo $form->getName(); ?>">
+<form id="form_ajout_agent_tournee" action="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour,'retour' => $retour)); ?>" method="post" class="form-horizontal" name="<?php echo $form->getName(); ?>">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
