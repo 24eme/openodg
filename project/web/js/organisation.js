@@ -41,12 +41,14 @@
     function initItems() {
         $(defaults.selector.item + ' ' + defaults.selector.itemAdd).on('click', function() {
             var ligne = $($(this).attr('data-item'));
+            console.log(ligne);
             addItem(ligne);
             return false;
         });
 
         $(defaults.selector.item + ' ' + defaults.selector.itemRemove).on('click', function() {
             var ligne = $($(this).attr('data-item'));
+            console.log(ligne);
             removeItem(ligne);
             return false;
         });
@@ -157,6 +159,9 @@
         ligne.attr('data-tournee', getTourneeId(tournee));
         ligne.find(defaults.selector.itemInputTournee).val(getTourneeId(tournee));
         var hour = tourneeCalculHour(ligne, tournee);
+        if(ligne.attr('data-hour') == undefined){
+            hour = '06:00';
+        }
         ligne.detach().insertBefore(tourneeInsertHourDiv(hour));
         ligne.find(defaults.selector.itemMarker).css('color', getTourneeColor(tournee));
         $(markers[getLignePoint(ligne)]._icon).find('.marker-inner').css('color', getTourneeColor(tournee));

@@ -5,6 +5,7 @@ class ConstatsClient extends acCouchdbClient {
     const TYPE_COUCHDB = 'CONSTATS';
     const STATUT_NONCONSTATE = 'NONCONSTATE';
     const STATUT_APPROUVE = 'APPROUVE';
+    const STATUT_REFUSE = 'REFUSE';
     const TYPE_CONTENANT_BOTICHE = 'CONTENANT_BOTICHE';
     const CONSTAT_TYPE_RAISIN = 'TYPE_RAISIN';
     const CONSTAT_TYPE_VOLUME = 'TYPE_VOLUME';

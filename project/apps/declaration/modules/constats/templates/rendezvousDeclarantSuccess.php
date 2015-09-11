@@ -27,11 +27,11 @@
 <div class="row">    
     <div class="col-xs-12">        
         <div class="list-group">
-                <?php foreach ($compte->getChais() as $keyChai => $chai): ?>
+            <?php foreach ($compte->getChais() as $keyChai => $chai): ?>
                 <div class="list-group-item">
-                <?php include_partial('constats/rendezvousModification', array('chai' => $chai, 'form' => $formsRendezVous[$keyChai], 'rendezvous' => $formsRendezVous[$keyChai]->getObject(), 'creation' => true)); ?> 
+                    <?php include_partial('constats/rendezvousModification', array('chai' => $chai, 'form' => $formsRendezVous[$keyChai], 'rendezvous' => $formsRendezVous[$keyChai]->getObject(), 'creation' => true)); ?> 
                 </div>
-<?php endforeach; ?>
+            <?php endforeach; ?>
 
         </div>
     </div>
@@ -44,23 +44,28 @@
             <tr>
                 <th>Chai</th>
                 <th>Infos</th>
-                <th>RDV&nbsp;<span class="icon-raisins size-36"></span></th>
                 <th>RDV</th>
                 <th>Résultat</th>  
             </tr>
-        <?php foreach ($rendezvousDeclarant as $rendezvous) : ?>
+            <?php foreach ($rendezvousDeclarant as $rendezvous) : ?>
                 <tr>
                     <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>
                     <td><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?></td>
                     <td class="text-center">
+                        <?php if ($rendezvous->isRendezvousRaisin()): ?>
+                            <span class="icon-raisins size-36"></span>
+                        <?php endif; ?>
+                        <?php if ($rendezvous->isRendezvousVolume()): ?>
+                            <span class="icon-mouts size-36"></span>
+                        <?php endif; ?>
+                        &nbsp;
                         <a href="<?php echo url_for('rendezvous_modification', $rendezvous); ?>">
-            <?php echo format_date($rendezvous->date, "P", "fr_FR"); ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?>
+                            <?php echo format_date($rendezvous->date, "P", "fr_FR"); ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?>
                         </a>
-                    </td>
-                    <td>2nd</td>
+                    </td>                
                     <td>Rés</td>
                 </tr>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
         </table>
     </div>
 </div>

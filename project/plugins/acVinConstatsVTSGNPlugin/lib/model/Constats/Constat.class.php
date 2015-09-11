@@ -22,6 +22,8 @@ class Constat extends BaseConstat {
             $this->produit = $jsonContent->produit->hash_produit;
             $this->nb_botiche = $jsonContent->nb_botiche;
             $this->contenant = $jsonContent->contenant;
+            $this->contenant_libelle = $jsonContent->contenant_libelle;
+            $this->statut_raisin = $jsonContent->statut_raisin;
             $this->degre_potentiel_raisin = $jsonContent->degre_potentiel_raisin;
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);
         }
@@ -29,7 +31,7 @@ class Constat extends BaseConstat {
 
     public function setStatutRaisinAndCreateVolumeRendezvous($jsonContent) {
 
-        if (($this->statut_raisin == ConstatsClient::STATUT_NONCONSTATE) && ($jsonContent->statut == ConstatsClient::STATUT_APPROUVE)) {
+        if (($this->statut_raisin == ConstatsClient::STATUT_NONCONSTATE) && ($jsonContent->statut_raisin == ConstatsClient::STATUT_APPROUVE)) {
             $newRdv = RendezvousClient::getInstance()->createRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_origine);
             $newRdv->save();
             $tourneeOrigine = TourneeClient::getInstance()->findTourneeByIdRendezvous($jsonContent->rendezvous_origine);
