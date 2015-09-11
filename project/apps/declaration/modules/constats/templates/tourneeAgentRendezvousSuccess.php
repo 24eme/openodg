@@ -4,7 +4,7 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('tournee_vtsgn.js?201505080324'); ?>
-<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; types_botiche =<?php echo json_encode($types_botiche->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>";'>
+<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>";'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <br/>
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">        
@@ -14,7 +14,7 @@
             <div class="row" ng-show="loaded">
                 <div class="col-xs-12">
                     <div class="list-group print-list-group-condensed">
-                        <a ng-repeat="(key,rdv) in planification | orderBy: ['position']" href="" ng-click="updateActive(key)" ng-class="{ 'list-group-item-success': operateur.termine && operateur.nb_prelevements, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && !operateur.nb_prelevements }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
+                        <a ng-repeat="(key,rdv) in planification | orderBy: ['position']" href="" ng-click="mission(rdv)" ng-class="{ 'list-group-item-success': operateur.termine && operateur.nb_prelevements, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && !operateur.nb_prelevements }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                             <div class="col-xs-2 col-sm-1 text-left">
                                 <strong ng-show="!rdv['rendezvous'].termine || rdv['rendezvous'].nb_prelevements" class="lead" style="font-weight: bold;">{{ rdv['rendezvous'].heure}}</strong>
                                 <strong ng-show="rdv['rendezvous'].termine && !rdv['rendezvous'].nb_prelevements" class="lead" style="text-decoration: line-through;">{{ rdv['rendezvous'].heure}}</strong><br />
@@ -59,52 +59,51 @@
             </div>
         </section>
 
-        <section ng-repeat="(key,rdv) in planification" id="detail_mission_{{ key}}" ng-show="active == key" ng-class="" style="page-break-after: always;">
-            <div href="" ng-click="precedent(rendezvous)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
-            <div class="page-header text-center">
-                <h2>Constats de {{ rdv['rendezvous'].heure}}</h2>
-                <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
-            </div>
-
-            <div class="row">
-                <div class="col-xs-12">
-                    <address>
-                        <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span><br />
-                        <span class="lead">{{ rdv['rendezvous'].compte_adresse}}</span><br />
-                        <span class="lead">{{ rdv['rendezvous'].compte_code_postal}} {{ rdv['rendezvous'].compte_commune}}</span><br /><br />
-                        <span ng-if="rdv['rendezvous'].compte_telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_bureau}}">{{ rdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
-                        <span ng-if="rdv['rendezvous'].compte_telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_prive}}">{{ rdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
-                        <span ng-if="rdv['rendezvous'].compte_telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_mobile}}">{{ rdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
-                    </address>
+        <div ng-repeat="(key,rdv) in planification" id="detail_mission_{{ key}}">
+            <section  ng-show="active == 'mission' && activeRdv == rdv" ng-class="" style="page-break-after: always;">
+                <div href="" ng-click="precedent(rendezvous)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
+                <div class="page-header text-center">
+                    <h2>Constats de {{ rdv['rendezvous'].heure_reelle}}</h2>
+                    <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div style="border-bottom: 0;" class="page-header">
-                        <h3 style="margin-top: 15px" class="text-warning">
-                            <!--                    <a class="text-warning" href="" ng-click="toggleOperateurAucun(operateur)">
-                                                <span class="ng-hide visible-print-inline"><span class="glyphicon glyphicon-unchecked" style="font-size: 20px;"></span></span>
-                                                <span ng-show="!operateur.aucun_prelevement" class="glyphicon glyphicon-unchecked hidden-print" style="font-size: 20px;"></span><span ng-show="operateur.aucun_prelevement" class="glyphicon glyphicon-check hidden-print" style="font-size: 20px;"></span>&nbsp;&nbsp;<strong class="lead text-warning">Aucun prélèvement</strong><span class="ng-hide visible-print-inline lead"> : Report, Plus de vin, Soucis, Déclassement  <small><i>(Veuillez entourer la raison)</i></small></span>
-                                                </a>-->
-                        </h3>
-                    </div>                
+                <div class="row">
+                    <div class="col-xs-12">
+                        <address>
+                            <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span><br />
+                            <span class="lead">{{ rdv['rendezvous'].compte_adresse}}</span><br />
+                            <span class="lead">{{ rdv['rendezvous'].compte_code_postal}} {{ rdv['rendezvous'].compte_commune}}</span><br /><br />
+                            <span ng-if="rdv['rendezvous'].compte_telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_bureau}}">{{ rdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
+                            <span ng-if="rdv['rendezvous'].compte_telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_prive}}">{{ rdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
+                            <span ng-if="rdv['rendezvous'].compte_telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_mobile}}">{{ rdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
+                        </address>
+                    </div>
                 </div>
-                <div class="row" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
-                
-                <div ng-show="constat.type_constat  == 'volume'">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3>Liste des constats à réaliser</h3>
+                        <div class="list-group">
+                            <div ng-click="remplir(constat)" class="list-group-item" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
+                                <button ng-click="remplir(constat)" class="btn btn-default btn-default-step pull-right">Remplir</button>
+                                <span style="font-size: 22px;" class="icon-raisins"></span>
+                                {{ constat.statut }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section ng-repeat="(keyConstatNode,constat) in rdv['constats']" ng-show="activeRdv == rdv && activeConstat == constat">
+                <div ng-show="constat.type_constat  == 'raisin'">
+                    <div href="" ng-click="mission(rdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
+                    <div class="page-header text-center">
+                        <h2>Saisie d'un constat raisin</h2>
+                        <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
+                    </div>
+                    <?php include_partial('constats/tourneeConstatRaisin'); ?> 
+                </div>
+                <div ng-show="constat.type_constat == 'volume'">
                     <?php include_partial('constats/tourneeConstatVolume'); ?> 
                 </div>
-                 <div ng-show="constat.type_constat  == 'raisin'">
-                     <?php include_partial('constats/tourneeConstatRaisin'); ?> 
-                </div>
-
-                    <div ng-class="{ 'hidden': !operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger">
-                        Vous n'avez saisi aucun lot<br /><small>Vous pouvez cocher "Aucun prélèvement" si il n'y a aucun prélèvement pour cet opérateur</small>
-                    </div>
-
-                </div>
-            </div>
-
-        </section>
+            </section>
+        </div>
     </div>
 </div>

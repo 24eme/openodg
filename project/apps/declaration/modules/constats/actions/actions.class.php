@@ -38,7 +38,7 @@ class constatsActions extends sfActions {
         $this->date = $this->tournee->getDate();
         $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
         $this->constructProduitsList();
-        $this->constructTypesBotiche();
+        $this->contenants = ConstatsClient::getInstance()->getContenantsLibelle();
         $this->constats = array();
 
         $this->setLayout('layoutResponsive');
@@ -263,7 +263,7 @@ class constatsActions extends sfActions {
 
     private function constructTypesBotiche() {
         $this->types_botiche = array();
-        foreach (ConstatsClient::$types_botiche as $type_botiche_key => $type_botiche) {
+        foreach (ConstatsClient::getInstance()->getContenantsLibelle() as $type_botiche_key => $type_botiche) {
             $b = new stdClass();
             $b->type_botiche = $type_botiche_key;
             $b->nom = $type_botiche;

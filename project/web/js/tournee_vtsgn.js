@@ -10,6 +10,7 @@ myApp.config(function (localStorageServiceProvider) {
 myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localStorageService', function ($scope, $rootScope, $http, localStorageService) {
 
         $scope.active = 'recapitulatif';
+        $scope.activeRdv = null;
         $scope.transmission = false;
         $scope.transmission_progress = false;
         $scope.state = true;
@@ -80,7 +81,6 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }
 
 
-
         var updateOperateurFromLoad = function (operateur) {
             var termine = false;
             var nb_prelevements = 0;
@@ -134,7 +134,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }, 30000);
 
         setInterval(function () {
-            $scope.loadOrUpdatePlanification();
+            //$scope.loadOrUpdatePlanification();
         }, 60000);
 
         if ($scope.reload) {
@@ -158,25 +158,19 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             $scope.transmission = false;
         }
 
-        $scope.precedent = function () {
+        $scope.precedent = function() {
             $scope.updateActive('recapitulatif');
         }
 
-        $scope.updateProduit = function (prelevement) {
-            prelevement.libelle = prelevement.produit.libelle;
-            prelevement.libelle_produit = prelevement.produit.libelle_produit;
-            prelevement.hash_produit = prelevement.produit.hash_produit;
-            prelevement.vtsgn = prelevement.produit.vtsgn;
+        $scope.mission = function(rdv) {
+            $scope.updateActive('mission');
+            $scope.activeRdv = rdv;
+            $scope.activeConstat = null;
+        }
 
-            var code_cepage = prelevement.hash_produit.substr(-2);
-
-            if (prelevement.vtsgn) {
-                code_cepage += prelevement.vtsgn;
-            }
-            prelevement.anonymat_prelevement_complet = prelevement.anonymat_prelevement_complet.replace(new RegExp("^[a-zA-Z0-9_]+ "), code_cepage + " ");
-            prelevement.show_produit = false;
-            prelevement.preleve = 1;
-            localSave();
+        $scope.remplir = function(constat) {
+            $scope.activeConstat = constat;
+            $scope.updateActive('saisie');
         }
 
         $scope.approuver = function (constat) {
@@ -187,13 +181,22 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
                 return;
             }
 
-            $scope.precedent(constat);
+            $scope.mission($scope.activeRdv);
 
             localSave();
 
             constat.transmission_needed = true;
             constat.statut = 'APPROUVE';
             $scope.transmettre(true);
+        }
+
+        $scope.refuser = function (constat) {
+            constat.statut = 'REFUSE';
+            $scope.mission($scope.activeRdv);
+        }
+
+        $scope.refuserConfirmation = function (constat) {
+            $scope.updateActive('refuser_confirmation');
         }
 
         $scope.transmettre = function (auto) {
@@ -270,47 +273,12 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             event.target.blur();
         }
 
+        $scope.updateContenant = function(constat) {
+            console.log($rootScope.contenants);
+            constat.contenant_libelle = $rootScope.contenants[constat.contenant];
+        }
+
         $scope.blur = function (event) {
-            localSave();
-        }
-
-        $scope.togglePreleve = function (prelevement) {
-            if (prelevement.preleve) {
-                prelevement.preleve = 0;
-            } else {
-                prelevement.preleve = 1;
-                prelevement.motif_non_prelevement = null;
-            }
-
-            $scope.updatePreleve(prelevement);
-        }
-
-//        $scope.toggleOperateurAucun = function (operateur) {
-//            if (operateur.erreurs) {
-//                operateur.erreurs["aucun_prelevement"] = false;
-//            }
-//            if (operateur.aucun_prelevement) {
-//                operateur.aucun_prelevement = 0;
-//                operateur.motif_non_prelevement = null;
-//            } else {
-//                operateur.aucun_prelevement = 1;
-//            }
-//            localSave();
-//        }
-
-        $scope.updateMotif = function (operateur) {
-            if (operateur.erreurs) {
-                operateur.erreurs["motif"] = false;
-            }
-            localSave();
-        }
-
-        $scope.updateMotifPrelevement = function (operateur) {
-
-            localSave();
-        }
-
-        $scope.updatePreleve = function (prelevement) {
             localSave();
         }
 

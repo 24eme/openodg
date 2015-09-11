@@ -20,8 +20,8 @@ class Constat extends BaseConstat {
     public function updateConstat($jsonContent) {
         if ($this->determineTypeConstat() == ConstatsClient::CONSTAT_TYPE_RAISIN) {
             $this->produit = $jsonContent->produit->hash_produit;
-//            $this->nb_botiche = $jsonContent->nb_botiche;
-            $this->type_botiche = $jsonContent->type_botiche->type_botiche;
+            $this->nb_botiche = $jsonContent->nb_botiche;
+            $this->contenant = $jsonContent->contenant;
             $this->degre_potentiel_raisin = $jsonContent->degre_potentiel_raisin;
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);
         }

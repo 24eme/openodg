@@ -8,9 +8,21 @@ class ConstatsClient extends acCouchdbClient {
     const TYPE_CONTENANT_BOTICHE = 'CONTENANT_BOTICHE';
     const CONSTAT_TYPE_RAISIN = 'TYPE_RAISIN';
     const CONSTAT_TYPE_VOLUME = 'TYPE_VOLUME';
-    
-    public static $types_botiche = array(self::TYPE_CONTENANT_BOTICHE => 'Botiche');
 
+    const CONTENANT_BOTTICHE = 'BOTTICHE';
+    const CONTENANT_BEINE = 'BENNE';
+    const CONTENANT_CAGETTE = 'CAGETTE';
+    const CONTENANT_KG = 'KG';
+    const CONTENANT_TYPE_PALOX = 'TYPE_PALOX';
+
+    public static $contenants_libelle = array(
+        self::CONTENANT_BOTTICHE => 'Bottiche',
+        self::CONTENANT_BEINE => 'Benne',
+        self::CONTENANT_CAGETTE => 'Cagette',
+        self::CONTENANT_KG => 'Kg',
+        self::CONTENANT_TYPE_PALOX => 'Type palox',
+    );
+    
     public static function getInstance() {
         return acCouchdbManager::getClient("Constats");
     }
@@ -41,7 +53,10 @@ class ConstatsClient extends acCouchdbClient {
         return $constats;
     }
     
-   
+   public function getContenantsLibelle() {
+
+        return self::$contenants_libelle;
+   }
 
     public function getProduits() { 
         
