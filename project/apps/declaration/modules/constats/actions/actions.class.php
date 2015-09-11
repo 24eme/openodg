@@ -61,7 +61,7 @@ class constatsActions extends sfActions {
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
                 $constatNodeJson = $constatNode->toJson();
                 $isConstatVolume = ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_VOLUME);
-                
+
                 if ($isConstatVolume) {
                     if (substr($constatNode->date_volume, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
                         $constatNodeJson->type_constat = 'volume';
@@ -100,7 +100,7 @@ class constatsActions extends sfActions {
     public function executeAjoutAgentTournee(sfWebRequest $request) {
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
         $this->jour = $request->getParameter('jour');
-        $this->retour = $request->getParameter('retour',null);
+        $this->retour = $request->getParameter('retour', null);
         $this->form = new TourneeAddAgentForm(array('date' => format_date($this->jour, "dd/MM/yyyy", "fr_FR")));
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -114,7 +114,7 @@ class constatsActions extends sfActions {
         }
         $compteAgent = CompteClient::getInstance()->find('COMPTE-' . $this->form->getValue('agent'));
         $tournee = TourneeClient::getInstance()->findOrAddByDateAndAgent($this->form->getValue('date'), $compteAgent);
-        if($this->retour && $this->retour == 'planification'){
+        if ($this->retour && $this->retour == 'planification') {
             $this->redirect('constats_planifications', array('date' => $this->jour));
         }
         $this->redirect('constats_planification_jour', array('jour' => $this->jour));
@@ -139,23 +139,30 @@ class constatsActions extends sfActions {
         }
 
         $this->rdvs = array();
+        $this->rdvsSansHeure = array();
         foreach ($this->tournees as $tournee) {
             foreach ($tournee->rendezvous as $id => $rendezvous) {
-                $this->rdvs[$rendezvous->getHeure()][$tournee->_id][$id] = $rendezvous;
+                if ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN) {
+                    $this->rdvs[$rendezvous->getHeure()][$tournee->_id][$id] = $rendezvous;
+                }
+                if ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_VOLUME) {
+                    $this->rdvs['no-hour'][$tournee->_id][$id] = $rendezvous;
+                }
             }
         }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
 
         $rdvValues = $request->getParameter("rdvs", array());
-        
+
         foreach ($rdvValues as $id_rdv => $values) {
             if ($values['tournee']) {
-                
+
                 $tournee = $this->tournees[$values['tournee']];
-                $tournee->addRendezVousAndGenerateConstat($id_rdv);                
+                $tournee->addRendezVousAndGenerateConstat($id_rdv);
                 $tournee->save();
             }
         }
@@ -193,7 +200,7 @@ class constatsActions extends sfActions {
     public function executeRendezvousModification(sfWebRequest $request) {
         $this->rendezvous = $this->getRoute()->getRendezvous();
         $this->chai = $this->rendezvous->getChai();
-        $this->retour = $request->getParameter('retour',null);
+        $this->retour = $request->getParameter('retour', null);
         $this->form = new RendezvousDeclarantForm($this->rendezvous);
         if (!$request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -203,7 +210,7 @@ class constatsActions extends sfActions {
             return $this->getTemplate('rendezvousDeclarant');
         }
         $this->form->save();
-        if($this->retour && $this->retour == 'planification'){
+        if ($this->retour && $this->retour == 'planification') {
             $this->redirect('constats_planifications', array('date' => $this->rendezvous->getDate()));
         }
         $this->redirect('rendezvous_declarant', $this->rendezvous->getCompte());
@@ -230,12 +237,13 @@ class constatsActions extends sfActions {
         $rendezvous->save();
         $this->redirect('rendezvous_declarant', $this->compte);
     }
+
     public function executeConstatPdf(sfWebRequest $request) {
         $this->constats = $this->getRoute()->getConstats();
         $this->constatNode = $request->getParameter('identifiantconstat');
-        
 
-        $this->document = new ExportConstatPdf($this->constats,$this->constatNode, $this->getRequestParameter('output', 'pdf'), false);
+
+        $this->document = new ExportConstatPdf($this->constats, $this->constatNode, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
         if ($request->getParameter('force')) {
