@@ -168,6 +168,15 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             $scope.activeConstat = null;
         }
 
+        $scope.showConstat = function(constat) {
+            $scope.activeConstat = constat;
+            if(constat.statut_raisin == 'REFUSE') {
+                $scope.refuserConfirmation(constat);
+            } else {
+                $scope.remplir(constat);
+            }
+        }
+
         $scope.remplir = function(constat) {
             $scope.activeConstat = constat;
             $scope.updateActive('saisie');
