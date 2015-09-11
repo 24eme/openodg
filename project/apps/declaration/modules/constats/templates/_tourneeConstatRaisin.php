@@ -1,4 +1,4 @@
-<div id="saisie_constat_{{ keyConstatNode}}" ng-show="active == 'saisie'" class="col-xs-12 print-margin-bottom">
+<div id="saisie_constat_raisin_{{ keyConstatNode}}" ng-show="active == 'saisie'" class="col-xs-12 print-margin-bottom">
     <div class="form-horizontal">
         <div class="col-xs-12">
             <div class="form-group">
@@ -6,7 +6,7 @@
                     Vous devez saisir un produit
                 </div>
                 <div class="col-xs-12">
-                    <select class="form-control input-lg" ng-model="constat.produit" ng-options="produit.libelle_complet for produit in produits"></select>
+                    <select class="form-control input-lg" ng-change="updateProduit(constat)" ng-model="constat.produit" ng-options="produit_key as produit_libelle for (produit_key, produit_libelle) in produits"></select>
                 </div>
             </div>
             <div class="form-group">
@@ -51,7 +51,7 @@
     <div class="col-xs-12">
         <div class="col-xs-12">
             <p class="lead text-center"> 
-            {{ constat.produit.libelle_complet }}<br />
+            {{ constat.produit_libelle }}<br />
             {{ constat.degre_potentiel_raisin }} degré potentiel<br />
             {{ constat.nb_botiche }} {{ constat.type_botiche.nom }}(s)<br />
             </p>

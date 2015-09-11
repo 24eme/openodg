@@ -52,6 +52,7 @@ Constats:
               definition:
                 fields: 
                   produit: { }
+                  produit_libelle: { }
                   nb_botiche: { }
                   contenant: { }
                   contenant_libelle: { }

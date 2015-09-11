@@ -15,6 +15,7 @@ Facture:
       date_paiement: {}
       date_echeance: {}
       reglement_paiement: {}
+      montant_paiement: {}
       campagne: {}
       numero_archive: {  }
       statut: {}

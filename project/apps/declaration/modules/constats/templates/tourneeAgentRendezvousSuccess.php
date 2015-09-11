@@ -63,7 +63,7 @@
             <section  ng-show="active == 'mission' && activeRdv == rdv" ng-class="" style="page-break-after: always;">
                 <div href="" ng-click="precedent(rendezvous)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                 <div class="page-header text-center">
-                    <h2>Constats de {{ rdv['rendezvous'].heure_reelle}}</h2>
+                    <h2>Constats de {{ rdv['rendezvous'].heure}}</h2>
                     <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
                 </div>
                 <div class="row">
@@ -82,17 +82,25 @@
                     <div class="col-xs-12">
                         <h3>Liste des constats à réaliser</h3>
                         <div class="list-group">
-                            <div ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>', 'list-group-item-danger': constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' }" class="list-group-item text-center" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
-                                <span style="font-size: 18px;" class="icon-raisins"></span>
-                                <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
-                                Saisir le constat Raisin
-                                </span>
-                                <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
-                                {{ constat.produit.libelle_complet }}, {{ constat.nb_botiche }} {{ constat.contenant }}, {{ constat.degre_potentiel_raisin }}°
-                                </span>
-                                <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
-                                {{ constat.raison_refus }}
-                                </span>
+                            <div ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' }" class="list-group-item text-center" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
+                                <div ng-show="constat.type_constat == 'raisin'">
+                                    <span style="font-size: 18px;" class="icon-raisins"></span>
+                                    <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
+                                    Saisir le constat Raisin
+                                    </span>
+                                    <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
+                                    {{ constat.produit_libelle }}, {{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="{{ constat.nb_botiche > 1 }}">s</span>, {{ constat.degre_potentiel_raisin }}°
+                                    </span>
+                                    <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
+                                    {{ constat.raison_refus }}
+                                    </span>
+                                </div>
+                                <div ng-show="constat.type_constat == 'volume'">
+                                    <span style="font-size: 18px;" class="icon-mouts"></span>
+                                    Saisir le constat volume
+                                    ({{ constat.produit_libelle }})
+
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -546,6 +546,20 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         return $this->date_paiement;
     }
 
+    public function getMontantPaiement() {
+        if(!is_null($this->_get('montant_paiement'))) {
+
+            return $this->_get('montant_paiement');
+        }
+
+        if($this->isPayee() && !$this->isAvoir()) {
+
+            return $this->_get('total_ttc');
+        }
+
+        return $this->_get('montant_paiement');
+    }
+
     public function getCodeComptableClient() {
       return $this->_get('code_comptable_client');      
     }

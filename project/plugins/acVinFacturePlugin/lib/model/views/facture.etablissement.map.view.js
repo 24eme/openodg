@@ -9,7 +9,7 @@ function(doc) {
         versement_comptable = 0;
     }
 
-    if(doc.date_paiemennt && !doc.versement_comptable_paiement) {
+    if(doc.date_paiement && !doc.versement_comptable_paiement) {
         versement_comptable = 0;
     }
 
