@@ -127,7 +127,7 @@ class constatsActions extends sfActions {
         $this->tournees = TourneeClient::getInstance()->getTourneesByDate($this->jour);
 
         $this->heures = array();
-        for ($i = 7; $i <= 20; $i++) {
+        for ($i = 7; $i <= 22; $i++) {
             $this->heures[sprintf("%02d:00", $i)] = sprintf("%02d", $i);
         }
 
