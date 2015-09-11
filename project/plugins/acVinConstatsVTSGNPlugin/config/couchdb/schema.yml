@@ -53,7 +53,9 @@ Constats:
                 fields: 
                   produit: { }
                   nb_botiche: { }
-                  type_botiche: { }
+                  contenant: { }
+                  contenant_libelle: { }
+                  type_botiche: { required: false }
                   degre_potentiel_raisin: { }
                   degre_potentiel_volume: { }
                   type_vtsgn: { }
