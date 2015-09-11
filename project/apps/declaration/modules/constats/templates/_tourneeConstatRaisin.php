@@ -11,13 +11,12 @@
                     <input placeholder="Nombre" id="nb_botiche_{{ keyConstatNode}}" ng-model="constat.nb_botiche" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                 </div>
                 <div class="col-xs-6">
-                    <select class="hidden-print form-control input-lg" ng-model="constat.type_botiche" ng-options="type_botiche.nom for type_botiche in types_botiche"></select>
+                    <select class="form-control input-lg" ng-change="updateContenant(constat)" ng-model="constat.contenant" ng-options="contenant_key as contenant_libelle for (contenant_key, contenant_libelle) in contenants"></select>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-xs-6">
                     <input placeholder="Degré potentiel" id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                    <!--<input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />--> 
                 </div>
                 <div class="col-xs-6 lead">
                 <p style="margin: 0;" class="form-control-static">Degré potentiel</p>

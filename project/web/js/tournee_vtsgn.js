@@ -134,7 +134,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }, 30000);
 
         setInterval(function () {
-            $scope.loadOrUpdatePlanification();
+            //$scope.loadOrUpdatePlanification();
         }, 60000);
 
         if ($scope.reload) {
@@ -271,6 +271,11 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             }
 
             event.target.blur();
+        }
+
+        $scope.updateContenant = function(constat) {
+            console.log($rootScope.contenants);
+            constat.contenant_libelle = $rootScope.contenants[constat.contenant];
         }
 
         $scope.blur = function (event) {
