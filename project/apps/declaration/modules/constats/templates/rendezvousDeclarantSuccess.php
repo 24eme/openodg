@@ -1,23 +1,23 @@
 <?php use_helper("Date") ?>
+<?php use_javascript("constats.js?201504020331", "last") ?>
 <?php include_partial('admin/menu', array('active' => 'constats')); ?>
-
 <div class="row row-margin">
-    <form method="post" action="" role="form" class="form-horizontal">
+    <form method="post" action="" role="form" class="form-horizontal" id="rendezvousDeclarantForm">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
         <div class="form-group">
             <?php echo $form["login"]->renderError(); ?>
-            <div class="col-xs-8 col-xs-offset-1">
+            <div class="col-xs-8 col-xs-offset-2">
                 <?php
                 echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote",
-                    "placeholder" => "Se connecter à un opérateur",
+                    "placeholder" => ($compte->_id) ? "" . $compte->raison_sociale . " (" . $compte->identifiant . ") " . $compte->adresse . " (" . $compte->code_postal . ")" : "Se connecter à un opérateur",
                     "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
                 ));
                 ?>
             </div>
-            <div class="col-xs-2">
-                <button class="btn btn-default btn-lg" type="submit">Se connecter</button>
-            </div>
+            <!--            <div class="col-xs-2">
+                            <button class="btn btn-default btn-lg" type="submit">Se connecter</button>
+                        </div>-->
         </div>
 
     </form>
@@ -60,7 +60,7 @@
                         <?php endif; ?>
                         &nbsp;
                         <a href="<?php echo url_for('rendezvous_modification', $rendezvous); ?>">
-                            <?php echo format_date($rendezvous->date, "P", "fr_FR"); ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?>
+                            <?php echo format_date($rendezvous->date, "P", "fr_FR"); ?><?php if ($rendezvous->isRendezvousRaisin()): ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?> <?php endif; ?>
                         </a>
                     </td>                
                     <td>Rés</td>
@@ -69,3 +69,10 @@
         </table>
     </div>
 </div>
+<div class="row">    
+    <div class="col-xs-12 text-right">
+        <a class="btn btn-default btn-upper" href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))); ?>" >Accèder aux planifications&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
+        </a>
+        <br/>
+    </div>
+</div> 
