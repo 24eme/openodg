@@ -1,4 +1,4 @@
-<div id="saisie_constat_{{ keyConstatNode}}" ng-show="active == 'saisie'" class="col-xs-12 print-margin-bottom">
+<div id="saisie_constat_raisin_{{ keyConstatNode}}" ng-show="active == 'saisie'" class="col-xs-12 print-margin-bottom">
     <div class="form-horizontal">
         <div class="col-xs-12">
             <div class="form-group">
