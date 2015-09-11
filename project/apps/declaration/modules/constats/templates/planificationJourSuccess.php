@@ -6,7 +6,9 @@ $nbRaisins = $tourneesJournee->nbTotalRdvRaisin;
 $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 ?>
 <?php include_partial('admin/menu', array('active' => 'constats')); ?>
-
+<div class="row row-margin text-center">
+    <h2>Tournée de la journée</h2>
+</div>
 <div class="page-header">
     <div class="row">
         <div class="col-xs-8 col-xs-offset-2">
@@ -26,12 +28,6 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="row row-margin">
-    <div class="col-xs-4 col-xs-offset-4 text-center">
-        <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-lg btn-default btn-upper"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Planifier</a>
     </div>
 </div>
 <div class="row row-margin">
@@ -57,7 +53,12 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
         
         <?php endforeach; ?>
     </table>
+    <a class="btn btn-warning btn-upper" href="<?php echo url_for('constats', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Retour à l'accueil</a>
+        
     <a class="btn btn-default btn-default-step btn-upper" href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un agent</a>
+<!--    <div class="col-xs-4 col-xs-offset-4 text-right">-->
+        <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Planifier</a>
+    <!--</div>-->
     </div>
 </div>
 

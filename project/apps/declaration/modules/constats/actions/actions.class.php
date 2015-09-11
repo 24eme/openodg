@@ -9,6 +9,7 @@ class constatsActions extends sfActions {
 
         $this->organisationJournee = RendezvousClient::getInstance()->buildOrganisationNbDays(2, $this->jour);
         $this->rendezvousNonPlanifies = RendezvousClient::getInstance()->getRendezvousByNonPlanifiesNbDays(2,$this->jour);
+        $this->formDate = new TourneesRecapDateForm(array('date' => Date::francizeDate($this->jour)));
         $this->form = new LoginForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {

@@ -26,7 +26,7 @@
                     $(this).find('input').each(function () {
                         $(this).attr('disabled', true);
                     });
-                    $(this).attr('style','opacity:0.6');
+                    $(this).attr('style', 'opacity:0.6');
                 }
             });
 
@@ -38,7 +38,7 @@
                     $(this).find('input').each(function () {
                         $(this).attr('disabled', false);
                     });
-                    $(this).attr('style','opacity:1');
+                    $(this).attr('style', 'opacity:1');
                 }
             });
 
@@ -46,6 +46,12 @@
     }
 
 
+    $.initTourneesRecapDate = function () {
+       
+        $('#tourneesRecapDateForm .date-picker').change(function () {
+            console.log($('#tourneesRecapDateForm .date-picker'));
+        });
+    }
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
@@ -54,7 +60,7 @@
     {
         $.initRendezvousDeclarantForm();
         $.initFormOperateurRendezvous();
-
+        $.initTourneesRecapDate();
     });
 
 })(jQuery);
