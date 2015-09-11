@@ -141,7 +141,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             localDelete();
         }
 
-        $scope.constats = localStorageService.get(local_storage_name);
+        //$scope.constats = localStorageService.get(local_storage_name);
 
         if ($scope.constats) {
             $scope.loaded = true;
@@ -186,12 +186,12 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             localSave();
 
             constat.transmission_needed = true;
-            constat.statut = 'APPROUVE';
+            constat.statut_raisin = 'APPROUVE';
             $scope.transmettre(true);
         }
 
         $scope.refuser = function (constat) {
-            constat.statut = 'REFUSE';
+            constat.statut_raisin = 'REFUSE';
             $scope.mission($scope.activeRdv);
         }
 

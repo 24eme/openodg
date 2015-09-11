@@ -82,15 +82,15 @@
                     <div class="col-xs-12">
                         <h3>Liste des constats à réaliser</h3>
                         <div class="list-group">
-                            <div ng-click="remplir(constat)" ng-class="{ 'list-group-item-success': constat.statut == '<?php echo ConstatsClient::STATUT_APPROUVE ?>', 'list-group-item-danger': constat.statut == '<?php echo ConstatsClient::STATUT_REFUSE ?>' }" class="list-group-item text-center" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
+                            <div ng-click="remplir(constat)" ng-class="{ 'list-group-item-success': constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>', 'list-group-item-danger': constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' }" class="list-group-item text-center" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
                                 <span style="font-size: 18px;" class="icon-raisins"></span>
-                                <span ng-show="!constat.statut">
+                                <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
                                 Saisir le constat Raisin
                                 </span>
-                                <span ng-show="constat.statut == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
+                                <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                 {{ constat.produit.libelle_complet }}, {{ constat.nb_botiche }} {{ constat.contenant }}, {{ constat.degre_potentiel_raisin }}°
                                 </span>
-                                <span ng-show="constat.statut == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
+                                <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                 {{ constat.raison_refus }}
                                 </span>
                             </div>
