@@ -10,15 +10,15 @@ class ConstatsClient extends acCouchdbClient {
     const CONSTAT_TYPE_VOLUME = 'TYPE_VOLUME';
 
     const CONTENANT_BOTTICHE = 'BOTTICHE';
-    const CONTENANT_BEINE = 'BEINE';
-    const CONTENANT_CAJETTE = 'CAJETTE';
+    const CONTENANT_BEINE = 'BENNE';
+    const CONTENANT_CAGETTE = 'CAGETTE';
     const CONTENANT_KG = 'KG';
     const CONTENANT_TYPE_PALOX = 'TYPE_PALOX';
 
     public static $contenants_libelle = array(
         self::CONTENANT_BOTTICHE => 'Bottiche',
-        self::CONTENANT_BEINE => 'Beine',
-        self::CONTENANT_CAJETTE => 'Cajette',
+        self::CONTENANT_BEINE => 'Benne',
+        self::CONTENANT_CAGETTE => 'Cagette',
         self::CONTENANT_KG => 'Kg',
         self::CONTENANT_TYPE_PALOX => 'Type palox',
     );

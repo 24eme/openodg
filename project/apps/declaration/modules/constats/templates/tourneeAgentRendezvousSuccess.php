@@ -93,6 +93,7 @@
             </section>
             <section ng-repeat="(keyConstatNode,constat) in rdv['constats']" ng-show="activeRdv == rdv && activeConstat == constat">
                 <div ng-show="constat.type_constat  == 'raisin'">
+                    <div href="" ng-click="mission(rdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                     <div class="page-header text-center">
                         <h2>Saisie d'un constat raisin</h2>
                         <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
