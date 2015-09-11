@@ -199,6 +199,17 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             $scope.transmettre(true);
         }
 
+        $scope.signature = function (constat) {
+            $scope.valideConstatVolume(constat);
+
+            if (constat.has_erreurs) {
+
+                return;
+            }
+
+            $scope.updateActive('signature');
+        }
+
         $scope.refuserConstatRaisin = function (constat) {
             constat.statut_raisin = 'REFUSE';
             $scope.mission($scope.activeRdv);
