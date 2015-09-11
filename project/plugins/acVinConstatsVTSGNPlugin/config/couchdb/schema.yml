@@ -60,6 +60,7 @@ Constats:
                   degre_potentiel_volume: { }
                   type_vtsgn: { }
                   statut_raisin: { }
+                  raison_refus: { }
                   statut_volume: { }
                   date_signature: { }
                   date_raisin: { }
