@@ -71,7 +71,6 @@ Tournee:
               type: collection
               definition:
                 fields: 
-                  heure_reelle: { }
                   heure: { }
                   compte_identifiant: { }
                   compte_raison_sociale: { }

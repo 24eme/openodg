@@ -34,6 +34,9 @@ class Constats extends BaseConstats {
             $dateStr = str_replace('-', '', $rendezvous->getDate());
             $cpt = 0;
             foreach ($this->constats as $constatKey => $constat) {
+                if($constat->rendezvous_origine == $rendezvous->_id){
+                    return $constatKey;
+                }
                 $matches = array();
                 if (preg_match('/^' . $dateStr . '([0-9]{3})$/', $constatKey, $matches)) {
                     if ($cpt < $matches[1]) {
