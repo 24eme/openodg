@@ -144,11 +144,20 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
 
         $scope.showConstat = function(constat) {
             $scope.activeConstat = constat;
-            if(constat.statut_raisin == 'REFUSE') {
+
+            if(constat.type_constat == 'raisin' && constat.statut_raisin == 'REFUSE') {
                 $scope.refuserConfirmation(constat);
-            } else {
-                $scope.remplir(constat);
+
+                return;
             }
+
+            if(constat.type_constat == 'volume' && constat.statut_volume == 'REFUSE') {
+                $scope.refuserConfirmation(constat);
+                
+                return;
+            }
+
+            $scope.remplir(constat);
         }
 
         $scope.remplir = function(constat) {
@@ -156,7 +165,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             $scope.updateActive('saisie');
         }
 
-        $scope.approuver = function (constat) {
+        $scope.approuverConstatRaisin = function (constat) {
             $scope.valideConstatRaisin(constat);
 
             if (constat.has_erreurs) {
@@ -173,8 +182,30 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             $scope.transmettre(true);
         }
 
-        $scope.refuser = function (constat) {
+        $scope.approuverConstatVolume = function (constat) {
+            $scope.valideConstatVolume(constat);
+
+            if (constat.has_erreurs) {
+
+                return;
+            }
+
+            $scope.mission($scope.activeRdv);
+
+            constat.statut_volume = 'APPROUVE';
+            constat.transmission_needed = true;
+
+            localSave();
+            $scope.transmettre(true);
+        }
+
+        $scope.refuserConstatRaisin = function (constat) {
             constat.statut_raisin = 'REFUSE';
+            $scope.mission($scope.activeRdv);
+        }
+
+        $scope.refuserConstatVolume = function (constat) {
+            constat.statut_volume = 'REFUSE';
             $scope.mission($scope.activeRdv);
         }
 
@@ -260,6 +291,26 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
                 constat.erreurs['degre_potentiel_raisin'] = true;
                 constat.has_erreurs = true;
             }
+        }
+
+        $scope.valideConstatVolume = function (constat) {
+            constat.has_erreurs = false;
+            constat.erreurs = [];
+            
+            if(!constat.degre_potentiel_volume) {
+                constat.erreurs['degre_potentiel_volume'] = true;
+                constat.has_erreurs = true;
+            }
+
+            if(!constat.volume_obtenu) {
+                constat.erreurs['volume_obtenu'] = true;
+                constat.has_erreurs = true;
+            }
+
+            /*if(!constat.type_vtsgn) {
+                constat.erreurs['type_vtsgn'] = true;
+                constat.has_erreurs = true;
+            }*/
         }
 
         $scope.blurOnEnter = function (event) {

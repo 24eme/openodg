@@ -31,7 +31,7 @@
                     <input placeholder="Degré potentiel" id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                 </div>
                 <div class="col-xs-6 lead">
-                <p style="margin: 0;" class="form-control-static">Degré potentiel</p>
+                <p style="margin: 0;" class="form-control-static">° potentiel</p>
                 </div>
             </div>
         </div>
@@ -39,10 +39,10 @@
     <div class="row row-margin">
         <div class="col-xs-12">
             <div class="col-xs-6">
-                <a href="" ng-click="approuver(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class=" glyphicon glyphicon-ok-circle"></span> Approuver</a>
+                <a href="" ng-click="refuserConfirmation(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class="glyphicon glyphicon-remove-circle"></span> Refuser</a>
             </div>
             <div class="col-xs-6">
-                <a href="" ng-click="refuserConfirmation(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class="glyphicon glyphicon-remove-circle"></span> Refuser</a>
+                <a href="" ng-click="approuverConstatRaisin(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class=" glyphicon glyphicon-ok-circle"></span> Approuver</a>
             </div>
         </div>
     </div>
@@ -74,7 +74,7 @@
                 <a href="" ng-click="remplir(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Annuler </a>
             </div>
             <div class="col-xs-6">
-                <a href="" ng-click="refuser(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Confirmer</a>
+                <a href="" ng-click="refuserConstatRaisin(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Confirmer</a>
             </div>
         </div>
     </div>

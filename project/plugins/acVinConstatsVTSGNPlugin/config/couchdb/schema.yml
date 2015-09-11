@@ -59,6 +59,7 @@ Constats:
                   type_botiche: { required: false }
                   degre_potentiel_raisin: { }
                   degre_potentiel_volume: { }
+                  volume_obtenu : { }
                   type_vtsgn: { }
                   statut_raisin: { }
                   raison_refus: { }

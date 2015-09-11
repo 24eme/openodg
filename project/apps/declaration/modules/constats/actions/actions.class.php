@@ -36,7 +36,7 @@ class constatsActions extends sfActions {
         $this->tournee = $this->getRoute()->getTournee();
         $this->agent = $this->tournee->getFirstAgent();
         $this->date = $this->tournee->getDate();
-        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
+        $this->lock = false;
         $this->constructProduitsList();
         $this->contenants = ConstatsClient::getInstance()->getContenantsLibelle();
         $this->constats = array();
