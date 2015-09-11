@@ -174,7 +174,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }
 
         $scope.approuver = function (constat) {
-            $scope.valide(constat);
+            $scope.valideConstatRaisin(constat);
 
             if (constat.has_erreurs) {
 
@@ -254,15 +254,29 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             });
         }
 
-        $scope.valide = function (constat) {
-            constat.termine = false;
+        $scope.valideConstatRaisin = function (constat) {
             constat.has_erreurs = false;
             constat.erreurs = [];
-            var nb = 0;
-            var nb_prelevements = 0;
+            
+            if(!constat.produit) {
+                constat.erreurs['produit'] = true;
+                constat.has_erreurs = true;
+            }
 
+            if(!constat.nb_botiche) {
+                constat.erreurs['nb_botiche'] = true;
+                constat.has_erreurs = true;
+            }
 
-            constat.termine = true;
+            if(!constat.contenant) {
+                constat.erreurs['contenant'] = true;
+                constat.has_erreurs = true;
+            }
+
+            if(!constat.degre_potentiel_raisin) {
+                constat.erreurs['degre_potentiel_raisin'] = true;
+                constat.has_erreurs = true;
+            }
         }
 
         $scope.blurOnEnter = function (event) {
@@ -274,7 +288,6 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }
 
         $scope.updateContenant = function(constat) {
-            console.log($rootScope.contenants);
             constat.contenant_libelle = $rootScope.contenants[constat.contenant];
         }
 
