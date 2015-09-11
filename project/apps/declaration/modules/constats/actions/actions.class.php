@@ -89,8 +89,7 @@ class constatsActions extends sfActions {
 
             $splitted_id = split('_', $json_content->_idNode);
             $constat = ConstatsClient::getInstance()->find($splitted_id[0]);
-            $constat->updateConstatNodeFromJson($splitted_id[1], $json_content);
-            $constat->save();
+            $constat->updateAndSaveConstatNodeFromJson($splitted_id[1], $json_content);
         }
 
         $this->response->setContentType('application/json');

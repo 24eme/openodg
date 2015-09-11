@@ -230,4 +230,18 @@ class TourneeClient extends acCouchdbClient {
         return null;
     }
 
+    public function findTourneeByIdRendezvous($idRendezvous) {
+        $rendezvous = RendezvousClient::getInstance()->find($idRendezvous);
+         $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Tournee', $rendezvous->getDate());
+         foreach ($resultsDate as $tournee) {
+             foreach ($tournee->value->rendezvous as $rendevousId => $rdv) {
+                 if($rendevousId == $idRendezvous){
+                     return $this->find($tournee->id);
+                 }
+             }
+         }
+         return null;
+        
+    }
+    
 }

@@ -29,7 +29,6 @@ class Constats extends BaseConstats {
     }
 
     public function getConstatIdNode($rendezvous) {
-
         if ($rendezvous->isRendezvousRaisin()) {
             $dateStr = str_replace('-', '', $rendezvous->getDate());
             $cpt = 0;
@@ -47,18 +46,20 @@ class Constats extends BaseConstats {
             return sprintf("%s%03d", $dateStr, $cpt + 1);
         } else {
             $idRendezvousOrigine = $rendezvous->rendezvous_origine;
+            
             foreach ($this->constats as $constatKey => $constat) {
-                if (($constat->rendezvous_origine == $idRendezvousOrigine) && ($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_NONCONSTATE)) {
+                if (($constat->rendezvous_origine == $idRendezvousOrigine) && ($constat->statut_volume == ConstatsClient::STATUT_NONCONSTATE)) {
                     return $constatKey;
                 }
             }
         }
-        throw new sfException("L'identifiant du rendez vous ne peut être créer ou trouvé");
+        throw new sfException("L'identifiant du constat ne peut être créer ou trouvé");
         return null;
     }
 
-    public function updateConstatNodeFromJson($constatIdNode, $jsonContent) {
-        $constatNode = $this->get('constats')->get($constatIdNode)->updateConstat($jsonContent);
+    public function updateAndSaveConstatNodeFromJson($constatIdNode, $jsonContent) {
+        $this->get('constats')->get($constatIdNode)->updateConstat($jsonContent);
+        $this->save();
     }
 
 }
