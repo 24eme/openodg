@@ -1,6 +1,5 @@
 <?php use_helper("Date"); ?>
 <?php include_partial('admin/menu', array('active' => 'constats')); ?>
-
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">
         <?php echo $form->renderHiddenFields(); ?>
@@ -19,10 +18,11 @@
                 <button class="btn btn-default btn-lg" type="submit">Valider</button>
             </div>
         </div>
-
     </form>
 </div>
-
+<div class="row row-margin text-center">
+    <h2>Planifications sur 5 jours</h2>
+</div>
 <div class="row row-margin">
     <div class="col-xs-12">
         <table class="table table-striped table-bordered">
@@ -54,14 +54,56 @@
                         <td class="text-center <?php if ($dateKey == date('Y-m-d')): ?>lead<?php endif; ?>"></td>
                         <td class="text-center">
                             <?php if ($dateKey >= date('Y-m-d')): ?>
-                                        <a href="<?php echo url_for('constats_planifications', array('date' => $dateKey)); ?>" class="btn btn-upper btn-default btn-default-step <?php if ($dateKey == date('Y-m-d')): ?>btn-lg<?php endif; ?>">Planifier</a>
-                                   
-                                        <a href="<?php echo url_for('constats_planification_jour', array('jour' => $dateKey)); ?>" class="btn btn-upper btn-default btn-default-step" >Voir</a>
-                                   
+                                <a href="<?php echo url_for('constats_planifications', array('date' => $dateKey)); ?>" class="btn btn-upper btn-default btn-default-step <?php if ($dateKey == date('Y-m-d')): ?>btn-lg<?php endif; ?>">Planifier</a>
+
+                                <a href="<?php echo url_for('constats_planification_jour', array('jour' => $dateKey)); ?>" class="btn btn-upper btn-default btn-default-step" >Voir</a>
+
                             <?php else: ?>
                                 <a href="<?php echo url_for('constats_planification_jour', array('jour' => $dateKey)); ?>" class="btn btn-upper btn-default btn-default-step" >Voir</a>
                             <?php endif; ?>
                         </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="row row-margin" style="padding-left: 20px;">
+    <h3>Liste des rendez-vous non planifiés</h3>
+</div>
+<div class="row row-margin">
+    <div class="col-xs-12">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-left col-xs-4">Jour/Heure</th>
+                    <th class="text-left col-xs-2">Type de RDV</th>
+                    <th class="text-center col-xs-6">Opérateur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($rendezvousNonPlanifies as $dateIdRdvKey => $rendezvous) :
+                    ?>
+                    <tr class="<?php if ($rendezvous->date == date('Y-m-d')): ?>font-weight: bold<?php endif; ?>">
+
+                        <td class="">
+                            <?php if ($rendezvous->date == date('Y-m-d')): ?>Aujourd'hui<?php else: ?>
+                                <?php echo ucfirst(format_date($rendezvous->date, "P", "fr_FR")); ?>
+                            <?php endif; ?>
+                            <?php if ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN): ?>
+                                &nbsp;à&nbsp;<?php echo str_replace(":", "h", $rendezvous->heure); ?>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-center ">
+
+                            <?php if ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN): ?>
+                                <span style="font-size: 20px;" class="icon-raisins"></span>   
+                            <?php else : ?>
+                                <span style="font-size: 20px;" class="icon-mouts"></span>   
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-center "><?php echo $rendezvous->raison_sociale." (".$rendezvous->cvi.") ".$rendezvous->commune; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

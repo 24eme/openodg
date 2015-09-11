@@ -1,6 +1,9 @@
 <?php use_helper("Date") ?>
 <?php use_javascript("constats.js?201504020331", "last") ?>
 <?php include_partial('admin/menu', array('active' => 'constats')); ?>
+<div class="row row-margin text-center">
+    <h2>Prise de Rendez-vous</h2>
+</div>
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal" id="rendezvousDeclarantForm">
         <?php echo $form->renderHiddenFields(); ?>
@@ -10,7 +13,7 @@
             <div class="col-xs-8 col-xs-offset-2">
                 <?php
                 echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote",
-                    "placeholder" => ($compte->_id) ? "" . $compte->raison_sociale . " (" . $compte->identifiant . ") " . $compte->adresse . " (" . $compte->code_postal . ")" : "Se connecter à un opérateur",
+                    "placeholder" => ($compte->_id) ? "" . $compte->raison_sociale . " (" . $compte->cvi . ") " . $compte->adresse . " (" . $compte->code_postal . ")" : "Se connecter à un opérateur",
                     "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
                 ));
                 ?>

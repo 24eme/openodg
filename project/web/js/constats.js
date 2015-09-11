@@ -26,6 +26,7 @@
                     $(this).find('input').each(function () {
                         $(this).attr('disabled', true);
                     });
+                    $(this).attr('style','opacity:0.6');
                 }
             });
 
@@ -37,6 +38,7 @@
                     $(this).find('input').each(function () {
                         $(this).attr('disabled', false);
                     });
+                    $(this).attr('style','opacity:1');
                 }
             });
 

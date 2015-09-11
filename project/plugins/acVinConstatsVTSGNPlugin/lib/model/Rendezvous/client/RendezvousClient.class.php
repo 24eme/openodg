@@ -36,6 +36,23 @@ class RendezvousClient extends acCouchdbClient {
         return $rendezvous;
     }
 
+    public function getRendezvousByNonPlanifiesNbDays($nb_days,$date) {
+        $resultRdv = array();
+        $rdvNonPlanifies = array();
+        $dates = array($date);
+        for ($i = 1; $i <= $nb_days; $i++) {
+            $dates = array_merge($dates, array(Date::addDelaiToDate("-" . $i . " day", $date), Date::addDelaiToDate("+" . $i . " day", $date)));
+        }
+        foreach ($dates as $date) {
+            $rdvNonPlanifies = array_merge($rdvNonPlanifies, $this->getRendezvousByDateAndStatut($date, self::RENDEZVOUS_STATUT_PRIS));
+        }
+        foreach ($rdvNonPlanifies as $key => $rdv){
+            $resultRdv[$rdv->date.$rdv->heure.$rdv->_id] = $rdv;
+        }
+        krsort($resultRdv);
+        return $resultRdv;
+    }
+    
     public function getRendezvousByDateAndStatut($date, $statut) {
         $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Rendezvous', $date);
         $rdvs = array();
