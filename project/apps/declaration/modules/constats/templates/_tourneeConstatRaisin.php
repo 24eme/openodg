@@ -2,11 +2,20 @@
     <div class="form-horizontal">
         <div class="col-xs-12">
             <div class="form-group">
+                <div ng-class="{ 'hidden': !constat.erreurs['produit'] }" class="alert alert-danger">
+                    Vous devez saisir un produit
+                </div>
                 <div class="col-xs-12">
                     <select class="form-control input-lg" ng-model="constat.produit" ng-options="produit.libelle_complet for produit in produits"></select>
                 </div>
             </div>
             <div class="form-group">
+                <div ng-class="{ 'hidden': !constat.erreurs['nb_botiche'] }" class="alert alert-danger">
+                    Vous devez saisir une quantité 
+                </div>
+                <div ng-class="{ 'hidden': !constat.erreurs['contenant'] }" class="alert alert-danger">
+                    Vous devez saisir un type de contenant
+                </div>
                 <div class="col-xs-6">
                     <input placeholder="Nombre" id="nb_botiche_{{ keyConstatNode}}" ng-model="constat.nb_botiche" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                 </div>
@@ -15,6 +24,9 @@
                 </div>
             </div>
             <div class="form-group">
+                <div ng-class="{ 'hidden': !constat.erreurs['degre_potentiel_raisin'] }" class="alert alert-danger">
+                    Vous devez saisir le degré potentiel
+                </div>
                 <div class="col-xs-6">
                     <input placeholder="Degré potentiel" id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                 </div>
@@ -47,10 +59,10 @@
             <div class="form-group">
                 <label for="raison_refus_raisin_{{ keyConstatNode}}" class="col-xs-4 control-label lead">Raison du refus</label>
                 <div class="col-xs-8">
-                <select id="raison_refus_raisin_{{ keyConstatNode}}" class="hidden-print form-control input-lg">
-                    <option value="">Degré insuffisant</option>
-                    <option value="">Multi cépage</option>
-                    <option value="">Pressurage en cours</option>
+                <select id="raison_refus_raisin_{{ keyConstatNode}}" ng-model="constat.raison_refus" class="hidden-print form-control input-lg">
+                    <option value="DEGRE_INSUFFISANT">Degré insuffisant</option>
+                    <option value="MULTI_CEPAGE">Multi cépage</option>
+                    <option value="PRESSURAGE_EN_COURS">Pressurage en cours</option>
                 </select>
                 </div>
             </div>
