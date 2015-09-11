@@ -20,6 +20,7 @@ class Constat extends BaseConstat {
     public function updateConstat($jsonContent) {
         if ($this->determineTypeConstat() == ConstatsClient::CONSTAT_TYPE_RAISIN) {
             $this->produit = $jsonContent->produit->hash_produit;
+            $this->produit_libelle = $jsonContent->produit->produit_libelle;
             $this->nb_botiche = $jsonContent->nb_botiche;
             $this->contenant = $jsonContent->contenant;
             $this->contenant_libelle = $jsonContent->contenant_libelle;

@@ -252,22 +252,7 @@ class constatsActions extends sfActions {
     private function constructProduitsList() {
         $this->produits = array();
         foreach (ConstatsClient::getInstance()->getProduits() as $produit) {
-            $p = new stdClass();
-            $p->hash_produit = $produit->getHash();
-            $p->libelle = $produit->getLibelleLong();
-            $p->libelle_produit = $produit->getParent()->getLibelleComplet();
-            $p->libelle_complet = $p->libelle_produit . " " . $p->libelle;
-            $this->produits[] = $p;
-        }
-    }
-
-    private function constructTypesBotiche() {
-        $this->types_botiche = array();
-        foreach (ConstatsClient::getInstance()->getContenantsLibelle() as $type_botiche_key => $type_botiche) {
-            $b = new stdClass();
-            $b->type_botiche = $type_botiche_key;
-            $b->nom = $type_botiche;
-            $this->types_botiche[] = $b;
+            $this->produits[$produit->getHash()] =  $produit->libelle_complet;
         }
     }
 

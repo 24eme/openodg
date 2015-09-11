@@ -81,32 +81,6 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         }
 
 
-        var updateOperateurFromLoad = function (operateur) {
-            var termine = false;
-            var nb_prelevements = 0;
-
-            for (prelevement_key in operateur.prelevements) {
-                var prelevement = operateur.prelevements[prelevement_key];
-                if (prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
-                    termine = true;
-                    nb_prelevements++;
-                }
-
-                if (!prelevement.preleve && prelevement.motif_non_prelevement) {
-                    termine = true;
-                }
-
-                prelevement.produit = {trackby: prelevement.hash_produit + prelevement.vtsgn};
-            }
-            operateur.termine = termine;
-            operateur.nb_prelevements = nb_prelevements;
-
-            if (operateur.motif_non_prelevement && !operateur.nb_prelevements) {
-                operateur.termine = true;
-                operateur.aucun_prelevement = true;
-            }
-        }
-
         $scope.loadOrUpdatePlanification = function () {
             $http.get($rootScope.url_json)
                     .success(function (data) {
@@ -298,6 +272,10 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
 
         $scope.updateContenant = function(constat) {
             constat.contenant_libelle = $rootScope.contenants[constat.contenant];
+        }
+
+        $scope.updateProduit = function(constat) {
+            constat.produit_libelle = $rootScope.produits[constat.produit];
         }
 
         $scope.blur = function (event) {
