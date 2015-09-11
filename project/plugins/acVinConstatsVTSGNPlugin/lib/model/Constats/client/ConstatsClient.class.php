@@ -35,7 +35,7 @@ class ConstatsClient extends acCouchdbClient {
     public function updateOrCreateConstatFromRendezVous(Rendezvous $rendezvous) {
 
         $constats = $this->findByIdentifiantAndCampagne($rendezvous->cvi, substr($rendezvous->date, 0, 4));
-
+        
         if ($constats) {
             return $this->updateConstatFromRendezVous($rendezvous, $constats);
         }
