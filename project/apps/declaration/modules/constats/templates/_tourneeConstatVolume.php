@@ -43,7 +43,7 @@
                 <a href="" ng-click="refuserConfirmation(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class="glyphicon glyphicon-remove-circle"></span> Refuser</a>
             </div>
             <div class="col-xs-6">
-                <a href="" ng-click="signature(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class=" glyphicon glyphicon-ok-circle"></span> Approuver</a>
+                <a href="" ng-click="signature(constat, 'signature_' + keyConstatNode)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class=" glyphicon glyphicon-ok-circle"></span> Approuver</a>
             </div>
     </div>
 </div>
@@ -80,10 +80,14 @@
         </div>
     </div>
 </div>
-<div ng-show="active == 'signature'" class="col-xs-12">
+<div id="signature_{{ keyConstatNode }}" ng-show="active == 'signature'" class="col-xs-12">
     <div class="form-horizontal">
-        <label class="text-muted">Signature :</label>
-        <div class="well" style="height: 240px">
+        <label class="text-muted">Signature de l'opérateur :</label>
+        <div ng-class="{ 'hidden': !constat.erreurs['signature'] }" class="alert alert-danger">
+                L'opérateur doit signer le constat
+        </div>
+        <div class="signature-pad well">
+            <canvas style="width: 100%;" height="318"></canvas>
         </div>
         <div class="form-group">
             <div class="col-xs-12">

@@ -7,7 +7,7 @@ myApp.config(function (localStorageServiceProvider) {
             .setNotify(true, true)
 });
 
-myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localStorageService', function ($scope, $rootScope, $http, localStorageService) {
+myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http', 'localStorageService', function ($window, $scope, $rootScope, $http, localStorageService) {
 
         $scope.active = 'recapitulatif';
         $scope.activeRdv = null;
@@ -15,6 +15,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
         $scope.transmission_progress = false;
         $scope.state = true;
         $scope.loaded = false;
+        var signaturePad = null;
+
         var local_storage_name = $rootScope.url_json;
 
         var localSave = function () {
@@ -182,24 +184,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             $scope.transmettre(true);
         }
 
-        $scope.approuverConstatVolume = function (constat) {
-            $scope.valideConstatVolume(constat);
-
-            if (constat.has_erreurs) {
-
-                return;
-            }
-
-            $scope.mission($scope.activeRdv);
-
-            constat.statut_volume = 'APPROUVE';
-            constat.transmission_needed = true;
-
-            localSave();
-            $scope.transmettre(true);
-        }
-
-        $scope.signature = function (constat) {
+        $scope.signature = function (constat, id) {
             $scope.valideConstatVolume(constat);
 
             if (constat.has_erreurs) {
@@ -208,8 +193,50 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             }
 
             $scope.updateActive('signature');
+
+            var wrapper = document.getElementById(id);
+            $(wrapper).removeClass('ng-hide');
+            canvas = wrapper.querySelector("canvas");
+
+            canvas.width = canvas.clientWidth;
+            signaturePad = new SignaturePad(canvas);
+
+            if($rootScope.signatureImg && !constat.signature) {
+                constat.signature = $rootScope.signatureImg;
+            }
+
+            if(constat.signature) {
+                signaturePad.fromDataURL(constat.signature);
+            }
         }
 
+        $scope.approuverConstatVolume = function (constat) {
+            constat.signature = null;
+            if(!signaturePad.isEmpty()) {
+                constat.signature = signaturePad.toDataURL();
+            }
+
+            $scope.valideConstatVolumeSignature(constat);
+
+            $rootScope.signatureImg = constat.signature;
+
+            if (constat.has_erreurs) {
+
+                return;
+            }
+
+            $scope.mission($scope.activeRdv);
+
+            signaturePad.off();
+            signaturePad = null;
+
+            constat.statut_volume = 'APPROUVE';
+            constat.transmission_needed = true;
+
+            localSave();
+            $scope.transmettre(true);
+        }
+    
         $scope.refuserConstatRaisin = function (constat) {
             constat.statut_raisin = 'REFUSE';
             $scope.mission($scope.activeRdv);
@@ -324,6 +351,16 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             }*/
         }
 
+        $scope.valideConstatVolumeSignature = function (constat) {
+            constat.has_erreurs = false;
+            constat.erreurs = [];
+
+            if(!constat.signature) {
+                constat.erreurs['signature'] = true;
+                constat.has_erreurs = true;
+            }
+        }
+
         $scope.blurOnEnter = function (event) {
             if (event.keyCode != 13) {
                 return
@@ -348,3 +385,16 @@ myApp.controller('tournee_vtsgnCtrl', ['$scope', '$rootScope', '$http', 'localSt
             window.print();
         }
     }]);
+
+(function($)
+{
+
+    $(document).ready(function()
+    {
+        /*var wrapper = document.getElementById("signature-pad");
+        canvas = document.querySelector("canvas");
+        console.log($('canvas'));
+        var signaturePad = new SignaturePad(canvas);*/
+    });
+    
+})(jQuery);
