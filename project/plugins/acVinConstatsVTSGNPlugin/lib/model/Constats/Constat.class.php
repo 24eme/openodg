@@ -26,9 +26,9 @@ class Constat extends BaseConstat {
         $this->contenant = $jsonContent->contenant;
         $this->contenant_libelle = $jsonContent->contenant_libelle;
         $this->degre_potentiel_raisin = $jsonContent->degre_potentiel_raisin;
-        $this->degre_potentiel_volume = $jsonContent->degre_potentiel_volume;
-        $this->volume_obtenu = $jsonContent->volume_obtenu;
-        $this->type_vtsgn = $jsonContent->type_vtsgn;
+        $this->degre_potentiel_volume = (isset($jsonContent->degre_potentiel_volume)) ? $jsonContent->degre_potentiel_volume : null;
+        $this->volume_obtenu = (isset($jsonContent->volume_obtenu)) ? $jsonContent->volume_obtenu : null;
+        $this->type_vtsgn = (isset($jsonContent->type_vtsgn)) ? $jsonContent->type_vtsgn : null;
 
         if ($this->determineTypeConstat() == ConstatsClient::CONSTAT_TYPE_RAISIN) {
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);

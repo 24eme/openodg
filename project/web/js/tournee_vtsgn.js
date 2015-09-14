@@ -67,7 +67,6 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                 callBack(true);
                 return;
             }
-
             $http.post($rootScope.url_json, angular.toJson(operateurs))
                     .success(function (data) {
                         callBack(data);
@@ -257,10 +256,12 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             var idNewNode = $rootScope.date.replace("-", "", "g") + '_' + UUID.generate();
             nouveauConstat.type_constat = 'raisin'; 
             nouveauConstat.statut_raisin = 'NONCONSTATE';             
+            nouveauConstat.statut_volume = 'NONCONSTATE';             
             nouveauConstat.idconstatdoc = rdv.rendezvous.constat;
-            nouveauConstat.idconstatnode = idNewNode; 
+            nouveauConstat.idconstatnode = idNewNode;
             var constatId = rdv.rendezvous.constat + '_' + idNewNode;
             rdv['constats'][constatId] = nouveauConstat;
+            $scope.constats.push(nouveauConstat);
             $scope.showConstat(rdv['constats'][constatId]);
         }
 
@@ -398,16 +399,3 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             window.print();
         }
     }]);
-
-(function($)
-{
-
-    $(document).ready(function()
-    {
-        /*var wrapper = document.getElementById("signature-pad");
-        canvas = document.querySelector("canvas");
-        console.log($('canvas'));
-        var signaturePad = new SignaturePad(canvas);*/
-    });
-    
-})(jQuery);
