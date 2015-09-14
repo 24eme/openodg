@@ -106,7 +106,7 @@ class TourneeClient extends acCouchdbClient {
                     $nbRendezvousRealise++;
                 }
             }
-            $tourneesObj->tourneesJournee[$tournee->agent_unique]->pourcentRealise = (!count($tourneeObj->degustations)) ? 0 : intval(($nbRealise / count($tourneeObj->degustations)) * 100);
+            $tourneesObj->tourneesJournee[$tournee->agent_unique]->pourcentRealise = (!count($tourneeObj->rendezvous)) ? 0 : intval(($nbRealise / count($tourneeObj->rendezvous)) * 100);
             $tourneesObj->tourneesJournee[$tournee->agent_unique]->tournee = $tourneeObj;
         }
 

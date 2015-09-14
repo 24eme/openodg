@@ -17,10 +17,7 @@
                     "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
                 ));
                 ?>
-            </div>
-            <!--            <div class="col-xs-2">
-                            <button class="btn btn-default btn-lg" type="submit">Se connecter</button>
-                        </div>-->
+            </div>           
         </div>
 
     </form>
@@ -51,7 +48,7 @@
                 <th>Résultat</th>  
             </tr>
             <?php foreach ($rendezvousDeclarant as $rendezvous) : ?>
-                <tr>
+            <tr class="<?php if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_REALISE): ?>list-group-item-success <?php endif; ?> <?php if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_PRIS): ?>list-group-item-warning <?php endif; ?>">
                     <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>
                     <td><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?></td>
                     <td class="text-center">
@@ -66,7 +63,11 @@
                             <?php echo format_date($rendezvous->date, "P", "fr_FR"); ?><?php if ($rendezvous->isRendezvousRaisin()): ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?> <?php endif; ?>
                         </a>
                     </td>                
-                    <td>Rés</td>
+                    <td class="text-center">
+                        <?php if($rendezvous->isRendezvousRaisin()): ?>
+                        <span class="glyphicon glyphicon-ban-circle"></span>
+                        <?php endif; ?>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </table>
