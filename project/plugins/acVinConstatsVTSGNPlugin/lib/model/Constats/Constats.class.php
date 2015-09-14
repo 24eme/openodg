@@ -46,7 +46,6 @@ class Constats extends BaseConstats {
     }
 
     public function updateAndSaveConstatNodeFromJson($constatIdNode, $jsonContent) {
-      //  var_dump($this->_id,$constatIdNode); exit;
         $this->get('constats')->getOrAdd($constatIdNode)->updateConstat($jsonContent);
         $this->save();
     }

@@ -29,11 +29,11 @@ class Constat extends BaseConstat {
         $this->degre_potentiel_volume = (isset($jsonContent->degre_potentiel_volume)) ? $jsonContent->degre_potentiel_volume : null;
         $this->volume_obtenu = (isset($jsonContent->volume_obtenu)) ? $jsonContent->volume_obtenu : null;
         $this->type_vtsgn = (isset($jsonContent->type_vtsgn)) ? $jsonContent->type_vtsgn : null;
-
-        if ($this->determineTypeConstat() == ConstatsClient::CONSTAT_TYPE_RAISIN) {
+        $this->rendezvous_raisin = $jsonContent->rendezvous_raisin;
+        if ($jsonContent->type_constat == 'raisin') {
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);
         }
-        if ($this->determineTypeConstat() == ConstatsClient::CONSTAT_TYPE_VOLUME) {
+        if ($jsonContent->type_constat == 'volume') {
             $this->setStatutVolumeAndRendezvous($jsonContent);
         }
         
@@ -42,8 +42,8 @@ class Constat extends BaseConstat {
     }
 
     public function setStatutRaisinAndCreateVolumeRendezvous($jsonContent) {
-
-        if (($this->statut_raisin == ConstatsClient::STATUT_NONCONSTATE) && ($jsonContent->statut_raisin == ConstatsClient::STATUT_APPROUVE)) {
+       
+        if ($jsonContent->statut_raisin == ConstatsClient::STATUT_APPROUVE) {
             $newRdvVolume = RendezvousClient::getInstance()->findOrCreateRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_raisin);
             $newRdvVolume->save();
             $rendezvousRaisin = RendezvousClient::getInstance()->find($jsonContent->rendezvous_raisin);

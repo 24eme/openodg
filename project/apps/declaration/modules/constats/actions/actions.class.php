@@ -60,7 +60,9 @@ class constatsActions extends sfActions {
         }
         foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
             $json[$idrendezvous] = array();
-            $json[$idrendezvous]['rendezvous'] = $rendezvous->toJson();
+            $rdvJson = $rendezvous->toJson();
+            $rdvJson->idrdv = $idrendezvous;
+            $json[$idrendezvous]['rendezvous'] = $rdvJson;
             $json[$idrendezvous]['constats'] = array();
 
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
@@ -88,10 +90,9 @@ class constatsActions extends sfActions {
         $json_return = array();
 
         foreach ($json as $json_content) {
-            $constat = ConstatsClient::getInstance()->find($json_content->idconstatdoc);
+            $constat = ConstatsClient::getInstance()->find($json_content->idconstatdoc);           
             $constat->updateAndSaveConstatNodeFromJson($json_content->idconstatnode, $json_content);
         }
-
         $this->response->setContentType('application/json');
 
         return $this->renderText(json_encode($json_return));
