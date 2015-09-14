@@ -8,6 +8,8 @@ class constatsActions extends sfActions {
         $this->jour = $request->getParameter('jour');
 
         $this->organisationJournee = RendezvousClient::getInstance()->buildOrganisationNbDays(2, $this->jour);
+        $this->rendezvousNonPlanifies = RendezvousClient::getInstance()->getRendezvousByNonPlanifiesNbDays(2,$this->jour);
+        $this->formDate = new TourneesRecapDateForm(array('date' => Date::francizeDate($this->jour)));
         $this->form = new LoginForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -173,8 +175,7 @@ class constatsActions extends sfActions {
         $this->compte = $this->getRoute()->getCompte();
         $this->rendezvousDeclarant = RendezvousClient::getInstance()->getRendezvousByCompte($this->compte->cvi);
         $this->formsRendezVous = array();
-        $this->form = new LoginForm();
-
+        $this->form = new LoginForm();       
         foreach ($this->compte->getChais() as $chaiKey => $chai) {
             $rendezvous = new Rendezvous();
             $rendezvous->identifiant = $this->compte->identifiant;

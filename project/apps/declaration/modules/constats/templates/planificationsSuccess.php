@@ -9,9 +9,9 @@
 
 <div class="page-header">
     <div class="row">
-        <div class="col-xs-7">
+        <div class="col-xs-12">
             <div class="row">
-                <div class="col-xs-2 text-left">
+                <div class="col-xs-1 text-left">
                     <h2><a class="text-muted" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("-1 day", $jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-left"></span>
                         </a></h2>
@@ -19,17 +19,14 @@
                 <div class="col-xs-8 text-center">
                     <h2><?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></h2>
                 </div>
-                <div class="col-xs-2 text-right">
+                <div class="col-xs-1 text-right">
                     <h2><a class="text-muted" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("+1 day", $jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-right"></span>
                         </a></h2>
                 </div>
-            </div>
-        </div>
-        <div class="col-xs-3">
-            <div class="row">
-                <div class="col-xs-12 text-right">
-                    <a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)); ?>" class="btn btn-upper btn-default btn-default-step" >Voir</a>
+                <div class="col-xs-2 text-right" style="margin-top: 12px;">
+                    <a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)); ?>" class="btn btn-upper btn-default btn-default-step" ><span class="glyphicon glyphicon-list-alt"></span></a>
+
                 </div>
             </div>
         </div>
