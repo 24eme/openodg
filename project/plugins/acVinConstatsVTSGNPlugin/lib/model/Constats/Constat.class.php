@@ -11,14 +11,15 @@ class Constat extends BaseConstat {
             $this->date_raisin = $rdv->getDateHeure();
             $this->statut_raisin = ConstatsClient::STATUT_NONCONSTATE;
             $this->statut_volume = ConstatsClient::STATUT_NONCONSTATE;
-            $this->rendezvous_origine = $rdv->_id;
+            $this->rendezvous_raisin = $rdv->_id;
         } elseif ($rdv->isRendezvousVolume()) {
+            $this->rendezvous_volume = $rdv->_id;
             $this->date_volume = $rdv->getDateHeure();
         }
     }
 
     public function updateConstat($jsonContent) {
-
+        
         $this->produit = $jsonContent->produit;
         $this->produit_libelle = $jsonContent->produit_libelle;
         $this->nb_botiche = $jsonContent->nb_botiche;
@@ -43,23 +44,24 @@ class Constat extends BaseConstat {
     public function setStatutRaisinAndCreateVolumeRendezvous($jsonContent) {
 
         if (($this->statut_raisin == ConstatsClient::STATUT_NONCONSTATE) && ($jsonContent->statut_raisin == ConstatsClient::STATUT_APPROUVE)) {
-            $newRdv = RendezvousClient::getInstance()->findOrCreateRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_origine);
-            $newRdv->save();
-            $rendezvousOrigine = RendezvousClient::getInstance()->find($jsonContent->rendezvous_origine);
-            $rendezvousOrigine->set('statut', RendezvousClient::RENDEZVOUS_STATUT_REALISE);
-            $rendezvousOrigine->save();
+            $newRdvVolume = RendezvousClient::getInstance()->findOrCreateRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_raisin);
+            $newRdvVolume->save();
+            $rendezvousRaisin = RendezvousClient::getInstance()->find($jsonContent->rendezvous_raisin);
+            $rendezvousRaisin->set('statut', RendezvousClient::RENDEZVOUS_STATUT_REALISE);
+            $rendezvousRaisin->save();
 
-            $tourneeOrigine = TourneeClient::getInstance()->findTourneeByIdRendezvous($jsonContent->rendezvous_origine);
-            $newTournee = TourneeClient::getInstance()->findOrAddByDateAndAgent($newRdv->getDate(), $tourneeOrigine->getAgentUniqueObj());
-            $newTournee->addRendezVousAndReferenceConstatsId($newRdv->_id, $this->getDocument());
+            $tourneeOrigine = TourneeClient::getInstance()->findTourneeByIdRendezvous($jsonContent->rendezvous_raisin);
+            $newTournee = TourneeClient::getInstance()->findOrAddByDateAndAgent($newRdvVolume->getDate(), $tourneeOrigine->getAgentUniqueObj());
+            $newTournee->addRendezVousAndReferenceConstatsId($newRdvVolume->_id, $this->getDocument());
             $newTournee->save();
             $this->date_volume = str_replace('-', '', $newTournee->getDate()) . substr($this->date_raisin, 8, 4);
+            $this->rendezvous_volume = $newRdvVolume->_id;
         }
     }
 
     public function setStatutVolumeAndRendezvous($jsonContent) {  
         if (($this->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($this->statut_volume == ConstatsClient::STATUT_NONCONSTATE)) {
-            $rendezvousVolume = RendezvousClient::getInstance()->findOrCreateRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_origine);
+            $rendezvousVolume = RendezvousClient::getInstance()->find($jsonContent->rendezvous_volume);
             $rendezvousVolume->set('statut', RendezvousClient::RENDEZVOUS_STATUT_REALISE);
             $rendezvousVolume->save();
         }

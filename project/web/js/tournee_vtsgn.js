@@ -254,9 +254,12 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
         $scope.ajoutConstat = function(rdv) {
 
             var nouveauConstat = {};
+            var idNewNode = $rootScope.date.replace("-", "", "g") + '_' + UUID.generate();
             nouveauConstat.type_constat = 'raisin'; 
-            nouveauConstat.statut_raisin = 'NONCONSTATE'; 
-            var constatId = rdv.rendezvous.constat + '_' + $rootScope.date.replace("-", "", "g") + '_' + UUID.generate();
+            nouveauConstat.statut_raisin = 'NONCONSTATE';             
+            nouveauConstat.idconstatdoc = rdv.rendezvous.constat;
+            nouveauConstat.idconstatnode = idNewNode; 
+            var constatId = rdv.rendezvous.constat + '_' + idNewNode;
             rdv['constats'][constatId] = nouveauConstat;
             $scope.showConstat(rdv['constats'][constatId]);
         }

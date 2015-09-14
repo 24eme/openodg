@@ -4,8 +4,8 @@ class constatsActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $this->getUser()->signOutEtablissement();
-        if(($tourneesRecapDate = $request->getParameter('tourneesRecapDate')) && $request->isMethod(sfWebRequest::POST)){
-            $this->jour =Date::getIsoDateFromFrenchDate($tourneesRecapDate['date']);
+        if (($tourneesRecapDate = $request->getParameter('tourneesRecapDate')) && $request->isMethod(sfWebRequest::POST)) {
+            $this->jour = Date::getIsoDateFromFrenchDate($tourneesRecapDate['date']);
             return $this->redirect('constats', array('jour' => $this->jour));
         }
         $this->jour = $request->getParameter('jour');
@@ -65,22 +65,19 @@ class constatsActions extends sfActions {
 
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
                 $constatNodeJson = $constatNode->toJson();
-                $isConstatVolume = ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_VOLUME);
-
-                if ($isConstatVolume) {
-                    if (substr($constatNode->date_volume, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
-                        $constatNodeJson->type_constat = 'volume';
-                        $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNodeJson;
-                    }
-                } else {
-                    if (substr($constatkey, 0, 8) == str_replace('-', '', $this->tournee->getDate())) {
-                        $constatNodeJson->type_constat = 'raisin';
-                        $json[$idrendezvous]['constats'][$rendezvous->constat . '_' . $constatkey] = $constatNodeJson;
-                    }
+                $constatNodeJson->idconstatdoc = $rendezvous->constat; 
+                $constatNodeJson->idconstatnode = $constatkey; 
+                if ($idrendezvous == $constatNode->rendezvous_raisin) {
+                    $constatNodeJson->type_constat = 'raisin';
+                    $json[$idrendezvous]['constats'][$constatNodeJson->idconstatdoc.'_'.$constatNodeJson->idconstatnode] = $constatNodeJson;
+                }
+                if ($idrendezvous == $constatNode->rendezvous_volume) {
+                    $constatNodeJson->type_constat = 'volume';
+                    $json[$idrendezvous]['constats'][$constatNodeJson->idconstatdoc.'_'.$constatNodeJson->idconstatnode] = $constatNodeJson;
                 }
             }
         }
-
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
 
@@ -91,10 +88,8 @@ class constatsActions extends sfActions {
         $json_return = array();
 
         foreach ($json as $json_content) {
-
-            $splitted_id = split('_', $json_content->_idNode);
-            $constat = ConstatsClient::getInstance()->find($splitted_id[0]);
-            $constat->updateAndSaveConstatNodeFromJson($splitted_id[1], $json_content);
+            $constat = ConstatsClient::getInstance()->find($json_content->idconstatdoc);
+            $constat->updateAndSaveConstatNodeFromJson($json_content->idconstatnode, $json_content);
         }
 
         $this->response->setContentType('application/json');

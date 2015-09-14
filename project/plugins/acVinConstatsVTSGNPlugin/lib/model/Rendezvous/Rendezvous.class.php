@@ -26,11 +26,14 @@ class Rendezvous extends BaseRendezvous {
     public function isRendezvousRaisin() {
         return RendezvousClient::RENDEZVOUS_TYPE_RAISIN == $this->type_rendezvous;
     }
+    
     public function isRendezvousVolume() {
         return RendezvousClient::RENDEZVOUS_TYPE_VOLUME == $this->type_rendezvous;
     }
     
-     public function isRealise() {
+    public function isRealise() {
         return RendezvousClient::RENDEZVOUS_STATUT_REALISE == $this->statut;
     }
+    
+    
 }

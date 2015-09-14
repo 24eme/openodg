@@ -29,36 +29,25 @@ class Constats extends BaseConstats {
     }
 
     public function getConstatIdNode($rendezvous) {
-        if ($rendezvous->isRendezvousRaisin()) {
-            $dateStr = str_replace('-', '', $rendezvous->getDate());
-            $cpt = 0;
-            foreach ($this->constats as $constatKey => $constat) {
-                if($constat->rendezvous_origine == $rendezvous->_id){
-                    return $constatKey;
-                }
-                $matches = array();
-                if (preg_match('/^' . $dateStr . '([0-9]{3})$/', $constatKey, $matches)) {
-                    if ($cpt < $matches[1]) {
-                        $cpt = intval($matches[1]);
-                    }
-                }
+        $dateStr = str_replace('-', '', $rendezvous->getDate());
+
+        foreach ($this->constats as $constatKey => $constat) {
+            if ($rendezvous->isRendezvousRaisin() && $constat->rendezvous_raisin == $rendezvous->_id) {
+                return $constatKey;
             }
-            return sprintf("%s%03d", $dateStr, $cpt + 1);
-        } else {
-            $idRendezvousOrigine = $rendezvous->rendezvous_origine;
-            
-            foreach ($this->constats as $constatKey => $constat) {
-                if (($constat->rendezvous_origine == $idRendezvousOrigine) && ($constat->statut_volume == ConstatsClient::STATUT_NONCONSTATE)) {
-                    return $constatKey;
-                }
+            if ($rendezvous->isRendezvousVolume() && $constat->rendezvous_volume == $rendezvous->_id) {
+                return $constatKey;
             }
         }
-        throw new sfException("L'identifiant du constat ne peut être créer ou trouvé");
-        return null;
+        if ($rendezvous->isRendezvousVolume()) {
+            throw new sfException("L'identifiant du constat ne peut être créer ou trouvé");
+        }
+        return sprintf("%s_%s", $dateStr, uniqid());
     }
 
     public function updateAndSaveConstatNodeFromJson($constatIdNode, $jsonContent) {
-        $this->get('constats')->get($constatIdNode)->updateConstat($jsonContent);
+      //  var_dump($this->_id,$constatIdNode); exit;
+        $this->get('constats')->getOrAdd($constatIdNode)->updateConstat($jsonContent);
         $this->save();
     }
 

@@ -111,7 +111,7 @@ class RendezvousClient extends acCouchdbClient {
            $rendezvous = $this->find($rendezvous->_id);
         }
         $rendezvous->statut = self::RENDEZVOUS_STATUT_PRIS;
-        $rendezvous->rendezvous_origine = $idRdvOrigine;
+        $rendezvous->rendezvous_raisin = $idRdvOrigine;
         return $rendezvous;
     }
 
