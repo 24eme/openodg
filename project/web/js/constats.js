@@ -47,9 +47,9 @@
 
 
     $.initTourneesRecapDate = function () {
-       
+
         $('#tourneesRecapDateForm .date-picker').change(function () {
-            console.log($('#tourneesRecapDateForm .date-picker'));
+            $('#tourneesRecapDateForm').submit();
         });
     }
 

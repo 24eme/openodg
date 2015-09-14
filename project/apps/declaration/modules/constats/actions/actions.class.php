@@ -4,11 +4,14 @@ class constatsActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $this->getUser()->signOutEtablissement();
-
+        if(($tourneesRecapDate = $request->getParameter('tourneesRecapDate')) && $request->isMethod(sfWebRequest::POST)){
+            $this->jour =Date::getIsoDateFromFrenchDate($tourneesRecapDate['date']);
+            return $this->redirect('constats', array('jour' => $this->jour));
+        }
         $this->jour = $request->getParameter('jour');
 
         $this->organisationJournee = RendezvousClient::getInstance()->buildOrganisationNbDays(2, $this->jour);
-        $this->rendezvousNonPlanifies = RendezvousClient::getInstance()->getRendezvousByNonPlanifiesNbDays(2,$this->jour);
+        $this->rendezvousNonPlanifies = RendezvousClient::getInstance()->getRendezvousByNonPlanifiesNbDays(2, $this->jour);
         $this->formDate = new TourneesRecapDateForm(array('date' => Date::francizeDate($this->jour)));
         $this->form = new LoginForm();
 
@@ -175,7 +178,7 @@ class constatsActions extends sfActions {
         $this->compte = $this->getRoute()->getCompte();
         $this->rendezvousDeclarant = RendezvousClient::getInstance()->getRendezvousByCompte($this->compte->cvi);
         $this->formsRendezVous = array();
-        $this->form = new LoginForm();       
+        $this->form = new LoginForm();
         foreach ($this->compte->getChais() as $chaiKey => $chai) {
             $rendezvous = new Rendezvous();
             $rendezvous->identifiant = $this->compte->identifiant;
@@ -261,7 +264,7 @@ class constatsActions extends sfActions {
     private function constructProduitsList() {
         $this->produits = array();
         foreach (ConstatsClient::getInstance()->getProduits() as $produit) {
-            $this->produits[$produit->getHash()] =  $produit->libelle_complet;
+            $this->produits[$produit->getHash()] = $produit->libelle_complet;
         }
     }
 
