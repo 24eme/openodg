@@ -19,7 +19,7 @@
             <div class="row" ng-show="loaded">
                 <div class="col-xs-12">
                     <div class="list-group print-list-group-condensed">
-                        <a ng-repeat="(key,rdv) in planification | orderBy: ['position']" href="" ng-click="mission(rdv)" ng-class="{ 'list-group-item-success': operateur.termine && operateur.nb_prelevements, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && !operateur.nb_prelevements }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
+                        <a ng-repeat="(key,rdv) in planification | orderBy: ['heure']" href="" ng-click="mission(rdv)" ng-class="{ 'list-group-item-success': operateur.termine && operateur.nb_prelevements, 'list-group-item-danger': (operateur.has_erreurs), 'list-group-item-warning': operateur.termine && !operateur.nb_prelevements }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                             <div class="col-xs-2 col-sm-1 text-left">
                                 <strong ng-show="!rdv['rendezvous'].termine || rdv['rendezvous'].nb_prelevements" class="lead" style="font-weight: bold;">{{ rdv['rendezvous'].heure}}</strong>
                                 <strong ng-show="rdv['rendezvous'].termine && !rdv['rendezvous'].nb_prelevements" class="lead" style="text-decoration: line-through;">{{ rdv['rendezvous'].heure}}</strong><br />
