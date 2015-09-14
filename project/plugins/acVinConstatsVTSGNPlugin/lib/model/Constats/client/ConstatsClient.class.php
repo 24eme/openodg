@@ -16,6 +16,18 @@ class ConstatsClient extends acCouchdbClient {
     const CONTENANT_KG = 'KG';
     const CONTENANT_TYPE_PALOX = 'TYPE_PALOX';
 
+    const RAISON_REFUS_DEGRE_INSUFFISANT = 'DEGRE_INSUFFISANT';
+    const RAISON_REFUS_MULTI_CEPAGE = 'MULTI_CEPAGE';
+    const RAISON_REFUS_PRESSURAGE_EN_COURS = 'PRESSURAGE_EN_COURS';
+    const RAISON_REFUS_VENDANGES_MECANIQUE = 'VENDANGES_MECANIQUE';
+
+    public static $raisons_refus_libelle = array(
+        self::RAISON_REFUS_DEGRE_INSUFFISANT => 'Degré insuffisant',
+        self::RAISON_REFUS_MULTI_CEPAGE => 'Multi cépage',
+        self::RAISON_REFUS_PRESSURAGE_EN_COURS => 'Pressurage en cours',
+        self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendandes mécanique',
+    );
+
     public static $contenants_libelle = array(
         self::CONTENANT_BOTTICHE => 'Bottiche',
         self::CONTENANT_BEINE => 'Benne',
@@ -54,10 +66,15 @@ class ConstatsClient extends acCouchdbClient {
         return $constats;
     }
     
-   public function getContenantsLibelle() {
+    public function getContenantsLibelle() {
 
         return self::$contenants_libelle;
-   }
+    }
+
+    public function getRaisonsRefusLibelle() {
+
+        return self::$raisons_refus_libelle;
+    }
 
     public function getProduits() { 
         

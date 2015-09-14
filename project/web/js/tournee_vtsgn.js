@@ -388,6 +388,10 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             constat.contenant_libelle = $rootScope.contenants[constat.contenant];
         }
 
+        $scope.updateRaisonRefus = function(constat) {
+            constat.raison_refus_libelle = $rootScope.raisons_refus[constat.raison_refus];
+        }
+
         $scope.updateProduit = function(constat) {
             constat.produit_libelle = $rootScope.produits[constat.produit];
         }

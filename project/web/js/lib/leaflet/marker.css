@@ -33,6 +33,9 @@ Version: 1.0
   display: block;
   position: absolute;
   left: 25%;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 27px;
 }
 
 .marker .marker-inner {

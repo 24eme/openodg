@@ -41,16 +41,26 @@
     function initItems() {
         $(defaults.selector.item + ' ' + defaults.selector.itemAdd).on('click', function() {
             var ligne = $($(this).attr('data-item'));
-            console.log(ligne);
+
             addItem(ligne);
             return false;
         });
 
         $(defaults.selector.item + ' ' + defaults.selector.itemRemove).on('click', function() {
             var ligne = $($(this).attr('data-item'));
-            console.log(ligne);
+
             removeItem(ligne);
             return false;
+        });
+
+        $(defaults.selector.item)
+        .mouseenter(function() {
+            var ligne = $(this);
+            toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
+        })
+        .mouseleave(function() {
+            var ligne = $(this);
+            toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
         });
     }
 
@@ -65,11 +75,22 @@
         }).addTo(map);
 
         var points = [];
+
         $(defaults.selector.item).each(function() {
             var ligne = $(this);
             var point = getLignePoint(ligne);
 
             if(!point) {
+                return;
+            }
+
+            if(markers[point]) {
+                var markerContent = $(markers[point]._icon).find('.marker-inner-bg');
+                if(!markerContent.html()) {
+                    markerContent.html("1");
+                }
+
+                markerContent.html((parseInt(markerContent.html()) + 1) + "");
                 return;
             }
 
@@ -79,24 +100,45 @@
             var color = ligne.find(defaults.selector.itemMarker).css('color');
             marker.addTo(map);
             $(marker._icon).find('.marker-inner').css('color', color);
-
             marker.on('click', function(m) {
                 var ligne = latlngToLigne(m.latlng);
-                toggleItem(ligne);
-                $('#listes_operateurs').scrollTo(ligne, 200, {offset: -150, queue: false});
+                if(ligne.length > 1) {
+                    return;
+                    var added = false;
+                    ligne.each(function() {
+                        console.log(added);
+                        if(!added && !getLigneTournee($(this))) {
+                            toggleItem($(this));
+                            added = true;  
+                        }
+                    });
+                } else {
+                    toggleItem(ligne);
+                }
+                var list = ligne.parent();
+                list.scrollTo(ligne, 200, {offset: -150, queue: false});
             });
 
             marker.on('mouseover', function(m) {
                 var ligne = latlngToLigne(m.latlng);
+                if(ligne.length > 1) {
+                    
+                    return; 
+                }
                 toggleMarkerHover(m.target, ligne, false, true);
-                /*timerHover = setTimeout(function() {
-                    $(defaults.selector.list).scrollTo(ligne, 200, {offset: -150, queue: false});
-                }, 600);*/
+                timerHover = setTimeout(function() {
+                    var list = ligne.parent();
+                    $(list).scrollTo(ligne, 200, {offset: -150, queue: false});
+                }, 600);
             })
 
             marker.on('mouseout', function(m) {
-                //clearTimeout(timerHover);
                 var ligne = latlngToLigne(m.latlng);
+                if(ligne.length > 1) {
+                    
+                    return; 
+                }
+                clearTimeout(timerHover);
                 toggleMarkerHover(m.target, ligne, false, true);
                 updateItem(ligne);
             });
@@ -309,9 +351,10 @@
 
     function tourneeNextHour(hour) {
         next = hour.split(':')[0] * 1 + 1;
-        if (next == 13 || next == 14) {
+        /*if (next == 13 || next == 14) {
             next = 15;
-        }
+        }*/
+        
         if (next > 9) {
             return next + ':00';
         } 
@@ -370,14 +413,14 @@
             markers[coordonnees].setZIndexOffset(900);
         }
         if (withLigneOpacity) {
-            $(defaults.selector.list + ' ' + defaults.selector.item + ' ' + defaults.selector.itemMarker).each(function() {
+            $(defaults.selector.item).each(function() {
                 if ($(this).css('opacity') == '1') {
-                    $(this).css('opacity', '0.3');
+                    $(this).css('opacity', '0.4');
                 } else {
                     $(this).css('opacity', '1');
                 }
             });
-            ligne.find('.glyphicon-map-marker').css('opacity', '1');
+            ligne.css('opacity', '1');
         }
         if (withMarkerOpacity) {
             $(marker._icon).css('opacity', '1');

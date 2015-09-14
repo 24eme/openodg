@@ -29,7 +29,7 @@
         <div class="list-group">
             <?php foreach ($compte->getChais() as $keyChai => $chai): ?>
                 <div class="list-group-item">
-                    <?php include_partial('constats/rendezvousModification', array('chai' => $chai, 'form' => $formsRendezVous[$keyChai], 'rendezvous' => $formsRendezVous[$keyChai]->getObject(), 'creation' => true)); ?> 
+                    <?php include_partial('constats/rendezvousForm', array('chai' => $chai, 'form' => $formsRendezVous[$keyChai], 'rendezvous' => $formsRendezVous[$keyChai]->getObject(), 'creation' => true)); ?> 
                 </div>
             <?php endforeach; ?>
 

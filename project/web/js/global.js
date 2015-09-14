@@ -92,7 +92,7 @@
                         language: 'fr',
                         pickTime: false,
                         useCurrent: false,
-                        calendarWeeks: true
+                        calendarWeeks: true,
                     });
             if (!hasValue) {
                 currentDp.find('input').val('');
@@ -125,6 +125,8 @@
                     ({
                         language: 'fr',
                         pickDate: false,
+                        useCurrent: false,
+                        minuteStepping: 5
                     });
             currentDp.on('focus', 'input', function ()
             {

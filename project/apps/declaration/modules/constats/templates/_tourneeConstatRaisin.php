@@ -55,11 +55,7 @@
         <div class="form-group">
             <label for="raison_refus_raisin_{{ keyConstatNode}}" class="col-xs-4 control-label lead">Raison du refus</label>
             <div class="col-xs-8">
-            <select id="raison_refus_raisin_{{ keyConstatNode}}" ng-model="constat.raison_refus" class="hidden-print form-control input-lg">
-                <option value="DEGRE_INSUFFISANT">Degré insuffisant</option>
-                <option value="MULTI_CEPAGE">Multi cépage</option>
-                <option value="PRESSURAGE_EN_COURS">Pressurage en cours</option>
-            </select>
+            <select id="raison_refus_raisin_{{ keyConstatNode}}" ng-change="updateRaisonRefus(constat)" ng-model="constat.raison_refus" ng-options="raison_refus_key as raison_refus_libelle for (raison_refus_key, raison_refus_libelle) in raisons_refus" class="hidden-print form-control input-lg"></select>
             </div>
         </div>
     </div>
