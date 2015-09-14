@@ -87,7 +87,7 @@
                 L'opérateur doit signer le constat
         </div>
         <div class="signature-pad well">
-            <canvas style="width: 100%;" height="318"></canvas>
+            <canvas style="width: 100%; height: 250px;" height="250"></canvas>
         </div>
         <div class="form-group">
             <div class="col-xs-12">

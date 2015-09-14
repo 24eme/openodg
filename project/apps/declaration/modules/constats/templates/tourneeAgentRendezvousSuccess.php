@@ -5,7 +5,7 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee_vtsgn.js?201505080324'); ?>
-<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>"; signatureImg=null;'>
+<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>"; date="<?php echo $tournee->date ?>"; signatureImg=null;'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
             <div class="text-center page-header">
@@ -122,6 +122,8 @@
                                 </div>
                             </a>
                         </div>
+
+                        <button ng-click="ajoutConstat(rdv)" class="btn btn-lg btn-block btn-default btn-default-step" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp; Ajouter un constat</button>
                     </div>
                 </div>
             </section>
