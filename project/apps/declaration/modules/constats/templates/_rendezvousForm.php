@@ -13,11 +13,13 @@ $url = ($creation) ? url_for('rendezvous_creation', array('id' => 'COMPTE-' . $r
         </div>
 
         <div class="col-xs-8">
+            <?php echo $form['date']->renderError(); ?>
+            <?php echo $form["heure"]->renderError(); ?>
             <div class="col-xs-6" >
                 <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-                    <?php echo $form['date']->renderError(); ?>
+                    
                     <div class="input-group date-picker " >
-                        <?php echo $form['date']->render(array('class' => 'form-control', 'placeholder' => "Date du rendez-vous",)); ?>
+                        <?php echo $form['date']->render(array('class' => 'form-control', 'placeholder' => "Date du rendez-vous", "required" => "required")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>
                         </div>
@@ -26,10 +28,8 @@ $url = ($creation) ? url_for('rendezvous_creation', array('id' => 'COMPTE-' . $r
             </div>
             <div class="col-xs-5 col-xs-offset-1">
                 <div class="form-group <?php if ($form["heure"]->hasError()): ?>has-error<?php endif; ?>">
-                    <?php echo $form["heure"]->renderError(); ?>
-
                     <div class="input-group date-picker-time">
-                        <?php echo $form["heure"]->render(array("class" => "form-control", "placeholder" => "Heure souhaitée")); ?>
+                        <?php echo $form["heure"]->render(array("class" => "form-control", "placeholder" => "Heure souhaitée", "required" => "required")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>

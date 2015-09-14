@@ -44,6 +44,7 @@ class constatsActions extends sfActions {
         $this->lock = false;
         $this->constructProduitsList();
         $this->contenants = ConstatsClient::getInstance()->getContenantsLibelle();
+        $this->raisonsRefus = ConstatsClient::getInstance()->getRaisonsRefusLibelle();
         $this->constats = array();
 
         $this->setLayout('layoutResponsive');
@@ -138,7 +139,7 @@ class constatsActions extends sfActions {
 
     public function executePlanifications(sfWebRequest $request) {
         $this->jour = $request->getParameter('date');
-        $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860");
+        $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860", "#172f77", "#24e4BD", "#fc1307", "#fc0afc", "#52e9af");
         $this->rdvsPris = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_PRIS);
         $this->tournees = TourneeClient::getInstance()->getTourneesByDate($this->jour);
 
@@ -236,6 +237,9 @@ class constatsActions extends sfActions {
         $this->idchai = $request->getParameter('idchai');
         $rendezvous = new Rendezvous();
         $rendezvous->idchai = $this->idchai;
+        $rendezvous->identifiant = $this->compte->identifiant;
+
+        $this->chai = $this->compte->chais->get($this->idchai);
         $this->form = new RendezvousDeclarantForm($rendezvous);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -243,7 +247,8 @@ class constatsActions extends sfActions {
         }
         $this->form->bind($request->getParameter($this->form->getName()));
         if (!$this->form->isValid()) {
-            return $this->getTemplate('rendezvousDeclarant');
+
+            return sfView::SUCCESS;
         }
         $date = $this->form->getValue('date');
         $heure = $this->form->getValue('heure');

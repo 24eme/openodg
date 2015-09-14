@@ -53,6 +53,9 @@ class RendezvousDeclarantForm extends acCouchdbObjectForm {
             'time_format' => '~(?P<hour>\d{2}):(?P<minute>\d{2})~',
             'required' => true)
         ));
+
+        $this->validatorSchema['heure']->setMessage('bad_format', "L'heure n'est pas au bon format, le format accepté est hh:mm (exemple 14:08)");
+        $this->validatorSchema['date']->setMessage('bad_format', "La date n'est pas au bon format, le format accepté est dd/mm/YYYY (exemple 24/08/2015)");
         $this->setValidator('commentaire', new sfValidatorString(array("required" => false)));
 
 

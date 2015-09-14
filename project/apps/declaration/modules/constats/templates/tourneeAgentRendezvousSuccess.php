@@ -5,7 +5,7 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee_vtsgn.js?201505080324'); ?>
-<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>"; date="<?php echo $tournee->date ?>"; signatureImg=null;'>
+<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>"; date="<?php echo $tournee->date ?>"; signatureImg=null;'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
             <div class="text-center page-header">
@@ -106,7 +106,7 @@
 
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                     <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                    {{ constat.raison_refus_libelle }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
                                     </span>
                                 </div>
                                 <div ng-show="constat.type_constat == 'volume'">
@@ -123,7 +123,7 @@
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                     <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                    {{ constat.raison_refus_libelle }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
                                     </span>
                                 </div>
                             </a>

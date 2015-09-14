@@ -31,8 +31,6 @@
 
             div.innerHTML = "<span class='marker-inner-bg'></span><span class='marker-inner glyphicon glyphicon-map-marker' style='color: "+options.color+"'></span></span>";
 
-            
-
             this._setIconStyles(div);
 
             if(options.size) {
