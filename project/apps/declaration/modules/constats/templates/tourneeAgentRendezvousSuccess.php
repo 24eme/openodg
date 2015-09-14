@@ -109,6 +109,7 @@
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
                                         <span class="pull-right"><span class="label label-default">Non saisi</span></span>
                                         Saisir le constat volume
+                                        {{ constat.produit_libelle }}
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                     <span class="pull-right"><span class="label label-success">Approuvé</span></span>
@@ -123,7 +124,7 @@
                             </a>
                         </div>
 
-                        <button ng-click="ajoutConstat(rdv)" class="btn btn-lg btn-block btn-default btn-default-step" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp; Ajouter un constat</button>
+                        <button ng-click="ajoutConstat(rdv)" class="btn btn-lg btn-block btn-default btn-default-step" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp; Ajouter un constat raisin</button>
                     </div>
                 </div>
             </section>
