@@ -44,7 +44,7 @@ class constatsActions extends sfActions {
         $this->lock = false;
         $this->constructProduitsList();
         $this->contenants = ConstatsClient::getInstance()->getContenantsLibelle();
-        $this->raisons_refus = ConstatsClient::getInstance()->getRaisonsRefusLibelle();
+        $this->raisonsRefus = ConstatsClient::getInstance()->getRaisonsRefusLibelle();
         $this->constats = array();
 
         $this->setLayout('layoutResponsive');

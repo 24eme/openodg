@@ -64,6 +64,7 @@ Constats:
                   type_vtsgn: { }
                   statut_raisin: { }
                   raison_refus: { }
+                  raison_refus_libelle: { }
                   statut_volume: { }
                   date_signature: { }
                   date_raisin: { }

@@ -239,11 +239,21 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
         $scope.refuserConstatRaisin = function (constat) {
             constat.statut_raisin = 'REFUSE';
             $scope.mission($scope.activeRdv);
+
+            constat.transmission_needed = true;
+
+            localSave();
+            $scope.transmettre(true);
         }
 
         $scope.refuserConstatVolume = function (constat) {
             constat.statut_volume = 'REFUSE';
             $scope.mission($scope.activeRdv);
+            
+            constat.transmission_needed = true;
+
+            localSave();
+            $scope.transmettre(true);
         }
 
         $scope.refuserConfirmation = function (constat) {

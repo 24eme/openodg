@@ -104,7 +104,7 @@
 
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                     <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                    {{ constat.raison_refus_libelle }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
                                     </span>
                                 </div>
                                 <div ng-show="constat.type_constat == 'volume'">
@@ -121,7 +121,7 @@
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                     <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                    {{ constat.raison_refus_libelle }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
                                     </span>
                                 </div>
                             </a>

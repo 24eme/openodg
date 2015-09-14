@@ -30,6 +30,8 @@ class Constat extends BaseConstat {
         $this->volume_obtenu = (isset($jsonContent->volume_obtenu)) ? $jsonContent->volume_obtenu : null;
         $this->type_vtsgn = (isset($jsonContent->type_vtsgn)) ? $jsonContent->type_vtsgn : null;
         $this->rendezvous_raisin = $jsonContent->rendezvous_raisin;
+        $this->raison_refus = (isset($jsonContent->raison_refus)) ? $jsonContent->raison_refus : null;
+        $this->raison_refus_libelle = (isset($jsonContent->raison_refus_libelle)) ? $jsonContent->raison_refus_libelle : null;
         if ($jsonContent->type_constat == 'raisin') {
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);
         }
