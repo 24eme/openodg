@@ -6,8 +6,12 @@
 <?php use_javascript('tournee_vtsgn.js?201505080324'); ?>
 <div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>";'>
     <div ng-controller="tournee_vtsgnCtrl">    
-        <br/>
-        <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">        
+        <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
+            <div class="text-center page-header">
+                <a href="" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
+                <?php if($lock): ?><span class="pull-right"><span class="glyphicon glyphicon-lock"></span></span><?php endif; ?>
+                <h2>Tournée du<span class="hidden-sm hidden-md hidden-lg"><br /></span><span class="hidden-xs">&nbsp;</span><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?>&nbsp;<span class="hidden-lg hidden-md hidden-sm"><br /></span><span class="hidden-xs text-muted-alt"> - </span><span class="text-muted-alt" style="font-weight: normal"><?php echo $tournee->getFirstAgent()->nom ?></span></h2>
+            </div>      
             <div ng-show="!loaded" class="row">
                 <div class="col-xs-12 text-center lead text-muted-alt" style="padding-top: 30px;">Chargement en cours ...</div>
             </div>
@@ -63,59 +67,76 @@
             <section  ng-show="active == 'mission' && activeRdv == rdv" ng-class="" style="page-break-after: always;">
                 <div href="" ng-click="precedent(rendezvous)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                 <div class="page-header text-center">
-                    <h2>Constats de {{ rdv['rendezvous'].heure}}</h2>
-                    <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
+                    <h2>Rendez-vous de {{ rdv['rendezvous'].heure }}<br /><span class="lead">{{ rdv['rendezvous'].compte_raison_sociale}}</span></h2>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12">
-                        <address>
-                            <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span><br />
+                    <div class="text-center col-xs-12">
                             <span class="lead">{{ rdv['rendezvous'].compte_adresse}}</span><br />
                             <span class="lead">{{ rdv['rendezvous'].compte_code_postal}} {{ rdv['rendezvous'].compte_commune}}</span><br /><br />
-                            <span ng-if="rdv['rendezvous'].compte_telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_bureau}}">{{ rdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
-                            <span ng-if="rdv['rendezvous'].compte_telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_prive}}">{{ rdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
-                            <span ng-if="rdv['rendezvous'].compte_telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_mobile}}">{{ rdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
-                        </address>
+                            <span ng-show="rdv['rendezvous'].compte_telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_bureau}}">{{ rdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
+                            <span ng-show="rdv['rendezvous'].compte_telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_prive}}">{{ rdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
+                            <span ng-show="rdv['rendezvous'].compte_telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ rdv['rendezvous'].compte_telephone_mobile}}">{{ rdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <h3>Liste des constats à réaliser</h3>
+                        <h3 class="text-center">Constats</h3>
                         <div class="list-group">
-                            <div ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' }" class="list-group-item text-center" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
+                            <a href="" ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>')) }" class="list-group-item" ng-repeat="(keyConstatNode,constat) in rdv['constats']">
                                 <div ng-show="constat.type_constat == 'raisin'">
-                                    <span style="font-size: 18px;" class="icon-raisins"></span>
+                                    <span style="font-size: 18px; margin-right: 6px;" class="icon-raisins"></span>
+                                    
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
-                                    Saisir le constat Raisin
+                                        <span class="pull-right"><span class="label label-default">Non saisi</span></span>
+                                        Saisir le constat raisin
                                     </span>
+                                    
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
-                                    {{ constat.produit_libelle }}, {{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="{{ constat.nb_botiche > 1 }}">s</span>, {{ constat.degre_potentiel_raisin }}°
+                                        <span class="pull-right"><span class="label label-success">Approuvé</span></span>
+                                        {{ constat.produit_libelle }}
+                                        ({{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_botiche > 1">s</span>, {{ constat.degre_potentiel_raisin }}°)
+                                        
                                     </span>
+
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
-                                    {{ constat.raison_refus }}
+                                    <span class="pull-right"><span class="label label-danger">Refusé</span></span>
+                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
                                     </span>
                                 </div>
                                 <div ng-show="constat.type_constat == 'volume'">
-                                    <span style="font-size: 18px;" class="icon-mouts"></span>
-                                    Saisir le constat volume
-                                    ({{ constat.produit_libelle }})
-
+                                    <span style="font-size: 18px; margin-right: 6px;" class="icon-mouts"></span>
+                                    <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
+                                        <span class="pull-right"><span class="label label-default">Non saisi</span></span>
+                                        Saisir le constat volume
+                                    </span>
+                                    <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
+                                    <span class="pull-right"><span class="label label-success">Approuvé</span></span>
+                                    {{ constat.produit_libelle }}
+                                    ({{ constat.degre_potentiel_volume }}°, {{ constat.volume_obtenu }} hl)
+                                    </span>
+                                    <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
+                                    <span class="pull-right"><span class="label label-danger">Refusé</span></span>
+                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                    </span>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>
             </section>
             <section ng-repeat="(keyConstatNode,constat) in rdv['constats']" ng-show="activeRdv == rdv && activeConstat == constat">
-                <div ng-show="constat.type_constat  == 'raisin'">
+                <div ng-show="constat.type_constat == 'raisin'">
                     <div href="" ng-click="mission(rdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                     <div class="page-header text-center">
-                        <h2>Saisie d'un constat raisin</h2>
-                        <span class="lead"><strong>{{ rdv['rendezvous'].compte_raison_sociale}}</strong> <small class="hidden-xs">({{ rdv['rendezvous'].compte_cvi}})</small></span>
+                        <h2>Saisie constat raisin <br /><span class="lead">{{ rdv['rendezvous'].compte_raison_sociale}}</span></h2>
                     </div>
                     <?php include_partial('constats/tourneeConstatRaisin'); ?> 
                 </div>
                 <div ng-show="constat.type_constat == 'volume'">
+                    <div href="" ng-click="mission(rdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
+                    <div class="page-header text-center">
+                        <h2>Saisie constat volume <br /><span class="lead">{{ rdv['rendezvous'].compte_raison_sociale}}</span></h2>
+                    </div>
                     <?php include_partial('constats/tourneeConstatVolume'); ?> 
                 </div>
             </section>

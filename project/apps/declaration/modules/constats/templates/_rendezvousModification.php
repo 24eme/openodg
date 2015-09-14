@@ -29,7 +29,7 @@ $url = ($creation) ? url_for('rendezvous_creation', array('id' => 'COMPTE-' . $r
                     <?php echo $form["heure"]->renderError(); ?>
 
                     <div class="input-group date-picker-time">
-                        <?php echo $form["heure"]->render(array("class" => "form-control", "placeholder" => "Heure souhaité")); ?>
+                        <?php echo $form["heure"]->render(array("class" => "form-control", "placeholder" => "Heure souhaitée")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-time"></span>
                         </div>
