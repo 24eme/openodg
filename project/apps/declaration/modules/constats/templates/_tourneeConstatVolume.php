@@ -29,10 +29,10 @@
             <div class="col-xs-12">
                 <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-default btn-lg btn-default-step">
-                        <input type="radio" ng-model="constat.type_vtsgn"> VT
+                        <input type="radio" ng-model="constat.type_vtsgn" value="VT"> VT
                     </label>
                     <label class="btn btn-default btn-lg btn-default-step">
-                        <input type="radio" ng-model="constat.type_vtsgn"> SGN
+                        <input type="radio" ng-model="constat.type_vtsgn" value="SGN"> SGN
                     </label>
                 </div>
             </div>
