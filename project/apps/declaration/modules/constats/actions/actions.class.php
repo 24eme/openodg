@@ -60,27 +60,39 @@ class constatsActions extends sfActions {
             $constats[$rendezvous->constat] = ConstatsClient::getInstance()->find($rendezvous->constat);
         }
         foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
-            $json[$idrendezvous] = array();
+            $rdvConstats = array();
+            
             $rdvJson = $rendezvous->toJson();
-            $rdvJson->idrdv = $idrendezvous;
-            $json[$idrendezvous]['rendezvous'] = $rdvJson;
-            $json[$idrendezvous]['constats'] = array();
+            $rdvJson->termine = true;
+            $rdvConstats['constats'] = array();
 
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
                 $constatNodeJson = $constatNode->toJson();
-                $constatNodeJson->idconstatdoc = $rendezvous->constat; 
-                $constatNodeJson->idconstatnode = $constatkey; 
+                $constatNodeJson->idconstatdoc = $rendezvous->constat;
+                $constatNodeJson->idconstatnode = $constatkey;
                 if ($idrendezvous == $constatNode->rendezvous_raisin) {
                     $constatNodeJson->type_constat = 'raisin';
-                    $json[$idrendezvous]['constats'][$constatNodeJson->idconstatdoc.'_'.$constatNodeJson->idconstatnode] = $constatNodeJson;
+                    if (!$constatNodeJson->produit) {
+                        $rdvJson->termine = false;
+                    }
+                    $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
                 }
                 if ($idrendezvous == $constatNode->rendezvous_volume) {
                     $constatNodeJson->type_constat = 'volume';
-                    $json[$idrendezvous]['constats'][$constatNodeJson->idconstatdoc.'_'.$constatNodeJson->idconstatnode] = $constatNodeJson;
+                    if ($constatNodeJson->statut_volume != ConstatsClient::STATUT_APPROUVE) {
+                        $rdvJson->termine = false;
+                    }
+                    $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
                 }
             }
+            $rdvConstats['heure'] = $rdvJson->heure;
+            $rdvConstats['rendezvous'] = $rdvJson;
+            $rdvConstats['idrdv'] = $idrendezvous;
+            $rdvConstats['typerendezvous'] = $rdvJson->type_rendezvous;
+            $rdvConstats['isRendezvousRaisin'] = ($rdvJson->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN);
+            $json[] = $rdvConstats;
         }
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->response->setContentType('application/json');
 
@@ -91,7 +103,7 @@ class constatsActions extends sfActions {
         $json_return = array();
 
         foreach ($json as $json_content) {
-            $constat = ConstatsClient::getInstance()->find($json_content->idconstatdoc);           
+            $constat = ConstatsClient::getInstance()->find($json_content->idconstatdoc);
             $constat->updateAndSaveConstatNodeFromJson($json_content->idconstatnode, $json_content);
         }
         $this->response->setContentType('application/json');
