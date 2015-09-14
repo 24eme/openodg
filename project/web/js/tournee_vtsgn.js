@@ -250,20 +250,20 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             $scope.updateActive('refuser_confirmation');
         }
 
-        $scope.ajoutConstat = function(rdv) {
+        $scope.ajoutConstat = function(rdvConstats) {
 
             var nouveauConstat = {};
             var idNewNode = $rootScope.date.replace("-", "", "g") + '_' + UUID.generate();
             nouveauConstat.type_constat = 'raisin'; 
             nouveauConstat.statut_raisin = 'NONCONSTATE';             
             nouveauConstat.statut_volume = 'NONCONSTATE';   
-            nouveauConstat.rendezvous_raisin = rdv.rendezvous.idrdv;
-            nouveauConstat.idconstatdoc = rdv.rendezvous.constat;
+            nouveauConstat.rendezvous_raisin = rdvConstats.idrdv;
+            nouveauConstat.idconstatdoc = rdvConstats.rendezvous.constat;
             nouveauConstat.idconstatnode = idNewNode;
-            var constatId = rdv.rendezvous.constat + '_' + idNewNode;
-            rdv['constats'][constatId] = nouveauConstat;
+            var constatId = rdvConstats.rendezvous.constat + '_' + idNewNode;
+            rdvConstats['constats'][constatId] = nouveauConstat;
             $scope.constats.push(nouveauConstat);
-            $scope.showConstat(rdv['constats'][constatId]);
+            $scope.showConstat(rdvConstats['constats'][constatId]);
         }
 
         $scope.transmettre = function (auto) {

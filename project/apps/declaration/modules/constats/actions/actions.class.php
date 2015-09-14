@@ -59,11 +59,11 @@ class constatsActions extends sfActions {
             $constats[$rendezvous->constat] = ConstatsClient::getInstance()->find($rendezvous->constat);
         }
         foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
-            $json[$idrendezvous] = array();
+            $rdvConstats = array();
+            
             $rdvJson = $rendezvous->toJson();
             $rdvJson->termine = true;
-            $rdvJson->idrdv = $idrendezvous;
-            $json[$idrendezvous]['constats'] = array();
+            $rdvConstats['constats'] = array();
 
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
                 $constatNodeJson = $constatNode->toJson();
@@ -74,18 +74,22 @@ class constatsActions extends sfActions {
                     if (!$constatNodeJson->produit) {
                         $rdvJson->termine = false;
                     }
-                    $json[$idrendezvous]['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
+                    $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
                 }
                 if ($idrendezvous == $constatNode->rendezvous_volume) {
                     $constatNodeJson->type_constat = 'volume';
                     if ($constatNodeJson->statut_volume != ConstatsClient::STATUT_APPROUVE) {
                         $rdvJson->termine = false;
                     }
-                    $json[$idrendezvous]['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
+                    $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
                 }
             }
-            $json[$idrendezvous]['heure'] = $rdvJson->heure;
-            $json[$idrendezvous]['rendezvous'] = $rdvJson;
+            $rdvConstats['heure'] = $rdvJson->heure;
+            $rdvConstats['rendezvous'] = $rdvJson;
+            $rdvConstats['idrdv'] = $idrendezvous;
+            $rdvConstats['typerendezvous'] = $rdvJson->type_rendezvous;
+            $rdvConstats['isRendezvousRaisin'] = ($rdvJson->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN);
+            $json[] = $rdvConstats;
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
