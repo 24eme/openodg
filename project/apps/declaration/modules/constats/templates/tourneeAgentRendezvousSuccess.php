@@ -7,7 +7,7 @@
 <div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>";'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
-            <div class="text-center" class="page-header">
+            <div class="text-center page-header">
                 <a href="" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
                 <?php if($lock): ?><span class="pull-right"><span class="glyphicon glyphicon-lock"></span></span><?php endif; ?>
                 <h2>Tournée du<span class="hidden-sm hidden-md hidden-lg"><br /></span><span class="hidden-xs">&nbsp;</span><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?>&nbsp;<span class="hidden-lg hidden-md hidden-sm"><br /></span><span class="hidden-xs text-muted-alt"> - </span><span class="text-muted-alt" style="font-weight: normal"><?php echo $tournee->getFirstAgent()->nom ?></span></h2>
@@ -94,13 +94,13 @@
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                         <span class="pull-right"><span class="label label-success">Approuvé</span></span>
                                         {{ constat.produit_libelle }}
-                                        ({{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="{{ constat.nb_botiche > 1 }}">s</span>, {{ constat.degre_potentiel_raisin }}°)
+                                        ({{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_botiche > 1">s</span>, {{ constat.degre_potentiel_raisin }}°)
                                         
                                     </span>
 
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                     <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus }}<span ng-show="{{ constat.produit_libelle }}"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
                                     </span>
                                 </div>
                                 <div ng-show="constat.type_constat == 'volume'">
@@ -116,7 +116,7 @@
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                     <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus }}<span ng-show="{{ constat.produit_libelle }}"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                    {{ constat.raison_refus }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
                                     </span>
                                 </div>
                             </a>
@@ -125,7 +125,7 @@
                 </div>
             </section>
             <section ng-repeat="(keyConstatNode,constat) in rdv['constats']" ng-show="activeRdv == rdv && activeConstat == constat">
-                <div ng-show="constat.type_constat  == 'raisin'">
+                <div ng-show="constat.type_constat == 'raisin'">
                     <div href="" ng-click="mission(rdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                     <div class="page-header text-center">
                         <h2>Saisie constat raisin <br /><span class="lead">{{ rdv['rendezvous'].compte_raison_sociale}}</span></h2>
