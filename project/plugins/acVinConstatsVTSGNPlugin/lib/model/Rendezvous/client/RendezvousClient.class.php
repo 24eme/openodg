@@ -49,7 +49,7 @@ class RendezvousClient extends acCouchdbClient {
         foreach ($rdvNonPlanifies as $key => $rdv){
             $resultRdv[$rdv->date.$rdv->heure.$rdv->_id] = $rdv;
         }
-        krsort($resultRdv);
+        ksort($resultRdv);
         return $resultRdv;
     }
     
@@ -127,7 +127,7 @@ class RendezvousClient extends acCouchdbClient {
         foreach ($dates as $date) {
             $organisationsJournee[$date] = $this->buildRendezvousJournee($date);            
         }
-        krsort($organisationsJournee);
+        ksort($organisationsJournee);
         return $organisationsJournee;
     }
 

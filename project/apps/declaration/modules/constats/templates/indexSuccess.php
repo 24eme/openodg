@@ -29,7 +29,7 @@
 </div>
 <div class="row row-margin">
     <div class="col-xs-12">
-        <form method="post" action="" role="form" class="form-horizontal" id="tourneesRecapDateForm">
+        <form method="post" action="<?php echo url_for('constats',array('jour' => $jour)) ?>" role="form" class="form-horizontal" id="tourneesRecapDateForm">
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
@@ -40,8 +40,8 @@
                 </div>
                 <div class="col-xs-6">
                     <div class="date-picker" >
-                        <div style="display: none;"> <?php echo $formDate['date']->render(array('class' => 'form-control')); ?></div>
-                        <div class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></div>
+                        <?php echo $formDate['date']->render(array('class' => 'form-control date')); ?>
+                        <div class="btn btn-default btn-default-step"><span class="glyphicon-calendar glyphicon"></span></div>
                     </div>
                 </div>
 

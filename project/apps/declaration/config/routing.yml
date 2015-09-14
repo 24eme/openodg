@@ -1037,7 +1037,7 @@ constats:
   param: { module: constats, action: index }
   requirements:
     sf_method: [get, post]
-
+    
 constats_planification_jour:
   url: /constats/planification/:jour
   param: { module: constats, action: planificationJour }
