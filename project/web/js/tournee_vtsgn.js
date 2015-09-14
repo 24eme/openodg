@@ -260,6 +260,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             nouveauConstat.rendezvous_raisin = rdvConstats.idrdv;
             nouveauConstat.idconstatdoc = rdvConstats.rendezvous.constat;
             nouveauConstat.idconstatnode = idNewNode;
+            nouveauConstat.nom_agent_origine = rdvConstats.rendezvous.nom_agent_origine;
             var constatId = rdvConstats.rendezvous.constat + '_' + idNewNode;
             rdvConstats['constats'][constatId] = nouveauConstat;
             $scope.constats.push(nouveauConstat);

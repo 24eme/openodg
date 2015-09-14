@@ -84,6 +84,7 @@ Tournee:
                   compte_telephone_mobile: { }
                   type_rendezvous: { }
                   rendezvous_commentaire: { }
+                  nom_agent_origine: { }
                   constat: { }
                   position: { }
 Degustation:

@@ -28,6 +28,7 @@
  * @property string $telephone_mobile
  * @property string $rendezvous_raisin
  * @property string $rendezvous_volume
+ * @property string $nom_agent_origine
 
  * @method string get_id()
  * @method string set_id()
@@ -77,6 +78,8 @@
  * @method string setRendezvousRaisin()
  * @method string getRendezvousVolume()
  * @method string setRendezvousVolume()
+ * @method string getNomAgentOrigine()
+ * @method string setNomAgentOrigine()
  
  */
  
