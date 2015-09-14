@@ -256,7 +256,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             var idNewNode = $rootScope.date.replace("-", "", "g") + '_' + UUID.generate();
             nouveauConstat.type_constat = 'raisin'; 
             nouveauConstat.statut_raisin = 'NONCONSTATE';             
-            nouveauConstat.statut_volume = 'NONCONSTATE';             
+            nouveauConstat.statut_volume = 'NONCONSTATE';   
+            nouveauConstat.rendezvous_raisin = rdv.rendezvous.idrdv;
             nouveauConstat.idconstatdoc = rdv.rendezvous.constat;
             nouveauConstat.idconstatnode = idNewNode;
             var constatId = rdv.rendezvous.constat + '_' + idNewNode;
