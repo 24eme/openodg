@@ -48,7 +48,7 @@
                 <th>Résultat</th>  
             </tr>
             <?php foreach ($rendezvousDeclarant as $rendezvous) : ?>
-            <tr class="<?php if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_REALISE): ?>list-group-item-success <?php endif; ?>">
+            <tr class="<?php if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_REALISE): ?>list-group-item-success <?php endif; ?> <?php if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_PRIS): ?>list-group-item-warning <?php endif; ?>">
                     <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>
                     <td><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?></td>
                     <td class="text-center">
