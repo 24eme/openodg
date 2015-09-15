@@ -223,7 +223,7 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         foreach ($courrier->prelevements as $prelevement) {
-            if(!is_null($prelevement->courrier_envoye)) {
+            if (!is_null($prelevement->courrier_envoye)) {
                 continue;
             }
 
@@ -241,20 +241,41 @@ class Email {
                     ->setTo($to)
                     ->setSubject($subject)
                     ->setBody($body);
-            
+
             $pdf = new ExportDegustationPDF($courrier->operateur, $prelevement);
             $pdf->setPartialFunction(array($this, 'getPartial'));
             $pdf->generate();
             $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
             $message->attach($pdfAttachment);
-            
+
             $message->setContentType('text/plain');
-            if($this->getMailer()->send($message)) {
+            if ($this->getMailer()->send($message)) {
                 $prelevement->courrier_envoye = date('Y-m-d');
             }
             $courrier->operateur->save();
         }
         return true;
+    }
+
+    public function sendPriseDeRendezvousMails(Rendezvous $rendezvous) {
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
+        $to = sfConfig::get('app_email_to_notification');
+        $subject = "Nouvelle prise de Rendezvous pour ".$rendezvous->raison_sociale." le ".$rendezvous->getDateHeureFr();
+        
+        $body = $this->getBodyFromPartial('send_notification_prise_rendezvous', array('rendezvous' => $rendezvous));
+        var_dump($body); exit;
+
+
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setReplyTo($reply_to)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body);
+
+        $message->setContentType('text/plain');
+        $this->getMailer()->send($message);
     }
 
     protected function getMailer() {

@@ -261,6 +261,7 @@ class constatsActions extends sfActions {
         $commentaire = $this->form->getValue('commentaire');
         $rendezvous = RendezvousClient::getInstance()->findOrCreate($this->compte, $this->idchai, $date, $heure, $commentaire);
         $rendezvous->save();
+        $this->sendMailConfirmationPriseRendezVous($rendezvous);
         $this->redirect('rendezvous_declarant', $this->compte);
     }
 
@@ -294,4 +295,7 @@ class constatsActions extends sfActions {
         }
     }
 
+    private function sendMailConfirmationPriseRendezVous($rendezvous){
+        Email::getInstance()->sendPriseDeRendezvousMails($rendezvous);
+    }    
 }

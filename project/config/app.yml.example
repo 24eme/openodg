@@ -18,6 +18,7 @@ all:
     from_name: "From name"
     reply_to_adresse: "email@email.fr"
     reply_to_name: "Reply to name"
+    to_notification: "Email notifié des rendezvous"
   url:
     civa: "https://url_civa"
     compte_mot_de_passe: "https://url_compte_civa_pour_modifier_mdp"

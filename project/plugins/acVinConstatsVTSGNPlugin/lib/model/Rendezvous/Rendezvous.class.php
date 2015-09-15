@@ -35,5 +35,7 @@ class Rendezvous extends BaseRendezvous {
         return RendezvousClient::RENDEZVOUS_STATUT_REALISE == $this->statut;
     }
     
-    
+    public function getDateHeureFr(){
+        return ucfirst(format_date($this->getDate(), "P", "fr_FR"))."&nbsp;".str_replace(':','h',$this->getHeure());
+    }
 }
