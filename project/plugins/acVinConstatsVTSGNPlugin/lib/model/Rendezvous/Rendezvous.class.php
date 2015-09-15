@@ -36,6 +36,6 @@ class Rendezvous extends BaseRendezvous {
     }
     
     public function getDateHeureFr(){
-        return ucfirst(format_date($this->getDate(), "P", "fr_FR"))."&nbsp;".str_replace(':','h',$this->getHeure());
+        return ucfirst(format_date($this->getDate(), "P", "fr_FR"))." à ".str_replace(':','h',$this->getHeure());
     }
 }
