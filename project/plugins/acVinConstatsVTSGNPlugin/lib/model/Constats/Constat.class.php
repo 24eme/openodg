@@ -22,7 +22,8 @@ class Constat extends BaseConstat {
         
         $this->produit = $jsonContent->produit;
         $this->produit_libelle = $jsonContent->produit_libelle;
-        $this->nb_botiche = $jsonContent->nb_botiche;
+        $this->denomination_lieu_dit = $jsonContent->denomination_lieu_dit;
+        $this->nb_contenant = $jsonContent->nb_contenant;
         $this->contenant = $jsonContent->contenant;
         $this->contenant_libelle = $jsonContent->contenant_libelle;
         $this->degre_potentiel_raisin = $jsonContent->degre_potentiel_raisin;

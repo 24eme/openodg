@@ -102,7 +102,7 @@
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                         <span class="pull-right"><span class="label label-success">Approuvé</span></span>
                                         {{ constat.produit_libelle }}
-                                        ({{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_botiche > 1">s</span>, {{ constat.degre_potentiel_raisin }}°)
+                                        ({{ constat.nb_contenant }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_contenant > 1">s</span>, {{ constat.degre_potentiel_raisin }}°)
                                         
                                     </span>
 
@@ -120,7 +120,7 @@
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                     <span class="pull-right"><span class="label label-success">Approuvé</span></span>
-                                    {{ constat.produit_libelle }}
+                                    {{ constat.produit_libelle }} <strong>{{ constat.type_vtsgn }}</strong>
                                     ({{ constat.degre_potentiel_volume }}°, {{ constat.volume_obtenu }} hl)
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">

@@ -370,8 +370,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                 constat.has_erreurs = true;
             }
 
-            if(!constat.nb_botiche) {
-                constat.erreurs['nb_botiche'] = true;
+            if(!constat.nb_contenant) {
+                constat.erreurs['nb_contenant'] = true;
                 constat.has_erreurs = true;
             }
 
@@ -400,10 +400,10 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                 constat.has_erreurs = true;
             }
 
-            /*if(!constat.type_vtsgn) {
+            if(!constat.type_vtsgn) {
                 constat.erreurs['type_vtsgn'] = true;
                 constat.has_erreurs = true;
-            }*/
+            }
         }
 
         $scope.valideConstatVolumeSignature = function (constat) {
