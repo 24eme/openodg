@@ -5,7 +5,12 @@
                 Vous devez saisir un produit
             </div>
             <div class="col-xs-12">
-                <select class="form-control input-lg" ng-change="updateProduit(constat)" ng-model="constat.produit" ng-options="produit_key as produit_libelle for (produit_key, produit_libelle) in produits"></select>
+                <select class="form-control input-lg" ng-change="updateProduit(constat)" ng-model="constat.produit" ng-options="produit_key as produit_libelle for (produit_key, produit_libelle) in produits"><option value="" disabled="disabled" selected="selected">Produit</option></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12">
+                <input placeholder="Dénomination / Lieu-dit (Facultatif)" id="lieu_denomination_{{ keyConstatNode}}" ng-model="constat.denomination_lieu_dit" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
         </div>
         <div class="form-group">
@@ -16,10 +21,10 @@
                 Vous devez saisir un type de contenant
             </div>
             <div class="col-xs-6">
-                <input placeholder="Nombre" id="nb_botiche_{{ keyConstatNode}}" ng-model="constat.nb_botiche" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                <input placeholder="Nombre de contenant" id="nb_botiche_{{ keyConstatNode}}" ng-model="constat.nb_botiche" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
             <div class="col-xs-6">
-                <select class="form-control input-lg" ng-change="updateContenant(constat)" ng-model="constat.contenant" ng-options="contenant_key as contenant_libelle for (contenant_key, contenant_libelle) in contenants"></select>
+                <select class="form-control input-lg" ng-change="updateContenant(constat)" ng-model="constat.contenant" ng-options="contenant_key as contenant_libelle for (contenant_key, contenant_libelle) in contenants"><option value="" disabled="disabled" selected="selected">Contenant</option></select>
             </div>
         </div>
         <div class="form-group">
