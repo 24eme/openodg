@@ -23,14 +23,16 @@
                             <div class="col-xs-3 col-sm-2 text-left">
                                 <strong ng-show="constatRdv['isRendezvousRaisin']" class="lead" style="font-weight: bold;">{{ constatRdv['rendezvous'].heure}}</strong>
                                 <strong ng-show="!constatRdv['isRendezvousRaisin']" class="lead" style="font-weight: bold;">({{ constatRdv['nomAgentOrigine']}})</strong>
-                                
-                                <label ng-show="constatRdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>
+                                <label ng-show="constatRdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>    
+                            </div>
+                            <div class="col-xs-2 col-sm-2 text-left">
+                                <strong class="lead" >{{ constatRdv['rendezvous'].rendezvous_commentaire}}</strong>
                             </div>
                              <div class="col-xs-1 col-sm-1">
                                  <span ng-show="constatRdv['isRendezvousRaisin']" class="icon-raisins" style="font-size: 20px;" ></span>
                                 <span ng-show="!constatRdv['isRendezvousRaisin']" class="icon-mouts" style="font-size: 20px;" ></span>
                              </div>
-                            <div class="col-xs-6 col-sm-8">
+                            <div class="col-xs-4 col-sm-6">
                                 <strong class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</strong><span class="text-muted hidden-xs"> {{ constatRdv['rendezvous'].compte_cvi}}</span><span ng-show="constatRdv['rendezvous'].termine && constatRdv['rendezvous'].nb_prelevements">&nbsp;<button class="btn btn-xs btn-success"></button></span>
                                 <br />
                                 {{ constatRdv['rendezvous'].compte_adresse}}, {{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (constatRdv['rendezvous'].compte_telephone_mobile) ? constatRdv['rendezvous'].compte_telephone_mobile : constatRdv['rendezvous'].compte_telephone_bureau}}</span>
