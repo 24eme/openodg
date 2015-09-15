@@ -63,9 +63,10 @@ class constatsActions extends sfActions {
             $rdvConstats = array();
             
             $rdvJson = $rendezvous->toJson();
-            $rdvJson->termine = true;
+            $rdvJson->termine = true;            
+            $rdvJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();
             $rdvConstats['constats'] = array();
-
+            
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
                 $constatNodeJson = $constatNode->toJson();
                 $constatNodeJson->idconstatdoc = $rendezvous->constat;
@@ -75,13 +76,14 @@ class constatsActions extends sfActions {
                     if (!$constatNodeJson->produit) {
                         $rdvJson->termine = false;
                     }
+                    $constatNodeJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();
                     $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
                 }
                 if ($idrendezvous == $constatNode->rendezvous_volume) {
                     $constatNodeJson->type_constat = 'volume';
                     if ($constatNodeJson->statut_volume != ConstatsClient::STATUT_APPROUVE) {
                         $rdvJson->termine = false;
-                    }
+                    }                    
                     $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
                 }
             }
@@ -89,6 +91,7 @@ class constatsActions extends sfActions {
             $rdvConstats['rendezvous'] = $rdvJson;
             $rdvConstats['idrdv'] = $idrendezvous;
             $rdvConstats['typerendezvous'] = $rdvJson->type_rendezvous;
+            $rdvConstats['nomAgentOrigine'] = $rdvJson->nom_agent_origine;
             $rdvConstats['isRendezvousRaisin'] = ($rdvJson->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN);
             $json[] = $rdvConstats;
         }

@@ -26,6 +26,7 @@ Rendezvous:
       telephone_mobile: { }
       rendezvous_raisin: { }
       rendezvous_volume: { }
+      nom_agent_origine: { }
 #Constat
 Constats:
   definition:

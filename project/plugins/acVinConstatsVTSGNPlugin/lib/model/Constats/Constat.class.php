@@ -30,8 +30,10 @@ class Constat extends BaseConstat {
         $this->volume_obtenu = (isset($jsonContent->volume_obtenu)) ? $jsonContent->volume_obtenu : null;
         $this->type_vtsgn = (isset($jsonContent->type_vtsgn)) ? $jsonContent->type_vtsgn : null;
         $this->rendezvous_raisin = $jsonContent->rendezvous_raisin;
+        
         $this->raison_refus = (isset($jsonContent->raison_refus)) ? $jsonContent->raison_refus : null;
         $this->raison_refus_libelle = (isset($jsonContent->raison_refus_libelle)) ? $jsonContent->raison_refus_libelle : null;
+        
         if ($jsonContent->type_constat == 'raisin') {
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);
         }
@@ -46,7 +48,7 @@ class Constat extends BaseConstat {
     public function setStatutRaisinAndCreateVolumeRendezvous($jsonContent) {
        
         if ($jsonContent->statut_raisin == ConstatsClient::STATUT_APPROUVE) {
-            $newRdvVolume = RendezvousClient::getInstance()->findOrCreateRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_raisin);
+            $newRdvVolume = RendezvousClient::getInstance()->findOrCreateRendezvousVolumeFromIdRendezvous($jsonContent->rendezvous_raisin,$jsonContent->nom_agent_origine);
             $newRdvVolume->save();
             $rendezvousRaisin = RendezvousClient::getInstance()->find($jsonContent->rendezvous_raisin);
             $rendezvousRaisin->set('statut', RendezvousClient::RENDEZVOUS_STATUT_REALISE);

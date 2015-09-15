@@ -95,7 +95,7 @@
                                         <div style="margin-right: 10px; margin-top: 9px;" class="pull-left">
                                             <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: <?php echo $tourneesCouleur[$tournee_id] ?>"></span>
                                         </div>
-                                        <?php echo $rdv->compte_raison_sociale ?> 
+                                        <?php echo $rdv->compte_raison_sociale ?>&nbsp;<?php echo ($rdv->nom_agent_origine)? '('.$rdv->nom_agent_origine.')' : ''; ?>
                                         <br /><small class="text-muted"><?php echo $rdv->compte_commune ?></small>
                                     </div>
                                 </li>
@@ -136,7 +136,8 @@
                                         </div>
                                     </li>
                                 <?php endforeach; ?>
-                            <?php endforeach; ?><?php endforeach; ?>
+                            <?php endforeach; ?>
+                                <?php endforeach; ?>
                     <?php endforeach; ?>
                 </ul>
             </div>

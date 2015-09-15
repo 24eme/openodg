@@ -531,6 +531,7 @@ class Tournee extends BaseTournee {
         $rendezvousNode->rendezvous_commentaire = $rendezvous->commentaire;
         $rendezvousNode->type_rendezvous = $rendezvous->type_rendezvous;
         $rendezvousNode->heure = $rendezvous->heure;
+        $rendezvousNode->nom_agent_origine = $rendezvous->nom_agent_origine;
 
         $rendezvous->setStatut(RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE);
         $rendezvous->save();
