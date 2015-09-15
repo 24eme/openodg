@@ -23,7 +23,7 @@ class ConstatsClient extends acCouchdbClient {
 
     public static $raisons_refus_libelle = array(
         self::RAISON_REFUS_DEGRE_INSUFFISANT => 'Degré insuffisant',
-        self::RAISON_REFUS_MULTI_CEPAGE => 'Multi cépage',
+        self::RAISON_REFUS_MULTI_CEPAGE => 'Multi-cépages',
         self::RAISON_REFUS_PRESSURAGE_EN_COURS => 'Pressurage en cours',
         self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendandes mécanique',
     );
