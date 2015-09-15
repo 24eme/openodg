@@ -55,7 +55,9 @@ Constats:
                 fields: 
                   produit: { }
                   produit_libelle: { }
-                  nb_botiche: { }
+                  denomination_lieu_dit: { }
+                  nb_botiche: { required: false }
+                  nb_contenant: { }
                   contenant: { }
                   contenant_libelle: { }
                   type_botiche: { required: false }

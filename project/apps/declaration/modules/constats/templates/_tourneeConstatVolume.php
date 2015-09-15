@@ -7,7 +7,7 @@
         </div>
         <div class="form-group">
             <div class="col-xs-12" style="font-size: 17px;">
-                <span class="icon-raisins"></span>&nbsp;{{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_botiche > 1">s</span>, {{ constat.degre_potentiel_raisin }}° Potentiel
+                <span class="icon-raisins"></span>&nbsp;{{ constat.nb_contenant }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_contenant > 1">s</span>, {{ constat.degre_potentiel_raisin }}° Potentiel
             </div>
         </div>
         <div class="form-group">
@@ -37,14 +37,12 @@
                 Vous devez choisir le type de constat VT ou SGN
             </div>
             <div class="col-xs-12">
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default btn-lg btn-default-step">
-                        <input type="radio" ng-model="constat.type_vtsgn" value="VT"> VT
-                    </label>
-                    <label class="btn btn-default btn-lg btn-default-step">
-                        <input type="radio" ng-model="constat.type_vtsgn" value="SGN"> SGN
-                    </label>
-                </div>
+                <label class="btn btn-default btn-lg btn-default-step">
+                    <input type="radio" name="type_vtsgn" ng-model="constat.type_vtsgn" ng-value="'VT'">&nbsp;&nbsp;VT
+                </label>
+                <label class="btn btn-default btn-lg btn-default-step">
+                    <input type="radio"  name="type_vtsgn" ng-model="constat.type_vtsgn" ng-value="'SGN'">&nbsp;&nbsp;SGN
+                </label>
             </div>
         </div>
     </div>

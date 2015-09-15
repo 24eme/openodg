@@ -17,14 +17,14 @@
             </div>
         </div>
         <div class="form-group">
-            <div ng-class="{ 'hidden': !constat.erreurs['nb_botiche'] }" class="alert alert-danger">
+            <div ng-class="{ 'hidden': !constat.erreurs['nb_contenant'] }" class="alert alert-danger">
                 Vous devez saisir une quantité 
             </div>
             <div ng-class="{ 'hidden': !constat.erreurs['contenant'] }" class="alert alert-danger">
                 Vous devez saisir un type de contenant
             </div>
             <div class="col-xs-6">
-                <input placeholder="Nombre de contenant" id="nb_botiche_{{ keyConstatNode}}" ng-model="constat.nb_botiche" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                <input placeholder="Nombre de contenant" id="nb_contenant_{{ keyConstatNode}}" ng-model="constat.nb_contenant" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
             <div class="col-xs-6">
                 <select class="form-control input-lg" ng-change="updateContenant(constat)" ng-model="constat.contenant" ng-options="contenant_key as contenant_libelle for (contenant_key, contenant_libelle) in contenants"><option value="" disabled="disabled" selected="selected">Contenant</option></select>
@@ -57,7 +57,7 @@
             <p class="lead text-center"> 
             {{ constat.produit_libelle }}<br />
             {{ constat.degre_potentiel_raisin }} degré potentiel<br />
-            {{ constat.nb_botiche }} {{ constat.type_botiche.nom }}(s)<br />
+            {{ constat.nb_contenant }} {{ constat.type_botiche.nom }}(s)<br />
             </p>
         </div>
         <div class="form-group">
