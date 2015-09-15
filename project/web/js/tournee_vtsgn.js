@@ -191,6 +191,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
         $scope.showChoixProduit = function() {
             $scope.updateActive('choix_produit');
+            $scope.resetFilterAppellation();
+            $scope.resetFilterCepage();
         }
 
         $scope.approuverConstatRaisin = function (constat) {
@@ -450,6 +452,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             $scope.activeConstat.produit = produit.hash;
             $scope.activeConstat.produit_libelle = produit.libelle;
             $scope.remplir($scope.activeConstat);
+            $scope.resetFilterAppellation();
+            $scope.resetFilterCepage();
         }
 
         $scope.blur = function (event) {

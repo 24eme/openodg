@@ -1,6 +1,16 @@
 <div id="saisie_constat_volume_{{ keyConstatNode}}" ng-show="active == 'saisie'" class="col-xs-12 print-margin-bottom">
     <div class="form-horizontal">
         <div class="form-group">
+            <div class="col-xs-12" style="font-size: 17px;">
+                {{ constat.produit_libelle }}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12" style="font-size: 17px;">
+                <span class="icon-raisins"></span>&nbsp;{{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_botiche > 1">s</span>, {{ constat.degre_potentiel_raisin }}° Potentiel
+            </div>
+        </div>
+        <div class="form-group">
             <div ng-class="{ 'hidden': !constat.erreurs['degre_potentiel_volume'] }" class="alert alert-danger">
                 Vous devez saisir le degré potentiel
             </div>
