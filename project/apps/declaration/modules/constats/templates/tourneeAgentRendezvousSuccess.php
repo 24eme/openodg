@@ -5,12 +5,12 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee_vtsgn.js?201505080324'); ?>
-<div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>"; date="<?php echo $tournee->date ?>"; signatureImg=null;'>
+<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = "1"; url_state = "<?php echo url_for('auth_state') ?>"; date = "<?php echo $tournee->date ?>"; signatureImg = null;'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
             <div class="text-center page-header">
-                <a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
-                <?php if($lock): ?><span class="pull-right"><span class="glyphicon glyphicon-lock"></span></span><?php endif; ?>
+                <a href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))); ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
+                <?php if ($lock): ?><span class="pull-right"><span class="glyphicon glyphicon-lock"></span></span><?php endif; ?>
                 <h2>Tournée du<span class="hidden-sm hidden-md hidden-lg"><br /></span><span class="hidden-xs">&nbsp;</span><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?>&nbsp;<span class="hidden-lg hidden-md hidden-sm"><br /></span><span class="hidden-xs text-muted-alt"> - </span><span class="text-muted-alt" style="font-weight: normal"><?php echo $tournee->getFirstAgent()->nom ?></span></h2>
             </div>      
             <div ng-show="!loaded" class="row">
@@ -19,20 +19,16 @@
             <div class="row" ng-show="loaded">
                 <div class="col-xs-12">
                     <div class="list-group print-list-group-condensed">
-                        <a ng-repeat="constatRdv in planification | orderBy: ['typerendezvous','heure']" href="" ng-click="mission(constatRdv)" ng-class="{ 'list-group-item-success': constatRdv['rendezvous'].termine }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
-                            <div class="col-xs-3 col-sm-2 text-left">
+                        <a ng-repeat="constatRdv in planification| orderBy: ['typerendezvous', 'heure']" href="" ng-click="mission(constatRdv)" ng-class="{ 'list-group-item-success': constatRdv['rendezvous'].termine }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
+                            <div class="col-xs-2 col-sm-2 text-left">
                                 <strong ng-show="constatRdv['isRendezvousRaisin']" class="lead" style="font-weight: bold;">{{ constatRdv['rendezvous'].heure}}</strong>
-                                <strong ng-show="!constatRdv['isRendezvousRaisin']" class="lead" style="font-weight: bold;">({{ constatRdv['nomAgentOrigine']}})</strong>
                                 <label ng-show="constatRdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>    
                             </div>
-                            <div class="col-xs-2 col-sm-2 text-left">
-                                <strong class="lead" >{{ constatRdv['rendezvous'].rendezvous_commentaire}}</strong>
-                            </div>
-                             <div class="col-xs-1 col-sm-1">
-                                 <span ng-show="constatRdv['isRendezvousRaisin']" class="icon-raisins" style="font-size: 20px;" ></span>
+                            <div class="col-xs-1 col-sm-1">
+                                <span ng-show="constatRdv['isRendezvousRaisin']" class="icon-raisins" style="font-size: 20px;" ></span>
                                 <span ng-show="!constatRdv['isRendezvousRaisin']" class="icon-mouts" style="font-size: 20px;" ></span>
-                             </div>
-                            <div class="col-xs-4 col-sm-6">
+                            </div>
+                            <div class="col-xs-7 col-sm-8">
                                 <strong class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</strong><span class="text-muted hidden-xs"> {{ constatRdv['rendezvous'].compte_cvi}}</span><span ng-show="constatRdv['rendezvous'].termine && constatRdv['rendezvous'].nb_prelevements">&nbsp;<button class="btn btn-xs btn-success"></button></span>
                                 <br />
                                 {{ constatRdv['rendezvous'].compte_adresse}}, {{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (constatRdv['rendezvous'].compte_telephone_mobile) ? constatRdv['rendezvous'].compte_telephone_mobile : constatRdv['rendezvous'].compte_telephone_bureau}}</span>
@@ -71,19 +67,25 @@
             </div>
         </section>
 
-        <div ng-repeat="constatRdv in planification" id="detail_mission_{{ constatRdv['idrdv'] }}">
+        <div ng-repeat="constatRdv in planification" id="detail_mission_{{ constatRdv['idrdv']}}">
             <section  ng-show="active == 'mission' && activeRdv == constatRdv" ng-class="" style="page-break-after: always;">
                 <div href="" ng-click="precedent(constatRdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                 <div class="page-header text-center">
-                    <h2>Rendez-vous de {{ constatRdv['heure'] }}<br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</span></h2>
+                    <h2>Rendez-vous de {{ constatRdv['heure']}}<br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</span></h2>
                 </div>
                 <div class="row">
                     <div class="text-center col-xs-12">
-                            <span class="lead">{{ constatRdv['rendezvous'].compte_adresse}}</span><br />
-                            <span class="lead">{{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}</span><br /><br />
-                            <span ng-show="constatRdv['rendezvous'].compte_telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_bureau}}">{{ constatRdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
-                            <span ng-show="constatRdv['rendezvous'].compte_telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_prive}}">{{ constatRdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
-                            <span ng-show="constatRdv['rendezvous'].compte_telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_mobile}}">{{ constatRdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
+                        <span class="lead">{{ constatRdv['rendezvous'].compte_adresse}}</span><br />
+                        <span class="lead">{{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}</span><br /><br />
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_bureau}}">{{ constatRdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_prive}}">{{ constatRdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_mobile}}">{{ constatRdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="text-center col-xs-12 text-muted">
+                        <span class="glyphicon glyphicon-warning-sign" style="font-size: 18pt;"></span>&nbsp;&nbsp;<strong class="lead" >{{ constatRdv['rendezvous'].rendezvous_commentaire}}</strong>
                     </div>
                 </div>
                 <div class="row">
@@ -93,22 +95,22 @@
                             <a href="" ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>')) }" class="list-group-item" ng-repeat="(keyConstatNode,constat) in constatRdv['constats']">
                                 <div ng-show="constat.type_constat == 'raisin'">
                                     <span style="font-size: 18px; margin-right: 6px;" class="icon-raisins"></span>
-                                    
+
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
                                         <span class="pull-right"><span class="label label-default">Non saisi</span></span>
                                         Saisir le constat raisin
                                     </span>
-                                    
+
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                         <span class="pull-right"><span class="label label-success">Approuvé</span></span>
-                                        {{ constat.produit_libelle }}
-                                        ({{ constat.nb_botiche }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_botiche > 1">s</span>, {{ constat.degre_potentiel_raisin }}°)
-                                        
+                                        {{ constat.produit_libelle}}
+                                        ({{ constat.nb_botiche}} {{ constat.contenant_libelle}}<span ng-show="constat.nb_botiche > 1">s</span>, {{ constat.degre_potentiel_raisin}}°)
+
                                     </span>
 
                                     <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
-                                    <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus_libelle }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                        <span class="pull-right"><span class="label label-danger">Refusé</span></span>
+                                        {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>
                                     </span>
                                 </div>
                                 <div ng-show="constat.type_constat == 'volume'">
@@ -116,16 +118,16 @@
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
                                         <span class="pull-right"><span class="label label-default">Non saisi</span></span>
                                         Saisir le constat volume
-                                        {{ constat.produit_libelle }}
+                                        {{ constat.produit_libelle}}
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
-                                    <span class="pull-right"><span class="label label-success">Approuvé</span></span>
-                                    {{ constat.produit_libelle }}
-                                    ({{ constat.degre_potentiel_volume }}°, {{ constat.volume_obtenu }} hl)
+                                        <span class="pull-right"><span class="label label-success">Approuvé</span></span>
+                                        {{ constat.produit_libelle}}
+                                        ({{ constat.degre_potentiel_volume}}°, {{ constat.volume_obtenu}} hl)
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
-                                    <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                    {{ constat.raison_refus_libelle }}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle }}</small></span>
+                                        <span class="pull-right"><span class="label label-danger">Refusé</span></span>
+                                        {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>
                                     </span>
                                 </div>
                             </a>
@@ -160,20 +162,20 @@
             <h3>Filter par Appellation</h3>
             <div class="form-group">
                 <span ng-repeat="produit in produitsAppellation">
-                    <button ng-show="produitFilterAppellation.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterAppellation()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle }}</button>
-                    <button ng-show="!produitFilterAppellation.hash" class="btn btn-default btn-block btn-default-step" ng-click="filterProduitsAppellation(produit.hash)" type="buttton">{{ produit.libelle }}</button>
+                    <button ng-show="produitFilterAppellation.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterAppellation()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle}}</button>
+                    <button ng-show="!produitFilterAppellation.hash" class="btn btn-default btn-block btn-default-step" ng-click="filterProduitsAppellation(produit.hash)" type="buttton">{{ produit.libelle}}</button>
                 </span>
             </div>
             <h3>Filter par Cépage</h3>
             <div class="form-group">
                 <span ng-repeat="produit in produitsCepage">
-                    <button ng-show="produitFilterCepage.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterCepage()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle }}</button>
-                    <button ng-show="!produitFilterCepage.hash" class="btn btn-default btn-default-step btn-block" ng-click="filterProduitsCepage(produit.hash)" type="buttton">{{ produit.libelle }}</button>
+                    <button ng-show="produitFilterCepage.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterCepage()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle}}</button>
+                    <button ng-show="!produitFilterCepage.hash" class="btn btn-default btn-default-step btn-block" ng-click="filterProduitsCepage(produit.hash)" type="buttton">{{ produit.libelle}}</button>
                 </span>
             </div>
             <h3>Liste des produits</h3>
             <div class="list-group">
-                <a href="" ng-click="choixProduit(produit)" ng-repeat="produit in produitsAll | filter : produitFilterAppellation | filter: produitFilterCepage" class="list-group-item">{{ produit.libelle }}</a>
+                <a href="" ng-click="choixProduit(produit)" ng-repeat="produit in produitsAll| filter : produitFilterAppellation | filter: produitFilterCepage" class="list-group-item">{{ produit.libelle}}</a>
             </div>
         </div>
     </div>
