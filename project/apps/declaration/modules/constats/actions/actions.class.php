@@ -286,6 +286,10 @@ class constatsActions extends sfActions {
     private function constructProduitsList() {
         $this->produits = array();
         foreach (ConstatsClient::getInstance()->getProduits() as $produit) {
+            if(!$produit->hasVtsgn()) {
+                continue;
+            }
+            
             $this->produits[$produit->getHash()] = $produit->libelle_complet;
         }
     }
