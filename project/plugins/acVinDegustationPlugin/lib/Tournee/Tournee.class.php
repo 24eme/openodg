@@ -549,9 +549,9 @@ class Tournee extends BaseTournee {
         $constats->save();
         $rendezvousNode->set('constat', $constats->_id);
     }
-    
+
     public function addRendezVousAndReferenceConstatsId($rendezvous_or_id, $constats) {
-         $rendezvous = $rendezvous_or_id;
+        $rendezvous = $rendezvous_or_id;
         if (!is_object($rendezvous_or_id)) {
             $rendezvous = RendezvousClient::getInstance()->find($rendezvous_or_id);
         }
@@ -566,9 +566,20 @@ class Tournee extends BaseTournee {
         }
         return null;
     }
-    
+
     public function getAgentUniqueObj() {
-        return CompteClient::getInstance()->find('COMPTE-'.$this->agent_unique);
+        return CompteClient::getInstance()->find('COMPTE-' . $this->agent_unique);
+    }
+
+    public function annuleRendezVous($rendezvous_or_id) {
+        $rendezvous = $rendezvous_or_id;
+        if (!is_object($rendezvous_or_id)) {
+            $rendezvous = RendezvousClient::getInstance()->find($rendezvous_or_id);
+        }
+        $rendezvoussNode = $this->getOrAdd('rendezvous');
+        if ($rendezvoussNode->exist($rendezvous->_id)) {
+            $rendezvoussNode->remove($rendezvous->_id);
+        }
     }
 
 }

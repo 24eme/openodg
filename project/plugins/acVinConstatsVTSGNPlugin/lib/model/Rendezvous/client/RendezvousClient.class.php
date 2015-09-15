@@ -8,6 +8,7 @@ class RendezvousClient extends acCouchdbClient {
     const RENDEZVOUS_STATUT_PRIS = "STATUT_PRIS";
     const RENDEZVOUS_STATUT_REALISE = "STATUT_REALISE";
     const RENDEZVOUS_STATUT_PLANIFIE = "STATUT_PLANIFIE";
+    const RENDEZVOUS_STATUT_ANNULE = "STATUT_ANNULE";
 
     public static $rendezvous_statut_libelles = array(self::RENDEZVOUS_STATUT_PRIS => 'A planifier',
         self::RENDEZVOUS_STATUT_PLANIFIE => 'Planifié',
@@ -99,6 +100,11 @@ class RendezvousClient extends acCouchdbClient {
 
         $rendezvous->constructId();
         return $rendezvous;
+    }
+    
+    public function findRendezvousVolumeFromIdRendezvous($idRdvOrigine){
+          $rdvOrigine = $this->find($idRdvOrigine);
+          $this->findByIdentifiantAndDateHeure($rdvOrigine->cvi, Date::addDelaiToDate("+1 day", $rdvOrigine->date));
     }
     
     public function findOrCreateRendezvousVolumeFromIdRendezvous($idRdvOrigine,$nom_agent_origine = ""){

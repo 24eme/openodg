@@ -61,12 +61,15 @@ class constatsActions extends sfActions {
         }
         foreach ($this->tournee->getRendezvous() as $idrendezvous => $rendezvous) {
             $rdvConstats = array();
-            
+
             $rdvJson = $rendezvous->toJson();
-            $rdvJson->termine = true;            
-            $rdvJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();            
+            $rdvJson->nb_non_saisis = 0;
+            $rdvJson->nb_refuses = 0;
+            $rdvJson->nb_approuves = 0;
+            $rdvJson->termine = true;
+            $rdvJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();
             $rdvConstats['constats'] = array();
-            
+
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
                 $constatNodeJson = $constatNode->toJson();
                 $constatNodeJson->idconstatdoc = $rendezvous->constat;
@@ -78,13 +81,27 @@ class constatsActions extends sfActions {
                     }
                     $constatNodeJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();
                     $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
+                    if ($constatNodeJson->statut_raisin == ConstatsClient::STATUT_REFUSE) {
+                        $rdvJson->nb_refuses++;
+                    } elseif ($constatNodeJson->statut_raisin == ConstatsClient::STATUT_APPROUVE) {
+                        $rdvJson->nb_approuves++;
+                    } else {
+                        $rdvJson->nb_non_saisis++;
+                    }
                 }
                 if ($idrendezvous == $constatNode->rendezvous_volume) {
                     $constatNodeJson->type_constat = 'volume';
                     if ($constatNodeJson->statut_volume != ConstatsClient::STATUT_APPROUVE) {
                         $rdvJson->termine = false;
-                    }                    
+                    }
                     $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
+                    if ($constatNodeJson->statut_volume == ConstatsClient::STATUT_REFUSE) {
+                        $rdvJson->nb_refuses++;
+                    } elseif ($constatNodeJson->statut_volume == ConstatsClient::STATUT_APPROUVE) {
+                        $rdvJson->nb_approuves++;
+                    } else {
+                        $rdvJson->nb_non_saisis++;
+                    }
                 }
             }
             $rdvConstats['heure'] = $rdvJson->heure;
@@ -287,15 +304,16 @@ class constatsActions extends sfActions {
     private function constructProduitsList() {
         $this->produits = array();
         foreach (ConstatsClient::getInstance()->getProduits() as $produit) {
-            if(!$produit->hasVtsgn()) {
+            if (!$produit->hasVtsgn()) {
                 continue;
             }
-            
+
             $this->produits[$produit->getHash()] = $produit->getLibelleComplet(true);
         }
     }
 
-    private function sendMailConfirmationPriseRendezVous($rendezvous){
+    private function sendMailConfirmationPriseRendezVous($rendezvous) {
         Email::getInstance()->sendPriseDeRendezvousMails($rendezvous);
-    }    
+    }
+
 }
