@@ -180,6 +180,12 @@ class constatsActions extends sfActions {
                 $tournee->save();
             }
         }
+
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => null, "revision" => null))));
+        }
+
         return $this->redirect('constats_planification_jour', array('jour' => $this->jour));
     }
 

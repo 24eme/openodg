@@ -12,7 +12,7 @@
         <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-1 text-left">
-                    <h2><a class="text-muted" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("-1 day", $jour))); ?>">
+                    <h2><a class="text-muted ajax" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("-1 day", $jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-left"></span>
                         </a></h2>
                 </div>
@@ -20,12 +20,12 @@
                     <h2><?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></h2>
                 </div>
                 <div class="col-xs-1 text-right">
-                    <h2><a class="text-muted" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("+1 day", $jour))); ?>">
+                    <h2><a class="text-muted ajax" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("+1 day", $jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-right"></span>
                         </a></h2>
                 </div>
                 <div class="col-xs-2 text-right" style="margin-top: 12px;">
-                    <a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)); ?>" class="btn btn-upper btn-default btn-default-step" ><span class="glyphicon glyphicon-list-alt"></span></a>
+                    <a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)); ?>" class="btn btn-upper btn-default btn-default-step ajax" ><span class="glyphicon glyphicon-list-alt"></span></a>
 
                 </div>
             </div>
@@ -33,16 +33,16 @@
     </div>
 </div>
 
-<form id="form_planification" action="" method="post" class="form-horizontal ajaxForm">
+<form id="form_planification" action="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" method="post" class="form-horizontal ajaxForm">
 
     <div class="row">
         <div class="col-xs-12">
             <div class="btn-group">
                 <btn class="active organisation-tournee btn btn-lg btn-default-step" href="">Tous</btn>
                 <?php foreach ($tournees as $t): ?>
-                    <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step"><?php echo $t->getFirstAgent()->nom ?></btn>
+                    <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step ajax"><?php echo $t->getFirstAgent()->nom ?></btn>
                 <?php endforeach; ?>
-                <a href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour, 'retour' => 'planification')) ?>" class="btn btn-lg btn-default btn-default-step"><span class="glyphicon glyphicon-plus"></span> Agent</a>
+                <a href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour, 'retour' => 'planification')) ?>" class="btn btn-lg btn-default btn-default-step ajax"><span class="glyphicon glyphicon-plus"></span> Agent</a>
             </div>
 
 
@@ -126,7 +126,7 @@
                                             </div>
                                             <div style="padding-right: 16px; margin-top: 4px;" class="pull-right">
                                                 <span style="font-size: 20px;" class="icon-raisins"></span>                                                
-                                                <span style="font-size: 16px;"><a href="<?php echo url_for('rendezvous_modification', array('id' => $rdv_id, 'retour' => 'planification')); ?>" class="btn btn-default btn-default-step"><?php echo str_replace(":", "h", $rdv->heure) ?></a></span>
+                                                <span style="font-size: 16px;"><a href="<?php echo url_for('rendezvous_modification', array('id' => $rdv_id, 'retour' => 'planification')); ?>" class="btn btn-default btn-default-step ajax"><?php echo str_replace(":", "h", $rdv->heure) ?></a></span>
                                             </div>
                                             <div style="margin-right: 10px; margin-top: 9px;" class="pull-left">
                                                 <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: <?php echo $tourneesCouleur[$tournee_id] ?>"></span>
