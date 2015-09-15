@@ -64,7 +64,7 @@ class constatsActions extends sfActions {
             
             $rdvJson = $rendezvous->toJson();
             $rdvJson->termine = true;            
-            $rdvJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();
+            $rdvJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();            
             $rdvConstats['constats'] = array();
             
             foreach ($constats[$rendezvous->constat]->constats as $constatkey => $constatNode) {
