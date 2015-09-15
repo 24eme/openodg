@@ -5,7 +5,10 @@
                 Vous devez saisir un produit
             </div>
             <div class="col-xs-12">
-                <select class="form-control input-lg" ng-change="updateProduit(constat)" ng-model="constat.produit" ng-options="produit_key as produit_libelle for (produit_key, produit_libelle) in produits"><option value="" disabled="disabled" selected="selected">Produit</option></select>
+                <div ng-show="constat.produit" style="font-size: 17px;">
+                    {{ constat.produit_libelle }}&nbsp;&nbsp;<button ng-show="constat.produit" class="btn btn-md btn-default btn-default-step" type="button" ng-click="showChoixProduit()"><span class="glyphicon glyphicon-pencil"></span></button>
+                </div>
+                <button ng-show="!constat.produit" class="btn btn-lg btn-block btn-default btn-default-step " type="button" ng-click="showChoixProduit()">Séléctionner un produit</button>
             </div>
         </div>
         <div class="form-group">

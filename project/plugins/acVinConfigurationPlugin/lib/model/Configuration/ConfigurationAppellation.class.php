@@ -59,7 +59,7 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
     return $arrLieux;
     }
     
-        public function getLibelleComplet() 
+        public function getLibelleComplet($libelle_long = false) 
     {
         return $this->libelle;
     }

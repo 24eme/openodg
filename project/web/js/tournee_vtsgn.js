@@ -15,7 +15,30 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
         $scope.transmission_progress = false;
         $scope.state = true;
         $scope.loaded = false;
+        $scope.produitFilterAppellation = { hash: '' };
+        $scope.produitFilterCepage = { hash: '' };
+
+        $scope.produitsAppellation = [
+            {'hash': 'appellation_ALSACEBLANC', 'libelle': 'AOC Alsace blanc'},
+            {'hash': 'appellation_COMMUNALE', 'libelle': 'AOC Alsace Communale'},
+            {'hash': 'appellation_LIEUDIT', 'libelle': 'AOC Alsace Lieu-dit'},
+            {'hash': 'appellation_GRDCRU', 'libelle': 'AOC Alsace Grands Crus'}
+        ];
+
+        $scope.produitsCepage = [
+            {'hash': 'cepage_RI', 'libelle': 'Riesling'},
+            {'hash': 'cepage_PG', 'libelle': 'Pinot Gris'},
+            {'hash': 'cepage_MU', 'libelle': 'Muscat'},
+            {'hash': 'cepage_MO', 'libelle': 'Muscat Ottonel'},
+            {'hash': 'cepage_GW', 'libelle': 'Gewurztraminer'}
+        ];
+
         var signaturePad = null;
+        
+        $scope.produitsAll = [];
+        for(produit_hash in $rootScope.produits) {
+            $scope.produitsAll.push({ hash: produit_hash, libelle: $rootScope.produits[produit_hash] });
+        }
 
         var local_storage_name = $rootScope.url_json;
 
@@ -164,6 +187,10 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
         $scope.remplir = function(constat) {
             $scope.activeConstat = constat;
             $scope.updateActive('saisie');
+        }
+
+        $scope.showChoixProduit = function() {
+            $scope.updateActive('choix_produit');
         }
 
         $scope.approuverConstatRaisin = function (constat) {
@@ -403,8 +430,26 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             constat.raison_refus_libelle = $rootScope.raisons_refus[constat.raison_refus];
         }
 
-        $scope.updateProduit = function(constat) {
-            constat.produit_libelle = $rootScope.produits[constat.produit];
+        $scope.resetFilterAppellation = function() {
+            $scope.produitFilterAppellation = { hash: '' }
+        }
+
+        $scope.resetFilterCepage = function() {
+            $scope.produitFilterCepage = { hash: '' }
+        }
+
+        $scope.filterProduitsAppellation = function(produit_hash) {
+            $scope.produitFilterAppellation = { hash: produit_hash }
+        }
+
+        $scope.filterProduitsCepage = function(produit_hash) {
+            $scope.produitFilterCepage = { hash: produit_hash }
+        }
+
+        $scope.choixProduit = function(produit) {
+            $scope.activeConstat.produit = produit.hash;
+            $scope.activeConstat.produit_libelle = produit.libelle;
+            $scope.remplir($scope.activeConstat);
         }
 
         $scope.blur = function (event) {

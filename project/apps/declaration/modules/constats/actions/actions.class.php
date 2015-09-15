@@ -290,7 +290,7 @@ class constatsActions extends sfActions {
                 continue;
             }
             
-            $this->produits[$produit->getHash()] = $produit->libelle_complet;
+            $this->produits[$produit->getHash()] = $produit->getLibelleComplet(true);
         }
     }
 

@@ -133,7 +133,7 @@
                     </div>
                 </div>
             </section>
-            <section ng-repeat="(keyConstatNode,constat) in constatRdv['constats']" ng-show="activeRdv == constatRdv && activeConstat == constat">
+            <section ng-repeat="(keyConstatNode,constat) in constatRdv['constats']" ng-show="activeRdv == constatRdv && activeConstat == constat && active != 'choix_produit'">
                 <div ng-show="constat.type_constat == 'raisin'">
                     <div href="" ng-click="mission(constatRdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                     <div class="page-header text-center">
@@ -149,6 +149,30 @@
                     <?php include_partial('constats/tourneeConstatVolume'); ?> 
                 </div>
             </section>
+        </div>
+        <div ng-show="active == 'choix_produit' && activeConstat">
+            <div href="" ng-click="remplir(activeConstat)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
+            <div class="page-header text-center">
+                <h2>Séléctionner un produit</h2>
+            </div>
+            <h3>Filter par Appellation</h3>
+            <div class="form-group">
+                <span ng-repeat="produit in produitsAppellation">
+                    <button ng-show="produitFilterAppellation.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterAppellation()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle }}</button>
+                    <button ng-show="!produitFilterAppellation.hash" class="btn btn-default btn-block btn-default-step" ng-click="filterProduitsAppellation(produit.hash)" type="buttton">{{ produit.libelle }}</button>
+                </span>
+            </div>
+            <h3>Filter par Cépage</h3>
+            <div class="form-group">
+                <span ng-repeat="produit in produitsCepage">
+                    <button ng-show="produitFilterCepage.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterCepage()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle }}</button>
+                    <button ng-show="!produitFilterCepage.hash" class="btn btn-default btn-default-step btn-block" ng-click="filterProduitsCepage(produit.hash)" type="buttton">{{ produit.libelle }}</button>
+                </span>
+            </div>
+            <h3>Liste des produits</h3>
+            <div class="list-group">
+                <a href="" ng-click="choixProduit(produit)" ng-repeat="produit in produitsAll | filter : produitFilterAppellation | filter: produitFilterCepage" class="list-group-item">{{ produit.libelle }}</a>
+            </div>
         </div>
     </div>
 </div>
