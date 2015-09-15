@@ -264,9 +264,7 @@ class Email {
         $subject = "Nouvelle prise de Rendezvous pour ".$rendezvous->raison_sociale." le ".$rendezvous->getDateHeureFr();
         
         $body = $this->getBodyFromPartial('send_notification_prise_rendezvous', array('rendezvous' => $rendezvous));
-        var_dump($body); exit;
-
-
+        
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setReplyTo($reply_to)
