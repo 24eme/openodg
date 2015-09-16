@@ -50,7 +50,7 @@
             <?php foreach ($rendezvousConstatsDeclarant->rendezvous as $idRendezvous => $rendezvous) : ?>
 
                 <?php if ($rendezvous->statut != RendezvousClient::RENDEZVOUS_STATUT_REALISE): ?>
-                    <tr class="">
+                    <tr style="border-bottom: 1px solid #cbcbcb;">
                         <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>                  
                         <td class="<?php if ($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_PRIS): ?>list-group-item-warning <?php endif; ?>"><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?>
                             <?php
