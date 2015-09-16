@@ -6,9 +6,9 @@
             </div>
             <div class="col-xs-12">
                 <div ng-show="constat.produit" style="font-size: 17px;">
-                    {{ constat.produit_libelle }}&nbsp;&nbsp;<button ng-show="constat.produit" class="btn btn-md btn-default btn-default-step" type="button" ng-click="showChoixProduit()"><span class="glyphicon glyphicon-pencil"></span></button>
+                    {{ constat.produit_libelle }}&nbsp;&nbsp;<button ng-show="constat.produit" class="btn btn-md btn-default btn-default-step" type="button" ng-click="showChoixProduit()" style="border: 1px solid #000000;"><span class="glyphicon glyphicon-pencil"></span></button>
                 </div>
-                <button ng-show="!constat.produit" class="btn btn-lg btn-block btn-default btn-default-step " type="button" ng-click="showChoixProduit()">Séléctionner un produit</button>
+                <button ng-show="!constat.produit" class="btn btn-lg btn-block btn-default btn-default-step " type="button" ng-click="showChoixProduit()" style="border: 2px solid #000000;">Sélectionner un produit</button>
             </div>
         </div>
         <div class="form-group">
@@ -24,7 +24,7 @@
                 Vous devez saisir un type de contenant
             </div>
             <div class="col-xs-6">
-                <input placeholder="Nombre de contenant" id="nb_contenant_{{ keyConstatNode}}" ng-model="constat.nb_contenant" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                <input placeholder="Nombre" id="nb_contenant_{{ keyConstatNode}}" ng-model="constat.nb_contenant" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
             <div class="col-xs-6">
                 <select class="form-control input-lg" ng-change="updateContenant(constat)" ng-model="constat.contenant" ng-options="contenant_key as contenant_libelle for (contenant_key, contenant_libelle) in contenants"><option value="" disabled="disabled" selected="selected">Contenant</option></select>

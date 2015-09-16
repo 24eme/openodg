@@ -7,7 +7,7 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 ?>
 <?php include_partial('admin/menu', array('active' => 'constats')); ?>
 <div class="row row-margin text-center">
-    <h2>Tournée de la journée</h2>
+    <h2>Tournées de la journée</h2>
 </div>
 <div class="page-header">
     <div class="row">
