@@ -122,7 +122,7 @@
                                 <span style="font-size: 20px;" class="icon-mouts"></span>   
                             <?php endif; ?>
                         </td>
-                        <td class="text-center "><?php echo $rendezvous->raison_sociale . " (" . $rendezvous->cvi . ") " . $rendezvous->commune; ?></td>
+                        <td class="text-center "><a href="<?php echo url_for('rendezvous_declarant' , array('id' => 'COMPTE-'.$rendezvous->identifiant)) ?>"><?php echo $rendezvous->raison_sociale . " (" . $rendezvous->cvi . ") " . $rendezvous->commune; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
