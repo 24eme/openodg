@@ -75,3 +75,6 @@ Constats:
                   rendezvous_raisin: { }
                   rendezvous_volume: { }
                   rendezvous_report: { }
+                  send_mail_required: { }
+                  mail_sended: { }
+                  signature_base64: { }

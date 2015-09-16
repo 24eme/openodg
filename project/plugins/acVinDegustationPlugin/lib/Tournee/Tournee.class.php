@@ -534,6 +534,9 @@ class Tournee extends BaseTournee {
         $rendezvousNode->nom_agent_origine = $rendezvous->nom_agent_origine;
 
         $rendezvous->setStatut(RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE);
+        if($rendezvous->isRendezvousRaisin()){
+            $rendezvous->nom_agent_origine = $this->getFirstAgent()->nom;
+        }
         $rendezvous->save();
 
         return $rendezvousNode;

@@ -34,9 +34,9 @@ class Constat extends BaseConstat {
 
         $this->raison_refus = (isset($jsonContent->raison_refus)) ? $jsonContent->raison_refus : null;
         $this->raison_refus_libelle = (isset($jsonContent->raison_refus_libelle)) ? $jsonContent->raison_refus_libelle : null;
-
-
-
+        $this->signature_base64 = isset($jsonContent->signature)?  $jsonContent->signature : null;
+        $this->getDocument()->email = isset($jsonContent->email)?  $jsonContent->email : null;
+        
         if ($jsonContent->type_constat == 'raisin') {
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);
         }
@@ -90,6 +90,7 @@ class Constat extends BaseConstat {
             $rendezvousVolume = RendezvousClient::getInstance()->find($jsonContent->rendezvous_volume);
             $rendezvousVolume->set('statut', RendezvousClient::RENDEZVOUS_STATUT_REALISE);
             $rendezvousVolume->save();
+            $this->send_mail_required = true;
         }
         if (($this->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($jsonContent->statut_volume == ConstatsClient::STATUT_REFUSE)) {
             $rendezvousVolume = RendezvousClient::getInstance()->find($jsonContent->statut_volume);

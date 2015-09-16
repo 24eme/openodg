@@ -36,6 +36,23 @@ class RendezvousClient extends acCouchdbClient {
 
         return $rendezvous;
     }
+    
+    public function getRendezvousConstatsByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $rendezvousConstats = new stdClass();
+        $rendezvousConstats->rendezvous = array();
+        $rendezvousConstats->constats = array();
+        $rendezvousByCompte = $this->getRendezvousByCompte($identifiant, $hydrate);
+        foreach ($rendezvousByCompte as $keyRendezvous => $rendezvous) {
+            $rendezvousConstats->rendezvous[$keyRendezvous] = $rendezvous;
+            $rendezvousConstats->constats[$keyRendezvous] = new stdClass();    
+            $rendezvousConstats->constats[$keyRendezvous]->hasRealises = false;
+            
+            if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_REALISE){
+                $rendezvousConstats->constats[$keyRendezvous]->hasRealises = true;
+            }
+        }
+        return $rendezvousConstats;
+    }
 
     public function getRendezvousByNonPlanifiesNbDays($nb_days,$date) {
         $resultRdv = array();

@@ -47,10 +47,10 @@
                 <th>RDV</th>
                 <th>Résultat</th>  
             </tr>
-            <?php foreach ($rendezvousDeclarant as $rendezvous) : ?>
+            <?php foreach ($rendezvousConstatsDeclarant->rendezvous as $idRendezvous => $rendezvous) : ?>
             <tr class="<?php if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_REALISE): ?>list-group-item-success <?php endif; ?> <?php if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_PRIS): ?>list-group-item-warning <?php endif; ?>">
-                    <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>
-                    <td><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?></td>
+                    <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>                  
+                    <td><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?><?php if ($rendezvous->statut!=RendezvousClient::RENDEZVOUS_STATUT_PRIS): echo " par ".$rendezvous->nom_agent_origine; endif; ?></td>
                     <td class="text-center">
                         <?php if ($rendezvous->isRendezvousRaisin()): ?>
                             <span class="icon-raisins size-36"></span>
@@ -64,6 +64,7 @@
                         </a>
                     </td>                
                     <td class="text-center">
+                        <?php echo $rendezvousConstatsDeclarant->constats[$idRendezvous]->hasRealises; ?>
                         <?php if($rendezvous->isRendezvousRaisin()): ?>
                         <span class="glyphicon glyphicon-ban-circle"></span>
                         <?php endif; ?>

@@ -210,8 +210,9 @@ class constatsActions extends sfActions {
     }
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {
+        
         $this->compte = $this->getRoute()->getCompte();
-        $this->rendezvousDeclarant = RendezvousClient::getInstance()->getRendezvousByCompte($this->compte->cvi);
+        $this->rendezvousConstatsDeclarant = RendezvousClient::getInstance()->getRendezvousConstatsByCompte($this->compte->cvi);
         $this->formsRendezVous = array();
         $this->form = new LoginForm();
         foreach ($this->compte->getChais() as $chaiKey => $chai) {
