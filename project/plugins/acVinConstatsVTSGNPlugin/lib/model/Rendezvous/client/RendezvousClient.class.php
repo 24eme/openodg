@@ -36,7 +36,7 @@ class RendezvousClient extends acCouchdbClient {
 
         return $rendezvous;
     }
-    
+
     public function getRendezvousConstatsByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $rendezvousConstats = new stdClass();
         $rendezvousConstats->rendezvous = array();
@@ -44,17 +44,39 @@ class RendezvousClient extends acCouchdbClient {
         $rendezvousByCompte = $this->getRendezvousByCompte($identifiant, $hydrate);
         foreach ($rendezvousByCompte as $keyRendezvous => $rendezvous) {
             $rendezvousConstats->rendezvous[$keyRendezvous] = $rendezvous;
-            $rendezvousConstats->constats[$keyRendezvous] = new stdClass();    
+            $rendezvousConstats->constats[$keyRendezvous] = new stdClass();
             $rendezvousConstats->constats[$keyRendezvous]->hasRealises = false;
-            
-            if($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_REALISE){
+
+            if ($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_REALISE) {
                 $rendezvousConstats->constats[$keyRendezvous]->hasRealises = true;
+                $rendezvousConstats->constats[$keyRendezvous]->constats = array();
+                $rendezvousConstats->constats[$keyRendezvous]->a_finir = 0;
+                $rendezvousConstats->constats[$keyRendezvous]->nb_approuves = 0;
+                $rendezvousConstats->constats[$keyRendezvous]->nb_refuses = 0;
+                $rendezvousConstats->constats[$keyRendezvous]->nb_nonconstate = 0;
+                $constatsForDateRdv = ConstatsClient::getInstance()->findConstatsByRendezvous($rendezvous);
+               
+                foreach ($constatsForDateRdv as $constatRdvKey => $constat) {
+                    if (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_APPROUVE)) {
+                       
+                        $rendezvousConstats->constats[$keyRendezvous]->nb_approuves++;
+                    } elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_REFUSE)) {
+                        $rendezvousConstats->constats[$keyRendezvous]->nb_refuses++;
+                    } elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_NONCONSTATE)) {
+                        $rendezvousConstats->constats[$keyRendezvous]->a_finir++;
+                    } elseif ($constat->statut_raisin == ConstatsClient::STATUT_REFUSE) {
+                        $rendezvousConstats->constats[$keyRendezvous]->nb_refuses++;
+                    } else {
+                        $rendezvousConstats->constats[$keyRendezvous]->nb_nonconstate++;
+                    }
+                    $rendezvousConstats->constats[$keyRendezvous]->constats[$constatRdvKey] = $constat;
+                }
             }
         }
         return $rendezvousConstats;
     }
 
-    public function getRendezvousByNonPlanifiesNbDays($nb_days,$date) {
+    public function getRendezvousByNonPlanifiesNbDays($nb_days, $date) {
         $resultRdv = array();
         $rdvNonPlanifies = array();
         $dates = array($date);
@@ -64,22 +86,22 @@ class RendezvousClient extends acCouchdbClient {
         foreach ($dates as $date) {
             $rdvNonPlanifies = array_merge($rdvNonPlanifies, $this->getRendezvousByDateAndStatut($date, self::RENDEZVOUS_STATUT_PRIS));
         }
-        foreach ($rdvNonPlanifies as $key => $rdv){
-            $resultRdv[$rdv->date.$rdv->heure.$rdv->_id] = $rdv;
+        foreach ($rdvNonPlanifies as $key => $rdv) {
+            $resultRdv[$rdv->date . $rdv->heure . $rdv->_id] = $rdv;
         }
         ksort($resultRdv);
         return $resultRdv;
     }
-    
+
     public function getRendezvousByDateAndStatut($date, $statut) {
         $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Rendezvous', $date);
         $rdvs = array();
-        foreach($resultsDate as $item) {
+        foreach ($resultsDate as $item) {
             $rdv = $this->find($item->id, acCouchdbClient::HYDRATE_JSON);
-            if($rdv->statut != $statut) {
+            if ($rdv->statut != $statut) {
                 continue;
             }
-            $rdvs[$item->id] = $rdv; 
+            $rdvs[$item->id] = $rdv;
         }
 
         return $rdvs;
@@ -118,21 +140,21 @@ class RendezvousClient extends acCouchdbClient {
         $rendezvous->constructId();
         return $rendezvous;
     }
-    
-    public function findRendezvousVolumeFromIdRendezvous($idRdvOrigine){
-          $rdvOrigine = $this->find($idRdvOrigine);
-          $this->findByIdentifiantAndDateHeure($rdvOrigine->cvi, Date::addDelaiToDate("+1 day", $rdvOrigine->date));
+
+    public function findRendezvousVolumeFromIdRendezvous($idRdvOrigine) {
+        $rdvOrigine = $this->find($idRdvOrigine);
+        $this->findByIdentifiantAndDateHeure($rdvOrigine->cvi, Date::addDelaiToDate("+1 day", $rdvOrigine->date));
     }
-    
-    public function findOrCreateRendezvousVolumeFromIdRendezvous($idRdvOrigine,$nom_agent_origine = ""){
+
+    public function findOrCreateRendezvousVolumeFromIdRendezvous($idRdvOrigine, $nom_agent_origine = "") {
         $rdvOrigine = $this->find($idRdvOrigine);
         $rendezvous = clone $rdvOrigine;
-        $rendezvous->date = Date::addDelaiToDate("+1 day", $rdvOrigine->date);       
+        $rendezvous->date = Date::addDelaiToDate("+1 day", $rdvOrigine->date);
         $rendezvous->nom_agent_origine = $nom_agent_origine;
         $rendezvous->type_rendezvous = self::RENDEZVOUS_TYPE_VOLUME;
         $rendezvous->constructId();
-        if($this->find($rendezvous->_id)){
-           $rendezvous = $this->find($rendezvous->_id);
+        if ($this->find($rendezvous->_id)) {
+            $rendezvous = $this->find($rendezvous->_id);
         }
         $rendezvous->statut = self::RENDEZVOUS_STATUT_PRIS;
         $rendezvous->rendezvous_raisin = $idRdvOrigine;
@@ -149,7 +171,7 @@ class RendezvousClient extends acCouchdbClient {
             $dates = array_merge($dates, array(Date::addDelaiToDate("-" . $i . " day", $dateToday), Date::addDelaiToDate("+" . $i . " day", $dateToday)));
         }
         foreach ($dates as $date) {
-            $organisationsJournee[$date] = $this->buildRendezvousJournee($date);            
+            $organisationsJournee[$date] = $this->buildRendezvousJournee($date);
         }
         ksort($organisationsJournee);
         return $organisationsJournee;
@@ -166,7 +188,6 @@ class RendezvousClient extends acCouchdbClient {
         }
 
         return $rendezvousJournee;
-    }   
-   
+    }
 
 }

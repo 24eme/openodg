@@ -30,15 +30,15 @@ class Constats extends BaseConstats {
 
     public function getConstatIdNode($rendezvous) {
         $dateStr = str_replace('-', '', $rendezvous->getDate());
-
+        
         foreach ($this->constats as $constatKey => $constat) {
             if ($rendezvous->isRendezvousRaisin() && $constat->rendezvous_raisin == $rendezvous->_id) {
                 return $constatKey;
-            }
+            }            
             if ($rendezvous->isRendezvousVolume() && $constat->rendezvous_volume == $rendezvous->_id) {
                 return $constatKey;
             }
-        }
+        } 
         if ($rendezvous->isRendezvousVolume()) {
             throw new sfException("L'identifiant du constat ne peut être créer ou trouvé");
         }

@@ -9,13 +9,11 @@ class ConstatsClient extends acCouchdbClient {
     const TYPE_CONTENANT_BOTICHE = 'CONTENANT_BOTICHE';
     const CONSTAT_TYPE_RAISIN = 'TYPE_RAISIN';
     const CONSTAT_TYPE_VOLUME = 'TYPE_VOLUME';
-
     const CONTENANT_BOTTICHE = 'BOTTICHE';
     const CONTENANT_BEINE = 'BENNE';
     const CONTENANT_CAGETTE = 'CAGETTE';
     const CONTENANT_KG = 'KG';
     const CONTENANT_TYPE_PALOX = 'TYPE_PALOX';
-
     const RAISON_REFUS_DEGRE_INSUFFISANT = 'DEGRE_INSUFFISANT';
     const RAISON_REFUS_MULTI_CEPAGE = 'MULTI_CEPAGE';
     const RAISON_REFUS_PRESSURAGE_EN_COURS = 'PRESSURAGE_EN_COURS';
@@ -27,7 +25,6 @@ class ConstatsClient extends acCouchdbClient {
         self::RAISON_REFUS_PRESSURAGE_EN_COURS => 'Pressurage en cours',
         self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendandes mécanique',
     );
-
     public static $contenants_libelle = array(
         self::CONTENANT_BOTTICHE => 'Bottiche',
         self::CONTENANT_BEINE => 'Benne',
@@ -35,7 +32,7 @@ class ConstatsClient extends acCouchdbClient {
         self::CONTENANT_KG => 'Kg',
         self::CONTENANT_TYPE_PALOX => 'Type palox',
     );
-    
+
     public static function getInstance() {
         return acCouchdbManager::getClient("Constats");
     }
@@ -44,10 +41,27 @@ class ConstatsClient extends acCouchdbClient {
         return $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, $campagne), $hydrate);
     }
 
+    public function findConstatsByRendezvous(Rendezvous $rendezvous) {
+        $campagne = substr($rendezvous->date, 0, 4);
+        $constats = $this->findByIdentifiantAndCampagne($rendezvous->cvi, $campagne);
+        $constatsResult = array();
+        foreach ($constats->getOrAdd('constats') as $uniqId => $constat) {
+
+            if (($constat->rendezvous_raisin == $rendezvous->_id) && $rendezvous->isRendezvousRaisin()) {
+                $constatsResult[$constats->_id . '_' . $uniqId] = $constat;
+            }
+            if ((($constat->rendezvous_volume == $rendezvous->_id) || ($constat->rendezvous_raisin == $rendezvous->_id)) && $rendezvous->isRendezvousVolume()) {
+
+                $constatsResult[$constats->_id . '_' . $uniqId] = $constat;
+            }
+        }
+        return $constatsResult;
+    }
+
     public function updateOrCreateConstatFromRendezVous(Rendezvous $rendezvous) {
 
         $constats = $this->findByIdentifiantAndCampagne($rendezvous->cvi, substr($rendezvous->date, 0, 4));
-        
+
         if ($constats) {
             return $this->updateConstatFromRendezVous($rendezvous, $constats);
         }
@@ -61,11 +75,11 @@ class ConstatsClient extends acCouchdbClient {
     }
 
     public function updateConstatFromRendezVous(Rendezvous $rendezvous, Constats $constats) {
-        $idNodeConstat = $constats->getConstatIdNode($rendezvous);        
+        $idNodeConstat = $constats->getConstatIdNode($rendezvous);
         $constats->add('constats')->getOrAdd($idNodeConstat)->createOrUpdateFromRendezVous($rendezvous);
         return $constats;
     }
-    
+
     public function getContenantsLibelle() {
 
         return self::$contenants_libelle;
@@ -76,10 +90,9 @@ class ConstatsClient extends acCouchdbClient {
         return self::$raisons_refus_libelle;
     }
 
-    public function getProduits() { 
-        
+    public function getProduits() {
+
         return ConfigurationClient::getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
-        
     }
-    
+
 }

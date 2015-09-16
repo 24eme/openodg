@@ -31,38 +31,39 @@
 </table>
 </td></tr></table>
 <br />
-<div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
+<div><span class="h3">&nbsp;Constats&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; <?php // if(!$drev->isNonRecoltant()): ?>width: 357px;<?php // else: ?>width: 467px;<?php // endif; ?>">&nbsp;Appellation</th>
-        <?php // if(!$drev->isNonRecoltant()): ?>
-        <th class="th" style="text-align: center; width: 140px;">Superficie</th>
-        <?php // endif; ?>
-        <th class="th" style="text-align: center; <?php // if(!$drev->isNonRecoltant()): ?>width: 140px;<?php // else: ?>width: 170px;<?php // endif; ?>">Volume</th>
+        <th class="th" style="text-align: left; width: 200px;">&nbsp;Mention</th>         
+        <th class="td" style="text-align: right; width: 440px;"><?php  echo $constat->type_vtsgn ?>&nbsp;&nbsp;</th>      
     </tr>
-    <?php // foreach($drev->declaration->getProduits(true) as $produit): ?>
+     <tr>
+        <th class="th" style="text-align: left; width: 200px;">&nbsp;Produit</th>         
+        <th class="td" style="text-align: right; width: 440px;"><?php  echo $constat->produit_libelle ?>&nbsp;&nbsp;</th>      
+    </tr>
     <tr>
-        <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php // echo $produit->getLibelleComplet() ?></td>
-        <?php // if(!$drev->isNonRecoltant()): ?>
-        <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php // echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-        <?php // endif; ?>
-        <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php // echo sprintFloatFr($produit->volume_revendique) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+        <th class="th" style="text-align: left; width: 200px;">&nbsp;Dénomination</th>         
+        <th class="td" style="text-align: right; width: 440px;"><?php  echo $constat->denomination_lieu_dit ?>&nbsp;&nbsp;</th>      
     </tr>
-  <?php //  endforeach; ?>
+     <tr>
+        <th class="th" style="text-align: left; width: 200px;">&nbsp;Volume</th>         
+        <th class="td" style="text-align: right; width: 440px;"><?php  echo $constat->volume_obtenu ?>&nbsp;hl&nbsp;&nbsp;</th>      
+    </tr>
+    <tr>
+        <th class="th" style="text-align: left; width: 200px;">&nbsp;T.A.V.N.</th>         
+        <th class="td" style="text-align: right; width: 440px;"><?php  echo $constat->degre_potentiel_volume ?>&nbsp;°&nbsp;&nbsp;</th>      
+    </tr>
 </table>
 <br />
 <br />
 <br />
 <table cellspacing=0 cellpadding=0>
-<tr><td class="tdH2Big"><span class="h2">Dégustation conseil</span></td></tr>
+<tr><td class="tdH2Big"><span class="h2">Signature</span></td></tr>
 </table>
-<?php // include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::CUVE)); ?>
 <br />
-<br />
-<?php // if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0): ?>
-<br />
-<table cellspacing=0 cellpadding=0>
-<tr><td class="tdH2Big"><span class="h2">Contrôle externe</span></td></tr>
+<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+    
+ <tr>
+     <td class="td" style="text-align:left; width: 300px;"><?php echo tdStart() ?><img style="width: 300px;" src="<?php  echo $constat->signature_base64; ?>" /></td>
+ </tr>
 </table>
-<?php // include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::BOUTEILLE)); ?>
-<?php // endif; ?>
