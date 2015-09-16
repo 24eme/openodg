@@ -87,9 +87,9 @@
                     <div class="text-center col-xs-12">
                         <span class="lead">{{ constatRdv['rendezvous'].compte_adresse}}</span><br />
                         <span class="lead">{{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}</span><br /><br />
-                        <span ng-show="constatRdv['rendezvous'].compte_telephone_bureau != ''"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_bureau}}">{{ constatRdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
-                        <span ng-show="constatRdv['rendezvous'].compte_telephone_prive != ''"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_prive}}">{{ constatRdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
-                        <span ng-show="constatRdv['rendezvous'].compte_telephone_mobile != ''"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_mobile}}">{{ constatRdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_bureau "><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_bureau}}">{{ constatRdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_prive "><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_prive}}">{{ constatRdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_mobile "><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_mobile}}">{{ constatRdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
                     </div>
                 </div>
 
