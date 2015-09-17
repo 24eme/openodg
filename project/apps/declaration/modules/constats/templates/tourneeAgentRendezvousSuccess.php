@@ -35,8 +35,8 @@
                                 <br />
                             </div>
                             <div class="col-xs-2 col-sm-1 text-right">
-                                 <span ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>
-                                
+                                <span ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>
+
                                 <span ng-if="!constatRdv['rendezvous'].termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
                                 <span ng-if="constatRdv['rendezvous'].termine" class="glyphicon glyphicon-check" style="font-size: 28px; margin-top: 8px;"></span>
                             </div>   
@@ -77,19 +77,19 @@
         <div ng-repeat="constatRdv in planification" id="detail_mission_{{ constatRdv['idrdv']}}">
             <section  ng-show="active == 'mission' && activeRdv == constatRdv" ng-class="" style="page-break-after: always;">
                 <div href="" ng-click="precedent(constatRdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
-                 
+
                 <div class="page-header text-center">
                     <h2><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></h2>
-                    
+
                     <h2>Rendez-vous de {{ constatRdv['heure']}}<br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</span></h2>
                 </div>
                 <div class="row">
                     <div class="text-center col-xs-12">
                         <span class="lead">{{ constatRdv['rendezvous'].compte_adresse}}</span><br />
                         <span class="lead">{{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}</span><br /><br />
-                        <span ng-show="constatRdv['rendezvous'].compte_telephone_bureau "><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_bureau}}">{{ constatRdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
-                        <span ng-show="constatRdv['rendezvous'].compte_telephone_prive "><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_prive}}">{{ constatRdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
-                        <span ng-show="constatRdv['rendezvous'].compte_telephone_mobile "><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_mobile}}">{{ constatRdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_bureau}}">{{ constatRdv['rendezvous'].compte_telephone_bureau}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_prive}}">{{ constatRdv['rendezvous'].compte_telephone_prive}}</a><br /></span>
+                        <span ng-show="constatRdv['rendezvous'].compte_telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ constatRdv['rendezvous'].compte_telephone_mobile}}">{{ constatRdv['rendezvous'].compte_telephone_mobile}}</a><br /></span>
                     </div>
                 </div>
 
@@ -141,8 +141,9 @@
                                 </div>
                             </a>
                         </div>
-
-                        <button ng-click="ajoutConstat(constatRdv)" class="btn btn-lg btn-block btn-default btn-default-step" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp; Ajouter un constat raisin</button>
+                        <div ng-show="constatRdv.type_rendezvous == 'TYPE_RAISINS'">                       
+                            <button ng-click="ajoutConstat(constatRdv)" class="btn btn-lg btn-block btn-default btn-default-step" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp; Ajouter un constat raisin</button>
+                        </div>
                     </div>
                 </div>
             </section>

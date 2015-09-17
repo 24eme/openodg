@@ -32,10 +32,10 @@
         </div>
         <div class="form-group">
             <div ng-class="{ 'hidden': !constat.erreurs['degre_potentiel_raisin'] }" class="alert alert-danger">
-                Vous devez saisir le degré potentiel
+                Vous devez saisir le degré potentiel entre 10° et 30°
             </div>
             <div class="col-xs-6">
-                <input placeholder="Degré potentiel" id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                <input placeholder="Degré potentiel" id="degre_potentiel_raisin_{{ keyConstatNode}}" ng-model="constat.degre_potentiel_raisin" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" min="10" max="30" />
             </div>
             <div class="col-xs-6 lead">
             <p style="margin: 0;" class="form-control-static">° potentiel</p>
