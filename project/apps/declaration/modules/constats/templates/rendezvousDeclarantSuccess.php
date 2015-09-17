@@ -64,21 +64,21 @@
                             </a>
                         </td>                
                         <td class="text-center">
-                             <?php  if ($rendezvous->isRendezvousRaisin()): ?>
+                            <?php if ($rendezvous->isRendezvousRaisin()): ?>
                                 <span class="icon-raisins size-36"></span>
-                            <?php  endif; ?>
-                            <?php  if ($rendezvous->isRendezvousVolume()): ?>
+                            <?php endif; ?>
+                            <?php if ($rendezvous->isRendezvousVolume()): ?>
                                 <span class="icon-mouts size-36"></span>
-                            <?php  endif; ?>
-                           &nbsp;    
-                            <!--<span class="glyphicon glyphicon-ban-circle"></span>--> 
+                            <?php endif; ?>
+                            &nbsp;    
+                             <!--<span class="glyphicon glyphicon-ban-circle"></span>--> 
                         </td>
                         <td class="col-xs-1 text-center" >
                             <?php if ($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_PRIS): ?>
-                            <a class=" glyphicon glyphicon-remove-circle text-danger" href="<?php echo url_for('rendezvous_declarant_remove',array('idrendezvous' => $rendezvous->_id)); ?>" onclick="confirm('Êtes-vous sûre de vouloir supprimer ce rendezvous?')"></a> 
-                             <?php  else: ?>
-                            <span class=" glyphicon glyphicon-ban-circle"></span>
-                             <?php  endif; ?>
+                                <a class=" glyphicon glyphicon-remove-circle text-danger" href="<?php echo url_for('rendezvous_declarant_remove', array('idrendezvous' => $rendezvous->_id)); ?>" onclick="confirm('Êtes-vous sûre de vouloir supprimer ce rendezvous?')"></a> 
+                            <?php else: ?>
+                                <span class=" glyphicon glyphicon-ban-circle"></span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -88,10 +88,10 @@
                             <td class="list-group-item-success"><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?>
                                 <?php
                                 if ($rendezvous->statut != RendezvousClient::RENDEZVOUS_STATUT_PRIS): echo " par " . $rendezvous->nom_agent_origine;
-                                endif;                                
+                                endif;
                                 ?></td>
                             <td class="text-center">
-                                    <?php echo ucfirst(format_date($rendezvous->date, "P", "fr_FR")); ?><?php if ($rendezvous->isRendezvousRaisin()): ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?> <?php endif; ?>
+                                <?php echo ucfirst(format_date($rendezvous->date, "P", "fr_FR")); ?><?php if ($rendezvous->isRendezvousRaisin()): ?> <?php echo str_replace(':', 'h', $rendezvous->heure); ?> <?php endif; ?>
                             </td>                
                             <td class="text-center" colspan="2">
                                 <?php if (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_APPROUVE) && $rendezvousConstatsDeclarant->rendezvous[$idRendezvous]->isRendezvousRaisin()): ?>
@@ -101,11 +101,11 @@
                                 <?php elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_APPROUVE)): ?>
                                     <span class="icon-mouts size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?>
                                     <br/>
-                                    <a class="label label-success" href="<?php echo url_for('constat_pdf',array('identifiant' => $constat->getDocument()->getCvi(),'campagne' => substr($constat->getKey(),0,4),'identifiantconstat' => $constat->getKey()))?>">Approuvé</a>
+                                    <a class="label label-success" href="<?php echo url_for('constat_pdf', array('identifiant' => $constat->getDocument()->getCvi(), 'campagne' => substr($constat->getKey(), 0, 4), 'identifiantconstat' => $constat->getKey())) ?>">Approuvé</a>
                                 <?php elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_REFUSE)): ?>
 
                                     <span class="icon-mouts size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?><br/>
-                                    <a class="label label-danger" href="<?php echo url_for('constat_pdf',array('identifiant' => $constat->getDocument()->getCvi(),'campagne' => substr($constat->getKey(),0,4),'identifiantconstat' => $constat->getKey()))?>">Refusé</a>
+                                    <a class="label label-danger" href="<?php echo url_for('constat_pdf', array('identifiant' => $constat->getDocument()->getCvi(), 'campagne' => substr($constat->getKey(), 0, 4), 'identifiantconstat' => $constat->getKey())) ?>">Refusé</a>
 
                                 <?php elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_NONCONSTATE)): ?>
                                     <span class="icon-raisins size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?>
@@ -113,7 +113,7 @@
                                     &nbsp;A finir le <?php echo format_date(substr($constat->date_volume, 0, 4) . '-' . substr($constat->date_volume, 4, 2) . '-' . substr($constat->date_volume, 6), "P", "fr_FR"); ?>
                                 <?php elseif ($constat->statut_raisin == ConstatsClient::STATUT_REFUSE): ?>
                                     <span class="icon-raisins size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?><br/>
-                                    <a class="label label-danger" href="<?php echo url_for('constat_pdf',array('identifiant' => $constat->getDocument()->getCvi(),'campagne' => substr($constat->getKey(),0,4),'identifiantconstat' => $constat->getKey()))?>">Refusé</a>                                   
+                                    <a class="label label-danger" href="<?php echo url_for('constat_pdf', array('identifiant' => $constat->getDocument()->getCvi(), 'campagne' => substr($constat->getKey(), 0, 4), 'identifiantconstat' => $constat->getKey())) ?>">Refusé</a>                                   
                                 <?php else: ?>
                                     <span class="label label-default"></span>
                                 <?php endif; ?>
@@ -129,9 +129,9 @@
     </div>
 </div>
 <div class="row">    
-    <div class="col-xs-12 text-right">
-        <a class="btn btn-default btn-upper" href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))); ?>" >Accèder aux planifications&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
-        </a>
+    <div class="col-xs-12">
+        <a class="btn btn-warning btn-upper" href="<?php echo url_for('constats', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Accueil</a>
+        <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Accèder à la planification d'aujourd'hui</a>
         <br/>
     </div>
 </div> 
