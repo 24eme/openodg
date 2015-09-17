@@ -531,14 +531,15 @@ class Tournee extends BaseTournee {
         $rendezvousNode->compte_telephone_mobile = $rendezvous->telephone_mobile;
         $rendezvousNode->compte_telephone_prive = $rendezvous->telephone_prive;
         $rendezvousNode->compte_telephone_bureau = $rendezvous->telephone_bureau;
-        
+
         $rendezvousNode->rendezvous_commentaire = $rendezvous->commentaire;
         $rendezvousNode->type_rendezvous = $rendezvous->type_rendezvous;
         $rendezvousNode->heure = $rendezvous->heure;
         $rendezvousNode->nom_agent_origine = $rendezvous->nom_agent_origine;
-
-        $rendezvous->setStatut(RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE);
-        if($rendezvous->isRendezvousRaisin()){
+        if (($rendezvous->statut != RendezvousClient::RENDEZVOUS_STATUT_REALISE) && ($rendezvous->statut != RendezvousClient::RENDEZVOUS_STATUT_ANNULE)) {
+            $rendezvous->setStatut(RendezvousClient::RENDEZVOUS_STATUT_PLANIFIE);
+        }
+        if ($rendezvous->isRendezvousRaisin()) {
             $rendezvous->nom_agent_origine = $this->getFirstAgent()->nom;
         }
         $rendezvous->save();

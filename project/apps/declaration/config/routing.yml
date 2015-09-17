@@ -1089,6 +1089,16 @@ rendezvous_declarant:
     type:     object
   requirements:
     sf_method: [get, post]
+    
+rendezvous_declarant_remove:
+  url: /rendezvous/suppression/:idrendezvous
+  param: { module: constats, action: rendezvousDeclarantRemove }
+  class: CompteRoute
+  options:
+    model:    Compte
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 rendezvous_creation:
   url: /rendezvous/creation/:id/:idchai

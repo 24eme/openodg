@@ -158,6 +158,9 @@ class constatsActions extends sfActions {
         $this->jour = $request->getParameter('date');
         $this->couleurs = array("#91204d", "#fa6900", "#1693a5", "#e05d6f", "#7ab317", "#ffba06", "#907860", "#172f77", "#24e4BD", "#fc1307", "#fc0afc", "#52e9af");
         $this->rdvsPris = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_PRIS);
+        $this->rdvsRealises = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_REALISE);
+        $this->rdvsAnnules = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_ANNULE);
+       
         $this->tournees = TourneeClient::getInstance()->getTourneesByDate($this->jour);
 
         $this->heures = array();
@@ -237,6 +240,13 @@ class constatsActions extends sfActions {
         return $this->redirect('rendezvous_declarant', $this->getUser()->getEtablissement()->getCompte());
     }
 
+    public function executeRendezvousDeclarantRemove(sfWebRequest $request) {
+        $rendezvous = RendezvousClient::getInstance()->find($request->getParameter('idrendezvous'));
+        $compte = $rendezvous->getCompte();
+        RendezvousClient::getInstance()->delete($rendezvous);
+        $this->redirect('rendezvous_declarant', $compte);
+    }
+    
     public function executeRendezvousModification(sfWebRequest $request) {
         $this->rendezvous = $this->getRoute()->getRendezvous();
         $this->chai = $this->rendezvous->getChai();

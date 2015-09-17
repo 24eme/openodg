@@ -12,7 +12,8 @@ class RendezvousClient extends acCouchdbClient {
 
     public static $rendezvous_statut_libelles = array(self::RENDEZVOUS_STATUT_PRIS => 'A planifier',
         self::RENDEZVOUS_STATUT_PLANIFIE => 'Planifié',
-        self::RENDEZVOUS_STATUT_REALISE => 'Réalisé');
+        self::RENDEZVOUS_STATUT_REALISE => 'Réalisé',
+        self::RENDEZVOUS_STATUT_ANNULE => 'Annulé');
 
     public static function getInstance() {
         return acCouchdbManager::getClient("Rendezvous");

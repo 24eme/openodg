@@ -121,11 +121,13 @@
                             <?php foreach ($tourneeRdvs as $rdv_id => $rdv): ?>
                                 <li id="<?php echo $rdv_id ?>" data-tournee="<?php echo $tournee_id ?>" data-title="<?php echo $rdv->compte_raison_sociale ?>" data-point="<?php echo $rdv->compte_lat * 1 ?>,<?php echo $rdv->compte_lon * 1 ?>" class="organisation-item list-group-item col-xs-12">
                                     <input type="hidden" class="input-tournee" name="rdvs[<?php echo $rdv_id ?>][tournee]" value="<?php echo $tournee_id ?>" />
-                                    <div class="col-xs-12">
-                                        <div style="margin-top: 6px;" class="pull-right">
-                                            <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                                            <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
-                                        </div>
+                                    <div class="col-xs-12 <?php if (isset($rdvsRealises[$rdv_id])): ?> list-group-item-success <?php endif; ?> <?php if (isset($rdvsAnnules[$rdv_id])): ?> list-group-item-danger <?php endif; ?>">
+                                        <?php if (!isset($rdvsRealises[$rdv_id]) && !(isset($rdvsAnnules[$rdv_id]))): ?>
+                                            <div style="margin-top: 6px;" class="pull-right">
+                                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                                                <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
+                                            </div>
+                                        <?php endif; ?> 
                                         <div style="padding-right: 16px; margin-top: 4px;" class="pull-right">
                                             <span style="font-size: 20px;" class="icon-mouts"></span>                                                
                                         </div>
@@ -133,7 +135,14 @@
                                             <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: <?php echo $tourneesCouleur[$tournee_id] ?>"></span>
                                         </div>
                                         <?php echo $rdv->compte_raison_sociale ?>&nbsp;<?php echo ($rdv->nom_agent_origine) ? '(' . $rdv->nom_agent_origine . ')' : ''; ?>
-                                        <br /><small class="text-muted"><?php echo $rdv->compte_commune ?></small>
+                                        <br /><small class="text-muted"><?php echo $rdv->compte_commune ?>&nbsp;
+                                            <?php if (isset($rdvsRealises[$rdv_id])): ?>
+                                                (Réalisé)
+                                            <?php endif; ?>
+                                            <?php if (isset($rdvsAnnules[$rdv_id])): ?>
+                                                (Annulé)
+                                            <?php endif; ?>
+                                        </small>
                                     </div>
                                 </li>
                             <?php endforeach; ?>

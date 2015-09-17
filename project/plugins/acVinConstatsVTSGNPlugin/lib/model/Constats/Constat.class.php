@@ -9,8 +9,8 @@ class Constat extends BaseConstat {
     public function createOrUpdateFromRendezVous(Rendezvous $rdv) {
         if ($rdv->isRendezvousRaisin()) {
             $this->date_raisin = $rdv->getDateHeure();
-            $this->statut_raisin = ConstatsClient::STATUT_NONCONSTATE;
-            $this->statut_volume = ConstatsClient::STATUT_NONCONSTATE;
+            $this->statut_raisin = (!$this->statut_raisin)? ConstatsClient::STATUT_NONCONSTATE : $this->statut_raisin;
+            $this->statut_volume = (!$this->statut_volume)? ConstatsClient::STATUT_NONCONSTATE : $this->statut_volume;
             $this->rendezvous_raisin = $rdv->_id;
         } elseif ($rdv->isRendezvousVolume()) {
             $this->rendezvous_volume = $rdv->_id;
@@ -22,7 +22,7 @@ class Constat extends BaseConstat {
 
         $this->produit = $jsonContent->produit;
         $this->produit_libelle = $jsonContent->produit_libelle;
-        $this->denomination_lieu_dit = $jsonContent->denomination_lieu_dit;
+        $this->denomination_lieu_dit = (isset($jsonContent->denomination_lieu_dit)) ? $jsonContent->denomination_lieu_dit : null;
         $this->nb_contenant = $jsonContent->nb_contenant;
         $this->contenant = $jsonContent->contenant;
         $this->contenant_libelle = $jsonContent->contenant_libelle;
