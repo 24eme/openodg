@@ -101,11 +101,11 @@
                                 <?php elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_APPROUVE)): ?>
                                     <span class="icon-mouts size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?>
                                     <br/>
-                                    <a class="label label-success" href="<?php echo url_for('constat_pdf', array('identifiant' => $constat->getDocument()->getCvi(), 'campagne' => substr($constat->getKey(), 0, 4), 'identifiantconstat' => $constat->getKey())) ?>">Approuvé</a>
+                                    <span class="label label-success" >Approuvé</span>&nbsp;<a href="<?php echo url_for('constat_pdf', array('identifiant' => $constat->getDocument()->getCvi(), 'campagne' => substr($constat->getKey(), 0, 4), 'identifiantconstat' => $constat->getKey())) ?>"  class="btn btn-xs btn-default btn-primary-step"><span class="glyphicon glyphicon-file"></span>&nbsp;Visualiser</a>
                                 <?php elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_REFUSE)): ?>
 
                                     <span class="icon-mouts size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?><br/>
-                                    <a class="label label-danger" href="<?php echo url_for('constat_pdf', array('identifiant' => $constat->getDocument()->getCvi(), 'campagne' => substr($constat->getKey(), 0, 4), 'identifiantconstat' => $constat->getKey())) ?>">Refusé</a>
+                                    <span class="label label-danger">Refusé</span>
 
                                 <?php elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_NONCONSTATE)): ?>
                                     <span class="icon-raisins size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?>
@@ -113,7 +113,7 @@
                                     &nbsp;A finir le <?php echo format_date(substr($constat->date_volume, 0, 4) . '-' . substr($constat->date_volume, 4, 2) . '-' . substr($constat->date_volume, 6), "P", "fr_FR"); ?>
                                 <?php elseif ($constat->statut_raisin == ConstatsClient::STATUT_REFUSE): ?>
                                     <span class="icon-raisins size-36"></span>&nbsp;<?php echo $constat->produit_libelle; ?><br/>
-                                    <a class="label label-danger" href="<?php echo url_for('constat_pdf', array('identifiant' => $constat->getDocument()->getCvi(), 'campagne' => substr($constat->getKey(), 0, 4), 'identifiantconstat' => $constat->getKey())) ?>">Refusé</a>                                   
+                                    <span class="label label-danger">Refusé</span>                                   
                                 <?php else: ?>
                                     <span class="label label-default"></span>
                                 <?php endif; ?>

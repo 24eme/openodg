@@ -531,6 +531,7 @@ class Tournee extends BaseTournee {
         $rendezvousNode->compte_telephone_mobile = $rendezvous->telephone_mobile;
         $rendezvousNode->compte_telephone_prive = $rendezvous->telephone_prive;
         $rendezvousNode->compte_telephone_bureau = $rendezvous->telephone_bureau;
+        $rendezvousNode->compte_email = $rendezvous->email;
 
         $rendezvousNode->rendezvous_commentaire = $rendezvous->commentaire;
         $rendezvousNode->type_rendezvous = $rendezvous->type_rendezvous;

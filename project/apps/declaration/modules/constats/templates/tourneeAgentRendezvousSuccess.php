@@ -35,8 +35,6 @@
                                 <br />
                             </div>
                             <div class="col-xs-2 col-sm-1 text-right">
-                                <span ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>
-
                                 <span ng-if="!constatRdv['rendezvous'].termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
                                 <span ng-if="constatRdv['rendezvous'].termine" class="glyphicon glyphicon-check" style="font-size: 28px; margin-top: 8px;"></span>
                             </div>   
@@ -44,6 +42,9 @@
                                 <span ng-show="{{ constatRdv['rendezvous'].nb_non_saisis}}" class="label label-default" style="" >{{ constatRdv['rendezvous'].nb_non_saisis}} non saisi(s)</span>
                                 <span ng-show="{{ constatRdv['rendezvous'].nb_approuves}}" class="label label-success" style="" >{{ constatRdv['rendezvous'].nb_approuves}} approuvé(s)</span>
                                 <span ng-show="{{ constatRdv['rendezvous'].nb_refuses}}" class="label label-danger" style="" >{{ constatRdv['rendezvous'].nb_refuses}} refusé(s)</span>
+                            </div>
+                            <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" >
+                            <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
                             </div>
                         </a>
                     </div>
@@ -140,8 +141,8 @@
                                     </span>
                                 </div>
                             </a>
-                        </div>
-                        <div ng-show="constatRdv.type_rendezvous == 'TYPE_RAISINS'">                       
+                        </div>                        
+                        <div ng-show="constatRdv['rendezvous'].type_rendezvous == 'TYPE_RAISINS'">                       
                             <button ng-click="ajoutConstat(constatRdv)" class="btn btn-lg btn-block btn-default btn-default-step" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp; Ajouter un constat raisin</button>
                         </div>
                     </div>

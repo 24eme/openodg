@@ -91,7 +91,8 @@ class constatsActions extends sfActions {
                 }
                 if ($idrendezvous == $constatNode->rendezvous_volume) {
                     $constatNodeJson->type_constat = 'volume';
-                    if ($constatNodeJson->statut_volume != ConstatsClient::STATUT_APPROUVE) {
+                    $constatNodeJson->email = $rdvJson->compte_email;
+                    if (($constatNodeJson->statut_volume != ConstatsClient::STATUT_APPROUVE) && ($constatNodeJson->statut_volume != ConstatsClient::STATUT_REFUSE)) {
                         $rdvJson->termine = false;
                     }
                     $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
