@@ -130,8 +130,8 @@
 </div>
 <div class="row">    
     <div class="col-xs-12">
-        <a class="btn btn-warning btn-upper" href="<?php echo url_for('constats', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Accueil</a>
-        <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Accèder à la planification d'aujourd'hui</a>
+        <a class="btn btn-warning btn-upper" href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))) ?>"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Accueil</a>
+        <a href="<?php echo url_for('constats_planifications', array('date' => date('Y-m-d'))) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Accèder à la planification d'aujourd'hui</a>
         <br/>
     </div>
 </div> 
