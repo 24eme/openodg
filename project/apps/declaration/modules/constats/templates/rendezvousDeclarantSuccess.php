@@ -74,7 +74,11 @@
                             <!--<span class="glyphicon glyphicon-ban-circle"></span>--> 
                         </td>
                         <td class="col-xs-1 text-center" >
+                            <?php if ($rendezvous->statut == RendezvousClient::RENDEZVOUS_STATUT_PRIS): ?>
                             <a class=" glyphicon glyphicon-remove-circle text-danger" href="<?php echo url_for('rendezvous_declarant_remove',array('idrendezvous' => $rendezvous->_id)); ?>" onclick="confirm('Êtes-vous sûre de vouloir supprimer ce rendezvous?')"></a> 
+                             <?php  else: ?>
+                            <span class=" glyphicon glyphicon-ban-circle"></span>
+                             <?php  endif; ?>
                         </td>
                     </tr>
                 <?php else: ?>

@@ -160,7 +160,7 @@ class constatsActions extends sfActions {
         $this->rdvsPris = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_PRIS);
         $this->rdvsRealises = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_REALISE);
         $this->rdvsAnnules = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_ANNULE);
-       
+
         $this->tournees = TourneeClient::getInstance()->getTourneesByDate($this->jour);
 
         $this->heures = array();
@@ -193,17 +193,27 @@ class constatsActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+
         $rdvValues = $request->getParameter("rdvs", array());
 
         foreach ($rdvValues as $id_rdv => $values) {
-            if ($values['tournee']) {
 
+            if ($values['tournee']) {
                 $tournee = $this->tournees[$values['tournee']];
                 $tournee->addRendezVousAndGenerateConstat($id_rdv);
                 $tournee->save();
+            } else {
+                foreach ($this->tournees as $tournee) {
+                    if($tournee->rendezvous->exist($id_rdv)){
+                            $tournee->rendezvous->remove($id_rdv);
+                            $tournee->save();
+                            $rdv = RendezvousClient::getInstance()->find($id_rdv);
+                            $rdv->set('statut', RendezvousClient::RENDEZVOUS_STATUT_PRIS);
+                            $rdv->save();                        
+                    }
+                }
             }
         }
-
         if ($request->isXmlHttpRequest()) {
 
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => null, "revision" => null))));
@@ -213,7 +223,7 @@ class constatsActions extends sfActions {
     }
 
     public function executeRendezvousDeclarant(sfWebRequest $request) {
-        
+
         $this->compte = $this->getRoute()->getCompte();
         $this->rendezvousConstatsDeclarant = RendezvousClient::getInstance()->getRendezvousConstatsByCompte($this->compte->cvi);
         $this->formsRendezVous = array();
@@ -246,7 +256,7 @@ class constatsActions extends sfActions {
         RendezvousClient::getInstance()->delete($rendezvous);
         $this->redirect('rendezvous_declarant', $compte);
     }
-    
+
     public function executeRendezvousModification(sfWebRequest $request) {
         $this->rendezvous = $this->getRoute()->getRendezvous();
         $this->chai = $this->rendezvous->getChai();
