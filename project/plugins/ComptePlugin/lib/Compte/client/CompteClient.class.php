@@ -5,6 +5,7 @@ class CompteClient extends acCouchdbClient {
     const TYPE_MODEL = "Compte";
     const TYPE_COUCHDB = "COMPTE";
     const DROIT_ADMIN = "ADMIN";
+    const DROIT_TOURNEE = "TOURNEE";
     const DROIT_OPERATEUR = "OPERATEUR";
     const DROIT_CONTACT = "CONTACT";
     const TYPE_COMPTE_ETABLISSEMENT = "ETABLISSEMENT";
