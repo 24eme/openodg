@@ -43,8 +43,9 @@ class Constat extends BaseConstat {
         if ($jsonContent->type_constat == 'volume') {
             $this->setStatutVolumeAndRendezvous($jsonContent);
             if ($jsonContent->statut_volume == ConstatsClient::STATUT_APPROUVE) {
-                $this->date_signature = date('Y-m-d');                
+                $this->date_signature = date('Y-m-d');
                 $this->send_mail_required = true;
+                $this->sendMailConstatsApprouves();
             } else {
                 $this->send_mail_required = true;
                 $this->date_signature = null;
@@ -128,6 +129,14 @@ class Constat extends BaseConstat {
         return true;
     }
 
-   
+    private function sendMailConstatsApprouves() {
+        if ($this->send_mail_required) {
+            $this->send_mail_required = false;
+            if ($this->getDocument()->email) {
+                Email::getInstance()->sendConstatApprouveMail($this->getDocument(), $this);
+                $this->mail_sended = true;
+            }
+        }
+    }
 
 }

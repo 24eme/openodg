@@ -48,20 +48,7 @@ class Constats extends BaseConstats {
     public function updateAndSaveConstatNodeFromJson($constatIdNode, $jsonContent) {
         $this->get('constats')->getOrAdd($constatIdNode)->updateConstat($jsonContent);
         $this->save();
-        $this->sendMailConstatsApprouves();
-        $this->save();
     }
-
-    private function sendMailConstatsApprouves() {
-        foreach ($this->constats as $constat) {
-            if ($constat->send_mail_required) {
-                $constat->send_mail_required = false;
-                if ($this->email) {
-                    Email::getInstance()->sendConstatApprouveMail($this, $constat);
-                    $constat->mail_sended = true;
-                }
-            }
-        }
-    }
+  
 
 }
