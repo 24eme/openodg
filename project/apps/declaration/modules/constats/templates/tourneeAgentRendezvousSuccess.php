@@ -29,7 +29,7 @@
                                 <span ng-show="!constatRdv['isRendezvousRaisin']" class="icon-mouts" style="font-size: 20px;" ></span>
                             </div>
                             <div class="col-xs-7 col-sm-6">
-                                <strong class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</strong><span class="text-muted hidden-xs"> {{ constatRdv['rendezvous'].compte_cvi}}</span><span ng-show="constatRdv['rendezvous'].termine && constatRdv['rendezvous'].nb_prelevements">&nbsp;<button class="btn btn-xs btn-success"></button></span>
+                                <strong class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</strong><span class="text-muted hidden-xs"> {{ constatRdv['rendezvous'].compte_cvi}}</span><!--<span ng-show="constatRdv['rendezvous'].termine && constatRdv['rendezvous'].nb_prelevements">&nbsp;<button class="btn btn-xs btn-success"></button>--></span>
                                 <br />
                                 {{ constatRdv['rendezvous'].compte_adresse}}, {{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (constatRdv['rendezvous'].compte_telephone_mobile) ? constatRdv['rendezvous'].compte_telephone_mobile : constatRdv['rendezvous'].compte_telephone_bureau}}</span>
                                 <br />
@@ -39,9 +39,9 @@
                                 <span ng-if="constatRdv['rendezvous'].termine" class="glyphicon glyphicon-check" style="font-size: 28px; margin-top: 8px;"></span>
                             </div>   
                             <div class="col-xs-12 col-sm-2 text-right">
-                                <span ng-show="{{ constatRdv['rendezvous'].nb_non_saisis}}" class="label label-default" style="" >{{ constatRdv['rendezvous'].nb_non_saisis}} non saisi(s)</span>
-                                <span ng-show="{{ constatRdv['rendezvous'].nb_approuves}}" class="label label-success" style="" >{{ constatRdv['rendezvous'].nb_approuves}} approuvé(s)</span>
-                                <span ng-show="{{ constatRdv['rendezvous'].nb_refuses}}" class="label label-danger" style="" >{{ constatRdv['rendezvous'].nb_refuses}} refusé(s)</span>
+                                <span ng-show="constatRdv['rendezvous'].nb_non_saisis" class="label label-default" style="" >{{ constatRdv['rendezvous'].nb_non_saisis }} non saisi(s)</span>
+                                <span ng-show="constatRdv['rendezvous'].nb_approuves" class="label label-success" style="" >{{ constatRdv['rendezvous'].nb_approuves}} approuvé(s)</span>
+                                <span ng-show="constatRdv['rendezvous'].nb_refuses" class="label label-danger" style="" >{{ constatRdv['rendezvous'].nb_refuses}} refusé(s)</span>
                             </div>
                             <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" >
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}

@@ -208,6 +208,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             constat.statut_raisin = 'APPROUVE';
             constat.transmission_needed = true;
 
+            $scope.updateRdv($scope.activeRdv);
+
             localSave();
             $scope.transmettre(true);
         }
@@ -261,6 +263,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             constat.statut_volume = 'APPROUVE';
             constat.transmission_needed = true;
 
+            $scope.updateRdv($scope.activeRdv);
+
             localSave();
             $scope.transmettre(true);
         }
@@ -271,8 +275,10 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
             constat.transmission_needed = true;
 
-            localSave();
-            $scope.transmettre(true);
+            $scope.updateRdv($scope.activeRdv);
+
+            //localSave();
+            //$scope.transmettre(true);
         }
 
         $scope.refuserConstatVolume = function (constat) {
@@ -280,6 +286,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             $scope.mission($scope.activeRdv);
             
             constat.transmission_needed = true;
+
+            $scope.updateRdv($scope.activeRdv);
 
             localSave();
             $scope.transmettre(true);
@@ -293,7 +301,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
             var nouveauConstat = {};
             var idNewNode = $rootScope.date.replace("-", "", "g") + '_' + UUID.generate();
-            nouveauConstat.type_constat = 'raisin'; 
+            nouveauConstat.type_constat = 'raisin';
             nouveauConstat.statut_raisin = 'NONCONSTATE';             
             nouveauConstat.statut_volume = 'NONCONSTATE';   
             nouveauConstat.rendezvous_raisin = rdvConstats.idrdv;
@@ -304,6 +312,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             rdvConstats['constats'][constatId] = nouveauConstat;
             $scope.constats.push(nouveauConstat);
             $scope.showConstat(rdvConstats['constats'][constatId]);
+            $scope.updateRdv(rdvConstats);
         }
 
         $scope.transmettre = function (auto) {
@@ -422,6 +431,38 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             }
 
             event.target.blur();
+        }
+
+        $scope.updateRdv = function(rdv) {
+            termine = true;
+
+            rdv.rendezvous.nb_refuses = 0;
+            rdv.rendezvous.nb_approuves = 0;
+            rdv.rendezvous.nb_non_saisis = 0;
+
+            for(constat_key in rdv.constats) {
+                constat = rdv.constats[constat_key];
+
+                if(constat.type_constat == 'raisin' && constat.statut_raisin == 'REFUSE') {
+                    rdv.rendezvous.nb_refuses += 1;
+                } else if(constat.type_constat == 'raisin' && constat.statut_raisin == 'APPROUVE') {
+                    rdv.rendezvous.nb_approuves += 1;
+                } else if(constat.type_constat == 'raisin') {
+                    rdv.rendezvous.nb_non_saisis += 1;
+                    termine = false;
+                }
+
+                if(constat.type_constat == 'volume' && constat.statut_raisin == 'REFUSE') {
+                    rdv.rendezvous.nb_refuses += 1;
+                } else if(constat.type_constat == 'volume' && constat.statut_raisin == 'APPROUVE') {
+                    rdv.rendezvous.nb_approuves += 1;
+                } else if(constat.type_constat == 'volume') {
+                    rdv.rendezvous.nb_non_saisis += 1;
+                    termine = false;
+                }
+            }
+
+            rdv.rendezvous.termine = termine;
         }
 
         $scope.updateContenant = function(constat) {
