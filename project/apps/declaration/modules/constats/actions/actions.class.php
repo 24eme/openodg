@@ -205,12 +205,12 @@ class constatsActions extends sfActions {
                 $tournee->save();
             } else {
                 foreach ($this->tournees as $tournee) {
-                    if($tournee->rendezvous->exist($id_rdv)){
-                            $tournee->rendezvous->remove($id_rdv);
-                            $tournee->save();
-                            $rdv = RendezvousClient::getInstance()->find($id_rdv);
-                            $rdv->set('statut', RendezvousClient::RENDEZVOUS_STATUT_PRIS);
-                            $rdv->save();                        
+                    if ($tournee->rendezvous->exist($id_rdv)) {
+                        $tournee->rendezvous->remove($id_rdv);
+                        $tournee->save();
+                        $rdv = RendezvousClient::getInstance()->find($id_rdv);
+                        $rdv->set('statut', RendezvousClient::RENDEZVOUS_STATUT_PRIS);
+                        $rdv->save();
                     }
                 }
             }
@@ -336,6 +336,26 @@ class constatsActions extends sfActions {
 
     private function sendMailConfirmationPriseRendezVous($rendezvous) {
         Email::getInstance()->sendPriseDeRendezvousMails($rendezvous);
+    }
+
+    public function executeRedirectInterfaceMobileAgent(sfWebRequest $request) {
+        $this->form = new RedirectAgentForm();
+        $this->setLayout('layoutResponsive');
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+        $compteAgent = CompteClient::getInstance()->find('COMPTE-' . $this->form->getValue('agent'));
+        $tournee = TourneeClient::getInstance()->findByDateAndAgent(date('Y-m-d'), $compteAgent);
+        if ($tournee) {
+            $this->redirect('tournee_rendezvous_agent', $tournee);
+        }
     }
 
 }

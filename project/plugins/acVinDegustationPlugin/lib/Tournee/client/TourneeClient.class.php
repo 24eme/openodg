@@ -37,8 +37,12 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
+    public function findByDateAndAgent($date, $agent) {
+        return $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, str_replace("-", "", $date), $agent->identifiant));
+    }
+
     public function findOrAddByDateAndAgent($date, $agent) {
-        $tournee = $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, str_replace("-", "", $date), $agent->identifiant));
+        $tournee = $this->findByDateAndAgent($date, $agent);
         if ($tournee) {
             return $tournee;
         }
@@ -232,16 +236,15 @@ class TourneeClient extends acCouchdbClient {
 
     public function findTourneeByIdRendezvous($idRendezvous) {
         $rendezvous = RendezvousClient::getInstance()->find($idRendezvous);
-         $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Tournee', $rendezvous->getDate());
-         foreach ($resultsDate as $tournee) {
-             foreach ($tournee->value->rendezvous as $rendevousId => $rdv) {
-                 if($rendevousId == $idRendezvous){
-                     return $this->find($tournee->id);
-                 }
-             }
-         }
-         return null;
-        
+        $resultsDate = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Tournee', $rendezvous->getDate());
+        foreach ($resultsDate as $tournee) {
+            foreach ($tournee->value->rendezvous as $rendevousId => $rdv) {
+                if ($rendevousId == $idRendezvous) {
+                    return $this->find($tournee->id);
+                }
+            }
+        }
+        return null;
     }
-    
+
 }

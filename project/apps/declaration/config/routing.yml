@@ -1060,6 +1060,12 @@ constats_planification_ajout_agent:
   requirements:
     sf_method: [get, post]
 
+tournee_agent_accueil:
+  url: /constat/accueil
+  param: { module: constats, action: redirectInterfaceMobileAgent }
+  requirements:
+    sf_method: [get, post]
+
 tournee_rendezvous_agent:
   url: /tournee/:id/rendezvous
   param: { module: constats, action: tourneeAgentRendezvous }
