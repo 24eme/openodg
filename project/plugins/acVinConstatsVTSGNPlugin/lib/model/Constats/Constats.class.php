@@ -30,15 +30,15 @@ class Constats extends BaseConstats {
 
     public function getConstatIdNode($rendezvous) {
         $dateStr = str_replace('-', '', $rendezvous->getDate());
-        
+
         foreach ($this->constats as $constatKey => $constat) {
             if ($rendezvous->isRendezvousRaisin() && $constat->rendezvous_raisin == $rendezvous->_id) {
                 return $constatKey;
-            }            
+            }
             if ($rendezvous->isRendezvousVolume() && $constat->rendezvous_volume == $rendezvous->_id) {
                 return $constatKey;
             }
-        } 
+        }
         if ($rendezvous->isRendezvousVolume()) {
             throw new sfException("L'identifiant du constat ne peut être créer ou trouvé");
         }
@@ -48,6 +48,20 @@ class Constats extends BaseConstats {
     public function updateAndSaveConstatNodeFromJson($constatIdNode, $jsonContent) {
         $this->get('constats')->getOrAdd($constatIdNode)->updateConstat($jsonContent);
         $this->save();
+        $this->sendMailConstatsApprouves();
+        $this->save();
+    }
+
+    private function sendMailConstatsApprouves() {
+        foreach ($this->constats as $constat) {
+            if ($constat->send_mail_required) {
+                $constat->send_mail_required = false;
+                if ($this->email) {
+                    Email::getInstance()->sendConstatApprouveMail($this, $constat);
+                    $constat->mail_sended = true;
+                }
+            }
+        }
     }
 
 }
