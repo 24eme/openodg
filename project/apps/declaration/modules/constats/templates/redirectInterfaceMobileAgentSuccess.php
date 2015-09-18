@@ -1,5 +1,9 @@
 <?php use_helper("Date"); ?>
-
+<?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+<div class="row row-margin text-left">
+    &nbsp;<a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>" class="btn btn-lg btn-warning"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span>&nbsp;Retour application</a>
+</div>
+<?php endif; ?>
 <div class="row row-margin text-center">
     <h2>Tournées</h2>
     <h2><?php echo ucfirst(format_date(date('Y-m-d'), "P", "fr_FR")); ?></h2>
