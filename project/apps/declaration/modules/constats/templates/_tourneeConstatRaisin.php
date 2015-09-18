@@ -17,6 +17,11 @@
             </div>
         </div>
         <div class="form-group">
+            <div class="col-xs-12">
+                <input placeholder="Observations (Facultatif)" id="commentaire_raisin_{{ keyConstatNode}}" ng-model="constat.commentaire_raisin" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+            </div>
+        </div>
+        <div class="form-group">
             <div ng-class="{ 'hidden': !constat.erreurs['nb_contenant'] }" class="alert alert-danger">
                 Vous devez saisir une quantité 
             </div>

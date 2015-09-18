@@ -35,6 +35,7 @@ class Constat extends BaseConstat {
         $this->raison_refus = (isset($jsonContent->raison_refus)) ? $jsonContent->raison_refus : null;
         $this->raison_refus_libelle = (isset($jsonContent->raison_refus_libelle)) ? $jsonContent->raison_refus_libelle : null;
         $this->signature_base64 = isset($jsonContent->signature) ? $jsonContent->signature : null;
+        $this->commentaire_raisin = isset($jsonContent->commentaire_raisin) ? $jsonContent->commentaire_raisin : null;      
         $this->getDocument()->email = isset($jsonContent->email) ? $jsonContent->email : null;
 
         if ($jsonContent->type_constat == 'raisin') {
