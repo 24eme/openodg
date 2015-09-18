@@ -47,7 +47,7 @@
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
                             </div>
                             <div ng-show="!constatRdv['isRendezvousRaisin']" class="col-xs-12 col-sm-12 text-center" >
-                                <strong class="lead" style="font-weight: bold;">Constat raisin à {{ constatRdv['rendezvous'].heure}}</strong>
+                                <span>Constat raisin à {{ constatRdv['rendezvous'].heure}}</span>
                             </div>
                         </a>
                     </div>

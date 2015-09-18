@@ -22,6 +22,8 @@ if ($compte->fax) {
     $telFaxRow.="&nbsp;" . $compte->fax . "&nbsp;/";
 }
 $telFax = substr($telFaxRowDecr, 0, strlen($telFaxRowDecr) - 1) . ": <i>" . substr($telFaxRow, 0, strlen($telFaxRow) - 1) . "</i>";
+
+$libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Super grains nobles' : 'Vendanges tardives'
 ?>
 <style>
 <?php echo styleConstat(); ?>
@@ -65,7 +67,7 @@ $telFax = substr($telFaxRowDecr, 0, strlen($telFaxRowDecr) - 1) . ": <i>" . subs
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: left; width: 280px;vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Mention&nbsp;<?php echo tdStart() ?></th>         
-        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->type_vtsgn ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>      
+        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $libelle_vtsgn; ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>      
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Produit&nbsp;<?php echo tdStart() ?></th>         
