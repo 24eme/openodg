@@ -43,7 +43,8 @@ class Constat extends BaseConstat {
         if ($jsonContent->type_constat == 'volume') {
             $this->setStatutVolumeAndRendezvous($jsonContent);
             if ($jsonContent->statut_volume == ConstatsClient::STATUT_APPROUVE) {
-                $this->date_signature = date('Y-m-d');
+                $this->date_signature = date('Y-m-d');                
+                $this->send_mail_required = true;
                 $this->sendMailConstatApprouve();
             } else {
                 $this->send_mail_required = true;
@@ -97,7 +98,6 @@ class Constat extends BaseConstat {
             $rendezvousVolume = RendezvousClient::getInstance()->find($jsonContent->rendezvous_volume);
             $rendezvousVolume->set('statut', RendezvousClient::RENDEZVOUS_STATUT_REALISE);
             $rendezvousVolume->save();
-            $this->send_mail_required = true;
         }
         if (($this->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($jsonContent->statut_volume == ConstatsClient::STATUT_REFUSE)) {
             $rendezvousVolume = RendezvousClient::getInstance()->find($jsonContent->rendezvous_volume);
