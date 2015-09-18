@@ -7,6 +7,7 @@ class Email {
 
     public function __construct($context = null) {
         $this->_context = ($context) ? $context : sfContext::getInstance();
+        sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
     }
 
     public static function getInstance($context = null) {
@@ -261,10 +262,10 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = sfConfig::get('app_email_to_notification');
-        $subject = "Nouvelle prise de Rendezvous pour ".$rendezvous->raison_sociale." le ".$rendezvous->getDateHeureFr();
-        
+        $subject = "Nouvelle prise de Rendezvous pour " . $rendezvous->raison_sociale . " le " . $rendezvous->getDateHeureFr();
+
         $body = $this->getBodyFromPartial('send_notification_prise_rendezvous', array('rendezvous' => $rendezvous));
-        
+
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setReplyTo($reply_to)
@@ -272,6 +273,31 @@ class Email {
                 ->setSubject($subject)
                 ->setBody($body);
 
+        $message->setContentType('text/plain');
+        $this->getMailer()->send($message);
+    }
+
+    public function sendConstatApprouveMail(Constats $constats, $constatNode) {
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
+        $to = $constats->email;
+        $subject = "Constat VT/SGN du " . ucfirst(format_date($constatNode->date_signature, "P", "fr_FR"));
+
+        $pdf = new ExportConstatPDF($constats,$constatNode->getKey());
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+        
+        $body = $this->getBodyFromPartial('send_constat_approuve', array('constats' => $constats, 'constat' => $constatNode));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setReplyTo($reply_to)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body);
+
+        $message->attach($pdfAttachment);
+        
         $message->setContentType('text/plain');
         $this->getMailer()->send($message);
     }
