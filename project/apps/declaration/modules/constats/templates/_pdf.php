@@ -23,7 +23,7 @@ if ($compte->fax) {
 }
 $telFax = substr($telFaxRowDecr, 0, strlen($telFaxRowDecr) - 1) . ": <i>" . substr($telFaxRow, 0, strlen($telFaxRow) - 1) . "</i>";
 
-$libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Super grains nobles' : 'Vendanges tardives'
+$libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Sélection de Grains Nobles' : 'Vendanges Tardives'
 ?>
 <style>
 <?php echo styleConstat(); ?>
