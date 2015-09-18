@@ -46,6 +46,9 @@
                             <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" >
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
                             </div>
+                            <div ng-show="!constatRdv['isRendezvousRaisin']" class="col-xs-12 col-sm-12 text-center" >
+                                <strong class="lead" style="font-weight: bold;">Constat raisin à {{ constatRdv['rendezvous'].heure}}</strong>
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -128,17 +131,20 @@
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
                                         <span class="pull-right"><span class="label label-default">Non saisi</span></span>
                                         Saisir le constat volume
-                                        {{ constat.produit_libelle}}
+                                        {{ constat.produit_libelle}} <span>(Constat raisin fait à {{ constatRdv['rendezvous'].heure}})</span>
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                         <span class="pull-right"><span class="label label-success">Approuvé</span></span>
                                         {{ constat.produit_libelle}} <strong>{{ constat.type_vtsgn}}</strong>
-                                        ({{ constat.degre_potentiel_volume}}°, {{ constat.volume_obtenu}} hl)
+                                        ({{ constat.degre_potentiel_volume}}°, {{ constat.volume_obtenu}} hl) <span>(Constat raisin fait à {{ constatRdv['rendezvous'].heure}})</span>
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                         <span class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                        {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>
+                                        {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>  <span>(Constat raisin fait à {{ constatRdv['rendezvous'].heure}})</span>
                                     </span>
+                                </div>
+                                <div ng-show="constat.type_constat == 'volume' && constat.commentaire_raisin!=''" class="text-center">
+                                    <span class="glyphicon glyphicon-info-sign"  style="font-size: 14pt; top: 5px;"></span>&nbsp;{{constat.commentaire_raisin}}
                                 </div>
                             </a>
                         </div>                        

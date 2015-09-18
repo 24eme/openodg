@@ -29,6 +29,7 @@
  * @property string $send_mail_required
  * @property string $mail_sended
  * @property string $signature_base64
+ * @property string $commentaire_raisin
 
  * @method string getProduit()
  * @method string setProduit()
@@ -80,6 +81,8 @@
  * @method string setMailSended()
  * @method string getSignatureBase64()
  * @method string setSignatureBase64()
+ * @method string getCommentaireRaisin()
+ * @method string setCommentaireRaisin()
  
  */
 

@@ -78,3 +78,4 @@ Constats:
                   send_mail_required: { }
                   mail_sended: { }
                   signature_base64: { }
+                  commentaire_raisin: { }
