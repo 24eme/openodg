@@ -1,6 +1,7 @@
 <?php
 
-class myUser extends sfBasicSecurityUser
+class 
+myUser extends sfBasicSecurityUser
 {
 
     const SESSION_LOGIN = "LOGIN";
@@ -9,6 +10,7 @@ class myUser extends sfBasicSecurityUser
     const NAMESPACE_AUTH = "AUTH";
 
     const CREDENTIAL_ADMIN = CompteClient::DROIT_ADMIN;
+    const CREDENTIAL_TOURNEE = CompteClient::DROIT_TOURNEE;
     const CREDENTIAL_CONTACT = CompteClient::DROIT_CONTACT;
 
     protected $etablissement = null;
