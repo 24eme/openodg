@@ -250,7 +250,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
         setInterval(function () {
             $scope.loadOrUpdatePlanification();
-        }, 30000);
+        }, 60000);
 
         if ($scope.reload) {
             localDelete();
