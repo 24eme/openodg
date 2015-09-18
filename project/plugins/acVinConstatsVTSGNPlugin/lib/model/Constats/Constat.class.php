@@ -34,7 +34,7 @@ class Constat extends BaseConstat {
 
         $this->raison_refus = (isset($jsonContent->raison_refus)) ? $jsonContent->raison_refus : null;
         $this->raison_refus_libelle = (isset($jsonContent->raison_refus_libelle)) ? $jsonContent->raison_refus_libelle : null;
-        $this->signature_base64 = isset($jsonContent->signature)?  $jsonContent->signature : null;
+        $this->signature_base64 = isset($jsonContent->signature)?  $jsonContent->signature : null;        
         $this->getDocument()->email = isset($jsonContent->email)?  $jsonContent->email : null;
         
         if ($jsonContent->type_constat == 'raisin') {
@@ -42,6 +42,11 @@ class Constat extends BaseConstat {
         }
         if ($jsonContent->type_constat == 'volume') {
             $this->setStatutVolumeAndRendezvous($jsonContent);
+            if($jsonContent->statut_volume == ConstatsClient::STATUT_APPROUVE){
+                $this->date_signature = date('Y-m-d');
+            }else{
+                $this->date_signature = null;
+            }
         }
 
         $this->statut_volume = $jsonContent->statut_volume;

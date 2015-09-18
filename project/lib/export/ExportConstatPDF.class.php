@@ -4,10 +4,12 @@ class ExportConstatPDF extends ExportPDF {
 
     protected $constats = null;
     protected $constatNode = null;
+    protected $constat = null;
 
     public function __construct($constats,$constatNode, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->constats = $constats;
         $this->constatNode = $constatNode;
+        $this->constat = $this->constats->constats->get($this->constatNode);
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
         if (!$filename) {
             $filename = $this->getFileName(true, true);
@@ -22,12 +24,20 @@ class ExportConstatPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Constat de %s du %s", $this->constats->raison_sociale, format_date(substr($this->constatNode, 0, 4) . '-' . substr($this->constatNode, 4, 2) . '-' . substr($this->constatNode, 6)));
+        return sprintf("Rapport de constat du %s",  Date::francizeDate($this->constat->date_signature));
     }
 
     protected function getHeaderSubtitle() {
-
-        $header_subtitle = sprintf("%s\n\n", $this->constats->raison_sociale);
+        $tourneeRaisin = TourneeClient::getInstance()->findTourneeByIdRendezvous($this->constat->rendezvous_volume);
+        $tourneeVolume = TourneeClient::getInstance()->findTourneeByIdRendezvous($this->constat->rendezvous_volume);
+        $agentRaisin = $tourneeRaisin->getFirstAgent()->nom;
+        $agentVolume = $tourneeVolume->getFirstAgent()->nom;
+        
+        $agentsName = 'Fait par : '.$agentRaisin;
+        if($agentRaisin != $agentVolume){
+            $agentsName .= " / ".$agentVolume;
+        }
+        $header_subtitle = sprintf("%s\n%s\n", $this->constats->raison_sociale,$agentsName);
         
         return $header_subtitle;
     }
