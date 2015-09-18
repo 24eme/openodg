@@ -9,8 +9,8 @@ class Constat extends BaseConstat {
     public function createOrUpdateFromRendezVous(Rendezvous $rdv) {
         if ($rdv->isRendezvousRaisin()) {
             $this->date_raisin = $rdv->getDateHeure();
-            $this->statut_raisin = (!$this->statut_raisin)? ConstatsClient::STATUT_NONCONSTATE : $this->statut_raisin;
-            $this->statut_volume = (!$this->statut_volume)? ConstatsClient::STATUT_NONCONSTATE : $this->statut_volume;
+            $this->statut_raisin = (!$this->statut_raisin) ? ConstatsClient::STATUT_NONCONSTATE : $this->statut_raisin;
+            $this->statut_volume = (!$this->statut_volume) ? ConstatsClient::STATUT_NONCONSTATE : $this->statut_volume;
             $this->rendezvous_raisin = $rdv->_id;
         } elseif ($rdv->isRendezvousVolume()) {
             $this->rendezvous_volume = $rdv->_id;
@@ -34,18 +34,18 @@ class Constat extends BaseConstat {
 
         $this->raison_refus = (isset($jsonContent->raison_refus)) ? $jsonContent->raison_refus : null;
         $this->raison_refus_libelle = (isset($jsonContent->raison_refus_libelle)) ? $jsonContent->raison_refus_libelle : null;
-        $this->signature_base64 = isset($jsonContent->signature)?  $jsonContent->signature : null;        
-        $this->getDocument()->email = isset($jsonContent->email)?  $jsonContent->email : null;
-        
+        $this->signature_base64 = isset($jsonContent->signature) ? $jsonContent->signature : null;
+        $this->getDocument()->email = isset($jsonContent->email) ? $jsonContent->email : null;
+
         if ($jsonContent->type_constat == 'raisin') {
             $this->setStatutRaisinAndCreateVolumeRendezvous($jsonContent);
         }
         if ($jsonContent->type_constat == 'volume') {
             $this->setStatutVolumeAndRendezvous($jsonContent);
-            if($jsonContent->statut_volume == ConstatsClient::STATUT_APPROUVE){
+            if ($jsonContent->statut_volume == ConstatsClient::STATUT_APPROUVE) {
                 $this->date_signature = date('Y-m-d');
                 $this->sendMailConstatApprouve();
-            }else{
+            } else {
                 $this->send_mail_required = true;
                 $this->date_signature = null;
             }
@@ -128,11 +128,14 @@ class Constat extends BaseConstat {
         }
         return true;
     }
-    
-    private function sendMailConstatApprouve(){
-        if($this->send_mail_required && $this->getDocument()->email){
-            Email::getInstance()->sendConstatApprouveMail($this->getDocument(),$this);
+
+    private function sendMailConstatApprouve() {
+        if ($this->send_mail_required) {
             $this->send_mail_required = false;
+            if ($this->getDocument()->email) {
+                Email::getInstance()->sendConstatApprouveMail($this->getDocument(), $this);
+                $this->mail_sended = true;
+            }
         }
     }
 
