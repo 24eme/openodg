@@ -14,7 +14,7 @@
             <div class="form-group <?php if ($form["agent"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["agent"]->renderError(); ?>
                 <?php echo $form["agent"]->renderLabel(); ?>
-                <?php echo $form["agent"]->render(array("class" => "form-control", "placeholder" => "Votre nom")); ?>
+                <?php echo $form["agent"]->render(array("class" => "form-control select2 select2-offscreen select2autocomplete", "placeholder" => "Votre nom")); ?>
             </div>
         </div>
 
