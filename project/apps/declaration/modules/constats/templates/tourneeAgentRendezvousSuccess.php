@@ -5,7 +5,7 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee_vtsgn.js?201509211237'); ?>
-<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload = 0; url_state = "<?php echo url_for('auth_state') ?>"; date = "<?php echo $tournee->date ?>"; signatureImg = null;'>
+<div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state = "<?php echo url_for('auth_state') ?>"; date = "<?php echo $tournee->date ?>"; signatureImg = null;'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
             <div class="text-center page-header">
@@ -33,6 +33,7 @@
                                 <br />
                                 {{ constatRdv['rendezvous'].compte_adresse}}, {{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (constatRdv['rendezvous'].compte_telephone_mobile) ? constatRdv['rendezvous'].compte_telephone_mobile : constatRdv['rendezvous'].compte_telephone_bureau}}</span>
                                 <br />
+                                <small>Constat raisin fait à {{ constatRdv['rendezvous'].heure}}</small>
                             </div>
                             <div class="col-xs-2 col-sm-1 text-right">
                                 <span ng-if="!constatRdv['rendezvous'].termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
@@ -88,7 +89,7 @@
                 <div class="page-header text-center">
                     <h2><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></h2>
 
-                    <h2>Rendez-vous de {{ constatRdv['heure']}}<br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</span></h2>
+                    <h2>Rendez-vous de {{ constatRdv['heure']}}<br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}} <small ng-show="constatRdv['rendezvous'].compte_cvi" class="text-muted hidden-xs">({{ constatRdv['rendezvous'].compte_cvi }})</small></span></h2>
                 </div>
                 <div class="row">
                     <div class="text-center col-xs-12">

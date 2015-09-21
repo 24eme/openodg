@@ -73,6 +73,7 @@ Tournee:
                 fields: 
                   heure: { }
                   compte_identifiant: { }
+                  compte_cvi: { }
                   compte_raison_sociale: { }
                   compte_commune: { }
                   compte_adresse: { }

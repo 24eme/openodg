@@ -526,6 +526,7 @@ class Tournee extends BaseTournee {
         $rendezvousNode->compte_adresse = $rendezvous->adresse;
         $rendezvousNode->compte_code_postal = $rendezvous->code_postal;
         $rendezvousNode->compte_commune = $rendezvous->commune;
+        $rendezvousNode->compte_cvi = $rendezvous->cvi;
         $rendezvousNode->compte_lon = $rendezvous->lon;
         $rendezvousNode->compte_lat = $rendezvous->lat;
         $rendezvousNode->compte_telephone_mobile = $rendezvous->telephone_mobile;
