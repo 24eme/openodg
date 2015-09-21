@@ -33,6 +33,7 @@
                                 <br />
                                 {{ constatRdv['rendezvous'].compte_adresse}}, {{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (constatRdv['rendezvous'].compte_telephone_mobile) ? constatRdv['rendezvous'].compte_telephone_mobile : constatRdv['rendezvous'].compte_telephone_bureau}}</span>
                                 <br />
+                                <small>Constat raisin fait à {{ constatRdv['rendezvous'].heure}}</small>
                             </div>
                             <div class="col-xs-2 col-sm-1 text-right">
                                 <span ng-if="!constatRdv['rendezvous'].termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
@@ -47,7 +48,7 @@
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
                             </div>
                             <div ng-show="!constatRdv['isRendezvousRaisin']" class="col-xs-12 col-sm-12 text-center" >
-                                <span>Constat raisin à {{ constatRdv['rendezvous'].heure}}</span>
+                                
                             </div>
                         </a>
                     </div>
