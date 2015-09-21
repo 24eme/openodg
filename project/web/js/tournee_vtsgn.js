@@ -179,6 +179,14 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                                     constat._idNode = constatId;
                                     $scope.planification[rdv]['constats'][constatId] = constat;
                                     $scope.constats.push(constat);
+                                } else {
+                                    var constat = $scope.planification[rdv]['constats'][constatId];
+                                    var newConstat = data[rdv]['constats'][constatId];
+
+                                    if(newConstat.type_constat == 'raisin' && newConstat.statut_raisin != 'NONCONSTATE' && constat.type_constat == 'raisin' && constat.statut_raisin != newConstat.statut_raisin) {
+                                        newConstat._idNode = constatId;
+                                        $scope.planification[rdv]['constats'][constatId] = newConstat;
+                                    }
                                 }
                             }
                             $scope.updateRdv($scope.planification[rdv]);
