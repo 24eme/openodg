@@ -42,6 +42,7 @@ class constatsActions extends sfActions {
         $this->agent = $this->tournee->getFirstAgent();
         $this->date = $this->tournee->getDate();
         $this->lock = false;
+        $this->reload = $request->getParameter('reload', 0);
         $this->constructProduitsList();
         $this->contenants = ConstatsClient::getInstance()->getContenantsLibelle();
         $this->raisonsRefus = ConstatsClient::getInstance()->getRaisonsRefusLibelle();
