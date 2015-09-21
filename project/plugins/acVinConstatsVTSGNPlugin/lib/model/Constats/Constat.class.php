@@ -20,17 +20,17 @@ class Constat extends BaseConstat {
 
     public function updateConstat($jsonContent) {
 
-        $this->produit = $jsonContent->produit;
-        $this->produit_libelle = $jsonContent->produit_libelle;
+        $this->produit = (isset($jsonContent->produit)) ? $jsonContent->produit : null;
+        $this->produit_libelle = (isset($jsonContent->produit_libelle)) ? $jsonContent->produit_libelle : null;
         $this->denomination_lieu_dit = (isset($jsonContent->denomination_lieu_dit)) ? $jsonContent->denomination_lieu_dit : null;
-        $this->nb_contenant = $jsonContent->nb_contenant;
-        $this->contenant = $jsonContent->contenant;
-        $this->contenant_libelle = $jsonContent->contenant_libelle;
-        $this->degre_potentiel_raisin = $jsonContent->degre_potentiel_raisin;
+        $this->nb_contenant = (isset($jsonContent->nb_contenant)) ? $jsonContent->nb_contenant : null;
+        $this->contenant = (isset($jsonContent->contenant)) ? $jsonContent->contenant : null;
+        $this->contenant_libelle = (isset($jsonContent->contenant_libelle)) ? $jsonContent->contenant_libelle : null;
+        $this->degre_potentiel_raisin = (isset($jsonContent->degre_potentiel_raisin)) ? $jsonContent->degre_potentiel_raisin : null;
         $this->degre_potentiel_volume = (isset($jsonContent->degre_potentiel_volume)) ? $jsonContent->degre_potentiel_volume : null;
         $this->volume_obtenu = (isset($jsonContent->volume_obtenu)) ? $jsonContent->volume_obtenu : null;
         $this->type_vtsgn = (isset($jsonContent->type_vtsgn)) ? $jsonContent->type_vtsgn : null;
-        $this->rendezvous_raisin = $jsonContent->rendezvous_raisin;
+        $this->rendezvous_raisin = (isset($jsonContent->rendezvous_raisin)) ? $jsonContent->rendezvous_raisin : null;
 
         $this->raison_refus = (isset($jsonContent->raison_refus)) ? $jsonContent->raison_refus : null;
         $this->raison_refus_libelle = (isset($jsonContent->raison_refus_libelle)) ? $jsonContent->raison_refus_libelle : null;

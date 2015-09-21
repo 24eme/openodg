@@ -17,6 +17,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
         $scope.loaded = false;
         $scope.produitFilterAppellation = { hash: '' };
         $scope.produitFilterCepage = { hash: '' };
+        $scope.constats = [];
 
         $scope.produitsAppellation = [
             {'hash': 'appellation_ALSACEBLANC', 'libelle': 'AOC Alsace blanc'},
@@ -46,26 +47,69 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             localStorageService.set(local_storage_name, angular.toJson($scope.planification));
         }
 
+        $scope.updateRdv = function(rdv) {
+            termine = true;
+
+            rdv.rendezvous.nb_refuses = 0;
+            rdv.rendezvous.nb_approuves = 0;
+            rdv.rendezvous.nb_non_saisis = 0;
+
+            for(constat_key in rdv.constats) {
+                constat = rdv.constats[constat_key];
+
+                if(constat.type_constat == 'raisin' && constat.statut_raisin == 'REFUSE') {
+                    rdv.rendezvous.nb_refuses += 1;
+                } else if(constat.type_constat == 'raisin' && constat.statut_raisin == 'APPROUVE') {
+                    rdv.rendezvous.nb_approuves += 1;
+                } else if(constat.type_constat == 'raisin') {
+                    rdv.rendezvous.nb_non_saisis += 1;
+                    termine = false;
+                }
+
+                if(constat.type_constat == 'volume' && constat.statut_raisin == 'REFUSE') {
+                    rdv.rendezvous.nb_refuses += 1;
+                } else if(constat.type_constat == 'volume' && constat.statut_raisin == 'APPROUVE') {
+                    rdv.rendezvous.nb_approuves += 1;
+                } else if(constat.type_constat == 'volume') {
+                    rdv.rendezvous.nb_non_saisis += 1;
+                    termine = false;
+                }
+            }
+
+            rdv.rendezvous.termine = termine;
+        }
+
+        var localGet = function () {
+            $scope.planification = localStorageService.get(local_storage_name);
+            for (var rdv in $scope.planification) {
+                for (var constatId in $scope.planification[rdv]['constats']) {
+                    var constat = $scope.planification[rdv]['constats'][constatId];
+                    constat._idNode = constatId;
+                    $scope.constats.push(constat);
+                }
+                $scope.updateRdv($scope.planification[rdv]);
+            }
+
+            if ($scope.planification) {
+                $scope.loaded = true;
+            }
+
+            if (!$scope.planification) {
+                $scope.planification = [];
+            }
+
+            $scope.loadOrUpdatePlanification();
+        }
+
         var localDelete = function () {
             localStorageService.remove(local_storage_name);
         }
 
-        var getOperateurById = function (id) {
-            for (key in $scope.operateurs) {
-                if ($scope.operateurs[key]._id == id) {
+        var getConstatById = function (id) {
+            for (key in $scope.constats) {
+                if ($scope.constats[key]._idNode == id) {
 
-                    return $scope.operateurs[key];
-                }
-            }
-
-            return null;
-        }
-
-        var getOperateurKeyById = function (id) {
-            for (key in $scope.operateurs) {
-                if ($scope.operateurs[key]._id == id) {
-
-                    return key;
+                    return $scope.constats[key];
                 }
             }
 
@@ -85,12 +129,17 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             return constatsToTransmettre;
         }
 
-        var remoteSave = function (operateurs, callBack) {
-            if (operateurs.length == 0) {
+        var transmissionNeeded = function() {
+
+            return getConstatsToTransmettre().length > 0;
+        }
+
+        var remoteSave = function (constats, callBack) {
+            if (constats.length == 0) {
                 callBack(true);
                 return;
             }
-            $http.post($rootScope.url_json, angular.toJson(operateurs))
+            $http.post($rootScope.url_json, angular.toJson(constats))
                     .success(function (data) {
                         callBack(data);
                     }).error(function (data) {
@@ -106,21 +155,93 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
 
         $scope.loadOrUpdatePlanification = function () {
+            if ($scope.transmission_progress) {
+                return;
+            }
+
+            if(transmissionNeeded()) {
+                $scope.transmettre(true);
+                return;
+            }
+
             $http.get($rootScope.url_json)
                     .success(function (data) {
 
-                        $scope.loaded = true;
-                        $scope.planification = data;
+                        //$scope.planification = data;
 
                         for (var rdv in data) {
-                            for (var constatId in data[rdv]['constats']) {
-                                var constat = data[rdv]['constats'][constatId];
-                                constat._idNode = constatId;
-                                $scope.constats.push(constat);
+                            if(!$scope.planification[rdv]) {
+                                $scope.planification[rdv] = data[rdv];
                             }
+                            for (var constatId in data[rdv]['constats']) {
+                                if(!$scope.planification[rdv]['constats'][constatId]) {
+                                    var constat = data[rdv]['constats'][constatId];
+                                    constat._idNode = constatId;
+                                    $scope.planification[rdv]['constats'][constatId] = constat;
+                                    $scope.constats.push(constat);
+                                }
+                            }
+                            $scope.updateRdv($scope.planification[rdv]);
                         }
                         localSave();
+                        $scope.loaded = true;
                     });
+        }
+
+        $scope.transmettre = function (auto) {
+            if ($scope.transmission_progress) {
+
+                return;
+            }
+
+            $scope.transmission = false;
+            $scope.transmission_progress = true;
+            $scope.transmission_result = "success";
+
+            var constats = $scope.constats;
+
+            if (auto) {
+                var constats = getConstatsToTransmettre();
+            }
+
+            remoteSave(constats, function (data) {
+                if (!auto) {
+                    $scope.transmission = true;
+                }
+                
+
+                if (data === true) {
+                    $scope.transmission_result = "aucune_transmission";
+                    return;
+                }
+
+                if (!data) {
+                    $scope.transmission_result = "error";
+                    $scope.testState();
+                    return;
+                }
+
+                if (typeof data !== 'object') {
+                    $scope.transmission_result = "error";
+                    $scope.testState();
+                    return;
+                }
+
+                for (id_constat in data) {
+                    var revision = data[id_constat];
+                    var constat = getConstatById(id_constat);
+                    constat.transmission_needed = false;
+                    /*if (!revision && $scope.transmission_result) {
+                        $scope.transmission_result = false;
+                        operateur.transmission_collision = true;
+                    } else {
+                        operateur._rev = revision;
+                    }*/
+                }
+
+                localSave();
+                $scope.transmission_progress = false;
+            });
         }
 
         setInterval(function () {
@@ -132,24 +253,14 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
         }, 30000);
 
         setInterval(function () {
-            //$scope.loadOrUpdatePlanification();
-        }, 60000);
+            $scope.loadOrUpdatePlanification();
+        }, 5000);
 
         if ($scope.reload) {
             localDelete();
         }
 
-        //$scope.constats = localStorageService.get(local_storage_name);
-
-        if ($scope.constats) {
-            $scope.loaded = true;
-        }
-
-        if (!$scope.constats) {
-            $scope.constats = [];
-        }
-
-        $scope.loadOrUpdatePlanification();
+        localGet();
 
         $scope.updateActive = function (key) {
             $scope.active = key;
@@ -277,8 +388,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
             $scope.updateRdv($scope.activeRdv);
 
-            //localSave();
-            //$scope.transmettre(true);
+            localSave();
+            $scope.transmettre(true);
         }
 
         $scope.refuserConstatVolume = function (constat) {
@@ -309,65 +420,12 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             nouveauConstat.idconstatnode = idNewNode;
             nouveauConstat.nom_agent_origine = rdvConstats.rendezvous.nom_agent_origine;
             var constatId = rdvConstats.rendezvous.constat + '_' + idNewNode;
+            nouveauConstat._idNode = constatId;
             rdvConstats['constats'][constatId] = nouveauConstat;
             $scope.constats.push(nouveauConstat);
             $scope.showConstat(rdvConstats['constats'][constatId]);
             $scope.updateRdv(rdvConstats);
-        }
-
-        $scope.transmettre = function (auto) {
-            if ($scope.transmission_progress) {
-
-                return;
-            }
-
-            $scope.transmission = false;
-            $scope.transmission_progress = true;
-            $scope.transmission_result = "success";
-
-            var constats = $scope.constats;
-
-            if (auto) {
-                var constats = getConstatsToTransmettre();
-            }
-
-            remoteSave(constats, function (data) {
-                if (!auto) {
-                    $scope.transmission = true;
-                }
-                $scope.transmission_progress = false;
-
-                if (data === true) {
-                    $scope.transmission_result = "aucune_transmission";
-                    return;
-                }
-
-                if (!data) {
-                    $scope.transmission_result = "error";
-                    $scope.testState();
-                    return;
-                }
-
-                if (typeof data !== 'object') {
-                    $scope.transmission_result = "error";
-                    $scope.testState();
-                    return;
-                }
-
-                for (id_degustation in data) {
-                    var revision = data[id_degustation];
-                    var operateur = getOperateurById(id_degustation);
-                    operateur.transmission_needed = false;
-                    if (!revision && $scope.transmission_result) {
-                        $scope.transmission_result = false;
-                        operateur.transmission_collision = true;
-                    } else {
-                        operateur._rev = revision;
-                    }
-                }
-
-                localSave();
-            });
+            localSave();
         }
 
         $scope.valideConstatRaisin = function (constat) {
@@ -431,38 +489,6 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             }
 
             event.target.blur();
-        }
-
-        $scope.updateRdv = function(rdv) {
-            termine = true;
-
-            rdv.rendezvous.nb_refuses = 0;
-            rdv.rendezvous.nb_approuves = 0;
-            rdv.rendezvous.nb_non_saisis = 0;
-
-            for(constat_key in rdv.constats) {
-                constat = rdv.constats[constat_key];
-
-                if(constat.type_constat == 'raisin' && constat.statut_raisin == 'REFUSE') {
-                    rdv.rendezvous.nb_refuses += 1;
-                } else if(constat.type_constat == 'raisin' && constat.statut_raisin == 'APPROUVE') {
-                    rdv.rendezvous.nb_approuves += 1;
-                } else if(constat.type_constat == 'raisin') {
-                    rdv.rendezvous.nb_non_saisis += 1;
-                    termine = false;
-                }
-
-                if(constat.type_constat == 'volume' && constat.statut_raisin == 'REFUSE') {
-                    rdv.rendezvous.nb_refuses += 1;
-                } else if(constat.type_constat == 'volume' && constat.statut_raisin == 'APPROUVE') {
-                    rdv.rendezvous.nb_approuves += 1;
-                } else if(constat.type_constat == 'volume') {
-                    rdv.rendezvous.nb_non_saisis += 1;
-                    termine = false;
-                }
-            }
-
-            rdv.rendezvous.termine = termine;
         }
 
         $scope.updateContenant = function(constat) {

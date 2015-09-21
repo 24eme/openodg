@@ -126,6 +126,7 @@ class constatsActions extends sfActions {
         foreach ($json as $json_content) {
             $constat = ConstatsClient::getInstance()->find($json_content->idconstatdoc);
             $constat->updateAndSaveConstatNodeFromJson($json_content->idconstatnode, $json_content);
+            $json_return[$json_content->_idNode] = true;
         }
         $this->response->setContentType('application/json');
 
