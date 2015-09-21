@@ -56,10 +56,10 @@ class RendezvousClient extends acCouchdbClient {
                 $rendezvousConstats->constats[$keyRendezvous]->nb_refuses = 0;
                 $rendezvousConstats->constats[$keyRendezvous]->nb_nonconstate = 0;
                 $constatsForDateRdv = ConstatsClient::getInstance()->findConstatsByRendezvous($rendezvous);
-               
+
                 foreach ($constatsForDateRdv as $constatRdvKey => $constat) {
                     if (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_APPROUVE)) {
-                       
+
                         $rendezvousConstats->constats[$keyRendezvous]->nb_approuves++;
                     } elseif (($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE) && ($constat->statut_volume == ConstatsClient::STATUT_REFUSE)) {
                         $rendezvousConstats->constats[$keyRendezvous]->nb_refuses++;
@@ -144,13 +144,14 @@ class RendezvousClient extends acCouchdbClient {
 
     public function findRendezvousVolumeFromIdRendezvous($idRdvOrigine) {
         $rdvOrigine = $this->find($idRdvOrigine);
-        $this->findByIdentifiantAndDateHeure($rdvOrigine->cvi, Date::addDelaiToDate("+1 day", $rdvOrigine->date));
+        ;
+        $this->findByIdentifiantAndDateHeure($rdvOrigine->cvi, self::getNextDate($rdvOrigine->date));
     }
 
     public function findOrCreateRendezvousVolumeFromIdRendezvous($idRdvOrigine, $nom_agent_origine = "") {
         $rdvOrigine = $this->find($idRdvOrigine);
         $rendezvous = clone $rdvOrigine;
-        $rendezvous->date = Date::addDelaiToDate("+1 day", $rdvOrigine->date);
+        $rendezvous->date = self::getNextDate($rdvOrigine->date);
         $rendezvous->nom_agent_origine = $nom_agent_origine;
         $rendezvous->type_rendezvous = self::RENDEZVOUS_TYPE_VOLUME;
         $rendezvous->constructId();
@@ -189,6 +190,34 @@ class RendezvousClient extends acCouchdbClient {
         }
 
         return $rendezvousJournee;
+    }
+
+    public static function getNextDate($date) {
+        $delai = 1;
+        if (date('N', strtotime($date)) > 5) {
+            $delai++;
+        }
+        $returnDate = Date::addDelaiToDate("+" . $delai . " day", $date);
+        if ((date('md', strtotime($returnDate)) == '0111') || (date('md', strtotime($returnDate)) == '1111')) {
+            $returnDate = Date::addDelaiToDate("+1 day", $returnDate);
+        }
+        return $returnDate;
+    }
+
+    public static function getPreviousDate($date) {
+        $delai = 1;
+        if (date('N', strtotime($date)) < 2) {
+            $delai++;
+        }
+        $returnDate = Date::addDelaiToDate("-" . $delai . " day", $date);
+        if ((date('md', strtotime($returnDate)) == '0111') || (date('md', strtotime($returnDate)) == '1111')) {
+            $returnDate = Date::addDelaiToDate("-1 day", $returnDate);
+        }
+        return $returnDate;
+    }
+
+    public static function isDateToByPass($date) {
+        return (date('md', strtotime($date)) == '0111') || (date('md', strtotime($date)) == '1111') || (date('N', strtotime($date)) == 7);
     }
 
 }
