@@ -86,7 +86,7 @@
                 <div class="page-header text-center">
                     <h2><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></h2>
 
-                    <h2>Rendez-vous de {{ constatRdv['heure']}}<br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</span></h2>
+                    <h2>Rendez-vous de {{ constatRdv['heure']}}<br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}} <small ng-show="constatRdv['rendezvous'].compte_cvi" class="text-muted hidden-xs">({{ constatRdv['rendezvous'].compte_cvi }})</small></span></h2>
                 </div>
                 <div class="row">
                     <div class="text-center col-xs-12">

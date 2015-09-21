@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="btn-group">
-                <btn class="active organisation-tournee btn btn-lg btn-default-step" href="">Tous</btn>
+                <btn class="active organisation-tournee btn btn-lg btn-default-step ajax" href="">Tous</btn>
                 <?php foreach ($tournees as $t): ?>
                     <btn style="color: <?php echo $tourneesCouleur[$t->_id] ?>;" data-per-hour="4" data-hour="09:00" data-color="<?php echo $tourneesCouleur[$t->_id] ?>" id="<?php echo $t->_id ?>" class="organisation-tournee btn btn-lg btn-default-step ajax"><?php echo $t->getFirstAgent()->nom ?></btn>
                 <?php endforeach; ?>
