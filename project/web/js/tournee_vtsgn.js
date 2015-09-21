@@ -66,9 +66,9 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                     termine = false;
                 }
 
-                if(constat.type_constat == 'volume' && constat.statut_raisin == 'REFUSE') {
+                if(constat.type_constat == 'volume' && constat.statut_volume == 'REFUSE') {
                     rdv.rendezvous.nb_refuses += 1;
-                } else if(constat.type_constat == 'volume' && constat.statut_raisin == 'APPROUVE') {
+                } else if(constat.type_constat == 'volume' && constat.statut_volume == 'APPROUVE') {
                     rdv.rendezvous.nb_approuves += 1;
                 } else if(constat.type_constat == 'volume') {
                     rdv.rendezvous.nb_non_saisis += 1;
