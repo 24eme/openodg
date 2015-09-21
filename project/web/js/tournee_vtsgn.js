@@ -339,7 +339,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             signaturePad = new SignaturePad(canvas);
 
             if($rootScope.signatureImg && !constat.signature) {
-                constat.signature = $rootScope.signatureImg;
+                //constat.signature = $rootScope.signatureImg;
             }
 
             if(constat.signature) {
