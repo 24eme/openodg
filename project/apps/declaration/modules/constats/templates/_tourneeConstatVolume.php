@@ -12,7 +12,7 @@
         </div>
         <div class="form-group">
             <div ng-class="{ 'hidden': !constat.erreurs['degre_potentiel_volume'] }" class="alert alert-danger">
-                Vous devez saisir le degré potentiel entre 10° et 30°
+                Valeur incohérente
             </div>
             <div class="col-xs-6">
                 <input placeholder="Degré potentiel" id="degre_potentiel_volume{{ keyConstatNode}}" ng-model="constat.degre_potentiel_volume" type="number" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" min="10" max="30" />

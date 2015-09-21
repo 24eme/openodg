@@ -143,7 +143,7 @@
                                         {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>  <span>(Constat raisin fait à {{ constatRdv['rendezvous'].heure}})</span>
                                     </span>
                                 </div>
-                                <div ng-show="constat.type_constat == 'volume' && constat.commentaire_raisin!=''" class="text-center">
+                                <div ng-show="constat.type_constat == 'volume' && constat.commentaire_raisin" class="text-center">
                                     <span class="glyphicon glyphicon-info-sign"  style="font-size: 14pt; top: 5px;"></span>&nbsp;{{constat.commentaire_raisin}}
                                 </div>
                             </a>
@@ -174,7 +174,7 @@
         <div ng-show="active == 'choix_produit' && activeConstat">
             <div href="" ng-click="remplir(activeConstat)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Séléctionner un produit</h2>
+                <h2>Sélectionner un produit</h2>
             </div>
             <h3>Filter par Appellation</h3>
             <div class="form-group">
@@ -183,7 +183,7 @@
                     <button ng-show="!produitFilterAppellation.hash" class="btn btn-default btn-block btn-default-step" ng-click="filterProduitsAppellation(produit.hash)" type="buttton" style="border: 1px solid #000000;">{{ produit.libelle}}</button>
                 </span>
             </div>
-            <h3>Filter par Cépage</h3>
+            <h3>Filtrer par Cépage</h3>
             <div class="form-group">
                 <span ng-repeat="produit in produitsCepage">
                     <button ng-show="produitFilterCepage.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterCepage()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle}}</button>
