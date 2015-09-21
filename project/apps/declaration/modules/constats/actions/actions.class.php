@@ -67,6 +67,7 @@ class constatsActions extends sfActions {
             $rdvJson->nb_refuses = 0;
             $rdvJson->nb_approuves = 0;
             $rdvJson->termine = true;
+            $rdvJson->hasOneCommentaire = false;
             $rdvJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();
             $rdvConstats['constats'] = array();
 
@@ -92,6 +93,9 @@ class constatsActions extends sfActions {
                 if ($idrendezvous == $constatNode->rendezvous_volume) {
                     $constatNodeJson->type_constat = 'volume';
                     $constatNodeJson->email = $rdvJson->compte_email;
+                    if ($constatNodeJson->commentaire_raisin) {
+                        $rdvJson->hasOneCommentaire = true;
+                    }
                     if (($constatNodeJson->statut_volume != ConstatsClient::STATUT_APPROUVE) && ($constatNodeJson->statut_volume != ConstatsClient::STATUT_REFUSE)) {
                         $rdvJson->termine = false;
                     }
