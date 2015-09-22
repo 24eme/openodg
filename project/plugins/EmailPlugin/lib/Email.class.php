@@ -261,8 +261,8 @@ class Email {
     public function sendPriseDeRendezvousMails(Rendezvous $rendezvous) {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
-        $to = sfConfig::get('app_email_to_notification');
-        $subject = "Nouvelle prise de Rendezvous pour " . $rendezvous->raison_sociale . " le " . $rendezvous->getDateHeureFr();
+        $to = sfConfig::get('app_email_plugin_to_notification');
+        $subject = "Nouvelle prise de rendez-vous pour " . $rendezvous->raison_sociale . " le " . $rendezvous->getDateHeureFr();
 
         $body = $this->getBodyFromPartial('send_notification_prise_rendezvous', array('rendezvous' => $rendezvous));
 
