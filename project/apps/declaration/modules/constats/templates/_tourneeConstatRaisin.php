@@ -81,6 +81,6 @@
             <div class="col-xs-6">
                 <a href="" ng-click="refuserConstatRaisin(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Confirmer</a>
             </div>
+            </div>
         </div>
     </div>
-</div>
