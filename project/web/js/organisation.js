@@ -106,7 +106,6 @@
                     return;
                     var added = false;
                     ligne.each(function () {
-                        console.log(added);
                         if (!added && !getLigneTournee($(this))) {
                             toggleItem($(this));
                             added = true;
@@ -362,6 +361,11 @@
          return next + ':00';
          } 
          */
+
+        if (next < 10) {
+            next = '0' + next; 
+        } 
+
         return  next + ':00';
     }
 
