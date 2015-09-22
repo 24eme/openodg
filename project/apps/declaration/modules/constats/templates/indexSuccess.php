@@ -64,7 +64,7 @@
                         $nbRendezvousRealise = (isset($journee[RendezvousClient::RENDEZVOUS_STATUT_REALISE])) ?
                                 count($journee[RendezvousClient::RENDEZVOUS_STATUT_REALISE]) : '';
                         ?>
-                        <tr class="<?php if ($dateKey == date('Y-m-d')): ?>font-weight: bold<?php endif; ?>">
+                        <tr class="<?php if ($dateKey == date('Y-m-d')): ?>font-weight: bold<?php endif; ?> "  <?php echo RendezvousClient::isDateToByPass($dateKey)? 'style="opacity : 0.5;"' : '';?>>
                             <td class="<?php if ($dateKey == date('Y-m-d')): ?>lead<?php endif; ?>"><?php if ($dateKey == date('Y-m-d')): ?>Aujourd'hui<?php else: ?><?php echo ucfirst(format_date($dateKey, "P", "fr_FR")); ?><?php endif; ?></td>
                             <td class="text-center <?php if ($dateKey == date('Y-m-d')): ?>lead<?php endif; ?>"><?php echo $nbRendezvousPris; ?></td>
                             <td class="text-center <?php if ($dateKey == date('Y-m-d')): ?>lead<?php endif; ?>"><?php echo $nbRendezvousPlanifie; ?></td>

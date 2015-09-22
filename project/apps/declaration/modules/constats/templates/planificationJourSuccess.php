@@ -14,17 +14,19 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
         <div class="col-xs-8 col-xs-offset-2">
             <div class="row">
                 <div class="col-xs-2 text-left">
-                    <h2><a class="text-muted" href="<?php echo url_for('constats_planification_jour', array('jour' => Date::addDelaiToDate("-1 day", $jour))); ?>">
+                    <h2><a class="text-muted" href="<?php echo url_for('constats_planification_jour', array('jour' => RendezvousClient::getPreviousDate($jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-left"></span>
-                        </a></h2>
+                        </a>
+                    </h2>
                 </div>
                 <div class="col-xs-8 text-center">
                     <h2><?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></h2>
                 </div>
                 <div class="col-xs-2 text-right">
-                    <h2><a class="text-muted" href="<?php echo url_for('constats_planification_jour', array('jour' => Date::addDelaiToDate("+1 day", $jour))); ?>">
+                    <h2><a class="text-muted" href="<?php echo url_for('constats_planification_jour', array('jour' => RendezvousClient::getNextDate($jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-right"></span>
-                        </a></h2>
+                        </a>
+                    </h2>
                 </div>
             </div>
         </div>

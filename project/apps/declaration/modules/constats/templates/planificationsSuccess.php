@@ -12,7 +12,7 @@
         <div class="col-xs-12">
             <div class="row">
                 <div class="col-xs-1 text-left">
-                    <h2><a class="text-muted ajax" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("-1 day", $jour))); ?>">
+                    <h2><a class="text-muted ajax" href="<?php echo url_for('constats_planifications', array('date' => RendezvousClient::getPreviousDate($jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-left"></span>
                         </a></h2>
                 </div>
@@ -20,7 +20,7 @@
                     <h2><?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></h2>
                 </div>
                 <div class="col-xs-1 text-right">
-                    <h2><a class="text-muted ajax" href="<?php echo url_for('constats_planifications', array('date' => Date::addDelaiToDate("+1 day", $jour))); ?>">
+                    <h2><a class="text-muted ajax" href="<?php echo url_for('constats_planifications', array('date' => RendezvousClient::getNextDate($jour))); ?>">
                             <span class="glyphicon glyphicon-arrow-right"></span>
                         </a></h2>
                 </div>

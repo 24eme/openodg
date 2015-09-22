@@ -48,7 +48,10 @@
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
                             </div>
                             <div ng-show="!constatRdv['isRendezvousRaisin']" class="col-xs-12 col-sm-12 text-center" >
-                                
+                                <span>Constat raisin à {{ constatRdv['rendezvous'].heure}}</span>
+                                 <div ng-show="constatRdv['rendezvous'].hasOneCommentaire" class="text-right">
+                                    <span class="glyphicon glyphicon-info-sign"  style="font-size: 14pt; top: 5px;"></span>
+                                </div>
                             </div>
                         </a>
                     </div>
@@ -177,7 +180,7 @@
             <div class="page-header text-center">
                 <h2>Sélectionner un produit</h2>
             </div>
-            <h3>Filter par Appellation</h3>
+            <h3>Filtrer par Appellation</h3>
             <div class="form-group">
                 <span ng-repeat="produit in produitsAppellation">
                     <button ng-show="produitFilterAppellation.hash == produit.hash" class="btn btn-default btn-block" ng-click="resetFilterAppellation()" type="buttton"><span class="glyphicon glyphicon-remove-sign"></span> {{ produit.libelle}}</button>
