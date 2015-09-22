@@ -90,6 +90,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                 $scope.updateRdv($scope.planification[rdv]);
             }
 
+
             if ($scope.planification) {
                 $scope.loaded = true;
             }
@@ -164,6 +165,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                 return;
             }
 
+
             $http.get($rootScope.url_json)
                     .success(function (data) {
 
@@ -178,6 +180,20 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                                     var constat = data[rdv]['constats'][constatId];
                                     constat._idNode = constatId;
                                     $scope.planification[rdv]['constats'][constatId] = constat;
+                                    $scope.constats.push(constat);
+                                } else {
+                                    var constat = $scope.planification[rdv]['constats'][constatId];
+                                    var newConstat = data[rdv]['constats'][constatId];
+
+                                    if(newConstat.type_constat == 'raisin' && newConstat.statut_raisin != 'NONCONSTATE' && constat.type_constat == 'raisin' && constat.statut_raisin != newConstat.statut_raisin) {
+                                        newConstat._idNode = constatId;
+                                        $scope.planification[rdv]['constats'][constatId] = newConstat;
+                                    }
+                                }
+
+                                if(!getConstatById(constatId))  {
+                                    var constat = $scope.planification[rdv]['constats'][constatId];
+                                    constat._idNode = constatId;
                                     $scope.constats.push(constat);
                                 }
                             }
@@ -200,9 +216,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
 
             var constats = $scope.constats;
 
-            if (auto) {
-                var constats = getConstatsToTransmettre();
-            }
+            var constats = getConstatsToTransmettre();
 
             remoteSave(constats, function (data) {
                 if (!auto) {
@@ -211,24 +225,28 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                 
 
                 if (data === true) {
-                    $scope.transmission_result = "aucune_transmission";
+                    $scope.transmission_result = "success";
+                    $scope.transmission_progress = false;
                     return;
                 }
 
                 if (!data) {
                     $scope.transmission_result = "error";
+                    $scope.transmission_progress = false;
                     $scope.testState();
                     return;
                 }
 
                 if (typeof data !== 'object') {
                     $scope.transmission_result = "error";
+                    $scope.transmission_progress = false;
                     $scope.testState();
                     return;
                 }
 
+
                 for (id_constat in data) {
-                    var revision = data[id_constat];
+                    //var revision = data[id_constat];
                     var constat = getConstatById(id_constat);
                     constat.transmission_needed = false;
                     /*if (!revision && $scope.transmission_result) {
