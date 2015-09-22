@@ -33,7 +33,7 @@
                                 <br />
                                 {{ constatRdv['rendezvous'].compte_adresse}}, {{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (constatRdv['rendezvous'].compte_telephone_mobile) ? constatRdv['rendezvous'].compte_telephone_mobile : constatRdv['rendezvous'].compte_telephone_bureau}}</span>
                                 <br />
-                                <small>Constat raisin fait à {{ constatRdv['rendezvous'].heure}}</small>
+                                <small ng-show="!constatRdv['isRendezvousRaisin']">Constat raisin fait à {{ constatRdv['rendezvous'].heure}}</small>
                             </div>
                             <div class="col-xs-2 col-sm-1 text-right">
                                 <span ng-if="!constatRdv['rendezvous'].termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
@@ -47,9 +47,8 @@
                             <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" >
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
                             </div>
-                            <div ng-show="!constatRdv['isRendezvousRaisin']" class="col-xs-12 col-sm-12 text-center" >
-                                <span>Constat raisin à {{ constatRdv['rendezvous'].heure}}</span>
-                                 <div ng-show="constatRdv['rendezvous'].hasOneCommentaire" class="text-right">
+                            <div class="col-xs-12 col-sm-12 text-center" >
+                                <div ng-show="constatRdv['rendezvous'].hasOneCommentaire" class="text-right">
                                     <span class="glyphicon glyphicon-info-sign"  style="font-size: 14pt; top: 5px;"></span>
                                 </div>
                             </div>
