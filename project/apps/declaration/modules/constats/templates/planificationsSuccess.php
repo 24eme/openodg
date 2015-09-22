@@ -55,7 +55,8 @@
                 <h4 class="text-center" style="text-transform: uppercase;"><span class="glyphicon glyphicon-time"></span> En attente de planification</h4>
                 <ul class="organisation-list-wait list-group">
                     <?php foreach ($rdvsPris as $rdv_id => $rdv): ?>
-                        <li id="<?php echo $rdv_id ?>" data-tournee="" data-hour="<?php echo preg_replace("/^([0-9]+):[0-9]+$/", '\1:00', $rdv->heure) ?>" data-title="<?php echo $rdv->raison_sociale ?>" data-point="<?php echo $rdv->lat * 1 ?>,<?php echo $rdv->lon * 1 ?>" class="organisation-item list-group-item col-xs-12">
+                        <?php $heure = ($rdv->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN)? 'data-hour="'.preg_replace("/^([0-9]+):[0-9]+$/", '\1:00', $rdv->heure).'"' : ''; ?>
+                        <li id="<?php echo $rdv_id ?>" data-tournee="" <?php echo $heure ?> data-title="<?php echo $rdv->raison_sociale ?>" data-point="<?php echo $rdv->lat * 1 ?>,<?php echo $rdv->lon * 1 ?>" class="organisation-item list-group-item col-xs-12">
 
                             <input type="hidden" class="input-tournee" name="rdvs[<?php echo $rdv->_id ?>][tournee]" value="" />
                             <div class="col-xs-12">
@@ -63,9 +64,14 @@
                                     <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
                                     <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm hidden" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
                                 </div>
+
                                 <div style="padding-right: 16px; margin-top: 4px;" class="pull-right">
-                                    <span style="font-size: 20px;" class="icon-raisins"></span>                                    
-                                    <span style="font-size: 16px;"><?php echo str_replace(":", "h", $rdv->heure) ?></span>
+                                    <?php if ($rdv->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN): ?>
+                                        <span style="font-size: 20px;" class="icon-raisins"></span>                                    
+                                        <span style="font-size: 16px;"><?php echo str_replace(":", "h", $rdv->heure) ?></span>
+                                    <?php else: ?>
+                                        <span style="font-size: 20px;" class="icon-mouts"></span>                 
+                                    <?php endif; ?>
                                 </div>
                                 <div style="margin-right: 10px; margin-top: 9px;" class="pull-left">
                                     <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: #e2e2e2"></span>
