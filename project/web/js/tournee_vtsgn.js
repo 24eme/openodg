@@ -417,9 +417,27 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             localSave();
             $scope.transmettre(true);
         }
+        
+        $scope.assemblerConstatVolume = function (constat) {
+            constat.statut_volume = 'REFUSE';
+            constat.raison_refus = 'ASSEMBLE';
+            $scope.mission($scope.activeRdv);
+            
+            constat.transmission_needed = true;
+
+            $scope.updateRdv($scope.activeRdv);
+
+            localSave();
+            $scope.transmettre(true);
+        }
+        
 
         $scope.refuserConfirmation = function (constat) {
             $scope.updateActive('refuser_confirmation');
+        }
+
+        $scope.assembleConfirmation = function (constat) {
+            $scope.updateActive('assemble_confirmation');
         }
 
         $scope.ajoutConstat = function(rdvConstats) {
