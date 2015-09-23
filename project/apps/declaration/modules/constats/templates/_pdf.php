@@ -100,9 +100,4 @@ $libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Sélection de Grains Nobles' 
     <tr><td class="tdH2Big"><span class="h2">Signature</span></td></tr>
 </table>
 <br />
-<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
-
-    <tr>
-        <td class="td" style="text-align:left; width: 300px;"><?php echo tdStart() ?><img style="width: 300px; height: 50px;" src="<?php echo $constat->signature_base64; ?>" /></td>
-    </tr>
-</table>
+<img style="height: 130px" src="<?php echo $constat->signature_base64; ?>" />

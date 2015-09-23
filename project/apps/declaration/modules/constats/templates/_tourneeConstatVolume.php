@@ -90,8 +90,8 @@
         <div ng-class="{ 'hidden': !constat.erreurs['signature'] }" class="alert alert-danger">
                 L'opérateur doit signer le constat
         </div>
-        <div class="signature-pad well">
-            <canvas style="width: 100%; height: 250px;" height="250"></canvas>
+        <div class="signature-pad well" style="width: 290px; padding: 5px;">
+            <canvas style="width: 100%; height: 200px;" height="200"></canvas>
         </div>
         <div class="form-group">
             <div class="col-xs-12">
