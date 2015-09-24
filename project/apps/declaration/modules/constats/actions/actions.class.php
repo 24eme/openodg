@@ -67,6 +67,7 @@ class constatsActions extends sfActions {
             $rdvJson->nb_non_saisis = 0;
             $rdvJson->nb_refuses = 0;
             $rdvJson->nb_approuves = 0;
+            $rdvJson->nb_assembles = 0;
             $rdvJson->termine = true;
             $rdvJson->hasOneCommentaire = false;
             $rdvJson->nom_agent_origine = $this->tournee->getFirstAgent()->getNom();
@@ -102,7 +103,11 @@ class constatsActions extends sfActions {
                     }
                     $rdvConstats['constats'][$constatNodeJson->idconstatdoc . '_' . $constatNodeJson->idconstatnode] = $constatNodeJson;
                     if ($constatNodeJson->statut_volume == ConstatsClient::STATUT_REFUSE) {
-                        $rdvJson->nb_refuses++;
+                        if ($constatNodeJson->raison_refus == ConstatsClient::RAISON_REFUS_ASSEMBLE) {
+                            $rdvJson->nb_assembles++;
+                        } else {
+                            $rdvJson->nb_refuses++;
+                        }
                     } elseif ($constatNodeJson->statut_volume == ConstatsClient::STATUT_APPROUVE) {
                         $rdvJson->nb_approuves++;
                     } else {

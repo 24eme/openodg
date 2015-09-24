@@ -43,6 +43,7 @@
                                 <span ng-show="constatRdv['rendezvous'].nb_non_saisis" class="label label-default" style="" >{{ constatRdv['rendezvous'].nb_non_saisis }} non saisi(s)</span>
                                 <span ng-show="constatRdv['rendezvous'].nb_approuves" class="label label-success" style="" >{{ constatRdv['rendezvous'].nb_approuves}} approuvé(s)</span>
                                 <span ng-show="constatRdv['rendezvous'].nb_refuses" class="label label-danger" style="" >{{ constatRdv['rendezvous'].nb_refuses}} refusé(s)</span>
+                                <span ng-show="constatRdv['rendezvous'].nb_assembles" class="label label-warning" style="" >{{ constatRdv['rendezvous'].nb_assembles}} assemblé(s)</span>
                             </div>
                             <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" >
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
@@ -109,7 +110,7 @@
                     <div class="col-xs-12">
                         <h3 class="text-center">Constats</h3>
                         <div class="list-group">
-                            <a href="" ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>')) }" class="list-group-item" ng-repeat="(keyConstatNode,constat) in constatRdv['constats']">
+                            <a href="" ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.raison_refus != '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>')), 'list-group-item-warning': (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.raison_refus == '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>') }" class="list-group-item" ng-repeat="(keyConstatNode,constat) in constatRdv['constats']">
                                 <div ng-show="constat.type_constat == 'raisin'">
                                     <span style="font-size: 18px; margin-right: 6px;" class="icon-raisins"></span>
 
@@ -124,7 +125,7 @@
                                         ({{ constat.nb_contenant}} {{ constat.contenant_libelle}}<span ng-show="constat.nb_contenant > 1">s</span>, {{ constat.degre_potentiel_raisin}}°)
                                     </span>
 
-                                    <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
+                                    <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">                                       
                                         <span class="pull-right"><span class="label label-danger">Refusé</span></span>
                                         {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>
                                     </span>
@@ -142,7 +143,8 @@
                                         ({{ constat.degre_potentiel_volume}}°, {{ constat.volume_obtenu}} hl) <span>(Constat raisin fait à {{ constatRdv['rendezvous'].heure}})</span>
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
-                                        <span class="pull-right"><span class="label label-danger">Refusé</span></span>
+                                       <span ng-show="constat.raison_refus != '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>'" class="pull-right"><span class="label label-danger">Refusé</span></span>
+                                        <span ng-show="constat.raison_refus == '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>'"  class="pull-right"><span class="label label-warning">Assemblé</span></span>                                        
                                         {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>  <span>(Constat raisin fait à {{ constatRdv['rendezvous'].heure}})</span>
                                     </span>
                                 </div>
