@@ -197,6 +197,8 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                                     $scope.constats.push(constat);
                                 }
                             }
+                            $scope.planification[rdv].heure = data[rdv].heure;
+                            $scope.planification[rdv].rendezvous = data[rdv].rendezvous;
                             $scope.updateRdv($scope.planification[rdv]);
                         }
                         localSave();
