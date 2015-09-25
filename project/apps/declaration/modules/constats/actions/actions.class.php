@@ -121,7 +121,7 @@ class constatsActions extends sfActions {
             $rdvConstats['typerendezvous'] = $rdvJson->type_rendezvous;
             $rdvConstats['nomAgentOrigine'] = $rdvJson->nom_agent_origine;
             $rdvConstats['isRendezvousRaisin'] = ($rdvJson->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN);
-            $json[] = $rdvConstats;
+            $json[$idrendezvous] = $rdvConstats;
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {

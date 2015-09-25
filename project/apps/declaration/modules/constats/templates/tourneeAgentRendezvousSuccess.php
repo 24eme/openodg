@@ -4,7 +4,7 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
-<?php use_javascript('tournee_vtsgn.js?201509231121'); ?>
+<?php use_javascript('tournee_vtsgn.js?201509251813'); ?>
 <div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state = "<?php echo url_for('auth_state') ?>"; date = "<?php echo $tournee->date ?>"; signatureImg = null;'>
     <div ng-controller="tournee_vtsgnCtrl">    
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
@@ -20,35 +20,38 @@
                 <div class="col-xs-12">
                     <div class="list-group print-list-group-condensed">
                         <a ng-repeat="constatRdv in planification| orderBy: ['typerendezvous', 'heure']" href="" ng-click="mission(constatRdv)" ng-class="{ 'list-group-item-success': constatRdv['rendezvous'].termine }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
-                            <div class="col-xs-2 col-sm-2 text-left">
-                                <strong ng-show="constatRdv['isRendezvousRaisin']" class="lead" style="font-weight: bold;">{{ constatRdv['rendezvous'].heure}}</strong>
-                                <label ng-show="constatRdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>    
+                            <div class="col-xs-2 col-sm-2 text-left" ng-class="{ 'opacity-md': constatRdv.annule }">
+                                <strong ng-show="constatRdv['isRendezvousRaisin']" ng-class="{ 'opacity-md': constatRdv.annule }" class="lead" style="font-weight: bold;">{{ constatRdv['rendezvous'].heure}}</strong>
+                                <label ng-show="constatRdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>  
                             </div>
-                            <div class="col-xs-1 col-sm-1">
+                            <div class="col-xs-1 col-sm-1" ng-class="{ 'opacity-md': constatRdv.annule }">
                                 <span ng-show="constatRdv['isRendezvousRaisin']" class="icon-raisins" style="font-size: 20px;" ></span>
                                 <span ng-show="!constatRdv['isRendezvousRaisin']" class="icon-mouts" style="font-size: 20px;" ></span>
                             </div>
-                            <div class="col-xs-7 col-sm-6">
+                            <div class="col-xs-7 col-sm-6" ng-class="{ 'opacity-md': constatRdv.annule, 'barred': constatRdv.annule }">
                                 <strong class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</strong><span class="text-muted hidden-xs"> {{ constatRdv['rendezvous'].compte_cvi}}</span><!--<span ng-show="constatRdv['rendezvous'].termine && constatRdv['rendezvous'].nb_prelevements">&nbsp;<button class="btn btn-xs btn-success"></button>--></span>
                                 <br />
                                 {{ constatRdv['rendezvous'].compte_adresse}}, {{ constatRdv['rendezvous'].compte_code_postal}} {{ constatRdv['rendezvous'].compte_commune}}<span class="text-muted hidden-xs">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-phone-alt"></span>&nbsp;{{ (constatRdv['rendezvous'].compte_telephone_mobile) ? constatRdv['rendezvous'].compte_telephone_mobile : constatRdv['rendezvous'].compte_telephone_bureau}}</span>
                                 <br />
                                 <small ng-show="!constatRdv['isRendezvousRaisin']">Constat raisin fait à {{ constatRdv['rendezvous'].heure}}</small>
                             </div>
-                            <div class="col-xs-2 col-sm-1 text-right">
+                            <div class="col-xs-2 col-sm-1 text-right" ng-show="!constatRdv.annule">
                                 <span ng-if="!constatRdv['rendezvous'].termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
                                 <span ng-if="constatRdv['rendezvous'].termine" class="glyphicon glyphicon-check" style="font-size: 28px; margin-top: 8px;"></span>
                             </div>   
-                            <div class="col-xs-12 col-sm-2 text-right">
+                            <div class="col-xs-12 col-sm-2 text-right" ng-show="!constatRdv.annule">
                                 <span ng-show="constatRdv['rendezvous'].nb_non_saisis" class="label label-default" style="" >{{ constatRdv['rendezvous'].nb_non_saisis }} non saisi(s)</span>
                                 <span ng-show="constatRdv['rendezvous'].nb_approuves" class="label label-success" style="" >{{ constatRdv['rendezvous'].nb_approuves}} approuvé(s)</span>
                                 <span ng-show="constatRdv['rendezvous'].nb_refuses" class="label label-danger" style="" >{{ constatRdv['rendezvous'].nb_refuses}} refusé(s)</span>
                                 <span ng-show="constatRdv['rendezvous'].nb_assembles" class="label label-warning" style="" >{{ constatRdv['rendezvous'].nb_assembles}} assemblé(s)</span>
                             </div>
-                            <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" >
+                            <div class="col-xs-12 col-sm-3 text-right" ng-show="constatRdv.annule">
+                                <label class="label label-danger">Annulé</label>  
+                            </div>
+                            <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" ng-class="{ 'opacity-md': constatRdv.annule }">
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
                             </div>
-                            <div class="col-xs-12 col-sm-12 text-center" >
+                            <div class="col-xs-12 col-sm-12 text-center" ng-class="{ 'opacity-md': constatRdv.annule }">
                                 <div ng-show="constatRdv['rendezvous'].hasOneCommentaire" class="text-right">
                                     <span class="glyphicon glyphicon-info-sign"  style="font-size: 14pt; top: 5px;"></span>
                                 </div>

@@ -111,6 +111,17 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             localStorageService.remove(local_storage_name);
         }
 
+        var getRdvById = function (id) {
+            for (key in $scope.planification) {
+                if ($scope.planification[key].idrdv == id) {
+
+                    return $scope.planification[key];
+                }
+            }
+
+            return null;
+        }
+
         var getConstatById = function (id) {
             for (key in $scope.constats) {
                 if ($scope.constats[key]._idNode == id) {
@@ -177,35 +188,52 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                         //$scope.planification = data;
 
                         for (var rdv in data) {
-                            if (!$scope.planification[rdv]) {
-                                $scope.planification[rdv] = data[rdv];
+                            var rdvObj = getRdvById(data[rdv].idrdv);
+                            if (!rdvObj) {
+                                rdvObj = data[rdv];
+                                $scope.planification.push(rdvObj);
                             }
                             for (var constatId in data[rdv]['constats']) {
-                                if (!$scope.planification[rdv]['constats'][constatId]) {
+                                if (!rdvObj['constats'][constatId]) {
                                     var constat = data[rdv]['constats'][constatId];
                                     constat._idNode = constatId;
-                                    $scope.planification[rdv]['constats'][constatId] = constat;
+                                    rdvObj['constats'][constatId] = constat;
                                     $scope.constats.push(constat);
                                 } else {
-                                    var constat = $scope.planification[rdv]['constats'][constatId];
+                                    var constat = rdvObj['constats'][constatId];
                                     var newConstat = data[rdv]['constats'][constatId];
 
                                     if (newConstat.type_constat == 'raisin' && newConstat.statut_raisin != 'NONCONSTATE' && constat.type_constat == 'raisin' && constat.statut_raisin != newConstat.statut_raisin) {
                                         newConstat._idNode = constatId;
-                                        $scope.planification[rdv]['constats'][constatId] = newConstat;
+                                        rdvObj['constats'][constatId] = newConstat;
+                                    }
+
+                                    if (newConstat.type_constat == 'volume' && newConstat.statut_volume != 'NONCONSTATE' && constat.type_constat == 'volume' && constat.statut_volume != newConstat.statut_volume) {
+                                        newConstat._idNode = constatId;
+                                        rdvObj['constats'][constatId] = newConstat;
                                     }
                                 }
 
                                 if (!getConstatById(constatId))  {
-                                    var constat = $scope.planification[rdv]['constats'][constatId];
+                                    var constat = rdvObj['constats'][constatId];
                                     constat._idNode = constatId;
                                     $scope.constats.push(constat);
                                 }
                             }
-                            $scope.planification[rdv].heure = data[rdv].heure;
-                            $scope.planification[rdv].rendezvous = data[rdv].rendezvous;
-                            $scope.updateRdv($scope.planification[rdv]);
+                            rdvObj.heure = data[rdv].heure;
+                            rdvObj.rendezvous = data[rdv].rendezvous;
+                            $scope.updateRdv(rdvObj);
                         }
+
+                        for(var rdv in $scope.planification) {
+                            var rdvObj = $scope.planification[rdv];
+                            if(!data[rdvObj.idrdv]) {
+                                rdvObj.annule = true;
+                            } else {
+                                rdvObj.annule = false;
+                            }
+                        }
+
                         localSave();
                         $scope.loaded = true;
                     });

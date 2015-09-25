@@ -7803,6 +7803,21 @@ input[type="radio"] {
   content: '|';
   padding: 0 15px;
 }
+.opacity-xs {
+  opacity: 0.8;
+}
+.opacity-sm {
+  opacity: 0.6;
+}
+.opacity-md {
+  opacity: 0.4;
+}
+.opacity-lg {
+  opacity: 0.2;
+}
+.barred {
+  text-decoration: line-through;
+}
 /* ============================================================= */
 /* HOME PAGE */
 /* ============================================================= */
