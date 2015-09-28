@@ -8,6 +8,13 @@
         <div class="form-group">
             <div class="col-xs-12" style="font-size: 17px;">
                 <span class="icon-raisins"></span>&nbsp;{{ constat.nb_contenant}} {{ constat.contenant_libelle}}<span ng-show="constat.nb_contenant > 1">s</span>, {{ constat.degre_potentiel_raisin}}° Potentiel
+                
+            </div>
+           
+        </div>
+        <div ng-show="constat.commentaire_raisin" class="form-group" style="font-size: 17px;">
+            <div class="col-xs-12">
+                <span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;{{constat.commentaire_raisin}}
             </div>
         </div>
         <div class="form-group">
@@ -55,7 +62,7 @@
         </div>
 
         <div class="col-md-3 col-xs-12" style="margin-bottom: 10px;">
-            <a href="" ng-click="assembleConfirmation(constat)" class="btn btn-warning btn-lg col-xs-6 btn-block btn-upper link-to-section"><span style="font-size: 18px; margin-right: 6px;" class="icon-mouts"></span>+&nbsp;&nbsp;<span style="font-size: 18px; margin-right: 6px;" class="icon-mouts"></span>Constat assemblé</a>
+            <a href="" ng-click="assembleConfirmation(constat)" class="btn btn-warning btn-lg col-xs-6 btn-block btn-upper link-to-section"><span style="font-size: 18px; margin-right: 6px;" class="icon-mouts"></span>+&nbsp;&nbsp;<span style="font-size: 18px; margin-right: 6px;" class="icon-mouts"></span>Constats assemblés</a>
         </div>
     </div>
 </div>

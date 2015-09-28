@@ -18,7 +18,7 @@
         </div>
         <div class="form-group">
             <div class="col-xs-12">
-                <input placeholder="Observations (Facultatif)" id="commentaire_raisin_{{ keyConstatNode}}" ng-model="constat.commentaire_raisin" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
+                <input placeholder="Observations pour le constat volume (Facultatif)" id="commentaire_raisin_{{ keyConstatNode}}" ng-model="constat.commentaire_raisin" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
         </div>
         <div class="form-group">
