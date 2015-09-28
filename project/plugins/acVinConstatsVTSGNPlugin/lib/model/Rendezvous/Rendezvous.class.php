@@ -38,4 +38,22 @@ class Rendezvous extends BaseRendezvous {
     public function getDateHeureFr(){
         return ucfirst(format_date($this->getDate(), "P", "fr_FR"))." à ".str_replace(':','h',$this->getHeure());
     }
+
+    public function incrementId() {
+        preg_match("/^RENDEZVOUS-[0-9]+-([0-9]+)$/", $this->_id, $matches);
+        $numero = $matches[1]*1 + 1;
+        $this->_id = preg_replace("/^(RENDEZVOUS-[0-9]+-)([0-9]+)$/", '${1}'.$numero , $this->_id);
+    }
+
+    protected function preSave() {
+        if(!$this->isNew()) {
+            return;
+        }
+        for($i = 0; $i <= 10; $i++) {
+            if(!RendezvousClient::getInstance()->find($this->_id, acCouchdbClient::HYDRATE_JSON)) {
+                return;
+            }
+            $this->incrementId();
+        }
+    }
 }
