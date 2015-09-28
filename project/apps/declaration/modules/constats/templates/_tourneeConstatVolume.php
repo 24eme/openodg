@@ -79,11 +79,11 @@
 
     <div class="row row-margin">
         <div class="col-xs-12">
-            <div class="col-xs-6">
-                <a href="" ng-click="remplir(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Annuler</a>
-            </div>
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
                 <a href="" ng-click="refuserConstatVolume(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Confirmer</a>
+            </div>
+            <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
+                <a href="" ng-click="remplir(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Annuler</a>
             </div>
         </div>
     </div>
@@ -112,10 +112,10 @@
     </div>
     <div class="row row-margin">
         <div class="col-xs-12">
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
                 <a href="" ng-click="remplir(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Annuler</a>
             </div>
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
                 <a href="" ng-click="assemblerConstatVolume(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Confirmer l'assemblage</a>
             </div>
         </div>
