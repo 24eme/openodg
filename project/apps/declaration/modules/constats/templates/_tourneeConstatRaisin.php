@@ -48,11 +48,11 @@
         </div>
     </div>
     <div class="row row-margin">
-        <div class="col-xs-6">
-            <a href="" ng-click="refuserConfirmation(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class="glyphicon glyphicon-remove-circle"></span> Refuser</a>
-        </div>
-        <div class="col-xs-6">
+        <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
             <a href="" ng-click="approuverConstatRaisin(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class=" glyphicon glyphicon-ok-circle"></span> Approuver</a>
+        </div>
+        <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
+            <a href="" ng-click="refuserConfirmation(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class="glyphicon glyphicon-remove-circle"></span> Refuser</a>
         </div>
     </div>
 </div>
@@ -75,12 +75,12 @@
 
     <div class="row row-margin">
         <div class="col-xs-12">
-            <div class="col-xs-6">
-                <a href="" ng-click="remplir(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Annuler </a>
-            </div>
-            <div class="col-xs-6">
+            <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
                 <a href="" ng-click="refuserConstatRaisin(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Confirmer</a>
             </div>
+            <div class="col-xs-12 col-sm-6" style="margin-bottom: 10px;">
+                <a href="" ng-click="remplir(constat)" class="btn btn-danger btn-lg col-xs-6 btn-block btn-upper link-to-section">Annuler </a>
             </div>
         </div>
     </div>
+</div>
