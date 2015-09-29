@@ -37,6 +37,26 @@ class constatsActions extends sfActions {
         $this->tourneesJournee = TourneeClient::getInstance()->buildTourneesJournee($this->jour);
     }
 
+    public function executeTourneeDelete(sfWebRequest $request) {
+        $tournee = TourneeClient::getInstance()->find($request->getParameter('id'));
+
+        if(!$tournee) {
+            
+            return $this->forward404(sprintf("La tournée %s n'existe pas !", $request->getParameter('id')));
+        }
+
+        if(count($tournee->rendezvous) > 0) {
+            
+            return $this->forward404(sprintf("La tournée %s ne peut pas être supprimé car elle a des rendez-vous !", $request->getParameter('id')));
+        }
+
+        $date = $tournee->date;
+
+        $tournee->delete();
+
+        return $this->redirect('constats_planification_jour', array('jour' => $date));
+    }
+
     public function executeTourneeAgentRendezvous(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
         $this->agent = $this->tournee->getFirstAgent();
