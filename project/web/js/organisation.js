@@ -56,11 +56,11 @@
         $(defaults.selector.item)
                 .mouseenter(function () {
                     var ligne = $(this);
-                    toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
+                    toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false, true);
                 })
                 .mouseleave(function () {
                     var ligne = $(this);
-                    toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
+                    toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false, false);
                 });
     }
 
@@ -121,9 +121,9 @@
                 var ligne = latlngToLigne(m.latlng);
                 if (ligne.length > 1) {
 
-                    return;
+                    ligne = ligne.eq(0);
                 }
-                toggleMarkerHover(m.target, ligne, false, true);
+                toggleMarkerHover(m.target, ligne, false, true, true);
                 timerHover = setTimeout(function () {
                     scrollToLigne(ligne.parent(), ligne);
                 }, 600);
@@ -133,10 +133,10 @@
                 var ligne = latlngToLigne(m.latlng);
                 if (ligne.length > 1) {
 
-                    return;
+                    ligne = ligne.eq(0);
                 }
                 clearTimeout(timerHover);
-                toggleMarkerHover(m.target, ligne, false, true);
+                toggleMarkerHover(m.target, ligne, false, true, false);
                 updateItem(ligne);
             });
 
@@ -410,10 +410,10 @@
         return $(defaults.selector.item + '[data-point="' + ll.lat + "," + ll.lng + '"]');
     }
 
-    function toggleMarkerHover(marker, ligne, withMarkerOpacity, withLigneOpacity) {
+    function toggleMarkerHover(marker, ligne, withMarkerOpacity, withLigneOpacity, activate) {
         for (coordonnees in markers) {
             if (withMarkerOpacity) {
-                if ($(markers[coordonnees]._icon).css('opacity') == '1') {
+                if (activate) {
                     $(markers[coordonnees]._icon).css('opacity', '0.3');
                 } else {
                     $(markers[coordonnees]._icon).css('opacity', '1');
@@ -423,7 +423,7 @@
         }
         if (withLigneOpacity) {
             $(defaults.selector.item).each(function () {
-                if ($(this).css('opacity') == '1') {
+                if (activate) {
                     $(this).css('opacity', '0.4');
                 } else {
                     $(this).css('opacity', '1');
