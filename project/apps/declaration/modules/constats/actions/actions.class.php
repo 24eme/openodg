@@ -229,23 +229,27 @@ class constatsActions extends sfActions {
         $rdvValues = $request->getParameter("rdvs", array());
 
         foreach ($rdvValues as $id_rdv => $values) {
-
             if ($values['tournee']) {
                 $tournee = $this->tournees[$values['tournee']];
                 $tournee->addRendezVousAndGenerateConstat($id_rdv);
                 $tournee->save();
             } else {
-                foreach ($this->tournees as $tournee) {
-                    if ($tournee->rendezvous->exist($id_rdv)) {
-                        $tournee->rendezvous->remove($id_rdv);
-                        $tournee->save();
-                        $rdv = RendezvousClient::getInstance()->find($id_rdv);
-                        $rdv->set('statut', RendezvousClient::RENDEZVOUS_STATUT_PRIS);
-                        $rdv->save();
-                    }
+                $rdv = RendezvousClient::getInstance()->find($id_rdv);
+                $rdv->set('statut', RendezvousClient::RENDEZVOUS_STATUT_PRIS);
+                $rdv->save();
+            }
+            foreach ($this->tournees as $tournee) {
+                if (!$tournee->rendezvous->exist($id_rdv)) {
+                    continue;
                 }
+                if ($tournee->_id == $values['tournee']) {
+                    continue;
+                }
+                $tournee->rendezvous->remove($id_rdv);
+                $tournee->save();
             }
         }
+
         if ($request->isXmlHttpRequest()) {
 
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => null, "revision" => null))));
