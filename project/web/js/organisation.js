@@ -114,8 +114,7 @@
                 } else {
                     toggleItem(ligne);
                 }
-                var list = ligne.parent();
-                list.scrollTo(ligne, 200, {offset: -150, queue: false});
+                scrollToLigne(ligne.parent(), ligne);
             });
 
             marker.on('mouseover', function (m) {
@@ -126,8 +125,7 @@
                 }
                 toggleMarkerHover(m.target, ligne, false, true);
                 timerHover = setTimeout(function () {
-                    var list = ligne.parent();
-                    $(list).scrollTo(ligne, 200, {offset: -150, queue: false});
+                    scrollToLigne(ligne.parent(), ligne);
                 }, 600);
             })
 
@@ -144,6 +142,10 @@
 
             markers[point] = marker;
         });
+    }
+
+    function scrollToLigne(list, ligne) {
+        $(list).scrollTo(ligne, 200, {offset: ((list.height()/2) - 23) * -1, queue: false});
     }
 
     function initSortable() {
