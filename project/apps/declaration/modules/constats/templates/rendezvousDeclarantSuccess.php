@@ -87,7 +87,7 @@
                             <td class="text-center"><?php echo "" . $rendezvous->idchai + 1; ?></td>                  
                             <td class="list-group-item-success"><?php echo RendezvousClient::$rendezvous_statut_libelles[$rendezvous->statut]; ?>
                                 <?php
-                                if ($rendezvous->statut != RendezvousClient::RENDEZVOUS_STATUT_PRIS): echo " par " . $rendezvous->nom_agent_origine;
+                                if ($rendezvous->statut != RendezvousClient::RENDEZVOUS_STATUT_PRIS): echo " par " . $rendezvous->getAgentNom();
                                 endif;
                                 ?></td>
                             <td class="text-center">

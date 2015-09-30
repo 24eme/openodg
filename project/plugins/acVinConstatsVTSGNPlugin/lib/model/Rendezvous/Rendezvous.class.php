@@ -14,6 +14,17 @@ class Rendezvous extends BaseRendezvous {
     public function getDateHeure(){
         return str_replace('-','',$this->getDate()).str_replace(':','',$this->getHeure());
     }
+
+    public function getAgentNom() {
+        $tournee = TourneeClient::getInstance()->findTourneeByIdRendezvous($this->_id);
+
+        if(!$tournee) {
+
+            return $this->nom_agent_origine;
+        }
+
+        return $tournee->getFirstAgent()->nom;
+    }
     
     public function getCompte() {
         return CompteClient::getInstance()->findByIdentifiant($this->identifiant);
