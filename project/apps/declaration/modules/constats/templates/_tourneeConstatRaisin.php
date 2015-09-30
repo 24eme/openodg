@@ -60,9 +60,9 @@
     <div class="col-xs-12">
         <div class="col-xs-12">
             <p class="lead text-center"> 
-            {{ constat.produit_libelle }}<br />
-            {{ constat.degre_potentiel_raisin }} degré potentiel<br />
-            {{ constat.nb_contenant }} {{ constat.type_botiche.nom }}(s)<br />
+            <span ng-show="constat.produit_libelle">{{ constat.produit_libelle }}<br /></span>
+            <span ng-show="constat.degre_potentiel_raisin">{{ constat.degre_potentiel_raisin }} degrés potentiels<br /></span>
+            <span ng-show="constat.nb_contenant && constat.contenant_libelle">{{ constat.nb_contenant }} {{ constat.contenant_libelle }}(s)<br /></span>
             </p>
         </div>
         <div class="form-group">

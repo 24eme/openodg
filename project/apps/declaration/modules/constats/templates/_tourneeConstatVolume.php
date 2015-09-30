@@ -2,7 +2,7 @@
     <div class="form-horizontal">
         <div class="form-group">
             <div class="col-xs-12" style="font-size: 17px;">
-                {{ constat.produit_libelle}}
+                {{ constat.produit_libelle}} {{ constat.denomination_lieu_dit}}
             </div>
         </div>
         <div class="form-group">
@@ -70,10 +70,10 @@
     <div class="col-xs-12">
         <div class="col-xs-12">
             <p class="lead text-center"> 
-                {{ constat.produit_libelle}}<br />
-                {{ constat.type_vtsgn}}<br />
-                {{ constat.degre_potentiel_volume}} degré potentiel<br />
-                {{ constat.volume_obtenu}} hl<br />
+                {{ constat.produit_libelle}} {{ constat.denomination_lieu_dit }}<br />
+                <span ng-show="constat.type_vtsgn">{{ constat.type_vtsgn }}<br /></span>
+                <span ng-show="constat.degre_potentiel_volume">{{ constat.degre_potentiel_volume }} degré potentiel<br /></span>
+                <span ng-show="constat.volume_obtenu !== null">{{ constat.volume_obtenu }} hl<br /></span>
             </p>
         </div>
         <div class="form-group">
