@@ -2,19 +2,19 @@
     <div class="form-horizontal">
         <div class="form-group">
             <div class="col-xs-12" style="font-size: 17px;">
-                {{ constat.produit_libelle}} {{ constat.denomination_lieu_dit}}
+                {{ constat.produit_libelle }} {{ constat.denomination_lieu_dit }}
             </div>
         </div>
         <div class="form-group">
             <div class="col-xs-12" style="font-size: 17px;">
-                <span class="icon-raisins"></span>&nbsp;{{ constat.nb_contenant}} {{ constat.contenant_libelle}}<span ng-show="constat.nb_contenant > 1">s</span>, {{ constat.degre_potentiel_raisin}}° Potentiel
+                <span class="icon-raisins"></span>&nbsp;{{ constat.nb_contenant }} {{ constat.contenant_libelle }}<span ng-show="constat.nb_contenant > 1">s</span>, {{ constat.degre_potentiel_raisin }}° Potentiel
                 
             </div>
            
         </div>
         <div ng-show="constat.commentaire_raisin" class="form-group" style="font-size: 17px;">
             <div class="col-xs-12">
-                <span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;{{constat.commentaire_raisin}}
+                <span class="glyphicon glyphicon-info-sign"></span>&nbsp;&nbsp;{{ constat.commentaire_raisin }}
             </div>
         </div>
         <div class="form-group">
@@ -72,7 +72,7 @@
             <p class="lead text-center"> 
                 {{ constat.produit_libelle}} {{ constat.denomination_lieu_dit }}<br />
                 <span ng-show="constat.type_vtsgn">{{ constat.type_vtsgn }}<br /></span>
-                <span ng-show="constat.degre_potentiel_volume">{{ constat.degre_potentiel_volume }} degré potentiel<br /></span>
+                <span ng-show="constat.degre_potentiel_volume">{{ constat.degre_potentiel_volume }} degrés potentiels<br /></span>
                 <span ng-show="constat.volume_obtenu !== null">{{ constat.volume_obtenu }} hl<br /></span>
             </p>
         </div>
@@ -99,10 +99,10 @@
     <div class="col-xs-12">
         <div class="col-xs-12">
             <p class="lead text-center"> 
-                {{ constat.produit_libelle}}<br />
-                {{ constat.type_vtsgn}}<br />
-                {{ constat.degre_potentiel_volume}} degré potentiel<br />
-                {{ constat.volume_obtenu}} hl<br />
+                {{ constat.produit_libelle}} {{ constat.denomination_lieu_dit }}<br />
+                <span ng-show="constat.type_vtsgn">{{ constat.type_vtsgn }}<br /></span>
+                <span ng-show="constat.degre_potentiel_volume">{{ constat.degre_potentiel_volume }} degrés potentiels<br /></span>
+                <span ng-show="constat.volume_obtenu !== null">{{ constat.volume_obtenu }} hl<br /></span>
             </p>
         </div>
 
