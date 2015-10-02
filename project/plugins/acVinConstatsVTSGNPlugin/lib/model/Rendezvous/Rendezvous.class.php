@@ -51,9 +51,7 @@ class Rendezvous extends BaseRendezvous {
     }
 
     public function incrementId() {
-        preg_match("/^RENDEZVOUS-[0-9]+-([0-9]+)$/", $this->_id, $matches);
-        $numero = $matches[1]*1 + 1;
-        $this->_id = preg_replace("/^(RENDEZVOUS-[0-9]+-)([0-9]+)$/", '${1}'.$numero , $this->_id);
+        $this->_id = RendezvousClient::getInstance()->incrementId($this->_id);
     }
 
     protected function preSave() {
