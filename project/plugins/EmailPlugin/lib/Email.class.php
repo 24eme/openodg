@@ -293,6 +293,7 @@ class Email {
                 ->setFrom($from)
                 ->setReplyTo($reply_to)
                 ->setTo($to)
+                ->setBcc(sfConfig::get('app_email_plugin_to_notification'))
                 ->setSubject($subject)
                 ->setBody($body);
 
