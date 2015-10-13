@@ -163,7 +163,7 @@
     </div>
     <div class="row row-margin">
         <div class="col-xs-12 text-right">
-            <button class="btn btn-lg btn-default btn-upper" type="submit">Valider</button>
+            <a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)) ?>" class="btn btn-lg btn-default btn-upper ajax">Valider</a>
         </div>
     </div>
 </form>
