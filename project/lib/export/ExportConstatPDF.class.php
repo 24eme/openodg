@@ -28,7 +28,7 @@ class ExportConstatPDF extends ExportPDF {
     }
 
     protected function getHeaderSubtitle() {
-        $tourneeRaisin = TourneeClient::getInstance()->findTourneeByIdRendezvous($this->constat->rendezvous_volume);
+        $tourneeRaisin = TourneeClient::getInstance()->findTourneeByIdRendezvous($this->constat->rendezvous_raisin);
         $tourneeVolume = TourneeClient::getInstance()->findTourneeByIdRendezvous($this->constat->rendezvous_volume);
         $agentRaisin = $tourneeRaisin->getAgentUniqueObj()->prenom . ' ' . $tourneeRaisin->getAgentUniqueObj()->nom;
         $agentVolume = $tourneeVolume->getAgentUniqueObj()->prenom . ' ' . $tourneeVolume->getAgentUniqueObj()->nom;

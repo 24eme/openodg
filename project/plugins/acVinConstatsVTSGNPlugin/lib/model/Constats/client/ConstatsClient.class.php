@@ -14,18 +14,22 @@ class ConstatsClient extends acCouchdbClient {
     const CONTENANT_CAGETTE = 'CAGETTE';
     const CONTENANT_KG = 'KG';
     const CONTENANT_TYPE_PALOX = 'TYPE_PALOX';
+    const RAISON_REFUS_ANNULE = 'ANNULE';
     const RAISON_REFUS_ASSEMBLE = 'ASSEMBLE';
     const RAISON_REFUS_DEGRE_INSUFFISANT = 'DEGRE_INSUFFISANT';
     const RAISON_REFUS_MULTI_CEPAGE = 'MULTI_CEPAGE';
     const RAISON_REFUS_PRESSURAGE_EN_COURS = 'PRESSURAGE_EN_COURS';
     const RAISON_REFUS_VENDANGES_MECANIQUE = 'VENDANGES_MECANIQUE';
+    const RAISON_REFUS_PROBLEME = 'PROBLEME';
 
     public static $raisons_refus_libelle = array(
+        self::RAISON_REFUS_ANNULE => 'Rendez-vous annulé',
         self::RAISON_REFUS_DEGRE_INSUFFISANT => 'Degré insuffisant',
         self::RAISON_REFUS_MULTI_CEPAGE => 'Multi-cépages',
         self::RAISON_REFUS_PRESSURAGE_EN_COURS => 'Pressurage en cours',
-        self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendanges mécanique',
+        self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendanges mécaniques',
         self::RAISON_REFUS_ASSEMBLE => 'Assemblé',
+        self::RAISON_REFUS_PROBLEME => 'Problème',
     );
     public static $contenants_libelle = array(
         self::CONTENANT_BOTTICHE => 'Bottiche',

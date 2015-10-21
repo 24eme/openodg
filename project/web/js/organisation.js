@@ -43,6 +43,7 @@
             var ligne = $($(this).attr('data-item'));
 
             addItem(ligne);
+            toggleMarkerHover(getMarkerFromLigne(ligne), ligne, true, false, false)
             return false;
         });
 
@@ -50,17 +51,18 @@
             var ligne = $($(this).attr('data-item'));
 
             removeItem(ligne);
+            toggleMarkerHover(getMarkerFromLigne(ligne), ligne, true, false, false)
             return false;
         });
 
         $(defaults.selector.item)
                 .mouseenter(function () {
                     var ligne = $(this);
-                    toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
+                    toggleMarkerHover(getMarkerFromLigne(ligne), ligne, true, false, true);
                 })
                 .mouseleave(function () {
                     var ligne = $(this);
-                    toggleMarkerHover(markers[ligne.attr('data-point')], ligne, true, false);
+                    toggleMarkerHover(getMarkerFromLigne(ligne), ligne, true, false, false);
                 });
     }
 
@@ -101,49 +103,51 @@
             marker.addTo(map);
             $(marker._icon).find('.marker-inner').css('color', color);
             marker.on('click', function (m) {
-                var ligne = latlngToLigne(m.latlng);
+                var ligne = latlngToLigne(m.latlng).filter(':not(.hidden)');
                 if (ligne.length > 1) {
                     return;
-                    var added = false;
+                    /*var added = false;
                     ligne.each(function () {
                         if (!added && !getLigneTournee($(this))) {
                             toggleItem($(this));
                             added = true;
                         }
-                    });
+                    });*/
                 } else {
                     toggleItem(ligne);
                 }
-                var list = ligne.parent();
-                list.scrollTo(ligne, 200, {offset: -150, queue: false});
+                scrollToLigne(ligne.parent(), ligne);
             });
 
             marker.on('mouseover', function (m) {
-                var ligne = latlngToLigne(m.latlng);
+                var ligne = latlngToLigne(m.latlng).filter(':not(.hidden)');
                 if (ligne.length > 1) {
 
-                    return;
+                    ligne = ligne.eq(0);
                 }
-                toggleMarkerHover(m.target, ligne, false, true);
+                toggleMarkerHover(m.target, ligne, false, true, true);
                 timerHover = setTimeout(function () {
-                    var list = ligne.parent();
-                    $(list).scrollTo(ligne, 200, {offset: -150, queue: false});
+                    scrollToLigne(ligne.parent(), ligne);
                 }, 600);
             })
 
             marker.on('mouseout', function (m) {
-                var ligne = latlngToLigne(m.latlng);
+                var ligne = latlngToLigne(m.latlng).filter(':not(.hidden)');
                 if (ligne.length > 1) {
 
-                    return;
+                    ligne = ligne.eq(0);
                 }
                 clearTimeout(timerHover);
-                toggleMarkerHover(m.target, ligne, false, true);
-                updateItem(ligne);
+                toggleMarkerHover(m.target, ligne, false, true, false);
+                //updateItem(ligne);
             });
 
             markers[point] = marker;
         });
+    }
+
+    function scrollToLigne(list, ligne) {
+        $(list).scrollTo(ligne, 200, {offset: ((list.height()/2) - 23) * -1, queue: false});
     }
 
     function initSortable() {
@@ -204,21 +208,22 @@
             hour = '22:00';
             ligne.detach().insertAfter($(defaults.selector.hour + '[data-value="' + hour + '"]'));
         } else {
-
             ligne.detach().insertBefore(tourneeInsertHourDiv(hour));
         }
         ligne.find(defaults.selector.itemMarker).css('color', getTourneeColor(tournee));
-        $(markers[getLignePoint(ligne)]._icon).find('.marker-inner').css('color', getTourneeColor(tournee));
         ligne.find(defaults.selector.itemInputHour).val(hour);
         ligne.find(defaults.selector.itemMove).removeClass('hidden');
 
         updateItem(ligne);
+        updateMarkerFromLigne(ligne);
     }
 
     function updateItems() {
         $(defaults.selector.item).each(function () {
             updateItem($(this));
         });
+
+        updateMarkers();
     }
 
     function updateItem(ligne)
@@ -226,27 +231,9 @@
         if (getLigneTournee(ligne)) {
             ligne.find(defaults.selector.itemRemove).removeClass('hidden');
             ligne.find(defaults.selector.itemAdd).addClass('hidden');
-
-            //ligne.addClass('list-group-item-success');
-            //ligne.find('.glyphicon-map-marker').css('color', ligne.attr('data-color'));
-            //$(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', ligne.attr('data-color'));
-
-            //ligne.removeClass('clickable');
         } else {
             ligne.find(defaults.selector.itemRemove).addClass('hidden');
             ligne.find(defaults.selector.itemAdd).removeClass('hidden');
-
-            //ligne.removeClass('list-group-item-success');
-            //$(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', '#e2e2e2');
-            //ligne.find('.glyphicon-map-marker').css('color', '#e2e2e2');
-
-            /*if ($('.nav-filter.active').attr('data-state')) {
-             ligne.addClass('clickable');
-             ligne.find('button.btn-success').removeClass('hidden');
-             } else {
-             ligne.removeClass('clickable');
-             ligne.find('button.btn-success').addClass('hidden');
-             }*/
         }
 
         if (getActiveTourneeId() && getLigneTournee(ligne) && getLigneTournee(ligne) != getActiveTourneeId()) {
@@ -262,12 +249,47 @@
 
     function hideItem(ligne) {
         ligne.addClass('hidden');
-        $(markers[getLignePoint(ligne)]._icon).addClass('hidden');
+        //$(markers[getLignePoint(ligne)]._icon).addClass('hidden');
     }
 
     function showItem(ligne) {
         ligne.removeClass('hidden');
-        $(markers[getLignePoint(ligne)]._icon).removeClass('hidden');
+        //$(markers[getLignePoint(ligne)]._icon).removeClass('hidden');
+    }
+
+    function updateMarkers() {
+        for(var key in markers) {
+            updateMarker(markers[key]);
+        }
+    }
+
+    function getMarkerFromLigne(ligne) {
+
+        return markers[getLignePoint(ligne)];
+    }
+
+    function updateMarkerFromLigne(ligne) {
+
+        updateMarker(getMarkerFromLigne(ligne));
+    }
+
+    function updateMarker(m) {
+        var marker = $(m._icon);
+        var ligne = latlngToLigne(m._latlng).filter(':not(.hidden)');
+        if(!ligne.length) {
+            marker.addClass('hidden');
+        } else {
+            marker.removeClass('hidden');
+        }
+
+        marker.find('.marker-inner').css('color', ligne.find(defaults.selector.itemMarker).css('color'));
+
+        var markerContent = marker.find('.marker-inner-bg');
+        if(ligne.length > 1) {
+            markerContent.html(ligne.length + "");
+        } else {
+            markerContent.html("");
+        }
     }
 
     function removeItem(ligne) {
@@ -280,10 +302,11 @@
         ligne.find(defaults.selector.itemInputHour).val("");
         ligne.find(defaults.selector.itemMove).addClass('hidden');
         ligne.find(defaults.selector.itemMarker).css('color', defaults.colorEmpty);
-        $(markers[getLignePoint(ligne)]._icon).find('.marker-inner').css('color', defaults.colorEmpty);
+        
 
         ligne.detach().appendTo($(defaults.selector.listWait));
         updateItem(ligne);
+        updateMarkerFromLigne(ligne);
     }
 
     function toggleItem(ligne) {
@@ -408,10 +431,10 @@
         return $(defaults.selector.item + '[data-point="' + ll.lat + "," + ll.lng + '"]');
     }
 
-    function toggleMarkerHover(marker, ligne, withMarkerOpacity, withLigneOpacity) {
+    function toggleMarkerHover(marker, ligne, withMarkerOpacity, withLigneOpacity, activate) {
         for (coordonnees in markers) {
             if (withMarkerOpacity) {
-                if ($(markers[coordonnees]._icon).css('opacity') == '1') {
+                if (activate) {
                     $(markers[coordonnees]._icon).css('opacity', '0.3');
                 } else {
                     $(markers[coordonnees]._icon).css('opacity', '1');
@@ -421,7 +444,7 @@
         }
         if (withLigneOpacity) {
             $(defaults.selector.item).each(function () {
-                if ($(this).css('opacity') == '1') {
+                if (activate) {
                     $(this).css('opacity', '0.4');
                 } else {
                     $(this).css('opacity', '1');

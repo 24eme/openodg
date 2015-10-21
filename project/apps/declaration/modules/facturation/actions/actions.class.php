@@ -87,9 +87,9 @@ class facturationActions extends sfActions
         $this->form->save();
 
         if($this->facture->isAvoir()) {
-            $this->getUser()->setFlash("notice", "La facture a été modifiée.");
+            $this->getUser()->setFlash("notice", "L'avoir a été modifiée.");
         } else {
-            $this->getUser()->setFlash("notice", "L'avoir a bien été modifié.");
+            $this->getUser()->setFlash("notice", "La facture a bien été modifiée.");
         }
         
         if($request->getParameter("not_redirect")) {

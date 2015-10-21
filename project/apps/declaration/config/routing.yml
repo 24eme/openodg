@@ -1037,10 +1037,16 @@ constats:
   param: { module: constats, action: index }
   requirements:
     sf_method: [get, post]
-    
+
 constats_planification_jour:
   url: /constats/planification/:jour
   param: { module: constats, action: planificationJour }
+  requirements:
+    sf_method: [get]
+
+constats_tournee_suppression:
+  url: /constats/tournee/suppression/:id
+  param: { module: constats, action: tourneeDelete }
   requirements:
     sf_method: [get]
 

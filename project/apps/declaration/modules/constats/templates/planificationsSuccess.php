@@ -1,5 +1,5 @@
 <?php use_helper('Date'); ?>
-<?php use_javascript("organisation.js?201509221738", "last") ?>
+<?php use_javascript("organisation.js?201510010024", "last") ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_javascript('lib/leaflet/marker.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
@@ -163,7 +163,7 @@
     </div>
     <div class="row row-margin">
         <div class="col-xs-12 text-right">
-            <button class="btn btn-lg btn-default btn-upper" type="submit">Valider</button>
+            <a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)) ?>" class="btn btn-lg btn-default btn-upper ajax">Valider</a>
         </div>
     </div>
 </form>

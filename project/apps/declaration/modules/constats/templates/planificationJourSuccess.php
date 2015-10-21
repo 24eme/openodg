@@ -45,7 +45,7 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
             </thead>
             <?php foreach ($tourneesJournee->tourneesJournee as $tourneeObj) : ?>
                 <tr>
-                    <td><?php echo $tourneeObj->agent->nom_a_afficher; ?></td>
+                    <td><?php echo $tourneeObj->agent->nom_a_afficher; ?> <?php if(!count($tourneeObj->tournee->rendezvous)): ?><small><a onclick="return confirm('Êtes vous sûr de vouloir supprimer la tournée ?')" href="<?php echo url_for("constats_tournee_suppression", array('id' => $tourneeObj->tournee->_id)) ?>">(Supprimer)</a></small><?php endif; ?></td>
                     <td class="text-center"><?php echo $tourneeObj->pourcentRealise; ?> %</td>
                     <td class="text-center"><?php if ($tourneeObj->nbRdvRaisin): ?><?php echo $tourneeObj->nbRdvRaisin; ?>&nbsp;<span class="icon-raisins size-36"></span>&nbsp;<?php endif; ?><?php if ($tourneeObj->nbRdvVolume): ?>&nbsp;<?php echo $tourneeObj->nbRdvVolume; ?>&nbsp;<span class="icon-mouts"></span><?php endif; ?></td>
                     <td>

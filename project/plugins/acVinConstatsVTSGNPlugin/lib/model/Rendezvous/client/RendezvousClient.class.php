@@ -155,12 +155,41 @@ class RendezvousClient extends acCouchdbClient {
         $rendezvous->nom_agent_origine = $nom_agent_origine;
         $rendezvous->type_rendezvous = self::RENDEZVOUS_TYPE_VOLUME;
         $rendezvous->constructId();
-        if ($this->find($rendezvous->_id)) {
-            $rendezvous = $this->find($rendezvous->_id);
+        $rendezvousExistant = $this->getRendezVousVolume($rendezvous->_id);
+        if ($rendezvousExistant) {
+            $rendezvous = $rendezvousExistant;
         }
         $rendezvous->statut = self::RENDEZVOUS_STATUT_PRIS;
         $rendezvous->rendezvous_raisin = $idRdvOrigine;
+        
         return $rendezvous;
+    }
+
+    public function incrementId($id) {
+        preg_match("/^RENDEZVOUS-[0-9]+-([0-9]+)$/", $id, $matches);
+
+        $numero = $matches[1]*1 + 1;
+
+        return preg_replace("/^(RENDEZVOUS-[0-9]+-)([0-9]+)$/", '${1}'.$numero , $id);
+    }
+
+    public function getRendezVousVolume($id) {
+        for($i = 0; $i <= 8; $i++) {
+            $rdv = $this->find($id);
+            
+            if(!$rdv) {
+                continue;
+            }
+
+            if($rdv && $rdv->type_rendezvous == self::RENDEZVOUS_TYPE_VOLUME) {
+
+                return $rdv;
+            }
+
+            $id = $this->incrementId($id);
+        }
+
+        return null;
     }
 
     public function buildOrganisationNbDays($nb_days = 0, $dateToday) {

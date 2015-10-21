@@ -14,6 +14,17 @@ class Rendezvous extends BaseRendezvous {
     public function getDateHeure(){
         return str_replace('-','',$this->getDate()).str_replace(':','',$this->getHeure());
     }
+
+    public function getAgentNom() {
+        $tournee = TourneeClient::getInstance()->findTourneeByIdRendezvous($this->_id);
+
+        if(!$tournee) {
+
+            return $this->nom_agent_origine;
+        }
+
+        return $tournee->getFirstAgent()->nom;
+    }
     
     public function getCompte() {
         return CompteClient::getInstance()->findByIdentifiant($this->identifiant);
@@ -40,9 +51,7 @@ class Rendezvous extends BaseRendezvous {
     }
 
     public function incrementId() {
-        preg_match("/^RENDEZVOUS-[0-9]+-([0-9]+)$/", $this->_id, $matches);
-        $numero = $matches[1]*1 + 1;
-        $this->_id = preg_replace("/^(RENDEZVOUS-[0-9]+-)([0-9]+)$/", '${1}'.$numero , $this->_id);
+        $this->_id = RendezvousClient::getInstance()->incrementId($this->_id);
     }
 
     protected function preSave() {
