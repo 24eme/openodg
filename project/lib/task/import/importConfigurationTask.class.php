@@ -47,7 +47,7 @@ EOF;
         /*
          * Parsing de la configuration Civa
          */
-        $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/2014.json');
+        $configurationJson = file_get_contents(sfConfig::get('sf_data_dir') . '/import/configuration/'.$arguments['campagne'].'.json');
 
         if (!$configurationJson) {
             throw new sfCommandException("Le fichier de configuration n'est pas existant dans l'arborescence " . sfConfig::get('sf_data_dir') . '/import/configuration/');

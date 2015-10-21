@@ -4,7 +4,7 @@ class adminComponents extends sfComponents {
 
     public function executeList(sfWebRequest $request) {
 
-        $this->current_key_list = $request->getParameter('docs', 'DRev 2014');
+        $this->current_key_list = $request->getParameter('docs', 'DRev 2015');
         $this->statut = $request->getParameter('doc_statut');
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "valide" => "Validé", "brouillon" => "En cours de saisie");
@@ -19,17 +19,17 @@ class adminComponents extends sfComponents {
     }
 
     public function executeExport(sfWebRequest $request) {
-        $this->current_key_list = $request->getParameter('docs', 'DRev 2014');
+        $this->current_key_list = $request->getParameter('docs', 'DRev 2015');
         $this->statut = $request->getParameter('doc_statut', "a_valider");
         $this->buildLists();
     }
 
     protected function buildLists() {
         $this->lists = array();
-        $this->lists["DRev 2014"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $this->lists["DRev Marc 2014"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $this->lists["Parcellaire 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
-        $this->lists["Parcellaire Crémant 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
+        $this->lists["DRev 2015"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->lists["DRev Marc 2015"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->lists["Parcellaire 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
+        $this->lists["Parcellaire Crémant 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
     }
 
     protected function getList($type, $campagne, $filter = null) {
