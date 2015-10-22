@@ -4,7 +4,7 @@
  * Model for Tournee
  *
  */
-class Tournee extends BaseTournee {
+class TourneeBackup extends BaseTournee {
 
     protected $degustations_object = array();
 

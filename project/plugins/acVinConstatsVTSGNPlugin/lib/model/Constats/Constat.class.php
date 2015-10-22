@@ -116,6 +116,48 @@ class Constat extends BaseConstat {
         return ($this->determineTypeConstat() == ConstatsClient::CONSTAT_TYPE_RAISIN) && $this->date_volume;
     }
 
+    public function getRDV($type) {
+        if(!$this->get('rendezvous_'.$type)) {
+            
+            return null;
+        }
+
+        return RendezvousClient::getInstance()->find($this->get('rendezvous_'.$type));
+    }
+
+    public function getRDVDateHeure($type) {
+        $rdv = $this->getRDV($type);
+
+        if(!$rdv || !$rdv->date) {
+
+            return null;
+        }
+
+        return $rdv->date . ' ' . $rdv->heure;
+    }
+
+    public function getRDVAgent($type) {
+        $rdv = $this->getRDV($type);
+
+        if(!$rdv) {
+
+            return null;
+        }
+
+        return $rdv->getAgent();
+    }
+
+    public function getRDVAgentNom($type) {
+        $agent = $this->getRDVAgent($type);
+
+        if(!$agent) {
+
+            return null;
+        }
+
+        return $agent->prenom . ' ' . $agent->nom;
+    }
+
     private function isAllConstatsForRendezVousRefuses($json) {
 
         foreach ($this->getDocument()->constats as $uniqKey => $constat) {

@@ -42,7 +42,7 @@ EOF;
             $doc = DeclarationClient::getInstance()->find($id);
             $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
 
-            if($arguments['validation'] && !$doc->validation) {               
+            if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {               
                 continue;
             }
 
