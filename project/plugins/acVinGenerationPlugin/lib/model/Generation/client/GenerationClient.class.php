@@ -60,7 +60,7 @@ class GenerationClient extends acCouchdbClient {
     }
 
     public static function sortHistory($a, $b) {
-      return strcmp($b->id, $a->id);
+      return strcmp($b->key[1], $a->key[1]);
     }
 
     public function getGenerationIdEnAttente() {
