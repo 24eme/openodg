@@ -2,6 +2,7 @@
 
 class ConstatsClient extends acCouchdbClient {
 
+    const TYPE_MODEL = "Constats"; 
     const TYPE_COUCHDB = 'CONSTATS';
     const STATUT_NONCONSTATE = 'NONCONSTATE';
     const STATUT_APPROUVE = 'APPROUVE';
