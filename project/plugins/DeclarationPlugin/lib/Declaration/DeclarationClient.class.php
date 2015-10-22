@@ -39,6 +39,11 @@ class DeclarationClient
             return 'ExportConstatsCSV';
         }
 
+        if($type == FactureClient::TYPE_MODEL) {
+
+            return 'ExportFactureCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 

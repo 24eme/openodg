@@ -1,6 +1,8 @@
 <?php
 class FactureClient extends acCouchdbClient {
 
+    const TYPE_MODEL = "Facture";
+    const TYPE_COUCHDB = "FACTURE";
     const FACTURE_LIGNE_ORIGINE_TYPE_DRM = "DRM";
     const FACTURE_LIGNE_ORIGINE_TYPE_SV12 = "SV12";
     const FACTURE_LIGNE_MOUVEMENT_TYPE_PROPRIETE = "propriete";
