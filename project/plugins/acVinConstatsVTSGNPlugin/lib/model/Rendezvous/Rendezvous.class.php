@@ -54,6 +54,23 @@ class Rendezvous extends BaseRendezvous {
         $this->_id = RendezvousClient::getInstance()->incrementId($this->_id);
     }
 
+    public function getTournee() {
+
+        return TourneeClient::getInstance()->findTourneeByIdRendezvous($this->_id);
+    }
+
+    public function getAgent() {
+
+        $tournee = $this->getTournee();
+
+        if(!$tournee) {
+
+            return null;
+        }
+
+        return $tournee->getAgentUniqueObj();
+    }
+
     protected function preSave() {
         if(!$this->isNew()) {
             return;

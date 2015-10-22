@@ -1,6 +1,6 @@
 <?php
 
-class TourneeClient extends acCouchdbClient {
+class TourneeBackupClient extends acCouchdbClient {
         
     const TYPE_MODEL = "Tournee"; 
     const TYPE_COUCHDB = "TOURNEE";
