@@ -18,7 +18,7 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;CVI;Nom;Adresse;Code postal;Commune;Email;Statut;Raison du refus;Date de signature;Produit;Denomination / Lieu-dit;Type VT/SGN;Date RDV raisin;Agent RDV Raisin;Date RDV volume;Agent RDV Raisin;Quantité Raisin;Degré potentiel Raisin;Volume obtenu;Degré potentiel Volume;Mail envoyé\n";
+        return "Campagne;CVI;Nom;Adresse;Code postal;Commune;Email;Statut;Raison du refus;Date de signature;Produit;Denomination / Lieu-dit;Type VT/SGN;Date RDV raisin;Agent RDV Raisin;Date RDV volume;Agent RDV Raisin;Quantité Raisin;Degré potentiel Raisin;Degré potentiel Volume;Volume obtenu;Mail envoyé\n";
     }
 
     public function __construct($constats, $header = true) {
