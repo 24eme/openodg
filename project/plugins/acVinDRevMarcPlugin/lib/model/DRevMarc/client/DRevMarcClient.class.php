@@ -1,6 +1,6 @@
 <?php
 
-class DRevMarcClient extends acCouchdbClient {
+class DRevMarcClient extends acCouchdbClient implements FacturableClient {
 
     const TYPE_MODEL = "DRevMarc"; 
     const TYPE_COUCHDB = "DREVMARC";
@@ -19,6 +19,17 @@ class DRevMarcClient extends acCouchdbClient {
         }
 
         return $doc;
+    }
+
+    public function findFacturable($identifiant, $campagne) {
+        $drev = $this->find('DREVMARC-'.str_replace("E", "", $identifiant).'-'.$campagne);
+
+        if(!$drev->validation) {
+
+            return null;
+        }
+
+        return $drev;
     }
     
     public function createDoc($identifiant, $campagne, $papier = false) 

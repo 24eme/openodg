@@ -126,7 +126,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 \\\vspace{6mm}
 \begin{tabular}{|>{\centering}p{9cm} >{\raggedleft}p{6.4cm}|>{\raggedleft}p{2.3cm}|}
   \hline
-  \multirow{4}{*} {\begin{minipage}{6cm}<?php if(!$facture->isAvoir()): ?>Paiement sous 30 jours à réception \newline de facture, net et sans escompte<?php endif; ?>\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
+  \multirow{<?php if($detail->taux_tva): ?>4<?php else: ?>2<?php endif; ?>}{*} {\begin{minipage}{6cm}<?php if(!$facture->isAvoir()): ?>Paiement sous 30 jours à réception \newline de facture, net et sans escompte<?php endif; ?>\end{minipage}}  & \textbf{TOTAL HT} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALHT~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
   <?php foreach ($facture->lignes as $ligne): ?>
   	<?php foreach ($ligne->details as $detail): ?>
   	<?php if ($detail->taux_tva): ?>

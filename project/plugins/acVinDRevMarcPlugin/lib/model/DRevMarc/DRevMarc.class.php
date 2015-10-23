@@ -4,9 +4,10 @@
  * Model for DRev
  *
  */
-class DRevMarc extends BaseDRevMarc implements InterfaceDeclaration {
+class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument {
 
     protected $declarant_document = null;
+    protected $mouvement_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -20,6 +21,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclaration {
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+        $this->mouvement_document = new MouvementDocument($this);
     }
 
     public function constructId() {
@@ -79,4 +81,60 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclaration {
     public function validateOdg() {
         $this->validation_odg = date('Y-m-d');
     }
+
+    /*
+     * Facture
+     */ 
+    public function getVolumeFacturable()
+    {
+        return $this->volume_obtenu;
+    }
+
+    /**** MOUVEMENTS ****/
+
+    public function getMouvements() {
+
+        return $this->_get('mouvements');
+    }
+
+    public function getMouvementsCalcule() {
+        
+        return array("E".$this->getIdentifiant() => array("TEMPLATE-FACTURE-MARC-2014" => array("facturable" => 1, "facture" => 0)));
+    }
+
+    public function getMouvementsCalculeByIdentifiant($identifiant) {
+
+        return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+    }
+    
+    public function generateMouvements() {
+
+        return $this->mouvement_document->generateMouvements();
+    }    
+    
+    public function findMouvement($cle, $id = null){
+      return $this->mouvement_document->findMouvement($cle, $id);
+    }
+
+    public function facturerMouvements() {
+
+        return $this->mouvement_document->facturerMouvements();
+    }
+
+    public function isFactures() {
+
+        return $this->mouvement_document->isFactures();
+    }
+
+    public function isNonFactures() {
+
+        return $this->mouvement_document->isNonFactures();
+    }
+
+    public function clearMouvements(){
+        $this->remove('mouvements');
+        $this->add('mouvements');
+    }
+
+    /**** FIN DES MOUVEMENTS ****/
 }
