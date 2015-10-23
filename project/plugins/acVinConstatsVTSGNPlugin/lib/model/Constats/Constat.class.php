@@ -6,6 +6,15 @@
  */
 class Constat extends BaseConstat {
 
+    public function getProduitConfig() {
+        if(!$this->produit) {
+
+            return null;
+        }
+        
+        return $this->getDocument()->getConfiguration()->get($this->produit);
+    }
+
     public function createOrUpdateFromRendezVous(Rendezvous $rdv) {
         if ($rdv->isRendezvousRaisin()) {
             $this->date_raisin = $rdv->getDateHeure();

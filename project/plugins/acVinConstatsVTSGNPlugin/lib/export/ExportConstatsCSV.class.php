@@ -18,7 +18,7 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;CVI;Nom;Adresse;Code postal;Commune;Email;Statut;Raison du refus;Date de signature;Produit;Denomination / Lieu-dit;Type VT/SGN;Date RDV raisin;Agent RDV Raisin;Quantité Raisin;Degré potentiel Raisin;Date RDV volume;Agent RDV volume;Volume obtenu;Degré potentiel Volume;Mail envoyé\n";
+        return "Campagne;CVI;Nom;Adresse;Code postal;Commune;Email;Statut;Raison du refus;Date de signature;Appellation;Lieu/Lieu-dit;Couleur;Cépage;Dénomination;Type VT/SGN;Date RDV raisin;Agent RDV Raisin;Quantité Raisin;Degré potentiel Raisin;Date RDV volume;Agent RDV volume;Volume obtenu;Degré potentiel Volume;Mail envoyé\n";
     }
 
     public function __construct($constats, $header = true) {
@@ -38,8 +38,16 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
         }
 
         foreach($this->constats->constats as $constat) {
+            $produitConfig = $constat->getProduitConfig();
 
-            $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", 
+            $lieu = null;
+            if($produitConfig && $produitConfig->hasLieuEditable()) {
+                $lieu = $constat->denomination_lieu_dit;
+            } elseif($produitConfig) {
+                $lieu = $constat->getProduitConfig()->getLieu()->getLibelleLong();
+            }
+
+            $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", 
                         $this->constats->campagne, 
                         $this->constats->cvi, 
                         $this->constats->raison_sociale, 
@@ -50,8 +58,11 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
                         $this->getStatut($constat),
                         $constat->raison_refus_libelle,
                         $constat->date_signature,
-                        $constat->produit_libelle, 
-                        $constat->denomination_lieu_dit,
+                        ($constat->getProduitConfig()) ? $constat->getProduitConfig()->getAppellation()->getLibelleLong() : null,
+                        $lieu,
+                        ($constat->getProduitConfig()) ? $constat->getProduitConfig()->getCouleur()->getLibelleLong() : null,
+                        ($constat->getProduitConfig()) ? $constat->getProduitConfig()->getLibelleLong() : null,
+                        ($constat->denomination_lieu_dit != $lieu) ? $constat->denomination_lieu_dit : null,
                         $constat->type_vtsgn,
                         $constat->getRDVDateHeure('raisin'),
                         $constat->getRDVAgentNom('raisin'),
