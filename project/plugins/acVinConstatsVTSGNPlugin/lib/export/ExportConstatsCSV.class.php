@@ -18,7 +18,7 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;CVI;Nom;Adresse;Code postal;Commune;Email;Statut;Raison du refus;Date de signature;Produit;Denomination / Lieu-dit;Type VT/SGN;Date RDV raisin;Agent RDV Raisin;Date RDV volume;Agent RDV volume;Quantité Raisin;Degré potentiel Raisin;Degré potentiel Volume;Volume obtenu;Mail envoyé\n";
+        return "Campagne;CVI;Nom;Adresse;Code postal;Commune;Email;Statut;Raison du refus;Date de signature;Produit;Denomination / Lieu-dit;Type VT/SGN;Date RDV raisin;Agent RDV Raisin;Quantité Raisin;Degré potentiel Raisin;Date RDV volume;Agent RDV volume;Volume obtenu;Degré potentiel Volume;Mail envoyé\n";
     }
 
     public function __construct($constats, $header = true) {
@@ -55,12 +55,12 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
                         $constat->type_vtsgn,
                         $constat->getRDVDateHeure('raisin'),
                         $constat->getRDVAgentNom('raisin'),
-                        $constat->getRDVDateHeure('volume'),
-                        $constat->getRDVAgentNom('volume'),
                         sprintf("%s %s%s", $this->formatFloat($constat->nb_contenant), $constat->contenant_libelle, ($constat->nb_contenant > 1) ? "s" : ""),
                         $this->formatFloat($constat->degre_potentiel_raisin),
-                        $this->formatFloat($constat->degre_potentiel_volume),
+                        $constat->getRDVDateHeure('volume'),
+                        $constat->getRDVAgentNom('volume'),
                         $this->formatFloat($constat->volume_obtenu),
+                        $this->formatFloat($constat->degre_potentiel_volume),
                         (int)$constat->mail_sended);
         }
 
