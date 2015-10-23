@@ -33,7 +33,9 @@ class ExportDRevPDF extends ExportPDF {
         if (!$this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
             $date = new DateTime($this->drev->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-        } 
+        } else {
+            $header_subtitle .= sprintf("Exemplaire brouillon");
+        }
 
         if ($this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
             $date = new DateTime($this->drev->validation);
