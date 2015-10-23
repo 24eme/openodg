@@ -14,6 +14,11 @@ class Constats extends BaseConstats {
         return CompteClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
+    public function getConfiguration() {
+
+        return ConfigurationClient::getConfiguration($this->getDocument()->campagne);
+    }
+
     public function synchroFromRendezVous(RendezVous $rendezvous) {
         $this->identifiant = $rendezvous->identifiant;
         $this->campagne = substr($rendezvous->date, 0, 4);
