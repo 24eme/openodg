@@ -28,6 +28,8 @@ class adminComponents extends sfComponents {
         $this->lists = array();
         $this->lists["DRev 2015"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->lists["DRev Marc 2015"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->lists["DRev 2014"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentPrevious());
+        $this->lists["DRev Marc 2014"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentPrevious());
         $this->lists["Parcellaire 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
         $this->lists["Parcellaire Crémant 2015"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
     }
