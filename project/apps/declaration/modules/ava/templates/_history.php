@@ -1,25 +1,14 @@
 <?php if(count($history) > 0): ?>
 <h2>Historique des déclarations</h2>
-    <div class="row">
-    <div class="col-xs-4">
-        <div class="block_declaration panel panel-primary equal-height">
-            <div class="panel-heading">
-                <h3>Historique</h3>
-            </div>
-            <ul class="list-group">
-            <?php foreach ($history as $drev): ?>
-            	<?php if ($drev->type == DRevMarcClient::TYPE_MODEL): ?>
-            	<li class="list-group-item">
-                    <a class="btn btn-link btn-primary" href="<?php echo url_for('drevmarc_visualisation', $drev) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Marc d'Alsace Gewurzt. <?php echo $drev->campagne ?></a>
-                </li>
-            	<?php elseif($drev->type == DRevClient::TYPE_MODEL): ?>
-                <li class="list-group-item">
-                    <a class="btn btn-link btn-primary" href="<?php echo url_for('drev_visualisation', $drev) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Appellations viticoles <?php echo $drev->campagne ?></a>
-                </li>
-                <?php endif; ?>
-            <?php endforeach; ?>
-            </ul>
-        </div>
-    </div>
+<div class="list-group">
+<?php foreach ($history as $drev): ?>
+	<?php if ($drev->type == DRevMarcClient::TYPE_MODEL): ?>
+        <a class="list-group-item" href="<?php echo url_for('drevmarc_visualisation', $drev) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp; Revendication de Marc d'Alsace Gewurztraminer <?php echo $drev->campagne ?></a>
+	<?php elseif($drev->type == DRevClient::TYPE_MODEL): ?>
+        <a class="list-group-item" href="<?php echo url_for('drev_visualisation', $drev) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Revendication des appellations viticoles <?php echo $drev->campagne ?></a>
+    <?php elseif($drev->type == ParcellaireClient::TYPE_MODEL): ?>
+        <a class="list-group-item" href="<?php echo url_for('parcellaire_visualisation', $drev) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Affectation parcellaire <?php echo $drev->campagne ?></a>
+    <?php endif; ?>
+<?php endforeach; ?>
 </div>
 <?php endif; ?>

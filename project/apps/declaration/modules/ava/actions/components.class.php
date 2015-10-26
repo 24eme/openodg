@@ -8,13 +8,18 @@ class avaComponents extends sfComponents
         $this->history = array();
         $drevsHistory = DRevClient::getInstance()->getHistory($this->etablissement->identifiant);
         $drevmarcsHistory = DRevMarcClient::getInstance()->getHistory($this->etablissement->identifiant);
+        $parcellairesHistory = ParcellaireClient::getInstance()->getHistory($this->etablissement->identifiant);
         foreach ($drevsHistory as $drevHistory) {
-        	$this->history['DREV'.$drevHistory->campagne] = $drevHistory;
+        	$this->history[$drevHistory->validation.$drevHistory->_id] = $drevHistory;
         }
     	foreach ($drevmarcsHistory as $drevmarcHistory) {
-        	$this->history['DREVM'.$drevmarcHistory->campagne] = $drevmarcHistory;
+        	$this->history[$drevmarcHistory->validation.$drevmarcHistory->_id] = $drevmarcHistory;
         }
-        ksort($this->history);
+        foreach ($parcellairesHistory as $parcellaireHistory) {
+            $this->history[$parcellaireHistory->validation.$parcellaireHistory->_id] = $parcellaireHistory;
+        }
+
+        krsort($this->history);
     }
     
 }
