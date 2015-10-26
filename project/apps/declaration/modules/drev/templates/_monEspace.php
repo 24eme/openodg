@@ -63,7 +63,7 @@
                         </p>
                         <?php if ($sf_user->isAdmin()): ?>
                             <p>
-                                <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drev_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                                <a class="btn btn-xs btn-warning btn-block pull-right" href="<?php echo url_for('drev_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                             </p>
                         <?php endif; ?>
                     </div>
