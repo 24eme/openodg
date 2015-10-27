@@ -544,7 +544,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             constat.has_erreurs = false;
             constat.erreurs = [];
 
-            if (!constat.signature) {
+            if (!constat.papier && !constat.signature) {
                 constat.erreurs['signature'] = true;
                 constat.has_erreurs = true;
             }

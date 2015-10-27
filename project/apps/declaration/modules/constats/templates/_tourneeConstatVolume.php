@@ -130,6 +130,16 @@
 </div>
 <div id="signature_{{ keyConstatNode}}" ng-show="active == 'signature'" class="col-xs-12">
     <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-12">
+              <div class="checkbox">
+                <label>
+                  <input ng-model="constat.papier" value="1" type="checkbox"> Constat saisi sur papier
+                </label>
+              </div>
+            </div>
+        </div>
+        <div ng-show="!constat.papier">
         <label class="text-muted">Signature de l'opérateur :</label>
         <div ng-class="{ 'hidden': !constat.erreurs['signature'] }" class="alert alert-danger">
             L'opérateur doit signer le constat
@@ -142,6 +152,7 @@
                 <label class="text-muted">Envoyer le constat à l'adresse email :</label>
                 <input placeholder="Adresse email" ng-model="constat.email" type="email" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
+        </div>
         </div>
         <div class="row row-margin">
             <div class="col-xs-12">

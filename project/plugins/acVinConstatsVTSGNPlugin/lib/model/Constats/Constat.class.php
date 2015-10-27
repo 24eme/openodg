@@ -27,6 +27,11 @@ class Constat extends BaseConstat {
         }
     }
 
+    public function isPapier() {
+
+        return $this->exist('papier') && $this->get('papier');
+    }
+
     public function updateConstat($jsonContent) {
 
         $this->produit = (isset($jsonContent->produit)) ? $jsonContent->produit : null;
@@ -53,12 +58,19 @@ class Constat extends BaseConstat {
         if ($jsonContent->type_constat == 'volume') {
             $this->setStatutVolumeAndRendezvous($jsonContent);
             if ($jsonContent->statut_volume == ConstatsClient::STATUT_APPROUVE) {
-                $this->date_signature = date('Y-m-d');
-                $this->sendMailConstatsApprouves();
+                if(isset($jsonContent->papier) && $jsonContent->papier) {
+                    $this->date_signature = preg_replace("/^([0-9]{4})([0-9]{2})([0-9]{2})[0-9]+$/", '\1-\2-\3', $this->date_volume);
+                    $this->add('papier', 1);
+                } else {
+                    $this->date_signature = date('Y-m-d');
+                    $this->sendMailConstatsApprouves();
+                }
             } else {
                 $this->date_signature = null;
             }
         }
+
+
 
         $this->statut_volume = $jsonContent->statut_volume;
         $this->statut_raisin = $jsonContent->statut_raisin;

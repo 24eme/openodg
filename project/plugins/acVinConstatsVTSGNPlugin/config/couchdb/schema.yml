@@ -79,3 +79,4 @@ Constats:
                   mail_sended: { }
                   signature_base64: { }
                   commentaire_raisin: { }
+                  papier: { required: false, type: integer }
