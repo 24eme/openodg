@@ -134,7 +134,7 @@
             <div class="col-sm-12">
               <div class="checkbox">
                 <label>
-                  <input ng-model="constat.papier" value="1" type="checkbox"> Constat saisi sur papier
+                  <input ng-model="constat.papier" type="checkbox" ng-true-value="1" ng-false-value="0"> Constat saisi sur papier
                 </label>
               </div>
             </div>

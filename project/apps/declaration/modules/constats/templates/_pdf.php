@@ -93,6 +93,9 @@ $libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Sélection de Grains Nobles' 
 <br />
 <br />
 <br />
+<?php if($constat->isPapier()): ?>
+    <?php echo "Constat signé sur un exemplaire papier le " . ucfirst(format_date($constat->date_signature, "P", "fr_FR")) . "."; ?>
+<?php else: ?>
 <?php echo "Signé électroniquement le " . ucfirst(format_date($constat->date_signature, "P", "fr_FR")) . ","; ?>
 <br />
 <br />
@@ -101,3 +104,4 @@ $libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Sélection de Grains Nobles' 
 </table>
 <br />
 <img style="height: 130px" src="<?php echo $constat->signature_base64; ?>" />
+<?php endif; ?>
