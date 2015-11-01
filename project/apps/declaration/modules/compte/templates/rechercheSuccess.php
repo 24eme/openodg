@@ -1,25 +1,27 @@
 <?php $allTypeCompte = CompteClient::getInstance()->getAllTypesCompteWithLibelles(); ?>
 
 <div>
-<div class="btn-group pull-right">
-    <a class="btn btn-default btn-default-step" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherce avancée</a>
-    <button type="button" class="btn btn-default btn-default-step" data-toggle="dropdown" aria-expanded="false">
-        <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu" role="menu">
-    <?php foreach(CompteClient::getInstance()->getAllTypesCompteWithLibelles() as $type_compte => $libelle): ?>
-        <li><a href="<?php echo url_for("compte_creation_admin", array("type_compte" => $type_compte)) ?>"><?php echo $libelle ?></a></li>
-    <?php endforeach; ?>
-    </ul>
-</div>
-
-
 <?php include_partial('admin/menu', array('active' => 'contacts')); ?>
 
 
 <?php $argsForm = $args->getRawValue(); ?>
 <?php unset($argsForm['q']) ?>
 <div class="row">
+    <div class="col-xs-12" style="padding-bottom: 10px">
+        <div class="col-xs-offset-6 col-xs-3">
+                <button type="button" class="btn btn-sm btn-default btn-default-step btn-block btn-upper" data-toggle="dropdown" aria-expanded="false">
+                    <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                <?php foreach(CompteClient::getInstance()->getAllTypesCompteWithLibelles() as $type_compte => $libelle): ?>
+                    <li><a href="<?php echo url_for("compte_creation_admin", array("type_compte" => $type_compte)) ?>"><?php echo $libelle ?></a></li>
+                <?php endforeach; ?>
+                </ul>
+        </div>
+        <div class="col-xs-3">
+        <a class="btn btn-default btn-default-step  btn-sm btn-block btn-upper" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherce avancée</a>
+        </div>
+    </div>
     <div class="col-xs-9">
         <div class="col-xs-12">
             <form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">  
