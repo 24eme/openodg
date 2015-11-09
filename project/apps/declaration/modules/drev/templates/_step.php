@@ -38,7 +38,7 @@ $steps = array(
             <?php endif; ?>
         </div>
     </li>
-    <?php if(!$drev->isNonConditionneur()): ?>
+    <?php if(!$drev->isNonConditionneur() || $drev->isNonConditionneurJustForThisMillesime()): ?>
     <li class="<?php if($stepNum == 4): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>

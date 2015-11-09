@@ -487,6 +487,28 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        if($request->getParameter('non_conditionneur')) {
+            $this->drev->add('non_conditionneur', 1);
+            if($this->drev->prelevements->exist(Drev::BOUTEILLE_ALSACE)) {
+                $this->drev->prelevements->remove(Drev::BOUTEILLE_ALSACE);
+                $this->drev->addPrelevement(Drev::BOUTEILLE_ALSACE);
+            }
+
+            if($this->drev->prelevements->exist(Drev::BOUTEILLE_GRDCRU)) {
+                $this->drev->prelevements->remove(Drev::BOUTEILLE_GRDCRU);
+                $this->drev->addPrelevement(Drev::BOUTEILLE_GRDCRU);
+            }
+
+            if($this->drev->prelevements->exist(Drev::BOUTEILLE_VTSGN)) {
+                $this->drev->prelevements->remove(Drev::BOUTEILLE_VTSGN);
+                $this->drev->addPrelevement(Drev::BOUTEILLE_VTSGN);
+            }
+            
+            $this->drev->save();
+
+            return $this->redirect('drev_validation', $this->drev);
+        }
+
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {

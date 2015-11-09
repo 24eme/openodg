@@ -6,10 +6,20 @@
 </div>
 
 <form method="post" action="<?php echo url_for("drev_controle_externe", $drev) ?>" role="form" class="form-horizontal ajaxForm">
-
     <div class="row">
         <div class="col-xs-7">
             <p>Les prélèvements se font uniquement sur des vins mis en bouteille, <strong>au plus proche de la commercialisation</strong></p>
+
+            <?php if($drev->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CONDITIONNEUR)): ?>
+            <div class="checkbox">
+              <label>
+                <input id="checkbox_non_conditionneur" name="non_conditionneur" <?php if($drev->isNonConditionneur()): ?>checked="checked"<?php endif; ?> type="checkbox" value="1">
+                Je ne conditionne pas de volume pour ce millésime
+              </label>
+            </div>
+            <?php endif; ?>
+
+            <div id="bloc-form-control-externe" class="<?php if($drev->isNonConditionneur()): ?>opacity-lg<?php endif; ?>">
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <?php if (isset($form[DRev::BOUTEILLE_ALSACE])): ?>
@@ -93,8 +103,9 @@
                     </div>
                 </div>
             <?php endif; ?>
+            </div>
         </div>
-        <div class="col-xs-4 col-xs-offset-1">
+        <div id="bloc-lieu-prelevement" class="col-xs-4 col-xs-offset-1 <?php if($drev->isNonConditionneur()): ?>opacity-lg<?php endif; ?>">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h2 class="panel-title">

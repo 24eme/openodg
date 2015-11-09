@@ -26,4 +26,10 @@ foreach ($drev->getPrelevementsOrdered() as $prelevementsOrdered):
         </table>
     </div>
 <?php endforeach; ?>
+<?php if($drev->isNonConditionneurJustForThisMillesime()): ?>
+    <div class="col-xs-6">
+        <h3>Contrôle externe</h3>
+        <p><em>Ne conditionne pas de volume pour ce millésime.</em></p>
+    </div>
+<?php endif; ?>
 
