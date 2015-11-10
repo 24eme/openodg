@@ -47,7 +47,7 @@
                                 <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('parcellaire_cremant_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                             </p>
                         <?php endif; ?>
-                    </div>-
+                    </div>
                 <?php else:  ?> 
                 <div class="panel-body">
                         <p>Aucune déclaration d'affectation parcellaire crémant n'a été débutée vous concernant cette année</p>
