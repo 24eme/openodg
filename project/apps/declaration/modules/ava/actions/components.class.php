@@ -9,6 +9,8 @@ class avaComponents extends sfComponents
         $drevsHistory = DRevClient::getInstance()->getHistory($this->etablissement->identifiant);
         $drevmarcsHistory = DRevMarcClient::getInstance()->getHistory($this->etablissement->identifiant);
         $parcellairesHistory = ParcellaireClient::getInstance()->getHistory($this->etablissement->identifiant);
+        $parcellairesCremantHistory = ParcellaireClient::getInstance()->getHistory($this->etablissement->identifiant, true);
+
         foreach ($drevsHistory as $drevHistory) {
         	$this->history[$drevHistory->validation.$drevHistory->_id] = $drevHistory;
         }
@@ -17,6 +19,9 @@ class avaComponents extends sfComponents
         }
         foreach ($parcellairesHistory as $parcellaireHistory) {
             $this->history[$parcellaireHistory->validation.$parcellaireHistory->_id] = $parcellaireHistory;
+        }
+        foreach ($parcellairesCremantHistory as $parcellaireCremantHistory) {
+            $this->history[$parcellaireCremantHistory->validation.$parcellaireHistory->_id] = $parcellaireCremantHistory;
         }
 
         krsort($this->history);
