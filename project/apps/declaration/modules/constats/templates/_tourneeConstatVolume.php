@@ -156,7 +156,7 @@
         </div>
         <div class="row row-margin">
             <div class="col-xs-12">
-                <a href="" ng-click="approuverConstatVolume(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
+                <a href="" ng-click="approuverConstatVolume(constat)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Approuver et terminer</a>
             </div>
         </div>
     </div>
