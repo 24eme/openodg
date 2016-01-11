@@ -509,6 +509,8 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
+        $this->drev->remove('non_conditionneur', 1);
+
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
