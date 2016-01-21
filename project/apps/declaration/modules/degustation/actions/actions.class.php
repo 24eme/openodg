@@ -67,6 +67,19 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_operateurs', array('sf_subject' => $this->tournee, 'nb_a_prelever' => $nb_a_prelever));
     }
 
+    public function executeSuppression(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if(count($this->tournee->degustations) > 0) {
+
+            throw new sfException("Suppression de la tournée impossible car il est relié à des prélevements");
+        }
+
+        $this->tournee->delete();
+
+        $this->redirect('degustation');
+    }
+
     public function executeOperateurs(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
 

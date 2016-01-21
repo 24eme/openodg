@@ -78,7 +78,7 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for('degustation') ?>" class="btn btn-danger btn-lg btn-upper">Annuler</a>
+            <a href="<?php echo url_for('degustation_suppression', $tournee) ?>" class="btn btn-danger btn-lg btn-upper">Supprimer</a>
         </div>
         <div class="col-xs-6 text-right">
             <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer</a>

@@ -569,6 +569,16 @@ degustation_creation:
   requirements:
     sf_method: [get, post]
 
+degustation_suppression:
+  url: /tournee/suppression/:id
+  param: { module: degustation, action: suppression }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_operateurs:
   url: /tournee/operateurs/:id
   param: { module: degustation, action: operateurs }
