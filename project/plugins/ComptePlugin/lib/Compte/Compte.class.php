@@ -185,8 +185,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     }
 
     public function updateLocalTagsProduits($produits_hash_array = array()) {
-        //$this->removeInfosTagsNode('produits');
-        $allProduits = ConfigurationClient::getConfiguration()->getProduits();
+        $this->removeInfosTagsNode('produits');
         foreach ($produits_hash_array as $produits_hash) {
             $this->addInfoProduit($produits_hash);
         }

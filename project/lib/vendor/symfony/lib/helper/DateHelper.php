@@ -57,7 +57,7 @@ function format_date($date, $format = 'd', $culture = null, $charset = null)
     $dateFormats[$culture] = new sfDateFormat($culture);
   }
 
-  return $dateFormats[$culture]->format($date, $format, null, $charset);
+  return preg_replace("/^1 /", "1er ", $dateFormats[$culture]->format($date, $format, null, $charset));
 }
 
 function format_datetime($date, $format = 'F', $culture = null, $charset = null)
