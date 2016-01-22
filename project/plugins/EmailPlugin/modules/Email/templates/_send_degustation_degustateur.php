@@ -18,6 +18,7 @@ Pour information, les autres dégustateurs conviés à cette dégustation sont :
 - <?php echo $degustateur->nom ?> (<?php echo $degustateur->commune ?>)<?php endforeach; ?><?php endforeach; ?>
 
 
+
 Bien cordialement,
 
 Le service Appui technique de l'AVA
