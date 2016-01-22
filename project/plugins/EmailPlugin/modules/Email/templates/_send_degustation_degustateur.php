@@ -12,8 +12,8 @@ Nous vous rappelons l’importance de votre présence pour la bonne tenue des co
 
 Merci de bien vouloir nous confirmer votre présence ou votre absence par retour de mail.
 
-Pour information, les autres dégustateurs conviés à cette dégustation sont :
 
+Pour information, les autres dégustateurs conviés à cette dégustation sont :
 <?php foreach($degustation->degustateurs as $degustateursType): ?><?php foreach($degustateursType as $degustateur): ?> 
 - <?php echo $degustateur->nom ?> (<?php echo $degustateur->commune ?>)<?php endforeach; ?><?php endforeach; ?>
 
