@@ -20,8 +20,7 @@ class TourneeCreationForm extends acCouchdbObjectForm
         return array(
             "" => "",
             "ALSACE" => "AOC Alsace",
-            "VTSGN" => "VT / SGN",
-            "GRDCRU" => "Grands Crus"
+            "VTSGN" => "VT / SGN"
         );
     }
     

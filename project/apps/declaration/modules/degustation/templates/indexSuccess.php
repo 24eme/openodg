@@ -1,4 +1,5 @@
 <?php use_helper("Date"); ?>
+<?php use_javascript("lib/chart.min.js", "last") ?>
 <?php include_partial('admin/menu', array('active' => 'tournees')); ?>
 
 <form action="" method="post" class="form-horizontal">
@@ -45,5 +46,42 @@
         </div>
     </div>
 </form>
+
+<div class="row">
+    <div class="col-xs-12">
+        <legend><small>Demandes de prélevements dans le temps</small></legend>
+        <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
+    </div>
+</div>
+<script type="text/javascript">
+window.onload = function () {
+        var ctx = document.getElementById("graphique").getContext("2d");
+        var myNewChart = new Chart(ctx).Bar({
+            labels: <?php echo json_encode(array_keys($demandes_alsace->getRawValue())) ?>,
+            datasets: [
+                {
+                    label: "AOC Alsace",
+                    fillColor: "rgba(220,220,220,0.2)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(220,220,220,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: <?php echo json_encode(array_values($demandes_alsace->getRawValue())) ?>
+                },
+                {
+                    label: "VT / SGN",
+                    fillColor: "rgba(0,220,220,0.2)",
+                    strokeColor: "rgba(0,220,220,1)",
+                    pointColor: "rgba(0,220,220,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(0,220,220,1)",
+                    data: <?php echo json_encode(array_values($demandes_vtsgn->getRawValue())) ?>
+                },
+            ]
+        }, {multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"} );
+};
+</script>
 
 <?php include_component('degustation', 'list'); ?>

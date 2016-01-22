@@ -6,7 +6,39 @@ class degustationActions extends sfActions {
         $this->tournee = new Tournee();
         $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
         $this->form = new TourneeCreationForm($this->tournee);
+
+        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
+            'ALSACE', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+
+        $this->demandes_alsace = array();
+        $this->demandes_vtsgn = array();
+        $total = 0;
+        foreach($prelevements as $prelevement) {
+            $total = $total + 1;
+            $dateObject = new DateTime($prelevement->date);
+            if(!isset($this->demandes_alsace[$dateObject->format('M Y')])) {
+                $this->demandes_alsace[$dateObject->format('M Y')] = 0;
+                $this->demandes_vtsgn[$dateObject->format('M Y')] = 0;
+            }
+            $this->demandes_alsace[$dateObject->format('M Y')] += 1; 
+        }
         
+        $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
+            'VTSGN', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
+        $total = 0;
+        foreach($prelevements as $prelevement) {
+            $total = $total + 1;
+            $dateObject = new DateTime($prelevement->date);
+            if(!isset($this->demandes_vtsgn[$dateObject->format('M Y')])) {
+                $this->demandes_vtsgn[$dateObject->format('M Y')] = 0;
+            }
+            if(!isset($this->demandes_alsace[$dateObject->format('M Y')])) {
+                $this->demandes_alsace[$dateObject->format('M Y')] = 0;
+            }
+            $this->demandes_vtsgn[$dateObject->format('M Y')] = $total; 
+        }
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
