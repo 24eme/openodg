@@ -124,15 +124,15 @@ class TourneeClient extends acCouchdbClient {
         return DRevPrelevementsView::getInstance()->getPrelevements($appellation, $date_from, $date_to);
     }
 
-    public function getPrelevementsFiltered($appellation, $date_from, $date_to) {
+    public function getPrelevementsFiltered($appellation, $date_from, $date_to, $campagne = null) {
 
-        return $this->filterPrelevements($appellation, DRevPrelevementsView::getInstance()->getPrelevements($appellation, $date_from, $date_to));
+        return $this->filterPrelevements($appellation, DRevPrelevementsView::getInstance()->getPrelevements($appellation, $date_from, $date_to, $campagne), $campagne);
     }
 
-    public function getReportes($appellation) {
+    public function getReportes($appellation, $campagne = null) {
         $reportes = array();
 
-        $degustations = DegustationClient::getInstance()->getDegustationsByAppellation($appellation);
+        $degustations = DegustationClient::getInstance()->getDegustationsByAppellation($appellation, $campagne);
 
         foreach ($degustations as $degustation) {
             if ($degustation->statut != DegustationClient::MOTIF_NON_PRELEVEMENT_REPORT) {
@@ -146,8 +146,8 @@ class TourneeClient extends acCouchdbClient {
         return $reportes;
     }
 
-    public function filterPrelevements($appellation, $prelevements) {
-        $degustations = DegustationClient::getInstance()->getDegustationsByAppellation($appellation);
+    public function filterPrelevements($appellation, $prelevements, $campagne = null) {
+        $degustations = DegustationClient::getInstance()->getDegustationsByAppellation($appellation, $campagne);
 
         $prelevements_filter = array();
 

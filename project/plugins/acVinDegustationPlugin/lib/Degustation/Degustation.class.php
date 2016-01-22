@@ -67,6 +67,16 @@ class Degustation extends BaseDegustation {
         return $produits;
     }
 
+    public function getLastDegustationDate() {
+        $last =  DegustationClient::getInstance()->getLastDegustationByStatut($this->appellation, $this->identifiant, "DEGUSTE");
+        
+        if(!$last) {
+            return null;
+        }
+
+        return $last->date_degustation;
+    }
+
     public function getDrev() {
         if($this->_get('drev')) {
 

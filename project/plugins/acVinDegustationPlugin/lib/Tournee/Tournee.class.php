@@ -294,7 +294,7 @@ class Tournee extends BaseTournee {
     }
 
     public function updateOperateursFromPrevious() {
-        $degustations_json = TourneeClient::getInstance()->getReportes($this->appellation);
+        $degustations_json = TourneeClient::getInstance()->getReportes($this->appellation, $this->getCampagne());
 
         foreach ($degustations_json as $degustation_previous_json) {
             if ($this->degustations->exist($degustation_previous_json->identifiant)) {
@@ -321,11 +321,16 @@ class Tournee extends BaseTournee {
     }
 
     public function updateOperateursFromDRev() {
-        $prelevements = TourneeClient::getInstance()->getPrelevementsFiltered($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin);
+        $prelevements = TourneeClient::getInstance()->getPrelevementsFiltered($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin, $this->getCampagne());
 
         foreach ($prelevements as $prelevement) {
             $degustation = $this->addOperateurFromDRev($prelevement->_id);
         }
+    }
+
+    public function getCampagne() {
+        
+        return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date);
     }
 
     public function cleanOperateurs($save = true) {

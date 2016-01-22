@@ -118,7 +118,7 @@ Degustation:
       telephone_prive: { }
       telephone_mobile: { }
       date_demande: { }
-      reporte: { type: integer }
+      reporte: { }
       motif_non_prelevement: { }
       prelevements:
         type: array_collection

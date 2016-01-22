@@ -119,17 +119,6 @@ class DegustationClient extends acCouchdbClient {
         return $degustation;
     }
 
-    public function getDegustationsByDRev($drev_id) {
-        
-    }
-
-    public function getDegustationsByIdentifiant($cvi) {
-
-        return $this->startkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "00000000", "ALSACE"))
-                    ->endkey(sprintf("DEGUSTATION-%s-%s-%s", $identifiant, "99999999", "ALSACE"))
-                    ->execute($hydrate);
-    }
-
     public static function sortOperateursByDatePrelevement($operateur_a, $operateur_b) {
 
         return $operateur_a->date_demande > $operateur_b->date_demande;
@@ -150,8 +139,13 @@ class DegustationClient extends acCouchdbClient {
         return $note_types;
     }
 
-    public function getDegustationsByAppellation($appellation) {
+    public function getDegustationsByAppellation($appellation, $campagne) {
 
-        return DegustationTousView::getInstance()->getDegustationsByAppellation($appellation);
+        return DegustationTousView::getInstance()->getDegustationsByAppellation($appellation, $campagne);
+    }
+
+    public function getLastDegustationByStatut($appellation, $identifiant, $statut) {
+        
+        return DegustationTousView::getInstance()->getLastDegustationByStatut($appellation, $identifiant, $statut);
     }
 }

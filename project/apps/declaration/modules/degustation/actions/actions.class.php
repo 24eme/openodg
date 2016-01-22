@@ -56,8 +56,8 @@ class degustationActions extends sfActions {
             $this->tournee->appellation_libelle = $request->getParameter('appellation_libelle');
         }
 
-        $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
-        $this->reportes =  TourneeClient::getInstance()->getReportes($this->tournee->appellation);
+        $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin, $this->tournee->getCampagne());
+        $this->reportes =  TourneeClient::getInstance()->getReportes($this->tournee->appellation, $this->tournee->getCampagne());
         $this->nb_reports = count($this->reportes);
 
         $this->form = new TourneeCreationFinForm($this->tournee);

@@ -13,19 +13,39 @@ class DegustationTousView extends acCouchdbView
         return acCouchdbManager::getView('degustation', 'tous', 'Degustation');
     }
 
-    public function getDegustationsByAppellation($appellation) {
+    public function getDegustationsByAppellation($appellation, $campagne) {
 
         return $this->viewToJson($this->client
                             ->startkey(array($appellation))
                             ->endkey(array($appellation, array()))
                             ->reduce(false)
-                            ->getView($this->design, $this->view)->rows);;
+                            ->getView($this->design, $this->view)->rows, $campagne);
     }
 
-    public function viewToJson($rows) {
+    public function getLastDegustationByStatut($appellation, $identifiant, $statut) {
+        $results = $this->viewToJson($this->client
+                            ->startkey(array($appellation, $identifiant, "9999-99-99", $statut, array()))
+                            ->endkey(array($appellation, $identifiant, "0000-00-00", $statut))
+                            ->reduce(false)
+                            ->descending(true)
+                            ->getView($this->design, $this->view)->rows);
+
+        if(count($results)) {
+            return $results[$identifiant];
+        }
+
+
+        return null;
+    }
+
+    public function viewToJson($rows, $campagne = null) {
         $items = array();
 
         foreach($rows as $row) {
+            if($campagne && preg_replace("/DREV-[0-9]+-/", "", $row->key[self::KEY_DREV]) != $campagne) {
+
+                continue;
+            }
 
             $key = $row->key[self::KEY_IDENTIFIANT];
 
