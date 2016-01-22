@@ -61,12 +61,12 @@ window.onload = function () {
             datasets: [
                 {
                     label: "AOC Alsace",
-                    fillColor: "rgba(220,220,220,0.2)",
-                    strokeColor: "rgba(220,220,220,1)",
-                    pointColor: "rgba(220,220,220,1)",
+                    fillColor: "rgba(120,120,220,0.2)",
+                    strokeColor: "rgba(120,120,220,1)",
+                    pointColor: "rgba(120,120,220,1)",
                     pointStrokeColor: "#fff",
                     pointHighlightFill: "#fff",
-                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    pointHighlightStroke: "rgba(120,120,220,1)",
                     data: <?php echo json_encode(array_values($demandes_alsace->getRawValue())) ?>
                 },
                 {
