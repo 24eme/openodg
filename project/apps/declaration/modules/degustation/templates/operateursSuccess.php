@@ -29,7 +29,7 @@
                 <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                 <div class="row">
                 <div class="col-xs-7"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><?php echo $operateur->commune ?></small></div>
-                <div class="col-xs-4 text-left"><!--<small class="text-muted">Prélevé le</small> 2012, 2014--> <?php if($operateur->reporte): ?><span class="label label-warning">Reporté</span><?php else: ?><small class="text-muted">Pour le </small> <?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><?php endif; ?></div>
+                <div class="col-xs-4 text-left"><!--<small class="text-muted">Prélevé le</small> 2012, 2014--> <?php if($operateur->reporte): ?><span class="label label-warning">Report du <?php echo format_date($operateur->reporte, "D", "fr_FR") ?></span><?php else: ?><small class="text-muted">Pour le </small> <?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><?php endif; ?></div>
                 
                 <div class="col-xs-1">
                     <button class="btn btn-success btn-sm pull-right <?php if($exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>

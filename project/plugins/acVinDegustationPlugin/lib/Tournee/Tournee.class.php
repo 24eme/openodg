@@ -308,7 +308,7 @@ class Tournee extends BaseTournee {
                 continue;
             }
 
-            $degustation->reporte = 1;
+            $degustation->reporte = $degustation_previous->date_prelevement;
 
             foreach ($degustation_previous->getLotsPrelevement() as $lot_key => $lot) {
                 if (!$degustation->lots->exist($lot_key)) {
