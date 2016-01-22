@@ -74,9 +74,9 @@
                   <span class="lead"><strong>{{ operateur.raison_sociale }}</strong> <small class="hidden-xs">({{ operateur.cvi }})</small></span><br />
                   <span class="lead">{{ operateur.adresse }}</span><br />
                   <span class="lead">{{ operateur.code_postal }} {{ operateur.commune }}</span><br /><br />
-                  <span ng-if="operateur.telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_bureau }}">{{ operateur.telephone_bureau }}</a><br /></span>
-                  <span ng-if="operateur.telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_prive }}">{{ operateur.telephone_prive }}</a><br /></span>
-                  <span ng-if="operateur.telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_mobile }}">{{ operateur.telephone_mobile }}</a><br /></span>
+                  <span ng-if="operateur.telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="callto:{{ operateur.telephone_bureau }}">{{ operateur.telephone_bureau }}</a><br /></span>
+                  <span ng-if="operateur.telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="callto:{{ operateur.telephone_prive }}">{{ operateur.telephone_prive }}</a><br /></span>
+                  <span ng-if="operateur.telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="callto:{{ operateur.telephone_mobile }}">{{ operateur.telephone_mobile }}</a><br /></span>
                 </address>
             </div>
         </div>

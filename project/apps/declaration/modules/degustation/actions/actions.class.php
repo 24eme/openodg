@@ -429,6 +429,7 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->form->updateObject($this->form->getValues());
         $this->tournee->validate();
         $this->tournee->save();
         $this->tournee->saveDegustations();
