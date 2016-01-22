@@ -560,7 +560,7 @@ degustation_edit:
     sf_method: [get, post]
 
 degustation_creation:
-  url: /tournee/creation/:id
+  url: /tournee/creation
   param: { module: degustation, action: creation }
   class: TourneeRoute
   options:

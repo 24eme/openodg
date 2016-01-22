@@ -19,9 +19,9 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->form->save();
+        $this->form->doUpdateObject($this->form->getValues());
 
-        return $this->redirect('degustation_creation', $this->tournee);
+        return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation, 'appellation_libelle' => $this->tournee->appellation_libelle));
     }
 
     public function executeEdit(sfWebRequest $request) {
@@ -36,13 +36,25 @@ class degustationActions extends sfActions {
     }
 
     public function executeCreation(sfWebRequest $request) {
-        $this->tournee = $this->getRoute()->getTournee();
-
-        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_CREATION))) {
-            $this->tournee->save();
+        if($request->getParameter('id')) {
+            $this->tournee = TourneeClient::getInstance()->find($request->getParameter('id'));
+            $this->forward404Unless($this->tournee);
+            if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_CREATION))) {
+                $this->tournee->save();
+            }
         }
 
-        $this->tournee->date_prelevement_debut = '2016-01-01';
+        if(!$this->tournee) {
+            $this->tournee = new Tournee();
+            $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
+        }
+
+        if($this->tournee->isNew()) {
+            $this->tournee->date_prelevement_debut = $request->getParameter('date_prelevement_debut');
+            $this->tournee->date = $request->getParameter('date');
+            $this->tournee->appellation = $request->getParameter('appellation');
+            $this->tournee->appellation_libelle = $request->getParameter('appellation_libelle');
+        }
 
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
         $this->reportes =  TourneeClient::getInstance()->getReportes($this->tournee->appellation);
