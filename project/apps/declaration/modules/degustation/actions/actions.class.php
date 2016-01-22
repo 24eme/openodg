@@ -5,6 +5,17 @@ class degustationActions extends sfActions {
     public function executeIndex(sfWebRequest $request) {
         $this->tournee = new Tournee();
         $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
+
+        if($request->getParameter('date_prelevement_debut')) {
+            $this->tournee->date_prelevement_debut = $request->getParameter('date_prelevement_debut');
+        }
+        if($request->getParameter('date')) {
+            $this->tournee->date = $request->getParameter('date');
+        }
+        if($request->getParameter('appellation')) {
+            $this->tournee->appellation = $request->getParameter('appellation');
+        }
+
         $this->form = new TourneeCreationForm($this->tournee);
 
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
@@ -40,7 +51,7 @@ class degustationActions extends sfActions {
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-
+            
             return sfView::SUCCESS;
         }
 

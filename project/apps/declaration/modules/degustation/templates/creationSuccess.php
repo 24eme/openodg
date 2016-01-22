@@ -22,7 +22,7 @@
             <h3>Prélévements</h3>
             <div class="form-group">
                 <strong  class="col-xs-5 text-right">Date de prélevement</strong>
-                <div class="col-xs-7"><span>du <?php echo format_date($tournee->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($tournee->date_prelevement_fin, "D", "fr_FR") ?></span></div>
+                <div class="col-xs-7"><span>du <?php echo format_date($tournee->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($tournee->date_prelevement_fin, "D", "fr_FR") ?></span> <a class="btn btn-xs btn-default btn-default-step" href="<?php echo url_for('degustation', array('date_prelevement_debut' => $tournee->date_prelevement_debut, 'date' => $tournee->date, 'appellation' => $tournee->appellation)) ?>">Modifier</a></div>
             </div>
             <div class="form-group">
                 <strong  class="col-xs-5 text-right">Nombre d'opérateurs concernés</strong>

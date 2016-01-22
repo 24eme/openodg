@@ -23,6 +23,18 @@ class TourneeCreationForm extends acCouchdbObjectForm
             "VTSGN" => "VT / SGN"
         );
     }
+
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        if($this->getObject()->date_prelevement_debut) {
+            $datePrelevementDebut = new DateTime($this->getObject()->date_prelevement_debut);
+            $this->setDefault('date_prelevement_debut', $datePrelevementDebut->format('d/m/Y'));
+        }
+        if($this->getObject()->date) {
+            $date = new DateTime($this->getObject()->date);
+            $this->setDefault('date', $date->format('d/m/Y'));
+        }
+    }
     
      public function doUpdateObject($values) 
     {
