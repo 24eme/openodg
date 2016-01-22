@@ -76,7 +76,14 @@
             return false;
         });
 
-        $("#listes_operateurs .list-group-item-item select").change(function() {
+        $("#listes_operateurs .list-group-item-item .select input").change(function() {
+            if($(this).prop('checked')) {
+                //$(this).parent('label').addClass('active');
+                $(this).parent('label').removeClass('btn-default-step');
+            } else {
+                //$(this).parent('label').removeClass('active');
+                $(this).parent('label').addClass('btn-default-step');
+            }
             $.updateRecapCepages();
         });
 
@@ -114,6 +121,8 @@
 
             return false;
         });
+
+        $("#listes_operateurs .list-group-item-item .select[disabled=disabled] label").attr('disabled', 'disabled');
 
         $(".nav-filter").click(function() {
             $(this).parent().find('a').removeClass('active')
@@ -160,7 +169,6 @@
         }
 
         if ($('#nb_a_prelever').length > 0) {
-
             var lignes_a_prelever = new Array();
             var nb_a_prelever = $('#nb_a_prelever').val();
 
@@ -412,14 +420,14 @@
              }*/
             ligne.addClass('list-group-item-success');
             ligne.removeClass('clickable');
-            ligne.find('input, select').removeAttr('disabled');
-            if (ligne.find('select[data-selection-mode=auto]').length > 0) {
-                if (ligne.find('select option[selected=selected]').length == 0) {
-                    $.tireAuSortCepage(ligne.find('select'));
+            ligne.find('input, select, .select label, .select').removeAttr('disabled');
+            if (ligne.find('.select[data-selection-mode=auto]').length > 0) {
+                if (ligne.find('.select input[checked=checked]').length == 0) {
+                    $.tireAuSortCepage(ligne.find('.select'));
                 }
             }
-            if (ligne.find('select[data-selection-mode=all]').length > 0) {
-                ligne.find('select[data-selection-mode=all] option').each(function() { $(this).prop('selected', 'selected') });
+            if (ligne.find('.select[data-selection-mode=all]').length > 0) {
+                ligne.find('.select[data-selection-mode=all] input').each(function() { $(this).prop('checked', 'checked'); $(this).parent('label').addClass('active'); $(this).change(); });
             }
             if (ligne.attr('data-point')) {
                 if (ligne.attr('data-color')) {
@@ -430,7 +438,7 @@
         } else {
             ligne.find('button.btn-danger, select').addClass('hidden');
             if (!$.isTournee()) {
-                ligne.find('input, select').attr('disabled', 'disabled');
+                ligne.find('input, select, .select label, .select').attr('disabled', 'disabled');
             }
             ligne.removeClass('list-group-item-success');
             if ($('.nav-filter.active').attr('data-state')) {
@@ -441,7 +449,9 @@
                 ligne.find('button.btn-success').addClass('hidden');
             }
 
-            ligne.find('select option').removeProp('selected');
+            ligne.find('.select input').removeProp('checked');
+            ligne.find('.select input').parent('label').removeClass('active');
+            ligne.find('.select input').change();
 
             if (ligne.attr('data-point')) {
                 $(markers[ligne.attr('data-point')]._icon).find('.marker-inner').css('color', '#e2e2e2');
@@ -466,18 +476,28 @@
 
     $.tireAuSortCepage = function(select)
     {
-        var nb_options = select.find('option').length;
-        select.find('option').eq(Math.floor((Math.random() * nb_options))).prop('selected', 'selected');
+        var nb_options = select.find('input').length;
+        var element = select.find('input').eq(Math.floor((Math.random() * nb_options)));
+        element.prop('checked', 'checked');
+        element.parent('label').addClass('active')
+        element.change();
     }
 
     $.updateRecapCepages = function()
     {
         $('#recap_cepages span.badge').text("0");
-        $("#listes_operateurs .list-group-item-item select:visible option:selected").each(function(index, value) {
+        nb_lot_total = 0; 
+        $("#listes_operateurs .list-group-item-item .select:visible input:checked").each(function(index, value) {
+            var nb_lot = 1;
+            if ($(value).parent('label').find('.badge').length) {
+                nb_lot = parseInt($(value).parent('label').find('.badge').html());
+            }
             var item = $('#recap_cepages button[data-cepage="' + $(value).val().replace(/-[0-9]+$/, "") + '"] .badge');
-            item.html(parseInt(item.html()) + 1);
+
+            item.html(parseInt(item.html()) + nb_lot);
+            nb_lot_total = nb_lot_total + nb_lot;
         });
-        $("[data-dynamic-value=nb-lots]").html($("#listes_operateurs .list-group-item-item select option:selected").length);
+        $("[data-dynamic-value=nb-lots]").html(nb_lot_total);
         $("[data-dynamic-value=nb-operateurs]").html($("#listes_operateurs .list-group-item-item.list-group-item-success").length);
     }
 

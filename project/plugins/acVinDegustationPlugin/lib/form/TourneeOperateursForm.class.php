@@ -34,14 +34,14 @@ class TourneeOperateursForm extends acCouchdbForm {
             $choices = array();
 
             foreach($operateur->lots as $lot_key => $lot) {
-                $choices[$lot_key] = sprintf("%s - %s hl", $lot->libelle, $lot->volume_revendique);
+                $choices[$lot_key] = sprintf("%s", $lot->libelle);
 
                 if($lot->nb > 1) {
-                    $choices[$lot_key] .= sprintf(" (%s lots)", $lot->nb);
+                    $choices[$lot_key] .= sprintf(" <span class='badge'>%s</span>", $lot->nb);
                 }
             }
 
-            $this->setWidget($operateur->identifiant, new sfWidgetFormChoice(array("choices" => $choices, 'multiple' => true)));
+            $this->setWidget($operateur->identifiant, new bsWidgetFormChoice(array("choices" => $choices, 'multiple' => true, 'expanded' => true)));
             $this->setValidator($operateur->identifiant, new sfValidatorChoice(array("choices" =>array_keys($choices), "multiple" => true, "required" => false)));
 
         }

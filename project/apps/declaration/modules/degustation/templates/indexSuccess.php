@@ -7,18 +7,6 @@
     <div class="row">
         <div class="col-xs-10">
             <div class="form-group <?php if($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-                <?php echo $form["date_prelevement_debut"]->renderError(); ?>
-                <?php echo $form["date_prelevement_debut"]->renderLabel("Date de début de demande des prélévements", array("class" => "col-xs-6 control-label")); ?>
-                <div class="col-xs-6">
-                    <div class="input-group date-picker">
-                        <?php echo $form["date_prelevement_debut"]->render(array("class" => "form-control")); ?>
-                        <div class="input-group-addon">
-                            <span class="glyphicon-calendar glyphicon"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group <?php if($form["date"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date"]->renderError(); ?>
                 <?php echo $form["date"]->renderLabel("Date de dégustation", array("class" => "col-xs-6 control-label")); ?>
                 <div class="col-xs-6">

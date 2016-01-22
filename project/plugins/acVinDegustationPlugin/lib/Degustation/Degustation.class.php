@@ -37,25 +37,23 @@ class Degustation extends BaseDegustation {
                     $lot->add('libelle_produit', sprintf("%s", $detail->getProduitLibelleComplet()));
                     $lot->hash_produit = $detail->getCepage()->getHash();
                     $lot->volume_revendique = $detail->get("volume_revendique_".$vtsgn_key);
-                    $lot->nb_hors_vtsgn = 1;
                     $lot->vtsgn = $vtsgn_libelle;
+                    $lot->nb = 1;
                 }
             }
         }
 
         foreach($prelevement->lots as $l_key => $l) {
-            for($i = 0; $i < $l->nb_hors_vtsgn; $i++) {
-                $lot = $this->lots->add(str_replace("/", "-", $l->hash_produit)."-".$i);
-                $lot->hash_produit = $l->hash_produit;
-                $lot->libelle = $l->libelle;
-                if($l->exist('libelle_produit')) {
-                    $lot->libelle_produit = $l->libelle_produit;
-                }
-                $lot->nb = 1;
-                $lot->vtsgn = $l->vtsgn;
-                $lot->volume_revendique = $l->volume_revendique;
-                $lot->prelevement = 0;
+            $lot = $this->lots->add(str_replace("/", "-", $l->hash_produit));
+            $lot->hash_produit = $l->hash_produit;
+            $lot->libelle = $l->libelle;
+            if($l->exist('libelle_produit')) {
+                $lot->libelle_produit = $l->libelle_produit;
             }
+            $lot->nb = $l->nb_hors_vtsgn;
+            $lot->vtsgn = $l->vtsgn;
+            $lot->volume_revendique = $l->volume_revendique;
+            $lot->prelevement = 0;
         }
     }
 
@@ -113,6 +111,23 @@ class Degustation extends BaseDegustation {
         }
 
         return $lots;
+    }
+
+    public function getNbLots() {
+        $nb = 0;
+        foreach($this->lots as $lot) {
+            if(!$lot->prelevement) {
+                continue;
+            }
+
+            if(!$lot->nb) {
+                $nb++;
+            } else {
+                $nb = $nb + $lot->nb;
+            }
+        }
+
+        return $nb;
     }
 
     public function resetLotsPrelevement() {

@@ -20,9 +20,17 @@
     <div class="row">
         <div class="col-xs-10">
             <h3>Prélévements</h3>
-            <div class="form-group">
-                <strong  class="col-xs-5 text-right">Date de prélevement</strong>
-                <div class="col-xs-7"><span>du <?php echo format_date($tournee->date_prelevement_debut, "D", "fr_FR") ?> au <?php echo format_date($tournee->date_prelevement_fin, "D", "fr_FR") ?></span></div>
+            <div class="form-group <?php if($form["date_prelevement_debut"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["date_prelevement_debut"]->renderError(); ?>
+                <?php echo $form["date_prelevement_debut"]->renderLabel("Date de début des demandes", array("class" => "col-xs-5 control-label")); ?>
+                <div class="col-xs-4">
+                    <div class="input-group date-picker">
+                        <?php echo $form["date_prelevement_debut"]->render(array("class" => "form-control")); ?>
+                        <div class="input-group-addon">
+                            <span class="glyphicon-calendar glyphicon"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <strong  class="col-xs-5 text-right">Nombre d'opérateurs concernés</strong>
@@ -44,13 +52,6 @@
             <div class="form-group">
                 <strong  class="col-xs-6 text-right">Date de la dégustation</strong>
                 <div class="col-xs-6"><span><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span></div>
-            </div>
-            <div class="form-group <?php if($form["nombre_commissions"]->hasError()): ?>has-error<?php endif; ?>">
-                <?php echo $form["nombre_commissions"]->renderError(); ?>
-                <?php echo $form["nombre_commissions"]->renderLabel("Nombre de commissions estimées", array("class" => "col-xs-6 control-label")); ?>
-                <div class="col-xs-2">
-                    <?php echo $form["nombre_commissions"]->render(array("class" => "form-control")); ?>
-                </div>
             </div>
             <div class="form-group <?php if($form["heure"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["heure"]->renderError(); ?>

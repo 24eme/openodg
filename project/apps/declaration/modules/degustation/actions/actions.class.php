@@ -42,6 +42,8 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
+        $this->tournee->date_prelevement_debut = '2016-01-01';
+
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin);
         $this->reportes =  TourneeClient::getInstance()->getReportes($this->tournee->appellation);
         $this->nb_reports = count($this->reportes);

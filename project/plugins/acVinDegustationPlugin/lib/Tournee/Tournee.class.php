@@ -203,7 +203,7 @@ class Tournee extends BaseTournee {
     public function getNbLots() {
         $nb_lot = 0;
         foreach ($this->getDegustationsObject() as $degustation) {
-            $nb_lot += count($degustation->getLotsPrelevement());
+            $nb_lot += $degustation->getNbLots();
         }
 
         return $nb_lot;

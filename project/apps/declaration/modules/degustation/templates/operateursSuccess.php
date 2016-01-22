@@ -13,16 +13,6 @@
 <input type="hidden" id="nb_a_prelever" value="<?php echo $nb_a_prelever ?>"/>
 
 <div class="row">
-    <?php if($tournee->appellation != 'VTSGN'): ?>
-    <div class="col-xs-12" style="padding-bottom: 15px;">
-        <div id="recap_cepages" class="btn-group">
-            <?php foreach($tournee->getProduits() as $produit): ?>
-            <button class="btn btn-default btn-default-step btn-sm disabled" data-cepage="<?php echo $produit->getHashForKey() ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></button>
-            <?php endforeach; ?>
-        </div>
-    </div>
-    <?php endif; ?>
-    
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div class="btn-group">
             <a data-state="active" data-filter="" class="btn btn-info active nav-filter" href="">Tous <span class="badge"><?php echo count($tournee->operateurs) ?></span></a>
@@ -37,24 +27,36 @@
                 <?php $operateur = $tournee->operateurs->get($key); ?>
                 <?php $exist = count($operateur->getLotsPrelevement()) > 0; ?>
                 <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
-                <div class="col-xs-5"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><br /><?php echo $operateur->commune ?></small></div>
-                <div class="col-xs-3 text-left"><small class="text-muted">Pour le </small><?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><!--<small class="text-muted">Prélevé le</small> 2012, 2014--><?php if($operateur->reporte): ?><br /><span class="label label-warning">Reporté</span><?php endif; ?></div>
-                <div class="col-xs-3">
-                    <?php $attrs = array("class" => "form-control input-sm", "data-selection-mode" => ($tournee->appellation == 'VTSGN') ? "all" : "auto", "data-placeholder" => "Sélectionné un lot") ?>
-                    <?php if(!$exist): ?>
-                        <?php $attrs["class"] .= " hidden"; ?>
-                        <?php $attrs["disabled"] = "disabled"; ?>
-                    <?php endif; ?>
-                    <?php echo $field->render($attrs); ?>
-                </div>
+                <div class="row">
+                <div class="col-xs-7"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><?php echo $operateur->commune ?></small></div>
+                <div class="col-xs-4 text-left"><!--<small class="text-muted">Prélevé le</small> 2012, 2014--> <?php if($operateur->reporte): ?><span class="label label-warning">Reporté</span><?php else: ?><small class="text-muted">Pour le </small> <?php echo format_date($operateur->date_demande, "D", "fr_FR") ?><?php endif; ?></div>
+                
                 <div class="col-xs-1">
                     <button class="btn btn-success btn-sm pull-right <?php if($exist): ?>hidden<?php endif; ?>" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
                     <button class="btn btn-danger btn-sm pull-right <?php if(!$exist): ?>hidden<?php endif; ?>" style="opacity: 0.7;" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                </div>
+                <div class="col-xs-12">
+                    <div class="btn-group select" <?php if(!$exist): ?>disabled="disabled"<?php endif; ?> data-selection-mode="<?php echo ($tournee->appellation == 'VTSGN') ? "all" : "auto"?>" data-toggle="buttons">
+                        <?php echo $field->render(); ?>
+                    </div>
+                </div>
                 </div>
             </div>
             <?php endforeach; ?>
         </div>
     </div>
+</div>
+
+<div class="row row-margin row-button">
+    <?php if($tournee->appellation != 'VTSGN'): ?>
+    <div class="col-xs-12" style="padding-bottom: 15px;">
+        <div id="recap_cepages" class="btn-group">
+            <?php foreach($tournee->getProduits() as $produit): ?>
+            <button class="btn btn-default btn-default-step btn-sm disabled" data-cepage="<?php echo $produit->getHashForKey() ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></button>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php endif; ?>
 </div>
 
 <div class="row row-margin row-button">
