@@ -14,7 +14,7 @@ Merci de bien vouloir nous confirmer votre présence ou votre absence par retour
 Pour information, les autres dégustateurs conviés à cette dégustation sont :
 
 <?php foreach($degustation->degustateurs as $degustateursType): ?><?php foreach($degustateursType as $degustateur): ?> 
-- <?php echo $degustateur->nom ?>
+- <?php echo $degustateur->nom ?> (<?php echo $degustateur->commune ?>)
 <?php endforeach; ?><?php endforeach; ?>
 
 
