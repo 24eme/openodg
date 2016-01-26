@@ -1,5 +1,5 @@
 <?php use_helper('Date'); ?>
-<?php use_javascript("degustation.js?201505150308", "last") ?>
+<?php use_javascript("degustation.js?201601261522", "last") ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_javascript('lib/leaflet/marker.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
