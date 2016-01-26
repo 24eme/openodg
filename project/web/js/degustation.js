@@ -194,12 +194,9 @@
         defaultIcon = L.BootstrapMarkers.icon({color: '#e2e2e2'});
 
         var map = L.map('carte', {minZoom: 8, icon: defaultIcon}).setView([48.100901, 7.361051], 9);
-        L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-                    '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-                    'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-            id: 'examples.map-i875mjb7'
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         var points = [];
@@ -392,7 +389,11 @@
     }
 
     $.removeItem = function(ligne) {
-        ligne.attr('data-state', '');
+        if(ligne.attr('data-value')) {
+            ligne.attr('data-state', '');
+        } else {
+            ligne.removeAttr('data-state');
+        }
         if ($.isTournee()) {
             ligne.find('input.input-tournee').val("");
             ligne.find('input.input-heure').val("");
