@@ -11,14 +11,7 @@
  *
  * @author mathurin
  */
-class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
-
-    private $appellationKey;
-
-    public function __construct(acCouchdbJson $object, $appellationKey, $options = array(), $CSRFSecret = null) {
-        $this->appellationKey = $appellationKey;
-        parent::__construct($object, $options, $CSRFSecret);
-    }
+class ParcellaireModificationParcelleForm extends acCouchdbObjectForm {
 
     public function configure() {
         $appellationNode = $this->getAppellationNode();
@@ -61,12 +54,12 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
 
         $this->setValidator('superficie', new sfValidatorNumber(array('required' => true)));
 
-        $this->widgetSchema->setNameFormat('parcellaire_ajout_parcelle[%s]');
+        $this->widgetSchema->setNameFormat('parcellaire_modification_parcelle[%s]');
     }
 
     public function getAppellationNode() {
 
-        return $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey, true);
+        return $this->getObject()->getAppellation();
     }
 
     public function getProduits() {
@@ -87,15 +80,17 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
     }
 
     public function getCommunes() {
-       $config = $this->getObject()->getConfiguration();
+       $config = $this->getObject()->getDocument()->getConfiguration();
        $communes = array();
        foreach($config->communes as $communeName => $dpt) {
-       $communes[strtoupper($communeName)] = $communeName;           
+       $communes[KeyInflector::slugify($communeName)] = $communeName;           
        }
        return array_merge(array('' => ''), $communes);
     }
     
     protected function doUpdateObject($values) {
+
+        return;
 
         if ((!isset($values['commune']) || empty($values['commune'])) ||
                 (!isset($values['section']) || empty($values['section'])) ||
@@ -140,6 +135,18 @@ class ParcellaireAjoutParcelleForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
+
+        if(isset($this->widgetSchema['lieuCepage'])) {
+            $this->setDefault('lieuCepage', $this->getObject()->getCepage()->getHashForKey());
+        }
+
+        if(isset($this->widgetSchema['cepage'])) {
+            $this->setDefault('cepage', $this->getObject()->getCepage()->getHashForKey());
+        }
+
+        if(isset($this->widgetSchema['lieuDit'])) {
+            $this->setDefault('lieuDit', $this->getObject()->lieu);
+        }
     }
     
 
