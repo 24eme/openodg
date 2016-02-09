@@ -21,13 +21,13 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->setWidgets(array(
-            'superficie' => new sfWidgetFormInputFloat(array('float_format' => '%01.2f'))
+            'declarer' => new sfWidgetFormInputCheckbox(), 
         ));
         $this->widgetSchema->setLabels(array(
-            'superficie' => 'Superficie (ares):'
+            'declarer' => 'Superficie (ares):'
         ));
         $this->setValidators(array(
-            'superficie' => new sfValidatorNumber(array('required' => false))
+            'declarer' => new sfValidatorBoolean(array('required' => false))
         ));
 
         $this->widgetSchema->setNameFormat('[%s]');
@@ -39,9 +39,6 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        if (!$this->getObject()->exist('superficie') || !$this->getObject()->superficie) {
-            $this->setDefault('superficie', '0.0000');
-        }
     }
 
 }

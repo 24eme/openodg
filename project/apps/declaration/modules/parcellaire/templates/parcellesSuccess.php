@@ -1,3 +1,5 @@
+<?php use_helper('Float'); ?>
+
 <?php include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire)); ?>
 
 <div class="page-header">
@@ -37,9 +39,9 @@
                                 <th class="col-xs-1">Section</th>        
                                 <th class="col-xs-1">Numéro</th>        
                                 <th class="col-xs-2">Lieu-dit</th>      
-                                <th class="col-xs-3">Cépage</th>        
-                                <th class="col-xs-3">Superficie <strong>en ares</strong></th>           
-                                <th class="col-xs-1"></th>           
+                                <th class="col-xs-2">Cépage</th>        
+                                <th class="col-xs-2">Superficie</th>           
+                                <th class="col-xs-1">Déclarer</th>           
                             </tr>
                         </thead>
                         <tbody>
@@ -57,9 +59,12 @@
                                     <td><?php echo $parcelle->getSection(); ?></td>         
                                     <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
                                     <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
-                                    <td><?php echo $parcelle->getCepageLibelle(); ?></td>        
-                                    <td <?php echo ($erreur_ret) ? 'class="has-error"' : '' ?> ><?php echo $form['produits'][$parcelle->getHashForKey()]['superficie']->render(array('class' => "form-control text-right input-rounded num_float " . $class, 'tabindex' => $tabindex)); ?></td>                 
-                                    <td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a><a class="ajax fakeDeleteButton hidden" href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"></a></td>
+                                    <td><?php echo $parcelle->getCepageLibelle(); ?></td>
+                                    <td class="text-right"><?php echo $parcelle->getSuperficie() ?>&nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>             
+                                    <!--<td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a><a class="ajax fakeDeleteButton hidden" href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"></a></td>-->
+                                    <td class="text-center">
+                                        <?php echo $form['produits'][$parcelle->getHashForKey()]['declarer']->render(); ?>
+                                    </td>
                                 </tr>
                             <?php 
                             $tabindex++;

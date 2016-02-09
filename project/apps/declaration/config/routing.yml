@@ -955,7 +955,7 @@ parcellaire_parcelles:
     sf_method: [get,post]
 
 parcellaire_parcelle_ajout:
-  url: /parcellaire/ajoutParcelle/:id/:appellation
+  url: /parcellaire/ajout-parcelle/:id/:appellation
   param: { module: parcellaire, action: ajoutParcelle }
   class: ParcellaireRoute
   options:
@@ -964,8 +964,18 @@ parcellaire_parcelle_ajout:
   requirements:
     sf_method: [post]
 
+parcellaire_parcelle_modification:
+  url: /parcellaire/modification-parcelle/:id/:appellation/:parcelle
+  param: { module: parcellaire, action: modificationParcelle }
+  class: ParcellaireRoute
+  options:
+    model:    Parcellaire
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaire_parcelle_delete:
-  url: /parcellaire/deleteParcelle/:id/:appellation/:parcelle
+  url: /parcellaire/suppression-parcelle/:id/:appellation/:parcelle
   param: { module: parcellaire, action: deleteParcelle }
   class: ParcellaireRoute
   options:

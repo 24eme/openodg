@@ -211,6 +211,35 @@ class parcellaireActions extends sfActions {
         }
     }
 
+    public function executeModificationParcelle(sfWebRequest $request) {
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $appellation = $request->getParameter('appellation');
+        $parcelleKey = $request->getParameter('parcelle');
+
+        preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
+        $detail = $this->parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
+
+        if(!$detail) {
+
+            return $this->forward404(sprintf("Le détail n'existe pas"));
+        }
+
+        $this->form = new ParcellaireModificationParcelleForm($detail);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+    }
+
     public function executeDeleteParcelle(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
         $appellation = $request->getParameter('appellation');

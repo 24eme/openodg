@@ -215,7 +215,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         if($lieu){
             $parcelleKey.='-'.KeyInflector::slugify($lieu);
         }
-        $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
+        
+        return $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
     }
 
     public function addAppellation($hash) {
