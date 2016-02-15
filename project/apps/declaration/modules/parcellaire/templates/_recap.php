@@ -131,7 +131,7 @@ if ($last) {
                                 if (!array_key_exists($a->nom, $nomAcheteurs)) {
                                 if ($y)
                                     echo ", ";
-                                    print $a->nom;
+                                    print preg_replace('/ *\([^\)]*\) */', '', $a->nom);
                                     $y = 1;
                                     $nomAcheteurs[$a->nom] = $a->nom;
                                 }

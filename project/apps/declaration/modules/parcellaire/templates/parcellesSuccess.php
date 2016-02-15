@@ -29,7 +29,12 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <div class="row">       
+    <div class="row">     
+        <?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>
+            <div class="col-xs-12">
+                <p><strong>&nbsp;Pour affecter une parcelle en mention VT ou SGN, cliquez sur la ligne.</strong></p>
+            </div>
+        <?php endif; ?>
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
                 <?php if (count($parcelles)) : ?>
@@ -82,7 +87,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                     <td>
                                         <?php
                                         if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {
-                                            echo ($parcelle->getLieuLibelle())? $parcelle->getLieuLibelle() . " / " : "";
+                                            echo ($parcelle->getLieuLibelle()) ? $parcelle->getLieuLibelle() . " / " : "";
                                         }
                                         echo $parcelle->getCepageLibelle();
                                         ?>
@@ -93,10 +98,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                                 <?php echoFloat($parcelle->getSuperficie()) ?>
                                             </div> 
                                             <div class="col-xs-6 text-left">    
-                                                <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)):  ?>
-                                                &nbsp;<a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
+                                                <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)): ?>
+                                                    &nbsp;<a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
                                                 <?php else: ?>
-                                                 <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
+                                                    <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
                                                 <?php endif; ?>
                                             </div> 
                                         </div>
@@ -112,7 +117,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                 </div>
             <?php else : ?>
                 <p class="text-muted">Vous n'avez affecté aucune parcelle pour cette appellation.</p><br/>
-<?php endif; ?>
+            <?php endif; ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>
@@ -133,11 +138,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Retourner <small>à la validation</small></button>
             <?php elseif (!$isVtSgn && $appellationNode->getNextAppellationKey()): ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-                <?php else: ?>
+            <?php else: ?>
                 <button type="submit" class="btn btn-default btn-lg btn-upper btn-default">Continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-<?php endif; ?>
+                <?php endif; ?>
         </div>
     </div>
 </form>
 
-<?php include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm,'appellation' => $appellation)); ?>
+<?php include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm, 'appellation' => $appellation)); ?>
