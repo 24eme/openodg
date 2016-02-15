@@ -11,7 +11,7 @@ class PageablePDF extends PageableOutput {
             $config = new acTCPDFConfig();
         }
 
-        if($config->path_images) { 
+        if($config->path_images && (!defined('K_PATH_IMAGES'))) { 
             define('K_PATH_IMAGES', $config->path_images);
         }
         // create new PDF document
