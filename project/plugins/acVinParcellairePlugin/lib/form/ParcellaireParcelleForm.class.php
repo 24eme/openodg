@@ -120,8 +120,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         $parcelle->superficie = $values['superficie'];
         
         $parcelle->active = 1;
-        
-        if ($this->getAppellationNode()->getKey() == ParcellaireClient::APPELLATION_VTSGN) {
+        if ($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
         	$parcelle->vtsgn = 1;
         }
 
