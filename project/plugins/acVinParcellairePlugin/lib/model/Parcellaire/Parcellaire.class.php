@@ -198,6 +198,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         }
 
         $produit = $this->getOrAdd($config->getHash());
+        $produit->getLieu()->getLibelle();
+        $produit->getCouleur()->getLibelle();
         $produit->getLibelle();
 
         return $produit;

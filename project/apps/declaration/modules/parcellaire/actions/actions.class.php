@@ -222,7 +222,7 @@ class parcellaireActions extends sfActions {
 
     public function executeModificationParcelle(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
-        $appellation = $request->getParameter('appellation');
+        $this->appellation = $request->getParameter('appellation');
         $parcelleKey = $request->getParameter('parcelle');
 
         preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
@@ -246,6 +246,10 @@ class parcellaireActions extends sfActions {
 
             return sfView::SUCCESS;
         }
+
+        $this->form->save();
+
+        return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
     }
 
     public function executeDeleteParcelle(sfWebRequest $request) {

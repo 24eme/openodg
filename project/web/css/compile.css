@@ -7773,6 +7773,7 @@ input[type="radio"] {
   margin-top: 35px;
   position: relative;
   padding: 0 20px 10px 20px;
+  min-height: 300px;
 }
 /* ============================================================= */
 /* FOOTER */
