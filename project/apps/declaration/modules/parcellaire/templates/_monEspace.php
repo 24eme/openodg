@@ -23,8 +23,8 @@
                         <p>Vous avez déjà débuté votre déclaration d'affectation parcellaire pour cette année sans la valider.</p>
                        </div>
                 <div class="panel-bottom">
-                    <p>
-                            <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_edit', $parcellaire) ?>">Continuer</a>
+                        <p>
+                            <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_edit', $parcellaire) ?>"><?php if($parcellaire->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer la saisie papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
                         </p>
                         <p>
                             <a class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('parcellaire_delete', $parcellaire) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
@@ -41,7 +41,7 @@
                     <div class="panel-bottom">
                         <?php if ($sf_user->isAdmin()): ?>
                             <p>
-                                <a class="btn btn-lg btn-warning btn-block" href="<?php echo url_for('parcellaire_create', $etablissement) ?>">Démarrer la télédéclaration</a>
+                                <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('parcellaire_create', $etablissement) ?>">Démarrer la télédéclaration</a>
                             </p>
                             <p>
                                 <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('parcellaire_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
@@ -54,7 +54,7 @@
                              </div>
                     <div class="panel-bottom">
                             <p>
-                                <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_create', $etablissement) ?>">Démarrer</a>
+                                <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('parcellaire_create', $etablissement) ?>">Démarrer la télédéclaration</a>
                             </p>
 
                             <?php if ($sf_user->isAdmin()): ?>

@@ -21,7 +21,7 @@ class avaComponents extends sfComponents
             $this->history[$parcellaireHistory->validation.$parcellaireHistory->_id] = $parcellaireHistory;
         }
         foreach ($parcellairesCremantHistory as $parcellaireCremantHistory) {
-            $this->history[$parcellaireCremantHistory->validation.$parcellaireHistory->_id] = $parcellaireCremantHistory;
+            $this->history[$parcellaireCremantHistory->validation.$parcellaireCremantHistory->_id] = $parcellaireCremantHistory;
         }
 
         krsort($this->history);
