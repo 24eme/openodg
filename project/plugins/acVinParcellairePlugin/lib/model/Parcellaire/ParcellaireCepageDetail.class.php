@@ -117,4 +117,8 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     public function setVtsgn($value) {
         return $this->_set('vtsgn', $value * 1);
     }
+    
+    public function isFromAppellation($appellation){
+        return 'appellation_'.$appellation == $this->getAppellation()->getKey();
+    }
 }
