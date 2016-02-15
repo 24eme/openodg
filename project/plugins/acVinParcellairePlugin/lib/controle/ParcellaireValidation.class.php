@@ -92,7 +92,7 @@ class ParcellaireValidation extends DocumentValidation {
             }
         }
 
-        if($hasParcelle && !$erreurRepartition && count($acheteurs) != count($acheteursUsed) && ) {
+        if($hasParcelle && !$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
             $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
         }
     }
