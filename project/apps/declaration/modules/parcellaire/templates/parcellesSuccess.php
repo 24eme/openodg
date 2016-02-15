@@ -1,6 +1,8 @@
-<?php use_helper('Float'); ?>
-
-<?php include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire)); ?>
+<?php
+use_helper('Float');
+include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire));
+$isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient::APPELLATION_VTSGN);
+?>
 
 <div class="page-header">
     <h2>Saisie des parcelles<?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
@@ -17,7 +19,7 @@
         }
         ?>
         <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?> <span class="badge"><?php echo $nb ?></span></a></li>
-    <?php endforeach; ?>
+<?php endforeach; ?>
 </ul>
 
 <?php if ($sf_user->hasFlash('warning')): ?>
@@ -26,12 +28,12 @@
 
 <form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal ajaxForm parcellaireForm">
     <?php echo $form->renderHiddenFields(); ?>
-    <?php echo $form->renderGlobalErrors(); ?>
+<?php echo $form->renderGlobalErrors(); ?>
 
     <div class="row">       
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
-                <?php if (count($parcelles)) : ?>
+<?php if (count($parcelles)) : ?>
                     <table class="table table-striped">
                         <thead>
                             <tr>
@@ -54,16 +56,27 @@
                                 $styleErr = ($attention_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkorange;"' : "";
                                 $styleWar = ($erreur_ret) ? 'style="border-style: solid; border-width: 1px; border-color: darkred;"' : "";
                                 ?>
-                                <tr <?php echo $styleErr.$styleWar; ?> >
+                                <tr <?php echo $styleErr . $styleWar; ?> >
                                     <td class="text-center">
-                                        <?php echo $form['produits'][$parcelle->getHashForKey()]['active']->render(); ?>
+        <?php echo $form['produits'][$parcelle->getHashForKey()]['active']->render(); ?>
                                     </td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>         
                                     <td><?php echo $parcelle->getSection(); ?></td>         
                                     <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
                                     <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
                                     <td><?php echo $parcelle->getCepageLibelle(); ?></td>
-                                    <td class="text-right"><?php echo $parcelle->getSuperficie() ?>&nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"><span class="glyphicon glyphicon-pencil"></span></a></td>             
+                                    <td class="text-right">
+                                        <div class="row">
+                                            <div class="col-xs-6 text-right">
+        <?php echoFloat($parcelle->getSuperficie()) ?>
+                                            </div>
+                                            <div class="col-xs-6 text-left">
+                                                <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)): ?>
+                                                    &nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+        <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </td>             
                                     <!--<td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a><a class="ajax fakeDeleteButton hidden" href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"></a></td>-->
                                 </tr>
                                 <?php
@@ -83,8 +96,8 @@
     </div>
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <?php if ( is_string($appellationNode) &&  ($appellationNode == ParcellaireClient::APPELLATION_VTSGN)) : ?>
-                <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => "GRDCRU" )); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
+            <?php if ($isVtSgn) : ?>
+                <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => "GRDCRU")); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
             <?php elseif ($appellationNode->getPreviousAppellationKey()) : ?>
                 <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationNode->getPreviousAppellationKey())); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
             <?php else : ?>
@@ -103,4 +116,4 @@
     </div>
 </form>
 
-<?php  include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm)); ?>
+<?php include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm)); ?>

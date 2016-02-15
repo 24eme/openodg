@@ -77,7 +77,7 @@
     <div class="col-xs-4">
         <div class="input-group">
             <?php echo $form['superficie']->render(array("placeholder" => "Saisissez une supérficie", "class" => "form-control num_float", "required" => true, "title" => "Votre numéro de parcelle doit etre un nombre")) ?>
-            <div class="input-group-addon">hl</div>
+            <div class="input-group-addon">ares</div>
         </div>
     </div>
 </div>
