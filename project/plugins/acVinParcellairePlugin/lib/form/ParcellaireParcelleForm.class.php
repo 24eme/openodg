@@ -52,7 +52,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
             $this->setValidator('lieuDit', new sfValidatorString(array('required' => true)));
         }
 
-        $this->setValidator('superficie', new sfValidatorNumber(array('required' => true)));
+        $this->setValidator('superficie', new sfValidatorNumber(array('required' => true, 'min' => '0.01'), array('min' => 'La superficie doit être supérieure à 0')));
 
         $this->widgetSchema->setNameFormat('parcellaire_parcelle[%s]');
     }
@@ -63,7 +63,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 
             foreach ($appellationNode->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE) as $key => $cepage) {
 
-            	if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN && !$cepage->hasVtsgn()) {
+            	if ($this->getAppellationNode()->getKey() == ParcellaireClient::APPELLATION_VTSGN && !$cepage->hasVtsgn()) {
             		continue;
             	}
                 $keyCepage = str_replace('/', '-', $key);
