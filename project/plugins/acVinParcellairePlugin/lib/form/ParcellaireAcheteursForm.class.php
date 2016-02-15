@@ -19,11 +19,14 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
             if($cepage->getConfig()->hasLieuEditable()) {
                 $lieu_libelle = $lieux_editable[preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash)];
             }
+            if ($cepage->getCouleur()->getLieu()->getAppellation()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
+            	$lieu_libelle = "VT/SGN";
+            }
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
             $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
             $this->getWidget($hash)->setLabel(
                 sprintf("%s - %s - %s", 
-                    str_replace("AOC Alsace ", "", $cepage->getCouleur()->getLieu()->getAppellation()->libelle),
+                    ParcellaireClient::getAppellationLibelle($cepage->getCouleur()->getLieu()->getAppellation()->getKey()),
                     $lieu_libelle,
                     $cepage->libelle
                 )
