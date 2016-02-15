@@ -83,7 +83,7 @@
     </div>
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <?php if ($appellationNode == ParcellaireClient::APPELLATION_VTSGN) : ?>
+            <?php if ( is_string($appellationNode) &&  ($appellationNode == ParcellaireClient::APPELLATION_VTSGN)) : ?>
                 <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => "GRDCRU" )); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
             <?php elseif ($appellationNode->getPreviousAppellationKey()) : ?>
                 <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationNode->getPreviousAppellationKey())); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
