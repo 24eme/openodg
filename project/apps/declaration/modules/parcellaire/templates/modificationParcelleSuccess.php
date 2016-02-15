@@ -1,7 +1,7 @@
 <div class="modal modal-page" id="" role="dialog" aria-labelledby="Ajouter un produit" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" action="<?php echo $url ?>" role="form" class="form-horizontal" novalidate="novalidate">
+            <form method="post" action="" role="form" class="form-horizontal" novalidate="novalidate">
                 <?php echo $form->renderHiddenFields(); ?>
                 <?php echo $form->renderGlobalErrors(); ?>
                 <div class="modal-header">
