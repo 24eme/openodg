@@ -83,15 +83,8 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
     }
 
     public function getAcheteurs() {
-        $acheteurs = array();
-
-        foreach($this->getDocument()->acheteurs as $achs) {
-            foreach($achs as $acheteur) {
-                $acheteurs[$acheteur->getHash()] = sprintf("%s", $acheteur->nom);
-            }
-        }
-
-        return $acheteurs;
+        
+        return $this->getDocument()->getAcheteursByHash();
     }
 
     public function update() {
