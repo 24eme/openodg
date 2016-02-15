@@ -13,12 +13,14 @@ class ParcellaireClient extends acCouchdbClient {
     const APPELLATION_GRDCRU = 'GRDCRU';
     const APPELLATION_COMMUNALE = 'COMMUNALE';
     const APPELLATION_LIEUDIT = 'LIEUDIT';
+    const APPELLATION_CREMANT = 'CREMANT';
     
     public static $appellations_libelles = array(
             self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
             self::APPELLATION_GRDCRU => 'Grand Cru',
             self::APPELLATION_COMMUNALE => 'Communale',
-            self::APPELLATION_LIEUDIT => 'Lieux dits'
+            self::APPELLATION_LIEUDIT => 'Lieux dits',
+            self::APPELLATION_CREMANT => 'Crémant'
                 );
 
     public static $destinations_libelles = array(
