@@ -95,13 +95,24 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }  
     
     public function getActive() {
-        return ($this->_get('active')) ? true : false;
+        $v = $this->_get('active');
+        if (!$this->superficie) {
+            return false;
+        }
+        if ($v === null) {
+            return true;
+        }
+        return ($v) ? true : false;
     }
     public function setActive($value) {
         return $this->_set('active', $value * 1);
     }
     public function getVtsgn() {
-        return ($this->_get('vtsgn')) ? true : false;
+        $v = $this->_get('vtsgn');
+        if ($v === null || !$this->superficie) {
+            return false;
+        }
+        return ($v) ? true : false;
     }
     public function setVtsgn($value) {
         return $this->_set('vtsgn', $value * 1);
