@@ -9,7 +9,7 @@
                     <h2 class="modal-title" id="myModalLabel">Ajouter une parcelle</h2>
                 </div>
                 <div class="modal-body">                    
-                    <?php include_partial('parcellaire/parcelleForm', array('form' => $form)); ?>                                  
+                    <?php include_partial('parcellaire/parcelleForm', array('form' => $form,'appellation' => $appellation)); ?>                                  
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>

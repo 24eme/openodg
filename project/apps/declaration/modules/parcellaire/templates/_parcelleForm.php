@@ -1,3 +1,9 @@
+<?php 
+$libelleLieuDitCepage = "Saisissez un lieu-dit/cépage";
+if($appellation == ParcellaireClient::APPELLATION_VTSGN){
+$libelleLieuDitCepage = "Saisissez un cépage";    
+}
+?>
 <h3>Identification du produit</h3>
 <br/>
 <?php if (isset($form['lieuCepage'])): ?>
@@ -12,7 +18,7 @@
             </a>
         </div>
         <div class="col-xs-8">
-            <?php echo $form['lieuCepage']->render(array("placeholder" => "Saisissez un lieu-dit/cépage", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+            <?php echo $form['lieuCepage']->render(array("placeholder" => $libelleLieuDitCepage, "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
         </div>
     </div>
 <?php else: ?>
