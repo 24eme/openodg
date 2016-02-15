@@ -15,13 +15,6 @@ class ParcellaireValidationForm extends acCouchdbObjectForm {
             $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");
         }
 
-
-        if($this->getObject()->hasVtsgn()) { 
-            $this->setWidget('engagement_vtsgn', new sfWidgetFormInputCheckbox());
-            $this->setValidator('engagement_vtsgn', new sfValidatorBoolean(array('required' => true)));
-            $this->getWidget("engagement_vtsgn")->setLabel("Je m'engage à respecter les conditions de production des mentions VT/SGN et les modalités de contrôle qui y sont liées.");
-        }
-        
         $this->widgetSchema->setNameFormat('parcellaire_validation[%s]');
     }
 

@@ -13,23 +13,23 @@
 <?php endif; ?>
 <?php include_partial('parcellaire/recap', array('parcellaire' => $parcellaire, 'diff' => 1)); ?>
 
-<?php  if (isset($form['engagement_vtsgn'])): ?>
-<div class="alert" role="alert" id="engagements">
-    <div class="form-group">
-        <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert">
-            <ul class="error_list">
-                <li class="text-left">Vous devez vous engager sur ce point afin de pouvoir valider votre déclaration.</li>
-            </ul>
-        </div>
-        
-        <div class="checkbox-container <?php if ($form['engagement_vtsgn']->hasError()): ?>has-error<?php endif; ?>">
-            <div class="checkbox">
-                <label><?php echo $form['engagement_vtsgn']->render();?> <?php echo $form['engagement_vtsgn']->renderLabel();?></label>
+    <?php  if ($parcellaire->hasVtsgn()): ?>
+    <div class="alert" role="alert" id="engagements">
+        <div class="form-group">
+            <div class="alert alert-danger hidden" role="alert">
+                <ul class="error_list">
+                    <li class="text-left">Vous devez vous engager sur ce point afin de pouvoir valider votre déclaration.</li>
+                </ul>
+            </div>
+            
+            <div class="checkbox-container">
+                <div class="checkbox">
+                    <label><input type="checkbox" name="parcellaire_validation[engagement_vtsgn]" /> Je m'engage à respecter les conditions de production des mentions VT/SGN et les modalités de contrôle qui y sont liées. </label>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<?php endif; ?>
+    <?php endif; ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">
