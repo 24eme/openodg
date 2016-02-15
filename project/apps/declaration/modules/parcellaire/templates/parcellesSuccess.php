@@ -87,7 +87,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                     <td>
                                         <?php
                                         if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {
-                                            echo $parcelle->getLieuLibelle() . " / ";
+                                            echo ($parcelle->getLieuLibelle())? $parcelle->getLieuLibelle() . " / " : "";
                                         }
                                         echo $parcelle->getCepageLibelle();
                                         ?>

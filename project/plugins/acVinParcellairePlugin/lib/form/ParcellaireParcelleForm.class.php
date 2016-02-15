@@ -112,6 +112,12 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         $parcelle = $this->getObject()->getDocument()->addParcelleForAppellation($this->getAppellationNode()->getKey(), $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
 
         $parcelle->superficie = $values['superficie'];
+        
+        $parcelle->active = 1;
+        
+        if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
+        	//$parcelle->vtsgn = 1;
+        }
 
         if($this->getObject() instanceof ParcellaireCepageDetail && $this->getObject()->getHash() != $parcelle->getHash()) {
             $this->getObject()->getCepage()->detail->remove($this->getObject()->getKey());
