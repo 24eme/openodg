@@ -11,7 +11,7 @@ if ($last) {
         <div class="col-xs-12">
             <?php
             foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation):
-                ?><h3><strong> <?php echo "Appellation " . $appellation->getLibelleComplet(); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' (ares)'; ?></span></h3>
+                ?><h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' ares'; ?></span></h3>
                 <?php
                 if (!$appellation->getSuperficieTotale()) {
                     echo "<i class='text-muted'>Vous n'avez pas affecté de parcelles pour cette appellation</i>";
@@ -24,6 +24,9 @@ if ($last) {
                         $appellation_details = $appellation->getDetailsSortedByParcelle();
                         $detailsHashes = array();
                         foreach ($appellation_details as $detail):
+                            if ($detail->isCleanable()) {
+                                continue;
+                            }
                             $detailsHashes[$detail->getHash()] = $detail->getHash();
                             $classline = '';
                             $styleline = '';
@@ -71,7 +74,7 @@ if ($last) {
                                 <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getCepageLibelle();  ?>
                                 </td>
-                             <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
+                                <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
                                 <td class="col-xs-3 <?php echo $classparcelle ?>" style="text-align: right; <?php echo $styleparcelle; ?>">
                                     <?php echo $detail->getParcelleIdentifiant(); ?>
                                 </td>   
@@ -93,6 +96,7 @@ if ($last) {
                                         <td class="col-xs-3" style="text-decoration: line-through;">
                                             <?php echo $detail->getCepageLibelle(); ?>
                                         </td>   
+                                        <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
                                         <td class="col-xs-3" style="text-align: right; text-decoration: line-through;">
                                             <?php echo $detail->getParcelleIdentifiant(); ?>
                                         </td>   

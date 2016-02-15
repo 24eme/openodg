@@ -83,7 +83,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function isCleanable() {
-        return !$this->superficie || !$this->getActive();
+        return (!($this->getActive()) || ($this->isFromAppellation('ALSACEBLANC') && !($this->getVtsgn())));
     }
 
     public function getLieuNode() {

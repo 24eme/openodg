@@ -109,7 +109,8 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
     public function getSuperficieTotale() {
         $superficie = 0;
         foreach ($this->getProduitsCepageDetails() as $detail) {
-            $superficie += $detail->superficie;
+            if (!$detail->isCleanable()) 
+                $superficie += $detail->superficie;
         }
         return $superficie;
     }
@@ -191,7 +192,7 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
 
     public function isActive() {
         foreach($this->detail as $detail) {
-            if(($detail->getActive() && !$detail->isFromAppellation('ALSACEBLANC')) || $detail->getVtsgn()) {
+            if(!$detail->isCleanable()) {
                 return true;
             }
         }

@@ -41,7 +41,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th class="col-xs-1">Déclarer</th>           
+                                <th class="col-xs-1">Affectée</th>
                                 <th class="col-xs-2">Commune</th>        
                                 <th class="col-xs-1">Section</th>        
                                 <th class="col-xs-1">Numéro</th>        

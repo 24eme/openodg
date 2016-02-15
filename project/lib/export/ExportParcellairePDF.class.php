@@ -26,16 +26,19 @@ class ExportParcellairePDF extends ExportPDF {
 
     public function create() {
         $this->parcellesByLieux = $this->parcellaire->getParcellesByLieux();
+        $this->parcellesByLieuxCommuneAndCepage = $this->parcellaire->getParcellesByLieuxCommuneAndCepage();
 
         if(count($this->parcellesByLieux) == 0) {
             $this->printable_document->addPage($this->getPartial('parcellaire/pdfVide', array('parcellaire' => $this->parcellaire)));
 
             return;
         }
-
+        
         foreach ($this->parcellesByLieux as $lieuHash => $parcellesByLieu) {
             $this->printable_document->addPage($this->getPartial('parcellaire/pdf', array('parcellaire' => $this->parcellaire, 'parcellesByLieu' => $parcellesByLieu)));
         }
+        $this->printable_document->addPage($this->getPartial('parcellaire/pdfRecap', array('parcellaire' => $this->parcellaire, 'parcellesByLieuxCommuneAndCepage' => $this->parcellesByLieuxCommuneAndCepage)));
+        
     }
 
     protected function getHeaderTitle() {
