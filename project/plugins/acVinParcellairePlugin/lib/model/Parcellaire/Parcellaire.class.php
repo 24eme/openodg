@@ -312,14 +312,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
     }
 
     public function hasVtsgn() {
-        foreach($this->declaration->getProduitsCepageDetails() as $detail) {
-            if($detail->getVtsgn()) {
 
-                return true;
-            }
-        }
-
-        return false;
+        return $this->declaration->hasVtsgn();
     } 
 
     public function validateOdg() {
