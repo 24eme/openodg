@@ -81,7 +81,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function isCleanable() {
-        return !$this->superficie;
+        return !$this->superficie || !$this->getActive();
     }
 
     public function getLieuNode() {
