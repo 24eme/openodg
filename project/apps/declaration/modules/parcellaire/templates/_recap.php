@@ -58,6 +58,9 @@ if ($last) {
                                     $styleproduit="text-decoration: line-through;";
                                     $styleparcelle="text-decoration: line-through;";
                                     $stylesuperficie="text-decoration: line-through;";
+                                    $classline="";
+                                    $classsuperficie="";
+                                    $classparcelle="";
                                 }
                             }
                             ?>

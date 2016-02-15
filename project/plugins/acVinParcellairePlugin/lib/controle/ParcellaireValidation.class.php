@@ -28,6 +28,9 @@ class ParcellaireValidation extends DocumentValidation {
     public function controle() {
         $parcelles = array();
         foreach ($this->document->declaration->getProduitsCepageDetails() as $detailk => $detailv) {
+            if(!$detailv->getActive()) {
+                continue;
+            }
             $pid = preg_replace('/.*\//', '', $detailk);
             if (!isset($parcelles[$pid])) {
                 $parcelles[$pid] = array();
@@ -50,7 +53,10 @@ class ParcellaireValidation extends DocumentValidation {
             }
         }
         $uniqParcelles = array();
-        foreach ($this->document->declaration->getProduitsCepageDetails() as $pid => $detail) {          
+        foreach ($this->document->declaration->getProduitsCepageDetails() as $pid => $detail) {
+            if(!$detail->getActive()) {
+                continue;
+            }
             $keyParcelle = $detail->getCepage()->getHash() . '/' . $detail->getCommune() . '-' . $detail->getSection() . '-' . $detail->getNumeroParcelle();
             if (array_key_exists($keyParcelle, $uniqParcelles)) {
                 $this->addPoint(self::TYPE_ERROR, 'parcelle_doublon', 'parcelle n°' . $detail->getSection() . ' ' . $detail->getNumeroParcelle() . ' à ' . $detail->getCommune() . ' déclarée en ' . $detail->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
