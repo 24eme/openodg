@@ -155,15 +155,24 @@ class parcellaireActions extends sfActions {
             $this->parcellaire->save();
         }
 
-        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsKeys($this->parcellaire->isParcellaireCremant());
-        $this->appellation = $request->getParameter('appellation');
-        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
-        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
-        $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
-
-        $this->erreur = $request->getParameter('erreur',false);
-        $this->attention = $request->getParameter('attention',false);
+        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsAndVtSgnKeys($this->parcellaire->isParcellaireCremant());
         
+        $this->appellation = $request->getParameter('appellation');
+        
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
+        
+        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
+        
+        $this->parcelles = array();
+        if ($this->appellationNode == ParcellaireClient::APPELLATION_VTSGN) {            
+           $this->parcelles =  $this->parcellaire->getDeclaration()->getProduitsCepageDetails(true);
+        } else {
+            $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
+        }
+
+        $this->erreur = $request->getParameter('erreur', false);
+        $this->attention = $request->getParameter('attention', false);
+
         $this->form = new ParcellaireAppellationEditForm($this->parcellaire, $this->appellation, $this->parcelles);
         if ($request->isMethod(sfWebRequest::POST)) {
 
@@ -219,7 +228,7 @@ class parcellaireActions extends sfActions {
         preg_match('/^(.*)-detail-(.*)$/', $parcelleKey, $parcelleKeyMatches);
         $detail = $this->parcellaire->get(str_replace('-', '/', $parcelleKeyMatches[1]))->detail->get($parcelleKeyMatches[2]);
 
-        if(!$detail) {
+        if (!$detail) {
 
             return $this->forward404(sprintf("Le détail n'existe pas"));
         }
@@ -325,12 +334,12 @@ class parcellaireActions extends sfActions {
 
         $this->form->save();
 
-        if($this->parcellaire->isPapier()) {
+        if ($this->parcellaire->isPapier()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             return $this->redirect('parcellaire_visualisation', $this->parcellaire);
         }
-        
+
         $this->sendParcellaireValidation($this->parcellaire);
 
         return $this->redirect('parcellaire_confirmation', $this->parcellaire);
@@ -365,12 +374,12 @@ class parcellaireActions extends sfActions {
 
         return $this->renderText($this->document->output());
     }
-    
-    public function executeExportCsvParcellaire(sfWebRequest $request) {     
-        $parcellaire = $this->getRoute()->getParcellaire();        
+
+    public function executeExportCsvParcellaire(sfWebRequest $request) {
+        $parcellaire = $this->getRoute()->getParcellaire();
         ini_set('memory_limit', '2048M');
         set_time_limit(0);
-        $this->exportCsv = new ExportParcellaireCSV(null,$parcellaire);
+        $this->exportCsv = new ExportParcellaireCSV(null, $parcellaire);
         $this->setLayout(false);
         $filename = $this->exportCsv->getFileName();
         $attachement = "attachment; filename=" . $filename . ".csv";
@@ -401,7 +410,7 @@ class parcellaireActions extends sfActions {
             return $this->forwardSecure();
         }
     }
-    
+
     protected function secureEtablissement($droits, $etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
 

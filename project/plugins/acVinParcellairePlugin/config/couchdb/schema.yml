@@ -145,3 +145,4 @@ Parcellaire:
                                                                   lieu: {  }
                                                                   departement: {  }
                                                                   active: { type: integer }
+                                                                  vtsgn: { type: integer }
