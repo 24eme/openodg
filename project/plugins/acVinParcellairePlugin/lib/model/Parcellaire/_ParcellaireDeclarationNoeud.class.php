@@ -190,9 +190,9 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         }
     }
 
-    public function isActive() {
+    public function isAffectee() {
         foreach($this->detail as $detail) {
-            if(!$detail->isCleanable()) {
+            if($detail->isAffectee()) {
                 return true;
             }
         }

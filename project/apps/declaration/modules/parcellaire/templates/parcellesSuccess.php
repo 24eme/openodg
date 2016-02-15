@@ -12,17 +12,12 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     <?php
     $selectedAppellationName = "";
     foreach ($parcellaireAppellations as $appellationKey => $appellationName) :
-        if ($appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
-            $nb = count($parcellaire->declaration->getProduitsCepageDetails(true, true));
-        } else {
-            $nb = ($parcellaire->declaration->exist("certification/genre/appellation_" . $appellationKey)) ? count($parcellaire->declaration->get("certification/genre/appellation_" . $appellationKey)->getProduitsCepageDetails()) : 0;
-        }
         $isSelectedAppellation = ($appellation == $appellationKey);
         if (!$selectedAppellationName && $isSelectedAppellation) {
             $selectedAppellationName = $appellationName;
         }
         ?>
-        <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?> <span class="badge"><?php echo $nb ?></span></a></li>
+        <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
     <?php endforeach; ?>
 </ul>
 

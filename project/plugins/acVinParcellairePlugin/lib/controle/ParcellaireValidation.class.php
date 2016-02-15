@@ -17,6 +17,7 @@ class ParcellaireValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'parcellaire_complantation', 'Attention');
         $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
         $this->addControle(self::TYPE_ERROR, 'parcelle_doublon', 'Parcelle doublonnée');
+        $this->addControle(self::TYPE_ERROR, 'acheteur_repartition', "La répartition des acheteurs n'est pas complète");
 
         /*
          * Error
@@ -64,6 +65,32 @@ class ParcellaireValidation extends DocumentValidation {
             } else {
                 $uniqParcelles[$keyParcelle] = $keyParcelle;
             }
+        }
+
+        $acheteurs = $this->document->getAcheteursByHash();
+        $acheteursUsed = array();
+        $erreurRepartition = false;
+
+        foreach ($this->document->declaration->getProduitsWithLieuEditable() as $produit) {
+            if(!$produit->isActive()) {
+                continue;
+            }
+
+            $acheteursParcelle = $produit->getAcheteursByHash();
+
+            if(!count($acheteursParcelle)) {
+                $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
+                break;
+            }
+
+            foreach($acheteursParcelle as $hash => $acheteurParcelle) {
+                $acheteursUsed[$hash] = $acheteurParcelle;
+                $erreurRepartition = true;
+            }
+        }
+
+        if(!$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
+            $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
         }
     }
 }
