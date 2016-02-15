@@ -4,7 +4,7 @@ class adminComponents extends sfComponents {
 
     public function executeList(sfWebRequest $request) {
 
-        $this->current_key_list = $request->getParameter('docs', 'DRev 2015');
+        $this->current_key_list = $request->getParameter('docs', 'Parcellaire '.ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
         $this->statut = $request->getParameter('doc_statut');
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "valide" => "Validé", "brouillon" => "En cours de saisie");
@@ -19,17 +19,17 @@ class adminComponents extends sfComponents {
     }
 
     public function executeExport(sfWebRequest $request) {
-        $this->current_key_list = $request->getParameter('docs', 'DRev 2015');
+        $this->current_key_list = $request->getParameter('docs', 'DRev '.ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->statut = $request->getParameter('doc_statut', "a_valider");
         $this->buildLists();
     }
 
     protected function buildLists() {
         $this->lists = array();
-        $this->lists["Parcellaire 2016"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
-        $this->lists["Parcellaire Crémant 2016"] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
-        $this->lists["DRev 2015"] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $this->lists["DRev Marc 2015"] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->lists["Parcellaire ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
+        $this->lists["Parcellaire Crémant ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
+        $this->lists["DRev ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->lists["DRev Marc ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
     }
 
     protected function getList($type, $campagne, $filter = null) {
@@ -48,8 +48,8 @@ class adminComponents extends sfComponents {
                            "brouillon" => array(), 
                        ),
                        "stats" => array(
-                            "global" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0),
-                            "a_valider" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0),
+                            "global" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0, "nb_brouillon" => 0),
+                            "a_valider" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0, ""),
                             "valide" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0),
                             "brouillon" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0),
                         )
@@ -82,6 +82,10 @@ class adminComponents extends sfComponents {
 
             if ($document->key[DeclarationTousView::KEY_VALIDATION] && !$document->key[DeclarationTousView::KEY_VALIDATION_ODG] && !$document->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]) {
                 $lists["stats"]["global"]["nb_can_be_validate"] += 1;
+            }
+
+             if (!$document->key[DeclarationTousView::KEY_VALIDATION] && !$document->key[DeclarationTousView::KEY_VALIDATION_ODG]) {
+                $lists["stats"]["global"]["nb_brouillon"] += 1;
             }
 
             if($document->key[DeclarationTousView::KEY_VALIDATION_ODG]) {

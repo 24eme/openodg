@@ -6,8 +6,9 @@
         <a href="<?php echo url_for('admin', array("docs" => $key_list)) ?>"><?php echo $key_list ?><br />
             &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $list['stats']['global']['nb_teledeclares'] ?>
             &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['global']['nb_papiers'] ?>
+            &nbsp;<span class="glyphicon glyphicon-pencil"></span>&nbsp;<?php echo $list['stats']['global']['nb_brouillon'] ?>
             <?php if($list['stats']['global']['nb_can_be_validate']): ?>
-            &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $list['stats']['global']['nb_can_be_validate'] ?></span>
+                &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['global']['nb_papiers'] ?>
             <?php endif; ?>
         </a></li>
     <?php endforeach; ?>
