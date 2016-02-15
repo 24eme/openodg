@@ -32,7 +32,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     <div class="row">     
         <?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>
             <div class="col-xs-12">
-                <p>&nbsp;Pour affecter une parcelle en mention VT ou SGN, cliquez sur la ligne</p>
+                <p><strong>&nbsp;Pour affecter une parcelle en mention VT ou SGN, cliquez sur la ligne.</strong></p>
             </div>
         <?php endif; ?>
         <div class="col-xs-12">
