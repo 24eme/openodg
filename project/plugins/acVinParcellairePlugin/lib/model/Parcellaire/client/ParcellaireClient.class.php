@@ -105,6 +105,7 @@ class ParcellaireClient extends acCouchdbClient {
             return array('CREMANT' => 'Crémant');
         }
         return array(
+            self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
             self::APPELLATION_GRDCRU => 'Grand Cru',
             self::APPELLATION_COMMUNALE => 'Communale',
             self::APPELLATION_LIEUDIT => 'Lieux dits'
