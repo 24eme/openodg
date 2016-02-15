@@ -287,6 +287,25 @@
             return false;
         });
     }
+    $.initBsSwitchCheckbox = function ()
+    {
+	$.fn.onoff = function (event, state) {
+	    if (state) {
+		$(this).parent().parent().parent().removeClass("bootstrap-switch-off");
+		$(this).parent().parent().parent().addClass("bootstrap-switch-on");
+		$(this).parent().parent().parent().parent().removeClass("bootstrap-switch-off");
+		$(this).parent().parent().parent().parent().addClass("bootstrap-switch-on");
+	    }else{
+		$(this).parent().parent().parent().addClass("bootstrap-switch-off");
+		$(this).parent().parent().parent().removeClass("bootstrap-switch-on");
+		$(this).parent().parent().parent().parent().addClass("bootstrap-switch-off");
+		$(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
+	    }
+	};
+	$('.bsswitch').on('switchChange.bootstrapSwitch', $.fn.onoff);
+	$('.bsswitch').on('init.bootstrapSwitch', $.fn.onoff);
+	$('.bsswitch').bootstrapSwitch();
+    }
 
     /**
      * Contrôle la bonne saisie de nombres dans
@@ -438,6 +457,7 @@
         $.initSelect2AutocompletePermissif();
         $.initSelect2PermissifNoAjax();
         $.initCheckboxRelations();
+	$.initBsSwitchCheckbox();
         $.initCarte();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
