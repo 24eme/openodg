@@ -13,6 +13,13 @@ class ParcellaireClient extends acCouchdbClient {
     const APPELLATION_GRDCRU = 'GRDCRU';
     const APPELLATION_COMMUNALE = 'COMMUNALE';
     const APPELLATION_LIEUDIT = 'LIEUDIT';
+    
+    public static $appellations_libelles = array(
+            self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
+            self::APPELLATION_GRDCRU => 'Grand Cru',
+            self::APPELLATION_COMMUNALE => 'Communale',
+            self::APPELLATION_LIEUDIT => 'Lieux dits'
+                );
 
     public static $destinations_libelles = array(
         self::DESTINATION_SUR_PLACE => "Viticulteur - Récoltant",
@@ -22,6 +29,11 @@ class ParcellaireClient extends acCouchdbClient {
 
     public static function getInstance() {
         return acCouchdbManager::getClient("Parcellaire");
+    }
+    
+    public static function getAppellationLibelle($appellationKey)
+    {
+    	return self::$appellations_libelles[str_replace('appellation_', '', $appellationKey)];
     }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
