@@ -22,7 +22,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
             $selectedAppellationName = $appellationName;
         }
         ?>
-        <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?> <span class="badge"><?php echo $nb ?></span></a></li>
+        <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
     <?php endforeach; ?>
 </ul>
 
