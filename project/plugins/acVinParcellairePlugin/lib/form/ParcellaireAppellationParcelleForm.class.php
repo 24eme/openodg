@@ -21,7 +21,7 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     public function configure() {
         $this->setWidgets(array(
-            'declarer' => new sfWidgetFormInputCheckbox(), 
+            'declarer' => new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-size' => 'mini', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success' )), 
         ));
         $this->widgetSchema->setLabels(array(
             'declarer' => 'Superficie (ares):'

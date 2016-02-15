@@ -1,3 +1,4 @@
+@import 'bootstrap-switch.min.css';
 @font-face {
   font-family: 'ElegantIcons';
   src: url('/fonts/ElegantIcons.eot');
@@ -8075,4 +8076,10 @@ ul.organisation-list-wait {
 }
 .bloc-transparent {
   opacity: 0.7;
+}
+tr.bootstrap-switch-off {
+  opacity: 0.4;
+}
+tr.bootstrap-switch-off td {
+  text-decoration: line-through;
 }
