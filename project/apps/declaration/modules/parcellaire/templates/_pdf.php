@@ -85,9 +85,9 @@
             <td class="td" style="text-align:center; background-color: #ddd"><?php echo tdStart() ?>&nbsp;</td>
                                
                 <?php elseif ($parcelle->parcelle->vtsgn): ?> 
-                    <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☒</span>&nbsp;</td>
+                    <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;X&nbsp;</td>
                 <?php else: ?>
-                    <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<span style="font-family: Dejavusans">☐</span>&nbsp;</td>
+                    <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;&nbsp;</td>
     <?php endif; ?>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.2f", $parcelle->parcelle->superficie); ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
         </tr>
