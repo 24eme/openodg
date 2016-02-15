@@ -71,26 +71,24 @@ class ParcellaireValidation extends DocumentValidation {
         $acheteursUsed = array();
         $erreurRepartition = false;
 
-        foreach ($this->document->declaration->getProduitsWithLieuEditable() as $produit) {
+        foreach ($this->document->declaration->getProduitsWithLieuEditable() as $hash => $produit) {
             if(!$produit->isAffectee()) {
                 continue;
             }
+            $lieu_key = $produit->getLieuKeyFromHash($hash);
 
-            $acheteursParcelle = $produit->getAcheteursByHash();
+            $acheteursParcelle = $produit->getAcheteursByHash($lieu_key);
 
             if(!count($acheteursParcelle)) {
                 $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
+                $erreurRepartition = true;
                 break;
             }
 
             foreach($acheteursParcelle as $hash => $acheteurParcelle) {
                 $acheteursUsed[$hash] = $acheteurParcelle;
-                $erreurRepartition = true;
             }
         }
-
-        //var_dump(array_keys($acheteursUsed));
-
 
         if(!$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
             $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));

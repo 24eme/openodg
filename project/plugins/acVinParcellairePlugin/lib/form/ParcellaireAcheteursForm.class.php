@@ -61,10 +61,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         }
 
         foreach($produits as $hash => $produit) {
-            $lieu_key = null;
-            if($produit->getConfig()->hasLieuEditable()) {
-                $lieu_key = preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash);
-            }
+            $lieu_key = $produit->getLieuKeyFromHash($hash);
             foreach($produit->getAcheteursNode($lieu_key) as $type => $acheteurs) {
                 foreach($acheteurs as $acheteur) {
                     if(!isset($defaults[$hash])) {
