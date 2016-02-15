@@ -60,7 +60,7 @@
                                 ?>
                                 <tr <?php echo $styleErr.$styleWar; ?> >
                                     <td class="text-center">
-                                        <?php echo $form['produits'][$parcelle->getHashForKey()]['declarer']->render(); ?>
+                                        <?php echo $form['produits'][$parcelle->getHashForKey()]['active']->render(); ?>
                                     </td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>         
                                     <td><?php echo $parcelle->getSection(); ?></td>         

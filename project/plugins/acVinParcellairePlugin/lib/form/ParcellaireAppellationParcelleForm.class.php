@@ -20,25 +20,28 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
+        $type = 'active';
         $this->setWidgets(array(
-            'declarer' => new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-size' => 'mini', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success' )), 
+            $type => new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-size' => 'mini', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success' )), 
         ));
         $this->widgetSchema->setLabels(array(
-            'declarer' => 'Superficie (ares):'
+            $type => 'Déclarer'
         ));
         $this->setValidators(array(
-            'declarer' => new sfValidatorBoolean(array('required' => false))
+            $type => new sfValidatorBoolean(array('required' => false))
         ));
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
     public function doUpdateObject($values) {
+        $values['active'] = $values['active'] * 1;
         parent::doUpdateObject($values);
     }
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
+        $this->setDefault('active', $this->getObject()->getActive());
     }
 
 }
