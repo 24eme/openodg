@@ -8,6 +8,7 @@ class ParcellaireClient extends acCouchdbClient {
     const DESTINATION_SUR_PLACE = "SUR_PLACE";
     const DESTINATION_CAVE_COOPERATIVE = EtablissementClient::FAMILLE_CAVE_COOPERATIVE;
     const DESTINATION_NEGOCIANT = EtablissementClient::FAMILLE_NEGOCIANT;
+    const APPELLATION_ALSACEBLANC = 'ALSACEBLANC';
     const APPELLATION_VTSGN = 'VTSGN';
     const APPELLATION_GRDCRU = 'GRDCRU';
     const APPELLATION_COMMUNALE = 'COMMUNALE';
