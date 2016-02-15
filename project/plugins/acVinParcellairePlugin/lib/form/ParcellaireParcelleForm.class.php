@@ -52,7 +52,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
             $this->setValidator('lieuDit', new sfValidatorString(array('required' => true)));
         }
 
-        $this->setValidator('superficie', new sfValidatorNumber(array('required' => true)));
+        $this->setValidator('superficie', new sfValidatorNumber(array('required' => true, 'min' => '0.01'), array('min' => 'La superficie doit être supérieure à 0')));
 
         $this->widgetSchema->setNameFormat('parcellaire_parcelle[%s]');
     }
