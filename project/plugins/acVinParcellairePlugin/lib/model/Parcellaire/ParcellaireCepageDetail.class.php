@@ -39,8 +39,10 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $acheteurs;
     }
 
-    public function getProduitsCepageDetails($onlyVtSgn = false) {
-
+    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
+		if ($active && !$this->getActive()) {
+			return array();
+		}
         return array($this->getHash() => $this);
     }
 
@@ -115,11 +117,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return ($v) ? true : false;
     }
     public function setVtsgn($value) {
-        $ret = $this->_set('vtsgn', $value * 1);
-        if ($ret && $value) {
-            $this->_set('active', true);
-        }
-        return $ret;
+        return $this->_set('vtsgn', $value * 1);
     }
     
     public function isFromAppellation($appellation){

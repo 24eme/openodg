@@ -30,13 +30,13 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return array($this->getHash() => $this);
     }
 
-    public function getProduitsCepageDetails($onlyVtSgn = false) {
+    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
     	
     	if ($onlyVtSgn && !$this->getConfig()->hasVtsgn()) {
     		return array();
     	}
     
-    	return parent::getProduitsCepageDetails($onlyVtSgn);
+    	return parent::getProduitsCepageDetails($onlyVtSgn, $active);
     }
 
     public function getAppellation() {

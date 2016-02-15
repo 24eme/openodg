@@ -13,7 +13,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     $selectedAppellationName = "";
     foreach ($parcellaireAppellations as $appellationKey => $appellationName) :
         if ($appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
-            $nb = count($parcellaire->declaration->getProduitsCepageDetails(true));
+            $nb = count($parcellaire->declaration->getProduitsCepageDetails(true, true));
         } else {
             $nb = ($parcellaire->declaration->exist("certification/genre/appellation_" . $appellationKey)) ? count($parcellaire->declaration->get("certification/genre/appellation_" . $appellationKey)->getProduitsCepageDetails()) : 0;
         }
@@ -87,19 +87,19 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                     <td>
                                         <?php
                                         if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {
-                                            echo $parcelle->getLieuLibelle() . " / ";
+                                            echo ($parcelle->getLieuLibelle())? $parcelle->getLieuLibelle() . " / " : "";
                                         }
                                         echo $parcelle->getCepageLibelle();
                                         ?>
                                     </td>
-                                    <td>
+                                    <td class="edit">
                                         <div class="row">
                                             <div class="col-xs-6 text-right">
                                                 <?php echoFloat($parcelle->getSuperficie()) ?>
                                             </div> 
                                             <div class="col-xs-6 text-left">    
                                                 <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)): ?>
-                                                    &nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                &nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
                                                 <?php endif; ?>
                                             </div> 
                                         </div>
