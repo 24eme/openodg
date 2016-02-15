@@ -11,6 +11,11 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $this->detail;
     }
 
+    public function getLieu() {
+
+        return $this->getCouleur()->getLieu();
+    }
+
     public function getCouleur() {
 
         return $this->getParent();

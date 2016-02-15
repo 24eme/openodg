@@ -446,6 +446,11 @@
             map.fitBounds(points, {padding: [10, 10], maxZoom: 13});
         });
     };
+
+    $.initModal = function() {
+        $('.modal.modal-page').modal({ keyboard: false, backdrop: 'static' });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -459,6 +464,7 @@
         $.initCheckboxRelations();
 	$.initBsSwitchCheckbox();
         $.initCarte();
+        $.initModal();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip]').tooltip({'container': 'body'});

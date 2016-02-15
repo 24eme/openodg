@@ -41,6 +41,8 @@ class ParcellaireModificationParcelleForm extends acCouchdbObjectForm {
             $this->widgetSchema->setLabel('cepage', 'Cépage :');
         }
 
+        $this->widgetSchema->setLabel('superficie', 'Superficie :');
+
         $this->setValidator('commune', new sfValidatorChoice(array('required' => true,'choices' => array_keys($communes)), array('required' => "Aucune commune saisie.")));
         $this->setValidator('section', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9A-Z]+$/"), array("invalid" => "La section doit être composée de numéro et lettres en majuscules")));
         $this->setValidator('numero_parcelle',new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]+$/"), array("invalid" => "Le numéro doit être un nombre")));
@@ -89,9 +91,6 @@ class ParcellaireModificationParcelleForm extends acCouchdbObjectForm {
     }
     
     protected function doUpdateObject($values) {
-
-        return;
-
         if ((!isset($values['commune']) || empty($values['commune'])) ||
                 (!isset($values['section']) || empty($values['section'])) ||
                 (!isset($values['numero_parcelle']) || empty($values['numero_parcelle']))
@@ -99,7 +98,7 @@ class ParcellaireModificationParcelleForm extends acCouchdbObjectForm {
             return;
         }
 
-       $config = $this->getObject()->getConfiguration();
+        $config = $this->getObject()->getDocument()->getConfiguration();
         $commune = $values['commune'];
         $section = preg_replace('/^0*/','',$values['section']);
         $numero_parcelle = preg_replace('/^0*/','',$values['numero_parcelle']);
@@ -113,9 +112,13 @@ class ParcellaireModificationParcelleForm extends acCouchdbObjectForm {
             $lieu = $values['lieuDit'];
         }
        
-        $parcelle = $this->getObject()->addParcelleForAppellation($this->appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
+        $parcelle = $this->getObject()->getDocument()->addParcelleForAppellation($this->getObject()->getAppellation()->getKey(), $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
 
         $parcelle->superficie = $values['superficie'];
+
+        if($this->getObject()->getHash() != $parcelle->getHash()) {
+            $this->getObject()->getCepage()->detail->remove($this->getObject()->getKey());
+        }
     }
 
     public function getLieuDetailForAutocomplete() {

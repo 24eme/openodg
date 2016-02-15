@@ -168,6 +168,10 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
     }
 
     public function getAppellationNodeFromAppellationKey($appellationKey, $autoAddAppellation = false) {
+        if($appellationKey == ParcellaireClient::APPELLATION_VTSGN){
+            return ParcellaireClient::APPELLATION_VTSGN;
+        }
+        
         $appellations = $this->declaration->getAppellations();
         $appellationNode = null;
         foreach ($appellations as $key => $appellation) {
@@ -194,6 +198,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         }
 
         $produit = $this->getOrAdd($config->getHash());
+        $produit->getLieu()->getLibelle();
+        $produit->getCouleur()->getLibelle();
         $produit->getLibelle();
 
         return $produit;
