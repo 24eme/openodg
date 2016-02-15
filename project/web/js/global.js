@@ -306,10 +306,11 @@
         $('.bsswitch').on('init.bootstrapSwitch', $.fn.onoff);
         $('.bsswitch').bootstrapSwitch();
 
-        $('tr td').click(function () {
-            var value = ($(this).parent().find('td.bootstrap-switch-off .bsswitch').val() == 'on');
-            $(this).parent().find('td .bsswitch').bootstrapSwitch('state', value, false);
-
+        $('tr td').click(function (event) {
+            if (!$(this).hasClass('edit')) {
+                var value = ($(this).parent().find('td.bootstrap-switch-off .bsswitch').val() == 'on');
+                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', value, false);
+            }
         });
     }
 
