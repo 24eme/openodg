@@ -60,17 +60,17 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
     public function getProduits() {
         $appellationNode = $this->getAppellationNode();
         $this->allCepagesAppellation = array();
-        if ($appellationNode == ParcellaireClient::APPELLATION_VTSGN) {
-            $this->allCepagesAppellation = $this->getProduitsForVtSGN();
-        } else {
+
             foreach ($appellationNode->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE) as $key => $cepage) {
+            	if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN && !$cepage->hasVtsgn()) {
+            		continue;
+            	}
                 $keyCepage = str_replace('/', '-', $key);
                 $libelleCepage = $cepage->getLibelleLong();
                 $lieu = $cepage->getCouleur()->getLieu();
                 $libelleLieu = $lieu->getLibelle();
                 $this->allCepagesAppellation[$keyCepage] = trim($libelleLieu . ' ' . $libelleCepage);
             }
-        }
 
         asort($this->allCepagesAppellation);
         $this->allCepagesAppellation = array_merge(array('' => ''), $this->allCepagesAppellation);
@@ -120,35 +120,17 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 
     public function getLieuDetailForAutocomplete() {
         $lieuxDetail = array();
-        if ($this->getAppellationNode() == ParcellaireClient::APPELLATION_VTSGN) {
-            $allAppellationsKeys = array_keys(ParcellaireClient::getInstance()->getAppellationsKeys());
-            foreach ($allAppellationsKeys as $appellationKey) {
-                $appellationNode = $this->getObject()->getAppellationNodeFromAppellationKey($appellationKey, true);
-                foreach ($appellationNode->getLieuxEditable() as $libelle) {
-                    $lieuxDetail[] = $libelle;
-                }
-                $entries = array();
-                foreach ($lieuxDetail as $lieu) {
-                    $entry = new stdClass();
-                    $entry->id = trim($lieu);
-                    $entry->text = trim($lieu);
-                    $entries[] = $entry;
-                }
-                return $entries;
-            }
-        } else {
-            foreach ($this->getAppellationNode()->getLieuxEditable() as $libelle) {
-                $lieuxDetail[] = $libelle;
-            }
-            $entries = array();
-            foreach ($lieuxDetail as $lieu) {
-                $entry = new stdClass();
-                $entry->id = trim($lieu);
-                $entry->text = trim($lieu);
-                $entries[] = $entry;
-            }
-            return $entries;
+        foreach ($this->getAppellationNode()->getLieuxEditable() as $libelle) {
+        	$lieuxDetail[] = $libelle;
         }
+        $entries = array();
+        foreach ($lieuxDetail as $lieu) {
+        	$entry = new stdClass();
+            $entry->id = trim($lieu);
+            $entry->text = trim($lieu);
+            $entries[] = $entry;
+        }
+        return $entries;
     }
     
 }
