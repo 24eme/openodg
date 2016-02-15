@@ -92,14 +92,14 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                         echo $parcelle->getCepageLibelle();
                                         ?>
                                     </td>
-                                    <td>
+                                    <td class="edit">
                                         <div class="row">
                                             <div class="col-xs-6 text-right">
                                                 <?php echoFloat($parcelle->getSuperficie()) ?>
                                             </div> 
                                             <div class="col-xs-6 text-left">    
                                                 <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)): ?>
-                                                    &nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                &nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
                                                 <?php endif; ?>
                                             </div> 
                                         </div>
