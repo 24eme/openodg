@@ -4,10 +4,10 @@ class ParcellaireValidation extends DocumentValidation {
 
     const TYPE_ERROR = 'erreur';
     const TYPE_WARNING = 'vigilance';
+    const TYPE_ENGAGEMENT = 'engagement';
 
     public function __construct($document, $options = null) {
         parent::__construct($document, $options);
-        $this->noticeVigilance = false;
     }
 
     public function configure() {
@@ -17,7 +17,6 @@ class ParcellaireValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'parcellaire_complantation', 'Attention');
         $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
         $this->addControle(self::TYPE_ERROR, 'parcelle_doublon', 'Parcelle doublonnée');
-
 
         /*
          * Error
@@ -67,5 +66,4 @@ class ParcellaireValidation extends DocumentValidation {
             }
         }
     }
-
 }

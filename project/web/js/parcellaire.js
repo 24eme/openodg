@@ -26,4 +26,21 @@ $(document).ready(function()
             $(this).select();
         });
     });
+
+    $('#btn-validation-document-parcellaire').click(function() {
+            $("input:checkbox[name*=validation]").each(function() {
+                    $(this).parent().parent().parent().removeClass("has-error");
+            });
+            $("#engagements .alert-danger").addClass("hidden");
+            if($("input:checkbox[name*=validation]").length != $("input:checkbox[name*=validation]:checked").length) {
+                $("#engagements .alert-danger").removeClass("hidden");
+                $("input:checkbox[name*=validation]:not(:checked)").each(function() {
+                    $(this).parent().parent().parent().addClass("has-error");
+                });
+                $("input:checkbox[name*=validation]:checked").each(function() {
+                    $(this).parent().parent().parent().removeClass("has-error");
+                });
+                return false;
+            }
+        });
 });
