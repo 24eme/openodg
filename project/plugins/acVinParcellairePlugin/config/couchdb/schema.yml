@@ -144,3 +144,4 @@ Parcellaire:
                                                                   numero_parcelle: { }
                                                                   lieu: {  }
                                                                   departement: {  }
+                                                                  active: { type: integer }
