@@ -317,11 +317,10 @@ class parcellaireActions extends sfActions {
             $this->parcellaire->save();
         }
 
+        $this->validation = new ParcellaireValidation($this->parcellaire);
         $this->form = new ParcellaireValidationForm($this->parcellaire);
-
+        
         if (!$request->isMethod(sfWebRequest::POST)) {
-            $this->validation = new ParcellaireValidation($this->parcellaire);
-
             return sfView::SUCCESS;
         }
 
