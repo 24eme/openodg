@@ -328,6 +328,9 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     public function calculCoordonnees($adresse, $commune, $code_postal) {
         $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
 
+        if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
+		return false;
+	}
         $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
         
         $file = file_get_contents($url);
