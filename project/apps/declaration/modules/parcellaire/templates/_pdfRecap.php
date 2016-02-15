@@ -5,7 +5,6 @@
 <style>
 <?php echo styleParcellaire(); ?>
 </style>
-
 <span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>
 <table class="tableAlt"><tr><td>
             <table border="0">
@@ -31,9 +30,10 @@
                     <td></td>
                 </tr>
             </table>
-        </td></tr></table>
+        </td>
+    </tr>
+</table>
 <br /> 
-
 <div><span class="h3">&nbsp;Récapitulatif&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
@@ -52,4 +52,15 @@
     <?php endforeach; ?>
 </table>  
 <br />
+<?php if($parcellaire->hasVtsgn() && $parcellaire->validation): ?>
+<br /> 
+                <table border="0">
+                        <tr>
+                            <td><span style="font-family: Dejavusans">☒</span>&nbsp;Je m'engage à respecter les conditions de production des mentions VT/SGN et les modalités de contrôle liées.
+                            </td>
+                        </tr>
+                </table>
+           
+    <br />
+<?php endif; ?>
 <br />
