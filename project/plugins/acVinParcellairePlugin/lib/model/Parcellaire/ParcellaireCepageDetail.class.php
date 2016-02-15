@@ -39,7 +39,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $acheteurs;
     }
 
-    public function getProduitsCepageDetails() {
+    public function getProduitsCepageDetails($onlyVtSgn = false) {
 
         return array($this->getHash() => $this);
     }
