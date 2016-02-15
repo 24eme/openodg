@@ -28,7 +28,7 @@ class ParcellaireValidation extends DocumentValidation {
     public function controle() {
         $parcelles = array();
         foreach ($this->document->declaration->getProduitsCepageDetails() as $detailk => $detailv) {
-            if(!$detailv->getActive()) {
+            if(!$detailv->isAffectee()) {
                 continue;
             }
             $pid = preg_replace('/.*\//', '', $detailk);
@@ -54,7 +54,7 @@ class ParcellaireValidation extends DocumentValidation {
         }
         $uniqParcelles = array();
         foreach ($this->document->declaration->getProduitsCepageDetails() as $pid => $detail) {
-            if(!$detail->getActive()) {
+            if(!$detail->isAffectee()) {
                 continue;
             }
             $keyParcelle = $detail->getCepage()->getHash() . '/' . $detail->getCommune() . '-' . $detail->getSection() . '-' . $detail->getNumeroParcelle();
@@ -72,7 +72,7 @@ class ParcellaireValidation extends DocumentValidation {
         $erreurRepartition = false;
 
         foreach ($this->document->declaration->getProduitsWithLieuEditable() as $produit) {
-            if(!$produit->isActive()) {
+            if(!$produit->isAffectee()) {
                 continue;
             }
 
@@ -88,6 +88,9 @@ class ParcellaireValidation extends DocumentValidation {
                 $erreurRepartition = true;
             }
         }
+
+        //var_dump(array_keys($acheteursUsed));
+
 
         if(!$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
             $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
