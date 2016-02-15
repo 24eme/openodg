@@ -10,7 +10,7 @@
 /* =================================================================================== */
 /* JQUERY CONTEXT */
 /* =================================================================================== */
-(function($)
+(function ($)
 {
     /* =================================================================================== */
     /* GLOBAL VARS */
@@ -53,11 +53,11 @@
     /**
      * Equal heights
      ******************************************/
-    $.fn.equalHeights = function()
+    $.fn.equalHeights = function ()
     {
         var maxHeight = 0,
                 $this = $(this);
-        $this.each(function() {
+        $this.each(function () {
             var height = $(this).innerHeight();
             if (height > maxHeight) {
                 maxHeight = height;
@@ -70,20 +70,20 @@
      * qui ont la classe .equal-height sur chaque ligne
      * $.initEqualHeight();
      ******************************************/
-    $.initEqualHeight = function()
+    $.initEqualHeight = function ()
     {
         if ($('.equal-height').length > 0)
         {
-            $('.row').each(function()
+            $('.row').each(function ()
             {
                 $(this).find('.equal-height').equalHeights();
             });
         }
     };
-    $.initDatePickers = function()
+    $.initDatePickers = function ()
     {
         var datePickers = $('.date-picker');
-        datePickers.each(function()
+        datePickers.each(function ()
         {
             var currentDp = $(this);
             hasValue = currentDp.find('input').val();
@@ -98,13 +98,13 @@
                 currentDp.find('input').val('');
             }
 
-            currentDp.on('focus', 'input', function()
+            currentDp.on('focus', 'input', function ()
             {
                 currentDp.data('DateTimePicker').show();
             });
         });
         var datePickers = $('.date-picker-all-days');
-        datePickers.each(function()
+        datePickers.each(function ()
         {
             var currentDp = $(this);
             currentDp.datetimepicker
@@ -112,7 +112,7 @@
                         language: 'fr',
                         pickTime: false
                     });
-            currentDp.on('focus', 'input', function()
+            currentDp.on('focus', 'input', function ()
             {
                 currentDp.data('DateTimePicker').show();
             });
@@ -134,12 +134,12 @@
             });
         });
     };
-    $.initSelect2Autocomplete = function()
+    $.initSelect2Autocomplete = function ()
     {
         $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
     }
 
-    $.initSelect2AutocompleteRemote = function()
+    $.initSelect2AutocompleteRemote = function ()
     {
         $('.select2autocompleteremote').select2({
             allowClear: true,
@@ -149,17 +149,17 @@
                 url: $('.select2autocompleteremote').data('url'),
                 dataType: 'json',
                 quietMillis: 250,
-                data: function(term, page) {
+                data: function (term, page) {
                     return {
                         q: term,
                     };
                 },
-                results: function(data, page) {
+                results: function (data, page) {
                     return {results: data};
                 },
                 cache: true
             },
-            formatResult: function(item) {
+            formatResult: function (item) {
                 if (item.text_html) {
 
                     return item.text_html;
@@ -170,13 +170,13 @@
         });
     }
 
-    $.initSelect2AutocompletePermissif = function()
+    $.initSelect2AutocompletePermissif = function ()
     {
 
         $('.select2autocompletepermissif').select2({
             tags: [],
             tokenSeparators: [','],
-            createSearchChoice: function(term) {
+            createSearchChoice: function (term) {
                 return {
                     id: $.trim(term),
                     text: $.trim(term) + ' (nouveau tag)'
@@ -185,18 +185,18 @@
             ajax: {
                 url: $('.select2autocompletepermissif').data('url'),
                 dataType: 'json',
-                data: function(term, page) {
+                data: function (term, page) {
                     return {
                         q: term
                     };
                 },
-                results: function(data, page) {
+                results: function (data, page) {
                     return {
                         results: data
                     };
                 }
             },
-            initSelection: function(element, callback) {
+            initSelection: function (element, callback) {
                 var data = [];
                 function splitVal(string, separator) {
                     var val, i, l;
@@ -208,7 +208,7 @@
                     return val;
                 }
 
-                $(splitVal(element.val(), ",")).each(function() {
+                $(splitVal(element.val(), ",")).each(function () {
                     data.push({
                         id: this,
                         text: this
@@ -217,14 +217,14 @@
 
 
 
-                callback($.map(element.val().split(','), function(id) {
+                callback($.map(element.val().split(','), function (id) {
                     return {id: id, text: id};
                 }));
             }
         });
     }
 
-    $.initSelect2PermissifNoAjax = function()
+    $.initSelect2PermissifNoAjax = function ()
     {
         if ($('.select2permissifNoAjax').length) {
             var lastValue = null;
@@ -232,38 +232,38 @@
                 data: JSON.parse($('.select2permissifNoAjax').attr('data-choices')),
                 multiple: false,
                 placeholder: true,
-                createSearchChoice: function(term, data) {
-                    if ($(data).filter(function() {
+                createSearchChoice: function (term, data) {
+                    if ($(data).filter(function () {
                         return this.text.localeCompare(term) === 0;
                     }).length === 0) {
                         return {id: term, text: term + ' (nouveau)'};
                     }
                 }
-            }).on("select2-close", function() {
+            }).on("select2-close", function () {
                 var old_choices = JSON.parse($('input.select2permissifNoAjax').attr('data-choices'));
-                old_choices.push({ id:  lastValue, text : lastValue + ' (nouveau)'});
-                $('input.select2permissifNoAjax').select2("val",lastValue);
+                old_choices.push({id: lastValue, text: lastValue + ' (nouveau)'});
+                $('input.select2permissifNoAjax').select2("val", lastValue);
                 $('input.select2permissifNoAjax').val(lastValue);
                 $('.select2permissifNoAjax .select2-chosen').text(lastValue);
-            }).on("select2-highlight", function(e) {
+            }).on("select2-highlight", function (e) {
                 lastValue = e.val;
             })
         }
     }
 
 
-    $.initCheckboxRelations = function()
+    $.initCheckboxRelations = function ()
     {
-        $('.checkbox-relation').click(function() {
+        $('.checkbox-relation').click(function () {
             $($(this).attr('data-relation')).toggleClass("hidden");
         })
 
     }
 
-    $.initCollectionAddTemplate = function(element, regexp_replace, callback)
+    $.initCollectionAddTemplate = function (element, regexp_replace, callback)
     {
 
-        $(element).click(function()
+        $(element).click(function ()
         {
             var bloc_html = $($(this).attr('data-template')).html().replace(regexp_replace, UUID.generate());
 
@@ -289,22 +289,28 @@
     }
     $.initBsSwitchCheckbox = function ()
     {
-	$.fn.onoff = function (event, state) {
-	    if (state) {
-		$(this).parent().parent().parent().removeClass("bootstrap-switch-off");
-		$(this).parent().parent().parent().addClass("bootstrap-switch-on");
-		$(this).parent().parent().parent().parent().removeClass("bootstrap-switch-off");
-		$(this).parent().parent().parent().parent().addClass("bootstrap-switch-on");
-	    }else{
-		$(this).parent().parent().parent().addClass("bootstrap-switch-off");
-		$(this).parent().parent().parent().removeClass("bootstrap-switch-on");
-		$(this).parent().parent().parent().parent().addClass("bootstrap-switch-off");
-		$(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
-	    }
-	};
-	$('.bsswitch').on('switchChange.bootstrapSwitch', $.fn.onoff);
-	$('.bsswitch').on('init.bootstrapSwitch', $.fn.onoff);
-	$('.bsswitch').bootstrapSwitch();
+        $.fn.onoff = function (event, state) {
+            if (state) {
+                $(this).parent().parent().parent().removeClass("bootstrap-switch-off");
+                $(this).parent().parent().parent().addClass("bootstrap-switch-on");
+                $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-off");
+                $(this).parent().parent().parent().parent().addClass("bootstrap-switch-on");
+            } else {
+                $(this).parent().parent().parent().addClass("bootstrap-switch-off");
+                $(this).parent().parent().parent().removeClass("bootstrap-switch-on");
+                $(this).parent().parent().parent().parent().addClass("bootstrap-switch-off");
+                $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
+            }
+        };
+        $('.bsswitch').on('switchChange.bootstrapSwitch', $.fn.onoff);
+        $('.bsswitch').on('init.bootstrapSwitch', $.fn.onoff);
+        $('.bsswitch').bootstrapSwitch();
+
+        $('tr td').click(function () {
+            var value = ($(this).parent().find('td.bootstrap-switch-off .bsswitch').val() == 'on');
+            $(this).parent().find('td .bsswitch').bootstrapSwitch('state', value, false);
+
+        });
     }
 
     /**
@@ -312,12 +318,12 @@
      * un champ
      * $(s).saisieNum(float, callbackKeypress);
      ******************************************/
-    $.fn.saisieNum = function(float, callbackKeypress, callbackBlur)
+    $.fn.saisieNum = function (float, callbackKeypress, callbackBlur)
     {
         var champ = $(this);
         var float4 = champ.hasClass('num_float4');
         // A chaque touche pressée
-        champ.keypress(function(e)
+        champ.keypress(function (e)
         {
             var val = $(this).val();
             var touche = e.which;
@@ -344,7 +350,7 @@
                 // 2 décimales
                 if (!float4 && val.match(/[\.\,][0-9][0-9]/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 3)
                     e.preventDefault();
-                
+
                 // 4 décimales
                 if (float4 && val.match(/[\.\,][0-9]{4}/) && chiffre && e.currentTarget && e.currentTarget.selectionStart > val.length - 5)
                     e.preventDefault();
@@ -361,7 +367,7 @@
             return e;
         });
         // A chaque touche pressée
-        champ.keyup(function(e)
+        champ.keyup(function (e)
         {
             var touche = e.which;
             // touche "retour"
@@ -373,7 +379,7 @@
             }
         });
         // A chaque fois que l'on quitte le champ
-        champ.blur(function()
+        champ.blur(function ()
         {
             $(this).nettoyageChamps();
             if (callbackBlur)
@@ -384,7 +390,7 @@
      * Nettoie les champs après la saisie
      * $(champ).nettoyageChamps();
      ******************************************/
-    $.fn.nettoyageChamps = function()
+    $.fn.nettoyageChamps = function ()
     {
         var champ = $(this);
         var val = champ.val();
@@ -411,8 +417,7 @@
                     val = parseFloat(val).toFixed(2);
                 }
 
-            }
-            else
+            } else
                 val = parseInt(val);
         }
         // Si rien n'a été saisi
@@ -431,30 +436,30 @@
         champ.val(val);
     };
 
-    $.initCarte = function()
+    $.initCarte = function ()
     {
-        $('.carte').each(function() {
+        $('.carte').each(function () {
             var map = L.map($(this).attr('id'), {minZoom: 6, zoom: 10, }).setView([48.100901, 7.361051], 9);
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
             }).addTo(map);
             var points = JSON.parse($(this).attr('data-point'));
-            for(point_key in points) {
+            for (point_key in points) {
                 L.marker(points[point_key]).addTo(map);
             }
             map.fitBounds(points, {padding: [10, 10], maxZoom: 13});
         });
     };
 
-    $.initModal = function() {
-        $('.modal.modal-page').modal({ keyboard: false, backdrop: 'static' });
+    $.initModal = function () {
+        $('.modal.modal-page').modal({keyboard: false, backdrop: 'static'});
     }
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
-    _doc.ready(function()
+    _doc.ready(function ()
     {
         $.initDatePickers();
         $.initSelect2Autocomplete();
@@ -462,7 +467,7 @@
         $.initSelect2AutocompletePermissif();
         $.initSelect2PermissifNoAjax();
         $.initCheckboxRelations();
-	$.initBsSwitchCheckbox();
+        $.initBsSwitchCheckbox();
         $.initCarte();
         $.initModal();
         $('input.num_float').saisieNum(true);
