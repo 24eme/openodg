@@ -13,7 +13,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     $selectedAppellationName = "";
     foreach ($parcellaireAppellations as $appellationKey => $appellationName) :
         if ($appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
-            $nb = count($parcellaire->declaration->getProduitsCepageDetails(true));
+            $nb = count($parcellaire->declaration->getProduitsCepageDetails(true, true));
         } else {
             $nb = ($parcellaire->declaration->exist("certification/genre/appellation_" . $appellationKey)) ? count($parcellaire->declaration->get("certification/genre/appellation_" . $appellationKey)->getProduitsCepageDetails()) : 0;
         }

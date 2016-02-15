@@ -83,10 +83,10 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
-    public function getProduitsCepageDetails($onlyVtSgn = false) {
+    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
         $produits = array();
         foreach ($this->getChildrenNode() as $key => $item) {
-            $produits = array_merge($produits, $item->getProduitsCepageDetails($onlyVtSgn));
+            $produits = array_merge($produits, $item->getProduitsCepageDetails($onlyVtSgn, $active));
         }
 
         return $produits;
