@@ -66,15 +66,13 @@ if ($last) {
                                     <?php echo $detail->getLieuLibelle(); ?>
                                 </td>   
                                 <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
-                                    <?php
-                                    echo $detail->getCepageLibelle();
-                                    ;
-                                    ?>
-                                </td>   
-                                <td class="col-xs-4 <?php echo $classparcelle ?>" style="text-align: right; <?php echo $styleparcelle; ?>">
+                                    <?php echo $detail->getCepageLibelle();  ?>
+                                </td>
+                             <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
+                                <td class="col-xs-3 <?php echo $classparcelle ?>" style="text-align: right; <?php echo $styleparcelle; ?>">
                                     <?php echo $detail->getParcelleIdentifiant(); ?>
                                 </td>   
-                                <td class="col-xs-2 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
+                                <td class="col-xs-1 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
                                     <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                                 </td>   
                             </tr> 
@@ -92,10 +90,10 @@ if ($last) {
                                         <td class="col-xs-3" style="text-decoration: line-through;">
                                             <?php echo $detail->getCepageLibelle(); ?>
                                         </td>   
-                                        <td class="col-xs-4" style="text-align: right; text-decoration: line-through;">
+                                        <td class="col-xs-3" style="text-align: right; text-decoration: line-through;">
                                             <?php echo $detail->getParcelleIdentifiant(); ?>
                                         </td>   
-                                        <td class="col-xs-2" style="text-align: right; text-decoration: line-through;">
+                                        <td class="col-xs-1" style="text-align: right; text-decoration: line-through;">
                                             <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                                         </td>   
                                     </tr>    
