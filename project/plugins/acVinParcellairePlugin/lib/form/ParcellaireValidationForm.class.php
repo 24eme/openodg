@@ -14,8 +14,7 @@ class ParcellaireValidationForm extends acCouchdbObjectForm {
             $this->getWidget('date')->setLabel("Date de réception du document");
             $this->getValidator('date')->setMessage("required", "La date de réception du document est requise");
         }
-        
-                        
+
         $this->widgetSchema->setNameFormat('parcellaire_validation[%s]');
     }
 
