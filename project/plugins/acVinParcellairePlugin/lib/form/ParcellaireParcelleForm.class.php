@@ -62,7 +62,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         $this->allCepagesAppellation = array();
 
             foreach ($appellationNode->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE) as $key => $cepage) {
-            	if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN && !$cepage->hasVtsgn()) {
+            	if ($appellationNode->getKey() == ParcellaireClient::APPELLATION_VTSGN && !$cepage->hasVtsgn()) {
             		continue;
             	}
                 $keyCepage = str_replace('/', '-', $key);
