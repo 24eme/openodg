@@ -8,7 +8,7 @@
             &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['global']['nb_papiers'] ?>
             &nbsp;<span class="glyphicon glyphicon-pencil"></span>&nbsp;<?php echo $list['stats']['global']['nb_brouillon'] ?>
             <?php if($list['stats']['global']['nb_can_be_validate']): ?>
-                &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['global']['nb_papiers'] ?>
+                &nbsp;<span class="label label-success"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<?php echo $list['stats']['global']['nb_can_be_validate'] ?></span>
             <?php endif; ?>
         </a></li>
     <?php endforeach; ?>
