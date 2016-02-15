@@ -121,7 +121,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         
         $parcelle->active = 1;
         
-        if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
+        if ($this->getAppellationNode()->getKey() == ParcellaireClient::APPELLATION_VTSGN) {
         	$parcelle->vtsgn = 1;
         }
 

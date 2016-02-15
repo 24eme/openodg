@@ -94,7 +94,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                             </div> 
                                             <div class="col-xs-6 text-left">    
                                                 <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)):  ?>
-                                                &nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
+                                                &nbsp;<a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
                                                 <?php else: ?>
                                                  <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
                                                 <?php endif; ?>
