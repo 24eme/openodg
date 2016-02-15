@@ -56,7 +56,7 @@ if ($last) {
                                     #$classsuperficie = 'danger';
                                 }
 
-                                if (!$detail->getActive()) {
+                                if (!$detail->isAffectee()) {
                                     $styleline="opacity: 0.4;";
                                     $styleproduit="text-decoration: line-through;";
                                     $styleparcelle="text-decoration: line-through;";
