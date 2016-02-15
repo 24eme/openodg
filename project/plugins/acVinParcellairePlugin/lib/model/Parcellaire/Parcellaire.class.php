@@ -49,6 +49,18 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         return $acheteurs;
     }
 
+    public function getAcheteursByHash() {
+        $acheteurs = array();
+
+        foreach($this->getDocument()->acheteurs as $achs) {
+            foreach($achs as $acheteur) {
+                $acheteurs[$acheteur->getHash()] = sprintf("%s", $acheteur->nom);
+            }
+        }
+
+        return $acheteurs;
+    }
+
     public function getConfiguration() {
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
     }

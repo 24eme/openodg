@@ -62,6 +62,17 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         return $acheteurs;
     }
 
+    public function getAcheteursByHash($lieu = null) {
+        $acheteurs = array();
+        foreach($this->getAcheteursNode($lieu) as $type => $acheteursByType) {
+            foreach($acheteursByType as $acheteur) {
+                $acheteurs[str_replace($this->getHash(), "", $acheteur->getHash())] = $acheteur;
+            }
+        }
+
+        return $acheteurs;
+    }
+
     public function addAcheteur($type, $cvi, $lieu = null) {
         $a = $this->getDocument()->addAcheteur($type, $cvi);
         if(!$lieu) {
