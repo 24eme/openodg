@@ -101,7 +101,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $this->_set('active', $value * 1);
     }
     public function getVtsgn() {
-        return ($this->_get('active')) ? true : false;
+        return ($this->_get('vtsgn')) ? true : false;
     }
     public function setVtsgn($value) {
         return $this->_set('vtsgn', $value * 1);

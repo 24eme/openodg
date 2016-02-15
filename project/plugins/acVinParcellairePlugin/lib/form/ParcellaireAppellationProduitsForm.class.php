@@ -15,15 +15,16 @@ class ParcellaireAppellationProduitsForm extends sfForm {
 
     protected $parcelles;
 
-    public function __construct($parcelles, $defaults = array(), $options = array(), $CSRFSecret = null) {
+    public function __construct($parcelles, $appellationKey, $defaults = array(), $options = array(), $CSRFSecret = null) {
         $this->parcelles = $parcelles;
+        $this->appellationKey = $appellationKey;
         parent::__construct($defaults, $options, $CSRFSecret);
     }
 
     public function configure() {
         if (count($this->parcelles)) {
             foreach ($this->parcelles as $key => $parcelle) {
-                $form = new ParcellaireAppellationParcelleForm($parcelle);
+                $form = new ParcellaireAppellationParcelleForm($parcelle, $this->appellationKey);
                 $this->embedForm($parcelle->getHashForKey(), $form);
             }
         }

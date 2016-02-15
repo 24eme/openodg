@@ -56,7 +56,11 @@
                                 ?>
                                 <tr <?php echo $styleErr.$styleWar; ?> >
                                     <td class="text-center">
-                                        <?php echo $form['produits'][$parcelle->getHashForKey()]['active']->render(); ?>
+                                    <?php if (isset($form['produits'][$parcelle->getHashForKey()]['vtsgn'])) {
+                                         echo $form['produits'][$parcelle->getHashForKey()]['vtsgn']->render();
+                                    }else{
+                                         echo $form['produits'][$parcelle->getHashForKey()]['active']->render();
+                                    } ?>
                                     </td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>         
                                     <td><?php echo $parcelle->getSection(); ?></td>         
