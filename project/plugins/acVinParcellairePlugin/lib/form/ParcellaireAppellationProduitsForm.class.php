@@ -23,7 +23,7 @@ class ParcellaireAppellationProduitsForm extends sfForm {
     public function configure() {
         if (count($this->parcelles)) {
             foreach ($this->parcelles as $key => $parcelle) {
-                $form = new ParcellaireAppellationParcelleForm($parcelle, $parcelle->getParent()->getParent()->libelle);
+                $form = new ParcellaireAppellationParcelleForm($parcelle);
                 $this->embedForm($parcelle->getHashForKey(), $form);
             }
         }
