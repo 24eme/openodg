@@ -35,7 +35,12 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('section', 'Section :');
         $this->widgetSchema->setLabel('numero_parcelle', 'Numéro :');
         if (!$hasLieuEditable) {
+            if($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC){
+                    $this->widgetSchema->setLabel('lieuCepage', 'Cépage :'); 
+            }else{
+                
             $this->widgetSchema->setLabel('lieuCepage', 'Lieu-dit/cépage :');
+            }
         } else {
             $this->widgetSchema->setLabel('lieuDit', 'Lieu Dit:');
             $this->widgetSchema->setLabel('cepage', 'Cépage :');
@@ -63,7 +68,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 
             foreach ($appellationNode->getConfig()->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_PARCELLAIRE) as $key => $cepage) {
 
-            	if ($this->getAppellationNode()->getKey() == ParcellaireClient::APPELLATION_VTSGN && !$cepage->hasVtsgn()) {
+            	if ($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC && !$cepage->hasVtsgn()) {
             		continue;
             	}
                 $keyCepage = str_replace('/', '-', $key);

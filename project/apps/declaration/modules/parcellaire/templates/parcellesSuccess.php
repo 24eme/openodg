@@ -140,4 +140,4 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     </div>
 </form>
 
-<?php include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm)); ?>
+<?php include_partial('parcellaire/popupAjoutForm', array('url' => url_for('parcellaire_parcelle_ajout', array('id' => $parcellaire->_id, 'appellation' => $appellation)), 'form' => $ajoutForm,'appellation' => $appellation)); ?>
