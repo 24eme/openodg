@@ -165,7 +165,7 @@ class parcellaireActions extends sfActions {
         
         $this->parcelles = array();
         if ($this->appellationNode == ParcellaireClient::APPELLATION_VTSGN) {            
-           $this->parcelles =  $this->parcellaire->getDeclaration()->getProduitsCepageDetails(true);
+           $this->parcelles =  $this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true);
         } else {
             $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
         }

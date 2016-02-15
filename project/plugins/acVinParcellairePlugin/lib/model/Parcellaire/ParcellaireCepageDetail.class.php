@@ -39,8 +39,10 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $acheteurs;
     }
 
-    public function getProduitsCepageDetails($onlyVtSgn = false) {
-
+    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
+		if ($active && !$this->getActive()) {
+			return array();
+		}
         return array($this->getHash() => $this);
     }
 
@@ -81,7 +83,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function isCleanable() {
-        return !$this->superficie;
+        return !$this->superficie || !$this->getActive();
     }
 
     public function getLieuNode() {
