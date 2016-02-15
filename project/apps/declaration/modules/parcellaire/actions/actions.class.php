@@ -190,7 +190,9 @@ class parcellaireActions extends sfActions {
 
                     return $this->redirect('parcellaire_validation', $this->parcellaire);
                 }
+                if($this->appellationNode != ParcellaireClient::APPELLATION_VTSGN){
                 $next_appellation = $this->appellationNode->getNextAppellationKey();
+                }
                 if ($next_appellation) {
                     return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $next_appellation));
                 } else {
