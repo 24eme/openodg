@@ -15,6 +15,9 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         $lieux_editable = $this->getDocument()->declaration->getLieuxEditable();
 
         foreach($produits as $hash => $cepage) {
+            if(!$cepage->isActive()) {
+                continue;
+            }
             $lieu_libelle = $cepage->getCouleur()->getLieu()->getLibelle();
             if($cepage->getConfig()->hasLieuEditable()) {
                 $lieu_libelle = $lieux_editable[preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash)];

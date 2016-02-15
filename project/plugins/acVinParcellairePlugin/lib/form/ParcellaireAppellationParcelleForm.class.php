@@ -21,13 +21,19 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
+        $checkarray = array('class' => 'bsswitch', 'data-size' => 'mini', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success');
         if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
             $type = 'vtsgn';
         }else{
             $type = 'active';
+            if ($this->getObject()->vtsgn) {
+                $checkarray['readonly'] = 'readonly';
+                $checkarray['data-toggle'] = 'tooltip';
+                $checkarray['title'] = "Cette parcelle est affectée en VT/SGN, elle n'est donc pas activable ici";
+            }
         }
         $this->setWidgets(array(
-            $type => new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-size' => 'mini', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success' )), 
+            $type => new sfWidgetFormInputCheckbox(array(), $checkarray),
         ));
         $this->widgetSchema->setLabels(array(
             $type => 'Déclarer'

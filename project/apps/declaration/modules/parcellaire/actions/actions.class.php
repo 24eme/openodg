@@ -204,15 +204,16 @@ class parcellaireActions extends sfActions {
         $this->parcellaire = $this->getRoute()->getParcellaire();
         $this->appellation = $request->getParameter('appellation');
 
-        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
-        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+        $this->form = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
+        $this->form->bind($request->getParameter($this->form->getName()));
 
-        if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
-            return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->appellation));
+        if (!$this->form->isValid()) {
+           
+
+            return sfView::SUCCESS;
         } else {
 
-            $this->ajoutForm->save();
+            $this->form->save();
 
             $this->getUser()->setFlash("notice", 'La parcelle a été ajoutée avec succès.');
 

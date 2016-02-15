@@ -123,8 +123,8 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
     }
 
     public function hasVtsgn() {
-        foreach ($this->getProduitsCepage() as $produit) {
-            if ($produit->hasVtsgn()) {
+        foreach ($this->getProduitsCepageDetails() as $detail) {
+            if ($detail->getVtsgn()) {
 
                 return true;
             }
@@ -188,4 +188,15 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
             $this->getDocument()->remove($hash);
         }
     }
+
+    public function isActive() {
+        foreach($this->detail as $detail) {
+            if(($detail->getActive() && !$detail->isFromAppellation('ALSACEBLANC')) || $detail->getVtsgn()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
