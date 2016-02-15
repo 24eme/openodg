@@ -65,8 +65,8 @@ class ParcellaireCepage extends BaseParcellaireCepage {
     public function getAcheteursByHash($lieu = null) {
         $acheteurs = array();
         foreach($this->getAcheteursNode($lieu) as $type => $acheteursByType) {
-            foreach($acheteursByType as $acheteur) {
-                $acheteurs[str_replace($this->getHash(), "", $acheteur->getHash())] = $acheteur;
+            foreach($acheteursByType as $cvi => $acheteur) {
+                $acheteurs["/acheteurs/".$type."/".$cvi] = $acheteur;
             }
         }
 
@@ -86,6 +86,15 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         $acheteur->commune = $a->commune;
 
         return $acheteur;
+    }
+
+    public function getLieuKeyFromHash($hash) {
+        $lieu_key = null;
+        if($this->getConfig()->hasLieuEditable()) {
+            $lieu_key = preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash);
+        }
+
+        return $lieu_key;
     }
 
     public function addAcheteurFromNode($acheteur, $lieu = null) {
