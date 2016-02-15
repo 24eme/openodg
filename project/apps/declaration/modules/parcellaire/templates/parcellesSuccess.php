@@ -107,7 +107,6 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                         </div>
 
                                     </td>             
-                                    <!--<td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a><a class="ajax fakeDeleteButton hidden" href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"></a></td>-->
                                 </tr>
                                 <?php
                                 $tabindex++;
