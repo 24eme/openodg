@@ -15,12 +15,17 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
 
     private $allCepagesAppellation;
 
-    public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+    public function __construct(\acCouchdbJson $object, $appellationKey, $options = array(), $CSRFSecret = null) {
+        $this->appellationKey = $appellationKey;
         parent::__construct($object, $options, $CSRFSecret);
     }
 
     public function configure() {
-        $type = 'active';
+        if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
+            $type = 'vtsgn';
+        }else{
+            $type = 'active';
+        }
         $this->setWidgets(array(
             $type => new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-size' => 'mini', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success' )), 
         ));
@@ -35,13 +40,11 @@ class ParcellaireAppellationParcelleForm extends acCouchdbObjectForm {
     }
 
     public function doUpdateObject($values) {
-        $values['active'] = $values['active'] * 1;
         parent::doUpdateObject($values);
     }
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        $this->setDefault('active', $this->getObject()->getActive());
     }
 
 }

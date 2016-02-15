@@ -23,7 +23,7 @@ class ParcellaireAppellationEditForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-        $this->embedForm('produits', new ParcellaireAppellationProduitsForm($this->parcelles));
+        $this->embedForm('produits', new ParcellaireAppellationProduitsForm($this->parcelles, $this->appellationKey));
         $this->validatorSchema->setPostValidator(new ParcellaireAppellationProduitsValidator());
         $this->widgetSchema->setNameFormat('parcellaire_parcelles[%s]');
     }

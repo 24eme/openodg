@@ -12,14 +12,18 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     <?php
     $selectedAppellationName = "";
     foreach ($parcellaireAppellations as $appellationKey => $appellationName) :
-        $nb = ($parcellaire->declaration->exist("certification/genre/appellation_" . $appellationKey)) ? count($parcellaire->declaration->get("certification/genre/appellation_" . $appellationKey)->getProduitsCepageDetails($appellationKey == ParcellaireClient::APPELLATION_VTSGN)) : 0;
+        if ($appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
+            $nb = count($parcellaire->declaration->getProduitsCepageDetails(true));
+        } else {
+            $nb = ($parcellaire->declaration->exist("certification/genre/appellation_" . $appellationKey)) ? count($parcellaire->declaration->get("certification/genre/appellation_" . $appellationKey)->getProduitsCepageDetails()) : 0;
+        }
         $isSelectedAppellation = ($appellation == $appellationKey);
         if (!$selectedAppellationName && $isSelectedAppellation) {
             $selectedAppellationName = $appellationName;
         }
         ?>
         <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?> <span class="badge"><?php echo $nb ?></span></a></li>
-<?php endforeach; ?>
+    <?php endforeach; ?>
 </ul>
 
 <?php if ($sf_user->hasFlash('warning')): ?>
@@ -28,21 +32,21 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
 
 <form action="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellation)); ?>" method="post" class="form-horizontal ajaxForm parcellaireForm">
     <?php echo $form->renderHiddenFields(); ?>
-<?php echo $form->renderGlobalErrors(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
 
     <div class="row">       
         <div class="col-xs-12">
             <div id="listes_cepages" class="list-group">
-<?php if (count($parcelles)) : ?>
+                <?php if (count($parcelles)) : ?>
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th class="col-xs-1">Déclarer</th>           
-                                <th class="col-xs-3">Commune</th>        
+                                <th class="col-xs-2">Commune</th>        
                                 <th class="col-xs-1">Section</th>        
                                 <th class="col-xs-1">Numéro</th>        
-                                <th class="col-xs-2">Lieu-dit</th>      
-                                <th class="col-xs-2">Cépage</th>        
+                                <th class="col-xs-2"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Appellation<?php else: ?>Lieu-dit<?php endif; ?></th>      
+                                <th class="col-xs-3"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>        
                                 <th class="col-xs-2">Superficie</th>           
                             </tr>
                         </thead>
@@ -58,24 +62,48 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                 ?>
                                 <tr <?php echo $styleErr . $styleWar; ?> >
                                     <td class="text-center">
-        <?php echo $form['produits'][$parcelle->getHashForKey()]['active']->render(); ?>
+                                        <?php
+                                        if (isset($form['produits'][$parcelle->getHashForKey()]['vtsgn'])) {
+                                            echo $form['produits'][$parcelle->getHashForKey()]['vtsgn']->render();
+                                        } else {
+                                            echo $form['produits'][$parcelle->getHashForKey()]['active']->render();
+                                        }
+                                        ?>
                                     </td>
                                     <td><?php echo $parcelle->getCommune(); ?></td>         
                                     <td><?php echo $parcelle->getSection(); ?></td>         
                                     <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
-                                    <td><?php echo $parcelle->getLieuLibelle(); ?></td>        
-                                    <td><?php echo $parcelle->getCepageLibelle(); ?></td>
-                                    <td class="text-right">
+
+
+                                    <td>
+                                        <?php
+                                        if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {
+                                            echo ParcellaireClient::getAppellationLibelle($parcelle->getAppellation()->getKey());
+                                        } else {
+                                            echo $parcelle->getLieuLibelle();
+                                        }
+                                        ?>
+                                    </td>        
+                                    <td>
+                                        <?php
+                                        if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {
+                                            echo $parcelle->getLieuLibelle() . " / ";
+                                        }
+                                        echo $parcelle->getCepageLibelle();
+                                        ?>
+                                    </td>
+                                    <td>
                                         <div class="row">
                                             <div class="col-xs-6 text-right">
-        <?php echoFloat($parcelle->getSuperficie()) ?>
-                                            </div>
-                                            <div class="col-xs-6 text-left">
+                                                <?php echoFloat($parcelle->getSuperficie()) ?>
+                                            </div> 
+                                            <div class="col-xs-6 text-left">    
                                                 <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)): ?>
                                                     &nbsp;<a class="btn btn-link btn-xs" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"><span class="glyphicon glyphicon-pencil"></span></a>
-        <?php endif; ?>
-                                            </div>
+                                                <?php endif; ?>
+                                            </div> 
                                         </div>
+
                                     </td>             
                                     <!--<td><a href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" class="btn btn-danger btn-sm deleteButton"><span class="glyphicon glyphicon-remove"></span></a><a class="ajax fakeDeleteButton hidden" href="<?php echo url_for('parcellaire_parcelle_delete', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>"></a></td>-->
                                 </tr>
@@ -102,7 +130,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                 <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationNode->getPreviousAppellationKey())); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
             <?php else : ?>
                 <a href="<?php echo url_for("parcellaire_exploitation", $parcellaire) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
-<?php endif; ?>
+            <?php endif; ?>
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireEtapes::ETAPE_VALIDATION): ?>
