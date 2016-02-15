@@ -22,7 +22,7 @@ class ParcellaireCepage extends BaseParcellaireCepage {
     }
 
     public function getProduits($onlyActive = false) {
-        if ($onlyActive && !$this->isActive()) {
+        if ($onlyActive && !$this->isAffectee()) {
 
             return array();
         }
