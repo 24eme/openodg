@@ -52,8 +52,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
     public function getAcheteursByHash() {
         $acheteurs = array();
 
-        foreach($this->getDocument()->acheteurs as $achs) {
-            foreach($achs as $acheteur) {
+        foreach ($this->getDocument()->acheteurs as $achs) {
+            foreach ($achs as $acheteur) {
                 $acheteurs[$acheteur->getHash()] = sprintf("%s", $acheteur->nom);
             }
         }
@@ -315,25 +315,27 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
 
     public function getParcellesByLieuxCommuneAndCepage() {
         $parcellesByLieuxCommuneAndCepage = array();
-        
+
         foreach ($this->getParcellesByLieux() as $parcellesByLieu) {
-            foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle){                
-                $key = $parcelle->parcelle->getCepage()->getHash().'/'.$parcelle->parcelle->commune;
-                if($parcelle->parcelle->lieu){
-                   $key.='/'. $parcelle->parcelle->lieu;
+            foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle) {
+                $key = $parcelle->parcelle->getCepage()->getHash() . '/' . $parcelle->parcelle->commune;
+                if ($parcelle->parcelle->lieu) {
+                    $key.='/' . $parcelle->parcelle->lieu;
                 }
-                if(!array_key_exists($key, $parcellesByLieuxCommuneAndCepage)){
+                if (!array_key_exists($key, $parcellesByLieuxCommuneAndCepage)) {
                     $parcellesByLieuxCommuneAndCepage[$key] = new stdClass();
                     $parcellesByLieuxCommuneAndCepage[$key]->total_superficie = 0;
                 }
                 $parcellesByLieuxCommuneAndCepage[$key]->total_superficie += $parcelle->parcelle->superficie;
                 $parcellesByLieuxCommuneAndCepage[$key]->cepage_libelle = $parcelle->parcelle->cepage_libelle;
                 $parcellesByLieuxCommuneAndCepage[$key]->commune = $parcelle->parcelle->commune;
-                if(!$parcellesByLieu->lieu_libelle){
-                $parcellesByLieuxCommuneAndCepage[$key]->appellation_lieu_libelle = $parcellesByLieu->appellation_libelle.' VTSGN';
-                    
-                }else{
-                    $parcellesByLieuxCommuneAndCepage[$key]->appellation_lieu_libelle = $parcellesByLieu->appellation_libelle.' - '.$parcellesByLieu->lieu_libelle;
+                if (!$parcellesByLieu->lieu_libelle) {
+                    $parcellesByLieuxCommuneAndCepage[$key]->appellation_lieu_libelle = $parcellesByLieu->appellation_libelle . ' VTSGN';
+                } else {
+                    $parcellesByLieuxCommuneAndCepage[$key]->appellation_lieu_libelle = $parcellesByLieu->appellation_libelle;
+                    if (!$this->isParcellaireCremant()) {
+                        $parcellesByLieuxCommuneAndCepage[$key]->appellation_lieu_libelle.=' - ' . $parcellesByLieu->lieu_libelle;
+                    }
                 }
             }
         }
@@ -355,7 +357,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
 
 
         return $this->declaration->hasVtsgn();
-    } 
+    }
 
     public function validateOdg() {
         $this->validation_odg = date('Y-m-d');
