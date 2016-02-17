@@ -29,14 +29,14 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function getAcheteursByCVI() {
-        $acheteurs = array();
+        $acheteursCvi = array();
         foreach($this->getAcheteurs() as $type => $acheteurs) {
             foreach($acheteurs as $cvi => $acheteur) {
-                $acheteurs[$cvi] = $acheteur; 
+                $acheteursCvi[$cvi] = $acheteur; 
             }
         }
 
-        return $acheteurs;
+        return $acheteursCvi;
     }
 
     public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
