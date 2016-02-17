@@ -319,8 +319,11 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         $parcellesByLieuxCommuneAndCepage = array();
         
         foreach ($this->getParcellesByLieux() as $parcellesByLieu) {
-            foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle){
+            foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle){                
                 $key = $parcelle->parcelle->getCepage()->getHash().'/'.$parcelle->parcelle->commune;
+                if($parcelle->parcelle->lieu){
+                   $key.='/'. $parcelle->parcelle->lieu;
+                }
                 if(!array_key_exists($key, $parcellesByLieuxCommuneAndCepage)){
                     $parcellesByLieuxCommuneAndCepage[$key] = new stdClass();
                     $parcellesByLieuxCommuneAndCepage[$key]->total_superficie = 0;
