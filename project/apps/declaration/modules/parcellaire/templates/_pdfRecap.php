@@ -37,7 +37,7 @@
 <div><span class="h3">&nbsp;Récapitulatif&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: center; width: 359px;">&nbsp;Appellation - Lieu - Cépage</th>        
+        <th class="th" style="text-align: center; width: 359px;">&nbsp;Appellation <?php if(!$parcellaire->isParcellaireCremant()): ?>- Lieu <?php endif; ?>- Cépage</th>        
         <th class="th" style="text-align: center; width: 180px;">Commune</th>  
         <th class="th" style="text-align: center; width: 100px;">Surface</th>
     </tr>
