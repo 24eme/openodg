@@ -26,12 +26,27 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
         $this->header = $header;
     }
 
-    public function getFileName() {
-        
-        return $this->parcellaire->_id . '_' . $this->parcellaire->_rev . '.csv';
+    public function getFileName($with_rev = false) {
+
+      return self::buildFileName($this->parcellaire, true, false);
     }
 
-    public function export() {
+    public static function buildFileName($parcellaire, $with_rev = false) {
+        
+        $prefixName = ($parcellaire->isParcellaireCremant())? "PARCELLAIRE_CREMANT_%s_%s" :"PARCELLAIRE_%s_%s";
+        $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
+
+        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
+        $filename .= '_' . $declarant_nom;
+
+        if ($with_rev) {
+            $filename .= '_' . $parcellaire->_rev;
+        }
+
+        return $filename . '.csv';
+    }
+
+    public function export($cviFilter = null) {
         $export = "";
         if($this->header) { 
             $export = self::getHeaderCsv();
@@ -60,6 +75,10 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
             }
 
             foreach($acheteurs as $acheteur) {
+                if($cviFilter && $cviFilter != $acheteur->cvi) {
+                    continue;
+                }
+
                 $export.= $parcelle->commune . ";";
                 $export.= $parcelle->section . ";";
                 $export.= $parcelle->numero_parcelle . ";";

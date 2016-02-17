@@ -33,6 +33,8 @@ Parcellaire:
                         cvi : { }
                         nom : { }
                         commune: { }
+                        email_envoye: { }
+                        email: { }
       declarant:
         type: collection
         definition:

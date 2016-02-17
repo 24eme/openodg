@@ -39,14 +39,14 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
     }
 
     public function getAcheteursByCVI() {
-        $acheteurs = array();
+        $acheteursCvi = array();
         foreach ($this->acheteurs as $type => $acheteurs) {
             foreach ($acheteurs as $cvi => $acheteur) {
-                $acheteurs[$cvi] = $acheteur;
+                $acheteursCvi[$cvi] = $acheteur;
             }
         }
 
-        return $acheteurs;
+        return $acheteursCvi;
     }
 
     public function getAcheteursByHash() {
@@ -54,6 +54,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
 
         foreach($this->getDocument()->acheteurs as $achs) {
             foreach($achs as $acheteur) {
+                echo $acheteur->getHash();
                 $acheteurs[$acheteur->getHash()] = sprintf("%s", $acheteur->nom);
             }
         }
@@ -269,6 +270,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         $acheteur->nom = $etablissement->raison_sociale;
         $acheteur->cvi = $cvi;
         $acheteur->commune = $etablissement->commune;
+        $acheteur->email = $etablissement->email;
 
         return $acheteur;
     }
