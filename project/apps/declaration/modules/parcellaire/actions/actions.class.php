@@ -366,6 +366,9 @@ class parcellaireActions extends sfActions {
 
         $this->document = new ExportParcellairePDF($this->parcellaire, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
+        if($request->getParameter('cvi')) {
+            $this->document->setCviFilter($request->getParameter('cvi'), $request->getParameter('cvi'));
+        }
 
         if ($request->getParameter('force')) {
             $this->document->removeCache();

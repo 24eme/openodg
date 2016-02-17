@@ -38,25 +38,32 @@
     <span class="h3Alt">&nbsp;Destination des raisins&nbsp;</span><br/>
     <table class="tableAlt"><tr><td>
                 <table border="0">
-                    <?php foreach ($parcellesByLieu->acheteurs as $type => $acheteurs): ?>
+                    <?php if(!$cviFilter): ?>
+                        <?php foreach ($parcellesByLieu->acheteurs as $type => $acheteurs): ?>
+                            <tr>
+                                <td><span style="font-family: Dejavusans">☒</span>&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
+                                    <?php
+                                    $acheteurs_nom = array();
+                                    foreach ($acheteurs as $acheteur) {
+                                        if ($acheteur->cvi != $parcellaire->identifiant)
+                                            $acheteurs_nom[] = $acheteur->nom;
+                                    }
+                                    $acheteurs_nom = array_unique($acheteurs_nom);
+                                    if (count($acheteurs_nom))
+                                        echo ' : <strong>';
+                                    echo implode('</strong>, <strong>', $acheteurs_nom);
+                                    if (count($acheteurs_nom))
+                                        echo '</strong>';
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <?php $acheteursByCvi = array(); foreach ($parcellesByLieu->acheteurs as $type => $acheteurs) { foreach ($acheteurs as $acheteur) { $acheteursByCvi[$acheteur->cvi] = $acheteur->nom; }}  ?>
                         <tr>
-                            <td><span style="font-family: Dejavusans">☒</span>&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
-                                <?php
-                                $acheteurs_nom = array();
-                                foreach ($acheteurs as $acheteur) {
-                                    if ($acheteur->cvi != $parcellaire->identifiant)
-                                        $acheteurs_nom[] = $acheteur->nom;
-                                }
-                                $acheteurs_nom = array_unique($acheteurs_nom);
-                                if (count($acheteurs_nom))
-                                    echo ' : <strong>';
-                                echo implode('</strong>, <strong>', $acheteurs_nom);
-                                if (count($acheteurs_nom))
-                                    echo '</strong>';
-                                ?>
-                            </td>
+                            <td><?php if(count($acheteursByCvi) > 1): ?>Partagées entre plusieurs destinataires dont <?php echo $acheteursByCvi[$cviFilter]; ?> <?php else: ?>Dédiées à <?php echo $acheteursByCvi[$cviFilter]; ?><?php endif; ?></td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </table>
             </td></tr></table>
     <br />

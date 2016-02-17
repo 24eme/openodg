@@ -289,10 +289,16 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         return false;
     }
 
-    public function getParcellesByLieux() {
+    public function getParcellesByLieux($cviFilter = null) {
         $parcellesByLieux = array();
         $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if($cviFilter) {
+                $acheteurs = $parcelle->getAcheteursByCVI();
+                if(!array_key_exists($cviFilter, $acheteurs)) {
+                    continue;
+                }
+            }
             $keyLieu = sprintf("%s. %s %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
             if (!array_key_exists($keyLieu, $parcellesByLieux)) {
                 $parcellesByLieux[$keyLieu] = new stdClass();
@@ -314,10 +320,10 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         return $parcellesByLieux;
     }
 
-    public function getParcellesByLieuxCommuneAndCepage() {
+    public function getParcellesByLieuxCommuneAndCepage($cviFilter = null) {
         $parcellesByLieuxCommuneAndCepage = array();
 
-        foreach ($this->getParcellesByLieux() as $parcellesByLieu) {
+        foreach ($this->getParcellesByLieux($cviFilter) as $parcellesByLieu) {
             foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle) {
                 $key = $parcelle->parcelle->getCepage()->getHash() . '/' . $parcelle->parcelle->commune;
                 if ($parcelle->parcelle->lieu) {

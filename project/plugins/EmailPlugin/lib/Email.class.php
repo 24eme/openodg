@@ -172,9 +172,10 @@ class Email {
         }
 
         $csv = new ExportParcellaireCSV($parcellaire);
-        $csvAttachment = new Swift_Attachment($csv->export($acheteur->cvi), $csv->getFileName(), 'text/csv');
+        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export($acheteur->cvi)), $csv->getFileName(), 'text/csv');
 
         $pdf = new ExportParcellairePDF($parcellaire);
+        $pdf->setCviFilter($acheteur->cvi, $acheteur->nom);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
@@ -182,7 +183,7 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = array($acheteur->email);
-        $subject = sprintf("Déclaration d'affectation parcellaire%s de %s", ($parcellaire->isParcellaireCremant())? ' crémant' : '', $acheteur->nom);
+        $subject = sprintf("Déclaration d'affectation parcellaire%s de %s", ($parcellaire->isParcellaireCremant())? ' crémant' : '', $parcellaire->declarant->nom);
         $body = $this->getBodyFromPartial('send_parcellaire_acheteur', array('parcellaire' => $parcellaire));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)

@@ -52,7 +52,7 @@
     <?php endforeach; ?>
 </table>  
 <br />
-<?php if($parcellaire->hasVtsgn() && $parcellaire->validation): ?>
+<?php if($engagement && $parcellaire->hasVtsgn() && $parcellaire->validation): ?>
 <br /> 
                 <table border="0">
                         <tr>

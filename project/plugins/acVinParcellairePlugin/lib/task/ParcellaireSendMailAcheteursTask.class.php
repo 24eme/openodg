@@ -31,11 +31,39 @@ EOF;
         $context = sfContext::createInstance($this->configuration);
         $context->set('routing', $routing);
 
-        $parcellaire = ParcellaireClient::getInstance()->find($arguments['doc_id']);
+        $parcellaire = ParcellaireClient::getInstance()->find($arguments['doc_id'], acCouchdbClient::HYDRATE_JSON);
 
         if(!$parcellaire->autorisation_acheteur) {
             return;
         }
+
+        if(isset($parcellaire->papier) && $parcellaire->papier) {
+            return;
+        }
+
+        $hasMailToSend = false;
+        foreach($parcellaire->acheteurs as $type => $acheteursType) {
+            foreach($acheteursType as $acheteur) {
+                if($acheteur->cvi == $parcellaire->identifiant) {
+
+                    continue;
+                }
+
+                if($acheteur->email_envoye) {
+                    continue;
+                }
+
+                $hasMailToSend = true;
+                break;
+            }
+        }
+
+        if(!$hasMailToSend) {
+
+            return;
+        }
+
+        $parcellaire = ParcellaireClient::getInstance()->find($arguments['doc_id']);
 
         foreach($parcellaire->getAcheteursByCVI() as $acheteur) {
             if($acheteur->cvi == $parcellaire->identifiant) {
@@ -61,7 +89,7 @@ EOF;
             $sended = Email::getInstance()->sendParcellaireAcheteur($parcellaire, $acheteur);
             if($sended) {
                 $acheteur->email_envoye = date('Y-m-d');
-                //$parcellaire->save();
+                $parcellaire->save();
                 echo sprintf("%s SUCCESS : Email envoyé à %s %s via %s\n", $parcellaire->_id, $acheteur->nom, $acheteur->cvi, $acheteur->email);
             } else {
                 echo sprintf("%s ERROR : Email non envoyé à %s %s via %s\n", $parcellaire->_id, $acheteur->nom, $acheteur->cvi, $acheteur->email);
