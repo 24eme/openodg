@@ -102,7 +102,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                 }
                 $export.= $this->parcellaire->validation.";";
                 $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
-                $export.= ";".($parcelle->parcelle->vtsgn) ? "VTSGN" : "";
+                $export.= ";".($parcelle->vtsgn) ? "VTSGN" : "";
                 $export.="\n";
             }
         }
