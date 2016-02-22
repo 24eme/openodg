@@ -1,4 +1,3 @@
-<?php use_javascript("tirage.js", "last") ?>
 <?php include_partial('tirage/step', array('step' => 'vin', 'tirage' => $tirage)) ?>
 <div class="page-header no-border">
     <h2>Vin <small>Merci de saisir les informations liées au Crémant dont vous souhaitez déclarer le tirage</small></h2>
@@ -36,7 +35,7 @@
     </div>
     <div class="row row-margin">
         <div class="col-xs-12">
-            <div class="form-inline">
+            <div class="form-inline bloc_condition" data-condition-cible="#bloc_millesime_ventile">
                 <?php echo $form["millesime"]->renderError(); ?>
                 <label class="col-xs-3 text-right">
                     <?php echo $form["millesime"]->renderLabel(); ?>
@@ -51,7 +50,7 @@
 
 
     <div class="row row-margin">
-        <div class="col-xs-12">
+        <div class="col-xs-12" id="bloc_millesime_ventile" data-condition-value="ASSEMBLE">
             <div>
                 <?php echo $form["volume_ventile"]->renderError(); ?>
                 <label class="col-xs-3 text-right">
