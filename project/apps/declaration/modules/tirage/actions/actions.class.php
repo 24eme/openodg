@@ -2,6 +2,42 @@
 
 class tirageActions extends sfActions {
 
+      public function executeCreate(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+        $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $tirage->save();
+
+        return $this->redirect('tirage_edit', $tirage);
+    }
+
+    public function executeCreatePapier(sfWebRequest $request) {
+        $etablissement = $this->getRoute()->getEtablissement();
+
+        $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $tirage->save();
+
+        return $this->redirect('drevmarc_edit', $tirage);
+    }
+
+    public function executeEdit(sfWebRequest $request) {
+        $tirage = $this->getRoute()->getTirage();
+
+        if ($tirage->exist('etape') && $tirage->etape) {
+            return $this->redirect('tirage_' . $tirage->etape, $tirage);
+        }
+
+        return $this->redirect('tirage_exploitation', $drevmarc);
+    }
+
+    public function executeDelete(sfWebRequest $request) {
+        $tirage = $this->getRoute()->getTirage();
+        $tirage->delete();
+        $this->getUser()->setFlash("notice", 'La déclaration de tirage a été supprimé avec succès.');
+        
+        return $this->redirect($this->generateUrl('home'));
+    }
+
+
     public function executeExploitation(sfWebRequest $request) {
         /* $this->drev = $this->getRoute()->getDRev();
           $this->secure(DRevSecurity::EDITION, $this->drev);

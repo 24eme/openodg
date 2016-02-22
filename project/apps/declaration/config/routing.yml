@@ -42,6 +42,36 @@ admin_export:
 
 #TIRAGE
 
+drevmarc_create:
+  url: /tirage/creation/:id
+  param: { module: tirage, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_create_papier:
+  url: /tirage/creation-papier/:id
+  param: { module: tirage, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_edit:
+  url: /tirage/edition/:id
+  param: { module: tirage, action: edit }
+  class: Tirage
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
 tirage_exploitation:
   url: /tirage/exploitation
   param: { module: tirage, action: exploitation }
