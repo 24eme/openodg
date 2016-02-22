@@ -145,8 +145,14 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     }
 
     public function updateCepages() {
+        $cepages = array();
         foreach($this->getConfigurationCepages() as $cepage) {
-            $this->cepages->add($cepage->getKey())->libelle = $cepage->getLibelle();
+            $cepages[$cepage->getKey()] = $cepage->getLibelle();
+        }
+        sort($cepages);
+        foreach ($cepages as $keyCep => $libelle) {
+            
+            $this->cepages->add($keyCep)->libelle = $libelle;
         }
     }
 
