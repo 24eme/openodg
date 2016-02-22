@@ -59,7 +59,7 @@ tirage_visualisation:
 
 tirage_export_pdf:
   url: /tirage/pdf
-  param: { module: drev, action: PDF }
+  param: { module: tirage, action: PDF }
 
 
 # DREV
