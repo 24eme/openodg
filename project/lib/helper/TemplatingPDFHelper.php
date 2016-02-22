@@ -248,12 +248,13 @@ function styleTirage() {
 
 function echoCheck($text, $checked) {
     if ($checked) {
-        echo '<strong><span style="font-family: Dejavusans">☒</span>&nbsp;';
+        echo '<strong><span style="font-family: Dejavusans">☒&nbsp;';
     }else{
-        echo '<span style="font-family: Dejavusans">☐</span>&nbsp;';
+        echo '<span style="font-family: Dejavusans">☐&nbsp;';
 
     }
     echo $text;
+    echo '</span>';
     if ($checked) {
         echo '</strong>';
     }

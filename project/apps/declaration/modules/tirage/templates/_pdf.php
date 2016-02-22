@@ -64,8 +64,7 @@ Déclare,
     <br/><br/>
     
     Cépages entrant dans la composition de la cuvée&nbsp;:
-    <p style="margin-left: 40px;">
-    <?php foreach($tirage->cepages as $cepage) {
+    <p><?php foreach($tirage->cepages as $cepage) {
     echoCheck(str_replace(' ', '&nbsp;', $cepage->libelle), $cepage->selectionne);
     } ?></p>
     <br/><br/>
