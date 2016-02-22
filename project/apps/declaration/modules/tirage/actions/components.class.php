@@ -12,8 +12,8 @@ class tirageComponents extends sfComponents {
         }
         $this->etablissement = $this->getUser()->getEtablissement();
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
-        $this->drev = null;
-        $this->drevsHistory = array();
+        $this->tirage = TirageClient::getInstance()->find('TIRAGE-' . $this->etablissement->identifiant . '-' . $campagne. "01");;
+        $this->tiragesHistory = array();
     }
 
 }

@@ -42,31 +42,123 @@ admin_export:
 
 #TIRAGE
 
+tirage_create:
+  url: /tirage/creation/:id
+  param: { module: tirage, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_create_papier:
+  url: /tirage/creation-papier/:id
+  param: { module: tirage, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_edit:
+  url: /tirage/edition/:id
+  param: { module: tirage, action: edit }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_exploitation:
+  url: /tirage/exploitation/:id
+  param: { module: tirage, action: exploitation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 tirage_vin:
   url: /tirage/vin/:id
   param: { module: tirage, action: vin }  
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
   requirements:
-    sf_method: [get]  
-
-tirage_exploitation:
-  url: /tirage/exploitation
-  param: { module: tirage, action: exploitation }
+    sf_method: [get, post] 
   
 tirage_lots:
   url: /tirage/lots
   param: { module: tirage, action: lots }
   
 tirage_validation:
-  url: /tirage/validation
+  url: /tirage/validation/:id
   param: { module: tirage, action: validation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_validation_admin:
+  url: /tirage/validation_admin/:id
+  param: { module: tirage, action: validationAdmin }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_confirmation:
+  url: /tirage/confirmation/:id
+  param: { module: tirage, action: confirmation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 tirage_visualisation:
-  url: /tirage/visualisation
+  url: /tirage/visualisation/:id
+  param: { module: tirage, action: visualisation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 tirage_export_pdf:
   url: /tirage/pdf
   param: { module: tirage, action: PDF }
 
+tirage_delete:
+  url: /tirage/suppression/:id
+  param: { module: tirage, action: delete }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_devalidation:
+  url: /tirage/devalidation/:id
+  param: { module: tirage, action: devalidation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
 
 # DREV
 

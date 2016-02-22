@@ -457,6 +457,30 @@
         $('.modal.modal-page').modal({keyboard: false, backdrop: 'static'});
     }
 
+    
+    $.initValidationDeclaration = function() {
+        $('#submit-confirmation-validation').click(function() {
+            $('#validation-form').submit();
+        });
+
+        $('#btn-validation-document').click(function() {
+            $("input:checkbox[name*=validation]").each(function() {
+                    $(this).parent().parent().parent().removeClass("has-error");
+            });
+            $("#engagements .alert-danger").addClass("hidden");
+            if($("input:checkbox[name*=validation]").length != $("input:checkbox[name*=validation]:checked").length) {
+                $("#engagements .alert-danger").removeClass("hidden");
+                $("input:checkbox[name*=validation]:not(:checked)").each(function() {
+                    $(this).parent().parent().parent().addClass("has-error");
+                });
+                $("input:checkbox[name*=validation]:checked").each(function() {
+                    $(this).parent().parent().parent().removeClass("has-error");
+                });
+                return false;
+            }
+        });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
