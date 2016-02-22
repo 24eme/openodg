@@ -1,38 +1,20 @@
 <?php include_partial('tirage/step', array('step' => 'validation', 'tirage' => $tirage)) ?>
 <div class="page-header">
-    <h2>Validation de votre déclaration</h2>
+    <h2>Validation de votre déclaration de Tirage A.O.C. Crémant d'Alsace</h2>
 </div>
 
 <form id="validation-form" role="form" action="<?php echo url_for("tirage_validation", $tirage) ?>" method="post">
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
 
-    <?php if(isset($form["date"])): ?>
-    <div class="row">
-        <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>                            
-                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
-            <?php endif; ?>
-            <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-            <div class="col-xs-4">
-                <div class="input-group date-picker-all-days">
-                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
-
+   
     <?php if ($validation->hasPoints()): ?>
         <?php include_partial('tirage/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
 
     <div class="row row-margin">
         <div class="col-xs-12">
-            <?php //include_partial('tirage/recap', array('tirage' => $tirage)); ?>
+            <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
         </div>
     </div>
 

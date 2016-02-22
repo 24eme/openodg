@@ -56,22 +56,24 @@ class TirageVinForm extends acCouchdbObjectForm {
 
     public function getCepages() {
         $cepageslist = array();
-        foreach ($this->tirage->getConfigurationCepages() as $keyCepage => $cepage) {
-            $cepageslist[$keyCepage] = $cepage->getLibelle();
+        foreach ($this->tirage->cepages as $cepage) {
+            $cepageslist[$cepage->getkey()] = $cepage->getLibelle();
         }
         return $cepageslist;
     }
 
     public function getMillesimes() {
-        return array($this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblé");
+        return array($this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblage");
     }
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
         $cepagesValues = $values['cepages_actifs'];
-        foreach ($this->getCepages() as $cepageKey => $cepage) {           
-            $this->getObject()->cepages->get($cepageKey)->selectionne = intval(in_array($cepageKey, $cepagesValues));
+        foreach ($this->getCepages() as $key => $cepage) {   
+            $this->getObject()->cepages->get($key)->selectionne = intval(in_array($key, $cepagesValues));
         }
+        $this->getObject()->couleur_libelle = TirageClient::$couleurs[$values['couleur']];
+        $this->getObject()->millesime_libelle = ($values['millesime'] == TirageClient::MILLESIME_ASSEMBLE)? 'assemblage' : $values['millesime'];
     }
 
     public function updateDefaultsFromObject() {

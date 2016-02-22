@@ -106,5 +106,15 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     public function getDeclarantQualite() {
         return "Viticulteur-Manipulant total ou partiel";
     }
+    
+    public function getCepagesSelectionnes() {
+        $cepagesSelectionnes = array();
+        foreach ($this->cepages as $cepageKey => $cepage) {
+            if($cepage->selectionne){                
+            $cepagesSelectionnes[$cepageKey] = $cepage;
+            }
+        }
+        return $cepagesSelectionnes;
+    }
 
 }
