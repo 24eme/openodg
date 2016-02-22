@@ -189,7 +189,7 @@ class tirageActions extends sfActions {
         $this->tirage->validate();
         $this->tirage->save();
 
-        //$this->sendDRevMarcValidation($this->tirage);
+         $this->sendTirageValidation($this->tirage);
 
         return $this->redirect('tirage_confirmation', $this->tirage);
     }
@@ -247,6 +247,14 @@ class tirageActions extends sfActions {
     protected function forwardSecure() {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
         throw new sfStopException();
+    }
+    
+    protected function sendTirageValidation($tirage) {
+        $pdf = new ExportTiragePdf($tirage, 'pdf', true);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->removeCache();
+        $pdf->generate();
+        Email::getInstance()->sendTirageValidation($tirage);
     }
 
 }

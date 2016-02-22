@@ -336,6 +336,31 @@ class Email {
         $this->getMailer()->send($message);
     }
 
+        public function sendTirageValidation($tirage) {
+        if (!$tirage->declarant->email) {
+
+            return;
+        }
+
+        $pdf = new ExportTiragePDF($tirage);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($tirage->declarant->email);
+        $subject = "Validation de votre déclaration de tirage de crémant d'Alsace";
+        $body = $this->getBodyFromPartial('send_tirage_validation', array('tirage' => $tirage));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain')
+                ->attach($pdfAttachment);
+        return $this->getMailer()->send($message);
+    }
+    
     protected function getMailer() {
         return $this->_context->getMailer();
     }

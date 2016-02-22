@@ -2,7 +2,7 @@
 
 class ExportTiragePDF extends ExportPDF {
 
-    protected $drev = null;
+    protected $tirage = null;
 
     public function __construct($tirage, $type = 'pdf', $use_cache = false, $file_dir = null, $filename = null) {
         $this->tirage = $tirage;
