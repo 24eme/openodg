@@ -26,18 +26,22 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
         $this->header = $header;
     }
 
-    public function getFileName($with_rev = true) {
+    public function getFileName($with_rev = true, $nomFilter = null) {
 
-      return self::buildFileName($this->parcellaire, $with_rev);
+      return self::buildFileName($this->parcellaire, $with_rev, $nomFilter);
     }
 
-    public static function buildFileName($parcellaire, $with_rev = false) {
+    public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
         
         $prefixName = ($parcellaire->isParcellaireCremant())? "PARCELLAIRE_CREMANT_%s_%s" :"PARCELLAIRE_%s_%s";
         $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
 
         $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
         $filename .= '_' . $declarant_nom;
+
+        if($nomFilter) {
+            $filename .= '_' . strtoupper(KeyInflector::slugify($nomFilter));
+        }
 
         if ($with_rev) {
             $filename .= '_' . $parcellaire->_rev;

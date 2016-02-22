@@ -30,7 +30,8 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinFacturePlugin');
 	$this->enablePlugins('FacturationPlugin');
         $this->enablePlugins('acVinGenerationPlugin');
-	$this->enablePlugins('acVinAbonnementPlugin');
+    $this->enablePlugins('acVinAbonnementPlugin');
+	$this->enablePlugins('acVinTiragePlugin');
     }
 
     public static function getAppRouting()
