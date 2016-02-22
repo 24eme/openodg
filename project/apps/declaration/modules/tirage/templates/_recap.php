@@ -20,7 +20,7 @@
 <br/>
 <p>Vin de base ayant fait la fermantation malo-lactique : <strong><?php echo ($tirage->fermentation_lactique)? 'Oui' : 'Non'; ?> </strong></p>
 <p>
-    Mis en bouteille à l'adresse : <strong><?php  echo ($tirage->lieu_stockage)? $tirage->lieu_stockage : $tirage->declarant->adresse.' '.$tirage->declarant->code_postal.' '.$tirage->declarant->commune; ?></strong>
+    Lieu de stockage : <strong><?php  echo ($tirage->lieu_stockage)? $tirage->lieu_stockage : $tirage->declarant->adresse.' '.$tirage->declarant->code_postal.' '.$tirage->declarant->commune; ?></strong>
 </p>
 <br/>
 <h2 class="h3">Composition du lot :</h2>

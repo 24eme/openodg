@@ -86,13 +86,12 @@ class tirageActions extends sfActions {
 
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
         }
-        
-        if($this->form->getValue('lieu_exploitation')) {
-          $this->tirage->lieu_exploitation = $this->form->getValue('lieu_exploitation');
-        }
-        
-        return $this->redirect('tirage_vin', $this->tirage);
 
+        if ($this->form->getValue('lieu_exploitation')) {
+            $this->tirage->lieu_exploitation = $this->form->getValue('lieu_exploitation');
+        }
+
+        return $this->redirect('tirage_vin', $this->tirage);
     }
 
     public function executeVin(sfWebRequest $request) {
@@ -111,36 +110,41 @@ class tirageActions extends sfActions {
         }
 
         $this->form->save();
-          return $this->redirect('tirage_lots', $this->tirage);
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tirage->_id, "revision" => $this->tirage->_rev))));
+        }
+        return $this->redirect('tirage_lots', $this->tirage);
     }
 
-    public function executeLots(sfWebRequest $request) 
-    {
-		$this->tirage = $this->getRoute()->getTirage();
-		$this->secure(TirageSecurity::EDITION, $this->tirage);
+    public function executeLots(sfWebRequest $request) {
+        $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
 
         $this->tirage->storeEtape($this->getEtape($this->tirage, TirageEtapes::ETAPE_LOTS));
 
         $this->tirage->save();
-		
-		$this->form = new TirageLotsForm($this->tirage);
-		
-		if (!$request->isMethod(sfWebRequest::POST)) {
-		
-			return sfView::SUCCESS;
-		}
-		
-		$this->form->bind($request->getParameter($this->form->getName()));
-		
-		if (!$this->form->isValid()) {
-		
-			return sfView::SUCCESS;
-		}
-		
-		$this->form->save();
-		
-		return $this->redirect('tirage_validation', $this->tirage);
-          
+
+        $this->form = new TirageLotsForm($this->tirage);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->save();
+        
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tirage->_id, "revision" => $this->tirage->_rev))));
+        }
+        
+        return $this->redirect('tirage_validation', $this->tirage);
     }
 
     public function executeValidation(sfWebRequest $request) {
@@ -198,8 +202,7 @@ class tirageActions extends sfActions {
         $this->tirage = $this->getRoute()->getTirage();
     }
 
-    public function executePDF(sfWebRequest $request) 
-    {
+    public function executePDF(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
         $this->secure(TirageSecurity::VISUALISATION, $tirage);
 
