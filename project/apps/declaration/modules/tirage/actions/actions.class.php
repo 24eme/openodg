@@ -1,203 +1,209 @@
 <?php
 
-class tirageActions extends sfActions 
-{
-    public function executeExploitation(sfWebRequest $request) 
-    {
-        /*$this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+class tirageActions extends sfActions {
 
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION));
-        $this->drev->save();
+    public function executeExploitation(sfWebRequest $request) {
+        /* $this->drev = $this->getRoute()->getDRev();
+          $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $this->etablissement = $this->drev->getEtablissementObject();
-        
-        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->drev->isPapier()));
+          $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION));
+          $this->drev->save();
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
+          $this->etablissement = $this->drev->getEtablissementObject();
 
-            return sfView::SUCCESS;
-        }
+          $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->drev->isPapier()));
 
-        $this->form->bind($request->getParameter($this->form->getName()));
+          if (!$request->isMethod(sfWebRequest::POST)) {
 
-        if (!$this->form->isValid()) {
+          return sfView::SUCCESS;
+          }
 
-            return sfView::SUCCESS;
-        }
+          $this->form->bind($request->getParameter($this->form->getName()));
 
-        $this->form->save();
+          if (!$this->form->isValid()) {
 
-        $this->drev->storeDeclarant();
-        $this->drev->save();
+          return sfView::SUCCESS;
+          }
 
-        if ($request->isXmlHttpRequest()) {
+          $this->form->save();
 
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
-        }
+          $this->drev->storeDeclarant();
+          $this->drev->save();
 
-        if ($request->getParameter('redirect', null)) {
-            return $this->redirect('drev_validation', $this->drev);
-        }
+          if ($request->isXmlHttpRequest()) {
 
-        if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
+          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
+          }
 
-            return $this->redirect('drev_dr', $this->drev);
-        }
+          if ($request->getParameter('redirect', null)) {
+          return $this->redirect('drev_validation', $this->drev);
+          }
 
-        return $this->redirect('drev_revendication', $this->drev);*/
+          if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
+
+          return $this->redirect('drev_dr', $this->drev);
+          }
+
+          return $this->redirect('drev_revendication', $this->drev); */
     }
 
-    public function executeLots(sfWebRequest $request) 
-    {
-        /*$this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+    public function executeVin(sfWebRequest $request) {
 
-        $this->prelevement = $this->getRoute()->getPrelevement();
-
-        $this->form = new DRevLotsForm($this->prelevement);
-        $this->ajoutForm = new DrevLotsAjoutProduitForm($this->prelevement);
-
-        $this->setTemplate(lcfirst(sfInflector::camelize(strtolower(('lots_' . $this->prelevement->getKey())))));
-
-        $this->error_produit = null;
-        if ($request->getParameter(('error_produit'))) {
-            $type_error = strstr($request->getParameter('error_produit'), '-', true);
-            $error_produit = str_replace($type_error, '', $request->getParameter('error_produit'));
-            $this->error_produit = str_replace('-', '_', $error_produit);
-            if ($type_error == 'erreur') {
-                $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
-            }
-            if ($type_error == 'vigilancewithFlash') {
-                $this->getUser()->setFlash("warning", "Pour supprimer un lot, il suffit de vider la case.");
-            }
-        }
-
+        $this->form = new TirageVinForm();
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-        if ($request->isXmlHttpRequest() && !$this->form->isValid()) {
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
-        }
-
-        if (!$this->form->isValid()) {
-            return sfView::SUCCESS;
-        }
-
         $this->form->save();
-
-        if ($request->isXmlHttpRequest()) {
-
-            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
-        }
-
-        
-        if ($request->getParameter('redirect', null)) {
-            return $this->redirect('drev_validation', $this->drev);
-        }
-
-        if ($this->prelevement->getKey() == Drev::CUVE_ALSACE && $this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
-            return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
-        }
-
-        if($this->drev->isNonConditionneur()) {
-
-            return $this->redirect('drev_validation', $this->drev);
-        }
-
-        return $this->redirect('drev_controle_externe', $this->drev);*/
     }
 
-    
+    public function executeLots(sfWebRequest $request) {
+        /* $this->drev = $this->getRoute()->getDRev();
+          $this->secure(DRevSecurity::EDITION, $this->drev);
 
-    public function executeValidation(sfWebRequest $request) 
-    {
-        /*$this->drev = $this->getRoute()->getDRev();
-        
-        $this->secure(DRevSecurity::EDITION, $this->drev);
+          $this->prelevement = $this->getRoute()->getPrelevement();
 
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
-        $this->drev->save();
+          $this->form = new DRevLotsForm($this->prelevement);
+          $this->ajoutForm = new DrevLotsAjoutProduitForm($this->prelevement);
 
-        $this->drev->cleanDoc();
-        $this->validation = new DRevValidation($this->drev);
+          $this->setTemplate(lcfirst(sfInflector::camelize(strtolower(('lots_' . $this->prelevement->getKey())))));
 
-        $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+          $this->error_produit = null;
+          if ($request->getParameter(('error_produit'))) {
+          $type_error = strstr($request->getParameter('error_produit'), '-', true);
+          $error_produit = str_replace($type_error, '', $request->getParameter('error_produit'));
+          $this->error_produit = str_replace('-', '_', $error_produit);
+          if ($type_error == 'erreur') {
+          $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
+          }
+          if ($type_error == 'vigilancewithFlash') {
+          $this->getUser()->setFlash("warning", "Pour supprimer un lot, il suffit de vider la case.");
+          }
+          }
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
+          if (!$request->isMethod(sfWebRequest::POST)) {
 
-            return sfView::SUCCESS;
-        }
+          return sfView::SUCCESS;
+          }
 
-        if (!$this->validation->isValide()) {
+          $this->form->bind($request->getParameter($this->form->getName()));
+          if ($request->isXmlHttpRequest() && !$this->form->isValid()) {
+          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+          }
 
-            return sfView::SUCCESS;
-        }
+          if (!$this->form->isValid()) {
+          return sfView::SUCCESS;
+          }
 
-        $this->form->bind($request->getParameter($this->form->getName()));
+          $this->form->save();
 
-        if (!$this->form->isValid()) {
+          if ($request->isXmlHttpRequest()) {
 
-            return sfView::SUCCESS;
-        }
+          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+          }
 
-        $documents = $this->drev->getOrAdd('documents');
 
-        foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
-            $document = $documents->add($engagement->getCode());
-            $document->statut = ($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
-        }
+          if ($request->getParameter('redirect', null)) {
+          return $this->redirect('drev_validation', $this->drev);
+          }
 
-        if($this->drev->isPapier()) {
-            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+          if ($this->prelevement->getKey() == Drev::CUVE_ALSACE && $this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
+          return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
+          }
 
-            $this->drev->validate($this->form->getValue("date"));
-            $this->drev->validateOdg();
-            $this->drev->save();
+          if($this->drev->isNonConditionneur()) {
 
-            return $this->redirect('drev_visualisation', $this->drev);
-        }
+          return $this->redirect('drev_validation', $this->drev);
+          }
 
-        $this->drev->validate();
-        $this->drev->save();
-
-        $this->sendDRevValidation($this->drev);
-
-        return $this->redirect('drev_confirmation', $this->drev);*/
+          return $this->redirect('drev_controle_externe', $this->drev); */
     }
 
-    public function executeVisualisation(sfWebRequest $request) 
-    {
-        /*$this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+    public function executeValidation(sfWebRequest $request) {
+        /* $this->drev = $this->getRoute()->getDRev();
 
-        $this->service = $request->getParameter('service');
+          $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $documents = $this->drev->getOrAdd('documents');
+          $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
+          $this->drev->save();
 
-        if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
-            $this->validation = new DRevValidation($this->drev);
-        }
+          $this->drev->cleanDoc();
+          $this->validation = new DRevValidation($this->drev);
 
-        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
+          $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
 
-        if (!$request->isMethod(sfWebRequest::POST)) {
+          if (!$request->isMethod(sfWebRequest::POST)) {
 
-            return sfView::SUCCESS;
-        }
-        $this->form->bind($request->getParameter($this->form->getName()));
+          return sfView::SUCCESS;
+          }
 
-        if (!$this->form->isValid()) {
+          if (!$this->validation->isValide()) {
 
-            return sfView::SUCCESS;
-        }
+          return sfView::SUCCESS;
+          }
 
-        $this->form->save();
+          $this->form->bind($request->getParameter($this->form->getName()));
 
-        return $this->redirect('drev_visualisation', $this->drev);*/
+          if (!$this->form->isValid()) {
+
+          return sfView::SUCCESS;
+          }
+
+          $documents = $this->drev->getOrAdd('documents');
+
+          foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
+          $document = $documents->add($engagement->getCode());
+          $document->statut = ($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+          }
+
+          if($this->drev->isPapier()) {
+          $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+
+          $this->drev->validate($this->form->getValue("date"));
+          $this->drev->validateOdg();
+          $this->drev->save();
+
+          return $this->redirect('drev_visualisation', $this->drev);
+          }
+
+          $this->drev->validate();
+          $this->drev->save();
+
+          $this->sendDRevValidation($this->drev);
+
+          return $this->redirect('drev_confirmation', $this->drev); */
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        /* $this->drev = $this->getRoute()->getDRev();
+          $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+
+          $this->service = $request->getParameter('service');
+
+          $documents = $this->drev->getOrAdd('documents');
+
+          if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
+          $this->validation = new DRevValidation($this->drev);
+          }
+
+          $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
+
+          if (!$request->isMethod(sfWebRequest::POST)) {
+
+          return sfView::SUCCESS;
+          }
+          $this->form->bind($request->getParameter($this->form->getName()));
+
+          if (!$this->form->isValid()) {
+
+          return sfView::SUCCESS;
+          }
+
+          $this->form->save();
+
+          return $this->redirect('drev_visualisation', $this->drev); */
     }
 
     public function executePDF(sfWebRequest $request) 
@@ -214,13 +220,13 @@ class tirageActions extends sfActions
         $this->document = new ExportTiragePdf($tirage, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
-        if ($request->getParameter('force')) {
-            $this->document->removeCache();
-        }
+          if ($request->getParameter('force')) {
+          $this->document->removeCache();
+          }
 
-        $this->document->generate();
+          $this->document->generate();
 
-        $this->document->addHeaders($this->getResponse());
+          $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
     }
@@ -229,19 +235,24 @@ class tirageActions extends sfActions
     protected function secure($droits, $doc) 
     {
         if (!TirageSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+=======
+          return $this->renderText($this->document->output()); */
+    }
+
+    protected function secure($droits, $doc) {
+        if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+>>>>>>> 8ad5ff843fce1eb99bd737bbdafd21b9cfbee19d
             return $this->forwardSecure();
         }
     }
 
-    protected function secureEtablissement($droits, $etablissement) 
-    {
+    protected function secureEtablissement($droits, $etablissement) {
         if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
             return $this->forwardSecure();
         }
     }
 
-    protected function forwardSecure() 
-    {
+    protected function forwardSecure() {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
         throw new sfStopException();
     }
