@@ -26,7 +26,7 @@ class tirageActions extends sfActions {
             return $this->redirect('tirage_' . $tirage->etape, $tirage);
         }
 
-        return $this->redirect('tirage_exploitation', $drevmarc);
+        return $this->redirect('tirage_exploitation', $tirage);
     }
 
     public function executeDelete(sfWebRequest $request) {
@@ -37,50 +37,37 @@ class tirageActions extends sfActions {
         return $this->redirect($this->generateUrl('home'));
     }
 
-
     public function executeExploitation(sfWebRequest $request) {
-        /* $this->drev = $this->getRoute()->getDRev();
-          $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->tirage = $this->getRoute()->getTirage();
 
-          $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION));
-          $this->drev->save();
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
 
-          $this->etablissement = $this->drev->getEtablissementObject();
+        $this->tirage->storeEtape($this->getEtape($this->tirage, TirageEtapes::ETAPE_EXPLOITATION));
 
-          $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->drev->isPapier()));
+        $this->tirage->save();
 
-          if (!$request->isMethod(sfWebRequest::POST)) {
+        $this->etablissement = $this->tirage->getEtablissementObject();
 
-          return sfView::SUCCESS;
-          }
+        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->tirage->isPapier()));
 
-          $this->form->bind($request->getParameter($this->form->getName()));
+        if (!$request->isMethod(sfWebRequest::POST)) {
 
-          if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
 
-          return sfView::SUCCESS;
-          }
+        $this->form->bind($request->getParameter($this->form->getName()));
 
-          $this->form->save();
+        if (!$this->form->isValid()) {
 
-          $this->drev->storeDeclarant();
-          $this->drev->save();
+            return sfView::SUCCESS;
+        }
 
-          if ($request->isXmlHttpRequest()) {
+        $this->form->save();
 
-          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
-          }
-
-          if ($request->getParameter('redirect', null)) {
-          return $this->redirect('drev_validation', $this->drev);
-          }
-
-          if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
-
-          return $this->redirect('drev_dr', $this->drev);
-          }
-
-          return $this->redirect('drev_revendication', $this->drev); */
+        $this->tirage->storeDeclarant();
+        $this->tirage->save();
+        
+        return $this->redirect('tirage_revendication', $this->tirage);
     }
 
     public function executeVin(sfWebRequest $request) {
@@ -265,6 +252,14 @@ class tirageActions extends sfActions {
           $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
+    }
+
+      protected function getEtape($tirage, $etape) {
+        $tirageEtapes = TirageEtapes::getInstance();
+        if (!$tirage->exist('etape')) {
+            return $etape;
+        }
+        return ($tirageEtapes->isLt($tirage->etape, $etape)) ? $etape : $tirage->etape;
     }
 
     

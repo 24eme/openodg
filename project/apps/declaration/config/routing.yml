@@ -65,22 +65,28 @@ tirage_create_papier:
 tirage_edit:
   url: /tirage/edition/:id
   param: { module: tirage, action: edit }
-  class: Tirage
+  class: TirageRoute
   options:
     model:    Tirage
     type:     object
   requirements:
     sf_method: [get]
 
+tirage_exploitation:
+  url: /tirage/exploitation/:id
+  param: { module: tirage, action: exploitation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 tirage_vin:
   url: /tirage/vin/:id
   param: { module: tirage, action: vin }  
   requirements:
     sf_method: [get]  
-
-tirage_exploitation:
-  url: /tirage/exploitation
-  param: { module: tirage, action: exploitation }
   
 tirage_lots:
   url: /tirage/lots
