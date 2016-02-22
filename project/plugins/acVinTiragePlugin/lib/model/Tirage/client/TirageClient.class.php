@@ -25,13 +25,33 @@ class TirageClient extends acCouchdbClient {
     public function createDoc($identifiant, $campagne, $papier = false) 
     {  
         $tirage = new Tirage();
-        $tirage->initDoc($identifiant, $campagne, "01");
+
+        $numero = $this->getLastNumero($identifiant, $campagne);
+
+        $tirage->initDoc($identifiant, $campagne, $numero + 1);
 
         if($papier) {
             $tirage->add('papier', 1);
         }
 
         return $tirage;
+    }
+
+    public function getLastNumero($identifiant, $campagne) {
+
+        $data = $this->startkey(sprintf("TIRAGE-%s-%s%s", $identifiant, $campagne, "99"))
+                    ->endkey(sprintf("TIRAGE-%s-%s%s", $identifiant, $campagne, "00"))
+                    ->descending(true)
+                    ->limit(1)
+                    ->include_docs(true)
+                    ->getAllDocs();
+
+        if(count($data->rows) > 0) {
+
+            return (int) $data->rows[0]->doc->numero;
+        }
+        
+        return 0;
     }
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
