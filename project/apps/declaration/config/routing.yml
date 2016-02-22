@@ -172,6 +172,16 @@ tirage_export_pdf:
   requirements:
     sf_method: [get, post]
 
+tirage_dr_pdf:
+  url: /tirage/pdf/:id/dr
+  param: { module: tirage, action: drPdf }
+  class: TirageRoute
+  options:
+    model:    DReTirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
 tirage_delete:
   url: /tirage/suppression/:id
   param: { module: tirage, action: delete }

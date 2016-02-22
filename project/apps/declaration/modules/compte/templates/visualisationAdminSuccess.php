@@ -17,7 +17,7 @@
     </div>
     <?php endif; ?>
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-12 col-md-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3>Identité</h3>
@@ -55,7 +55,7 @@
             </div>
             <?php include_partial('compte/carte', array('compte' => $compte)); ?>
         </div>
-        <div class="col-xs-6">
+        <div class="col-md-6 col-xs-12">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3>Coordonnées</h3>

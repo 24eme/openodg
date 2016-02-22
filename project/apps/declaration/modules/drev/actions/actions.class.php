@@ -632,8 +632,10 @@ class drevActions extends sfActions {
 
         $this->drev->validateOdg();
         $this->drev->save();
-        
-        $this->sendDRevConfirmee($this->drev);
+
+        if (!$this->drev->isPapier()) {
+            $this->sendDRevConfirmee($this->drev);
+        }
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 

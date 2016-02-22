@@ -75,9 +75,13 @@
         <th class="th" style="text-align: center; width: 170px;">&nbsp;Commune</th>        
         <th class="th" style="text-align: center; width: 74px;">Section</th>       
         <th class="th" style="text-align: center; width: 74px;">Numéro</th>
-        <th class="th" style="text-align: center; width: 160px;">Cépage</th>        
+        <th class="th" style="text-align: center; width: 160px;">Cépage</th> 
+<?php if(!$parcellaire->isParcellaireCremant()) : ?>
         <th class="th" style="text-align: center; width: 60px;">VT/SGN</th>
         <th class="th" style="text-align: center; width: 100px;">Surface</th>
+<?php else: ?>
+        <th class="th" style="text-align: center; width: 160px;">Surface</th>
+<?php endif; ?>
     </tr>
     <?php
     foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle):
@@ -88,14 +92,15 @@
             <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->section ?>&nbsp;</td>       
             <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->parcelle->numero_parcelle ?>&nbsp;</td>
             <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage_libelle ?>&nbsp;</td>
-            <?php if (!$hasVtSgn): ?>
-            <td class="td" style="text-align:center; background-color: #ddd"><?php echo tdStart() ?>&nbsp;</td>
-                               
-                <?php elseif ($parcelle->parcelle->vtsgn): ?> 
+            <?php if(!$parcellaire->isParcellaireCremant()) : ?>
+                <?php if (!$hasVtSgn): ?>
+                    <td class="td" style="text-align:center; background-color: #ddd"><?php echo tdStart() ?>&nbsp;</td>
+                <?php elseif ($parcelle->parcelle->vtsgn): ?>
                     <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;X&nbsp;</td>
                 <?php else: ?>
                     <td class="td" style="text-align:center;"><?php echo tdStart() ?>&nbsp;&nbsp;</td>
-    <?php endif; ?>
+                <?php endif; ?>
+            <?php endif; ?>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.2f", $parcelle->parcelle->superficie); ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
         </tr>
 <?php endforeach; ?>
