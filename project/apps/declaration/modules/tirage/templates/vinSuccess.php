@@ -82,7 +82,7 @@
         
         <div class="col-xs-4"></div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Continuer vers les lots</button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper">Continuer vers les lots</button>
         </div>
     </div>
 </form>
