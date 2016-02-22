@@ -3,7 +3,6 @@ class TirageValidationForm extends acCouchdbForm
 {    
     public function configure()
     {
-
         if(!$this->getDocument()->isPapier()) {
             $engagements = $this->getOption('engagements');
             foreach ($engagements as $engagement) {

@@ -190,9 +190,7 @@ class tirageActions extends sfActions {
 
         $this->validation = new TirageValidation($this->tirage);
         
-        $engagements = $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT);
-
-        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $engagements));
+        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -222,6 +220,9 @@ class tirageActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             $this->tirage->validate($this->form->getValue("date"));
+            if($this->tirage->hasCompleteDocuments()) {
+                $this->tirage->validateOdg();
+            }
             $this->tirage->save();
 
             return $this->redirect('tirage_visualisation', $this->tirage);

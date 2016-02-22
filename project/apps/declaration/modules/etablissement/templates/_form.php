@@ -112,6 +112,7 @@
                    <?php echo $etablissement->siret; ?>
                 </span>
             </div>
+<?php if(isset($extra)): ?>
 <?php foreach($extra as $label => $value): ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right"><?php echo $label; ?></strong>
@@ -120,6 +121,7 @@
                 </span>
             </div>
 <?php endforeach; ?>
+<?php endif; ?>
         </div>
         <div class="col-xs-7">
             <div class="form-group">

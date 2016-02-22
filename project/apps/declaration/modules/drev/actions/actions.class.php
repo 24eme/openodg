@@ -578,6 +578,9 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             $this->drev->validate($this->form->getValue("date"));
+            if($this->drev->hasCompleteDocuments()) {
+                $this->drev->validateOdg();
+            }
             $this->drev->save();
 
             return $this->redirect('drev_visualisation', $this->drev);

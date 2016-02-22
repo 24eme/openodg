@@ -1,3 +1,4 @@
+
 <?php include_partial('tirage/step', array('step' => 'validation', 'tirage' => $tirage)) ?>
 <div class="page-header">
     <h2>Validation de votre déclaration</h2>
@@ -9,7 +10,7 @@
 
     <?php if($sf_user->hasFlash('success')): ?><div class="alert alert-success"><?php echo $sf_user->getFlash('success'); ?></div><?php endif; ?>
 
-    <?php if($sf_user->hasFlash('error')): ?><div class="alert alert-error"><?php echo $sf_user->getFlash('error'); ?></div><?php endif; ?>
+    <?php if($sf_user->hasFlash('error')): ?><div class="alert alert-danger"><?php echo $sf_user->getFlash('error'); ?></div><?php endif; ?>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('tirage/pointsAttentions', array('tirage' => $tirage, 'validation' => $validation)); ?>
