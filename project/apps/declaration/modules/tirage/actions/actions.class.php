@@ -199,6 +199,13 @@ class tirageActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $documents = $this->tirage->getOrAdd('documents');
+
+        foreach ($this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement) {
+            $document = $documents->add($engagement->getCode());
+            $document->statut = ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $this->tirage->hasDr()) ? TirageDocuments::STATUT_RECU : TirageDocuments::STATUT_EN_ATTENTE;
+        }
+
         if ($this->tirage->isPapier()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
@@ -264,7 +271,7 @@ class tirageActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('drev_visualisation', $this->drev);
+        return $this->redirect('tirage_visualisation', $this->tirage);
     }
 
     public function executePDF(sfWebRequest $request) 

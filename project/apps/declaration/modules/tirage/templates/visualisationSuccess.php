@@ -34,7 +34,7 @@
         <?php if(count($tirage->getOrAdd('documents')->toArray()) > 0 || $tirage->hasDr()): ?>
         <h3>Documents à joindre</h3>
             <?php if ($form): ?>
-                <form action="<?php echo url_for('drev_visualisation', $tirage) ?>" method="post">
+                <form action="<?php echo url_for('tirage_visualisation', $tirage) ?>" method="post">
                     <?php echo $form->renderHiddenFields(); ?>
                     <?php echo $form->renderGlobalErrors(); ?>
             <?php endif; ?>
@@ -48,14 +48,14 @@
                 <tbody>
                     <?php if($tirage->hasDr()): ?>
                         <tr>
-                            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle(DRevDocuments::DOC_DR) ?></td>
+                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle(TirageDocuments::DOC_DR) ?></td>
                             <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $tirage) ?>" target="_blank">Télécharger</a></td>
                         </tr>
                     <?php endif; ?>
                     <?php if (isset($form)): ?>
                         <?php foreach ($form->getEmbeddedForms() as $key => $documentForm): ?>
                         <tr>
-                            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle($key) ?></td>
+                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle($key) ?></td>
                             <td class="text-left">
                                 <div class="checkbox">
                                     <label>
@@ -69,8 +69,8 @@
                     <?php else: ?>
                         <?php foreach($tirage->getOrAdd('documents') as $document): ?>
                         <tr>
-                            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle($document->getKey()) ?></td>
-                            <td class="text-center"><span class="<?php if($document->statut == DRevDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif; ?>"><?php echo DRevDocuments::getStatutLibelle($document->statut) ?></span></td>
+                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle($document->getKey()) ?></td>
+                            <td class="text-center"><span class="<?php if($document->statut == TirageDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif; ?>"><?php echo TirageDocuments::getStatutLibelle($document->statut) ?></span></td>
                         </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
