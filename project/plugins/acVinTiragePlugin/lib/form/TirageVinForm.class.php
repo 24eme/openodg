@@ -23,11 +23,13 @@ class TirageVinForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
+        $checkarray = array('class' => 'bsswitch', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success');
+        
         $this->setWidget('couleur', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getCouleurs())));
         $this->setWidget('cepages_actifs', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getCepages())));
         $this->setWidget('millesime', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getMillesimes())));
         $this->setWidget('volume_ventile', new sfWidgetFormTextarea());
-        $this->setWidget('fermentation_lactique', new bsWidgetFormInputCheckbox());
+        $this->setWidget('fermentation_lactique', new bsWidgetFormInputCheckbox(array(), $checkarray));
 
 
         $this->widgetSchema->setLabel('couleur', 'Couleur :');
@@ -76,6 +78,14 @@ class TirageVinForm extends acCouchdbObjectForm {
         parent::updateDefaultsFromObject();
         $this->setDefault('millesime', $this->annee);
         $this->setDefault('couleur', TirageClient::COULEUR_BLANC);
+        $cepagesDefault = array();
+        foreach ($this->getObject()->getCepages() as $cepageKey => $cepage) {
+            if($cepage->selectionne){
+            $cepagesDefault[] = $cepageKey;
+                
+            }
+        }
+        $this->setDefault('cepages_actifs', $cepagesDefault);
     }
 
 }

@@ -76,11 +76,13 @@
             </div>
         </div>
     </div>
+   
     <div class="row row-margin">
-        <div class="col-xs-4 text-center">
-        </div>
+        <div class="col-xs-4"><a href="<?php echo url_for("tirage_exploitation", $tirage) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à mon espace</small></a></div>
+        
+        <div class="col-xs-4"></div>
         <div class="col-xs-4 text-right">
-            <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider</button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Continuer vers les lots</button>
         </div>
     </div>
 </form>
