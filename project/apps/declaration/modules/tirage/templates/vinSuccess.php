@@ -35,7 +35,7 @@
     </div>
     <div class="row row-margin">
         <div class="col-xs-12">
-            <div class="form-inline bloc_condition" data-condition-cible="#bloc_millesime_ventile">
+            <div class="form-inline bloc_condition" data-condition-cible="#bloc_millesime_ventilation">
                 <?php echo $form["millesime"]->renderError(); ?>
                 <label class="col-xs-3 text-right">
                     <?php echo $form["millesime"]->renderLabel(); ?>
@@ -50,14 +50,14 @@
 
 
     <div class="row row-margin">
-        <div class="col-xs-12" id="bloc_millesime_ventile" data-condition-value="ASSEMBLE">
+        <div class="col-xs-12" id="bloc_millesime_ventilation" data-condition-value="ASSEMBLE">
             <div>
-                <?php echo $form["volume_ventile"]->renderError(); ?>
+                <?php echo $form["millesime_ventilation"]->renderError(); ?>
                 <label class="col-xs-3 text-right">
-                    <?php echo $form["volume_ventile"]->renderLabel(); ?>
+                    <?php echo $form["millesime_ventilation"]->renderLabel(); ?>
                 </label>
                 <div class="col-xs-6 text-left">       
-                    <?php echo $form["volume_ventile"]->render(); ?>
+                    <?php echo $form["millesime_ventilation"]->render(); ?>
                 </div>
             </div>
         </div>
