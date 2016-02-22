@@ -224,7 +224,7 @@ class tirageActions extends sfActions {
         $this->secure(TirageSecurity::VISUALISATION, $tirage);
 
         if (!$tirage->validation) {
-            //    $tirage->cleanDoc();
+            $tirage->cleanDoc();
         }
 
         $this->document = new ExportTiragePdf($tirage, $this->getRequestParameter('output', 'pdf'), false);

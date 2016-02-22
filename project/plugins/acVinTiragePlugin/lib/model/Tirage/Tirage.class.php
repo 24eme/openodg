@@ -48,7 +48,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
 
     public function getConfigurationCepages() {
 
-        return $this->getConfiguration()->declaration->get('certification/genre/appellation_CREMANT/mention/lieu/couleur')->getCepages();
+        return $this->getConfiguration()->declaration->get('certification/genre/appellation_CREMANT/mention/lieu/couleur')->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_TIRAGE);
     }
 
     public function getEtablissementObject() {
@@ -105,6 +105,9 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
 
     public function getDeclarantQualite() {
         return "Viticulteur-Manipulant total ou partiel";
+    }
+    public function cleanDoc() {
+        return false;
     }
 
 }
