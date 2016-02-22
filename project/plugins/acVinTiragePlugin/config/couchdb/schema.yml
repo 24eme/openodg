@@ -42,11 +42,11 @@ Tirage:
       millesime: { }
       millesime_libelle: { }
       millesime_ventilation: { }
-      fermentation_lactique: { type: integer }
+      fermentation_lactique: {  }
       date_mise_en_bouteille_debut: { }
       date_mise_en_bouteille_fin: { }
       composition:
-        type: collection
+        type: array_collection
         definition:
           fields:
             '*':
