@@ -183,7 +183,7 @@ class tirageActions extends sfActions {
 
         $this->secure(TirageSecurity::EDITION, $this->tirage);
 
-        $this->tirage->storeEtape($this->getEtape($this->tirage, DrevEtapes::ETAPE_VALIDATION));
+        $this->tirage->storeEtape($this->getEtape($this->tirage, TirageEtapes::ETAPE_VALIDATION));
         $this->tirage->save();
 
         $this->tirage->cleanDoc();
@@ -237,7 +237,7 @@ class tirageActions extends sfActions {
 
     public function executeValidationAdmin(sfWebRequest $request) {
         $this->tirage = $this->getRoute()->getTirage();
-        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->tirage);
+        $this->secure(TirageSecurity::VALIDATION_ADMIN, $this->tirage);
 
         $this->tirage->validateOdg();
         $this->tirage->save();
@@ -360,4 +360,24 @@ class tirageActions extends sfActions {
         Email::getInstance()->sendTirageConfirmee($tirage);
     }
 
+    public function executeDrPdf(sfWebRequest $request) {
+        $tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::VISUALISATION, $tirage);
+
+        $file = file_get_contents($tirage->getAttachmentUri('DR.pdf'));
+
+        if(!$file) {
+
+            $this->forward404();
+        }
+
+        $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="DR-%s-%s.pdf"', $tirage->identifiant, $tirage->campagne));
+        $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+
+        return $this->renderText($file);
+    }
 }
