@@ -2,6 +2,7 @@
 <?php use_helper('Parcellaire') ?>
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Date') ?>
 <style>
 <?php echo styleTirage(); ?>
 </style>
@@ -11,19 +12,18 @@
             <table border="0">
                 <tr>
                     <td style="width: 420px;">&nbsp;Nom : <i><?php echo $tirage->declarant->raison_sociale ?></i></td>
-
-                    <td><?php if ($tirage->declarant->cvi): ?>N° CVI : <i><?php echo $tirage->declarant->cvi ?></i><?php else: ?>&nbsp;<?php endif; ?></td>
+                    <td><?php echo $tirage->getDeclarantQualite(); ?></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Adresse : <i><?php echo $tirage->declarant->adresse ?></i></td>
                     <td>N° SIRET : <i><?php echo $tirage->declarant->siret ?></i></td>
                 </tr>
                 <tr>
-                    <td>&nbsp;Commune : <i><?php echo $tirage->declarant->code_postal ?>, <?php echo $tirage->declarant->commune ?></i></td>
-                    <td></td>
+                    <td>&nbsp;Commune : <i><?php echo $tirage->declarant->code_postal ?> <?php echo $tirage->declarant->commune ?></i></td>
+                    <td><?php if ($tirage->declarant->cvi): ?>N° CVI : <i><?php echo $tirage->declarant->cvi ?></i><?php else: ?>&nbsp;<?php endif; ?></td>
                 </tr>
                 <tr>
-                    <td>&nbsp;Lieu de stockage : <i><?php echo $tirage->declarant->code_postal ?>, <?php echo $tirage->declarant->commune ?></i></td>
+                    <td>&nbsp;Lieu de stockage : <i><?php echo $tirage->declarant->code_postal ?> <?php echo $tirage->declarant->commune ?></i></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -35,9 +35,6 @@
                     <td></td>
                 </tr>
             </table>
-        </td></tr><tr><td>
-<hr/>
-Qualité du Déclarant : 
         </td></tr></table>
 <br />
 <br />
@@ -50,38 +47,40 @@ Déclare,
       <tr><td style="vertical-align: top; width: 150px;">Pour le lot composé de&nbsp;:</td>
 	<td style="text-align:left;">
 	  <table>
-	  <tr><td class="border">10 &nbsp; </td><td> &nbsp; bouteilles de 31,5&nbsp;cl.</td></tr>
+      <?php foreach ($tirage->composition as $compo): ?>
+      <tr><td class="border"><?php echo $compo->nombre; ?> &nbsp; </td><td> &nbsp; bouteilles de <?php echo $compo->contenance; ?>&nbsp;cl.</td></tr>
+      <?php endforeach; ?>
 	  </table>
       </td></tr>
     </table>
     <br/>
     <br/>
     
-    <strong>Millesime&nbsp;:</strong> 2015
+    <strong>Millesime&nbsp;:</strong> <?php echo $tirage->millesime_libelle; if ($tirage->millesime_ventilation) echo ' ('.$tirage->millesime_ventilation.')';?>
     <br/><br/>
     
     <strong>Couleur&nbsp;:</strong>
-    <span style="font-family: Dejavusans">☒</span>&nbsp;Blanc &nbsp;
-    <span style="font-family: Dejavusans">☐</span>&nbsp;Rosé
+    <?php echoCheck("Blanc", ($tirage->couleur == TirageClient::COULEUR_BLANC)); echoCheck("Rosé", ($tirage->couleur == TirageClient::COULEUR_ROSE)); ?>
     <br/><br/>
     
     Cépages entrant dans la composition de la cuvée&nbsp;:
-    <span style="font-family: Dejavusans">☒</span>&nbsp;PB
-    <span style="font-family: Dejavusans">☐</span>&nbsp;AUX
-    <span style="font-family: Dejavusans">☐</span>&nbsp;CH
-    <span style="font-family: Dejavusans">☐</span>&nbsp;RI
-    <span style="font-family: Dejavusans">☐</span>&nbsp;PG
-    <span style="font-family: Dejavusans">☐</span>&nbsp;PN
+    <p><?php foreach($tirage->cepages as $cepage) {
+    echoCheck(str_replace(' ', '&nbsp;', $cepage->libelle), $cepage->selectionne);
+    } ?></p>
     <br/><br/>
     
     Vin de base ayant fait la fermantation mal-lactique&nbsp;:
-    <span style="font-family: Dejavusans">☒</span>&nbsp;Oui
-    &nbsp;
-    <span style="font-family: Dejavusans">☐</span>&nbsp;Non
+    <?php echoCheck("Oui", ($tirage->fermentation_lactique)) ?>
+    <?php echoCheck("Non", !($tirage->fermentation_lactique)) ?>
     <br/><br/>
 
     <strong>Date de mis en bouteilles&nbsp;:</strong>
-    du 11/12/2015 au 11/01/2016
+    <?php if ($tirage->date_mise_en_bouteille_debut == $tirage->date_mise_en_bouteille_fin ) {
+        echo "le ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
+    }else{ 
+        echo "du ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
+        echo " au ".format_date($tirage->date_mise_en_bouteille_fin, 'dd/MM/yyyy', 'fr_FR');
+    }?>
     <br/><br/>
 
   </li>
@@ -92,7 +91,7 @@ Déclare,
 &nbsp;
 <p style="text-align: right">Signé électroniquement le 12/02/2016</p>
 
-<?php for($i = 0 ; $i < 18 ; $i++) : ?>
+<?php for($i = 0 ; $i < 16  - count($tirage->composition); $i++) : ?>
 &nbsp;<br/>
 <?php endfor; ?>
       
