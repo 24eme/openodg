@@ -242,16 +242,19 @@ class tirageActions extends sfActions {
           return $this->redirect('drev_visualisation', $this->drev); */
     }
 
-    public function executePDF(sfWebRequest $request) {
-        /* $drev = $this->getRoute()->getDRev();
-          $this->secure(DRevSecurity::VISUALISATION, $drev);
+    public function executePDF(sfWebRequest $request) 
+    {
+        $tirage = new Tirage();
+        /*$tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::VISUALISATION, $tirage);
 
-          if (!$drev->validation) {
-          $drev->cleanDoc();
-          }
+        if (!$tirage->validation) {
+            $tirage->cleanDoc();
+        }
+	*/
 
-          $this->document = new ExportDRevPdf($drev, $this->getRequestParameter('output', 'pdf'), false);
-          $this->document->setPartialFunction(array($this, 'getPartial'));
+        $this->document = new ExportTiragePdf($tirage, $this->getRequestParameter('output', 'pdf'), false);
+        $this->document->setPartialFunction(array($this, 'getPartial'));
 
           if ($request->getParameter('force')) {
           $this->document->removeCache();
@@ -261,11 +264,13 @@ class tirageActions extends sfActions {
 
           $this->document->addHeaders($this->getResponse());
 
-          return $this->renderText($this->document->output()); */
+        return $this->renderText($this->document->output());
     }
 
-    protected function secure($droits, $doc) {
-        if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+    
+    protected function secure($droits, $doc) 
+    {
+        if (!TirageSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
             return $this->forwardSecure();
         }
     }

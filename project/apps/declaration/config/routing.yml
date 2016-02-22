@@ -42,7 +42,7 @@ admin_export:
 
 #TIRAGE
 
-drevmarc_create:
+tirage_create:
   url: /tirage/creation/:id
   param: { module: tirage, action: create }
   class: EtablissementRoute
@@ -72,6 +72,12 @@ tirage_edit:
   requirements:
     sf_method: [get]
 
+tirage_vin:
+  url: /tirage/vin/:id
+  param: { module: tirage, action: vin }  
+  requirements:
+    sf_method: [get]  
+
 tirage_exploitation:
   url: /tirage/exploitation
   param: { module: tirage, action: exploitation }
@@ -89,7 +95,7 @@ tirage_visualisation:
 
 tirage_export_pdf:
   url: /tirage/pdf
-  param: { module: drev, action: PDF }
+  param: { module: tirage, action: PDF }
 
 
 # DREV
@@ -1282,18 +1288,6 @@ facturation_declarant:
   requirements:
     sf_method: [get, post]
 
-
-#TIRAGE
-
-tirage_vin:
-  url: /tirage/vin/:id
-  param: { module: tirage, action: vin }
-  class: TirageRoute
-  options:
-    model:    Tirage
-    type:     object
-  requirements:
-    sf_method: [get]  
 
 #Génération
 

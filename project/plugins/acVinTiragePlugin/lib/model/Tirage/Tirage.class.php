@@ -6,6 +6,8 @@
 
 class Tirage extends BaseTirage implements InterfaceDeclarantDocument, InterfaceDeclaration {
 
+    protected $declarant_document;
+
     public function __construct() {
         parent::__construct();
         $this->initDocuments();
@@ -28,7 +30,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
         $this->numero = $numero;
-        $this->updateCepages(),
+        $this->updateCepages();
     }
 
     public function storeDeclarant() {
