@@ -38,10 +38,10 @@ class TirageVinForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('millesime_ventilation', 'Ventilation des millesimes :');
         $this->widgetSchema->setLabel('fermentation_lactique', 'Fermentation lactique :');
 
-        $this->setValidator('couleur', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCouleurs())), array('required' => "Aucune couleur n'a été choisie.")));
-        $this->setValidator('cepages_actifs', new sfValidatorChoice(array("multiple" => true, "required" => true, 'choices' => array_keys($this->getCepages())), array('required' => "Aucune couleur n'a été choisie.")));
+        $this->setValidator('couleur', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCouleurs())), array('required' => "Aucune couleur n'a été choisie")));
+        $this->setValidator('cepages_actifs', new sfValidatorChoice(array("multiple" => true, "required" => true, 'choices' => array_keys($this->getCepages())), array('required' => "Aucun cépage n'a été choisi")));
 
-        $this->setValidator('millesime', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getMillesimes())), array('required' => "Aucune couleur n'a été choisie.")));
+        $this->setValidator('millesime', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getMillesimes())), array('required' => "Aucun millesiume n'a été choisi")));
 
         $this->setValidator('millesime_ventilation', new sfValidatorString(array('required' => false)));
 
