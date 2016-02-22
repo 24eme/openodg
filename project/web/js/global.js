@@ -457,7 +457,16 @@
         $('.modal.modal-page').modal({keyboard: false, backdrop: 'static'});
     }
 
-    
+    $.initCheckboxBtnGroup = function() {
+        $('.btn-group.select label.btn').on('click', function() {
+            if(!$(this).hasClass('active')) {
+                $(this).removeClass('btn-default-step');
+            } else {
+                $(this).addClass('btn-default-step');
+            }
+        })
+    }
+
     $.initValidationDeclaration = function() {
         $('#submit-confirmation-validation').click(function() {
             $('#validation-form').submit();
@@ -500,5 +509,6 @@
         $('a[data-toggle=tooltip], button[data-toggle=tooltip], span[data-toggle=tooltip]').tooltip({'container': 'body'});
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
+        $.initCheckboxBtnGroup();
     });
 })(jQuery);
