@@ -235,13 +235,6 @@ class tirageActions extends sfActions {
     protected function secure($droits, $doc) 
     {
         if (!TirageSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
-=======
-          return $this->renderText($this->document->output()); */
-    }
-
-    protected function secure($droits, $doc) {
-        if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
->>>>>>> 8ad5ff843fce1eb99bd737bbdafd21b9cfbee19d
             return $this->forwardSecure();
         }
     }
