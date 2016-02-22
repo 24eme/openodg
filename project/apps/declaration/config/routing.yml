@@ -85,19 +85,56 @@ tirage_exploitation:
 tirage_vin:
   url: /tirage/vin/:id
   param: { module: tirage, action: vin }  
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
   requirements:
-    sf_method: [get]  
+    sf_method: [get, post] 
   
 tirage_lots:
   url: /tirage/lots
   param: { module: tirage, action: lots }
   
 tirage_validation:
-  url: /tirage/validation
+  url: /tirage/validation/:id
   param: { module: tirage, action: validation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_validation_admin:
+  url: /tirage/validation_admin/:id
+  param: { module: tirage, action: validationAdmin }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_confirmation:
+  url: /tirage/confirmation/:id
+  param: { module: tirage, action: confirmation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 tirage_visualisation:
-  url: /tirage/visualisation
+  url: /tirage/visualisation/:id
+  param: { module: tirage, action: visualisation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 tirage_export_pdf:
   url: /tirage/pdf

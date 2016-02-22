@@ -146,58 +146,50 @@ class tirageActions extends sfActions {
     }
 
     public function executeValidation(sfWebRequest $request) {
-        /* $this->drev = $this->getRoute()->getDRev();
+        $this->tirage = $this->getRoute()->getTirage();
 
-          $this->secure(DRevSecurity::EDITION, $this->drev);
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
 
-          $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
-          $this->drev->save();
+        $this->tirage->storeEtape($this->getEtape($this->tirage, DrevEtapes::ETAPE_VALIDATION));
+        $this->tirage->save();
 
-          $this->drev->cleanDoc();
-          $this->validation = new DRevValidation($this->drev);
+        $this->validation = new TirageValidation($this->tirage);
 
-          $this->form = new DRevValidationForm($this->drev, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+        $this->form = new TirageValidationForm($this->tirage);
 
-          if (!$request->isMethod(sfWebRequest::POST)) {
+        if (!$request->isMethod(sfWebRequest::POST)) {
 
-          return sfView::SUCCESS;
-          }
+             return sfView::SUCCESS;
+        }
 
-          if (!$this->validation->isValide()) {
+        if (!$this->validation->isValide()) {
 
-          return sfView::SUCCESS;
-          }
+            return sfView::SUCCESS;
+        }
 
-          $this->form->bind($request->getParameter($this->form->getName()));
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
 
-          if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
 
-          return sfView::SUCCESS;
-          }
+        if($this->tirage->isPapier()) {
+            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
-          $documents = $this->drev->getOrAdd('documents');
+            $this->tirage->validate($this->form->getValue("date"));
+            $this->tirage->validateOdg();
+            $this->tirage->save();
 
-          foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
-          $document = $documents->add($engagement->getCode());
-          $document->statut = ($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
-          }
+            return $this->redirect('tirage_visualisation', $this->tirage);
+        }
 
-          if($this->drev->isPapier()) {
-          $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+        $this->tirage->validate();
+        $this->tirage->save();
 
-          $this->drev->validate($this->form->getValue("date"));
-          $this->drev->validateOdg();
-          $this->drev->save();
+        //$this->sendDRevMarcValidation($this->tirage);
 
-          return $this->redirect('drev_visualisation', $this->drev);
-          }
-
-          $this->drev->validate();
-          $this->drev->save();
-
-          $this->sendDRevValidation($this->drev);
-
-          return $this->redirect('drev_confirmation', $this->drev); */
+        return $this->redirect('tirage_confirmation', $this->tirage);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
