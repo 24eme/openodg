@@ -7,6 +7,10 @@
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
 
+    <?php if($sf_user->hasFlash('success')): ?><div class="alert alert-success"><?php echo $sf_user->getFlash('success'); ?></div><?php endif; ?>
+
+    <?php if($sf_user->hasFlash('error')): ?><div class="alert alert-error"><?php echo $sf_user->getFlash('error'); ?></div><?php endif; ?>
+
     <?php if(isset($form["date"])): ?>
     <div class="row">
         <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
