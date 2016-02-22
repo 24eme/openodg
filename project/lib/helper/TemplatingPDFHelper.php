@@ -220,4 +220,30 @@ function tdStart() {
     return "<small style=\"font-size: 2pt;\"><br /></small>";
 }
 
+function styleTirage() {
+    return "
+
+    hr {
+        border: 0px;
+        border-top: 1px solid #88DC89;
+    }
+
+    td.border {
+        border: 1px solid black;
+        margin-left: 100px;
+        padding-left: 100px;
+        text-align: right;
+    }
+
+    .tableAlt {
+        border: 1px solid #88DC89;
+    }
+
+    .h3Alt {
+        background-color: #88DC89; color: #1F6320; font-weight: bold;   
+    }
+
+";
+}
+
 ?>

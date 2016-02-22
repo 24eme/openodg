@@ -98,4 +98,9 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         }
     }
 
+    public function setNumero($numero) {
+
+        return $this->_set('numero', sprintf("%02d", $numero)); 
+    }
+
 }
