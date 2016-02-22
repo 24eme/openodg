@@ -10,7 +10,7 @@ class TirageLotsForm extends acCouchdbObjectForm
         ));
 
         $this->setValidators(array(
-            'date_mise_en_bouteille_debut' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)),
+            'date_mise_en_bouteille_debut' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true), array('required' => "Merci de saisir au moins une date de début d'embouteillage")),
         	'date_mise_en_bouteille_fin' => new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)),
         ));
         
