@@ -223,14 +223,6 @@ function tdStart() {
 function styleTirage() {
     return "
 
-    .adresse {
-        float:right;
-    }
-
-    .table {
-        border: 1px solid #1A8A3C;
-    }
-
     hr {
         border: 0px;
         border-top: 1px solid #88DC89;
@@ -245,30 +237,6 @@ function styleTirage() {
 
     .tableAlt {
         border: 1px solid #88DC89;
-    }
-
-    .th {
-        font-weight: normal; border: 1px solid #1A8A3C; background-color: #D0FAB6; color: #1A8A3C;
-    }
-
-    .td {
-        border: 1px solid #1A8A3C; height:22px; text-align: left;
-    }
-
-    .tdAlt {
-        border: 1px solid #1A8A3C; height:22px; text-align: left; background-color: #D0FAB6;
-    }
-
-    .h2 {
-        text-align: left; font-size: 12pt; color: #1A8A3C;
-    }
-
-    .tdH2 {
-       border-bottom: 1px solid #1A8A3C; 
-    }
-
-    .h3 {
-        background-color: #1A8A3C; color: white; font-weight: bold;
     }
 
     .h3Alt {
