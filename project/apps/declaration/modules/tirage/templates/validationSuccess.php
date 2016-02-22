@@ -1,6 +1,6 @@
 <?php include_partial('tirage/step', array('step' => 'validation', 'tirage' => $tirage)) ?>
 <div class="page-header">
-    <h2>Validation de votre déclaration</h2>
+    <h2>Validation de votre déclaration de Tirage A.O.C. Crémant d'Alsace</h2>
 </div>
 
 <form id="validation-form" role="form" action="<?php echo url_for("tirage_validation", $tirage) ?>" method="post">
@@ -28,7 +28,13 @@
 
     <?php if($validation->hasPoints()): ?>
     <?php endif; ?>
-    <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
+
+    <div class="row row-margin">
+        <div class="col-xs-12">
+            <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
+        </div>
+    </div>
+
     <?php  if (count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
         <h2 class="h3">J'ai pris connaissance des pièces à fournir</h2>
         <div class="alert" role="alert" id="engagements">
@@ -60,12 +66,6 @@
             </div>
         </div>
     <?php endif; ?>
-
-    <div class="row row-margin">
-        <div class="col-xs-12">
-            <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
-        </div>
-    </div>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">

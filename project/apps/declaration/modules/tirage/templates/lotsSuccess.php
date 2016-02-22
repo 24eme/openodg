@@ -11,7 +11,7 @@ $hasError = ($global_error_msg != "");
 <?php include_partial('tirage/step', array('step' => 'lots', 'tirage' => $tirage)) ?>
 
 <div class="page-header no-border">
-    <h2>Lots <small>Réalisée par l'ODG - AVA</small></h2>
+    <h2>Lots</h2>
 </div>
 
 
@@ -21,9 +21,6 @@ $hasError = ($global_error_msg != "");
     <?php if ($hasError): ?>
         <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Veuillez indiquer le nombre de lots susceptibles d'être prélevés en AOC Alsace (<strong>AOC Alsace Communale et Lieu-dit inclus</strong>).</p>
-
-    <p>Un lot doit correspondre au maximum à 4 récipients et au maximum à 2000 hl.</p>
     
     
     <div class="row">
@@ -33,7 +30,6 @@ $hasError = ($global_error_msg != "");
 				<div class="col-xs-offset-1">
 					<p>
 						Mise en bouteille : 
-						<a class="btn-tooltip btn btn-lg" data-toggle="tooltip" data-placement="auto" title="" data-original-title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)"><span class="glyphicon glyphicon-question-sign"></span></a>
 					</p>
 					<div class="form-group <?php if ($form["date_mise_en_bouteille_debut"]->hasError()): ?>has-error<?php endif; ?>">
 						<?php if ($form["date_mise_en_bouteille_debut"]->hasError()): ?>                            
@@ -70,7 +66,6 @@ $hasError = ($global_error_msg != "");
 				<div class="col-xs-offset-1">
 					<p>
 						Composé de : 
-						<a class="btn-tooltip btn btn-lg" data-toggle="tooltip" data-placement="auto" title="" data-original-title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)"><span class="glyphicon glyphicon-question-sign"></span></a>
 					</p>
 					<div class="form-group" id="compositions">
 						<?php foreach ($form['composition'] as $k => $formComposition): ?>
@@ -92,7 +87,7 @@ $hasError = ($global_error_msg != "");
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="#" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>au prélèvement</small></a>
+            <a href="<?php echo url_for('tirage_vin', $tirage); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>au vin</small></a>
         </div>
         <div class="col-xs-6 text-right">
         	<button type="submit" class="btn btn-default btn-lg btn-upper">Continuer <small>vers la validation</small>&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>

@@ -14,6 +14,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     const TYPE_DECLARATION_DREV_LOTS = 'DREV_LOTS';
     const TYPE_DECLARATION_PARCELLAIRE = 'PARCELLAIRE';
     const TYPE_DECLARATION_DEGUSTATION = 'DEGUSTATION';
+    const TYPE_DECLARATION_TIRAGE = 'TIRAGE';
 
     protected function loadAllData() {
       parent::loadAllData();
@@ -25,6 +26,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $this->getProduitsFilter(self::TYPE_DECLARATION_DREV_LOTS);
       $this->getProduitsFilter(self::TYPE_DECLARATION_PARCELLAIRE);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DEGUSTATION);
+      $this->getProduitsFilter(self::TYPE_DECLARATION_TIRAGE);
       $this->getRendementAppellation();
       $this->getRendementCouleur();
       $this->getRendementCepage();
@@ -38,6 +40,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $this->getChildrenFilter(self::TYPE_DECLARATION_DREV_LOTS);
       $this->getChildrenFilter(self::TYPE_DECLARATION_PARCELLAIRE);
       $this->getChildrenFilter(self::TYPE_DECLARATION_DEGUSTATION);
+      $this->getChildrenFilter(self::TYPE_DECLARATION_TIRAGE);
     }
 
     abstract public function getChildrenNode();
@@ -52,7 +55,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getChildrenFilter($type_declaration = null) {
-      
       return $this->store('get_children_filter_'.$type_declaration, array($this, 'getChildrenFilterStorable'), array($type_declaration));
     }
 
@@ -147,7 +149,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       }
 
       if(!$type_declaration) {  
-
         return $this->getProduits();
       }
       

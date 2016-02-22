@@ -1,4 +1,4 @@
-<div class="row compositionBouteilles">
+<div class="row compositionBouteilles" style="margin-bottom: 10px;">
 	<div class="col-xs-2 col-xs-offset-3 <?php if ($form["nombre"]->hasError()): ?>has-error<?php endif; ?>">
 		<?php if ($form["nombre"]->hasError()): ?>                            
 			<div class="alert alert-danger" role="alert"><?php echo $form["nombre"]->getError(); ?></div>

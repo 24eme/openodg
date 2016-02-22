@@ -31,6 +31,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         $this->campagne = $campagne;
         $this->numero = $numero;
         $this->updateCepages();
+        $this->getQualite();
     }
 
     public function storeDeclarant() {
@@ -48,7 +49,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
 
     public function getConfigurationCepages() {
 
-        return $this->getConfiguration()->declaration->get('certification/genre/appellation_CREMANT/mention/lieu/couleur')->getCepages();
+        return $this->getConfiguration()->declaration->get('certification/genre/appellation_CREMANT/mention/lieu/couleur')->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_TIRAGE);
     }
 
     public function getEtablissementObject() {
@@ -143,8 +144,46 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         return $this->_set('numero', sprintf("%02d", $numero)); 
     }
 
-    public function getDeclarantQualite() {
-        return "Viticulteur-Manipulant total ou partiel";
+    public function isNegociant() {
+        $etblmt = $this->getEtablissementObject();
+        return ($etblmt->familles->exist('NEGOCIANT') &&  $etblmt->familles->get('NEGOCIANT'));
+    }
+    
+    public function isCaveCooperative() {
+        $etblmt = $this->getEtablissementObject();
+        return ($etblmt->familles->exist('CAVE_COOPERATIVE') && $etblmt->familles->get('CAVE_COOPERATIVE'));
+    }
+
+    public function isViticulteur() {
+        return !($this>isNegociant()) && !($this->isCaveCooperative());
+    }
+    
+    public function getQualite() {
+        $q = $this->_get('qualite');
+        if ($q) {
+            return $q;
+        }
+        $q = "Viticulteur-Manipulant total ou partiel";
+        if ($this->isCaveCooperative()) {
+            $q = "Cave coopérative";
+        }else if ($this->isNegociant()) {
+            $q = "Négociant";
+        }
+        $this->_set('qualite', $q);
+        return $q;
+    }
+    public function cleanDoc() {
+        return false;
+    }
+    
+    public function getCepagesSelectionnes() {
+        $cepagesSelectionnes = array();
+        foreach ($this->cepages as $cepageKey => $cepage) {
+            if($cepage->selectionne){                
+            $cepagesSelectionnes[$cepageKey] = $cepage;
+            }
+        }
+        return $cepagesSelectionnes;
     }
 
 }
