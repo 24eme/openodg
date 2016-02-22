@@ -6,6 +6,7 @@ class tirageActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $tirage->save();
+        $tirage->storeDRFromDRev();
 
         return $this->redirect('tirage_edit', $tirage);
     }

@@ -34,6 +34,34 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         $this->getQualite();
     }
 
+    public function storeDRFromDRev() {
+        $drev = $this->getDRev();
+
+        if(!$drev) {
+
+            return false;
+        }
+
+        if(!$drev->getAttachmentUri('DR.pdf')) {
+
+            return false;
+        }
+
+        $drContent = file_get_contents($drev->getAttachmentUri('DR.pdf'));
+            
+        if(!$drContent) {
+
+            return false;
+        }
+
+        return $this->storeAsAttachment($drContent, "DR.pdf", "application/pdf");
+    }
+
+    public function getDRev() {
+
+        return DRevClient::getInstance()->find("DREV-".$this->identifiant."-".$this->campagne);
+    }
+
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
     }
