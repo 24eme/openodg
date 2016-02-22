@@ -10,8 +10,8 @@ class TirageLotForm extends acCouchdbObjectForm
 			'contenance' => new bsWidgetFormChoice(array('choices' => $choices)),
         ));
         $this->setValidators(array(
-            'nombre' => new sfValidatorInteger(array('required' => true)),
-			'contenance' => new sfValidatorChoice(array('choices' => array_keys($choices), 'required' => true)),
+            'nombre' => new sfValidatorInteger(array('required' => false)),
+			'contenance' => new sfValidatorChoice(array('choices' => array_keys($choices))),
         ));
         $this->widgetSchema->setNameFormat('[%s]');
     }

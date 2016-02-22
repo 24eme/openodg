@@ -187,6 +187,8 @@ class tirageActions extends sfActions {
         $this->tirage->storeEtape($this->getEtape($this->tirage, DrevEtapes::ETAPE_VALIDATION));
         $this->tirage->save();
 
+        $this->tirage->cleanDoc();
+        
         $this->validation = new TirageValidation($this->tirage);
 
         $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT)));
@@ -228,7 +230,7 @@ class tirageActions extends sfActions {
         $this->tirage->validate();
         $this->tirage->save();
 
-         $this->sendTirageValidation($this->tirage);
+        $this->sendTirageValidation($this->tirage);
 
         return $this->redirect('tirage_confirmation', $this->tirage);
     }

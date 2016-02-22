@@ -219,7 +219,16 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         return $q;
     }
     public function cleanDoc() {
-        return false;
+        $tobedeleted = array();
+        foreach ($this->composition as $k => $v) {
+            echo "<p>".$v->nombre."</p>";
+            if (!$v->nombre) {
+                $tobedeleted[] = $k;
+            }
+        }
+        foreach($tobedeleted as $k) {
+            $this->composition->remove($k);
+        }
     }
     
     public function getCepagesSelectionnes() {
