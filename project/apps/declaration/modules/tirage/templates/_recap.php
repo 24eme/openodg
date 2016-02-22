@@ -17,29 +17,24 @@
 <?php echo '&nbsp;( '.$tirage->millesime_ventilation.' )'; ?>
 <?php endif; ?>
 </div>
-<br/>
-<p>Vin de base ayant fait la fermantation malo-lactique : <strong><?php echo ($tirage->fermentation_lactique)? 'Oui' : 'Non'; ?> </strong></p>
-<p>
-    Lieu de stockage : <strong><?php  echo ($tirage->lieu_stockage)? $tirage->lieu_stockage : $tirage->declarant->adresse.' '.$tirage->declarant->code_postal.' '.$tirage->declarant->commune; ?></strong>
-</p>
-<br/>
-<h2 class="h3">Composition du lot :</h2>
+<h2 class="h3">Composition du lot</h2>
+<?php if (!count($tirage->composition)) : ?>
+    <i>Vous n'avez pas saisi d'information relative aux bouteilles</i>
+<?php else: ?>
 <ul style="list-style: disc;">
     <?php foreach ($tirage->composition as $compo): ?>
         <li ><?php echo $compo->nombre; ?>  bouteilles de <?php echo $compo->contenance; ?>&nbsp;</li>
         <?php endforeach; ?>
 </ul>
-<br/>
-<div class="row">
-    <div class="col-xs-12">
-        Date de mise en bouteille :
+<?php endif; ?>
+<h2 class="h3">Informations complémentaires</h2>
+<p>Date de mise en bouteille&nbsp;:
 <?php if ($tirage->date_mise_en_bouteille_debut == $tirage->date_mise_en_bouteille_fin ) {
         echo "le <strong>".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR')."</strong>";
     }else{ 
         echo "du <strong>".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR')."</strong>";
         echo " au <strong>".format_date($tirage->date_mise_en_bouteille_fin, 'dd/MM/yyyy', 'fr_FR')."</strong>";
     }?>
-    </div>
-</div>
-<br/>
-
+    </p>
+<p>Vin de base ayant fait la fermantation malo-lactique : <strong><?php echo ($tirage->fermentation_lactique)? 'Oui' : 'Non'; ?> </strong></p>
+<p>Lieu de stockage : <strong><?php  echo ($tirage->lieu_stockage)? $tirage->lieu_stockage : $tirage->declarant->adresse.' '.$tirage->declarant->code_postal.' '.$tirage->declarant->commune; ?></strong></p>
