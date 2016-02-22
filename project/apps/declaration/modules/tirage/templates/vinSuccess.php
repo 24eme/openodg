@@ -4,7 +4,7 @@
     <h2>Vin</h2>
 </div>
 
-<form role="form" action="<?php echo url_for('tirage_lots', $tirage) ?>" method="post" id="tirage-vin-form">
+<form role="form" action="" method="post" id="tirage-vin-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -12,35 +12,38 @@
         <div class="col-xs-12"> 
             <div class="form-inline">
                 <?php echo $form["couleur"]->renderError(); ?>
-                <label class="col-xs-6 text-right">
+                <label class="col-xs-2 text-right">
                     <?php echo $form["couleur"]->renderLabel(); ?>
                 </label>
-                <?php echo $form["couleur"]->render(); ?>
+                <div class="col-xs-10 text-left">
+                    <?php echo $form["couleur"]->render(); ?>
+                </div>
             </div>
         </div>
     </div>
     <div class="row row-margin">
         <div class="col-xs-12">
-          <div class="form-inline">
+            <div class="form-inline">
                 <?php echo $form["cepage"]->renderError(); ?>
-                <label class="col-xs-6 text-right">
+                <label class="col-xs-2 text-right">
                     <?php echo $form["cepage"]->renderLabel(); ?>
                 </label>
-              <div class="checkbox">                  
+                <div class="col-xs-10 text-left">              
                     <?php echo $form["cepage"]->render(array("class" => "")); ?>
-              </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="row row-margin">
         <div class="col-xs-12">
-           <div class="form-inline">
+            <div class="form-inline">
                 <?php echo $form["millesime"]->renderError(); ?>
-               <label class="col-xs-6 text-right">
+                <label class="col-xs-2 text-right">
                     <?php echo $form["millesime"]->renderLabel(); ?>
-               </label>
+                </label>
+                <div class="col-xs-10 text-left">              
                     <?php echo $form["millesime"]->render(array("class" => "")); ?>
-               
+                </div>
             </div>
 
         </div>
@@ -49,13 +52,14 @@
 
     <div class="row row-margin">
         <div class="col-xs-12">
-           <div class="form-inline">
+            <div class="form-inline">
                 <?php echo $form["volume_ventile"]->renderError(); ?>
-               <label class="col-xs-6 text-right">
+                <label class="col-xs-2 text-right">
                     <?php echo $form["volume_ventile"]->renderLabel(); ?>
-               </label>
+                </label>
+                <div class="col-xs-10 text-left">       
                     <?php echo $form["volume_ventile"]->render(array("class" => "")); ?>
-              
+                </div>
             </div>
         </div>
     </div>
@@ -63,10 +67,12 @@
         <div class="col-xs-12">
             <div class="form-group">
                 <?php echo $form["fermentation_lactique"]->renderError(); ?>
-                <label class="col-xs-12">
+                <label class="col-xs-2 text-right">
                     <?php echo $form["fermentation_lactique"]->renderLabel(); ?>
-                    <?php echo $form["fermentation_lactique"]->render(array("class" => "bsswitch")); ?>
                 </label>
+                <div class="col-xs-10 text-left">       
+                    <?php echo $form["fermentation_lactique"]->render(array("class" => "bsswitch")); ?>
+                </div>
             </div>
         </div>
     </div>
