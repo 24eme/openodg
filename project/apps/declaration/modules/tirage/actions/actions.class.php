@@ -72,7 +72,8 @@ class tirageActions extends sfActions {
 
     public function executeVin(sfWebRequest $request) {
 
-        $this->form = new TirageVinForm();
+        $this->tirage = new Tirage();
+        $this->form = new TirageVinForm($this->tirage);
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
