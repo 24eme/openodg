@@ -192,34 +192,12 @@ class tirageActions extends sfActions {
         return $this->redirect('tirage_confirmation', $this->tirage);
     }
 
+    public function executeConfirmation(sfWebRequest $request) {
+        $this->tirage = $this->getRoute()->getTirage();
+    }
+
     public function executeVisualisation(sfWebRequest $request) {
-        /* $this->drev = $this->getRoute()->getDRev();
-          $this->secure(DRevSecurity::VISUALISATION, $this->drev);
-
-          $this->service = $request->getParameter('service');
-
-          $documents = $this->drev->getOrAdd('documents');
-
-          if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
-          $this->validation = new DRevValidation($this->drev);
-          }
-
-          $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
-
-          if (!$request->isMethod(sfWebRequest::POST)) {
-
-          return sfView::SUCCESS;
-          }
-          $this->form->bind($request->getParameter($this->form->getName()));
-
-          if (!$this->form->isValid()) {
-
-          return sfView::SUCCESS;
-          }
-
-          $this->form->save();
-
-          return $this->redirect('drev_visualisation', $this->drev); */
+        $this->tirage = $this->getRoute()->getTirage();
     }
 
     public function executePDF(sfWebRequest $request) 
