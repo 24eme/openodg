@@ -46,19 +46,29 @@
                     </ul>
                 </div>
                 
-                <?php foreach ($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement): ?>
+                <?php foreach ($validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement): ?>
                 <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
-                    <div class="checkbox<?php if($engagement->getCode() == DRevDocuments::DOC_DR && $drev->hasDr()): ?> disabled<?php endif; ?>">
+                    <div class="checkbox<?php if($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?> disabled<?php endif; ?>">
                         <label>
                             <?php 
-                                if ($engagement->getCode() == DRevDocuments::DOC_DR && $drev->hasDr()) {
+                                if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()) {
                                     echo $form['engagement_' . $engagement->getCode()]->render(array('checked' => 'checked'));
+                                } elseif($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()) {
+                                    echo $form['engagement_' . $engagement->getCode()]->render(array('class' => 'hidden'));
+
                                 } else {
                                     echo $form['engagement_' . $engagement->getCode()]->render();
+                                
                                 }
                             ?>
+                            <?php if ($engagement->getCode() != TirageDocuments::DOC_PRODUCTEUR || $tirage->hasDr()): ?>
                             <?php echo $engagement->getRawValue()->getMessage() ?>
-                            <?php if ($engagement->getCode() == DRevDocuments::DOC_DR && $drev->hasDr()): ?>- <a href="<?php echo $drev->getAttachmentUri('DR.pdf'); ?>" target="_blank"><small>Télécharger ma DR</small></a><?php endif; ?>
+                            <?php endif; ?>
+                            <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?>- <a href="<?php echo $tirage->getAttachmentUri('DR.pdf'); ?>" class="btn-link" target="_blank"><small>Voir ma Déclaration de récolte associée</small></a>
+                            <?php endif; ?>
+                            <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()): ?>
+                                <a href="<?php echo url_for("tirage_dr_recuperation", $tirage) ?>">☐ Récupérer ma DR depuis le CIVA</a>
+                            <?php endif; ?>
                         </label>
                     </div>
                     </div>

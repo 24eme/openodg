@@ -138,6 +138,38 @@ class tirageActions extends sfActions {
           
     }
 
+    public function executeDrRecuperation(sfWebRequest $request) {
+        $tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $tirage);
+
+        return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
+                        "?" .
+                        http_build_query(array(
+                            'url' => $this->generateUrl('tirage_dr_import', $tirage, true),
+                            'id' => sprintf('DR-%s-%s', $tirage->identifiant, $tirage->campagne))));
+    }
+
+
+    public function executeDrImport(sfWebRequest $request) {
+        $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
+
+        if (!$request->getParameter('pdf')) {
+
+            $this->getUser()->setFlash('error', "La récupération de la DR a échoué");
+
+            return $this->redirect($this->generateUrl('tirage_validation', array("sf_subject" => $this->tirage)));
+        }
+
+        $this->tirage->storeAsAttachment(base64_decode($request->getParameter('pdf')), "DR.pdf", "application/pdf");
+
+        $this->tirage->save();
+
+        $this->getUser()->setFlash('success', "La DR a bien été récupérée depuis le CIVA");
+
+        return $this->redirect($this->generateUrl('tirage_validation', $this->tirage));
+    }
+
     public function executeValidation(sfWebRequest $request) {
         $this->tirage = $this->getRoute()->getTirage();
 
@@ -148,7 +180,7 @@ class tirageActions extends sfActions {
 
         $this->validation = new TirageValidation($this->tirage);
 
-        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -185,12 +217,54 @@ class tirageActions extends sfActions {
         return $this->redirect('tirage_confirmation', $this->tirage);
     }
 
+    public function executeValidationAdmin(sfWebRequest $request) {
+        $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->tirage);
+
+        $this->tirage->validateOdg();
+        $this->tirage->save();
+
+        //$this->sendDRevConfirmee($this->drev);
+
+        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
+
+        $service = $request->getParameter("service");
+
+        return $this->redirect('tirage_visualisation', array('sf_subject' => $this->tirage, 'service' => isset($service) ? $service : null));
+    }
+
     public function executeConfirmation(sfWebRequest $request) {
         $this->tirage = $this->getRoute()->getTirage();
     }
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::VISUALISATION, $this->tirage);
+
+        $this->service = $request->getParameter('service');
+
+        $documents = $this->tirage->getOrAdd('documents');
+
+        if($this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) {
+            $this->validation = new TirageValidation($this->tirage);
+        }
+
+        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) ? new TirageDocumentsForm($documents) : null;
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('drev_visualisation', $this->drev);
     }
 
     public function executePDF(sfWebRequest $request) 
