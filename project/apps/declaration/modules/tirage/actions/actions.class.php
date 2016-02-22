@@ -14,10 +14,10 @@ class tirageActions extends sfActions {
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
 
-        $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true);
         $tirage->save();
 
-        return $this->redirect('drevmarc_edit', $tirage);
+        return $this->redirect('tirage_edit', $tirage);
     }
 
     public function executeEdit(sfWebRequest $request) {
@@ -190,8 +190,10 @@ class tirageActions extends sfActions {
         $this->tirage->cleanDoc();
         
         $this->validation = new TirageValidation($this->tirage);
+        
+        $engagements = $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT);
 
-        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT)));
+        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $engagements));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -221,7 +223,6 @@ class tirageActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             $this->tirage->validate($this->form->getValue("date"));
-            $this->tirage->validateOdg();
             $this->tirage->save();
 
             return $this->redirect('tirage_visualisation', $this->tirage);
@@ -242,10 +243,15 @@ class tirageActions extends sfActions {
         $this->tirage->validateOdg();
         $this->tirage->save();
 
+        if ($this->tirage->isPapier()) {
+            $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée.");
+            
+            return $this->redirect('tirage_visualisation', array('sf_subject' => $this->tirage, 'service' => isset($service) ? $service : null));
+        }
+
         $this->sendTirageConfirmee($this->tirage);
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
-
 
         $service = $request->getParameter("service");
 
@@ -334,6 +340,11 @@ class tirageActions extends sfActions {
     }
     
     protected function sendTirageValidation($tirage) {
+        if($tirage->isPapier()) {
+
+            return false;
+        }
+
         $pdf = new ExportTiragePdf($tirage, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
@@ -342,6 +353,11 @@ class tirageActions extends sfActions {
     }
     
     protected function sendTirageConfirmee($tirage) {
+        if($tirage->isPapier()) {
+
+            return false;
+        }
+
         Email::getInstance()->sendTirageConfirmee($tirage);
     }
 

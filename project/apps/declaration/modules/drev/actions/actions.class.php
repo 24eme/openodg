@@ -578,7 +578,6 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             $this->drev->validate($this->form->getValue("date"));
-            $this->drev->validateOdg();
             $this->drev->save();
 
             return $this->redirect('drev_visualisation', $this->drev);
@@ -633,7 +632,7 @@ class drevActions extends sfActions {
 
         $this->drev->validateOdg();
         $this->drev->save();
-
+        
         $this->sendDRevConfirmee($this->drev);
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
