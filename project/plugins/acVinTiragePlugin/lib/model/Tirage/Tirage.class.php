@@ -137,5 +137,14 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     
     	return $date->format('d/m/Y');
     }
+    
+    public function setNumero($numero) {
+
+        return $this->_set('numero', sprintf("%02d", $numero)); 
+    }
+
+    public function getDeclarantQualite() {
+        return "Viticulteur-Manipulant total ou partiel";
+    }
 
 }

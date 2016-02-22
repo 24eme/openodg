@@ -11,42 +11,47 @@
  *
  * @author mathurin
  */
-class TirageVinForm extends acCouchdbForm {
+class TirageVinForm extends acCouchdbObjectForm {
 
     protected $tirage = null;
+    protected $annee = null;
 
-    public function __construct(\acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
-        $this->tirage = $doc;
-        parent::__construct($doc, $defaults, $options, $CSRFSecret);
+    public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
+        $this->tirage = $object;
+        $this->annee = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        parent::__construct($object, $options, $CSRFSecret);
     }
 
     public function configure() {
-        $this->setWidget('couleur', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getCouleurs())));
-        $this->setWidget('cepage', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getCepages())));
-        $this->setWidget('millesime', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getMillesimes())));
+        $checkarray = array('class' => 'bsswitch', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success');
+        
+        $this->setWidget('couleur', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getCouleurs())));
+        $this->setWidget('cepages_actifs', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getCepages())));
+        $this->setWidget('millesime', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getMillesimes())));
         $this->setWidget('volume_ventile', new sfWidgetFormTextarea());
-        $this->setWidget('fermentation_lactique', new sfWidgetFormChoice(array('expanded' => false, 'multiple' => false, 'choices' => $this->getFermentationLactique())));
+        $this->setWidget('fermentation_lactique', new bsWidgetFormInputCheckbox(array(), $checkarray));
 
-        $this->widgetSchema->setLabel('couleur', 'Couleur');
-        $this->widgetSchema->setLabel('cepage', 'Cépages');
-        $this->widgetSchema->setLabel('millesime', 'Millesime');
-        $this->widgetSchema->setLabel('volume_ventile', 'Indiquer le volume ventilé');
-        $this->widgetSchema->setLabel('fermentation_lactique', 'Fermentation lactique');
+
+        $this->widgetSchema->setLabel('couleur', 'Couleur :');
+        $this->widgetSchema->setLabel('cepages_actifs', 'Cépages :');
+        $this->widgetSchema->setLabel('millesime', 'Millesime :');
+        $this->widgetSchema->setLabel('volume_ventile', 'Indiquer le volume ventilé :');
+        $this->widgetSchema->setLabel('fermentation_lactique', 'Fermentation lactique :');
 
         $this->setValidator('couleur', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCouleurs())), array('required' => "Aucune couleur n'a été choisie.")));
-        $this->setValidator('cepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCepages())), array('required' => "Aucune couleur n'a été choisie.")));
+        $this->setValidator('cepages_actifs', new sfValidatorChoice(array("multiple" => true, "required" => true, 'choices' => array_keys($this->getCepages())), array('required' => "Aucune couleur n'a été choisie.")));
 
         $this->setValidator('millesime', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getMillesimes())), array('required' => "Aucune couleur n'a été choisie.")));
 
         $this->setValidator('volume_ventile', new sfValidatorString(array('required' => false)));
-        $this->setValidator('fermentation_lactique', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getFermentationLactique())), array('required' => "Aucune couleur n'a été choisie.")));
 
+        $this->setValidator('fermentation_lactique', new sfValidatorBoolean(array('required' => false)));
 
-        $this->widgetSchema->setNameFormat('tournee_add_agent[%s]');
+        $this->widgetSchema->setNameFormat('tirage_vin[%s]');
     }
 
     public function getCouleurs() {
-        return array("BLANC" => "Blanc", "ROSE" => "Rosé");
+        return TirageClient::$couleurs;
     }
 
     public function getCepages() {
@@ -54,16 +59,33 @@ class TirageVinForm extends acCouchdbForm {
         foreach ($this->tirage->getConfigurationCepages() as $keyCepage => $cepage) {
             $cepageslist[$keyCepage] = $cepage->getLibelle();
         }
-    return $cepageslist;
-    
-        }
-
-    public function getMillesimes() {
-        return array("" => "");
+        return $cepageslist;
     }
 
-    public function getFermentationLactique() {
-        return array("" => "");
+    public function getMillesimes() {
+        return array($this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblé");
+    }
+
+    public function doUpdateObject($values) {
+        parent::doUpdateObject($values);
+        $cepagesValues = $values['cepages_actifs'];
+        foreach ($this->getCepages() as $cepageKey => $cepage) {           
+            $this->getObject()->cepages->get($cepageKey)->selectionne = intval(in_array($cepageKey, $cepagesValues));
+        }
+    }
+
+    public function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $this->setDefault('millesime', $this->annee);
+        $this->setDefault('couleur', TirageClient::COULEUR_BLANC);
+        $cepagesDefault = array();
+        foreach ($this->getObject()->getCepages() as $cepageKey => $cepage) {
+            if($cepage->selectionne){
+            $cepagesDefault[] = $cepageKey;
+                
+            }
+        }
+        $this->setDefault('cepages_actifs', $cepagesDefault);
     }
 
 }
