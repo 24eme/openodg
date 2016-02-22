@@ -246,4 +246,17 @@ function styleTirage() {
 ";
 }
 
-?>
+function echoCheck($text, $checked) {
+    if ($checked) {
+        echo '<strong><span style="font-family: Dejavusans">☒</span>&nbsp;';
+    }else{
+        echo '<span style="font-family: Dejavusans">☐</span>&nbsp;';
+
+    }
+    echo $text;
+    if ($checked) {
+        echo '</strong>';
+    }
+    echo ' ';
+}
+
