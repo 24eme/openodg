@@ -1,5 +1,11 @@
 <?php use_helper('Date') ?>
 
+<?php if (isset($form)): ?>
+<form action="<?php echo url_for('tirage_visualisation', $tirage) ?>" method="post">
+    <?php echo $form->renderHiddenFields(); ?>
+    <?php echo $form->renderGlobalErrors(); ?>
+<?php endif; ?>
+
 <div class="page-header no-border">
     <h2>Déclaration de Tirage <?php echo $tirage->campagne; ?>
         <br />
@@ -33,11 +39,6 @@
     <div class="col-xs-12">
         <?php if (count($tirage->getOrAdd('documents')->toArray()) > 0 || $tirage->hasDr()): ?>
             <h3>Documents à joindre</h3>
-            <?php if ($form): ?>
-                <form action="<?php echo url_for('tirage_visualisation', $tirage) ?>" method="post">
-                    <?php echo $form->renderHiddenFields(); ?>
-                    <?php echo $form->renderGlobalErrors(); ?>
-                <?php endif; ?>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -49,7 +50,7 @@
                         <?php if ($tirage->hasDr()): ?>
                             <tr>
                                 <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle(TirageDocuments::DOC_PRODUCTEUR) ?></td>
-                                <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $tirage) ?>" target="_blank">Télécharger</a></td>
+                                <td class="text-center"><a class="text-success" href="<?php echo url_for("tirage_dr_pdf", $tirage) ?>" target="_blank">Télécharger</a></td>
                             </tr>
                         <?php endif; ?>
                         <?php if (isset($form)): ?>
@@ -76,12 +77,6 @@
                         <?php endif; ?>
                     </tbody>
                 </table>
-                <?php if ($form): ?>
-                    <div class="col-xs-3 pull-right text-center">
-                        <button type="submit" class="btn btn-default btn-sm btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
-                    </div>
-                </form>
-            <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>
@@ -104,9 +99,15 @@
         </div>
     <?php elseif (!$tirage->validation_odg && $sf_user->isAdmin()): ?>
         <div class="col-xs-4 text-right">
-            <a href="<?php echo url_for("tirage_validation_admin", $tirage) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+            <?php if($tirage->hasCompleteDocuments()): ?>
+                <a href="<?php echo url_for("tirage_validation_admin", array("sf_subject" => $tirage, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+            <?php else: ?>
+                <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 </div>    
 
-
+<?php if (isset($form)): ?>
+    </form>
+<?php endif; ?>
