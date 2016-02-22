@@ -18,6 +18,8 @@
 <?php endif; ?>
 </div>
 <br/>
+<p>Vin de base ayant fait la fermantation malo-lactique : <span class="lead"><?php echo ($tirage->fermentation_lactique)? 'Oui' : 'Non'; ?> </span></p>
+<br/>
 <span class="lead">Composition du lot :</span>
 <ul class="list-unstyled">
     <?php foreach ($tirage->composition as $compo): ?>
@@ -25,6 +27,7 @@
             <?php echo $compo->nombre; ?>  bouteilles de <?php echo $compo->contenance; ?>&nbsp;</li>
         <?php endforeach; ?>
 </ul>
+<br/>
 <br/>
 <br/>
 <div class="row">
