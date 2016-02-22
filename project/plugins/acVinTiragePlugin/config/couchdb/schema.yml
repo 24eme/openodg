@@ -26,6 +26,8 @@ Tirage:
             telephone: { }
             fax: { }
             email: { }
+      qualite: { }
+      lieu_stockage: { }
       couleur: { }
       couleur_libelle: { }
       cepages:
@@ -45,7 +47,7 @@ Tirage:
       date_mise_en_bouteille_debut: { }
       date_mise_en_bouteille_fin: { }
       composition:
-        type: collection
+        type: array_collection
         definition:
           fields:
             '*':

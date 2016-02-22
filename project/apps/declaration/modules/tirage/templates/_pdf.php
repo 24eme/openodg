@@ -7,12 +7,12 @@
 <?php echo styleTirage(); ?>
 </style>
 
-<span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>
+<span class="h3Alt">&nbsp;Déclarant&nbsp;</span><br/>
 <table class="tableAlt"><tr><td>
             <table border="0">
                 <tr>
                     <td style="width: 420px;">&nbsp;Nom : <i><?php echo $tirage->declarant->raison_sociale ?></i></td>
-                    <td><?php echo $tirage->getDeclarantQualite(); ?></td>
+                    <td><?php echo $tirage->getQualite(); ?></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Adresse : <i><?php echo $tirage->declarant->adresse ?></i></td>

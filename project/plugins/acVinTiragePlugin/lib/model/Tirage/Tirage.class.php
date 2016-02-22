@@ -31,6 +31,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         $this->campagne = $campagne;
         $this->numero = $numero;
         $this->updateCepages();
+        $this->getQualite();
     }
 
     public function storeDeclarant() {
@@ -48,7 +49,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
 
     public function getConfigurationCepages() {
 
-        return $this->getConfiguration()->declaration->get('certification/genre/appellation_CREMANT/mention/lieu/couleur')->getCepages();
+        return $this->getConfiguration()->declaration->get('certification/genre/appellation_CREMANT/mention/lieu/couleur')->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_TIRAGE);
     }
 
     public function getEtablissementObject() {
@@ -98,13 +99,68 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         }
     }
 
+    public function getDateMiseEnBouteilleDebutObject() {
+    	if (!$this->date_mise_en_bouteille_debut) {
+    
+    		return null;
+    	}
+    
+    	return new DateTime($this->date_mise_en_bouteille_debut);
+    }
+    
+    public function getDateMiseEnBouteilleDebutFr() {
+    	$date = $this->getDateMiseEnBouteilleDebutObject();
+    
+    	if (!$date) {
+    
+    		return null;
+    	}
+    
+    	return $date->format('d/m/Y');
+    }
+
+    public function getDateMiseEnBouteilleFinObject() {
+    	if (!$this->date_mise_en_bouteille_fin) {
+    
+    		return null;
+    	}
+    
+    	return new DateTime($this->date_mise_en_bouteille_fin);
+    }
+    
+    public function getDateMiseEnBouteilleFinFr() {
+    	$date = $this->getDateMiseEnBouteilleFinObject();
+    
+    	if (!$date) {
+    
+    		return null;
+    	}
+    
+    	return $date->format('d/m/Y');
+    }
+    
     public function setNumero($numero) {
 
         return $this->_set('numero', sprintf("%02d", $numero)); 
     }
 
-    public function getDeclarantQualite() {
-        return "Viticulteur-Manipulant total ou partiel";
+    public function getQualite() {
+        $q = $this->_get('qualite');
+        if ($q) {
+            return $q;
+        }
+        $q = "Viticulteur-Manipulant total ou partiel";
+        $etblmt = $this->getEtablissementObject();
+        if ($etblmt->familles->exist('CAVE_COOPERATIVE') && $etblmt->familles->get('CAVE_COOPERATIVE')) {
+            $q = "Cave coopérative";
+        }else if ($etblmt->familles->exist('NEGOCIANT') &&  $etblmt->familles->get('NEGOCIANT')) {
+            $q = "Négociant";
+        }
+        $this->_set('qualite', $q);
+        return $q;
+    }
+    public function cleanDoc() {
+        return false;
     }
     
     public function getCepagesSelectionnes() {

@@ -23,8 +23,7 @@ class ExportTiragePDF extends ExportPDF {
 
     protected function getHeaderSubtitle() {
 
-        $header_subtitle = sprintf("%s\n\n", $this->tirage->declarant->nom
-        );
+        $header_subtitle = sprintf("A.O.C. Crémant d'Alsace\n%s\n", $this->tirage->declarant->nom);
 
         if (!$this->tirage->isPapier() && $this->tirage->validation && $this->tirage->validation !== true) {
             $date = new DateTime($this->tirage->validation);
