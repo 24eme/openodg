@@ -42,6 +42,11 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
             return false;
         }
 
+        if($drev->isAutomatique()) {
+
+            return false;
+        }
+
         if(!$drev->hasDR()) {
 
             return false;
