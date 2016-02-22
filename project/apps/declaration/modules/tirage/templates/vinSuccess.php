@@ -78,7 +78,7 @@
     </div>
    
     <div class="row row-margin">
-        <div class="col-xs-4"><a href="<?php echo url_for("tirage_exploitation", $tirage) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à mon espace</small></a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("tirage_exploitation", $tirage) ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'axploitation</small></a></div>
         
         <div class="col-xs-4"></div>
         <div class="col-xs-4 text-right">
