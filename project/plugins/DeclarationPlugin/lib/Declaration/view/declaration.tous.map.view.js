@@ -1,6 +1,6 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Constats" && doc.type != "Facture") {
+    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Constats" && doc.type != "Facture" && doc.type != "Tirage") {
         
         return;
     }

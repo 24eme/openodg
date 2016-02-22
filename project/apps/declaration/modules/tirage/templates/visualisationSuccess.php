@@ -48,7 +48,7 @@
                 <tbody>
                     <?php if($tirage->hasDr()): ?>
                         <tr>
-                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle(TirageDocuments::DOC_DR) ?></td>
+                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle(TirageDocuments::DOC_PRODUCTEUR) ?></td>
                             <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $tirage) ?>" target="_blank">Télécharger</a></td>
                         </tr>
                     <?php endif; ?>
