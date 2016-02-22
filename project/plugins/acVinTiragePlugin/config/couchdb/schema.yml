@@ -1,0 +1,13 @@
+#PARCELLAIRE
+Parcellaire:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      etape: { }
+      validation: { }
+      validation_odg: { }
+      papier: { required: false, type: integer }
