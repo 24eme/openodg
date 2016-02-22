@@ -60,7 +60,7 @@ Déclare,
     <br/><br/>
     
     <strong>Couleur&nbsp;:</strong>
-    <?php echoCheck("Blanc", ($tirage->couleur == "BLANC")); echoCheck("Rosé", ($tirage->couleur == "ROSE")); ?>
+    <?php echoCheck("Blanc", ($tirage->couleur == TirageClient::COULEUR_BLANC)); echoCheck("Rosé", ($tirage->couleur == TirageClient::COULEUR_ROSE)); ?>
     <br/><br/>
     
     Cépages entrant dans la composition de la cuvée&nbsp;:
