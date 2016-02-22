@@ -56,3 +56,14 @@ Tirage:
                 fields:
                   nombre: { }
                   contenance: { }
+      documents:
+        required: false
+        class: TirageDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }

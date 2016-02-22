@@ -15,10 +15,10 @@
  * @property string $validation_odg
  * @property integer $papier
  * @property acCouchdbJson $declarant
+ * @property string $lieu_stockage
  * @property string $couleur
  * @property string $couleur_libelle
- * @property string $cepage
- * @property string $cepage_libelle
+ * @property acCouchdbJson $cepages
  * @property string $millesime
  * @property string $millesime_libelle
  * @property string $millesime_ventilation
@@ -26,6 +26,7 @@
  * @property string $date_mise_en_bouteille_debut
  * @property string $date_mise_en_bouteille_fin
  * @property acCouchdbJson $composition
+ * @property TirageDocuments $documents
 
  * @method string get_id()
  * @method string set_id()
@@ -49,14 +50,14 @@
  * @method integer setPapier()
  * @method acCouchdbJson getDeclarant()
  * @method acCouchdbJson setDeclarant()
+ * @method string getLieuStockage()
+ * @method string setLieuStockage()
  * @method string getCouleur()
  * @method string setCouleur()
  * @method string getCouleurLibelle()
  * @method string setCouleurLibelle()
- * @method string getCepage()
- * @method string setCepage()
- * @method string getCepageLibelle()
- * @method string setCepageLibelle()
+ * @method acCouchdbJson getCepages()
+ * @method acCouchdbJson setCepages()
  * @method string getMillesime()
  * @method string setMillesime()
  * @method string getMillesimeLibelle()
@@ -71,6 +72,8 @@
  * @method string setDateMiseEnBouteilleFin()
  * @method acCouchdbJson getComposition()
  * @method acCouchdbJson setComposition()
+ * @method TirageDocuments getDocuments()
+ * @method TirageDocuments setDocuments()
  
  */
  

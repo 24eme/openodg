@@ -144,16 +144,29 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         return $this->_set('numero', sprintf("%02d", $numero)); 
     }
 
+    public function isNegociant() {
+        $etblmt = $this->getEtablissementObject();
+        return ($etblmt->familles->exist('NEGOCIANT') &&  $etblmt->familles->get('NEGOCIANT'));
+    }
+    
+    public function isCaveCooperative() {
+        $etblmt = $this->getEtablissementObject();
+        return ($etblmt->familles->exist('CAVE_COOPERATIVE') && $etblmt->familles->get('CAVE_COOPERATIVE'));
+    }
+
+    public function isViticulteur() {
+        return !($this>isNegociant()) && !($this->isCaveCooperative());
+    }
+    
     public function getQualite() {
         $q = $this->_get('qualite');
         if ($q) {
             return $q;
         }
         $q = "Viticulteur-Manipulant total ou partiel";
-        $etblmt = $this->getEtablissementObject();
-        if ($etblmt->familles->exist('CAVE_COOPERATIVE') && $etblmt->familles->get('CAVE_COOPERATIVE')) {
+        if ($this->isCaveCooperative()) {
             $q = "Cave coopérative";
-        }else if ($etblmt->familles->exist('NEGOCIANT') &&  $etblmt->familles->get('NEGOCIANT')) {
+        }else if ($this->isNegociant()) {
             $q = "Négociant";
         }
         $this->_set('qualite', $q);

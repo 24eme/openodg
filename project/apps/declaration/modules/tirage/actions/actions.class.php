@@ -147,7 +147,7 @@ class tirageActions extends sfActions {
 
         $this->validation = new TirageValidation($this->tirage);
 
-        $this->form = new TirageValidationForm($this->tirage);
+        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
