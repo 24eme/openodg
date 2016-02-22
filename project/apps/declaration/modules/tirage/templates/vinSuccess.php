@@ -12,10 +12,10 @@
         <div class="col-xs-12"> 
             <div class="form-inline">
                 <?php echo $form["couleur"]->renderError(); ?>
-                <label class="col-xs-2 text-right">
+                <label class="col-xs-3 text-right">
                     <?php echo $form["couleur"]->renderLabel(); ?>
                 </label>
-                <div class="col-xs-10 text-left">
+                <div class="col-xs-9 text-left">
                     <?php echo $form["couleur"]->render(); ?>
                 </div>
             </div>
@@ -25,10 +25,10 @@
         <div class="col-xs-12">
             <div class="form-inline">
                 <?php echo $form["cepages_actifs"]->renderError(); ?>
-                <label class="col-xs-2 text-right">
+                <label class="col-xs-3 text-right">
                     <?php echo $form["cepages_actifs"]->renderLabel(); ?>
                 </label>
-                <div class="col-xs-10 text-left">              
+                <div class="col-xs-9 text-left">              
                     <?php echo $form["cepages_actifs"]->render(array("class" => "")); ?>
                 </div>
             </div>
@@ -38,10 +38,10 @@
         <div class="col-xs-12">
             <div class="form-inline">
                 <?php echo $form["millesime"]->renderError(); ?>
-                <label class="col-xs-2 text-right">
+                <label class="col-xs-3 text-right">
                     <?php echo $form["millesime"]->renderLabel(); ?>
                 </label>
-                <div class="col-xs-10 text-left">              
+                <div class="col-xs-9 text-left">              
                     <?php echo $form["millesime"]->render(array("class" => "")); ?>
                 </div>
             </div>
@@ -52,13 +52,13 @@
 
     <div class="row row-margin">
         <div class="col-xs-12">
-            <div class="form-inline">
+            <div>
                 <?php echo $form["volume_ventile"]->renderError(); ?>
-                <label class="col-xs-2 text-right">
+                <label class="col-xs-3 text-right">
                     <?php echo $form["volume_ventile"]->renderLabel(); ?>
                 </label>
-                <div class="col-xs-10 text-left">       
-                    <?php echo $form["volume_ventile"]->render(array("class" => "")); ?>
+                <div class="col-xs-6 text-left">       
+                    <?php echo $form["volume_ventile"]->render(); ?>
                 </div>
             </div>
         </div>
@@ -67,10 +67,10 @@
         <div class="col-xs-12">
             <div class="form-group">
                 <?php echo $form["fermentation_lactique"]->renderError(); ?>
-                <label class="col-xs-2 text-right">
+                <label class="col-xs-3 text-right">
                     <?php echo $form["fermentation_lactique"]->renderLabel(); ?>
                 </label>
-                <div class="col-xs-10 text-left">       
+                <div class="col-xs-9 text-left">       
                     <?php echo $form["fermentation_lactique"]->render(array("class" => "bsswitch")); ?>
                 </div>
             </div>
