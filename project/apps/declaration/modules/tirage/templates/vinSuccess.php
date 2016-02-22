@@ -1,7 +1,7 @@
 <?php use_javascript("tirage.js", "last") ?>
 <?php include_partial('tirage/step', array('step' => 'vin', 'tirage' => $tirage)) ?>
 <div class="page-header no-border">
-    <h2>Vin</h2>
+    <h2>Vin <small>Merci de saisir les informations liées au Crémant dont vous souhaitez déclarer le tirage</small></h2>
 </div>
 
 <form role="form" action="" method="post" id="tirage-vin-form">
