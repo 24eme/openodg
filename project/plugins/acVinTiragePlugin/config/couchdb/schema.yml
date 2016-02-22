@@ -28,7 +28,7 @@ Tirage:
             email: { }
       couleur: { }
       couleur_libelle: { }
-      cepages: { }
+      cepages:
         type: collection
         definition:
           fields:
