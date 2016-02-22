@@ -150,6 +150,16 @@ tirage_delete:
   requirements:
     sf_method: [get]
 
+tirage_devalidation:
+  url: /tirage/devalidation/:id
+  param: { module: tirage, action: devalidation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
 # DREV
 
 drev_index:

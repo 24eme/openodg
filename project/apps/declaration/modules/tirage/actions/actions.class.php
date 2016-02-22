@@ -29,6 +29,20 @@ class tirageActions extends sfActions {
         return $this->redirect('tirage_exploitation', $tirage);
     }
 
+    public function executeDevalidation(sfWebRequest $request) {
+        $tirage = $this->getRoute()->getTirage();
+
+        $this->secure(TirageSecurity::DEVALIDATION, $tirage);
+
+        $tirage->validation = null;
+        $tirage->validation_odg = null;
+        $tirage->save();
+
+        $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
+
+        return $this->redirect($this->generateUrl('home'));
+    }
+
     public function executeDelete(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
         $tirage->delete();
