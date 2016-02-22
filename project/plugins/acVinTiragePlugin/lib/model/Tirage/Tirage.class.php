@@ -16,16 +16,6 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         $this->initDocuments();
     }
 
-    public function __construct() {
-        parent::__construct();
-        $this->initDocuments();
-    }
-
-    public function __clone() {
-        parent::__clone();
-        $this->initDocuments();
-    }
-
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
     }
