@@ -27,8 +27,10 @@
                 <label class="col-xs-3 text-right">
                     <?php echo $form["cepages_actifs"]->renderLabel(); ?>
                 </label>
-                <div class="col-xs-9 text-left">              
-                    <?php echo $form["cepages_actifs"]->render(array("class" => "")); ?>
+                <div class="col-xs-9 text-left">
+                    <div data-toggle="buttons" data-selection-mode="auto" class="btn-group select">
+                    <?php echo $form["cepages_actifs"]->render(); ?>
+                    </div>
                 </div>
             </div>
         </div>
