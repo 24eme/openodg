@@ -11,25 +11,6 @@
 
     <?php if($sf_user->hasFlash('error')): ?><div class="alert alert-error"><?php echo $sf_user->getFlash('error'); ?></div><?php endif; ?>
 
-    <?php if(isset($form["date"])): ?>
-    <div class="row">
-        <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>                            
-                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
-            <?php endif; ?>
-            <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-            <div class="col-xs-4">
-                <div class="input-group date-picker-all-days">
-                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
-                    <div class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
-
 <?php if (isset($validation) && $validation->hasPoints()): ?>
     <?php include_partial('tirage/pointsAttentions', array('tirage' => $tirage, 'validation' => $validation)); ?>
 <?php endif; ?>
@@ -40,7 +21,7 @@
         </div>
     </div>
 
-    <?php  if (count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
+    <?php  if (!$tirage->isPapier() && count($validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)) > 0): ?>
         <h2 class="h3">J'ai pris connaissance des pièces à fournir</h2>
         <div class="alert" role="alert" id="engagements">
             <div class="form-group">
@@ -80,6 +61,25 @@
                 <?php endforeach; ?>
             </div>
         </div>
+    <?php endif; ?>
+
+    <?php if(isset($form["date"])): ?>
+    <div class="row">
+        <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
+            <?php if ($form["date"]->hasError()): ?>                            
+                <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
+            <?php endif; ?>
+            <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 col-xs-offset-4 control-label")); ?>
+            <div class="col-xs-4">
+                <div class="input-group date-picker-all-days">
+                    <?php echo $form["date"]->render(array("class" => "form-control")); ?>
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <?php endif; ?>
 
     <div class="row row-margin row-button">
