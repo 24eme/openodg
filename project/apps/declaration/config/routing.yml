@@ -1253,6 +1253,18 @@ facturation_declarant:
     sf_method: [get, post]
 
 
+#TIRAGE
+
+tirage_vin:
+  url: /tirage/vin/:id
+  param: { module: tirage, action: vin }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]  
+
 #Génération
 
 generation_view:
