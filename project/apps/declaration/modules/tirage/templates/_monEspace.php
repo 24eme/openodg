@@ -5,7 +5,21 @@
         <div class="panel-heading">
             <h3>Tirage Crémant&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?><br /><br /></h3>
         </div>
-        <?php if ($tirage): ?>
+        <?php if ($tirage && $tirage->validation): ?>
+            <div class="panel-body">
+                <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer a été validée pour cette année.</p>
+            </div>
+            <div class="panel-bottom">
+                <p>
+                    <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('tirage_visualisation', $tirage) ?>">Visualiser</a>
+                </p>
+                <?php if (TirageSecurity::getInstance($sf_user, $tirage->getRawValue())->isAuthorized(TirageSecurity::DEVALIDATION)): ?>
+                    <p>
+                        <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('tirage_devalidation', $tirage) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
+                    </p>
+                <?php endif; ?>
+            </div>
+        <?php elseif ($tirage): ?>
                 <div class="panel-body">
                     <p>Une déclaration de tirage a été débutée.</p>
                 </div>

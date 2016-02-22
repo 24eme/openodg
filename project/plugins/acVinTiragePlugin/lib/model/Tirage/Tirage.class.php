@@ -99,6 +99,46 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         }
     }
 
+    public function getDateMiseEnBouteilleDebutObject() {
+    	if (!$this->date_mise_en_bouteille_debut) {
+    
+    		return null;
+    	}
+    
+    	return new DateTime($this->date_mise_en_bouteille_debut);
+    }
+    
+    public function getDateMiseEnBouteilleDebutFr() {
+    	$date = $this->getDateMiseEnBouteilleDebutObject();
+    
+    	if (!$date) {
+    
+    		return null;
+    	}
+    
+    	return $date->format('d/m/Y');
+    }
+
+    public function getDateMiseEnBouteilleFinObject() {
+    	if (!$this->date_mise_en_bouteille_fin) {
+    
+    		return null;
+    	}
+    
+    	return new DateTime($this->date_mise_en_bouteille_fin);
+    }
+    
+    public function getDateMiseEnBouteilleFinFr() {
+    	$date = $this->getDateMiseEnBouteilleFinObject();
+    
+    	if (!$date) {
+    
+    		return null;
+    	}
+    
+    	return $date->format('d/m/Y');
+    }
+    
     public function setNumero($numero) {
 
         return $this->_set('numero', sprintf("%02d", $numero)); 

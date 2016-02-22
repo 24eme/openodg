@@ -10,6 +10,8 @@
         <a class="list-group-item" href="<?php echo url_for('parcellaire_visualisation', $document) ?>">Affectation parcellaire <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
     <?php elseif($document->type == ParcellaireClient::TYPE_MODEL && strpos($document->_id, ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT."-") !== false): ?>
         <a class="list-group-item" href="<?php echo url_for('parcellaire_visualisation', $document) ?>">Affectation parcellaire Crémant <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
+    <?php elseif($document->type == ParcellaireClient::TYPE_MODEL && strpos($document->_id, ParcellaireClient::TYPE_COUCHDB_TIRAGE."-") !== false): ?>
+        <a class="list-group-item" href="<?php echo url_for('tirage_visualisation', $document) ?>">Affectation parcellaire Crémant <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
     <?php endif; ?>
 <?php endforeach; ?>
 </div>
