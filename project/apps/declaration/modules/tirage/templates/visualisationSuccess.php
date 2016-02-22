@@ -46,12 +46,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if ($tirage->hasDr()): ?>
-                            <tr>
-                                <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle(TirageDocuments::DOC_PRODUCTEUR) ?></td>
-                                <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $tirage) ?>" target="_blank">Télécharger</a></td>
-                            </tr>
-                        <?php endif; ?>
                         <?php if (isset($form)): ?>
                             <?php foreach ($form->getEmbeddedForms() as $key => $documentForm): ?>
                                 <tr>
@@ -70,7 +64,11 @@
                             <?php foreach ($tirage->getOrAdd('documents') as $document): ?>
                                 <tr>
                                     <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle($document->getKey()) ?></td>
-                                    <td class="text-center"><span class="<?php if ($document->statut == TirageDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif; ?>"><?php echo TirageDocuments::getStatutLibelle($document->statut) ?></span></td>
+                                    <?php $href = '' ; if ($tirage->hasDr()) { $href = url_for("drev_dr_pdf", $tirage); } ?>
+                                    <td class="text-center"><<?php if ($href) {echo 'a href="'.$href.'"';} else {'span';} 
+                                        ?>  class="<?php if ($document->statut == TirageDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif; 
+                                        ?>"><?php echo ($href) ? "Télécharger" : TirageDocuments::getStatutLibelle($document->statut) 
+                                        ?></<?php echo ($href) ? 'a' : 'span'; ?>></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

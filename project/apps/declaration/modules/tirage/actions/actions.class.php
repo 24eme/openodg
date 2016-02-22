@@ -262,12 +262,12 @@ class tirageActions extends sfActions {
         $this->service = $request->getParameter('service');
 
         $documents = $this->tirage->getOrAdd('documents');
-
+        
         if ($this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) {
             $this->validation = new TirageValidation($this->tirage);
         }
 
-        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) ? new TirageDocumentsForm($documents) : null;
+        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg && !$this->tirage->hasCompleteDocuments()) ? new TirageDocumentsForm($documents) : null;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

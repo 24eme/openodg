@@ -6,7 +6,7 @@ class TirageDocumentsForm extends acCouchdbObjectForm
     public function configure() 
     {
         foreach ($this->getObject() as $type => $document) {
-            $this->embedForm($type, new DRevDocumentForm($document));
+            $this->embedForm($type, new TirageDocumentForm($document));
         }
         $this->widgetSchema->setNameFormat('documents[%s]');
     }
