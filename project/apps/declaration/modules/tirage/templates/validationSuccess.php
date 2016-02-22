@@ -32,7 +32,7 @@
 
     <div class="row row-margin">
         <div class="col-xs-12">
-            <?php //include_partial('tirage/recap', array('tirage' => $tirage)); ?>
+            <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
         </div>
     </div>
 

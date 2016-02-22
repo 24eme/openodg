@@ -17,7 +17,7 @@
         <td>SIRET : <i><?php echo $drev->declarant->siret ?></i></td>
     </tr>
     <tr>
-        <td>&nbsp;Commune : <i><?php echo $drev->declarant->code_postal ?>, <?php echo $drev->declarant->commune ?></i></td>
+        <td>&nbsp;Commune : <i><?php echo $drev->declarant->code_postal ?> <?php echo $drev->declarant->commune ?></i></td>
         <td></td>
     </tr>
     <tr>
