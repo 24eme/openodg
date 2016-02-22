@@ -78,8 +78,12 @@ class TirageVinForm extends acCouchdbObjectForm {
 
     public function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
-        $this->setDefault('millesime', $this->annee);
-        $this->setDefault('couleur', TirageClient::COULEUR_BLANC);
+        if (!$this->getObject()->getMillesime()) {
+            $this->setDefault('millesime', $this->annee);
+        }
+        if (!$this->getObject()->getCouleur()) {
+            $this->setDefault('couleur', TirageClient::COULEUR_BLANC);
+        }
         $cepagesDefault = array();
         foreach ($this->getObject()->getCepages() as $cepageKey => $cepage) {
             if($cepage->selectionne){
