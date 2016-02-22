@@ -58,7 +58,7 @@
 
                 <?php if ($sf_user->isAdmin()): ?>
                     <p>
-                        <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('parcellaire_cremant_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                        <a class="btn btn-xs btn-block btn-warning pull-right" href="<?php echo url_for('parcellaire_cremant_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
         </div>

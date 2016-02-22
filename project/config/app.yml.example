@@ -38,6 +38,9 @@ all:
     parcellaire_cremant:
       debut: "YYYY-mm-dd"
       fin: "YYYY-mm-dd"
+    tirage:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"
