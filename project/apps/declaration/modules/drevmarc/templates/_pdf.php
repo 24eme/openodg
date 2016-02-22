@@ -19,7 +19,7 @@
                     <td>N° SIRET : <i><?php echo $drevmarc->declarant->siret ?></i></td>
                 </tr>
                 <tr>
-                    <td>&nbsp;Commune : <i><?php echo $drevmarc->declarant->code_postal ?>, <?php echo $drevmarc->declarant->commune ?></i></td>
+                    <td>&nbsp;Commune : <i><?php echo $drevmarc->declarant->code_postal ?> <?php echo $drevmarc->declarant->commune ?></i></td>
                     <td></td>
                 </tr>
                 <tr>

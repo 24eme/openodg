@@ -62,7 +62,7 @@ class tirageActions extends sfActions {
 
         $this->etablissement = $this->tirage->getEtablissementObject();
 
-        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->tirage->isPapier()));
+        $this->form = new TirageExploitationForm($this->tirage, array("use_email" => !$this->tirage->isPapier()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -80,6 +80,10 @@ class tirageActions extends sfActions {
 
         $this->tirage->storeDeclarant();
         $this->tirage->save();
+
+        if($this->form->getValue('lieu_exploitation')) {
+          $this->tirage->lieu_exploitation = $this->form->getValue('lieu_exploitation');
+        }
         
         return $this->redirect('tirage_revendication', $this->tirage);
     }
