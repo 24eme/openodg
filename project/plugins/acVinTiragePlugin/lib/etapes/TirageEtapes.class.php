@@ -19,7 +19,7 @@ class TirageEtapes
     public static function getInstance() 
     {
         if(is_null(self::$_instance)) {
-            self::$_instance = new DrevMarcEtapes();
+            self::$_instance = new TirageEtapes();
         }
         return self::$_instance;
     }
