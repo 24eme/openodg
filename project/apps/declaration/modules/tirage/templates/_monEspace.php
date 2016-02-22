@@ -7,7 +7,7 @@
         </div>
         <?php if ($tirage && $tirage->validation): ?>
             <div class="panel-body">
-                <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer a été validée pour cette année.</p>
+                <p>Votre déclaration de tirage de Crémant a été validée pour cette année.</p>
             </div>
             <div class="panel-bottom">
                 <p>
@@ -32,12 +32,17 @@
                     </p>
                 </div>
         <?php else: ?>
-        <div class="panel-body">
-            <p>Créer une nouvelle déclaration de tirage</p>
+            <div class="panel-body">
+            <p><?php if ($nbDeclaration > 0) {
+            echo ($nbDeclaration > 2) ? "Vous avez déjà déclaré ".$nbDeclaration." déclarations de tirage. Vous pouvez en déclarer une nouvelle&nbsp;:"  :
+            "Vous avez déjà déclaré une déclaration de tirage. Vous pouvez en déclarer une nouvelle&nbsp;:";
+        }else{
+            echo "Créer une nouvelle déclaration de tirage&nbsp;:";
+        }?></p>
         </div>
         <div class="panel-bottom">  
             <p>
-                <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('tirage_create', $etablissement) ?>">Démarrer la télédéclaration</a>
+                <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('tirage_create', $etablissement) ?>">Démarrer la <?php echo $nieme; ?> déclaration</a>
             </p>
             <?php if ($sf_user->isAdmin()): ?>
                 <p>
