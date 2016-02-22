@@ -70,11 +70,13 @@ class ParcellaireValidation extends DocumentValidation {
         $acheteurs = $this->document->getAcheteursByHash();
         $acheteursUsed = array();
         $erreurRepartition = false;
-
+        $hasParcelle = false;
         foreach ($this->document->declaration->getProduitsWithLieuEditable() as $hash => $produit) {
             if(!$produit->isAffectee()) {
                 continue;
             }
+            $hasParcelle = true;
+
             $lieu_key = $produit->getLieuKeyFromHash($hash);
 
             $acheteursParcelle = $produit->getAcheteursByHash($lieu_key);
@@ -90,7 +92,7 @@ class ParcellaireValidation extends DocumentValidation {
             }
         }
 
-        if(!$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
+        if($hasParcelle && !$erreurRepartition && count($acheteurs) != count($acheteursUsed)) {
             $this->addPoint(self::TYPE_ERROR, 'acheteur_repartition', 'terminer la répartition des acheteurs', $this->generateUrl('parcellaire_acheteurs', array('id' => $this->document->_id)));
         }
     }
