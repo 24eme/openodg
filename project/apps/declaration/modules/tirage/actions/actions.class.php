@@ -40,7 +40,7 @@ class tirageActions extends sfActions {
         $tirage->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
-
+       
         return $this->redirect($this->generateUrl('home'));
     }
 
@@ -137,13 +137,13 @@ class tirageActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-        
+
         $this->form->save();
-        
+
         if ($request->isXmlHttpRequest()) {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tirage->_id, "revision" => $this->tirage->_rev))));
         }
-        
+
         return $this->redirect('tirage_validation', $this->tirage);
     }
 
@@ -157,7 +157,6 @@ class tirageActions extends sfActions {
                             'url' => $this->generateUrl('tirage_dr_import', $tirage, true),
                             'id' => sprintf('DR-%s-%s', $tirage->identifiant, $tirage->campagne))));
     }
-
 
     public function executeDrImport(sfWebRequest $request) {
         $this->tirage = $this->getRoute()->getTirage();
@@ -188,7 +187,7 @@ class tirageActions extends sfActions {
         $this->tirage->save();
 
         $this->tirage->cleanDoc();
-        
+
         $this->validation = new TirageValidation($this->tirage);
 
         $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT)));
@@ -264,7 +263,7 @@ class tirageActions extends sfActions {
 
         $documents = $this->tirage->getOrAdd('documents');
 
-        if($this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) {
+        if ($this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) {
             $this->validation = new TirageValidation($this->tirage);
         }
 
@@ -332,7 +331,7 @@ class tirageActions extends sfActions {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
         throw new sfStopException();
     }
-    
+
     protected function sendTirageValidation($tirage) {
         $pdf = new ExportTiragePdf($tirage, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
@@ -340,10 +339,9 @@ class tirageActions extends sfActions {
         $pdf->generate();
         Email::getInstance()->sendTirageValidation($tirage);
     }
-    
+
     protected function sendTirageConfirmee($tirage) {
         Email::getInstance()->sendTirageConfirmee($tirage);
     }
-
 
 }

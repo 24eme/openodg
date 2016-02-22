@@ -11,7 +11,7 @@ class tirageComponents extends sfComponents {
         $this->tirage = TirageClient::getInstance()->find('TIRAGE-' . $this->etablissement->identifiant . '-' . $campagne. sprintf("%02d", $this->nbDeclaration));
         
         $nextNumero = $this->nbDeclaration + 1;
-        if($this->tirage->validation){
+        if($this->tirage && $this->tirage->validation){
         $this->tirage = TirageClient::getInstance()->find('TIRAGE-' . $this->etablissement->identifiant . '-' . $campagne. sprintf("%02d", $nextNumero));
         }
         $this->tiragesHistory = array();
