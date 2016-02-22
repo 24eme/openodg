@@ -60,3 +60,13 @@ all:
       cp_ville: "CP Ville"
       telephone: "Téléphone 00 00 00 00 00 - Fax 01 01 01 01 01"
       email: "Email : mail@mailer.fr"
+  contenances:
+    bouteilles:
+      "37,5 cl": 37.5
+      "50 cl": 50
+      "75 cl": 75
+      "100 cl": 100
+      "150 cl": 150
+      "300 cl": 300
+      "500 cl": 500
+      "600 cl": 600

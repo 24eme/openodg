@@ -93,8 +93,14 @@ tirage_vin:
     sf_method: [get, post] 
   
 tirage_lots:
-  url: /tirage/lots
-  param: { module: tirage, action: lots }
+  url: /tirage/lots/:id
+  param: { module: tirage, action: lots }  
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post] 
   
 tirage_validation:
   url: /tirage/validation/:id

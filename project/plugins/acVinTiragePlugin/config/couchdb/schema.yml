@@ -45,7 +45,7 @@ Tirage:
       date_mise_en_bouteille_debut: { }
       date_mise_en_bouteille_fin: { }
       composition:
-        type: collection
+        type: array_collection
         definition:
           fields:
             '*':

@@ -81,7 +81,7 @@ class tirageActions extends sfActions {
         $this->tirage->storeDeclarant();
         $this->tirage->save();
         
-        return $this->redirect('tirage_revendication', $this->tirage);
+        return $this->redirect('tirage_vin', $this->tirage);
     }
 
     public function executeVin(sfWebRequest $request) {
@@ -97,66 +97,33 @@ class tirageActions extends sfActions {
         $this->form->save();
     }
 
-    public function executeLots(sfWebRequest $request) {
-        /* $this->drev = $this->getRoute()->getDRev();
-          $this->secure(DRevSecurity::EDITION, $this->drev);
+    public function executeLots(sfWebRequest $request) 
+    {
+		$this->tirage = $this->getRoute()->getTirage();
+		$this->secure(TirageSecurity::EDITION, $this->tirage);
 
-          $this->prelevement = $this->getRoute()->getPrelevement();
+        $this->tirage->storeEtape($this->getEtape($this->tirage, TirageEtapes::ETAPE_LOTS));
 
-          $this->form = new DRevLotsForm($this->prelevement);
-          $this->ajoutForm = new DrevLotsAjoutProduitForm($this->prelevement);
-
-          $this->setTemplate(lcfirst(sfInflector::camelize(strtolower(('lots_' . $this->prelevement->getKey())))));
-
-          $this->error_produit = null;
-          if ($request->getParameter(('error_produit'))) {
-          $type_error = strstr($request->getParameter('error_produit'), '-', true);
-          $error_produit = str_replace($type_error, '', $request->getParameter('error_produit'));
-          $this->error_produit = str_replace('-', '_', $error_produit);
-          if ($type_error == 'erreur') {
-          $this->getUser()->setFlash("erreur", "Pour supprimer un lot, il suffit de vider la case.");
-          }
-          if ($type_error == 'vigilancewithFlash') {
-          $this->getUser()->setFlash("warning", "Pour supprimer un lot, il suffit de vider la case.");
-          }
-          }
-
-          if (!$request->isMethod(sfWebRequest::POST)) {
-
-          return sfView::SUCCESS;
-          }
-
-          $this->form->bind($request->getParameter($this->form->getName()));
-          if ($request->isXmlHttpRequest() && !$this->form->isValid()) {
-          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
-          }
-
-          if (!$this->form->isValid()) {
-          return sfView::SUCCESS;
-          }
-
-          $this->form->save();
-
-          if ($request->isXmlHttpRequest()) {
-
-          return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
-          }
-
-
-          if ($request->getParameter('redirect', null)) {
-          return $this->redirect('drev_validation', $this->drev);
-          }
-
-          if ($this->prelevement->getKey() == Drev::CUVE_ALSACE && $this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
-          return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
-          }
-
-          if($this->drev->isNonConditionneur()) {
-
-          return $this->redirect('drev_validation', $this->drev);
-          }
-
-          return $this->redirect('drev_controle_externe', $this->drev); */
+        $this->tirage->save();
+		
+		$this->form = new TirageLotsForm($this->tirage);
+		
+		if (!$request->isMethod(sfWebRequest::POST)) {
+		
+			return sfView::SUCCESS;
+		}
+		
+		$this->form->bind($request->getParameter($this->form->getName()));
+		
+		if (!$this->form->isValid()) {
+		
+			return sfView::SUCCESS;
+		}
+		
+		$this->form->save();
+		
+		return $this->redirect('tirage_validation', $this->tirage);
+          
     }
 
     public function executeValidation(sfWebRequest $request) {
