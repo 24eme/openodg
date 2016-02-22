@@ -30,8 +30,9 @@
     </div>
     <?php endif; ?>
 
-    <?php if($validation->hasPoints()): ?>
-    <?php endif; ?>
+<?php if (isset($validation) && $validation->hasPoints()): ?>
+    <?php include_partial('tirage/pointsAttentions', array('tirage' => $tirage, 'validation' => $validation)); ?>
+<?php endif; ?>
 
     <div class="row row-margin">
         <div class="col-xs-12">
