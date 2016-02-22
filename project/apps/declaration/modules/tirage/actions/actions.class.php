@@ -242,9 +242,10 @@ class tirageActions extends sfActions {
         $this->tirage->validateOdg();
         $this->tirage->save();
 
-        //$this->sendDRevConfirmee($this->drev);
+        $this->sendTirageConfirmee($this->tirage);
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
+
 
         $service = $request->getParameter("service");
 
@@ -339,5 +340,10 @@ class tirageActions extends sfActions {
         $pdf->generate();
         Email::getInstance()->sendTirageValidation($tirage);
     }
+    
+    protected function sendTirageConfirmee($tirage) {
+        Email::getInstance()->sendTirageConfirmee($tirage);
+    }
+
 
 }
