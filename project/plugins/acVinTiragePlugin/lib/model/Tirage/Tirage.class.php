@@ -42,7 +42,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
             return false;
         }
 
-        if(!$drev->getAttachmentUri('DR.pdf')) {
+        if(!$drev->hasDR()) {
 
             return false;
         }
@@ -56,6 +56,12 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
 
         return $this->storeAsAttachment($drContent, "DR.pdf", "application/pdf");
     }
+
+    public function hasDR() {
+
+        return $this->_attachments->exist('DR.pdf');
+    }
+
 
     public function getDRev() {
 
@@ -91,6 +97,18 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         }
 
         $this->validation = $date;
+    }
+
+    public function hasCompleteDocuments()
+    {
+        $complete = true;
+        foreach($this->getOrAdd('documents') as $document) {
+            if ($document->statut != DRevDocuments::STATUT_RECU) {
+                $complete = false;
+                break;
+            }
+        }
+        return $complete;
     }
     
     public function isValide() {

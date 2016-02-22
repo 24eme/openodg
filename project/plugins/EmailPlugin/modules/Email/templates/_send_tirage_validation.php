@@ -1,0 +1,10 @@
+Bonjour,
+
+Votre déclaration de tirage de crémant d'Alsace <?php echo $tirage->campagne; ?> a bien été enregistré à l'AVA pour le compte du Syndicat des producteurs de crémant d'Alsace.
+
+Vous pouvez à tout moment revenir sur votre compte pour consulter ou imprimer votre document : <?php echo sfContext::getInstance()->getRouting()->generate('tirage_visualisation', $tirage,true); ?>
+
+
+Bien cordialement,
+
+Le service Appui technique (via l'application de télédéclaration)

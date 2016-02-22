@@ -3,7 +3,7 @@
     <h2>Vin <small>Merci de saisir les informations liées au Crémant dont vous souhaitez déclarer le tirage</small></h2>
 </div>
 
-<form role="form" action="" method="post" id="tirage-vin-form">
+<form role="form" action="" method="post" id="tirage-vin-form" class="ajaxForm" >
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 

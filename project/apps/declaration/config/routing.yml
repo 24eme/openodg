@@ -100,7 +100,27 @@ tirage_lots:
     model:    Tirage
     type:     object
   requirements:
-    sf_method: [get, post] 
+    sf_method: [get, post]
+
+tirage_dr_recuperation:
+  url: /tirage/dr-recuperation/:id
+  param: { module: tirage, action: drRecuperation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_dr_import:
+  url: /tirage/dr-import/:id
+  param: { module: tirage, action: drImport }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
   
 tirage_validation:
   url: /tirage/validation/:id
@@ -151,7 +171,6 @@ tirage_export_pdf:
     type:     object
   requirements:
     sf_method: [get, post]
-
 
 tirage_delete:
   url: /tirage/suppression/:id

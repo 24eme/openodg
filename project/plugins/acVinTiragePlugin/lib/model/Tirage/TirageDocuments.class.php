@@ -14,7 +14,7 @@ class TirageDocuments extends BaseTirageDocuments
     
     private static $_document_libelles = array(
         self::DOC_PRODUCTEUR => 'Déclaration de Récolte',
-        self::DOC_ACHETEUR => 'Certificat de de Fabrication ou DRM',
+        self::DOC_ACHETEUR => 'Certificat de Fabrication ou DRM',
     );
     
     private static $_statut_libelles = array(

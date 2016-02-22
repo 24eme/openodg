@@ -86,13 +86,12 @@ class tirageActions extends sfActions {
 
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
         }
-        
-        if($this->form->getValue('lieu_exploitation')) {
-          $this->tirage->lieu_exploitation = $this->form->getValue('lieu_exploitation');
-        }
-        
-        return $this->redirect('tirage_vin', $this->tirage);
 
+        if ($this->form->getValue('lieu_exploitation')) {
+            $this->tirage->lieu_exploitation = $this->form->getValue('lieu_exploitation');
+        }
+
+        return $this->redirect('tirage_vin', $this->tirage);
     }
 
     public function executeVin(sfWebRequest $request) {
@@ -111,36 +110,73 @@ class tirageActions extends sfActions {
         }
 
         $this->form->save();
-          return $this->redirect('tirage_lots', $this->tirage);
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tirage->_id, "revision" => $this->tirage->_rev))));
+        }
+        return $this->redirect('tirage_lots', $this->tirage);
     }
 
-    public function executeLots(sfWebRequest $request) 
-    {
-		$this->tirage = $this->getRoute()->getTirage();
-		$this->secure(TirageSecurity::EDITION, $this->tirage);
+    public function executeLots(sfWebRequest $request) {
+        $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
 
         $this->tirage->storeEtape($this->getEtape($this->tirage, TirageEtapes::ETAPE_LOTS));
 
         $this->tirage->save();
-		
-		$this->form = new TirageLotsForm($this->tirage);
-		
-		if (!$request->isMethod(sfWebRequest::POST)) {
-		
-			return sfView::SUCCESS;
-		}
-		
-		$this->form->bind($request->getParameter($this->form->getName()));
-		
-		if (!$this->form->isValid()) {
-		
-			return sfView::SUCCESS;
-		}
-		
-		$this->form->save();
-		
-		return $this->redirect('tirage_validation', $this->tirage);
-          
+
+        $this->form = new TirageLotsForm($this->tirage);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+        
+        $this->form->save();
+        
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->tirage->_id, "revision" => $this->tirage->_rev))));
+        }
+        
+        return $this->redirect('tirage_validation', $this->tirage);
+    }
+
+    public function executeDrRecuperation(sfWebRequest $request) {
+        $tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $tirage);
+
+        return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
+                        "?" .
+                        http_build_query(array(
+                            'url' => $this->generateUrl('tirage_dr_import', $tirage, true),
+                            'id' => sprintf('DR-%s-%s', $tirage->identifiant, $tirage->campagne))));
+    }
+
+
+    public function executeDrImport(sfWebRequest $request) {
+        $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
+
+        if (!$request->getParameter('pdf')) {
+
+            $this->getUser()->setFlash('error', "La récupération de la DR a échoué");
+
+            return $this->redirect($this->generateUrl('tirage_validation', array("sf_subject" => $this->tirage)));
+        }
+
+        $this->tirage->storeAsAttachment(base64_decode($request->getParameter('pdf')), "DR.pdf", "application/pdf");
+
+        $this->tirage->save();
+
+        $this->getUser()->setFlash('success', "La DR a bien été récupérée depuis le CIVA");
+
+        return $this->redirect($this->generateUrl('tirage_validation', $this->tirage));
     }
 
     public function executeValidation(sfWebRequest $request) {
@@ -153,7 +189,7 @@ class tirageActions extends sfActions {
 
         $this->validation = new TirageValidation($this->tirage);
 
-        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT)));
+        $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -172,6 +208,13 @@ class tirageActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $documents = $this->tirage->getOrAdd('documents');
+
+        foreach ($this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement) {
+            $document = $documents->add($engagement->getCode());
+            $document->statut = ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $this->tirage->hasDr()) ? TirageDocuments::STATUT_RECU : TirageDocuments::STATUT_EN_ATTENTE;
+        }
+
         if ($this->tirage->isPapier()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
@@ -185,9 +228,25 @@ class tirageActions extends sfActions {
         $this->tirage->validate();
         $this->tirage->save();
 
-        //$this->sendDRevMarcValidation($this->tirage);
+         $this->sendTirageValidation($this->tirage);
 
         return $this->redirect('tirage_confirmation', $this->tirage);
+    }
+
+    public function executeValidationAdmin(sfWebRequest $request) {
+        $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->tirage);
+
+        $this->tirage->validateOdg();
+        $this->tirage->save();
+
+        //$this->sendDRevConfirmee($this->drev);
+
+        $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
+
+        $service = $request->getParameter("service");
+
+        return $this->redirect('tirage_visualisation', array('sf_subject' => $this->tirage, 'service' => isset($service) ? $service : null));
     }
 
     public function executeConfirmation(sfWebRequest $request) {
@@ -196,10 +255,35 @@ class tirageActions extends sfActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::VISUALISATION, $this->tirage);
+
+        $this->service = $request->getParameter('service');
+
+        $documents = $this->tirage->getOrAdd('documents');
+
+        if($this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) {
+            $this->validation = new TirageValidation($this->tirage);
+        }
+
+        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) ? new TirageDocumentsForm($documents) : null;
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('tirage_visualisation', $this->tirage);
     }
 
-    public function executePDF(sfWebRequest $request) 
-    {
+    public function executePDF(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
         $this->secure(TirageSecurity::VISUALISATION, $tirage);
 
@@ -244,6 +328,14 @@ class tirageActions extends sfActions {
     protected function forwardSecure() {
         $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
         throw new sfStopException();
+    }
+    
+    protected function sendTirageValidation($tirage) {
+        $pdf = new ExportTiragePdf($tirage, 'pdf', true);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->removeCache();
+        $pdf->generate();
+        Email::getInstance()->sendTirageValidation($tirage);
     }
 
 }

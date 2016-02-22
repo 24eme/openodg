@@ -29,6 +29,63 @@
 
 <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
 
+<div class="row">
+    <div class="col-xs-12">
+        <?php if(count($tirage->getOrAdd('documents')->toArray()) > 0 || $tirage->hasDr()): ?>
+        <h3>Documents à joindre</h3>
+            <?php if ($form): ?>
+                <form action="<?php echo url_for('tirage_visualisation', $tirage) ?>" method="post">
+                    <?php echo $form->renderHiddenFields(); ?>
+                    <?php echo $form->renderGlobalErrors(); ?>
+            <?php endif; ?>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-left col-md-9">Documents</th>
+                        <th class="text-center col-md-3">Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if($tirage->hasDr()): ?>
+                        <tr>
+                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle(TirageDocuments::DOC_DR) ?></td>
+                            <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $tirage) ?>" target="_blank">Télécharger</a></td>
+                        </tr>
+                    <?php endif; ?>
+                    <?php if (isset($form)): ?>
+                        <?php foreach ($form->getEmbeddedForms() as $key => $documentForm): ?>
+                        <tr>
+                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle($key) ?></td>
+                            <td class="text-left">
+                                <div class="checkbox">
+                                    <label>
+                                        <?php echo $form[$key]['statut']->render(); ?>
+                                        <?php echo $form[$key]['statut']->renderLabel(); ?>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <?php foreach($tirage->getOrAdd('documents') as $document): ?>
+                        <tr>
+                            <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle($document->getKey()) ?></td>
+                            <td class="text-center"><span class="<?php if($document->statut == TirageDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif; ?>"><?php echo TirageDocuments::getStatutLibelle($document->statut) ?></span></td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+            <?php if ($form): ?>
+            <div class="col-xs-3 pull-right text-center">
+                <button type="submit" class="btn btn-default btn-sm btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
+            </div>
+            </form>
+            <?php endif; ?>
+        <?php endif; ?>
+    </div>
+</div>
+
 <div class="row row-margin row-button">
     <div class="col-xs-4">
         <a href="<?php echo url_for("home") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
