@@ -240,7 +240,7 @@ class tirageActions extends sfActions {
         $this->tirage->validateOdg();
         $this->tirage->save();
 
-        $this->sendTirageConfirmee($this->drev);
+        $this->sendTirageConfirmee($this->tirage);
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 
