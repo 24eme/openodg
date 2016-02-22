@@ -3,7 +3,7 @@
 		<?php if ($form["nombre"]->hasError()): ?>                            
 			<div class="alert alert-danger" role="alert"><?php echo $form["nombre"]->getError(); ?></div>
         <?php endif; ?> 
-		<?php echo $form['nombre']->render(array('class' => 'form-control input-rounded num_int text-right')) ?>
+        <?php echo $form['nombre']->render() ?>
 	</div>
 	<div class="col-xs-3 text-left" style="padding-top: 7px;">bouteille(s) de</div>
 	<div class="col-xs-3 <?php if ($form["contenance"]->hasError()): ?>has-error<?php endif; ?>">
