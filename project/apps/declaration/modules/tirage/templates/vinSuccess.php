@@ -24,12 +24,12 @@
     <div class="row row-margin">
         <div class="col-xs-12">
             <div class="form-inline">
-                <?php echo $form["cepage"]->renderError(); ?>
+                <?php echo $form["cepages_actifs"]->renderError(); ?>
                 <label class="col-xs-2 text-right">
-                    <?php echo $form["cepage"]->renderLabel(); ?>
+                    <?php echo $form["cepages_actifs"]->renderLabel(); ?>
                 </label>
                 <div class="col-xs-10 text-left">              
-                    <?php echo $form["cepage"]->render(array("class" => "")); ?>
+                    <?php echo $form["cepages_actifs"]->render(array("class" => "")); ?>
                 </div>
             </div>
         </div>

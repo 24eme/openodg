@@ -99,6 +99,7 @@ class tirageActions extends sfActions {
         }
 
         $this->form->save();
+          return $this->redirect('tirage_lots', $this->tirage);
     }
 
     public function executeLots(sfWebRequest $request) {
