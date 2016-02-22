@@ -42,15 +42,13 @@ admin_export:
 
 #TIRAGE
 
-tirage_vin:
-  url: /tirage/vin/:id
-  param: { module: tirage, action: vin }  
-  requirements:
-    sf_method: [get]  
-
 tirage_exploitation:
   url: /tirage/exploitation
   param: { module: tirage, action: exploitation }
+
+tirage_vin:
+  url: /tirage/vin/:id
+  param: { module: tirage, action: vin }
   
 tirage_lots:
   url: /tirage/lots
