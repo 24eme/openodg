@@ -38,6 +38,31 @@ admin_doc:
 admin_export:
   url: /admin/export
   param: { module: admin, action: export }
+  
+
+#TIRAGE
+
+tirage_exploitation:
+  url: /tirage/exploitation
+  param: { module: tirage, action: exploitation }
+  
+tirage_lots:
+  url: /tirage/lots
+  param: { module: tirage, action: lots }
+  
+tirage_validation:
+  url: /tirage/validation
+  param: { module: tirage, action: validation }
+
+tirage_visualisation:
+  url: /tirage/visualisation
+
+tirage_export_pdf:
+  url: /tirage/pdf
+  param: { module: drev, action: PDF }
+
+
+# DREV
 
 drev_index:
   url: /drev
