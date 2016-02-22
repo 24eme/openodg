@@ -12,7 +12,7 @@
             <table border="0">
                 <tr>
                     <td style="width: 420px;">&nbsp;Nom : <i><?php echo $tirage->declarant->raison_sociale ?></i></td>
-                    <td><?php echo $tirage->getQualite(); ?></td>
+                    <td><i><?php echo $tirage->getQualite(); ?></i></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Adresse : <i><?php echo $tirage->declarant->adresse ?></i></td>
@@ -23,16 +23,11 @@
                     <td><?php if ($tirage->declarant->cvi): ?>N° CVI : <i><?php echo $tirage->declarant->cvi ?></i><?php else: ?>&nbsp;<?php endif; ?></td>
                 </tr>
                 <tr>
-                    <td>&nbsp;Lieu de stockage : <i><?php echo $tirage->declarant->code_postal ?> <?php echo $tirage->declarant->commune ?></i></td>
-                    <td></td>
+                  <td collspan="2">&nbsp;Lieu de stockage : <i><?php echo ($tirage->lieu_stockage) ? $tirage->lieu_stockage : "même lieu que l'adresse"; ?></i></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Tel / Fax : <i><?php echo $tirage->declarant->telephone ?> / <?php echo $tirage->declarant->fax ?></i></td>
-                    <td></td>
-                </tr>
-                <tr>
                     <td>&nbsp;Email : <i><?php echo $tirage->declarant->email ?></i></td>
-                    <td></td>
                 </tr>
             </table>
         </td></tr></table>
@@ -48,7 +43,7 @@ Déclare,
 	<td style="text-align:left;">
 	  <table>
       <?php foreach ($tirage->composition as $compo): ?>
-      <tr><td class="border"><?php echo $compo->nombre; ?> &nbsp; </td><td> &nbsp; bouteilles de <?php echo $compo->contenance; ?>&nbsp;cl.</td></tr>
+      <tr><td class="border"><?php echo $compo->nombre; ?> &nbsp; </td><td> &nbsp; bouteilles de <?php echo $compo->contenance; ?></td></tr>
       <?php endforeach; ?>
 	  </table>
       </td></tr>
