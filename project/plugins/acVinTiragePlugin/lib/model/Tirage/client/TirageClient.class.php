@@ -4,6 +4,8 @@ class TirageClient extends acCouchdbClient {
 
     const TYPE_MODEL = "Tirage"; 
     const TYPE_COUCHDB = "TIRAGE";
+    
+    const MILLESIME_ASSEMBLE = "ASSEMBLE";
 
     public static function getInstance()
     {
