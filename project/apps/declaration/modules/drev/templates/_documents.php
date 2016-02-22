@@ -1,10 +1,5 @@
 <?php if(count($drev->getOrAdd('documents')->toArray()) > 0 || $drev->hasDr()): ?>
 <h3>Documents à joindre</h3>
-<?php if ($form): ?>
-	<form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
-        <?php echo $form->renderHiddenFields(); ?>
-        <?php echo $form->renderGlobalErrors(); ?>
-<?php endif; ?>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -43,10 +38,4 @@
         <?php endif; ?>
     </tbody>
 </table>
-<?php if ($form): ?>
-<div class="col-xs-3 pull-right text-center">
-	<button type="submit" class="btn btn-default btn-sm btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
-</div>
-</form>
-<?php endif; ?>
 <?php endif; ?>

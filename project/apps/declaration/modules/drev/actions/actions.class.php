@@ -609,7 +609,7 @@ class drevActions extends sfActions {
             $this->validation = new DRevValidation($this->drev);
         }
 
-        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
+        $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
