@@ -23,7 +23,7 @@ class TirageValidation extends DocumentValidation {
             $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, null);
         }
         $composition_incomplete = true;
-        if (!count($this->document->composition)) {
+        if (count($this->document->composition)) {
             foreach ($this->document->composition as $compo) {
                 if ($compo->nombre) {
                     $composition_incomplete = false;
