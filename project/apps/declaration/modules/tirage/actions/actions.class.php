@@ -2,7 +2,7 @@
 
 class tirageActions extends sfActions {
 
-      public function executeCreate(sfWebRequest $request) {
+    public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $tirage->save();
@@ -47,7 +47,7 @@ class tirageActions extends sfActions {
         $tirage = $this->getRoute()->getTirage();
         $tirage->delete();
         $this->getUser()->setFlash("notice", 'La déclaration de tirage a été supprimé avec succès.');
-        
+
         return $this->redirect($this->generateUrl('home'));
     }
 
@@ -80,20 +80,24 @@ class tirageActions extends sfActions {
 
         $this->tirage->storeDeclarant();
         $this->tirage->save();
-        
-        return $this->redirect('tirage_revendication', $this->tirage);
+        return $this->redirect('tirage_vin', $this->tirage);
     }
 
     public function executeVin(sfWebRequest $request) {
 
-        $this->tirage = new Tirage();
+        $this->tirage = $this->getRoute()->getTirage();
         $this->form = new TirageVinForm($this->tirage);
         if (!$request->isMethod(sfWebRequest::POST)) {
-
             return sfView::SUCCESS;
         }
 
+
         $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+            return sfView::SUCCESS;
+        }
+
         $this->form->save();
     }
 
@@ -173,7 +177,7 @@ class tirageActions extends sfActions {
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
-             return sfView::SUCCESS;
+            return sfView::SUCCESS;
         }
 
         if (!$this->validation->isValide()) {
@@ -182,13 +186,13 @@ class tirageActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-        
+
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
 
-        if($this->tirage->isPapier()) {
+        if ($this->tirage->isPapier()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             $this->tirage->validate($this->form->getValue("date"));
@@ -226,18 +230,18 @@ class tirageActions extends sfActions {
         $this->document = new ExportTiragePdf($tirage, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
-          if ($request->getParameter('force')) {
-          $this->document->removeCache();
-          }
+        if ($request->getParameter('force')) {
+            $this->document->removeCache();
+        }
 
-          $this->document->generate();
+        $this->document->generate();
 
-          $this->document->addHeaders($this->getResponse());
+        $this->document->addHeaders($this->getResponse());
 
         return $this->renderText($this->document->output());
     }
 
-      protected function getEtape($tirage, $etape) {
+    protected function getEtape($tirage, $etape) {
         $tirageEtapes = TirageEtapes::getInstance();
         if (!$tirage->exist('etape')) {
             return $etape;
@@ -245,9 +249,7 @@ class tirageActions extends sfActions {
         return ($tirageEtapes->isLt($tirage->etape, $etape)) ? $etape : $tirage->etape;
     }
 
-    
-    protected function secure($droits, $doc) 
-    {
+    protected function secure($droits, $doc) {
         if (!TirageSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
             return $this->forwardSecure();
         }
