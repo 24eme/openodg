@@ -13,6 +13,6 @@
 		<?php echo $form['contenance']->render(array('class' => 'form-control')) ?>
 	</div>
 	<div class="col-xs-1" style="padding-top: 5px;">
-		<a href="javascript:$.initCollectionDeleteTemplate();" data-container="div.compositionBouteilles" role="button" class="text-danger btn_rm_ligne_template" style="font-size: 20px;"><span class="glyphicon glyphicon-remove-sign"></span></a>
+		<a href="javascript:void(0)" data-container="div.compositionBouteilles" role="button" class="text-danger btn_rm_ligne_template" style="font-size: 20px;"><span class="glyphicon glyphicon-remove-sign"></span></a>
 	</div>
 </div>

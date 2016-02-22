@@ -145,8 +145,14 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     }
 
     public function updateCepages() {
+        $cepages = array();
         foreach($this->getConfigurationCepages() as $cepage) {
-            $this->cepages->add($cepage->getKey())->libelle = $cepage->getLibelle();
+            $cepages[$cepage->getKey()] = $cepage->getLibelle();
+        }
+        sort($cepages);
+        foreach ($cepages as $keyCep => $libelle) {
+            
+            $this->cepages->add($keyCep)->libelle = $libelle;
         }
     }
 
@@ -224,7 +230,15 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         return $q;
     }
     public function cleanDoc() {
-        return false;
+        $tobedeleted = array();
+        foreach ($this->composition as $k => $v) {
+            if (!$v->nombre) {
+                $tobedeleted[] = $k;
+            }
+        }
+        foreach($tobedeleted as $k) {
+            $this->composition->remove($k);
+        }
     }
     
     public function getCepagesSelectionnes() {

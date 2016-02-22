@@ -118,7 +118,8 @@
     
     $.initCollectionDeleteTemplate = function()
     {
-    	$('.btn_rm_ligne_template').on('click',function()
+    	
+    	$('#compositions').on('click', 'a.btn_rm_ligne_template', function()
         {
         	var element = $(this).attr('data-container');
             $(this).parents(element).remove();
