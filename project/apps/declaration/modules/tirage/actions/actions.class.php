@@ -226,7 +226,7 @@ class tirageActions extends sfActions
     
     protected function secure($droits, $doc) 
     {
-        if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
+        if (!TirageSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
             return $this->forwardSecure();
         }
     }
