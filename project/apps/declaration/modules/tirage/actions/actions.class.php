@@ -81,6 +81,11 @@ class tirageActions extends sfActions {
         $this->tirage->storeDeclarant();
         $this->tirage->save();
 
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
+        }
+        
         if($this->form->getValue('lieu_exploitation')) {
           $this->tirage->lieu_exploitation = $this->form->getValue('lieu_exploitation');
         }
