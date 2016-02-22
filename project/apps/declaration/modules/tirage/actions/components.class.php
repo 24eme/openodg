@@ -7,9 +7,13 @@ class tirageComponents extends sfComponents {
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
 
         $this->nbDeclaration = TirageClient::getInstance()->getLastNumero($this->etablissement->identifiant, $campagne);
-        $nextNumero = $this->nbDeclaration + 1;
 
+        $this->tirage = TirageClient::getInstance()->find('TIRAGE-' . $this->etablissement->identifiant . '-' . $campagne. sprintf("%02d", $this->nbDeclaration));
+        
+        $nextNumero = $this->nbDeclaration + 1;
+        if($this->tirage->validation){
         $this->tirage = TirageClient::getInstance()->find('TIRAGE-' . $this->etablissement->identifiant . '-' . $campagne. sprintf("%02d", $nextNumero));
+        }
         $this->tiragesHistory = array();
         $this->nieme = '';
         if ($nextNumero > 1) {
