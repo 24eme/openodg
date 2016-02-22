@@ -11,7 +11,7 @@ $hasError = ($global_error_msg != "");
 <?php include_partial('tirage/step', array('step' => 'lots', 'tirage' => $tirage)) ?>
 
 <div class="page-header no-border">
-    <h2>Lots</h2>
+    <h2>Lot <small>Merci de saisir dans cet écran les informations liées à l'embouteillage de votre Crémant</small></h2>
 </div>
 
 
