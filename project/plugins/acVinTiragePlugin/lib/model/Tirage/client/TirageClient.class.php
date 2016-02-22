@@ -62,7 +62,7 @@ class TirageClient extends acCouchdbClient {
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrent())."";
+        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()."";
 
         return $this->startkey(sprintf("TIRAGE-%s-%s%s", $identifiant, $campagne_from, "00"))
                     ->endkey(sprintf("TIRAGE-%s-%s%s", $identifiant, $campagne_to, "99"))
