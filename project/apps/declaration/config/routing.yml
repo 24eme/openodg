@@ -42,6 +42,12 @@ admin_export:
 
 #TIRAGE
 
+tirage_vin:
+  url: /tirage/vin/:id
+  param: { module: tirage, action: vin }  
+  requirements:
+    sf_method: [get]  
+
 tirage_exploitation:
   url: /tirage/exploitation
   param: { module: tirage, action: exploitation }
@@ -1252,18 +1258,6 @@ facturation_declarant:
   requirements:
     sf_method: [get, post]
 
-
-#TIRAGE
-
-tirage_vin:
-  url: /tirage/vin/:id
-  param: { module: tirage, action: vin }
-  class: TirageRoute
-  options:
-    model:    Tirage
-    type:     object
-  requirements:
-    sf_method: [get]  
 
 #Génération
 
