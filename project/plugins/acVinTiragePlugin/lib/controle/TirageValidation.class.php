@@ -20,8 +20,11 @@ class TirageValidation extends DocumentValidation
 
     public function controle()
     {
-        $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, null);
-        $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, null);
+        if($this->document->isNegociant()) {
+            $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, null);
+        } else {
+            $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, null);
+        }
     }
     
 }
