@@ -6,6 +6,7 @@ class tirageActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $tirage->save();
+        $tirage->storeDRFromDRev();
 
         return $this->redirect('tirage_edit', $tirage);
     }
@@ -81,6 +82,11 @@ class tirageActions extends sfActions {
         $this->tirage->storeDeclarant();
         $this->tirage->save();
 
+        if ($request->isXmlHttpRequest()) {
+
+            return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->etablissement->_id, "revision" => $this->etablissement->_rev))));
+        }
+        
         if($this->form->getValue('lieu_exploitation')) {
           $this->tirage->lieu_exploitation = $this->form->getValue('lieu_exploitation');
         }

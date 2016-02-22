@@ -1,6 +1,6 @@
 <?php include_partial('tirage/step', array('step' => 'validation', 'tirage' => $tirage)) ?>
 <div class="page-header">
-    <h2>Validation de votre déclaration de Tirage A.O.C. Crémant d'Alsace</h2>
+    <h2>Validation de votre déclaration</h2>
 </div>
 
 <form id="validation-form" role="form" action="<?php echo url_for("tirage_validation", $tirage) ?>" method="post">
