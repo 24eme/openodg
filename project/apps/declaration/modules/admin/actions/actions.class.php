@@ -21,7 +21,7 @@ class adminActions extends sfActions {
         }
 
         $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
-
+        
         return $this->redirect('home'); 
     }
 
