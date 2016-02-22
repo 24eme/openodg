@@ -3,6 +3,29 @@
 <div class="page-header">
     <h2><?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>Confirmation de votre e-mail<?php else: ?>Eléments declaratifs<?php endif; ?></h2>
 </div>
+
+<?php if ($sf_user->isAdmin()): ?>
+    <div class="row row-margin">
+        <form method="post" action="" role="form" class="form-horizontal">
+            <?php echo $formLogin->renderHiddenFields(); ?>
+            <?php echo $formLogin->renderGlobalErrors(); ?>
+            <div class="form-group">
+                <?php echo $formLogin["login"]->renderError(); ?>
+                <div class="col-xs-8 col-xs-offset-1">
+                    <?php
+                    echo $formLogin["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote",
+                        "placeholder" => $etablissement->nom.' ('.$etablissement->cvi.') à '.$etablissement->commune.' ('.$etablissement->code_postal.')',
+                        "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
+                    ));
+                    ?>
+                </div>
+                <div class="col-xs-2">
+                    <button class="btn btn-default btn-lg" type="submit">Valider</button>
+                </div>
+            </div>
+        </form>
+    </div>
+<?php endif; ?>
 <?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>
     <form action="<?php echo url_for("home") ?>" method="post" class="form-horizontal">
         <p>Pour votre première connexion sur le portail de l'Association des Viticulteurs d'Alsace, vous devez confirmer votre adresse e-mail.</p>
@@ -14,7 +37,7 @@
         </div>
     </form>
 <?php else: ?>
-        <h4>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</h4>
+    <h4>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</h4>
     <div class="row">
         <?php include_component('drev', 'monEspace'); ?>
         <?php include_component('drevmarc', 'monEspace'); ?>
