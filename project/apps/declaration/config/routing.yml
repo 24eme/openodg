@@ -137,8 +137,15 @@ tirage_visualisation:
     sf_method: [get, post]
 
 tirage_export_pdf:
-  url: /tirage/pdf
+  url: /tirage/pdf/:id
   param: { module: tirage, action: PDF }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 
 tirage_delete:
   url: /tirage/suppression/:id

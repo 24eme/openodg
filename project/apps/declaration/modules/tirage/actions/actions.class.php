@@ -216,14 +216,12 @@ class tirageActions extends sfActions {
 
     public function executePDF(sfWebRequest $request) 
     {
-        $tirage = new Tirage();
-        /*$tirage = $this->getRoute()->getTirage();
+        $tirage = $this->getRoute()->getTirage();
         $this->secure(TirageSecurity::VISUALISATION, $tirage);
 
         if (!$tirage->validation) {
-            $tirage->cleanDoc();
+            //    $tirage->cleanDoc();
         }
-	*/
 
         $this->document = new ExportTiragePdf($tirage, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
