@@ -9,13 +9,15 @@ class tirageActions extends sfActions {
         $nbDeclaration = TirageClient::getInstance()->getLastNumero($etablissement->identifiant, $campagne);
         $tirage->save();
         $tirage->storeDRFromDRev();
-        
+
         if ($nbDeclaration >= 1) {
             $idLast = 'TIRAGE-' . $etablissement->identifiant . '-' . $campagne . sprintf('%02d', $nbDeclaration);
             $lastTirage = TirageClient::getInstance()->find($idLast);
             if ($lastTirage && $lastTirage->exist('documents') && $lastTirage->exist('_attachments')) {
-                $tirage->add('documents', $lastTirage->documents);                
-                $tirage->storeAsAttachment(file_get_contents($lastTirage->getAttachmentUri("DR.pdf")), "DR.pdf", "application/pdf");               
+                $tirage->add('documents', $lastTirage->documents);
+                if (file_get_contents($lastTirage->getAttachmentUri("DR.pdf"))) {
+                    $tirage->storeAsAttachment(file_get_contents($lastTirage->getAttachmentUri("DR.pdf")), "DR.pdf", "application/pdf");
+                }
             }
         }
         $tirage->save();

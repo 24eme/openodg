@@ -44,7 +44,8 @@
                                     echo $form['engagement_' . $engagement->getCode()]->render(array('class' => 'hidden'));
 
                                 } else {
-                                    echo $form['engagement_' . $engagement->getCode()]->render();
+                                    $svRecu = ($tirage->hasSV())? array('checked' => 'checked') : array();
+                                    echo $form['engagement_' . $engagement->getCode()]->render($svRecu);
                                 
                                 }
                             ?>

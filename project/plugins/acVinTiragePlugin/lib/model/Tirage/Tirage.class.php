@@ -67,7 +67,17 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         return $this->_attachments->exist('DR.pdf');
     }
 
-
+    public function hasSV() {
+        return (($this->documents->exist(TirageDocuments::DOC_SV11) 
+                && ($this->documents->get(TirageDocuments::DOC_SV11)->statut) == TirageDocuments::STATUT_RECU)
+                ||
+                ($this->documents->exist(TirageDocuments::DOC_SV12) 
+                && ($this->documents->get(TirageDocuments::DOC_SV12)->statut) == TirageDocuments::STATUT_RECU)
+                );
+       
+        
+    }
+    
     public function getDRev() {
 
         return DRevClient::getInstance()->find("DREV-".$this->identifiant."-".$this->campagne);

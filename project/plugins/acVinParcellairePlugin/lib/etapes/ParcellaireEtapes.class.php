@@ -27,7 +27,7 @@ class ParcellaireEtapes extends Etapes {
 
     public static $libelles = array(
         self::ETAPE_EXPLOITATION => 'Exploitation',
-        self::ETAPE_PROPRIETE => 'Destination du raison',
+        self::ETAPE_PROPRIETE => 'Destination du raisin',
         self::ETAPE_PARCELLES => 'Parcelles',
         self::ETAPE_ACHETEURS => 'Acheteurs',
         self::ETAPE_VALIDATION => 'Validation'
