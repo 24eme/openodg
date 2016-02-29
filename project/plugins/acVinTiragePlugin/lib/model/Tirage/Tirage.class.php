@@ -251,4 +251,15 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         return $cepagesSelectionnes;
     }
 
+    public function getVolumeTotalComposition() {
+        $sommeTotal = 0;
+        $contenances = sfConfig::get('app_contenances_bouteilles');
+       
+        foreach ($this->composition as $compo){
+            $hectolitre = $contenances[$compo->contenance] / 10000;            
+            $sommeTotal+=$compo->nombre * $hectolitre;
+        }
+        return $sommeTotal;
+    }
+    
 }
