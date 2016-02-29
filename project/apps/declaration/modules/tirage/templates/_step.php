@@ -25,7 +25,7 @@ $steps = array(
             <?php if($etapes->isGt($etapeCourante, TirageEtapes::ETAPE_VIN) && !$tirage->isValide()): ?>
             <a href="<?php echo url_for("tirage_vin", $tirage) ?>" class="ajax">Vin</a>
             <?php else: ?>
-            <span>Vin</span>
+            <span>Caractéristiques</span>
             <?php endif; ?>
         </div>
     </li>
@@ -34,7 +34,7 @@ $steps = array(
             <?php if($etapes->isGt($etapeCourante, TirageEtapes::ETAPE_LOTS) && !$tirage->isValide()): ?>
             <a href="<?php echo url_for("tirage_lots", $tirage) ?>" class="ajax">Lot</a>
             <?php else: ?>
-            <span>Lot</span>
+            <span>Répartition</span>
             <?php endif; ?>
         </div>
     </li>
