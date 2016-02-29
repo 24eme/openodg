@@ -33,13 +33,13 @@
             </table>
         </td></tr></table>
 <br /> 
-<?php if (count($parcellesByLieu->acheteurs)): ?>
+<?php if (count($parcellesForDetail->acheteurs)): ?>
     <br /> 
     <span class="h3Alt">&nbsp;Destination des raisins&nbsp;</span><br/>
     <table class="tableAlt"><tr><td>
                 <table border="0">
                     <?php if(!$cviFilter): ?>
-                        <?php foreach ($parcellesByLieu->acheteurs as $type => $acheteurs): ?>
+                        <?php foreach ($parcellesForDetail->acheteurs as $type => $acheteurs): ?>
                             <tr>
                                 <td><span style="font-family: Dejavusans">☒</span>&nbsp;<?php echo ParcellaireClient::$destinations_libelles[$type] ?>
                                     <?php
@@ -60,7 +60,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         
-                        <?php $acheteursByCvi = array(); foreach($parcellesByLieu->acheteurs as $type => $acheteurs) { foreach ($acheteurs as $acheteur) { $acheteursByCvi[$acheteur->cvi] = $acheteur->nom; }} ?>
+                        <?php $acheteursByCvi = array(); foreach($parcellesForDetail->acheteurs as $type => $acheteurs) { foreach ($acheteurs as $acheteur) { $acheteursByCvi[$acheteur->cvi] = $acheteur->nom; }} ?>
                         <tr>
                             <td><?php if(count($acheteursByCvi) > 1): ?>Partagés entre plusieurs destinataires dont <?php echo $acheteursByCvi[$cviFilter]; ?> <?php else: ?>Dédiés à <?php echo $acheteursByCvi[$cviFilter]; ?><?php endif; ?></td>
                         </tr>
@@ -69,23 +69,23 @@
             </td></tr></table>
     <br />
 <?php endif; ?>
-<div><span class="h3">&nbsp;<?php echo $parcellesByLieu->appellation_libelle; ?><?php echo ($parcellesByLieu->lieu_libelle) ? '&nbsp;-&nbsp;' . $parcellesByLieu->lieu_libelle : ''; ?>&nbsp;</span></div>
+<div><span class="h3">&nbsp;<?php echo $parcellesForDetail->appellation_libelle; ?><?php echo ($parcellesForDetail->lieu_libelle) ? '&nbsp;-&nbsp;' . $parcellesForDetail->lieu_libelle : ''; ?>&nbsp;</span></div>
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="text-align: center; width: 170px;">&nbsp;Commune</th>        
         <th class="th" style="text-align: center; width: 74px;">Section</th>       
         <th class="th" style="text-align: center; width: 74px;">Numéro</th>
-        <th class="th" style="text-align: center; width: 160px;">Cépage</th> 
 <?php if(!$parcellaire->isParcellaireCremant()) : ?>
+        <th class="th" style="text-align: center; width: 160px;">Cépage</th> 
         <th class="th" style="text-align: center; width: 60px;">VT/SGN</th>
-        <th class="th" style="text-align: center; width: 100px;">Surface</th>
 <?php else: ?>
-        <th class="th" style="text-align: center; width: 160px;">Surface</th>
+        <th class="th" style="text-align: center; width: 220px;">Lieu - Cépage</th> 
 <?php endif; ?>
+        <th class="th" style="text-align: center; width: 100px;">Surface</th>
     </tr>
     <?php
-    foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle):
+    foreach ($parcellesForDetail->parcelles as $detailHash => $parcelle):
         $hasVtSgn = $parcelle->parcelle->getCepage()->getConfig()->hasVtsgn();
         ?>
         <tr>
