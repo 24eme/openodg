@@ -29,14 +29,14 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function getAcheteursByCVI() {
-        $acheteurs = array();
+        $acheteursCvi = array();
         foreach($this->getAcheteurs() as $type => $acheteurs) {
             foreach($acheteurs as $cvi => $acheteur) {
-                $acheteurs[$cvi] = $acheteur; 
+                $acheteursCvi[$cvi] = $acheteur; 
             }
         }
 
-        return $acheteurs;
+        return $acheteursCvi;
     }
 
     public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
@@ -83,10 +83,16 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function isCleanable() {
-        return (!($this->getActive()) || ($this->isFromAppellation('ALSACEBLANC') && !($this->getVtsgn())));
+    	if (!$this->getActive()) {
+    		return true;
+    	}
+        return ($this->isFromAppellation('ALSACEBLANC') && !$this->getVtsgn());
     }
 
-    public function isAffectee() {
+    public function isAffectee($lieu = null) {
+    	if ($lieu && $lieu != $this->lieu) {
+    		return false;
+    	}
         return !$this->isCleanable();
     }
     

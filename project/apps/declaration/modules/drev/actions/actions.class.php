@@ -146,6 +146,10 @@ class drevActions extends sfActions {
 
         $this->drev->storeDeclarant();
         $this->drev->save();
+        
+        if ($this->form->hasUpdatedValues() && !$this->drev->isPapier()) {
+        	Email::getInstance()->sendNotificationModificationsExploitation($this->drev->getEtablissementObject(), $this->form->getUpdatedValues());
+        }
 
         if ($request->isXmlHttpRequest()) {
 
@@ -578,7 +582,9 @@ class drevActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             $this->drev->validate($this->form->getValue("date"));
-            $this->drev->validateOdg();
+            if($this->drev->hasCompleteDocuments()) {
+                $this->drev->validateOdg();
+            }
             $this->drev->save();
 
             return $this->redirect('drev_visualisation', $this->drev);
@@ -609,7 +615,7 @@ class drevActions extends sfActions {
             $this->validation = new DRevValidation($this->drev);
         }
 
-        $this->form = (count($documents->toArray()) && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
+        $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -634,7 +640,9 @@ class drevActions extends sfActions {
         $this->drev->validateOdg();
         $this->drev->save();
 
-        $this->sendDRevConfirmee($this->drev);
+        if (!$this->drev->isPapier()) {
+            $this->sendDRevConfirmee($this->drev);
+        }
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 

@@ -167,6 +167,9 @@
 
                 return item.text;
             }
+            
+        }).on("select2-selected", function(e) {            
+            $(this).parents('form').submit();
         });
     }
 
@@ -457,6 +460,39 @@
         $('.modal.modal-page').modal({keyboard: false, backdrop: 'static'});
     }
 
+    $.initCheckboxBtnGroup = function() {
+        $('.btn-group.select label.btn').on('click', function() {
+            if(!$(this).hasClass('active')) {
+                $(this).removeClass('btn-default-step');
+            } else {
+                $(this).addClass('btn-default-step');
+            }
+        })
+    }
+
+    $.initValidationDeclaration = function() {
+        $('#submit-confirmation-validation').click(function() {
+            $('#validation-form').submit();
+        });
+
+        $('#btn-validation-document').click(function() {
+            $("input:checkbox[name*=validation]").each(function() {
+                    $(this).parent().parent().parent().removeClass("has-error");
+            });
+            $("#engagements .alert-danger").addClass("hidden");
+            if($("input:checkbox[name*=validation]").length != $("input:checkbox[name*=validation]:checked").length) {
+                $("#engagements .alert-danger").removeClass("hidden");
+                $("input:checkbox[name*=validation]:not(:checked)").each(function() {
+                    $(this).parent().parent().parent().addClass("has-error");
+                });
+                $("input:checkbox[name*=validation]:checked").each(function() {
+                    $(this).parent().parent().parent().removeClass("has-error");
+                });
+                return false;
+            }
+        });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -476,5 +512,6 @@
         $('a[data-toggle=tooltip], button[data-toggle=tooltip], span[data-toggle=tooltip]').tooltip({'container': 'body'});
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
+        $.initCheckboxBtnGroup();
     });
 })(jQuery);

@@ -1,0 +1,78 @@
+#TIRAGE
+Tirage:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      _attachments:
+        type: collection
+        definition:
+          fields: 
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*': { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      numero: { }
+      etape: { }
+      validation: { }
+      validation_odg: { }
+      papier: { required: false, type: integer }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
+      qualite: { }
+      lieu_stockage: { }
+      couleur: { }
+      couleur_libelle: { }
+      cepages:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  libelle: { }
+                  selectionne: { type: integer }
+      millesime: { }
+      millesime_libelle: { }
+      millesime_ventilation: { }
+      fermentation_lactique: {  }
+      date_mise_en_bouteille_debut: { }
+      date_mise_en_bouteille_fin: { }
+      composition:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  nombre: { }
+                  contenance: { }
+      documents:
+        required: false
+        class: TirageDocuments
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  statut: { }

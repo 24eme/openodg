@@ -38,6 +38,171 @@ admin_doc:
 admin_export:
   url: /admin/export
   param: { module: admin, action: export }
+  
+
+#TIRAGE
+
+tirage_create:
+  url: /tirage/creation/:id
+  param: { module: tirage, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_create_papier:
+  url: /tirage/creation-papier/:id
+  param: { module: tirage, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_edit:
+  url: /tirage/edition/:id
+  param: { module: tirage, action: edit }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_exploitation:
+  url: /tirage/exploitation/:id
+  param: { module: tirage, action: exploitation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_vin:
+  url: /tirage/vin/:id
+  param: { module: tirage, action: vin }  
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post] 
+  
+tirage_lots:
+  url: /tirage/lots/:id
+  param: { module: tirage, action: lots }  
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_dr_recuperation:
+  url: /tirage/dr-recuperation/:id
+  param: { module: tirage, action: drRecuperation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_dr_import:
+  url: /tirage/dr-import/:id
+  param: { module: tirage, action: drImport }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+  
+tirage_validation:
+  url: /tirage/validation/:id
+  param: { module: tirage, action: validation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_validation_admin:
+  url: /tirage/validation_admin/:id
+  param: { module: tirage, action: validationAdmin }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_confirmation:
+  url: /tirage/confirmation/:id
+  param: { module: tirage, action: confirmation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_visualisation:
+  url: /tirage/visualisation/:id
+  param: { module: tirage, action: visualisation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_export_pdf:
+  url: /tirage/pdf/:id
+  param: { module: tirage, action: PDF }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+tirage_dr_pdf:
+  url: /tirage/pdf/:id/dr
+  param: { module: tirage, action: drPdf }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_delete:
+  url: /tirage/suppression/:id
+  param: { module: tirage, action: delete }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_devalidation:
+  url: /tirage/devalidation/:id
+  param: { module: tirage, action: devalidation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+# DREV
 
 drev_index:
   url: /drev
@@ -1034,9 +1199,9 @@ parcellaire_visualisation:
   requirements:
     sf_method: [get]
 
-parcellaire_export_csv_document:
-  url: /parcellaire/export-csv/:id
-  param: { module: parcellaire, action: exportCsvParcellaire }
+parcellaire_export_csv:
+  url: /parcellaire/csv/:id
+  param: { module: parcellaire, action: CSV }
   class: ParcellaireRoute
   options:
     model:    Parcellaire

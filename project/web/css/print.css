@@ -51,10 +51,16 @@ img
 /* ============================================================= */
 /* ELEMENTS CACHES */
 /* ============================================================= */
-#colonne
+#colonne,
+#header,
+#footer,
+#carte,
+.row-button,
+.btn-group 
 {
 	display: none !important;
 }
+
 
 
 /* ============================================================= */
@@ -150,5 +156,9 @@ h2, h3 {
 .print-list-group-condensed a {
     padding-top: 2px;
     padding-bottom: 3px;
+}
+
+.panel.panel-primary {
+	background: 0 !important;
 }
 

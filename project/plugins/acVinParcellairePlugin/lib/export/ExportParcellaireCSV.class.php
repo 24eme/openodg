@@ -18,7 +18,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;Campagne;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission\n";
+        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;Campagne;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN\n";
     }
 
     public function __construct($parcellaire, $header = true) {
@@ -26,12 +26,31 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
         $this->header = $header;
     }
 
-    public function getFileName() {
-        
-        return $this->parcellaire->_id . '_' . $this->parcellaire->_rev . '.csv';
+    public function getFileName($with_rev = true, $nomFilter = null) {
+
+      return self::buildFileName($this->parcellaire, $with_rev, $nomFilter);
     }
 
-    public function export() {
+    public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
+        
+        $prefixName = ($parcellaire->isParcellaireCremant())? "PARCELLAIRE_CREMANT_%s_%s" :"PARCELLAIRE_%s_%s";
+        $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
+
+        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
+        $filename .= '_' . $declarant_nom;
+
+        if($nomFilter) {
+            $filename .= '_' . strtoupper(KeyInflector::slugify($nomFilter));
+        }
+
+        if ($with_rev) {
+            $filename .= '_' . $parcellaire->_rev;
+        }
+
+        return $filename . '.csv';
+    }
+
+    public function export($cviFilter = null) {
         $export = "";
         if($this->header) { 
             $export = self::getHeaderCsv();
@@ -60,6 +79,10 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
             }
 
             foreach($acheteurs as $acheteur) {
+                if($cviFilter && $cviFilter != $acheteur->cvi) {
+                    continue;
+                }
+
                 $export.= $parcelle->commune . ";";
                 $export.= $parcelle->section . ";";
                 $export.= $parcelle->numero_parcelle . ";";
@@ -83,6 +106,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
                 }
                 $export.= $this->parcellaire->validation.";";
                 $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
+                $export.= ";".(($parcelle->vtsgn) ? "VTSGN" : "");
                 $export.="\n";
             }
         }

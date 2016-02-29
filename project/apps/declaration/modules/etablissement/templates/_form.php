@@ -96,7 +96,7 @@
             <?php endif; ?>
         </div>
     </div>
-    <div id="row_info_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
+    <div id="row_info_exploitation" class="row col-xs-12 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
             <?php if($etablissement->cvi): ?>
             <div class="form-group">
@@ -112,6 +112,16 @@
                    <?php echo $etablissement->siret; ?>
                 </span>
             </div>
+<?php if(isset($extra)): ?>
+<?php foreach($extra as $label => $value): ?>
+            <div class="form-group">
+                <strong class="col-xs-3 text-right"><?php echo $label; ?></strong>
+                <span class="col-xs-9">
+                   <?php echo $value; ?>
+                </span>
+            </div>
+<?php endforeach; ?>
+<?php endif; ?>
         </div>
         <div class="col-xs-7">
             <div class="form-group">

@@ -95,6 +95,10 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->storeDeclarant();
 
         $this->parcellaire->save();
+        
+        if ($this->form->hasUpdatedValues() && !$this->parcellaire->isPapier()) {
+        	Email::getInstance()->sendNotificationModificationsExploitation($this->parcellaire->getEtablissementObject(), $this->form->getUpdatedValues());
+        }
 
         if ($request->isXmlHttpRequest()) {
 
@@ -366,6 +370,9 @@ class parcellaireActions extends sfActions {
 
         $this->document = new ExportParcellairePDF($this->parcellaire, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
+        if($request->getParameter('cvi')) {
+            $this->document->setCviFilter($request->getParameter('cvi'), $request->getParameter('cvi'));
+        }
 
         if ($request->getParameter('force')) {
             $this->document->removeCache();
@@ -378,17 +385,22 @@ class parcellaireActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
-    public function executeExportCsvParcellaire(sfWebRequest $request) {
+    public function executeCSV(sfWebRequest $request) {
+        set_time_limit(180);
         $parcellaire = $this->getRoute()->getParcellaire();
-        ini_set('memory_limit', '2048M');
-        set_time_limit(0);
-        $this->exportCsv = new ExportParcellaireCSV(null, $parcellaire);
-        $this->setLayout(false);
-        $filename = $this->exportCsv->getFileName();
+        $this->exportCsv = new ExportParcellaireCSV($parcellaire);
+
+        $this->cvi = null;
+        if($request->getParameter('cvi')) {
+            $this->cvi = $request->getParameter('cvi');
+        }
+        $filename = $this->exportCsv->getFileName(true, $this->cvi);
         $attachement = "attachment; filename=" . $filename . ".csv";
 
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition', $attachement);
+
+        return $this->renderText($this->exportCsv->export($this->cvi));
     }
 
     public function sendParcellaireValidation($parcellaire) {

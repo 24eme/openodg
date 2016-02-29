@@ -38,6 +38,9 @@ all:
     parcellaire_cremant:
       debut: "YYYY-mm-dd"
       fin: "YYYY-mm-dd"
+    tirage:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
   osm:
     url_search: "http://Url_osm/search"
     return_format: "json"
@@ -60,3 +63,11 @@ all:
       cp_ville: "CP Ville"
       telephone: "Téléphone 00 00 00 00 00 - Fax 01 01 01 01 01"
       email: "Email : mail@mailer.fr"
+  contenances:
+    bouteilles:
+      "75 cl": 75
+      "37,5 cl": 37.5
+      "50 cl": 50
+      "100 cl": 100
+      "150 cl": 150
+      "300 cl": 300

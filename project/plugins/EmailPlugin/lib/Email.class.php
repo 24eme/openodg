@@ -146,6 +146,9 @@ class Email {
             return;
         }
 
+        $csv = new ExportParcellaireCSV($parcellaire);
+        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export()), $csv->getFileName(true, $parcellaire->declarant->nom), 'text/csv');
+        
         $pdf = new ExportParcellairePDF($parcellaire);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
@@ -153,7 +156,7 @@ class Email {
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($parcellaire->declarant->email);
-        $subject = "Validation de votre déclaration d'affectation parcellaire";
+        $subject = sprintf("Validation de votre déclaration d'affectation parcellaire%s", ($parcellaire->isParcellaireCremant())? ' crémant' : '');
         $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
@@ -161,7 +164,41 @@ class Email {
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain')
+                ->attach($csvAttachment)
                 ->attach($pdfAttachment);
+        return $this->getMailer()->send($message);
+    }
+
+    public function sendParcellaireAcheteur($parcellaire, $acheteur) {
+        if (!$acheteur->email || $acheteur->email_envoye || !$parcellaire->autorisation_acheteur) {
+
+            return false;
+        }
+
+        $csv = new ExportParcellaireCSV($parcellaire);
+        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export($acheteur->cvi)), $csv->getFileName(true, $acheteur->nom), 'text/csv');
+
+        $pdf = new ExportParcellairePDF($parcellaire);
+        $pdf->setCviFilter($acheteur->cvi, $acheteur->nom);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
+        $to = array($acheteur->email);
+        $subject = sprintf("Déclaration d'affectation parcellaire%s de %s", ($parcellaire->isParcellaireCremant())? ' crémant' : '', $parcellaire->declarant->nom);
+        $body = $this->getBodyFromPartial('send_parcellaire_acheteur', array('parcellaire' => $parcellaire));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setReplyTo($reply_to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain')
+                ->attach($csvAttachment)
+                ->attach($pdfAttachment);
+
         return $this->getMailer()->send($message);
     }
 
@@ -303,6 +340,74 @@ class Email {
         $this->getMailer()->send($message);
     }
 
+        public function sendTirageValidation($tirage) {
+        if (!$tirage->declarant->email) {
+
+            return;
+        }
+
+        $pdf = new ExportTiragePDF($tirage);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($tirage->declarant->email);
+        $subject = "Validation de votre déclaration de tirage de crémant d'Alsace";
+        $body = $this->getBodyFromPartial('send_tirage_validation', array('tirage' => $tirage));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain')
+                ->attach($pdfAttachment);
+        return $this->getMailer()->send($message);
+    }
+    
+    public function sendTirageConfirmee($tirage) {
+        if (!$tirage->declarant->email) {
+
+            return;
+        }
+
+        $pdf = new ExportTiragePDF($tirage);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($tirage->declarant->email);
+        $subject = "Validation définitive de votre Déclaration de Tirage de Crémant d'Alsace";
+        $body = $this->getBodyFromPartial('send_tirage_confirmee', array('tirage' => $tirage));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain')
+                ->attach($pdfAttachment);
+
+        return $this->getMailer()->send($message);
+    }
+    
+    public function sendNotificationModificationsExploitation($etablissement, $updatedValues) {
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        
+        $subject = "Modification des informations d'exploitation";
+        $body = $this->getBodyFromPartial('send_notification_modifications_exploitation', array('etablissement' => $etablissement, 'updatedValues' => $updatedValues));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
+
+        return $this->getMailer()->send($message);
+    }
+    
     protected function getMailer() {
         return $this->_context->getMailer();
     }

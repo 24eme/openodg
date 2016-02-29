@@ -1,5 +1,11 @@
 <?php use_helper('Date') ?>
 
+<?php if (isset($form)): ?>
+    <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
+        <?php echo $form->renderHiddenFields(); ?>
+        <?php echo $form->renderGlobalErrors(); ?>
+<?php endif; ?>
+
 <div class="page-header no-border">
     <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
     <?php if($drev->isPapier()): ?>
@@ -54,8 +60,15 @@
     </div>
     <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="col-xs-4 text-right">
-            <!--<button type="submit" class="btn btn-danger btn-lg btn-upper"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Refuser</button>-->
-            <a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" <?php if(!$drev->hasCompleteDocuments()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+            <?php if($drev->hasCompleteDocuments()): ?>
+            <a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+            <?php else: ?>
+                <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
+            <?php endif; ?>
     </div>
     <?php endif; ?>
 </div>
+
+<?php if (isset($form)): ?>
+</form>
+<?php endif; ?>

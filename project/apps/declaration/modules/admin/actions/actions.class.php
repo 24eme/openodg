@@ -21,7 +21,7 @@ class adminActions extends sfActions {
         }
 
         $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
-
+        
         return $this->redirect('home'); 
     }
 
@@ -60,11 +60,16 @@ class adminActions extends sfActions {
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id, "service" => $request->getParameter("service")));
         }
 
+         if($doc_type == "TIRAGE") {
+
+            return $this->redirect("tirage_visualisation", array("id" => $doc_id, "service" => $request->getParameter("service")));
+        }
+
         return $this->forward404();
     }
 
     public function executeExport(sfWebRequest $request) {
-        $current_key_list = $request->getParameter('docs', 'DRev 2014');
+        $current_key_list = $request->getParameter('docs', 'DRev '.ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $statut = $request->getParameter('doc_statut', "a_valider");
 
         $this->setLayout(false);

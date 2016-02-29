@@ -39,14 +39,14 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
     }
 
     public function getAcheteursByCVI() {
-        $acheteurs = array();
+        $acheteursCvi = array();
         foreach ($this->acheteurs as $type => $acheteurs) {
             foreach ($acheteurs as $cvi => $acheteur) {
-                $acheteurs[$cvi] = $acheteur;
+                $acheteursCvi[$cvi] = $acheteur;
             }
         }
 
-        return $acheteurs;
+        return $acheteursCvi;
     }
 
     public function getAcheteursByHash() {
@@ -269,6 +269,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         $acheteur->nom = $etablissement->raison_sociale;
         $acheteur->cvi = $cvi;
         $acheteur->commune = $etablissement->commune;
+        $acheteur->email = $etablissement->email;
 
         return $acheteur;
     }
@@ -288,10 +289,48 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         return false;
     }
 
-    public function getParcellesByLieux() {
+    public function getParcellesByAppellation($cviFilter = null) {
+        $parcellesByAppellations = array();
+        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if($cviFilter) {
+                $acheteurs = $parcelle->getAcheteursByCVI();
+                if(!array_key_exists($cviFilter, $acheteurs)) {
+                    continue;
+                }
+            }
+            $keyApp = sprintf("%s. %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle());
+            if (!array_key_exists($keyApp, $parcellesByAppellations)) {
+                $parcellesByAppellations[$keyApp] = new stdClass();
+                $parcellesByAppellations[$keyApp]->total_superficie = 0;
+                $parcellesByAppellations[$keyApp]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
+                $parcellesByAppellations[$keyApp]->lieu_libelle = '';
+                $parcellesByAppellations[$keyApp]->parcelles = array();
+                $parcellesByAppellations[$keyApp]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter);
+            }
+
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()] = new stdClass();
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->cepage_libelle = ($parcelle->getLieuLibelle()) ? $parcelle->getLieuLibelle().' - ' : '';
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->cepage_libelle .= $parcelle->getCepageLibelle();
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
+            $parcellesByAppellations[$keyApp]->total_superficie += $parcelle->superficie;
+        }
+
+        ksort($parcellesByAppellations);
+
+        return $parcellesByAppellations;
+    }
+
+    public function getParcellesByLieux($cviFilter = null) {
         $parcellesByLieux = array();
         $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if($cviFilter) {
+                $acheteurs = $parcelle->getAcheteursByCVI();
+                if(!array_key_exists($cviFilter, $acheteurs)) {
+                    continue;
+                }
+            }
             $keyLieu = sprintf("%s. %s %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle(), $parcelle->getLieuLibelle());
             if (!array_key_exists($keyLieu, $parcellesByLieux)) {
                 $parcellesByLieux[$keyLieu] = new stdClass();
@@ -299,7 +338,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
                 $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
                 $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
                 $parcellesByLieux[$keyLieu]->parcelles = array();
-                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null);
+                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter);
             }
 
             $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
@@ -313,10 +352,10 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         return $parcellesByLieux;
     }
 
-    public function getParcellesByLieuxCommuneAndCepage() {
+    public function getParcellesByLieuxCommuneAndCepage($cviFilter = null) {
         $parcellesByLieuxCommuneAndCepage = array();
 
-        foreach ($this->getParcellesByLieux() as $parcellesByLieu) {
+        foreach ($this->getParcellesByLieux($cviFilter) as $parcellesByLieu) {
             foreach ($parcellesByLieu->parcelles as $detailHash => $parcelle) {
                 $key = $parcelle->parcelle->getCepage()->getHash() . '/' . $parcelle->parcelle->commune;
                 if ($parcelle->parcelle->lieu) {
