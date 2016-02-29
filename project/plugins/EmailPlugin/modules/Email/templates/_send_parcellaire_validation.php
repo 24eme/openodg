@@ -4,6 +4,7 @@ Votre déclaration d'affectation parcellaire<?php echo ($parcellaire->isParcella
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter ou imprimer votre document : <?php echo sfContext::getInstance()->getRouting()->generate('parcellaire_visualisation', $parcellaire,true); ?>
 
+Vous trouverez votre document en pièce jointe de ce mail aux formats PDF et CSV.
 
 Bien cordialement,
 
