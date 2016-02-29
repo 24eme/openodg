@@ -36,7 +36,7 @@
 <ol>
  <p>Déclare,</p>
   <br/>
-  <p>Avoir mis en bouteilles le volume suivant pour l'AOC Crémant d'Alsace&nbsp;:</p> 
+  <p>Avoir mis en bouteille le volume suivant pour l'AOC Crémant d'Alsace&nbsp;:</p> 
     <ol>
     <table>
       <tr><td style="vertical-align: top; width: 150px;">

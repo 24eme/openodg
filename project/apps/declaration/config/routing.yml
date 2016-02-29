@@ -177,7 +177,7 @@ tirage_dr_pdf:
   param: { module: tirage, action: drPdf }
   class: TirageRoute
   options:
-    model:    DReTirage
+    model:    Tirage
     type:     object
   requirements:
     sf_method: [get]

@@ -4,10 +4,23 @@ class tirageActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+        $nbDeclaration = TirageClient::getInstance()->getLastNumero($etablissement->identifiant, $campagne);
         $tirage->save();
         $tirage->storeDRFromDRev();
 
+        if ($nbDeclaration >= 1) {
+            $idLast = 'TIRAGE-' . $etablissement->identifiant . '-' . $campagne . sprintf('%02d', $nbDeclaration);
+            $lastTirage = TirageClient::getInstance()->find($idLast);
+            if ($lastTirage && $lastTirage->exist('documents') && $lastTirage->exist('_attachments')) {
+                $tirage->add('documents', $lastTirage->documents);
+                if (file_get_contents($lastTirage->getAttachmentUri("DR.pdf"))) {
+                    $tirage->storeAsAttachment(file_get_contents($lastTirage->getAttachmentUri("DR.pdf")), "DR.pdf", "application/pdf");
+                }
+            }
+        }
+        $tirage->save();
         return $this->redirect('tirage_edit', $tirage);
     }
 
@@ -40,7 +53,7 @@ class tirageActions extends sfActions {
         $tirage->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
-       
+
         return $this->redirect($this->generateUrl('home'));
     }
 
@@ -81,6 +94,10 @@ class tirageActions extends sfActions {
 
         $this->tirage->storeDeclarant();
         $this->tirage->save();
+        
+        if ($this->form->hasUpdatedValues() && !$this->tirage->isPapier()) {
+        	Email::getInstance()->sendNotificationModificationsExploitation($this->tirage->getEtablissementObject(), $this->form->getUpdatedValues());
+        }
 
         if ($request->isXmlHttpRequest()) {
 
@@ -189,7 +206,7 @@ class tirageActions extends sfActions {
         $this->tirage->cleanDoc();
 
         $this->validation = new TirageValidation($this->tirage);
-        
+
         $this->form = new TirageValidationForm($this->tirage, array(), array('engagements' => $this->validation->getPoints(TirageValidation::TYPE_ENGAGEMENT)));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -220,7 +237,7 @@ class tirageActions extends sfActions {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             $this->tirage->validate($this->form->getValue("date"));
-            if($this->tirage->hasCompleteDocuments()) {
+            if ($this->tirage->hasCompleteDocuments()) {
                 $this->tirage->validateOdg();
             }
             $this->tirage->save();
@@ -245,7 +262,7 @@ class tirageActions extends sfActions {
 
         if ($this->tirage->isPapier()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée.");
-            
+
             return $this->redirect('tirage_visualisation', array('sf_subject' => $this->tirage, 'service' => isset($service) ? $service : null));
         }
 
@@ -265,9 +282,8 @@ class tirageActions extends sfActions {
         $nextNumero = $this->nbDeclaration + 1;
         $this->nieme = '';
         if ($nextNumero > 1) {
-            $this->nieme = $nextNumero."ème";
+            $this->nieme = $nextNumero . "ème";
         }
-
     }
 
     public function executeVisualisation(sfWebRequest $request) {
@@ -277,7 +293,7 @@ class tirageActions extends sfActions {
         $this->service = $request->getParameter('service');
 
         $documents = $this->tirage->getOrAdd('documents');
-        
+
         if ($this->getUser()->isAdmin() && $this->tirage->validation && !$this->tirage->validation_odg) {
             $this->validation = new TirageValidation($this->tirage);
         }
@@ -348,7 +364,7 @@ class tirageActions extends sfActions {
     }
 
     protected function sendTirageValidation($tirage) {
-        if($tirage->isPapier()) {
+        if ($tirage->isPapier()) {
 
             return false;
         }
@@ -361,7 +377,7 @@ class tirageActions extends sfActions {
     }
 
     protected function sendTirageConfirmee($tirage) {
-        if($tirage->isPapier()) {
+        if ($tirage->isPapier()) {
 
             return false;
         }
@@ -375,7 +391,7 @@ class tirageActions extends sfActions {
 
         $file = file_get_contents($tirage->getAttachmentUri('DR.pdf'));
 
-        if(!$file) {
+        if (!$file) {
 
             $this->forward404();
         }
@@ -389,4 +405,5 @@ class tirageActions extends sfActions {
 
         return $this->renderText($file);
     }
+
 }

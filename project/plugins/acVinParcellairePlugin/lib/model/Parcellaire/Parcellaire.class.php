@@ -289,6 +289,38 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         return false;
     }
 
+    public function getParcellesByAppellation($cviFilter = null) {
+        $parcellesByAppellations = array();
+        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));
+        foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
+            if($cviFilter) {
+                $acheteurs = $parcelle->getAcheteursByCVI();
+                if(!array_key_exists($cviFilter, $acheteurs)) {
+                    continue;
+                }
+            }
+            $keyApp = sprintf("%s. %s", $appellationsPos[str_replace("appellation_", "", $parcelle->getLieuNode()->getAppellation()->getKey())], $parcelle->getLieuNode()->getAppellation()->getLibelle());
+            if (!array_key_exists($keyApp, $parcellesByAppellations)) {
+                $parcellesByAppellations[$keyApp] = new stdClass();
+                $parcellesByAppellations[$keyApp]->total_superficie = 0;
+                $parcellesByAppellations[$keyApp]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
+                $parcellesByAppellations[$keyApp]->lieu_libelle = '';
+                $parcellesByAppellations[$keyApp]->parcelles = array();
+                $parcellesByAppellations[$keyApp]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter);
+            }
+
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()] = new stdClass();
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->cepage_libelle = ($parcelle->getLieuLibelle()) ? $parcelle->getLieuLibelle().' - ' : '';
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->cepage_libelle .= $parcelle->getCepageLibelle();
+            $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->parcelle = $parcelle;
+            $parcellesByAppellations[$keyApp]->total_superficie += $parcelle->superficie;
+        }
+
+        ksort($parcellesByAppellations);
+
+        return $parcellesByAppellations;
+    }
+
     public function getParcellesByLieux($cviFilter = null) {
         $parcellesByLieux = array();
         $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));

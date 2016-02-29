@@ -146,6 +146,10 @@ class drevActions extends sfActions {
 
         $this->drev->storeDeclarant();
         $this->drev->save();
+        
+        if ($this->form->hasUpdatedValues() && !$this->drev->isPapier()) {
+        	Email::getInstance()->sendNotificationModificationsExploitation($this->drev->getEtablissementObject(), $this->form->getUpdatedValues());
+        }
 
         if ($request->isXmlHttpRequest()) {
 

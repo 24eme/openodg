@@ -42,7 +42,7 @@
         <th class="th" style="text-align: center; width: 100px;">Surface</th>
     </tr>
 
-    <?php foreach ($parcellesByLieuxCommuneAndCepage as $parcelleByLieuxCommuneAndCepage) : ?>
+    <?php foreach ($parcellesForRecap as $parcelleByLieuxCommuneAndCepage) : ?>
             <tr>
                 <td class = "td" style = "text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelleByLieuxCommuneAndCepage->appellation_lieu_libelle.' - '.$parcelleByLieuxCommuneAndCepage->cepage_libelle; ?>&nbsp;</td>        
                 <td class="td" style="text-align: center;">&nbsp;<?php echo $parcelleByLieuxCommuneAndCepage->commune ?>&nbsp;</td>       

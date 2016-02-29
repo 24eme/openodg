@@ -7511,7 +7511,6 @@ input[type="radio"] {
   line-height: 82px;
   position: relative;
   text-transform: uppercase;
-  width: 188px;
 }
 .breadcrumb-steps li:first-child {
   width: 155px;
@@ -7565,6 +7564,9 @@ input[type="radio"] {
   left: 100%;
   content: '';
 }
+.breadcrumb-steps li:last-child .step:after {
+  background: none;
+}
 .breadcrumb-steps a {
   color: inherit;
   display: inline-block;
@@ -7578,8 +7580,14 @@ input[type="radio"] {
   line-height: normal;
   padding: 20px 0 20px 75px;
 }
+.breadcrumb-steps-last {
+  background: #b9cf62;
+}
+.breadcrumb-steps-visited {
+  background: #2c4a48;
+}
 /**
- * Tabs (BS overrides)
+* Tabs (BS overrides)
  ******************************************/
 .nav-tabs {
   margin-left: -10px;

@@ -1,6 +1,6 @@
 <?php
 
-class ParcellaireEtapes {
+class ParcellaireEtapes extends Etapes {
 
     const ETAPE_EXPLOITATION = 'exploitation';
     const ETAPE_PROPRIETE = 'propriete';
@@ -10,11 +10,27 @@ class ParcellaireEtapes {
 
     private static $_instance = null;
     public static $etapes = array(
-        self::ETAPE_EXPLOITATION,
-        self::ETAPE_PROPRIETE,
-        self::ETAPE_PARCELLES,
-        self::ETAPE_ACHETEURS,
-        self::ETAPE_VALIDATION,
+        self::ETAPE_EXPLOITATION => 1,
+        self::ETAPE_PROPRIETE => 2,
+        self::ETAPE_PARCELLES => 3,
+        self::ETAPE_ACHETEURS => 4,
+        self::ETAPE_VALIDATION => 5
+    );
+
+    public static $links = array(
+        self::ETAPE_EXPLOITATION => 'parcellaire_exploitation',
+        self::ETAPE_PROPRIETE => 'parcellaire_propriete',
+        self::ETAPE_PARCELLES => 'parcellaire_parcelles',
+        self::ETAPE_ACHETEURS => 'parcellaire_acheteurs',
+        self::ETAPE_VALIDATION => 'parcellaire_validation'
+    );
+
+    public static $libelles = array(
+        self::ETAPE_EXPLOITATION => 'Exploitation',
+        self::ETAPE_PROPRIETE => 'Destination du raisin',
+        self::ETAPE_PARCELLES => 'Parcelles',
+        self::ETAPE_ACHETEURS => 'Acheteurs',
+        self::ETAPE_VALIDATION => 'Validation'
     );
 
     public static function getInstance() {
@@ -24,67 +40,16 @@ class ParcellaireEtapes {
         return self::$_instance;
     }
 
-    public function __construct() {
-        
-    }
-
-    public function getEtapes() {
+    public function getEtapesHash() {
         return self::$etapes;
     }
 
-    public function getFirst() {
-        $etapes = $this->getEtapes();
-        $first = null;
-        foreach ($etapes as $etape) {
-            $first = $etape;
-            break;
-        }
-        return $first;
+    public function getRouteLinksHash() {
+        return self::$links;
     }
 
-    public function getNext($etape) {
-        if (!$etape) {
-            return $this->getFirst();
-        }
-        $etapes = $this->getEtapes();
-        if (!in_array($etape, $etapes)) {
-            throw new sfException('Etape inconnu');
-        }
-        $find = false;
-        $next = self::ETAPE_VALIDATION;
-        foreach ($etapes as $e) {
-            if ($find) {
-                $next = $e;
-                break;
-            }
-            if ($etape == $e) {
-                $find = true;
-            }
-        }
-        return $next;
+    public function getLibellesHash() {
+        return self::$libelles;
     }
-
-    public function isGt($etapeToTest, $etape, $strict = false) {
-        $etapes = $this->getEtapes();
-        if (!$etapeToTest) {
-            return false;
-        }
-        if (!in_array($etapeToTest, $etapes)) {
-            throw new sfException('"' . $etapeToTest . '" : étape inconnu');
-        }
-        if (!in_array($etape, $etapes)) {
-            throw new sfException('"' . $etape . '" : étape inconnu');
-        }
-        $key = array_search($etape, $etapes);
-        $keyToTest = array_search($etapeToTest, $etapes);
-        if ($strict) {
-            return ($keyToTest > $key);
-        }
-        return ($keyToTest >= $key);
-    }
-
-    public function isLt($etapeToTest, $etape) {
-        return !$this->isGt($etapeToTest, $etape);
-    }
-
+    
 }
