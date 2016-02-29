@@ -93,9 +93,6 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     	if ($lieu && $this->lieu && $lieu != $this->lieu) {
     		return false;
     	}
-        if ($lieu && !$this->lieu && $lieu != $this->getLieuNode()->getLibelle()) {
-    		return false;
-    	}
         return !$this->isCleanable();
     }
     
