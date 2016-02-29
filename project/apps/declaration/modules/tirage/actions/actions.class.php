@@ -259,7 +259,15 @@ class tirageActions extends sfActions {
     }
 
     public function executeConfirmation(sfWebRequest $request) {
+        $this->etablissement = $this->getUser()->getEtablissement();
         $this->tirage = $this->getRoute()->getTirage();
+        $this->nbDeclaration = TirageClient::getInstance()->getLastNumero($this->tirage->identifiant, $this->tirage->campagne);
+        $nextNumero = $this->nbDeclaration + 1;
+        $this->nieme = '';
+        if ($nextNumero > 1) {
+            $this->nieme = $nextNumero."ème";
+        }
+
     }
 
     public function executeVisualisation(sfWebRequest $request) {

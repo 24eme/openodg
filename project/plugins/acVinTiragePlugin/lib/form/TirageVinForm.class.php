@@ -23,13 +23,11 @@ class TirageVinForm extends acCouchdbObjectForm {
     }
 
     public function configure() {
-        $checkarray = array('class' => 'bsswitch', 'data-on-text' => '<span class="glyphicon glyphicon-ok-sign"></span>', 'data-off-text' => '<span class="glyphicon"></span>', 'data-on-color' => 'success');
-        
         $this->setWidget('couleur', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getCouleurs())));
         $this->setWidget('cepages_actifs', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $this->getCepages())));
         $this->setWidget('millesime', new bsWidgetFormChoice(array('expanded' => true, 'multiple' => false, 'choices' => $this->getMillesimes())));
         $this->setWidget('millesime_ventilation', new bsWidgetFormInput());
-        $this->setWidget('fermentation_lactique', new bsWidgetFormInputCheckbox(array(), $checkarray));
+        $this->setWidget('fermentation_lactique', new bsWidgetFormInputCheckbox(array()));
 
 
         $this->widgetSchema->setLabel('couleur', 'Couleur :');

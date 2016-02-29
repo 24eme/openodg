@@ -18,7 +18,7 @@ class ExportTiragePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration de Revendication %s / Déclaration de Tirage %s", $this->tirage->campagne, $this->tirage->campagne);
+        return sprintf("Déclaration de Revendication / Déclaration de Tirage du millésime %s", $this->tirage->campagne, $this->tirage->campagne);
     }
 
     protected function getHeaderSubtitle() {
