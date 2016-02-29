@@ -196,9 +196,9 @@ abstract class _ParcellaireDeclarationNoeud extends acCouchdbDocumentTree {
         }
     }
 
-    public function isAffectee() {
+    public function isAffectee($lieu = null) {
         foreach($this->detail as $detail) {
-            if($detail->isAffectee()) {
+            if($detail->isAffectee($lieu)) {
                 return true;
             }
         }

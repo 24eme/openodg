@@ -15,15 +15,15 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
         $lieux_editable = $this->getDocument()->declaration->getLieuxEditable();
 
         foreach($produits as $hash => $cepage) {
-            if(!$cepage->isAffectee()) {
-                continue;
-            }
             $lieu_libelle = $cepage->getCouleur()->getLieu()->getLibelle();
             if($cepage->getConfig()->hasLieuEditable()) {
                 $lieu_libelle = $lieux_editable[preg_replace("|^.*/lieu([^/]*)/.+$|", '\1', $hash)];
             }
             if ($cepage->getCouleur()->getLieu()->getAppellation()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
             	$lieu_libelle = "VT/SGN";
+            }
+            if(!$cepage->isAffectee($lieu_libelle)) {
+            	continue;
             }
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
             $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
