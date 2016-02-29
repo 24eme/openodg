@@ -2,8 +2,11 @@
 
 class EtablissementForm extends acCouchdbObjectForm
 {
+	protected $updatedValues;
+	
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
+        $this->updatedValues = array();
     }
     
      public function configure() {
@@ -49,4 +52,27 @@ class EtablissementForm extends acCouchdbObjectForm
         parent::save($con);
         $this->getObject()->updateCompte();
     }
+
+    public function doUpdateObject($values) {
+    	foreach ($this as $field => $widget) {
+    		if (!$widget->isHidden()) {
+    			if ($this->getObject()->exist($field) && $this->getObject()->get($field) != $values[$field]) {
+    				$this->updatedValues[$field] = $this->getObject()->get($field);
+    			}
+    		}
+    	}
+        parent::doUpdateObject($values);
+    }
+    
+    public function getUpdatedValues()
+    {
+    	return $this->updatedValues;
+    }
+    
+    public function hasUpdatedValues()
+    {
+    	return (count($this->updatedValues) > 0);
+    }
+    
+    
 }

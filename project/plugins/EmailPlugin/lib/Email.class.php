@@ -146,6 +146,9 @@ class Email {
             return;
         }
 
+        $csv = new ExportParcellaireCSV($parcellaire);
+        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export()), $csv->getFileName(true, $parcellaire->declarant->nom), 'text/csv');
+        
         $pdf = new ExportParcellairePDF($parcellaire);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
@@ -161,6 +164,7 @@ class Email {
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain')
+                ->attach($csvAttachment)
                 ->attach($pdfAttachment);
         return $this->getMailer()->send($message);
     }
@@ -383,6 +387,23 @@ class Email {
                 ->setBody($body)
                 ->setContentType('text/plain')
                 ->attach($pdfAttachment);
+
+        return $this->getMailer()->send($message);
+    }
+    
+    public function sendNotificationModificationsExploitation($etablissement, $updatedValues) {
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        
+        $subject = "Modification des informations d'exploitation";
+        $body = $this->getBodyFromPartial('send_notification_modifications_exploitation', array('etablissement' => $etablissement, 'updatedValues' => $updatedValues));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
 
         return $this->getMailer()->send($message);
     }
