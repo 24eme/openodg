@@ -52,7 +52,7 @@
                             <?php if ($engagement->getCode() != TirageDocuments::DOC_PRODUCTEUR || $tirage->hasDr()): ?>
                             <?php echo $engagement->getRawValue()->getMessage() ?>
                             <?php endif; ?>
-                            <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?>- <a href="<?php echo $tirage->getAttachmentUri('DR.pdf'); ?>" class="btn-link" target="_blank"><small>Voir ma Déclaration de récolte associée</small></a>
+                            <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?>- <a href="<?php echo url_for("tirage_dr_pdf", $tirage); ?>" class="btn-link" target="_blank"><small>Voir ma Déclaration de récolte associée</small></a>
                             <?php endif; ?>
                             <?php if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()): ?>
                                 <a href="<?php echo url_for("tirage_dr_recuperation", $tirage) ?>">☐ Récupérer ma DR depuis le CIVA</a>
