@@ -2,7 +2,7 @@
 $etapes = TourneeEtapes::getInstance();
 $etapeCourante = ($tournee->exist('etape') && $tournee->etape)? $tournee->etape : $etapes->getFirst();
 ?>
-<ol class="breadcrumb-steps">
+<ol class="breadcrumb-steps<?php if($active == TourneeEtapes::ETAPE_VALIDATION) {echo ' breadcrumb-steps-last';}  else if($etapes->isGt($etapeCourante, TourneeEtapes::ETAPE_VALIDATION)) { echo ' breadcrumb-steps-visited'; }?>">
     <li class="<?php if($active == TourneeEtapes::ETAPE_OPERATEURS): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, TourneeEtapes::ETAPE_OPERATEURS)): ?>visited<?php endif; ?>">
         <div class="step">
             <a href="<?php echo url_for("degustation_operateurs", $tournee) ?>" class="ajax">Opérateurs</a>

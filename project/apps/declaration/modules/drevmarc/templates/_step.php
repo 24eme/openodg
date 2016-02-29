@@ -4,12 +4,10 @@ $etapeCourante = ($drevmarc->exist('etape') && $drevmarc->etape)? $drevmarc->eta
 $steps = array(
                     "exploitation" => 1,
                     "revendication" => 2,
-                    "validation" => 3,
-                    "confirmation" => 4,
-                      ); ?>
-<?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
-
-<ol class="breadcrumb-steps">
+                    "validation" => 3
+); 
+$stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
+<ol class="breadcrumb-steps<?php if($stepNum == 3) {echo ' breadcrumb-steps-last';} else if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_VALIDATION)) { echo ' breadcrumb-steps-visited'; }?>">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?>  <?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
         <div class="step">
          <?php if($etapes->isGt($etapeCourante, DrevMarcEtapes::ETAPE_EXPLOITATION) && !$drevmarc->isValide()): ?>

@@ -1,10 +1,8 @@
 <?php 
 $etapes = TirageEtapes::getInstance();
 $etapeCourante = ($tirage->exist('etape') && $tirage->etape)? $tirage->etape : $etapes->getFirst();
-?>
-<?php $stepNum = isset(TirageEtapes::$etapes[$step]) ? TirageEtapes::$etapes[$step] : 0; ?>
-
-<ol class="breadcrumb-steps">
+$stepNum = isset(TirageEtapes::$etapes[$step]) ? TirageEtapes::$etapes[$step] : 0; ?>
+<ol class="breadcrumb-steps<?php if($stepNum == 4) {echo ' breadcrumb-steps-last';} else if($etapes->isGt($etapeCourante, TirageEtapes::ETAPE_VALIDATION)) { echo ' breadcrumb-steps-visited'; }?>">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?>  <?php if($etapes->isGt($etapeCourante, TirageEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
         <div class="step">
          <?php if($etapes->isGt($etapeCourante, TirageEtapes::ETAPE_EXPLOITATION) && !$tirage->isValide()): ?>

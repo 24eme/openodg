@@ -7,9 +7,9 @@ $steps = array(
                     "parcelles" => 3,
                     "acheteurs" => 4,
                     "validation" => 5,
-                      ); ?>
-<?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
-<ol class="breadcrumb-steps">
+                      ); 
+$stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
+<ol class="breadcrumb-steps<?php if($stepNum == 5) {echo ' breadcrumb-steps-last';} ?>">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
         <div class="step">
             <?php if($etapes->isGt($etapeCourante, ParcellaireEtapes::ETAPE_EXPLOITATION)): ?>

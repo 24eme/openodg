@@ -10,7 +10,7 @@ $steps = array(
                     "confirmation" => 6,
                       ); ?>
 <?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
-<ol class="breadcrumb-steps">
+<ol class="breadcrumb-steps <?php if($stepNum == 5) {echo 'breadcrumb-steps-last';}  else if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_VALIDATION)) { echo ' breadcrumb-steps-visited'; }?>">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
         <div class="step">
             <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_EXPLOITATION)): ?>
@@ -32,7 +32,7 @@ $steps = array(
     <li class="<?php if($stepNum == 3): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_DEGUSTATION)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_DEGUSTATION)): ?>
-            <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="<?php if($stepNum <= 3): ?>ajax<?php endif; ?>">Dégustation conseil</a>
+            <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="<?php if($stepNum <= 3): ?>ajax<?php endif; ?>">Dégustation<br/>conseil</a>
             <?php else: ?>
             <span>Dégustation conseil</span>
             <?php endif; ?>
@@ -42,7 +42,7 @@ $steps = array(
     <li class="<?php if($stepNum == 4): ?>active<?php endif; ?> <?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>visited<?php endif; ?>">
         <div class="step">
         	<?php if($etapes->isGt($etapeCourante, DrevEtapes::ETAPE_CONTROLE)): ?>
-            <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="<?php if($stepNum <= 4): ?>ajax<?php endif; ?>">Contrôle externe</a>
+            <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="<?php if($stepNum <= 4): ?>ajax<?php endif; ?>">Contrôle<br/>externe</a>
             <?php else: ?>
             <span>Contrôle externe</span>
             <?php endif; ?>
