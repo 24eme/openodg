@@ -306,7 +306,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
                 $parcellesByLieux[$keyLieu]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
                 $parcellesByLieux[$keyLieu]->lieu_libelle = $parcelle->getLieuLibelle();
                 $parcellesByLieux[$keyLieu]->parcelles = array();
-                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null);
+                $parcellesByLieux[$keyLieu]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter);
             }
 
             $parcellesByLieux[$keyLieu]->parcelles[$parcelle->gethash()] = new stdClass();
