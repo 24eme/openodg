@@ -10,10 +10,10 @@ class TirageEtapes
     private static $_instance = null;
     
     public static $etapes = array(
-            self::ETAPE_EXPLOITATION,
-            self::ETAPE_VIN,
-            self::ETAPE_LOTS,
-            self::ETAPE_VALIDATION,
+            self::ETAPE_EXPLOITATION => 1,
+            self::ETAPE_VIN => 2,
+            self::ETAPE_LOTS => 3,
+            self::ETAPE_VALIDATION => 4,
     );
     
     public static function getInstance() 
@@ -30,7 +30,7 @@ class TirageEtapes
     
     public function getEtapes()
     {
-        return self::$etapes;
+        return array_keys(self::$etapes);
     }
     
     public function getFirst()

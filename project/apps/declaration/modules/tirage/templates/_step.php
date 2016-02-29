@@ -1,14 +1,8 @@
 <?php 
 $etapes = TirageEtapes::getInstance();
 $etapeCourante = ($tirage->exist('etape') && $tirage->etape)? $tirage->etape : $etapes->getFirst();
-$steps = array(
-                    "exploitation" => 1,
-                    "vin" => 2,
-                    "lots" => 3,
-                    "validation" => 4,
-                    "confirmation" => 5,
-                      ); ?>
-<?php $stepNum = isset($steps[$step]) ? $steps[$step] : 0; ?>
+?>
+<?php $stepNum = isset(TirageEtapes::$etapes[$step]) ? TirageEtapes::$etapes[$step] : 0; ?>
 
 <ol class="breadcrumb-steps">
     <li class="<?php if($stepNum == 1): ?>active<?php endif; ?>  <?php if($etapes->isGt($etapeCourante, TirageEtapes::ETAPE_EXPLOITATION)): ?>visited<?php endif; ?>">
