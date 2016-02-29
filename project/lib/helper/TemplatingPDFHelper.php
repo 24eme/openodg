@@ -225,7 +225,7 @@ function styleTirage() {
 
     hr {
         border: 0px;
-        border-top: 1px solid #88DC89;
+        border-top: 1px solid #a0b;
     }
 
     td.border {
@@ -236,11 +236,11 @@ function styleTirage() {
     }
 
     .tableAlt {
-        border: 1px solid #88DC89;
+        border: 1px solid #a0b;
     }
 
     .h3Alt {
-        background-color: #88DC89; color: #1F6320; font-weight: bold;   
+        background-color: #a0b; color: white; font-weight: bold;   
     }
 
 ";
