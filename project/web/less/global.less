@@ -1549,7 +1549,6 @@ ul.radio_list li, ul.checkbox_list
         line-height: 82px;
         position: relative;
         text-transform: uppercase;
-        width: 188px;
 
         &:first-child 
             {
@@ -1603,6 +1602,12 @@ ul.radio_list li, ul.checkbox_list
         }
     }
 
+    li:last-child {
+        .step:after {
+	    background: none;
+	}
+    }
+
     a 
     { 
         color: inherit;
@@ -1619,6 +1624,12 @@ ul.radio_list li, ul.checkbox_list
         line-height: normal;
         padding: 20px 0 20px 75px;
     }
+}
+.breadcrumb-steps-visited {
+    background: @breadcrumb-steps-visited-color;
+}
+.breadcrumb-steps-last {
+    background: @breadcrumb-steps-active-color;
 }
 
 /**
