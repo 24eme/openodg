@@ -34,20 +34,25 @@ class ExportParcellairePDF extends ExportPDF {
     }
 
     public function create() {
-        $this->parcellesByLieux = $this->parcellaire->getParcellesByLieux($this->cviFilter);
-        $this->parcellesByLieuxCommuneAndCepage = $this->parcellaire->getParcellesByLieuxCommuneAndCepage($this->cviFilter);
+        if($this->parcellaire->isParcellaireCremant()){
+            $this->parcellesForDetails = $this->parcellaire->getParcellesByAppellation($this->cviFilter);
+        }else{
+            $this->parcellesForDetails = $this->parcellaire->getParcellesByLieux($this->cviFilter);
+        }
+        $this->parcellesForRecap = $this->parcellaire->getParcellesByLieuxCommuneAndCepage($this->cviFilter);
 
-        if(count($this->parcellesByLieux) == 0) {
+        if(count($this->parcellesForDetails) == 0) {
             $this->printable_document->addPage($this->getPartial('parcellaire/pdfVide', array('parcellaire' => $this->parcellaire)));
 
             return;
         }
         
-        foreach ($this->parcellesByLieux as $lieuHash => $parcellesByLieu) {
-            $this->printable_document->addPage($this->getPartial('parcellaire/pdf', array('parcellaire' => $this->parcellaire, 'parcellesByLieu' => $parcellesByLieu, 'cviFilter' => $this->cviFilter)));
+        foreach ($this->parcellesForDetails as $pageid => $parcellesForDetail) {
+            $this->printable_document->addPage($this->getPartial('parcellaire/pdf', array('parcellaire' => $this->parcellaire, 'parcellesForDetail' => $parcellesForDetail, 'cviFilter' => $this->cviFilter)));
         }
-
-        $this->printable_document->addPage($this->getPartial('parcellaire/pdfRecap', array('parcellaire' => $this->parcellaire, 'parcellesByLieuxCommuneAndCepage' => $this->parcellesByLieuxCommuneAndCepage, 'engagement' => !$this->cviFilter)));
+        if ((count($this->parcellesForDetails) == 1) && (count($this->parcellesForDetails[$pageid]->parcelles) < count($this->parcellesForRecap))) {
+            $this->printable_document->addPage($this->getPartial('parcellaire/pdfRecap', array('parcellaire' => $this->parcellaire, 'parcellesForRecap' => $this->parcellesForRecap, 'engagement' => !$this->cviFilter)));
+        }
         
     }
 

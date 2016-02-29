@@ -80,6 +80,10 @@ class drevmarcActions extends sfActions {
         $this->drevmarc->storeDeclarant();
         $this->drevmarc->save();
         
+        if ($this->form->hasUpdatedValues() && !$this->drevmarc->isPapier()) {
+        	Email::getInstance()->sendNotificationModificationsExploitation($this->drevmarc->getEtablissementObject(), $this->form->getUpdatedValues());
+        }
+        
         return $this->redirect('drevmarc_revendication', $this->drevmarc);
     }
 
