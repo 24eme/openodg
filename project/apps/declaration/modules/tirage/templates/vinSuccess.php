@@ -52,14 +52,17 @@
 
 
     <div class="row row-margin">
-        <div class="col-xs-12" id="bloc_millesime_ventilation" data-condition-value="ASSEMBLE">
+        <div class="col-xs-12 form-group" id="bloc_millesime_ventilation" data-condition-value="ASSEMBLE">
             <div>
                 <?php echo $form["millesime_ventilation"]->renderError(); ?>
                 <label class="col-xs-3 text-right">
-                    <?php echo $form["millesime_ventilation"]->renderLabel(); ?>
+                    <?php echo $form["millesime_ventilation"]->renderLabel(null,array('class' => 'control-label')); ?>
                 </label>
-                <div class="col-xs-6 text-left">       
-                    <?php echo $form["millesime_ventilation"]->render(); ?>
+                <div class="col-xs-8 text-left"> 
+                    <?php 
+                    $lastYear = date('Y') - 1; $last3year = date('Y') - 3;
+                    $placeHolder = 'Inscivez ici le volume par millésime (par exemple : 15hl de '. $lastYear .', 13hl de '.  $last3year .')';?>
+                    <?php echo $form["millesime_ventilation"]->render(array('placeholder' =>  $placeHolder)); ?>
                 </div>
             </div>
         </div>
