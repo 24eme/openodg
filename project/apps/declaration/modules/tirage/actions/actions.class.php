@@ -81,6 +81,10 @@ class tirageActions extends sfActions {
 
         $this->tirage->storeDeclarant();
         $this->tirage->save();
+        
+        if ($this->form->hasUpdatedValues() && !$this->tirage->isPapier()) {
+        	Email::getInstance()->sendNotificationModificationsExploitation($this->tirage->getEtablissementObject(), $this->form->getUpdatedValues());
+        }
 
         if ($request->isXmlHttpRequest()) {
 

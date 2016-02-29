@@ -95,6 +95,10 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->storeDeclarant();
 
         $this->parcellaire->save();
+        
+        if ($this->form->hasUpdatedValues() && !$this->parcellaire->isPapier()) {
+        	Email::getInstance()->sendNotificationModificationsExploitation($this->parcellaire->getEtablissementObject(), $this->form->getUpdatedValues());
+        }
 
         if ($request->isXmlHttpRequest()) {
 

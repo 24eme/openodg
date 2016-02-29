@@ -387,6 +387,23 @@ class Email {
         return $this->getMailer()->send($message);
     }
     
+    public function sendNotificationModificationsExploitation($etablissement, $updatedValues) {
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        
+        $subject = "Modification des informations d'exploitation";
+        $body = $this->getBodyFromPartial('send_notification_modifications_exploitation', array('etablissement' => $etablissement, 'updatedValues' => $updatedValues));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
+
+        return $this->getMailer()->send($message);
+    }
+    
     protected function getMailer() {
         return $this->_context->getMailer();
     }
