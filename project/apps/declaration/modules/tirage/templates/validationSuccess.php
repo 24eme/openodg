@@ -37,7 +37,7 @@
                 <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
                     <div class="checkbox<?php if($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?> disabled<?php endif; ?>">
                         <label>
-                            <?php 
+                            <?php
                                 if ($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()) {
                                     echo $form['engagement_' . $engagement->getCode()]->render(array('checked' => 'checked'));
                                 } elseif($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && !$tirage->hasDr()) {
