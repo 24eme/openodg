@@ -63,7 +63,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     }
 
     public function hasDR() {
-
+        
         return $this->_attachments->exist('DR.pdf');
     }
 
