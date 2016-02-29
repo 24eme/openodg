@@ -1,6 +1,6 @@
 <?php include_partial('tirage/step', array('step' => 'vin', 'tirage' => $tirage)) ?>
 <div class="page-header no-border">
-    <h2>Vin <small>Merci de saisir les informations liées au Crémant dont vous souhaitez déclarer le tirage</small></h2>
+    <h2>Caracteristique du lot <small>Saisiez ici les informations liées au Crémant dont vous souhaitez déclarer le tirage</small></h2>
 </div>
 
 <form role="form" action="" method="post" id="tirage-vin-form" class="ajaxForm" >
@@ -72,7 +72,7 @@
                     <?php echo $form["fermentation_lactique"]->renderLabel(); ?>
                 </label>
                 <div class="col-xs-9 text-left">       
-                    <?php echo $form["fermentation_lactique"]->render(array("class" => "bsswitch")); ?>
+                    <?php echo $form["fermentation_lactique"]->render(); ?>
                 </div>
             </div>
         </div>

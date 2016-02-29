@@ -33,60 +33,57 @@
         </td></tr></table>
 <br />
 <br />
-<br />
-Déclare,
 <ol>
-  <li><strong>Avoir mis en bouteilles le volume suivant pour l'AOC Crémant d'Alsace&nbsp;:</strong><br/>
-    <br/>
+ <p>Déclare,</p>
+  <br/>
+  <p>Avoir mis en bouteilles le volume suivant pour l'AOC Crémant d'Alsace&nbsp;:</p> 
+    <ol>
     <table>
-      <tr><td style="vertical-align: top; width: 150px;">Pour le lot composé de&nbsp;:</td>
-	<td style="text-align:left;">
-	  <table>
+      <tr><td style="vertical-align: top; width: 150px;">
+                              <p>Pour le lot composé de&nbsp;:</p></td>
+	  <td style="text-align:left;">
       <?php foreach ($tirage->composition as $compo): ?>
-      <tr><td class="border"><?php echo $compo->nombre; ?> &nbsp; </td><td> &nbsp; bouteilles de <?php echo $compo->contenance; ?></td></tr>
+      <p><?php echo $compo->nombre; ?>&nbsp;bouteilles de <?php echo $compo->contenance; ?></p>
       <?php endforeach; ?>
-	  </table>
       </td></tr>
-    </table>
-    <br/>
-    <br/>
-    
-    <strong>Millesime&nbsp;:</strong> <?php echo $tirage->millesime_libelle; if ($tirage->millesime_ventilation) echo ' ('.$tirage->millesime_ventilation.')';?>
-    <br/><br/>
-    
-    <strong>Couleur&nbsp;:</strong>
-    <?php echoCheck("Blanc", ($tirage->couleur == TirageClient::COULEUR_BLANC)); echoCheck("Rosé", ($tirage->couleur == TirageClient::COULEUR_ROSE)); ?>
-    <br/><br/>
-    
-    Cépages entrant dans la composition de la cuvée&nbsp;:
-    <p><?php foreach($tirage->cepages as $cepage) {
-    echoCheck(str_replace(' ', '&nbsp;', $cepage->libelle), $cepage->selectionne);
-    } ?></p>
-    <br/><br/>
-    
-    Vin de base ayant fait la fermantation mal-lactique&nbsp;:
-    <?php echoCheck("Oui", ($tirage->fermentation_lactique)) ?>
-    <?php echoCheck("Non", !($tirage->fermentation_lactique)) ?>
-    <br/><br/>
-
-    <strong>Date de mis en bouteilles&nbsp;:</strong>
+      <tr><td colspan="2">
+      <p>Millésime&nbsp;: <?php echo $tirage->millesime_libelle; if ($tirage->millesime_ventilation) echo ' ('.$tirage->millesime_ventilation.')';?></p>
+      </td></tr>
+      <tr><td colspan="2">
+    <p>Couleur&nbsp;:
+    <?php echo $tirage->couleur_libelle; ?></p>
+      </td></tr>
+      <tr><td colspan="2">
+    <p>Cépages entrant dans la composition de la cuvée&nbsp;:</p>
+        <ol><?php $cpt = 0; foreach($tirage->cepages as $cepage) {
+        if ($cepage->selectionne)  {
+            if ($cpt++)
+                echo ' ; ';
+            echo str_replace(' ', '&nbsp;', $cepage->libelle);
+        }
+    } ?></ol>
+      </td></tr>
+      <tr><td colspan="2">
+    <p>Vin de base ayant fait la fermentation malo-lactique&nbsp;:
+    <?php echo ($tirage->fermentation_lactique) ? 'Oui' : 'Non' ; ?></p>
+      </td></tr>
+      <tr><td colspan="2">
+    <p>Date de mise en bouteilles
     <?php if ($tirage->date_mise_en_bouteille_debut == $tirage->date_mise_en_bouteille_fin ) {
         echo "le ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
     }else{ 
         echo "du ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
         echo " au ".format_date($tirage->date_mise_en_bouteille_fin, 'dd/MM/yyyy', 'fr_FR');
-    }?>
-    <br/><br/>
-
-  </li>
-  <li><strong>Joindre une copie lisible de la déclaration de résolte.</strong>
-    <p>Dans le cas d'une cave coopérative ou d'un négociant, joindre une copie du certificat de fabrication visé par les douanes ou une copie de la DRM visée par les Douanes.</p>
-    </li>
+    }?></p>
+    </td></tr></table>
+    </ol>
 </ol>
-&nbsp;
+&nbsp;<br/>
+&nbsp;<br/>
+&nbsp;<br/>
 <p style="text-align: right">Signé électroniquement le 12/02/2016</p>
 
-<?php for($i = 0 ; $i < 16  - count($tirage->composition); $i++) : ?>
+<?php for($i = 0 ; $i < 8  - count($tirage->composition); $i++) : ?>
 &nbsp;<br/>
 <?php endfor; ?>
       

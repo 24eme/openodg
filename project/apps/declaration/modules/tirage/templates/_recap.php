@@ -12,7 +12,7 @@
     ?>
         ) </span>
 </div>
-<div class="text-center">Millesime : <span class="lead"> <?php echo $tirage->millesime_libelle; ?> </span>
+<div class="text-center">Millésime : <span class="lead"> <?php echo $tirage->millesime_libelle; ?> </span>
 <?php if ($tirage->millesime == TirageClient::MILLESIME_ASSEMBLE): ?>
 <?php echo '&nbsp;( '.$tirage->millesime_ventilation.' )'; ?>
 <?php endif; ?>
@@ -36,5 +36,5 @@
         echo " au <strong>".format_date($tirage->date_mise_en_bouteille_fin, 'dd/MM/yyyy', 'fr_FR')."</strong>";
     }?>
     </p>
-<p>Vin de base ayant fait la fermantation malo-lactique : <strong><?php echo ($tirage->fermentation_lactique)? 'Oui' : 'Non'; ?> </strong></p>
+<p>Vin de base ayant fait la fermentation malo-lactique : <strong><?php echo ($tirage->fermentation_lactique)? 'Oui' : 'Non'; ?> </strong></p>
 <p>Lieu de stockage : <strong><?php  echo ($tirage->lieu_stockage)? $tirage->lieu_stockage : $tirage->declarant->adresse.' '.$tirage->declarant->code_postal.' '.$tirage->declarant->commune; ?></strong></p>
