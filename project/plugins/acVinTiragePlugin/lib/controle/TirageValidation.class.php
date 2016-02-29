@@ -14,9 +14,11 @@ class TirageValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'composition_incomplete', "Vous n'avez pas saisie d'information relative à la composition de votre lot");
         $this->addControle(self::TYPE_ERROR, 'couleur_cepage', "Pour le rosé, il n'est pas possible d'avoir un autre cépage que le Pinot noir");
         $this->addControle(self::TYPE_ERROR, 'assemblage_no_ventilation', "Pour les millésimes assemblés, il est nécessaire d'indiquer la ventilation");
-      $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, "Joindre une copie de votre Déclaration de Récolte");
+        $this->addControle(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', "La date de début de mise en bouteille ne peut pas être inférieure au 1er décembre");
+        $this->addControle(self::TYPE_ERROR, 'date_mise_en_bouteille_fin', "La date de fin de mise en bouteille ne peut pas être inférieure à la date de début");
+      	$this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, "Joindre une copie de votre Déclaration de Récolte");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, "Joindre une copie de votre Certificat de Fabrication visé par les douanes ou une copie de la DRM visé par les Douanes");
-        $this->addControle(self::TYPE_WARNING, 'famille_elaborateur', "Vous n'êtes pas élaborateur.");
+        $this->addControle(self::TYPE_WARNING, 'famille_elaborateur', "Vous n'êtes pas élaborateur");
     }
 
     public function controle() {
@@ -56,6 +58,12 @@ class TirageValidation extends DocumentValidation {
         
         if (!$this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_ELABORATEUR)) {
         	$this->addPoint(self::TYPE_WARNING, 'famille_elaborateur', null);
+        }
+        if ($this->document->date_mise_en_bouteille_debut < $this->document->campagne.'-12-01') {
+            $this->addPoint(self::TYPE_ERROR, 'date_mise_en_bouteille_debut','', $this->generateUrl('tirage_lots',  $this->document));
+        }
+        if ($this->document->date_mise_en_bouteille_fin < $this->document->date_mise_en_bouteille_debut) {
+            $this->addPoint(self::TYPE_ERROR, 'date_mise_en_bouteille_fin','', $this->generateUrl('tirage_lots',  $this->document));
         }
     }
 
