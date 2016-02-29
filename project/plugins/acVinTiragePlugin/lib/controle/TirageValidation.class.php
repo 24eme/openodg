@@ -12,11 +12,25 @@ class TirageValidation extends DocumentValidation {
 
     public function configure() {
         $this->addControle(self::TYPE_ERROR, 'composition_incomplete', "Vous n'avez pas saisie d'information relative à la composition de votre lot");
+        $this->addControle(self::TYPE_ERROR, 'couleur_cepage', "Pour le rosé, il n'est pas possible d'avoir un autre cépage que le Pinot noir");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, "Joindre une copie de votre Déclaration de Récolte");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, "Joindre une copie de votre Certificat de Fabrication visé par les douanes ou une copie de la DRM visé par les Douanes");
     }
 
     public function controle() {
+        
+        $isRoseCepageNonPN = false;
+        if($this->document->couleur == TirageClient::COULEUR_ROSE){
+            foreach ($this->document->getCepagesSelectionnes() as $cepage){
+                if($cepage->libelle != 'Pinot noir'){
+                    $isRoseCepageNonPN = true;
+                    break;
+                }
+            }
+        }
+        if($isRoseCepageNonPN){
+            $this->addPoint(self::TYPE_ERROR, 'couleur_cepage','', $this->generateUrl('tirage_vin',  $this->document));
+        }
         if ($this->document->isNegociant()) {
             $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, null);
         } else {
