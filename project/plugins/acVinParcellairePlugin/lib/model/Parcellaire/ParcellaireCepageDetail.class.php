@@ -83,10 +83,16 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function isCleanable() {
-        return (!($this->getActive()) || ($this->isFromAppellation('ALSACEBLANC') && !($this->getVtsgn())));
+    	if (!$this->getActive()) {
+    		return true;
+    	}
+        return ($this->isFromAppellation('ALSACEBLANC') && !$this->getVtsgn());
     }
 
-    public function isAffectee() {
+    public function isAffectee($lieu = null) {
+    	if ($lieu && $lieu != $this->lieu) {
+    		return false;
+    	}
         return !$this->isCleanable();
     }
     
