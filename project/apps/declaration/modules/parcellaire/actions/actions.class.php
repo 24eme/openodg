@@ -381,17 +381,22 @@ class parcellaireActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
-    public function executeExportCsvParcellaire(sfWebRequest $request) {
+    public function executeCSV(sfWebRequest $request) {
+        set_time_limit(180);
         $parcellaire = $this->getRoute()->getParcellaire();
-        ini_set('memory_limit', '2048M');
-        set_time_limit(0);
-        $this->exportCsv = new ExportParcellaireCSV(null, $parcellaire);
-        $this->setLayout(false);
-        $filename = $this->exportCsv->getFileName();
+        $this->exportCsv = new ExportParcellaireCSV($parcellaire);
+
+        $this->cvi = null;
+        if($request->getParameter('cvi')) {
+            $this->cvi = $request->getParameter('cvi');
+        }
+        $filename = $this->exportCsv->getFileName(true, $this->cvi);
         $attachement = "attachment; filename=" . $filename . ".csv";
 
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition', $attachement);
+
+        return $this->renderText($this->exportCsv->export($this->cvi));
     }
 
     public function sendParcellaireValidation($parcellaire) {

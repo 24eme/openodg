@@ -1199,9 +1199,9 @@ parcellaire_visualisation:
   requirements:
     sf_method: [get]
 
-parcellaire_export_csv_document:
-  url: /parcellaire/export-csv/:id
-  param: { module: parcellaire, action: exportCsvParcellaire }
+parcellaire_export_csv:
+  url: /parcellaire/csv/:id
+  param: { module: parcellaire, action: CSV }
   class: ParcellaireRoute
   options:
     model:    Parcellaire

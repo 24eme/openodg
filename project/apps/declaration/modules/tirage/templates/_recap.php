@@ -17,7 +17,7 @@
 <?php echo '&nbsp;( '.$tirage->millesime_ventilation.' )'; ?>
 <?php endif; ?>
 </div>
-<h2 class="h3">Composition du lot</h2>
+<h2 class="h3">Composition du lot <small>d'un volume total de <?php echo $tirage->getVolumeTotalComposition(); ?> hl</small></h2>
 <?php if (!count($tirage->composition)) : ?>
     <i>Vous n'avez pas saisi d'information relative aux bouteilles</i>
 <?php else: ?>

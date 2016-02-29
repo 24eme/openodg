@@ -59,7 +59,8 @@
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <?php $acheteursByCvi = array(); foreach ($parcellesByLieu->acheteurs as $type => $acheteurs) { foreach ($acheteurs as $acheteur) { $acheteursByCvi[$acheteur->cvi] = $acheteur->nom; }}  ?>
+                        
+                        <?php $acheteursByCvi = array(); foreach($parcellesByLieu->acheteurs as $type => $acheteurs) { foreach ($acheteurs as $acheteur) { $acheteursByCvi[$acheteur->cvi] = $acheteur->nom; }} ?>
                         <tr>
                             <td><?php if(count($acheteursByCvi) > 1): ?>Partagés entre plusieurs destinataires dont <?php echo $acheteursByCvi[$cviFilter]; ?> <?php else: ?>Dédiés à <?php echo $acheteursByCvi[$cviFilter]; ?><?php endif; ?></td>
                         </tr>

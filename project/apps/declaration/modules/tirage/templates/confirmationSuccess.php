@@ -7,7 +7,7 @@
 <div class="row">
     <div class="col-xs-12">
         <p>Votre déclaration de tirage a bien été enregistrée par l'AVA.</p>
-        <p>Vous recevrez le PDF de votre déclaration par email dès que l'AVA aura pu valider les documents que vous vous êtes engagés à lui faire parvenir.</p>
+        <p>Vous recevrez le PDF de votre déclaration par email dès que l'AVA aura pu valider les documents que vous vous êtes engagé à lui faire parvenir.</p>
     </div>
 </div>
 
