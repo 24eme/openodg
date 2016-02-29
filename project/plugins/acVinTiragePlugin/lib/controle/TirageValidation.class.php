@@ -15,6 +15,7 @@ class TirageValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'couleur_cepage', "Pour le rosé, il n'est pas possible d'avoir un autre cépage que le Pinot noir");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, "Joindre une copie de votre Déclaration de Récolte");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, "Joindre une copie de votre Certificat de Fabrication visé par les douanes ou une copie de la DRM visé par les Douanes");
+        $this->addControle(self::TYPE_WARNING, 'famille_elaborateur', "Vous n'êtes pas élaborateur.");
     }
 
     public function controle() {
@@ -47,6 +48,10 @@ class TirageValidation extends DocumentValidation {
         }
         if($composition_incomplete){
             $this->addPoint(self::TYPE_ERROR, 'composition_incomplete','', $this->generateUrl('tirage_lots',  $this->document));
+        }
+        
+        if (!$this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_ELABORATEUR)) {
+        	$this->addPoint(self::TYPE_WARNING, 'famille_elaborateur', null);
         }
     }
 
