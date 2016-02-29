@@ -167,6 +167,9 @@
 
                 return item.text;
             }
+            
+        }).on("select2-selected", function(e) {            
+            $(this).parents('form').submit();
         });
     }
 
