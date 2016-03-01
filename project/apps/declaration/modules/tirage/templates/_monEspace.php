@@ -51,11 +51,11 @@
             </div>
         <?php else: ?>
             <div class="panel-body">
-            <p><?php if ($nbDeclaration > 0) {
-            echo ($nbDeclaration > 2) ? "Vous avez déjà déclaré ".$nbDeclaration." déclarations de tirage. Vous pouvez en déclarer une nouvelle&nbsp;:"  :
-            "Vous avez déjà déclaré une déclaration de tirage. Vous pouvez en déclarer une nouvelle&nbsp;:";
-        }else{
-            echo "Créer une nouvelle déclaration de tirage&nbsp;:";
+            <p><?php 
+        echo "Déclaration à remplir dans les 60 jours qui suivent la fin du tirage.<br/>";
+
+        if ($nbDeclaration > 0) {
+            echo ($nbDeclaration == 1) ? "Une déclaration de tirage déjà validée" : $nbDeclaration." déclarations de tirage déjà validées";
         }?></p>
         </div>
         <div class="panel-bottom">  
