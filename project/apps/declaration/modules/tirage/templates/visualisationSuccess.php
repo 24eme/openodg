@@ -33,6 +33,10 @@
     </div>
 <?php endif; ?>
 
+<?php if (isset($validation) && $validation->hasPoints()): ?>
+    <?php include_partial('tirage/pointsAttentions', array('tirage' => $tirage, 'validation' => $validation)); ?>
+<?php endif; ?>
+
 <?php include_partial('tirage/recap', array('tirage' => $tirage)); ?>
 
 <div class="row">
