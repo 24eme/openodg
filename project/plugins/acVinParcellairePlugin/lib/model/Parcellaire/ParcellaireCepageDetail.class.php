@@ -90,7 +90,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function isAffectee($lieu = null) {
-    	if ($lieu && $lieu != $this->lieu) {
+    	if ($lieu && $this->lieu && $lieu != $this->lieu) {
     		return false;
     	}
         return !$this->isCleanable();
