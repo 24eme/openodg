@@ -1,7 +1,7 @@
 <?php use_javascript("main.js", "last") ?>
 
 <div class="page-header">
-    <h2><?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>Confirmation de votre e-mail<?php else: ?>Eléments declaratifs<?php endif; ?></h2>
+    <h2><?php if ($etablissement->needEmailConfirmation() && !$sf_user->isAdmin()): ?>Confirmation de votre e-mail<?php else: ?>Eléments déclaratifs<?php endif; ?></h2>
 </div>
 
 <?php if ($sf_user->isAdmin()): ?>

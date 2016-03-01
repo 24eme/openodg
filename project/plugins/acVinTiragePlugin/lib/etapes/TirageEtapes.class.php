@@ -25,7 +25,7 @@ class TirageEtapes extends Etapes
     
     public static $libelles = array(
             self::ETAPE_EXPLOITATION => 'Exploitation',
-            self::ETAPE_VIN => 'Caractértistiques',
+            self::ETAPE_VIN => 'Caractéristiques',
             self::ETAPE_LOTS => 'Répartition',
             self::ETAPE_VALIDATION => 'Validation',
     );
