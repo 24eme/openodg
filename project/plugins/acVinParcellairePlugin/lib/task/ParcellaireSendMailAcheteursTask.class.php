@@ -45,6 +45,10 @@ EOF;
             return;
         }
 
+        if(!$parcellaire->validation || !$parcellaire->validation_odg) {
+            return;
+        }
+
         $hasMailToSend = false;
         foreach($parcellaire->acheteurs as $type => $acheteursType) {
             foreach($acheteursType as $acheteur) {

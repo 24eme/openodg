@@ -34,7 +34,7 @@ class TirageVinForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('cepages_actifs', 'Cépages :');
         $this->widgetSchema->setLabel('millesime', 'Millesime :');
         $this->widgetSchema->setLabel('millesime_ventilation', 'Ventilation des millesimes :');
-        $this->widgetSchema->setLabel('fermentation_lactique', 'Fermentation lactique :');
+        $this->widgetSchema->setLabel('fermentation_lactique', 'Fermentation malo-lactique :');
 
         $this->setValidator('couleur', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCouleurs())), array('required' => "Aucune couleur n'a été choisie")));
         $this->setValidator('cepages_actifs', new sfValidatorChoice(array("multiple" => true, "required" => true, 'choices' => array_keys($this->getCepages())), array('required' => "Aucun cépage n'a été choisi")));
