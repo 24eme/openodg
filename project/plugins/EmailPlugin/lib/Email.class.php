@@ -353,7 +353,7 @@ class Email {
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($tirage->declarant->email);
-        $subject = "Validation de votre déclaration de tirage de crémant d'Alsace";
+        $subject = "Validation de votre déclaration de tirage de Crémant d'Alsace";
         $body = $this->getBodyFromPartial('send_tirage_validation', array('tirage' => $tirage));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
