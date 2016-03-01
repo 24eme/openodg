@@ -176,7 +176,7 @@ class Email {
         }
 
         $csv = new ExportParcellaireCSV($parcellaire);
-        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export($acheteur->cvi)), $csv->getFileName(true, $acheteur->nom), 'text/csv');
+        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export($acheteur->cvi)), $csv->getFileName(false, $acheteur->nom), 'text/csv');
 
         $pdf = new ExportParcellairePDF($parcellaire);
         $pdf->setCviFilter($acheteur->cvi, $acheteur->nom);

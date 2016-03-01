@@ -33,6 +33,10 @@ EOF;
 
         $parcellaire = ParcellaireClient::getInstance()->find($arguments['doc_id'], acCouchdbClient::HYDRATE_JSON);
 
+        if(ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext() != $parcellaire->campagne) {
+            return;
+        }
+
         if(!$parcellaire->autorisation_acheteur) {
             return;
         }
