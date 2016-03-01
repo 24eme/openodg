@@ -49,6 +49,10 @@ EOF;
             return;
         }
 
+        if(!count($parcellaire->declaration)) {
+            return;
+        }
+
         $hasMailToSend = false;
         foreach($parcellaire->acheteurs as $type => $acheteursType) {
             foreach($acheteursType as $acheteur) {
