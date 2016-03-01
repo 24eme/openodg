@@ -20,7 +20,7 @@ class TirageValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         // $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_ACHETEUR, "Joindre une copie de votre Certificat de Fabrication visé par les douanes ou une copie de la DRM visé par les Douanes");
-        $this->addControle(self::TYPE_WARNING, 'famille_elaborateur', "Vous n'êtes pas élaborateur");
+        $this->addControle(self::TYPE_WARNING, 'famille_elaborateur', "Vous n’êtes pas identifié(e) en tant qu’élaborateur");
     }
 
     public function controle() {

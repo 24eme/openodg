@@ -12,9 +12,9 @@
 
     <?php if($sf_user->hasFlash('error')): ?><div class="alert alert-danger"><?php echo $sf_user->getFlash('error'); ?></div><?php endif; ?>
 
-<?php if (isset($validation) && $validation->hasPoints()): ?>
-    <?php include_partial('tirage/pointsAttentions', array('tirage' => $tirage, 'validation' => $validation)); ?>
-<?php endif; ?>
+    <?php if (isset($validation) && $validation->hasPoints()): ?>
+        <?php include_partial('tirage/pointsAttentions', array('tirage' => $tirage, 'validation' => $validation)); ?>
+    <?php endif; ?>
 
     <div class="row row-margin">
         <div class="col-xs-12">
