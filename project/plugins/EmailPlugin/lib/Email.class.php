@@ -146,13 +146,13 @@ class Email {
             return;
         }
 
+        $csv = new ExportParcellaireCSV($parcellaire);
+        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export()), $csv->getFileName(true, $parcellaire->declarant->nom), 'text/csv');
+
         $pdf = new ExportParcellairePDF($parcellaire);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
-
-        $csv = new ExportParcellaireCSV($parcellaire);
-        $csvAttachment = new Swift_Attachment(utf8_decode($csv->export()), $csv->getFileName(true, $parcellaire->declarant->nom), 'text/csv');
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($parcellaire->declarant->email);
@@ -164,8 +164,8 @@ class Email {
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain')
-                ->attach($csvAttachment)
                 ->attach($pdfAttachment);
+                ->attach($csvAttachment)
         return $this->getMailer()->send($message);
     }
 
