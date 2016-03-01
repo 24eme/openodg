@@ -164,8 +164,9 @@ class Email {
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain')
-                ->attach($pdfAttachment);
-                ->attach($csvAttachment)
+                ->attach($pdfAttachment)
+                ->attach($csvAttachment);
+                
         return $this->getMailer()->send($message);
     }
 
