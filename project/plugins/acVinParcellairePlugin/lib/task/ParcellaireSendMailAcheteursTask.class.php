@@ -49,7 +49,7 @@ EOF;
             return;
         }
 
-        if(!count($parcellaire->declaration)) {
+        if(!isset($parcellaire->declaration->certification)) {
             return;
         }
 
