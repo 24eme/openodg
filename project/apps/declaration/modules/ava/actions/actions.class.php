@@ -9,7 +9,7 @@ class avaActions extends sfActions {
         }
 
 
-        if ($request->isMethod(sfWebRequest::POST)) {
+        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN) && $request->isMethod(sfWebRequest::POST)) {
             $this->formLogin->bind($request->getParameter($this->formLogin->getName()));
             if ($this->formLogin->isValid()) {
                 $this->getUser()->signInEtablissement($this->formLogin->getValue('etablissement'));
