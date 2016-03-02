@@ -1,0 +1,4 @@
+*    *  * * * bash /path/to/project/bin/cron/generation.sh
+*    *  * * * bash /path/to/project/bin/cron/sendmail.sh
+30   07 * * * cd /path/to/project; php symfony drev:send-mail-rappel-document
+*/15 *  * * * cd /path/to/project; bash bin/mailParcellaireAcheteurs.sh [campagne]
