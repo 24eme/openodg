@@ -7,7 +7,7 @@
 <?php echo styleTirage(); ?>
 </style>
 
-<span class="h3Alt">&nbsp;Déclarant&nbsp;</span><br/>
+<span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>
 <table class="tableAlt"><tr><td>
             <table border="0">
                 <tr>
@@ -31,61 +31,64 @@
                 </tr>
             </table>
         </td></tr></table>
-<br />
-<br />
-<ol>
- <p>Déclare,</p>
-  <br/>
-  <p>Avoir mis en bouteille le volume suivant pour l'AOC Crémant d'Alsace&nbsp;:</p> 
-    <ol>
-    <table>
-      <tr><td style="vertical-align: top; width: 150px;">
-                              <p>Pour le lot composé de&nbsp;:</p></td>
-	  <td style="text-align:left;">
-      <?php foreach ($tirage->composition as $compo): ?>
-      <p><?php echo $compo->nombre; ?>&nbsp;bouteilles de <?php echo $compo->contenance; ?></p>
-      <?php endforeach; ?>
-      </td></tr>
-      <tr><td colspan="2">
-      <p>Millésime&nbsp;: <?php echo $tirage->millesime_libelle; if ($tirage->millesime_ventilation) echo ' ('.$tirage->millesime_ventilation.')';?></p>
-      </td></tr>
-      <tr><td colspan="2">
-    <p>Couleur&nbsp;:
-    <?php echo $tirage->couleur_libelle; ?></p>
-      </td></tr>
-      <tr><td colspan="2">
-    <p>Cépages entrant dans la composition de la cuvée&nbsp;:</p>
-        <ol><?php $cpt = 0; foreach($tirage->cepages as $cepage) {
+&nbsp;<br/>
+&nbsp;<br/>
+&nbsp;<br/>
+&nbsp;<br/>
+<span class="h3Alt">&nbsp;Caractéristiques du lot&nbsp;</span><br/>
+<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+                <tr>
+                    <td><?php echo tdStart() ?>&nbsp;Couleur</td>
+                    <td><?php echo tdStart() ?>&nbsp;<?php echo $tirage->couleur_libelle; ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo tdStart() ?>&nbsp;Cépage</td>
+                    <td><?php echo tdStart() ?>&nbsp;<?php $cpt = 0; foreach($tirage->cepages as $cepage) {
         if ($cepage->selectionne)  {
             if ($cpt++)
                 echo ' ; ';
             echo str_replace(' ', '&nbsp;', $cepage->libelle);
         }
-    } ?></ol>
-      </td></tr>
-      <tr><td colspan="2">
-    <p>Vin de base ayant fait la fermentation malo-lactique&nbsp;:
-    <?php echo ($tirage->fermentation_lactique) ? 'Oui' : 'Non' ; ?></p>
-      </td></tr>
-      <tr><td colspan="2">
-    <p>Date de mise en bouteilles
-    <?php if ($tirage->date_mise_en_bouteille_debut == $tirage->date_mise_en_bouteille_fin ) {
+    } ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo tdStart() ?>&nbsp;Millésime</td>
+                    <td><?php echo tdStart() ?>&nbsp;<?php echo $tirage->millesime_libelle; if ($tirage->millesime_ventilation) echo ' ('.$tirage->millesime_ventilation.')'; ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo tdStart() ?>&nbsp;Fermentation Malo-lactique</td>
+                    <td><?php echo tdStart() ?>&nbsp;<?php  echo ($tirage->fermentation_lactique) ? 'Oui' : 'Non' ; ?></td>
+                </tr>
+            </table>
+&nbsp;<br/>
+&nbsp;<br/>
+&nbsp;<br/>
+&nbsp;<br/>
+<span class="h3Alt">&nbsp;Répartition du volume&nbsp;</span><br/>
+<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+                <tr>
+                    <td class="td"><?php echo tdStart() ?>&nbsp;Date de mise en bouteilles</td>
+                    <td class="td"><?php echo tdStart() ?>&nbsp;<?php if ($tirage->date_mise_en_bouteille_debut == $tirage->date_mise_en_bouteille_fin ) {
         echo "le ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
     }else{ 
         echo "du ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
         echo " au ".format_date($tirage->date_mise_en_bouteille_fin, 'dd/MM/yyyy', 'fr_FR');
-    }?></p>
-    </td></tr></table>
-    </ol>
-</ol>
+    }?></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align: top;"><?php echo tdStart() ?>&nbsp;Détail de la composition du lot</td>
+<td><?php echo tdStart() ?>&nbsp;<?php  $nbcompo = 0 ; foreach ($tirage->composition as $compo): ?><?php echo ($nbcompo) ? "<br/>".tdStart()."&nbsp;" : ""; echo $compo->nombre; ?>&nbsp;bouteilles de <?php echo $compo->contenance; $nbcompo++;?><?php endforeach; ?></td>
+                </tr>
+                <tr>
+                    <td><?php echo tdStart() ?>&nbsp;Volume total mis en bouteilles</td>
+                    <td><?php echo tdStart() ?>&nbsp;<?php  echo $tirage->getVolumeTotalComposition(); ?> hl</td>
+                </tr>
+            </table>
+<br/>
+<br/>
+&nbsp;<br/>
+&nbsp;<br/>
 &nbsp;<br/>
 &nbsp;<br/>
 &nbsp;<br/>
 <p style="text-align: right">Signé électroniquement le 12/02/2016</p>
-
-<?php for($i = 0 ; $i < 8  - count($tirage->composition); $i++) : ?>
-&nbsp;<br/>
-<?php endfor; ?>
-      
-<hr/>
-<p><strong>N.B.&nbsp;:</strong> Nous vous conseillons de faire procéder à l'identification des lots par un agent de prélèvement dès la mise en bouteille de vos différents lots.</p>

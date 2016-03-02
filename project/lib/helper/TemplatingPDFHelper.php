@@ -239,6 +239,10 @@ function styleTirage() {
         border: 1px solid #a0b;
     }
 
+    .table td {
+        border: 1px solid #a0b; height:22px; text-align: left;
+    }
+
     .h3Alt {
         background-color: #a0b; color: white; font-weight: bold;   
     }
