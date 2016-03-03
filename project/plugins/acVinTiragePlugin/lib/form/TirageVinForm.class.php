@@ -71,7 +71,7 @@ class TirageVinForm extends acCouchdbObjectForm {
             $this->getObject()->cepages->get($key)->selectionne = intval(in_array($key, $cepagesValues));
         }
         $this->getObject()->couleur_libelle = TirageClient::$couleurs[$values['couleur']];
-        $this->getObject()->millesime_libelle = ($values['millesime'] == TirageClient::MILLESIME_ASSEMBLE)? 'assemblage' : $values['millesime'];
+        $this->getObject()->millesime_libelle = ($values['millesime'] == TirageClient::MILLESIME_ASSEMBLE)? 'Assemblage' : $values['millesime'];
     }
 
     public function updateDefaultsFromObject() {

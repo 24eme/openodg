@@ -23,7 +23,7 @@
                     <td><?php if ($tirage->declarant->cvi): ?>N° CVI : <i><?php echo $tirage->declarant->cvi ?></i><?php else: ?>&nbsp;<?php endif; ?></td>
                 </tr>
                 <tr>
-                  <td collspan="2">&nbsp;Lieu de stockage : <i><?php echo ($tirage->lieu_stockage) ? $tirage->lieu_stockage : "même lieu que l'adresse"; ?></i></td>
+                  <td collspan="2">&nbsp;Lieu de stockage : <i><?php echo ($tirage->lieu_stockage) ? $tirage->lieu_stockage : "même adresse"; ?></i></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Tel / Fax : <i><?php echo $tirage->declarant->telephone ?> / <?php echo $tirage->declarant->fax ?></i></td>
