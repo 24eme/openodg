@@ -72,12 +72,11 @@ class ParcellaireValidation extends DocumentValidation {
         $erreurRepartition = false;
         $hasParcelle = false;
         foreach ($this->document->declaration->getProduitsWithLieuEditable() as $hash => $produit) {
-            if(!$produit->isAffectee()) {
+            $lieu_key = $produit->getLieuKeyFromHash($hash);
+            if(!$produit->isAffectee($lieu_key)) {
                 continue;
             }
             $hasParcelle = true;
-
-            $lieu_key = $produit->getLieuKeyFromHash($hash);
 
             $acheteursParcelle = $produit->getAcheteursByHash($lieu_key);
 
