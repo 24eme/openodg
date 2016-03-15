@@ -18,9 +18,7 @@ class parcellaireActions extends sfActions {
 
         $this->secure(ParcellaireSecurity::DEVALIDATION, $parcellaire);
 
-        $parcellaire->validation = null;
-        $parcellaire->validation_odg = null;
-        $parcellaire->etape = null;
+        $parcellaire->devalidate();
         $parcellaire->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");

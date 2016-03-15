@@ -392,8 +392,16 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
         $this->validateOdg();
     }
 
-    public function hasVtsgn() {
+    public function devalidate() {
+        $this->validation = null;
+        $this->validation_odg = null;
+        $this->etape = null;
+        foreach($this->getAcheteursByCVI() as $acheteur) {
+            $acheteur->email_envoye = null;
+        }
+    }
 
+    public function hasVtsgn() {
 
         return $this->declaration->hasVtsgn();
     }
