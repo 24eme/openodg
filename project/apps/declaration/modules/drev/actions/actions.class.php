@@ -22,7 +22,9 @@ class drevActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
+
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);
@@ -32,7 +34,8 @@ class drevActions extends sfActions {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_DREV, $etablissement);
 
-        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true);
+        $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne, true);
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);
@@ -127,7 +130,7 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         $this->etablissement = $this->drev->getEtablissementObject();
-        
+
         $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->drev->isPapier()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -146,7 +149,7 @@ class drevActions extends sfActions {
 
         $this->drev->storeDeclarant();
         $this->drev->save();
-        
+
         if ($this->form->hasUpdatedValues() && !$this->drev->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->drev->getEtablissementObject(), $this->form->getUpdatedValues());
         }
@@ -181,7 +184,7 @@ class drevActions extends sfActions {
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
         $this->drev->save();
-        
+
         if ($this->drev->isNonRecoltant()) {
             if (!count($this->drev->declaration->getAppellations())) {
 
@@ -271,7 +274,7 @@ class drevActions extends sfActions {
         $this->form = new DRevRevendicationCepageForm($this->noeud);
         $this->ajoutForm = new DrevCepageAjoutProduitForm($this->noeud);
         $this->ajoutAppellationForm = new DRevRevendicationAjoutProduitForm($this->drev);
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -366,17 +369,17 @@ class drevActions extends sfActions {
         $this->drev->save();
 
         if ($request->getParameter('redirect', null)) {
-            
+
             return $this->redirect('drev_validation', $this->drev);
         }
 
         if ($this->drev->prelevements->exist(Drev::CUVE_ALSACE)) {
-            
+
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_ALSACE));
         }
 
         if ($this->drev->prelevements->exist(Drev::CUVE_GRDCRU)) {
-            
+
             return $this->redirect('drev_lots', $this->drev->prelevements->get(Drev::CUVE_GRDCRU));
         }
 
@@ -384,7 +387,7 @@ class drevActions extends sfActions {
 
             return $this->redirect('drev_validation', $this->drev);
         }
-        
+
         return $this->redirect('drev_controle_externe', $this->drev);
     }
 
@@ -433,7 +436,7 @@ class drevActions extends sfActions {
             return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
         }
 
-        
+
         if ($request->getParameter('redirect', null)) {
             return $this->redirect('drev_validation', $this->drev);
         }
@@ -507,7 +510,7 @@ class drevActions extends sfActions {
                 $this->drev->prelevements->remove(Drev::BOUTEILLE_VTSGN);
                 $this->drev->addPrelevement(Drev::BOUTEILLE_VTSGN);
             }
-            
+
             $this->drev->save();
 
             return $this->redirect('drev_validation', $this->drev);
@@ -543,7 +546,7 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-        
+
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
@@ -709,12 +712,12 @@ class drevActions extends sfActions {
         $pdf->generate();
         Email::getInstance()->sendDRevValidation($drev);
     }
-    
+
     protected function sendDrevConfirmee($drev) {
         Email::getInstance()->sendDrevConfirmee($drev);
     }
 
-    
+
     protected function secure($droits, $doc) {
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
 
