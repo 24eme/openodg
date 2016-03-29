@@ -6,7 +6,7 @@
 <?php use_javascript('tournee.js?201505080324'); ?>
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
 <div ng-controller="tourneeCtrl">
-    
+
     <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
         <div class="text-center" class="page-header">
             <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
@@ -23,7 +23,7 @@
                         <div class="col-xs-2 col-sm-1 text-left">
                             <strong ng-show="!operateur.termine || operateur.nb_prelevements" class="lead" style="font-weight: bold;">{{ operateur.heure }}</strong>
                             <strong ng-show="operateur.termine && !operateur.nb_prelevements" class="lead" style="text-decoration: line-through;">{{ operateur.heure }}</strong><br />
-                            
+
                             <label ng-show="operateur.transmission_collision" class="btn btn-xs btn-danger">Collision</label>
                         </div>
                         <div class="col-xs-8 col-sm-10">
@@ -74,9 +74,9 @@
                   <span class="lead"><strong>{{ operateur.raison_sociale }}</strong> <small class="hidden-xs">({{ operateur.cvi }})</small></span><br />
                   <span class="lead">{{ operateur.adresse }}</span><br />
                   <span class="lead">{{ operateur.code_postal }} {{ operateur.commune }}</span><br /><br />
-                  <span ng-if="operateur.telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="callto:{{ operateur.telephone_bureau }}">{{ operateur.telephone_bureau }}</a><br /></span>
-                  <span ng-if="operateur.telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="callto:{{ operateur.telephone_prive }}">{{ operateur.telephone_prive }}</a><br /></span>
-                  <span ng-if="operateur.telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="callto:{{ operateur.telephone_mobile }}">{{ operateur.telephone_mobile }}</a><br /></span>
+                  <span ng-if="operateur.telephone_bureau"><abbr >Bureau</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_bureau }}">{{ operateur.telephone_bureau }}</a><br /></span>
+                  <span ng-if="operateur.telephone_prive"><abbr>Privé</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_prive }}">{{ operateur.telephone_prive }}</a><br /></span>
+                  <span ng-if="operateur.telephone_mobile"><abbr>Mobile</abbr> : <a class="btn-link" href="tel:{{ operateur.telephone_mobile }}">{{ operateur.telephone_mobile }}</a><br /></span>
                 </address>
             </div>
         </div>
@@ -119,7 +119,7 @@
                     <div class="col-xs-12 form-horizontal">
                         <div ng-class="{ 'hidden': !prelevement.erreurs['motif'] || operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger col-xs-12">
                             Vous devez saisir un motif de non prélevement
-                        </div> 
+                        </div>
                         <div class="form-group col-xs-12" >
                             <label class="control-label col-xs-3 lead" for="motif_preleve_{{ operateur._id }}_{{ prelevement_key }}">Motif :</label>
                             <div class="col-xs-9">
@@ -155,7 +155,7 @@
                                     <div class="col-xs-7">
                                         <input id="volume_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.volume_revendique" type="number" class="form-control input-md hidden-sm hidden-md hidden-lg hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
                                         <input id="volume_{{ operateur._id }}_{{ prelevement_key }}" ng-model="prelevement.volume_revendique" type="number" class="form-control input-lg hidden-xs hidden-print" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
-                                        <input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" /> 
+                                        <input ng-model="prelevement.volume_revendique" type="text" class="form-control input-lg ng-hide visible-print-inline" />
                                     </div>
                                 </div>
                             </div>
