@@ -21,7 +21,7 @@ rm -rf $TMP_PDF_DIR $TMP_PDF_DIR.zip
 wget -O $TMP_PDF_DIR.zip $HTTP_CIVA_DATA/DR/$CAMPAGNE.zip
 mkdir $TMP_PDF_DIR 2> /dev/null
 unzip -d $TMP_PDF_DIR/ $TMP_PDF_DIR.zip
-rename 's/(DR_[0-9]{10}_[0-9]{4}).*\.pdf/\1.pdf/' $TMP_PDF_DIR/*.pdf
+rename 's/(DR_[0-9]{10}_[0-9]{4}).*\.pdf/$1.pdf/' $TMP_PDF_DIR/*.pdf
 rsync -av $TMP_PDF_DIR/*.pdf $DATA_DIR/
 rm -rf $TMP_PDF_DIR $TMP_PDF_DIR.zip
 
