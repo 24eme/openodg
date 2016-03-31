@@ -1,7 +1,7 @@
-<?php 
+<?php
 $libelleLieuDitCepage = "Saisissez un lieu-dit/cépage";
 if($appellation == ParcellaireClient::APPELLATION_VTSGN){
-$libelleLieuDitCepage = "Saisissez un cépage";    
+$libelleLieuDitCepage = "Saisissez un cépage";
 }
 ?>
 <h3>Identification du produit</h3>
@@ -44,7 +44,7 @@ $libelleLieuDitCepage = "Saisissez un cépage";
             <?php echo $form['cepage']->render(array("placeholder" => "Saisissez cépage", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
         </div>
     </div>
-<?php endif; ?>   
+<?php endif; ?>
 
 <h3>Identification de la parcelle</h3>
 <br/>

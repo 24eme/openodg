@@ -1,4 +1,4 @@
-/* =================================================================================== 
+/* ===================================================================================
  * File : global.js
  * Description : JS generic functions
  * Authors : Hamza Iqbal - hiqbal[at]actualys.com
@@ -167,8 +167,8 @@
 
                 return item.text;
             }
-            
-        }).on("select2-selected", function(e) {            
+
+        }).on("select2-selected", function(e) {
             $(this).parents('form').submit();
         });
     }
@@ -230,30 +230,27 @@
     $.initSelect2PermissifNoAjax = function ()
     {
         if ($('.select2permissifNoAjax').length) {
-            var lastValue = null;
             $('.select2permissifNoAjax').select2({
                 data: JSON.parse($('.select2permissifNoAjax').attr('data-choices')),
                 multiple: false,
                 placeholder: true,
+                allowClear: true,
                 createSearchChoice: function (term, data) {
                     if ($(data).filter(function () {
-                        return this.text.localeCompare(term) === 0;
+                        return this.text.localeCompare(this.text) === 0;
                     }).length === 0) {
                         return {id: term, text: term + ' (nouveau)'};
                     }
                 }
-            }).on("select2-close", function () {
-                var old_choices = JSON.parse($('input.select2permissifNoAjax').attr('data-choices'));
-                old_choices.push({id: lastValue, text: lastValue + ' (nouveau)'});
-                $('input.select2permissifNoAjax').select2("val", lastValue);
-                $('input.select2permissifNoAjax').val(lastValue);
-                $('.select2permissifNoAjax .select2-chosen').text(lastValue);
-            }).on("select2-highlight", function (e) {
-                lastValue = e.val;
-            })
+            }).on("select2-open", function (e) {
+                $('.select2-input').attr('placeholder', 'Rechercher ou ajouter un nouvel élément');
+                console.log(e);
+            }).on("select2-close", function (e) {
+                $('.select2-input').attr('placeholder', null);
+                console.log(e);
+            });
         }
     }
-
 
     $.initCheckboxRelations = function ()
     {
