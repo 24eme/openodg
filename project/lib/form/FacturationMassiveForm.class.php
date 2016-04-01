@@ -1,7 +1,7 @@
 <?php
 
 class FacturationMassiveForm extends acCouchdbForm {
-    
+
     public function configure() {
         $modeles = $this->getModeles();
         $this->setWidgets(array(
@@ -34,15 +34,16 @@ class FacturationMassiveForm extends acCouchdbForm {
         $this->getDocument()->arguments->add('modele', $this->getValue('modele'));
         $this->getDocument()->arguments->add('date_facturation', $this->getValue('date_facturation'));
     }
-    
+
     public function getModeles()
     {
         $choices = array("" => "");
+
         foreach ($this->getOption("modeles") as $templateFacture) {
             $choices[$templateFacture->_id] = $templateFacture->libelle;
         }
+
         return $choices;
     }
 
 }
-

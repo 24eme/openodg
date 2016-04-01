@@ -37,7 +37,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         self::BOUTEILLE_GRDCRU,
         self::BOUTEILLE_VTSGN,
     );
-    
+
     protected $declarant_document = null;
     protected $mouvement_document = null;
 
@@ -100,13 +100,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->isNonConditionneur() && $this->chais->exist(Drev::BOUTEILLE);
     }
 
-    public function isPapier() { 
-        
+    public function isPapier() {
+
         return $this->exist('papier') && $this->get('papier');
     }
 
-    public function isAutomatique() { 
-        
+    public function isAutomatique() {
+
         return $this->exist('automatique') && $this->get('automatique');
     }
 
@@ -370,7 +370,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $result = array();
         foreach ($ordrePrelevements as $type => $prelevementsOrdered) {
             foreach ($prelevementsOrdered as $prelevementOrdered) {
-                foreach ($drev_prelevements as $prelevement) {                    
+                foreach ($drev_prelevements as $prelevement) {
                     if ('/prelevements/' . $prelevementOrdered == $prelevement->getHash()) {
 
                         if (!array_key_exists($type, $result)) {
@@ -388,7 +388,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                     }
                 }
             }
-        
+
         }
         return $result;
     }
@@ -607,7 +607,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
                 continue;
             }
-            
+
             $prelevements[$lot->getPrelevement()->getKey()] = $lot->getPrelevement();
         }
 
@@ -640,7 +640,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
         return null;
     }
-    
+
     public function hasCompleteDocuments()
     {
     	$complete = true;
@@ -652,7 +652,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	}
     	return $complete;
     }
-    
+
     /*
      * Facture
      */
@@ -660,7 +660,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 	{
 		return $this->declaration->getTotalTotalSuperficie();
 	}
-	
+
 	public function getVolumeFacturable()
 	{
 		return $this->declaration->getTotalVolumeRevendique();
@@ -674,20 +674,21 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function getMouvementsCalcule() {
-        
-        return array("E".$this->getIdentifiant() => array("TEMPLATE-FACTURE-AOC-2014" => array("facturable" => 1, "facture" => 0)));
+        $templateFactureId = "TEMPLATE-FACTURE-AOC-".$this->getCampagne();
+
+        return array("E".$this->getIdentifiant() => array($templateFactureId => array("facturable" => 1, "facture" => 0)));
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {
 
         return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
     }
-    
+
     public function generateMouvements() {
 
         return $this->mouvement_document->generateMouvements();
-    }    
-    
+    }
+
     public function findMouvement($cle, $id = null){
       return $this->mouvement_document->findMouvement($cle, $id);
     }
