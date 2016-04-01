@@ -19,12 +19,12 @@ class Degustation extends BaseDegustation {
         $this->adresse = $drev->chais->cuve_->adresse;
         $this->code_postal = $drev->chais->cuve_->code_postal;
         $this->commune = $drev->chais->cuve_->commune;
-        
+
         $prelevement = $drev->prelevements->{"cuve_".$this->appellation};
         $this->date_demande = $prelevement->date;
         $this->lots = array();
 
-        if($this->appellation == "VTSGN") {        
+        if($this->appellation == "VTSGN") {
             $vtsgn_items = array("vt" => "VT", "sgn" => "SGN");
             foreach($drev->declaration->getProduitsCepage() as $detail) {
                 foreach($vtsgn_items as $vtsgn_key => $vtsgn_libelle) {
@@ -38,7 +38,7 @@ class Degustation extends BaseDegustation {
                     $lot->hash_produit = $detail->getCepage()->getHash();
                     $lot->volume_revendique = $detail->get("volume_revendique_".$vtsgn_key);
                     $lot->vtsgn = $vtsgn_libelle;
-                    $lot->nb = 1;
+                    $lot->nb_vtsgn = $lot->nb_vtsgn + 1;
                 }
             }
         }
@@ -50,7 +50,11 @@ class Degustation extends BaseDegustation {
             if($l->exist('libelle_produit')) {
                 $lot->libelle_produit = $l->libelle_produit;
             }
-            $lot->nb = $l->nb_hors_vtsgn;
+            if($this->appellation == "VTSGN") {
+                $lot->nb = $l->nb_vtsgn;
+            } else {
+                $lot->nb = $l->nb_hors_vtsgn;
+            }
             $lot->vtsgn = $l->vtsgn;
             $lot->volume_revendique = $l->volume_revendique;
             $lot->prelevement = 0;
@@ -69,7 +73,7 @@ class Degustation extends BaseDegustation {
 
     public function getLastDegustationDate() {
         $last =  DegustationClient::getInstance()->getLastDegustationByStatut($this->appellation, $this->identifiant, "DEGUSTE");
-        
+
         if(!$last) {
             return null;
         }
@@ -223,7 +227,7 @@ class Degustation extends BaseDegustation {
         $prelevement->libelle_produit = $lot->libelle_produit;
         $prelevement->vtsgn = $lot->vtsgn;
         $prelevement->volume_revendique = $lot->volume_revendique;
-        
+
         $prelevement->preleve = 1;
 
         return $prelevement;
@@ -280,7 +284,7 @@ class Degustation extends BaseDegustation {
     }
 
     public function generateCourrier() {
-        
+
     }
 
     public function getCompte() {
@@ -290,7 +294,7 @@ class Degustation extends BaseDegustation {
 
     public function updateFromCompte() {
         $compte = $this->getCompte();
-        
+
         $this->email = $compte->email;
         $this->telephone_bureau = $compte->telephone_bureau;
         $this->telephone_prive = $compte->telephone_prive;
