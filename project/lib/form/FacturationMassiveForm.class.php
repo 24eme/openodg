@@ -35,15 +35,35 @@ class FacturationMassiveForm extends acCouchdbForm {
         $this->getDocument()->arguments->add('date_facturation', $this->getValue('date_facturation'));
     }
 
-    public function getModeles()
-    {
+    public function getModeles() {
+
+        return self::getModelesByObject($this->getOption("modeles"));
+    }
+
+    public static function getModelesByObject($modeles) {
         $choices = array("" => "");
 
-        foreach ($this->getOption("modeles") as $templateFacture) {
+        foreach ($modeles as $templateFacture) {
             $choices[$templateFacture->_id] = $templateFacture->libelle;
         }
 
+        usort($choices, "FacturationMassiveForm::sortModeles");
+
         return $choices;
+    }
+
+    public static function sortModeles($a, $b) {
+        if($a == "") {
+
+            return false;
+        }
+
+        if($b == "") {
+
+            return true;
+        }
+
+        return $a < $b;
     }
 
 }

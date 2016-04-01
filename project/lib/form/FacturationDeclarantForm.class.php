@@ -1,15 +1,15 @@
 <?php
 
 class FacturationDeclarantForm extends BaseForm {
-	
+
 	protected $templatesFactures;
-	
+
 	public function __construct($templatesFactures, $defaults = array(), $options = array(), $CSRFSecret = null)
   	{
   		$this->templatesFactures = $templatesFactures;
     	parent::__construct($defaults, $options, $CSRFSecret);
   	}
-	
+
     public function configure() {
     	$choices = $this->getChoices();
 
@@ -30,15 +30,10 @@ class FacturationDeclarantForm extends BaseForm {
 
         $this->widgetSchema->setNameFormat('facturation_declarant[%s]');
     }
-    
-    public function getChoices()
-    {
-    	$choices = array("" => "");
-    	foreach ($this->templatesFactures as $templateFacture) {
-    		$choices[$templateFacture->_id] = $templateFacture->libelle;
-    	}
-    	return $choices;
+
+	public function getModeles() {
+
+        return FacturationMassiveForm::getModelesByObject($this->getOption("modeles"));
     }
 
 }
-
