@@ -202,7 +202,7 @@ class facturationActions extends sfActions
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
         $this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
-        $this->form = new FacturationDeclarantForm($this->templatesFactures);
+        $this->form = new FacturationDeclarantForm(array(), array('modeles' => TemplateFactureClient::getInstance()->findAll()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
