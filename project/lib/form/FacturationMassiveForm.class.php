@@ -47,7 +47,7 @@ class FacturationMassiveForm extends acCouchdbForm {
             $choices[$templateFacture->_id] = $templateFacture->libelle;
         }
 
-        usort($choices, "FacturationMassiveForm::sortModeles");
+        uasort($choices, "FacturationMassiveForm::sortModeles");
 
         return $choices;
     }

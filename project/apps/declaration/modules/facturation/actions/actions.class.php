@@ -201,8 +201,8 @@ class facturationActions extends sfActions
         $this->compte = $this->getRoute()->getCompte();
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
-        $this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
-        $this->form = new FacturationDeclarantForm(array(), array('modeles' => TemplateFactureClient::getInstance()->findAll()));
+        $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
+        $this->form = new FacturationDeclarantForm(array(), array('modeles' => $this->templatesFactures));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -217,6 +217,7 @@ class facturationActions extends sfActions
         }
 
         $this->values = $this->form->getValues();
+        print_r($this->values);
         $templateFacture = TemplateFactureClient::getInstance()->find($this->values['modele']);
         try {
            $generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $this->compte->_id, $this->value['date_facturation'], null, $templateFacture->arguments->toArray(true, false));
