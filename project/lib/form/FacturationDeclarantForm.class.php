@@ -11,7 +11,7 @@ class FacturationDeclarantForm extends BaseForm {
   	}
 
     public function configure() {
-    	$choices = $this->getChoices();
+    	$choices = $this->getModeles();
 
         $this->setWidgets(array(
                 'modele'   => new sfWidgetFormChoice(array('choices' => $choices)),
