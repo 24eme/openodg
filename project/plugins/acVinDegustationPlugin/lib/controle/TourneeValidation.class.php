@@ -3,6 +3,7 @@
 class TourneeValidation extends DocumentValidation {
 
     const TYPE_WARNING = 'vigilance';
+    const TYPE_ERROR = 'erreur';
 
     public function __construct($document, $options = null) {
         parent::__construct($document, $options);
@@ -16,6 +17,7 @@ class TourneeValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'operateur_no_email', "Cet opérateur ne possède pas d'email");
         $this->addControle(self::TYPE_WARNING, 'operateur_non_affecte', "Cet opérateur n'a pas été affecté à une tournée");
         $this->addControle(self::TYPE_WARNING, 'conflit_interet', "Ces intervenants ont des rôles différents dans la tournée / dégustation");
+        $this->addControle(self::TYPE_ERROR, 'degustateurs', "Vous n'avez choisi aucun dégustateur");
 
     }
 
@@ -38,12 +40,20 @@ class TourneeValidation extends DocumentValidation {
             $conflits[KeyInflector::slugify($operateur->raison_sociale)][] = sprintf("L'opérateur : %s (%s, %s)", $operateur->raison_sociale, $operateur->cvi, $operateur->commune);
         }
 
+        $types = CompteClient::getInstance()->getAttributsForType(CompteClient::TYPE_COMPTE_DEGUSTATEUR);
+
+        foreach($types as $typeKey => $typeLibelle) {
+            if(!$this->document->degustateurs->exist($typeKey) || !count($this->document->degustateurs->get( $typeKey))) {
+                $this->addPoint(self::TYPE_ERROR, 'degustateurs', $typeLibelle, $this->generateUrl('degustation_degustateurs_type', array('sf_subject' => $this->document, 'type' =>  $typeKey)));
+            }
+        }
+
         foreach ($this->document->degustateurs as $degustateur_type => $degustateurs) {
             foreach ($degustateurs as $compte_id => $degustateur) {
                 if (!$degustateur->email) {
                     $this->addPoint(self::TYPE_WARNING, 'degustateur_no_email', sprintf("%s (%s)", $degustateur->nom, $degustateur->commune));
                 }
-                
+
                 if($degustateur->email) {
                     $conflits[$degustateur->email][] = sprintf("Le dégustateur %s : %s (%s)", $degustateur_type, $degustateur->nom, $degustateur->commune);
                 }
