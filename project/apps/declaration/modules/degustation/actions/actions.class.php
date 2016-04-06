@@ -314,10 +314,15 @@ class degustationActions extends sfActions {
             $agent->dates = $value;
         }
 
+        $agents_to_remove = array();
         foreach($this->tournee->agents as $key => $agent) {
             if(!isset($values[$key])) {
-                $this->tournee->agents->remove($key);
+                $agents_to_remove[$key] = true;
             }
+        }
+
+        foreach($agents_to_remove as $key => $value) {
+            $this->tournee->agents->remove($key);
         }
 
         $this->tournee->save();
