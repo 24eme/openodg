@@ -23,13 +23,16 @@ class FactureLatex extends GenericLatex {
       $nbLignes += self::NB_LIGNES_PAPILLONS_FIXE + self::NB_LIGNES_PAPILLONS_PAR_ECHEANCE * $nb_echeances;
     return $nbLignes;
   }
-  
+
   public function getNbPages() {
     return floor(($this->getNbLignes()/ self::MAX_LIGNES_PERPAGE) + 1);
   }
-  
+
   private function getFileNameWithoutExtention() {
-    return  'facture_'.$this->facture->identifiant.'_'.str_replace('/', '-', $this->facture->numero_interloire).'_'.$this->facture->numero_facture.'_'.$this->facture->_rev;
+      $commune = KeyInflector::slugify($this->facture->declarant->commune);
+      $nom = KeyInflector::slugify(EtablissementClient::cleanCivilite($this->facture->declarant->nom));
+
+      return  'facture_'.$commune.'_'.$nom.'_'.$this->facture->identifiant.'_'.str_replace('/', '-', $this->facture->numero_interloire).'_'.$this->facture->numero_facture.'_'.$this->facture->_rev;
   }
 
   public function getLatexFileNameWithoutExtention() {
