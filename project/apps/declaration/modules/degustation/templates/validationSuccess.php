@@ -32,14 +32,14 @@
             </div>
         </div>
     </div>
-    
+
 
 <div class="row row-margin row-button">
     <div class="col-xs-6">
         <a href="<?php echo url_for('degustation_prelevements', $tournee) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
     </div>
     <div class="col-xs-6 text-right">
-        
+
         <button type="submit" onclick="return confirm('Étes-vous sur de valider et envoyer les mails aux intervenants ?')" class="btn btn-default btn-lg btn-upper">Valider et envoyer les mails&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
     </div>
 </div>
