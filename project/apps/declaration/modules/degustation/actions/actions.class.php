@@ -32,9 +32,9 @@ class degustationActions extends sfActions {
                 $this->demandes_alsace[$dateObject->format('M Y')] = 0;
                 $this->demandes_vtsgn[$dateObject->format('M Y')] = 0;
             }
-            $this->demandes_alsace[$dateObject->format('M Y')] += 1; 
+            $this->demandes_alsace[$dateObject->format('M Y')] += 1;
         }
-        
+
         $prelevements = DRevPrelevementsView::getInstance()->getPrelevements(
             'VTSGN', $campagne."-10-01", ($campagne+1)."-10-01", $campagne);
         $total = 0;
@@ -47,11 +47,11 @@ class degustationActions extends sfActions {
             if(!isset($this->demandes_alsace[$dateObject->format('M Y')])) {
                 $this->demandes_alsace[$dateObject->format('M Y')] = 0;
             }
-            $this->demandes_vtsgn[$dateObject->format('M Y')] = $total; 
+            $this->demandes_vtsgn[$dateObject->format('M Y')] = $total;
         }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-            
+
             return sfView::SUCCESS;
         }
 
@@ -143,7 +143,7 @@ class degustationActions extends sfActions {
         if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_OPERATEURS))) {
             $this->tournee->save();
         }
-        
+
         $this->tournee->updateOperateursFromPrevious();
         $this->tournee->updateOperateursFromDRev();
 
@@ -164,7 +164,7 @@ class degustationActions extends sfActions {
         }
 
         $this->form->update();
-        
+
         $this->tournee->save();
         $this->tournee->saveDegustations();
 
@@ -314,6 +314,12 @@ class degustationActions extends sfActions {
             $agent->dates = $value;
         }
 
+        foreach($this->tournee->agents as $key => $agent) {
+            if(!isset($values[$key])) {
+                $this->tournee->agents->remove($key);
+            }
+        }
+
         $this->tournee->save();
 
         if ($request->isXmlHttpRequest()) {
@@ -419,9 +425,9 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        
+
         $this->form->bind($request->getParameter($this->form->getName()));
-        
+
         if (!$this->form->isValid()) {
             $this->validation = new TourneeValidation($this->tournee);
             $this->tournee->cleanOperateurs(false);
@@ -452,7 +458,7 @@ class degustationActions extends sfActions {
         if($this->tournee->generatePrelevements()) {
             $this->tournee->save();
         }
-        
+
         return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
@@ -549,12 +555,12 @@ class degustationActions extends sfActions {
                     $p = $degustation->prelevements->add();
                 }
 
-                $p->cuve = $prelevement->cuve;  
-                $p->volume_revendique = $prelevement->volume_revendique;  
-                $p->hash_produit = $prelevement->hash_produit;                
-                $p->anonymat_prelevement = $prelevement->anonymat_prelevement;                
-                $p->libelle = $prelevement->libelle;                
-                $p->libelle_produit = $prelevement->libelle_produit;                
+                $p->cuve = $prelevement->cuve;
+                $p->volume_revendique = $prelevement->volume_revendique;
+                $p->hash_produit = $prelevement->hash_produit;
+                $p->anonymat_prelevement = $prelevement->anonymat_prelevement;
+                $p->libelle = $prelevement->libelle;
+                $p->libelle_produit = $prelevement->libelle_produit;
                 $p->preleve = $prelevement->preleve;
                 $p->vtsgn = null;
                 if($prelevement->vtsgn) {
@@ -657,7 +663,7 @@ class degustationActions extends sfActions {
                 $prelevement->anonymat_degustation = $json_prelevement->anonymat_degustation;
                 $prelevement->commission = $json_prelevement->commission;
             }
-            
+
             $degustation->save();
 
             $json_return[$degustation->_id] = $degustation->_rev;
@@ -710,7 +716,7 @@ class degustationActions extends sfActions {
         }
 
         if(!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS) {
-            
+
             throw new sfException("La dégustation n'est plus éditable");
         }
 
@@ -748,7 +754,7 @@ class degustationActions extends sfActions {
                 }
                 $prelevement->appreciations = $json_prelevement->appreciations;
             }
-            
+
             $degustation->save();
 
             $json_return[$degustation->_id] = $degustation->_rev;
@@ -819,9 +825,9 @@ class degustationActions extends sfActions {
 
     public function executeGenerationCourrier(sfWebRequest $request) {
         set_time_limit(180);
-        $tournee = $this->getRoute()->getTournee();         
+        $tournee = $this->getRoute()->getTournee();
         foreach ($tournee->getPrelevementsReadyForCourrier() as $courrier) {
-            Email::getInstance()->sendDegustationNoteCourrier($courrier);   
+            Email::getInstance()->sendDegustationNoteCourrier($courrier);
         }
 
         if($tournee->hasAllTypeCourrier()) {
@@ -894,7 +900,7 @@ class degustationActions extends sfActions {
         if(!$tournee->hasAllTypeCourrier()) {
             throw new sfException("Tous les types de courriers n'ont pas été défini");
         }
-        
+
         $tournee->statut = TourneeClient::STATUT_TERMINE;
         $tournee->save();
 
