@@ -4,18 +4,18 @@
  *
  */
 
-class TemplateFacture extends BaseTemplateFacture 
+class TemplateFacture extends BaseTemplateFacture
 {
-	
+
 	public function generateCotisations($identifiant_or_compte, $campagne, $force = false)
 	{
 		$template = $this;
 		$compte = $identifiant_or_compte;
-		
+
 		if(is_string($compte)) {
 			$compte = CompteClient::getInstance()->findByIdentifiant($identifiant_or_compte);
 		}
-		
+
 		$cotisations = array();
 		foreach ($this->docs as $doc) {
 			$document = $this->getDocumentFacturable($doc, $compte->identifiant, $campagne);
@@ -34,12 +34,12 @@ class TemplateFacture extends BaseTemplateFacture
 			}
 
 			foreach ($this->cotisations as $key => $cotisation) {
-				
+
 				$modele = $cotisation->modele;
 
 				$object = new $modele($compte, $cotisation->callback);
 				$details = $object->getDetails($cotisation->details);
-				
+
 				if (!in_array($cotisation->libelle, array_keys($cotisations))) {
 					$cotisations[$key] = array();
 					$cotisations[$key]["libelle"] = $cotisation->libelle;
@@ -65,7 +65,7 @@ class TemplateFacture extends BaseTemplateFacture
 		}
 		return $cotisations;
 	}
-	
+
 	public function getDocumentFacturable($docModele, $identifiant, $campagne)
 	{
 		$client = acCouchdbManager::getClient($docModele);

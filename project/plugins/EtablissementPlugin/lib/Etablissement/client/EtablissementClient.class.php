@@ -1,8 +1,8 @@
 <?php
 
 class EtablissementClient extends acCouchdbClient {
-    
-    const TYPE_MODEL = "Etablissement"; 
+
+    const TYPE_MODEL = "Etablissement";
     const TYPE_COUCHDB = "ETABLISSEMENT";
 
     const FAMILLE_VINIFICATEUR = CompteClient::ATTRIBUT_ETABLISSEMENT_VINIFICATEUR;
@@ -15,7 +15,7 @@ class EtablissementClient extends acCouchdbClient {
     const FAMILLE_CAVE_COOPERATIVE = CompteClient::ATTRIBUT_ETABLISSEMENT_CAVE_COOPERATIVE;
 
     const STATUT_INSCRIT = 'INSCRIT';
-    
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient(self::TYPE_MODEL);
@@ -36,7 +36,7 @@ class EtablissementClient extends acCouchdbClient {
 
         $query = $this->startkey(sprintf("ETABLISSEMENT-%s", "0000000000"))
                     ->endkey(sprintf("ETABLISSEMENT-%s", "9999999999"));
-        
+
         return $query->execute(acCouchdbClient::HYDRATE_ARRAY);
     }
 
@@ -66,5 +66,9 @@ class EtablissementClient extends acCouchdbClient {
     public static function getPrefixForRegion($region){
     	        $prefixs = array(CompteClient::REGION_VITICOLE => '1');
         return $prefixs[$region];
+    }
+
+    public static function cleanCivilite($nom) {
+        return preg_replace("/^(M|MME|EARL|SCEA|SARL|SDF|GAEC|MLLE|SA|SAS|Mme|M\.|STEF|MEMR|MM|IND|EURL|SCA|EI|SCI|MMES|SASU|SC|SCV|Melle|ASSO|GFA)[,]? /", "", $nom);
     }
 }

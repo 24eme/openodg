@@ -1,13 +1,13 @@
 <?php
 
 class TemplateFactureClient extends acCouchdbClient {
-    
-    const TYPE_MODEL = "TemplateFacture"; 
+
+    const TYPE_MODEL = "TemplateFacture";
     const TYPE_COUCHDB = "TEMPLATE";
 
     public static function getInstance()
     {
-        
+
         return acCouchdbManager::getClient("TemplateFacture");
     }
 
@@ -20,6 +20,14 @@ class TemplateFactureClient extends acCouchdbClient {
         }
 
         return $doc;
+    }
+
+    public function findAll() {
+        return $this->startkey_docid(sprintf("TEMPLATE-FACTURE-%s", ""))
+        ->endkey_docid(sprintf("TEMPLATE-FACTURE-%s", "Z"))
+                    ->execute();
+
+        return $ids;
     }
 
 }

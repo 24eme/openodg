@@ -1,7 +1,7 @@
 <?php use_helper('TemplatingFacture'); ?>
 <?php use_helper('Display'); ?>
 \documentclass[a4paper, 10pt]{letter}
-\usepackage[utf8]{inputenc} 
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[francais]{babel}
 \usepackage[top=3cm, bottom=1.5cm, left=1cm, right=1cm, headheight=2cm, headsep=0mm, marginparwidth=0cm]{geometry}
@@ -18,7 +18,7 @@
 \usepackage{marvosym}
 \usepackage{lastpage}
 \usepackage{truncate}
-\usepackage{colortbl} 
+\usepackage{colortbl}
 \usepackage{tabularx}
 \usepackage{multirow}
 \usepackage[framemethod=tikz]{mdframed}
@@ -32,6 +32,7 @@
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
+\def\CAMPAGNE{<?php echo $facture->campagne; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
 \def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}
@@ -66,7 +67,7 @@ linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframetotal}
 }{%
    \end{minipage}
    \end{lrbox}%
-   
+
    \sbox\mysavebox{\usebox\mysavebox}%
    \mbox{\rlap{\raisebox{-\dp\mysavebox}{\imgcmd}}\usebox\mysavebox}%
 }
@@ -77,7 +78,7 @@ linecolor=white,backgroundcolor=white, outerlinewidth=1pt]{beamerframetotal}
 \renewcommand{\familydefault}{\sfdefault}
 \fancyhead[L]{\includegraphics[scale=0.5]{\LOGO}}
 \fancyhead[R]{
-\colorbox{vertclair}{\LARGE{\textbf{\textcolor{vertfonce}{\TYPEFACTURE~N°~\NUMFACTURE}}}} \\ 
+\colorbox{vertclair}{\LARGE{\textbf{\textcolor{vertfonce}{\TYPEFACTURE~N°~\NUMFACTURE}}}} \\
 \vspace{5mm}
 N° adhérent : \textbf{\NUMADHERENT}
 }
@@ -107,7 +108,7 @@ N° adhérent : \textbf{\NUMADHERENT}
 		\vspace{3mm}
 		\FACTUREDATE
 		\end{flushleft}
-	
+
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
 \arrayrulecolor{vertclair}
@@ -136,7 +137,7 @@ N° adhérent : \textbf{\NUMADHERENT}
   <?php endforeach; ?>
   & \textbf{TOTAL TTC} \rule[-5pt]{0pt}{18pt} & \textbf{\FACTURETOTALTTC~€} \rule[-5pt]{0pt}{18pt} \tabularnewline
   \hline
-\end{tabular}	
+\end{tabular}
 \end{center}
 \begin{center}
 \small{
@@ -154,7 +155,7 @@ SIRET : 778 904 599 00033 - APE : 9412 Z - TVA Intracom. : FR 08 778 904 599
 			\vspace{7mm}
 			\textbf{\large{CARTE DE MEMBRE}} \\
 			\vspace{1mm}
-			\textbf{\large{Année 2015}} \\
+			\textbf{\large{Année \CAMPAGNE}} \\
 		\end{center}
 		\vspace{5.9mm}
 		\begin{center}

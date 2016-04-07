@@ -1,16 +1,16 @@
 <?php
 
-class facturationActions extends sfActions 
+class facturationActions extends sfActions
 {
-	
-    public function executeIndex(sfWebRequest $request) 
+
+    public function executeIndex(sfWebRequest $request)
     {
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,200);
 
         $this->getUser()->signOutEtablissement();
-        
+
         $this->form = new LoginForm();
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -19,16 +19,16 @@ class facturationActions extends sfActions
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if(!$this->form->isValid()) {
-            
+
             return sfView::SUCCESS;
         }
 
         $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
 
-        return $this->redirect('facturation_declarant', $this->getUser()->getEtablissement()->getCompte()); 
+        return $this->redirect('facturation_declarant', $this->getUser()->getEtablissement()->getCompte());
     }
 
-    public function executeMassive(sfWebRequest $request) 
+    public function executeMassive(sfWebRequest $request)
     {
         $this->generation = new Generation();
         $this->generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
@@ -39,15 +39,17 @@ class facturationActions extends sfActions
             $defaults['requete'] = $request->getParameter('q');
         }
 
-        $this->form = new FacturationMassiveForm($this->generation, $defaults, array('modeles' => ConfigurationClient::getConfiguration('2014')->getTemplatesFactures()));
-        
+        $this->form = new FacturationMassiveForm($this->generation, $defaults, array('modeles' => TemplateFactureClient::getInstance()->findAll()));
+
+		;
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-            
+
         if(!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
@@ -79,7 +81,7 @@ class facturationActions extends sfActions
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-            
+
         if(!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
@@ -91,7 +93,7 @@ class facturationActions extends sfActions
         } else {
             $this->getUser()->setFlash("notice", "La facture a bien été modifiée.");
         }
-        
+
         if($request->getParameter("not_redirect")) {
 
             return $this->redirect('facturation_edition', $this->facture);
@@ -120,7 +122,7 @@ class facturationActions extends sfActions
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-            
+
         if(!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
@@ -133,7 +135,7 @@ class facturationActions extends sfActions
 
             return $this->redirect('facturation_edition', $this->facture);
         }
-        
+
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
@@ -153,7 +155,7 @@ class facturationActions extends sfActions
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-            
+
         if(!$this->form->isValid()) {
             return sfView::SUCCESS;
         }
@@ -161,19 +163,19 @@ class facturationActions extends sfActions
         $this->form->save();
 
         $this->getUser()->setFlash("notice", "Le paiement a bien été ajouté");
-        
+
         return $this->redirect('facturation_declarant', array("id" => "COMPTE-".$this->facture->identifiant));
     }
 
     public function executeLatex(sfWebRequest $request) {
-        
+
         $this->setLayout(false);
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
         if(!$this->facture) {
 
             return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
         }
-        
+
         $latex = new FactureLatex($this->facture);
         $latex->echoWithHTTPHeader($request->getParameter('type'));
         exit;
@@ -199,25 +201,26 @@ class facturationActions extends sfActions
         $this->compte = $this->getRoute()->getCompte();
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
-        $this->templatesFactures = ConfigurationClient::getConfiguration('2014')->getTemplatesFactures();
-        $this->form = new FacturationDeclarantForm($this->templatesFactures);
+        $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
+        $this->form = new FacturationDeclarantForm(array(), array('modeles' => $this->templatesFactures));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
         }
-        
+
         $this->form->bind($request->getParameter($this->form->getName()));
-            
+
         if(!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
 
         $this->values = $this->form->getValues();
+
         $templateFacture = TemplateFactureClient::getInstance()->find($this->values['modele']);
         try {
-           $generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $this->compte->_id, $this->value['date_facturation'], null, $templateFacture->arguments->toArray(true, false)); 
+           $generation = FactureClient::getInstance()->createFactureByCompte($templateFacture, $this->compte->_id, $this->value['date_facturation'], null, $templateFacture->arguments->toArray(true, false));
         } catch (Exception $e) {
             $this->getUser()->setFlash("error", $e->getMessage());
 
@@ -234,7 +237,7 @@ class facturationActions extends sfActions
 
         return $this->redirect('generation_view', array('type_document' => GenerationClient::TYPE_DOCUMENT_FACTURES, 'date_emission' => $generation->date_emission));
     }
-        
+
     private function getLatexTmpPath() {
             return "/tmp/";
     }

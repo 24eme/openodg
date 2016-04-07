@@ -9,7 +9,7 @@
 <div class="page-header no-border">
     <div class="btn-group pull-right">
         <?php if($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && GenerationClient::getInstance()->isRegenerable($generation)): ?>
-        <a href="<?php echo url_for('generation_regenerate', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>" onclick='return confirm("Étes vous sûr de vouloir regénérer les factures ?");' class="btn btn-sm btn-default btn-default-step btn-upper"><span class="glyphicon glyphicon-repeat"></span>&nbsp;&nbsp;Regénérer</a>
+        <a href="<?php echo url_for('generation_regenerate', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>" onclick='return confirm("Étes vous sûr de vouloir regénérer les factures ?");' class="btn btn-xs btn-default btn-default-step btn-upper">Regénérer les factures</a>
         <?php endif; ?>
     </div>
     <h2>Génération N° <?php echo $generation->identifiant; ?><small> créé le <?php echo GenerationClient::getInstance()->getDateFromIdGeneration($generation->date_maj); ?></small></h2>
@@ -64,22 +64,13 @@
         <a class="btn btn-default btn-default-step btn-lg btn-upper" href="<?php echo $backUrl ?>"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
         <?php endif; ?>
     </div>
-    <?php if(in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_ENERREUR, GenerationClient::GENERATION_STATUT_GENERE)) && $generation->message): ?>
+    <?php if(($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR) || ($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && $generation->message)): ?>
     <div class="col-xs-4 text-center">
         <a class="btn btn-<?php if($generation->statut == GenerationClient::GENERATION_STATUT_ENERREUR): ?>danger<?php else: ?>warning<?php endif; ?> btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
     </div>
-    <?php elseif(in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_ENERREUR)) && !$generation->message): ?>
-    <div class="col-xs-4 text-center">
-        <a class="btn btn-btn-default btn-default-step btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
-    </div>
-    <?php elseif(GenerationClient::getInstance()->isRegenerable($generation) && in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_GENERE)) && !$generation->message): ?>
-    <div class="col-xs-4 text-center">
-        <a class="btn btn-btn-default btn-default-step btn-upper" href="<?php echo url_for('generation_reload', array('type_document' => $generation->type_document, 'date_emission' => $generation->date_emission)); ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Relancer</a>
-    </div>    
     <?php endif; ?>
 </div>
 
 <?php if(in_array($generation->statut, array(GenerationClient::GENERATION_STATUT_ENATTENTE, GenerationClient::GENERATION_STATUT_ENCOURS))): ?>
 <script type="text/javascript">window.setTimeout("window.location.reload()", 30000);</script>
 <?php endif; ?>
- 
