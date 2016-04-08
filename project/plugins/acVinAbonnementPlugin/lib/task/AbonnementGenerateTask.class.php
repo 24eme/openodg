@@ -44,7 +44,7 @@ EOF;
 
         if(AbonnementClient::getInstance()->findByIdentifiantAndDate($compte->identifiant, $this->getDateDebut($campagne), $this->getDateFin($campagne), acCouchdbClient::HYDRATE_JSON)) {
 
-            return;
+            //return;
         }
 
         $prevAbo = AbonnementClient::getInstance()->findByIdentifiantAndDate($compte->identifiant, $this->getDateDebut($campagne-1), $this->getDateFin($campagne-1), acCouchdbClient::HYDRATE_JSON);

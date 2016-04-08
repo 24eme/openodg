@@ -33,21 +33,26 @@ class Abonnement extends BaseAbonnement {
         return $this->_get('mouvements');
     }
 
+    public function getTemplateFacture() {
+
+        return "TEMPLATE-FACTURE-ABONNEMENT-".str_replace("-", "", $this->getDateDebut())."-".str_replace("-", "", $this->getDateFin());
+    }
+
     public function getMouvementsCalcule() {
-        
-        return array($this->getIdentifiant() => array("TEMPLATE-FACTURE-ABONNEMENT-20150101-20151231" => array("facturable" => 1, "facture" => 0)));
+
+        return array($this->getIdentifiant() => array($this->getTemplateFacture() => array("facturable" => 1, "facture" => 0)));
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {
 
         return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
     }
-    
+
     public function generateMouvements() {
 
         return $this->mouvement_document->generateMouvements();
-    }    
-    
+    }
+
     public function findMouvement($cle, $id = null){
       return $this->mouvement_document->findMouvement($cle, $id);
     }
