@@ -33,10 +33,12 @@ EOF;
         $compte = CompteClient::getInstance()->find($arguments['compte_id'], acCouchdbClient::HYDRATE_JSON);
 
         if(!$compte) {
+
             return;
         }
 
-        if(!$compte->statut == 'ACTIF') {
+        if($compte->statut != 'ACTIF') {
+
             return;
         }
 
@@ -57,9 +59,9 @@ EOF;
 
         if(!$isCompteAbonneRevue && $prevAbo) {
             echo "WARNING Plus abonné : $compte->identifiant ($compte->nom_a_afficher)\n";
+        }
 
-            return;
-        } elseif(!$isCompteAbonneRevue) {
+        if(!$isCompteAbonneRevue) {
 
             return;
         }
@@ -83,11 +85,17 @@ EOF;
 
         if($prevAbo && $abo->tarif != $prevAbo->tarif) {
             echo "ERROR Le tarif $abo->tarif de l'abonnement diffère de celui de l'année dernière $prevAbo->tarif $compte->identifiant ($compte->nom_a_afficher)\n";
+
             return;
         }
 
         if(in_array($abo->tarif, array(AbonnementClient::TARIF_GRATUIT, AbonnementClient::TARIF_PLEIN, AbonnementClient::TARIF_ETRANGER))) {
             $abo->facturerMouvements();
+        }
+
+        if($abo->tarif != AbonnementClient::TARIF_MEMBRE) {
+
+            return;
         }
 
         $abo->save();
