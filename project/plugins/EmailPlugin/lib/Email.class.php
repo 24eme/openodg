@@ -166,7 +166,7 @@ class Email {
                 ->setContentType('text/plain')
                 ->attach($pdfAttachment)
                 ->attach($csvAttachment);
-                
+
         return $this->getMailer()->send($message);
     }
 
@@ -325,7 +325,7 @@ class Email {
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->generate();
         $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
-        
+
         $body = $this->getBodyFromPartial('send_constat_approuve', array('constats' => $constats, 'constat' => $constatNode));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
@@ -336,7 +336,7 @@ class Email {
                 ->setBody($body);
 
         $message->attach($pdfAttachment);
-        
+
         $message->setContentType('text/plain');
         $this->getMailer()->send($message);
     }
@@ -365,7 +365,7 @@ class Email {
                 ->attach($pdfAttachment);
         return $this->getMailer()->send($message);
     }
-    
+
     public function sendTirageConfirmee($tirage) {
         if (!$tirage->declarant->email) {
 
@@ -391,12 +391,12 @@ class Email {
 
         return $this->getMailer()->send($message);
     }
-    
+
     public function sendNotificationModificationsExploitation($etablissement, $updatedValues) {
 
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-        $to = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-        
+        $to = sfConfig::get('app_email_plugin_from_adresse');
+
         $subject = "Modification des informations d'exploitation";
         $body = $this->getBodyFromPartial('send_notification_modifications_exploitation', array('etablissement' => $etablissement, 'updatedValues' => $updatedValues));
         $message = Swift_Message::newInstance()
@@ -408,7 +408,7 @@ class Email {
 
         return $this->getMailer()->send($message);
     }
-    
+
     protected function getMailer() {
         return $this->_context->getMailer();
     }
