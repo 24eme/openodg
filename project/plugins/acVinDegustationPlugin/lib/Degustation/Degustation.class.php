@@ -44,7 +44,7 @@ class Degustation extends BaseDegustation {
         }
 
         foreach($prelevement->lots as $l_key => $l) {
-            $lot = $this->lots->add(str_replace("/", "-", $l->hash_produit));
+            $lot = $this->lots->add($l_key);
             $lot->hash_produit = $l->hash_produit;
             $lot->libelle = $l->libelle;
             if($l->exist('libelle_produit')) {
