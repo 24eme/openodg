@@ -394,7 +394,7 @@ class Email {
 
     public function sendNotificationModificationsExploitation($etablissement, $updatedValues) {
 
-        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $from = array('noreply@ava-aoc.fr' => sfConfig::get('app_email_plugin_from_name'));
         $to = sfConfig::get('app_email_plugin_from_adresse');
 
         $subject = "Modification des informations d'exploitation";
