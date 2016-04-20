@@ -329,7 +329,7 @@ class Tournee extends BaseTournee {
     }
 
     public function getCampagne() {
-        
+
         return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date);
     }
 

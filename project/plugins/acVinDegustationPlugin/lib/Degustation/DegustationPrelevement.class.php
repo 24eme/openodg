@@ -53,14 +53,14 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
     public function isPreleve() {
 
-        return $this->preleve && $this->hash_produit && $this->cuve;
+        return $this->preleve && $this->hash_produit && !is_null($this->cuve) && $this->cuve != "";
     }
 
     public function isAffectationTerminee() {
 
         return $this->commission && $this->anonymat_degustation;
     }
-    
+
     public function getCuveNettoye() {
 
         return trim(str_replace('/', '', $this->cuve));
