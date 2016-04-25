@@ -10,11 +10,11 @@ class FactureSetexportedTask extends sfBaseTask
     ));
 
     $this->addOptions(array(
-			    new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'vinsdeloire'),
+			    new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
 			    new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
 			    new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
 			    new sfCommandOption('directory', null, sfCommandOption::PARAMETER_REQUIRED, 'Output directory', '.'),
-          new sfCommandOption('deversement', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', false),
+          new sfCommandOption('deversement', null, sfCommandOption::PARAMETER_REQUIRED, 'Déversement', false),
       // add your own options here
     ));
 
@@ -28,18 +28,22 @@ Call it with:
   [php symfony generatePDF|INFO]
 EOF;
   }
-  
+
   protected function execute($arguments = array(), $options = array())
   {
-    sfContext::createInstance($this->configuration);
-    // initialize the database connection
     $databaseManager = new sfDatabaseManager($this->configuration);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-    $facture = FactureClient::getInstance()->find($arguments['factureid']);
+    $paiement = false;
+    if(preg_match('/PAIEMENT-/', $arguments['factureid'])) {
+        $paiement = true;
+    }
+
+    $id = str_replace("PAIEMENT-", "FACTURE-", $arguments['factureid']);
+    $facture = FactureClient::getInstance()->find($id);
     if(!$options['deversement']) {
-      $facture->setVerseEnCompta();
+      $facture->setVerseEnCompta($paiement);
     } else {
-      $facture->setDeVerseEnCompta();
+      $facture->setDeVerseEnCompta($paiement);
     }
     $facture->save();
   }

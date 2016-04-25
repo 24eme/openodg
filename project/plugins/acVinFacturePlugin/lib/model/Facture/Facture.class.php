@@ -34,13 +34,13 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     public function storeEmetteur() {
         $configs = sfConfig::get('app_facture_emetteur');
         $emetteur = new stdClass();
-        
-        
+
+
         if (!array_key_exists($this->region, $configs))
             throw new sfException(sprintf('Config %s not found in app.yml', $this->region));
         $this->emetteur = $configs[$this->region];
     }
-    
+
     public function getCoordonneesBancaire(){
         $coordonneesBancaires = new stdClass();
         switch ($this->region) {
@@ -220,7 +220,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         return $origines;
     }
 
-    private function createOrigineLibelle($ligne, $transacteur, $famille, $view) { 
+    private function createOrigineLibelle($ligne, $transacteur, $famille, $view) {
         sfContext::getInstance()->getConfiguration()->loadHelpers(array('Date'));
         if ($ligne->origine_type == FactureClient::FACTURE_LIGNE_ORIGINE_TYPE_SV12) {
             if ($ligne->produit_type == FactureClient::FACTURE_LIGNE_PRODUIT_TYPE_ECART) {
@@ -303,7 +303,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
             }
         }
     }
-    
+
     private function isContratPluriannuel($l) {
         $contrat = VracClient::getInstance()->findByNumContrat($l->contrat_identifiant, acCouchdbClient::HYDRATE_JSON);
         if (!$contrat->type_contrat)
@@ -314,11 +314,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     public function createOrUpdateEcheanceC($ligne) {
         $ligne->echeance_code = 'C';
         $date = str_replace('-','',$this->date_facturation);
-        
+
         $d1 = date('Y') . '0331'; // 31/03/N
         $d2 = date('Y') . '0630'; // 30/06/N
         $d3 = date('Y') . '0930'; // 30/09/N
-        
+
         //if( date < 31/03/N) { 33% 31/03/N 33% 30/06/N et 33% 30/09/N }
         if ($date < $d1) {
             $this->updateEcheance('C', date('Y') . '-03-31', $ligne->montant_ht * (1/3));
@@ -327,37 +327,37 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
             return;
         }
 
-        //if(01/04/N < date < 31/05/N)   { 50% au 30/06/N et 50% 30/09/N}              
-        if ($date < $d2 ) {            
+        //if(01/04/N < date < 31/05/N)   { 50% au 30/06/N et 50% 30/09/N}
+        if ($date < $d2 ) {
             $this->updateEcheance('C', date('Y') . '-06-30', $ligne->montant_ht * 0.5);
             $this->updateEcheance('C', date('Y') . '-09-30', $ligne->montant_ht * 0.5);
             return;
         }
 
-        //if(30/06/N < date < 30/09/N) { 100% 30/09/N } 
+        //if(30/06/N < date < 30/09/N) { 100% 30/09/N }
         if ($date < $d3) {
             $this->updateEcheance('C', date('Y') . '-09-30', $ligne->montant_ht);
             return;
         }
-        
+
         //Dépassement de délais -> 100% comptant
         $this->createOrUpdateEcheanceE($ligne);
     }
 
-    public function createOrUpdateEcheanceB($ligne) {        
+    public function createOrUpdateEcheanceB($ligne) {
         $ligne->echeance_code = 'B';
         $date = str_replace('-','',$this->date_facturation);
-        
+
         $d1 = date('Y') . '0331'; // 31/03/N
-        $d2 = date('Y') . '0630'; // 30/06/N  
-                
+        $d2 = date('Y') . '0630'; // 30/06/N
+
         //if( date < 31/03/N) { 50% 31/03/N 50% 30/06/N}
         if ($date < $d1) {
             $this->updateEcheance('B', date('Y') . '-03-31', $ligne->montant_ht * 0.5);
             $this->updateEcheance('B', date('Y') . '-06-30', $ligne->montant_ht * 0.5);
             return;
         }
-        //if(01/04/N <= date < 30/06/N)   { 100% au 30/06 }              
+        //if(01/04/N <= date < 30/06/N)   { 100% au 30/06 }
         if ($date < $d2) {
             $this->updateEcheance('B', date('Y') . '-06-30', $ligne->montant_ht);
             return;
@@ -366,7 +366,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         //Dépassement de délais -> 100% comptant
         $this->createOrUpdateEcheanceE($ligne);
     }
-    
+
     public function createOrUpdateEcheanceA($ligne) {
         $ligne->echeance_code = 'A';
         $this->updateEcheance('A', Date::getIsoDateFinDeMoisISO($this->date_facturation, 2), $ligne->montant_ht);
@@ -382,7 +382,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
             return;
         }
         //Dépassement de délais -> 100% comptant
-        $this->createOrUpdateEcheanceE($ligne);        
+        $this->createOrUpdateEcheanceE($ligne);
     }
 
     public function createOrUpdateEcheanceE($ligne) {
@@ -437,7 +437,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         $this->updateTotalTTC();
     }
 
-    public function updateTotalHT() 
+    public function updateTotalHT()
     {
         $this->total_ht = 0;
         foreach ($this->lignes as $ligne) {
@@ -446,12 +446,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         $this->total_ht = round($this->total_ht, 2);
     }
 
-    public function updateTotalTTC() 
+    public function updateTotalTTC()
     {
     	$this->total_ttc = round($this->total_ht + $this->total_taxe, 2);
     }
 
-    public function updateTotalTaxe() 
+    public function updateTotalTaxe()
     {
     	$this->total_taxe = 0;
         foreach ($this->lignes as $ligne) {
@@ -472,22 +472,22 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
       $taux_tva = $this->getTauxTva()/100;
       return round($p + $p * $taux_tva, 2);
     }
-    
-    public function getTauxTva() {  
+
+    public function getTauxTva() {
         if($this->exist('taux_tva') && $this->_get('taux_tva')){
             return round($this->_get('taux_tva'),2);
         }
         $config_tva = sfConfig::get('app_tva_taux');
         $date_facturation = str_replace('-', '', $this->date_facturation);
-        $taux_f = 0.0;        
+        $taux_f = 0.0;
         foreach ($config_tva as $date => $taux) {
             if($date_facturation >= $date){
                 $taux_f = round($taux,2);
             }
         }
         return $taux_f;
-    }    
-    
+    }
+
     public function save() {
         parent::save();
         $this->saveDocumentsOrigine();
@@ -505,7 +505,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     public function getTemplate() {
         foreach($this->templates as $template_id) {
 
-            return TemplateFactureClient::getInstance()->find($template_id);        
+            return TemplateFactureClient::getInstance()->find($template_id);
         }
 
         return null;
@@ -561,7 +561,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     }
 
     public function getCodeComptableClient() {
-      return $this->_get('code_comptable_client');      
+      return $this->_get('code_comptable_client');
     }
 
     public function getSociete() {
@@ -580,12 +580,12 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     public function hasAvoir(){
         return ($this->exist('avoir') && !is_null($this->get('avoir')));
     }
-    
+
     public function isAvoir() {
-        
+
         return $this->total_ht < 0.0;
     }
-    
+
     /*** ARCHIVAGE ***/
 
     public function getNumeroArchive() {
@@ -602,26 +602,34 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
 
     /*** VERSEMENT COMPTABLE ***/
 
-    public function setVerseEnCompta() {
-      return $this->_set('versement_comptable', 1);
+    public function setVerseEnCompta($paiement = false) {
+        if($paiement) {
+            return $this->_set('versement_comptable_paiement', 1);
+        }
+
+        return $this->_set('versement_comptable', 1);
     }
 
-    public function setDeVerseEnCompta() {
-      return $this->_set('versement_comptable', 0);
+    public function setDeVerseEnCompta($paiement = false) {
+        if($paiement) {
+            return $this->_set('versement_comptable_paiement', 0);
+        }
+
+        return $this->_set('versement_comptable', 0);
     }
 
     /*** VERSEMENT COMPTABLE ***/
-    
+
     public function addOneMessageCommunication($message_communication = null) {
         $this->add('message_communication', $message_communication);
     }
-    
+
     public function hasMessageCommunication() {
         return $this->exist('message_communication');
     }
-    
+
     public function getMessageCommunicationWithDefault() {
-        if($this->exist('message_communication')){            
+        if($this->exist('message_communication')){
             return $this->_get('message_communication');
         }
         return self::MESSAGE_DEFAULT;
