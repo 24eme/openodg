@@ -434,6 +434,19 @@ class Tournee extends BaseTournee {
         return $this->_get('nombre_prelevements');
     }
 
+    public function hasSentCourrier() {
+        $prelevements = array();
+        foreach ($this->operateurs as $cvi => $operateur) {
+            foreach ($operateur->prelevements as $prelevement) {
+                if (!is_null($prelevement->courrier_envoye)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function getPrelevementsReadyForCourrier() {
         $prelevementsByOperateurs = array();
 

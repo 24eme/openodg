@@ -699,7 +699,7 @@ class degustationActions extends sfActions {
         $this->tournee = $this->getRoute()->getTournee();
         $this->commission = $request->getParameter('commission');
 
-        $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_DEGUSTATIONS);
+        $this->lock = (!$request->getParameter("unlock") && !in_array($this->tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_COURRIERS)) && !$this->tournee->hasSentCourrier());
 
         $this->setLayout('layoutResponsive');
     }
