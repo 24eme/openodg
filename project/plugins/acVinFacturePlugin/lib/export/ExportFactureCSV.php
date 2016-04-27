@@ -68,7 +68,12 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
             if($l->getKey() == 'syndicat_viticole' && count($l->details) >= 1) {
                 $commentaire = $l->details[0]->libelle;
             }
-            
+
+            if(in_array($l->getKey(), array('odg_ava', 'ava_syndicale')) && isset($l->details[1])) {
+                preg_match('/\(([0-9\.]+)[ ares]*\)/', $l->details[1]->libelle, $matches);
+                $commentaire = $matches[1];
+            }
+
             $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';'.$l->produit_identifiant_analytique.';;;;' . (($l->montant_ht >= 0) ? "CREDIT" : "DEBIT") .';' . abs($l->montant_ht) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_LIGNE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ';'.$l->getOrigineType().';'.$l->libelle.';'.$l->getOrigineIdentifiant().";".$commentaire;
 
             $csv .= "\n";
@@ -80,9 +85,9 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
 
 
         }
-        
+
         $csv .= self::CODE_JOURNAL_FACTURE.';' . $this->facture->date_facturation . ';' . $this->facture->date_emission . ';' . $this->facture->numero_interloire . ';'.$libelle.';411000;' . $this->facture->code_comptable_client . ';;' . $this->facture->date_echeance . ';' . (($this->facture->total_ttc >= 0) ? "DEBIT" : "CREDIT") .';' . abs($this->facture->total_ttc) . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_ECHEANCE . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;;";
-        
+
         $csv .= "\n";
 
         return $csv;
@@ -101,14 +106,14 @@ class ExportFactureCSV implements InterfaceDeclarationExportCsv {
             $csv .= "\n";
             $csv .= self::CODE_JOURNAL_PAIEMENT.';' . $this->facture->date_paiement . ';' . $this->facture->date_paiement . ';' . $this->facture->numero_interloire . ';'.$this->getLibelleFacture().';511150;;;' . $this->facture->date_echeance . ';DEBIT;' . $this->facture->montant_paiement . ';;;' . $this->facture->_id . ';' . self::TYPE_LIGNE_PAIEMENT . ';' . $this->facture->declarant->nom . ";" . $this->facture->code_comptable_client . ";;;;";
             $csv .= "\n";
-        } 
+        }
 
         return $csv;
     }
 
     protected function getSageCompteGeneral($ligne) {
         if ($ligne->getTauxTva() == 0.20) {
-            
+
             return "445710";
         }
 
