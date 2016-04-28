@@ -306,8 +306,10 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
                 $parcellesByAppellations[$keyApp]->appellation_libelle = $parcelle->getAppellation()->getLibelle();
                 $parcellesByAppellations[$keyApp]->lieu_libelle = '';
                 $parcellesByAppellations[$keyApp]->parcelles = array();
-                $parcellesByAppellations[$keyApp]->acheteurs = $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter);
+                $parcellesByAppellations[$keyApp]->acheteurs = array();
             }
+
+            $parcellesByAppellations[$keyApp]->acheteurs = array_merge_recursive($parcellesByAppellations[$keyApp]->acheteurs, $parcelle->getLieuNode()->getAcheteursNode(($parcelle->lieu) ? $parcelle->lieu : null, $cviFilter));
 
             $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()] = new stdClass();
             $parcellesByAppellations[$keyApp]->parcelles[$parcelle->gethash()]->cepage_libelle = ($parcelle->getLieuLibelle()) ? $parcelle->getLieuLibelle().' - ' : '';
