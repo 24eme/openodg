@@ -45,22 +45,22 @@ Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' mi
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; width: 260px; font-weight: bold;">&nbsp;Produit</th>    
-        <th class="th" style="text-align: center; width: 60px; font-weight: bold;">Lot N°</th>  
-        <th class="th" style="text-align: center; width: 160px; font-weight: bold;">Cuve / Volume</th>  
+        <th class="th" style="text-align: left; width: 260px; font-weight: bold;">&nbsp;Produit</th>
+        <th class="th" style="text-align: center; width: 60px; font-weight: bold;">Lot N°</th>
+        <th class="th" style="text-align: center; width: 160px; font-weight: bold;">Cuve / Volume</th>
         <th class="th" style="text-align: center; width: 140px; font-weight: bold;">N° de Prélèvement</th>
     </tr>
     <tr>
         <td class="td" style="text-align:left; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->libelle; ?><?php if($prelevement->libelle_produit): ?><small style="font-weight: normal"><br />&nbsp;&nbsp;<?php echo str_replace("AOC ", "" , $prelevement->libelle_produit) ?></small><?php endif; ?></td>
-        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->getKey() + 1; ?></td>        
-        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php if($prelevement->getCuveNettoye()): ?><?php echo $prelevement->getCuveNettoye(); ?> <?php endif; ?><?php if($prelevement->getCuveNettoye() && $prelevement->volume_revendique): ?>/ <?php endif; ?><?php if($prelevement->volume_revendique): ?><?php echoFloat($prelevement->volume_revendique) ?> <small>hl</small><?php endif; ?></td>        
+        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->getKey() + 1; ?></td>
+        <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php if($prelevement->getCuveNettoye()): ?><?php echo $prelevement->getCuveNettoye(); ?> <?php endif; ?><?php if($prelevement->getCuveNettoye() && $prelevement->volume_revendique): ?>/ <?php endif; ?><?php if($prelevement->volume_revendique): ?><?php echoFloat($prelevement->volume_revendique) ?> <small>hl</small><?php endif; ?></td>
         <td class="td" style="text-align:center; font-weight: bold;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->anonymat_prelevement_complet; ?></td>
 
-    </tr>    
+    </tr>
     <?php foreach ($prelevement->notes as $type_note => $note): ?>
         <tr>
             <td class="td" style="text-align:center; border-bottom: 1px solid #fff;"><?php echo tdStart() ?>&nbsp;<?php echo getLibelleTypeNote($type_note) ?></td>
-            <td class="td" style="text-align:center; font-weight: bold; border-bottom: 1px solid #fff;" colspan="3"><?php echo tdStart() ?>&nbsp;<?php echo $note->note ?></td>        
+            <td class="td" style="text-align:center; font-weight: bold; border-bottom: 1px solid #fff;" colspan="3"><?php echo tdStart() ?>&nbsp;<?php echo $note->note ?></td>
         </tr>
         <?php
         $defaults = "";
@@ -104,8 +104,11 @@ Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' mi
         $notesDesc = substr($notesDesc, 0, strlen($notesDesc) - 2);
         ?>
         <tr>
-            <th class="th" style="text-align: left; width: 140px; height:16px; font-weight: bold;"><span style="font-size: 1pt"><br /></span><small>&nbsp;<?php echo $noteLibelle; ?></small></th>    
+            <th class="th" style="text-align: left; width: 140px; height:16px; font-weight: bold;"><span style="font-size: 1pt"><br /></span><small>&nbsp;<?php echo $noteLibelle; ?></small></th>
             <td class="td" style="text-align: left; width: 490px; height:16px; font-size: 9pt;"><span style="font-size: 1pt"><br /></span><small>&nbsp;<?php echo $notesDesc; ?></small></td>
-        </tr>            
+        </tr>
     <?php endforeach; ?>
 </table>
+<?php if($degustation->appellation == "VTSGN"): ?>
+<p style="font-weight: normal; font-size: 8pt;">La dégustation conseil VT/SGN ne porte pas sur l’appellation Alsace ou Alsace Grand cru ; les commentaires et appréciations des experts dégustateurs concernent uniquement la mention VT/SGN.</p>
+<?php endif; ?>
