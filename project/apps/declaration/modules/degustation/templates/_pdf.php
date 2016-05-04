@@ -110,5 +110,5 @@ Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' mi
     <?php endforeach; ?>
 </table>
 <?php if($degustation->appellation == "VTSGN"): ?>
-<p style="font-weight: normal; font-size: 8pt;">La dégustation conseil VT/SGN ne porte pas sur l’appellation Alsace ou Alsace Grand cru ; les commentaires et appréciations des experts dégustateurs concernent uniquement la mention VT/SGN.</p>
+<p style="font-weight: bold; text-align: justify; font-size: 9pt;">N.B. : La dégustation conseil VT/SGN ne porte pas sur l’appellation Alsace ou Alsace Grand cru ; les commentaires et appréciations des experts dégustateurs concernent uniquement la mention VT/SGN.</p>
 <?php endif; ?>
