@@ -189,7 +189,7 @@ class Tournee extends BaseTournee {
                     $j++;
                 }
             }
-            for ($i = 1; $i <= 2; $i++) {
+            for ($i = 1; $i <= 3; $i++) {
                 $prelevement = $degustation->prelevements->add();
                 $prelevement->anonymat_prelevement = $j;
                 $prelevement->preleve = 0;
