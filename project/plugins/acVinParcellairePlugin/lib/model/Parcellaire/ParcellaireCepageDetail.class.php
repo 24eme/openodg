@@ -19,7 +19,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function addAcheteur($acheteur) {
-        
+
         return $this->getCepage()->addAcheteurFromNode($acheteur, $this->lieu);
     }
 
@@ -32,7 +32,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         $acheteursCvi = array();
         foreach($this->getAcheteurs() as $type => $acheteurs) {
             foreach($acheteurs as $cvi => $acheteur) {
-                $acheteursCvi[$cvi] = $acheteur; 
+                $acheteursCvi[$cvi] = $acheteur;
             }
         }
 
@@ -49,7 +49,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     public function getLibelleComplet() {
         return $this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle().' '.$this->getCepageLibelle();
     }
-    
+
     public function getLieuLibelle() {
         if ($this->lieu) {
 
@@ -90,12 +90,14 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     }
 
     public function isAffectee($lieu = null) {
-    	if ($lieu && $this->lieu && $lieu != $this->lieu) {
+        if ($lieu && $this->lieu && KeyInflector::slugify(trim($lieu)) != KeyInflector::slugify(trim($this->lieu))) {
+
     		return false;
     	}
+
         return !$this->isCleanable();
     }
-    
+
     public function getLieuNode() {
 
         return $this->getCouleur()->getLieu();
@@ -104,8 +106,8 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     public function cleanNode() {
 
         return false;
-    }  
-    
+    }
+
     public function getActive() {
         $v = $this->_get('active');
         if (!$this->superficie) {
@@ -129,7 +131,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
     public function setVtsgn($value) {
         return $this->_set('vtsgn', $value * 1);
     }
-    
+
     public function isFromAppellation($appellation){
         return 'appellation_'.$appellation == $this->getAppellation()->getKey();
     }
