@@ -51,5 +51,5 @@ class TourneeEtapes extends Etapes{
         return self::$libelles;
     }
 
-    
+
 }

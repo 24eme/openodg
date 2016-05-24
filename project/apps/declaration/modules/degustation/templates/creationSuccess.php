@@ -1,8 +1,8 @@
 <?php use_helper('Date') ?>
-<?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => false)); ?>
+<?php //include_partial('degustation/step', array('tournee' => $tournee, 'active' => false)); ?>
 
 <div class="page-header">
-    <h2>Fin de la création</h2>
+    <h2>Création d'une tournée</h2>
 </div>
 
 <form action="" method="post" class="form-horizontal">
