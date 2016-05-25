@@ -82,9 +82,6 @@ class degustationActions extends sfActions {
         if($request->getParameter('id')) {
             $this->tournee = TourneeClient::getInstance()->find($request->getParameter('id'));
             $this->forward404Unless($this->tournee);
-            if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeEtapes::ETAPE_CREATION))) {
-                $this->tournee->save();
-            }
         }
 
         if(!$this->tournee) {
