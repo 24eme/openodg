@@ -752,7 +752,8 @@ class degustationActions extends sfActions {
                 foreach($json_prelevement->notes as $key_note => $json_note) {
                     $note = $prelevement->notes->add($key_note);
                     $note->note = $json_note->note;
-                    $note->defauts = $json_note->defauts;
+                    $note->remove('defauts', $json_note->defauts);
+                    $note->add('defauts', $json_note->defauts);
                 }
                 $prelevement->appreciations = $json_prelevement->appreciations;
             }
