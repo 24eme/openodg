@@ -16,6 +16,7 @@ class DRevImportDRTask extends sfBaseTask
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
             new sfCommandOption('force', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import", false),
+            new sfCommandOption('removerevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Suppprime les volumes revendique", false),
         ));
 
         $this->namespace = 'drev';
@@ -44,7 +45,7 @@ EOF;
         }
 
         $drev = DRevClient::getInstance()->find($arguments['doc_id']);
-        
+
         if(!$drev) {
             $etablisement_id = preg_replace("/^DREV-([0-9]+)-[0-9]+$/", 'ETABLISSEMENT-\1', $arguments['doc_id']);
             $etablissement = EtablissementClient::getInstance()->find($etablisement_id);
@@ -67,6 +68,10 @@ EOF;
             $drev->add('automatique', 1);
             $drev->add('non_vinificateur', 1);
             $drev->add('non_conditionneur', 1);
+
+            if($options['removerevendique']) {
+                $drev->declaration->removeVolumeRevendique();
+            }
 
             if($drev->declaration->getTotalVolumeRevendique() > 0) {
                 echo sprintf("ERROR;La DR a du volume sur place;%s\n", $etablisement_id);
@@ -94,8 +99,10 @@ EOF;
             }
 
             $drev->storeDeclarant();
-            $drev->validation = true;
-            $drev->validation_odg = true;
+
+            $drev->validate(true);
+            $drev->validateOdg(true);
+
             $drev->save();
         }
 
@@ -126,6 +133,11 @@ EOF;
         $drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
         $drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
         $drev->updateFromCSV();
+        
+        if($options['removerevendique']) {
+            $drev->declaration->removeVolumeRevendique();
+        }
+
         $drev->declaration->cleanNode();
         $drev->save();
 

@@ -1,9 +1,9 @@
 <?php
 
-class DRevCouleur extends BaseDRevCouleur 
+class DRevCouleur extends BaseDRevCouleur
 {
 
-	public function getChildrenNode() 
+	public function getChildrenNode()
     {
         return $this->getCepages();
     }
@@ -12,24 +12,24 @@ class DRevCouleur extends BaseDRevCouleur
 
         return $this->filter('^cepage_');
     }
-    
-	public function getLieu() 
+
+	public function getLieu()
     {
         return $this->getParent();
     }
-    
-	public function getMention() 
+
+	public function getMention()
     {
         return $this->getLieu()->getMention();
     }
-    
+
     public function getAppellation()
     {
     	return $this->getMention()->getAppellation();
     }
 
-    public function getProduits($onlyActive = false) 
-    {   
+    public function getProduits($onlyActive = false)
+    {
     	if ($onlyActive && !$this->isActive()) {
 
     		return array();
@@ -86,12 +86,12 @@ class DRevCouleur extends BaseDRevCouleur
             $this->volume_revendique += $produit->volume_revendique_total;
         }
     }
-    
+
     public function getTotalTotalSuperficie()
     {
     	return ($this->isActive())? $this->superficie_revendique : 0;
     }
-    
+
     public function getTotalVolumeRevendique()
     {
     	return ($this->isActive())? $this->volume_revendique : 0;
@@ -104,13 +104,13 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function updateDetail() {
         if($this->detail->usages_industriels_sur_place === -1) {
-           $this->detail->volume_sur_place_revendique = null; 
-           $this->detail->usages_industriels_sur_place = null; 
+           $this->detail->volume_sur_place_revendique = null;
+           $this->detail->usages_industriels_sur_place = null;
         }
 
         if(!is_null($this->detail->volume_sur_place) && !is_null($this->detail->usages_industriels_sur_place)) {
             $this->detail->volume_sur_place_revendique = $this->detail->volume_sur_place - $this->detail->usages_industriels_sur_place;
-        }  
+        }
     }
 
     public function updateRevendiqueFromDetail() {
@@ -127,7 +127,7 @@ class DRevCouleur extends BaseDRevCouleur
 
         return $this->getProduitHash() == $this->getHash();
     }
-    
+
     public function isActive()
     {
 
@@ -142,12 +142,12 @@ class DRevCouleur extends BaseDRevCouleur
         }
 
         if(!$this->volume_revendique && !$this->superficie_revendique && !count($this->getProduitsCepage())) {
-            
+
             return true;
         }
 
         return false;
     }
 
-    
+
 }

@@ -5,7 +5,7 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     protected $total_superficie_before;
     protected $total_volume_before;
 
-    public function getConfig() 
+    public function getConfig()
     {
         return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
     }
@@ -44,25 +44,25 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
             $child_added->reorderByConf();
         }
     }
-    
-	public function getChildrenNodeDeep($level = 1) 
+
+	public function getChildrenNodeDeep($level = 1)
 	{
       if($this->getConfig()->hasManyNoeuds()) {
-          
+
           throw new sfException("getChildrenNodeDeep() peut uniquement être appelé d'un noeud qui contient un seul enfant...");
       }
 
       $node = $this->getChildrenNode()->getFirst();
-      
+
       if($level > 1) {
-        
+
         return $node->getChildrenNodeDeep($level - 1);
       }
 
       return $node->getChildrenNode();
     }
 
-    public function getProduits($onlyActive = false) 
+    public function getProduits($onlyActive = false)
     {
         $produits = array();
         foreach($this->getChildrenNode() as $key => $item) {
@@ -72,7 +72,22 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
-    public function getProduitsCepage() 
+    public function removeVolumeRevendique() {
+
+        foreach($this->getProduits() as $produit) {
+            $produit->detail->volume_sur_place = 0;
+            $produit->detail->volume_sur_place_revendique = 0;
+            $produit->detail->usages_industriels_sur_place = 0;
+            $produit->updateRevendiqueFromDetail();
+        }
+
+        foreach($this->getProduitsCepage() as $detail) {
+            $detail->resetRevendique();
+        }
+
+    }
+
+    public function getProduitsCepage()
     {
         $produits = array();
         foreach($this->getChildrenNode() as $key => $item) {
@@ -81,7 +96,7 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
 
         return $produits;
     }
-    
+
     public function hasVtsgn() {
         foreach($this->getProduitsCepage() as $produit) {
             if($produit->hasVtsgn()) {
@@ -92,25 +107,25 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
 
         return false;
     }
-    
+
     public function getLibelle() {
         if(is_null($this->_get('libelle'))) {
             if($this->getConfig()->exist('libelle_long')) {
                 $this->_set('libelle', $this->getConfig()->libelle_long);
             } else {
-                $this->_set('libelle', $this->getConfig()->libelle); 
+                $this->_set('libelle', $this->getConfig()->libelle);
             }
         }
 
         return $this->_get('libelle');
     }
-    
-    public function getLibelleComplet() 
+
+    public function getLibelleComplet()
     {
     	$libelle = $this->getParent()->getLibelleComplet();
     	return trim($libelle).' '.$this->libelle;
     }
-    
+
 	public function getTotalTotalSuperficie()
     {
     	$total = 0;
@@ -119,7 +134,7 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         }
         return $total;
     }
-    
+
 	public function getTotalVolumeRevendique()
     {
     	$total = 0;
@@ -131,7 +146,7 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
 
     public function isCleanable() {
         if(count($this->getChildrenNode()) == 0) {
-            
+
             return true;
         }
 
@@ -152,4 +167,4 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         }
     }
 
-} 
+}

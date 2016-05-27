@@ -430,8 +430,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->validation = $date;
     }
 
-    public function validateOdg() {
-        $this->validation_odg = date('Y-m-d');
+    public function validateOdg($date = null) {
+        if(is_null($date)) {
+            $date = date('Y-m-d');
+        }
+
+        $this->validation_odg = $date;
     }
 
     public function getEtablissementObject() {

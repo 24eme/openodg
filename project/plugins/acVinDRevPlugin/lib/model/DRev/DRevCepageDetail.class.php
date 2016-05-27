@@ -5,13 +5,13 @@
  */
 
 class DRevCepageDetail extends BaseDRevCepageDetail {
-    
+
     public function getConfig() {
 
         return $this->getCepage()->getConfig();
-    }    
+    }
 
-    public function getProduitsCepage() 
+    public function getProduitsCepage()
     {
 
         return array($this->getHash() => $this);
@@ -65,12 +65,12 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
 
     public function isCleanable() {
         $this->updateTotal();
-        
+
         return !$this->volume_revendique_total && !$this->superficie_revendique_total;
     }
-    
+
     public function cleanNode() {
-        
+
         return false;
     }
 
@@ -106,7 +106,7 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     }
 
     public function getProduitLibelleComplet() {
-        
+
         return trim($this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle());
     }
 

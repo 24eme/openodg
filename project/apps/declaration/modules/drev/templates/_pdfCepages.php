@@ -9,7 +9,7 @@
 <br /><br />
 
 <?php if($drev->hasDR()): ?>
-<i>Ces volumes ceux issus de la déclaration de récolte, usages industriels inclus.</i>
+<i>Ces volumes sont ceux issus de la déclaration de récolte, usages industriels inclus.</i>
 <br />
 <?php endif; ?>
 
@@ -21,10 +21,10 @@ foreach ($drev->getProduitsCepageByAppellations() as $produitsCepageByAppellatio
 
     <table border="1" class="table" cellspacing=0 cellpadding=0 style="text-align: right;">
         <tr>
-            <th class="th" style="text-align: left; width: 267px">&nbsp;Produits</th>        
+            <th class="th" style="text-align: left; width: 267px">&nbsp;Produits</th>
             <th class="th" style="text-align: center; width: 120px">Hors VT/SGN</th>
             <th class="th" style="text-align: center; width: 120px">VT</th>
-            <th class="th" style="text-align: center; width: 120px">SGN</th>   
+            <th class="th" style="text-align: center; width: 120px">SGN</th>
         </tr>
         <?php
         foreach ($produitsCepageByAppellations->cepages as $cepages):
@@ -48,7 +48,7 @@ foreach ($drev->getProduitsCepageByAppellations() as $produitsCepageByAppellatio
                     <td class="tdAlt"><?php echo tdStart() ?>&nbsp;</td>
                 <?php endif; ?>
             </tr>
-        <?php endforeach; ?>     
+        <?php endforeach; ?>
     </table>
     <br />
     <?php
