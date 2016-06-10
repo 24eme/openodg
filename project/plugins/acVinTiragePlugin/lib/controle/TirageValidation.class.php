@@ -43,8 +43,7 @@ class TirageValidation extends DocumentValidation {
 
         if ($this->document->isCaveCooperative()) {
             $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV11, '');
-        }
-        if ($this->document->isNegociant()) {
+        } elseif ($this->document->isNegociant()) {
             $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV12, '');
         } else {
             $this->addPoint(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, null);
