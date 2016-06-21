@@ -61,7 +61,7 @@ class DegustationCourrierForm extends acCouchdbObjectForm {
         foreach ($values as $key => $value) {
             if (preg_match('/^([0-9]{10})-(.*)/', $key, $matches)) {
                 $cvi_operateur = $matches[1];
-                $id_degustation = 'DEGUSTATION-' . $cvi_operateur . '-' . $this->getObject()->identifiant;
+                $id_degustation = $this->getObject()->degustations[$cvi_operateur];
                 $degustation = DegustationClient::getInstance()->find($id_degustation);
                 $realKeyPrelevement = str_replace('-', '/', $matches[2]);
                 if(!$degustation){
