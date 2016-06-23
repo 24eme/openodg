@@ -61,13 +61,14 @@ class TirageVinForm extends acCouchdbObjectForm {
     }
 
     public function getMillesimes() {
-        return array($this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblage");
+
+        return array(($this->annee - 1)."" => ($this->annee - 1)."", $this->annee => $this->annee, TirageClient::MILLESIME_ASSEMBLE => "Assemblage");
     }
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
         $cepagesValues = $values['cepages_actifs'];
-        foreach ($this->getCepages() as $key => $cepage) {   
+        foreach ($this->getCepages() as $key => $cepage) {
             $this->getObject()->cepages->get($key)->selectionne = intval(in_array($key, $cepagesValues));
         }
         $this->getObject()->couleur_libelle = TirageClient::$couleurs[$values['couleur']];
