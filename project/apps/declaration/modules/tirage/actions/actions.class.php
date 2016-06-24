@@ -59,6 +59,9 @@ class tirageActions extends sfActions {
 
     public function executeDelete(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
+
+        $this->secure(TirageSecurity::EDITION, $tirage);
+
         $tirage->delete();
         $this->getUser()->setFlash("notice", 'La déclaration de tirage a été supprimé avec succès.');
 
@@ -94,7 +97,7 @@ class tirageActions extends sfActions {
 
         $this->tirage->storeDeclarant();
         $this->tirage->save();
-        
+
         if ($this->form->hasUpdatedValues() && !$this->tirage->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->tirage->getEtablissementObject(), $this->form->getUpdatedValues());
         }

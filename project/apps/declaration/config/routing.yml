@@ -38,7 +38,7 @@ admin_doc:
 admin_export:
   url: /admin/export
   param: { module: admin, action: export }
-  
+
 
 #TIRAGE
 
@@ -84,17 +84,17 @@ tirage_exploitation:
 
 tirage_vin:
   url: /tirage/vin/:id
-  param: { module: tirage, action: vin }  
+  param: { module: tirage, action: vin }
   class: TirageRoute
   options:
     model:    Tirage
     type:     object
   requirements:
-    sf_method: [get, post] 
-  
+    sf_method: [get, post]
+
 tirage_lots:
   url: /tirage/lots/:id
-  param: { module: tirage, action: lots }  
+  param: { module: tirage, action: lots }
   class: TirageRoute
   options:
     model:    Tirage
@@ -121,7 +121,7 @@ tirage_dr_import:
     type:     object
   requirements:
     sf_method: [get, post]
-  
+
 tirage_validation:
   url: /tirage/validation/:id
   param: { module: tirage, action: validation }
@@ -195,6 +195,16 @@ tirage_delete:
 tirage_devalidation:
   url: /tirage/devalidation/:id
   param: { module: tirage, action: devalidation }
+  class: TirageRoute
+  options:
+    model:    Tirage
+    type:     object
+  requirements:
+    sf_method: [get]
+
+tirage_delete:
+  url: /tirage/suppression/:id
+  param: { module: tirage, action: delete }
   class: TirageRoute
   options:
     model:    Tirage
@@ -620,7 +630,7 @@ mon_compte:
   url: /mon-compte
   param: { module: compte, action: modification }
 
-redirect_to_mon_compte_civa:    
+redirect_to_mon_compte_civa:
   url: /mon-compte-civa
   param: { module: compte, action: redirectToMonCompteCiva }
 
@@ -1286,7 +1296,7 @@ rendezvous_declarant:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 rendezvous_declarant_remove:
   url: /rendezvous/suppression/:idrendezvous
   param: { module: constats, action: rendezvousDeclarantRemove }
