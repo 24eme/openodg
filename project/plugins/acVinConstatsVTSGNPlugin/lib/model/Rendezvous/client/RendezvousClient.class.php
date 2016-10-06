@@ -246,7 +246,8 @@ class RendezvousClient extends acCouchdbClient {
     }
 
     public static function isDateToByPass($date) {
-        return date('Ymd', strtotime($date)) == '20161031' ||date('md', strtotime($date)) == '1101' || date('md', strtotime($date)) == '1111' || date('N', strtotime($date)) == 7;
+
+        return date('md', strtotime($date)) == '1101' || date('md', strtotime($date)) == '1111' || date('N', strtotime($date)) == 7;
     }
 
 }
