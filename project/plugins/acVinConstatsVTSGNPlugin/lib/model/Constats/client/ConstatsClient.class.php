@@ -2,7 +2,7 @@
 
 class ConstatsClient extends acCouchdbClient {
 
-    const TYPE_MODEL = "Constats"; 
+    const TYPE_MODEL = "Constats";
     const TYPE_COUCHDB = 'CONSTATS';
     const STATUT_NONCONSTATE = 'NONCONSTATE';
     const STATUT_APPROUVE = 'APPROUVE';
@@ -29,7 +29,6 @@ class ConstatsClient extends acCouchdbClient {
         self::RAISON_REFUS_MULTI_CEPAGE => 'Multi-cépages',
         self::RAISON_REFUS_PRESSURAGE_EN_COURS => 'Pressurage en cours',
         self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendanges mécaniques',
-        self::RAISON_REFUS_ASSEMBLE => 'Assemblé',
         self::RAISON_REFUS_PROBLEME => 'Problème',
     );
     public static $contenants_libelle = array(

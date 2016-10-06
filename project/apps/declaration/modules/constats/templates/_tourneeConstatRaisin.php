@@ -13,6 +13,9 @@
         </div>
         <div class="form-group">
             <div class="col-xs-12">
+                <div ng-class="{ 'hidden': !constat.erreurs['denomination_lieu_dit'] }" class="alert alert-danger">
+                    Vous devez saisir un lieu-dit pour cette appellation
+                </div>
                 <input placeholder="Dénomination / Lieu-dit (Facultatif)" id="lieu_denomination_{{ keyConstatNode}}" ng-model="constat.denomination_lieu_dit" type="text" class="form-control input-lg" ng-keydown="blurOnEnter($event)" ng-blur="blur()" />
             </div>
         </div>
@@ -23,7 +26,7 @@
         </div>
         <div class="form-group">
             <div ng-class="{ 'hidden': !constat.erreurs['nb_contenant'] }" class="alert alert-danger">
-                Vous devez saisir une quantité 
+                Vous devez saisir une quantité
             </div>
             <div ng-class="{ 'hidden': !constat.erreurs['contenant'] }" class="alert alert-danger">
                 Vous devez saisir un type de contenant
@@ -59,7 +62,7 @@
 <div ng-show="active == 'refuser_confirmation'" class="form-horizontal">
     <div class="col-xs-12">
         <div class="col-xs-12">
-            <p class="lead text-center"> 
+            <p class="lead text-center">
             <span ng-show="constat.produit_libelle">{{ constat.produit_libelle }}<br /></span>
             <span ng-show="constat.degre_potentiel_raisin">{{ constat.degre_potentiel_raisin }} degrés potentiels<br /></span>
             <span ng-show="constat.nb_contenant && constat.contenant_libelle">{{ constat.nb_contenant }} {{ constat.contenant_libelle }}(s)<br /></span>
