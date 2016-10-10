@@ -113,7 +113,7 @@
                     <div class="col-xs-12">
                         <h3 class="text-center">Constats</h3>
                         <div class="list-group">
-                            <a href="" ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.raison_refus != '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>')), 'list-group-item-warning': (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.raison_refus == '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>') }" class="list-group-item" ng-repeat="(keyConstatNode,constat) in constatRdv['constats']">
+                            <a href="" ng-click="showConstat(constat)" ng-class="{ 'list-group-item-success': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_APPROUVE ?>')), 'list-group-item-danger': ((constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.type_constat == 'raisin') || (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.raison_refus != '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>')), 'list-group-item-warning': (constat.type_constat == 'volume' && constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>' && constat.raison_refus == '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>') }" class="list-group-item" ng-repeat="(keyConstatNode,constat) in constatRdv['constats'], 'hidden': (constat.type_constat == 'volume' && constat.statut_raisin != '<?php echo ConstatsClient::STATUT_APPROUVE ?>')">
                                 <div ng-show="constat.type_constat == 'raisin'">
                                     <span style="font-size: 18px; margin-right: 6px;" class="icon-raisins"></span>
 
@@ -133,7 +133,7 @@
                                         {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>
                                     </span>
                                 </div>
-                                <div ng-show="constat.type_constat == 'volume' && constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
+                                <div ng-show="constat.type_constat == 'volume'">
                                     <span style="font-size: 18px; margin-right: 6px;" class="icon-mouts"></span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
                                         <span class="pull-right"><span class="label label-default">Non saisi</span></span>
