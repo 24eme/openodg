@@ -6,13 +6,13 @@
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee_vtsgn.js?201510271700'); ?>
 <div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state = "<?php echo url_for('auth_state') ?>"; date = "<?php echo $tournee->date ?>"; signatureImg = null;'>
-    <div ng-controller="tournee_vtsgnCtrl">    
+    <div ng-controller="tournee_vtsgnCtrl">
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">
             <div class="text-center page-header">
                 <a href="<?php echo url_for('tournee_agent_accueil'); ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
                 <?php if ($lock): ?><span class="pull-right"><span class="glyphicon glyphicon-lock"></span></span><?php endif; ?>
                 <h2>Tournée du<span class="hidden-sm hidden-md hidden-lg"><br /></span><span class="hidden-xs">&nbsp;</span><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?>&nbsp;<span class="hidden-lg hidden-md hidden-sm"><br /></span><span class="hidden-xs text-muted-alt"> - </span><span class="text-muted-alt" style="font-weight: normal"><?php echo $tournee->getFirstAgent()->nom ?></span></h2>
-            </div>      
+            </div>
             <div ng-show="!loaded" class="row">
                 <div class="col-xs-12 text-center lead text-muted-alt" style="padding-top: 30px;">Chargement en cours ...</div>
             </div>
@@ -22,7 +22,7 @@
                         <a ng-repeat="constatRdv in planification| orderBy: ['typerendezvous', 'heure']" href="" ng-click="mission(constatRdv)" ng-class="{ 'list-group-item-success': constatRdv['rendezvous'].termine }" class="list-group-item col-xs-12 link-to-section" style="padding-right: 0; padding-left: 0;">
                             <div class="col-xs-2 col-sm-2 text-left" ng-class="{ 'opacity-md': constatRdv.annule }">
                                 <strong ng-show="constatRdv['isRendezvousRaisin']" ng-class="{ 'opacity-md': constatRdv.annule }" class="lead" style="font-weight: bold;">{{ constatRdv['rendezvous'].heure}}</strong>
-                                <label ng-show="constatRdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>  
+                                <label ng-show="constatRdv['rendezvous'].transmission_collision" class="btn btn-xs btn-danger">Collision</label>
                             </div>
                             <div class="col-xs-1 col-sm-1" ng-class="{ 'opacity-md': constatRdv.annule }">
                                 <span ng-show="constatRdv['isRendezvousRaisin']" class="icon-raisins" style="font-size: 20px;" ></span>
@@ -38,7 +38,7 @@
                             <div class="col-xs-2 col-sm-1 text-right" ng-show="!constatRdv.annule">
                                 <span ng-if="!constatRdv['rendezvous'].termine" class="glyphicon glyphicon-unchecked" style="font-size: 28px; margin-top: 8px;"></span>
                                 <span ng-if="constatRdv['rendezvous'].termine" class="glyphicon glyphicon-check" style="font-size: 28px; margin-top: 8px;"></span>
-                            </div>   
+                            </div>
                             <div class="col-xs-12 col-sm-2 text-right" ng-show="!constatRdv.annule">
                                 <span ng-show="constatRdv['rendezvous'].nb_non_saisis" class="label label-default" style="" >{{ constatRdv['rendezvous'].nb_non_saisis }} non saisi(s)</span>
                                 <span ng-show="constatRdv['rendezvous'].nb_approuves" class="label label-success" style="" >{{ constatRdv['rendezvous'].nb_approuves}} approuvé(s)</span>
@@ -46,7 +46,7 @@
                                 <span ng-show="constatRdv['rendezvous'].nb_assembles" class="label label-warning" style="" >{{ constatRdv['rendezvous'].nb_assembles}} assemblé(s)</span>
                             </div>
                             <div class="col-xs-12 col-sm-3 text-right" ng-show="constatRdv.annule">
-                                <label class="label label-danger">Annulé</label>  
+                                <label class="label label-danger">Annulé</label>
                             </div>
                             <div ng-show="constatRdv['rendezvous'].rendezvous_commentaire != ''" class="col-xs-12 col-sm-12 text-left" ng-class="{ 'opacity-md': constatRdv.annule }">
                             <span  class="glyphicon glyphicon-warning-sign" style="font-size: 18pt; padding-right: 10px;"></span>&nbsp;&nbsp;{{ constatRdv['rendezvous'].rendezvous_commentaire }}
@@ -128,12 +128,12 @@
                                         ({{ constat.nb_contenant}} {{ constat.contenant_libelle}}<span ng-show="constat.nb_contenant > 1">s</span>, {{ constat.degre_potentiel_raisin}}°)
                                     </span>
 
-                                    <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">                                       
+                                    <span ng-show="constat.statut_raisin == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                         <span class="pull-right"><span class="label label-danger">Refusé</span></span>
                                         {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>
                                     </span>
                                 </div>
-                                <div ng-show="constat.type_constat == 'volume'">
+                                <div ng-show="constat.type_constat == 'volume' && constat.statut_raisin == '<?php echo ConstatsClient::STATUT_APPROUVE ?>'">
                                     <span style="font-size: 18px; margin-right: 6px;" class="icon-mouts"></span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_NONCONSTATE ?>'">
                                         <span class="pull-right"><span class="label label-default">Non saisi</span></span>
@@ -147,7 +147,7 @@
                                     </span>
                                     <span ng-show="constat.statut_volume == '<?php echo ConstatsClient::STATUT_REFUSE ?>'">
                                        <span ng-show="constat.raison_refus != '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>'" class="pull-right"><span class="label label-danger">Refusé</span></span>
-                                        <span ng-show="constat.raison_refus == '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>'"  class="pull-right"><span class="label label-warning">Assemblé</span></span>                                        
+                                        <span ng-show="constat.raison_refus == '<?php echo ConstatsClient::RAISON_REFUS_ASSEMBLE ?>'"  class="pull-right"><span class="label label-warning">Assemblé</span></span>
                                         {{ constat.raison_refus_libelle}}<span ng-show="constat.produit_libelle"><br /><small>{{ constat.produit_libelle}}</small></span>  <span>(Constat raisin fait à {{ constatRdv['rendezvous'].heure}})</span>
                                     </span>
                                 </div>
@@ -155,8 +155,8 @@
                                     <span class="glyphicon glyphicon-info-sign"  style="font-size: 14pt; top: 5px;"></span>&nbsp;{{constat.commentaire_raisin}}
                                 </div>
                             </a>
-                        </div>                        
-                        <div ng-show="constatRdv['rendezvous'].type_rendezvous == 'TYPE_RAISINS'">                       
+                        </div>
+                        <div ng-show="constatRdv['rendezvous'].type_rendezvous == 'TYPE_RAISINS'">
                             <button ng-click="ajoutConstat(constatRdv)" class="btn btn-lg btn-block btn-default btn-default-step" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp; Ajouter un constat raisin</button>
                         </div>
                     </div>
@@ -168,14 +168,14 @@
                     <div class="page-header text-center">
                         <h2>Saisie constat raisin <br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</span></h2>
                     </div>
-                    <?php include_partial('constats/tourneeConstatRaisin'); ?> 
+                    <?php include_partial('constats/tourneeConstatRaisin'); ?>
                 </div>
                 <div ng-show="constat.type_constat == 'volume'">
                     <div href="" ng-click="mission(constatRdv)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
                     <div class="page-header text-center">
                         <h2>Saisie constat volume <br /><span class="lead">{{ constatRdv['rendezvous'].compte_raison_sociale}}</span></h2>
                     </div>
-                    <?php include_partial('constats/tourneeConstatVolume'); ?> 
+                    <?php include_partial('constats/tourneeConstatVolume'); ?>
                 </div>
             </section>
         </div>
