@@ -1,15 +1,15 @@
 <?php
-class DRevAjoutAppellationForm extends acCouchdbObjectForm 
-{    
+class DRevAjoutAppellationForm extends acCouchdbObjectForm
+{
     protected $produits;
     protected $noeud;
-    
-    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) 
+
+    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null)
     {
         $this->produits = array();
         parent::__construct($object, $options, $CSRFSecret);
     }
-    
+
     public function configure()
     {
         $produits = $this->getProduits();
@@ -25,15 +25,15 @@ class DRevAjoutAppellationForm extends acCouchdbObjectForm
         ));
         $this->widgetSchema->setNameFormat('drev_ajout_appellation[%s]');
     }
-    
-    public function getProduits() 
+
+    public function getProduits()
     {
         if (!$this->produits) {
             $produits = $this->getObject()->declaration->certification->genre->getConfigChidrenNode();
             foreach ($produits as $produit) {
                 if ($this->getObject()->exist($produit->getHash())) {
                     continue;
-                } 
+                }
 
                 $this->produits[$produit->getHash()] = $produit->libelle;
             }
@@ -41,12 +41,12 @@ class DRevAjoutAppellationForm extends acCouchdbObjectForm
 
         return array_merge(array('' => ''), $this->produits);
     }
-    
+
     public function hasProduits()
     {
         return (count($this->getProduits()) > 1);
     }
-    
+
     protected function doUpdateObject($values)
     {
         if (!isset($values['hashref']) || empty($values['hashref'])) {

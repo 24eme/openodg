@@ -78,6 +78,9 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
             $produit->detail->volume_sur_place = 0;
             $produit->detail->volume_sur_place_revendique = 0;
             $produit->detail->usages_industriels_sur_place = 0;
+            $produit->detail_vtsgn->volume_sur_place = 0;
+            $produit->detail_vtsgn->volume_sur_place_revendique = 0;
+            $produit->detail_vtsgn->usages_industriels_sur_place = 0;
             $produit->updateRevendiqueFromDetail();
         }
 

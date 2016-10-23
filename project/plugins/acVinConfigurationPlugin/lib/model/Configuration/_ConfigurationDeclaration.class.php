@@ -62,7 +62,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $children = array();
       foreach($this->getChildrenNode() as $item) {
         if(!$item->hasAcces($type_declaration)) {
-          
+
           continue;
         }
 
@@ -83,7 +83,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getParentNode() {
       if ($this->getKey() == 'recolte') {
- 
+
         throw new sfException('Noeud racine atteint');
       }
 
@@ -92,14 +92,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getChildrenNodeDeep($level = 1) {
       if($this->hasManyNoeuds()) {
-          
+
           throw new sfException("getChildrenNodeDeep() peut uniquement être appelé d'un noeud qui contient un seul enfant...");
       }
 
       $node = $this->getChildrenNode()->getFirst();
-      
+
       if($level > 1) {
-        
+
         return $node->getChildrenNodeDeep($level - 1);
       }
 
@@ -134,12 +134,12 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getHashRelation($key) {
-        
+
         return $this->getParent()->getHashRelation($key)."/".$this->getKeyRelation($key);
     }
 
     public function getNodeRelation($key) {
-        
+
         return $this->getDocument()->get($this->getHashRelation($key));
     }
 
@@ -148,10 +148,10 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return array($this->getHash() => $this);
       }
 
-      if(!$type_declaration) {  
+      if(!$type_declaration) {
         return $this->getProduits();
       }
-      
+
       if(!isset($this->produits[$type_declaration]) || is_null($this->produits[$type_declaration])) {
         $this->produits[$type_declaration.$class_node] = array();
         foreach($this->getChildrenFilter($type_declaration) as $key => $item) {
@@ -175,47 +175,47 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getRendementAppellation() {
-      
+
         return $this->getRendementByKey('rendement_appellation');
     }
 
     public function getRendementCouleur() {
-        
+
         return $this->getRendementByKey('rendement_couleur');
     }
 
     public function getRendementCepage() {
-        
+
         return $this->getRendementByKey('rendement');
     }
 
     public function hasRendementAppellation() {
-        
+
         return $this->hasRendementByKey('rendement_appellation');
     }
 
     public function hasRendementCouleur() {
-        
+
         return $this->hasRendementByKey('rendement_couleur');
     }
 
     public function hasRendementCepage() {
-        
+
         return $this->hasRendementByKey('rendement');
     }
 
     public function existRendementAppellation() {
-        
+
         return $this->existRendementByKey('rendement_appellation');
     }
 
     public function existRendementCouleur() {
-        
+
         return $this->existRendementByKey('rendement_couleur');
     }
 
     public function existRendementCepage() {
-        
+
         return $this->existRendementByKey('rendement');
     }
 
@@ -231,7 +231,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function existRendementByKey($key) {
-        
+
         return $this->store('exist_rendement_by_key_'.$key, array($this, 'existRendementByKeyStorable'), array($key));
     }
 
@@ -252,7 +252,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     protected function getRendementByKey($key) {
-      
+
         return $this->store('rendement_by_key_'.$key, array($this, 'findRendementByKeyStorable'), array($key));
     }
 
@@ -276,36 +276,47 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function hasMout() {
         if ($this->exist('mout')) {
-            
+
             return ($this->mout == 1);
-        } 
+        }
 
         return $this->getParentNode()->hasMout();
     }
-    
-    public function excludeTotal() 
+
+    public function excludeTotal()
     {
         return ($this->exist('exclude_total') && $this->get('exclude_total'));
     }
 
     public function hasTotalCepage() {
-      
+
       return $this->store('has_total_cepage', array($this, 'hasTotalCepageStorable'));
     }
 
     protected function hasTotalCepageStorable() {
 
       if ($this->exist('no_total_cepage')) {
-        
+
           return !($this->no_total_cepage == 1);
       }
 
       if ($this->exist('min_quantite') && $this->get('min_quantite')) {
-          
-          return false;
-      } 
 
-      return $this->getParentNode()->hasTotalCepage(); 
+          return false;
+      }
+
+      return $this->getParentNode()->hasTotalCepage();
+    }
+
+    public function hasProduitsVtsgn() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->hasVtsgn()) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function hasVtsgn() {
@@ -322,7 +333,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function isForDR() {
-      
+
         return !$this->exist('no_dr') || !$this->get('no_dr');
     }
 
@@ -333,12 +344,12 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function hasAcces($type_declaration) {
         if($type_declaration == self::TYPE_DECLARATION_DR && !$item->isForDR()) {
-            
+
             return false;
         }
 
         if($type_declaration == self::TYPE_DECLARATION_DS && !$item->isForDS()) {
-            
+
             return false;
         }
 
@@ -349,12 +360,12 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
         return (!$this->no_acces->exist($type_declaration) || !$this->no_acces->get($type_declaration));
     }
-    
+
     public function isAutoDs() {
         if ($this->exist('auto_ds')) {
             return $this->get('auto_ds');
         }
-        
+
         return $this->getParentNode()->isAutoDs();
     }
 
@@ -362,14 +373,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         if ($this->exist('auto_drev')) {
             return $this->get('auto_drev');
         }
-        
+
         return $this->getParentNode()->isAutoDRev();
     }
-    
-        public function getLibelleComplet($libelle_long = false) 
+
+        public function getLibelleComplet($libelle_long = false)
     {
     	$libelle = $this->getParent()->getLibelleComplet();
-      
+
       if($libelle_long) {
 
           return trim(trim($libelle).' '.$this->getLibelleLong());

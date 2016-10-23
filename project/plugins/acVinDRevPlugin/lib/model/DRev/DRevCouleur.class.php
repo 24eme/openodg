@@ -99,7 +99,9 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function resetDetail() {
         $this->remove('detail');
+		$this->remove('detail_vtsgn');
         $this->add('detail');
+        $this->add('detail_vtsgn');
     }
 
     public function updateDetail() {
@@ -108,8 +110,17 @@ class DRevCouleur extends BaseDRevCouleur
            $this->detail->usages_industriels_sur_place = null;
         }
 
+		if($this->detail_vtsgn->usages_industriels_sur_place === -1) {
+           $this->detail_vtsgn->volume_sur_place_revendique = null;
+           $this->detail_vtsgn->usages_industriels_sur_place = null;
+        }
+
         if(!is_null($this->detail->volume_sur_place) && !is_null($this->detail->usages_industriels_sur_place)) {
             $this->detail->volume_sur_place_revendique = $this->detail->volume_sur_place - $this->detail->usages_industriels_sur_place;
+        }
+
+		if(!is_null($this->detail_vtsgn->volume_sur_place) && !is_null($this->detail_vtsgn->usages_industriels_sur_place)) {
+            $this->detail_vtsgn->volume_sur_place_revendique = $this->detail_vtsgn->volume_sur_place - $this->detail_vtsgn->usages_industriels_sur_place;
         }
     }
 
@@ -118,9 +129,17 @@ class DRevCouleur extends BaseDRevCouleur
             $this->superficie_revendique = $this->detail->superficie_total;
         }
 
+		if(!is_null($this->detail_vtsgn->superficie_total)) {
+			$this->superficie_revendique_vtsgn = $this->detail_vtsgn->superficie_total;
+		}
+
         if(!is_null($this->detail->volume_sur_place_revendique)) {
             $this->volume_revendique = $this->detail->volume_sur_place_revendique;
         }
+
+		if(!is_null($this->detail_vtsgn->volume_sur_place_revendique)) {
+			$this->volume_revendique_vtsgn = $this->detail_vtsgn->volume_sur_place_revendique;
+		}
     }
 
     public function isProduit() {

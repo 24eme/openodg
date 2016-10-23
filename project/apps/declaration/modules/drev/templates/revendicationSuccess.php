@@ -20,7 +20,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
         <a class="btn btn-warning btn-sm pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Récupérer les données de la Déclaration de Récolte</a>
     <?php endif; ?>
-    <h2>Revendication</h2> 
+    <h2>Revendication</h2>
 </div>
 
 <form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
@@ -28,7 +28,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($hasError): ?>
     <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte si vous avez autorisé le transfert de vos données. 
+    <p>Les informations de revendication sont reprises depuis votre Déclaration de Récolte si vous avez autorisé le transfert de vos données.
     <br /><br />Veuillez vérifier leur cohérence et au besoin compléter les informations manquantes.</p>
     <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
@@ -57,67 +57,12 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             </tr>
         </thead>
         <tbody>
-            <?php
-            foreach ($form['produits'] as $key => $embedForm) :
-            $produit = $drev->get($key);
-            $global_error_class = ($appellation && ($appellation_hash == $key))? 'error_field_to_focused' : '';
-            ?>
-            <tr class="<?php echo (isset($embedForm['superficie_revendique'])) ? 'with_superficie' : ''; ?>" >
-                <td><?php echo $produit->getLibelleComplet() ?></td>
-                <?php if ($drev->hasDR()): ?>
-                    <?php if (!$produit->detail->superficie_total): ?>
-                        <td class="striped-success"></td>
-                        <td class="striped-success"></td>
-                        <td class="striped-success"></td>
-                    <?php else: ?>
-                        <td class="text-right striped-success small">
-                          <?php echoFloat($produit->detail->volume_sur_place); ?>&nbsp;<small>hl</small>
-                        </td>
-                        <td class="text-right striped-success small">
-                          <?php echoFloat($produit->detail->volume_total); ?>&nbsp;<small >hl</small>
-                        </td>
-                        <td class="text-right striped-success small">
-                          <?php echoFloat($produit->detail->usages_industriels_total); ?>&nbsp;<small>hl</small>
-                        </td>
+            <?php foreach ($form['produits'] as $key => $embedForm): ?>
+                <?php $produit = $drev->get($key); ?>
+                <?php include_partial("drev/revendicationForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => false)); ?>
+                <?php if(isset($embedForm['superficie_revendique_vtsgn']) || isset($embedForm['volume_revendique_vtsgn'])): ?>
+                    <?php include_partial("drev/revendicationForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => true)); ?>
                 <?php endif; ?>
-                <?php endif; ?>
-                <td class="text-center">              
-                    <?php if (isset($embedForm['superficie_revendique'])): ?>
-                    <?php
-                    $global_error_class = ((($global_error_class == 'error_field_to_focused') && $appellation_field == 'surface') ||
-                    ('drev_produits[produits]' . $global_error_id == $embedForm['superficie_revendique']->renderName())) ?
-                    'error_field_to_focused' : '';
-                    ?>
-                    <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
-                        <?php echo $embedForm['superficie_revendique']->renderError() ?>
-                        <div class="col-xs-10 col-xs-offset-1">
-                            <?php echo $embedForm['superficie_revendique']->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => "ares")) ?>
-                        </div>
-                    </div>
-                    <?php else: ?>
-                        <div class="col-xs-10 text-right">
-                        <?php echoFloat($produit->detail->superficie_total); ?>
-                        </div>
-                    <?php endif; ?>
-                </td>   
-                <td class="text-center">
-                    <?php if (isset($embedForm['volume_revendique'])): ?>
-                    <?php
-                    $global_error_class = ((($global_error_class == 'error_field_to_focused') && $appellation_field == 'volume') ||
-                    ('drev_produits[produits]' . $global_error_id == $embedForm['volume_revendique']->renderName())) ?
-                    'error_field_to_focused' : '';
-                    ?>
-                    <div class="form-group <?php if ($global_error_class): ?>has-error<?php endif; ?>">
-                        <?php echo $embedForm['volume_revendique']->renderError() ?>
-                        <div class="col-xs-10 col-xs-offset-1">
-                            <?php echo $embedForm['volume_revendique']->render(array('class' => 'disabled form-control text-right input-rounded num_float' . $global_error_class, 'placeholder' => "hl")) ?>
-                        </div>
-                    </div>
-                    <?php else: ?>
-                        <?php echoFloat($produit->volume_revendique); ?> <small class="text-muted">hl</small>
-                    <?php endif; ?>
-                </td>
-            </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
