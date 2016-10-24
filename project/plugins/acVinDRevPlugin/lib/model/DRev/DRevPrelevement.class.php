@@ -174,7 +174,13 @@ class DRevPrelevement extends BaseDRevPrelevement {
 
             $lot = $this->lots->get($hash);
 
-            $lot->volume_revendique += $produit->volume_revendique;
+            if($lot->nb_hors_vtsgn) {
+                $lot->volume_revendique += $produit->volume_revendique;
+            }
+
+            if($lot->nb_vtsgn) {
+                $lot->volume_revendique += $produit->volume_revendique_vt + $produit->volume_revendique_sgn;
+            }
         }
 
         foreach($this->lots as $lot) {
@@ -192,7 +198,7 @@ class DRevPrelevement extends BaseDRevPrelevement {
         foreach ($this->lots as $produit_lot) {
             $nb_hors_vtsgn = ($produit_lot->exist('nb_hors_vtsgn') && $produit_lot->nb_hors_vtsgn) ?
                     $produit_lot->nb_hors_vtsgn : 0;
-            $total = $nb_hors_vtsgn; 
+            $total = $nb_hors_vtsgn;
             $this->total_lots += $total;
         }
     }

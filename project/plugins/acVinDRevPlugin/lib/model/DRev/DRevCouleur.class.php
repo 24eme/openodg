@@ -89,12 +89,14 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function getTotalTotalSuperficie()
     {
-    	return ($this->isActive())? $this->superficie_revendique : 0;
+
+		return $this->superficie_revendique + $this->superficie_revendique_vtsgn;
     }
 
     public function getTotalVolumeRevendique()
     {
-    	return ($this->isActive())? $this->volume_revendique : 0;
+
+    	return $this->volume_revendique + $this->volume_revendique_vtsgn;
     }
 
     public function resetDetail() {
@@ -150,7 +152,7 @@ class DRevCouleur extends BaseDRevCouleur
     public function isActive()
     {
 
-	    return ($this->volume_revendique > 0 || $this->superficie_revendique > 0);
+	    return ($this->getTotalVolumeRevendique() > 0 || $this->getTotalTotalSuperficie() > 0);
     }
 
     public function isCleanable() {

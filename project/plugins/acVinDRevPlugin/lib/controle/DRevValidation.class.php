@@ -73,7 +73,7 @@ class DRevValidation extends DocumentValidation {
             $this->controleErrorPrelevement(DRev::BOUTEILLE_ALSACE);
             $this->controleErrorPrelevement(DRev::BOUTEILLE_GRDCRU);
         }
-       
+
         $this->controleErrorPeriodes();
 
         if ($this->document->mustDeclareCepage()) {
@@ -108,7 +108,7 @@ class DRevValidation extends DocumentValidation {
                 }
                 if (!$found) {
                     $text = sprintf("%s - %s", $prelevement->libelle, $prelevement->libelle_produit . ' - ' . $lot->libelle);
-                   
+
                     $produit_lot_hash = self::TYPE_WARNING.'withFlash' . str_replace('/', '-', $lot->hash_produit);
                     $url = $this->generateUrl('drev_lots', array('id' => $this->document->_id, 'prelevement' => $key)).'?error_produit='.$produit_lot_hash;
                     $this->addPoint(self::TYPE_WARNING, 'lot_sans_cepage_revendique', $text, $url);
@@ -152,7 +152,7 @@ class DRevValidation extends DocumentValidation {
 
     protected function controleEngagementDr() {
         if($this->document->isPapier()) {
-            
+
             return;
         }
 
@@ -163,7 +163,7 @@ class DRevValidation extends DocumentValidation {
 
     protected function controleEngagementPressoir($produit) {
         if($this->document->isPapier()) {
-            
+
             return;
         }
 
@@ -179,7 +179,7 @@ class DRevValidation extends DocumentValidation {
         }
 
         if ($produit->volume_revendique > 0) {
-        
+
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, '');
 
             return;
@@ -200,6 +200,15 @@ class DRevValidation extends DocumentValidation {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-surface';
             $this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
+
+        if (
+                $produit->superficie_revendique_vtsgn !== null &&
+                $produit->detail_vtsgn->superficie_total !== null &&
+                $produit->superficie_revendique_vtsgn != $produit->detail_vtsgn->superficie_total
+        ) {
+            $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-surface';
+            $this->addPoint(self::TYPE_WARNING, 'dr_surface', $produit->getLibelleComplet()." VT/SGN", $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+        }
     }
 
     protected function controleWarningDrVolume($produit) {
@@ -216,6 +225,15 @@ class DRevValidation extends DocumentValidation {
         ) {
             $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
             $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
+        }
+
+        if (
+                $produit->volume_revendique_vtsgn !== null &&
+                $produit->detail_vtsgn->volume_sur_place_revendique !== null &&
+                $produit->volume_revendique_vtsgn != $produit->detail_vtsgn->volume_sur_place_revendique
+        ) {
+            $appellation_hash = str_replace('/', '-', $produit->getHash()) . '-volume';
+            $this->addPoint(self::TYPE_WARNING, 'dr_volume', $produit->getLibelleComplet()." VT/SGN", $this->generateUrl('drev_revendication', array('sf_subject' => $this->document, 'appellation' => $appellation_hash)));
         }
     }
 
@@ -251,27 +269,27 @@ class DRevValidation extends DocumentValidation {
 
     protected function controleEngagementSv() {
         if($this->document->isPapier()) {
-            
+
             return;
         }
 
         if (!$this->document->isNonRecoltant()) {
-            
+
             return;
         }
 
         if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE)) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, '');
-            
+
             return;
         }
 
         if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, '');
-            
+
             return;
         }
-        
+
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
     }
 
@@ -301,7 +319,7 @@ class DRevValidation extends DocumentValidation {
 
             return;
         }
-       
+
         $prelevement = $this->document->prelevements->get(DRev::CUVE_ALSACE);
         $degustation = $this->document->prelevements->get(DRev::BOUTEILLE_ALSACE);
 

@@ -13,14 +13,14 @@
             <?php echo $form->renderGlobalErrors(); ?>
             <?php if (isset($form[DRev::CUVE_ALSACE])): ?>
                 <div class="row-margin">
-                    <h3>AOC Alsace</h3>
+                    <h3>AOC Alsace <small>(hors VT/SGN)</small></h3>
                     <div class="col-xs-offset-1">
                         <p>
-                            Semaine à partir de laquelle le vin est prêt à être dégusté : 
+                            Semaine à partir de laquelle le vin est prêt à être dégusté :
                             <a title="Les vins sont à présenter fermentation terminée, stabilisés et clarifiés (filtration non obligatoire)" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-lg"><span class="glyphicon glyphicon-question-sign"></span></a>
                         </p>
                         <div class="form-group <?php if ($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>has-error<?php endif; ?>">
-                            <?php if ($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>                            
+                            <?php if ($form[DRev::CUVE_ALSACE]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::CUVE_ALSACE]["date"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form[DRev::CUVE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
@@ -49,11 +49,11 @@
                         </div>
                         <div id="degustation_conseil_cuve_vtsgn_date_form_group" class="form-group <?php if (!$form[DRev::CUVE_VTSGN]["date"]->getValue() && !$form["vtsgn_demande"]->hasError()): ?>hidden<?php endif; ?> <?php if ($form[DRev::CUVE_VTSGN]["date"]->hasError()): ?>has-error<?php endif; ?>">
                             <div class="<?php if ($form["vtsgn_demande"]->hasError()): ?>has-error<?php endif; ?>">
-                                <?php if ($form["vtsgn_demande"]->hasError()): ?>                            
+                                <?php if ($form["vtsgn_demande"]->hasError()): ?>
                                     <div class="alert alert-danger" role="alert"><?php echo $form["vtsgn_demande"]->getError(); ?></div>
                                 <?php endif; ?>
 
-                                <?php if ($form[DRev::CUVE_VTSGN]["date"]->hasError()): ?>                            
+                                <?php if ($form[DRev::CUVE_VTSGN]["date"]->hasError()): ?>
                                     <div class="alert alert-danger" role="alert"><?php echo $form[DRev::CUVE_ALSACE]["date"]->getError(); ?></div>
                                 <?php endif; ?>
 
@@ -85,7 +85,7 @@
                     <?php endif; ?>
                     <?php if (isset($form['chai'])): ?>
                         <div class="form-group <?php if (!$formPrelevement): ?>hidden<?php endif; ?>">
-                            <?php if ($form["chai"]->hasError()): ?>                            
+                            <?php if ($form["chai"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form["chai"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form["chai"]->render(array("class" => "form-control")); ?>
@@ -114,6 +114,3 @@
         </div>
     </div>
 </form>
-
-
-

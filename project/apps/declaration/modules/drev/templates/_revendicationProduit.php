@@ -1,5 +1,5 @@
-<?php $key_for_tr_id = str_replace("/", '_', $produit->getHash()); ?>
 <?php $suffixe = ($vtsgn) ? "_vtsgn" : null; ?>
+<?php $key_for_tr_id = str_replace("/", '_', $produit->getHash()).$suffixe; ?>
 <tr data-toggle="collapse" data-target="#<?php echo $key_for_tr_id ?>" class="accordion-toggle
     <?php echo ($cpt % 2) ? "" : "table_td_zebra"; ?>
     <?php echo (count($produit->getProduitsCepage()) > 0)? 'trAccordion' : ''; ?>" >
@@ -28,7 +28,7 @@
                             <?php
                             foreach ($produit->getProduitsCepage() as $cepage_key => $produit_cepage) :
                                 ?>
-                                <?php if ($produit_cepage->volume_revendique): ?>
+                                <?php if ($produit_cepage->volume_revendique && !$vtsgn): ?>
                                 <tr>
                                     <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?></small></td>
                                     <?php if(!$drev->isNonRecoltant()): ?>
@@ -41,7 +41,7 @@
                                     <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                 </tr>
                                 <?php endif; ?>
-                                <?php if ($produit_cepage->volume_revendique_vt): ?>
+                                <?php if ($produit_cepage->volume_revendique_vt && $vtsgn): ?>
                                     <tr>
                                         <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - VT</small></td>
                                         <?php if(!$drev->isNonRecoltant()): ?>
@@ -54,7 +54,7 @@
                                         <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if ($produit_cepage->volume_revendique_sgn): ?>
+                                <?php if ($produit_cepage->volume_revendique_sgn && $vtsgn): ?>
                                     <tr>
                                         <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - SGN</small></td>
                                         <?php if(!$drev->isNonRecoltant()): ?>
