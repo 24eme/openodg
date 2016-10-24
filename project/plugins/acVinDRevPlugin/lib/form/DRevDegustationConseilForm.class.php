@@ -7,7 +7,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         if($this->getObject()->getDocument()->prelevements->exist(Drev::CUVE_ALSACE)) {
             $form_alsace = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::CUVE_ALSACE));
             $this->embedForm(Drev::CUVE_ALSACE, $form_alsace);
-        }  
+        }
 
         $vtsgn = false;
 
@@ -32,17 +32,17 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
             $form_vtsgn->validatorSchema['date']->setMessage('required', 'La semaine de degustation est obligatoire.');
         }
 
-        
+
 
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
-            $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice(), 'expanded' => true, 'renderer_options' => array('formatter' => array($this, 'formatter')))));    
+            $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice(), 'expanded' => true, 'renderer_options' => array('formatter' => array($this, 'formatter')))));
             $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
         }
         $this->widgetSchema->setNameFormat('degustation_conseil[%s]');
 		$this->mergePostValidator(new DRevDegustationConseilValidator());
     }
 
-    public function formatter($widget, $inputs) 
+    public function formatter($widget, $inputs)
     {
         $rows = array();
         foreach ($inputs as $input) {
@@ -62,14 +62,14 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
     }
 
     public function getVtsgnChoices() {
-        
+
         $annee = $this->getObject()->getDocument()->getCampagne() + 1;
 
         return array(
                      '' => '',
                      sprintf('%s-04-01', $annee) => sprintf('Avril %s', $annee),
-                     sprintf('%s-06-01', $annee) => sprintf('Juin %s', $annee),
-                     sprintf('%s-08-01', $annee) => sprintf('Octobre %s', $annee),
+                     sprintf('%s-07-01', $annee) => sprintf('Juillet %s', $annee),
+                     sprintf('%s-11-01', $annee) => sprintf('Novembre %s', $annee),
                      );
     }
 
@@ -97,7 +97,7 @@ class DRevDegustationConseilForm extends acCouchdbObjectForm
         return $values;
     }
 
-    public function doUpdateObject($values) 
+    public function doUpdateObject($values)
     {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
             $embedForm->doUpdateObject($values[$key]);
