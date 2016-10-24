@@ -21,7 +21,7 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
             unset($this->validatorSchema['superficie_revendique']);
         }
 
-        if($this->getObject()->getConfig()->hasProduitsVtsgn()) {
+        if($this->getObject()->canHaveVtsgn()) {
             $this->setWidget('superficie_revendique_vtsgn', new sfWidgetFormInputFloat());
             $this->setWidget('volume_revendique_vtsgn', new sfWidgetFormInputFloat());
 

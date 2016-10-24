@@ -1,6 +1,6 @@
 <?php $global_error_class = ($appellation && ($appellation_hash == $key))? 'error_field_to_focused' : ''; ?>
 <tr class="<?php echo (isset($form['superficie_revendique'.(($vtsgn) ? "_vtsgn" : null)])) ? 'with_superficie' : ''; ?>" >
-    <td><?php echo $produit->getLibelleComplet() ?> <?php if (!$vtsgn):?><small class="text-muted">(hors VT/SGN)</small><?php else : ?><span>VT/SGN</span><?php endif; ?></td>
+    <td><?php echo $produit->getLibelleComplet() ?> <?php if (!$vtsgn && $produit->exist('detail_vtsgn')):?><small class="text-muted">(hors VT/SGN)</small><?php elseif($vtsgn) : ?><span>VT/SGN</span><?php endif; ?></td>
     <?php if ($drev->hasDR()): ?>
         <?php if (!$produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->superficie_total): ?>
             <td class="striped-success"></td>

@@ -5,7 +5,7 @@
     <?php echo (count($produit->getProduitsCepage()) > 0)? 'trAccordion' : ''; ?>" >
     <td>
         <div class="float-left col-xs-10">
-            <?php echo $produit->getLibelleComplet() ?> <?php if(!$vtsgn): ?><small class="text-muted">(hors VT/SGN)</small><?php else: ?>VT/SGN<?php endif; ?>
+            <?php echo $produit->getLibelleComplet() ?> <?php if(!$vtsgn && $produit->canHaveVtsgn()): ?><small class="text-muted">(hors VT/SGN)</small><?php elseif($vtsgn): ?>VT/SGN<?php endif; ?>
         </div>
         <div class="float-right text-right col-xs-2">
             <?php if (count($produit->getProduitsCepage()) > 0): ?>

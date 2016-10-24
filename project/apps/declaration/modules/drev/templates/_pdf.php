@@ -43,14 +43,14 @@
     <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
         <?php if($produit->volume_revendique|| $produit->superficie_revendique): ?>
             <tr>
-                <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?> <small>(hors VT/SGN)</small></td>
+                <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?><?php if($produit->canHaveVtsgn()): ?> <small>(hors VT/SGN)</small><?php endif; ?></td>
                 <?php if(!$drev->isNonRecoltant()): ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
                 <?php endif; ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
             </tr>
         <?php endif; ?>
-        <?php if($produit->volume_revendique_vtsgn || $produit->superficie_revendique_vtsgn): ?>
+        <?php if($produit->canHaveVtsgn() && ($produit->volume_revendique_vtsgn || $produit->superficie_revendique_vtsgn)): ?>
             <tr>
                 <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?> VT/SGN</td>
                 <?php if(!$drev->isNonRecoltant()): ?>

@@ -93,11 +93,9 @@ DRev:
                                               fields:
                                                 libelle: { }
                                                 volume_revendique: { type: float }
-                                                volume_revendique_vtsgn: { type: float }
-                                                volume_revendique_total: { type: float }
+                                                volume_revendique_vtsgn: { type: float, required: false }
                                                 superficie_revendique: { type: float }
-                                                superficie_revendique_vtsgn: { type: float }
-                                                superficie_revendique_total: { type: float }
+                                                superficie_revendique_vtsgn: { type: float, required: false }
                                                 detail:
                                                   type: collection
                                                   definition:
@@ -110,6 +108,7 @@ DRev:
                                                       superficie_total: { type: float }
                                                 detail_vtsgn:
                                                   type: collection
+                                                  required: false
                                                   definition:
                                                     fields:
                                                       volume_sur_place: { type: float }

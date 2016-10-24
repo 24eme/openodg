@@ -101,6 +101,12 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     }
 
     public function hasVtsgn() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->canHaveVtsgn() && $produit->volume_revendique_vtsgn) {
+
+                return true;
+            }
+        }
         foreach($this->getProduitsCepage() as $produit) {
             if($produit->hasVtsgn()) {
 

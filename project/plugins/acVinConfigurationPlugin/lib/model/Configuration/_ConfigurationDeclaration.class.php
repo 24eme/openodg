@@ -2,7 +2,7 @@
 
 abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
-    protected $produits = null;
+    protected $produits = array();
     protected $drev_produits = null;
     protected $drev_lot_produits = null;
     protected $produits_filter = array(self::TYPE_DECLARATION_DR => null, self::TYPE_DECLARATION_DS => null);
@@ -114,14 +114,14 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getProduits() {
-      if(is_null($this->produits)) {
-        $this->produits = array();
+      if(!array_key_exists("ConfigurationCepage", $this->produits)) {
+        $this->produits["ConfigurationCepage"] = array();
         foreach($this->getChildrenNode() as $key => $item) {
-            $this->produits = array_merge($this->produits, $item->getProduits());
+            $this->produits["ConfigurationCepage"] = array_merge($this->produits["ConfigurationCepage"], $item->getProduits());
         }
       }
 
-      return $this->produits;
+      return $this->produits["ConfigurationCepage"];
     }
 
     public function getKeyRelation($key) {

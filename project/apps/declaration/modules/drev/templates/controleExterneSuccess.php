@@ -8,7 +8,7 @@
 <form method="post" action="<?php echo url_for("drev_controle_externe", $drev) ?>" role="form" class="form-horizontal ajaxForm">
     <div class="row">
         <div class="col-xs-7">
-            <p>Les prélèvements se font uniquement sur des vins mis en bouteille, <strong>au plus proche de la commercialisation</strong></p>
+            <p>Les prélèvements se font uniquement sur des vins mis en bouteilles, <strong>au plus proche de la commercialisation</strong></p>
 
             <?php if($drev->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_CONDITIONNEUR)): ?>
             <div class="checkbox">
@@ -28,7 +28,7 @@
                     <div class="col-xs-offset-1">
                         <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                         <div class="form-group <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError() || $focus): ?>has-error<?php endif; ?>">
-                            <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError()): ?>                            
+                            <?php if ($form[DRev::BOUTEILLE_ALSACE]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form[DRev::BOUTEILLE_ALSACE]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
@@ -54,7 +54,7 @@
                     <div class="col-xs-offset-1">
                         <p>Semaine à partir de laquelle le vin est prêt à être dégusté</p>
                         <div class="form-group <?php if ($form[DRev::BOUTEILLE_GRDCRU]["date"]->hasError()): ?>has-error<?php endif; ?>">
-                            <?php if ($form[DRev::BOUTEILLE_GRDCRU]["date"]->hasError()): ?>                            
+                            <?php if ($form[DRev::BOUTEILLE_GRDCRU]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form[DRev::BOUTEILLE_GRDCRU]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
@@ -76,7 +76,7 @@
                     <div class="col-xs-offset-1">
                         <p>Semaine à partir de laquelle le vin est prêt à être dégusté :</p>
                         <div class="form-group <?php if ($form[DRev::BOUTEILLE_VTSGN]["date"]->hasError()): ?>has-error<?php endif; ?>">
-                            <?php if ($form[DRev::BOUTEILLE_VTSGN]["date"]->hasError()): ?>                            
+                            <?php if ($form[DRev::BOUTEILLE_VTSGN]["date"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert"><?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->getError(); ?></div>
                             <?php endif; ?>
                             <?php echo $form[DRev::BOUTEILLE_VTSGN]["date"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="form-group <?php if ($form[DRev::BOUTEILLE_VTSGN]["total_lots"]->hasError()): ?>has-error<?php endif; ?>">
-                            <?php if ($form[DRev::BOUTEILLE_VTSGN]["total_lots"]->hasError()): ?>                            
+                            <?php if ($form[DRev::BOUTEILLE_VTSGN]["total_lots"]->hasError()): ?>
                                 <div class="alert alert-danger" role="alert">
                                     <?php echo $form[DRev::BOUTEILLE_VTSGN]["total_lots"]->getError(); ?>
                                 </div>

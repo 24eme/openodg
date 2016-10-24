@@ -30,7 +30,7 @@ Vous devez déclarer vos volumes revendiqués par cépage pour pouvoir continuer
                 <td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small></td>
             </tr>
             <?php endif; ?>
-            <?php if($produit->volume_revendique_vtsgn > 0): ?>
+            <?php if($produit->canHaveVtsgn() && $produit->volume_revendique_vtsgn > 0): ?>
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?> VT/SGN</td>
                 <td class="text-center"><?php echoFloat($produit->volume_revendique_vtsgn) ?> <small class="text-muted">hl</small></td>

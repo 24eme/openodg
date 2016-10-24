@@ -24,7 +24,6 @@ class drevActions extends sfActions {
 
         $campagne = $request->getParameter("campagne", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $drev = DRevClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
-
         $drev->save();
 
         return $this->redirect('drev_edit', $drev);

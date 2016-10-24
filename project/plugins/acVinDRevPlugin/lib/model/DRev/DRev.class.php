@@ -262,6 +262,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $produit = $this->getOrAdd($config->getHash());
         $produit->getLibelle();
 
+        if($produit->getConfig()->hasProduitsVtsgn()) {
+            $produit->add('volume_revendique_vtsgn');
+            $produit->add('superficie_revendique_vtsgn');
+            $produit->add('detail_vtsgn');
+        }
+
         return $produit;
     }
 

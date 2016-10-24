@@ -83,7 +83,10 @@ class DRevCouleur extends BaseDRevCouleur
 
             $produit->updateTotal();
 
-			$this->volume_revendique_vtsgn += $produit->volume_revendique_vt + $produit->volume_revendique_sgn;
+			if($this->canHaveVtsgn()) {
+				$this->volume_revendique_vtsgn += $produit->volume_revendique_vt + $produit->volume_revendique_sgn;
+			}
+
 			$this->volume_revendique += $produit->volume_revendique;
         }
     }
@@ -91,20 +94,23 @@ class DRevCouleur extends BaseDRevCouleur
     public function getTotalTotalSuperficie()
     {
 
-		return $this->superficie_revendique + $this->superficie_revendique_vtsgn;
+		return $this->superficie_revendique + (($this->canHaveVtsgn()) ? $this->superficie_revendique_vtsgn : 0);
     }
 
     public function getTotalVolumeRevendique()
     {
 
-    	return $this->volume_revendique + $this->volume_revendique_vtsgn;
+    	return $this->volume_revendique + (($this->canHaveVtsgn()) ? $this->volume_revendique_vtsgn : 0);
     }
 
     public function resetDetail() {
         $this->remove('detail');
-		$this->remove('detail_vtsgn');
         $this->add('detail');
-        $this->add('detail_vtsgn');
+
+		if($this->canHaveVtsgn()) {
+			$this->remove('detail_vtsgn');
+			$this->add('detail_vtsgn');
+		}
     }
 
     public function updateDetail() {
@@ -113,18 +119,22 @@ class DRevCouleur extends BaseDRevCouleur
            $this->detail->usages_industriels_sur_place = null;
         }
 
-		if($this->detail_vtsgn->usages_industriels_sur_place === -1) {
-           $this->detail_vtsgn->volume_sur_place_revendique = null;
-           $this->detail_vtsgn->usages_industriels_sur_place = null;
-        }
+		if($this->canHaveVtsgn()) {
+			if($this->detail_vtsgn->usages_industriels_sur_place === -1) {
+           		$this->detail_vtsgn->volume_sur_place_revendique = null;
+           		$this->detail_vtsgn->usages_industriels_sur_place = null;
+        	}
+		}
 
         if(!is_null($this->detail->volume_sur_place) && !is_null($this->detail->usages_industriels_sur_place)) {
             $this->detail->volume_sur_place_revendique = $this->detail->volume_sur_place - $this->detail->usages_industriels_sur_place;
         }
 
-		if(!is_null($this->detail_vtsgn->volume_sur_place) && !is_null($this->detail_vtsgn->usages_industriels_sur_place)) {
-            $this->detail_vtsgn->volume_sur_place_revendique = $this->detail_vtsgn->volume_sur_place - $this->detail_vtsgn->usages_industriels_sur_place;
-        }
+		if($this->canHaveVtsgn()) {
+			if(!is_null($this->detail_vtsgn->volume_sur_place) && !is_null($this->detail_vtsgn->usages_industriels_sur_place)) {
+            	$this->detail_vtsgn->volume_sur_place_revendique = $this->detail_vtsgn->volume_sur_place - $this->detail_vtsgn->usages_industriels_sur_place;
+        	}
+		}
     }
 
     public function updateRevendiqueFromDetail() {
@@ -132,18 +142,28 @@ class DRevCouleur extends BaseDRevCouleur
             $this->superficie_revendique = $this->detail->superficie_total;
         }
 
-		if(!is_null($this->detail_vtsgn->superficie_total)) {
-			$this->superficie_revendique_vtsgn = $this->detail_vtsgn->superficie_total;
+		if($this->canHaveVtsgn()) {
+			if(!is_null($this->detail_vtsgn->superficie_total)) {
+				$this->superficie_revendique_vtsgn = $this->detail_vtsgn->superficie_total;
+			}
 		}
 
         if(!is_null($this->detail->volume_sur_place_revendique)) {
             $this->volume_revendique = $this->detail->volume_sur_place_revendique;
         }
 
-		if(!is_null($this->detail_vtsgn->volume_sur_place_revendique)) {
-			$this->volume_revendique_vtsgn = $this->detail_vtsgn->volume_sur_place_revendique;
+		if($this->canHaveVtsgn()) {
+			if(!is_null($this->detail_vtsgn->volume_sur_place_revendique)) {
+				$this->volume_revendique_vtsgn = $this->detail_vtsgn->volume_sur_place_revendique;
+			}
 		}
     }
+
+	public function canHaveVtsgn() {
+
+		return $this->exist('detail_vtsgn');
+	}
+
 
     public function isProduit() {
 
@@ -163,7 +183,7 @@ class DRevCouleur extends BaseDRevCouleur
             return parent::isCleanable();
         }
 
-        if(!$this->volume_revendique && !$this->superficie_revendique && !count($this->getProduitsCepage())) {
+        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !count($this->getProduitsCepage())) {
 
             return true;
         }

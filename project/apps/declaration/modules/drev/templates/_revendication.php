@@ -23,7 +23,7 @@
             <?php include_partial('drev/revendicationProduit', array('produit' => $produit, 'drev' => $drev, 'cpt' => $cpt, 'vtsgn' => false)); ?>
             <?php $cpt++; ?>
             <?php endif; ?>
-            <?php if($produit->volume_revendique_vtsgn || $produit->superficie_revendique_vtsgn): ?>
+            <?php if($produit->canHaveVtsgn() && ($produit->volume_revendique_vtsgn || $produit->superficie_revendique_vtsgn)): ?>
                 <?php $totalVolRevendique += $produit->volume_revendique_vtsgn; ?>
                 <?php $totalSuperficie += $produit->superficie_revendique_vtsgn; ?>
                 <?php include_partial('drev/revendicationProduit', array('produit' => $produit, 'drev' => $drev, 'cpt' => $cpt, 'vtsgn' => true)); ?>

@@ -202,6 +202,7 @@ class DRevValidation extends DocumentValidation {
         }
 
         if (
+                $produit->canHaveVtsgn() &&
                 $produit->superficie_revendique_vtsgn !== null &&
                 $produit->detail_vtsgn->superficie_total !== null &&
                 $produit->superficie_revendique_vtsgn != $produit->detail_vtsgn->superficie_total
@@ -228,6 +229,7 @@ class DRevValidation extends DocumentValidation {
         }
 
         if (
+                $produit->canHaveVtsgn() &&
                 $produit->volume_revendique_vtsgn !== null &&
                 $produit->detail_vtsgn->volume_sur_place_revendique !== null &&
                 $produit->volume_revendique_vtsgn != $produit->detail_vtsgn->volume_sur_place_revendique
