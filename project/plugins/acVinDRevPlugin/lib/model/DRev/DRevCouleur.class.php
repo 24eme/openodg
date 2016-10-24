@@ -83,7 +83,8 @@ class DRevCouleur extends BaseDRevCouleur
 
             $produit->updateTotal();
 
-            $this->volume_revendique += $produit->volume_revendique_total;
+			$this->volume_revendique_vtsgn += $produit->volume_revendique_vt + $produit->volume_revendique_sgn;
+			$this->volume_revendique += $produit->volume_revendique;
         }
     }
 
