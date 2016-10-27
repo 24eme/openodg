@@ -26,7 +26,7 @@ Vous devez déclarer vos volumes revendiqués par cépage pour pouvoir continuer
         <?php foreach ($drev->getProduits(true) as $key => $produit) : ?>
             <?php if($produit->volume_revendique > 0): ?>
             <tr>
-                <td><?php echo $produit->getLibelleComplet() ?> <small class="text-muted">(hors VT/SGN)</small></td>
+                <td><?php echo $produit->getLibelleComplet() ?> <?php if ($produit->canHaveVtsgn()):?><small class="text-muted">(hors VT/SGN)</small><?php endif; ?></td>
                 <td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small></td>
             </tr>
             <?php endif; ?>

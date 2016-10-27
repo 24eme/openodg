@@ -20,7 +20,7 @@ foreach ($drev->getPrelevementsOrdered() as $prelevementsOrdered):
                         <td class="text-center" >
                             <?php echo (!$prelevement->total_lots) ? '-' : $prelevement->total_lots; ?></td>
                         <td class="text-center"><?php echo format_date($prelevement->date, "D", "fr_FR") ?></td>
-                    </tr> 
+                    </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
@@ -32,4 +32,3 @@ foreach ($drev->getPrelevementsOrdered() as $prelevementsOrdered):
         <p><em>Ne conditionne pas de volume pour ce millésime.</em></p>
     </div>
 <?php endif; ?>
-
