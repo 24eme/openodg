@@ -12,7 +12,7 @@ class ExportTirageCSV implements InterfaceDeclarationExportCsv {
         foreach(sfConfig::get('app_contenances_bouteilles') as $libelle => $volume) {
             $header .= ";".$libelle;
         }
-        $header .= ";Date de validation / récéption;Type de déclaration\n";
+        $header .= ";Date de validation / récéption;Date de validation ODG;Type de déclaration\n";
 
         return $header;
     }
@@ -77,7 +77,7 @@ class ExportTirageCSV implements InterfaceDeclarationExportCsv {
             }
         }
 
-        $csv .= ";".$this->tirage->validation.";".$mode."\n";
+        $csv .= ";".$this->tirage->validation.";".$this->tirage->validation_odg.";".$mode."\n";
 
         return $csv;
     }
