@@ -18,7 +18,7 @@ class Tournee extends BaseTournee {
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration("2014");
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->getCampagne());
     }
 
     public function setDate($date) {
@@ -330,7 +330,7 @@ class Tournee extends BaseTournee {
 
     public function getCampagne() {
 
-        return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date);
+        return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate($this->date_prelevement_debut);
     }
 
     public function cleanOperateurs($save = true) {
