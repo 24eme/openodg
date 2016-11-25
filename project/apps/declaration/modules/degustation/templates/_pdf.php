@@ -34,7 +34,7 @@
 </table>
 <p>
 N° CVI : <?php echo $degustation->cvi; ?><br /><br />
-Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . ((int) substr($degustation->date_degustation, 0, 4) - 1); ?><br />
+Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . $degustation->getMillesime() ?><br />
 </p>
 <p>Madame, Monsieur,</p>
 <br/>

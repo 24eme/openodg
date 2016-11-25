@@ -2,7 +2,7 @@
 <?php use_helper('Date') ?>
 Madame, Monsieur,
 
-Un agent de l'ODG-AVA viendra prélever vos lots <?php echo $operateur->appellation_libelle ?> du Millésime <?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() ?> à votre chai situé au <?php echo getAdresseChai($operateur) ?> :
+Un agent de l'ODG-AVA viendra prélever vos lots <?php echo $operateur->appellation_libelle ?> du Millésime <?php echo $operateur->getMillesime(); ?> à votre chai situé au <?php echo getAdresseChai($operateur) ?> :
 
 Le <?php echo ucfirst(format_date($operateur->date_prelevement, "P", "fr_FR")) ?> entre <?php echo Date::francizeHeure($operateur->heure); ?> et <?php echo Date::francizeHeure(getHeurePlus($operateur, 2)); ?>
 
