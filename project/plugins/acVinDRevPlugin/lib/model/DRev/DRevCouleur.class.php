@@ -76,6 +76,9 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function updateFromCepage() {
         $this->volume_revendique = 0;
+		if($this->exist('volume_revendique_vtsgn')) {
+			$this->volume_revendique_vtsgn = 0;
+		}
         foreach($this->getAppellation()->getProduitsCepage() as $produit) {
             if($produit->getCouleur()->getKey() != $this->getKey()) {
                 continue;
