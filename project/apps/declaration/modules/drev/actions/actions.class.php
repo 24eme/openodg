@@ -550,6 +550,7 @@ class drevActions extends sfActions {
 
         $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
         $this->drev->save();
+        $this->drev->update();
 
         $this->drev->cleanDoc();
         $this->validation = new DRevValidation($this->drev);
