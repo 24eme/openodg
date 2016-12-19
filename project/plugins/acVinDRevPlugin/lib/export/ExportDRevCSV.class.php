@@ -1,16 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of ExportParcellairePdf
- *
- * @author mathurin
- */
 class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     protected $drev = null;
@@ -27,7 +16,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function getFileName() {
-        
+
         return $this->drev->_id . '_' . $this->drev->_rev . '.csv';
     }
 

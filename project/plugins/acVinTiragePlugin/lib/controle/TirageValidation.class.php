@@ -14,7 +14,7 @@ class TirageValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'composition_incomplete', "Vous n'avez pas saisie d'information relative à la composition de votre lot");
         $this->addControle(self::TYPE_ERROR, 'couleur_cepage', "Le crémant rosé ne peut se faire qu’à partir du seul cépage Pinot noir");
         $this->addControle(self::TYPE_ERROR, 'assemblage_no_ventilation', "Pour les millésimes assemblés, il est nécessaire d'indiquer la ventilation");
-        $this->addControle(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', "La date de début de mise en bouteille ne peut pas être inférieure au 1er décembre");
+        $this->addControle(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', "La date de début de mise en bouteille ne peut pas être inférieure au 1er décembre de l'année de récolte (millésime)");
         $this->addControle(self::TYPE_ERROR, 'date_mise_en_bouteille_fin', "La date de fin de tirage ne peut précéder la date de début du tirage");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_PRODUCTEUR, "Joindre une copie de votre Déclaration de Récolte");
         $this->addControle(self::TYPE_ENGAGEMENT, TirageDocuments::DOC_SV11, 'Joindre une copie de votre SV11');
@@ -65,9 +65,15 @@ class TirageValidation extends DocumentValidation {
         if (!$this->document->getEtablissementObject()->hasFamille(EtablissementClient::FAMILLE_ELABORATEUR)) {
             $this->addPoint(self::TYPE_WARNING, 'famille_elaborateur', null);
         }
-        if ($this->document->date_mise_en_bouteille_debut < $this->document->campagne . '-12-01') {
+
+        if ($this->document->isMillesimeAnnee() && $this->document->date_mise_en_bouteille_debut < $this->document->millesime . '-12-01') {
             $this->addPoint(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', '', $this->generateUrl('tirage_lots', $this->document));
         }
+
+        if(!$this->document->isMillesimeAnnee() && $this->document->date_mise_en_bouteille_debut < $this->document->campagne . '-12-01')  {
+            $this->addPoint(self::TYPE_ERROR, 'date_mise_en_bouteille_debut', '', $this->generateUrl('tirage_lots', $this->document));
+        }
+
         if ($this->document->date_mise_en_bouteille_fin < $this->document->date_mise_en_bouteille_debut) {
             $this->addPoint(self::TYPE_ERROR, 'date_mise_en_bouteille_fin', '', $this->generateUrl('tirage_lots', $this->document));
         }

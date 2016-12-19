@@ -161,7 +161,7 @@ class RendezvousClient extends acCouchdbClient {
         }
         $rendezvous->statut = self::RENDEZVOUS_STATUT_PRIS;
         $rendezvous->rendezvous_raisin = $idRdvOrigine;
-        
+
         return $rendezvous;
     }
 
@@ -176,7 +176,7 @@ class RendezvousClient extends acCouchdbClient {
     public function getRendezVousVolume($id) {
         for($i = 0; $i <= 8; $i++) {
             $rdv = $this->find($id);
-            
+
             if(!$rdv) {
                 continue;
             }
@@ -246,7 +246,8 @@ class RendezvousClient extends acCouchdbClient {
     }
 
     public static function isDateToByPass($date) {
-        return (date('md', strtotime($date)) == '0111') || (date('md', strtotime($date)) == '1111') || (date('N', strtotime($date)) == 7);
+
+        return date('md', strtotime($date)) == '1101' || date('md', strtotime($date)) == '1111' || date('N', strtotime($date)) == 7;
     }
 
 }

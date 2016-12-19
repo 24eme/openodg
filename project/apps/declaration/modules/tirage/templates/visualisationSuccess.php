@@ -71,9 +71,9 @@
                                     <td class="text-left"><?php echo TirageDocuments::getDocumentLibelle($document->getKey()) ?></td>
                                     <?php $href = '' ; if ($tirage->hasDr()) { $href = url_for("tirage_dr_pdf", $tirage); } ?>
                                     <td class="text-center">
-                                         <<?php if ($href) {echo 'a href="'.$href.'"';} else { echo 'span';} 
-                                        ?>  class="<?php if ($document->statut == TirageDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif; 
-                                        ?>"><?php echo ($href) ? "Télécharger" : TirageDocuments::getStatutLibelle($document->statut) 
+                                         <<?php if ($href) {echo 'a href="'.$href.'"';} else { echo 'span';}
+                                        ?>  class="<?php if ($document->statut == TirageDocuments::STATUT_RECU): ?>text-success<?php else: ?>text-warning<?php endif;
+                                        ?>"><?php echo ($href) ? "Télécharger" : TirageDocuments::getStatutLibelle($document->statut)
                                         ?></<?php echo ($href) ? 'a' : 'span'; ?>></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -92,6 +92,9 @@
         <?php if ($tirage->validation && $sf_user->isAdmin()): ?>
         <a href="<?php echo url_for("tirage_devalidation", $tirage) ?>" class="btn btn-danger btn-lg">Dévalider</a>&nbsp;&nbsp;&nbsp;
         <?php endif; ?>
+        <?php if (!$tirage->validation): ?>
+            <a href="<?php echo url_for("tirage_delete", $tirage) ?>" class="btn btn-danger btn-lg">Supprimer</a>&nbsp;&nbsp;&nbsp;
+        <?php endif ; ?>
             <a href="<?php echo url_for("tirage_export_pdf", $tirage) ?>" class="btn btn-warning btn-lg">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
             </a>
@@ -109,7 +112,7 @@
             <?php endif; ?>
         </div>
     <?php endif; ?>
-</div>    
+</div>
 
 <?php if (isset($form)): ?>
     </form>

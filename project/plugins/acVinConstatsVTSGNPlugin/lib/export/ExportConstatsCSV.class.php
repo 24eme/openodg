@@ -27,7 +27,7 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
     }
 
     public function getFileName() {
-        
+
         return $this->constats->_id . '_' . $this->constats->_rev . '.csv';
     }
 
@@ -47,14 +47,14 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
                 $lieu = $constat->getProduitConfig()->getLieu()->getLibelleLong();
             }
 
-            $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", 
-                        $this->constats->campagne, 
-                        $this->constats->cvi, 
-                        $this->constats->raison_sociale, 
-                        $this->constats->adresse, 
-                        $this->constats->code_postal, 
-                        $this->constats->commune, 
-                        $this->constats->email, 
+            $csv .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                        $this->constats->campagne,
+                        $this->constats->cvi,
+                        $this->constats->raison_sociale,
+                        $this->constats->adresse,
+                        $this->constats->code_postal,
+                        $this->constats->commune,
+                        $this->constats->email,
                         $this->getStatut($constat),
                         $constat->raison_refus_libelle,
                         $constat->date_signature,
@@ -97,6 +97,11 @@ class ExportConstatsCSV implements InterfaceDeclarationExportCsv {
         if($constat->statut_raisin == ConstatsClient::STATUT_REFUSE) {
 
             return "Refusé (Constat raisin)";
+        }
+
+        if($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE && $constat->statut_volume == ConstatsClient::STATUT_REFUSE && $constat->raison_refus == ConstatsClient::RAISON_REFUS_ASSEMBLE) {
+
+            return "Assemblé";
         }
 
         if($constat->statut_raisin == ConstatsClient::STATUT_APPROUVE && $constat->statut_volume == ConstatsClient::STATUT_REFUSE) {

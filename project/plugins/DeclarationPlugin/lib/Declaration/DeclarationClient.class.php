@@ -29,6 +29,11 @@ class DeclarationClient
             return 'ExportParcellaireCSV';
         }
 
+        if($type == TirageClient::TYPE_MODEL) {
+
+            return 'ExportTirageCSV';
+        }
+
         if($type == DRevMarcClient::TYPE_MODEL) {
 
             return 'ExportDRevMarcCSV';

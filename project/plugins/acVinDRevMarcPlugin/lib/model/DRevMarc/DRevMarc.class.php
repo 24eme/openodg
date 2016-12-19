@@ -36,7 +36,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
     }
-    
+
     public function storeEtape($etape) {
     	$this->add('etape', $etape);
     }
@@ -53,18 +53,18 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
 
         $this->validation = $date;
     }
-    
+
     public function isValide() {
         return $this->exist('validation') && $this->validation;
     }
 
-    public function isPapier() { 
-        
+    public function isPapier() {
+
         return $this->exist('papier') && $this->get('papier');
     }
 
-    public function isAutomatique() { 
-        
+    public function isAutomatique() {
+
         return $this->exist('automatique') && $this->get('automatique');
     }
 
@@ -84,7 +84,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
 
     /*
      * Facture
-     */ 
+     */
     public function getVolumeFacturable()
     {
         return $this->volume_obtenu;
@@ -98,20 +98,20 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     }
 
     public function getMouvementsCalcule() {
-        
-        return array("E".$this->getIdentifiant() => array("TEMPLATE-FACTURE-MARC-2014" => array("facturable" => 1, "facture" => 0)));
+
+        return array("E".$this->getIdentifiant() => array("TEMPLATE-FACTURE-MARC-".$this->campagne => array("facturable" => 1, "facture" => 0)));
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {
 
         return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
     }
-    
+
     public function generateMouvements() {
 
         return $this->mouvement_document->generateMouvements();
-    }    
-    
+    }
+
     public function findMouvement($cle, $id = null){
       return $this->mouvement_document->findMouvement($cle, $id);
     }

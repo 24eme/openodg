@@ -4,6 +4,11 @@ class avaActions extends sfActions {
 
     public function executeHome(sfWebRequest $request) {
 
+        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_TOURNEE)) {
+
+            return $this->redirect('tournee_agent_accueil');
+        }
+
         if ($this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
             $this->formLogin = new LoginForm();
         }
@@ -68,11 +73,11 @@ class avaActions extends sfActions {
     }
 
     public function executeContact(sfWebRequest $request) {
-        
+
     }
 
     public function executeMentionsLegales(sfWebRequest $request) {
-        
+
     }
 
     protected function forwardSecure() {

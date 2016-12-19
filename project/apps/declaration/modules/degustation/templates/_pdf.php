@@ -34,11 +34,11 @@
 </table>
 <p>
 N° CVI : <?php echo $degustation->cvi; ?><br /><br />
-Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . ((int) substr($degustation->date_degustation, 0, 4) - 1); ?><br />
+Objet : Dégustation conseil <?php echo $degustation->appellation_libelle . ' millésime ' . $degustation->getMillesime() ?><br />
 </p>
 <p>Madame, Monsieur,</p>
 <br/>
-<p style="text-align: justify;">Vous avez présenté un échantillon de <strong><?php $prelevement->libelle; ?></strong> à une dégustation conseil <?php echo $degustation->appellation_libelle ?> organisée par l'ODG-AVA. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($degustation->date_degustation, "P", "fr_FR")); ?></strong>.</p>
+<p style="text-align: justify;">Vous avez présenté un échantillon de <strong><?php echo $prelevement->libelle; ?></strong> à une dégustation conseil <?php echo $degustation->appellation_libelle ?> organisée par l'ODG-AVA. Celle-ci a eu lieu le <strong><?php echo ucfirst(format_date($degustation->date_degustation, "P", "fr_FR")); ?></strong>.</p>
 <p>Les experts dégustateurs ont fait les commentaires suivants sur votre vin : </p>
 
 <div><span class="h3">&nbsp;Rapport de notes&nbsp;</span></div>

@@ -9,6 +9,11 @@ class Degustation extends BaseDegustation {
         $this->set('_id', sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->cvi, str_replace("-", "", $this->date_degustation), $this->appellation));
     }
 
+    public function getMillesime() {
+
+        return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+    }
+
     public function updateFromDRev($drev = null) {
         if(!$drev) {
             $drev = DRevClient::getInstance()->find($this->drev);

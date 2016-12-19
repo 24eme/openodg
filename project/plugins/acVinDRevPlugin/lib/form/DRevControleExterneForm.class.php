@@ -13,38 +13,28 @@ class DRevControleExterneForm extends acCouchdbObjectForm
             $form_grdcru = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->get(Drev::BOUTEILLE_GRDCRU));
             $this->embedForm(Drev::BOUTEILLE_GRDCRU, $form_grdcru);
         }
-        $vtsgn = false;
 
-        if(!$this->getObject()->getDocument()->mustDeclareCepage()) {
-            $vtsgn = true;
-        }
-
-        if ($this->getObject()->getDocument()->prelevements->exist(Drev::BOUTEILLE_VTSGN)) {
-            $vtsgn = true;
-        }
-
-        if($vtsgn) {
+        if($this->getObject()->getDocument()->prelevements->exist(Drev::BOUTEILLE_VTSGN)) {
         	$form_vtsgn = new DRevPrelevementForm($this->getObject()->getDocument()->prelevements->getOrAdd(Drev::BOUTEILLE_VTSGN));
 
-            $form_vtsgn->getValidator('date')->setOption('required', $this->getObject()->getDocument()->mustDeclareCepage());
-
             $form_vtsgn->setWidget('total_lots', new sfWidgetFormInputText());
-            $form_vtsgn->setValidator('total_lots', new sfValidatorNumber(array('required' => $this->getObject()->getDocument()->mustDeclareCepage(), 'min' => 1),array('required' => 'Champs obligatoire', "min" => "Le nombre de lot doit être strictement supérieur à 0")));
+            $form_vtsgn->setValidator('total_lots', new sfValidatorNumber(array('required' => true, 'min' => 1),array('required' => 'Champs obligatoire', "min" => "Le nombre de lot doit être strictement supérieur à 0")));
             $form_vtsgn->getWidget('total_lots')->setLabel("Nombre de lots");
 
             $this->embedForm(Drev::BOUTEILLE_VTSGN, $form_vtsgn);
         }
+        
         if(count($this->getObject()->getDocument()->getEtablissementObject()->chais) > 1) {
             $this->setWidget("chai", new sfWidgetFormChoice(array('choices' => $this->getChaiChoice(), 'expanded' => true, 'renderer_options' => array('formatter' => array($this, 'formatter')))));
             $this->setValidator("chai", new sfValidatorChoice(array('required' => false, 'choices' => array_keys($this->getChaiChoice()))));
         }
 
         $this->widgetSchema->setNameFormat('controle_externe[%s]');
-        
+
         $this->mergePostValidator(new DRevControleExterneValidator());
     }
 
-    public function formatter($widget, $inputs) 
+    public function formatter($widget, $inputs)
     {
         $rows = array();
         foreach ($inputs as $input) {
@@ -77,7 +67,7 @@ class DRevControleExterneForm extends acCouchdbObjectForm
         }
     }
 
-    public function doUpdateObject($values) 
+    public function doUpdateObject($values)
     {
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
             $embedForm->doUpdateObject($values[$key]);

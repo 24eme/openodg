@@ -78,6 +78,9 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
             $produit->detail->volume_sur_place = 0;
             $produit->detail->volume_sur_place_revendique = 0;
             $produit->detail->usages_industriels_sur_place = 0;
+            $produit->detail_vtsgn->volume_sur_place = 0;
+            $produit->detail_vtsgn->volume_sur_place_revendique = 0;
+            $produit->detail_vtsgn->usages_industriels_sur_place = 0;
             $produit->updateRevendiqueFromDetail();
         }
 
@@ -98,6 +101,12 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
     }
 
     public function hasVtsgn() {
+        foreach($this->getProduits() as $produit) {
+            if($produit->canHaveVtsgn() && $produit->volume_revendique_vtsgn) {
+
+                return true;
+            }
+        }
         foreach($this->getProduitsCepage() as $produit) {
             if($produit->hasVtsgn()) {
 
