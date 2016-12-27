@@ -3,7 +3,7 @@
 <ul class="nav nav-tabs">
     <?php foreach($lists as $key_list => $list): ?>
     <li role="presentation" <?php if ($key_list == $current_key_list): ?>class="active"<?php endif ?>>
-        <a href="<?php echo url_for('admin', array("docs" => $key_list)) ?>"><?php echo $key_list ?><br />
+        <a style="padding-left: 10px; padding-right: 10px;" href="<?php echo url_for('admin', array("docs" => $key_list)) ?>"><?php echo $key_list ?><br />
             &nbsp;<span class="glyphicon glyphicon-globe"></span>&nbsp;<?php echo $list['stats']['global']['nb_teledeclares'] ?>
             &nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $list['stats']['global']['nb_papiers'] ?>
             &nbsp;<span class="glyphicon glyphicon-pencil"></span>&nbsp;<?php echo $list['stats']['global']['nb_brouillon'] ?>
