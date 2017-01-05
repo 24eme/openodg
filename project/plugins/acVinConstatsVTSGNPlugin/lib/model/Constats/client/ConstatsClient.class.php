@@ -31,7 +31,7 @@ class ConstatsClient extends acCouchdbClient {
         self::RAISON_REFUS_MULTI_CEPAGE => 'Multi-cépages',
         self::RAISON_REFUS_PRESSURAGE_EN_COURS => 'Pressurage en cours',
         self::RAISON_REFUS_VENDANGES_MECANIQUE => 'Vendanges mécaniques',
-        self::RAISON_REFUS_PROBLEME => 'Problème',
+        self::RAISON_REFUS_PROBLEME => 'Degré insuffisant/Autre constat accepté',
     );
     public static $contenants_libelle = array(
         self::CONTENANT_BOTTICHE => 'Bottiche',
