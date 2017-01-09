@@ -1,11 +1,11 @@
 function(doc) {
 
     if(doc.type != "DRev") {
-        
+
         return;
     }
 
-    if(!doc.validation) {
+    if(!doc.validation_odg) {
         return;
     }
 
