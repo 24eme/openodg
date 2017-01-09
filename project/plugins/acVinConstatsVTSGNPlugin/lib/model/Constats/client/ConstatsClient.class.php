@@ -49,8 +49,15 @@ class ConstatsClient extends acCouchdbClient {
         return $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, $campagne), $hydrate);
     }
 
+    public function getCampagneByDate($date) {
+        $dateObject = new DateTime($date);
+        $dateObject = $dateObject->modify("-2 months");
+
+        return $dateObject->format('Y');
+    }
+
     public function findConstatsByRendezvous(Rendezvous $rendezvous) {
-        $campagne = substr($rendezvous->date, 0, 4);
+        $campagne = $this->getCampagneByDate($rendezvous->date);
         $constats = $this->findByIdentifiantAndCampagne($rendezvous->cvi, $campagne);
         $constatsResult = array();
         foreach ($constats->getOrAdd('constats') as $uniqId => $constat) {
@@ -67,8 +74,8 @@ class ConstatsClient extends acCouchdbClient {
     }
 
     public function updateOrCreateConstatFromRendezVous(Rendezvous $rendezvous) {
-
-        $constats = $this->findByIdentifiantAndCampagne($rendezvous->cvi, substr($rendezvous->date, 0, 4));
+        $campagne = $this->getCampagneByDate($rendezvous->date);
+        $constats = $this->findByIdentifiantAndCampagne($rendezvous->cvi, $campagne);
 
         if ($constats) {
             return $this->updateConstatFromRendezVous($rendezvous, $constats);

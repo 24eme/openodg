@@ -21,7 +21,7 @@ class Constats extends BaseConstats {
 
     public function synchroFromRendezVous(RendezVous $rendezvous) {
         $this->identifiant = $rendezvous->identifiant;
-        $this->campagne = substr($rendezvous->date, 0, 4);
+        $this->campagne = ConstatsClient::getInstance()->getCampagneByDate($rendezvous->date);
 
         $this->cvi = $rendezvous->cvi;
         $this->email = $rendezvous->email;
@@ -54,6 +54,6 @@ class Constats extends BaseConstats {
         $this->get('constats')->getOrAdd($constatIdNode)->updateConstat($jsonContent);
         $this->save();
     }
-  
+
 
 }
