@@ -423,7 +423,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function storeEtape($etape) {
+        $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;
+        
         $this->add('etape', $etape);
+
+        return $etapeOriginal != $this->etape;
     }
 
     public function validate($date = null) {

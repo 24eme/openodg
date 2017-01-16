@@ -126,8 +126,9 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION));
-        $this->drev->save();
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_EXPLOITATION))) {
+            $this->drev->save();
+        }
 
         $this->etablissement = $this->drev->getEtablissementObject();
 
@@ -182,8 +183,9 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION));
-        $this->drev->save();
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION))) {
+            $this->drev->save();
+        }
 
         if ($this->drev->isNonRecoltant()) {
             if (!count($this->drev->declaration->getAppellations())) {
@@ -336,9 +338,9 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_DEGUSTATION));
-
-        $this->drev->save();
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_DEGUSTATION))) {
+            $this->drev->save();
+        }
 
         $this->form = new DRevDegustationConseilForm($this->drev->prelevements);
 
@@ -481,9 +483,9 @@ class drevActions extends sfActions {
 
         $this->focus = $request->getParameter("focus");
 
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_CONTROLE));
-
-        $this->drev->save();
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_CONTROLE))) {
+            $this->drev->save();
+        }
 
         $this->form = new DRevControleExterneForm($this->drev->prelevements);
 
@@ -549,8 +551,9 @@ class drevActions extends sfActions {
 
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION));
-        $this->drev->save();
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION))) {
+            $this->drev->save();
+        }
 
         $this->drev->cleanDoc();
         $this->validation = new DRevValidation($this->drev);
