@@ -31,8 +31,8 @@ EOF;
         $context->set('routing', $routing);
 
         $this->rows = acCouchdbManager::getClient()
-                    ->startkey(array('DRev', '2015', array()))
-                    ->endkey(array('DRev', '2015'))
+                    ->startkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), array()))
+                    ->endkey(array('DRev', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()))
                     ->descending(true)
                     ->reduce(false)
                     ->getView('declaration', 'tous')->rows;
