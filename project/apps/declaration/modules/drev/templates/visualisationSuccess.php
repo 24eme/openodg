@@ -66,6 +66,14 @@
                 <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
             <?php endif; ?>
     </div>
+    <?php elseif (DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
+    <div class="col-xs-4 text-right">
+            <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
+    </div>
+    <?php elseif ($sf_user->isAdmin()): ?>
+      <div class="col-xs-4 text-right">
+              <a class="btn btn-xs btn-warning pull-right" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir la déclaration</a>
+      </div>
     <?php endif; ?>
 </div>
 
