@@ -146,7 +146,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public function updateFromCSVAndInit() {
         $csv = $this->getCSV();
         $this->updatePrelevementsFromRevendication();
-        $this->resetDetail();
+        $this->remove('declaration');
+        $this->add('declaration');
         $this->updateDetailFromCSV($csv);
         $this->updateDetail();
         $this->updateRevendiqueFromDetail();
@@ -424,7 +425,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     public function storeEtape($etape) {
         $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;
-        
+
         $this->add('etape', $etape);
 
         return $etapeOriginal != $this->etape;
