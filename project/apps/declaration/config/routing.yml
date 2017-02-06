@@ -60,7 +60,7 @@ tirage_create_papier:
     model:    Etablissement
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 tirage_edit:
   url: /tirage/edition/:id

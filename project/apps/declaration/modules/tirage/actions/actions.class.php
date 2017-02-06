@@ -25,9 +25,23 @@ class tirageActions extends sfActions {
     }
 
     public function executeCreatePapier(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
+        $this->etablissement = $this->getRoute()->getEtablissement();
 
-        $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true);
+        $this->form = new TirageCreationForm();
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $tirage = TirageClient::getInstance()->createDoc($this->etablissement->identifiant, $this->form->getValue('campagne'), true);
         $tirage->save();
 
         return $this->redirect('tirage_edit', $tirage);
