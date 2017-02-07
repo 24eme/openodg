@@ -18,7 +18,7 @@ class ExportTiragePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration de Revendication / Déclaration de Tirage du millésime %s", $this->tirage->campagne, $this->tirage->campagne);
+        return sprintf("Déclaration de Revendication / Déclaration de Tirage");
     }
 
     protected function getHeaderSubtitle() {
@@ -35,7 +35,7 @@ class ExportTiragePDF extends ExportPDF {
         if ($this->tirage->isPapier() && $this->tirage->validation && $this->tirage->validation !== true) {
             $date = new DateTime($this->tirage->validation);
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
-        }  
+        }
 
         return $header_subtitle;
     }
