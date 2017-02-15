@@ -36,9 +36,9 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('numero_parcelle', 'Numéro :');
         if (!$hasLieuEditable) {
             if($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC){
-                    $this->widgetSchema->setLabel('lieuCepage', 'Cépage :'); 
+                    $this->widgetSchema->setLabel('lieuCepage', 'Cépage :');
             }else{
-                
+
             $this->widgetSchema->setLabel('lieuCepage', 'Lieu-dit/cépage :');
             }
         } else {
@@ -48,7 +48,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 
         $this->setValidator('commune', new sfValidatorChoice(array('required' => true,'choices' => array_keys($communes)), array('required' => "Aucune commune saisie.")));
         $this->setValidator('section', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9A-Z]+$/"), array("invalid" => "La section doit être composée de numéro et lettres en majuscules")));
-        $this->setValidator('numero_parcelle',new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]+$/"), array("invalid" => "Le numéro doit être un nombre")));
+        $this->setValidator('numero_parcelle',new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]+[A-Za-z]*$/"), array("invalid" => "La section doit être composée d'un numéro")));
 
         if (!$hasLieuEditable) {
             $this->setValidator('lieuCepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Aucun cépage saisie.")));
@@ -87,13 +87,13 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
        $config = $this->getObject()->getDocument()->getConfiguration();
        $communes = array();
        foreach($config->communes as $communeName => $dpt) {
-       $communes[strtoupper($communeName)] = $communeName;           
+       $communes[strtoupper($communeName)] = $communeName;
        }
        return array_merge(array('' => ''), $communes);
     }
 
     protected function doUpdateObject($values) {
-        
+
         if ((!isset($values['commune']) || empty($values['commune'])) ||
                 (!isset($values['section']) || empty($values['section'])) ||
                 (!isset($values['numero_parcelle']) || empty($values['numero_parcelle']))
@@ -106,19 +106,19 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         $section = preg_replace('/^0*/','',$values['section']);
         $numero_parcelle = preg_replace('/^0*/','',$values['numero_parcelle']);
         $lieu = null;
-        $dpt = $config->communes[$commune]; 
-        
+        $dpt = $config->communes[$commune];
+
         if (!$this->getAppellationNode()->getConfig()->hasLieuEditable()) {
             $cepage = $values['lieuCepage'];
         } else {
             $cepage = $values['cepage'];
             $lieu = $values['lieuDit'];
         }
-       
+
         $parcelle = $this->getObject()->getDocument()->addParcelleForAppellation($this->getAppellationNode()->getKey(), $cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
 
         $parcelle->superficie = $values['superficie'];
-        
+
         $parcelle->active = 1;
         if ($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
         	$parcelle->vtsgn = 1;
@@ -143,5 +143,5 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         }
         return $entries;
     }
-    
+
 }
