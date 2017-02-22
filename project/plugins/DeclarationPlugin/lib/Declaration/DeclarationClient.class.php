@@ -13,9 +13,9 @@ class DeclarationClient
         return self::$self;
     }
 
-    public function find($id) {
+    public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
 
-        return acCouchdbManager::getClient()->find($id);
+        return acCouchdbManager::getClient()->find($id, $hydrate, $force_return_ls);
     }
 
     public function getExportCsvClassName($type) {
@@ -87,6 +87,22 @@ class DeclarationClient
 
         foreach($rows as $row) {
             $ids[] = $row->id;
+        }
+
+        return $ids;
+    }
+
+    public function getIdsByIdentifiant($identifiant) {
+        $ids = array();
+
+        $rows = acCouchdbManager::getClient()
+                    ->reduce(false)
+                    ->getView('declaration', 'tous')->rows;
+
+        foreach($rows as $row) {
+            if(str_replace("E", "", $row->key[DeclarationTousView::KEY_IDENTIFIANT]) == $identifiant) {
+                $ids[] = $row->id;
+            }
         }
 
         return $ids;
