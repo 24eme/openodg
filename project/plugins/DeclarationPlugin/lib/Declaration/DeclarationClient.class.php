@@ -13,7 +13,7 @@ class DeclarationClient
         return self::$self;
     }
 
-    public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
+    public function find($id, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $force_return_ls = false) {
 
         return acCouchdbManager::getClient()->find($id, $hydrate, $force_return_ls);
     }
