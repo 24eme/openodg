@@ -226,10 +226,10 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         $scope.active = key;
         $scope.transmission = false;
         var operateur = getOperateurById(key);
-        if(operateur && operateur.signature){
+        if(operateur && operateur.signature_base64){
           var wrapper = document.getElementById('result-signature-'+key);
           $(wrapper).removeClass('ng-hide');
-          $(wrapper).find('img').attr('src',operateur.signature);
+          $(wrapper).find('img').attr('src',operateur.signature_base64);
         }
     }
 
@@ -289,8 +289,8 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
         canvas.width = canvas.clientWidth;
         signaturePad = new SignaturePad(canvas);
-        if (operateur.signature) {
-          signaturePad.fromDataURL(operateur.signature);
+        if (operateur.signature_base64) {
+          signaturePad.fromDataURL(operateur.signature_base64);
         }
 
         $scope.active = 'signature_'+ operateur._id;
@@ -299,9 +299,9 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.signerRevenir = function(operateur) {
 
       $scope.valide(operateur);
-      operateur.signature = null;
+      operateur.signature_base64 = null;
       if (!signaturePad.isEmpty()) {
-          operateur.signature = signaturePad.toDataURL();
+          operateur.signature_base64 = signaturePad.toDataURL();
       }
       $scope.terminer(operateur);
       $scope.updateActive(operateur._id);
