@@ -14,8 +14,9 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.transmission_progress = false;
     $scope.state = true;
     $scope.loaded = false;
-    
+
     var local_storage_name = $rootScope.url_json;
+    var signaturePad = null;
 
     var localSave = function() {
         localStorageService.set(local_storage_name, angular.toJson($scope.operateurs));
@@ -53,7 +54,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         for(operateur_key in $scope.operateurs) {
             var operateur = $scope.operateurs[operateur_key];
             if(operateur.transmission_needed) {
-               operateursToTransmettre.push(operateur); 
+               operateursToTransmettre.push(operateur);
             }
         }
 
@@ -137,7 +138,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
                     operateur._rev = revision;
                 }
             }
-                
+
             localSave();
         });
     }
@@ -145,7 +146,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     var updateOperateurFromLoad = function(operateur) {
         var termine = false;
         var nb_prelevements = 0;
-        
+
         for(prelevement_key in operateur.prelevements) {
             var prelevement = operateur.prelevements[prelevement_key];
             if(prelevement.preleve && prelevement.hash_produit && prelevement.cuve) {
@@ -177,7 +178,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
                 if(operateur && operateurRemote._rev == operateur._rev) {
 
                 } else if(operateur && operateur.transmission_needed) {
-                
+
                 } else if(operateur && operateur.transmission_collision) {
 
                 } else if(operateur && operateurRemote._rev != operateur._rev) {
@@ -224,6 +225,12 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     $scope.updateActive = function(key) {
         $scope.active = key;
         $scope.transmission = false;
+        var operateur = getOperateurById(key);
+        if(operateur && operateur.signature){
+          var wrapper = document.getElementById('result-signature-'+key);
+          $(wrapper).removeClass('ng-hide');
+          $(wrapper).find('img').attr('src',operateur.signature);
+        }
     }
 
     $scope.precedent = function() {
@@ -249,7 +256,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
     $scope.terminer = function(operateur) {
         $scope.valide(operateur);
-        
+
         if(operateur.has_erreurs) {
 
             return;
@@ -261,6 +268,44 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
 
         operateur.transmission_needed = true;
         $scope.transmettre(true);
+    }
+
+    $scope.signature = function(operateur, id) {
+        $scope.valide(operateur);
+
+        if(operateur.has_erreurs) {
+
+            return;
+        }
+
+        $scope.precedent(operateur);
+
+        localSave();
+        operateur.transmission_needed = true;
+
+        var wrapper = document.getElementById(id);
+        $(wrapper).removeClass('ng-hide');
+        canvas = wrapper.querySelector("canvas");
+
+        canvas.width = canvas.clientWidth;
+        signaturePad = new SignaturePad(canvas);
+        if (operateur.signature) {
+          signaturePad.fromDataURL(operateur.signature);
+        }
+
+        $scope.active = 'signature_'+ operateur._id;
+    }
+
+    $scope.signerRevenir = function(operateur) {
+
+      $scope.valide(operateur);
+      operateur.signature = null;
+      if (!signaturePad.isEmpty()) {
+          operateur.signature = signaturePad.toDataURL();
+      }
+      $scope.terminer(operateur);
+      $scope.updateActive(operateur._id);
+      $scope.active = operateur._id;
     }
 
     $scope.valide = function(operateur) {
@@ -276,7 +321,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             if(operateur.aucun_prelevement && operateur.motif_non_prelevement) {
                 prelevement.preleve = 0;
                 prelevement.motif_non_prelevement = null;
-            }   
+            }
 
             if(prelevement.preleve && !prelevement.cuve) {
                 prelevement.erreurs['cuve'] = true;
@@ -334,7 +379,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             for(prelevement_key in operateur.prelevements) {
                var prelevement = operateur.prelevements[prelevement_key];
                if(operateur.motif_non_prelevement && prelevement.motif_non_prelevement != operateur.motif_non_prelevement) {
-                    operateur.motif_non_prelevement = "MIXTE"; 
+                    operateur.motif_non_prelevement = "MIXTE";
                } else {
                     operateur.motif_non_prelevement = prelevement.motif_non_prelevement;
                }
@@ -342,7 +387,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         }
 
         if(!nb_prelevements && nb && !operateur.motif_non_prelevement) {
-            operateur.motif_non_prelevement = "MIXTE"; 
+            operateur.motif_non_prelevement = "MIXTE";
         }
 
         operateur.termine = true;
@@ -353,7 +398,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
             return
         }
 
-        event.target.blur();    
+        event.target.blur();
     }
 
     $scope.blur = function(event) {
@@ -381,7 +426,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
         } else {
             operateur.aucun_prelevement = 1;
         }
-        localSave();    
+        localSave();
     }
 
     $scope.updateMotif = function(operateur) {
@@ -392,7 +437,7 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
     }
 
     $scope.updateMotifPrelevement = function(operateur) {
-        
+
         localSave();
     }
 
@@ -438,7 +483,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         for(degustation_key in $scope.degustations) {
             var degustation = $scope.degustations[degustation_key];
             if(degustation.transmission_needed) {
-               degustationsToTransmettre.push(degustation); 
+               degustationsToTransmettre.push(degustation);
             }
         }
 
@@ -454,7 +499,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
                 prelevement.degustation_id = degustation._id;
                 $scope.prelevements.push($scope.degustations[degustation_key].prelevements[prelevement_key]);
             }
-        } 
+        }
         calculAnonymatDegustation();
     }
 
@@ -478,7 +523,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
                 if(degustation && degustationRemote._rev == degustation._rev) {
 
                 } else if(degustation && degustation.transmission_needed) {
-                
+
                 } else if(degustation && degustation.transmission_collision) {
 
                 } else if(degustation && degustationRemote._rev != degustation._rev) {
@@ -544,7 +589,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             if(!auto) {
                 $scope.transmission = true;
             }
-            
+
             $scope.transmission_progress = false;
 
             if(data === true) {
@@ -575,7 +620,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
                     degustation._rev = revision;
                 }
             }
-            
+
             localSave();
         });
     }
@@ -602,7 +647,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         updatePrelevements();
         $scope.loaded = true;
     } else {
-        $scope.degustations = {};    
+        $scope.degustations = {};
     }
 
     $scope.loadOrUpdateDegustations();
@@ -647,7 +692,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             $scope.error_ajout = true;
             return;
         }
-        
+
         $scope.showAjoutValidation(prelevement);
     }
 
@@ -674,7 +719,7 @@ myApp.controller('affectationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             return
         }
 
-        event.target.blur();    
+        event.target.blur();
     }
 
     $scope.validation = function(prelevement, commission) {
@@ -719,7 +764,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         for(degustation_key in $scope.degustations) {
             var degustation = $scope.degustations[degustation_key];
             if(degustation.transmission_needed) {
-               degustationsToTransmettre.push(degustation); 
+               degustationsToTransmettre.push(degustation);
             }
         }
 
@@ -736,7 +781,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
                 if(degustation && degustationRemote._rev == degustation._rev) {
 
                 } else if(degustation && degustation.transmission_needed) {
-                
+
                 } else if(degustation && degustation.transmission_collision) {
 
                 } else if(degustation && degustationRemote._rev != degustation._rev) {
@@ -779,7 +824,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
                     $scope.prelevements.push($scope.degustations[degustation_key].prelevements[prelevement_key]);
                 }
             }
-        } 
+        }
     }
 
     var remoteSave = function(degustations, callBack) {
@@ -861,7 +906,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
                     degustation._rev = revision;
                 }
             }
-            
+
             localSave();
         });
     }
@@ -884,7 +929,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         updatePrelevements();
         $scope.loaded = true;
     } else {
-        $scope.degustations = {};    
+        $scope.degustations = {};
     }
 
     $scope.loadOrUpdateDegustations();
@@ -935,7 +980,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.removeDefaut = function(prelevement, note_key, defaut) {
 
         if (!confirm("Etes vous sûr de vouloir supprimer ce défaut") == true) {
-            
+
             return;
         }
 
@@ -991,7 +1036,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
         }
 
         if(prelevement.has_erreurs) {
-            
+
             return;
         }
 
@@ -1005,7 +1050,7 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
             localSave();
             return;
         }
-        
+
         $scope.degustations[prelevement.degustation_id].transmission_needed = true;
         localSave();
         $scope.transmettre(true);

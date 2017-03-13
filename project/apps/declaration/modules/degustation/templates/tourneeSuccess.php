@@ -3,6 +3,7 @@
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
+<?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee.js?201505080324'); ?>
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
 <div ng-controller="tourneeCtrl">
@@ -167,12 +168,56 @@
         <div ng-class="{ 'hidden': !operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger">
             Vous n'avez saisi aucun lot<br /><small>Vous pouvez cocher "Aucun prélèvement" si il n'y a aucun prélèvement pour cet opérateur</small>
         </div>
+        <div class="row row-margin " >
+          <div class="col-xs-12">
+            <div id="result-signature-{{operateur._id}}" class="ng-hide visible-print-inline  signature-result well print-margin-bottom" style="width: 290px; padding: 5px;">
+                <img src="">
+            </div>
+          </div>
+        </div>
         <div class="row row-margin hidden-print">
-            <div class="col-xs-6">
+            <div class="col-xs-4">
                 <a href="" ng-click="precedent(operateur)" class="btn btn-primary btn-lg col-xs-6 btn-block btn-upper link-to-section">Précédent</a>
             </div>
-            <div class="col-xs-6 pull-right">
+            <div class="col-xs-4">
+                <a href="" ng-click="signature(operateur,'signature_' + operateur._id)" class="btn btn-default-step btn-lg col-xs-6 btn-block btn-upper link-to-section"><span class="glyphicon glyphicon-edit"></span>&nbsp;Signer</a>
+            </div>
+            <div class="col-xs-4 pull-right">
                 <a href="" ng-click="terminer(operateur)" class="btn btn-default btn-lg col-xs-6 btn-block btn-upper link-to-section">Terminer</a>
+            </div>
+        </div>
+    </section>
+    <section ng-repeat="operateur in operateurs" id="signature_{{ operateur._id }}" ng-show="active == 'signature_'+operateur._id"  >
+        <div class="text-center" class="page-header">
+          <a ng-click="updateActive(operateur._id)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
+          <h2>Prélévement pour <strong class="lead">{{ operateur.raison_sociale }}</strong><span class="text-muted hidden-xs"> {{ operateur.cvi }}</span> {{operateur.adresse}}  {{operateur.code_postal}}  {{operateur.commune}}</h2>
+        </div>
+        <div ng-show="!loaded" class="row">
+            <div class="col-xs-12 text-center lead text-muted-alt" style="padding-top: 30px;">Chargement en cours ...</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+              <div class="signature-pad well" style="width: 290px; padding: 5px;">
+                  <canvas style="width: 100%; height: 200px;" height="200"></canvas>
+              </div>
+            </div>
+        </div>
+        <div ng-show="!state" class="alert alert-warning col-xs-12" style="margin-top: 10px;">
+        Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_tournee", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
+        </div>
+        <div ng-show="transmission && transmission_result == 'error'" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
+        La transmission a échoué :-( <small>(vous n'avez peut être pas de connexion internet, veuillez réessayer plus tard)</small>
+        </div>
+        <div ng-show="transmission && transmission_result == 'success'" class="alert alert-success col-xs-12" style="margin-top: 10px;">
+        La transmission a réussi :-)
+        </div>
+        <div ng-show="transmission && transmission_result == 'aucune_transmission'" class="alert alert-success col-xs-12" style="margin-top: 10px;">
+        Rien à transmettre
+        </div>
+        <div class="row row-margin hidden-print">
+            <div class="col-xs-12 text-center">
+                <a href="" ng-show="!transmission_progress" ng-click="signerRevenir(operateur)" class="btn btn-default btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Signer</a>
+                <span class="text-muted-alt" ng-show="transmission_progress">Transmission en cours...</span>
             </div>
         </div>
     </section>
