@@ -493,6 +493,7 @@
     /* =================================================================================== */
     _doc.ready(function ()
     {
+        $.fn.modal.Constructor.prototype.enforceFocus = function () {};
         $.initDatePickers();
         $.initSelect2Autocomplete();
         $.initSelect2AutocompleteRemote();
@@ -508,6 +509,5 @@
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
         $.initCheckboxBtnGroup();
-        $.fn.modal.Constructor.prototype.enforceFocus = function () {};
     });
 })(jQuery);
