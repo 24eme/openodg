@@ -70,7 +70,7 @@ Tournee:
              '*':
               type: collection
               definition:
-                fields: 
+                fields:
                   heure: { }
                   compte_identifiant: { }
                   compte_cvi: { }
@@ -120,6 +120,7 @@ Degustation:
       date_demande: { }
       reporte: { }
       motif_non_prelevement: { }
+      signature_base64: { }
       prelevements:
         type: array_collection
         definition:
