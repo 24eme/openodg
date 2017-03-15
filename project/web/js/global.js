@@ -244,10 +244,8 @@
                 }
             }).on("select2-open", function (e) {
                 $('.select2-input').attr('placeholder', 'Rechercher ou ajouter un nouvel élément');
-                console.log(e);
             }).on("select2-close", function (e) {
                 $('.select2-input').attr('placeholder', null);
-                console.log(e);
             });
         }
     }
@@ -510,5 +508,6 @@
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
         $.initCheckboxBtnGroup();
+        $.fn.modal.Constructor.prototype.enforceFocus = function () {};
     });
 })(jQuery);
