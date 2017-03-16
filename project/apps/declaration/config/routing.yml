@@ -724,6 +724,12 @@ degustation:
   requirements:
     sf_method: [get]
 
+degustation_saisie:
+  url: /tournee/saisie
+  param: { module: degustation, action: saisie }
+  requirements:
+    sf_method: [get, post]
+
 degustation_edit:
   url: /tournee/edit/:id
   param: { module: degustation, action: edit }

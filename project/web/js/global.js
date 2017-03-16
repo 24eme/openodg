@@ -134,19 +134,21 @@
             });
         });
     };
-    $.initSelect2Autocomplete = function ()
+    $.fn.initSelect2Autocomplete = function ()
     {
-        $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
+        $(this).find('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
     }
 
-    $.initSelect2AutocompleteRemote = function ()
+    $.fn.initSelect2AutocompleteRemote = function ()
     {
-        $('.select2autocompleteremote').select2({
+        $(this).find('.select2autocompleteremote').each(function() {
+            var element = $(this);
+            element.select2({
             allowClear: true,
             placeholder: true,
             minimumInputLength: 3,
             ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
-                url: $('.select2autocompleteremote').data('url'),
+                url: element.data('url'),
                 dataType: 'json',
                 quietMillis: 250,
                 data: function (term, page) {
@@ -166,10 +168,9 @@
                 }
 
                 return item.text;
-            }
-
-        }).on("select2-selected", function(e) {
-            $(this).parents('form').submit();
+            }}).on("select2-selected", function(e) {
+                //$(this).parents('form').submit();
+            });
         });
     }
 
@@ -488,20 +489,66 @@
         });
     }
 
+    $.initDynamicCollection = function() {
+        $("#page").on('click', ".dynamic-element-add", function () {
+            var content = $($($(this).attr('data-template')).html().replace(/var---nbItem---/g, UUID.generate()));
+            $($(this).attr('data-container')).append(content);
+            content.initAdvancedElements();
+        });
+
+        $("#page").on('click', '.dynamic-element-delete', function () {
+            $($(this).attr('data-line')).find('input').val("");
+            $($(this).attr('data-line')).find('input').trigger('keyup');
+            $($(this).attr('data-line')).remove();
+            if ($($(this).attr('data-lines')).length < 1 && $(this).attr('data-add')) {
+                $($(this).attr('data-add')).trigger('click');
+            }
+        });
+
+        $('#page').on('change', '.dynamic-element-item:last input,.dynamic-element-item:last select, .dynamic-element-item:last select checkbox', function() {
+            $(".dynamic-element-add").click();
+        });
+
+        $("#page").on('click', '.btn-dynamic-element-submit', function(e) {
+            var vals = $(this).parents('form').serializeArray();
+
+            $(this).parents('form').find('.dynamic-element-delete').each(function(){
+                var ligne = $($(this).attr('data-line'));
+                var hasValue = false;
+                ligne.find('input, select, textarea').each(function() {
+                    if($(this).attr('name') && $(this).val()) {
+                        hasValue = true;
+                    }
+                });
+
+                if(!hasValue) {
+                    $($(this).attr('data-line')).remove();
+                }
+            });
+
+            return true;
+        });
+    }
+
+    $.fn.initAdvancedElements = function () {
+        $(this).initSelect2Autocomplete();
+        $(this).initSelect2AutocompleteRemote();
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
     _doc.ready(function ()
     {
         $.initDatePickers();
-        $.initSelect2Autocomplete();
-        $.initSelect2AutocompleteRemote();
+        _doc.initAdvancedElements();
         $.initSelect2AutocompletePermissif();
         $.initSelect2PermissifNoAjax();
         $.initCheckboxRelations();
         $.initBsSwitchCheckbox();
         $.initCarte();
         $.initModal();
+        $.initDynamicCollection();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip], span[data-toggle=tooltip]').tooltip({'container': 'body'});

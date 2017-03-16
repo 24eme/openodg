@@ -67,6 +67,32 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation, 'appellation_libelle' => $this->tournee->appellation_libelle));
     }
 
+
+    public function executeSaisie(sfWebRequest $request) {
+        $this->tournee = new Tournee();
+        $degustation = new Degustation();
+        $degustation->identifiant = "6823700100";
+        $this->tournee->addDegustationObject($degustation);
+        $this->form = new TourneeSaisieForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->updateDoc();
+
+        return $this->redirect('degustation_saisie');
+    }
+
+
     public function executeEdit(sfWebRequest $request) {
         $degustation = $this->getRoute()->getTournee();
 
