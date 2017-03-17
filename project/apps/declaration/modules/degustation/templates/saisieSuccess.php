@@ -3,7 +3,7 @@
 </div>
 
 
-<form action="" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_saisie", array("appellation" => $tournee->appellation, "date" => $tournee->date)) ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
@@ -36,7 +36,7 @@
         <div class="col-xs-6">
         </div>
         <div class="col-xs-6 text-right">
-            <button class="btn btn-default btn-lg" type="submit">Valider</button>
+            <button class="btn btn-default btn-lg btn-dynamic-element-submit" type="submit">Valider</button>
         </div>
     </div>
 </form>

@@ -118,6 +118,10 @@ class Tournee extends BaseTournee {
         return $this->degustations_object;
     }
 
+    public function resetDegustationsObject() {
+        $this->degustations_object = array();
+    }
+
     public function getDegustationsObjectByCommission($commission) {
         $degustations = array();
         foreach ($this->getDegustationsObject() as $degustation) {

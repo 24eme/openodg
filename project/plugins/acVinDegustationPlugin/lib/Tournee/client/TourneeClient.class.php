@@ -37,6 +37,25 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
+    public function createOrFindForSaisieDegustation($appellation, $date) {
+        $tournee = $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, str_replace("-", "", $date), $appellation));
+
+        if($tournee) {
+
+            return $tournee;
+        }
+
+        $tournee = new Tournee();
+        $tournee->appellation = $appellation;
+        $tournee->date = $date;
+        $tournee->nombre_commissions = 1;
+        $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
+        $tournee->statut == TourneeClient::STATUT_DEGUSTATIONS;
+
+
+        return $tournee;
+    }
+
     public function findByDateAndAgent($date, $agent) {
         return $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, str_replace("-", "", $date), $agent->identifiant));
     }

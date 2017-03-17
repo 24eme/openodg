@@ -142,35 +142,47 @@
     $.fn.initSelect2AutocompleteRemote = function ()
     {
         $(this).find('.select2autocompleteremote').each(function() {
-            var element = $(this);
-            element.select2({
-            allowClear: true,
-            placeholder: true,
-            minimumInputLength: 3,
-            ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
-                url: element.data('url'),
-                dataType: 'json',
-                quietMillis: 250,
-                data: function (term, page) {
-                    return {
-                        q: term,
-                    };
+                var element = $(this);
+                var defaultValue = $(this).val();
+                var defaultValueSplitted = defaultValue.split(',');
+                element.select2({
+                allowClear: true,
+                placeholder: true,
+                minimumInputLength: 3,
+                initSelection: function (element, callback) {
+                    if (defaultValue != '') {
+                        callback({id: defaultValueSplitted[0], text: defaultValueSplitted[1]});
+                        element.val(defaultValueSplitted[0]);
+                    }
                 },
-                results: function (data, page) {
-                    return {results: data};
+                ajax: {
+                    url: element.data('url'),
+                    dataType: 'json',
+                    quietMillis: 250,
+                    data: function (term, page) {
+                        return {
+                            q: term,
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data};
+                    },
+                    cache: true
                 },
-                cache: true
-            },
-            formatResult: function (item) {
-                if (item.text_html) {
+                formatResult: function (item) {
+                    if (item.text_html) {
 
-                    return item.text_html;
-                }
+                        return item.text_html;
+                    }
 
-                return item.text;
-            }}).on("select2-selected", function(e) {
-                //$(this).parents('form').submit();
-            });
+                    return item.text;
+                }});
+        });
+
+        $(this).find(".select2SubmitOnChange").on("change", function (e) {
+            if (e.val) {
+                $(this).parents('form').submit();
+            }
         });
     }
 

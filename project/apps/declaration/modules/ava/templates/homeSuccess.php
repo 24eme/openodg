@@ -13,7 +13,7 @@
                 <?php echo $formLogin["login"]->renderError(); ?>
                 <div class="col-xs-8 col-xs-offset-1">
                     <?php
-                    echo $formLogin["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote",
+                    echo $formLogin["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
                         "placeholder" => $etablissement->nom.' ('.$etablissement->cvi.') à '.$etablissement->commune.' ('.$etablissement->code_postal.')',
                         "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
                     ));
@@ -44,8 +44,6 @@
         <?php include_component('parcellaire', 'monEspace'); ?>
         <?php include_component('parcellaireCremant', 'monEspace'); ?>
         <?php include_component('tirage', 'monEspace'); ?>
-    </div>                                                                                                     
+    </div>
     <?php include_component('ava', 'history'); ?>
 <?php endif; ?>
-
-

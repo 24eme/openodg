@@ -1,14 +1,14 @@
 <?php
 
 class DegustationClient extends acCouchdbClient {
-    
-    const TYPE_MODEL = "Degustation"; 
+
+    const TYPE_MODEL = "Degustation";
     const TYPE_COUCHDB = "DEGUSTATION";
 
-    const NOTE_TYPE_QUALITE_TECHNIQUE = "QUALITE_TECHNIQUE"; 
-    const NOTE_TYPE_MATIERE = "MATIERE"; 
-    const NOTE_TYPE_TYPICITE = "TYPICITE"; 
-    const NOTE_TYPE_CONCENTRATION = "CONCENTRATION"; 
+    const NOTE_TYPE_QUALITE_TECHNIQUE = "QUALITE_TECHNIQUE";
+    const NOTE_TYPE_MATIERE = "MATIERE";
+    const NOTE_TYPE_TYPICITE = "TYPICITE";
+    const NOTE_TYPE_CONCENTRATION = "CONCENTRATION";
     const NOTE_TYPE_EQUILIBRE = "EQUILIBRE";
 
     const MOTIF_NON_PRELEVEMENT_REPORT = "REPORT";
@@ -70,26 +70,26 @@ class DegustationClient extends acCouchdbClient {
 
     public static function getInstance()
     {
-        
+
         return acCouchdbManager::getClient("Degustation");
     }
 
     public function create($data, $force_return_ls = false) {
         if (!isset($data->type)) {
-            
+
             throw new acCouchdbException('Property "type" ($data->type)');
         }
         if (!class_exists($data->type)) {
-            
+
             throw new acCouchdbException('Class "' . $data->type . '" not found');
         }
-        
+
         $doc = new $data->type();
         $doc->loadFromCouchdb($data);
 
         if($doc->getType() == "LS" && $force_return_ls == false )
           return $this->find($doc->getPointeur());
-        
+
         return $doc;
     }
 
@@ -115,6 +115,20 @@ class DegustationClient extends acCouchdbClient {
         $degustation->identifiant = $identifiant;
         $degustation->date_degustation = $date;
         $degustation->appellation = $appellation;
+        $degustation->constructId();
+
+        return $degustation;
+    }
+
+    public function findOrCreateByTournee($tournee, $identifiant) {
+
+        return $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation);
+    }
+
+    public function findOrCreateForSaisieByTournee($tournee, $identifiant) {
+        $degustation = $this->findOrCreateByTournee($tournee->date, $identifiant);
+        $degustation->updateFromEtablissement();
+        $degustation->updateFromCompte();
 
         return $degustation;
     }
@@ -145,7 +159,7 @@ class DegustationClient extends acCouchdbClient {
     }
 
     public function getLastDegustationByStatut($appellation, $identifiant, $statut) {
-        
+
         return DegustationTousView::getInstance()->getLastDegustationByStatut($appellation, $identifiant, $statut);
     }
 }

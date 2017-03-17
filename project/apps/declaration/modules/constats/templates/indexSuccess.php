@@ -12,7 +12,7 @@
             <?php echo $form["login"]->renderError(); ?>
             <div class="col-xs-8 col-xs-offset-1">
                 <?php
-                echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote",
+                echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
                     "placeholder" => "Prendre un RDV ou rechercher un opérateur",
                     "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
                 ));
@@ -117,9 +117,9 @@
                         <td class="text-center ">
 
                             <?php if ($rendezvous->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN): ?>
-                                <span style="font-size: 20px;" class="icon-raisins"></span>   
+                                <span style="font-size: 20px;" class="icon-raisins"></span>
                             <?php else : ?>
-                                <span style="font-size: 20px;" class="icon-mouts"></span>   
+                                <span style="font-size: 20px;" class="icon-mouts"></span>
                             <?php endif; ?>
                         </td>
                         <td class="text-center "><a href="<?php echo url_for('rendezvous_declarant' , array('id' => 'COMPTE-'.$rendezvous->identifiant)) ?>"><?php echo $rendezvous->raison_sociale . " (" . $rendezvous->cvi . ") " . $rendezvous->commune; ?></a></td>
@@ -129,4 +129,3 @@
         </table>
     </div>
 </div>
-

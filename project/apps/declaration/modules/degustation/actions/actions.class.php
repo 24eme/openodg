@@ -69,10 +69,8 @@ class degustationActions extends sfActions {
 
 
     public function executeSaisie(sfWebRequest $request) {
-        $this->tournee = new Tournee();
-        $degustation = new Degustation();
-        $degustation->identifiant = "6823700100";
-        $this->tournee->addDegustationObject($degustation);
+        $this->tournee = TourneeClient::getInstance()->createOrFindForSaisieDegustation($request->getParameter("appellation"), $request->getParameter("date"));
+
         $this->form = new TourneeSaisieForm($this->tournee);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -89,7 +87,7 @@ class degustationActions extends sfActions {
 
         $this->form->updateDoc();
 
-        return $this->redirect('degustation_saisie');
+        return $this->redirect('degustation_degustation', array("sf_subject" => $this->tournee, "commission" => 1));
     }
 
 
@@ -778,8 +776,10 @@ class degustationActions extends sfActions {
                 foreach($json_prelevement->notes as $key_note => $json_note) {
                     $note = $prelevement->notes->add($key_note);
                     $note->note = $json_note->note;
-                    $note->remove('defauts', $json_note->defauts);
-                    $note->add('defauts', $json_note->defauts);
+                    if(isset($json_note->defauts)) {
+                        $note->remove('defauts', $json_note->defauts);
+                        $note->add('defauts', $json_note->defauts);
+                    }
                 }
                 $prelevement->appreciations = $json_prelevement->appreciations;
             }

@@ -2,13 +2,31 @@
 
 class TourneeSaisieForm extends acCouchdbForm {
 
-    public function configure() {
+    public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+        $defaults = array();
 
-        $this->embedForm("prelevement_".uniqid(), new TourneeSaisieDegustationForm($this->getDocument()));
-
-        $this->widgetSchema->setNameFormat('tournee_saisie[%s]');
+        foreach($doc->getDegustationsObject() as $identifiant => $degustation) {
+            foreach($degustation->prelevements as $prelevement) {
+                $defaults["prelevement_".$identifiant."_".$prelevement->getKey()] = array(
+                    "numero" => $prelevement->anonymat_degustation,
+                    "etablissement" => "COMPTE-E".$degustation->identifiant.",".$degustation->raison_sociale.' ('.$degustation->cvi.') à '.$degustation->commune.' ('.$degustation->code_postal.')',
+                    "produit" => $prelevement->hash_produit
+                );
+            }
+        }
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
+    public function configure() {
+
+        foreach($this->defaults as $key => $value) {
+            if(!preg_match("/^prelevement_/", $key)) {
+                continue;
+            }
+            $this->embedForm($key, new TourneeSaisieDegustationForm($this->getDocument(), $value));
+        }
+        $this->widgetSchema->setNameFormat('tournee_saisie[%s]');
+    }
 
     public function getFormTemplate() {
         $form = new TourneeSaisieForm($this->getDocument());
@@ -95,10 +113,39 @@ class TourneeSaisieForm extends acCouchdbForm {
     public function updateDoc() {
         $values = $this->getValues();
 
+        $degustations = array();
         foreach($values as $key => $value) {
             if(!preg_match("/^prelevement_/", $key)) {
                 continue;
             }
+
+            $identifiant = preg_replace("/^COMPTE-E/", "", $value['etablissement']);
+
+            if(!array_key_exists($identifiant, $degustations)) {
+                $degustation = DegustationClient::getInstance()->findOrCreateForSaisieByTournee($this->getDocument(), $identifiant);
+                $degustations[$identifiant] = $degustation;
+                $degustation->remove("prelevements");
+                $degustation->add("prelevements");
+            } else {
+                $degustation = $degustations[$identifiant];
+            }
+
+            $prelevement = $degustation->prelevements->add();
+            $prelevement->commission = 1;
+            $prelevement->hash_produit = $value["produit"];
+            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleComplet();
+            $prelevement->anonymat_degustation = $value["numero"];
         }
+
+        $this->getDocument()->remove('degustations');
+        $this->getDocument()->add('degustations');
+        $this->getDocument()->resetDegustationsObject();
+
+        foreach($degustations as $identifiant => $degustation) {
+            $this->getDocument()->addDegustationObject($degustation);
+        }
+
+        $this->getDocument()->save();
+        $this->getDocument()->saveDegustations();
     }
 }

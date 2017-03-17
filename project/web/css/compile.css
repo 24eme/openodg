@@ -7580,14 +7580,14 @@ input[type="radio"] {
   line-height: normal;
   padding: 20px 0 20px 75px;
 }
-.breadcrumb-steps-last {
-  background: #b9cf62;
-}
 .breadcrumb-steps-visited {
   background: #2c4a48;
 }
+.breadcrumb-steps-last {
+  background: #b9cf62;
+}
 /**
-* Tabs (BS overrides)
+ * Tabs (BS overrides)
  ******************************************/
 .nav-tabs {
   margin-left: -10px;
@@ -8102,4 +8102,13 @@ tr.bootstrap-switch-off td {
 }
 tr.bootstrap-switch-on {
   cursor: pointer;
+}
+.form-group .select2-container {
+  position: relative;
+  z-index: 2;
+  float: left;
+  width: 100%;
+  margin-bottom: 0;
+  display: table;
+  table-layout: fixed;
 }

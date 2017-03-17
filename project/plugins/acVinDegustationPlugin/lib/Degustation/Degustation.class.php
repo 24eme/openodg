@@ -6,12 +6,27 @@
 
 class Degustation extends BaseDegustation {
     public function constructId() {
-        $this->set('_id', sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->cvi, str_replace("-", "", $this->date_degustation), $this->appellation));
+        $this->set('_id', sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date_degustation), $this->appellation));
     }
 
     public function getMillesime() {
 
         return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+    }
+
+    public function getEtablissementObject() {
+
+        return EtablissementClient::getInstance()->find("ETABLISSEMENT-".$this->identifiant);
+    }
+
+    public function updateFromEtablissement() {
+        $etablissement = $this->getEtablissementObject();
+
+        $this->cvi = $etablissement->cvi;
+        $this->raison_sociale = $etablissement->raison_sociale;
+        $this->adresse = $etablissement->adresse;
+        $this->code_postal = $etablissement->code_postal;
+        $this->commune = $etablissement->commune;
     }
 
     public function updateFromDRev($drev = null) {
