@@ -120,13 +120,13 @@ class DegustationClient extends acCouchdbClient {
         return $degustation;
     }
 
-    public function findOrCreateByTournee($tournee, $identifiant) {
+    public function findOrCreateByTournee(Tournee $tournee, $identifiant) {
 
         return $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation);
     }
 
-    public function findOrCreateForSaisieByTournee($tournee, $identifiant) {
-        $degustation = $this->findOrCreateByTournee($tournee->date, $identifiant);
+    public function findOrCreateForSaisieByTournee(Tournee $tournee, $identifiant) {
+        $degustation = $this->findOrCreateByTournee($tournee, $identifiant);
         $degustation->updateFromEtablissement();
         $degustation->updateFromCompte();
 
