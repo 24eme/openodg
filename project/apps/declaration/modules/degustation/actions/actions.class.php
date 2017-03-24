@@ -64,12 +64,38 @@ class degustationActions extends sfActions {
 
         $this->form->doUpdateObject($this->form->getValues());
 
+        if($this->form->getValue('action') == "saisir") {
+
+            return $this->redirect('degustation_saisie_creation', array('date' => $this->tournee->date, 'appellation' => $this->tournee->appellation));
+        }
+
         return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation, 'appellation_libelle' => $this->tournee->appellation_libelle));
     }
 
+    public function executeSaisieCreation(sfWebRequest $request) {
+        $this->tournee = TourneeClient::getInstance()->createOrFindForSaisieDegustation($request->getParameter("appellation"), $request->getParameter("date"));
+
+        $this->form = new TourneeSaisieCreationForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('degustation_saisie',  $this->tournee);
+    }
 
     public function executeSaisie(sfWebRequest $request) {
-        $this->tournee = TourneeClient::getInstance()->createOrFindForSaisieDegustation($request->getParameter("appellation"), $request->getParameter("date"));
+        $this->tournee = $this->getRoute()->getTournee();
 
         $this->form = new TourneeSaisieForm($this->tournee);
 

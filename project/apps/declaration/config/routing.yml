@@ -725,8 +725,18 @@ degustation:
     sf_method: [get]
 
 degustation_saisie:
-  url: /tournee/saisie
+  url: /tournee/saisie/:id
   param: { module: degustation, action: saisie }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+degustation_saisie_creation:
+  url: /tournee/saisie-creation
+  param: { module: degustation, action: saisieCreation }
   requirements:
     sf_method: [get, post]
 

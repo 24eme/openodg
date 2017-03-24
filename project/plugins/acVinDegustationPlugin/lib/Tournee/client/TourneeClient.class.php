@@ -50,7 +50,7 @@ class TourneeClient extends acCouchdbClient {
         $tournee->date = $date;
         $tournee->nombre_commissions = 1;
         $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
-        $tournee->statut == TourneeClient::STATUT_DEGUSTATIONS;
+        $tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
 
 
         return $tournee;

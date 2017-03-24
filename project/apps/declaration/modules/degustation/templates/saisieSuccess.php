@@ -2,8 +2,7 @@
     <h2>Saisie d'une dégustation</h2>
 </div>
 
-
-<form action="<?php echo url_for("degustation_saisie", array("appellation" => $tournee->appellation, "date" => $tournee->date)) ?>" method="post" class="form-horizontal">
+<form action="<?php echo url_for("degustation_saisie", $tournee) ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 

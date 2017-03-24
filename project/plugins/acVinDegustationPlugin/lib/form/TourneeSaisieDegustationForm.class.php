@@ -16,7 +16,7 @@ class TourneeSaisieDegustationForm extends acCouchdbForm {
     }
 
     public function getProduits() {
-        $produitsConfig = ConfigurationClient::getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION_CEPAGE);
+        $produitsConfig = ConfigurationClient::getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DEGUSTATION);
         $produits = array("" => "");
 
         foreach ($produitsConfig as $hash => $produit) {

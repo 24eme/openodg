@@ -14,6 +14,9 @@ class TourneeSaisieForm extends acCouchdbForm {
                 );
             }
         }
+
+        $defaults["prelevement_".uniqid()] = array("numero" => null, "etablissement" => null, "produit" => null);
+
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
@@ -131,6 +134,8 @@ class TourneeSaisieForm extends acCouchdbForm {
             }
 
             $prelevement = $degustation->prelevements->add();
+            $prelevement->preleve = 1;
+            $prelevement->cuve = "test";
             $prelevement->commission = 1;
             $prelevement->hash_produit = $value["produit"];
             $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleComplet();
@@ -145,6 +150,7 @@ class TourneeSaisieForm extends acCouchdbForm {
             $this->getDocument()->addDegustationObject($degustation);
         }
 
+        $this->getDocument()->updateNombrePrelevements();
         $this->getDocument()->save();
         $this->getDocument()->saveDegustations();
     }
