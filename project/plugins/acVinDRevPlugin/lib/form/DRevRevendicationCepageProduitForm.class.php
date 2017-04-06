@@ -28,6 +28,13 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
             $this->setValidator('volume_revendique_vt', new sfValidatorNumber(array('required' => false)));
             $this->setValidator('volume_revendique_sgn', new sfValidatorNumber(array('required' => false)));
         }
+        
+
+        if ($this->getObject()->canHaveSuperficieVinifiee()) {
+        	$this->setWidget('superficie_vinifiee', new sfWidgetFormInputFloat());
+        	$this->getWidget('superficie_vinifiee')->setLabel("Superficie vinifiée (ares):");
+        	$this->setValidator('superficie_vinifiee', new sfValidatorNumber(array('required' => false)));
+        }
 
         $this->widgetSchema->setNameFormat('[%s]');
     }

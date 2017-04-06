@@ -33,13 +33,13 @@ class DRevCepage extends BaseDRevCepage {
 
         $detail = $this->getDetailNode($lieu);
         if($detail) {
-
             return $detail;
         }
 
         $detail = $this->detail->add();
         $detail->lieu = $lieu;
         $detail->getLibelle();
+        $detail->add('superficie_vinifiee');
 
         return $detail;
     }

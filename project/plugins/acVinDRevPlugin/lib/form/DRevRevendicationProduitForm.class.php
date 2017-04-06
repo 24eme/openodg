@@ -37,6 +37,18 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
             }
         }
 
+        if ($this->getObject()->canHaveSuperficieVinifiee()) {
+        	$this->setWidget('superficie_vinifiee', new sfWidgetFormInputFloat());
+        	$this->getWidget('superficie_vinifiee')->setLabel("Superficie vinifiée (ares):");
+        	$this->setValidator('superficie_vinifiee', new sfValidatorNumber(array('required' => false)));
+        	
+        	if($this->getObject()->canHaveVtsgn()) {
+        		$this->setWidget('superficie_vinifiee_vtsgn', new sfWidgetFormInputFloat());
+        		$this->getWidget('superficie_vinifiee_vtsgn')->setLabel("Superficie vinifiée (ares):");
+        		$this->setValidator('superficie_vinifiee_vtsgn', new sfValidatorNumber(array('required' => false)));
+        	}
+        }
+
         $this->widgetSchema->setNameFormat('[%s]');
     }
 

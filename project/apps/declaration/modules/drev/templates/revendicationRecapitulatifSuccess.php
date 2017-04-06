@@ -18,8 +18,9 @@ Vous devez déclarer vos volumes revendiqués par cépage pour pouvoir continuer
 <table class="table table-striped">
     <thead>
         <tr>
-            <th class="col-xs-8">Appellation revendiquée</th>
-            <th class="col-xs-4 text-center">Volume&nbsp;revendiqué</th>
+            <th class="col-xs-6">Appellation revendiquée</th>
+            <th class="col-xs-3 text-center">Superficie&nbsp;vinififée</th>
+            <th class="col-xs-3 text-center">Volume&nbsp;revendiqué</th>
         </tr>
     </thead>
     <tbody>
@@ -27,6 +28,7 @@ Vous devez déclarer vos volumes revendiqués par cépage pour pouvoir continuer
             <?php if($produit->volume_revendique > 0): ?>
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?> <?php if ($produit->canHaveVtsgn()):?><small class="text-muted">(hors VT/SGN)</small><?php endif; ?></td>
+                <td class="text-center"><?php if($produit->exist('superficie_vinifiee')): ?><?php echoFloat($produit->superficie_vinifiee) ?> <small class="text-muted">ares</small><?php endif; ?></td>
                 <td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small></td>
             </tr>
             <?php endif; ?>

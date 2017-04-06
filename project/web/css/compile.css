@@ -8112,3 +8112,13 @@ tr.bootstrap-switch-on {
   display: table;
   table-layout: fixed;
 }
+#table-revendication td,
+#table-revendication th {
+  padding: 5px 2px !important;
+}
+#table-revendication th.manual-width {
+  padding: 5px !important;
+}
+#table-revendication .form-control {
+  padding: 6px !important;
+}

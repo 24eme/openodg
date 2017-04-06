@@ -16,11 +16,12 @@
     <?php if(!$drev->isNonRecoltant()): ?>
     <td class="text-center"><?php echoFloat($produit->get('superficie_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_revendique'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?></td>
     <?php endif; ?>
+    <td class="text-center"><?php if ($produit->exist('superficie_vinifiee'.$suffixe)): ?><?php echoFloat($produit->get('superficie_vinifiee'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_vinifiee'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?><?php endif; ?></td>
     <td class="text-center"><?php echoFloat($produit->get('volume_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('volume_revendique'.$suffixe))): ?> <small class="text-muted">hl</small><?php endif; ?></td>
 </tr>
 <?php if (count($produit->getProduitsCepage()) > 0): ?>
     <tr>
-        <td class="hiddenRow" colspan="3"  >
+        <td class="hiddenRow" colspan="4"  >
             <div id="<?php echo $key_for_tr_id; ?>" class="accordian-body collapse" >
                 <div class="col-xs-12 revendication_recap_padding">
                     <table class="table table-striped-alt">
@@ -32,39 +33,42 @@
                                 <tr>
                                     <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?></small></td>
                                     <?php if(!$drev->isNonRecoltant()): ?>
-                                    <td class="text-center text-muted col-md-3">
+                                    <td class="text-center text-muted col-md-2">
                                         <?php if ($produit_cepage->superficie_revendique): ?>
                                             <small><?php echoFloat($produit_cepage->superficie_revendique) ?><?php if (!is_null($produit_cepage->superficie_revendique)): ?> <small class="text-muted">ares</small><?php endif; ?></small>
                                         <?php endif; ?>
                                     </td>
                                     <?php endif; ?>
-                                    <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
+                                    <td class="text-center text-muted col-md-2"></td>
+                                    <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                 </tr>
                                 <?php endif; ?>
                                 <?php if ($produit_cepage->volume_revendique_vt && $vtsgn): ?>
                                     <tr>
                                         <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - VT</small></td>
                                         <?php if(!$drev->isNonRecoltant()): ?>
-                                        <td class="text-center text-muted col-md-3">
+                                        <td class="text-center text-muted col-md-2">
                                             <?php if ($produit_cepage->superficie_revendique_vt): ?>
                                                 <small><?php echoFloat($produit_cepage->superficie_revendique_vt) ?><?php if (!is_null($produit_cepage->superficie_revendique_vt)): ?> <small class="text-muted">ares</small><?php endif; ?></small>
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
-                                        <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
+                                    <td class="text-center text-muted col-md-2"></td>
+                                        <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($produit_cepage->volume_revendique_sgn && $vtsgn): ?>
                                     <tr>
                                         <td class="col-md-6 text-muted revendication_recap_td_libelle"><small><?php echo $produit_cepage->getLibelle() ?> - SGN</small></td>
                                         <?php if(!$drev->isNonRecoltant()): ?>
-                                        <td class="text-center text-muted col-md-3">
+                                        <td class="text-center text-muted col-md-2">
                                             <?php if ($produit_cepage->superficie_revendique_sgn): ?>
                                                 <small><?php echoFloat($produit_cepage->superficie_revendique_sgn) ?><?php if (!is_null($produit_cepage->superficie_revendique_sgn)): ?> <small class="text-muted">ares</small><?php endif; ?></small>
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
-                                        <td class="text-center text-muted col-md-3"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?><?php if (!is_null($produit_cepage->volume_revendique_sgn)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
+                                    <td class="text-center text-muted col-md-2"></td>
+                                        <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?><?php if (!is_null($produit_cepage->volume_revendique_sgn)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>
                             <?php endforeach; ?>

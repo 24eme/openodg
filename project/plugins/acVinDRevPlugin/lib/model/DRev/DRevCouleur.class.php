@@ -76,6 +76,7 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function updateFromCepage() {
         $this->volume_revendique = 0;
+        $this->superficie_vinifiee = 0;
 		if($this->exist('volume_revendique_vtsgn')) {
 			$this->volume_revendique_vtsgn = 0;
 		}
@@ -91,6 +92,7 @@ class DRevCouleur extends BaseDRevCouleur
 			}
 
 			$this->volume_revendique += $produit->volume_revendique;
+			$this->superficie_vinifiee += $produit->superficie_vinifiee;
         }
     }
 
@@ -165,6 +167,11 @@ class DRevCouleur extends BaseDRevCouleur
 	public function canHaveVtsgn() {
 
 		return $this->exist('detail_vtsgn');
+	}
+
+	public function canHaveSuperficieVinifiee() {
+
+		return $this->exist('superficie_vinifiee');
 	}
 
 

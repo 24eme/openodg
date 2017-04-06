@@ -109,5 +109,9 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
 
         return trim($this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle());
     }
+    
+    public function canHaveSuperficieVinifiee() {
+    	return ($this->exist('superficie_vinifiee'));
+    }
 
 }

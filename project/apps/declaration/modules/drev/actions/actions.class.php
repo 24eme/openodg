@@ -209,7 +209,6 @@ class drevActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
-
                 return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
             }
             if ($this->form->isValid()) {
