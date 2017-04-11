@@ -53,7 +53,7 @@
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
-                                    <td class="text-center text-muted col-md-2"></td>
+                                   	 	<td class="text-center text-muted col-md-2"></td>
                                         <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>
@@ -67,7 +67,7 @@
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
-                                    <td class="text-center text-muted col-md-2"></td>
+                                    	<td class="text-center text-muted col-md-2"></td>
                                         <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?><?php if (!is_null($produit_cepage->volume_revendique_sgn)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>

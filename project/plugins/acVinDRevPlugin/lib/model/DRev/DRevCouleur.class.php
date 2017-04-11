@@ -108,6 +108,12 @@ class DRevCouleur extends BaseDRevCouleur
     	return $this->volume_revendique + (($this->canHaveVtsgn()) ? $this->volume_revendique_vtsgn : 0);
     }
 
+    public function getTotalSuperficieVinifiee()
+    {
+
+    	return $this->superficie_vinifiee + (($this->canHaveVtsgn()) ? $this->superficie_vinifiee_vtsgn : 0);
+    }
+
     public function resetDetail() {
         $this->remove('detail');
         $this->add('detail');
@@ -162,6 +168,22 @@ class DRevCouleur extends BaseDRevCouleur
 				$this->volume_revendique_vtsgn = $this->detail_vtsgn->volume_sur_place_revendique;
 			}
 		}
+		
+        if(!is_null($this->detail->superficie_vinifiee)) {
+        	if (!$this->exist('superficie_vinifiee')) {
+        		$this->add('superficie_vinifiee');
+        	}
+            $this->superficie_vinifiee = $this->detail->superficie_vinifiee;
+        }
+
+		if($this->canHaveVtsgn()) {
+			if(!is_null($this->detail_vtsgn->superficie_vinifiee)) {
+	        	if (!$this->exist('superficie_vinifiee_vtsgn')) {
+	        		$this->add('superficie_vinifiee_vtsgn');
+	        	}
+				$this->superficie_vinifiee_vtsgn = $this->detail_vtsgn->superficie_vinifiee;
+			}
+		}
     }
 
 	public function canHaveVtsgn() {
@@ -183,7 +205,7 @@ class DRevCouleur extends BaseDRevCouleur
     public function isActive()
     {
 
-	    return ($this->getTotalVolumeRevendique() > 0 || $this->getTotalTotalSuperficie() > 0);
+	    return ($this->getTotalVolumeRevendique() > 0 || $this->getTotalTotalSuperficie() > 0 || $this->getTotalSuperficieVinifiee() > 0);
     }
 
     public function isCleanable() {
@@ -193,7 +215,7 @@ class DRevCouleur extends BaseDRevCouleur
             return parent::isCleanable();
         }
 
-        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !count($this->getProduitsCepage())) {
+        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !$this->getTotalSuperficieVinifiee() && !count($this->getProduitsCepage())) {
 
             return true;
         }

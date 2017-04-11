@@ -501,6 +501,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $produitDetail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
             $produitDetail->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             $produitDetail->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            if (!$produitDetail->exist('superficie_vinifiee')) {
+            	$produitDetail->add('superficie_vinifiee');
+            }
+            $produitDetail->superficie_vinifiee += (float) $line[DRCsvFile::CSV_SUPERFICIE];
             if ($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
                 $produitDetail->usages_industriels_sur_place = -1;
             } elseif ($produitDetail->usages_industriels_sur_place != -1) {
@@ -693,6 +697,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 	public function getVolumeFacturable()
 	{
 		return $this->declaration->getTotalVolumeRevendique();
+	}
+
+	public function getSurfaceVinifieeFacturable()
+	{
+		return $this->declaration->getTotalSuperficieVinifiee();
 	}
 
     /**** MOUVEMENTS ****/
