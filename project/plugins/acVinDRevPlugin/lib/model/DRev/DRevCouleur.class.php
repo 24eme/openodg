@@ -110,8 +110,10 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function getTotalSuperficieVinifiee()
     {
-
-    	return $this->superficie_vinifiee + (($this->canHaveVtsgn()) ? $this->superficie_vinifiee_vtsgn : 0);
+    	if (!$this->exist('superficie_vinifiee')) {
+    		return 0;
+    	}
+    	return $this->superficie_vinifiee + (($this->canHaveVtsgn() && $this->exist('superficie_vinifiee_vtsgn')) ? $this->superficie_vinifiee_vtsgn : 0);
     }
 
     public function resetDetail() {
