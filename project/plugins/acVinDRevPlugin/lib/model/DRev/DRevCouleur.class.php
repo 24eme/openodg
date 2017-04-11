@@ -169,7 +169,7 @@ class DRevCouleur extends BaseDRevCouleur
 			}
 		}
 		
-        if(!is_null($this->detail->superficie_vinifiee)) {
+        if($this->detail->exist('superficie_vinifiee') && !is_null($this->detail->superficie_vinifiee)) {
         	if (!$this->exist('superficie_vinifiee')) {
         		$this->add('superficie_vinifiee');
         	}
@@ -177,7 +177,7 @@ class DRevCouleur extends BaseDRevCouleur
         }
 
 		if($this->canHaveVtsgn()) {
-			if(!is_null($this->detail_vtsgn->superficie_vinifiee)) {
+			if($this->detail->exist('superficie_vinifiee_vtsgn') && !is_null($this->detail_vtsgn->superficie_vinifiee)) {
 	        	if (!$this->exist('superficie_vinifiee_vtsgn')) {
 	        		$this->add('superficie_vinifiee_vtsgn');
 	        	}
