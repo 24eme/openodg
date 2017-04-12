@@ -517,8 +517,19 @@
             }
         });
 
-        $('#page').on('change', '.dynamic-element-item:last input,.dynamic-element-item:last select, .dynamic-element-item:last select checkbox', function() {
-            $(".dynamic-element-add").click();
+        $('#page').on('change', '.dynamic-element-item:last input, .dynamic-element-item:last select, .dynamic-element-item:last checkbox', function() {
+            var item = $(this).parents(".dynamic-element-item");
+            var allIsComplete = true;
+            item.find("input, select, checkbox").each(function() {
+                if($(this).attr('name') && !$(this).val()) {
+                    console.log($(this).val());
+                    allIsComplete = false;
+                }
+            });
+
+            if(allIsComplete) {
+                $(".dynamic-element-add").click();
+            }
         });
 
         $("#page").on('click', '.btn-dynamic-element-submit', function(e) {
