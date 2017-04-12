@@ -69,7 +69,7 @@ class degustationActions extends sfActions {
             return $this->redirect('degustation_saisie_creation', array('date' => $this->tournee->date, 'appellation' => $this->tournee->appellation));
         }
 
-        return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation, 'appellation_libelle' => $this->tournee->appellation_libelle));
+        return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation));
     }
 
     public function executeSaisieCreation(sfWebRequest $request) {
@@ -96,6 +96,10 @@ class degustationActions extends sfActions {
 
     public function executeSaisie(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
+
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeSaisieEtapes::ETAPE_SAISIE, "TourneeSaisieEtapes"))) {
+            $this->tournee->save();
+        }
 
         $this->form = new TourneeSaisieForm($this->tournee);
 
@@ -143,7 +147,7 @@ class degustationActions extends sfActions {
             $this->tournee->date_prelevement_debut = $request->getParameter('date_prelevement_debut');
             $this->tournee->date = $request->getParameter('date');
             $this->tournee->appellation = $request->getParameter('appellation');
-            $this->tournee->appellation_libelle = $request->getParameter('appellation_libelle');
+            //$this->tournee->appellation_libelle = $request->getParameter('appellation_libelle');
         }
 
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin, $this->tournee->getCampagne());
@@ -964,8 +968,8 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_visualisation', $tournee);
     }
 
-    protected function getEtape($doc, $etape) {
-        $etapes = TourneeEtapes::getInstance();
+    protected function getEtape($doc, $etape, $class = "TourneeEtapes") {
+        $etapes = $class::getInstance();
         if (!$doc->exist('etape')) {
             return $etape;
         }

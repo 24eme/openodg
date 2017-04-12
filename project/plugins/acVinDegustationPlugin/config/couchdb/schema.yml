@@ -10,11 +10,16 @@ Tournee:
       statut: { }
       date: { }
       appellation: { }
-      appellation_libelle: { }
+      appellation_complement: { }
+      millesime: { }
+      appellation_libelle: { required: false }
+      libelle: { }
+      produit: { }
       date_prelevement_debut: { }
       date_prelevement_fin: { }
       nombre_commissions: { type: integer }
       nombre_prelevements: { type: integer }
+      millesime: { }
       heure: { }
       lieu: { }
       validation: { }

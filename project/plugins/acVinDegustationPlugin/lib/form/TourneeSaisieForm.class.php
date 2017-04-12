@@ -15,7 +15,7 @@ class TourneeSaisieForm extends acCouchdbForm {
             }
         }
 
-        $defaults["prelevement_".uniqid()] = array("numero" => null, "etablissement" => null, "produit" => null);
+        $defaults["prelevement_".uniqid()] = array("numero" => null, "etablissement" => null, "produit" => null, "commission" => 1);
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }

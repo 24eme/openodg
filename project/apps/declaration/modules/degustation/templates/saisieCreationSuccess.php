@@ -21,7 +21,7 @@
 
     <div class="form-group <?php if($form["produit"]->hasError()): ?>has-error<?php endif; ?>">
         <?php echo $form["produit"]->renderError(); ?>
-        <?php echo $form["produit"]->renderLabel("Produit", array("class" => "col-xs-3 control-label")); ?>
+        <?php echo $form["produit"]->renderLabel("Lieu-dit", array("class" => "col-xs-3 control-label")); ?>
         <div class="col-xs-5">
             <?php echo $form["produit"]->render(array("class" => "select2autocomplete form-control select2", "placeholder" => "Séléctionner un produit")); ?>
         </div>

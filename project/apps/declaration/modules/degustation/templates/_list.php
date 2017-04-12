@@ -10,7 +10,7 @@
             <?php if($tournee->statut == TourneeClient::STATUT_ORGANISATION): ?>
                 <a href="<?php echo url_for('degustation_edit', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
-                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
                     <span class="col-xs-5 text-muted"><?php echo $nb_operateurs ?> opérateurs, <?php echo $nb_degustateurs ?> dégustateurs et <?php echo $nb_tournees ?> tournées</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-default">Organisation</span>
@@ -19,7 +19,7 @@
             <?php elseif($tournee->statut == TourneeClient::STATUT_TOURNEES): ?>
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
-                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
                     <span class="col-xs-5 text-muted"><?php echo $nb_operateurs ?> opérateurs, <?php echo $nb_degustateurs ?> dégustateurs et <?php echo $nb_tournees; ?> tournées</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-info">Tournées</span>
@@ -28,7 +28,7 @@
             <?php elseif($tournee->statut == TourneeClient::STATUT_AFFECTATION): ?>
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
-                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
                     <span class="col-xs-5 text-muted"><?php echo $tournee->nombre_prelevements ?> prélevements</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-warning">Affectation</span>
@@ -37,7 +37,7 @@
             <?php elseif($tournee->statut == TourneeClient::STATUT_DEGUSTATIONS): ?>
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
-                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
                     <span class="col-xs-5 text-muted"><?php echo $tournee->nombre_prelevements ?> vins à déguster</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-danger">Dégustations</span>
@@ -46,7 +46,7 @@
             <?php elseif($tournee->statut == TourneeClient::STATUT_COURRIERS): ?>
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
-                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
                     <span class="col-xs-5 text-muted"><?php echo $tournee->nombre_prelevements ?> vins dégustés</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-success"><span class="glyphicon glyphicon-envelope"></span>&nbsp;&nbsp;Courriers à envoyer</span>
@@ -55,7 +55,7 @@
             <?php elseif($tournee->statut == TourneeClient::STATUT_TERMINE): ?>
                 <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
-                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
                     <span class="col-xs-5 text-muted"><?php echo $tournee->nombre_prelevements ?> vins dégustés</span>
                     <span class="col-xs-2 text-muted text-right">
                         <span class="label label-success">Terminé</span>
@@ -64,7 +64,7 @@
             <?php else: ?>
                 <a href="<?php echo url_for('degustation_edit', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
-                    <span class="col-xs-2 text-muted"><?php echo $tournee->appellation; ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
                     <span class="col-xs-5 text-muted"><?php echo $nb_operateurs ?> opérateurs, <?php echo $nb_degustateurs ?> dégustateurs et <?php echo $nb_tournees ?> tournées</span>
             <?php endif; ?>
         <?php endforeach; ?>

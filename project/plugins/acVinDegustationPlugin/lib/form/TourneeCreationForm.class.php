@@ -5,7 +5,6 @@ class TourneeCreationForm extends acCouchdbObjectForm
     public function configure() {
         $this->setWidget('date_prelevement_debut', new sfWidgetFormInput(array(), array()));
         $this->setValidator('date_prelevement_debut', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)));
-
         $this->setWidget('date', new sfWidgetFormInput(array(), array()));
         $this->setValidator('date', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => true)));
 
@@ -15,13 +14,12 @@ class TourneeCreationForm extends acCouchdbObjectForm
         $this->setWidget('action', new sfWidgetFormChoice(array('choices' => $this->getActionChoices())));
         $this->setValidator('action', new sfValidatorChoice(array('choices' => array_keys($this->getActionChoices()))));
 
-
         $this->widgetSchema->setNameFormat('tournee_creation[%s]');
     }
 
     public static function getActionChoices() {
 
-        return array("organiser" => "Organiser une tournée", "saisir" => " Saisir une dégusation");
+        return array("organiser" => "Organiser une tournée", "saisir" => "Saisir une dégustation sans tournée");
     }
 
     public static function getAppellationChoices() {
@@ -30,7 +28,7 @@ class TourneeCreationForm extends acCouchdbObjectForm
             "" => "",
             "ALSACE" => "AOC Alsace",
             "VTSGN" => "VT / SGN",
-            "GRDCRU" => "Grands crus"
+            "GRDCRU" => "AOC Alsace Grand Cru"
         );
     }
 
@@ -48,11 +46,11 @@ class TourneeCreationForm extends acCouchdbObjectForm
         $this->setDefault("action", "organiser");
     }
 
-     public function doUpdateObject($values)
+    public function doUpdateObject($values)
     {
         parent::doUpdateObject($values);
         $appellationsWithLibelle = self::getAppellationChoices();
         $appellation = $values["appellation"];
-        $this->getObject()->appellation_libelle = $appellationsWithLibelle[$appellation];
+        //$this->getObject()->appellation_libelle = $appellationsWithLibelle[$appellation];
     }
 }

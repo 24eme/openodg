@@ -1,3 +1,7 @@
+<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
+
+<?php include_partial('degustation/stepSaisie', array('tournee' => $tournee, 'active' => TourneeSaisieEtapes::ETAPE_SAISIE)); ?>
+
 <div class="page-header">
     <h2>Saisie d'une dégustation</h2>
 </div>
@@ -10,8 +14,9 @@
         <thead>
             <tr>
                 <th class="col-xs-1">Numéro</th>
-                <th class="col-xs-5">Produit</th>
-                <th class="col-xs-5">Opérateur</th>
+                <th class="col-xs-3">Produit</th>
+                <th class="col-xs-6">Opérateur</th>
+                <th class="col-xs-1">Commiss°</th>
                 <th class="col-xs-1"></th>
             </tr>
         </tfoot>
@@ -23,7 +28,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4" class="text-right"><button tabindex="-1" type="button" data-container="#saisie_container" data-template="#template_prevement_item" class="btn btn-xs btn-default-step dynamic-element-add"><span class="glyphicon-plus"></span> Ajouter</button></td>
+                <td colspan="5" class="text-right"><button tabindex="-1" type="button" data-container="#saisie_container" data-template="#template_prevement_item" class="btn btn-xs btn-default-step dynamic-element-add"><span class="glyphicon-plus"></span> Ajouter</button></td>
             </tr>
         </tfoot>
     </table>
@@ -31,11 +36,12 @@
         <?php echo include_partial('degustation/saisieItemForm', array('form' => $form->getFormTemplate())); ?>
     </script>
 
-    <div class="row">
+    <div class="row row-margin row-button">
         <div class="col-xs-6">
+            <a href="<?php echo url_for('degustation') ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button class="btn btn-default btn-lg btn-dynamic-element-submit" type="submit">Valider</button>
+            <button class="btn btn-default btn-lg btn-dynamic-element-submit" type="submit">Continuer</button>
         </div>
     </div>
 </form>
