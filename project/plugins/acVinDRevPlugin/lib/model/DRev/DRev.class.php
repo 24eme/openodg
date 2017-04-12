@@ -685,6 +685,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	}
     	return $complete;
     }
+    
+    public function isSauvegarde()
+    {
+    	$tabId = explode('-', $this->_id);
+    	return (strlen($tabId[(count($tabId) - 1)]) > 4)? true : false;
+    }
 
     /*
      * Facture
