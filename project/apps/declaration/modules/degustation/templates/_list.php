@@ -7,7 +7,16 @@
             <?php $nb_degustateurs = 0; foreach($t->degustateurs as $degustateursType): $nb_degustateurs += count((array) $degustateursType); endforeach; ?>
             <?php $nb_tournees = 0; foreach($t->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach; ?>
             <?php $nb_prelevements = 0; ?>
-            <?php if($tournee->statut == TourneeClient::STATUT_ORGANISATION): ?>
+            <?php if($tournee->statut == TourneeClient::STATUT_SAISIE): ?>
+                <a href="<?php echo url_for('degustation_edit', $tournee) ?>" class="list-group-item col-xs-12">
+                    <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
+                    <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>
+                    <span class="col-xs-5 text-muted"></span>
+                    <span class="col-xs-2 text-muted text-right">
+                        <span class="label label-default">Saisie</span>
+                    </span>
+                </a>
+            <?php elseif($tournee->statut == TourneeClient::STATUT_ORGANISATION): ?>
                 <a href="<?php echo url_for('degustation_edit', $tournee) ?>" class="list-group-item col-xs-12">
                     <span class="col-xs-3 text-muted"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></span>
                     <span class="col-xs-2 text-muted"><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></span>

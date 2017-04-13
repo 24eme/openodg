@@ -151,6 +151,7 @@ class TourneeSaisieForm extends acCouchdbForm {
             $this->getDocument()->addDegustationObject($degustation);
         }
 
+        $this->getDocument()->generateNotes();
         $this->getDocument()->updateNombrePrelevements();
         $this->getDocument()->save();
         $this->getDocument()->saveDegustations();

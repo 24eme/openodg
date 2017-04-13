@@ -5,6 +5,7 @@ class TourneeClient extends acCouchdbClient {
     const TYPE_MODEL = "Tournee";
     const TYPE_COUCHDB = "TOURNEE";
     const STATUT_ORGANISATION = 'ORGANISATION';
+    const STATUT_SAISIE = 'SAISIE';
     const STATUT_TOURNEES = 'TOURNEES';
     const STATUT_AFFECTATION = 'AFFECTATION';
     const STATUT_DEGUSTATIONS = 'DEGUSTATIONS';
@@ -50,7 +51,7 @@ class TourneeClient extends acCouchdbClient {
         $tournee->date = $date;
         $tournee->nombre_commissions = 1;
         $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
-        $tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
+        $tournee->statut = TourneeClient::STATUT_SAISIE;
 
 
         return $tournee;

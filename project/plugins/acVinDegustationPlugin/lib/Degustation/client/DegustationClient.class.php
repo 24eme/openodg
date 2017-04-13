@@ -105,7 +105,17 @@ class DegustationClient extends acCouchdbClient {
     }
 
     public function findOrCreate($identifiant, $date, $appellation, $appellation_complement = null, $millesime = null) {
-        $degustation = $this->find(sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $date), $appellation));
+        $id = sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $date), $appellation);
+
+        if($appellation_complement) {
+            $id .= $appellation_complement;
+        }
+
+        if($millesime) {
+            $id .= $millesime;
+        }
+
+        $degustation = $this->find($id);
         if($degustation) {
 
             return $degustation;

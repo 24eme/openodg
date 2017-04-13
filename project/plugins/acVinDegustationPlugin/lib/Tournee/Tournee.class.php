@@ -593,6 +593,18 @@ class Tournee extends BaseTournee {
         return $notes;
     }
 
+    public function addDegustateur($type, $compteId) {
+        $compte = CompteClient::getInstance()->find($compteId);
+        $degustateur = $this->degustateurs->add($type)->add($compteId);
+        $degustateur->nom = $compte->nom_a_afficher;
+        $degustateur->email = $compte->email;
+        $degustateur->adresse = $compte->adresse;
+        $degustateur->commune = $compte->commune;
+        $degustateur->code_postal = $compte->code_postal;
+
+        return $degustateur;
+    }
+
     /*
      * =========================================
      */

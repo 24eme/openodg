@@ -117,9 +117,34 @@ class degustationActions extends sfActions {
 
         $this->form->updateDoc();
 
-        return $this->redirect('degustation_visualisation', array("sf_subject" => $this->tournee));
+        return $this->redirect('degustation_saisie_degustateurs', $this->tournee);
     }
 
+    public function executeSaisieDegustateurs(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeSaisieEtapes::ETAPE_SAISIE_DEGUSTATEURS, "TourneeSaisieEtapes"))) {
+            $this->tournee->save();
+        }
+
+        $this->form = new TourneeSaisieDegustateursForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->updateDoc();
+
+        return $this->redirect('degustation_saisie_degustateurs', $this->tournee);
+    }
 
     public function executeEdit(sfWebRequest $request) {
         $degustation = $this->getRoute()->getTournee();
@@ -260,13 +285,7 @@ class degustationActions extends sfActions {
         $values = $request->getParameter("degustateurs", array());
 
         foreach ($values as $key => $value) {
-            $d = $this->degustateurs[$key];
-            $degustateur = $this->noeud->add($d->_id);
-            $degustateur->nom = $d->nom_a_afficher;
-            $degustateur->email = $d->email;
-            $degustateur->adresse = $d->adresse;
-            $degustateur->commune = $d->commune;
-            $degustateur->code_postal = $d->code_postal;
+            $this->tournee->degustateurs->addDegustateur($this->type, $this->degustateurs[$key]->_id);
         }
 
         $degustateurs_to_delete = array();

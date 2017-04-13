@@ -3,7 +3,7 @@
 <?php include_partial('degustation/stepSaisie', array('tournee' => $tournee, 'active' => TourneeSaisieEtapes::ETAPE_SAISIE)); ?>
 
 <div class="page-header">
-    <h2>Saisie d'une dégustation</h2>
+    <h2>Saisie des prélévements</h2>
 </div>
 
 <form action="<?php echo url_for("degustation_saisie", $tournee) ?>" method="post" class="form-horizontal">
@@ -19,7 +19,7 @@
                 <th class="col-xs-1">Commiss°</th>
                 <th class="col-xs-1"></th>
             </tr>
-        </tfoot>
+        </thead>
         <tbody id="saisie_container">
             <?php foreach($form as $key => $formPrelevement): ?>
                 <?php if(!preg_match("/^prelevement_/", $key)): continue; endif;?>
