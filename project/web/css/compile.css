@@ -449,7 +449,7 @@ ul.error_list {
   color: #6e6e6e;
 }
 .text-primary {
-  color: #105251;
+  color: #2c4a48;
 }
 a.text-primary:hover {
   color: #082727;
@@ -481,7 +481,7 @@ a.text-danger:hover {
 }
 .bg-primary {
   color: #fff;
-  background-color: #105251;
+  background-color: #2c4a48;
 }
 a.bg-primary:hover {
   background-color: #082727;
@@ -2965,7 +2965,7 @@ input[type="button"].btn-block {
   color: #ffffff;
   text-decoration: none;
   outline: 0;
-  background-color: #105251;
+  background-color: #2c4a48;
 }
 .dropdown-menu > .disabled > a,
 .dropdown-menu > .disabled > a:hover,
@@ -3506,7 +3506,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-pills > li.active > a:hover,
 .nav-pills > li.active > a:focus {
   color: #ffffff;
-  background-color: #105251;
+  background-color: #2c4a48;
 }
 .nav-stacked > li {
   float: none;
@@ -3622,8 +3622,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .pagination > .active > span:focus {
   z-index: 2;
   color: #ffffff;
-  background-color: #105251;
-  border-color: #105251;
+  background-color: #2c4a48;
+  border-color: #2c4a48;
   cursor: default;
 }
 .pagination > .disabled > span,
@@ -3894,8 +3894,8 @@ a.list-group-item.active:hover,
 a.list-group-item.active:focus {
   z-index: 2;
   color: #ffffff;
-  background-color: #105251;
-  border-color: #105251;
+  background-color: #2c4a48;
+  border-color: #2c4a48;
 }
 a.list-group-item.active .list-group-item-heading,
 a.list-group-item.active:hover .list-group-item-heading,
@@ -5910,7 +5910,7 @@ disabled look for disabled choices in the results dropdown
  */
 .select2-results .select2-highlighted {
   color: #ffffff;
-  background-color: #105251;
+  background-color: #2c4a48;
 }
 /**
  * Adjust alignment of Bootstrap 3 buttons in Bootstrap 3 Input Groups to address
@@ -7737,7 +7737,7 @@ input[type="radio"] {
   right: 0;
   bottom: 0;
   left: auto;
-  background: #105251;
+  background: #2c4a48;
   color: #ffffff;
   padding: 10px 20px;
   text-align: right;
@@ -7850,7 +7850,7 @@ input[type="radio"] {
 }
 .first-connection h2,
 .space-member h2 {
-  color: #105251;
+  color: #2c4a48;
   padding-bottom: 10px;
   font-size: 22px;
 }
@@ -7875,7 +7875,7 @@ ul.list-group-history a {
   text-align: center;
 }
 .presentation-services h3 {
-  color: #105251;
+  color: #2c4a48;
   margin-top: 0;
   margin-bottom: 20px;
   text-transform: uppercase;
