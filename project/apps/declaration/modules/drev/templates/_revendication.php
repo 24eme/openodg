@@ -5,10 +5,10 @@
         <tr>
             <th class="col-md-6">Appellation</th>
             <?php if(!$drev->isNonRecoltant()): ?>
-            <th class="text-center col-md-2">Superficie totale</th>
+            <th class="text-center col-md-2">Superficie<br />totale</th>
         	<?php endif; ?>
-        	<th class="text-center col-md-2">Superficie vinifiée</th>
-            <th class="text-center col-md-2">Volume revendiqué <?php if($drev->hasDR()): ?><a title="Les volumes ventilés par cépage sont ceux issus de la déclaration de récolte, usages industriels inclus" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a><?php endif; ?></th>
+        	<th class="text-center col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>">Superficie<?php if(!$drev->isNonRecoltant()): ?><br /><?php else: ?> <?php endif; ?>vinifiée</th>
+            <th class="text-center col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>">Volume<?php if(!$drev->isNonRecoltant()): ?><br /><?php else: ?> <?php endif; ?>revendiqué <?php if($drev->hasDR()): ?><a title="Les volumes ventilés par cépage sont ceux issus de la déclaration de récolte, usages industriels inclus" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a><?php endif; ?></th>
         </tr>
     </thead>
     <tbody id="revendication_accordion" >

@@ -5,7 +5,7 @@
 	<?php if ($document->type == DRevMarcClient::TYPE_MODEL): ?>
         <a class="list-group-item" href="<?php echo url_for('drevmarc_visualisation', $document) ?>">Revendication de Marc d'Alsace Gewurztraminer <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
 	<?php elseif($document->type == DRevClient::TYPE_MODEL): ?>
-        <a class="list-group-item" href="<?php echo url_for('drev_visualisation', $document) ?>">Revendication des appellations viticoles <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
+        <a class="list-group-item" href="<?php echo url_for('drev_visualisation', $document) ?>">Revendication des appellations viticoles <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?><?php if ($document->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?></small></a>
     <?php elseif($document->type == ParcellaireClient::TYPE_MODEL && strpos($document->_id, ParcellaireClient::TYPE_COUCHDB."-") !== false): ?>
         <a class="list-group-item" href="<?php echo url_for('parcellaire_visualisation', $document) ?>">Affectation parcellaire <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
     <?php elseif($document->type == ParcellaireClient::TYPE_MODEL && strpos($document->_id, ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT."-") !== false): ?>

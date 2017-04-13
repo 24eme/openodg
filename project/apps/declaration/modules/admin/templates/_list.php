@@ -37,14 +37,17 @@
             <div class="list-group">
                 <?php foreach ($lists[$current_key_list]['statuts'][$statut] as $doc): ?>
                             <a class="list-group-item col-xs-12 <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && !$doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('admin', array("docs" => $key_list, 'doc_statut' => $statut)))) ?>">
+                            <?php $tabId = explode('-', $doc->id); $annee = $tabId[count($tabId)-1]; ?>
                             <span class="col-xs-2 text-muted">
                                 <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION]): ?>
                                     <?php echo format_date($doc->key[DeclarationTousView::KEY_VALIDATION], "dd/MM/yyyy", "fr_FR"); ?><br />
                                 <?php endif; ?>
                             </span>
-                            <span class="col-xs-6"><?php if($doc->key[DeclarationTousView::KEY_PAPIER]): ?>
+                            <span class="col-xs-6">
+                            	<?php if($doc->key[DeclarationTousView::KEY_PAPIER]): ?>
                                     <span class="glyphicon glyphicon-file"></span>
-                                <?php endif; ?><?php echo $doc->key[DeclarationTousView::KEY_RAISON_SOCIALE] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span></span>
+                                <?php endif; ?>
+                                <?php echo $doc->key[DeclarationTousView::KEY_RAISON_SOCIALE] ?>&nbsp;-&nbsp;<span class="text-muted"><?php echo $doc->key[5] ?></span><?php if (strlen($annee) == 5): ?> <span class="text-danger">Non facturé</span><?php endif; ?></span>
                             <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?>
                                 <span class="text-warning col-xs-4 text-right"><?php echo $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE] ?>&nbsp;pièce(s) en attente</span>
                             <?php endif; ?>

@@ -40,6 +40,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
+    protected $complement_id = null;
 
     public function __construct() {
         parent::__construct();
@@ -57,7 +58,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function constructId() {
-        $this->set('_id', 'DREV-' . $this->identifiant . '-' . $this->campagne);
+        $this->set('_id', 'DREV-' . $this->identifiant . '-' . $this->campagne.$this->complement_id);
     }
 
     public function getConfiguration() {
@@ -501,6 +502,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             $produitDetail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
             $produitDetail->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             $produitDetail->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            if (!$produitDetail->exist('superficie_vinifiee')) {
+            	$produitDetail->add('superficie_vinifiee');
+            }
+            $produitDetail->superficie_vinifiee += (float) $line[DRCsvFile::CSV_SUPERFICIE];
             if ($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
                 $produitDetail->usages_industriels_sur_place = -1;
             } elseif ($produitDetail->usages_industriels_sur_place != -1) {
@@ -681,6 +686,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	}
     	return $complete;
     }
+    
+    public function isSauvegarde()
+    {
+    	$tabId = explode('-', $this->_id);
+    	return (strlen($tabId[(count($tabId) - 1)]) > 4)? true : false;
+    }
+    
+    public function setComplementId($complement = null)
+    {
+    	$this->complement_id = $complement;
+    }
 
     /*
      * Facture
@@ -693,6 +709,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 	public function getVolumeFacturable()
 	{
 		return $this->declaration->getTotalVolumeRevendique();
+	}
+
+	public function getSurfaceVinifieeFacturable()
+	{
+		return $this->declaration->getTotalSuperficieVinifiee();
 	}
 
     /**** MOUVEMENTS ****/
