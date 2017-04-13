@@ -15,8 +15,10 @@ class DRevImportDRTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-            new sfCommandOption('force', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import", false),
+            new sfCommandOption('force', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import à la création", false),
+        	new sfCommandOption('forceupdate', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import à la mise à jour", false),
             new sfCommandOption('removerevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Suppprime les volumes revendique", false),
+        	new sfCommandOption('isautomatique', null, sfCommandOption::PARAMETER_REQUIRED, "Saisie automatique", false),
         ));
 
         $this->namespace = 'drev';
@@ -106,7 +108,7 @@ EOF;
             $drev->save();
         }
 
-        if($drev->hasDR()) {
+        if($drev->hasDR() && !$options['forceupdate']) {
             echo sprintf("WARNING;La DR a déjà été importée;%s\n", $drev->_id);
 
             return;
@@ -124,7 +126,7 @@ EOF;
             return;
         }
 
-        if(!$drev->isAutomatique() && !$drev->isPapier()) {
+        if(!$drev->isAutomatique() && !$drev->isPapier() && !$options['forceupdate']) {
             echo sprintf("WARNING;La DREV n'est pas une déclaration papier;%s\n", $drev->_id);
 
             return;
@@ -136,6 +138,13 @@ EOF;
         
         if($options['removerevendique']) {
             $drev->declaration->removeVolumeRevendique();
+        }
+        
+        if ($options['isautomatique']) {
+        	$drev->add('automatique', 1);
+        	if ($drev->exist('papier')) {
+        		$drev->remove('papier');
+        	}
         }
 
         $drev->declaration->cleanNode();
