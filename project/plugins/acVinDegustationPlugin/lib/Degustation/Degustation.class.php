@@ -6,12 +6,25 @@
 
 class Degustation extends BaseDegustation {
     public function constructId() {
-        $this->set('_id', sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date_degustation), $this->appellation));
+        $id = sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date_degustation), $this->appellation);
+
+        if($this->appellation_complement) {
+            $id .= $this->appellation_complement;
+        }
+
+        if($this->millesime) {
+            $id .= $this->millesime;
+        }
+
+        $this->set('_id', $id);
     }
 
     public function getMillesime() {
+        if(!$this->_get('millesime')) {
+            return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+        }
 
-        return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+        return $this->_get('millesime');
     }
 
     public function getEtablissementObject() {

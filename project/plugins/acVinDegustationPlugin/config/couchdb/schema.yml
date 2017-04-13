@@ -101,7 +101,10 @@ Degustation:
       _rev: {  }
       type: {  }
       appellation: { }
-      appellation_libelle: { }
+      appellation_complement: { }
+      millesime: { }
+      libelle: { }
+      appellation_libelle: { required: false }
       date_degustation: { }
       identifiant: { }
       drev: { }

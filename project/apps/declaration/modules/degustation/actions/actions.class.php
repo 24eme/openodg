@@ -117,7 +117,7 @@ class degustationActions extends sfActions {
 
         $this->form->updateDoc();
 
-        return $this->redirect('degustation_degustation', array("sf_subject" => $this->tournee, "commission" => 1));
+        return $this->redirect('degustation_visualisation', array("sf_subject" => $this->tournee));
     }
 
 

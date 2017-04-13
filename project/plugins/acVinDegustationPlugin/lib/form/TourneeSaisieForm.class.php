@@ -10,7 +10,8 @@ class TourneeSaisieForm extends acCouchdbForm {
                 $defaults["prelevement_".$identifiant."_".$prelevement->getKey()] = array(
                     "numero" => $prelevement->anonymat_degustation,
                     "etablissement" => "COMPTE-E".$degustation->identifiant.",".$degustation->raison_sociale.' ('.$degustation->cvi.') à '.$degustation->commune.' ('.$degustation->code_postal.')',
-                    "produit" => $prelevement->hash_produit
+                    "produit" => $prelevement->hash_produit,
+                    "commission" => $prelevement->commission,
                 );
             }
         }
@@ -135,8 +136,8 @@ class TourneeSaisieForm extends acCouchdbForm {
 
             $prelevement = $degustation->prelevements->add();
             $prelevement->preleve = 1;
-            $prelevement->cuve = "test";
-            $prelevement->commission = 1;
+            $prelevement->cuve = null;
+            $prelevement->commission = $value["commission"];
             $prelevement->hash_produit = $value["produit"];
             $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleComplet();
             $prelevement->anonymat_degustation = $value["numero"];

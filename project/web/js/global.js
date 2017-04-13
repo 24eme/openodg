@@ -505,6 +505,25 @@
         $("#page").on('click', ".dynamic-element-add", function () {
             var content = $($($(this).attr('data-template')).html().replace(/var---nbItem---/g, UUID.generate()));
             $($(this).attr('data-container')).append(content);
+            var previous = content.prev();
+            content.find('input, select, checkbox').each(function() {
+                if($(this).attr('data-copie')) {
+                    $(this).val(previous.find('[data-copie='+$(this).attr('data-copie')+']').val());
+                }
+
+                if($(this).attr('data-increment')) {
+                    var previousValue = parseInt(previous.find('[data-increment='+$(this).attr('data-increment')+']').val());
+                    if(!isNaN(previousValue)) {
+                        $(this).val(previousValue + 1);
+                    }
+                }
+            });
+            content.find('input, select, checkbox').each(function() {
+                if($(this).attr('name')) {
+                    $(this).focus();
+                    return false;
+                }
+            });
             content.initAdvancedElements();
         });
 
@@ -522,7 +541,6 @@
             var allIsComplete = true;
             item.find("input, select, checkbox").each(function() {
                 if($(this).attr('name') && !$(this).val()) {
-                    console.log($(this).val());
                     allIsComplete = false;
                 }
             });
@@ -535,16 +553,16 @@
         $("#page").on('click', '.btn-dynamic-element-submit', function(e) {
             var vals = $(this).parents('form').serializeArray();
 
-            $(this).parents('form').find('.dynamic-element-delete').each(function(){
+            $(this).parents('form').find('.dynamic-element-delete').last().each(function(){
                 var ligne = $($(this).attr('data-line'));
-                var hasValue = false;
+                var hasAllValue = true;
                 ligne.find('input, select, textarea').each(function() {
-                    if($(this).attr('name') && $(this).val()) {
-                        hasValue = true;
+                    if($(this).attr('name') && !$(this).val()) {
+                        hasAllValue = false;
                     }
                 });
 
-                if(!hasValue) {
+                if(!hasAllValue) {
                     $($(this).attr('data-line')).remove();
                 }
             });

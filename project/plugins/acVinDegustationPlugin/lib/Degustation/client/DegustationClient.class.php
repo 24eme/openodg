@@ -104,7 +104,7 @@ class DegustationClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findOrCreate($identifiant, $date, $appellation) {
+    public function findOrCreate($identifiant, $date, $appellation, $appellation_complement = null, $millesime = null) {
         $degustation = $this->find(sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $date), $appellation));
         if($degustation) {
 
@@ -115,6 +115,8 @@ class DegustationClient extends acCouchdbClient {
         $degustation->identifiant = $identifiant;
         $degustation->date_degustation = $date;
         $degustation->appellation = $appellation;
+        $degustation->appellation_complement = $appellation_complement;
+        $degustation->millesime = $millesime;
         $degustation->constructId();
 
         return $degustation;
@@ -122,7 +124,7 @@ class DegustationClient extends acCouchdbClient {
 
     public function findOrCreateByTournee(Tournee $tournee, $identifiant) {
 
-        return $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation);
+        return $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation, $tournee->appellation_complement, $tournee->millesime);
     }
 
     public function findOrCreateForSaisieByTournee(Tournee $tournee, $identifiant) {
