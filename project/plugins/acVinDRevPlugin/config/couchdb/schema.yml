@@ -24,6 +24,7 @@ DRev:
       non_vinificateur: { required: false, type: integer }
       papier: { required: false, type: integer }
       automatique: { required: false, type: integer }
+      lecture_seule: { required: false }
       declarant:
         type: collection
         definition:
