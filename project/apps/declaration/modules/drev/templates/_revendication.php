@@ -28,7 +28,7 @@
             <?php include_partial('drev/revendicationProduit', array('produit' => $produit, 'drev' => $drev, 'cpt' => $cpt, 'vtsgn' => false)); ?>
             <?php $cpt++; ?>
             <?php endif; ?>
-            <?php if($produit->canHaveVtsgn() && ($produit->volume_revendique_vtsgn || $produit->superficie_revendique_vtsgn || ($produit->exist('superficie_vinifiee') && $produit->superficie_vinifiee))): ?>
+            <?php if($produit->canHaveVtsgn() && ($produit->volume_revendique_vtsgn || $produit->superficie_revendique_vtsgn || ($produit->exist('superficie_vinifiee_vtsgn') && $produit->superficie_vinifiee_vtsgn))): ?>
                 <?php $totalVolRevendique += $produit->volume_revendique_vtsgn; ?>
                 <?php $totalSuperficie += $produit->superficie_revendique_vtsgn; ?>
             	<?php $totalSuperficieVinifiee += ($produit->exist('superficie_vinifiee_vtsgn'))? $produit->superficie_vinifiee_vtsgn : 0; ?>
