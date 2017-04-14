@@ -1,13 +1,13 @@
 <?php
-class DRevRevendicationCepageForm extends acCouchdbObjectForm 
-{    
+class DRevRevendicationCepageForm extends acCouchdbObjectForm
+{
     public function configure()
     {
         $this->embedForm('produits', new DRevRevendicationCepageProduitsForm($this->getObject()->getProduitsCepage()));
         $this->widgetSchema->setNameFormat('drev_cepage_produits[%s]');
     }
-    
-    protected function doUpdateObject($values) 
+
+    protected function doUpdateObject($values)
     {
         parent::doUpdateObject($values);
         foreach ($this->getEmbeddedForms() as $key => $embedForm) {
@@ -15,7 +15,7 @@ class DRevRevendicationCepageForm extends acCouchdbObjectForm
         }
 
         $this->getObject()->getDocument()->updatePrelevementsFromRevendication();
-        $this->getObject()->getDocument()->updateProduitsFromCepage();
+        $this->getObject()->getDocument()->updateProduitRevendiqueFromCepage();
         $this->getObject()->getDocument()->updateLotsFromCepage();
     }
 }

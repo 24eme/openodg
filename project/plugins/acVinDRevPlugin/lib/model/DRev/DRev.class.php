@@ -95,6 +95,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->exist('non_conditionneur') && $this->get('non_conditionneur');
     }
 
+    public function isLectureSeule() {
+        
+        return $this->exist('lecture_seule') && $this->get('lecture_seule');
+    }
+
     public function isNonVinificateur() {
 
         return $this->exist('non_vinificateur') && $this->get('non_vinificateur');
@@ -148,43 +153,37 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $csv->getCsvAcheteur($this->identifiant);
     }
 
-    public function updateFromCSVAndInit() {
-    	if (!$this->hasDR()) {
-    		return;
-    	}
-        $csv = $this->getCSV();
-        $this->updatePrelevementsFromRevendication();
-        $this->remove('declaration');
-        $this->add('declaration');
-        $this->updateDetailFromCSV($csv);
-        $this->updateDetail();
-        $this->updateRevendiqueFromDetail();
-        $this->resetCepage();
-        $this->updateCepageFromCSV($csv);
-        $this->updatePrelevementsFromRevendication();
-        $this->updateLotsFromCepage();
-        $this->declaration->reorderByConf();
-    }
-
-    public function updateFromCSV($csv = null) {
+    public function updateFromCSV($updateProduitRevendique = false, $updatePrelevements = false,  $csv = null) {
     	if (!$this->hasDR() && !$csv) {
     		return;
     	}
         if(is_null($csv)) {
             $csv = $this->getCSV();
         }
-        $this->resetDetail();
-        $this->updateDetailFromCSV($csv);
-        $this->updateDetail();
-        $this->resetCepage();
-        $this->updateCepageFromCSV($csv);
-        $this->declaration->reorderByConf();
-    }
 
-    public function reUpdateCepageFromCSV() {
-        $csv = $this->getCSV();
-        $this->resetCepage();
+        if($updatePrelevements) {
+            $this->updatePrelevementsFromRevendication();
+        }
+
+        if($updateProduitRevendique) {
+            $this->remove('declaration');
+            $this->add('declaration');
+        }
+
+        $this->updateProduitDetailFromCSV($csv);
+
+        if($updateProduitRevendique) {
+            $this->updateProduitRevendiqueFromDetail();
+        }
+
         $this->updateCepageFromCSV($csv);
+
+        if($updatePrelevements) {
+            $this->updatePrelevementsFromRevendication();
+            $this->updateLotsFromCepage();
+        }
+
+        $this->declaration->reorderByConf();
     }
 
     public function updateFromDRev($drev) {
@@ -412,14 +411,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $result;
     }
 
-    public function hasRevendicationAlsace() {
-        return true;
-    }
-
-    public function hasRevendicationGrdCru() {
-        return $this->declaration->certification->genre->exist('appellation_GRDCRU') && $this->declaration->certification->genre->appellation_GRDCRU->mention->lieu->couleur->isActive();
-    }
-
     public function hasLots($vtsgn = false, $horsvtsgn = false) {
         foreach ($this->prelevements as $prelevement) {
             if ($prelevement->hasLots($vtsgn, $horsvtsgn)) {
@@ -473,7 +464,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
-    protected function updateDetailFromCSV($csv) {
+    protected function updateProduitDetailFromCSV($csv) {
+        $this->resetProduitDetail();
         foreach ($csv as $line) {
 
             if (!preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) && !preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])) {
@@ -526,21 +518,23 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 $produitDetail->usages_industriels_sur_place += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS];
             }
         }
+
+        $this->updateProduitDetail();
     }
 
-    protected function resetDetail() {
+    protected function resetProduitDetail() {
         foreach ($this->declaration->getProduits() as $produit) {
             $produit->resetDetail();
         }
     }
 
-    protected function updateDetail() {
+    protected function updateProduitDetail() {
         foreach ($this->declaration->getProduits() as $produit) {
             $produit->updateDetail();
         }
     }
 
-    public function updateRevendiqueFromDetail() {
+    protected function updateProduitRevendiqueFromDetail() {
         foreach ($this->declaration->getProduits() as $produit) {
             $produit->updateRevendiqueFromDetail();
         }
@@ -589,6 +583,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     protected function updateCepageFromCSV($csv) {
+        $this->resetCepage();
+
         foreach ($csv as $line) {
             if (
                     preg_match("/^TOTAL/", $line[DRCsvFile::CSV_APPELLATION]) ||
@@ -670,7 +666,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         }
     }
 
-    public function updateProduitsFromCepage() {
+    public function updateProduitRevendiqueFromCepage() {
         foreach($this->getProduits() as $produit) {
             $produit->updateFromCepage();
         }
