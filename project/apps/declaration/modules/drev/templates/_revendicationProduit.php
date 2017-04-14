@@ -39,8 +39,8 @@
                                         <?php endif; ?>
                                     </td>
                                     <?php endif; ?>
-                                    <td class="text-center text-muted col-md-2"></td>
-                                    <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
+                                    <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"></td>
+                                    <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                 </tr>
                                 <?php endif; ?>
                                 <?php if ($produit_cepage->volume_revendique_vt && $vtsgn): ?>
@@ -53,8 +53,8 @@
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
-                                   	 	<td class="text-center text-muted col-md-2"></td>
-                                        <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
+                                   	 	<td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"></td>
+                                        <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>
                                 <?php if ($produit_cepage->volume_revendique_sgn && $vtsgn): ?>
@@ -67,8 +67,8 @@
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
-                                    	<td class="text-center text-muted col-md-2"></td>
-                                        <td class="text-center text-muted col-md-2"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?><?php if (!is_null($produit_cepage->volume_revendique_sgn)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
+                                    	<td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"></td>
+                                        <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?><?php if (!is_null($produit_cepage->volume_revendique_sgn)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>
                             <?php endforeach; ?>

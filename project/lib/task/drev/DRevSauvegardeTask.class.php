@@ -38,9 +38,17 @@ EOF;
 
         if(!$drev->validation) {
         	echo sprintf("WARNING;La DREV n'est pas validée;%s\n", $drev->_id);
-        
         	return;
         }
+        
+        if ($drev->isSauvegarde()) {
+        	return;
+        }
+        
+        if(DRevClient::getInstance()->find($arguments['doc_id'].'0')) {
+        	echo sprintf("WARNING;La DREV est déjà sauvegardée;%s\n", $drev->_id);
+        	return;
+		}
 		
         $sauvegarde = clone $drev;
         
@@ -52,7 +60,7 @@ EOF;
         }
         
         $sauvegarde->setComplementId(0);
-        
+        echo $arguments['doc_id']."\n";
         $sauvegarde->save();
         
         if ($drev->exist('_attachments')) {

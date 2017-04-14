@@ -34,17 +34,18 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        if(!file_exists($arguments['csv'])) {
+        if(!file_exists($arguments['csv']) && !$options['forceupdate']) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['doc_id']);
 
             return;
         }
 
-        if(!file_exists($arguments['pdf'])) {
+        if(!file_exists($arguments['pdf']) && !$options['forceupdate']) {
             echo sprintf("ERROR;Le fichier PDF n'existe pas;%s\n", $arguments['doc_id']);
 
             return;
         }
+        
 
         $drev = DRevClient::getInstance()->find($arguments['doc_id']);
 
@@ -108,6 +109,10 @@ EOF;
             $drev->save();
         }
 
+        if ($drev->isSauvegarde()) {
+        	return;
+        }
+
         if($drev->hasDR() && !$options['forceupdate']) {
             echo sprintf("WARNING;La DR a déjà été importée;%s\n", $drev->_id);
 
@@ -131,10 +136,16 @@ EOF;
 
             return;
         }
-
-        $drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
-        $drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
-        $drev->updateFromCSV();
+		if (!$options['forceupdate']) {
+        	$drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
+        	$drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
+		}
+        
+        if ($options['forceupdate']) {
+        	$drev->updateFromCSVAndInit();
+        } else {
+        	$drev->updateFromCSV();
+        }
         
         if($options['removerevendique']) {
             $drev->declaration->removeVolumeRevendique();

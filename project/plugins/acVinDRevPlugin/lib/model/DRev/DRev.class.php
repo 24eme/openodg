@@ -145,6 +145,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateFromCSVAndInit() {
+    	if (!$this->hasDR()) {
+    		return;
+    	}
         $csv = $this->getCSV();
         $this->updatePrelevementsFromRevendication();
         $this->remove('declaration');
@@ -160,6 +163,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateFromCSV($csv = null) {
+    	if (!$this->hasDR()) {
+    		return;
+    	}
         if(is_null($csv)) {
             $csv = $this->getCSV();
         }
