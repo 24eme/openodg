@@ -45,7 +45,7 @@ EOF;
         	return;
         }
 
-        if(DRevClient::getInstance()->find($arguments['doc_id'].'0')) {
+        if(DRevClient::getInstance()->find($arguments['doc_id'].'_SAUVEGARDE')) {
         	echo sprintf("WARNING;La DREV est déjà sauvegardée;%s\n", $drev->_id);
         	return;
 		}
@@ -58,8 +58,7 @@ EOF;
         if ($sauvegarde->exist('_attachments')) {
         	$sauvegarde->remove('_attachments');
         }
-
-        $sauvegarde->set('_id', $sauvegarde->_id."_SAUVEGARDE");
+        $sauvegarde->set('_id', $drev->_id."_SAUVEGARDE");
         echo $arguments['doc_id']."\n";
         $sauvegarde->save();
 
