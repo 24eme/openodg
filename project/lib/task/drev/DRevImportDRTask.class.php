@@ -75,7 +75,7 @@ EOF;
                 $drev->declaration->removeVolumeRevendique();
             }
 
-            if($drev->declaration->getTotalVolumeRevendique() > 0 || $this->isCSVVinificateur($csv->getCsvAcheteur($drev->identifiant))) {
+            if($drev->declaration->getTotalVolumeRevendique() > 0) {
                 echo sprintf("ERROR;La DR a du volume sur place;%s\n", $etablisement_id);
 
                 if(!$options['force']) {
@@ -168,15 +168,5 @@ EOF;
         }
 
         echo sprintf("SUCCESS;La DR a bien été importée;%s\n", $drev->_id);
-    }
-
-    public function isCSVVinificateur($csv) {
-        foreach($csv as $line) {
-            if(preg_match("/AOC/", $line[DRCsvFile::CSV_APPELLATION])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
