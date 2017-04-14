@@ -18,7 +18,6 @@ class DRevImportDRTask extends sfBaseTask
             new sfCommandOption('force', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import à la création", false),
         	new sfCommandOption('forceupdate', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import à la mise à jour", false),
             new sfCommandOption('removerevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Suppprime les volumes revendique", false),
-        	new sfCommandOption('isautomatique', null, sfCommandOption::PARAMETER_REQUIRED, "Saisie automatique", false),
         ));
 
         $this->namespace = 'drev';
@@ -34,13 +33,13 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        if(!file_exists($arguments['csv']) && !$options['forceupdate']) {
+        if(!file_exists($arguments['csv'])) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['doc_id']);
 
             return;
         }
 
-        if(!file_exists($arguments['pdf']) && !$options['forceupdate']) {
+        if(!file_exists($arguments['pdf'])) {
             echo sprintf("ERROR;Le fichier PDF n'existe pas;%s\n", $arguments['doc_id']);
 
             return;
@@ -136,10 +135,10 @@ EOF;
 
             return;
         }
-		if (!$options['forceupdate']) {
-        	$drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
-        	$drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
-		}
+
+        $drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
+        $drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
+
         
         if ($options['forceupdate']) {
         	$drev->updateFromCSVAndInit();
@@ -149,13 +148,6 @@ EOF;
         
         if($options['removerevendique']) {
             $drev->declaration->removeVolumeRevendique();
-        }
-        
-        if ($options['isautomatique']) {
-        	$drev->add('automatique', 1);
-        	if ($drev->exist('papier')) {
-        		$drev->remove('papier');
-        	}
         }
 
         $drev->declaration->cleanNode();
