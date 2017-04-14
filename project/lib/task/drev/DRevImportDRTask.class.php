@@ -44,7 +44,7 @@ EOF;
 
             return;
         }
-        
+
 
         $drev = DRevClient::getInstance()->find($arguments['doc_id']);
 
@@ -75,7 +75,7 @@ EOF;
                 $drev->declaration->removeVolumeRevendique();
             }
 
-            if($drev->declaration->getTotalVolumeRevendique() > 0) {
+            if($drev->declaration->getTotalVolumeRevendique() > 0 || $this->isCSVVinificateur($csv->getCsvAcheteur($drev->identifiant))) {
                 echo sprintf("ERROR;La DR a du volume sur place;%s\n", $etablisement_id);
 
                 if(!$options['force']) {
@@ -139,13 +139,13 @@ EOF;
         $drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
         $drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
 
-        
+
         if ($options['forceupdate']) {
         	$drev->updateFromCSVAndInit();
         } else {
         	$drev->updateFromCSV();
         }
-        
+
         if($options['removerevendique']) {
             $drev->declaration->removeVolumeRevendique();
         }
@@ -153,6 +153,32 @@ EOF;
         $drev->declaration->cleanNode();
         $drev->save();
 
+        if(!$drev->isNonVinificateur()) {
+            foreach($drev->getProduits() as $produit) {
+                if(($produit->superficie_revendique && is_null($produit->superficie_vinifiee)) || ($produit->exist('superficie_revendique_vtsgn') && $produit->superficie_revendique_vtsgn && is_null($produit->superficie_vinifiee_vtsgn))) {
+                    echo $produit->getHash()."\n";
+                    echo sprintf("WARNING;Les informations de superficie_vinifiee ne sont pas complètes;%s\n", $drev->_id);
+                }
+
+                if(($produit->superficie_revendique && is_null($produit->volume_revendique)) || ($produit->exist('superficie_revendique_vtsgn') && $produit->superficie_revendique_vtsgn && is_null($produit->volume_revendique_vtsgn))) {
+                    echo sprintf("WARNING;Les informations de volume_vinifiee ne sont pas complètes;%s\n", $drev->_id);
+                }
+
+            }
+        }
+
         echo sprintf("SUCCESS;La DR a bien été importée;%s\n", $drev->_id);
+    }
+
+    public function isCSVVinificateur() {
+        $csv = $csv->getCsvAcheteur($drev->identifiant);
+
+        foreach($csv as $line) {
+            if(preg_match("/AOC/", $line[DRCsvFile::CSV_APPELLATION])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
