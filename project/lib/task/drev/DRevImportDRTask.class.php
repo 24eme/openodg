@@ -15,8 +15,10 @@ class DRevImportDRTask extends sfBaseTask
             new sfCommandOption('application', null, sfCommandOption::PARAMETER_REQUIRED, 'The application name', 'declaration'),
             new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'prod'),
             new sfCommandOption('connection', null, sfCommandOption::PARAMETER_REQUIRED, 'The connection name', 'default'),
-            new sfCommandOption('force', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import", false),
+            new sfCommandOption('force', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import à la création", false),
+        	new sfCommandOption('forceupdate', null, sfCommandOption::PARAMETER_REQUIRED, "Force l'import à la mise à jour", false),
             new sfCommandOption('removerevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Suppprime les volumes revendique", false),
+        	new sfCommandOption('isautomatique', null, sfCommandOption::PARAMETER_REQUIRED, "Saisie automatique", false),
         ));
 
         $this->namespace = 'drev';
@@ -32,17 +34,18 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-        if(!file_exists($arguments['csv'])) {
+        if(!file_exists($arguments['csv']) && !$options['forceupdate']) {
             echo sprintf("ERROR;Le fichier CSV n'existe pas;%s\n", $arguments['doc_id']);
 
             return;
         }
 
-        if(!file_exists($arguments['pdf'])) {
+        if(!file_exists($arguments['pdf']) && !$options['forceupdate']) {
             echo sprintf("ERROR;Le fichier PDF n'existe pas;%s\n", $arguments['doc_id']);
 
             return;
         }
+        
 
         $drev = DRevClient::getInstance()->find($arguments['doc_id']);
 
@@ -106,7 +109,11 @@ EOF;
             $drev->save();
         }
 
-        if($drev->hasDR()) {
+        if ($drev->isSauvegarde()) {
+        	return;
+        }
+
+        if($drev->hasDR() && !$options['forceupdate']) {
             echo sprintf("WARNING;La DR a déjà été importée;%s\n", $drev->_id);
 
             return;
@@ -124,18 +131,31 @@ EOF;
             return;
         }
 
-        if(!$drev->isAutomatique() && !$drev->isPapier()) {
+        if(!$drev->isAutomatique() && !$drev->isPapier() && !$options['forceupdate']) {
             echo sprintf("WARNING;La DREV n'est pas une déclaration papier;%s\n", $drev->_id);
 
             return;
         }
-
-        $drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
-        $drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
-        $drev->updateFromCSV();
+		if (!$options['forceupdate']) {
+        	$drev->storeAttachment($arguments['csv'], "text/csv", "DR.csv");
+        	$drev->storeAttachment($arguments['pdf'], "application/pdf", "DR.pdf");
+		}
+        
+        if ($options['forceupdate']) {
+        	$drev->updateFromCSVAndInit();
+        } else {
+        	$drev->updateFromCSV();
+        }
         
         if($options['removerevendique']) {
             $drev->declaration->removeVolumeRevendique();
+        }
+        
+        if ($options['isautomatique']) {
+        	$drev->add('automatique', 1);
+        	if ($drev->exist('papier')) {
+        		$drev->remove('papier');
+        	}
         }
 
         $drev->declaration->cleanNode();

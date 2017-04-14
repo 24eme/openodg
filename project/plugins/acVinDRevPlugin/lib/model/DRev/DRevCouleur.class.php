@@ -110,8 +110,12 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function getTotalSuperficieVinifiee()
     {
-
-    	return $this->superficie_vinifiee + (($this->canHaveVtsgn()) ? $this->superficie_vinifiee_vtsgn : 0);
+    	if (!$this->exist('superficie_vinifiee')) {
+    		return 0;
+    	}
+    	$superficie = $this->superficie_vinifiee + (($this->canHaveVtsgn() && $this->exist('superficie_vinifiee_vtsgn')) ? $this->superficie_vinifiee_vtsgn : 0);
+    	// Conversion de la superficie en hectares pour la facturation
+    	return ($superficie > 0)? round($superficie / 100,4) : 0;
     }
 
     public function resetDetail() {
@@ -169,7 +173,7 @@ class DRevCouleur extends BaseDRevCouleur
 			}
 		}
 		
-        if(!is_null($this->detail->superficie_vinifiee)) {
+        if($this->detail->exist('superficie_vinifiee') && !is_null($this->detail->superficie_vinifiee)) {
         	if (!$this->exist('superficie_vinifiee')) {
         		$this->add('superficie_vinifiee');
         	}
@@ -177,7 +181,7 @@ class DRevCouleur extends BaseDRevCouleur
         }
 
 		if($this->canHaveVtsgn()) {
-			if(!is_null($this->detail_vtsgn->superficie_vinifiee)) {
+			if($this->detail->exist('superficie_vinifiee_vtsgn') && !is_null($this->detail_vtsgn->superficie_vinifiee)) {
 	        	if (!$this->exist('superficie_vinifiee_vtsgn')) {
 	        		$this->add('superficie_vinifiee_vtsgn');
 	        	}

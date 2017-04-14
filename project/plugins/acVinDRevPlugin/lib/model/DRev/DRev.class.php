@@ -40,6 +40,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
+    protected $complement_id = null;
 
     public function __construct() {
         parent::__construct();
@@ -57,7 +58,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function constructId() {
-        $this->set('_id', 'DREV-' . $this->identifiant . '-' . $this->campagne);
+        $this->set('_id', 'DREV-' . $this->identifiant . '-' . $this->campagne.$this->complement_id);
     }
 
     public function getConfiguration() {
@@ -144,6 +145,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateFromCSVAndInit() {
+    	if (!$this->hasDR()) {
+    		return;
+    	}
         $csv = $this->getCSV();
         $this->updatePrelevementsFromRevendication();
         $this->remove('declaration');
@@ -159,6 +163,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateFromCSV($csv = null) {
+    	if (!$this->hasDR()) {
+    		return;
+    	}
         if(is_null($csv)) {
             $csv = $this->getCSV();
         }
@@ -684,6 +691,17 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     		}
     	}
     	return $complete;
+    }
+    
+    public function isSauvegarde()
+    {
+    	$tabId = explode('-', $this->_id);
+    	return (strlen($tabId[(count($tabId) - 1)]) > 4)? true : false;
+    }
+    
+    public function setComplementId($complement = null)
+    {
+    	$this->complement_id = $complement;
     }
 
     /*
