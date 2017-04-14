@@ -79,7 +79,7 @@ EOF;
         }
 
         $sauvegarde->add('lecture_seule', true);
-        acCouchdbClient::getManager()->storeDoc($sauvegarde->getData());
+        DRevClient::getInstance()->storeDoc($sauvegarde->getData());
 
         echo sprintf("SUCCESS;La DRev a bien été sauvegardée et passé en lecture seule;%s\n", $drev->_id);
     }
