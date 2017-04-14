@@ -95,6 +95,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         return $this->exist('non_conditionneur') && $this->get('non_conditionneur');
     }
 
+    public function isNonVinificateur() {
+
+        return $this->exist('non_vinificateur') && $this->get('non_vinificateur');
+    }
+
     public function isNonConditionneurJustForThisMillesime() {
 
         return $this->isNonConditionneur() && $this->chais->exist(Drev::BOUTEILLE);
