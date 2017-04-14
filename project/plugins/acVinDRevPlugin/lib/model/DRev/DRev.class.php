@@ -703,6 +703,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     {
     	$this->complement_id = $complement;
     }
+    
+    public function canHaveSuperficieVinifiee()
+    {
+    	$can = false;
+    	foreach ($this->declaration->getProduits() as $produit) {
+    		if ($produit->exist('superficie_vinifiee') || $produit->exist('superficie_vinifiee_vtsgn')) {
+    			$can = true;
+    			break;
+    		}
+    	}
+    	return $can;
+    }
 
     /*
      * Facture

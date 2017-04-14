@@ -7,7 +7,9 @@
             <?php if(!$drev->isNonRecoltant()): ?>
             <th class="text-center col-md-2">Superficie<br />totale</th>
         	<?php endif; ?>
+        	<?php if ($drev->canHaveSuperficieVinifiee()): ?>
         	<th class="text-center col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>">Superficie<?php if(!$drev->isNonRecoltant()): ?><br /><?php else: ?> <?php endif; ?>vinifiée</th>
+            <?php endif; ?>
             <th class="text-center col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>">Volume<?php if(!$drev->isNonRecoltant()): ?><br /><?php else: ?> <?php endif; ?>revendiqué <?php if($drev->hasDR()): ?><a title="Les volumes ventilés par cépage sont ceux issus de la déclaration de récolte, usages industriels inclus" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a><?php endif; ?></th>
         </tr>
     </thead>
@@ -41,7 +43,9 @@
             <?php if(!$drev->isNonRecoltant()): ?>
             <td class="text-center"><strong><?php echoFloat($totalSuperficie) ?></strong><?php if (!is_null($totalSuperficie)): ?> <small class="text-muted">ares</small><?php endif; ?></td>
         	<?php endif; ?>
+        	<?php if ($drev->canHaveSuperficieVinifiee()): ?>
         	<td class="text-center"><?php if ($hasSuperficieVinifiee): ?><strong><?php echoFloat($totalSuperficieVinifiee) ?></strong><?php if (!is_null($totalSuperficieVinifiee)): ?> <small class="text-muted">ares</small><?php endif; ?><?php endif; ?></td>
+        	<?php endif; ?>
             <td class="text-center"><strong><?php echoFloat($totalVolRevendique) ?></strong><?php if (!is_null($totalVolRevendique)): ?> <small class="text-muted">hl</small><?php endif; ?></td>
         </tr>
     </tbody>
