@@ -347,4 +347,9 @@ class Degustation extends BaseDegustation {
             }
         }
     }
+
+    public function getOrganismeDegustateur() {
+
+        return "ODG-AVA";
+    }
 }
