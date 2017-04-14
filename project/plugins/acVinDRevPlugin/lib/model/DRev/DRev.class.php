@@ -515,7 +515,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
             if (!$produitDetail->exist('superficie_vinifiee')) {
             	$produitDetail->add('superficie_vinifiee');
             }
-            $produitDetail->superficie_vinifiee += (float) $line[DRCsvFile::CSV_SUPERFICIE];
+            if($line[DRCsvFile::CSV_SUPERFICIE] != "") {
+                $produitDetail->superficie_vinifiee += (float) $line[DRCsvFile::CSV_SUPERFICIE];
+            } else {
+                $produitDetail->superficie_vinifiee = null;
+            }
             if ($line[DRCsvFile::CSV_USAGES_INDUSTRIELS] == "") {
                 $produitDetail->usages_industriels_sur_place = -1;
             } elseif ($produitDetail->usages_industriels_sur_place != -1) {
@@ -702,7 +706,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	$tabId = explode('-', $this->_id);
     	return (strlen($tabId[(count($tabId) - 1)]) > 4)? true : false;
     }
-    
+
     public function canHaveSuperficieVinifiee()
     {
     	$can = false;
