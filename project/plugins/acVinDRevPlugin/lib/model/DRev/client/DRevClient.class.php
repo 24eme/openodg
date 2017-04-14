@@ -2,14 +2,14 @@
 
 class DRevClient extends acCouchdbClient implements FacturableClient {
 
-    const TYPE_MODEL = "DRev"; 
+    const TYPE_MODEL = "DRev";
     const TYPE_COUCHDB = "DREV";
 
     public static function getInstance()
     {
-        
+
         return acCouchdbManager::getClient("DRev");
-    } 
+    }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
@@ -21,7 +21,7 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         return $doc;
     }
-    
+
     public function findFacturable($identifiant, $campagne) {
     	$drev = $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
 
@@ -33,8 +33,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $drev;
     }
 
-    public function createDoc($identifiant, $campagne, $papier = false) 
-    {  
+    public function createDoc($identifiant, $campagne, $papier = false)
+    {
         $drev = new DRev();
         $drev->initDoc($identifiant, $campagne);
 
@@ -101,18 +101,18 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $date = date('Y-m-d');
         }
 
-        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin(); 
+        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin();
     }
-    
+
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
         $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()."";
 
         return $this->startkey(sprintf("DREV-%s-%s", $identifiant, $campagne_from))
-                    ->endkey(sprintf("DREV-%s-%s0", $identifiant, $campagne_to))
+                    ->endkey(sprintf("DREV-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
                     ->execute($hydrate);
     }
-    
+
     public function getOrdrePrelevements() {
         return array("cuve" => array("cuve_ALSACE", "cuve_GRDCRU", "cuve_VTSGN"), "bouteille" => array("bouteille_ALSACE","bouteille_GRDCRU","bouteille_VTSGN"));
     }

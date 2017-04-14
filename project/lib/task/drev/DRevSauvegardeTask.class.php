@@ -40,32 +40,32 @@ EOF;
         	echo sprintf("WARNING;La DREV n'est pas validée;%s\n", $drev->_id);
         	return;
         }
-        
+
         if ($drev->isSauvegarde()) {
         	return;
         }
-        
+
         if(DRevClient::getInstance()->find($arguments['doc_id'].'0')) {
         	echo sprintf("WARNING;La DREV est déjà sauvegardée;%s\n", $drev->_id);
         	return;
 		}
-		
+
         $sauvegarde = clone $drev;
-        
+
         $sauvegarde->remove('mouvements');
         $sauvegarde->add('mouvements');
-        
+
         if ($sauvegarde->exist('_attachments')) {
         	$sauvegarde->remove('_attachments');
         }
-        
-        $sauvegarde->setComplementId(0);
+
+        $sauvegarde->set('_id', $sauvegarde->_id."_SAUVEGARDE");
         echo $arguments['doc_id']."\n";
         $sauvegarde->save();
-        
+
         if ($drev->exist('_attachments')) {
         	$sauvegarde->add('_attachments');
-        
+
 	        umask(0002);
 	        $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
 	        if (!file_exists($cache_dir)) {
@@ -73,13 +73,15 @@ EOF;
 	        }
 	        file_put_contents($cache_dir . "/DR.csv", $drev->getAttachmentUri('DR.csv'));
 	        $sauvegarde->storeAttachment($cache_dir . "/DR.csv", "text/csv");
-	        
+
 	        file_put_contents($cache_dir . "/DR.pdf", $drev->getAttachmentUri('DR.pdf'));
 	        $sauvegarde->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
-        
+
         }
-        
-        
-        echo sprintf("SUCCESS;La DRev a bien été sauvegardée;%s\n", $drev->_id);
+
+        $sauvegarde->add('lecture_seule', true);
+        acCouchdbClient::getManager()->storeDoc($sauvegarde->getData());
+
+        echo sprintf("SUCCESS;La DRev a bien été sauvegardée et passé en lecture seule;%s\n", $drev->_id);
     }
 }
