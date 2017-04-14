@@ -163,7 +163,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateFromCSV($csv = null) {
-    	if (!$this->hasDR()) {
+    	if (!$this->hasDR() && !$csv) {
     		return;
     	}
         if(is_null($csv)) {
