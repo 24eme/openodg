@@ -152,6 +152,13 @@ EOF;
                     echo sprintf("WARNING;Les informations de volume_vinifiee ne sont pas complètes;%s\n", $drev->_id);
                 }
 
+                if(($produit->volume_revendique && !$produit->superficie_vinifiee) || ($produit->volume_revendique_vtsgn && !$produit->superficie_vinifiee_vtsgn)) {
+                    echo sprintf("WARNING;Les informations de superficie_vinifiee ne sont pas complètes;%s\n", $drev->_id);
+                }
+
+                if((!$produit->volume_revendique && $produit->superficie_vinifiee) || (!$produit->volume_revendique_vtsgn && $produit->superficie_vinifiee_vtsgn)) {
+                    echo sprintf("WARNING;Les informations de volume_vinifiee ne sont pas complètes;%s\n", $drev->_id);
+                }
             }
         }
 
