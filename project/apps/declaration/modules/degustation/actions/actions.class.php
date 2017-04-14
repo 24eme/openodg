@@ -141,9 +141,11 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
         $this->form->updateDoc();
 
-        return $this->redirect('degustation_saisie_degustateurs', $this->tournee);
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     public function executeEdit(sfWebRequest $request) {

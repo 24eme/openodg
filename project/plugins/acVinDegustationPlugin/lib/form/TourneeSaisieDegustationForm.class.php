@@ -8,7 +8,7 @@ class TourneeSaisieDegustationForm extends acCouchdbForm {
         $this->setWidget('numero', new bsWidgetFormInput());
         $this->setValidator('numero', new sfValidatorInteger(array("required" => true)));
 
-        $this->setWidget('etablissement', new bsWidgetFormInput());
+        $this->setWidget('etablissement', new WidgetCompte(array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT)));
         $this->setValidator('etablissement', new sfValidatorString(array("required" => true)));
 
         $this->setWidget('produit', new bsWidgetFormChoice(array('choices' => $produits)));

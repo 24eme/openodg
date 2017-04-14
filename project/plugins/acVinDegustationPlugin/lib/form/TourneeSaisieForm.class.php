@@ -9,7 +9,7 @@ class TourneeSaisieForm extends acCouchdbForm {
             foreach($degustation->prelevements as $prelevement) {
                 $defaults["prelevement_".$identifiant."_".$prelevement->getKey()] = array(
                     "numero" => $prelevement->anonymat_degustation,
-                    "etablissement" => "COMPTE-E".$degustation->identifiant.",".$degustation->raison_sociale.' ('.$degustation->cvi.') à '.$degustation->commune.' ('.$degustation->code_postal.')',
+                    "etablissement" => "COMPTE-E".$degustation->identifiant,
                     "produit" => $prelevement->hash_produit,
                     "commission" => $prelevement->commission,
                 );

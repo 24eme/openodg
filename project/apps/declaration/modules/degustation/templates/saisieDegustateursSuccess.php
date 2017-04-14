@@ -38,7 +38,7 @@
             <a href="<?php echo url_for('degustation_saisie', $tournee) ?>" class="btn btn-primary btn-lg btn-upper">Précédent</a>
         </div>
         <div class="col-xs-6 text-right">
-            <button class="btn btn-default btn-lg btn-dynamic-element-submit" type="submit">Continuer</button>
+            <button class="btn btn-default btn-lg btn-dynamic-element-submit" type="submit">Terminer</button>
         </div>
     </div>
 </form>

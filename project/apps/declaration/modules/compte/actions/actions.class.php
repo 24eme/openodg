@@ -228,7 +228,7 @@ class compteActions extends sfActions {
             $item->cvi = $data['cvi'];
             $item->siren = $data['siren'];
             $item->siret = $data['siret'];
-            $item->text = sprintf("%s (%s) à %s (%s)", $data['nom_a_afficher'], ($data['cvi']) ? $data['cvi'] : (($data['siren']) ? $data['siren'] : $data['identifiant_interne']), $data['commune'], $data['code_postal']);
+            $item->text = CompteClient::getInstance()->makeLibelle($data);
             $item->text_html = sprintf("%s <small>(%s)</small> à %s <small>(%s)</small><br /><small>%s</small>", $data['nom_a_afficher'], ($data['cvi']) ? $data['cvi'] : (($data['siren']) ? $data['siren'] : $data['identifiant_interne']), $data['commune'], $data['code_postal'], implode(", ", $data['tags']['attributs']));
             $item->id = $data['_id'];
             $list[] = $item;

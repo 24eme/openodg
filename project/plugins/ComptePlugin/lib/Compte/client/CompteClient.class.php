@@ -37,8 +37,8 @@ class CompteClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
     const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
     const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
-    
-    
+
+
     const REGION_VITICOLE = 'ALSACE';
 
     private $libelles_attributs_etablissements = array(
@@ -102,7 +102,7 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function getAllComptesPrefixed($prefix, $hydrate = self::HYDRATE_JSON) {
-        
+
         $query = $this->startkey(sprintf("COMPTE-" . $prefix . "%s", "000000"))
                 ->endkey(sprintf("COMPTE-" . $prefix . "%s", "999999"));
 
@@ -208,7 +208,7 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function getChaiAttributLibelle($attribut) {
-       
+
         return $this->libelles_chais_attributs[$attribut];
     }
 
@@ -217,10 +217,10 @@ class CompteClient extends acCouchdbClient {
         $q = new acElasticaQuery();
         $q->setQuery($qs);
         $q->setLimit(99999);
-        
+
         $index = acElasticaManager::getType('compte');
         $resset = $index->search($q);
-        
+
         return $resset->getResults();
     }
 
@@ -255,4 +255,11 @@ class CompteClient extends acCouchdbClient {
         return $attributsByTypeCompte;
     }
 
+    public function makeLibelle($compte) {
+        if(is_array($compte)) {
+            $compte = (object) $compte;
+        }
+
+        return sprintf("%s (%s) à %s (%s)", $compte->nom_a_afficher, ($compte->cvi) ? $compte->cvi : (($compte->siren) ? $compte->siren : $compte->identifiant_interne), $compte->commune, $compte->code_postal);
+    }
 }

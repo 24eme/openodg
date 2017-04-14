@@ -6,7 +6,7 @@
         <?php echo $form['produit']->render(array("class" => "select2autocomplete form-control select2", "placeholder" => "Séléctionner un produit", "data-copie" => "produit")); ?>
     </td>
     <td class="form-group">
-        <?php echo $form["etablissement"]->render(array("class" => "form-control select2 select2-offscreen select2autocompleteremote", "placeholder" => "Chercher un établissement", "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT)))); ?>
+        <?php echo $form["etablissement"]->render(array("placeholder" => "Chercher un établissement")); ?>
     </td>
     <td class="form-group text-center">
         <?php echo $form['commission']->render(array("class" => "form-control", "placeholder" => "N°", "data-copie" => "commission")); ?>

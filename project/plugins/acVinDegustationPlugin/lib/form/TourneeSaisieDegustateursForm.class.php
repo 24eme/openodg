@@ -9,7 +9,8 @@ class TourneeSaisieDegustateursForm extends acCouchdbForm {
 
         foreach($doc->degustateurs->add(self::NOEUD_TYPE_DEGUSTATEUR) as $idCompte => $degustateur) {
             $defaults["degustateur_".$idCompte] = array(
-                "compte" => $idCompte.",".$degustateur->nom.' ('.str_replace("COMPTE-D", "", $idCompte).') à '.$degustateur->commune.' ('.$degustateur->code_postal.')',
+                //"compte" => $idCompte.",".$degustateur->nom.' ('.str_replace("COMPTE-D", "", $idCompte).') à '.$degustateur->commune.' ('.$degustateur->code_postal.')',
+                "compte" => $idCompte,
             );
         }
 

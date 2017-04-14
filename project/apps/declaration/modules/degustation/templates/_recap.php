@@ -26,7 +26,7 @@
                     <a href="<?php if($tournee->statut == TourneeClient::STATUT_AFFECTATION): ?><?php echo url_for('degustation_affectation', $tournee); ?><?php elseif(in_array($tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_COURRIERS, TourneeClient::STATUT_TERMINE))): ?><?php echo url_for('degustation_degustations', $tournee); ?><?php endif; ?>">Dégustation (<?php if($tournee->nombre_commissions): ?><?php echo $tournee->nombre_commissions." commissions, " ?><?php endif; ?>
                     <?php if($tournee->degustateurs->exist('PORTEUR_MEMOIRES')): ?><?php echo count($tournee->degustateurs->PORTEUR_MEMOIRES)." porteurs de mémoires, " ?><?php endif; ?><?php if($tournee->degustateurs->exist('TECHNICIEN_PRODUIT')): ?><?php echo count($tournee->degustateurs->TECHNICIEN_PRODUIT)." techniciens du produit, " ?><?php endif; ?><?php if($tournee->degustateurs->exist('USAGER_PRODUIT')): ?><?php echo count($tournee->degustateurs->USAGER_PRODUIT)." usagers du produit" ?><?php endif; ?>)</a>
                     <?php if($tournee->statut != TourneeClient::STATUT_ORGANISATION): ?>
-                    <a class="btn btn-xs btn-warning" href="<?php echo url_for('degustation_degustateurs_presence', $tournee) ?>"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Présences des dégustateurs</a>
+                    <a class="btn btn-xs btn-link" href="<?php echo url_for('degustation_degustateurs_presence', $tournee) ?>"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;Présences des dégustateurs</a>
                     <?php endif; ?>
                 </td>
             </tr>
