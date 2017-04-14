@@ -54,10 +54,12 @@ EOF;
             return;
         }
 
-        if($drev && !$drev->isAutomatique() && !$drev->isPapier() && !$drev->hasDR() && !$options['forceupdate']) {
+        if($drev && !$drev->isAutomatique() && !$drev->isPapier() && !$drev->hasDR()) {
             echo sprintf("WARNING;La DREV est télédéclaré;%s\n", $drev->_id);
 
-            return;
+            if(!$option['forceupdate']) {
+                return;
+            }
         }
 
         if($drev && $drev->hasDR() && !$options['forceupdate']) {
