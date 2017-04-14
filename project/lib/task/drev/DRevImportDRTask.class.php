@@ -57,7 +57,7 @@ EOF;
         if($drev && !$drev->isAutomatique() && !$drev->isPapier() && !$drev->hasDR()) {
             echo sprintf("WARNING;La DREV est télédéclaré;%s\n", $drev->_id);
 
-            if(!$option['forceupdate']) {
+            if(!$options['forceupdate']) {
                 return;
             }
         }
@@ -148,7 +148,6 @@ EOF;
         if(!$drev->isNonVinificateur()) {
             foreach($drev->getProduits() as $produit) {
                 if(($produit->superficie_revendique && is_null($produit->superficie_vinifiee)) || ($produit->exist('superficie_revendique_vtsgn') && $produit->superficie_revendique_vtsgn && is_null($produit->superficie_vinifiee_vtsgn))) {
-                    echo $produit->getHash()."\n";
                     echo sprintf("WARNING;Les informations de superficie_vinifiee ne sont pas complètes;%s\n", $drev->_id);
                 }
 
