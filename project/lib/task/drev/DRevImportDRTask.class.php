@@ -170,9 +170,7 @@ EOF;
         echo sprintf("SUCCESS;La DR a bien été importée;%s\n", $drev->_id);
     }
 
-    public function isCSVVinificateur() {
-        $csv = $csv->getCsvAcheteur($drev->identifiant);
-
+    public function isCSVVinificateur($csv) {
         foreach($csv as $line) {
             if(preg_match("/AOC/", $line[DRCsvFile::CSV_APPELLATION])) {
                 return true;
