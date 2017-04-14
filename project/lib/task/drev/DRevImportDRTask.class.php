@@ -98,8 +98,6 @@ EOF;
 
             //Juste pour contrôler qu'il n'y a pas volume à revendiquer
             $drev->updateFromCSV(true, false, $csv->getCsvAcheteur($drev->identifiant));
-            $drev->remove('declaration');
-            $drev->add('declaration');
 
             $drev->add('automatique', 1);
             $drev->add('non_vinificateur', 1);
@@ -115,6 +113,7 @@ EOF;
             if(!$drev->declaration->getTotalTotalSuperficie() && !$options['forcecreate']) {
                 echo sprintf("ERROR;La DR n'a pas de superficie totale;%s\n", $etablisement_id);
 
+                return;
             }
 
             if($etablissement->hasFamille(EtablissementClient::FAMILLE_VINIFICATEUR)) {
@@ -125,6 +124,9 @@ EOF;
             if(!$etablissement->hasFamille(EtablissementClient::FAMILLE_PRODUCTEUR)) {
                 echo sprintf("WARNING;L'établissement n'est pas un producteur;%s\n", $etablisement_id);
             }
+
+            $drev->remove('declaration');
+            $drev->add('declaration');
 
             $drev->storeDeclarant();
 
@@ -151,14 +153,6 @@ EOF;
                 }
 
                 if(($produit->superficie_revendique && is_null($produit->volume_revendique)) || ($produit->exist('superficie_revendique_vtsgn') && $produit->superficie_revendique_vtsgn && is_null($produit->volume_revendique_vtsgn))) {
-                    echo sprintf("WARNING;Les informations de volume_vinifiee ne sont pas complètes;%s\n", $drev->_id);
-                }
-
-                if(($produit->volume_revendique && !$produit->superficie_vinifiee) || ($produit->volume_revendique_vtsgn && !$produit->superficie_vinifiee_vtsgn)) {
-                    echo sprintf("WARNING;Les informations de superficie_vinifiee ne sont pas complètes;%s\n", $drev->_id);
-                }
-
-                if((!$produit->volume_revendique && $produit->superficie_vinifiee) || (!$produit->volume_revendique_vtsgn && $produit->superficie_vinifiee_vtsgn)) {
                     echo sprintf("WARNING;Les informations de volume_vinifiee ne sont pas complètes;%s\n", $drev->_id);
                 }
             }
