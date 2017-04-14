@@ -12,13 +12,6 @@ fi
 
 curl -s http://$COUCHDBDOMAIN:$COUCHDBPORT/$COUCHDBBASE/_design/declaration/_view/tous?reduce=false | grep "DREV\-" | grep "\-$CAMPAGNE" | cut -d "," -f 1 | sed 's/{"id":"//' | sed 's/"//' > /tmp/drev_to_sauvegarde_update.csv
 
-echo "Sauvegarde DRev";
-
-cat /tmp/drev_to_sauvegarde_update.csv | sort | uniq | while read id  
-do
-    php symfony drev:sauvegarde $id
-done
-
 echo "Update DRev";
 
 cat /tmp/drev_to_sauvegarde_update.csv | sort | uniq | while read id  
