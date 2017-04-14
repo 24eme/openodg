@@ -16,7 +16,9 @@
     <?php if(!$drev->isNonRecoltant()): ?>
     <td class="text-center"><?php echoFloat($produit->get('superficie_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_revendique'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?></td>
     <?php endif; ?>
+    <?php if ($drev->canHaveSuperficieVinifiee()): ?>
     <td class="text-center"><?php if ($produit->exist('superficie_vinifiee'.$suffixe)): ?><?php echoFloat($produit->get('superficie_vinifiee'.$suffixe)) ?><?php if (!is_null($produit->get('superficie_vinifiee'.$suffixe))): ?> <small class="text-muted">ares</small><?php endif; ?><?php endif; ?></td>
+    <?php endif; ?>
     <td class="text-center"><?php echoFloat($produit->get('volume_revendique'.$suffixe)) ?><?php if (!is_null($produit->get('volume_revendique'.$suffixe))): ?> <small class="text-muted">hl</small><?php endif; ?></td>
 </tr>
 <?php if (count($produit->getProduitsCepage()) > 0): ?>
@@ -39,7 +41,9 @@
                                         <?php endif; ?>
                                     </td>
                                     <?php endif; ?>
+                                    <?php if ($drev->canHaveSuperficieVinifiee()): ?>
                                     <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"></td>
+                                    <?php endif; ?>
                                     <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique) ?><?php if (!is_null($produit_cepage->volume_revendique)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                 </tr>
                                 <?php endif; ?>
@@ -53,7 +57,9 @@
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
+                                        <?php if ($drev->canHaveSuperficieVinifiee()): ?>
                                    	 	<td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"></td>
+                                   	 	<?php endif; ?>
                                         <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique_vt) ?><?php if (!is_null($produit_cepage->volume_revendique_vt)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>
@@ -67,7 +73,9 @@
                                             <?php endif; ?>
                                         </td>
                                         <?php endif; ?>
+                                        <?php if ($drev->canHaveSuperficieVinifiee()): ?>
                                     	<td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"></td>
+                                    	<?php endif; ?>
                                         <td class="text-center text-muted col-md-<?php if(!$drev->isNonRecoltant()): ?>2<?php else: ?>3<?php endif; ?>"><small><?php echoFloat($produit_cepage->volume_revendique_sgn) ?><?php if (!is_null($produit_cepage->volume_revendique_sgn)): ?> <small class="text-muted">hl</small><?php endif; ?></small></td>
                                     </tr>
                                 <?php endif; ?>

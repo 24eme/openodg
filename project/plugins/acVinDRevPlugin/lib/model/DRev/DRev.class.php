@@ -167,7 +167,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function updateFromCSV($csv = null) {
-    	if (!$this->hasDR()) {
+    	if (!$this->hasDR() && !$csv) {
     		return;
     	}
         if(is_null($csv)) {
@@ -701,6 +701,18 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     {
     	$tabId = explode('-', $this->_id);
     	return (strlen($tabId[(count($tabId) - 1)]) > 4)? true : false;
+    }
+    
+    public function canHaveSuperficieVinifiee()
+    {
+    	$can = false;
+    	foreach ($this->declaration->getProduits() as $produit) {
+    		if ($produit->exist('superficie_vinifiee') || $produit->exist('superficie_vinifiee_vtsgn')) {
+    			$can = true;
+    			break;
+    		}
+    	}
+    	return $can;
     }
 
     /*

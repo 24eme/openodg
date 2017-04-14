@@ -34,11 +34,13 @@
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; <?php if(!$drev->isNonRecoltant()): ?>width: 280px;<?php else: ?>width: 400px;<?php endif; ?>">&nbsp;Appellation</th>
+        <th class="th" style="text-align: left; <?php if ($drev->canHaveSuperficieVinifiee()): ?><?php if(!$drev->isNonRecoltant()): ?>width: 280px;<?php else: ?>width: 400px;<?php endif; ?><?php else: ?><?php if(!$drev->isNonRecoltant()): ?>width: 400px;<?php else: ?>width: 520px;<?php endif; ?><?php endif; ?>">&nbsp;Appellation</th>
         <?php if(!$drev->isNonRecoltant()): ?>
         <th class="th" style="text-align: center; width: 120px;">Superficie totale</th>
         <?php endif; ?>
+        <?php if ($drev->canHaveSuperficieVinifiee()): ?>
         <th class="th" style="text-align: center; width: 120px;">Superficie vinifiée</th>
+        <?php endif; ?>
         <th class="th" style="text-align: center; width: 120px;">Volume revendiqué</th>
     </tr>
     <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
@@ -48,7 +50,9 @@
                 <?php if(!$drev->isNonRecoltant()): ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
                 <?php endif; ?>
+                <?php if ($drev->canHaveSuperficieVinifiee()): ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->exist('superficie_vinifiee')): ?><?php echo sprintFloatFr($produit->superficie_vinifiee) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;<?php endif; ?>&nbsp;</td>
+                <?php endif; ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
             </tr>
         <?php endif; ?>
@@ -58,7 +62,9 @@
                 <?php if(!$drev->isNonRecoltant()): ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique_vtsgn) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
                 <?php endif; ?>
+                <?php if ($drev->canHaveSuperficieVinifiee()): ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->exist('superficie_vinifiee_vtsgn')): ?><?php echo sprintFloatFr($produit->superficie_vinifiee_vtsgn) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;<?php endif; ?>&nbsp;</td>
+                <?php endif; ?>
                 <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_vtsgn) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
             </tr>
         <?php endif; ?>
