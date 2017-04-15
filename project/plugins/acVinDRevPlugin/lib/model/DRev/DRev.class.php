@@ -96,7 +96,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     public function isLectureSeule() {
-        
+
         return $this->exist('lecture_seule') && $this->get('lecture_seule');
     }
 
@@ -273,9 +273,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $produit = $this->getOrAdd($config->getHash());
         $produit->getLibelle();
         $produit->add('superficie_vinifiee');
-        $produit->add('superficie_vinifiee_vtsgn');
         if($produit->getConfig()->hasProduitsVtsgn()) {
             $produit->add('volume_revendique_vtsgn');
+            $produit->add('superficie_vinifiee_vtsgn');
             $produit->add('superficie_revendique_vtsgn');
             $produit->add('detail_vtsgn');
         }

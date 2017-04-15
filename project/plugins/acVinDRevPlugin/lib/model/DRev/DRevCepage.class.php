@@ -5,8 +5,8 @@
  */
 
 class DRevCepage extends BaseDRevCepage {
-    
-    public function getChildrenNode() 
+
+    public function getChildrenNode()
     {
         return $this->detail;
     }
@@ -39,7 +39,11 @@ class DRevCepage extends BaseDRevCepage {
         $detail = $this->detail->add();
         $detail->lieu = $lieu;
         $detail->getLibelle();
+        
+        $detail->add('superficie_vinifiee_total');
         $detail->add('superficie_vinifiee');
+        $detail->add('superficie_vinifiee_vt');
+        $detail->add('superficie_vinifiee_sgn');
 
         return $detail;
     }
@@ -51,8 +55,8 @@ class DRevCepage extends BaseDRevCepage {
                 return $detail;
             }
 
-            if($detail->exist('lieu') && trim(strtolower($detail->lieu) == trim(strtolower($lieu)))) {                
-             
+            if($detail->exist('lieu') && trim(strtolower($detail->lieu) == trim(strtolower($lieu)))) {
+
                 return $detail;
             }
         }

@@ -143,7 +143,10 @@ DRev:
                                                                   volume_revendique_sgn: { type: float }
                                                                   volume_revendique: { type: float }
                                                                   volume_revendique_total: { type: float }
+                                                                  superficie_vinifiee_total: { type: float, required: false }
                                                                   superficie_vinifiee: { type: float, required: false }
+                                                                  superficie_vinifiee_vt: { type: float, required: false }
+                                                                  superficie_vinifiee_sgn: { type: float, required: false }
                                                                   superficie_revendique: { type: float }
                                                                   superficie_revendique_vt: { type: float }
                                                                   superficie_revendique_sgn: { type: float }

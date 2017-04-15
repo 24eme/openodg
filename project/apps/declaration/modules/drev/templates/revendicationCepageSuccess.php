@@ -28,8 +28,8 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($form['produits'] as $hash => $embedForm): ?> 
-                <?php $produit = $drev->get($hash); ?> 
+            <?php foreach ($form['produits'] as $hash => $embedForm): ?>
+                <?php $produit = $drev->get($hash); ?>
                 <tr style="height: 44px;">
                     <td><?php echo $produit->getLibelle() ?> <small class="text-muted">(hors VT/SGN)</small></td>
                     <td class="text-center">
@@ -55,7 +55,16 @@
                 <?php if (isset($embedForm['volume_revendique_vt']) || isset($embedForm['volume_revendique_sgn'])): ?>
                 <tr style="height: 44px;">
                 	<td><?php echo $produit->getLibelle() ?> <span>VT</span></td>
-                	<td></td>
+                	<td class="text-center">
+                        <?php if(isset($embedForm['superficie_vinifiee_vt'])): ?>
+                    	<div class="form-group <?php if($embedForm['superficie_vinifiee_vt']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['superficie_vinifiee_vt']->renderError() ?>
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <?php echo $embedForm['superficie_vinifiee_vt']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </td>
                 	<?php if (isset($embedForm['volume_revendique_vt'])): ?>
                     <td class="text-center">
                     	<div class="form-group <?php if($embedForm['volume_revendique_vt']->hasError()): ?>has-error<?php endif; ?>">
@@ -66,12 +75,21 @@
                         </div>
                     </td>
                     <?php else: ?>
-                    <td></td>  
-                    <?php endif; ?>             
+                    <td></td>
+                    <?php endif; ?>
                 </tr>
                 <tr style="height: 44px;">
                 	<td><?php echo $produit->getLibelle() ?> <span>SGN</span></td>
-                	<td></td>
+                    <td class="text-center">
+                        <?php if(isset($embedForm['superficie_vinifiee_sgn'])): ?>
+                    	<div class="form-group <?php if($embedForm['superficie_vinifiee_sgn']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['superficie_vinifiee_sgn']->renderError() ?>
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <?php echo $embedForm['superficie_vinifiee_sgn']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </td>
                 	<?php if (isset($embedForm['volume_revendique_vt'])): ?>
                     <td class="text-center">
 						<div class="form-group <?php if($embedForm['volume_revendique_sgn']->hasError()): ?>has-error<?php endif; ?>">
@@ -82,10 +100,10 @@
 						</div>
                     </td>
                     <?php else: ?>
-                    <td></td>  
-                    <?php endif; ?>             
+                    <td></td>
+                    <?php endif; ?>
                 </tr>
-            <?php endif; ?>  
+            <?php endif; ?>
             <?php endforeach; ?>
             <?php if ($ajoutForm->hasProduits()): ?>
                 <tr>
