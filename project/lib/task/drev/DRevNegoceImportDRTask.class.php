@@ -75,16 +75,7 @@ EOF;
         }
 
         foreach($drev->getProduits() as $produit) {
-            $produit->add('superficie_vinifiee');
-            if($produit->getConfig()->hasProduitsVtsgn()) {
-                $produit->add('superficie_vinifiee_vtsgn');
-            }
             foreach($produit->getProduitsCepage() as $detail) {
-                $detail->add('superficie_vinifiee_total', null);
-                $detail->add('superficie_vinifiee', null);
-                $detail->add('superficie_vinifiee_vt', null);
-                $detail->add('superficie_vinifiee_sgn', null);
-
                 $detail->superficie_vinifiee_total = null;
                 $detail->superficie_vinifiee = null;
                 $detail->superficie_vinifiee_vt = null;

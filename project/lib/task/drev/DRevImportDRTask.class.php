@@ -69,7 +69,7 @@ EOF;
         }
 
         if($drev && !$drev->validation) {
-            echo sprintf("WARNING;La DREV n'est pas validée;%s\n", $drev->_id);
+            echo sprintf("ERROR;La DREV n'est pas validée;%s\n", $drev->_id);
 
             return;
         }
