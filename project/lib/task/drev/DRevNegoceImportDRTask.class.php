@@ -48,6 +48,12 @@ EOF;
             return;
         }
 
+        if($drev && !$drev->isNonRecoltant()) {
+            echo sprintf("ERROR;Le DREV est une DREV producteur;%s\n", $drev->_id);
+
+            return;
+        }
+
         $csv = new DRCsvFile($arguments['csv']);
 
         $lines = array();
