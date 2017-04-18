@@ -70,7 +70,7 @@
     <div class="col-xs-4 text-right">
             <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
     </div>
-    <?php elseif ($sf_user->isAdmin()): ?>
+<?php elseif ($sf_user->isAdmin() && !$drev->isLectureSeule()): ?>
       <div class="col-xs-4 text-right">
               <a class="btn btn-xs btn-warning pull-right" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir la déclaration</a>
       </div>
