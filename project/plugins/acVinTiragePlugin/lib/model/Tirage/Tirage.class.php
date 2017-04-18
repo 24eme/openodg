@@ -135,6 +135,11 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         return $this->exist('papier') && $this->get('papier');
     }
 
+    public function isLectureSeule() {
+
+        return $this->exist('lecture_seule') && $this->get('lecture_seule');
+    }
+
     public function isAutomatique() {
 
         return $this->exist('automatique') && $this->get('automatique');

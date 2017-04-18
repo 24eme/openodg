@@ -60,6 +60,11 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
+        if(in_array(self::DEVALIDATION, $droits) && $this->doc->isLectureSeule()) {
+
+            return false;
+        }
+
         if(in_array(self::DEVALIDATION, $droits) && !$this->user->isAdmin()) {
 
             return false;

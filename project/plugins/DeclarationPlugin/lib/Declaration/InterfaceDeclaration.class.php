@@ -7,5 +7,6 @@ interface InterfaceDeclaration
     public function isPapier();
     public function getValidation();
     public function getValidationOdg();
+    public function isLectureSeule();
 
 }
