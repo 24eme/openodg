@@ -580,23 +580,26 @@ class drevActions extends sfActions {
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
             $document = $documents->add($engagement->getCode());
-            $document->statut = ($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
         }
 
         if($this->drev->isPapier()) {
-            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
-
             $this->drev->validate($this->form->getValue("date"));
-            if($this->drev->hasCompleteDocuments()) {
-                $this->drev->validateOdg();
-            }
-            $this->drev->save();
+        } else {
+            $this->drev->validate();
+        }
+
+        if($this->getUser()->isAdmin() && $this->drev->hasCompleteDocuments()) {
+            $this->drev->validateOdg();
+        }
+
+        $this->drev->save();
+
+        if($this->getUser()->isAdmin()) {
+            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
-
-        $this->drev->validate();
-        $this->drev->save();
 
         $this->sendDRevValidation($this->drev);
 
