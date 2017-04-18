@@ -12,7 +12,7 @@
 class GenerationFacturePDF extends GenerationPDF {
 
     const BATCH_SAVE = 15;
-    
+
     function __construct(Generation $g, $config = null, $options = null) {
         parent::__construct($g, $config, $options);
     }
@@ -34,14 +34,14 @@ class GenerationFacturePDF extends GenerationPDF {
         if(!$this->generation->exist('somme')) {
           $this->generation->somme = 0;
         }
-        
+
         $cpt = count($this->generation->documents);
         $batch_cpt = 0;
         foreach($comptes_id as $compte_id) {
             $compte = CompteClient::getInstance()->find($compte_id);
 
             if(!$compte) {
-                throw new sfException(sprintf("Compte inexistant %s", $compte_id));
+                continue;
             }
 
             try {
@@ -63,7 +63,7 @@ class GenerationFacturePDF extends GenerationPDF {
             $facture->save();
             $this->generation->somme += $facture->total_ttc;
             $this->generation->documents->add($cpt, $facture->_id);
-            
+
             $batch_cpt++;
             if($batch_cpt >= (self::BATCH_SAVE)) {
               $this->generation->save();
@@ -101,7 +101,7 @@ class GenerationFacturePDF extends GenerationPDF {
 
             $this->generation->somme += $facture->total_ttc;
             $this->generation->documents->add($cpt, $facture->_id);
-            
+
             $batch_cpt++;
             if($batch_cpt >= (self::BATCH_SAVE)) {
               $this->generation->save();
