@@ -11,7 +11,7 @@
  */
 class GenerationFacturePDF extends GenerationPDF {
 
-    const BATCH_SAVE = 15;
+    const BATCH_SAVE = 100;
 
     function __construct(Generation $g, $config = null, $options = null) {
         parent::__construct($g, $config, $options);
