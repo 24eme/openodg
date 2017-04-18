@@ -19,58 +19,98 @@
         <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
     <?php endif; ?>
 
-    <table class="table table-striped">
+    <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
             <tr>
-                <th class="col-xs-3">Produits</th>
+                <th class="col-xs-6">Produits</th>
+                <th class="text-center col-xs-3">Superficie vinifiée <small class="text-muted">(ares)</small></th>
                 <th class="text-center col-xs-3">Volume revendiqué <small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-3">Volume revendiqué VT <small class="text-muted">(hl)</small></th>
-                <th class="text-center col-xs-3">Volume revendiqué SGN <small class="text-muted">(hl)</small></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($form['produits'] as $hash => $embedForm): ?> 
-                <?php $produit = $drev->get($hash); ?> 
-                <tr>
-                    <td><?php echo $produit->getLibelle() ?></td>
+            <?php foreach ($form['produits'] as $hash => $embedForm): ?>
+                <?php $produit = $drev->get($hash); ?>
+                <tr style="height: 44px;">
+                    <td><?php echo $produit->getLibelle() ?> <small class="text-muted">(hors VT/SGN)</small></td>
+                    <td class="text-center">
+                    	<?php if(isset($embedForm['superficie_vinifiee'])): ?>
+                    	<div class="form-group <?php if($embedForm['superficie_vinifiee']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['superficie_vinifiee']->renderError() ?>
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <?php echo $embedForm['superficie_vinifiee']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </td>
                     <td class="text-center">
                         <div class="form-group <?php if($embedForm['volume_revendique']->hasError()): ?>has-error<?php endif; ?>">
                             <?php echo $embedForm['volume_revendique']->renderError() ?>
                             <div class="col-xs-8 col-xs-offset-2">
-                                <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input input-rounded num_float text-right')) ?>
+                                <?php echo $embedForm['volume_revendique']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
                             </div>
                         </div>
 
                     </td>
-                    <?php if (isset($embedForm['volume_revendique_vt']) && isset($embedForm['volume_revendique_sgn'])): ?>
-                        <td class="text-center">
-                            <div class="form-group <?php if($embedForm['volume_revendique_vt']->hasError()): ?>has-error<?php endif; ?>">
-                                <?php echo $embedForm['volume_revendique_vt']->renderError() ?>
-                                <div class="col-xs-8 col-xs-offset-2">
-                                    <?php echo $embedForm['volume_revendique_vt']->render(array('class' => 'form-control input input-rounded num_float text-right')) ?>
-                                </div>
+                </tr>
+                <?php if (isset($embedForm['volume_revendique_vt']) || isset($embedForm['volume_revendique_sgn'])): ?>
+                <tr style="height: 44px;">
+                	<td><?php echo $produit->getLibelle() ?> <span>VT</span></td>
+                	<td class="text-center">
+                        <?php if(isset($embedForm['superficie_vinifiee_vt'])): ?>
+                    	<div class="form-group <?php if($embedForm['superficie_vinifiee_vt']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['superficie_vinifiee_vt']->renderError() ?>
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <?php echo $embedForm['superficie_vinifiee_vt']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
                             </div>
-                        </td>
-                        <td class="text-center">
-                            <div class="form-group <?php if($embedForm['volume_revendique_sgn']->hasError()): ?>has-error<?php endif; ?>">
-                                <?php echo $embedForm['volume_revendique_sgn']->renderError() ?>
-                                <div class="col-xs-8 col-xs-offset-2">
-                                    <?php echo $embedForm['volume_revendique_sgn']->render(array('class' => 'form-control input input-rounded num_float text-right')) ?>
-                                </div>
+                        </div>
+                        <?php endif; ?>
+                    </td>
+                	<?php if (isset($embedForm['volume_revendique_vt'])): ?>
+                    <td class="text-center">
+                    	<div class="form-group <?php if($embedForm['volume_revendique_vt']->hasError()): ?>has-error<?php endif; ?>">
+                        	<?php echo $embedForm['volume_revendique_vt']->renderError() ?>
+                        	<div class="col-xs-8 col-xs-offset-2">
+                            	<?php echo $embedForm['volume_revendique_vt']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
                             </div>
-                        </td>
+                        </div>
+                    </td>
                     <?php else: ?>
-                        <td></td>
-                        <td></td>
+                    <td></td>
                     <?php endif; ?>
                 </tr>
+                <tr style="height: 44px;">
+                	<td><?php echo $produit->getLibelle() ?> <span>SGN</span></td>
+                    <td class="text-center">
+                        <?php if(isset($embedForm['superficie_vinifiee_sgn'])): ?>
+                    	<div class="form-group <?php if($embedForm['superficie_vinifiee_sgn']->hasError()): ?>has-error<?php endif; ?>">
+                            <?php echo $embedForm['superficie_vinifiee_sgn']->renderError() ?>
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <?php echo $embedForm['superficie_vinifiee_sgn']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "ares")) ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                    </td>
+                	<?php if (isset($embedForm['volume_revendique_vt'])): ?>
+                    <td class="text-center">
+						<div class="form-group <?php if($embedForm['volume_revendique_sgn']->hasError()): ?>has-error<?php endif; ?>">
+							<?php echo $embedForm['volume_revendique_sgn']->renderError() ?>
+							<div class="col-xs-8 col-xs-offset-2">
+								<?php echo $embedForm['volume_revendique_sgn']->render(array('class' => 'form-control input input-rounded num_float text-right', 'placeholder' => "hl")) ?>
+							</div>
+						</div>
+                    </td>
+                    <?php else: ?>
+                    <td></td>
+                    <?php endif; ?>
+                </tr>
+            <?php endif; ?>
             <?php endforeach; ?>
             <?php if ($ajoutForm->hasProduits()): ?>
                 <tr>
                     <td>
                         <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit / cépage</button>
                     </td>
-                    <td></td><td></td><td>
+                    <td></td><td></td>
                 </tr>
             <?php endif; ?>
         </tbody>

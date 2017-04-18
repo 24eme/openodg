@@ -9,9 +9,9 @@
 <div class="page-header no-border">
     <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
     <?php if($drev->isPapier()): ?>
-    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
+    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?></small>
     <?php elseif($drev->validation): ?>
-    <small class="pull-right">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?></small>
+    <small class="pull-right">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?></small>
     <?php endif; ?>
     </h2>
 </div>
@@ -70,7 +70,7 @@
     <div class="col-xs-4 text-right">
             <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
     </div>
-    <?php elseif ($sf_user->isAdmin()): ?>
+<?php elseif ($sf_user->isAdmin() && !$drev->isLectureSeule()): ?>
       <div class="col-xs-4 text-right">
               <a class="btn btn-xs btn-warning pull-right" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir la déclaration</a>
       </div>

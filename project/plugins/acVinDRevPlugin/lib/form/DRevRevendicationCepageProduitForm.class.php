@@ -18,7 +18,6 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
         ));
 
         if ($this->vtsgn) {
-
             $this->setWidget('volume_revendique_vt', new sfWidgetFormInputFloat());
             $this->setWidget('volume_revendique_sgn', new sfWidgetFormInputFloat());
 
@@ -27,6 +26,23 @@ class DRevRevendicationCepageProduitForm extends acCouchdbObjectForm {
 
             $this->setValidator('volume_revendique_vt', new sfValidatorNumber(array('required' => false)));
             $this->setValidator('volume_revendique_sgn', new sfValidatorNumber(array('required' => false)));
+        }
+
+
+        if ($this->getObject()->canHaveSuperficieVinifiee()) {
+        	$this->setWidget('superficie_vinifiee', new sfWidgetFormInputFloat());
+        	$this->getWidget('superficie_vinifiee')->setLabel("Superficie vinifiée (ares):");
+        	$this->setValidator('superficie_vinifiee', new sfValidatorNumber(array('required' => false)));
+
+            if ($this->vtsgn) {
+                $this->setWidget('superficie_vinifiee_vt', new sfWidgetFormInputFloat());
+            	$this->getWidget('superficie_vinifiee_vt')->setLabel("Superficie vinifiée (ares):");
+            	$this->setValidator('superficie_vinifiee_vt', new sfValidatorNumber(array('required' => false)));
+
+                $this->setWidget('superficie_vinifiee_sgn', new sfWidgetFormInputFloat());
+            	$this->getWidget('superficie_vinifiee_sgn')->setLabel("Superficie vinifiée (ares):");
+            	$this->setValidator('superficie_vinifiee_sgn', new sfValidatorNumber(array('required' => false)));
+            }
         }
 
         $this->widgetSchema->setNameFormat('[%s]');

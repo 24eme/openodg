@@ -48,7 +48,9 @@ EOF;
         }
 
         $drev_origin = clone $drev;
-        $drev->reUpdateCepageFromCSV();
+        if($drev->getCSV()) {
+            $drev->updateCepageFromCSV($drev->getCSV());
+        }
         $drev->declaration->cleanNode();
 
         foreach($drev->declaration->getProduitsCepage() as $hash => $produit) {

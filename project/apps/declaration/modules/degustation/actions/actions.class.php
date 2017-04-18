@@ -64,7 +64,88 @@ class degustationActions extends sfActions {
 
         $this->form->doUpdateObject($this->form->getValues());
 
-        return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation, 'appellation_libelle' => $this->tournee->appellation_libelle));
+        if($this->form->getValue('action') == "saisir") {
+
+            return $this->redirect('degustation_saisie_creation', array('date' => $this->tournee->date, 'appellation' => $this->tournee->appellation));
+        }
+
+        return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation));
+    }
+
+    public function executeSaisieCreation(sfWebRequest $request) {
+        $this->tournee = TourneeClient::getInstance()->createOrFindForSaisieDegustation($request->getParameter("appellation"), $request->getParameter("date"));
+
+        $this->form = new TourneeSaisieCreationForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('degustation_saisie',  $this->tournee);
+    }
+
+    public function executeSaisie(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeSaisieEtapes::ETAPE_SAISIE, "TourneeSaisieEtapes"))) {
+            $this->tournee->save();
+        }
+
+        $this->form = new TourneeSaisieForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->updateDoc();
+
+        return $this->redirect('degustation_saisie_degustateurs', $this->tournee);
+    }
+
+    public function executeSaisieDegustateurs(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeSaisieEtapes::ETAPE_SAISIE_DEGUSTATEURS, "TourneeSaisieEtapes"))) {
+            $this->tournee->save();
+        }
+
+        $this->form = new TourneeSaisieDegustateursForm($this->tournee);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
+        $this->form->updateDoc();
+
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     public function executeEdit(sfWebRequest $request) {
@@ -93,7 +174,7 @@ class degustationActions extends sfActions {
             $this->tournee->date_prelevement_debut = $request->getParameter('date_prelevement_debut');
             $this->tournee->date = $request->getParameter('date');
             $this->tournee->appellation = $request->getParameter('appellation');
-            $this->tournee->appellation_libelle = $request->getParameter('appellation_libelle');
+            //$this->tournee->appellation_libelle = $request->getParameter('appellation_libelle');
         }
 
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin, $this->tournee->getCampagne());
@@ -206,13 +287,7 @@ class degustationActions extends sfActions {
         $values = $request->getParameter("degustateurs", array());
 
         foreach ($values as $key => $value) {
-            $d = $this->degustateurs[$key];
-            $degustateur = $this->noeud->add($d->_id);
-            $degustateur->nom = $d->nom_a_afficher;
-            $degustateur->email = $d->email;
-            $degustateur->adresse = $d->adresse;
-            $degustateur->commune = $d->commune;
-            $degustateur->code_postal = $d->code_postal;
+            $this->tournee->degustateurs->addDegustateur($this->type, $this->degustateurs[$key]->_id);
         }
 
         $degustateurs_to_delete = array();
@@ -752,8 +827,10 @@ class degustationActions extends sfActions {
                 foreach($json_prelevement->notes as $key_note => $json_note) {
                     $note = $prelevement->notes->add($key_note);
                     $note->note = $json_note->note;
-                    $note->remove('defauts', $json_note->defauts);
-                    $note->add('defauts', $json_note->defauts);
+                    if(isset($json_note->defauts)) {
+                        $note->remove('defauts', $json_note->defauts);
+                        $note->add('defauts', $json_note->defauts);
+                    }
                 }
                 $prelevement->appreciations = $json_prelevement->appreciations;
             }
@@ -912,8 +989,8 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_visualisation', $tournee);
     }
 
-    protected function getEtape($doc, $etape) {
-        $etapes = TourneeEtapes::getInstance();
+    protected function getEtape($doc, $etape, $class = "TourneeEtapes") {
+        $etapes = $class::getInstance();
         if (!$doc->exist('etape')) {
             return $etape;
         }

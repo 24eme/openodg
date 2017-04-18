@@ -79,6 +79,12 @@ class DRevCouleur extends BaseDRevCouleur
 		if($this->exist('volume_revendique_vtsgn')) {
 			$this->volume_revendique_vtsgn = 0;
 		}
+		if($this->canHaveSuperficieVinifiee()) {
+        	$this->superficie_vinifiee = 0;
+			if($this->exist('superficie_vinifiee_vtsgn')) {
+				$this->superficie_vinifiee_vtsgn = 0;;
+			}
+		}
         foreach($this->getAppellation()->getProduitsCepage() as $produit) {
             if($produit->getCouleur()->getKey() != $this->getKey()) {
                 continue;
@@ -86,11 +92,18 @@ class DRevCouleur extends BaseDRevCouleur
 
             $produit->updateTotal();
 
+			$this->volume_revendique += $produit->volume_revendique;
 			if($this->canHaveVtsgn()) {
 				$this->volume_revendique_vtsgn += $produit->volume_revendique_vt + $produit->volume_revendique_sgn;
 			}
 
-			$this->volume_revendique += $produit->volume_revendique;
+			if($produit->canHaveSuperficieVinifiee()) {
+				$this->superficie_vinifiee += $produit->superficie_vinifiee;
+
+				if($this->canHaveVtsgn()) {
+					$this->superficie_vinifiee_vtsgn += $produit->superficie_vinifiee_vt + $produit->superficie_vinifiee_sgn;
+				}
+			}
         }
     }
 
@@ -104,6 +117,16 @@ class DRevCouleur extends BaseDRevCouleur
     {
 
     	return $this->volume_revendique + (($this->canHaveVtsgn()) ? $this->volume_revendique_vtsgn : 0);
+    }
+
+    public function getTotalSuperficieVinifiee()
+    {
+    	if (!$this->exist('superficie_vinifiee')) {
+    		return 0;
+    	}
+    	$superficie = $this->superficie_vinifiee + (($this->canHaveVtsgn() && $this->exist('superficie_vinifiee_vtsgn')) ? $this->superficie_vinifiee_vtsgn : 0);
+    	// Conversion de la superficie en hectares pour la facturation
+    	return ($superficie > 0)? round($superficie / 100,4) : 0;
     }
 
     public function resetDetail() {
@@ -160,11 +183,26 @@ class DRevCouleur extends BaseDRevCouleur
 				$this->volume_revendique_vtsgn = $this->detail_vtsgn->volume_sur_place_revendique;
 			}
 		}
+
+        if($this->detail->exist('superficie_vinifiee') && !is_null($this->detail->superficie_vinifiee)) {
+        	$this->add('superficie_vinifiee', $this->detail->superficie_vinifiee);
+        }
+
+		if($this->canHaveVtsgn()) {
+			if($this->detail_vtsgn->exist('superficie_vinifiee') && !is_null($this->detail_vtsgn->superficie_vinifiee)) {
+	        	$this->add('superficie_vinifiee_vtsgn', $this->detail_vtsgn->superficie_vinifiee);
+			}
+		}
     }
 
 	public function canHaveVtsgn() {
 
 		return $this->exist('detail_vtsgn');
+	}
+
+	public function canHaveSuperficieVinifiee() {
+
+		return $this->exist('superficie_vinifiee');
 	}
 
 
@@ -176,7 +214,7 @@ class DRevCouleur extends BaseDRevCouleur
     public function isActive()
     {
 
-	    return ($this->getTotalVolumeRevendique() > 0 || $this->getTotalTotalSuperficie() > 0);
+	    return ($this->getTotalVolumeRevendique() > 0 || $this->getTotalTotalSuperficie() > 0 || $this->getTotalSuperficieVinifiee() > 0);
     }
 
     public function isCleanable() {
@@ -186,7 +224,7 @@ class DRevCouleur extends BaseDRevCouleur
             return parent::isCleanable();
         }
 
-        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !count($this->getProduitsCepage())) {
+        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !$this->getTotalSuperficieVinifiee() && !count($this->getProduitsCepage())) {
 
             return true;
         }

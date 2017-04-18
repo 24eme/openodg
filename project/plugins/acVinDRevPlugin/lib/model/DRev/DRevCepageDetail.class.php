@@ -46,6 +46,12 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
         $this->volume_revendique = null;
         $this->volume_revendique_vt = null;
         $this->volume_revendique_sgn = null;
+        if($this->canHaveSuperficieVinifiee()) {
+            $this->superficie_vinifiee_total = null;
+            $this->superficie_vinifiee = null;
+            $this->superficie_vinifiee_total_vt = null;
+            $this->superficie_vinifiee_sgn = null;
+        }
     }
 
     public function hasVtsgn() {
@@ -61,6 +67,9 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     public function updateTotal() {
         $this->volume_revendique_total = round($this->volume_revendique + $this->volume_revendique_sgn + $this->volume_revendique_vt, 2);
         $this->superficie_revendique_total = round($this->superficie_revendique + $this->superficie_revendique_sgn + $this->superficie_revendique_vt, 2);
+        if($this->canHaveSuperficieVinifiee()) {
+            $this->superficie_vinifiee_total = round($this->superficie_vinifiee + $this->superficie_vinifiee_sgn + $this->superficie_vinifiee_vt, 2);
+        }
     }
 
     public function isCleanable() {
@@ -108,6 +117,10 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
     public function getProduitLibelleComplet() {
 
         return trim($this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle());
+    }
+
+    public function canHaveSuperficieVinifiee() {
+    	return ($this->exist('superficie_vinifiee'));
     }
 
 }

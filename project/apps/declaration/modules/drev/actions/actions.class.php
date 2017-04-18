@@ -116,7 +116,7 @@ class drevActions extends sfActions {
         file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
         $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
 
-        $this->drev->updateFromCSVAndInit();
+        $this->drev->updateFromCSV(true, true);
         $this->drev->save();
 
         return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
@@ -209,7 +209,6 @@ class drevActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
 
             if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
-
                 return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
             }
             if ($this->form->isValid()) {
@@ -581,23 +580,26 @@ class drevActions extends sfActions {
 
         foreach ($this->validation->getPoints(DrevValidation::TYPE_ENGAGEMENT) as $engagement) {
             $document = $documents->add($engagement->getCode());
-            $document->statut = ($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
+            $document->statut = (($engagement->getCode() == DRevDocuments::DOC_DR && $this->drev->hasDr()) || ($document->statut == DRevDocuments::STATUT_RECU)) ? DRevDocuments::STATUT_RECU : DRevDocuments::STATUT_EN_ATTENTE;
         }
 
         if($this->drev->isPapier()) {
-            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
-
             $this->drev->validate($this->form->getValue("date"));
-            if($this->drev->hasCompleteDocuments()) {
-                $this->drev->validateOdg();
-            }
-            $this->drev->save();
+        } else {
+            $this->drev->validate();
+        }
+
+        if($this->getUser()->isAdmin() && $this->drev->hasCompleteDocuments()) {
+            $this->drev->validateOdg();
+        }
+
+        $this->drev->save();
+
+        if($this->getUser()->isAdmin()) {
+            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
             return $this->redirect('drev_visualisation', $this->drev);
         }
-
-        $this->drev->validate();
-        $this->drev->save();
 
         $this->sendDRevValidation($this->drev);
 

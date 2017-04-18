@@ -24,9 +24,9 @@ class compteActions extends sfActions {
         $this->compte = $this->getRoute()->getCompte();
         $this->abonnements = AbonnementClient::getInstance()->getAbonnementsByCompte($this->compte->identifiant);
     }
-    
+
     public function executeRedirectEspaceEtablissement(sfWebRequest $request) {
-        $this->compte = $this->getRoute()->getCompte();        
+        $this->compte = $this->getRoute()->getCompte();
         if(!($etablissement = $this->compte->getEtablissementObj())){
             throw new sfException("L'établissement du compte n'a pas été trouvé");
         }
@@ -50,15 +50,15 @@ class compteActions extends sfActions {
     }
 
     public function executeCreation(sfWebRequest $request) {
-        
+
     }
 
     public function executeCreationConfirmation(sfWebRequest $request) {
-        
+
     }
 
     public function executeMotDePasseOublie(sfWebRequest $request) {
-        
+
     }
 
     public function executeArchiver(sfWebRequest $request) {
@@ -165,14 +165,14 @@ class compteActions extends sfActions {
         $this->form = new CompteRechercheAvanceeForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
-            
+
             return sfView::SUCCESS;
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-        
+
         if (!$this->form->isValid()) {
-            
+
             return sfView::SUCCESS;
         }
 
@@ -193,7 +193,7 @@ class compteActions extends sfActions {
         $this->setLayout(false);
         $q = $this->initSearch($request);
         $q->setLimit(99999);
-        
+
         $index = acElasticaManager::getType('compte');
         $resset = $index->search($q);
         $this->results = $resset->getResults();
@@ -202,10 +202,12 @@ class compteActions extends sfActions {
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
     }
-    
+
     public function executeRechercheJson($request) {
+        $type_compte = $request->getParameter('type_compte', "ETABLISSEMENT");
+
         if($request->getParameter('q')) {
-            $request->setParameter('q', "*".$request->getParameter('q')."* type_compte:ETABLISSEMENT");
+            $request->setParameter('q', "*".$request->getParameter('q')."* type_compte:".$type_compte);
         }
 
         $q = $this->initSearch($request);
@@ -226,8 +228,8 @@ class compteActions extends sfActions {
             $item->cvi = $data['cvi'];
             $item->siren = $data['siren'];
             $item->siret = $data['siret'];
-            $item->text = sprintf("%s (%s) à %s (%s)", $data['nom_a_afficher'], ($data['cvi']) ? $data['cvi'] : $data['siren'], $data['commune'], $data['code_postal']);
-            $item->text_html = sprintf("%s <small>(%s)</small> à %s <small>(%s)</small><br /><small>%s</small>", $data['nom_a_afficher'], ($data['cvi']) ? $data['cvi'] : $data['siren'], $data['commune'], $data['code_postal'], implode(", ", $data['tags']['attributs']));
+            $item->text = CompteClient::getInstance()->makeLibelle($data);
+            $item->text_html = sprintf("%s <small>(%s)</small> à %s <small>(%s)</small><br /><small>%s</small>", $data['nom_a_afficher'], ($data['cvi']) ? $data['cvi'] : (($data['siren']) ? $data['siren'] : $data['identifiant_interne']), $data['commune'], $data['code_postal'], implode(", ", $data['tags']['attributs']));
             $item->id = $data['_id'];
             $list[] = $item;
         }
@@ -271,7 +273,7 @@ class compteActions extends sfActions {
         $qs = new acElasticaQueryQueryString(self::convertArgumentsToQuery($this->args));
         $q = new acElasticaQuery();
         $q->setQuery($qs);
-        
+
         return $q;
     }
 

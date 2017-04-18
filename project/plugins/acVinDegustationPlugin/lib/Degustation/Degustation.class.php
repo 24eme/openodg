@@ -6,12 +6,40 @@
 
 class Degustation extends BaseDegustation {
     public function constructId() {
-        $this->set('_id', sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->cvi, str_replace("-", "", $this->date_degustation), $this->appellation));
+        $id = sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date_degustation), $this->appellation);
+
+        if($this->appellation_complement) {
+            $id .= $this->appellation_complement;
+        }
+
+        if($this->millesime) {
+            $id .= $this->millesime;
+        }
+
+        $this->set('_id', $id);
     }
 
     public function getMillesime() {
+        if(!$this->_get('millesime')) {
+            return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+        }
 
-        return ((int) substr($this->date_degustation, 0, 4) - 1)."";
+        return $this->_get('millesime');
+    }
+
+    public function getEtablissementObject() {
+
+        return EtablissementClient::getInstance()->find("ETABLISSEMENT-".$this->identifiant);
+    }
+
+    public function updateFromEtablissement() {
+        $etablissement = $this->getEtablissementObject();
+
+        $this->cvi = $etablissement->cvi;
+        $this->raison_sociale = $etablissement->raison_sociale;
+        $this->adresse = $etablissement->adresse;
+        $this->code_postal = $etablissement->code_postal;
+        $this->commune = $etablissement->commune;
     }
 
     public function updateFromDRev($drev = null) {
@@ -318,5 +346,10 @@ class Degustation extends BaseDegustation {
                 $this->lon = $coordonnees["lon"];
             }
         }
+    }
+
+    public function getOrganismeDegustateur() {
+
+        return "ODG-AVA";
     }
 }

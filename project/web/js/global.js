@@ -134,42 +134,55 @@
             });
         });
     };
-    $.initSelect2Autocomplete = function ()
+    $.fn.initSelect2Autocomplete = function ()
     {
-        $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
+        $(this).find('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
     }
 
-    $.initSelect2AutocompleteRemote = function ()
+    $.fn.initSelect2AutocompleteRemote = function ()
     {
-        $('.select2autocompleteremote').select2({
-            allowClear: true,
-            placeholder: true,
-            minimumInputLength: 3,
-            ajax: {// instead of writing the function to execute the request we use Select2's convenient helper
-                url: $('.select2autocompleteremote').data('url'),
-                dataType: 'json',
-                quietMillis: 250,
-                data: function (term, page) {
-                    return {
-                        q: term,
-                    };
+        $(this).find('.select2autocompleteremote').each(function() {
+                var element = $(this);
+                var defaultValue = $(this).val();
+                var defaultValueSplitted = defaultValue.split(',');
+                element.select2({
+                allowClear: true,
+                placeholder: true,
+                minimumInputLength: 3,
+                initSelection: function (element, callback) {
+                    if (defaultValue != '') {
+                        callback({id: defaultValueSplitted[0], text: defaultValueSplitted[1]});
+                        element.val(defaultValueSplitted[0]);
+                    }
                 },
-                results: function (data, page) {
-                    return {results: data};
+                ajax: {
+                    url: element.data('url'),
+                    dataType: 'json',
+                    quietMillis: 250,
+                    data: function (term, page) {
+                        return {
+                            q: term,
+                        };
+                    },
+                    results: function (data, page) {
+                        return {results: data};
+                    },
+                    cache: true
                 },
-                cache: true
-            },
-            formatResult: function (item) {
-                if (item.text_html) {
+                formatResult: function (item) {
+                    if (item.text_html) {
 
-                    return item.text_html;
-                }
+                        return item.text_html;
+                    }
 
-                return item.text;
+                    return item.text;
+                }});
+        });
+
+        $(this).find(".select2SubmitOnChange").on("change", function (e) {
+            if (e.val) {
+                $(this).parents('form').submit();
             }
-
-        }).on("select2-selected", function(e) {
-            $(this).parents('form').submit();
         });
     }
 
@@ -488,6 +501,142 @@
         });
     }
 
+    $.initDynamicCollection = function() {
+        $("#page").on('click', ".dynamic-element-add", function () {
+            var content = $($($(this).attr('data-template')).html().replace(/var---nbItem---/g, UUID.generate()));
+            $($(this).attr('data-container')).append(content);
+            var previous = content.prev();
+            content.find('input, select, checkbox').each(function() {
+                if($(this).attr('data-copie')) {
+                    $(this).val(previous.find('[data-copie='+$(this).attr('data-copie')+']').val());
+                }
+
+                if($(this).attr('data-increment')) {
+                    var previousValue = parseInt(previous.find('[data-increment='+$(this).attr('data-increment')+']').val());
+                    if(!isNaN(previousValue)) {
+                        $(this).val(previousValue + 1);
+                    }
+                }
+            });
+            content.find('input, select, checkbox').each(function() {
+                if($(this).attr('name')) {
+                    $(this).focus();
+                    return false;
+                }
+            });
+            content.initAdvancedElements();
+        });
+
+        $("#page").on('click', '.dynamic-element-delete', function () {
+            $($(this).attr('data-line')).find('input').val("");
+            $($(this).attr('data-line')).find('input').trigger('keyup');
+            $($(this).attr('data-line')).remove();
+            if ($($(this).attr('data-lines')).length < 1 && $(this).attr('data-add')) {
+                $($(this).attr('data-add')).trigger('click');
+            }
+        });
+
+        $('#page').on('change', '.dynamic-element-item:last input, .dynamic-element-item:last select, .dynamic-element-item:last checkbox', function() {
+            var item = $(this).parents(".dynamic-element-item");
+            var allIsComplete = true;
+            item.find("input, select, checkbox").each(function() {
+                if($(this).attr('name') && !$(this).val()) {
+                    allIsComplete = false;
+                }
+            });
+
+            if(allIsComplete) {
+                $(".dynamic-element-add").click();
+            }
+        });
+
+        $("#page").on('click', '.btn-dynamic-element-submit', function(e) {
+            var vals = $(this).parents('form').serializeArray();
+
+            $(this).parents('form').find('.dynamic-element-delete').last().each(function(){
+                var ligne = $($(this).attr('data-line'));
+                var hasAllValue = true;
+                ligne.find('input, select, textarea').each(function() {
+                    if($(this).attr('name') && !$(this).val()) {
+                        hasAllValue = false;
+                    }
+                });
+
+                if(!hasAllValue) {
+                    $($(this).attr('data-line')).remove();
+                }
+            });
+
+            return true;
+        });
+    }
+
+    $.fn.initBlocCondition = function()
+    {
+        $(this).find('.bloc_condition').each(function() {
+            var blocCondition = $(this);
+            var input = blocCondition.find('input');
+            if(input.length == 0) {
+                input = blocCondition.find('select');
+            }
+            var blocs = blocCondition.attr('data-condition-cible').split('|');
+            var traitement = function(input, blocs) {
+                   for (bloc in blocs) {
+                       console.log($(blocs[bloc]));
+                       if ($(blocs[bloc]).size() > 0) {
+                           var values = $(blocs[bloc]).attr('data-condition-value').split('|');
+                           for(key in values) {
+                               if (input.attr('type') == 'checkbox') {
+                                   if (values[key] == 1 && input.is(':checked')) {
+                                       $(blocs[bloc]).show();
+                                   }
+                                   if (values[key] != 1 && !input.is(':checked')) {
+                                       $(blocs[bloc]).show();
+                                   }
+
+                               }
+                               if (values[key] == input.val() && (input.is(':checked')) || input.is(':selected')) {
+                                   $(blocs[bloc]).show();
+                               }
+                           }
+                       }
+                   }
+            }
+            if(input.length == 0) {
+               for (bloc in blocs) {
+                    $(blocs[bloc]).show();
+               }
+            } else {
+               for (bloc in blocs) {
+                    $(blocs[bloc]).hide();
+               }
+            }
+            input.each(function() {
+                traitement($(this), blocs);
+            });
+
+            input.click(function()
+            {
+               for (bloc in blocs) {
+                    $(blocs[bloc]).hide();
+               }
+               if($(this).is(':checkbox')) {
+                   $(this).parent().find('input').each(function() {
+                       traitement($(this), blocs);
+                   });
+               } else {
+                   traitement($(this), blocs);
+               }
+            });
+        });
+    }
+
+    $.fn.initAdvancedElements = function () {
+        $(this).initSelect2Autocomplete();
+        $(this).initSelect2AutocompleteRemote();
+        $(this).initBlocCondition();
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -495,19 +644,20 @@
     {
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
         $.initDatePickers();
-        $.initSelect2Autocomplete();
-        $.initSelect2AutocompleteRemote();
+        _doc.initAdvancedElements();
         $.initSelect2AutocompletePermissif();
         $.initSelect2PermissifNoAjax();
         $.initCheckboxRelations();
         $.initBsSwitchCheckbox();
         $.initCarte();
         $.initModal();
+        $.initDynamicCollection();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip], span[data-toggle=tooltip]').tooltip({'container': 'body'});
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
         $.initCheckboxBtnGroup();
+        $.fn.modal.Constructor.prototype.enforceFocus = function () {};
     });
 })(jQuery);

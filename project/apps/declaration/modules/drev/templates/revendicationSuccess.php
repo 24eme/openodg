@@ -36,24 +36,25 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php if ($sf_user->hasFlash('erreur')): ?>
     <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
     <?php endif; ?>
-    <table class="table table-striped">
+    <table class="table table-striped table-condensed" id="table-revendication">
         <thead>
             <?php if ($drev->hasDR()): ?>
             <tr>
-                <th class="text-center"></th>
+                <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>"></th>
                 <th colspan="3" class="text-center striped-success small">Déclaration de Récolte</th>
-                <th colspan="2" class="text-center">Déclaration de Revendication</th>
+                <th colspan="3" class="text-center">Déclaration de Revendication</th>
             </tr>
             <?php endif; ?>
             <tr>
-                <th class="col-xs-4">Appellation revendiquée</th>
+                <th class="col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>">Appellation revendiquée</th>
                 <?php if ($drev->hasDR()): ?>
                 <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
                 <?php endif; ?>
-                <th class="col-xs-2 text-center">Superficie Totale<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie totale en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-2 text-center">Volume&nbsp;Revendiqué<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Superficie&nbsp;Totale<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie totale en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Superficie&nbsp;Vinifiée<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie vinifiée en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Volume&nbsp;Revendiqué<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>

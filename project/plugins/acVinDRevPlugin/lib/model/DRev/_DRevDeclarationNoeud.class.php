@@ -153,6 +153,15 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return $total;
     }
 
+	public function getTotalSuperficieVinifiee()
+    {
+    	$total = 0;
+        foreach($this->getChildrenNode() as $key => $item) {
+            $total += $item->getTotalSuperficieVinifiee();
+        }
+        return $total;
+    }
+
     public function isCleanable() {
         if(count($this->getChildrenNode()) == 0) {
 

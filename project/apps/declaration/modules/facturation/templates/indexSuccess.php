@@ -1,4 +1,4 @@
-<?php include_partial('admin/menu', array('active' => 'facturation')); ?> 
+<?php include_partial('admin/menu', array('active' => 'facturation')); ?>
 
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">
@@ -7,7 +7,7 @@
         <div class="form-group">
             <?php echo $form["login"]->renderError(); ?>
             <div class="col-xs-8 col-xs-offset-1">
-                <?php echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote",
+                <?php echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
                                 "placeholder" => "Se connecter à un opérateur",
                                 "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
                                 )); ?>

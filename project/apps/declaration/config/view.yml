@@ -14,7 +14,7 @@ default:
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"
 
-  stylesheets:    [compile.css?201412041035: { media: all }, print.css: { media: print }, ../components/vins/vins.css: { media: all }]
+  stylesheets:    [compile.css?201704061735: { media: all }, print.css: { media: print }, ../components/vins/vins.css: { media: all }]
 
   javascripts:    [lib/jquery/jquery.min.js, lib/jquery.plugins.min.js, lib/bootstrap/bootstrap.min.js, lib/bootstrap-switch.min.js, global.js?201703151259, compte.js, drev.js?20151126, drevmarc.js, form.js, parcellaire.js]
 

@@ -10,10 +10,70 @@ class Tournee extends BaseTournee {
 
     public function constructId() {
         $this->identifiant = sprintf("%s-%s", str_replace("-", "", $this->date), $this->appellation);
+
+        if($this->appellation_complement) {
+            $this->identifiant .= $this->appellation_complement;
+        }
+
+        if($this->millesime) {
+            $this->identifiant .= $this->millesime;
+        }
+
         if ($this->type_tournee == TourneeClient::TYPE_TOURNEE_CONSTAT_VTSGN) {
             $this->identifiant = sprintf("%s-%s", str_replace("-", "", $this->date), $this->agent_unique);
         }
+
+        $this->libelle = null;
+        $this->getLibelle();
+
         $this->set('_id', sprintf("%s-%s", TourneeClient::TYPE_COUCHDB, $this->identifiant));
+    }
+
+    public function getProduitHashConfigByAppellation() {
+        if(!$this->appellation) {
+
+            return null;
+        }
+        return $this->getConfiguration()->declaration->certification->genre->get("appellation_".$this->appellation)->getHash();
+    }
+
+    public function getProduit() {
+        if(!$this->_get('produit')) {
+
+            return $this->getProduitHashConfigByAppellation();
+        }
+
+        return $this->_get('produit');
+    }
+
+    public function getProduitConfig() {
+        if(!$this->_get('produit')) {
+
+            return null;
+        }
+
+        return $this->getConfiguration()->get($this->_get('produit'));
+    }
+
+    public function getLibelle() {
+        if(!$this->_get('libelle')) {
+            $this->_set('libelle', $this->constructLibelle());
+        }
+
+        return $this->_get('libelle');
+    }
+
+    public function constructLibelle() {
+
+        $libelle = null;
+        if($this->getProduitConfig()) {
+            $libelle .= $this->getProduitConfig()->getLibelleComplet();
+        }
+        if($this->millesime) {
+            $libelle .= " ".$this->millesime;
+        }
+
+        return $libelle;
     }
 
     public function getConfiguration() {
@@ -116,6 +176,10 @@ class Tournee extends BaseTournee {
         }
 
         return $this->degustations_object;
+    }
+
+    public function resetDegustationsObject() {
+        $this->degustations_object = array();
     }
 
     public function getDegustationsObjectByCommission($commission) {
@@ -527,6 +591,18 @@ class Tournee extends BaseTournee {
         ksort($notes);
 
         return $notes;
+    }
+
+    public function addDegustateur($type, $compteId) {
+        $compte = CompteClient::getInstance()->find($compteId);
+        $degustateur = $this->degustateurs->add($type)->add($compteId);
+        $degustateur->nom = $compte->nom_a_afficher;
+        $degustateur->email = $compte->email;
+        $degustateur->adresse = $compte->adresse;
+        $degustateur->commune = $compte->commune;
+        $degustateur->code_postal = $compte->code_postal;
+
+        return $degustateur;
     }
 
     /*

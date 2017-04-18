@@ -1,12 +1,17 @@
 function(doc) {
 
     if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Constats" && doc.type != "Facture" && doc.type != "Tirage") {
-        
+
+        return;
+    }
+
+    if(doc.lecture_seule) {
+
         return;
     }
 
     var nb_doc_en_attente = 0;
-    
+
     if(doc.documents) {
         for(key in doc.documents) {
             if(doc.documents[key].statut != "RECU") {
@@ -19,7 +24,7 @@ function(doc) {
     if(doc.validation) {
     validation = doc.validation;
     }
- 
+
     var validation_odg = null;
     if(doc.validation_odg) {
     validation_odg = doc.validation_odg;
@@ -54,6 +59,6 @@ function(doc) {
     if(doc.declarant && doc.declarant.email) {
         email = doc.declarant.email;
     }
-    
+
     emit([doc.type, doc.campagne, validation, validation_odg, etape, doc.identifiant, nb_doc_en_attente, papier, automatique, raison_sociale, commune, email], 1);
 }

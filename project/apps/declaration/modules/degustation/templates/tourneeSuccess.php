@@ -168,9 +168,9 @@
         <div ng-class="{ 'hidden': !operateur.erreurs['aucun_prelevement'] }" class="alert alert-danger">
             Vous n'avez saisi aucun lot<br /><small>Vous pouvez cocher "Aucun prélèvement" si il n'y a aucun prélèvement pour cet opérateur</small>
         </div>
-        <div class="row row-margin " >
-          <div class="col-xs-12">
-            <div id="result-signature-{{operateur._id}}" class="ng-hide visible-print-inline  signature-result well print-margin-bottom" style="width: 290px; padding: 5px;">
+        <div class="row row-margin">
+            <div class="col-xs-12 text-center">
+            <div id="result-signature-{{operateur._id}}" class="ng-hide visible-print-inline  signature-result well print-margin-bottom" style="width: 290px; padding: 5px; display: inline-block;">
                 <img src="">
             </div>
           </div>
@@ -190,34 +190,21 @@
     <section ng-repeat="operateur in operateurs" id="signature_{{ operateur._id }}" ng-show="active == 'signature_'+operateur._id"  >
         <div class="text-center" class="page-header">
           <a ng-click="updateActive(operateur._id)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
-          <h2>Prélévement pour <strong class="lead">{{ operateur.raison_sociale }}</strong><span class="text-muted hidden-xs"> {{ operateur.cvi }}</span> {{operateur.adresse}}  {{operateur.code_postal}}  {{operateur.commune}}</h2>
-        </div>
-        <div ng-show="!loaded" class="row">
-            <div class="col-xs-12 text-center lead text-muted-alt" style="padding-top: 30px;">Chargement en cours ...</div>
+          <h2>
+              Signature<br />
+              <span class="text-muted-alt" style="font-weight: normal">{{ operateur.raison_sociale }}</span>
+          </h2>
         </div>
         <div class="row">
-            <div class="col-xs-12">
-              <div class="signature-pad well" style="width: 290px; padding: 5px;">
+            <div class="col-xs-12 text-center">
+              <div class="signature-pad well" style="width: 290px; padding: 5px; display: inline-block;">
                   <canvas style="width: 100%; height: 200px;" height="200"></canvas>
               </div>
             </div>
         </div>
-        <div ng-show="!state" class="alert alert-warning col-xs-12" style="margin-top: 10px;">
-        Vous n'êtes plus authentifié à la plateforme, veuiller vous <a href="<?php echo url_for("degustation_tournee", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date)) ?>">reconnecter</a> pour pouvoir transmettre vos données.</a>
-        </div>
-        <div ng-show="transmission && transmission_result == 'error'" class="alert alert-danger col-xs-12" style="margin-top: 10px;">
-        La transmission a échoué :-( <small>(vous n'avez peut être pas de connexion internet, veuillez réessayer plus tard)</small>
-        </div>
-        <div ng-show="transmission && transmission_result == 'success'" class="alert alert-success col-xs-12" style="margin-top: 10px;">
-        La transmission a réussi :-)
-        </div>
-        <div ng-show="transmission && transmission_result == 'aucune_transmission'" class="alert alert-success col-xs-12" style="margin-top: 10px;">
-        Rien à transmettre
-        </div>
         <div class="row row-margin hidden-print">
             <div class="col-xs-12 text-center">
-                <a href="" ng-show="!transmission_progress" ng-click="signerRevenir(operateur)" class="btn btn-default btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Signer</a>
-                <span class="text-muted-alt" ng-show="transmission_progress">Transmission en cours...</span>
+                <a href="" ng-click="signerRevenir(operateur)" class="btn btn-default btn-lg btn-upper btn-block"><span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;Signer</a>
             </div>
         </div>
     </section>

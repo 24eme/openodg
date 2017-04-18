@@ -5,6 +5,7 @@ class TourneeClient extends acCouchdbClient {
     const TYPE_MODEL = "Tournee";
     const TYPE_COUCHDB = "TOURNEE";
     const STATUT_ORGANISATION = 'ORGANISATION';
+    const STATUT_SAISIE = 'SAISIE';
     const STATUT_TOURNEES = 'TOURNEES';
     const STATUT_AFFECTATION = 'AFFECTATION';
     const STATUT_DEGUSTATIONS = 'DEGUSTATIONS';
@@ -34,6 +35,25 @@ class TourneeClient extends acCouchdbClient {
         $tournee = new Tournee();
         $tournee->date = $date;
         $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
+        return $tournee;
+    }
+
+    public function createOrFindForSaisieDegustation($appellation, $date) {
+        $tournee = $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, str_replace("-", "", $date), $appellation));
+
+        if($tournee) {
+
+            return $tournee;
+        }
+
+        $tournee = new Tournee();
+        $tournee->appellation = $appellation;
+        $tournee->date = $date;
+        $tournee->nombre_commissions = 1;
+        $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
+        $tournee->statut = TourneeClient::STATUT_SAISIE;
+
+
         return $tournee;
     }
 
