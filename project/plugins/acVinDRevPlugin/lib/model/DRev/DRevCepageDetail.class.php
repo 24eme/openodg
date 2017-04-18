@@ -49,7 +49,7 @@ class DRevCepageDetail extends BaseDRevCepageDetail {
         if($this->canHaveSuperficieVinifiee()) {
             $this->superficie_vinifiee_total = null;
             $this->superficie_vinifiee = null;
-            $this->superficie_vinifiee_total_vt = null;
+            $this->superficie_vinifiee_vt = null;
             $this->superficie_vinifiee_sgn = null;
         }
     }
