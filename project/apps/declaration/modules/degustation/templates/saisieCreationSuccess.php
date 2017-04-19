@@ -1,3 +1,5 @@
+<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
+
 <div class="page-header">
     <h2>Création d'une dégustation</h2>
 </div>

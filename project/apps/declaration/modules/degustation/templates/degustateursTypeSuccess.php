@@ -1,5 +1,7 @@
 <?php use_javascript("degustation.js?201601261522", "last") ?>
 
+<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
+
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_DEGUSTATEURS)); ?>
 
 <div class="page-header">

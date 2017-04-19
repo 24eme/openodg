@@ -348,8 +348,12 @@ class Degustation extends BaseDegustation {
         }
     }
 
-    public function getOrganismeDegustateur() {
+    public function getOrganisme() {
+        if(!$this->exist('organisme') || !$this->_get('organisme')) {
 
-        return "ODG-AVA";
+            return DegustationClient::ORGANISME_DEFAUT;
+        }
+
+        return $this->_get('organisme');
     }
 }

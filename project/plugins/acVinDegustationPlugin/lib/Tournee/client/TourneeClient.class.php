@@ -15,6 +15,26 @@ class TourneeClient extends acCouchdbClient {
     const TYPE_TOURNEE_CONSTAT_VTSGN = "CONSTAT_VTSGN";
     const TYPE_TOURNEE_DEGUSTATION = "DEGUSTATION";
 
+    public static $statutsLibelle = array(
+        self::STATUT_SAISIE => "Saisie",
+        self::STATUT_ORGANISATION => "Organisation",
+        self::STATUT_TOURNEES => "Tournée",
+        self::STATUT_AFFECTATION => "Affectation",
+        self::STATUT_DEGUSTATIONS => "Dégustation",
+        self::STATUT_COURRIERS => "Courriers à envoyer",
+        self::STATUT_TERMINE => "Terminée",
+    );
+
+    public static $couleursStatut = array(
+        TourneeClient::STATUT_SAISIE => "default-step",
+        TourneeClient::STATUT_ORGANISATION => "default-step",
+        TourneeClient::STATUT_TOURNEES => "info",
+        TourneeClient::STATUT_AFFECTATION => "warning",
+        TourneeClient::STATUT_DEGUSTATIONS => "danger",
+        TourneeClient::STATUT_COURRIERS => "success",
+        TourneeClient::STATUT_TERMINE => "default",
+    );
+
     public static function getInstance() {
 
         return acCouchdbManager::getClient("Tournee");
@@ -35,6 +55,7 @@ class TourneeClient extends acCouchdbClient {
         $tournee = new Tournee();
         $tournee->date = $date;
         $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
+        $tournee = DegustationClient::ORGANISME_DEFAUT;
         return $tournee;
     }
 
@@ -52,7 +73,7 @@ class TourneeClient extends acCouchdbClient {
         $tournee->nombre_commissions = 1;
         $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
         $tournee->statut = TourneeClient::STATUT_SAISIE;
-
+        $tournee->organisme = "Gestion locale";
 
         return $tournee;
     }

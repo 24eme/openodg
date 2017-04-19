@@ -1,17 +1,40 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
-<div class="row">
-    <div class="col-xs-12">
 
-        <table class="table table-striped">
-
+        <h2>Informations <?php if(!$tournee->getNbTournees()): ?><a href="" class="btn btn-xs btn-default-step">Modifier</a><?php endif; ?></h2>
+        <table class="table table-condensed table-striped">
             <tr>
-                <th>Date/heure</th>
-                <th>Action</th>
+                <td class="col-xs-3"><strong>Date de la dégustation</strong></td>
+                <td class="col-xs-9"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></td>
             </tr>
             <tr>
-                <td><?php if(str_replace("-", "", $tournee->date)) { echo ucfirst(format_date($tournee->date, "P", "fr_FR")); }; ?></td>
-                <td><a href="<?php echo url_for("degustation_saisie", $tournee) ?>">Saisie</a></td>
+                <td class="col-xs-3"><strong>Appellation</strong></td>
+                <td class="col-xs-9"><?php echo $tournee->getLibelle() ?></td>
+            </tr>
+            <tr>
+                <td class="col-xs-3"><strong>Demande de prélèvement</strong></td>
+                <td class="col-xs-9"><?php if($tournee->date_prelevement_debut): ?><?php echo getDatesPrelevements($tournee); ?><?php else: ?><em>Aucune</em><?php endif; ?></td>
+            </tr>
+            <tr>
+                <td class="col-xs-3"><strong>Opérateurs</strong></td>
+                <td class="col-xs-9"><?php echo count($tournee->operateurs) ?></td>
+            </tr>
+            <tr>
+                <td class="col-xs-3"><strong>Prélèvements</strong></td>
+                <td class="col-xs-9"><?php echo $tournee->nombre_prelevements ?> vins (<?php echo $tournee->getNbLots() ?> lots prévus)</td>
+            </tr>
+            <tr>
+                <td class="col-xs-3"><strong>Organisme</strong></td>
+                <td class="col-xs-9"><?php echo $tournee->organisme ?></td>
+            </tr>
+
+        </table>
+
+        <h2>Résumé des actions</h2>
+        <table class="table table-condensed table-striped">
+            <tr>
+                <th class="col-xs-3">Date/heure</th>
+                <th class="col-xs-9">Action</th>
             </tr>
             <?php foreach ($tournee->getTournees() as $date_compteid => $t):  ?>
              <tr>
@@ -31,5 +54,3 @@
                 </td>
             </tr>
         </table>
-    </div>
-</div>

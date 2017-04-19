@@ -15,6 +15,7 @@ Tournee:
       appellation_libelle: { required: false }
       libelle: { }
       produit: { }
+      organisme: { }
       date_prelevement_debut: { }
       date_prelevement_fin: { }
       nombre_commissions: { type: integer }
@@ -102,6 +103,7 @@ Degustation:
       type: {  }
       appellation: { }
       appellation_complement: { }
+      organisme: { }
       millesime: { }
       libelle: { }
       appellation_libelle: { required: false }

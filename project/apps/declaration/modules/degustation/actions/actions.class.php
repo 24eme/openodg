@@ -287,7 +287,7 @@ class degustationActions extends sfActions {
         $values = $request->getParameter("degustateurs", array());
 
         foreach ($values as $key => $value) {
-            $this->tournee->degustateurs->addDegustateur($this->type, $this->degustateurs[$key]->_id);
+            $this->tournee->addDegustateur($this->type, $this->degustateurs[$key]->_id);
         }
 
         $degustateurs_to_delete = array();

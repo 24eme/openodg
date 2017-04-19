@@ -49,8 +49,8 @@ function getExplicationsPDF($prelevement) {
             return "<p style=\"text-align: justify;\">Nos experts ont noté des observations sur votre vin. N'hésitez pas à nous solliciter si vous avez besoin d'un appui technique suite à ces remarques ou simplement pour vous apporter un éclairage sur le cahier des charges.</p>";
         case DegustationClient::COURRIER_TYPE_VISITE: {
                 $heurePlus = (int) format_date($prelevement->visite_heure, "H", "fr_FR") + 2;
-                return "<p style=\"text-align: justify;\">Afin de discuter avec vous des remarques attribuées à votre échantillon, nous vous proposons de vous rencontrer <strong>à votre chai</strong>.</p>
-<p style=\"text-align: center;\"><strong>Le " . ucfirst(format_date($prelevement->visite_date, "P", "fr_FR")) . " entre " . format_date($prelevement->visite_heure, "H", "fr_FR") . "h et " . $heurePlus . "h</strong></p>
+                return "<p style=\"text-align: justify;\">Afin de discuter avec vous des remarques attribuées à votre échantillon, nous vous proposons de vous rencontrer <strong>à votre chai</strong> :</p>
+<p style=\"text-align: center;\"><strong>Le " . format_date($prelevement->visite_date, "P", "fr_FR") . " entre " . format_date($prelevement->visite_heure, "H", "fr_FR") . "h et " . $heurePlus . "h</strong></p>
 <p style=\"text-align: justify;\">En cas d'empêchement, merci de nous le faire savoir au ".sfConfig::get('app_degustation_courrier_visitetel')." (".sfConfig::get('app_degustation_courrier_visiteorga').").</p>";
             }
         default:

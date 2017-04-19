@@ -60,7 +60,26 @@ class Tournee extends BaseTournee {
             $this->_set('libelle', $this->constructLibelle());
         }
 
+        if(!$this->_get('libelle') && $this->exist('appellation_libelle')) {
+
+            return $this->appellation_libelle;
+        }
+
         return $this->_get('libelle');
+    }
+
+    public function getAppellationLibelle() {
+        if(!$this->appellation) {
+            return null;
+        }
+
+        if(!$this->exist('appellation_libelle') || !$this->_get('appellation_libelle')) {
+            $appellationsWithLibelle = TourneeCreationForm::getAppellationChoices();
+
+            return $appellationsWithLibelle[$this->appellation];
+        }
+
+        return $this->_get('appellation_libelle');
     }
 
     public function constructLibelle() {
@@ -68,7 +87,10 @@ class Tournee extends BaseTournee {
         $libelle = null;
         if($this->getProduitConfig()) {
             $libelle .= $this->getProduitConfig()->getLibelleComplet();
+        } else {
+            $libelle .= $this->getAppellationLibelle();
         }
+
         if($this->millesime) {
             $libelle .= " ".$this->millesime;
         }
@@ -262,6 +284,12 @@ class Tournee extends BaseTournee {
         }
 
         return true;
+    }
+
+    public function getNbTournees() {
+        $nb_tournees = 0; foreach($this->agents as $agent): $nb_tournees += count((array) $agent->dates); endforeach;
+
+        return $nb_tournees;
     }
 
     public function getNbLots() {
@@ -684,6 +712,15 @@ class Tournee extends BaseTournee {
         if ($rendezvoussNode->exist($rendezvous->_id)) {
             $rendezvoussNode->remove($rendezvous->_id);
         }
+    }
+
+    public function getOrganisme() {
+        if(!$this->exist('organisme') || !$this->_get('organisme')) {
+
+            return DegustationClient::ORGANISME_DEFAUT;
+        }
+
+        return $this->_get('organisme');
     }
 
 }

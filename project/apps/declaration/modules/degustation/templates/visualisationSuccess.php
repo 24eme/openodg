@@ -1,8 +1,10 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 
+<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
+
 <div class="page-header no-border">
-    <h2><?php echo $tournee->libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($tournee); ?></span>&nbsp;<div class="btn-group"><button class="btn btn-default btn-default-step btn-sm"><?php echo count($tournee->operateurs) ?>&nbsp;opérateurs</button><button class="btn btn-default btn-default-step btn-sm"><?php echo ($tournee->nombre_prelevements) ? $tournee->nombre_prelevements : "0" ?> prélevement<?php if($tournee->nombre_prelevements): ?>s<?php endif; ?> (<?php echo $tournee->getNbLots() ?> prévus)</button></div></h2>
+    <h2>Visualisation de la dégustation du <?php echo format_date($tournee->date, "P", "fr_FR") ?> <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="btn pull-right btn-sm btn-<?php echo TourneeClient::$couleursStatut[$tournee->statut] ?>"><?php echo TourneeClient::$statutsLibelle[$tournee->statut] ?></a></h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -33,8 +35,10 @@
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_degustations', $tournee) ?>"><span class="glyphicon glyphicon-glass"></span>&nbsp;&nbsp;Saisir les dégustations</a>
         <?php elseif ($tournee->statut == TourneeClient::STATUT_AFFECTATION || ($tournee->statut == TourneeClient::STATUT_TOURNEES && $tournee->isTourneeTerminee())): ?>
             <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_affectation', $tournee) ?>"><span class="glyphicon glyphicon-list-alt"></span>&nbsp;&nbsp;Anonymer les prélèvements</a>
-        <?php elseif (!in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS, TourneeClient::STATUT_TERMINE))): ?>
-            <a class="btn btn-warning btn-lg" href="<?php echo url_for('degustation_organisation', $tournee) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier l'organisation des tournées</a>
+        <?php elseif (in_array($tournee->statut, array(TourneeClient::STATUT_TOURNEES))): ?>
+            <a class="btn btn-default-step btn-lg" href="<?php echo url_for('degustation_organisation', $tournee) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier l'organisation des tournées</a>
+        <?php elseif (in_array($tournee->statut, array(TourneeClient::STATUT_SAISIE, TourneeClient::STATUT_ORGANISATION))): ?>
+            <a class="btn btn-default-step btn-lg" href="<?php echo url_for('degustation_edit', $tournee) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer</a>
         <?php endif; ?>
     </div>
 </div>

@@ -20,6 +20,8 @@ class DegustationClient extends acCouchdbClient {
     const COURRIER_TYPE_OK = "OK" ;
     const COURRIER_TYPE_VISITE = "VISITE" ;
 
+    const ORGANISME_DEFAUT = "ODG-AVA";
+
     public static $note_type_libelles = array(
         self::NOTE_TYPE_QUALITE_TECHNIQUE => "Qualité technique",
         self::NOTE_TYPE_MATIERE => "Matière",
@@ -134,7 +136,9 @@ class DegustationClient extends acCouchdbClient {
 
     public function findOrCreateByTournee(Tournee $tournee, $identifiant) {
 
-        return $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation, $tournee->appellation_complement, $tournee->millesime);
+        $degustation = $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation, $tournee->appellation_complement, $tournee->millesime);
+
+        $degustation->organisme = $tournee->organisme;
     }
 
     public function findOrCreateForSaisieByTournee(Tournee $tournee, $identifiant) {

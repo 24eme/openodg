@@ -1,9 +1,12 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
+
+<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
+
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_VALIDATION)); ?>
 
 <div class="page-header no-border">
-    <h2><?php echo $tournee->appellation_libelle; ?>&nbsp;<span class="small"><?php echo getDatesPrelevements($tournee); ?></span>
+    <h2>Validation de la dégustation du <?php echo format_date($tournee->date, "P", "fr_FR") ?></span>
     </h2>
 
 </div>
@@ -14,10 +17,6 @@
 <form action="<?php echo url_for('degustation_validation', $tournee); ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-
-    <div class="lead text-muted">
-    <?php echo $tournee->getNbLots() ?>&nbsp;lot(s) pour <?php echo count($tournee->operateurs) ?>&nbsp;opérateur(s)
-    </div>
 
     <?php include_partial('degustation/recap', array('tournee' => $tournee)); ?>
 
