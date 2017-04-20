@@ -8,7 +8,7 @@ class adminComponents extends sfComponents {
         $this->statut = $request->getParameter('doc_statut');
 
         $this->statuts_libelle = array("a_valider" => "À Valider", "valide" => "Validé", "brouillon" => "En cours de saisie");
-        
+
         $this->buildLists();
 
         if(!$this->statut && !$this->lists[$this->current_key_list]['statuts']['a_valider']) {
@@ -29,7 +29,7 @@ class adminComponents extends sfComponents {
         $this->lists["DRev ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()] = $this->getList("DRev", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->lists["DRev Marc ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()] = $this->getList("DRevMarc", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $this->lists["Parcellaire ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRE-/", $document->id); });
-        $this->lists["Parcellaire Crémant ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
+        $this->lists["Parcellaire Crém. ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()] = $this->getList("Parcellaire", ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext(), function($document) { return preg_match("/PARCELLAIRECREMANT-/", $document->id); });
         $this->lists["Tirage ".ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()] = $this->getList("Tirage", ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), function($document) { return preg_match("/TIRAGE-/", $document->id); });
     }
 
@@ -44,9 +44,9 @@ class adminComponents extends sfComponents {
         $lists = array("type" => $type,
                        "campagne" => $campagne,
                        "statuts" => array(
-                           "a_valider" => array(), 
-                           "valide" => array(), 
-                           "brouillon" => array(), 
+                           "a_valider" => array(),
+                           "valide" => array(),
+                           "brouillon" => array(),
                        ),
                        "stats" => array(
                             "global" => array("nb_teledeclares" => 0, "nb_papiers" => 0, "nb_can_be_validate" => 0, "nb_brouillon" => 0),
@@ -69,7 +69,7 @@ class adminComponents extends sfComponents {
 
         foreach($documents as $document) {
             if($document->key[DeclarationTousView::KEY_AUTOMATIQUE] && $document->key[DeclarationTousView::KEY_AUTOMATIQUE]) {
-                
+
                 continue;
             }
 
@@ -91,7 +91,7 @@ class adminComponents extends sfComponents {
 
             if($document->key[DeclarationTousView::KEY_VALIDATION_ODG]) {
                 $lists["statuts"]["valide"][] = $document;
-                
+
                 if($document->key[DeclarationTousView::KEY_PAPIER]) {
                     $lists["stats"]["valide"]["nb_papiers"] += 1;
                 } else {
@@ -116,7 +116,7 @@ class adminComponents extends sfComponents {
 
                 continue;
             }
-            
+
             $lists["statuts"]["brouillon"][] = $document;
 
             if($document->key[DeclarationTousView::KEY_PAPIER]) {
