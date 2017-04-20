@@ -8,7 +8,7 @@
                 <td class="col-xs-9"><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></td>
             </tr>
             <tr>
-                <td class="col-xs-3"><strong>Appellation</strong></td>
+                <td class="col-xs-3"><strong>Produit</strong></td>
                 <td class="col-xs-9"><?php echo $tournee->getLibelle() ?></td>
             </tr>
             <tr>

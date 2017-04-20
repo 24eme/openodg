@@ -109,7 +109,8 @@ class TourneeSaisieForm extends acCouchdbForm {
             $prelevement->cuve = null;
             $prelevement->commission = $value["commission"];
             $prelevement->hash_produit = $value["produit"];
-            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleComplet();
+            $prelevement->libelle_produit = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getCouleur()->getLibelleComplet();
+            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleLong();
             $prelevement->anonymat_degustation = $value["numero"];
         }
 

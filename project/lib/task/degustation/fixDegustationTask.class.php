@@ -16,8 +16,8 @@ class FixDegustationTask extends sfBaseTask
         ));
 
         $this->namespace = 'fix';
-        $this->name = 'Degustation';
-        $this->briefDescription = "Corrige le parcellaire passé en parametre";
+        $this->name = 'degustation';
+        $this->briefDescription = "Corrige les dégustations après une petite refonte";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -35,37 +35,22 @@ EOF;
             throw new sfException("Tournee introuvable");
         }
 
-        if(!$tournee->exist('operateurs')) {
-            echo "Tournee déja converti\n";
+        if($tournee->libelle == TourneeClient::TYPE_TOURNEE_CONSTAT_VTSGN) {
             return;
         }
 
-        foreach($tournee->_get('operateurs') as $operateur) {
-            $degustation = DegustationClient::getInstance()->findOrCreateByTournee($tournee, $operateur->getKey());
-            $datas = $operateur->toArray(true, false);
+        $tournee->millesime = $tournee->getMillesime();
+        $tournee->type_tournee = TourneeClient::TYPE_TOURNEE_DEGUSTATION;
+        $tournee->organisme = DegustationClient::ORGANISME_DEFAUT;
+        $tournee->libelle = $tournee->constructLibelle();
 
-            foreach($datas as $key => $data) {
-                if($key == "degustation") {
-                    continue;
-                }
-                $degustation->add($key, $data);
-            }
-
-            $degustation->date_prelevement = $degustation->date;
-            $degustation->remove('lng');
-            $degustation->remove('date');
-            foreach($degustation->prelevements as $prelevement) {
-                if(strlen($prelevement->anonymat_prelevement) <= 3) {
-                    continue;
-                }
-                $prelevement->anonymat_prelevement_complet =$prelevement->anonymat_prelevement;
-                $prelevement->anonymat_prelevement = (int) substr($prelevement->anonymat_prelevement, 2, 3);
-            }
-            $degustation->save();
-            $tournee->degustations->add($degustation->identifiant, $degustation->_id);
+        foreach($tournee->getDegustationsObject() as $degustation) {
+            $degustation->millesime = $tournee->millesime;
+            $degustation->organisme = $tournee->organisme;
+            $degustation->libelle = $tournee->libelle;
         }
 
-        $tournee->remove('operateurs');
         $tournee->save();
+        $tournee->saveDegustations();
     }
 }

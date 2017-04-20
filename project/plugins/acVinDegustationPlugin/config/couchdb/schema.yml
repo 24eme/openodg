@@ -9,7 +9,7 @@ Degustation:
       appellation_complement: { }
       organisme: { }
       millesime: { }
-      libelle: { required: false }
+      libelle: { }
       appellation_libelle: { required: false }
       date_degustation: { }
       identifiant: { }

@@ -418,7 +418,7 @@ class Tournee extends BaseTournee {
 
     public function getCampagne() {
 
-        return ConfigurationClient::getInstance()->getCampagneManager()->getCampagneByDate(($this->date_prelevement_debut) ? $this->date_prelevement_debut : $this->date);
+        return $this->millesime;
     }
 
     public function cleanOperateurs($save = true) {

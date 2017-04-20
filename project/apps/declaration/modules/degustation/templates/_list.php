@@ -17,8 +17,8 @@
     <tr>
         <td><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></td>
         <td><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation; ?></td>
-        <td><?php echo $nb_operateurs ?> opérateurs <small>(<?php echo $nb_tournees; ?> tournées)</small><br />
-            <?php echo $tournee->nombre_prelevements ?> prélèvements
+        <td><?php echo $tournee->nombre_prelevements ?> prélèvements<br />
+            <span class="text-muted"><?php echo $nb_operateurs ?> opérateurs <small>(<?php echo $nb_tournees; ?> tournées)</small></span>
         </td>
         <td class="text-center"><a href="<?php if (in_array($tournee->statut, array(TourneeClient::STATUT_SAISIE, TourneeClient::STATUT_ORGANISATION))): ?><?php echo url_for('degustation_edit', $tournee) ?><?php else: ?><?php echo url_for('degustation_visualisation', $tournee) ?><?php endif; ?>" class="btn btn-block btn-sm btn-<?php echo TourneeClient::$couleursStatut[$tournee->statut] ?>"><?php echo TourneeClient::$statutsLibelle[$tournee->statut] ?></a></td>
     </tr>

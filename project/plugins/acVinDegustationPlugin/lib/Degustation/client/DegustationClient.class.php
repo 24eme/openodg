@@ -137,6 +137,7 @@ class DegustationClient extends acCouchdbClient {
         $degustation->appellation_complement = $tournee->appellation_complement;
         $degustation->millesime = $tournee->millesime;
         $degustation->organisme = $tournee->organisme;
+        $degustation->libelle = $tournee->libelle;
         $degustation->constructId();
 
         return $degustation;

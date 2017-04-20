@@ -58,7 +58,7 @@
         <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
             <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Lot n°{{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
+                <h2>Lot n° {{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
             </div>
             <div class="row">
                 <div class="col-xs-12">
@@ -90,7 +90,7 @@
                                 </select>
                                 </div>
                             </div>
-                           
+
                         </div>
                         <?php endforeach; ?>
                         <div ng-show="prelevement.has_erreurs && prelevement.erreurs['requis']" class="alert alert-danger text-center">
@@ -119,7 +119,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section ng-show="active == 'ajout_defaut'">
             <div href="" ng-click="showCepage(ajout_defaut.prelevement)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">

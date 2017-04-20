@@ -5,6 +5,17 @@
  */
 
 class Degustation extends BaseDegustation {
+
+    public function getConfiguration() {
+
+        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->getCampagne());
+    }
+
+    public function getCampagne() {
+
+        return $this->millesime;
+    }
+
     public function constructId() {
         $id = sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date_degustation), $this->appellation);
 
@@ -244,7 +255,10 @@ class Degustation extends BaseDegustation {
         $prelevement = $this->prelevements->add();
         $prelevement->hash_produit = $lot->hash_produit;
         $prelevement->libelle = $lot->libelle;
-        $prelevement->libelle_produit = $lot->libelle_produit;
+        $prelevement->updateLibelleProduit();
+        if($lot->libelle_produit) {
+            $prelevement->libelle_produit = $lot->libelle_produit;
+        }
         $prelevement->vtsgn = $lot->vtsgn;
         $prelevement->volume_revendique = $lot->volume_revendique;
 
