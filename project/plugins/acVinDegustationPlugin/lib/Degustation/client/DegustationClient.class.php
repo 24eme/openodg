@@ -30,6 +30,12 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_EQUILIBRE => "Équilibre",
     );
 
+    public static $appellations = array(
+        "ALSACE" => "AOC Alsace",
+        "VTSGN" => "VT / SGN",
+        "GRDCRU" => "AOC Alsace Grand Cru",
+    );
+
     public static $note_type_by_appellation = array(
         'ALSACE' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE),
         'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_CONCENTRATION, self::NOTE_TYPE_EQUILIBRE),
@@ -106,18 +112,19 @@ class DegustationClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findOrCreate($identifiant, $date, $appellation, $appellation_complement = null, $millesime = null) {
-        $id = sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $date), $appellation);
+    public function findOrCreateByTournee(Tournee $tournee, $identifiant) {
+        $id = sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $tournee->date), $tournee->appellation);
 
-        if($appellation_complement) {
-            $id .= $appellation_complement;
+        if($tournee->appellation_complement) {
+            $id .= $tournee->appellation_complement;
         }
 
-        if($millesime) {
-            $id .= $millesime;
+        if($tournee->millesime) {
+            $id .= $tournee->millesime;
         }
 
         $degustation = $this->find($id);
+
         if($degustation) {
 
             return $degustation;
@@ -125,20 +132,14 @@ class DegustationClient extends acCouchdbClient {
 
         $degustation = new Degustation();
         $degustation->identifiant = $identifiant;
-        $degustation->date_degustation = $date;
-        $degustation->appellation = $appellation;
-        $degustation->appellation_complement = $appellation_complement;
-        $degustation->millesime = $millesime;
+        $degustation->date_degustation = $tournee->date;
+        $degustation->appellation = $tournee->appellation;
+        $degustation->appellation_complement = $tournee->appellation_complement;
+        $degustation->millesime = $tournee->millesime;
+        $degustation->organisme = $tournee->organisme;
         $degustation->constructId();
 
         return $degustation;
-    }
-
-    public function findOrCreateByTournee(Tournee $tournee, $identifiant) {
-
-        $degustation = $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation, $tournee->appellation_complement, $tournee->millesime);
-
-        $degustation->organisme = $tournee->organisme;
     }
 
     public function findOrCreateForSaisieByTournee(Tournee $tournee, $identifiant) {
@@ -177,5 +178,10 @@ class DegustationClient extends acCouchdbClient {
     public function getLastDegustationByStatut($appellation, $identifiant, $statut) {
 
         return DegustationTousView::getInstance()->getLastDegustationByStatut($appellation, $identifiant, $statut);
+    }
+
+    public function getAppellationLibelle($appellation) {
+
+        return self::$appellations[$appellation];
     }
 }

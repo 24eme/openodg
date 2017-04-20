@@ -24,11 +24,9 @@ class TourneeCreationForm extends acCouchdbObjectForm
 
     public static function getAppellationChoices() {
 
-        return array(
-            "" => "",
-            "ALSACE" => "AOC Alsace",
-            "VTSGN" => "VT / SGN",
-            "GRDCRU" => "AOC Alsace Grand Cru"
+        return array_merge(
+            array("" => ""),
+            DegustationClient::$appellations
         );
     }
 

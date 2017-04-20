@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 
-        <h2>Informations <?php if(!$tournee->getNbTournees()): ?><a href="" class="btn btn-xs btn-default-step">Modifier</a><?php endif; ?></h2>
+        <h2>Informations <?php if(!$tournee->getNbTournees()): ?><a href="<?php echo url_for('degustation_edit', $tournee) ?>" class="btn btn-xs btn-default-step">Modifier</a><?php endif; ?></h2>
         <table class="table table-condensed table-striped">
             <tr>
                 <td class="col-xs-3"><strong>Date de la dégustation</strong></td>
@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td class="col-xs-3"><strong>Prélèvements</strong></td>
-                <td class="col-xs-9"><?php echo $tournee->nombre_prelevements ?> vins (<?php echo $tournee->getNbLots() ?> lots prévus)</td>
+                <td class="col-xs-9"><?php echo $tournee->nombre_prelevements ?> vins <?php if($tournee->getNbLots()): ?>(<?php echo $tournee->getNbLots() ?> lots prévus)<?php endif; ?></td>
             </tr>
             <tr>
                 <td class="col-xs-3"><strong>Organisme</strong></td>

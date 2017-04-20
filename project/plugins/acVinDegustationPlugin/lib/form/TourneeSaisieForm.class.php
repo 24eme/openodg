@@ -58,36 +58,6 @@ class TourneeSaisieForm extends acCouchdbForm {
 
         }
         $nodes_to_remove = array();
-        /*foreach ($taintedValues as $key => $values) {
-            if (array_key_exists($key, $this->embeddedForms)) {
-                foreach ($values as $keyValue => $value) {
-                    if ($keyValue == 'identifiant') {
-                        $keyEmbedded = explode('_', $key);
-                        if (($keyEmbedded[0] != str_replace('SOCIETE-', '', $value) . '01') && $keyEmbedded[0] != "nouveau") {
-
-                            if ($value && SocieteClient::getInstance()->find($value) && $values['quantite']) {
-                                $identifiant = str_replace("SOCIETE-", "", $values['identifiant']) . '01';
-
-                                $keyMvt = $keyEmbedded[1];
-                                $newKey = $identifiant . '_' . $keyMvt;
-
-                                $mouvementCloned = clone $this->getObject()->getOrAdd($keyEmbedded[0])->get($keyEmbedded[1]);
-                                $mouvementCloned->identifiant = str_replace("SOCIETE-", "", $values['identifiant']) . '01';
-
-                                $mouvement = $this->getObject()->getOrAdd($mouvementCloned->identifiant)->add($keyMvt, $mouvementCloned);
-
-                                $this->embedForm($newKey, new FactureMouvementEtablissementEditionLigneForm($mouvement, array('interpro_id' => $this->interpro_id, 'keyMvt' => $newKey)));
-                                $taintedValues[$newKey] = $taintedValues[$key];
-                                $this->validatorSchema[$newKey] = $this->validatorSchema[$key];
-                                $this->widgetSchema[$newKey] = $this->widgetSchema[$key];
-
-                                $nodes_to_remove[] = $key;
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
 
         foreach ($nodes_to_remove as $nodeToRemoveKey) {
             $keyEmbedded = explode('_', $nodeToRemoveKey);
@@ -153,6 +123,7 @@ class TourneeSaisieForm extends acCouchdbForm {
 
         $this->getDocument()->generateNotes();
         $this->getDocument()->updateNombrePrelevements();
+        $this->getDocument()->updateNombreCommissionsFromDegustations();
         $this->getDocument()->save();
         $this->getDocument()->saveDegustations();
     }

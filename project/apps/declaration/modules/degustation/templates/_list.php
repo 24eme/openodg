@@ -16,7 +16,7 @@
         <?php $nb_prelevements = 0; ?>
     <tr>
         <td><?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></td>
-        <td><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation_libelle; ?></td>
+        <td><?php echo (isset($tournee->libelle)) ? $tournee->libelle : $tournee->appellation; ?></td>
         <td><?php echo $nb_operateurs ?> opérateurs <small>(<?php echo $nb_tournees; ?> tournées)</small><br />
             <?php echo $tournee->nombre_prelevements ?> prélèvements
         </td>

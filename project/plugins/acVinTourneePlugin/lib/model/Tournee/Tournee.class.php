@@ -60,35 +60,23 @@ class Tournee extends BaseTournee {
             $this->_set('libelle', $this->constructLibelle());
         }
 
-        if(!$this->_get('libelle') && $this->exist('appellation_libelle')) {
-
-            return $this->appellation_libelle;
-        }
-
         return $this->_get('libelle');
     }
 
-    public function getAppellationLibelle() {
-        if(!$this->appellation) {
-            return null;
+    public function getMillesime() {
+        if(!$this->_get('millesime')) {
+            return ((int) substr($this->date, 0, 4) - 1)."";
         }
 
-        if(!$this->exist('appellation_libelle') || !$this->_get('appellation_libelle')) {
-            $appellationsWithLibelle = TourneeCreationForm::getAppellationChoices();
-
-            return $appellationsWithLibelle[$this->appellation];
-        }
-
-        return $this->_get('appellation_libelle');
+        return $this->_get('millesime');
     }
 
     public function constructLibelle() {
-
         $libelle = null;
         if($this->getProduitConfig()) {
             $libelle .= $this->getProduitConfig()->getLibelleComplet();
-        } else {
-            $libelle .= $this->getAppellationLibelle();
+        } elseif($this->appellation) {
+            $libelle .= DegustationClient::getInstance()->getAppellationLibelle($this->appellation);
         }
 
         if($this->millesime) {
@@ -182,6 +170,14 @@ class Tournee extends BaseTournee {
         $this->getDegustationsObject();
 
         return $this->degustations_object[$cvi];
+    }
+
+    public function setMillesime($millesime) {
+        if($millesime) {
+            $millesime .= "";
+        }
+
+        return $this->_set('millesime', $millesime);
     }
 
     public function getDegustationsObject() {
@@ -442,7 +438,7 @@ class Tournee extends BaseTournee {
 
     public function generateDegustations() {
         foreach ($this->operateurs as $operateur) {
-            $degustation = DegustationClient::getInstance()->findOrCreate($operateur->cvi, $this->date, $this->appellation);
+            $degustation = DegustationClient::getInstance()->findOrCreateByTournee($this, $operateur->cvi);
             $operateur->updateDegustation($degustation);
             $degustation->save();
             $operateur->degustation = $degustation->_id;
@@ -471,7 +467,7 @@ class Tournee extends BaseTournee {
             return $this->getDegustationObject($drev->identifiant);
         }
 
-        $degustation = DegustationClient::getInstance()->findOrCreate($drev->identifiant, $this->date, $this->appellation);
+        $degustation = DegustationClient::getInstance()->findOrCreateByTournee($this, $drev->identifiant);
 
         $degustation->updateFromDRev($drev);
         $degustation->constructId();
@@ -524,6 +520,28 @@ class Tournee extends BaseTournee {
         }
 
         return $this->_get('nombre_prelevements');
+    }
+
+    public function updateNombreCommissionsFromDegustations() {
+
+        $this->nombre_commissions = count($this->getCommissions());
+    }
+
+    public function getCommissions() {
+        $commissions = array();
+        foreach ($this->getDegustationsObject() as $degustation) {
+            $commissions = $commissions + $degustation->getCommissions();
+        }
+
+        if(count($commissions) < $this->nombre_commissions) {
+            for($i = 1; $i <= $this->nombre_commissions; $i++) {
+                $commissions[$i+""] = $i+"";
+            }
+        }
+
+        ksort($commissions);
+
+        return $commissions;
     }
 
     public function hasSentCourrier() {

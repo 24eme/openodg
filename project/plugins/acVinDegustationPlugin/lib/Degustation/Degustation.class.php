@@ -123,19 +123,6 @@ class Degustation extends BaseDegustation {
         return "DREV-".$this->getIdentifiant()."-2014";
     }
 
-    public function getAppellationLibelle() {
-        if(!$this->appellation) {
-            return null;
-        }
-
-        if(!$this->_get('appellation_libelle')) {
-            $appellationsWithLibelle = TourneeCreationForm::getAppellationChoices();
-            $this->_set("appellation_libelle", $appellationsWithLibelle[$this->appellation]);
-        }
-
-        return $this->_get('appellation_libelle');
-    }
-
     public function isDeguste() {
           foreach($this->prelevements as $prelevement) {
             if(!is_null($prelevement->anonymat_degustation)) {
@@ -294,6 +281,18 @@ class Degustation extends BaseDegustation {
         return true;
     }
 
+    public function getCommissions() {
+        $commissions = array();
+        foreach($this->prelevements as $prelevement) {
+            if(!$prelevement->commission) {
+                continue;
+            }
+            $commissions[$prelevement->commission] = $prelevement->commission;
+        }
+
+        return $commissions;
+    }
+
     public function isDegustationTerminee() {
         foreach($this->prelevements as $prelevement) {
             if(!$prelevement->isDegustationTerminee()) {
@@ -316,13 +315,17 @@ class Degustation extends BaseDegustation {
         return false;
     }
 
-    public function generateCourrier() {
-
-    }
-
     public function getCompte() {
 
         return CompteClient::getInstance()->findByIdentifiant("E" . $this->getIdentifiant());
+    }
+
+    public function setMillesime($millesime) {
+        if($millesime) {
+            $millesime .= "";
+        }
+
+        return $this->_set('millesime', $millesime);
     }
 
     public function updateFromCompte() {

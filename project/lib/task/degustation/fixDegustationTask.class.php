@@ -41,7 +41,7 @@ EOF;
         }
 
         foreach($tournee->_get('operateurs') as $operateur) {
-            $degustation = DegustationClient::getInstance()->findOrCreate($operateur->getKey(), $tournee->date, $tournee->appellation);
+            $degustation = DegustationClient::getInstance()->findOrCreateByTournee($tournee, $operateur->getKey());
             $datas = $operateur->toArray(true, false);
 
             foreach($datas as $key => $data) {
