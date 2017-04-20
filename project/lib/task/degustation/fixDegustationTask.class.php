@@ -30,10 +30,12 @@ EOF;
 
         $tournee = TourneeClient::getInstance()->find($arguments['tournee_id']);
 
+
         if(!$tournee) {
 
             throw new sfException("Tournee introuvable");
         }
+        echo $tournee->_id."\n";
 
         if($tournee->libelle == TourneeClient::TYPE_TOURNEE_CONSTAT_VTSGN) {
             return;
@@ -45,6 +47,7 @@ EOF;
         $tournee->libelle = $tournee->constructLibelle();
 
         foreach($tournee->getDegustationsObject() as $degustation) {
+            echo $degustation->_id."\n";
             $degustation->millesime = $tournee->millesime;
             $degustation->organisme = $tournee->organisme;
             $degustation->libelle = $tournee->libelle;
