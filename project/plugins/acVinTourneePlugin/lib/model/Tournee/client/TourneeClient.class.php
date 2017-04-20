@@ -258,32 +258,23 @@ class TourneeClient extends acCouchdbClient {
         return $degustateurs_result;
     }
 
-    public function getTournees($hydrate = acCouchdbClient::HYDRATE_JSON) {
+    public function getTourneesByType($type, $hydrate = acCouchdbClient::HYDRATE_JSON) {
 
-        return $this->startkey("TOURNEE-999999999-ZZZZZZZZZZ")
+        $resultats = $this->startkey("TOURNEE-999999999-ZZZZZZZZZZ")
                         ->endkey("TOURNEE-00000000-AAAAAAAAA")
                         ->descending(true)
                         ->execute($hydrate);
-    }
 
-    public function getPrevious($tournee_id) {
-        $tournees = $this->getTournees();
-
-        $finded = false;
-        foreach ($tournees as $row) {
-            if ($row->_id == $tournee_id) {
-                $finded = true;
+        $tournees = array();
+        foreach($resultats as $tournee) {
+            if($tournee->type_tournee != $type) {
                 continue;
             }
 
-            if (!$finded) {
-                continue;
-            }
-
-            return $this->find($row->_id);
+            $tournees[$tournee->_id] = $tournee;
         }
 
-        return null;
+        return $tournees;
     }
 
     public function findTourneeByIdRendezvous($idRendezvous) {

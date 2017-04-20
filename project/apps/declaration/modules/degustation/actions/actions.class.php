@@ -3,6 +3,8 @@
 class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
+        $this->tournees = TourneeClient::getInstance()->getTourneesByType(TourneeClient::TYPE_TOURNEE_DEGUSTATION);
+        
         $this->tournee = new Tournee();
         $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
 

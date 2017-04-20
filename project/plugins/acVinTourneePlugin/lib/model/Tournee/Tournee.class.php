@@ -477,11 +477,6 @@ class Tournee extends BaseTournee {
         return $degustation;
     }
 
-    public function getPrevious() {
-
-        return TourneeClient::getInstance()->getPrevious($this->_id);
-    }
-
     public function validate() {
         $this->validation = date('Y-m-d');
         $this->statut = TourneeClient::STATUT_TOURNEES;
