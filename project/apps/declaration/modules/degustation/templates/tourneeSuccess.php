@@ -197,9 +197,12 @@
         </div>
         <div class="row">
             <div class="col-xs-12 text-center">
-              <div class="signature-pad well" style="width: 290px; padding: 5px; display: inline-block;">
+                <button class="btn btn-link btn-sm signature-pad-clear"><span class="glyphicon glyphicon-trash"></span> Recommencer</button>
+            </div>
+            <div class="col-xs-12 text-center">
+                <div class="signature-pad well" style="width: 290px; padding: 5px; display: inline-block;">
                   <canvas style="width: 100%; height: 200px;" height="200"></canvas>
-              </div>
+                </div>
             </div>
         </div>
         <div class="row row-margin hidden-print">

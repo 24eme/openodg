@@ -395,6 +395,12 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
                 //constat.signature = $rootScope.signatureImg;
             }
 
+            wrapper.querySelector('.signature-pad-clear').onclick = function() {
+                if(confirm("Étes-vous sûr de vouloir effacer la signature ?")) {
+                    signaturePad.clear();
+                }
+            };
+
             if (constat.signature) {
                 signaturePad.fromDataURL(constat.signature);
             }

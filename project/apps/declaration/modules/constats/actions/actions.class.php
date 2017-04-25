@@ -193,7 +193,7 @@ class constatsActions extends sfActions {
         $this->rdvsRealises = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_REALISE);
         $this->rdvsAnnules = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_ANNULE);
 
-        $this->tournees = TourneeClient::getInstance()->getTourneesByDate($this->jour);
+        $this->tournees = TourneeClient::getInstance()->getTourneesByDateAndType($this->jour, TourneeClient::TYPE_TOURNEE_CONSTAT_VTSGN);
 
         $this->heures = array();
         for ($i = 7; $i <= 22; $i++) {

@@ -140,13 +140,14 @@
             </div>
         </div>
         <div ng-show="!constat.papier">
-        <label class="text-muted">Signature de l'opérateur :</label>
+        <label class="text-muted">Signature de l'opérateur : </label> <button class="btn btn-link btn-sm signature-pad-clear">(<span class="glyphicon glyphicon-trash"></span> Recommencer)</button>
         <div ng-class="{ 'hidden': !constat.erreurs['signature'] }" class="alert alert-danger">
             L'opérateur doit signer le constat
         </div>
         <div class="signature-pad well" style="width: 290px; padding: 5px;">
             <canvas style="width: 100%; height: 200px;" height="200"></canvas>
         </div>
+
         <div class="form-group">
             <div class="col-xs-12">
                 <label class="text-muted">Envoyer le constat à l'adresse email :</label>

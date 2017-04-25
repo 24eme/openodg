@@ -293,6 +293,12 @@ myApp.controller('tourneeCtrl', ['$scope', '$rootScope', '$http', 'localStorageS
           signaturePad.fromDataURL(operateur.signature_base64);
         }
 
+        wrapper.querySelector('.signature-pad-clear').onclick = function() {
+            if(confirm("Étes-vous sûr de vouloir effacer la signature ?")) {
+                signaturePad.clear();
+            }
+        };
+
         $scope.active = 'signature_'+ operateur._id;
     }
 
