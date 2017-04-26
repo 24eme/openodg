@@ -16,7 +16,7 @@
                 <th class="col-xs-1">Numéro</th>
                 <th class="col-xs-3">Produit</th>
                 <th class="col-xs-6">Opérateur</th>
-                <th class="col-xs-1">Commiss°</th>
+                <th class="col-xs-1">Commissi.</th>
                 <th class="col-xs-1"></th>
             </tr>
         </thead>
