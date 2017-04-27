@@ -6129,9 +6129,6 @@ div.date-picker div.input-group-addon {
 /**
  * Structuration
  ******************************************/
-.container {
-  width: 940px;
-}
 .center-block {
   float: none;
 }
@@ -7283,7 +7280,7 @@ div.date-picker div.input-group-addon {
   content: "\e0e6";
 }
 /**
- * Titles 
+ * Titles
  ******************************************/
 h1,
 .h1,
@@ -7317,7 +7314,7 @@ h4,
   padding: 0 0 15px;
 }
 /**
- * Texts 
+ * Texts
  ******************************************/
 /**
  * Lists
@@ -8121,4 +8118,17 @@ tr.bootstrap-switch-on {
 }
 #table-revendication .form-control {
   padding: 6px !important;
+}
+@media (max-width: 991px) {
+  .backgroundsize body {
+    background: none;
+  }
+  #content {
+    padding: 0;
+    margin: 0;
+    min-height: 0;
+  }
+  .container {
+    width: auto;
+  }
 }

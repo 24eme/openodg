@@ -577,8 +577,6 @@ class degustationActions extends sfActions {
                 $this->produits[] = $produit;
             }
         }
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeTourneeJson(sfWebRequest $request) {
@@ -686,8 +684,6 @@ class degustationActions extends sfActions {
 
         $this->reload = $request->getParameter('reload', 0);
         $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_AFFECTATION);
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeAffectationJson(sfWebRequest $request) {
@@ -757,8 +753,6 @@ class degustationActions extends sfActions {
 
             return $this->forward404("La tournée n'est pas prête à être dégusté");
         }
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeDegustation(sfWebRequest $request) {
@@ -766,8 +760,6 @@ class degustationActions extends sfActions {
         $this->commission = $request->getParameter('commission');
 
         $this->lock = (!$request->getParameter("unlock") && !in_array($this->tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_COURRIERS)) && !$this->tournee->hasSentCourrier());
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeDegustationJson(sfWebRequest $request) {

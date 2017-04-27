@@ -2,6 +2,8 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201505110953'); ?>
+<?php include_partial('admin/menu', array('active' => 'tournees', 'hideIfSmall' => true)); ?>
+
 <div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission, 'unlock' => !$lock)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::getInstance()->getNotesTypeByAppellation($tournee->appellation)) ?>; defauts=<?php echo json_encode(DegustationClient::$note_type_defauts, JSON_HEX_APOS) ?>;'>
     <div ng-controller="degustationCtrl">
         <section ng-show="active == 'recapitulatif'">

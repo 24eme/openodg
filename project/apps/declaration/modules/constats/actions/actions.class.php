@@ -67,8 +67,6 @@ class constatsActions extends sfActions {
         $this->contenants = ConstatsClient::getInstance()->getContenantsLibelle();
         $this->raisonsRefus = ConstatsClient::getInstance()->getRaisonsRefusLibelle();
         $this->constats = array();
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeTourneeAgentJsonRendezvous(sfWebRequest $request) {
@@ -375,7 +373,6 @@ class constatsActions extends sfActions {
 
     public function executeRedirectInterfaceMobileAgent(sfWebRequest $request) {
         $this->form = new RedirectAgentForm();
-        $this->setLayout('layoutResponsive');
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
