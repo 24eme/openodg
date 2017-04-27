@@ -58,9 +58,9 @@
     </div>
 
     <div class="col-xs-2 text-right">
-        <?php if (DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
+        <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
                     <a class="btn btn-xs btn-default-step pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-        <?php elseif ($sf_user->isAdmin() && !$drev->isLectureSeule()): ?>
+        <?php elseif ($drev->validation && $sf_user->isAdmin() && !$drev->isLectureSeule()): ?>
                   <a class="btn btn-xs btn-default-step pull-right" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
         <?php endif; ?>
     </div>
