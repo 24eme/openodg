@@ -56,7 +56,7 @@
     <div class="col-xs-12" style="padding-bottom: 15px;">
         <div id="recap_cepages" class="btn-group">
             <?php foreach($tournee->getProduits() as $produit): ?>
-            <button class="btn btn-default btn-default-step btn-sm disabled" data-cepage="<?php echo $produit->getHashForKey() ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></button>
+            <span style="cursor: default" class="btn btn-default btn-default-step btn-sm" data-cepage="<?php echo str_replace("-", "_", $produit->getHashForKey()) ?>"><?php echo $produit->getLibelleLong() ?> <span class="badge" style="color: white">0</span></span>
             <?php endforeach; ?>
         </div>
     </div>
