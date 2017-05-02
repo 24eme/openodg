@@ -4,7 +4,7 @@ class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $this->tournees = TourneeClient::getInstance()->getTourneesByType(TourneeClient::TYPE_TOURNEE_DEGUSTATION);
-        
+
         $this->tournee = new Tournee();
         $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
 
@@ -272,6 +272,11 @@ class degustationActions extends sfActions {
         $this->noeud = $this->tournee->degustateurs->add($this->type);
 
         $this->degustateurs = TourneeClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_".$this->tournee->appellation);
+
+        uasort($this->degustateurs, function ($a, $b) {
+           
+            return rand(-1, 1);
+        });
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
