@@ -321,8 +321,8 @@
         }
         if (next > 9) {
             return next + ':00';
-        } 
-            
+        }
+
         return '0' + next + ':00';
     }
 
@@ -372,7 +372,7 @@
         $.addItemToTournee(ligne, tournee);
     }
     $.updateHourTournee = function(tournee) {
-        
+
     }
 
     $.addItemToTournee = function(ligne, tournee) {
@@ -487,13 +487,13 @@
     $.updateRecapCepages = function()
     {
         $('#recap_cepages span.badge').text("0");
-        nb_lot_total = 0; 
+        nb_lot_total = 0;
         $("#listes_operateurs .list-group-item-item .select:visible input:checked").each(function(index, value) {
             var nb_lot = 1;
             if ($(value).parent('label').find('.badge').length) {
                 nb_lot = parseInt($(value).parent('label').find('.badge').html());
             }
-            var item = $('#recap_cepages button[data-cepage="' + $(value).val().replace(/-[0-9]+$/, "") + '"] .badge');
+            var item = $('#recap_cepages button[data-cepage="' + $(value).val() + '"] .badge');
 
             item.html(parseInt(item.html()) + nb_lot);
             nb_lot_total = nb_lot_total + nb_lot;
