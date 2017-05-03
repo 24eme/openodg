@@ -82,6 +82,7 @@
                                         <?php foreach(DegustationClient::$note_type_notes[$key_note_type] as $key_note_note => $libelle_note_note): ?>
                                         <option value="<?php echo $key_note_note ?>"><?php echo $libelle_note_note ?></option>
                                         <?php endforeach; ?>
+                                        <option value="X">X - Échantillon non dégusté</option>
                                     </select>
                                 </div>
                                 <div class="col-xs-7 col-md-6 col-lg-7">

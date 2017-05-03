@@ -80,7 +80,7 @@ Objet : Dégustation conseil <?php echo str_replace(" ".$degustation->getMillesi
         ?>
         <tr>
             <th class="th" style="text-align: left; width: 200px; font-weight: bold; height: 38px;"><?php echo tdStart() ?>&nbsp;<?php echo getLibelleTypeNote($type_note) ?><br />&nbsp;<span style="font-weight: normal;">Remarque(s)</span></th>
-            <td class="td" style="text-align: left; font-weight: bold; width: 420px; height: 38px;"><?php echo tdStart() ?>&nbsp;<?php echo $note->note ?><span style="font-weight: normal"> - <?php echo $note->getLibelle() ?></span><br />&nbsp;<span style="font-weight: normal;"><?php if($defaults): ?><?php echo $defaults ?><?php else: ?><i>Aucune</i><?php endif; ?></span></td>
+            <td class="td" style="text-align: left; font-weight: bold; width: 420px; height: 38px;"><?php echo tdStart() ?>&nbsp;<?php if($note->note == "X"): ?><span style="font-weight: normal">Échantillon non dégusté</span><?php else: ?><?php echo $note->note ?><span style="font-weight: normal"> - <?php echo $note->getLibelle() ?></span><?php endif; ?><br />&nbsp;<span style="font-weight: normal;"><?php if($defaults): ?><?php echo $defaults ?><?php else: ?><i>Aucune</i><?php endif; ?></span></td>
         </tr>
     <?php endforeach; ?>
     <?php if($prelevement->appreciations): ?>

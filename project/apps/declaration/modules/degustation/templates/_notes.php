@@ -9,15 +9,15 @@
 
 <?php $notes = $tournee->getNotes(); ?>
 <?php $hasForm = isset($form) && $form; ?>
-<div class="row">    
-    <div class="col-xs-12">        
+<div class="row">
+    <div class="col-xs-12">
         <table class="table table-striped table-condensed">
             <tr>
-                <th style="width: 0">N°</th>            
-                <th class="col-xs-4">Opérateur</th> 
-                <th class="col-xs-2">Produit</th> 
-                <th class="col-xs-4">Notes et Appreciation</th> 
-                <th class="col-xs-2">Courrier</th> 
+                <th style="width: 0">N°</th>
+                <th class="col-xs-4">Opérateur</th>
+                <th class="col-xs-2">Produit</th>
+                <th class="col-xs-4">Notes et Appreciation</th>
+                <th class="col-xs-2">Courrier</th>
             </tr>
             <?php foreach ($tournee->getNotes() as $note): ?>
                 <tr>
@@ -25,8 +25,8 @@
                     <td><?php echo $note->operateur->raison_sociale; ?><br />
                     <small class="text-muted"><?php echo $note->operateur->cvi ?></small><br />
                     <small class="text-muted"><?php echo $note->operateur->commune ?></small>
-                    </td> 
-                    <td><?php echo $note->prelevement->libelle; ?><?php if($note->prelevement->libelle_produit): ?><small class="text-muted"><br /><?php echo $note->prelevement->libelle_produit ?></small><?php endif; ?></td> 
+                    </td>
+                    <td><?php echo $note->prelevement->libelle; ?><?php if($note->prelevement->libelle_produit): ?><small class="text-muted"><br /><?php echo $note->prelevement->libelle_produit ?></small><?php endif; ?></td>
                     <td>
                         <ul style="margin: 0; padding: 0" >
                             <?php
@@ -42,23 +42,23 @@
                                 <li>
                                     <span class="<?php echo ($noteQualifie->isMauvaiseNote()) ? "bg-danger text-danger" : ""; ?>">
                                     <?php
-                                    echo DegustationClient::$note_type_libelles[$noteType] . ' : <strong class="pull-right">' . $noteQualifie->note . '</strong>';
+                                    echo DegustationClient::$note_type_libelles[$noteType] . ' : <strong class="pull-right">' . (($noteQualifie->note == "X") ? "Non dégusté" : $noteQualifie->note) . '</strong>';
                                     if (count($noteQualifie->defauts)):
                                         echo "<br/><small class='text-muted'>" . $defautsStr . "</small>";
                                     else:
-                                       echo "<br/><small class='text-muted'>-</small>"; 
+                                       echo "<br/><small class='text-muted'>-</small>";
                                     endif;
-                                    ?> 
+                                    ?>
                                     </span>
-                                </li>                                
+                                </li>
                             <?php endforeach; ?>
                         </ul>
                         <i class="text-muted"><?php echo $note->prelevement->appreciations; ?></i>
-                    </td> 
+                    </td>
                     <td class="text-center">
                         <?php if ($hasForm && isset($form[$note->operateur->cvi.$note->prelevement->getHashForKey()])): ?>
                             <div class="type_courrier_for_visite" id="<?php echo $note->operateur->cvi.$note->prelevement->getHashForKey(); ?>">
-                               
+
                                     <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->renderError(); ?>
                                     <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->render(array('class' => 'form-control select2')); ?>
                                 <div id="<?php echo 'visite_date_degustation_courrier_' . $note->operateur->cvi.$note->prelevement->getHashForKey(); ?>" style="<?php echo ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier == DegustationClient::COURRIER_TYPE_VISITE)? '' : 'display:none;' ?>" >
@@ -77,9 +77,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                             </div>
-                        <?php else: ?>        
+                        <?php else: ?>
                             <?php if ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier): ?>
                                 <a href="<?php echo url_for('degustation_courrier_prelevement', $note->prelevement) ?>">
                                 <?php endif; ?>
