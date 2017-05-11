@@ -146,8 +146,18 @@ class degustationActions extends sfActions {
         $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
         $this->form->updateDoc();
 
+        return $this->redirect('degustation_saisie_validation', $this->tournee);
+    }
 
-        return $this->redirect('degustation_visualisation', $this->tournee);
+    public function executeSaisieValidation(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeSaisieEtapes::ETAPE_SAISIE_VALIDATION, "TourneeSaisieEtapes"))) {
+            $this->tournee->save();
+        }
+
+        $this->validation = new TourneeValidation($this->tournee);
+
     }
 
     public function executeEdit(sfWebRequest $request) {
@@ -274,7 +284,7 @@ class degustationActions extends sfActions {
         $this->degustateurs = TourneeClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_".$this->tournee->appellation);
 
         uasort($this->degustateurs, function ($a, $b) {
-           
+
             return rand(-1, 1);
         });
 

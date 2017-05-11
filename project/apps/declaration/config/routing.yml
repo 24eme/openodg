@@ -750,6 +750,16 @@ degustation_saisie_degustateurs:
   requirements:
     sf_method: [get, post]
 
+degustation_saisie_validation:
+  url: /tournee/saisie-validation/:id
+  param: { module: degustation, action: saisieValidation }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_edit:
   url: /tournee/edit/:id
   param: { module: degustation, action: edit }
