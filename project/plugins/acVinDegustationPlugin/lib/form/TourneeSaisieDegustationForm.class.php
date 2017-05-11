@@ -24,6 +24,10 @@ class TourneeSaisieDegustationForm extends acCouchdbForm {
 
         foreach ($produitsConfig as $hash => $produit) {
             $produits[$hash] = $produit->getLibelleLong();
+            if($produit->hasVtsgn()) {
+                $produits[str_replace("/mention/", "/mentionVT/", $hash)] = $produit->getLibelleLong()." VT";
+                $produits[str_replace("/mention/", "/mentionSGN/", $hash)] = $produit->getLibelleLong()." SGN";
+            }
         }
 
         return $produits;

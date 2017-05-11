@@ -7,10 +7,14 @@ class TourneeSaisieForm extends acCouchdbForm {
 
         foreach($doc->getDegustationsObject() as $identifiant => $degustation) {
             foreach($degustation->prelevements as $prelevement) {
+                $hashProduit = $prelevement->hash_produit;
+                if($prelevement->vtsgn) {
+                    $hashProduit = str_replace("/mention/", "/mention".$prelevement->vtsgn."/", $hashProduit);
+                }
                 $defaults["prelevement_".$identifiant."_".$prelevement->getKey()] = array(
                     "numero" => $prelevement->anonymat_degustation,
                     "etablissement" => "COMPTE-E".$degustation->identifiant,
-                    "produit" => $prelevement->hash_produit,
+                    "produit" => $hashProduit,
                     "commission" => $prelevement->commission,
                 );
             }
@@ -104,13 +108,21 @@ class TourneeSaisieForm extends acCouchdbForm {
                 $degustation = $degustations[$identifiant];
             }
 
+            $hashProduit = $value["produit"];
+            $vtsgn = null;
+            if(preg_match("#/mention(VT|SGN)/#", $hashProduit, $matches)) {
+                $hashProduit = preg_replace("#/mention(VT|SGN)/#", "/mention/", $hashProduit);
+                $vtsgn = $matches[1];
+            }
+
             $prelevement = $degustation->prelevements->add();
             $prelevement->preleve = 1;
             $prelevement->cuve = null;
             $prelevement->commission = $value["commission"];
-            $prelevement->hash_produit = $value["produit"];
+            $prelevement->hash_produit = $hashProduit;
+            $prelevement->vtsgn = $vtsgn;
             $prelevement->libelle_produit = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getCouleur()->getLibelleComplet();
-            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleLong();
+            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleLong().(($prelevement->vtsgn) ? " ".$prelevement->vtsgn : null);
             $prelevement->anonymat_degustation = $value["numero"];
         }
 
