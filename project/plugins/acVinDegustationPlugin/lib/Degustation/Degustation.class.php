@@ -211,9 +211,9 @@ class Degustation extends BaseDegustation {
         return null;
     }
 
-    public function getPrelevementsByAnonymatDegustation($anonymat_degustation) {
+    public function getPrelevementsByAnonymatDegustation($anonymat_degustation, $commission, $hashProduit, $vtsgn) {
         foreach($this->prelevements as $prelevement) {
-            if($prelevement->anonymat_degustation == $anonymat_degustation) {
+            if($prelevement->anonymat_degustation == $anonymat_degustation && $prelevement->commission == $commission && $prelevement->hash_produit == $hashProduit && $prelevement->vtsgn == $vtsgn) {
 
                 return $prelevement;
             }

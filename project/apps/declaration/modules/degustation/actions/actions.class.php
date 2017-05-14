@@ -815,7 +815,7 @@ class degustationActions extends sfActions {
             }*/
 
             foreach($json_degustation->prelevements as $json_prelevement) {
-                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation);
+                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation, $json_prelevement->commission, $json_prelevement->hash_produit, $json_prelevement->vtsgn);
                 if(!$prelevement) {
                     continue;
                 }
