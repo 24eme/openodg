@@ -6,6 +6,9 @@
         <?php echo $form['produit']->render(array("class" => "select2autocomplete form-control select2", "placeholder" => "Séléctionner un produit", "data-copie" => "produit")); ?>
     </td>
     <td class="form-group">
+        <?php echo $form["denomination_complementaire"]->render(array("class" => "form-control", "placeholder" => "Dénomination...", "data-norequired" => true)); ?>
+    </td>
+    <td class="form-group">
         <?php echo $form["etablissement"]->render(array("placeholder" => "Chercher un établissement")); ?>
     </td>
     <td class="form-group text-center">

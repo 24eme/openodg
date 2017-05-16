@@ -48,6 +48,7 @@ Degustation:
                   libelle: { }
                   libelle_complet: { required: false }
                   libelle_produit: { }
+                  denomination_complementaire: { }
                   vtsgn: { }
                   volume_revendique: { type: float }
                   anonymat_prelevement: { type: integer }

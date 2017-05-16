@@ -55,7 +55,7 @@ Objet : Dégustation conseil <?php echo str_replace(" ".$degustation->getMillesi
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 200px; font-weight: bold;"><?php echo tdStart() ?>&nbsp;Identification du lot</th>
-        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;Lot n° <?php echo $prelevement->getKey() + 1; ?> / Échantillon n° <?php echo ($prelevement->anonymat_prelevement_complet) ? $prelevement->anonymat_prelevement_complet : $prelevement->anonymat_degustation; ?></td>
+        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;Lot n° <?php echo $prelevement->getKey() + 1; ?> / Échantillon n° <?php echo ($prelevement->anonymat_prelevement_complet) ? $prelevement->anonymat_prelevement_complet : $prelevement->anonymat_degustation; ?><?php if($prelevement->denomination_complementaire): ?> / <?php echo $prelevement->denomination_complementaire; ?><?php endif; ?></td>
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 200px; font-weight: bold;"><?php echo tdStart() ?>&nbsp;Cuve / Volume</th>

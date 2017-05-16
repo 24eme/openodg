@@ -15,6 +15,7 @@ class TourneeSaisieForm extends acCouchdbForm {
                     "numero" => $prelevement->anonymat_degustation,
                     "etablissement" => "COMPTE-E".$degustation->identifiant,
                     "produit" => $hashProduit,
+                    "denomination_complementaire" => $prelevement->denomination_complementaire,
                     "commission" => $prelevement->commission,
                 );
             }
@@ -123,6 +124,10 @@ class TourneeSaisieForm extends acCouchdbForm {
             $prelevement->vtsgn = $vtsgn;
             $prelevement->libelle_produit = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getCouleur()->getLibelleComplet();
             $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleLong().(($prelevement->vtsgn) ? " ".$prelevement->vtsgn : null);
+            $prelevement->denomination_complementaire = null;
+            if($value["denomination_complementaire"]) {
+                $prelevement->denomination_complementaire = $value["denomination_complementaire"];
+            }
             $prelevement->anonymat_degustation = $value["numero"];
         }
 

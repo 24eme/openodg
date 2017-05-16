@@ -540,7 +540,7 @@
             var item = $(this).parents(".dynamic-element-item");
             var allIsComplete = true;
             item.find("input, select, checkbox").each(function() {
-                if($(this).attr('name') && !$(this).val()) {
+                if($(this).attr('name') && !$(this).attr('data-norequired') && !$(this).val()) {
                     allIsComplete = false;
                 }
             });

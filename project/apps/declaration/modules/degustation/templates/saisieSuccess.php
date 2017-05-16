@@ -15,8 +15,9 @@
             <tr>
                 <th class="col-xs-1">Numéro</th>
                 <th class="col-xs-3">Produit</th>
-                <th class="col-xs-6">Opérateur</th>
-                <th class="col-xs-1">Commissi.</th>
+                <th class="col-xs-2">Dénominat° Compl.</th>
+                <th class="col-xs-4">Opérateur</th>
+                <th class="col-xs-1">Commiss°</th>
                 <th class="col-xs-1"></th>
             </tr>
         </thead>
@@ -28,7 +29,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="5" class="text-right"><button tabindex="-1" type="button" data-container="#saisie_container" data-template="#template_prevement_item" class="btn btn-xs btn-default-step dynamic-element-add"><span class="glyphicon-plus"></span> Ajouter</button></td>
+                <td colspan="6" class="text-right"><button tabindex="-1" type="button" data-container="#saisie_container" data-template="#template_prevement_item" class="btn btn-xs btn-default-step dynamic-element-add"><span class="glyphicon-plus"></span> Ajouter</button></td>
             </tr>
         </tfoot>
     </table>
