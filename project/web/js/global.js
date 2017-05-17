@@ -518,12 +518,6 @@
                     }
                 }
             });
-            content.find('input, select, checkbox').each(function() {
-                if($(this).attr('name')) {
-                    $(this).focus();
-                    return false;
-                }
-            });
             content.initAdvancedElements();
         });
 
