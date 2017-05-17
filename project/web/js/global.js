@@ -557,7 +557,7 @@
                 var ligne = $($(this).attr('data-line'));
                 var hasAllValue = true;
                 ligne.find('input, select, textarea').each(function() {
-                    if($(this).attr('name') && !$(this).val()) {
+                    if($(this).attr('name') && !$(this).attr('data-norequired') && !$(this).val()) {
                         hasAllValue = false;
                     }
                 });

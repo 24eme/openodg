@@ -15,7 +15,7 @@ class TourneeSaisieDegustationForm extends acCouchdbForm {
         $this->setValidator('produit', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)), array('required' => "Le produit est requis")));
 
         $this->setWidget('denomination_complementaire', new bsWidgetFormInput());
-        $this->setValidator('denomination_complementaire', new sfValidatorString(array("required" => true)));
+        $this->setValidator('denomination_complementaire', new sfValidatorString(array("required" => false)));
 
         $this->setWidget('commission', new bsWidgetFormInput());
         $this->setValidator('commission', new sfValidatorInteger(array("required" => true)));
