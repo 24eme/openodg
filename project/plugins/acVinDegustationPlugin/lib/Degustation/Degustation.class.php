@@ -131,7 +131,7 @@ class Degustation extends BaseDegustation {
             return $this->_get('drev');
         }
 
-        return "DREV-".$this->getIdentifiant()."-2014";
+        return "DREV-".$this->getIdentifiant()."-".$this->getMillesime();
     }
 
     public function isDeguste() {

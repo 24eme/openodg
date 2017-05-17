@@ -143,7 +143,6 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
         $this->form->updateDoc();
 
         return $this->redirect('degustation_saisie_validation', $this->tournee);
@@ -156,8 +155,17 @@ class degustationActions extends sfActions {
             $this->tournee->save();
         }
 
-        $this->validation = new TourneeValidation($this->tournee);
+        $this->validation = new TourneeSaisieValidation($this->tournee);
 
+        if ($this->validation->hasErreurs() || !$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
+        $this->tournee->save();
+
+        return $this->redirect('degustation_visualisation', $this->tournee);
     }
 
     public function executeEdit(sfWebRequest $request) {

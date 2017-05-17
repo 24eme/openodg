@@ -5,6 +5,11 @@ function(doc) {
         return;
     }
 
+    if(doc.lecture_seule) {
+
+        return;
+    }
+
     if(!doc.validation_odg) {
         return;
     }
