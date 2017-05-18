@@ -1060,7 +1060,15 @@ degustation_cloturer:
   requirements:
     sf_method: [get, post]
 
-
+degustation_export_csv:
+  url: /degustation/export-csv/:id
+  param: { module: degustation, action: exportCsv }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 # Parcellaire
 

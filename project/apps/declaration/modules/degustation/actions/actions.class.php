@@ -898,6 +898,23 @@ class degustationActions extends sfActions {
         $this->response->setHttpHeader('Content-Disposition',$attachement );
     }
 
+    public function executeExportCsv()
+    {
+        $this->tournee = $this->getRoute()->getTournee();
+        $csv = sprintf("\xef\xbb\xbf");
+        $csv .= ExportDegustationCSV::getHeaderCsv();
+        foreach($this->tournee->getDegustationsObject() as $degustation) {
+            $export = new ExportDegustationCSV($degustation, false);
+            $csv .= $export->export();
+        }
+
+        $this->response->setContentType('text/csv');
+        $attachement = sprintf("attachment; filename=export.csv");
+        $this->response->setHttpHeader('Content-Disposition', $attachement );
+
+        return $this->renderText($csv);
+    }
+
     public function executeCourrier(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
         $this->form = new DegustationCourrierForm($this->tournee);

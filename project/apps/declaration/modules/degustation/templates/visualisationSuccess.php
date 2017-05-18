@@ -11,6 +11,16 @@
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
 
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="glyphicon glyphicon-export"></span> Exporter en csv <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="<?php echo url_for('degustation_export_csv', $tournee); ?>">Les résultats de dégustation</a></li>
+    <!--<li><a href="">Les opérateurs manquants</a></li>-->
+  </ul>
+</div>
+
 <?php include_partial('degustation/recap', array('tournee' => $tournee)); ?>
 
 <?php if (in_array($tournee->statut, array(TourneeClient::STATUT_COURRIERS, TourneeClient::STATUT_TERMINE))): ?>
