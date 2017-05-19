@@ -17,7 +17,9 @@
   </button>
   <ul class="dropdown-menu">
     <li><a href="<?php echo url_for('degustation_export_csv', $tournee); ?>">Les résultats de dégustation</a></li>
+    <?php if($tournee->_get('produit')): ?>
     <li><a href="<?php echo url_for('degustation_export_manquantes_csv', $tournee); ?>">Les opérateurs manquants</a></li>
+    <?php endif; ?>
   </ul>
 </div>
 
