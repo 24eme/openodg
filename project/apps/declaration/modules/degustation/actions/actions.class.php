@@ -909,7 +909,22 @@ class degustationActions extends sfActions {
         }
 
         $this->response->setContentType('text/csv');
-        $attachement = sprintf("attachment; filename=export.csv");
+        $attachement = sprintf("attachment; filename=degustations_resultats_".$this->tournee->_id.".csv");
+        $this->response->setHttpHeader('Content-Disposition', $attachement );
+
+        return $this->renderText($csv);
+    }
+
+    public function executeExportCsvManquantes()
+    {
+        $this->tournee = $this->getRoute()->getTournee();
+        $csv = sprintf("\xef\xbb\xbf");
+        $csv .= ExportDegustationsManquantes::getHeaderCsv();
+        $export = new ExportDegustationsManquantes($this->tournee, false);
+        $csv .= $export->export();
+
+        $this->response->setContentType('text/csv');
+        $attachement = sprintf("attachment; filename=degustations_manquantes_".$this->tournee->_id.".csv");
         $this->response->setHttpHeader('Content-Disposition', $attachement );
 
         return $this->renderText($csv);

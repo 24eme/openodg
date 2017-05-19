@@ -1070,6 +1070,16 @@ degustation_export_csv:
   requirements:
     sf_method: [get, post]
 
+degustation_export_manquantes_csv:
+  url: /degustation/export-manquantes-csv/:id
+  param: { module: degustation, action: exportCsvManquantes }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 # Parcellaire
 
 parcellaire_delete:
