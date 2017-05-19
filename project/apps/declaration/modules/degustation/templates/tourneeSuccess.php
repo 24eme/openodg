@@ -4,7 +4,9 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
-<?php use_javascript('tournee.js?201505080324'); ?>
+<?php use_javascript('tournee.js?201704271621'); ?>
+<?php include_partial('admin/menu', array('active' => 'tournees', 'hideIfSmall' => true)); ?>
+
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
 <div ng-controller="tourneeCtrl">
 
@@ -197,9 +199,12 @@
         </div>
         <div class="row">
             <div class="col-xs-12 text-center">
-              <div class="signature-pad well" style="width: 290px; padding: 5px; display: inline-block;">
+                <button class="btn btn-link btn-sm signature-pad-clear"><span class="glyphicon glyphicon-trash"></span> Recommencer</button>
+            </div>
+            <div class="col-xs-12 text-center">
+                <div class="signature-pad well" style="width: 290px; padding: 5px; display: inline-block;">
                   <canvas style="width: 100%; height: 200px;" height="200"></canvas>
-              </div>
+                </div>
             </div>
         </div>
         <div class="row row-margin hidden-print">

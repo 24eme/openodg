@@ -67,8 +67,6 @@ class constatsActions extends sfActions {
         $this->contenants = ConstatsClient::getInstance()->getContenantsLibelle();
         $this->raisonsRefus = ConstatsClient::getInstance()->getRaisonsRefusLibelle();
         $this->constats = array();
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeTourneeAgentJsonRendezvous(sfWebRequest $request) {
@@ -193,7 +191,7 @@ class constatsActions extends sfActions {
         $this->rdvsRealises = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_REALISE);
         $this->rdvsAnnules = RendezvousClient::getInstance()->getRendezvousByDateAndStatut($this->jour, RendezvousClient::RENDEZVOUS_STATUT_ANNULE);
 
-        $this->tournees = TourneeClient::getInstance()->getTourneesByDate($this->jour);
+        $this->tournees = TourneeClient::getInstance()->getTourneesByDateAndType($this->jour, TourneeClient::TYPE_TOURNEE_CONSTAT_VTSGN);
 
         $this->heures = array();
         for ($i = 7; $i <= 22; $i++) {
@@ -375,7 +373,6 @@ class constatsActions extends sfActions {
 
     public function executeRedirectInterfaceMobileAgent(sfWebRequest $request) {
         $this->form = new RedirectAgentForm();
-        $this->setLayout('layoutResponsive');
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;

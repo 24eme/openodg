@@ -51,11 +51,23 @@ class TourneeClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function createDoc($date) {
+    public function createDoc($type, $date) {
         $tournee = new Tournee();
+        $tournee->type_tournee = $type;
         $tournee->date = $date;
-        $tournee->type_tournee = self::TYPE_TOURNEE_DEGUSTATION;
-        $tournee = DegustationClient::ORGANISME_DEFAUT;
+
+        return $tournee;
+    }
+
+    public function createOrFindForDegustation($appellation, $date, $date_debut_prelevement) {
+        $tournee = $this->createDoc(self::TYPE_TOURNEE_DEGUSTATION, $date);
+        $tournee->appellation = $appellation;
+        $tournee->statut = TourneeClient::STATUT_ORGANISATION;
+        $tournee->millesime = ((int) substr($tournee->date, 0, 4) - 1)."";
+        $tournee->date_prelevement_debut = $date_debut_prelevement;
+        $tournee->organisme = DegustationClient::ORGANISME_DEFAUT;
+        $tournee->getLibelle();
+
         return $tournee;
     }
 
@@ -87,7 +99,7 @@ class TourneeClient extends acCouchdbClient {
         if ($tournee) {
             return $tournee;
         }
-        $tournee = $this->createDoc($date);
+        $tournee = $this->createDoc(self::TYPE_TOURNEE_CONSTAT_VTSGN, $date);
         $tournee->agent_unique = $agent->identifiant;
         $agentNode = $tournee->agents->add($agent->identifiant);
         $agentNode->nom = sprintf("%s %s.", $agent->prenom, substr($agent->nom, 0, 1));
@@ -98,17 +110,20 @@ class TourneeClient extends acCouchdbClient {
         $agentNode->lat = $agent->lat;
         $agentNode->lon = $agent->lon;
         $agentNode->dates = array();
-        $tournee->type_tournee = self::TYPE_TOURNEE_CONSTAT_VTSGN;
         $tournee->constructId();
         $tournee->save();
         return $tournee;
     }
 
-    public function getTourneesByDate($date) {
+    public function getTourneesByDateAndType($date, $type) {
         $tournees = array();
         $tourneesRows = DocAllByTypeAndDateView::getInstance()->allByTypeAndDate('Tournee', $date);
 
         foreach ($tourneesRows as $tourneeRow) {
+            $tourneeJson = TourneeClient::getInstance()->find($tourneeRow->id, acCouchdbClient::HYDRATE_JSON);
+            if ($tourneeJson->type_tournee != $type) {
+                continue;
+            }
             $tournees[$tourneeRow->id] = TourneeClient::getInstance()->find($tourneeRow->id);
         }
 
@@ -247,32 +262,23 @@ class TourneeClient extends acCouchdbClient {
         return $degustateurs_result;
     }
 
-    public function getTournees($hydrate = acCouchdbClient::HYDRATE_JSON) {
+    public function getTourneesByType($type, $hydrate = acCouchdbClient::HYDRATE_JSON) {
 
-        return $this->startkey("TOURNEE-999999999-ZZZZZZZZZZ")
+        $resultats = $this->startkey("TOURNEE-999999999-ZZZZZZZZZZ")
                         ->endkey("TOURNEE-00000000-AAAAAAAAA")
                         ->descending(true)
                         ->execute($hydrate);
-    }
 
-    public function getPrevious($tournee_id) {
-        $tournees = $this->getTournees();
-
-        $finded = false;
-        foreach ($tournees as $row) {
-            if ($row->_id == $tournee_id) {
-                $finded = true;
+        $tournees = array();
+        foreach($resultats as $tournee) {
+            if($tournee->type_tournee != $type) {
                 continue;
             }
 
-            if (!$finded) {
-                continue;
-            }
-
-            return $this->find($row->_id);
+            $tournees[$tournee->_id] = $tournee;
         }
 
-        return null;
+        return $tournees;
     }
 
     public function findTourneeByIdRendezvous($idRendezvous) {

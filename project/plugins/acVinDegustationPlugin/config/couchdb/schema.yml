@@ -1,100 +1,4 @@
-#Tournee
-Tournee:
-  definition:
-    fields:
-      _id: { }
-      _rev: { }
-      type: { }
-      etape: { }
-      identifiant: { }
-      statut: { }
-      date: { }
-      appellation: { }
-      appellation_complement: { }
-      millesime: { }
-      appellation_libelle: { required: false }
-      libelle: { }
-      produit: { }
-      organisme: { }
-      date_prelevement_debut: { }
-      date_prelevement_fin: { }
-      nombre_commissions: { type: integer }
-      nombre_prelevements: { type: integer }
-      millesime: { }
-      heure: { }
-      lieu: { }
-      validation: { }
-      agent_unique: { }
-      type_tournee: { }
-      degustations:
-        type: collection
-        definition:
-          fields:
-            '*': { }
-      degustateurs:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  '*':
-                    type: collection
-                    definition:
-                      fields:
-                        nom: { }
-                        email: { }
-                        adresse: { }
-                        commune: { }
-                        code_postal: { }
-                        presence: { type: integer }
-      agents:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  nom: { }
-                  email: { }
-                  adresse: { }
-                  commune: { }
-                  code_postal: { }
-                  lat: { }
-                  lon: { }
-                  dates:
-                    type: array_collection
-                    definition:
-                      fields:
-                        '*': { }
-      rendezvous:
-        type: collection
-        definition:
-          fields:
-             '*':
-              type: collection
-              definition:
-                fields:
-                  heure: { }
-                  compte_identifiant: { }
-                  compte_cvi: { }
-                  compte_raison_sociale: { }
-                  compte_commune: { }
-                  compte_adresse: { }
-                  compte_code_postal: { }
-                  compte_lon: { }
-                  compte_lat: { }
-                  compte_telephone_bureau: { }
-                  compte_telephone_prive: { }
-                  compte_telephone_mobile: { }
-                  compte_email: { }
-                  type_rendezvous: { }
-                  rendezvous_commentaire: { }
-                  nom_agent_origine: { }
-                  constat: { }
-                  position: { }
+#Degustation
 Degustation:
   definition:
     fields:
@@ -144,6 +48,7 @@ Degustation:
                   libelle: { }
                   libelle_complet: { required: false }
                   libelle_produit: { }
+                  denomination_complementaire: { }
                   vtsgn: { }
                   volume_revendique: { type: float }
                   anonymat_prelevement: { type: integer }

@@ -3,6 +3,8 @@
 class degustationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
+        $this->tournees = TourneeClient::getInstance()->getTourneesByType(TourneeClient::TYPE_TOURNEE_DEGUSTATION);
+
         $this->tournee = new Tournee();
         $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
 
@@ -141,9 +143,27 @@ class degustationActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
         $this->form->updateDoc();
 
+        return $this->redirect('degustation_saisie_validation', $this->tournee);
+    }
+
+    public function executeSaisieValidation(sfWebRequest $request) {
+        $this->tournee = $this->getRoute()->getTournee();
+
+        if ($this->tournee->storeEtape($this->getEtape($this->tournee, TourneeSaisieEtapes::ETAPE_SAISIE_VALIDATION, "TourneeSaisieEtapes"))) {
+            $this->tournee->save();
+        }
+
+        $this->validation = new TourneeSaisieValidation($this->tournee);
+
+        if ($this->validation->hasErreurs() || !$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;
+        $this->tournee->save();
 
         return $this->redirect('degustation_visualisation', $this->tournee);
     }
@@ -166,15 +186,7 @@ class degustationActions extends sfActions {
         }
 
         if(!$this->tournee) {
-            $this->tournee = new Tournee();
-            $this->tournee->statut = TourneeClient::STATUT_ORGANISATION;
-        }
-
-        if($this->tournee->isNew()) {
-            $this->tournee->date_prelevement_debut = $request->getParameter('date_prelevement_debut');
-            $this->tournee->date = $request->getParameter('date');
-            $this->tournee->appellation = $request->getParameter('appellation');
-            //$this->tournee->appellation_libelle = $request->getParameter('appellation_libelle');
+            $this->tournee = TourneeClient::getInstance()->createOrFindForDegustation($request->getParameter('appellation'),  $request->getParameter('date'), $request->getParameter('date_prelevement_debut'));
         }
 
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin, $this->tournee->getCampagne());
@@ -278,6 +290,11 @@ class degustationActions extends sfActions {
         $this->noeud = $this->tournee->degustateurs->add($this->type);
 
         $this->degustateurs = TourneeClient::getInstance()->getDegustateurs($this->type, "-declaration-certification-genre-appellation_".$this->tournee->appellation);
+
+        uasort($this->degustateurs, function ($a, $b) {
+
+            return rand(-1, 1);
+        });
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -578,13 +595,11 @@ class degustationActions extends sfActions {
                 $produit->vtsgn = null;
                 $produit->trackby = $p->getHash();
                 $produit->libelle = $p->getLibelleLong();
-                $produit->libelle_produit = null;
+                $produit->libelle_produit = $p->getParent()->getLibelleComplet();
                 $produit->libelle_complet = $produit->libelle;
                 $this->produits[] = $produit;
             }
         }
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeTourneeJson(sfWebRequest $request) {
@@ -692,8 +707,6 @@ class degustationActions extends sfActions {
 
         $this->reload = $request->getParameter('reload', 0);
         $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_AFFECTATION);
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeAffectationJson(sfWebRequest $request) {
@@ -763,8 +776,6 @@ class degustationActions extends sfActions {
 
             return $this->forward404("La tournée n'est pas prête à être dégusté");
         }
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeDegustation(sfWebRequest $request) {
@@ -772,8 +783,6 @@ class degustationActions extends sfActions {
         $this->commission = $request->getParameter('commission');
 
         $this->lock = (!$request->getParameter("unlock") && !in_array($this->tournee->statut, array(TourneeClient::STATUT_DEGUSTATIONS, TourneeClient::STATUT_COURRIERS)) && !$this->tournee->hasSentCourrier());
-
-        $this->setLayout('layoutResponsive');
     }
 
     public function executeDegustationJson(sfWebRequest $request) {
@@ -814,7 +823,7 @@ class degustationActions extends sfActions {
             }*/
 
             foreach($json_degustation->prelevements as $json_prelevement) {
-                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation);
+                $prelevement = $degustation->getPrelevementsByAnonymatDegustation($json_prelevement->anonymat_degustation, $json_prelevement->commission, $json_prelevement->hash_produit, $json_prelevement->vtsgn);
                 if(!$prelevement) {
                     continue;
                 }
@@ -887,6 +896,38 @@ class degustationActions extends sfActions {
         $attachement = sprintf("attachment; filename=degustateurs_%s_%s.csv", $this->tournee->_id, date('Ymd'));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
+    }
+
+    public function executeExportCsv()
+    {
+        $this->tournee = $this->getRoute()->getTournee();
+        $csv = sprintf("\xef\xbb\xbf");
+        $csv .= ExportDegustationCSV::getHeaderCsv();
+        foreach($this->tournee->getDegustationsObject() as $degustation) {
+            $export = new ExportDegustationCSV($degustation, false);
+            $csv .= $export->export();
+        }
+
+        $this->response->setContentType('text/csv');
+        $attachement = sprintf("attachment; filename=degustations_resultats_".$this->tournee->_id.".csv");
+        $this->response->setHttpHeader('Content-Disposition', $attachement );
+
+        return $this->renderText($csv);
+    }
+
+    public function executeExportCsvManquantes()
+    {
+        $this->tournee = $this->getRoute()->getTournee();
+        $csv = sprintf("\xef\xbb\xbf");
+        $csv .= ExportDegustationsManquantes::getHeaderCsv();
+        $export = new ExportDegustationsManquantes($this->tournee, false);
+        $csv .= $export->export();
+
+        $this->response->setContentType('text/csv');
+        $attachement = sprintf("attachment; filename=degustations_manquantes_".$this->tournee->_id.".csv");
+        $this->response->setHttpHeader('Content-Disposition', $attachement );
+
+        return $this->renderText($csv);
     }
 
     public function executeCourrier(sfWebRequest $request) {

@@ -778,6 +778,16 @@ degustation_saisie_degustateurs:
   requirements:
     sf_method: [get, post]
 
+degustation_saisie_validation:
+  url: /tournee/saisie-validation/:id
+  param: { module: degustation, action: saisieValidation }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_edit:
   url: /tournee/edit/:id
   param: { module: degustation, action: edit }
@@ -1078,7 +1088,25 @@ degustation_cloturer:
   requirements:
     sf_method: [get, post]
 
+degustation_export_csv:
+  url: /degustation/export-csv/:id
+  param: { module: degustation, action: exportCsv }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
+degustation_export_manquantes_csv:
+  url: /degustation/export-manquantes-csv/:id
+  param: { module: degustation, action: exportCsvManquantes }
+  class: TourneeRoute
+  options:
+    model:    Tournee
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 # Parcellaire
 

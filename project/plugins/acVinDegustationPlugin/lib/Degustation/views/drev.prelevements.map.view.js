@@ -1,11 +1,16 @@
 function(doc) {
 
     if(doc.type != "DRev") {
-        
+
         return;
     }
 
-    if(!doc.validation) {
+    if(doc.lecture_seule) {
+
+        return;
+    }
+
+    if(!doc.validation_odg) {
         return;
     }
 

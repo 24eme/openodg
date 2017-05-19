@@ -10,14 +10,15 @@
         <?php include_http_metas() ?>
         <?php include_metas() ?>
         <?php include_title() ?>
-        
+
         <link rel="shortcut icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/png" href="/favico.png" />
 
-        <?php //include_stylesheets() ?>
-        <link href="/css/compile.css" rel="stylesheet" type="text/css">
-        
+
+        <?php include_stylesheets() ?>
+
+
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
@@ -41,15 +42,15 @@
         <!-- #page -->
         <div id="page" class="container">
 
-            <div id="bg-page">
+            <div id="bg-page" class="hidden-xs hidden-sm">
                 <img src="/images/bg/bg_global.jpg" alt="" />
             </div>
 
             <!-- #header -->
-            <header id="header" class="container" role="banner">
+            <header id="header" class="container hidden-xs hidden-sm" role="banner">
 
                 <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
-                    
+
                 <div id="logo">
                     <a href="<?php echo url_for('home') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
@@ -69,7 +70,7 @@
                         <li><a href="<?php echo url_for('redirect_to_mon_compte_civa'); ?>">Mon compte</a></li>
                         <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                     </ul>
-                </nav>    
+                </nav>
                 <?php endif; ?>
                 <?php if($sf_user->getEtablissement()): ?>
                 <nav id="navigation" role="navigation">
@@ -87,14 +88,14 @@
                 <?php endif; ?>
             </header>
             <!-- end #header -->
-            
+
             <!-- #content -->
             <section id="content" class="container">
                 <?php echo $sf_content ?>
             </section>
 
                 <!-- #footer -->
-            <footer id="footer" class="container" role="contentinfo">
+            <footer id="footer" class="container hidden-xs hidden-sm" role="contentinfo">
                 <nav role="navigation">
                     <ul>
                         <li><a href="<?php echo url_for('@contact') ?>">Contact</a></li>
@@ -103,7 +104,7 @@
                 </nav>
             </footer>
             <!-- end #footer -->
-        
+
         </div>
         <!-- end #page -->
 

@@ -66,29 +66,21 @@
 &nbsp;<br/>
 <span class="h3Alt">&nbsp;Répartition du volume&nbsp;</span><br/>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
-                <tr>
-                    <td class="td"><?php echo tdStart() ?>&nbsp;Date de mise en bouteilles</td>
-                    <td class="td"><?php echo tdStart() ?>&nbsp;<?php if ($tirage->date_mise_en_bouteille_debut == $tirage->date_mise_en_bouteille_fin ) {
-        echo "le ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
-    }else{ 
-        echo "du ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
-        echo " au ".format_date($tirage->date_mise_en_bouteille_fin, 'dd/MM/yyyy', 'fr_FR');
+    <tr>
+        <td class="td"><?php echo tdStart() ?>&nbsp;Date de mise en bouteilles</td>
+        <td class="td"><?php echo tdStart() ?>&nbsp;<?php if ($tirage->date_mise_en_bouteille_debut == $tirage->date_mise_en_bouteille_fin ) {
+    echo "le ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
+    }else{
+    echo "du ".format_date($tirage->date_mise_en_bouteille_debut, 'dd/MM/yyyy', 'fr_FR');
+    echo " au ".format_date($tirage->date_mise_en_bouteille_fin, 'dd/MM/yyyy', 'fr_FR');
     }?></td>
-                </tr>
-                <tr>
-                    <td style="vertical-align: top;"><?php echo tdStart() ?>&nbsp;Détail de la composition du lot</td>
-<td><?php echo tdStart() ?>&nbsp;<?php  $nbcompo = 0 ; foreach ($tirage->composition as $compo): ?><?php echo ($nbcompo) ? "<br/>".tdStart()."&nbsp;" : ""; echo $compo->nombre; ?>&nbsp;bouteilles de <?php echo $compo->contenance; $nbcompo++;?><?php endforeach; ?></td>
-                </tr>
-                <tr>
-                    <td><?php echo tdStart() ?>&nbsp;Volume total mis en bouteilles</td>
-                    <td><?php echo tdStart() ?>&nbsp;<?php  echo $tirage->getVolumeTotalComposition(); ?> hl</td>
-                </tr>
-            </table>
-<br/>
-<br/>
-&nbsp;<br/>
-&nbsp;<br/>
-&nbsp;<br/>
-&nbsp;<br/>
-&nbsp;<br/>
-<p style="text-align: right">Signé électroniquement le 12/02/2016</p>
+    </tr>
+    <tr>
+        <td style="vertical-align: top;"><?php echo tdStart() ?>&nbsp;Détail de la composition du lot</td>
+    <td><?php echo tdStart() ?>&nbsp;<?php  $nbcompo = 0 ; foreach ($tirage->composition as $compo): ?><?php echo ($nbcompo) ? "<br/>".tdStart()."&nbsp;" : ""; echo $compo->nombre; ?>&nbsp;bouteilles de <?php echo $compo->contenance; $nbcompo++;?><?php endforeach; ?></td>
+    </tr>
+    <tr>
+        <td><?php echo tdStart() ?>&nbsp;Volume total mis en bouteilles</td>
+        <td><?php echo tdStart() ?>&nbsp;<?php  echo $tirage->getVolumeTotalComposition(); ?> hl</td>
+    </tr>
+</table>

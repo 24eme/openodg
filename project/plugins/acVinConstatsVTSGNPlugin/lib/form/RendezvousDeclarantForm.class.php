@@ -65,7 +65,7 @@ class RendezvousDeclarantForm extends acCouchdbObjectForm {
     public function updateObject($values = null) {
         parent::updateObject($values);
         if ($this->getObject()->heure != $this->oldHeure) {
-            $tournees = TourneeClient::getInstance()->getTourneesByDate($this->getObject()->date);
+            $tournees = TourneeClient::getInstance()->getTourneesByDateAndType($this->getObject()->date, TourneeClient::TYPE_TOURNEE_CONSTAT_VTSGN);
             foreach ($tournees as $tournee) {
                 if($tournee->getRendezvous()->exist($this->getObject()->_id)){
                     $tournee->getRendezvous()->get($this->getObject()->_id)->setHeure($this->getObject()->heure);

@@ -18,6 +18,7 @@ class DRevImportDRTask extends sfBaseTask
             new sfCommandOption('forcecreate', null, sfCommandOption::PARAMETER_REQUIRED, "Force la création", false),
         	new sfCommandOption('forceupdate', null, sfCommandOption::PARAMETER_REQUIRED, "Force la mise à jour de la DR", false),
         	new sfCommandOption('updaterevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Force la mise à jour du volume revendique", false),
+        	new sfCommandOption('removerevendique', null, sfCommandOption::PARAMETER_REQUIRED, "Supprime les volumes revendiquées", false),
         ));
 
         $this->namespace = 'drev';
@@ -63,7 +64,7 @@ EOF;
         }
 
         if($drev && $drev->hasDR() && !$options['forceupdate']) {
-            echo sprintf("WARNING;La DR a déjà été importée;%s\n", $drev->_id);
+            echo sprintf("ERROR;La DR a déjà été importée;%s\n", $drev->_id);
 
             return;
         }
@@ -142,6 +143,11 @@ EOF;
         $updateRevendique = $drev->isAutomatique() || $options['updaterevendique'];
 
     	$drev->updateFromCSV($updateRevendique);
+
+        if($options['removerevendique']) {
+            $drev->declaration->removeVolumeRevendique();
+        }
+
         $drev->declaration->cleanNode();
         $drev->save();
 

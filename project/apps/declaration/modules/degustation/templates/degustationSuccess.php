@@ -2,6 +2,8 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201505110953'); ?>
+<?php include_partial('admin/menu', array('active' => 'tournees', 'hideIfSmall' => true)); ?>
+
 <div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_degustation_json", array('sf_subject' => $tournee, 'commission' => $commission, 'unlock' => !$lock)) ?>"; url_state="<?php echo url_for('auth_state') ?>"; commission=<?php echo $commission ?>; notes=<?php echo json_encode(DegustationClient::getInstance()->getNotesTypeByAppellation($tournee->appellation)) ?>; defauts=<?php echo json_encode(DegustationClient::$note_type_defauts, JSON_HEX_APOS) ?>;'>
     <div ng-controller="degustationCtrl">
         <section ng-show="active == 'recapitulatif'">
@@ -58,7 +60,7 @@
         <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
             <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Lot n°{{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
+                <h2>Lot n° {{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
             </div>
             <div class="row">
                 <div class="col-xs-12">
@@ -80,6 +82,7 @@
                                         <?php foreach(DegustationClient::$note_type_notes[$key_note_type] as $key_note_note => $libelle_note_note): ?>
                                         <option value="<?php echo $key_note_note ?>"><?php echo $libelle_note_note ?></option>
                                         <?php endforeach; ?>
+                                        <option value="X">X - Échantillon non dégusté</option>
                                     </select>
                                 </div>
                                 <div class="col-xs-7 col-md-6 col-lg-7">
@@ -90,7 +93,7 @@
                                 </select>
                                 </div>
                             </div>
-                           
+
                         </div>
                         <?php endforeach; ?>
                         <div ng-show="prelevement.has_erreurs && prelevement.erreurs['requis']" class="alert alert-danger text-center">
@@ -119,7 +122,7 @@
                 </div>
             </div>
         </section>
-        
+
         <section ng-show="active == 'ajout_defaut'">
             <div href="" ng-click="showCepage(ajout_defaut.prelevement)" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">

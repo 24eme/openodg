@@ -36,7 +36,7 @@ class TourneeSaisieDegustateursForm extends acCouchdbForm {
 
         $form->embedForm('degustateur_var---nbItem---', new TourneeSaisieDegustateurForm($this->getDocument()));
 
-        $form->getWidgetSchema()->setNameFormat(sprintf("tournee_saisie[%%s]"));
+        $form->getWidgetSchema()->setNameFormat(sprintf("tournee_saisie_degustateurs[%%s]"));
 
         return $form['degustateur_var---nbItem---'];
     }

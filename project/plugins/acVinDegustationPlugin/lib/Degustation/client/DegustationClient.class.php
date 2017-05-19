@@ -30,6 +30,12 @@ class DegustationClient extends acCouchdbClient {
         self::NOTE_TYPE_EQUILIBRE => "Équilibre",
     );
 
+    public static $appellations = array(
+        "ALSACE" => "AOC Alsace",
+        "VTSGN" => "VT / SGN",
+        "GRDCRU" => "AOC Alsace Grand Cru",
+    );
+
     public static $note_type_by_appellation = array(
         'ALSACE' => array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_MATIERE),
         'VTSGN'=> array(self::NOTE_TYPE_QUALITE_TECHNIQUE, self::NOTE_TYPE_CONCENTRATION, self::NOTE_TYPE_EQUILIBRE),
@@ -49,7 +55,7 @@ class DegustationClient extends acCouchdbClient {
     );
 
     public static $note_type_defauts = array(
-        self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Acescence", "Acétate d'éthyl","Acétique","Acide","Acidité volatile","Aigre-doux","Alcooleux","Alliacé","Amande amère","Amer","Amylique","Apre","Asséchant","Astringent","Bactérien","Bock","Botrytis","Bouchonné","Bourbes","Brunissement","Butyrique","Caoutchouc","Cassé","Champignon","Ciment","Couleur altérée","Créosote","Croupi","Cuit","Cuivre","Décoloré","Désagréable","Déséquilibré","Douceureux","Ecurie","Eventé","Evolué","Fatigué","Fermentaire","Filant","Foxé","Gazeux","Géranium","Gouache","Goudron","Goût de bois sec","Goût de colle","Grêle","Grossier","H2S","Herbacé","Huileux","Hydrocarbures","Insuffisant","Iodé","Lactique","Levure","Lie","Logement","Lourd","Madérisé","Malpropre","Manque de finesse","Manque de fruit","Manque de structure", "Marc","Mauvais boisé","Mauvais goût","Mauvaise odeur","Mercaptans","Métallique","Moisi","Mou","Oignon","Oxydé","Papier","Pas net","Pharmaceutique","Phéniqué","Phénolé","Piqué","Plastique","Plat","Plombé","Poivron","Pourri","Pourriture grise","Poussiéreux","Punaise","Putride","Rafle","Rance","Réduit","Résinique","Sale","Savonneux","Sec","Serpilière","Sirupeux","SO2","Solvant","Souris","Squelettique","Styrène","Taché","Tannique","Tartre sec","Terreux","Trop boisé","Trouble","Tuilé","Usé","Végétal","Vert","Vin non terminé"),
+        self::NOTE_TYPE_QUALITE_TECHNIQUE => array("Acescence", "Acétate d'éthyl","Acétique","Acide","Acidité volatile","Aigre-doux","Alcooleux","Alliacé","Amande amère","Amer","Amylique","Apre","Asséchant","Astringent","Bactérien","Bock","Botrytis","Bouchonné","Bourbes","Brunissement","Butyrique","Caoutchouc","Cassé","Champignon","Ciment","Couleur altérée","Créosote","Croupi","Cuit","Cuivre","Décoloré","Désagréable","Déséquilibré","Douceureux","Ecurie","Eventé","Evolué","Fatigué","Fermentaire","Filant","Foxé","Gazeux","Géranium","Gouache","Goudron","Goût de bois sec","Goût de colle","Grêle","Grossier","H2S","Herbacé","Huileux","Hydrocarbures","Insuffisant","Iodé","Lactique","Levure","Lie","Logement","Lourd","Madérisé","Malpropre","Manque de finesse","Manque de fruit","Manque de structure", "Marc","Mauvais boisé","Mauvais goût","Mauvaise odeur","Mercaptans","Métallique","Moisi","Mou","Oignon","Oxydé","Papier","Pas net","Pharmaceutique","Phéniqué","Phénolé","Piqué","Plastique","Plat","Plombé","Poivron","Pourri","Pourriture grise","Poussiéreux","Punaise","Putride","Rafle","Rance","Réduit","Résinique","Sale","Savonneux","Sec","Serpilière","Sirupeux","SO2","Solvant","Souris","Squelettique","Styrène","Taché","Tannique","Tartre sec","Terreux","Trop boisé","Trouble","Tuilé","Usé","Végétal","Vert","Vin non terminé", "Fermentation en cours"),
         self::NOTE_TYPE_MATIERE => array("Champignon","Court","Creux","Dilué","Insuffisant","Maigre","Manque de corps","Manque de fruit","Manque de matière","Manque de puissance","Manque de structure","Manque de typicité dans le cépage","Pourri","Pourriture grise","Végétal","Vert", "Acide", "Lourd", "Moisi", "Mou", "Poivron", "Poussiéreux", "Herbacé"),
         self::NOTE_TYPE_TYPICITE => array(),
         self::NOTE_TYPE_CONCENTRATION => array("Court","Creux","Dilué","Insuffisant","Maigre","Manque de corps","Manque de fruit","Manque de matière","Manque de puissance","Manque de structure"),
@@ -106,18 +112,19 @@ class DegustationClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findOrCreate($identifiant, $date, $appellation, $appellation_complement = null, $millesime = null) {
-        $id = sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $date), $appellation);
+    public function findOrCreateByTournee(Tournee $tournee, $identifiant) {
+        $id = sprintf("%s-%s-%s-%s", self::TYPE_COUCHDB, $identifiant, str_replace("-", "", $tournee->date), $tournee->appellation);
 
-        if($appellation_complement) {
-            $id .= $appellation_complement;
+        if($tournee->appellation_complement) {
+            $id .= $tournee->appellation_complement;
         }
 
-        if($millesime) {
-            $id .= $millesime;
+        if($tournee->millesime) {
+            $id .= $tournee->millesime;
         }
 
         $degustation = $this->find($id);
+
         if($degustation) {
 
             return $degustation;
@@ -125,20 +132,15 @@ class DegustationClient extends acCouchdbClient {
 
         $degustation = new Degustation();
         $degustation->identifiant = $identifiant;
-        $degustation->date_degustation = $date;
-        $degustation->appellation = $appellation;
-        $degustation->appellation_complement = $appellation_complement;
-        $degustation->millesime = $millesime;
+        $degustation->date_degustation = $tournee->date;
+        $degustation->appellation = $tournee->appellation;
+        $degustation->appellation_complement = $tournee->appellation_complement;
+        $degustation->millesime = $tournee->millesime;
+        $degustation->organisme = $tournee->organisme;
+        $degustation->libelle = $tournee->libelle;
         $degustation->constructId();
 
         return $degustation;
-    }
-
-    public function findOrCreateByTournee(Tournee $tournee, $identifiant) {
-
-        $degustation = $this->findOrCreate($identifiant, $tournee->date, $tournee->appellation, $tournee->appellation_complement, $tournee->millesime);
-
-        $degustation->organisme = $tournee->organisme;
     }
 
     public function findOrCreateForSaisieByTournee(Tournee $tournee, $identifiant) {
@@ -177,5 +179,10 @@ class DegustationClient extends acCouchdbClient {
     public function getLastDegustationByStatut($appellation, $identifiant, $statut) {
 
         return DegustationTousView::getInstance()->getLastDegustationByStatut($appellation, $identifiant, $statut);
+    }
+
+    public function getAppellationLibelle($appellation) {
+
+        return self::$appellations[$appellation];
     }
 }

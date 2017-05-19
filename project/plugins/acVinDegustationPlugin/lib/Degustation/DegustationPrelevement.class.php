@@ -5,6 +5,39 @@
  */
 
 class DegustationPrelevement extends BaseDegustationPrelevement {
+
+    public function getLibelleComplet() {
+
+        return trim($this->libelle_produit . " " . $this->libelle . " " . $this->getDocument()->getMillesime());
+    }
+
+    public function getConfigProduit() {
+        if(!$this->hash_produit || !$this->getDocument()->getConfiguration()->exist($this->hash_produit)) {
+
+            return null;
+        }
+
+        return $this->getDocument()->getConfiguration()->get($this->hash_produit);
+    }
+
+    public function updateLibelleProduit() {
+        if(!$this->getConfigProduit()) {
+            $this->libelle_produit = null;
+
+            return;
+        }
+
+        $this->libelle_produit = $this->getConfigProduit()->getCouleur()->getLibelleComplet();
+    }
+
+    public function getLibelleProduit() {
+        if(!$this->_get('libelle_produit')) {
+            $this->updateLibelleProduit();
+        }
+
+        return $this->_get('libelle_produit');
+    }
+
     public function generateAnonymatPrelevementComplet() {
         if(!$this->anonymat_prelevement) {
             $this->anonymat_prelevement_complet = null;
@@ -52,6 +85,10 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
     }
 
     public function isPreleve() {
+        if($this->preleve && $this->hash_produit && $this->anonymat_degustation && $this->commission) {
+
+            return true;
+        }
 
         return $this->preleve && $this->hash_produit && !is_null($this->cuve) && $this->cuve != "";
     }

@@ -34,7 +34,7 @@
 </table>
 <p>
 N° CVI : <?php echo $degustation->cvi; ?><br /><br />
-Objet : Dégustation conseil <?php echo $degustation->libelle . ' millésime ' . $degustation->getMillesime() ?><br />
+Objet : Dégustation conseil <?php echo str_replace(" ".$degustation->getMillesime(), "", $degustation->libelle) . ' millésime ' . $degustation->getMillesime() ?><br />
 </p>
 <p>Madame, Monsieur,</p>
 <br/>
@@ -47,7 +47,7 @@ Objet : Dégustation conseil <?php echo $degustation->libelle . ' millésime ' .
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 200px; font-weight: bold;"><?php echo tdStart() ?>&nbsp;Produit</th>
-        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->libelle; ?></td>
+        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;<?php echo $prelevement->getLibelleComplet(); ?></td>
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 200px; font-weight: bold;"><?php echo tdStart() ?>&nbsp;Organisateur</th>
@@ -55,11 +55,11 @@ Objet : Dégustation conseil <?php echo $degustation->libelle . ' millésime ' .
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 200px; font-weight: bold;"><?php echo tdStart() ?>&nbsp;Identification du lot</th>
-        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;Lot n° <?php echo $prelevement->getKey() + 1; ?> / Échantillon n° <?php echo ($prelevement->anonymat_prelevement_complet) ? $prelevement->anonymat_prelevement_complet : $prelevement->anonymat_degustation; ?></td>
+        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;Lot n° <?php echo $prelevement->getKey() + 1; ?> / Échantillon n° <?php echo ($prelevement->anonymat_prelevement_complet) ? $prelevement->anonymat_prelevement_complet : $prelevement->anonymat_degustation; ?><?php if($prelevement->denomination_complementaire): ?> / <?php echo $prelevement->denomination_complementaire; ?><?php endif; ?></td>
     </tr>
     <tr>
         <th class="th" style="text-align: left; width: 200px; font-weight: bold;"><?php echo tdStart() ?>&nbsp;Cuve / Volume</th>
-        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;<?php if($prelevement->getCuveNettoye()): ?><?php echo $prelevement->getCuveNettoye(); ?> <?php endif; ?><?php if($prelevement->getCuveNettoye() && $prelevement->volume_revendique): ?>/ <?php endif; ?><?php if($prelevement->volume_revendique): ?><?php echoFloat($prelevement->volume_revendique) ?> <small>hl</small><?php endif; ?><?php if(!$prelevement->getCuveNettoye() && !$prelevement->volume_revendique): ?><i><small>Non défini</small></i><?php endif; ?></td>
+        <td class="td" style="text-align: left; width: 420px;"><?php echo tdStart() ?>&nbsp;<?php if($prelevement->getCuveNettoye()): ?><?php echo $prelevement->getCuveNettoye(); ?> <?php endif; ?><?php if($prelevement->getCuveNettoye() && $prelevement->volume_revendique): ?>/ <?php endif; ?><?php if($prelevement->volume_revendique): ?><?php echoFloat($prelevement->volume_revendique) ?> <small>hl</small><?php endif; ?><?php if(!$prelevement->getCuveNettoye() && !$prelevement->volume_revendique): ?><i>Non défini</i><?php endif; ?></td>
     </tr>
 </table>
 
@@ -80,7 +80,7 @@ Objet : Dégustation conseil <?php echo $degustation->libelle . ' millésime ' .
         ?>
         <tr>
             <th class="th" style="text-align: left; width: 200px; font-weight: bold; height: 38px;"><?php echo tdStart() ?>&nbsp;<?php echo getLibelleTypeNote($type_note) ?><br />&nbsp;<span style="font-weight: normal;">Remarque(s)</span></th>
-            <td class="td" style="text-align: left; font-weight: bold; width: 420px; height: 38px;"><?php echo tdStart() ?>&nbsp;<?php echo $note->note ?><span style="font-weight: normal"> - <?php echo $note->getLibelle() ?></span><br />&nbsp;<span style="font-weight: normal;"><?php if($defaults): ?><?php echo $defaults ?><?php else: ?><i>Aucune</i><?php endif; ?></span></td>
+            <td class="td" style="text-align: left; font-weight: bold; width: 420px; height: 38px;"><?php echo tdStart() ?>&nbsp;<?php if($note->note == "X"): ?><span style="font-weight: normal">Échantillon non dégusté</span><?php else: ?><?php echo $note->note ?><span style="font-weight: normal"> - <?php echo $note->getLibelle() ?></span><?php endif; ?><br />&nbsp;<span style="font-weight: normal;"><?php if($defaults): ?><?php echo $defaults ?><?php else: ?><i>Aucune</i><?php endif; ?></span></td>
         </tr>
     <?php endforeach; ?>
     <?php if($prelevement->appreciations): ?>

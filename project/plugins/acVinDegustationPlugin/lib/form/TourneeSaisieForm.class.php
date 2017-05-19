@@ -7,10 +7,15 @@ class TourneeSaisieForm extends acCouchdbForm {
 
         foreach($doc->getDegustationsObject() as $identifiant => $degustation) {
             foreach($degustation->prelevements as $prelevement) {
+                $hashProduit = $prelevement->hash_produit;
+                if($prelevement->vtsgn) {
+                    $hashProduit = str_replace("/mention/", "/mention".$prelevement->vtsgn."/", $hashProduit);
+                }
                 $defaults["prelevement_".$identifiant."_".$prelevement->getKey()] = array(
                     "numero" => $prelevement->anonymat_degustation,
                     "etablissement" => "COMPTE-E".$degustation->identifiant,
-                    "produit" => $prelevement->hash_produit,
+                    "produit" => $hashProduit,
+                    "denomination_complementaire" => $prelevement->denomination_complementaire,
                     "commission" => $prelevement->commission,
                 );
             }
@@ -58,36 +63,6 @@ class TourneeSaisieForm extends acCouchdbForm {
 
         }
         $nodes_to_remove = array();
-        /*foreach ($taintedValues as $key => $values) {
-            if (array_key_exists($key, $this->embeddedForms)) {
-                foreach ($values as $keyValue => $value) {
-                    if ($keyValue == 'identifiant') {
-                        $keyEmbedded = explode('_', $key);
-                        if (($keyEmbedded[0] != str_replace('SOCIETE-', '', $value) . '01') && $keyEmbedded[0] != "nouveau") {
-
-                            if ($value && SocieteClient::getInstance()->find($value) && $values['quantite']) {
-                                $identifiant = str_replace("SOCIETE-", "", $values['identifiant']) . '01';
-
-                                $keyMvt = $keyEmbedded[1];
-                                $newKey = $identifiant . '_' . $keyMvt;
-
-                                $mouvementCloned = clone $this->getObject()->getOrAdd($keyEmbedded[0])->get($keyEmbedded[1]);
-                                $mouvementCloned->identifiant = str_replace("SOCIETE-", "", $values['identifiant']) . '01';
-
-                                $mouvement = $this->getObject()->getOrAdd($mouvementCloned->identifiant)->add($keyMvt, $mouvementCloned);
-
-                                $this->embedForm($newKey, new FactureMouvementEtablissementEditionLigneForm($mouvement, array('interpro_id' => $this->interpro_id, 'keyMvt' => $newKey)));
-                                $taintedValues[$newKey] = $taintedValues[$key];
-                                $this->validatorSchema[$newKey] = $this->validatorSchema[$key];
-                                $this->widgetSchema[$newKey] = $this->widgetSchema[$key];
-
-                                $nodes_to_remove[] = $key;
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
 
         foreach ($nodes_to_remove as $nodeToRemoveKey) {
             $keyEmbedded = explode('_', $nodeToRemoveKey);
@@ -134,12 +109,25 @@ class TourneeSaisieForm extends acCouchdbForm {
                 $degustation = $degustations[$identifiant];
             }
 
+            $hashProduit = $value["produit"];
+            $vtsgn = null;
+            if(preg_match("#/mention(VT|SGN)/#", $hashProduit, $matches)) {
+                $hashProduit = preg_replace("#/mention(VT|SGN)/#", "/mention/", $hashProduit);
+                $vtsgn = $matches[1];
+            }
+
             $prelevement = $degustation->prelevements->add();
             $prelevement->preleve = 1;
             $prelevement->cuve = null;
             $prelevement->commission = $value["commission"];
-            $prelevement->hash_produit = $value["produit"];
-            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleComplet();
+            $prelevement->hash_produit = $hashProduit;
+            $prelevement->vtsgn = $vtsgn;
+            $prelevement->libelle_produit = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getCouleur()->getLibelleComplet();
+            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleLong().(($prelevement->vtsgn) ? " ".$prelevement->vtsgn : null);
+            $prelevement->denomination_complementaire = null;
+            if($value["denomination_complementaire"]) {
+                $prelevement->denomination_complementaire = $value["denomination_complementaire"];
+            }
             $prelevement->anonymat_degustation = $value["numero"];
         }
 
@@ -153,6 +141,7 @@ class TourneeSaisieForm extends acCouchdbForm {
 
         $this->getDocument()->generateNotes();
         $this->getDocument()->updateNombrePrelevements();
+        $this->getDocument()->updateNombreCommissionsFromDegustations();
         $this->getDocument()->save();
         $this->getDocument()->saveDegustations();
     }
