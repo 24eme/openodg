@@ -10,6 +10,9 @@
  * @property string $section
  * @property string $numero_parcelle
  * @property string $lieu
+ * @property string $departement
+ * @property integer $active
+ * @property integer $vtsgn
 
  * @method float getSuperficie()
  * @method float setSuperficie()
@@ -23,6 +26,12 @@
  * @method string setNumeroParcelle()
  * @method string getLieu()
  * @method string setLieu()
+ * @method string getDepartement()
+ * @method string setDepartement()
+ * @method integer getActive()
+ * @method integer setActive()
+ * @method integer getVtsgn()
+ * @method integer setVtsgn()
  
  */
 

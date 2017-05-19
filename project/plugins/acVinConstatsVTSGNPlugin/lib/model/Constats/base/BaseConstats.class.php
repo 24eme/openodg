@@ -18,11 +18,12 @@
  * @property string $lat
  * @property string $lon
  * @property acCouchdbJson $constats
+ * @property acCouchdbJson $pieces
 
- * @method string get_id()
- * @method string set_id()
- * @method string get_rev()
- * @method string set_rev()
+ * @method string getId()
+ * @method string setId()
+ * @method string getRev()
+ * @method string setRev()
  * @method string getType()
  * @method string setType()
  * @method string getIdentifiant()
@@ -47,6 +48,8 @@
  * @method string setLon()
  * @method acCouchdbJson getConstats()
  * @method acCouchdbJson setConstats()
+ * @method acCouchdbJson getPieces()
+ * @method acCouchdbJson setPieces()
  
  */
  

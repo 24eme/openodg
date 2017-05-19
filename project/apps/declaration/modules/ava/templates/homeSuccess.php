@@ -44,6 +44,7 @@
         <?php include_component('parcellaire', 'monEspace'); ?>
         <?php include_component('parcellaireCremant', 'monEspace'); ?>
         <?php include_component('tirage', 'monEspace'); ?>
+        <?php include_component('fichier', 'monEspace'); ?>
     </div>
     <?php include_component('ava', 'history'); ?>
 <?php endif; ?>

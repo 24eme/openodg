@@ -4,9 +4,10 @@
  * Model for Parcellaire
  *
  */
-class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
+class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, InterfacePieceDocument {
 
     protected $declarant_document = null;
+    protected $piece_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -20,6 +21,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+        $this->piece_document = new PieceDocument($this);
     }
 
     public function storeDeclarant() {
@@ -420,5 +422,38 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration {
     public function isParcellaireCremant() {
         return substr($this->_id, 0, strlen(ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT)) === ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT;
     }
+    
+    protected function doSave() {
+    	$this->piece_document->generatePieces();
+    }
+    
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+    	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+    	$cremant = ($this->isParcellaireCremant())? 'Crémant ' : '';
+    	return (!$this->getValidation())? array() : array(array(
+    		'identifiant' => $this->getIdentifiant(),
+    		'date_depot' => $this->getValidation(),
+    		'libelle' => 'Affectation parcellaire '.$cremant.$this->campagne.' '.$complement,
+    		'mime' => Piece::MIME_PDF,
+    		'visibilite' => 1,
+    		'source' => null
+    	));
+    }
+    
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+    
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('parcellaire_export_pdf', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return sfContext::getInstance()->getRouting()->generate('parcellaire_visualisation', array('id' => $id));
+    }
+    
+    /**** FIN DES PIECES ****/
 
 }

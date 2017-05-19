@@ -71,6 +71,30 @@ class avaActions extends sfActions {
 
         return $this->redirect('home');
     }
+    
+    public function executePiecesHistorique(sfWebRequest $request) {
+    	$this->etablissement = $this->getUser()->getEtablissement();
+    	$this->year = ($request->getParameter('annee'))? $request->getParameter('annee') : date('Y');
+    	$this->category = $request->getParameter('categorie');
+    	
+    	$allHistory = PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant);
+    	$this->history = PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->year.'-01-01', $this->year.'-12-31');
+    	$this->years = array();
+    	$this->categories = array();
+    	foreach ($allHistory as $doc) {
+    		if (preg_match('/^([0-9]{4})-[0-9]{2}-[0-9]{2}$/', $doc->key[PieceAllView::KEYS_DATE_DEPOT], $m)) {
+    			$this->years[$m[1]] = $m[1];
+    		}
+    		if (!isset($m[1]) || $m[1] != $this->year) { continue; }
+    		if (preg_match('/^([a-zA-Z]*)\-./', $doc->id, $m)) {
+    			if (!isset($this->categories[$m[1]])) {
+    				$this->categories[$m[1]] = 0;
+    			}
+    			$this->categories[$m[1]]++;
+    		}
+    	}
+    	ksort($this->categories);
+    }
 
     public function executeContact(sfWebRequest $request) {
 

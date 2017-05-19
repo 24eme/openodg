@@ -1,18 +1,26 @@
+<?php echo use_helper("Date"); ?>
 <?php if(count($history) > 0): ?>
-<h2>Historique des déclarations</h2>
-<div class="list-group">
-<?php foreach ($history as $document): ?>
-	<?php if ($document->type == DRevMarcClient::TYPE_MODEL): ?>
-        <a class="list-group-item" href="<?php echo url_for('drevmarc_visualisation', $document) ?>">Revendication de Marc d'Alsace Gewurztraminer <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
-	<?php elseif($document->type == DRevClient::TYPE_MODEL): ?>
-        <a class="list-group-item" href="<?php echo url_for('drev_visualisation', $document) ?>">Revendication des appellations viticoles <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?><?php if ($document->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?></small></a>
-    <?php elseif($document->type == ParcellaireClient::TYPE_MODEL && strpos($document->_id, ParcellaireClient::TYPE_COUCHDB."-") !== false): ?>
-        <a class="list-group-item" href="<?php echo url_for('parcellaire_visualisation', $document) ?>">Affectation parcellaire <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
-    <?php elseif($document->type == ParcellaireClient::TYPE_MODEL && strpos($document->_id, ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT."-") !== false): ?>
-        <a class="list-group-item" href="<?php echo url_for('parcellaire_visualisation', $document) ?>">Affectation parcellaire Crémant <?php echo $document->campagne ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
-    <?php elseif($document->type == TirageClient::TYPE_MODEL && strpos($document->_id, TirageClient::TYPE_COUCHDB."-") !== false): ?>
-        <a class="list-group-item" href="<?php echo url_for('tirage_visualisation', $document) ?>">Déclaration de tirage Crémant <?php echo $document->couleur_libelle." ".$document->campagne ?> - embouteillage jusqu'au <?php echo format_date($document->date_mise_en_bouteille_fin, 'dd/MM/yyyy'); ?> <small class="text-muted"><?php if($document->isPapier()): ?>(Papier)<?php else: ?>(Télédéclaration)<?php endif; ?></small></a>
-    <?php endif; ?>
+<h2>Derniers documents</h2>
+
+<div class="row">
+<div class="list-group col-xs-12">
+<?php $i=0; foreach ($history as $document): $i++; if ($i>$limit) { break; } ?>
+<div class="list-group-item col-xs-12">
+	<span class="col-xs-2">
+		<?php echo (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $document->key[PieceAllView::KEYS_DATE_DEPOT]))? format_date($document->key[PieceAllView::KEYS_DATE_DEPOT], "dd/MM/yyyy", "fr_FR") : null; ?>
+	</span>
+	<span class="col-xs-8">
+		<?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?>
+	</span>
+	<span class="col-xs-2">
+		<a class="pull-right" href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><span class="glyphicon glyphicon-file"></span></a>
+		<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+		<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;"><span class=" glyphicon glyphicon-eye-open"></span></a>
+		<?php endif; ?>
+	</span>
+</div>
 <?php endforeach; ?>
 </div>
+</div>
+<a href="<?php echo url_for('pieces_historique') ?>" class="pull-right btn btn-warning btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Plus de document</a>
 <?php endif; ?>

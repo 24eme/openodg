@@ -26,6 +26,10 @@ contact:
 mentions_legales:
   url: /mentions-legales
   param: { module: ava, action: mentionsLegales }
+  
+pieces_historique:
+  url: /historique-documents
+  param: { module: ava, action: piecesHistorique }
 
 admin:
   url: /admin
@@ -39,6 +43,30 @@ admin_export:
   url: /admin/export
   param: { module: admin, action: export }
 
+#PIECE
+get_piece:
+  url: /piece/get/:doc_id/:piece_id
+  param: { module: piece, action: get }
+  
+#PIECE
+forward_visu_piece:
+  url: /piece/visualisation/:doc_id
+  param: { module: piece, action: visualisation }
+  
+#FICHIER
+get_fichier:
+  url: /fichier/get/:id
+  param: { module: fichier, action: get }
+  class: FichierRoute
+  options:
+    model:    Fichier
+    type:     object
+  requirements:
+    sf_method: [get]
+
+upload_fichier:
+  url: /fichier/upload
+  param: { module: fichier, action: upload }
 
 #TIRAGE
 

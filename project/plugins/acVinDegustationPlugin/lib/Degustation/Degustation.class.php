@@ -4,7 +4,24 @@
  *
  */
 
-class Degustation extends BaseDegustation {
+class Degustation extends BaseDegustation implements InterfacePieceDocument {
+	
+	protected $piece_document = null;
+
+    public function __construct() {
+        parent::__construct();
+        $this->initDocuments();
+    }
+
+    public function __clone() {
+        parent::__clone();
+        $this->initDocuments();
+    }
+
+    protected function initDocuments() {
+        $this->piece_document = new PieceDocument($this);
+    }
+    
     public function constructId() {
         $id = sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date_degustation), $this->appellation);
 
@@ -356,4 +373,42 @@ class Degustation extends BaseDegustation {
 
         return $this->_get('organisme');
     }
+	
+	protected function doSave() {
+		$this->piece_document->generatePieces();
+	}
+    
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+    	$pieces = array();
+    	foreach ($this->prelevements as $key => $prelevement) {
+    		if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) { 
+	    		if (!$this->getDateDegustation()) { continue; }
+	    		$pieces[] = array(
+	    			'identifiant' => $this->getIdentifiant(),
+	    			'date_depot' => $this->getDateDegustation(),
+	    			'libelle' => 'Dégustation conseil '.$this->getMillesime().' '.$prelevement->getLibelleProduit().' ('.$prelevement->getLibelle().')',
+	    			'mime' => Piece::MIME_PDF,
+	    			'visibilite' => 1,
+	    			'source' => $key
+	    		);
+    		}
+    	}
+    	return $pieces;
+    }
+    
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+    
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('degustation_courrier_prelevement', $this->prelevements->get($source));
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return ($admin)? sfContext::getInstance()->getRouting()->generate('degustation_visualisation', array('id' => preg_replace('/DEGUSTATION-[a-zA-Z0-9]*-/', 'TOURNEE-', $id))) : null;
+    }
+    
+    /**** FIN DES PIECES ****/
 }

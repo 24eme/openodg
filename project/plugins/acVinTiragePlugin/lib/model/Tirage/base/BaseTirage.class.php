@@ -6,6 +6,7 @@
  *
  * @property string $_id
  * @property string $_rev
+ * @property acCouchdbJson $_attachments
  * @property string $type
  * @property string $campagne
  * @property string $identifiant
@@ -15,6 +16,7 @@
  * @property string $validation_odg
  * @property integer $papier
  * @property acCouchdbJson $declarant
+ * @property string $qualite
  * @property string $lieu_stockage
  * @property string $couleur
  * @property string $couleur_libelle
@@ -27,11 +29,14 @@
  * @property string $date_mise_en_bouteille_fin
  * @property acCouchdbJson $composition
  * @property TirageDocuments $documents
+ * @property acCouchdbJson $pieces
 
- * @method string get_id()
- * @method string set_id()
- * @method string get_rev()
- * @method string set_rev()
+ * @method string getId()
+ * @method string setId()
+ * @method string getRev()
+ * @method string setRev()
+ * @method acCouchdbJson getAttachments()
+ * @method acCouchdbJson setAttachments()
  * @method string getType()
  * @method string setType()
  * @method string getCampagne()
@@ -50,6 +55,8 @@
  * @method integer setPapier()
  * @method acCouchdbJson getDeclarant()
  * @method acCouchdbJson setDeclarant()
+ * @method string getQualite()
+ * @method string setQualite()
  * @method string getLieuStockage()
  * @method string setLieuStockage()
  * @method string getCouleur()
@@ -74,6 +81,8 @@
  * @method acCouchdbJson setComposition()
  * @method TirageDocuments getDocuments()
  * @method TirageDocuments setDocuments()
+ * @method acCouchdbJson getPieces()
+ * @method acCouchdbJson setPieces()
  
  */
  

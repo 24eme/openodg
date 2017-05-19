@@ -4,10 +4,11 @@
  * Model for DRev
  *
  */
-class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument {
+class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
+    protected $piece_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -22,6 +23,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementDocument($this);
+        $this->piece_document = new PieceDocument($this);
     }
 
     public function constructId() {
@@ -94,6 +96,10 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     {
         return $this->volume_obtenu;
     }
+    
+    protected function doSave() {
+    	$this->piece_document->generatePieces();
+    }
 
     /**** MOUVEMENTS ****/
 
@@ -142,4 +148,32 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     }
 
     /**** FIN DES MOUVEMENTS ****/
+    
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+    	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+    	return (!$this->getValidation())? array() : array(array(
+    		'identifiant' => $this->getIdentifiant(),
+    		'date_depot' => $this->getValidation(),
+    		'libelle' => 'Revendication de Marc d\'Alsace Gewurztraminer '.$this->campagne.' '.$complement,
+    		'mime' => Piece::MIME_PDF,
+    		'visibilite' => 1,
+    		'source' => null
+    	));
+    }
+    
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+    
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('drevmarc_export_pdf', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', array('id' => $id));
+    }
+    
+    /**** FIN DES PIECES ****/
 }
