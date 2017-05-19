@@ -50,8 +50,8 @@ class ExportDegustationsManquantes implements InterfaceDeclarationExportCsv {
                 foreach($degustation->prelevements as $prelevement) {
                     if($prelevement->hash_produit == $row->key[2]) {
                         $finded = true;
+                        break;
                     }
-                    break;
                 }
 
                 if($finded) {
