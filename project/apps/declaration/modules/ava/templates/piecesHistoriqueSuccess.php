@@ -5,6 +5,7 @@
     	<form class="form-inline pull-right col-xs-2">
 		  <div class="form-group">
 		    <select class="form-control select2 select2SubmitOnChange select2autocomplete input-sm text-right" id="year" name="annee">
+		    	<option value="0">Toutes années</option>
 		    	<?php foreach ($years as $y): ?>
 		    	<option value="<?php echo $y ?>"<?php if($y == $year): ?> selected="selected"<?php endif; ?>><?php echo $y ?></option>
 		    	<?php endforeach; ?>
@@ -19,7 +20,7 @@
 <div class="list-group col-xs-12">
 <?php if(count($history) > 0): ?>
 	<ul class="nav nav-pills" style="margin: 0 0 20px 0;">
-		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('annee' => $year))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) ?></a></li>
+		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('annee' => $year))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) - $decreases ?></a></li>
 		<?php foreach ($categories as $categorie => $nbDoc): ?>
         <li<?php if ($category && $category == $categorie):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('annee' => $year, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : ucfirst(strtolower($categorie)); ?>&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nbDoc ?></a></li>
 		<?php endforeach; ?>
@@ -46,7 +47,7 @@
 	</div>
 	<?php endforeach; ?>
 <?php else: ?>
-	<p class="text-center"><em>Aucun document disponible pour l'année <strong><?php echo $year ?></strong></em></p>
+	<p class="text-center"><em>Aucun document disponible<?php if ($year): ?> pour l'année <strong><?php echo $year ?></strong><?php endif; ?></em></p>
 <?php endif; ?>
 </div>
 </div>
