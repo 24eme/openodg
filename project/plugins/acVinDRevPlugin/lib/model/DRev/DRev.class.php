@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument {
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -40,6 +40,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
+    protected $piece_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -54,6 +55,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementDocument($this);
+        $this->piece_document = new PieceDocument($this);
     }
 
     public function constructId() {
@@ -714,6 +716,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	}
     	return $can;
     }
+	
+	protected function doSave() {
+		$this->piece_document->generatePieces();
+	}
 
     /*
      * Facture
@@ -781,4 +787,33 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     /**** FIN DES MOUVEMENTS ****/
+    
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+    	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+    	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
+    	return (!$this->getValidation())? array() : array(array(
+    		'identifiant' => $this->getIdentifiant(),
+    		'date_depot' => $this->getValidation(),
+    		'libelle' => 'Revendication des appellations viticoles '.$this->campagne.' '.$complement,
+    		'mime' => Piece::MIME_PDF,
+    		'visibilite' => 1,
+    		'source' => null
+    	));
+    }
+    
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+    
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('drev_export_pdf', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return sfContext::getInstance()->getRouting()->generate('drev_visualisation', array('id' => $id));
+    }
+    
+    /**** FIN DES PIECES ****/
 }

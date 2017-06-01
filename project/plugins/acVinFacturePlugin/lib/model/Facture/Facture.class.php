@@ -4,11 +4,12 @@
  * Model for Facture
  *
  */
-class Facture extends BaseFacture implements InterfaceArchivageDocument {
+class Facture extends BaseFacture implements InterfaceArchivageDocument, InterfacePieceDocument {
 
     private $documents_origine = array();
     protected $declarant_document = null;
     protected $archivage_document = null;
+    protected $piece_document = null;
     const MESSAGE_DEFAULT = "ICI le message par défaut : Vous pouvez retrouver nos infos jours après jours sur http://www.vinsvaldeloire.fr";
 
     public function __construct() {
@@ -24,6 +25,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
         $this->archivage_document = new ArchivageDocument($this);
+        $this->piece_document = new PieceDocument($this);
     }
 
     public function getCampagne() {
@@ -634,6 +636,39 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument {
         }
         return self::MESSAGE_DEFAULT;
     }
+    
+    protected function doSave() {
+    	$this->piece_document->generatePieces();
+    }
+    
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+    	$type = ($this->isAvoir())? 'Avoir' : 'Facture';
+    	$date = new DateTime($this->date_facturation);
+    	return (!$this->getDateFacturation())? array() : array(array(
+    		'identifiant' => str_replace('E', '', $this->getIdentifiant()),
+    		'date_depot' => $this->getDateFacturation(),
+    		'libelle' => $type.' n° '.$this->numero_ava.' du '.$date->format('d/m/Y').' - '.number_format($this->total_ht, 2, '.', ' ').' € HT',
+    		'mime' => Piece::MIME_PDF,
+    		'visibilite' => 1,
+    		'source' => null
+    	));
+    }
+    
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+    
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('facturation_pdf', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return null;
+    }
+    
+    /**** FIN DES PIECES ****/
 
 
 }

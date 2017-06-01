@@ -15,7 +15,9 @@
         <link rel="icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/png" href="/favico.png" />
 
+
         <?php include_stylesheets() ?>
+
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 

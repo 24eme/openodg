@@ -104,3 +104,19 @@ Degustation:
                   vtsgn: { }
                   nb: { }
                   prelevement: { type: integer }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: DegustationPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }

@@ -18,6 +18,7 @@
  * @property integer $non_vinificateur
  * @property integer $papier
  * @property integer $automatique
+ * @property string $lecture_seule
  * @property acCouchdbJson $declarant
  * @property DRevDeclaration $declaration
  * @property acCouchdbJson $prelevements
@@ -27,13 +28,14 @@
  * @property acCouchdbJson $facturable
  * @property acCouchdbJson $chais
  * @property acCouchdbJson $mouvements
+ * @property acCouchdbJson $pieces
 
- * @method string get_id()
- * @method string set_id()
- * @method string get_rev()
- * @method string set_rev()
- * @method acCouchdbJson get_attachments()
- * @method acCouchdbJson set_attachments()
+ * @method string getId()
+ * @method string setId()
+ * @method string getRev()
+ * @method string setRev()
+ * @method acCouchdbJson getAttachments()
+ * @method acCouchdbJson setAttachments()
  * @method string getType()
  * @method string setType()
  * @method string getCampagne()
@@ -56,6 +58,8 @@
  * @method integer setPapier()
  * @method integer getAutomatique()
  * @method integer setAutomatique()
+ * @method string getLectureSeule()
+ * @method string setLectureSeule()
  * @method acCouchdbJson getDeclarant()
  * @method acCouchdbJson setDeclarant()
  * @method DRevDeclaration getDeclaration()
@@ -74,6 +78,8 @@
  * @method acCouchdbJson setChais()
  * @method acCouchdbJson getMouvements()
  * @method acCouchdbJson setMouvements()
+ * @method acCouchdbJson getPieces()
+ * @method acCouchdbJson setPieces()
  
  */
  

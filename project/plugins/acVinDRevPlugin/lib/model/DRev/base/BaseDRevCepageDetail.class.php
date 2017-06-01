@@ -8,6 +8,10 @@
  * @property float $volume_revendique_sgn
  * @property float $volume_revendique
  * @property float $volume_revendique_total
+ * @property float $superficie_vinifiee_total
+ * @property float $superficie_vinifiee
+ * @property float $superficie_vinifiee_vt
+ * @property float $superficie_vinifiee_sgn
  * @property float $superficie_revendique
  * @property float $superficie_revendique_vt
  * @property float $superficie_revendique_sgn
@@ -23,6 +27,14 @@
  * @method float setVolumeRevendique()
  * @method float getVolumeRevendiqueTotal()
  * @method float setVolumeRevendiqueTotal()
+ * @method float getSuperficieVinifieeTotal()
+ * @method float setSuperficieVinifieeTotal()
+ * @method float getSuperficieVinifiee()
+ * @method float setSuperficieVinifiee()
+ * @method float getSuperficieVinifieeVt()
+ * @method float setSuperficieVinifieeVt()
+ * @method float getSuperficieVinifieeSgn()
+ * @method float setSuperficieVinifieeSgn()
  * @method float getSuperficieRevendique()
  * @method float setSuperficieRevendique()
  * @method float getSuperficieRevendiqueVt()

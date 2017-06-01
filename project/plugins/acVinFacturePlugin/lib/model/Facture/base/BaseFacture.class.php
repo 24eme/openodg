@@ -14,6 +14,10 @@
  * @property string $numero_adherent
  * @property string $date_emission
  * @property string $date_facturation
+ * @property string $date_paiement
+ * @property string $date_echeance
+ * @property string $reglement_paiement
+ * @property string $montant_paiement
  * @property string $campagne
  * @property string $numero_archive
  * @property string $statut
@@ -21,6 +25,8 @@
  * @property string $taux_tva
  * @property string $region
  * @property integer $versement_comptable
+ * @property integer $versement_comptable_paiement
+ * @property acCouchdbJson $arguments
  * @property string $message_communication
  * @property acCouchdbJson $emetteur
  * @property acCouchdbJson $declarant
@@ -30,11 +36,13 @@
  * @property FactureLignes $lignes
  * @property acCouchdbJson $echeances
  * @property acCouchdbJson $origines
+ * @property acCouchdbJson $templates
+ * @property acCouchdbJson $pieces
 
- * @method string get_id()
- * @method string set_id()
- * @method string get_rev()
- * @method string set_rev()
+ * @method string getId()
+ * @method string setId()
+ * @method string getRev()
+ * @method string setRev()
  * @method string getType()
  * @method string setType()
  * @method string getIdentifiant()
@@ -51,6 +59,14 @@
  * @method string setDateEmission()
  * @method string getDateFacturation()
  * @method string setDateFacturation()
+ * @method string getDatePaiement()
+ * @method string setDatePaiement()
+ * @method string getDateEcheance()
+ * @method string setDateEcheance()
+ * @method string getReglementPaiement()
+ * @method string setReglementPaiement()
+ * @method string getMontantPaiement()
+ * @method string setMontantPaiement()
  * @method string getCampagne()
  * @method string setCampagne()
  * @method string getNumeroArchive()
@@ -65,6 +81,10 @@
  * @method string setRegion()
  * @method integer getVersementComptable()
  * @method integer setVersementComptable()
+ * @method integer getVersementComptablePaiement()
+ * @method integer setVersementComptablePaiement()
+ * @method acCouchdbJson getArguments()
+ * @method acCouchdbJson setArguments()
  * @method string getMessageCommunication()
  * @method string setMessageCommunication()
  * @method acCouchdbJson getEmetteur()
@@ -83,6 +103,10 @@
  * @method acCouchdbJson setEcheances()
  * @method acCouchdbJson getOrigines()
  * @method acCouchdbJson setOrigines()
+ * @method acCouchdbJson getTemplates()
+ * @method acCouchdbJson setTemplates()
+ * @method acCouchdbJson getPieces()
+ * @method acCouchdbJson setPieces()
  
  */
  

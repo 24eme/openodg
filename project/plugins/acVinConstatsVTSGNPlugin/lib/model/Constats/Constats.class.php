@@ -4,7 +4,23 @@
  * Model for Constats
  *
  */
-class Constats extends BaseConstats {
+class Constats extends BaseConstats implements InterfacePieceDocument {
+	
+	protected $piece_document = null;
+
+    public function __construct() {
+        parent::__construct();
+        $this->initDocuments();
+    }
+
+    public function __clone() {
+        parent::__clone();
+        $this->initDocuments();
+    }
+
+    protected function initDocuments() {
+        $this->piece_document = new PieceDocument($this);
+    }
 
     public function constructId() {
         $this->set('_id', sprintf("%s-%s-%s", ConstatsClient::TYPE_COUCHDB, $this->cvi, $this->campagne));
@@ -54,6 +70,42 @@ class Constats extends BaseConstats {
         $this->get('constats')->getOrAdd($constatIdNode)->updateConstat($jsonContent);
         $this->save();
     }
+	
+	protected function doSave() {
+		$this->piece_document->generatePieces();
+	}
+    
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+    	$pieces = array();
+    	foreach ($this->constats as $key => $constat) {
+    		if (!$constat->getDateSignature()) { continue; }
+    		$pieces[] = array(
+    			'identifiant' => $this->getCvi(),
+    			'date_depot' => $constat->getDateSignature(),
+    			'libelle' => 'Constat VT/SGN '.$this->getCampagne().' d\''.$constat->produit_libelle,
+    			'mime' => Piece::MIME_PDF,
+    			'visibilite' => 1,
+    			'source' => $key
+    		);
+    	}
+    	return $pieces;
+    }
+    
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+    
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('constat_pdf', array('identifiant' => $this->getCvi(), 'campagne' => $this->getCampagne(), 'identifiantconstat' => $source));
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return null;
+    }
+    
+    /**** FIN DES PIECES ****/
 
 
 }

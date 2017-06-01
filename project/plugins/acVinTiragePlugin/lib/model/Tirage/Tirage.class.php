@@ -4,9 +4,10 @@
  *
  */
 
-class Tirage extends BaseTirage implements InterfaceDeclarantDocument, InterfaceDeclaration {
+class Tirage extends BaseTirage implements InterfaceDeclarantDocument, InterfaceDeclaration, InterfacePieceDocument {
 
     protected $declarant_document;
+    protected $piece_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -20,6 +21,7 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+        $this->piece_document = new PieceDocument($this);
     }
 
     public function constructId() {
@@ -281,5 +283,43 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         }
         return $sommeTotal;
     }
+    
+    protected function doSave() {
+    	$this->piece_document->generatePieces();
+    }
+    
+    /**** PIECES ****/
+
+    public function getAllPieces() {
+    	if ($this->date_mise_en_bouteille_fin) {
+    		$date = new DateTime($this->date_mise_en_bouteille_fin);
+    		$complement = $date->format('d/m/Y').' ';
+    	} else {
+    		$complement = '';
+    	}
+    	$complement .= ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+    	return (!$this->getValidation())? array() : array(array(
+    		'identifiant' => $this->getIdentifiant(),
+    		'date_depot' => $this->getValidation(),
+    		'libelle' => 'Déclaration de tirage Crémant '.$this->couleur_libelle.' '.$this->campagne.' - embouteillage jusqu\'au '.$complement,
+    		'mime' => Piece::MIME_PDF,
+    		'visibilite' => 1,
+    		'source' => null
+    	));
+    }
+    
+    public function generatePieces() {
+    	return $this->piece_document->generatePieces();
+    }
+    
+    public function generateUrlPiece($source = null) {
+    	return sfContext::getInstance()->getRouting()->generate('tirage_export_pdf', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+    	return sfContext::getInstance()->getRouting()->generate('tirage_visualisation', array('id' => $id));
+    }
+    
+    /**** FIN DES PIECES ****/
 
 }

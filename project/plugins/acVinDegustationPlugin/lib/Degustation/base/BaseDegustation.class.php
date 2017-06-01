@@ -8,6 +8,10 @@
  * @property string $_rev
  * @property string $type
  * @property string $appellation
+ * @property string $appellation_complement
+ * @property string $organisme
+ * @property string $millesime
+ * @property string $libelle
  * @property string $appellation_libelle
  * @property string $date_degustation
  * @property string $identifiant
@@ -30,19 +34,30 @@
  * @property string $telephone_prive
  * @property string $telephone_mobile
  * @property string $date_demande
- * @property integer $reporte
+ * @property string $reporte
  * @property string $motif_non_prelevement
+ * @property string $signature_base64
  * @property acCouchdbJson $prelevements
+ * @property acCouchdbJson $reports
  * @property DegustationLot $lots
+ * @property acCouchdbJson $pieces
 
- * @method string get_id()
- * @method string set_id()
- * @method string get_rev()
- * @method string set_rev()
+ * @method string getId()
+ * @method string setId()
+ * @method string getRev()
+ * @method string setRev()
  * @method string getType()
  * @method string setType()
  * @method string getAppellation()
  * @method string setAppellation()
+ * @method string getAppellationComplement()
+ * @method string setAppellationComplement()
+ * @method string getOrganisme()
+ * @method string setOrganisme()
+ * @method string getMillesime()
+ * @method string setMillesime()
+ * @method string getLibelle()
+ * @method string setLibelle()
  * @method string getAppellationLibelle()
  * @method string setAppellationLibelle()
  * @method string getDateDegustation()
@@ -87,14 +102,20 @@
  * @method string setTelephoneMobile()
  * @method string getDateDemande()
  * @method string setDateDemande()
- * @method integer getReporte()
- * @method integer setReporte()
+ * @method string getReporte()
+ * @method string setReporte()
  * @method string getMotifNonPrelevement()
  * @method string setMotifNonPrelevement()
+ * @method string getSignatureBase64()
+ * @method string setSignatureBase64()
  * @method acCouchdbJson getPrelevements()
  * @method acCouchdbJson setPrelevements()
+ * @method acCouchdbJson getReports()
+ * @method acCouchdbJson setReports()
  * @method DegustationLot getLots()
  * @method DegustationLot setLots()
+ * @method acCouchdbJson getPieces()
+ * @method acCouchdbJson setPieces()
  
  */
  

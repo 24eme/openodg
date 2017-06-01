@@ -30,6 +30,7 @@
  * @property string $mail_sended
  * @property string $signature_base64
  * @property string $commentaire_raisin
+ * @property integer $papier
 
  * @method string getProduit()
  * @method string setProduit()
@@ -83,6 +84,8 @@
  * @method string setSignatureBase64()
  * @method string getCommentaireRaisin()
  * @method string setCommentaireRaisin()
+ * @method integer getPapier()
+ * @method integer setPapier()
  
  */
 
