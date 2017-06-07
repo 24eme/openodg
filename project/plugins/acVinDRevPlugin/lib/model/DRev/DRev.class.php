@@ -195,6 +195,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
                 continue;
             }
             $p = $this->addProduit($produit->getHash());
+            if($this->isNonRecoltant()) {
+                continue;
+            }
             $p->superficie_revendique = $produit->superficie_revendique;
         }
 
@@ -716,7 +719,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     	}
     	return $can;
     }
-	
+
 	protected function doSave() {
 		$this->piece_document->generatePieces();
 	}
@@ -787,7 +790,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     /**** FIN DES MOUVEMENTS ****/
-    
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -802,11 +805,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     		'source' => null
     	));
     }
-    
+
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
     }
-    
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('drev_export_pdf', $this);
     }
@@ -814,6 +817,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return sfContext::getInstance()->getRouting()->generate('drev_visualisation', array('id' => $id));
     }
-    
+
     /**** FIN DES PIECES ****/
 }
