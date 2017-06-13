@@ -1,4 +1,3 @@
-<?php include_partial('drev/step', array('step' => 'confirmation', 'drev' => $drev)) ?>
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 
 <div class="page-header">

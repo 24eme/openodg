@@ -1,3 +1,8 @@
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
+  <li class="active"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+</ol>
+
 <div class="page-header">
     <h2>Choix de la campagne pour la création de la déclaration de Tirage papier</h2>
 </div>

@@ -1,6 +1,5 @@
-<?php include_partial('tirage/step', array('step' => 'confirmation', 'tirage' => $tirage)) ?>
+<?php include_partial('tirage/breadcrumb', array('tirage' => $tirage )); ?>
 
-<br/>
 <div class="page-header">
     <h2>Confirmation de validation de votre déclaration de tirage</h2>
 </div>

@@ -1,5 +1,7 @@
 <?php use_helper('Date') ?>
 
+<?php include_partial('tirage/breadcrumb', array('tirage' => $tirage )); ?>
+
 <?php if (isset($form)): ?>
 <form action="<?php echo url_for('tirage_visualisation', $tirage) ?>" method="post">
     <?php echo $form->renderHiddenFields(); ?>

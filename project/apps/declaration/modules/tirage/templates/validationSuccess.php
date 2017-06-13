@@ -1,4 +1,4 @@
-
+<?php include_partial('tirage/breadcrumb', array('tirage' => $tirage )); ?>
 <?php include_partial('tirage/step', array('step' => 'validation', 'tirage' => $tirage)) ?>
 <div class="page-header">
     <h2>Validation de votre déclaration</h2>
@@ -26,13 +26,13 @@
         <h2 class="h3">J'ai pris connaissance des pièces à fournir</h2>
         <div class="alert" role="alert" id="engagements">
             <div class="form-group">
-           
+
                 <div class="alert alert-danger <?php if(!$form->hasErrors()): ?>hidden<?php endif; ?>" role="alert">
                     <ul class="error_list">
                         <li class="text-left">Vous devez cocher pour valider votre déclaration.</li>
                     </ul>
                 </div>
-                
+
                 <?php foreach ($validation->getPoints(TirageValidation::TYPE_ENGAGEMENT) as $engagement): ?>
                 <div class="checkbox-container <?php if ($form['engagement_' . $engagement->getCode()]->hasError()): ?>has-error<?php endif; ?>">
                     <div class="checkbox<?php if($engagement->getCode() == TirageDocuments::DOC_PRODUCTEUR && $tirage->hasDr()): ?> disabled<?php endif; ?>">
@@ -46,7 +46,7 @@
                                 } else {
                                     $svRecu = ($tirage->hasSV())? array('checked' => 'checked') : array();
                                     echo $form['engagement_' . $engagement->getCode()]->render($svRecu);
-                                
+
                                 }
                             ?>
                             <?php if ($engagement->getCode() != TirageDocuments::DOC_PRODUCTEUR || $tirage->hasDr()): ?>
@@ -68,7 +68,7 @@
     <?php if(isset($form["date"])): ?>
     <div class="row">
         <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>                            
+            <?php if ($form["date"]->hasError()): ?>
                 <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
             <?php endif; ?>
             <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 col-xs-offset-4 control-label")); ?>
