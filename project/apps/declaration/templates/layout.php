@@ -88,10 +88,13 @@
                 <?php endif; ?>
             </header>
             <!-- end #header -->
+            <div class="container" style="padding: 0; margin: 0;">
+                <?php include_partial('global/nav'); ?>
+            </div>
 
             <!-- #content -->
-            <section id="content" class="container">
-                <?php include_partial('admin/menu'); ?>
+            <section id="content" class="container" style="margin-top: 20px;">
+                <div style="margin-bottom: 20px;"></div>
                 <?php echo $sf_content ?>
             </section>
 
