@@ -1,3 +1,7 @@
+<ol class="breadcrumb">
+  <li class="active"><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
+</ol>
+
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">
         <?php echo $form->renderHiddenFields(); ?>

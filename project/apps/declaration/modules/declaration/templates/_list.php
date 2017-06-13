@@ -27,7 +27,7 @@
             </a></li>
     <?php endforeach; ?>
     <li class="pull-right">
-        <a href="<?php echo url_for('admin_export', array("docs" => $current_key_list, 'doc_statut' => $statut)) ?>"><span class="glyphicon glyphicon-export"></span> Exporter la liste courante en CSV</a>
+        <a href="<?php echo url_for('declaration_export', array("docs" => $current_key_list, 'doc_statut' => $statut)) ?>"><span class="glyphicon glyphicon-export"></span> Exporter la liste courante en CSV</a>
     </li>
 </ul>
 
@@ -36,7 +36,7 @@
         <?php if (count($lists[$current_key_list]['statuts'][$statut]) > 0): ?>
             <div class="list-group">
                 <?php foreach ($lists[$current_key_list]['statuts'][$statut] as $doc): ?>
-                            <a class="list-group-item col-xs-12 <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && !$doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?><?php endif; ?>" href="<?php echo url_for("admin_doc", array("id" => $doc->id, "service" => url_for('declaration', array("docs" => $key_list, 'doc_statut' => $statut)))) ?>">
+                            <a class="list-group-item col-xs-12 <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && !$doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?>list-group-item-success<?php endif; ?> <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION] && !$doc->key[DeclarationTousView::KEY_VALIDATION_ODG] && $doc->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]): ?><?php endif; ?>" href="<?php echo url_for("declaration_doc", array("id" => $doc->id, "service" => url_for('declaration', array("docs" => $key_list, 'doc_statut' => $statut)))) ?>">
                             <?php $tabId = explode('-', $doc->id); $annee = $tabId[count($tabId)-1]; ?>
                             <span class="col-xs-2 text-muted">
                                 <?php if ($doc->key[DeclarationTousView::KEY_VALIDATION]): ?>

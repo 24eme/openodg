@@ -1,6 +1,6 @@
 <?php
 
-class adminComponents extends sfComponents {
+class declarationComponents extends sfComponents {
 
     public function executeList(sfWebRequest $request) {
 
