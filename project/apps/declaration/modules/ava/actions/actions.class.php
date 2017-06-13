@@ -44,7 +44,7 @@ class avaActions extends sfActions {
 
         if (!$this->etablissement && $this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
 
-            return $this->redirect('admin');
+            return $this->redirect('declaration');
         } if (!$this->etablissement && $this->getUser()->hasCredential(myUser::CREDENTIAL_CONTACT)) {
 
             return $this->redirect('compte_recherche');
@@ -70,40 +70,6 @@ class avaActions extends sfActions {
         $this->form->save();
 
         return $this->redirect('home');
-    }
-    
-    public function executePiecesHistorique(sfWebRequest $request) {
-    	$this->etablissement = $this->getUser()->getEtablissement();
-    	$this->year = $request->getParameter('annee', 0);
-    	$this->category = $request->getParameter('categorie');
-    	
-    	$allHistory = PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant);
-    	$this->history = ($this->year)? PieceAllView::getInstance()->getPiecesByEtablissement($this->etablissement->identifiant, $this->year.'-01-01', $this->year.'-12-31') : $allHistory;
-    	$this->years = array();
-    	$this->categories = array();
-    	$this->decreases = 0;
-    	foreach ($allHistory as $doc) {
-    		if (preg_match('/^([0-9]{4})-[0-9]{2}-[0-9]{2}$/', $doc->key[PieceAllView::KEYS_DATE_DEPOT], $m)) {
-    			$this->years[$m[1]] = $m[1];
-    		}
-    		if ($this->year && (!isset($m[1]) || $m[1] != $this->year)) { continue; }
-    		if (preg_match('/^([a-zA-Z]*)\-./', $doc->id, $m)) {
-    			if ($this->year && $m[1] == 'FICHIER') { $this->decreases++; continue; }
-    			if (!isset($this->categories[$m[1]])) {
-    				$this->categories[$m[1]] = 0;
-    			}
-    			$this->categories[$m[1]]++;
-    		}
-    	}
-    	ksort($this->categories);
-    }
-
-    public function executeContact(sfWebRequest $request) {
-
-    }
-
-    public function executeMentionsLegales(sfWebRequest $request) {
-
     }
 
     protected function forwardSecure() {

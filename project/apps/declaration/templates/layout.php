@@ -63,7 +63,7 @@
                     <span class="profile-name"><?php echo $sf_user->getCompte()->nom ?></span>
                     <ul>
                         <?php if($sf_user->isAdmin()): ?>
-                        <li><a href="<?php echo url_for('admin') ?>">Administration</a></li>
+                        <li><a href="<?php echo url_for('declaration') ?>">Administration</a></li>
                         <?php elseif($sf_user->hasCredential(myUser::CREDENTIAL_CONTACT)): ?>
                         <li><a href="<?php echo url_for('compte_recherche') ?>">Contacts</a></li>
                         <?php endif; ?>

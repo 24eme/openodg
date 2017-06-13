@@ -1,15 +1,25 @@
 <ol class="breadcrumb">
-  <li><a href="#">Déclarations</a></li>
-  <li class="active"><a href="#">GAEC Justin Boxler (6823700100)</a></li>
+  <li class="active"><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
 </ol>
 
-<h4>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</h4>
-<div class="row">
-    <?php include_component('drev', 'monEspace'); ?>
-    <?php include_component('drevmarc', 'monEspace'); ?>
-    <?php include_component('parcellaire', 'monEspace'); ?>
-    <?php include_component('parcellaireCremant', 'monEspace'); ?>
-    <?php include_component('tirage', 'monEspace'); ?>
-    <?php include_component('fichier', 'monEspace'); ?>
+<div class="row row-margin">
+    <form method="post" action="" role="form" class="form-horizontal">
+        <?php echo $form->renderHiddenFields(); ?>
+        <?php echo $form->renderGlobalErrors(); ?>
+        <div class="form-group">
+            <?php echo $form["login"]->renderError(); ?>
+            <div class="col-xs-8 col-xs-offset-1">
+                <?php echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
+                                "placeholder" => "Se connecter à un opérateur",
+                                "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
+                                )); ?>
+            </div>
+            <div class="col-xs-2">
+                <button class="btn btn-default btn-lg" type="submit">Se connecter</button>
+            </div>
+        </div>
+
+    </form>
 </div>
-<?php include_component('ava', 'history'); ?>
+
+<?php include_component('admin', 'list'); ?>

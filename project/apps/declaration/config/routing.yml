@@ -20,33 +20,6 @@ home:
   param: { module: ava, action: home }
   class: DeclarationRoute
 
-declarations:
-  url: /declarations/:id
-  param: { module: declaration, action: index }
-  class: DeclarationDeclarantRoute
-  options:
-    model:    EtablissementRoute
-    type:     object
-  requirements:
-    sf_method: [get]
-
-contact:
-  url: /contact
-  param: { module: ava, action: contact }
-
-mentions_legales:
-  url: /mentions-legales
-  param: { module: ava, action: mentionsLegales }
-
-pieces_historique:
-  url: /historique-documents
-  param: { module: ava, action: piecesHistorique }
-
-admin:
-  url: /admin
-  param: { module: admin, action: index }
-  class: DeclarationRoute
-
 admin_doc:
   url: /admin/doc
   param: { module: admin, action: doc }
@@ -55,17 +28,55 @@ admin_export:
   url: /admin/export
   param: { module: admin, action: export }
 
-#PIECE
+# Common
+
+contact:
+  url: /contact
+  param: { module: common, action: contact }
+
+mentions_legales:
+  url: /mentions-legales
+  param: { module: common, action: mentionsLegales }
+
+# Déclaration
+
+declaration:
+  url: /declaration
+  param: { module: declaration, action: index }
+  class: DeclarationRoute
+
+declaration_etablissement:
+  url: /declarations/:id
+  param: { module: declaration, action: etablissement }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get]
+
+# PIECE
+
 get_piece:
   url: /piece/get/:doc_id/:piece_id
   param: { module: piece, action: get }
 
-#PIECE
 forward_visu_piece:
   url: /piece/visualisation/:doc_id
   param: { module: piece, action: visualisation }
 
-#FICHIER
+# FICHIER
+
+pieces_historique:
+  url: /historique-documents/:id
+  param: { module: fichier, action: piecesHistorique }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
 get_fichier:
   url: /fichier/get/:id
   param: { module: fichier, action: get }

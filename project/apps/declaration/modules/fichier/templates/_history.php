@@ -22,5 +22,5 @@
 <?php endforeach; ?>
 </div>
 </div>
-<a href="<?php echo url_for('pieces_historique') ?>" class="pull-right btn btn-warning btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Plus de document</a>
+<a href="<?php echo url_for('pieces_historique', $etablissement) ?>" class="pull-right btn btn-warning btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Plus de document</a>
 <?php endif; ?>

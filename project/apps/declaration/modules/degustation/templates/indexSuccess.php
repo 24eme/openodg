@@ -1,6 +1,10 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript("lib/chart.min.js", "last") ?>
 
+<ol class="breadcrumb">
+  <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
+</ol>
+
 <form action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>

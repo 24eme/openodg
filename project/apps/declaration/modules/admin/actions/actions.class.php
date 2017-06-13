@@ -2,29 +2,6 @@
 
 class adminActions extends sfActions {
 
-    public function executeIndex(sfWebRequest $request) {
-
-        $this->getUser()->signOutEtablissement();
-
-        $this->form = new LoginForm();
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if(!$this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
-
-        return $this->redirect('declarations', $this->form->getValue('etablissement')); 
-    }
-
     public function executeDoc(sfWebRequest $request) {
         $this->getUser()->signOutEtablissement();
 
