@@ -1,3 +1,5 @@
+<?php include_partial('degustation/breadcrumb', array('tournee' => $tournee )); ?>
+
 <div class="page-header">
     <h2>Création d'une dégustation</h2>
 </div>

@@ -1,4 +1,4 @@
-
+<?php include_partial('degustation/breadcrumb', array('tournee' => $tournee )); ?>
 <?php include_partial('degustation/stepSaisie', array('tournee' => $tournee, 'active' => TourneeSaisieEtapes::ETAPE_SAISIE)); ?>
 
 <div class="page-header">
