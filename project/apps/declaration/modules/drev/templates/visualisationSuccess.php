@@ -1,5 +1,7 @@
 <?php use_helper('Date') ?>
 
+<?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
+
 <?php if (isset($form)): ?>
     <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
         <?php echo $form->renderHiddenFields(); ?>
@@ -49,7 +51,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-5">
-        <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("home") ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", $drev->getEtablissementObject()) ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
     <div class="col-xs-2 text-center">
             <a href="<?php echo url_for("drev_export_pdf", $drev) ?>" class="btn btn-warning btn-lg">

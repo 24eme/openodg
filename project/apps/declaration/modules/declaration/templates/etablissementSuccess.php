@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
-  <li class="active"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>">GAEC Justin Boxler (6823700100)</a></li>
+  <li class="active"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
 </ol>
 
 <h4>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</h4>

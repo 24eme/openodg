@@ -1,4 +1,5 @@
 <?php use_helper("Date"); ?>
+<?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'controle_externe', 'drev' => $drev)) ?>
 
 <div class="page-header">

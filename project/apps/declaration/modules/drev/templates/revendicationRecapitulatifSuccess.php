@@ -1,5 +1,5 @@
 <?php use_helper('Float') ?>
-
+<?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'revendication', 'drev' => $drev)) ?>
 
 <div class="page-header">
