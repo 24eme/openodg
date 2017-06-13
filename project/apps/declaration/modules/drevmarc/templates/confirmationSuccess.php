@@ -1,6 +1,5 @@
-<?php include_partial('drevmarc/step', array('step' => 'confirmation', 'drevmarc' => $drevmarc)) ?>
+<?php include_partial('drevmarc/breadcrumb', array('drevmarc' => $drevmarc )); ?>
 
-<br/>
 <div class="page-header">
     <h2>Confirmation de validation de votre déclaration</h2>
 </div>
