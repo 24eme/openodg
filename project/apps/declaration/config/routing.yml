@@ -3,6 +3,8 @@
 
 # default rules
 
+# Auth
+
 auth_login:
   url: /login
   param: { module: auth, action: login }
@@ -20,14 +22,6 @@ home:
   param: { module: ava, action: home }
   class: DeclarationRoute
 
-admin_doc:
-  url: /admin/doc
-  param: { module: admin, action: doc }
-
-admin_export:
-  url: /admin/export
-  param: { module: admin, action: export }
-
 # Common
 
 contact:
@@ -44,6 +38,14 @@ declaration:
   url: /declaration
   param: { module: declaration, action: index }
   class: DeclarationRoute
+
+declaration_doc:
+  url: /declaration/doc
+  param: { module: declaration, action: doc }
+
+declaration_export:
+  url: /declarations/export
+  param: { module: declaration, action: export }
 
 declaration_etablissement:
   url: /declarations/:id

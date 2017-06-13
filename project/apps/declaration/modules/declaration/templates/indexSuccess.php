@@ -22,4 +22,4 @@
     </form>
 </div>
 
-<?php include_component('admin', 'list'); ?>
+<?php include_component('declaration', 'list'); ?>

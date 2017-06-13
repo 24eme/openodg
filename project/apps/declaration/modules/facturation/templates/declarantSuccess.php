@@ -1,3 +1,9 @@
+<ol class="breadcrumb">
+  <li class=""><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
+  <li class="active"><a href="<?php echo url_for('facturation_declarant', $compte); ?>">GAEC Justin Boxler (6823700100)</a></li>
+</ol>
+
+
 <?php use_helper('Date'); ?>
 <?php use_helper('Float'); ?>
 <?php use_helper('Generation'); ?>
