@@ -1,6 +1,5 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript("lib/chart.min.js", "last") ?>
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
 
 <form action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>

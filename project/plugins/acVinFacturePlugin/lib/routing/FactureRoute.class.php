@@ -1,5 +1,5 @@
 <?php
-class FactureRoute extends sfObjectRoute {
+class FactureRoute extends sfObjectRoute implements InterfaceFacturationRoute {
 
     protected $facture = null;
 
@@ -13,7 +13,7 @@ class FactureRoute extends sfObjectRoute {
         return $this->facture;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

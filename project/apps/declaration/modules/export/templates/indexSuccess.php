@@ -1,5 +1,3 @@
-<?php include_partial('admin/menu', array('active' => 'export')); ?> 
-
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -19,7 +17,7 @@
             </div>
         </div>
     </div>
-</form> 
+</form>
 
 
 <?php include_partial('generation/list', array('generations' => $generationsList)); ?>

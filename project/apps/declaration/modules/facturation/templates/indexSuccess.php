@@ -1,5 +1,3 @@
-<?php include_partial('admin/menu', array('active' => 'facturation')); ?>
-
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">
         <?php echo $form->renderHiddenFields(); ?>

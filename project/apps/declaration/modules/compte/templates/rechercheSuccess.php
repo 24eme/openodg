@@ -1,9 +1,5 @@
 <?php $allTypeCompte = CompteClient::getInstance()->getAllTypesCompteWithLibelles(); ?>
 
-<div>
-<?php include_partial('admin/menu', array('active' => 'contacts')); ?>
-
-
 <?php $argsForm = $args->getRawValue(); ?>
 <?php unset($argsForm['q']) ?>
 <div class="row">
@@ -24,7 +20,7 @@
     </div>
     <div class="col-xs-9">
         <div class="col-xs-12">
-            <form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">  
+            <form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="input-group">
@@ -111,7 +107,7 @@
                         <?php else: ?>
                             <li class="disabled"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-right"></span></span></li>
                         <?php endif; ?>
-                        
+
                     </ul>
                 </nav>
             </div>

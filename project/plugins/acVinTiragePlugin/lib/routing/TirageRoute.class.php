@@ -1,6 +1,6 @@
 <?php
 
-class TirageRoute extends sfObjectRoute {
+class TirageRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
 
     protected $tirage = null;
 
@@ -14,7 +14,7 @@ class TirageRoute extends sfObjectRoute {
         return $this->tirage;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

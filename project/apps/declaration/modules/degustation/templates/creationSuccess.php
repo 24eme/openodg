@@ -1,7 +1,5 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
-
 <div class="page-header">
     <h2>Création d'une tournée</h2>
 </div>

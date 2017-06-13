@@ -1,13 +1,13 @@
 <?php
 
 class adminActions extends sfActions {
-    
+
     public function executeIndex(sfWebRequest $request) {
 
         $this->getUser()->signOutEtablissement();
-        
+
         $this->form = new LoginForm();
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
 
             return sfView::SUCCESS;
@@ -16,13 +16,13 @@ class adminActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if(!$this->form->isValid()) {
-            
+
             return sfView::SUCCESS;
         }
 
         $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
-        
-        return $this->redirect('home'); 
+
+        return $this->redirect('declarations', $this->form->getValue('etablissement')); 
     }
 
     public function executeDoc(sfWebRequest $request) {
@@ -31,7 +31,7 @@ class adminActions extends sfActions {
         $doc_id = $request->getParameter("id");
 
         if(!preg_match("/^([A-Z]+)-([0-9]+)-[0-9]+$/", $doc_id, $matches)) {
-            
+
             return $this->forward404();
         }
 
@@ -40,7 +40,7 @@ class adminActions extends sfActions {
 
         if(!$etablissement) {
 
-           return $this->forward404(); 
+           return $this->forward404();
         }
 
         $this->getUser()->signInEtablissement($etablissement);

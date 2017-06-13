@@ -1,8 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
-
 <div class="page-header no-border">
     <h2>Visualisation de la dégustation du <?php echo format_date($tournee->date, "P", "fr_FR") ?> <a href="<?php echo url_for('degustation_visualisation', $tournee) ?>" class="btn pull-right btn-sm btn-<?php echo TourneeClient::$couleursStatut[$tournee->statut] ?>"><?php echo TourneeClient::$statutsLibelle[$tournee->statut] ?></a></h2>
 </div>

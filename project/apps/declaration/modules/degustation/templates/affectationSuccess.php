@@ -2,7 +2,6 @@
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201504281909'); ?>
-<?php include_partial('admin/menu', array('active' => 'tournees', 'hideIfSmall' => true)); ?>
 
 <div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; url_state="<?php echo url_for('auth_state') ?>";nombre_commissions=<?php echo $tournee->nombre_commissions ?>; reload=<?php echo $reload ?>;'>
     <div ng-controller="affectationCtrl">

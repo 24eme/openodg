@@ -91,6 +91,7 @@
 
             <!-- #content -->
             <section id="content" class="container">
+                <?php include_partial('admin/menu'); ?>
                 <?php echo $sf_content ?>
             </section>
 

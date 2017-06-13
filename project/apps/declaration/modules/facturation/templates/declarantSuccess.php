@@ -2,8 +2,6 @@
 <?php use_helper('Float'); ?>
 <?php use_helper('Generation'); ?>
 
-<?php include_partial('ava/menu', array('active' => 'facturation')); ?>
-
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
@@ -43,7 +41,7 @@
             </div>
         </div>
     </div>
-</form> 
+</form>
 
 <div class="row row-margin">
     <div class="col-xs-12">

@@ -2,8 +2,6 @@
 <?php use_helper('Float'); ?>
 <?php use_javascript('facture.js'); ?>
 
-<?php include_partial('admin/menu', array('active' => 'facturation')); ?>
-
 <h2><?php if($facture->numero_ava): ?>Édition de <?php if($facture->isAvoir()): ?>l'<?php else: ?>la <?php endif; ?><?php else: ?>Création <?php if($facture->isAvoir()): ?>d'un<?php else: ?>d'une<?php endif; ?> <?php endif; ?><?php if($facture->isAvoir()): ?>Avoir <?php else: ?>Facture<?php endif; ?> <?php if($facture->numero_ava): ?>n°<?php echo $facture->numero_ava; ?><?php endif; ?> <small>(Daté du <?php $date = new DateTime($facture->date_facturation); echo $date->format('d/m/Y'); ?>)</small>
 <br />
     <small><?php echo $facture->declarant->raison_sociale ?>
@@ -20,7 +18,7 @@
             Veuuillez compléter ou corriger les erreurs
         </div>
     <?php endif; ?>
-    
+
     <div class="row row-margin">
         <div class="col-xs-12" style="border-bottom: 1px dotted #d2d2d2;">
             <div class="col-xs-7">
@@ -45,7 +43,7 @@
                     <div class="col-xs-7">
                         <div class="row">
                             <div class="col-xs-3">
-                                
+
                             </div>
                             <div class="col-xs-6 <?php echo (($f_ligne['libelle']->hasError()) ? 'has-error' : null) ?>">
                             <?php echo $f_ligne['libelle']->render(array('class' => 'form-control input-lg', 'placeholder' => 'Libellé')); ?>
@@ -82,7 +80,7 @@
                                     </div>
                                     <div class="col-xs-9 <?php echo (($f_detail['libelle']->hasError()) ? 'has-error' : null) ?>">
                                         <?php echo $f_detail['libelle']->render(array('class' => 'form-control', 'data-detail' => "#".$f_detail->renderId(), 'placeholder' => 'Libellé')); ?>
-                                    </div>  
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-xs-3">
@@ -92,8 +90,8 @@
                                     </div>
                                     <div class="col-xs-7 <?php echo (($f_detail['montant_ht']->hasError()) ? 'has-error' : null) ?>">
                                     <?php echo $f_detail['montant_ht']->render(
-                                        array('class' => 'form-control text-right data-sum-element', 
-                                              'data-sum' => sprintf("#%s * #%s", $f_detail['quantite']->renderId(), $f_detail['prix_unitaire']->renderId()), 
+                                        array('class' => 'form-control text-right data-sum-element',
+                                              'data-sum' => sprintf("#%s * #%s", $f_detail['quantite']->renderId(), $f_detail['prix_unitaire']->renderId()),
                                               'data-sum-element' => json_encode(array("#".$f_detail['montant_tva']->renderId(), "#".$f_ligne['montant_ht']->renderId())),
                                               "readonly" => "readonly", 'data-detail' => "#".$f_detail->renderId())); ?>
                                     </div>

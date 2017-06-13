@@ -1,4 +1,6 @@
-<?php include_partial('admin/menu', array('active' => 'declarations')); ?>
+<ol class="breadcrumb">
+  <li class="active"><a href="#">Déclarations</a></li>
+</ol>
 
 <div class="row row-margin">
     <form method="post" action="" role="form" class="form-horizontal">

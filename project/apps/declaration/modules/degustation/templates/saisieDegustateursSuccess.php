@@ -1,5 +1,3 @@
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
-
 <?php include_partial('degustation/stepSaisie', array('tournee' => $tournee, 'active' => TourneeSaisieEtapes::ETAPE_SAISIE_DEGUSTATEURS)); ?>
 
 <div class="page-header">

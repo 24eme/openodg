@@ -1,5 +1,4 @@
 <?php use_helper("Date"); ?>
-<?php include_partial('admin/menu', array('active' => 'tournees', 'hideIfSmall' => true)); ?>
 
 <section id="commissions">
     <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>

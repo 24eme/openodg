@@ -1,5 +1,3 @@
-<?php include_partial('admin/menu', array('active' => 'facturation')); ?>
-
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -40,7 +38,7 @@
                     <button class="btn btn-default btn-lg btn-block btn-upper" type="submit">Générer</button>
                 </div>
             </div>
-            
+
         </div>
     </div>
-</form>  
+</form>

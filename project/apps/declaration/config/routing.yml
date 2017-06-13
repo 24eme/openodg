@@ -18,6 +18,17 @@ auth_state:
 home:
   url: /
   param: { module: ava, action: home }
+  class: DeclarationRoute
+
+declarations:
+  url: /declarations/:id
+  param: { module: declaration, action: index }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get]
 
 contact:
   url: /contact
@@ -26,7 +37,7 @@ contact:
 mentions_legales:
   url: /mentions-legales
   param: { module: ava, action: mentionsLegales }
-  
+
 pieces_historique:
   url: /historique-documents
   param: { module: ava, action: piecesHistorique }
@@ -34,6 +45,7 @@ pieces_historique:
 admin:
   url: /admin
   param: { module: admin, action: index }
+  class: DeclarationRoute
 
 admin_doc:
   url: /admin/doc
@@ -47,12 +59,12 @@ admin_export:
 get_piece:
   url: /piece/get/:doc_id/:piece_id
   param: { module: piece, action: get }
-  
+
 #PIECE
 forward_visu_piece:
   url: /piece/visualisation/:doc_id
   param: { module: piece, action: visualisation }
-  
+
 #FICHIER
 get_fichier:
   url: /fichier/get/:id
@@ -667,10 +679,12 @@ redirect_to_mon_compte_civa:
 compte_recherche:
   url: /compte/recherche
   param: { module: compte, action: recherche }
+  class: ContactsRoute
 
 compte_recherche_avancee:
   url: /compte/recherche-avancee
   param: { module: compte, action: rechercheAvancee }
+  class: ContactsRoute
 
 compte_recherche_json:
   url: /compte/recherche.json
@@ -691,7 +705,7 @@ compte_creation_admin:
 compte_visualisation_admin:
   url: /compte-visualisation/:id
   param: { module: compte, action: visualisationAdmin }
-  class: CompteRoute
+  class: ContactsCompteRoute
   options:
     model:    Compte
     type:     object
@@ -751,17 +765,19 @@ degustation:
   param: { module: degustation, action: index }
   requirements:
     sf_method: [get]
+  class: DegustationGeneralRoute
 
 degustation_saisie_creation:
   url: /tournee/saisie-creation
   param: { module: degustation, action: saisieCreation }
   requirements:
     sf_method: [get, post]
+  class: DegustationGeneralRoute
 
 degustation_saisie:
   url: /tournee/saisie/:id
   param: { module: degustation, action: saisie }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -771,7 +787,7 @@ degustation_saisie:
 degustation_saisie_degustateurs:
   url: /tournee/saisie-degustateurs/:id
   param: { module: degustation, action: saisieDegustateurs }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -781,7 +797,7 @@ degustation_saisie_degustateurs:
 degustation_saisie_validation:
   url: /tournee/saisie-validation/:id
   param: { module: degustation, action: saisieValidation }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -791,7 +807,7 @@ degustation_saisie_validation:
 degustation_edit:
   url: /tournee/edit/:id
   param: { module: degustation, action: edit }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -801,7 +817,7 @@ degustation_edit:
 degustation_creation:
   url: /tournee/creation
   param: { module: degustation, action: creation }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -811,7 +827,7 @@ degustation_creation:
 degustation_suppression:
   url: /tournee/suppression/:id
   param: { module: degustation, action: suppression }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -821,7 +837,7 @@ degustation_suppression:
 degustation_operateurs:
   url: /tournee/operateurs/:id
   param: { module: degustation, action: operateurs }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -831,7 +847,7 @@ degustation_operateurs:
 degustation_degustateurs:
   url: /tournee/degustateurs/:id
   param: { module: degustation, action: degustateurs }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -841,7 +857,7 @@ degustation_degustateurs:
 degustation_degustateurs_type:
   url: /tournee/degustateurs/:id/:type
   param: { module: degustation, action: degustateursType }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -851,7 +867,7 @@ degustation_degustateurs_type:
 degustation_degustateurs_type_precedent:
   url: /tournee/degustateurs/:id/:type/precedent
   param: { module: degustation, action: degustateursTypePrecedent }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -861,7 +877,7 @@ degustation_degustateurs_type_precedent:
 degustation_degustateurs_type_suivant:
   url: /tournee/degustateurs/:id/:type/suivant
   param: { module: degustation, action: degustateursTypeSuivant }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -871,7 +887,7 @@ degustation_degustateurs_type_suivant:
 degustation_prelevements:
   url: /tournee/prelevements/:id
   param: { module: degustation, action: prelevements }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -881,7 +897,7 @@ degustation_prelevements:
 degustation_organisation:
   url: /tournee/organisation/:id
   param: { module: degustation, action: organisation }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -891,7 +907,7 @@ degustation_organisation:
 degustation_agents:
   url: /tournee/agents/:id
   param: { module: degustation, action: agents }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -901,7 +917,7 @@ degustation_agents:
 degustation_validation:
   url: /tournee/validation/:id
   param: { module: degustation, action: validation }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -911,7 +927,7 @@ degustation_validation:
 degustation_visualisation:
   url: /tournee/visualisation/:id
   param: { module: degustation, action: visualisation }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -921,7 +937,7 @@ degustation_visualisation:
 degustation_tournees_generate:
   url: /tournee/tournees-generation/:id
   param: { module: degustation, action: tourneesGenerate }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -931,7 +947,7 @@ degustation_tournees_generate:
 degustation_tournee:
   url: /tournee/tournee/:id/:agent/:date
   param: { module: degustation, action: tournee }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -941,7 +957,7 @@ degustation_tournee:
 degustation_tournee_json:
   url: /tournee/tournee/:id/:agent/:date.json
   param: { module: degustation, action: tourneeJson }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -951,7 +967,7 @@ degustation_tournee_json:
 degustation_affectation_generate:
   url: /tournee/affectation-generation/:id
   param: { module: degustation, action: affectationGenerate }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -961,7 +977,7 @@ degustation_affectation_generate:
 degustation_affectation:
   url: /tournee/affectation/:id
   param: { module: degustation, action: affectation }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -971,7 +987,7 @@ degustation_affectation:
 degustation_affectation_json:
   url: /tournee/affectation/:id.json
   param: { module: degustation, action: affectationJson }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -981,7 +997,7 @@ degustation_affectation_json:
 degustation_degustations:
   url: /tournee/degustations/:id
   param: { module: degustation, action: degustations }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -991,7 +1007,7 @@ degustation_degustations:
 degustation_degustation:
   url: /tournee/degustation/:id/:commission
   param: { module: degustation, action: degustation }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1001,7 +1017,7 @@ degustation_degustation:
 degustation_degustation_json:
   url: /tournee/degustation/:id/:commission.json
   param: { module: degustation, action: degustationJson }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1011,7 +1027,7 @@ degustation_degustation_json:
 degustation_lever_anonymat:
   url: /tournee/lever-anonymat/:id
   param: { module: degustation, action: leverAnonymat }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1021,7 +1037,7 @@ degustation_lever_anonymat:
 degustation_degustateurs_presence:
   url: /tournee/degustateurs-presence/:id
   param: { module: degustation, action: degustateursPresence }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1031,7 +1047,7 @@ degustation_degustateurs_presence:
 degustation_degustateurs_presence_export:
   url: /tournee/degustateurs-presence/:id.csv
   param: { module: degustation, action: degustateursPresenceExport }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1041,7 +1057,7 @@ degustation_degustateurs_presence_export:
 degustation_courriers:
   url: /degustation/courrier/:id
   param: { module: degustation, action: courrier }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1051,7 +1067,7 @@ degustation_courriers:
 degustation_generation_courriers:
   url: /degustation/generation-courrier/:id
   param: { module: degustation, action: generationCourrier }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1071,7 +1087,7 @@ degustation_courrier_prelevement:
 degustation_courriers_papier:
   url: /degustation/courriers-papier/:id
   param: { module: degustation, action: courriersPapier }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1081,7 +1097,7 @@ degustation_courriers_papier:
 degustation_cloturer:
   url: /degustation/cloturer/:id
   param: { module: degustation, action: cloturer }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1091,7 +1107,7 @@ degustation_cloturer:
 degustation_export_csv:
   url: /degustation/export-csv/:id
   param: { module: degustation, action: exportCsv }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1101,7 +1117,7 @@ degustation_export_csv:
 degustation_export_manquantes_csv:
   url: /degustation/export-manquantes-csv/:id
   param: { module: degustation, action: exportCsvManquantes }
-  class: TourneeRoute
+  class: DegustationTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1308,24 +1324,28 @@ constats_planifications:
   param: { module: constats, action: planifications }
   requirements:
     sf_method: [get, post]
+  class: ConstatsGeneralRoute
 
 constats:
   url: /constats/:jour
   param: { module: constats, action: index }
   requirements:
     sf_method: [get, post]
+  class: ConstatsGeneralRoute
 
 constats_planification_jour:
   url: /constats/planification/:jour
   param: { module: constats, action: planificationJour }
   requirements:
     sf_method: [get]
+  class: ConstatsGeneralRoute
 
 constats_tournee_suppression:
   url: /constats/tournee/suppression/:id
   param: { module: constats, action: tourneeDelete }
   requirements:
     sf_method: [get]
+  class: ConstatsGeneralRoute
 
 constat_pdf:
   url: /constat/:identifiant/:campagne/pdf/:identifiantconstat
@@ -1342,17 +1362,19 @@ constats_planification_ajout_agent:
   param: { module: constats, action: ajoutAgentTournee }
   requirements:
     sf_method: [get, post]
+  class: ConstatsGeneralRoute
 
 tournee_agent_accueil:
   url: /constat/accueil
   param: { module: constats, action: redirectInterfaceMobileAgent }
   requirements:
     sf_method: [get, post]
+  class: ConstatsGeneralRoute
 
 tournee_rendezvous_agent:
   url: /tournee/:id/rendezvous
   param: { module: constats, action: tourneeAgentRendezvous }
-  class: TourneeRoute
+  class: ConstatsTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1362,7 +1384,7 @@ tournee_rendezvous_agent:
 tournee_rendezvous_agent_json:
   url: /tournee/:id/rendezvous.json
   param: { module: constats, action: tourneeAgentJsonRendezvous }
-  class: TourneeRoute
+  class: ConstatsTourneeRoute
   options:
     model:    Tournee
     type:     object
@@ -1372,7 +1394,7 @@ tournee_rendezvous_agent_json:
 rendezvous_declarant:
   url: /rendezvous/declarant/:id
   param: { module: constats, action: rendezvousDeclarant }
-  class: CompteRoute
+  class: ConstatsDeclarantRoute
   options:
     model:    Compte
     type:     object
@@ -1382,7 +1404,7 @@ rendezvous_declarant:
 rendezvous_declarant_remove:
   url: /rendezvous/suppression/:idrendezvous
   param: { module: constats, action: rendezvousDeclarantRemove }
-  class: CompteRoute
+  class: ConstatsDeclarantRoute
   options:
     model:    Compte
     type:     object
@@ -1392,7 +1414,7 @@ rendezvous_declarant_remove:
 rendezvous_creation:
   url: /rendezvous/creation/:id/:idchai
   param: { module: constats, action: rendezvousCreation }
-  class: CompteRoute
+  class: ConstatsDeclarantRoute
   options:
     model:    Compte
     type:     object
@@ -1404,7 +1426,7 @@ rendezvous_modification:
   param: { module: constats, action: rendezvousModification }
   class: RendezvousRoute
   options:
-    model:    Compte
+    model:    Rendezvous
     type:     object
   requirements:
     sf_method: [get, post]
@@ -1417,12 +1439,14 @@ facturation:
   param: { module: facturation, action: index }
   requirements:
     sf_method: [get, post]
+  class: FacturationRoute
 
 facturation_massive:
   url: /facturation_massive
   param: { module: facturation, action: massive }
   requirements:
     sf_method: [get, post]
+  class: FacturationRoute
 
 facturation_pdf:
   url: /facturation/pdf/:id
@@ -1477,7 +1501,7 @@ facturation_regenerate:
 facturation_declarant:
   url: /facturation/declarant/:id
   param: { module: facturation, action: declarant }
-  class: CompteRoute
+  class: FacturationDeclarantRoute
   options:
     model:    Compte
     type:     object
@@ -1512,12 +1536,14 @@ export:
   param: { module: export, action: index }
   requirements:
     sf_method: [get, post]
+  class: ExportRoute
 
 export_generation:
   url: /export/generation/:id
   param: { module: export, action: generation }
   requirements:
     sf_method: [get]
+  class: ExportRoute
 
 #Défaut
 

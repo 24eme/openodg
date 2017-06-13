@@ -5,7 +5,7 @@ $pourcentRealises = $tourneesJournee->pourcentTotalRealise;
 $nbRaisins = $tourneesJournee->nbTotalRdvRaisin;
 $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 ?>
-<?php include_partial('admin/menu', array('active' => 'constats')); ?>
+
 <div class="row row-margin text-center">
     <h2>Tournées de la journée</h2>
 </div>
@@ -63,6 +63,3 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 
     </div>
 </div>
-
-
-

@@ -1,8 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper('Degustation') ?>
 
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
-
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_VALIDATION)); ?>
 
 <div class="page-header no-border">

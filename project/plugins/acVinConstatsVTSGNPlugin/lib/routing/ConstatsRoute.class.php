@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class ConstatsRoute extends sfObjectRoute {
+class ConstatsRoute extends sfObjectRoute implements InterfaceConstatsRoute {
 
     protected $constat = null;
 
@@ -25,7 +25,7 @@ class ConstatsRoute extends sfObjectRoute {
         return $this->constat;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("identifiant" => $object->cvi, "campagne" => $object->campagne);
         return $parameters;
     }

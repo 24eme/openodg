@@ -1,5 +1,5 @@
 <?php
-class ParcellaireRoute extends sfObjectRoute {
+class ParcellaireRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
 
     protected $parcellaire = null;
 
@@ -12,7 +12,7 @@ class ParcellaireRoute extends sfObjectRoute {
         return $this->parcellaire;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

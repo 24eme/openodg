@@ -1,8 +1,6 @@
 <?php use_helper('Date'); ?>
 <?php use_helper('Float'); ?>
 
-<?php include_partial('ava/menu', array('active' => 'facturation')); ?>
-
 <div class="page-header">
     <h2>Paiement de la facture n°<?php echo $facture->numero_ava ?> <small> du <?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></small></h2>
 </div>

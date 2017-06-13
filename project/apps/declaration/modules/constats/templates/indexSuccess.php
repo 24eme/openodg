@@ -1,6 +1,6 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript("constats.js?201504020331", "last") ?>
-<?php include_partial('admin/menu', array('active' => 'constats')); ?>
+
 <div class="row row-margin text-center">
     <h2>Prendre un rendez-vous</h2>
 </div>
