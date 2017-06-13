@@ -1,3 +1,4 @@
+<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 <?php include_partial('parcellaire/step', array('step' => 'validation', 'parcellaire' => $parcellaire)) ?>
 <div class="page-header">
     <h2>Validation de votre déclaration d'affectation parcellaire<?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?></h2>
@@ -21,7 +22,7 @@
                     <li class="text-left">Vous devez vous engager sur ce point afin de pouvoir valider votre déclaration.</li>
                 </ul>
             </div>
-            
+
             <div class="checkbox-container">
                 <div class="checkbox">
                     <label><input type="checkbox" name="parcellaire_validation[engagement_vtsgn]" /> Je m'engage à respecter les conditions de production des mentions VT/SGN et les modalités de contrôle qui y sont liées. </label>

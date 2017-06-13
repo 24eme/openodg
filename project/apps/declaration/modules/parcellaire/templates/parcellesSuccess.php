@@ -1,6 +1,6 @@
-<?php
-use_helper('Float');
-include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire));
+<?php use_helper('Float'); ?>
+<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
+<?php include_partial('step', array('step' => 'parcelles', 'parcellaire' => $parcellaire));
 $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient::APPELLATION_VTSGN);
 ?>
 
@@ -29,7 +29,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 
-    <div class="row">     
+    <div class="row">
         <?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>
             <div class="col-xs-12">
                 <p><strong>&nbsp;Pour affecter une parcelle en mention VT ou SGN, cliquez sur la ligne.</strong></p>
@@ -42,12 +42,12 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                         <thead>
                             <tr>
                                 <th class="col-xs-1">Affectée</th>
-                                <th class="col-xs-2">Commune</th>        
-                                <th class="col-xs-1">Section</th>        
-                                <th class="col-xs-1">Numéro</th>        
-                                <th class="col-xs-2"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Appellation<?php else: ?>Lieu-dit<?php endif; ?></th>      
-                                <th class="col-xs-3"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>        
-                                <th class="col-xs-2">Superficie</th>           
+                                <th class="col-xs-2">Commune</th>
+                                <th class="col-xs-1">Section</th>
+                                <th class="col-xs-1">Numéro</th>
+                                <th class="col-xs-2"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Appellation<?php else: ?>Lieu-dit<?php endif; ?></th>
+                                <th class="col-xs-3"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
+                                <th class="col-xs-2">Superficie</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -70,9 +70,9 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                         }
                                         ?>
                                     </td>
-                                    <td><?php echo $parcelle->getCommune(); ?></td>         
-                                    <td><?php echo $parcelle->getSection(); ?></td>         
-                                    <td><?php echo $parcelle->getNumeroParcelle(); ?></td>         
+                                    <td><?php echo $parcelle->getCommune(); ?></td>
+                                    <td><?php echo $parcelle->getSection(); ?></td>
+                                    <td><?php echo $parcelle->getNumeroParcelle(); ?></td>
 
 
                                     <td>
@@ -83,7 +83,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                             echo $parcelle->getLieuLibelle();
                                         }
                                         ?>
-                                    </td>        
+                                    </td>
                                     <td>
                                         <?php
                                         if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {
@@ -96,17 +96,17 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                         <div class="row">
                                             <div class="col-xs-6 text-right">
                                                 <?php echoFloat($parcelle->getSuperficie()) ?>
-                                            </div> 
-                                            <div class="col-xs-6 text-left">    
+                                            </div>
+                                            <div class="col-xs-6 text-left">
                                                 <?php if (!$isVtSgn || $parcelle->isFromAppellation(ParcellaireClient::APPELLATION_ALSACEBLANC)): ?>
                                                     &nbsp;<a class="btn btn-link btn-xs ajax" href="<?php echo url_for('parcellaire_parcelle_modification', array('id' => $parcellaire->_id, 'appellation' => $appellation, 'parcelle' => $parcelle->getHashForKey())); ?>" ><span class="glyphicon glyphicon-pencil"></span></a>
                                                 <?php else: ?>
                                                     <span class="btn btn-link btn-xs opacity-md" data-toggle="tooltip" title="Cette parcelle provient d'un autre onglet, elle n'est modifiable qu'à son origine"><span class="glyphicon glyphicon-pencil"></span></span>
                                                 <?php endif; ?>
-                                            </div> 
+                                            </div>
                                         </div>
 
-                                    </td>             
+                                    </td>
                                 </tr>
                                 <?php
                                 $tabindex++;

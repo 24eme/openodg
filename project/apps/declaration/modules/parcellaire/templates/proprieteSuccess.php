@@ -1,3 +1,4 @@
+<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 <?php include_partial('parcellaire/step', array('step' => 'propriete', 'parcellaire' => $parcellaire)) ?>
 
 <div class="page-header">
@@ -11,7 +12,7 @@
     <?php echo $form->renderHiddenFields() ?>
     <?php if($form->hasGlobalErrors()): ?><div class="alert alert-danger"><?php echo $form->renderGlobalErrors(array("class" => "text-left")) ?></div><?php endif; ?>
     <div class="row">
-        <div class="col-xs-12">  
+        <div class="col-xs-12">
             <?php foreach($form as $key => $formDestination): ?>
             <?php if($formDestination->isHidden()): continue; endif; ?>
             <div class="form-group">

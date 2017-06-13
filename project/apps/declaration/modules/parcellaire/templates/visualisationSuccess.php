@@ -1,5 +1,7 @@
 <?php use_helper('Date') ?>
 
+<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
+
 <div class="page-header no-border">
     <h2>Visualisation de votre parcellaire<?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?> <?php echo $parcellaire->campagne; ?>
     <?php if($parcellaire->isPapier()): ?>
@@ -18,7 +20,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("home") ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", $parcellaire->getEtablissementObject()) ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
     <div class="col-xs-4 text-center">
             <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>" class="btn btn-warning btn-lg">

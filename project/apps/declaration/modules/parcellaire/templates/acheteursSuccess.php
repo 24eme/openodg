@@ -1,3 +1,4 @@
+<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 <?php include_partial('step', array('parcellaire' => $parcellaire, 'step' => 'acheteurs', 'identifiant' => 'XXX')); ?>
 
 <div class="page-header">
@@ -7,7 +8,7 @@
 <form action="<?php echo url_for("parcellaire_acheteurs", $parcellaire) ?>" method="post" class="ajaxForm">
     <?php echo $form->renderHiddenFields() ?>
     <?php if($form->hasGlobalErrors()): ?><div class="alert alert-danger"><?php echo $form->renderGlobalErrors(array("class" => "text-left")) ?></div><?php endif; ?>
-    <div class="row">       
+    <div class="row">
         <div class="col-xs-12">
             <?php if($form->hasProduits()): ?>
             <div id="listes_cepages" class="list-group">
@@ -15,9 +16,9 @@
                     <thead>
                         <tr>
                             <th class="col-xs-5"></th>
-                            <?php foreach($form->getAcheteurs() as $libelle): ?>           
+                            <?php foreach($form->getAcheteurs() as $libelle): ?>
                             <th class="text-center"><?php echo $libelle ?></th>
-                            <?php endforeach; ?>  
+                            <?php endforeach; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +29,7 @@
                             <?php echo $field->renderLabel(null, array('style' => 'font-weight: normal')) ?>
                             <?php echo $field->renderError() ?>
                         </td>
-                        <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>            
+                        <?php foreach($field->getWidget()->getChoices() as $key => $option): ?>
                         <td class="text-center tdAcheteur" >
                             <input class="acheteur_checkbox" type="checkbox" id="<?php echo $field->renderId() ?>_<?php echo $key ?>" name="<?php echo $field->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($field->getValue()) && in_array($key, $field->getValue())): ?>checked="checked"<?php endif; ?> />
                         </td>
