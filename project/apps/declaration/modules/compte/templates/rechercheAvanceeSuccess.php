@@ -1,4 +1,7 @@
-<?php include_partial('admin/menu', array('active' => 'contacts')); ?>
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
+    <li class="active"><a href="">Recherche avancée</a></li>
+</ol>
 
 <div class="page-header">
     <h2>Recherche avancée</h2>

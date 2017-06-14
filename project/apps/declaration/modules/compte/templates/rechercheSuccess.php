@@ -2,6 +2,11 @@
 
 <?php $argsForm = $args->getRawValue(); ?>
 <?php unset($argsForm['q']) ?>
+
+<ol class="breadcrumb">
+    <li class="active"><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
+</ol>
+
 <div class="row">
     <div class="col-xs-12" style="padding-bottom: 10px">
         <div class="col-xs-offset-6 col-xs-3">

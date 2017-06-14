@@ -1,3 +1,9 @@
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
+    <li><a href="<?php echo url_for('compte_visualisation_admin', $compte); ?>"><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
+    <li class="active"><a href="">Modification</a></li>
+</ol>
+
 <div class="page-header">
     <h2>Modification du compte <?php echo $compte->identifiant; ?> (<?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->getTypeCompte()); ?>)</h2>
 </div>

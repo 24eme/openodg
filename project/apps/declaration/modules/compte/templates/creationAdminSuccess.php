@@ -1,3 +1,8 @@
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
+    <li class="active"><a href="">Création</a></li>
+</ol>
+
 <div class="page-header">
     <h2>Création d'un nouveau compte <?php echo CompteClient::getInstance()->getCompteTypeLibelle($type_compte); ?></h2>
 </div>

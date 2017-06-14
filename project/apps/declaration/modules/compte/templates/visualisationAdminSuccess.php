@@ -1,4 +1,10 @@
 <?php echo use_helper('Date'); ?>
+
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
+    <li class="active"><a href="<?php echo url_for('compte_visualisation_admin', $compte); ?>"><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
+</ol>
+
 <div class="page-header">
     <div class="btn-group pull-right">
         <?php if(!$compte->date_archivage): ?>
