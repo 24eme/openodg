@@ -52,7 +52,7 @@
                 <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
 
                 <div id="logo">
-                    <a href="<?php echo url_for('home') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
+                    <a href="<?php echo url_for('accueil') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
@@ -62,11 +62,6 @@
                 <nav class="<?php if($sf_user->getEtablissement()): ?>bloc-right<?php endif; ?>" id="navigation-admin" role="navigation">
                     <span class="profile-name"><?php echo $sf_user->getCompte()->nom ?></span>
                     <ul>
-                        <?php if($sf_user->isAdmin()): ?>
-                        <li><a href="<?php echo url_for('declaration') ?>">Administration</a></li>
-                        <?php elseif($sf_user->hasCredential(myUser::CREDENTIAL_CONTACT)): ?>
-                        <li><a href="<?php echo url_for('compte_recherche') ?>">Contacts</a></li>
-                        <?php endif; ?>
                         <li><a href="<?php echo url_for('redirect_to_mon_compte_civa'); ?>">Mon compte</a></li>
                         <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                     </ul>
@@ -76,7 +71,7 @@
                 <nav id="navigation" role="navigation">
                     <span class="profile-name"><?php echo str_replace(" ", "&nbsp;", truncate_text(preg_replace('/(EARL|SCEA|SARL|SAS|SA|GAEC|Distillerie)(.*)/', "$2", $sf_user->getEtablissement()->nom),30)); ?></span>
                     <ul>
-                        <li><a href="<?php echo url_for('home') ?>">Mes déclarations AVA</a></li>
+                        <li><a href="<?php echo url_for('accueil') ?>">Mes déclarations AVA</a></li>
                         <li><a href="<?php echo sfConfig::get('app_url_civa') ?>">Mon espace CIVA</a></li>
                         <li><a href="<?php echo url_for('mon_compte'); ?>">Mon compte</a></li>
                         <?php if(!$sf_user->getCompte()): ?>

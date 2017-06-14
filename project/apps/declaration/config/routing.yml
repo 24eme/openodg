@@ -17,10 +17,9 @@ auth_state:
   url: /auth/state
   param: { module: auth, action: state }
 
-home:
+accueil:
   url: /
-  param: { module: ava, action: home }
-  class: DeclarationRoute
+  param: { module: common, action: accueil }
 
 # Common
 
@@ -678,6 +677,10 @@ compte_creation_confirmation:
 compte_mot_de_passe_oublie:
   url: /mot_de_passe_oublie
   param: { module: compte, action: motDePasseOublie }
+
+compte_teledeclarant_premiere_connexion:
+  url: /compte-premiere-connexion
+  param: { module: compte_teledeclarant, action: premiereConnexion }
 
 mon_compte:
   url: /mon-compte

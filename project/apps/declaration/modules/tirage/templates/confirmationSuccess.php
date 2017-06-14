@@ -12,7 +12,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-6">
-        <a href="<?php echo url_for("home") ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour à votre espace</a>
+        <a href="<?php echo url_for("accueil") ?>" class="btn btn-primary"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour à votre espace</a>
     </div>
     <div class="col-xs-6 text-right">
      <a href="<?php echo url_for('tirage_create', $etablissement); ?>" class="btn btn-success">Démarrer une <?php echo $nieme; ?> déclaration&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>

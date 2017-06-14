@@ -31,9 +31,11 @@ class drevmarcActions extends sfActions {
 
     public function executeDelete(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
+        $etablissement = $drevmarc->getEtablissementObject();
         $drevmarc->delete();
         $this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');
-        return $this->redirect($this->generateUrl('home'));
+
+        return $this->redirect('declaration_etablissement', $etablissement);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -47,7 +49,7 @@ class drevmarcActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $drev->getEtablissementObject());
     }
 
     public function executeExploitation(sfWebRequest $request) {
@@ -79,11 +81,11 @@ class drevmarcActions extends sfActions {
 
         $this->drevmarc->storeDeclarant();
         $this->drevmarc->save();
-        
+
         if ($this->form->hasUpdatedValues() && !$this->drevmarc->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->drevmarc->getEtablissementObject(), $this->form->getUpdatedValues());
         }
-        
+
         return $this->redirect('drevmarc_revendication', $this->drevmarc);
     }
 
@@ -132,7 +134,7 @@ class drevmarcActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-        
+
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -158,7 +160,7 @@ class drevmarcActions extends sfActions {
 
     public function executeValidationAdmin(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
-        
+
         $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drevmarc);
 
         $this->drevmarc->validation_odg = date('Y-m-d');

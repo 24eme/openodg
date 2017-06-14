@@ -1,4 +1,4 @@
-<?php $url = sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe_oublie'),http_build_query(array('service' => url_for("home", array(), true)))); ?>
+<?php $url = sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe_oublie'),http_build_query(array('service' => url_for("accueil", array(), true)))); ?>
 <div class="page-header">
     <h2>Mot de passe oublié</h2>
 </div>

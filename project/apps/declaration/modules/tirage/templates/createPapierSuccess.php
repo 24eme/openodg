@@ -23,7 +23,7 @@
     </div>
 
     <div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("home") ?>" class="btn btn-primary btn-lg btn-upper">Annuler</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", $etablissement) ?>" class="btn btn-primary btn-lg btn-upper">Annuler</a></div>
         <div class="col-xs-4 text-center">
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-default btn-lg btn-upper">Créer</button></div>

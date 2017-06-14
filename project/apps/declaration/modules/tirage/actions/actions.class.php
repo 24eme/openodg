@@ -68,18 +68,18 @@ class tirageActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $tirage->getEtablissementObject());
     }
 
     public function executeDelete(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
-
+        $etablissement = $tirage->getEtablissementObject();
         $this->secure(TirageSecurity::EDITION, $tirage);
 
         $tirage->delete();
         $this->getUser()->setFlash("notice", 'La déclaration de tirage a été supprimé avec succès.');
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $etablissement);
     }
 
     public function executeExploitation(sfWebRequest $request) {

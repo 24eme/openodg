@@ -88,7 +88,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php echo url_for("home") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", $tirage->getEtablissementObject()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
     <div class="col-xs-4 text-center">
         <?php if ($tirage->validation && $sf_user->isAdmin()): ?>

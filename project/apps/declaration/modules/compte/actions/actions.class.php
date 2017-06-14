@@ -32,7 +32,7 @@ class compteActions extends sfActions {
         }
         $this->getUser()->signIn($etablissement->identifiant);
 
-        return $this->redirect('home');
+        return $this->redirect('accueil');
     }
 
     public function executeModificationAdmin(sfWebRequest $request) {
@@ -105,7 +105,7 @@ class compteActions extends sfActions {
             return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("mon_compte", array(), true)))));
         }
 
-        return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("home", array(), true)))));
+        return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("accueil", array(), true)))));
     }
 
     public function executeAllTagsManuels() {

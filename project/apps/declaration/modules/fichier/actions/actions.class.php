@@ -44,7 +44,7 @@ class fichierActions extends sfActions
 
     	$this->form->save();
 
-    	return $this->redirect('home');
+    	return $this->redirect('declaration_etablissement', $this->etablissement);
     }
 
 	public function executePiecesHistorique(sfWebRequest $request) {

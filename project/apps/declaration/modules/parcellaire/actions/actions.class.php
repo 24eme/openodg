@@ -4,13 +4,13 @@ class parcellaireActions extends sfActions {
 
     public function executeDelete(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
-
+        $etablissement = $parcellaire->getEtablissementObject();
         $this->secure(ParcellaireSecurity::EDITION, $parcellaire);
 
         $parcellaire->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $etablissement);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -23,7 +23,7 @@ class parcellaireActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $parcellaire->getEtablissementObject());
     }
 
     public function executeCreate(sfWebRequest $request) {
@@ -93,7 +93,7 @@ class parcellaireActions extends sfActions {
         $this->parcellaire->storeDeclarant();
 
         $this->parcellaire->save();
-        
+
         if ($this->form->hasUpdatedValues() && !$this->parcellaire->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->parcellaire->getEtablissementObject(), $this->form->getUpdatedValues());
         }
@@ -158,15 +158,15 @@ class parcellaireActions extends sfActions {
         }
 
         $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsAndVtSgnKeys($this->parcellaire->isParcellaireCremant());
-        
+
         $this->appellation = $request->getParameter('appellation');
-        
+
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
-        
+
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
-        
+
         $this->parcelles = array();
-        if ($this->appellationNode == ParcellaireClient::APPELLATION_VTSGN) {            
+        if ($this->appellationNode == ParcellaireClient::APPELLATION_VTSGN) {
            $this->parcelles =  $this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true);
         } else {
             $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
@@ -211,7 +211,7 @@ class parcellaireActions extends sfActions {
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
-           
+
 
             return sfView::SUCCESS;
         } else {
@@ -321,15 +321,15 @@ class parcellaireActions extends sfActions {
             $this->parcellaire->save();
         }
 
-        
+
         $this->form = new ParcellaireValidationForm($this->parcellaire);
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
             $this->validation = new ParcellaireValidation($this->parcellaire);
 
             return sfView::SUCCESS;
         }
-        
+
         $this->form->bind($request->getParameter($this->form->getName()));
 
         if (!$this->form->isValid()) {
