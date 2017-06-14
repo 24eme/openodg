@@ -1,3 +1,8 @@
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
+  <li class="active"><a href="">Facturation massive des contacts</a></li>
+</ol>
+
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
