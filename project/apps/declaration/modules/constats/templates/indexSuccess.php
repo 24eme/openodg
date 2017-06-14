@@ -1,7 +1,11 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript("constats.js?201504020331", "last") ?>
 
-<div class="row row-margin text-center">
+<ol class="breadcrumb">
+  <li class="active"><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+</ol>
+
+<div class="row text-center">
     <h2>Prendre un rendez-vous</h2>
 </div>
 <div class="row row-margin">
@@ -24,7 +28,7 @@
         </div>
     </form>
 </div>
-<div class="row row-margin text-center">
+<div class="row text-center">
     <h2>Planifications sur 5 jours</h2>
 </div>
 <div class="row row-margin">
@@ -87,7 +91,7 @@
         </form>
     </div>
 </div>
-<div class="row row-margin" style="padding-left: 20px;">
+<div class="row" style="padding-left: 20px;">
     <h3>Liste des rendez-vous non planifiés</h3>
 </div>
 <div class="row row-margin">

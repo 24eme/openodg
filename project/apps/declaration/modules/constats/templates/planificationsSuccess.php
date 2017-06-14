@@ -5,6 +5,12 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+  <li><a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)); ?>">Tournée du <?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></a></li>
+  <li class="active"><a href="">Planification</a></li>
+</ol>
+
 <div class="page-header">
     <div class="row">
         <div class="col-xs-12">

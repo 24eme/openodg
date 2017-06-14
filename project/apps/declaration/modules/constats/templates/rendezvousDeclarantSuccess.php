@@ -1,7 +1,12 @@
 <?php use_helper("Date") ?>
 <?php use_javascript("constats.js?201504020331", "last") ?>
 
-<div class="row row-margin text-center">
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+  <li class="active"><a href=""><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
+</ol>
+
+<div class="row text-center">
     <h2>Prise de Rendez-vous</h2>
 </div>
 <div class="row row-margin">
@@ -136,8 +141,8 @@
 </div>
 <div class="row">
     <div class="col-xs-12">
-        <a class="btn btn-warning btn-upper" href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))) ?>"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Accueil</a>
-        <a href="<?php echo url_for('constats_planifications', array('date' => date('Y-m-d'))) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Accéder à la planification d'aujourd'hui</a>
+        <a class="btn btn-default-step btn-upper" href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))) ?>"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;Retour à l'accueil</a>
+        <a href="<?php echo url_for('constats_planifications', array('date' => date('Y-m-d'))) ?>" class="btn btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Accéder à la planification d'aujourd'hui</a>
         <br/>
     </div>
 </div>

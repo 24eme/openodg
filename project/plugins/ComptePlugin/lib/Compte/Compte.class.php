@@ -36,6 +36,11 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         return $this->_get('campagne_archive');
     }
 
+	public function getIdentifiantAAfficher() {
+
+		return ($this->cvi) ? $this->cvi : (($this->siren) ? $this->siren : $this->identifiant_interne);
+	}
+
     protected function getIdentifiantEtablissement() {
         if($this->cvi) {
 
