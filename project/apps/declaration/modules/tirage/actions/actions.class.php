@@ -293,8 +293,8 @@ class tirageActions extends sfActions {
     }
 
     public function executeConfirmation(sfWebRequest $request) {
-        $this->etablissement = $this->getUser()->getEtablissement();
         $this->tirage = $this->getRoute()->getTirage();
+        $this->etablissement = $this->tirage->getEtablissementObject();
         $this->nbDeclaration = TirageClient::getInstance()->getLastNumero($this->tirage->identifiant, $this->tirage->campagne);
         $nextNumero = $this->nbDeclaration + 1;
         $this->nieme = '';

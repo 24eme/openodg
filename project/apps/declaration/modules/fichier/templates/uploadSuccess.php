@@ -4,7 +4,7 @@
     <h2>Ajout de fichier</h2>
 </div>
 
-<form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id)) ?>" method="post" enctype="multipart/form-data">
+<form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id, 'sf_subject' => $etablissement)) ?>" method="post" enctype="multipart/form-data">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
 

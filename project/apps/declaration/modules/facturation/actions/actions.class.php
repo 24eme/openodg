@@ -23,9 +23,7 @@ class facturationActions extends sfActions
             return sfView::SUCCESS;
         }
 
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
-
-        return $this->redirect('facturation_declarant', $this->getUser()->getEtablissement()->getCompte());
+        return $this->redirect('facturation_declarant', $this->form->getValue('etablissement')->getCompte());
     }
 
     public function executeMassive(sfWebRequest $request)

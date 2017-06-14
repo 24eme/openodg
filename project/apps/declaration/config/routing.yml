@@ -89,8 +89,14 @@ get_fichier:
     sf_method: [get]
 
 upload_fichier:
-  url: /fichier/upload
+  url: /fichier/upload/:id
   param: { module: fichier, action: upload }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
 
 #TIRAGE
 
@@ -741,16 +747,6 @@ compte_modification_admin:
 compte_tags_manuels:
   url: /compte-tags-manuels
   param: { module: compte, action: allTagsManuels }
-  requirements:
-    sf_method: [get]
-
-compte_redirect_espace_etablissement:
-  url: /compte-redirect-espace-etablissement/:id
-  param: { module: compte, action: redirectEspaceEtablissement }
-  class: CompteRoute
-  options:
-    model:    Compte
-    type:     object
   requirements:
     sf_method: [get]
 

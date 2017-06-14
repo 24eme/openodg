@@ -27,7 +27,7 @@ class fichierActions extends sfActions
     }
 
     public function executeUpload(sfWebRequest $request) {
-    	$this->etablissement = $this->getUser()->getEtablissement();
+    	$this->etablissement = $this->getRoute()->getEtablissement();
     	$this->fichier_id = $request->getParameter('fichier_id');
     	$this->fichier = ($this->fichier_id) ? FichierClient::getInstance()->find($this->fichier_id) : FichierClient::getInstance()->createDoc($this->etablissement->identifiant, true);
     	$this->form = new FichierForm($this->fichier);
@@ -48,7 +48,7 @@ class fichierActions extends sfActions
     }
 
 	public function executePiecesHistorique(sfWebRequest $request) {
-		$this->etablissement = $this->getUser()->getEtablissement();
+		$this->etablissement = $this->getRoute()->getEtablissement();
 		$this->year = $request->getParameter('annee', 0);
 		$this->category = $request->getParameter('categorie');
 

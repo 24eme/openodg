@@ -294,9 +294,9 @@
             <a class="btn btn-lg btn-warning" href="<?php echo url_for('compte_modification_admin', $compte) ?>">Modifier</a>
         </div>
         <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $sf_user->isAdmin()): ?>
-            <div class="col-xs-4 text-right">               
+            <div class="col-xs-4 text-right">
 
-                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('compte_redirect_espace_etablissement', $compte); ?>">Espace etablissement&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
+                <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('declaration_etablissement', $compte->getEtablissementObj()); ?>">Espace etablissement&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
             </div>
         <?php endif; ?>
     </div>

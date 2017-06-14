@@ -3,7 +3,6 @@
 class constatsActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $this->getUser()->signOutEtablissement();
         if (($tourneesRecapDate = $request->getParameter('tourneesRecapDate')) && $request->isMethod(sfWebRequest::POST)) {
             $this->jour = Date::getIsoDateFromFrenchDate($tourneesRecapDate['date']);
             return $this->redirect('constats', array('jour' => $this->jour));
@@ -26,9 +25,8 @@ class constatsActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
 
-        return $this->redirect('rendezvous_declarant', $this->getUser()->getEtablissement()->getCompte());
+        return $this->redirect('rendezvous_declarant', $this->form->getValue('etablissement')->getCompte());
     }
 
     public function executePlanificationJour(sfWebRequest $request) {
@@ -279,9 +277,8 @@ class constatsActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
 
-        return $this->redirect('rendezvous_declarant', $this->getUser()->getEtablissement()->getCompte());
+        return $this->redirect('rendezvous_declarant', $this->compte);
     }
 
     public function executeRendezvousDeclarantRemove(sfWebRequest $request) {
