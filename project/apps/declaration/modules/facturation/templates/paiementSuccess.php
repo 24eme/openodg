@@ -1,6 +1,12 @@
 <?php use_helper('Date'); ?>
 <?php use_helper('Float'); ?>
 
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
+  <li><a href="<?php echo url_for('facturation_declarant', $facture->getCompte()); ?>"><?php echo $facture->getCompte()->getNomAAfficher() ?> (<?php echo $facture->getCompte()->getIdentifiantAAfficher() ?>)</a></li>
+  <li class="active"><a href="">Paiement de la facture n°<?php echo $facture->numero_ava ?></a></li>
+</ol>
+
 <div class="page-header">
     <h2>Paiement de la facture n°<?php echo $facture->numero_ava ?> <small> du <?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></small></h2>
 </div>
