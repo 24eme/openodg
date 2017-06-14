@@ -1,8 +1,7 @@
 <ol class="breadcrumb">
-  <li class=""><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
-  <li class="active"><a href="<?php echo url_for('facturation_declarant', $compte); ?>">GAEC Justin Boxler (6823700100)</a></li>
+  <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Facturation</a></li>
+  <li class="active"><a href=""><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
 </ol>
-
 
 <?php use_helper('Date'); ?>
 <?php use_helper('Float'); ?>
