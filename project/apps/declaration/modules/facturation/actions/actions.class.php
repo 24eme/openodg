@@ -7,8 +7,6 @@ class facturationActions extends sfActions
     {
         $this->generations = GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_FACTURES,200);
 
-        $this->getUser()->signOutEtablissement();
-
         $this->form = new LoginForm();
 
         if (!$request->isMethod(sfWebRequest::POST)) {
