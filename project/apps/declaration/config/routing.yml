@@ -96,7 +96,7 @@ upload_fichier:
     model:    Etablissement
     type:     object
   requirements:
-    sf_method: [get]
+    sf_method: [get, post]
 
 #TIRAGE
 

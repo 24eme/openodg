@@ -79,7 +79,7 @@
         	<a href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="annuler btn btn-default btn-danger">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
-        	<button type="submit" class="btn btn-default btn-lg btn-upper">Ajouter</button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper"><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></button>
         </div>
     </div>
 </form>
