@@ -74,6 +74,11 @@ class degustationActions extends sfActions {
         return $this->redirect('degustation_creation', array('date' => $this->tournee->date, 'date_prelevement_debut' => $this->tournee->date_prelevement_debut, 'appellation' => $this->tournee->appellation));
     }
 
+    public function executeDeclarant(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->degustations = DegustationClient::getInstance()->getDegustationsByEtablissement($this->etablissement->identifiant);
+    }
+
     public function executeSaisieCreation(sfWebRequest $request) {
         $this->tournee = TourneeClient::getInstance()->createOrFindForSaisieDegustation($request->getParameter("appellation"), $request->getParameter("date"));
 

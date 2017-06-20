@@ -779,6 +779,16 @@ degustation:
     sf_method: [get]
   class: DegustationGeneralRoute
 
+degustation_declarant:
+  url: /degustation/declarant/:id
+  param: { module: degustation, action: declarant }
+  class: DegustationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 degustation_saisie_creation:
   url: /tournee/saisie-creation
   param: { module: degustation, action: saisieCreation }
