@@ -621,7 +621,7 @@ class Tournee extends BaseTournee {
 
             foreach ($operateurDeguste->prelevements as $prelevement) {
                 if ($prelevement->anonymat_degustation) {
-                    $key = sprintf("%03d-%02d-%s", $prelevement->anonymat_degustation, $prelevement->commission, $operateurDeguste->getIdentifiant());
+                    $key = sprintf("%03d-%02d-%s-%s", $prelevement->anonymat_degustation, $prelevement->commission, uniqid(), $operateurDeguste->getIdentifiant());
                     $notes[$key] = new stdClass();
                     $notes[$key]->operateur = $operateurDeguste;
                     $notes[$key]->prelevement = $prelevement;
