@@ -71,7 +71,7 @@ forward_visu_piece:
 pieces_historique:
   url: /historique-documents/:id
   param: { module: fichier, action: piecesHistorique }
-  class: EtablissementRoute
+  class: DeclarationDeclarantRoute
   options:
     model:    Etablissement
     type:     object
@@ -91,9 +91,9 @@ get_fichier:
 upload_fichier:
   url: /fichier/upload/:id
   param: { module: fichier, action: upload }
-  class: EtablissementRoute
+  class: DeclarationDeclarantRoute
   options:
-    model:    Etablissement
+    model:    EtablissementDe
     type:     object
   requirements:
     sf_method: [get, post]

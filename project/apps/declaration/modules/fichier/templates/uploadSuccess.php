@@ -1,7 +1,14 @@
 <?php use_helper('Date') ?>
 
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <li><a href="<?php echo url_for('pieces_historique', $etablissement) ?>">Documents</a></li>
+  <li class="active"><a href=""><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></a></li>
+</ol>
+
 <div class="page-header">
-    <h2>Ajout de fichier</h2>
+    <h2><?php if($fichier->isNew()): ?>Ajout de fichier<?php else: ?>Modification du fichier<?php endif; ?></a></h2>
 </div>
 
 <form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id, 'sf_subject' => $etablissement)) ?>" method="post" enctype="multipart/form-data">

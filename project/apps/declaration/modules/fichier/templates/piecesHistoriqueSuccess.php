@@ -1,8 +1,14 @@
 <?php echo use_helper("Date"); ?>
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <li class="active"><a href="<?php echo url_for('pieces_historique', $etablissement) ?>">Documents</a></li>
+</ol>
+
 <div class="page-header">
     <h2>
     	Historique des documents
-    	<form class="form-inline pull-right col-xs-2">
+        <form class="form-inline pull-right col-xs-3">
 		  <div class="form-group">
 		    <select class="form-control select2 select2SubmitOnChange select2autocomplete input-sm text-right" id="year" name="annee">
 		    	<option value="0">Toutes années</option>
