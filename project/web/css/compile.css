@@ -3870,7 +3870,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-default {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: #ffffff;
   border-color: 0;
 }
 .navbar-default .navbar-brand {
