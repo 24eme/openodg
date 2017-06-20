@@ -9,6 +9,7 @@
 <div class="row">
     <div class="col-xs-12">
         <h3>Liste des prélévements dégustés</h3>
+        <?php if(count($degustations)): ?>
         <table class="table table-striped table-bordered table-condensed">
             <thead>
                 <tr>
@@ -67,5 +68,8 @@
             <?php endforeach; ?>
             </tbody>
         </table>
+        <?php else: ?>
+            <em>Aucun prélèvement dégusté pour cet opérateur</em>
+        <?php endif; ?>
     </div>
 </div>
