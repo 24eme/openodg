@@ -41,12 +41,12 @@
             <tbody>
                 <?php foreach($rows as $row): ?>
                     <tr>
-                        <td><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php if($row->key[6] && $row->key[6] !== true): ?><?php echo format_date($row->key[6], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
-                        <td><?php echo $row->key[1]; ?></td>
-                        <td><?php echo $row->key[0]; ?></td>
-                        <td><a href="<?php echo url_for("declaration_etablissement", array("id" => "ETABLISSEMENT-".$row->key[5])); ?>"><?php echo $row->key[8]; ?> <small>(<?php echo $row->key[5]; ?>)</small></a></td>
-                        <td class="text-center"><?php echo $row->key[2]; ?></td>
-                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php echo $row->key[3]; ?><?php if($row->key[7]): ?><br /><small class="text-muted"><?php echo $row->key[7] ?></small><?php endif; ?></a></td>
+                        <td><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php if($row->key[DeclarationTousView::KEY_DATE] && $row->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($row->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
+                        <td><?php echo $row->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
+                        <td><?php echo $row->key[DeclarationTousView::KEY_TYPE]; ?></td>
+                        <td><a href="<?php echo url_for("declaration_etablissement", array("id" => "ETABLISSEMENT-". $row->key[DeclarationTousView::KEY_IDENTIFIANT])); ?>"><?php echo $row->key[DeclarationTousView::KEY_RAISON_SOCIALE]; ?> <small>(<?php echo $row->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
+                        <td class="text-center"><?php echo $row->key[DeclarationTousView::KEY_MODE]; ?></td>
+                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php echo $row->key[DeclarationTousView::KEY_STATUT]; ?><?php if($row->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $row->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

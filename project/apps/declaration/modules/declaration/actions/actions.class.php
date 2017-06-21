@@ -17,7 +17,7 @@ class declarationActions extends sfActions {
             "Mode" => array(),
         );
 
-        $facetToRowKey = array("Type" => 0, "Campagne" => 1, "Mode" => 2, "Statut" => 3);
+        $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
 
         $this->query = $request->getParameter('query', array("Statut" => "À valider"));
         $this->rows = array();
@@ -52,9 +52,10 @@ class declarationActions extends sfActions {
 
             }
             if($addition > 0 && $this->query && count($this->query)) {
+                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);
                 $this->rows = array_merge($this->rows, acCouchdbManager::getClient()
-                ->startkey(array($row->key[0], $row->key[1], $row->key[2], $row->key[3]))
-                ->endkey(array($row->key[0], $row->key[1], $row->key[2], $row->key[3], array()))
+                ->startkey($keys)
+                ->endkey(array_merge($keys, array(array())))
                 ->reduce(false)
                 ->getView('declaration', 'tous')->rows);
             }
@@ -65,10 +66,9 @@ class declarationActions extends sfActions {
         ksort($this->facets["Type"]);
         krsort($this->facets["Mode"]);
 
-
         uasort($this->rows, function($a, $b) {
 
-            return $a->key[6] < $b->key[6];
+            return $a->key[DeclarationTousView::KEY_DATE] < $b->key[DeclarationTousView::KEY_DATE];
         });
 
         $nbResultatsParPage = 15;

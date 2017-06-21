@@ -64,8 +64,6 @@ function(doc) {
 
     if(doc.automatique) {
         mode = "Importé";
-
-        return;
     }
 
     if(doc.papier) {
@@ -75,38 +73,31 @@ function(doc) {
     var statut = "Brouillon";
     var infos = "Étape " + doc.etape;
     if(validation_odg) {
-	statut = "Validé";
+	    statut = "Validé";
         infos = null;
+        if(validation_odg !== false && validation_odg !== true) {
+            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)/, "$3/$2/$1");
+        }
     }
 
     if(validation && !validation_odg) {
-	statut = "À valider";
+	    statut = "À valider";
         infos = null;
         if(nb_doc_en_attente) {
            infos = nb_doc_en_attente + " pièce(s) en attente";
-	}
+	    }
     }
 
     var type = doc.type;
 
     var date = null;
-    if(validation_odg) {
-	date = validation_odg;
-    }
-
-    var date = null;
-
     if(validation && validation !== false && validation !== true) {
-	date = validation;
-    }
-
-    if(validation_odg && validation_odg !== false && validation_odg !== true) {
-	date = validation_odg;
+	    date = validation;
     }
 
     if(doc._id.indexOf('PARCELLAIRECREMANT') > -1) {
-	type = "Parcellaire Crémant";
+	    type = "Parcellaire Crémant";
     }
 
-    emit([type, doc.campagne, mode, statut, etape, doc.identifiant, date, infos, raison_sociale, commune, email], 1);
+    emit([type, doc.campagne, mode, statut, doc.identifiant, date, infos, raison_sociale, commune, email], 1);
 }
