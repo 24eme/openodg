@@ -1,3 +1,6 @@
+<?php use_helper('Date'); ?>
+<?php $query = ($query) ? $query->getRawValue() : $query ?>
+
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
 </ol>
@@ -21,5 +24,59 @@
 
     </form>
 </div>
+<h3>Liste des déclarations</h3>
+<div class="row">
+    <div class="col-xs-9">
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th class="col-xs-1">Date</th>
+                    <th class="col-xs-1 text-center">Camp.</th>
+                    <th class="col-xs-1 text-center">Type</th>
+                    <th class="col-xs-4">Opérateur</th>
+                    <th class="col-xs-2 text-center">Mode</th>
+                    <th class="col-xs-2 text-center">Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($rows as $row): ?>
+                    <tr>
+                        <td><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php if($row->key[6] && $row->key[6] !== true): ?><?php echo format_date($row->key[6], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
+                        <td><?php echo $row->key[1]; ?></td>
+                        <td><?php echo $row->key[0]; ?></td>
+                        <td><a href="<?php echo url_for("declaration_etablissement", array("id" => "ETABLISSEMENT-".$row->key[5])); ?>"><?php echo $row->key[8]; ?> <small>(<?php echo $row->key[5]; ?>)</small></a></td>
+                        <td class="text-center"><?php echo $row->key[2]; ?></td>
+                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php echo $row->key[3]; ?><?php if($row->key[7]): ?><br /><small class="text-muted"><?php echo $row->key[7] ?></small><?php endif; ?></a></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        <div class="text-center">
+            <ul class="pagination pagination-lg" style="margin-top: 0;">
+                <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
+                <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span</span></a></li>
+                <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></span></small></li>
+                <li <?php if ($page +1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => $nbPage)); ?>" aria-label="Next"><span aria-hidden="true"><small>Dernière page</small></span></a></li>
+                <li <?php if ($page + 1 > $nbPage) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' =>(($page + 1) > $nbPage) ? $page : $page + 1)); ?>" aria-label="Next"><span aria-hidden="true"></span><span class="glyphicon glyphicon-chevron-right"></span></a></li>
+            </ul>
+        </div>
+    </div>
 
-<?php include_component('declaration', 'list'); ?>
+    <div class="col-xs-3">
+        <p class="text-muted"><i><?php echo $nbResultats ?> déclaration<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
+        <p><a href="" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
+        </p>
+        <?php foreach($facets as $facetNom => $items): ?>
+        <h4><?php echo $facetNom; ?></h4>
+        <div class="list-group">
+            <?php foreach($items as $itemNom => $count): ?>
+                <?php $active = isset($query[$facetNom]) && $query[$facetNom] == $itemNom; ?>
+                <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
+                <?php if(!count($params)): $params = false; endif; ?>
+                <a href="<?php echo url_for('declaration', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo $itemNom; ?></a>
+            <?php endforeach; ?>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+<?php //include_component('declaration', 'list'); ?>
