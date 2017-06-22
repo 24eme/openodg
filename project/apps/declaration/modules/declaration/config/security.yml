@@ -1,0 +1,5 @@
+all:
+  credentials: [[ADMIN]]
+
+etablissement:
+  credentials: []

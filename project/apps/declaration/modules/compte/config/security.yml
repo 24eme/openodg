@@ -1,44 +1,47 @@
-creation:
-  is_secure: false
-
-creationConfirmation:
-  is_secure: false
-
-motDePasseOublie:
-  is_secure: false
-
-choiceCreationAdmin:
+all:
   credentials: [[CONTACT, ADMIN]]
 
-creationAdmin:
-  credentials: [[CONTACT, ADMIN]]
-
-visualisationAdmin:
-  credentials: [[CONTACT, ADMIN]]
-
-modificationAdmin:
-  credentials: [[CONTACT, ADMIN]]
-
-recherche:
-  credentials: [[CONTACT, ADMIN]]
-
-recherche-avancee:
-  credentials: [[CONTACT, ADMIN]]
-
-rechercheCsv:
-  credentials: [[CONTACT, ADMIN]]
-
-rechercheJson:
-  credentials: [[CONTACT, ADMIN]]
-
-desarchiver:
-  credentials: [[CONTACT, ADMIN]]
-
-archiver:
-  credentials: [[CONTACT, ADMIN]]
-
-allTagsManuels:
-  credentials: [[CONTACT, ADMIN]]
-
-redirectEspaceEtablissement:
-  credentials: [[ADMIN]]
+# creation:
+#   is_secure: false
+#
+# creationConfirmation:
+#   is_secure: false
+#
+# motDePasseOublie:
+#   is_secure: false
+#
+# choiceCreationAdmin:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# creationAdmin:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# visualisationAdmin:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# modificationAdmin:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# recherche:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# recherche-avancee:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# rechercheCsv:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# rechercheJson:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# desarchiver:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# archiver:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# allTagsManuels:
+#   credentials: [[CONTACT, ADMIN]]
+#
+# redirectEspaceEtablissement:
+#   credentials: [[ADMIN]]
