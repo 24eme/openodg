@@ -28,7 +28,7 @@ class commonActions extends sfActions {
             return $this->redirect('compte_teledeclarant_premiere_connexion');
         }
 
-        return $this->redirect('declaration', $this->getUser()->getEtablissement());
+        return $this->redirect('declaration_etablissement', $this->getUser()->getEtablissement());
     }
 
     public function executeContact(sfWebRequest $request) {

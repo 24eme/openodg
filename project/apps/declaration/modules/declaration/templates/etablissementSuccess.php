@@ -1,5 +1,6 @@
 <ol class="breadcrumb">
-  <li><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
+
+  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
   <li class="active"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
 </ol>
 

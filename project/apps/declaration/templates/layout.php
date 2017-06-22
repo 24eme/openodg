@@ -84,7 +84,9 @@
             </header>
             <!-- end #header -->
             <div class="container" style="padding: 0; margin: 0;">
+                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
                 <?php include_partial('global/nav'); ?>
+                <?php endif; ?>
             </div>
 
             <!-- #content -->
