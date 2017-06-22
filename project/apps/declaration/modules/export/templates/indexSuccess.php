@@ -10,7 +10,7 @@
             <div class="form-group <?php if($form["generation"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["generation"]->renderError() ?>
                 <div class="col-xs-12">
-                <?php echo $form["generation"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocomplete", "placeholder" => "Sélectionner un export")); ?>
+                <?php echo $form["generation"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocomplete", "autofocus" => "autofocus", "placeholder" => "Sélectionner un export")); ?>
                 </div>
             </div>
 
