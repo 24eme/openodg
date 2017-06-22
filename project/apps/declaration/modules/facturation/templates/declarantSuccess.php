@@ -15,16 +15,18 @@
     <div class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('error') ?></div>
 <?php endif; ?>
 
+
+<h3>Générer une facture</h3>
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <div class="row">
-        <div class="col-xs-8 col-xs-offset-2">
+        <div class="col-xs-8">
             <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["modele"]->renderError() ?>
                 <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
-                <?php echo $form["modele"]->render(array("class" => "form-control input-lg")); ?>
+                <?php echo $form["modele"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
             <div class="form-group <?php if($form["date_facturation"]->hasError()): ?>has-error<?php endif; ?>">
@@ -32,7 +34,7 @@
                 <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
                     <div class="input-group date-picker">
-                        <?php echo $form["date_facturation"]->render(array("class" => "form-control input-lg", "placeholder" => "Date de facturation")); ?>
+                        <?php echo $form["date_facturation"]->render(array("class" => "form-control", "placeholder" => "Date de facturation")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>
                         </div>
@@ -41,15 +43,17 @@
             </div>
             <div class="form-group text-right">
                 <div class="col-xs-6 col-xs-offset-6">
-                    <button class="btn btn-default btn-lg btn-block btn-upper" type="submit">Générer la facture</button>
+                    <button class="btn btn-default btn-block btn-upper" type="submit">Générer la facture</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<div class="row row-margin">
+
+<div class="row">
     <div class="col-xs-12">
+        <h3>Liste des factures</h3>
         <?php if(count($factures)): ?>
         <div class="list-group">
             <?php foreach ($factures as $facture) : ?>
