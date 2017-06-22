@@ -2,7 +2,7 @@
 
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
-    <li class="active"><a href="<?php echo url_for('compte_visualisation_admin', $compte); ?>"><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
+    <li class="active"><a href="<?php echo url_for('compte_visualisation', $compte); ?>"><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
 </ol>
 
 <div class="page-header">
@@ -10,7 +10,7 @@
         <?php if(!$compte->date_archivage): ?>
         <a href="<?php echo url_for('compte_archiver', $compte) ?>" class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Archiver</a>
         <?php endif; ?>
-        <a href="<?php echo url_for('compte_modification_admin', $compte) ?>" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier</a>
+        <a href="<?php echo url_for('compte_modification', $compte) ?>" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier</a>
     </div>
     <h2><?php echo $compte->nom_a_afficher ?> <small><?php echo CompteClient::getInstance()->getCompteTypeLibelle($compte->type_compte); ?></span> - <?php echo $compte->identifiant; ?></small></h2>
 </div>
@@ -291,7 +291,7 @@
             <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour à la recherche</a>
         </div>
         <div class="col-xs-4 text-center">
-            <a class="btn btn-lg btn-warning" href="<?php echo url_for('compte_modification_admin', $compte) ?>">Modifier</a>
+            <a class="btn btn-lg btn-warning" href="<?php echo url_for('compte_modification', $compte) ?>">Modifier</a>
         </div>
         <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $sf_user->isAdmin()): ?>
             <div class="col-xs-4 text-right">

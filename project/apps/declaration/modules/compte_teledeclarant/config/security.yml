@@ -1,0 +1,8 @@
+creation:
+  is_secure: false
+
+creationConfirmation:
+  is_secure: false
+
+motDePasseOublie:
+  is_secure: false

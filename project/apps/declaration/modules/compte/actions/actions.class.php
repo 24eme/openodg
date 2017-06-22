@@ -2,7 +2,7 @@
 
 class compteActions extends sfActions {
 
-    public function executeCreationAdmin(sfWebRequest $request) {
+    public function executeCreation(sfWebRequest $request) {
         $this->type_compte = $request->getParameter('type_compte');
         if (!$this->type_compte) {
             throw sfException("La création de compte doit avoir un type");
@@ -15,17 +15,17 @@ class compteActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('compte_visualisation_admin', $this->compte);
+                $this->redirect('compte_visualisation', $this->compte);
             }
         }
     }
 
-    public function executeVisualisationAdmin(sfWebRequest $request) {
+    public function executeVisualisation(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
         $this->abonnements = AbonnementClient::getInstance()->getAbonnementsByCompte($this->compte->identifiant);
     }
 
-    public function executeModificationAdmin(sfWebRequest $request) {
+    public function executeModification(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
 
         $this->form = $this->getCompteModificationForm();
@@ -34,21 +34,9 @@ class compteActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('compte_visualisation_admin', $this->compte);
+                $this->redirect('compte_visualisation', $this->compte);
             }
         }
-    }
-
-    public function executeCreation(sfWebRequest $request) {
-
-    }
-
-    public function executeCreationConfirmation(sfWebRequest $request) {
-
-    }
-
-    public function executeMotDePasseOublie(sfWebRequest $request) {
-
     }
 
     public function executeArchiver(sfWebRequest $request) {
@@ -60,7 +48,7 @@ class compteActions extends sfActions {
         $this->compte->archiver();
         $this->compte->save();
 
-        $this->redirect('compte_visualisation_admin', $this->compte);
+        $this->redirect('compte_visualisation', $this->compte);
     }
 
     public function executeDesarchiver(sfWebRequest $request) {
@@ -72,22 +60,7 @@ class compteActions extends sfActions {
         $this->compte->desarchiver();
         $this->compte->save();
 
-        $this->redirect('compte_visualisation_admin', $this->compte);
-    }
-
-    public function executeModification(sfWebRequest $request) {
-        $this->etablissement = $this->getUser()->getEtablissement();
-
-        $this->form = new EtablissementModificationEmailForm($this->etablissement);
-
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {
-                $this->etablissement = $this->form->save();
-                $this->getUser()->setFlash('maj', 'Vos identifiants ont bien été mis à jour.');
-                $this->redirect('mon_compte');
-            }
-        }
+        $this->redirect('compte_visualisation', $this->compte);
     }
 
     public function executeRedirectToMonCompteCiva(sfWebRequest $request) {

@@ -15,7 +15,7 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                 <?php foreach(CompteClient::getInstance()->getAllTypesCompteWithLibelles() as $type_compte => $libelle): ?>
-                    <li><a href="<?php echo url_for("compte_creation_admin", array("type_compte" => $type_compte)) ?>"><?php echo $libelle ?></a></li>
+                    <li><a href="<?php echo url_for("compte_creation", array("type_compte" => $type_compte)) ?>"><?php echo $libelle ?></a></li>
                 <?php endforeach; ?>
                 </ul>
         </div>
@@ -41,7 +41,7 @@
             <div class="list-group">
             <?php foreach ($results as $res): ?>
             <?php $data = $res->getData(); ?>
-                <a style="<?php if($data['statut'] != CompteClient::STATUT_ACTIF): ?>opacity: 0.6<?php endif ?>" href="<?php echo url_for('compte_visualisation_admin', array("id" => $data["_id"])); ?>" class="list-group-item">
+                <a style="<?php if($data['statut'] != CompteClient::STATUT_ACTIF): ?>opacity: 0.6<?php endif ?>" href="<?php echo url_for('compte_visualisation', array("id" => $data["_id"])); ?>" class="list-group-item">
                     <h3 class="list-group-item-heading"><?php echo $data['nom_a_afficher']; ?> <?php if($data['cvi'] || $data['siren']): ?><small><?php if($data['cvi']): ?><?php echo $data['cvi'] ?><?php endif; ?><?php if($data['cvi'] && $data['siren']): ?> / <?php endif; ?><?php if($data['siren']): ?><?php echo $data['siren'] ?><?php endif; ?></small><?php endif; ?> <button class="btn btn-xs btn-info pull-right"><?php echo $allTypeCompte[$data['type_compte']]; ?></button></h3>
                     <p class="list-group-item-text">
                     <div class="pull-right">

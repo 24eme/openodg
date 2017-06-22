@@ -672,17 +672,17 @@ drevmarc_export_pdf:
 
 #Mon compte
 
-compte_creation:
+compte_teledeclarant_creation:
   url: /compte
-  param: { module: compte, action: creation }
+  param: { module: compte_teledeclarant, action: creation }
 
 compte_creation_confirmation:
   url: /compte-creation-confirmation
-  param: { module: compte, action: creationConfirmation }
+  param: { module: compte_teledeclarant, action: creationConfirmation }
 
 compte_mot_de_passe_oublie:
   url: /mot_de_passe_oublie
-  param: { module: compte, action: motDePasseOublie }
+  param: { module: compte_teledeclarant, action: motDePasseOublie }
 
 compte_teledeclarant_premiere_connexion:
   url: /compte-premiere-connexion
@@ -690,7 +690,7 @@ compte_teledeclarant_premiere_connexion:
 
 mon_compte:
   url: /mon-compte
-  param: { module: compte, action: modification }
+  param: { module: compte_teledeclarant, action: modification }
 
 redirect_to_mon_compte_civa:
   url: /mon-compte-civa
@@ -716,17 +716,13 @@ compte_recherche_csv:
   url: /compte/recherche.csv
   param: { module: compte, action: rechercheCsv }
 
-compte_choice_creation_admin:
-  url: /compte-choice-admin-creation
-  param: { module: compte, action: choiceCreationAdmin }
+compte_creation:
+  url: /compte/creation/:type_compte
+  param: { module: compte, action: creation }
 
-compte_creation_admin:
-  url: /compte-admin-creation/:type_compte
-  param: { module: compte, action: creationAdmin }
-
-compte_visualisation_admin:
-  url: /compte-visualisation/:id
-  param: { module: compte, action: visualisationAdmin }
+compte_visualisation:
+  url: /compte/visualisation/:id
+  param: { module: compte, action: visualisation }
   class: ContactsCompteRoute
   options:
     model:    Compte
@@ -734,9 +730,9 @@ compte_visualisation_admin:
   requirements:
     sf_method: [get]
 
-compte_modification_admin:
-  url: /compte-modification/:id
-  param: { module: compte, action: modificationAdmin }
+compte_modification:
+  url: /compte/modification/:id
+  param: { module: compte, action: modification }
   class: CompteRoute
   options:
     model:    Compte
