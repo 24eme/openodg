@@ -3,79 +3,12 @@
 class declarationActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-
-        $this->declarations = array();
-        $rows = acCouchdbManager::getClient()
-                    ->group(true)
-                    ->group_level(4)
-                    ->getView('declaration', 'tous')->rows;
-
-        $this->facets = array(
-            "Type" => array(),
-            "Statut" => array(),
-            "Campagne" => array(),
-            "Mode" => array(),
-        );
-
-        $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
-
-        $this->query = $request->getParameter('query', array("Statut" => "À valider"));
-        $this->rows = array();
-
-        if(!$this->query || !count($this->query)) {
-            $this->rows = acCouchdbManager::getClient()
-            ->reduce(false)
-            ->getView('declaration', 'tous')->rows;
-        }
-
-        foreach($rows as $row) {
-            $addition = 0;
-            foreach($this->facets as $facetNom => $items) {
-                $find = true;
-                if($this->query) {
-                    foreach($this->query as $queryKey => $queryValue) {
-                        if($queryValue != $row->key[$facetToRowKey[$queryKey]]) {
-                            $find = false;
-                            break;
-                        }
-                    }
-                }
-                if(!$find) {
-                    continue;
-                }
-                $facetKey = $facetToRowKey[$facetNom];
-                if(!array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
-                    $this->facets[$facetNom][$row->key[$facetKey]] = 0;
-                }
-                $this->facets[$facetNom][$row->key[$facetKey]] += $row->value;
-                $addition += $row->value;
-
-            }
-            if($addition > 0 && $this->query && count($this->query)) {
-                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);
-                $this->rows = array_merge($this->rows, acCouchdbManager::getClient()
-                ->startkey($keys)
-                ->endkey(array_merge($keys, array(array())))
-                ->reduce(false)
-                ->getView('declaration', 'tous')->rows);
-            }
-        }
-
-        krsort($this->facets["Campagne"]);
-        ksort($this->facets["Statut"]);
-        ksort($this->facets["Type"]);
-        krsort($this->facets["Mode"]);
-
-        uasort($this->rows, function($a, $b) {
-
-            return $a->key[DeclarationTousView::KEY_DATE] < $b->key[DeclarationTousView::KEY_DATE];
-        });
-
+        $this->buildSearch($request);
         $nbResultatsParPage = 15;
-        $this->nbResultats = count($this->rows);
+        $this->nbResultats = count($this->docs);
         $this->page = $request->getParameter('page', 1);
         $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
-        $this->rows = array_slice($this->rows, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
+        $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
 
         $this->form = new LoginForm();
 
@@ -134,17 +67,84 @@ class declarationActions extends sfActions {
     }
 
     public function executeExport(sfWebRequest $request) {
-        $current_key_list = $request->getParameter('docs', 'DRev '.ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
-        $statut = $request->getParameter('doc_statut', "a_valider");
+        $this->buildSearch($request);
 
         $this->setLayout(false);
-        $attachement = sprintf("attachment; filename=export_%s_%s_%s.csv", str_replace("-", "_", strtolower(KeyInflector::slugify($current_key_list))), $statut, date('YmdHis'));
+        $attachement = sprintf("attachment; filename=export_declarations_%s.csv", date('YmdHis'));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
     }
 
     public function executeEtablissement(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
+    }
+
+    protected function buildSearch(sfWebRequest $request) {
+        $rows = acCouchdbManager::getClient()
+                    ->group(true)
+                    ->group_level(4)
+                    ->getView('declaration', 'tous')->rows;
+
+        $this->facets = array(
+            "Type" => array(),
+            "Statut" => array(),
+            "Campagne" => array(),
+            "Mode" => array(),
+        );
+
+        $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
+
+        $this->query = $request->getParameter('query', array("Statut" => "À valider"));
+        $this->docs = array();
+
+        if(!$this->query || !count($this->query)) {
+            $this->docs = acCouchdbManager::getClient()
+            ->reduce(false)
+            ->getView('declaration', 'tous')->rows;
+        }
+
+        foreach($rows as $row) {
+            $addition = 0;
+            foreach($this->facets as $facetNom => $items) {
+                $find = true;
+                if($this->query) {
+                    foreach($this->query as $queryKey => $queryValue) {
+                        if($queryValue != $row->key[$facetToRowKey[$queryKey]]) {
+                            $find = false;
+                            break;
+                        }
+                    }
+                }
+                if(!$find) {
+                    continue;
+                }
+                $facetKey = $facetToRowKey[$facetNom];
+                if(!array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
+                    $this->facets[$facetNom][$row->key[$facetKey]] = 0;
+                }
+                $this->facets[$facetNom][$row->key[$facetKey]] += $row->value;
+                $addition += $row->value;
+
+            }
+            if($addition > 0 && $this->query && count($this->query)) {
+                $keys = array($row->key[DeclarationTousView::KEY_TYPE], $row->key[DeclarationTousView::KEY_CAMPAGNE], $row->key[DeclarationTousView::KEY_MODE], $row->key[DeclarationTousView::KEY_STATUT]);
+                $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
+                ->startkey($keys)
+                ->endkey(array_merge($keys, array(array())))
+                ->reduce(false)
+                ->getView('declaration', 'tous')->rows);
+            }
+        }
+
+        krsort($this->facets["Campagne"]);
+        ksort($this->facets["Statut"]);
+        ksort($this->facets["Type"]);
+        krsort($this->facets["Mode"]);
+
+        uasort($this->docs, function($a, $b) {
+
+            return $a->key[DeclarationTousView::KEY_DATE] < $b->key[DeclarationTousView::KEY_DATE];
+        });
     }
 
 }

@@ -39,14 +39,14 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($rows as $row): ?>
+                <?php foreach($docs as $doc): ?>
                     <tr>
-                        <td><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php if($row->key[DeclarationTousView::KEY_DATE] && $row->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($row->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
-                        <td><?php echo $row->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
-                        <td><?php echo $row->key[DeclarationTousView::KEY_TYPE]; ?></td>
-                        <td><a href="<?php echo url_for("declaration_etablissement", array("id" => "ETABLISSEMENT-". $row->key[DeclarationTousView::KEY_IDENTIFIANT])); ?>"><?php echo $row->key[DeclarationTousView::KEY_RAISON_SOCIALE]; ?> <small>(<?php echo $row->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
-                        <td class="text-center"><?php echo $row->key[DeclarationTousView::KEY_MODE]; ?></td>
-                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", array("id" => $row->id)); ?>"><?php echo $row->key[DeclarationTousView::KEY_STATUT]; ?><?php if($row->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $row->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
+                        <td><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($doc->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
+                        <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
+                        <td><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></td>
+                        <td><a href="<?php echo url_for("declaration_etablissement", array("id" => "ETABLISSEMENT-". $doc->key[DeclarationTousView::KEY_IDENTIFIANT])); ?>"><?php echo $doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]; ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
+                        <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
+                        <td class="text-center"><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $doc->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -64,8 +64,13 @@
 
     <div class="col-xs-3">
         <p class="text-muted"><i><?php echo $nbResultats ?> déclaration<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
-        <p><a href="" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
+        <p><a href="<?php echo url_for('declaration_export', array('query' => $query)) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
         </p>
+        <?php if($query && count($query) > 0): ?>
+        <p>
+            <a href="<?php echo url_for('declaration', array('query' => 0)) ?>"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
+        </p>
+        <?php endif; ?>
         <?php foreach($facets as $facetNom => $items): ?>
         <h4><?php echo $facetNom; ?></h4>
         <div class="list-group">
