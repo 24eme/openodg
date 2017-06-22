@@ -17,6 +17,7 @@
             <div class="col-xs-8 col-xs-offset-1">
                 <?php
                 echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
+                    "autofocus" => "autofocus",
                     "placeholder" => "Prendre un RDV ou rechercher un opérateur",
                     "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
                 ));

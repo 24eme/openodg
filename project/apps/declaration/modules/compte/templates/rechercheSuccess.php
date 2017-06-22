@@ -29,7 +29,7 @@
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="input-group">
-                <?php echo $form["q"]->render(array("value" => ($q == '*') ? '' : $q, "class" => "form-control input-lg", "placeholder" => "Votre recherche...")); ?>
+                <?php echo $form["q"]->render(array("value" => ($q == '*') ? '' : $q, "class" => "form-control input-lg", "placeholder" => "Votre recherche...", "autofocus" => "autofocus")); ?>
                 <span class="input-group-btn">
                     <button class="btn btn-lg btn-info" type="submit" style="font-size: 22px; padding-top: 8px; padding-bottom: 8px;"><span class="glyphicon glyphicon-search"></span></button>
                 </span>

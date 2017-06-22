@@ -6,14 +6,13 @@
             <?php echo $form["login"]->renderError(); ?>
             <div class="col-xs-8 col-xs-offset-1">
                 <?php echo $form["login"]->render(array("class" => "form-control input-lg",
-                                "placeholder" => "Se connecter à un opérateur",
-                                "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
-                                )); ?>
+                                                        "autofocus" => "autofocus",
+                                                        "placeholder" => "Se connecter à un opérateur")); ?>
             </div>
             <div class="col-xs-2">
                 <button class="btn btn-default btn-lg" type="submit">Se connecter</button>
             </div>
         </div>
 
-    </form>  
+    </form>
 </div>
