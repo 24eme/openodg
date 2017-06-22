@@ -38,24 +38,12 @@ EOF;
                     ->getView('declaration', 'tous')->rows;
 
         foreach($this->rows as $row) {
-            if($row->key[DeclarationTousView::KEY_AUTOMATIQUE]) {
+            if($row->key[DeclarationTousView::KEY_MODE] != DeclarationTousView::MODE_TELDECLARATION) {
 
                 continue;
             }
 
-            if($row->key[DeclarationTousView::KEY_PAPIER]) {
-
-                continue;
-            }
-            if(!$row->key[DeclarationTousView::KEY_NB_DOC_EN_ATTENTE]) {
-
-                continue;
-            }
-            if(!$row->key[DeclarationTousView::KEY_VALIDATION]) {
-
-                continue;
-            }
-            if($row->key[DeclarationTousView::KEY_VALIDATION_ODG]) {
+            if($row->key[DeclarationTousView::KEY_STATUT] != DeclarationTousView::STATUT_A_VALIDER) {
 
                 continue;
             }

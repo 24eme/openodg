@@ -1,20 +1,19 @@
 <?php
 
 class exportActions extends sfActions {
-    
-    public function executeIndex(sfWebRequest $request) 
+
+    public function executeIndex(sfWebRequest $request)
     {
         $this->generationsList = array_merge(
             GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_CSV, 100),
             GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE, 100)
         );
 
-
         uasort($this->generationsList, "GenerationClient::sortHistory");
 
         $generations = array();
 
-        foreach(DeclarationClient::getInstance()->getTypesAndCampagne() as $typeCampagne) {
+        foreach(DeclarationClient::getInstance()->getTypesAndCampagneForExport() as $typeCampagne) {
             $generation = new Generation();
             $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_CSV;
             $generation->libelle = sprintf("Export CSV %s %s", $typeCampagne->type, $typeCampagne->campagne);
@@ -37,9 +36,9 @@ class exportActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-        
+
         $this->form->bind($request->getParameter($this->form->getName()));
-            
+
         if(!$this->form->isValid()) {
 
             return sfView::SUCCESS;
