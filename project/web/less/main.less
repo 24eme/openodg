@@ -325,6 +325,10 @@ tr.bootstrap-switch-on { cursor: pointer;}
     padding: 6px !important;
 }
 
+#header #logo {
+    display: inline-block;
+}
+
 #content {
     margin-top: 20px;
 }
@@ -332,6 +336,12 @@ tr.bootstrap-switch-on { cursor: pointer;}
 #menu_navigation {
     margin: 0;
     border: 0;
+}
+
+#header_titre {
+    display: inline-block;
+    margin: 0;
+    font-size: 24px;
 }
 
 @media (max-width: @screen-sm-max) {
@@ -347,6 +357,31 @@ tr.bootstrap-switch-on { cursor: pointer;}
 
     .container {
         width: auto;
+    }
+
+    #header {
+        margin: 0 -10px;
+        background: #fff;
+    }
+
+    #header_titre {
+        position: relative;
+        width: auto;
+        height: auto;
+        margin: 0;
+        clip: inherit;
+    }
+}
+
+@media (max-width: 760px) {
+    #header_titre {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 660px) {
+    #header_titre {
+        display: none;
     }
 }
 

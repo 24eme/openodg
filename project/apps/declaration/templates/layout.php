@@ -44,15 +44,13 @@
                 <img src="/images/bg/bg_global.jpg" alt="" />
             </div>
 
-            <header id="header" class="container hidden-xs hidden-sm" role="banner">
-
-                <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
-
+            <header id="header" class="container <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>hidden-xs hidden-sm<?php endif; ?>" role="banner">
                 <div id="logo">
                     <a href="<?php echo url_for('accueil') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
+                <h1 id="header_titre" class="sr-only">Portail de l'association<br /> des viticulteurs d'alsace</h1>
                 <?php use_helper('Text'); ?>
                 <?php if($sf_user->isAuthenticated()): ?>
                 <?php if($sf_user->getCompte()): ?>
