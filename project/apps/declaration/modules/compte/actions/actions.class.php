@@ -63,14 +63,6 @@ class compteActions extends sfActions {
         $this->redirect('compte_visualisation', $this->compte);
     }
 
-    public function executeRedirectToMonCompteCiva(sfWebRequest $request) {
-        if($request->getParameter('return_mon_compte')) {
-            return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("mon_compte", array(), true)))));
-        }
-
-        return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("accueil", array(), true)))));
-    }
-
     public function executeAllTagsManuels() {
 
         $qm = new acElasticaQueryMatchAll();

@@ -387,6 +387,15 @@ class constatsActions extends sfActions {
         if ($tournee) {
             $this->redirect('tournee_rendezvous_agent', $tournee);
         }
+
+        $tournee = TourneeClient::getInstance()->findTourneeDegustationByDateAndAgent(date('Y-m-d'), $compteAgent);
+        if($tournee) {
+            $this->redirect('degustation_tournee', array('sf_subject' => $tournee, 'agent' => $compteAgent->_id, 'date' => date('Y-m-d')));
+        }
+
+        $this->getUser()->setFlash('error', "Aucune tournée trouvée pour cet agent aujourd'hui");
+
+        return $this->redirect('tournee_agent_accueil');
     }
 
 }

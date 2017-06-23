@@ -694,7 +694,7 @@ mon_compte:
 
 redirect_to_mon_compte_civa:
   url: /mon-compte-civa
-  param: { module: compte, action: redirectToMonCompteCiva }
+  param: { module: compte_teledeclarant, action: redirectToMonCompteCiva }
 
 #Compte et etablissement admin
 

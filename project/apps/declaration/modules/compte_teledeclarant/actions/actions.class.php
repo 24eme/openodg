@@ -51,4 +51,12 @@ class compte_teledeclarantActions extends sfActions {
         }
     }
 
+    public function executeRedirectToMonCompteCiva(sfWebRequest $request) {
+        if($request->getParameter('return_mon_compte')) {
+            return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("mon_compte", array(), true)))));
+        }
+
+        return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("accueil", array(), true)))));
+    }
+
 }

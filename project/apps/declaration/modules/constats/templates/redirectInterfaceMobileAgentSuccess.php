@@ -16,6 +16,12 @@
     <h2><?php echo ucfirst(format_date(date('Y-m-d'), "P", "fr_FR")); ?></h2>
 </div>
 
+<?php if($sf_user->hasFlash('error')): ?>
+<div class="alert alert-danger">
+    <?php echo $sf_user->getFlash('error'); ?>
+</div>
+<?php endif; ?>
+
 <div class="row row-margin">
 <form id="form_ajout_agent_tournee" action="<?php echo url_for('tournee_agent_accueil'); ?>" method="post" class="form-horizontal" name="<?php echo $form->getName(); ?>">
     <?php echo $form->renderHiddenFields(); ?>
@@ -26,7 +32,7 @@
             <div class="col-xs-12">
             <?php echo $form["agent"]->renderError(); ?>
             <?php echo $form["agent"]->renderLabel(); ?> :
-            <?php echo $form["agent"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocomplete", "placeholder" => "Votre nom")); ?>
+            <?php echo $form["agent"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocomplete select2SubmitOnChange", "placeholder" => "Votre nom")); ?>
             </div>
         </div>
     </div>
