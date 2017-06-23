@@ -6,6 +6,12 @@
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee.js?201704271621'); ?>
 
+<ol class="breadcrumb hidden-xs hidden-sm">
+  <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
+  <li><a href="<?php echo url_for('degustation_visualisation', $tournee); ?>"><?php echo $tournee->getLibelle(); ?> le <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></a></li>
+  <li class="active"><a href="">Tournée du <?php echo ucfirst(format_date($date, "P", "fr_FR")) ?></a></li>
+</ol>
+
 <div ng-app="myApp" ng-init='produits=<?php echo json_encode($produits->getRawValue()) ?>; url_json="<?php echo url_for("degustation_tournee_json", array('sf_subject' => $tournee, 'agent' => $agent->getKey(), 'date' => $date, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state="<?php echo url_for('auth_state') ?>"; motifs=<?php echo json_encode(DegustationClient::$motif_non_prelevement_libelles) ?>'>
 <div ng-controller="tourneeCtrl">
 

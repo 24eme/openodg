@@ -15,9 +15,7 @@
         <link rel="icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/png" href="/favico.png" />
 
-
         <?php include_stylesheets() ?>
-
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 
@@ -29,6 +27,7 @@
         <![endif]-->
     </head>
     <body role="document">
+
         <!-- ####### PLEASE KEEP ####### -->
         <!--[if lte IE 7 ]>
         <div id="message_ie">
@@ -39,14 +38,12 @@
         <![endif]-->
         <!-- ####### PLEASE KEEP ####### -->
 
-        <!-- #page -->
         <div id="page" class="container">
 
             <div id="bg-page" class="hidden-xs hidden-sm">
                 <img src="/images/bg/bg_global.jpg" alt="" />
             </div>
 
-            <!-- #header -->
             <header id="header" class="container hidden-xs hidden-sm" role="banner">
 
                 <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
@@ -82,25 +79,23 @@
                 <?php endif; ?>
                 <?php endif; ?>
             </header>
-            <!-- end #header -->
-            <div class="container" style="padding: 0; margin: 0;">
-                <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <?php include_partial('global/nav'); ?>
-                <?php endif; ?>
-            </div>
 
-            <!-- #content -->
-            <section id="content" class="container" style="margin-top: 20px;">
+            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <div class="container <?php if($sf_params->get('modeMobile')): ?>hidden-xs hidden-sm<?php endif; ?>" style="padding: 0; margin: 0;">
+                <?php include_partial('global/nav'); ?>
+            </div>
+            <?php endif; ?>
+
+            <section id="content" class="container">
                 <div style="margin-bottom: 20px;"></div>
                 <?php echo $sf_content ?>
             </section>
 
-                <!-- #footer -->
             <footer id="footer" class="container hidden-xs hidden-sm" role="contentinfo">
                 <nav role="navigation">
                     <ul>
-                        <li><a href="<?php echo url_for('@contact') ?>">Contact</a></li>
-                        <li><a href="<?php echo url_for('@mentions_legales') ?>">Mentions légales</a></li>
+                        <li><a href="<?php echo url_for('contact') ?>">Contact</a></li>
+                        <li><a href="<?php echo url_for('mentions_legales') ?>">Mentions légales</a></li>
                     </ul>
                 </nav>
             </footer>

@@ -2,8 +2,8 @@
 <?php use_javascript("degustation.js?201504020331", "last") ?>
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
-  <li><a href="<?php echo url_for('degustation_visualisation', $tournee); ?>">Tournée <?php echo $tournee->getLibelle(); ?>  le <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></a></li>
-  <li class="active"><a href="">Présence dégustat.</a></li>
+  <li><a href="<?php echo url_for('degustation_visualisation', $tournee); ?>"><?php echo $tournee->getLibelle(); ?>  le <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></a></li>
+  <li class="active"><a href="">Présence dégustateurs</a></li>
 </ol>
 
 <form id="form_degustateurs_presence" action="" method="post" class="form-horizontal">

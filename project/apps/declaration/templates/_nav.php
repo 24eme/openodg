@@ -11,7 +11,16 @@
     <?php $etablissement = $compte->getEtablissementObj(); ?>
 <?php endif; ?>
 
-<nav class="navbar navbar-default" style="margin: 0; border: 0;">
+<nav id="menu_navigation" class="navbar navbar-default">
+    <div class="navbar-header hidden-lg hidden-md">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="<?php echo url_for('accueil') ?>"><img src="/images/logo_site.svg" style="height:28px;" alt="AVA - Association des viticulteurs d'alsace" /></a>
+    </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
       <ul class="nav navbar-nav" style="border: 0;">
         <li class="<?php if($route instanceof InterfaceDeclarationRoute): ?>active<?php endif; ?>"><a href="<?php if($etablissement && !$route instanceof InterfaceDeclarationRoute): ?><?php echo url_for('declaration_etablissement', $etablissement); ?><?php else: ?><?php echo url_for('declaration'); ?><?php endif; ?>">Déclarations</a></li>

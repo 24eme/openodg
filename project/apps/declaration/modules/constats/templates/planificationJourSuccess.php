@@ -8,7 +8,7 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
-  <li class="active"><a href="">Tournée du <?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></a></li>
+  <li class="active"><a href="">Tournées du <?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></a></li>
 </ol>
 
 <div class="row text-center">

@@ -6,6 +6,12 @@
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
 <?php use_javascript('tournee_vtsgn.js?201704271621'); ?>
 
+<ol class="breadcrumb hidden-xs hidden-sm">
+  <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+  <li><a href="<?php echo url_for('constats_planification_jour', array('jour' => $tournee->date)); ?>">Tournées du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")); ?></a></li>
+  <li class="active"><a href="">Tournée de <?php echo $tournee->getFirstAgent()->nom ?></a></li>
+</ol>
+
 <div ng-app="myApp" ng-init='produits =<?php echo json_encode($produits->getRawValue(), JSON_HEX_APOS); ?>; contenants =<?php echo json_encode($contenants->getRawValue(), JSON_HEX_APOS); ?>; raisons_refus =<?php echo json_encode($raisonsRefus->getRawValue(), JSON_HEX_APOS); ?>; url_json = "<?php echo url_for("tournee_rendezvous_agent_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; reload=<?php echo $reload ?>; url_state = "<?php echo url_for('auth_state') ?>"; date = "<?php echo $tournee->date ?>"; signatureImg = null;'>
     <div ng-controller="tournee_vtsgnCtrl">
         <section ng-show="active == 'recapitulatif'" class="visible-print-block" id="mission" style="page-break-after: always;">

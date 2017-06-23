@@ -8613,6 +8613,13 @@ tr.bootstrap-switch-on {
 #table-revendication .form-control {
   padding: 6px !important;
 }
+#content {
+  margin-top: 20px;
+}
+#menu_navigation {
+  margin: 0;
+  border: 0;
+}
 @media (max-width: 991px) {
   .backgroundsize body {
     background: none;

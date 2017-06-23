@@ -39,12 +39,12 @@ class constatsActions extends sfActions {
         $tournee = TourneeClient::getInstance()->find($request->getParameter('id'));
 
         if(!$tournee) {
-            
+
             return $this->forward404(sprintf("La tournée %s n'existe pas !", $request->getParameter('id')));
         }
 
         if(count($tournee->rendezvous) > 0) {
-            
+
             return $this->forward404(sprintf("La tournée %s ne peut pas être supprimé car elle a des rendez-vous !", $request->getParameter('id')));
         }
 
@@ -56,6 +56,7 @@ class constatsActions extends sfActions {
     }
 
     public function executeTourneeAgentRendezvous(sfWebRequest $request) {
+        $request->setParameter('modeMobile', true);
         $this->tournee = $this->getRoute()->getTournee();
         $this->agent = $this->tournee->getFirstAgent();
         $this->date = $this->tournee->getDate();
@@ -369,6 +370,7 @@ class constatsActions extends sfActions {
     }
 
     public function executeRedirectInterfaceMobileAgent(sfWebRequest $request) {
+        $request->setParameter('modeMobile', true);
         $this->form = new RedirectAgentForm();
         if (!$request->isMethod(sfWebRequest::POST)) {
 

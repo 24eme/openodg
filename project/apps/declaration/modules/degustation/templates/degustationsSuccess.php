@@ -1,5 +1,11 @@
 <?php use_helper("Date"); ?>
 
+<ol class="breadcrumb hidden-xs hidden-sm">
+  <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
+  <li><a href="<?php echo url_for('degustation_visualisation', $tournee); ?>">Tournée <?php echo $tournee->getLibelle(); ?>  le <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></a></li>
+  <li class="active"><a href="">Commissions</a></li>
+</ol>
+
 <section id="commissions">
     <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
     <div class="page-header text-center">

@@ -569,7 +569,7 @@ class degustationActions extends sfActions {
         $this->reload = $request->getParameter('reload', 0);
         $this->produits = array();
         $this->lock = (!$request->getParameter("unlock") && $this->tournee->statut != TourneeClient::STATUT_TOURNEES);
-
+        $request->setParameter('modeMobile', true);
         if($this->tournee->appellation == 'VTSGN') {
             foreach($this->tournee->getProduits() as $produit) {
                 if(!$produit->hasVtsgn()) {
@@ -704,6 +704,7 @@ class degustationActions extends sfActions {
 
     public function executeAffectation(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
+        $request->setParameter('modeMobile', true);
 
         if($this->tournee->statut == TourneeClient::STATUT_TOURNEES) {
 
@@ -771,6 +772,7 @@ class degustationActions extends sfActions {
 
     public function executeDegustations(sfWebRequest $request) {
         $this->tournee = $this->getRoute()->getTournee();
+        $request->setParameter('modeMobile', true);
 
         if($this->tournee->statut == TourneeClient::STATUT_AFFECTATION && $this->tournee->isAffectationTerminee()) {
             $this->tournee->statut = TourneeClient::STATUT_DEGUSTATIONS;

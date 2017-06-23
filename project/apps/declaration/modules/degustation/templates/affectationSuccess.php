@@ -3,6 +3,12 @@
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
 <?php use_javascript('tournee.js?201504281909'); ?>
 
+<ol class="breadcrumb hidden-xs hidden-sm">
+  <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
+  <li><a href="<?php echo url_for('degustation_visualisation', $tournee); ?>"><?php echo $tournee->getLibelle(); ?>  le <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></a></li>
+  <li class="active"><a href="">Affectation</a></li>
+</ol>
+
 <div ng-app="myApp" ng-init='url_json="<?php echo url_for("degustation_affectation_json", array('sf_subject' => $tournee, 'unlock' => !$lock)) ?>"; url_state="<?php echo url_for('auth_state') ?>";nombre_commissions=<?php echo $tournee->nombre_commissions ?>; reload=<?php echo $reload ?>;'>
     <div ng-controller="affectationCtrl">
         <section ng-show="active == 'recapitulatif'" id="commissions">
