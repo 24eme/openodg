@@ -4,6 +4,7 @@ class tirageActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement($etablissement);
         $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
         $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
         $nbDeclaration = TirageClient::getInstance()->getLastNumero($etablissement->identifiant, $campagne);
@@ -26,6 +27,7 @@ class tirageActions extends sfActions {
 
     public function executeCreatePapier(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement($this->etablissement);
 
         $this->form = new TirageCreationForm();
 
@@ -49,6 +51,7 @@ class tirageActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $tirage);
 
         if ($tirage->exist('etape') && $tirage->etape) {
             return $this->redirect('tirage_' . $tirage->etape, $tirage);
@@ -129,8 +132,8 @@ class tirageActions extends sfActions {
     }
 
     public function executeVin(sfWebRequest $request) {
-
         $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
         $this->form = new TirageVinForm($this->tirage);
         if (!$request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -294,6 +297,7 @@ class tirageActions extends sfActions {
 
     public function executeConfirmation(sfWebRequest $request) {
         $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::VISUALISATION, $this->tirage);
         $this->etablissement = $this->tirage->getEtablissementObject();
         $this->nbDeclaration = TirageClient::getInstance()->getLastNumero($this->tirage->identifiant, $this->tirage->campagne);
         $nextNumero = $this->nbDeclaration + 1;
@@ -369,8 +373,8 @@ class tirageActions extends sfActions {
         }
     }
 
-    protected function secureEtablissement($droits, $etablissement) {
-        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
+    protected function secureEtablissement($etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
             return $this->forwardSecure();
         }
     }

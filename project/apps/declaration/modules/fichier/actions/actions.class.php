@@ -4,6 +4,7 @@ class fichierActions extends sfActions
 {
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
+		$this->secureEtablissement($fichier->getEtablissementObject());
     	if (!$fichier->hasAttachments()) {
     		return $this->forward404("Aucun fichier pour ".$fichier->_id);
     	}
@@ -49,6 +50,8 @@ class fichierActions extends sfActions
 
 	public function executePiecesHistorique(sfWebRequest $request) {
 		$this->etablissement = $this->getRoute()->getEtablissement();
+		$this->secureEtablissement($this->etablissement);
+
 		$this->year = $request->getParameter('annee', 0);
 		$this->category = $request->getParameter('categorie');
 
@@ -72,5 +75,18 @@ class fichierActions extends sfActions
 		}
 		ksort($this->categories);
 	}
+
+	protected function secureEtablissement($etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
+
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
+    }
 
 }

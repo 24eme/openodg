@@ -77,6 +77,7 @@ class declarationActions extends sfActions {
 
     public function executeEtablissement(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement($this->etablissement);
     }
 
     protected function buildSearch(sfWebRequest $request) {
@@ -147,4 +148,16 @@ class declarationActions extends sfActions {
         });
     }
 
+    protected function secureEtablissement($etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
+
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
+    }
 }

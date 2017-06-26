@@ -205,6 +205,7 @@ class parcellaireActions extends sfActions {
 
     public function executeAjoutParcelle(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
         $this->appellation = $request->getParameter('appellation');
 
         $this->form = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
@@ -226,6 +227,8 @@ class parcellaireActions extends sfActions {
 
     public function executeModificationParcelle(sfWebRequest $request) {
         $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireSecurity::EDITION, $this->parcellaire);
+
         $this->appellation = $request->getParameter('appellation');
         $parcelleKey = $request->getParameter('parcelle');
 
@@ -258,6 +261,7 @@ class parcellaireActions extends sfActions {
 
     public function executeDeleteParcelle(sfWebRequest $request) {
         $parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireSecurity::EDITION, $parcellaire);
         $appellation = $request->getParameter('appellation');
         $parcelleKey = $request->getParameter('parcelle');
 
@@ -363,6 +367,7 @@ class parcellaireActions extends sfActions {
     public function executePDF(sfWebRequest $request) {
         set_time_limit(180);
         $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaire);
 
         $this->parcellaire->declaration->cleanNode();
 
@@ -386,6 +391,7 @@ class parcellaireActions extends sfActions {
     public function executeCSV(sfWebRequest $request) {
         set_time_limit(180);
         $parcellaire = $this->getRoute()->getParcellaire();
+        $this->secure(ParcellaireSecurity::VISUALISATION, $parcellaire);
         $this->exportCsv = new ExportParcellaireCSV($parcellaire);
 
         $this->cvi = null;
