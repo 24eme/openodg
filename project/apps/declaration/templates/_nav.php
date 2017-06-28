@@ -19,7 +19,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="<?php echo url_for('accueil') ?>"><img src="/images/logo_site.svg" style="height:28px;" alt="AVA - Association des viticulteurs d'alsace" /></a>
+      <a class="navbar-brand" href="<?php echo url_for('accueil') ?>"><img src="/images/logo_site.svg" style="height:28px;" alt="" /></a>
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="padding-left: 0;">
         <ul class="nav navbar-nav <?php if($compte): ?>mode-operateur<?php endif; ?>" style="border: 0;">
