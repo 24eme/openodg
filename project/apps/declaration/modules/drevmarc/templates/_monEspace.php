@@ -6,9 +6,9 @@
 
 <div class="col-xs-4">
     <?php if ($etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
-        <div class="block_declaration panel <?php if ($drevmarc && $drevmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
+        <div class="block_declaration panel <?php if ($drevmarc && $drevmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
             <div class="panel-heading">
-                <h3>Revendication Marc&nbsp;d'Alsace&nbsp;Gw&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?></h3>
+                <h3>Revendication Marc&nbsp;d'Alsace&nbsp;Gw&nbsp;<?php echo $campagne; ?></h3>
             </div>
             <?php if ($drevmarc && $drevmarc->validation): ?>
                 <div class="panel-body">
@@ -47,10 +47,10 @@
                 <div class="panel-bottom">
                     <?php if ($sf_user->isAdmin()): ?>
                         <p>
-                            <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('drevmarc_create', $etablissement) ?>">Démarrer la télédéclaration</a>
+                            <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('drevmarc_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
                         </p>
                         <p>
-                            <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('drevmarc_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                            <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('drevmarc_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -58,13 +58,13 @@
                 <div class="panel-body">
                     <p>Votre déclaration de revendication de Marc d'Alsace Gewurztraminer n'a pas été validée pour cette année.</p>
                 </div>
-                <div class="panel-bottom">  
+                <div class="panel-bottom">
                     <p>
-                        <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drevmarc_create', $etablissement) ?>">Démarrer la télédéclaration</a>
+                        <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('drevmarc_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
                     </p>
                     <?php if ($sf_user->isAdmin()): ?>
                         <p>
-                            <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('drevmarc_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                            <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('drevmarc_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                         </p>
                     <?php endif; ?>
                 </div>

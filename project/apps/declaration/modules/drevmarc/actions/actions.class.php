@@ -5,7 +5,7 @@ class drevmarcActions extends sfActions {
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($etablissement);
-        $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()));
         $drevmarc->save();
 
         return $this->redirect('drevmarc_edit', $drevmarc);
@@ -14,7 +14,7 @@ class drevmarcActions extends sfActions {
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($etablissement);
-        $drev = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true);
+        $drev = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true));
         $drev->save();
 
         return $this->redirect('drevmarc_edit', $drev);

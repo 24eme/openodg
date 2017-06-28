@@ -78,6 +78,11 @@ class declarationActions extends sfActions {
     public function executeEtablissement(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($this->etablissement);
+        $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        if(!$this->getUser()->isAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
+
+            return $this->forwardSecure();
+        }
     }
 
     protected function buildSearch(sfWebRequest $request) {

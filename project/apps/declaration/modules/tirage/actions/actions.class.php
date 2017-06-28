@@ -5,7 +5,7 @@ class tirageActions extends sfActions {
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($etablissement);
-        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
         $nbDeclaration = TirageClient::getInstance()->getLastNumero($etablissement->identifiant, $campagne);
         $tirage->save();
@@ -29,7 +29,7 @@ class tirageActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($this->etablissement);
 
-        $this->form = new TirageCreationForm();
+        $this->form = new TirageCreationForm(array("campagne" => $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent())));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

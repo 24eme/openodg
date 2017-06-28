@@ -180,7 +180,7 @@
         });
 
         $(this).find(".select2SubmitOnChange").on("change", function (e) {
-            if (e.val) {
+            if (e.val || $(this).val()) {
                 $(this).parents('form').submit();
             }
         });

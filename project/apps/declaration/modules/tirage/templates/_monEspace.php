@@ -1,9 +1,9 @@
 <?php use_helper('Date'); ?>
 
 <div class="col-xs-4">
-    <div class="block_declaration panel <?php if ($tirage && $tirage->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">     
+    <div class="block_declaration panel <?php if ($tirage && $tirage->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-            <h3>Tirage Crémant&nbsp;<?php echo ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); ?><br /><br /></h3>
+            <h3>Tirage Crémant&nbsp;<?php echo $campagne; ?><br /><br /></h3>
         </div>
         <?php if ($tirage && $tirage->validation): ?>
             <div class="panel-body">
@@ -42,29 +42,29 @@
             <div class="panel-bottom">
                 <?php if ($sf_user->isAdmin()): ?>
                     <p>
-                        <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('tirage_create', $etablissement) ?>">Démarrer la <?php echo $nieme; ?> déclaration</a>
+                        <a class="btn btn-lg btn-default btn-block" href="<?php echo url_for('tirage_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la <?php echo $nieme; ?> déclaration</a>
                     </p>
                     <p>
-                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('tirage_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                        <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('tirage_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                     </p>
                 <?php endif; ?>
             </div>
         <?php else: ?>
             <div class="panel-body">
-            <p><?php 
+            <p><?php
         echo "Déclaration à remplir dans les 60 jours qui suivent la fin du tirage.<br/>";
 
         if ($nbDeclaration > 0) {
             echo ($nbDeclaration == 1) ? "Une déclaration de tirage déjà validée" : $nbDeclaration." déclarations de tirage déjà validées";
         }?></p>
         </div>
-        <div class="panel-bottom">  
+        <div class="panel-bottom">
             <p>
-                <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('tirage_create', $etablissement) ?>">Démarrer la <?php echo $nieme; ?> déclaration</a>
+                <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('tirage_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la <?php echo $nieme; ?> déclaration</a>
             </p>
             <?php if ($sf_user->isAdmin()): ?>
                 <p>
-                    <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('tirage_create_papier', $etablissement) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
+                    <a class="btn btn-xs btn-warning btn-block" href="<?php echo url_for('tirage_create_papier', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Saisir la déclaration papier</a>
                 </p>
             <?php endif; ?>
         </div>

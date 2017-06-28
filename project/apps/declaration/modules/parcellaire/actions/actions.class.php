@@ -31,7 +31,7 @@ class parcellaireActions extends sfActions {
 
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
-        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
+        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaire->save();
 
@@ -43,7 +43,7 @@ class parcellaireActions extends sfActions {
 
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
-        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext());
+        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
         $this->parcellaire->add('papier', 1);
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaire->save();
