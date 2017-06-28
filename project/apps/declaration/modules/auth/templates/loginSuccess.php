@@ -1,5 +1,5 @@
 <div class="row row-margin">
-    <form method="post" action="" role="form" class="form-horizontal">
+    <form method="post" action="<?php echo url_for("auth_login") ?>" role="form" class="form-horizontal">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
         <div class="form-group">
