@@ -8667,6 +8667,28 @@ tr.bootstrap-switch-on {
   border-bottom: 6px solid #fff;
   border-top: 6px solid transparent;
 }
+.navbar-nav.mode-operateur li a {
+  border-bottom-color: #b9cf62;
+}
+.navbar-nav li#nav_item_operateur {
+  visibility: hidden;
+}
+.navbar-nav li#nav_item_operateur a {
+  position: relative;
+  background: #b9cf62;
+  color: #fff;
+}
+.navbar-nav li#nav_item_operateur a:hover {
+  border-bottom-color: #b9cf62;
+  color: #2c4a48;
+}
+.navbar-nav.mode-operateur li#nav_item_operateur {
+  visibility: visible;
+}
+#menu_navigation .navbar-nav li.disabled a {
+  border-bottom: 6px solid #fff;
+  cursor: inherit;
+}
 .navbar-nav li.active a,
 .navbar-nav li a:hover {
   border-bottom: 6px solid #2c4a48;
