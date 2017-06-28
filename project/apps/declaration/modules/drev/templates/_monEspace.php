@@ -3,7 +3,7 @@
 <?php if (!EtablissementSecurity::getInstance($sf_user, $etablissement->getRawValue())->isAuthorized(EtablissementSecurity::DECLARANT_DREV) && (!$drev || !$sf_user->isAdmin())): ?>
     <?php return; ?>
 <?php endif; ?>
-<div class="col-xs-4">
+<div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($drev && $drev->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
             <h3>Revendication des appellations viticoles <?php echo $campagne; ?></h3>

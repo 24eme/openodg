@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<div class="col-xs-4">
+<div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($tirage && $tirage->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
             <h3>Tirage Crémant&nbsp;<?php echo $campagne; ?><br /><br /></h3>

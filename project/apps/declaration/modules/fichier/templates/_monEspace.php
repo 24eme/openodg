@@ -3,7 +3,7 @@
 <?php if (!$sf_user->isAdmin()): ?>
     <?php return; ?>
 <?php endif; ?>
-<div class="col-xs-4">
+<div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel panel-danger" style="background: #c56f6f none repeat scroll 0 0;">
         <div class="panel-heading" style="background: #c56f6f none repeat scroll 0 0; border-color: #6e6e6e;">
             <h3 style="color: #ffffff;">Documents<br /><br /></h3>

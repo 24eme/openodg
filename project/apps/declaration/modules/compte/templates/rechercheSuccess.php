@@ -8,24 +8,21 @@
 </ol>
 
 <div class="row">
-    <div class="col-xs-12" style="padding-bottom: 10px">
-        <div class="col-xs-offset-6 col-xs-3">
-                <button type="button" class="btn btn-sm btn-default btn-default-step btn-block btn-upper" data-toggle="dropdown" aria-expanded="false">
-                    <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                <?php foreach(CompteClient::getInstance()->getAllTypesCompteWithLibelles() as $type_compte => $libelle): ?>
-                    <li><a href="<?php echo url_for("compte_creation", array("type_compte" => $type_compte)) ?>"><?php echo $libelle ?></a></li>
-                <?php endforeach; ?>
-                </ul>
-        </div>
-        <div class="col-xs-3">
-        <a class="btn btn-default btn-default-step  btn-sm btn-block btn-upper" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherce avancée</a>
-        </div>
+    <div class="col-sm-offset-6 col-sm-3 col-xs-12">
+            <button type="button" class="btn btn-sm btn-default btn-default-step btn-block btn-upper" data-toggle="dropdown" aria-expanded="false">
+                <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+            <?php foreach(CompteClient::getInstance()->getAllTypesCompteWithLibelles() as $type_compte => $libelle): ?>
+                <li><a href="<?php echo url_for("compte_creation", array("type_compte" => $type_compte)) ?>"><?php echo $libelle ?></a></li>
+            <?php endforeach; ?>
+            </ul>
     </div>
-    <div class="col-xs-9">
-        <div class="col-xs-12">
-            <form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">
+    <div class="col-sm-3 col-xs-12">
+    <a class="btn btn-default btn-default-step  btn-sm btn-block btn-upper" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherce avancée</a>
+    </div>
+    <div class="col-sm-9 col-xs-12" style="padding-top: 10px;">
+        <form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="input-group">
@@ -34,11 +31,9 @@
                     <button class="btn btn-lg btn-info" type="submit" style="font-size: 22px; padding-top: 8px; padding-bottom: 8px;"><span class="glyphicon glyphicon-search"></span></button>
                 </span>
             </div>
-            </form>
-        </div>
+        </form>
         <?php if ($nb_results > 0): ?>
-        <div class="col-xs-12" style="padding-top: 15px">
-            <div class="list-group">
+            <div class="list-group" style="margin-top: 15px">
             <?php foreach ($results as $res): ?>
             <?php $data = $res->getData(); ?>
                 <a style="<?php if($data['statut'] != CompteClient::STATUT_ACTIF): ?>opacity: 0.6<?php endif ?>" href="<?php echo url_for('compte_visualisation', array("id" => $data["_id"])); ?>" class="list-group-item">
@@ -76,10 +71,9 @@
                 </a>
                 <?php endforeach; ?>
             </div>
-        </div>
         <?php endif; ?>
         <?php if ($nb_results > 0 && $last_page > 1): ?>
-            <div class="col-xs-12 text-center">
+            <div class="text-center">
                 <nav>
                     <ul class="pagination pagination-lg" style="margin-top: 0;">
                         <?php
@@ -118,7 +112,7 @@
             </div>
         <?php endif; ?>
     </div>
-    <div class="col-xs-3">
+    <div class="col-sm-3 col-xs-12">
         <p class="text-muted"><i><?php echo $nb_results ?> résultat<?php if ($nb_results > 1): ?>s<?php endif; ?></i></p>
         <p>
         <a href="<?php echo url_for("compte_recherche_csv", $args->getRawValue()) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>

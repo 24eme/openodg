@@ -16,7 +16,7 @@
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="form-group">
                 <?php echo $form["login"]->renderError(); ?>
-                <div class="col-xs-8 col-xs-offset-2">
+                <div class="col-sm-8 col-xs-12 col-sm-offset-2">
                     <?php
                     echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
                         "placeholder" => ($compte->_id) ? "" . $compte->raison_sociale . " (" . $compte->cvi . ") " . $compte->adresse . " (" . $compte->code_postal . ")" : "Se connecter à un opérateur",

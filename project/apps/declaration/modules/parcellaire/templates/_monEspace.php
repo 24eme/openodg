@@ -1,4 +1,4 @@
-<div class="col-xs-4">
+<div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($parcellaire && $parcellaire->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
         <h3>Affectation&nbsp;parcellaire&nbsp;<?php echo $campagne; ?><br/>&nbsp;</h3>

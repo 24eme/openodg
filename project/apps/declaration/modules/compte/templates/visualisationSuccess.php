@@ -287,14 +287,14 @@
     <?php endif; ?>
 
     <div class="row row-margin row-button">
-        <div class="col-xs-4">
+        <div class="col-sm-4 col-xs-12">
             <a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour à la recherche</a>
         </div>
-        <div class="col-xs-4 text-center">
+        <div class="col-sm-4 hidden-xs text-center">
             <a class="btn btn-lg btn-warning" href="<?php echo url_for('compte_modification', $compte) ?>">Modifier</a>
         </div>
         <?php if ($compte->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $sf_user->isAdmin()): ?>
-            <div class="col-xs-4 text-right">
+            <div class="col-sm-4 hidden-xs text-right">
                 <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for('declaration_etablissement', $compte->getEtablissementObj()); ?>">Espace etablissement&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
             </div>
         <?php endif; ?>

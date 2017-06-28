@@ -4,7 +4,7 @@
     <?php return; ?>
 <?php endif; ?>
 
-<div class="col-xs-4">
+<div class="col-sm-6 col-md-4 col-xs-12">
     <?php if ($etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
         <div class="block_declaration panel <?php if ($drevmarc && $drevmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
             <div class="panel-heading">

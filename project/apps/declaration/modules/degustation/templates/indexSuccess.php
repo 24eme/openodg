@@ -10,11 +10,11 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <div class="row">
-        <div class="col-xs-10">
+        <div class="col-sm-10 col-xs-12">
             <div class="form-group <?php if($form["date"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date"]->renderError(); ?>
                 <?php echo $form["date"]->renderLabel("Date de dégustation", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-6">
+                <div class="col-sm-6 col-xs-8">
                     <div class="input-group date-picker">
                         <?php echo $form["date"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
@@ -26,12 +26,12 @@
             <div class="form-group <?php if($form["appellation"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["appellation"]->renderError(); ?>
                 <?php echo $form["appellation"]->renderLabel("Appellation / Mention", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-6">
+                <div class="col-sm-6 col-xs-8">
                     <?php echo $form["appellation"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
             <div class="form-group bloc_condition" data-condition-cible="#bloc_date_prelevement">
-                <div class="col-xs-8 col-xs-offset-4">
+                <div class="col-sm-8 col-sm-offset-4 col-xs-12">
                     <?php foreach(TourneeCreationForm::getActionChoices() as $key => $libelle): ?>
                         <label class="radio-inline">
                           <input type="radio" name="<?php echo $form["action"]->renderName(); ?>" <?php if($form["action"]->getValue() == $key): ?>checked="checked"<?php endif; ?> value="<?php echo $key ?>"> <?php echo $libelle ?>
@@ -42,7 +42,7 @@
             <div id="bloc_date_prelevement" data-condition-value="organiser" class="form-group <?php if($form["date"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["date_prelevement_debut"]->renderError(); ?>
                 <?php echo $form["date_prelevement_debut"]->renderLabel("Date de début des prélévements", array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-6">
+                <div class="col-sm-6 col-xs-8">
                     <div class="input-group date-picker">
                         <?php echo $form["date_prelevement_debut"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
@@ -52,7 +52,7 @@
                 </div>
             </div>
             <div class="form-group text-right">
-                <div class="col-xs-4 col-xs-offset-6">
+                <div class="col-sm-4 col-sm-offset-6 col-xs-12">
                     <button type="submit" class="btn btn-default btn-lg btn-block btn-upper">Créer</button>
                 </div>
             </div>

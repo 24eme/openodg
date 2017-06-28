@@ -7,10 +7,10 @@
 
 <div class="page-header">
     <div class="row">
-        <div class="col-xs-7">
+        <div class="col-sm-7 col-xs-12">
             <h2>Eléments déclaratifs </h2>
         </div>
-        <div class="col-xs-5 text-right" style="padding-top: 20px;">
+        <div class="col-sm-5 col-xs-12 text-right hidden-xs" style="padding-top: 20px;">
             <?php if ($sf_user->isAdmin()): ?>
             <form method="GET" class="form-inline" action="">
                 Campagne :

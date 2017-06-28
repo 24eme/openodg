@@ -21,7 +21,7 @@
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
     <div class="row">
-        <div class="col-xs-8">
+        <div class="col-sm-8 col-xs-12">
             <div class="form-group <?php if($form["modele"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form["modele"]->renderError() ?>
                 <?php echo $form["modele"]->renderLabel("Type de facture", array("class" => "col-xs-4 control-label")); ?>
@@ -58,11 +58,11 @@
         <div class="list-group">
             <?php foreach ($factures as $facture) : ?>
                 <li class="list-group-item col-xs-12">
-                    <span class="col-xs-1"><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></span>
-                    <span class="col-xs-2">N° <?php echo $facture->numero_ava ?></span>
-                    <span class="col-xs-2"><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></span>
-                    <span class="col-xs-2 text-right"><?php echo echoFloat($facture->total_ttc); ?> € TTC</span>
-                    <span class="col-xs-5 text-right">
+                    <span class="col-sm-1 col-xs-3"><?php if($facture->isAvoir()): ?>AVOIR<?php else: ?>FACTURE<?php endif; ?></span>
+                    <span class="col-sm-2 col-xs-3">N°&nbsp;<?php echo $facture->numero_ava ?></span>
+                    <span class="col-sm-2 col-xs-3"><?php echo format_date($facture->date_facturation, "dd/MM/yyyy", "fr_FR"); ?></span>
+                    <span class="col-sm-2 col-xs-3 text-right"><?php echo echoFloat($facture->total_ttc); ?>&nbsp;€&nbsp;TTC</span>
+                    <span class="col-sm-5 col-xs-12 text-right">
                         <div class="btn-group text-left">
                              <?php if(!$facture->isPayee() && !$facture->isAvoir()): ?>
                                 <a href="<?php echo url_for("facturation_paiement", array("id" => $facture->_id)) ?>"  class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Saisir le Paiement</a>

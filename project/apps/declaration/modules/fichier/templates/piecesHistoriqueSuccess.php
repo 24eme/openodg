@@ -22,8 +22,7 @@
 </div>
 
 
-<div class="row">
-<div class="list-group col-xs-12">
+<div class="list-group">
 <?php if(count($history) > 0): ?>
 	<ul class="nav nav-pills" style="margin: 0 0 20px 0;">
 		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) - $decreases ?></a></li>
@@ -38,13 +37,13 @@
 			}
 	?>
 	<div class="list-group-item col-xs-12">
-		<span class="col-xs-2">
+		<span class="col-sm-2 col-xs-12">
 			<?php echo (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $document->key[PieceAllView::KEYS_DATE_DEPOT]))? format_date($document->key[PieceAllView::KEYS_DATE_DEPOT], "dd/MM/yyyy", "fr_FR") : null; ?>
 		</span>
-		<span class="col-xs-8">
+		<span class="col-sm-8 col-xs-12">
 			<?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?>
 		</span>
-		<span class="col-xs-2">
+		<span class="col-sm-2 col-xs-12">
 			<a class="pull-right" href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><span class="glyphicon glyphicon-file"></span></a>
 			<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 			<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;"><span class=" glyphicon glyphicon-eye-open"></span></a>
@@ -55,5 +54,4 @@
 <?php else: ?>
 	<p class="text-center"><em>Aucun document disponible<?php if ($year): ?> pour l'année <strong><?php echo $year ?></strong><?php endif; ?></em></p>
 <?php endif; ?>
-</div>
 </div>
