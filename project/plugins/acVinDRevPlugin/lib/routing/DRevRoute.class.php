@@ -1,5 +1,5 @@
 <?php
-class DRevRoute extends sfObjectRoute {
+class DRevRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
 
     protected $drev = null;
 
@@ -13,7 +13,7 @@ class DRevRoute extends sfObjectRoute {
         return $this->drev;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

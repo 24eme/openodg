@@ -1,7 +1,11 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript("lib/chart.min.js", "last") ?>
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
 
+<ol class="breadcrumb">
+  <li class="active"><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
+</ol>
+
+<h3>Création d'une dégustation</h3>
 <form action="" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -58,7 +62,7 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <legend><small>Demandes de prélevements dans le temps</small></legend>
+        <legend><small><small>Demandes de prélevements dans le temps</small></small></legend>
         <canvas id="graphique" width="920" class="col-xs-12" height="200"></canvas>
     </div>
 </div>

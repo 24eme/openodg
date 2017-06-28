@@ -8,6 +8,7 @@ endforeach;
 $hasError = ($global_error_msg != "");
 ?>
 
+<?php include_partial('tirage/breadcrumb', array('tirage' => $tirage )); ?>
 <?php include_partial('tirage/step', array('step' => 'lots', 'tirage' => $tirage)) ?>
 
 <div class="page-header no-border">
@@ -21,20 +22,20 @@ $hasError = ($global_error_msg != "");
     <?php if ($hasError): ?>
         <div class="alert alert-danger" role="alert"><?php echo $global_error_msg; ?></div>
     <?php endif; ?>
-    
-    
+
+
     <div class="row">
-    
+
     	<div class="col-xs-7">
     		<div class="row-margin">
 				<div class="col-xs-offset-1">
 					<p>
-						Mise en bouteille : 
+						Mise en bouteille :
 					</p>
 					<div class="form-group <?php if ($form["date_mise_en_bouteille_debut"]->hasError()): ?>has-error<?php endif; ?>">
-						<?php if ($form["date_mise_en_bouteille_debut"]->hasError()): ?>                            
+						<?php if ($form["date_mise_en_bouteille_debut"]->hasError()): ?>
 							<div class="alert alert-danger" role="alert"><?php echo $form["date_mise_en_bouteille_debut"]->getError(); ?></div>
-                        <?php endif; ?> 
+                        <?php endif; ?>
 						<label class="col-xs-5 control-label">du</label>
 						<div class="col-xs-7">
 							<div class="input-group date-picker">
@@ -46,10 +47,10 @@ $hasError = ($global_error_msg != "");
 						</div>
 					</div>
 					<div class="form-group <?php if ($form["date_mise_en_bouteille_fin"]->hasError()): ?>has-error<?php endif; ?>">
-						<?php if ($form["date_mise_en_bouteille_fin"]->hasError()): ?>                            
+						<?php if ($form["date_mise_en_bouteille_fin"]->hasError()): ?>
 							<div class="alert alert-danger" role="alert"><?php echo $form["date_mise_en_bouteille_fin"]->getError(); ?></div>
-                        <?php endif; ?>      
-						<label class="col-xs-5 control-label">au</label>                      
+                        <?php endif; ?>
+						<label class="col-xs-5 control-label">au</label>
 						<div class="col-xs-7">
 							<div class="input-group date-picker">
 								<?php echo $form["date_mise_en_bouteille_fin"]->render(array("class" => "form-control")); ?>
@@ -61,11 +62,11 @@ $hasError = ($global_error_msg != "");
 					</div>
 				</div>
 			</div>
-			
+
     		<div class="row-margin">
 				<div class="col-xs-offset-1">
 					<p>
-						Composé de : 
+						Composé de :
 					</p>
 					<div class="form-group" id="compositions">
 						<?php foreach ($form['composition'] as $k => $formComposition): ?>
@@ -78,12 +79,12 @@ $hasError = ($global_error_msg != "");
 					</script>
 				</div>
 			</div>
-			
-    	</div>    
+
+    	</div>
     	<div class="col-xs-4 col-xs-offset-1"></div>
     </div>
 
-    
+
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">

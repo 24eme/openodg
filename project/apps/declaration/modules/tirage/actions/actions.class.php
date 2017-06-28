@@ -4,7 +4,8 @@ class tirageActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+        $this->secureEtablissement($etablissement);
+        $campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         $tirage = TirageClient::getInstance()->createDoc($etablissement->identifiant, $campagne);
         $nbDeclaration = TirageClient::getInstance()->getLastNumero($etablissement->identifiant, $campagne);
         $tirage->save();
@@ -26,8 +27,9 @@ class tirageActions extends sfActions {
 
     public function executeCreatePapier(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement($this->etablissement);
 
-        $this->form = new TirageCreationForm();
+        $this->form = new TirageCreationForm(array("campagne" => $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent())));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -49,6 +51,7 @@ class tirageActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $tirage);
 
         if ($tirage->exist('etape') && $tirage->etape) {
             return $this->redirect('tirage_' . $tirage->etape, $tirage);
@@ -68,18 +71,18 @@ class tirageActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $tirage->getEtablissementObject());
     }
 
     public function executeDelete(sfWebRequest $request) {
         $tirage = $this->getRoute()->getTirage();
-
+        $etablissement = $tirage->getEtablissementObject();
         $this->secure(TirageSecurity::EDITION, $tirage);
 
         $tirage->delete();
         $this->getUser()->setFlash("notice", 'La déclaration de tirage a été supprimé avec succès.');
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $etablissement);
     }
 
     public function executeExploitation(sfWebRequest $request) {
@@ -129,8 +132,8 @@ class tirageActions extends sfActions {
     }
 
     public function executeVin(sfWebRequest $request) {
-
         $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::EDITION, $this->tirage);
         $this->form = new TirageVinForm($this->tirage);
         if (!$request->isMethod(sfWebRequest::POST)) {
             return sfView::SUCCESS;
@@ -293,8 +296,9 @@ class tirageActions extends sfActions {
     }
 
     public function executeConfirmation(sfWebRequest $request) {
-        $this->etablissement = $this->getUser()->getEtablissement();
         $this->tirage = $this->getRoute()->getTirage();
+        $this->secure(TirageSecurity::VISUALISATION, $this->tirage);
+        $this->etablissement = $this->tirage->getEtablissementObject();
         $this->nbDeclaration = TirageClient::getInstance()->getLastNumero($this->tirage->identifiant, $this->tirage->campagne);
         $nextNumero = $this->nbDeclaration + 1;
         $this->nieme = '';
@@ -369,8 +373,8 @@ class tirageActions extends sfActions {
         }
     }
 
-    protected function secureEtablissement($droits, $etablissement) {
-        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized($droits)) {
+    protected function secureEtablissement($etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
             return $this->forwardSecure();
         }
     }

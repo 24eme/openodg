@@ -1,3 +1,4 @@
+<?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'validation', 'drev' => $drev)) ?>
 
 <div class="page-header no-border">
@@ -11,7 +12,7 @@
     <?php if(isset($form["date"])): ?>
     <div class="row">
         <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
-            <?php if ($form["date"]->hasError()): ?>                            
+            <?php if ($form["date"]->hasError()): ?>
                 <div class="alert alert-danger" role="alert"><?php echo $form["date"]->getError(); ?></div>
             <?php endif; ?>
             <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>

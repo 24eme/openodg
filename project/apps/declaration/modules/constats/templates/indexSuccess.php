@@ -1,30 +1,37 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript("constats.js?201504020331", "last") ?>
-<?php include_partial('admin/menu', array('active' => 'constats')); ?>
-<div class="row row-margin text-center">
+
+<ol class="breadcrumb">
+  <li class="active"><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+</ol>
+
+<div class="row text-center">
     <h2>Prendre un rendez-vous</h2>
 </div>
 <div class="row row-margin">
-    <form method="post" action="" role="form" class="form-horizontal">
-        <?php echo $form->renderHiddenFields(); ?>
-        <?php echo $form->renderGlobalErrors(); ?>
-        <div class="form-group">
-            <?php echo $form["login"]->renderError(); ?>
-            <div class="col-xs-8 col-xs-offset-1">
-                <?php
-                echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
-                    "placeholder" => "Prendre un RDV ou rechercher un opérateur",
-                    "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
-                ));
-                ?>
+    <div class="col-xs-12">
+        <form method="post" action="" role="form" class="form-horizontal">
+            <?php echo $form->renderHiddenFields(); ?>
+            <?php echo $form->renderGlobalErrors(); ?>
+            <div class="form-group">
+                <?php echo $form["login"]->renderError(); ?>
+                <div class="col-xs-8 col-xs-offset-1">
+                    <?php
+                    echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
+                        "autofocus" => "autofocus",
+                        "placeholder" => "Prendre un RDV ou rechercher un opérateur",
+                        "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
+                    ));
+                    ?>
+                </div>
+                <div class="col-xs-2">
+                    <button class="btn btn-default btn-lg" type="submit">Valider</button>
+                </div>
             </div>
-            <div class="col-xs-2">
-                <button class="btn btn-default btn-lg" type="submit">Valider</button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
-<div class="row row-margin text-center">
+<div class="row text-center">
     <h2>Planifications sur 5 jours</h2>
 </div>
 <div class="row row-margin">
@@ -87,7 +94,7 @@
         </form>
     </div>
 </div>
-<div class="row row-margin" style="padding-left: 20px;">
+<div class="row" style="padding-left: 20px;">
     <h3>Liste des rendez-vous non planifiés</h3>
 </div>
 <div class="row row-margin">

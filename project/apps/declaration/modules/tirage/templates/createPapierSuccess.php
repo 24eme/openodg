@@ -1,3 +1,8 @@
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('declaration'); ?>">Déclarations</a></li>
+  <li class="active"><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+</ol>
+
 <div class="page-header">
     <h2>Choix de la campagne pour la création de la déclaration de Tirage papier</h2>
 </div>
@@ -18,7 +23,7 @@
     </div>
 
     <div class="row row-margin row-button">
-        <div class="col-xs-4"><a href="<?php echo url_for("home") ?>" class="btn btn-primary btn-lg btn-upper">Annuler</a></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("declaration_etablissement", $etablissement) ?>" class="btn btn-primary btn-lg btn-upper">Annuler</a></div>
         <div class="col-xs-4 text-center">
         </div>
         <div class="col-xs-4 text-right"><button type="submit" class="btn btn-default btn-lg btn-upper">Créer</button></div>

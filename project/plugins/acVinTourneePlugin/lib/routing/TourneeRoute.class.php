@@ -8,12 +8,12 @@ class TourneeRoute extends sfObjectRoute {
         $this->tournee = TourneeClient::getInstance()->find($parameters['id']);
         if (!$this->tournee) {
 
-            throw new sfError404Exception(sprintf('No Degustation found with the id "%s".', $parameters['id']));
+            throw new sfError404Exception(sprintf("Pas de tournée trouvé avec l'id \"%s\"", $parameters['id']));
         }
         return $this->tournee;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

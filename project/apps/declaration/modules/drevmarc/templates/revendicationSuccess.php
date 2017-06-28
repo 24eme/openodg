@@ -1,8 +1,8 @@
-<?php
-use_helper('DRevMarc');
-include_partial('drevmarc/step', array('step' => 'revendication', 'drevmarc' => $drevmarc));
-$hasError = false;
-?>
+<?php use_helper('DRevMarc'); ?>
+<?php include_partial('drevmarc/breadcrumb', array('drevmarc' => $drevmarc )); ?>
+<?php include_partial('drevmarc/step', array('step' => 'revendication', 'drevmarc' => $drevmarc)); ?>
+<?php $hasError = false; ?>
+
 <div class="page-header">
     <h2>Revendication</h2>
 </div>
@@ -12,7 +12,7 @@ $hasError = false;
     <?php echo $form->renderHiddenFields() ?>
     <?php echo $form->renderGlobalErrors() ?>
 
-    <p></p>	
+    <p></p>
     <div class="row">
         <div class="col-xs-11">
             <table class="table table-striped ">
@@ -58,17 +58,17 @@ $hasError = false;
                             <td class="col-xs-5"></td>
                             <td class="col-xs-7 form-inline">
                                 <div class="form-group">
-                                    <div class="col-xs-6">                                        
+                                    <div class="col-xs-6">
                                         <span class="text-danger"><?php echo $form['debut_distillation']->renderError(); ?></span>
                                     </div>
-                                    <div class="col-xs-6">     
+                                    <div class="col-xs-6">
                                         <span class="text-danger"><?php echo $form['fin_distillation']->renderError(); ?></span>
                                     </div>
                                 </div>
                             </td>
                         </tr>
                         <tr>
-                        <?php endif; ?> 
+                        <?php endif; ?>
                         <td  class="col-xs-5">
                             <?php echo $form['qte_marc']->renderLabel(null, array('class' => 'control-label')); ?>
                         </td>
@@ -90,7 +90,7 @@ $hasError = false;
                                 <span class="text-danger"><?php echo $form['qte_marc']->renderError(); ?></span>
                             </td>
                         </tr>
-                    <?php endif; ?>          
+                    <?php endif; ?>
                     <tr>
                         <td  class="col-xs-5">
                             <?php echo $form['volume_obtenu']->renderLabel(null, array('class' => 'control-label')); ?>
@@ -101,7 +101,7 @@ $hasError = false;
                                 <?php echo $form['volume_obtenu']->render(array('class' => 'form-control input-rounded text-right ' . $errorClass)); ?>
                             </div>
                             <div class="col-xs-4">
-                                <span>hl d'alcool pur</span>   
+                                <span>hl d'alcool pur</span>
                             </div>
                         </td>
                     </tr>
@@ -113,7 +113,7 @@ $hasError = false;
                                 <span class="text-danger"><?php echo $form['volume_obtenu']->renderError(); ?></span>
                             </td>
                         </tr>
-                    <?php endif; ?>                                                      
+                    <?php endif; ?>
                     <tr>
                         <td  class="col-xs-5">
                             <?php echo $form['titre_alcool_vol']->renderLabel(null, array('class' => 'control-label')); ?>

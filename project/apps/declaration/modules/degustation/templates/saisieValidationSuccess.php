@@ -1,6 +1,6 @@
 <?php use_helper("Date"); ?>
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
 
+<?php include_partial('degustation/breadcrumb', array('tournee' => $tournee )); ?>
 <?php include_partial('degustation/stepSaisie', array('tournee' => $tournee, 'active' => TourneeSaisieEtapes::ETAPE_SAISIE_VALIDATION)); ?>
 
 <div class="page-header">

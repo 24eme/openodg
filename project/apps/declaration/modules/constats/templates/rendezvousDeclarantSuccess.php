@@ -1,26 +1,33 @@
 <?php use_helper("Date") ?>
 <?php use_javascript("constats.js?201504020331", "last") ?>
-<?php include_partial('admin/menu', array('active' => 'constats')); ?>
-<div class="row row-margin text-center">
+
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+  <li class="active"><a href=""><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
+</ol>
+
+<div class="row text-center">
     <h2>Prise de Rendez-vous</h2>
 </div>
 <div class="row row-margin">
-    <form method="post" action="" role="form" class="form-horizontal" id="rendezvousDeclarantForm">
-        <?php echo $form->renderHiddenFields(); ?>
-        <?php echo $form->renderGlobalErrors(); ?>
-        <div class="form-group">
-            <?php echo $form["login"]->renderError(); ?>
-            <div class="col-xs-8 col-xs-offset-2">
-                <?php
-                echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
-                    "placeholder" => ($compte->_id) ? "" . $compte->raison_sociale . " (" . $compte->cvi . ") " . $compte->adresse . " (" . $compte->code_postal . ")" : "Se connecter à un opérateur",
-                    "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
-                ));
-                ?>
+    <div class="col-xs-12">
+        <form method="post" action="" role="form" class="form-horizontal" id="rendezvousDeclarantForm">
+            <?php echo $form->renderHiddenFields(); ?>
+            <?php echo $form->renderGlobalErrors(); ?>
+            <div class="form-group">
+                <?php echo $form["login"]->renderError(); ?>
+                <div class="col-xs-8 col-xs-offset-2">
+                    <?php
+                    echo $form["login"]->render(array("class" => "form-control input-lg select2 select2-offscreen select2autocompleteremote select2SubmitOnChange",
+                        "placeholder" => ($compte->_id) ? "" . $compte->raison_sociale . " (" . $compte->cvi . ") " . $compte->adresse . " (" . $compte->code_postal . ")" : "Se connecter à un opérateur",
+                        "data-url" => url_for('compte_recherche_json', array('type_compte' => CompteClient::TYPE_COMPTE_ETABLISSEMENT))
+                    ));
+                    ?>
+                </div>
             </div>
-        </div>
 
-    </form>
+        </form>
+    </div>
 </div>
 
 <h3>Prendre le 1er rendez-vous <span class="icon-raisins size-36"></span></h3>
@@ -136,8 +143,8 @@
 </div>
 <div class="row">
     <div class="col-xs-12">
-        <a class="btn btn-warning btn-upper" href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))) ?>"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Accueil</a>
-        <a href="<?php echo url_for('constats_planifications', array('date' => date('Y-m-d'))) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Accéder à la planification d'aujourd'hui</a>
+        <a class="btn btn-default-step btn-upper" href="<?php echo url_for('constats', array('jour' => date('Y-m-d'))) ?>"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;Retour à l'accueil</a>
+        <a href="<?php echo url_for('constats_planifications', array('date' => date('Y-m-d'))) ?>" class="btn btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Accéder à la planification d'aujourd'hui</a>
         <br/>
     </div>
 </div>

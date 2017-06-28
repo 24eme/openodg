@@ -84,19 +84,26 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     		'source' => null
     	));
     }
-    
+
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
     }
-    
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('get_fichier', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return ($admin)? sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $id)) : null;
+		if(!$admin) {
+
+			return null;
+		}
+
+		$fichier = FichierClient::getInstance()->find($id);
+
+    	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $id, 'sf_subject' => $fichier->getEtablissementObject()));
     }
-    
+
     /**** FIN DES PIECES ****/
 
 }

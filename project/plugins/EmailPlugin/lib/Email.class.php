@@ -214,7 +214,7 @@ class Email {
             if (!$operateur->email) {
                 $to = $reply_to;
                 $subject = "[$operateur->raison_sociale : EMAIL NON ENVOYE] " . $subject;
-                $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s (%s)\n\nFiche contact : %s\n\n----------------------------------\n\n%s", $operateur->raison_sociale, $operateur->cvi, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => "COMPTE-E" . $operateur->getKey()), true), $body);
+                $body = sprintf("/!\ L'email n'a pas pu être envoyé pour cet opérateur car il ne possède pas d'adresse email/!\\n\n%s (%s)\n\nFiche contact : %s\n\n----------------------------------\n\n%s", $operateur->raison_sociale, $operateur->cvi, $this->getAction()->generateUrl("compte_visualisation", array("id" => "COMPTE-E" . $operateur->getKey()), true), $body);
             }
 
             $message = Swift_Message::newInstance()
@@ -241,7 +241,7 @@ class Email {
                 if (!$degustateur_node->email) {
                     $to = $reply_to;
                     $subject = "[$degustateur_node->nom : EMAIL NON ENVOYE] " . $subject;
-                    $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $degustateur_node->nom, $this->getAction()->generateUrl("compte_visualisation_admin", array("id" => $degustateur_node->getKey()), true), $body);
+                    $body = sprintf("/!\ L'email n'a pas pu être envoyé pour ce dégustateur car il ne possède pas d'adresse email/!\\n\n%s\n\nfiche contact : %s\n\n----------------------------------\n\n%s", $degustateur_node->nom, $this->getAction()->generateUrl("compte_visualisation", array("id" => $degustateur_node->getKey()), true), $body);
                 }
 
                 $message = Swift_Message::newInstance()

@@ -3,7 +3,6 @@
 class constatsActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
-        $this->getUser()->signOutEtablissement();
         if (($tourneesRecapDate = $request->getParameter('tourneesRecapDate')) && $request->isMethod(sfWebRequest::POST)) {
             $this->jour = Date::getIsoDateFromFrenchDate($tourneesRecapDate['date']);
             return $this->redirect('constats', array('jour' => $this->jour));
@@ -26,9 +25,8 @@ class constatsActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
 
-        return $this->redirect('rendezvous_declarant', $this->getUser()->getEtablissement()->getCompte());
+        return $this->redirect('rendezvous_declarant', $this->form->getValue('etablissement')->getCompte());
     }
 
     public function executePlanificationJour(sfWebRequest $request) {
@@ -41,12 +39,12 @@ class constatsActions extends sfActions {
         $tournee = TourneeClient::getInstance()->find($request->getParameter('id'));
 
         if(!$tournee) {
-            
+
             return $this->forward404(sprintf("La tournée %s n'existe pas !", $request->getParameter('id')));
         }
 
         if(count($tournee->rendezvous) > 0) {
-            
+
             return $this->forward404(sprintf("La tournée %s ne peut pas être supprimé car elle a des rendez-vous !", $request->getParameter('id')));
         }
 
@@ -58,6 +56,7 @@ class constatsActions extends sfActions {
     }
 
     public function executeTourneeAgentRendezvous(sfWebRequest $request) {
+        $request->setParameter('modeMobile', true);
         $this->tournee = $this->getRoute()->getTournee();
         $this->agent = $this->tournee->getFirstAgent();
         $this->date = $this->tournee->getDate();
@@ -279,9 +278,8 @@ class constatsActions extends sfActions {
 
             return sfView::SUCCESS;
         }
-        $this->getUser()->signInEtablissement($this->form->getValue('etablissement'));
 
-        return $this->redirect('rendezvous_declarant', $this->getUser()->getEtablissement()->getCompte());
+        return $this->redirect('rendezvous_declarant', $this->compte);
     }
 
     public function executeRendezvousDeclarantRemove(sfWebRequest $request) {
@@ -372,6 +370,7 @@ class constatsActions extends sfActions {
     }
 
     public function executeRedirectInterfaceMobileAgent(sfWebRequest $request) {
+        $request->setParameter('modeMobile', true);
         $this->form = new RedirectAgentForm();
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -388,6 +387,15 @@ class constatsActions extends sfActions {
         if ($tournee) {
             $this->redirect('tournee_rendezvous_agent', $tournee);
         }
+
+        $tournee = TourneeClient::getInstance()->findTourneeDegustationByDateAndAgent(date('Y-m-d'), $compteAgent);
+        if($tournee) {
+            $this->redirect('degustation_tournee', array('sf_subject' => $tournee, 'agent' => $compteAgent->_id, 'date' => date('Y-m-d')));
+        }
+
+        $this->getUser()->setFlash('error', "Aucune tournée trouvée pour cet agent aujourd'hui");
+
+        return $this->redirect('tournee_agent_accueil');
     }
 
 }

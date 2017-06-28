@@ -1,5 +1,5 @@
 <?php
-class DegustationPrelevementRoute extends sfObjectRoute {
+class DegustationPrelevementRoute extends sfObjectRoute implements InterfaceDegustationGeneralRoute {
 
     protected $degustation = null;
     protected $prelevement = null;
@@ -13,7 +13,7 @@ class DegustationPrelevementRoute extends sfObjectRoute {
         }
 
         $hash_prelevement = str_replace('-', '/', $parameters['hash_prelevement']);
-        
+
 
         if(!$this->degustation->exist($hash_prelevement)) {
 
@@ -25,7 +25,7 @@ class DegustationPrelevementRoute extends sfObjectRoute {
         return $this->prelevement;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("id" => $object->getDocument()->_id, "hash_prelevement" => $object->getHashForKey());
 
         return $parameters;

@@ -2,10 +2,6 @@
 <?php use_helper("Date"); ?>
 <?php use_helper("Float"); ?>
 
-<?php if($menuActive): ?>
-<?php include_partial('admin/menu', array('active' => $menuActive)); ?>
-<?php endif; ?>
-
 <div class="page-header no-border">
     <div class="btn-group pull-right">
         <?php if($generation->statut == GenerationClient::GENERATION_STATUT_GENERE && GenerationClient::getInstance()->isRegenerable($generation)): ?>

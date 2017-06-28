@@ -1,13 +1,20 @@
 <?php use_helper('Date') ?>
 
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
+  <li><a href="<?php echo url_for('declaration_etablissement', $etablissement); ?>"><?php echo $etablissement->getNom() ?> (<?php echo $etablissement->identifiant ?>)</a></li>
+  <li><a href="<?php echo url_for('pieces_historique', $etablissement) ?>">Documents</a></li>
+  <li class="active"><a href=""><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></a></li>
+</ol>
+
 <div class="page-header">
-    <h2>Ajout de fichier</h2>
+    <h2><?php if($fichier->isNew()): ?>Ajout de fichier<?php else: ?>Modification du fichier<?php endif; ?></a></h2>
 </div>
 
-<form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id)) ?>" method="post" enctype="multipart/form-data">
+<form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id, 'sf_subject' => $etablissement)) ?>" method="post" enctype="multipart/form-data">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-    
+
     <div class="row">
     	<div class="form-group <?php if($form['file']->hasError()): ?>has-error<?php endif; ?>">
 			<div class="col-xs-8 col-xs-offset-4">
@@ -26,7 +33,7 @@
 			<?php endif; ?>
 		</div>
     </div>
-    
+
     <div class="row">
     	<div class="form-group <?php if($form['libelle']->hasError()): ?>has-error<?php endif; ?>">
 			<div class="col-xs-8 col-xs-offset-4">
@@ -40,7 +47,7 @@
 			</div>
 		</div>
     </div>
-    
+
     <div class="row">
     	<div class="form-group <?php if($form['date_depot']->hasError()): ?>has-error<?php endif; ?>">
 			<div class="col-xs-8 col-xs-offset-4">
@@ -59,7 +66,7 @@
 			</div>
 		</div>
     </div>
-    
+
     <div class="row">
     	<div class="form-group <?php if($form['visibilite']->hasError()): ?>has-error<?php endif; ?>">
 			<div class="col-xs-8 col-xs-offset-4">
@@ -73,17 +80,13 @@
 			</div>
 		</div>
     </div>
-    
-    
-                        
-    
 
     <div class="row row-margin row-button">
         <div class="col-xs-6">
-        	<a href="<?php echo url_for('home') ?>" class="annuler btn btn-default btn-danger">Annuler</a>
+        	<a href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="annuler btn btn-default btn-danger">Annuler</a>
         </div>
         <div class="col-xs-6 text-right">
-        	<button type="submit" class="btn btn-default btn-lg btn-upper">Ajouter</button>
+            <button type="submit" class="btn btn-default btn-lg btn-upper"><?php if($fichier->isNew()): ?>Ajouter<?php else: ?>Modifier<?php endif; ?></button>
         </div>
     </div>
 </form>

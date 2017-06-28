@@ -11,7 +11,7 @@
  *
  * @author mathurin
  */
-class RendezvousRoute extends sfObjectRoute {
+class RendezvousRoute extends sfObjectRoute implements InterfaceConstatsRoute {
 
     protected $rendezvous = null;
 
@@ -25,7 +25,7 @@ class RendezvousRoute extends sfObjectRoute {
         return $this->rendezvous;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

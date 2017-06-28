@@ -1,6 +1,6 @@
 <?php use_helper('Date') ?>
 
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
+<?php include_partial('degustation/breadcrumb', array('tournee' => $tournee )); ?>
 
 <div class="page-header">
     <h2>Création d'une tournée</h2>

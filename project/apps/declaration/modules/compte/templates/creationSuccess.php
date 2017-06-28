@@ -1,17 +1,23 @@
+<ol class="breadcrumb">
+    <li><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
+    <li class="active"><a href="">Création</a></li>
+</ol>
+
 <div class="page-header">
-    <h2>Création de compte</h2>
+    <h2>Création d'un nouveau compte <?php echo CompteClient::getInstance()->getCompteTypeLibelle($type_compte); ?></h2>
 </div>
-<div class="row">
-    <div class="col-xs-12">
-        <p>La création de compte s'effectue sur l'espace professionnel du CIVA.<br /><br />
-        Une fois créé, ce compte vous permettra de vous connecter sur le portail de l'AVA.</p>
+
+<form action="<?php echo url_for("compte_creation", array('type_compte' => $type_compte)) ?>" method="post" class="form-horizontal">
+
+    <div class="row">
+        <?php include_partial('modificationForm', array('form' => $form)); ?>
     </div>
-</div>
+
 <div class="row row-margin row-button">
-    <div class="col-xs-12 text-right">
-        <a class="btn btn-default btn-lg btn-upper" href="<?php echo sprintf("%s?%s", sfConfig::get('app_url_compte_creation'),http_build_query(array('service' => url_for("compte_creation_confirmation", array(), true)))) ?>">
-            Créer mon compte
-            <span class="eleganticon arrow_carrot-right"></span>
-        </a>
+    <div class="col-xs-4"><a href="<?php echo url_for("compte_recherche") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>Annuler</a></div>
+    <div class="col-xs-4 text-center">
+        <a href="" id="btn_exploitation_annuler" class="btn btn-danger hidden">Annuler</a>
+        <button id="btn_compte_creation" type="submit" class="btn btn-lg btn-default">Valider</button>
     </div>
 </div>
+</form>

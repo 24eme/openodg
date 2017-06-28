@@ -7,7 +7,7 @@ endforeach;
 
 $hasError = ($global_error_msg != "");
 ?>
-
+<?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'degustation_conseil', 'drev' => $drev)) ?>
 
 <div class="page-header no-border">

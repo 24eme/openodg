@@ -1,6 +1,5 @@
-<?php include_partial('parcellaire/step', array('step' => 'parcellaire', 'parcellaire' => $parcellaire)) ?>
+<?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 
-<br/>
 <div class="page-header">
     <h2>Confirmation de la validation de votre déclaration d'affectation parcellaire</h2>
 </div>
@@ -16,6 +15,6 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php echo url_for("home") ?>" class="btn btn-default btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", $parcellaire->getEtablissementObject()) ?>" class="btn btn-default btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
 </div>

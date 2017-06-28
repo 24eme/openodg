@@ -1,4 +1,7 @@
-<?php include_partial('admin/menu', array('active' => 'facturation')); ?>
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
+  <li class="active"><a href="">Facturation massive des contacts</a></li>
+</ol>
 
 <form method="post" action="" role="form" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
@@ -40,7 +43,7 @@
                     <button class="btn btn-default btn-lg btn-block btn-upper" type="submit">Générer</button>
                 </div>
             </div>
-            
+
         </div>
     </div>
-</form>  
+</form>

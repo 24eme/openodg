@@ -1,6 +1,5 @@
-<?php include_partial('drev/step', array('step' => 'confirmation', 'drev' => $drev)) ?>
+<?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 
-<br/>
 <div class="page-header">
     <h2>Confirmation de validation de votre déclaration</h2>
 </div>
@@ -16,6 +15,6 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php echo url_for("home") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", $drev->getEtablissementObject()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
 </div>

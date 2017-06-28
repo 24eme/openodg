@@ -13,9 +13,9 @@
             </div>
             <div class="panel-bottom">
                 <p>
-                    <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('upload_fichier') ?>">Ajouter un document</a>
+                    <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>">Ajouter un document</a>
                 </p>
             </div>
-        
+
     </div>
 </div>

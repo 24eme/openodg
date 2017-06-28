@@ -5,7 +5,11 @@
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_stylesheet('/js/lib/leaflet/marker.css'); ?>
 
-<?php include_partial('admin/menu', array('active' => 'constats')); ?>
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+  <li><a href="<?php echo url_for('constats_planification_jour', array('jour' => $jour)); ?>">Tournées du <?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></a></li>
+  <li class="active"><a href="">Planification</a></li>
+</ol>
 
 <div class="page-header">
     <div class="row">
@@ -67,10 +71,10 @@
 
                                 <div style="padding-right: 16px; margin-top: 4px;" class="pull-right">
                                     <?php if ($rdv->type_rendezvous == RendezvousClient::RENDEZVOUS_TYPE_RAISIN): ?>
-                                        <span style="font-size: 20px;" class="icon-raisins"></span>                                    
+                                        <span style="font-size: 20px;" class="icon-raisins"></span>
                                         <span style="font-size: 16px;"><?php echo str_replace(":", "h", $rdv->heure) ?></span>
                                     <?php else: ?>
-                                        <span style="font-size: 20px;" class="icon-mouts"></span>                 
+                                        <span style="font-size: 20px;" class="icon-mouts"></span>
                                     <?php endif; ?>
                                 </div>
                                 <div style="margin-right: 10px; margin-top: 9px;" class="pull-left">
@@ -108,13 +112,13 @@
                                                 <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
                                             </div>
                                             <div style="padding-right: 16px; margin-top: 4px;" class="pull-right">
-                                                <span style="font-size: 20px;" class="icon-raisins"></span>                                                
+                                                <span style="font-size: 20px;" class="icon-raisins"></span>
                                                 <span style="font-size: 16px;"><a href="<?php echo url_for('rendezvous_modification', array('id' => $rdv_id, 'retour' => 'planification')); ?>" class="btn btn-default btn-default-step ajax"><?php echo str_replace(":", "h", $rdv->heure) ?></a></span>
                                             </div>
                                             <div style="margin-right: 10px; margin-top: 9px;" class="pull-left">
                                                 <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: <?php echo $tourneesCouleur[$tournee_id] ?>"></span>
                                             </div>
-                                            <?php echo $rdv->compte_raison_sociale ?> 
+                                            <?php echo $rdv->compte_raison_sociale ?>
                                             <br /><small class="text-muted"><?php echo $rdv->compte_commune ?></small>
                                         </div>
                                     </li>
@@ -133,9 +137,9 @@
                                                 <button data-item="#<?php echo $rdv_id ?>" class="btn btn-success btn-sm hidden" type="button"><span class="glyphicon glyphicon-plus-sign"></span></button>
                                                 <button data-item="#<?php echo $rdv_id ?>" class="btn btn-danger btn-sm" type="button"><span class="glyphicon glyphicon-minus-sign"></span></button>
                                             </div>
-                                        <?php endif; ?> 
+                                        <?php endif; ?>
                                         <div style="padding-right: 16px; margin-top: 4px;" class="pull-right">
-                                            <span style="font-size: 20px;" class="icon-mouts"></span>                                                
+                                            <span style="font-size: 20px;" class="icon-mouts"></span>
                                         </div>
                                         <div style="margin-right: 10px; margin-top: 9px;" class="pull-left">
                                             <span class="glyphicon glyphicon-map-marker" style="font-size: 24px; color: <?php echo $tourneesCouleur[$tournee_id] ?>"></span>
@@ -153,7 +157,7 @@
                                 </li>
                             <?php endforeach; ?>
                         <?php endforeach; ?>
-                    <?php endif; ?> 
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>

@@ -54,13 +54,13 @@ class drevActions extends sfActions {
 
     public function executeDelete(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-
+        $etablissement = $drev->getEtablissementObject();
         $this->secure(DRevSecurity::EDITION, $drev);
 
         $drev->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $etablissement);
     }
 
     public function executeDevalidation(sfWebRequest $request) {

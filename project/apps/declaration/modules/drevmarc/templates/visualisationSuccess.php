@@ -1,5 +1,7 @@
 <?php use_helper('Date') ?>
 
+<?php include_partial('drevmarc/breadcrumb', array('drevmarc' => $drevmarc )); ?>
+
 <div class="page-header no-border">
     <h2>Déclaration de Revendication Marc d'Alsace de Gewurztraminer <?php echo $drevmarc->campagne; ?>
     <br />
@@ -14,7 +16,7 @@
 <?php if ($sf_user->hasFlash('notice')): ?>
     <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>
-    
+
 <?php if(!$drevmarc->validation): ?>
 <div class="alert alert-warning">
     La saisie de cette déclaration n'est pas terminée elle est en cours d'édition
@@ -31,7 +33,7 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php echo url_for("home") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a href="<?php echo url_for("accueil") ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
     <div class="col-xs-4 text-center">
         <a href="<?php echo url_for("drevmarc_export_pdf", $drevmarc) ?>" class="btn btn-warning btn-lg">
@@ -48,5 +50,3 @@
     </div>
 <?php endif; ?>
 </div>
-
-

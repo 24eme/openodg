@@ -5,8 +5,13 @@ $pourcentRealises = $tourneesJournee->pourcentTotalRealise;
 $nbRaisins = $tourneesJournee->nbTotalRdvRaisin;
 $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 ?>
-<?php include_partial('admin/menu', array('active' => 'constats')); ?>
-<div class="row row-margin text-center">
+
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
+  <li class="active"><a href="">Tournées du <?php echo ucfirst(format_date($jour, "P", "fr_FR")); ?></a></li>
+</ol>
+
+<div class="row text-center">
     <h2>Tournées de la journée</h2>
 </div>
 <div class="page-header">
@@ -55,14 +60,11 @@ $nbVolume = $tourneesJournee->nbTotalRdvVolume;
 
             <?php endforeach; ?>
         </table>
-        <a class="btn btn-warning btn-upper" href="<?php echo url_for('constats', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Accueil</a>
-        <a class="btn btn-default btn-default-step btn-upper" href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un agent</a>
+        <a class="btn btn-lg btn-default-step btn-upper" href="<?php echo url_for('constats', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-chevron-left"></span>&nbsp;&nbsp;Retour à l'accueil</a>
+        <a class="btn btn-lg btn-default btn-default-step btn-upper" href="<?php echo url_for('constats_planification_ajout_agent', array('jour' => $jour)) ?>"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un agent</a>
 
-        <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Retour à la planification</a>
+        <a href="<?php echo url_for('constats_planifications', array('date' => $jour)) ?>" class="btn btn-lg btn-default btn-upper pull-right"><span class="glyphicon glyphicon-calendar"></span>&nbsp;&nbsp;Planification</a>
 
 
     </div>
 </div>
-
-
-

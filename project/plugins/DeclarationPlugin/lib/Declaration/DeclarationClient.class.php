@@ -58,18 +58,18 @@ class DeclarationClient
         return new $className($doc, $header);
     }
 
-    public function getTypesAndCampagne() {
+    public function getTypesAndCampagneForExport() {
         $typeAndCampagne = array();
 
         $rows = acCouchdbManager::getClient()
                     ->reduce(true)
                     ->group_level(2)
-                    ->getView('declaration', 'tous')->rows;
+                    ->getView('declaration', 'export')->rows;
 
         foreach($rows as $row) {
             $item = new stdClass();
-            $item->type = $row->key[DeclarationTousView::KEY_TYPE];
-            $item->campagne = $row->key[DeclarationTousView::KEY_CAMPAGNE];
+            $item->type = $row->key[DeclarationExportView::KEY_TYPE];
+            $item->campagne = $row->key[DeclarationExportView::KEY_CAMPAGNE];
             $typeAndCampagne[$item->campagne."_".$item->type] = $item;
         }
 
@@ -83,7 +83,7 @@ class DeclarationClient
                     ->startkey(array($type, $campagne))
                     ->endkey(array($type, $campagne, array()))
                     ->reduce(false)
-                    ->getView('declaration', 'tous')->rows;
+                    ->getView('declaration', 'export')->rows;
 
         foreach($rows as $row) {
             $ids[] = $row->id;
@@ -97,10 +97,10 @@ class DeclarationClient
 
         $rows = acCouchdbManager::getClient()
                     ->reduce(false)
-                    ->getView('declaration', 'tous')->rows;
+                    ->getView('declaration', 'export')->rows;
 
         foreach($rows as $row) {
-            if(str_replace("E", "", $row->key[DeclarationTousView::KEY_IDENTIFIANT]) == $identifiant) {
+            if(str_replace("E", "", $row->key[DeclarationExportView::KEY_IDENTIFIANT]) == $identifiant) {
                 $ids[] = $row->id;
             }
         }

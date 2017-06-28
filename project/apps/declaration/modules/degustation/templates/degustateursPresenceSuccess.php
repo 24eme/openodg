@@ -1,11 +1,17 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript("degustation.js?201504020331", "last") ?>
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
+  <li><a href="<?php echo url_for('degustation_visualisation', $tournee); ?>"><?php echo $tournee->getLibelle(); ?>  le <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></a></li>
+  <li class="active"><a href="">Présence dégustateurs</a></li>
+</ol>
+
 <form id="form_degustateurs_presence" action="" method="post" class="form-horizontal">
     <a href="<?php echo url_for("degustation_visualisation", $tournee) ?>" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></a>
     <div class="page-header text-center">
         <a href="<?php echo url_for('degustation_degustateurs_presence_export', $tournee) ?>" class="btn btn-default btn-default-step pull-right"><span class="glyphicon glyphicon-export"></span>&nbsp;Exporter en CSV</a>
         <h2>Liste de présence des dégustateurs<br /><small>Dégustation du <?php echo ucfirst(format_date($tournee->date, "P", "fr_FR")) ?></small></h2>
-    </div> 
+    </div>
     <div class="row">
         <div class="col-xs-12">
             <?php echo $form->renderHiddenFields(); ?>
@@ -16,7 +22,7 @@
                     <?php $degustateur = $tournee->get($key); ?>
                     <div class="list-group-item col-xs-12">
                         <div class="col-xs-7">
-                        <?php echo $degustateur->nom ?> <small class="text-muted"><?php echo $degustateur->commune ?> <?php if($degustateur->email): ?>(<?php echo $degustateur->email ?>)<?php endif; ?></small> 
+                        <?php echo $degustateur->nom ?> <small class="text-muted"><?php echo $degustateur->commune ?> <?php if($degustateur->email): ?>(<?php echo $degustateur->email ?>)<?php endif; ?></small>
                         </div>
                         <div class="col-xs-5 text-right">
                             <div class="btn-group" data-toggle="buttons">

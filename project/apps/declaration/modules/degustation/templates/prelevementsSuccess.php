@@ -1,5 +1,4 @@
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
-
+<?php include_partial('degustation/breadcrumb', array('tournee' => $tournee )); ?>
 <?php include_partial('degustation/step', array('tournee' => $tournee, 'active' => TourneeEtapes::ETAPE_PRELEVEMENTS)); ?>
 
 <div class="page-header">

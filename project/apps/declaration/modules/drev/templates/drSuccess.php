@@ -1,3 +1,5 @@
+<?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
+
 <?php include_partial('drev/step', array('step' => 'revendication', 'drev' => $drev)) ?>
 <div class="page-header">
     <h2>Récupération des données de la Déclaration de Récolte <small>sur la plateforme du CIVA</small></h2>
@@ -10,4 +12,3 @@
         <a class="btn btn-default btn-lg btn-upper" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>">Récupérer les données&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></a>
     </div>
 </div>
-

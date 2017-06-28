@@ -90,6 +90,17 @@ class TourneeClient extends acCouchdbClient {
         return $tournee;
     }
 
+    public function findTourneeDegustationByDateAndAgent($date, $agent) {
+        foreach($this->getTourneesByType(TourneeClient::TYPE_TOURNEE_DEGUSTATION) as $tournee) {
+            if(isset($tournee->agents->{$agent->_id}) && in_array($date, $tournee->agents->{$agent->_id}->dates)) {
+
+                return $this->find($tournee->_id);
+            }
+        }
+
+        return null;
+    }
+
     public function findByDateAndAgent($date, $agent) {
         return $this->find(sprintf("%s-%s-%s", self::TYPE_COUCHDB, str_replace("-", "", $date), $agent->identifiant));
     }

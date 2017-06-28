@@ -15,9 +15,7 @@
         <link rel="icon" type="image/x-icon" href="/favico.ico" />
         <link rel="icon" type="image/png" href="/favico.png" />
 
-
         <?php include_stylesheets() ?>
-
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
 
@@ -29,6 +27,7 @@
         <![endif]-->
     </head>
     <body role="document">
+
         <!-- ####### PLEASE KEEP ####### -->
         <!--[if lte IE 7 ]>
         <div id="message_ie">
@@ -39,34 +38,25 @@
         <![endif]-->
         <!-- ####### PLEASE KEEP ####### -->
 
-        <!-- #page -->
         <div id="page" class="container">
 
             <div id="bg-page" class="hidden-xs hidden-sm">
                 <img src="/images/bg/bg_global.jpg" alt="" />
             </div>
 
-            <!-- #header -->
-            <header id="header" class="container hidden-xs hidden-sm" role="banner">
-
-                <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
-
+            <header id="header" class="container <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) || $sf_params->get('modeMobile')): ?>hidden-xs hidden-sm<?php endif; ?>" role="banner">
                 <div id="logo">
-                    <a href="<?php echo url_for('home') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
+                    <a href="<?php echo url_for('accueil') ?>" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
                         <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
                     </a>
                 </div>
+                <h1 id="header_titre" class="sr-only">Portail de l'association<br /> des viticulteurs d'alsace</h1>
                 <?php use_helper('Text'); ?>
                 <?php if($sf_user->isAuthenticated()): ?>
                 <?php if($sf_user->getCompte()): ?>
                 <nav class="<?php if($sf_user->getEtablissement()): ?>bloc-right<?php endif; ?>" id="navigation-admin" role="navigation">
                     <span class="profile-name"><?php echo $sf_user->getCompte()->nom ?></span>
                     <ul>
-                        <?php if($sf_user->isAdmin()): ?>
-                        <li><a href="<?php echo url_for('admin') ?>">Administration</a></li>
-                        <?php elseif($sf_user->hasCredential(myUser::CREDENTIAL_CONTACT)): ?>
-                        <li><a href="<?php echo url_for('compte_recherche') ?>">Contacts</a></li>
-                        <?php endif; ?>
                         <li><a href="<?php echo url_for('redirect_to_mon_compte_civa'); ?>">Mon compte</a></li>
                         <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
                     </ul>
@@ -76,7 +66,7 @@
                 <nav id="navigation" role="navigation">
                     <span class="profile-name"><?php echo str_replace(" ", "&nbsp;", truncate_text(preg_replace('/(EARL|SCEA|SARL|SAS|SA|GAEC|Distillerie)(.*)/', "$2", $sf_user->getEtablissement()->nom),30)); ?></span>
                     <ul>
-                        <li><a href="<?php echo url_for('home') ?>">Mes déclarations AVA</a></li>
+                        <li><a href="<?php echo url_for('accueil') ?>">Mes déclarations AVA</a></li>
                         <li><a href="<?php echo sfConfig::get('app_url_civa') ?>">Mon espace CIVA</a></li>
                         <li><a href="<?php echo url_for('mon_compte'); ?>">Mon compte</a></li>
                         <?php if(!$sf_user->getCompte()): ?>
@@ -87,19 +77,23 @@
                 <?php endif; ?>
                 <?php endif; ?>
             </header>
-            <!-- end #header -->
 
-            <!-- #content -->
+            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <div class="container <?php if($sf_params->get('modeMobile')): ?>hidden-xs hidden-sm<?php endif; ?>" style="padding: 0; margin: 0;">
+                <?php include_partial('global/nav'); ?>
+            </div>
+            <?php endif; ?>
+
             <section id="content" class="container">
+                <div style="margin-bottom: 20px;"></div>
                 <?php echo $sf_content ?>
             </section>
 
-                <!-- #footer -->
             <footer id="footer" class="container hidden-xs hidden-sm" role="contentinfo">
                 <nav role="navigation">
                     <ul>
-                        <li><a href="<?php echo url_for('@contact') ?>">Contact</a></li>
-                        <li><a href="<?php echo url_for('@mentions_legales') ?>">Mentions légales</a></li>
+                        <li><a href="<?php echo url_for('contact') ?>">Contact</a></li>
+                        <li><a href="<?php echo url_for('mentions_legales') ?>">Mentions légales</a></li>
                     </ul>
                 </nav>
             </footer>

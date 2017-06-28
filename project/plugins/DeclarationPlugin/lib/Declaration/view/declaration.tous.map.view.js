@@ -1,6 +1,6 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Constats" && doc.type != "Facture" && doc.type != "Tirage") {
+    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Tirage") {
 
         return;
     }
@@ -60,5 +60,44 @@ function(doc) {
         email = doc.declarant.email;
     }
 
-    emit([doc.type, doc.campagne, validation, validation_odg, etape, doc.identifiant, nb_doc_en_attente, papier, automatique, raison_sociale, commune, email], 1);
+    var mode = "Télédeclaration";
+
+    if(doc.automatique) {
+        mode = "Importé";
+    }
+
+    if(doc.papier) {
+        mode = "Saisie interne";
+    }
+
+    var statut = "Brouillon";
+    var infos = "Étape " + doc.etape;
+    if(validation_odg) {
+	    statut = "Validé";
+        infos = null;
+        if(validation_odg !== false && validation_odg !== true) {
+            infos = validation_odg.replace(/([0-9]+)-([0-9]+)-([0-9]+)/, "$3/$2/$1");
+        }
+    }
+
+    if(validation && !validation_odg) {
+	    statut = "À valider";
+        infos = null;
+        if(nb_doc_en_attente) {
+           infos = nb_doc_en_attente + " pièce(s) en attente";
+	    }
+    }
+
+    var type = doc.type;
+
+    var date = null;
+    if(validation && validation !== false && validation !== true) {
+	    date = validation;
+    }
+
+    if(doc._id.indexOf('PARCELLAIRECREMANT') > -1) {
+	    type = "Parcellaire Crémant";
+    }
+
+    emit([type, doc.campagne, mode, statut, doc.identifiant, date, infos, raison_sociale, commune, email], 1);
 }

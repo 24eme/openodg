@@ -4,7 +4,8 @@ class drevmarcActions extends sfActions {
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-        $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
+        $this->secureEtablissement($etablissement);
+        $drevmarc = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()));
         $drevmarc->save();
 
         return $this->redirect('drevmarc_edit', $drevmarc);
@@ -12,8 +13,8 @@ class drevmarcActions extends sfActions {
 
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
-
-        $drev = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true);
+        $this->secureEtablissement($etablissement);
+        $drev = DRevMarcClient::getInstance()->createDoc($etablissement->identifiant, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true));
         $drev->save();
 
         return $this->redirect('drevmarc_edit', $drev);
@@ -21,6 +22,7 @@ class drevmarcActions extends sfActions {
 
     public function executeEdit(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
+        $this->secure(DRevMarcSecurity::EDITION, $drevmarc);
 
         if ($drevmarc->exist('etape') && $drevmarc->etape) {
             return $this->redirect('drevmarc_' . $drevmarc->etape, $drevmarc);
@@ -31,9 +33,12 @@ class drevmarcActions extends sfActions {
 
     public function executeDelete(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
+        $this->secure(DRevMarcSecurity::EDITION, $drevmarc);
+        $etablissement = $drevmarc->getEtablissementObject();
         $drevmarc->delete();
         $this->getUser()->setFlash("notice", 'La DRev a été supprimé avec succès.');
-        return $this->redirect($this->generateUrl('home'));
+
+        return $this->redirect('declaration_etablissement', $etablissement);
     }
 
     public function executeDevalidation(sfWebRequest $request) {
@@ -47,7 +52,7 @@ class drevmarcActions extends sfActions {
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
 
-        return $this->redirect($this->generateUrl('home'));
+        return $this->redirect('declaration_etablissement', $drev->getEtablissementObject());
     }
 
     public function executeExploitation(sfWebRequest $request) {
@@ -79,11 +84,11 @@ class drevmarcActions extends sfActions {
 
         $this->drevmarc->storeDeclarant();
         $this->drevmarc->save();
-        
+
         if ($this->form->hasUpdatedValues() && !$this->drevmarc->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->drevmarc->getEtablissementObject(), $this->form->getUpdatedValues());
         }
-        
+
         return $this->redirect('drevmarc_revendication', $this->drevmarc);
     }
 
@@ -132,7 +137,7 @@ class drevmarcActions extends sfActions {
         }
 
         $this->form->bind($request->getParameter($this->form->getName()));
-        
+
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
@@ -158,7 +163,7 @@ class drevmarcActions extends sfActions {
 
     public function executeValidationAdmin(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
-        
+
         $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drevmarc);
 
         $this->drevmarc->validation_odg = date('Y-m-d');
@@ -172,16 +177,18 @@ class drevmarcActions extends sfActions {
     }
 
     public function executeConfirmation(sfWebRequest $request) {
+        $this->secure(DRevMarcSecurity::VISUALISATION, $drevmarc);
         $this->drevmarc = $this->getRoute()->getDRevMarc();
     }
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+        $this->secure(DRevMarcSecurity::VISUALISATION, $this->drevmarc);
     }
 
     public function executePDF(sfWebRequest $request) {
         $drevmarc = $this->getRoute()->getDRevMarc();
-
+        $this->secure(DRevMarcSecurity::VISUALISATION, $drevmarc);
         $this->document = new ExportDRevMarcPdf($drevmarc, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 
@@ -214,6 +221,13 @@ class drevmarcActions extends sfActions {
 
     protected function sendDrevMarcConfirmee($drevmarc) {
         Email::getInstance()->sendDrevMarcConfirmee($drevmarc);
+    }
+
+    protected function secureEtablissement($etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
+
+            return $this->forwardSecure();
+        }
     }
 
     protected function secure($droits, $doc) {

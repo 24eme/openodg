@@ -1,5 +1,3 @@
-<?php include_partial('admin/menu', array('active' => 'tournees')); ?>
-
 <div class="page-header">
     <h2>Organisation des tournées</h2>
 </div>

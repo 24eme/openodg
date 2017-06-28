@@ -2,7 +2,7 @@
 
 class compteActions extends sfActions {
 
-    public function executeCreationAdmin(sfWebRequest $request) {
+    public function executeCreation(sfWebRequest $request) {
         $this->type_compte = $request->getParameter('type_compte');
         if (!$this->type_compte) {
             throw sfException("La création de compte doit avoir un type");
@@ -15,27 +15,17 @@ class compteActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('compte_visualisation_admin', $this->compte);
+                $this->redirect('compte_visualisation', $this->compte);
             }
         }
     }
 
-    public function executeVisualisationAdmin(sfWebRequest $request) {
+    public function executeVisualisation(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
         $this->abonnements = AbonnementClient::getInstance()->getAbonnementsByCompte($this->compte->identifiant);
     }
 
-    public function executeRedirectEspaceEtablissement(sfWebRequest $request) {
-        $this->compte = $this->getRoute()->getCompte();
-        if(!($etablissement = $this->compte->getEtablissementObj())){
-            throw new sfException("L'établissement du compte n'a pas été trouvé");
-        }
-        $this->getUser()->signIn($etablissement->identifiant);
-
-        return $this->redirect('home');
-    }
-
-    public function executeModificationAdmin(sfWebRequest $request) {
+    public function executeModification(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
 
         $this->form = $this->getCompteModificationForm();
@@ -44,21 +34,9 @@ class compteActions extends sfActions {
             if ($this->form->isValid()) {
                 $this->form->save();
                 $this->getUser()->setFlash('maj', 'Le compte a bien été mis à jour.');
-                $this->redirect('compte_visualisation_admin', $this->compte);
+                $this->redirect('compte_visualisation', $this->compte);
             }
         }
-    }
-
-    public function executeCreation(sfWebRequest $request) {
-
-    }
-
-    public function executeCreationConfirmation(sfWebRequest $request) {
-
-    }
-
-    public function executeMotDePasseOublie(sfWebRequest $request) {
-
     }
 
     public function executeArchiver(sfWebRequest $request) {
@@ -70,7 +48,7 @@ class compteActions extends sfActions {
         $this->compte->archiver();
         $this->compte->save();
 
-        $this->redirect('compte_visualisation_admin', $this->compte);
+        $this->redirect('compte_visualisation', $this->compte);
     }
 
     public function executeDesarchiver(sfWebRequest $request) {
@@ -82,30 +60,7 @@ class compteActions extends sfActions {
         $this->compte->desarchiver();
         $this->compte->save();
 
-        $this->redirect('compte_visualisation_admin', $this->compte);
-    }
-
-    public function executeModification(sfWebRequest $request) {
-        $this->etablissement = $this->getUser()->getEtablissement();
-
-        $this->form = new EtablissementModificationEmailForm($this->etablissement);
-
-        if ($request->isMethod(sfWebRequest::POST)) {
-            $this->form->bind($request->getParameter($this->form->getName()));
-            if ($this->form->isValid()) {
-                $this->etablissement = $this->form->save();
-                $this->getUser()->setFlash('maj', 'Vos identifiants ont bien été mis à jour.');
-                $this->redirect('@mon_compte');
-            }
-        }
-    }
-
-    public function executeRedirectToMonCompteCiva(sfWebRequest $request) {
-        if($request->getParameter('return_mon_compte')) {
-            return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("mon_compte", array(), true)))));
-        }
-
-        return $this->redirect(sprintf("%s?%s", sfConfig::get('app_url_compte_mot_de_passe'), http_build_query(array('service' => $this->generateUrl("home", array(), true)))));
+        $this->redirect('compte_visualisation', $this->compte);
     }
 
     public function executeAllTagsManuels() {
@@ -229,8 +184,11 @@ class compteActions extends sfActions {
             $item->siren = $data['siren'];
             $item->siret = $data['siret'];
             $item->text = CompteClient::getInstance()->makeLibelle($data);
-            $item->text_html = sprintf("%s <small>(%s)</small> à %s <small>(%s)</small><br /><small>%s</small>", $data['nom_a_afficher'], ($data['cvi']) ? $data['cvi'] : (($data['siren']) ? $data['siren'] : $data['identifiant_interne']), $data['commune'], $data['code_postal'], implode(", ", $data['tags']['attributs']));
+            $item->text_html = sprintf("%s <small>(%s)</small> à %s <small>(%s)</small><br /><small>%s</small>", $data['nom_a_afficher'], ($data['cvi']) ? $data['cvi'] : (($data['siren']) ? $data['siren'] : $data['identifiant_interne']), $data['commune'], $data['code_postal'], ($data['tags']['attributs']) ? implode(", ", $data['tags']['attributs']) : implode(", ", $data['tags']['automatiques']));
             $item->id = $data['_id'];
+            if($request->getParameter('link')) {
+                $item->visualisationLink = $this->generateUrl('compte_visualisation', array('id' => $data['_id']));
+            }
             $list[] = $item;
         }
 

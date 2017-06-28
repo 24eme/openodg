@@ -1,0 +1,11 @@
+all:
+  credentials: [[ADMIN]]
+
+redirectInterfaceMobileAgent:
+  credentials: [[ADMIN, TOURNEE]]
+
+tourneeAgentRendezvous:
+  credentials: [[ADMIN, TOURNEE]]
+
+tourneeAgentJsonRendezvous:
+  credentials: [[ADMIN, TOURNEE]]
