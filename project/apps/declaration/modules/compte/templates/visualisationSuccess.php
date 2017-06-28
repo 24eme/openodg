@@ -8,7 +8,7 @@
 <div class="page-header">
     <div class="btn-group pull-right">
         <?php if(!$compte->date_archivage): ?>
-        <a href="<?php echo url_for('compte_archiver', $compte) ?>" class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Archiver</a>
+        <a onclick='return confirm("Êtes vous sûr de vouloir archiver ce compte ?");' href="<?php echo url_for('compte_archiver', $compte) ?>" class="btn btn-sm btn-default btn-default-step"><span class="glyphicon glyphicon-folder-open"></span>&nbsp;&nbsp;Archiver</a>
         <?php endif; ?>
         <a href="<?php echo url_for('compte_modification', $compte) ?>" class="btn btn-sm btn-warning"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Modifier</a>
     </div>

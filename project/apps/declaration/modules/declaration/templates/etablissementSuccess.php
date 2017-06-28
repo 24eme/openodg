@@ -12,9 +12,9 @@
         </div>
         <div class="col-xs-5 text-right" style="padding-top: 20px;">
             <?php if ($sf_user->isAdmin()): ?>
-            <form method="GET" action="">
+            <form method="GET" class="form-inline" action="">
                 Campagne :
-                <select class="select2SubmitOnChange" name="campagne">
+                <select class="select2SubmitOnChange form-control" name="campagne">
                     <?php for($i=ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(); $i > ConfigurationClient::getInstance()->getCampagneManager()->getCurrent() - 5; $i--): ?>
                         <option <?php if($campagne == $i): ?>selected="selected"<?php endif; ?> value="<?php echo $i ?>"><?php echo $i; ?>-<?php echo $i+1 ?></option>
                     <?php endfor; ?>

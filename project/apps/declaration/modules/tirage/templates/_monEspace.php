@@ -15,7 +15,7 @@
                 </p>
                 <?php if (TirageSecurity::getInstance($sf_user, $tirage->getRawValue())->isAuthorized(TirageSecurity::DEVALIDATION)): ?>
                     <p>
-                        <a class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('tirage_devalidation', $tirage) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
+                        <a onclick='return confirm("Êtes vous sûr de vouloir dévalider cette déclaration ?");' class="btn btn-xs btn-warning pull-right" href="<?php echo url_for('tirage_devalidation', $tirage) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
                     </p>
                 <?php endif; ?>
             </div>
@@ -28,7 +28,7 @@
                         <a class="btn btn-lg btn-block btn-default" href="<?php echo url_for('tirage_edit', $tirage) ?>"><?php if($tirage->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer la saisie papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
                     </p>
                     <p>
-                        <a class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('tirage_delete', $tirage) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
+                        <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-danger pull-right" href="<?php echo url_for('tirage_delete', $tirage) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
                     </p>
                 </div>
         <?php elseif (!TirageClient::getInstance()->isOpen()): ?>
