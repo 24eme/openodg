@@ -29,7 +29,7 @@
             <?php echo $form->renderHiddenFields(); ?>
             <?php echo $form->renderGlobalErrors(); ?>
             <div class="input-group">
-                <?php echo $form["q"]->render(array("value" => ($q == '*') ? '' : $q, "class" => "form-control input-lg", "placeholder" => "Votre recherche...", "autofocus" => "autofocus")); ?>
+                <?php echo $form["q"]->render(array("value" => ($q == '*') ? '' : $q, "class" => "form-control input-lg typeahead", "placeholder" => "Votre recherche...", "autofocus" => "autofocus", "autocomplete" => "off", "data-url" => url_for('compte_recherche_json', array('link' => true, 'type_compte' => '*')), "data-query-param" => "q", "data-link" => "visualisationLink", "data-text" => "text_html")); ?>
                 <span class="input-group-btn">
                     <button class="btn btn-lg btn-info" type="submit" style="font-size: 22px; padding-top: 8px; padding-bottom: 8px;"><span class="glyphicon glyphicon-search"></span></button>
                 </span>

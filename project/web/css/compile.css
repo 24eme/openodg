@@ -8671,3 +8671,6 @@ tr.bootstrap-switch-on {
 .navbar-nav li a:hover {
   border-bottom: 6px solid #2c4a48;
 }
+.typeahead .dropdown-item {
+  overflow: hidden;
+}
