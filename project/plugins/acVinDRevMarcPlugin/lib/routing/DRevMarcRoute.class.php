@@ -1,5 +1,5 @@
 <?php
-class DRevMarcRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
+class DRevMarcRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
     protected $drevMarc = null;
 
@@ -25,4 +25,8 @@ class DRevMarcRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
         return $this->drevMarc;
     }
 
+    public function getEtablissement() {
+
+        return $this->drevMarc->getEtablissementObject();
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-class TirageRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
+class TirageRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
     protected $tirage = null;
 
@@ -24,6 +24,11 @@ class TirageRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
             $this->getObject();
         }
         return $this->tirage;
+    }
+
+    public function getEtablissement() {
+
+        return $this->tirage->getEtablissementObject();
     }
 
 }

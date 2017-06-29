@@ -1,5 +1,5 @@
 <?php
-class ParcellaireRoute extends sfObjectRoute implements InterfaceDeclarationRoute {
+class ParcellaireRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
     protected $parcellaire = null;
 
@@ -24,4 +24,8 @@ class ParcellaireRoute extends sfObjectRoute implements InterfaceDeclarationRout
         return $this->parcellaire;
     }
 
+    public function getEtablissement() {
+
+        return $this->parcellaire->getEtablissementObject();
+    }
 }
