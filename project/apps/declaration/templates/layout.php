@@ -76,6 +76,13 @@
                 </nav>
                 <?php endif; ?>
                 <?php endif; ?>
+                <?php if($sf_user->isAuthenticated() && !$sf_user->getCompte() && !$sf_user->getEtablissement()): ?>
+                    <nav id="navigation" role="navigation">
+                        <ul>
+                            <li><a href="<?php echo url_for('auth_logout') ?>">Déconnexion</a></li>
+                        </ul>
+                    </nav>
+                <?php endif; ?>
             </header>
 
             <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
