@@ -1,5 +1,5 @@
 <?php
-class FactureRoute extends sfObjectRoute implements InterfaceFacturationRoute {
+class FactureRoute extends CompteRoute implements InterfaceFacturationRoute {
 
     protected $facture = null;
 
@@ -23,6 +23,11 @@ class FactureRoute extends sfObjectRoute implements InterfaceFacturationRoute {
             $this->getObject();
         }
         return $this->facture;
+    }
+
+    public function getCompte() {
+
+        return $this->getFacture()->getCompte();
     }
 
 }

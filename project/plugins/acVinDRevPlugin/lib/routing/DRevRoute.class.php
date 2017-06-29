@@ -27,7 +27,7 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
 
     public function getEtablissement() {
 
-        return $this->drev->getEtablissementObject();
+        return $this->getDRev()->getEtablissementObject();
     }
 
 }

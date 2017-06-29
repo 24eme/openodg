@@ -28,7 +28,7 @@ class TirageRoute extends EtablissementRoute implements InterfaceDeclarationRout
 
     public function getEtablissement() {
 
-        return $this->tirage->getEtablissementObject();
+        return $this->getTirage()->getEtablissementObject();
     }
 
 }
