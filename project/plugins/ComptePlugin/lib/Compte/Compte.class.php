@@ -5,7 +5,7 @@
  *
  */
 class Compte extends BaseCompte implements InterfaceArchivageDocument {
-	
+
     const CAMPAGNE_ARCHIVE = 'UNIQUE';
 
     protected $archivage_document = null;
@@ -42,6 +42,11 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
 	}
 
     protected function getIdentifiantEtablissement() {
+		if($this->getEtablissement()) {
+
+			return str_replace("ETABLISSEMENT-", "", $this->getEtablissement());
+		}
+
         if($this->cvi) {
 
             return $this->cvi;
@@ -58,7 +63,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
             $this->identifiant = CompteClient::getInstance()->createIdentifiantForCompte($this);
             $this->statut = CompteClient::STATUT_ACTIF;
         }
-        
+
         if ($this->isTypeCompte(CompteClient::TYPE_COMPTE_ETABLISSEMENT) && $synchro_etablissement) {
             //$this->updateChais();
             $etablissement = EtablissementClient::getInstance()->createOrFind($this->getIdentifiantEtablissement());
@@ -131,7 +136,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     public function getInfosAutomatiques() {
         return $this->infos->get('automatiques');
     }
-    
+
     public function getInfosSyndicats() {
         return $this->infos->get('syndicats');
     }
@@ -139,7 +144,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     public function hasProduits() {
         return count($this->infos->get('produits'));
     }
-    
+
     public function hasAttributs() {
         return count($this->infos->get('attributs'));
     }
@@ -147,7 +152,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     public function hasManuels() {
         return count($this->infos->get('manuels'));
     }
-    
+
     public function hasSyndicats() {
         return count($this->infos->get('syndicats'));
     }
@@ -174,14 +179,14 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
             $this->infos->add($node);
         }
     }
-    
+
     public function updateInfosTagsAttributs($attributs_array = array()) {
         $this->removeInfosTagsNode('attributs');
         foreach ($attributs_array as $attribut_code) {
             $this->updateInfosTags('attributs', $attribut_code, CompteClient::getInstance()->getAttributLibelle($attribut_code));
         }
     }
-    
+
     public function updateInfosTagsManuels($infos_manuels = array()) {
         $this->removeInfosTagsNode('manuels');
         foreach ($infos_manuels as $info_manuel) {
@@ -202,8 +207,8 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
             $this->addInfoSyndicat($syndicatId);
         }
     }
-    
-    public function updateInfosTags($nodeType, $key, $value) {        
+
+    public function updateInfosTags($nodeType, $key, $value) {
         if (!$this->infos->exist($nodeType)) {
             $this->infos->add($nodeType, null);
         }
@@ -223,7 +228,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
 
     public function removeInfo($type, $info_key) {
         $key = $info_key;
-        
+
         if($type == 'manuels') {
 
             $key = $this->getInfoManuelKey($info_key);
@@ -234,7 +239,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
 
     public function getInfo($type, $info_key) {
         $key = $info_key;
-        
+
         if($type == 'manuels') {
 
             $key = $this->getInfoManuelKey($info_key);
@@ -281,7 +286,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     public function addInfoManuel($info_manuel) {
         $this->updateInfosTags('manuels', $this->getInfoManuelKey($info_manuel), $info_manuel);
     }
-    
+
     public function getEtablissementObj() {
         if(!$this->getEtablissement()){
             return null;
@@ -337,7 +342,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
 		return false;
 	}
         $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
-        
+
         $file = file_get_contents($url);
 
         $result = json_decode($file);
@@ -423,7 +428,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
         $this->statut = CompteClient::STATUT_ACTIF;
         $this->date_archivage = null;
     }
-    
+
     public function getRegionViticole() {
     	return CompteClient::REGION_VITICOLE;
     }
@@ -449,7 +454,7 @@ class Compte extends BaseCompte implements InterfaceArchivageDocument {
     		$result = array_keys($syndicats->toArray());
     	}
     	return $result;
-    	
+
     }
 
     public function isAdherentSyndicat() {

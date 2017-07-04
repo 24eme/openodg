@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-sm-offset-6 col-sm-3 col-xs-12">
-            <button type="button" class="btn btn-sm btn-default btn-default-step btn-block btn-upper" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-sm btn-default btn-default-step btn-block btn-upper dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                 <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer un contact&nbsp;&nbsp;<span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
