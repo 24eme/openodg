@@ -5,6 +5,7 @@ class ParcellaireClient extends acCouchdbClient {
     const TYPE_MODEL = "Parcellaire";
     const TYPE_COUCHDB = "PARCELLAIRE";
     const TYPE_COUCHDB_PARCELLAIRE_CREMANT = "PARCELLAIRECREMANT";
+    const TYPE_COUCHDB_INTENTION_CREMANT = "INTENTIONCREMANT";
     const DESTINATION_SUR_PLACE = "SUR_PLACE";
     const DESTINATION_CAVE_COOPERATIVE = EtablissementClient::FAMILLE_CAVE_COOPERATIVE;
     const DESTINATION_NEGOCIANT = EtablissementClient::FAMILLE_NEGOCIANT;
@@ -49,105 +50,106 @@ class ParcellaireClient extends acCouchdbClient {
         return $doc;
     }
 
-    public function findOrCreateFromEtablissement($etablissement, $campagne, $cremant = false) {
-        return $this->findOrCreate($etablissement->identifiant, $campagne, $cremant);
+    public function findOrCreateFromEtablissement($etablissement, $campagne, $type = self::TYPE_COUCHDB) {
+        return $this->findOrCreate($etablissement->identifiant, $campagne, $type);
     }
 
-    public function findOrCreate($cvi, $campagne, $cremant = false) {
+    public function findOrCreate($cvi, $campagne, $type = self::TYPE_COUCHDB) {
         if (strlen($cvi) != 10) {
             throw new sfException("Le CVI doit avoir 10 caractères : $cvi");
         }
         if (strlen($campagne) != 4)
             throw new sfException("La campagne doit être une année et non " . $campagne);
-        $parcellaire = $this->find($this->buildId($cvi, $campagne, $cremant));
+        $parcellaire = $this->find($this->buildId($cvi, $campagne, $type));
         if (is_null($parcellaire)) {
-            $parcellaire = $this->createDoc($cvi, $campagne, $cremant);
+            $parcellaire = $this->createDoc($cvi, $campagne, $type);
         }
 
         return $parcellaire;
     }
 
-    public function buildId($identifiant, $campagne, $cremant = false) {
-        $id = (!$cremant) ? "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
+    public function buildId($identifiant, $campagne, $type = self::TYPE_COUCHDB) {
+        $id = "$type-%s-%s";
         return sprintf($id, $identifiant, $campagne);
     }
 
-    public function createDoc($identifiant, $campagne, $cremant = false) {
+    public function createDoc($identifiant, $campagne, $type = self::TYPE_COUCHDB) {
         $parcellaire = new Parcellaire();
-        $parcellaire->initDoc($identifiant, $campagne, $cremant);
+        $parcellaire->initDoc($identifiant, $campagne, $type);
 
         return $parcellaire;
     }
 
-    public function getHistory($identifiant, $cremant = false, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+    public function getHistory($identifiant, $type = self::TYPE_COUCHDB, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
         $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()) . "";
 
-        $id = (!$cremant) ? "PARCELLAIRE-%s-%s" : "PARCELLAIRECREMANT-%s-%s";
+        $id = "$type-%s-%s";
         return $this->startkey(sprintf($id, $identifiant, $campagne_from))
                         ->endkey(sprintf($id, $identifiant, $campagne_to))
                         ->execute($hydrate);
     }
 
-    public function getAppellationsAndVtSgnKeys($parcellaireCremant = false) {
-        if ($parcellaireCremant) {
-            return array('CREMANT' => 'Crémant');
+    public function getAppellationsAndVtSgnKeys($type = self::TYPE_COUCHDB) {
+        if ($type == self::TYPE_COUCHDB) {
+	        return array_merge(array(
+	            self::APPELLATION_GRDCRU => 'Grand Cru',
+	            self::APPELLATION_COMMUNALE => 'Communale',
+	            self::APPELLATION_LIEUDIT => 'Lieux dits'
+	                ),
+	            array(self::APPELLATION_VTSGN => 'VT/SGN')
+	        );
         }
-        return array_merge(array(
-            self::APPELLATION_GRDCRU => 'Grand Cru',
-            self::APPELLATION_COMMUNALE => 'Communale',
-            self::APPELLATION_LIEUDIT => 'Lieux dits'
-                ),
-            array(self::APPELLATION_VTSGN => 'VT/SGN')
-        );
+        return array('CREMANT' => 'Crémant');
     }
 
-    public function getAppellationsKeys($parcellaireCremant = false) {
-        if ($parcellaireCremant) {
-            return array('CREMANT' => 'Crémant');
+    public function getAppellationsKeys($type = self::TYPE_COUCHDB) {
+        if ($type == self::TYPE_COUCHDB) {
+	        return array(
+	            self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
+	            self::APPELLATION_GRDCRU => 'Grand Cru',
+	            self::APPELLATION_COMMUNALE => 'Communale',
+	            self::APPELLATION_LIEUDIT => 'Lieux dits'
+	        );
         }
-        return array(
-            self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
-            self::APPELLATION_GRDCRU => 'Grand Cru',
-            self::APPELLATION_COMMUNALE => 'Communale',
-            self::APPELLATION_LIEUDIT => 'Lieux dits'
-        );
+        return array('CREMANT' => 'Crémant');
     }
 
-    public function getFirstAppellation($parcellaireCremant = false) {
-        if ($parcellaireCremant) {
-            return 'CREMANT';
+    public function getFirstAppellation($type = self::TYPE_COUCHDB) {
+        if ($type == self::TYPE_COUCHDB) {
+        	return 'GRDCRU';
         }
-        return 'GRDCRU';
+        return 'CREMANT';
     }
-
-    public function getDateOuvertureDebut($parcellaireCremant = false) {
-        if ($parcellaireCremant) {
+    
+    public function getDateOuverture($type = self::TYPE_COUCHDB) {
+        if ($type == self::TYPE_COUCHDB) {
+            $dates = sfConfig::get('app_dates_ouverture_parcellaire');
+        } elseif ($type == self::TYPE_COUCHDB_PARCELLAIRE_CREMANT) {
+            $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
+        } elseif ($type == self::TYPE_COUCHDB_INTENTION_CREMANT) {
             $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
         } else {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire');
+        	throw new sfException("Le type de parcellaire $type n'existe pas");
         }
+        return $dates;
+    }
 
+    public function getDateOuvertureDebut($type = self::TYPE_COUCHDB) {
+        $dates = $this->getDateOuverture($type);
         return $dates['debut'];
     }
 
-    public function getDateOuvertureFin($parcellaireCremant = false) {
-        if ($parcellaireCremant) {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
-        } else {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire');
-        }
-
+    public function getDateOuvertureFin($type = self::TYPE_COUCHDB) {
+        $dates = $this->getDateOuverture($type);
         return $dates['fin'];
     }
 
-    public function isOpen($parcellaireCremant = false, $date = null) {
+    public function isOpen($type = self::TYPE_COUCHDB, $date = null) {
         if (is_null($date)) {
-
             $date = date('Y-m-d');
         }
-
-        return $date >= $this->getDateOuvertureDebut($parcellaireCremant) && $date <= $this->getDateOuvertureFin($parcellaireCremant);
+        return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
     }
 
 }

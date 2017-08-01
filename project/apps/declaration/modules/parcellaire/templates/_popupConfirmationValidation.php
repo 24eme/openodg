@@ -8,7 +8,7 @@
                 <?php echo $form->renderGlobalErrors() ?>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Validation de votre déclaration d'affectation parcellaire<?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?></h4>
+                    <h4 class="modal-title" id="myModalLabel">Validation de votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?></h4>
                 </div>               
 
                 <div class="modal-body">
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     <?php endif; ?>
-                     <p>Confirmez la validation de votre déclaration d'affectation parcellaire<?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?> ?</p>                  
+                     <p>Confirmez la validation de votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?> ?</p>                  
                 </div>
                 <div class="modal-footer">
                     <a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>

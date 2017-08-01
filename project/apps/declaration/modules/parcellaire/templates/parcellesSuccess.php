@@ -4,8 +4,13 @@
 $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient::APPELLATION_VTSGN);
 ?>
 
+<?php if ($recapParcellaire): ?>
+	<div class="page-header"><h2>Rappel de votre parcellaire crémant <?php echo $recapParcellaire->campagne; ?></h2></div>
+	<?php include_partial('parcellaire/recap', array('parcellaire' => $recapParcellaire)); ?>
+<?php endif; ?>
+        	
 <div class="page-header">
-    <h2>Saisie des parcelles<?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
+    <h2>Saisie des <?php if ($parcellaire->isIntentionCremant()): ?>intentions de production<?php else: ?>parcelles<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
 </div>
 
 <ul class="nav nav-tabs">
@@ -116,7 +121,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                     </table>
                 </div>
             <?php else : ?>
-                <p class="text-muted">Vous n'avez affecté aucune parcelle pour cette appellation.</p><br/>
+                <p class="text-muted">Vous n'avez affecté aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> pour cette appellation.</p><br/>
             <?php endif; ?>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>

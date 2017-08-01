@@ -31,6 +31,7 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $isCremant = isset($options['cremant']) && $options['cremant'];
+        $type = ($isCremant)? ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT : ParcellaireClient::TYPE_COUCHDB;
         $convert = array('COMMUNALE' => "AOC Alsace Communale", 'LIEUDIT' => 'aoc alsace lieudit', 'GRDCRU' => 'aoc alsace grand cru ', 'CREMANT' => 'aoc cremant dalsace');
         $i = 0;
         $sep = '';
@@ -44,7 +45,7 @@ EOF;
                 continue;
             }
             try {
-                $p = ParcellaireClient::getInstance()->findOrCreate($csv[8], $arguments['annee'],$isCremant);
+                $p = ParcellaireClient::getInstance()->findOrCreate($csv[8], $arguments['annee'],$type);
             }catch(sfException $e) {
                 print "ERROR: ligne $i: ".$e->getMessage()."\n";
                 continue;

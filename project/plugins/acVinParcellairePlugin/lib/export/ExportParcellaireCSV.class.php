@@ -33,7 +33,7 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
     public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
         
-        $prefixName = ($parcellaire->isParcellaireCremant())? "PARCELLAIRE_CREMANT_%s_%s" :"PARCELLAIRE_%s_%s";
+        $prefixName = $parcellaire->getTypeParcellaire()."_%s_%s";
         $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
 
         $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));

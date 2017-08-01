@@ -33,10 +33,10 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-    public function initDoc($identifiant, $campagne, $cremant = false) {
+    public function initDoc($identifiant, $campagne, $type = ParcellaireClient::TYPE_COUCHDB) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
-        $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne, $cremant));
+        $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne, $type));
         $this->storeDeclarant();
     }
 
@@ -115,12 +115,12 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
 
     public function getParcellaireLastCampagne() {
         $campagnePrec = $this->campagne - 1;
-        $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->isParcellaireCremant());
+        $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->getTypeParcellaire());
         $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
 
         if (!$parcellaire) {
             $campagnePrec = $this->campagne - 2;
-            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->isParcellaireCremant());
+            $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, $this->getTypeParcellaire());
             $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
         }
 
@@ -298,7 +298,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
 
     public function getParcellesByAppellation($cviFilter = null) {
         $parcellesByAppellations = array();
-        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));
+        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->getTypeParcellaire())));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if($cviFilter) {
                 $acheteurs = $parcelle->getAcheteursByCVI();
@@ -332,7 +332,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
 
     public function getParcellesByLieux($cviFilter = null) {
         $parcellesByLieux = array();
-        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->isParcellaireCremant())));
+        $appellationsPos = array_flip(array_keys(ParcellaireClient::getInstance()->getAppellationsKeys($this->getTypeParcellaire())));
         foreach ($this->declaration->getProduitsCepageDetails() as $parcelle) {
             if($cviFilter) {
                 $acheteurs = $parcelle->getAcheteursByCVI();
@@ -420,7 +420,20 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     }
 
     public function isParcellaireCremant() {
-        return substr($this->_id, 0, strlen(ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT)) === ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT;
+        return in_array($this->getTypeParcellaire(), array(ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT, ParcellaireClient::TYPE_COUCHDB_INTENTION_CREMANT));
+    }
+    
+    public function isIntentionCremant() {
+    	return ($this->getTypeParcellaire() == ParcellaireClient::TYPE_COUCHDB_INTENTION_CREMANT);
+    }
+    
+    public function getTypeParcellaire() {
+    	if ($this->_id) {
+    		if (preg_match('/^([A-Z]*)-([0-9]*)-([0-9]{4})/', $this->_id, $result)) {
+    			return $result[1];
+    		}
+    	}
+    	throw new sfException("Impossible de determiner le type de parcellaire");
     }
     
     protected function doSave() {
@@ -432,10 +445,11 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     public function getAllPieces() {
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$cremant = ($this->isParcellaireCremant())? 'Crémant ' : '';
+    	$title = ($this->isIntentionCremant())? 'Intention de production' : 'Affectation parcellaire';
     	return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getValidation(),
-    		'libelle' => 'Affectation parcellaire '.$cremant.$this->campagne.' '.$complement,
+    		'libelle' => $title.' '.$cremant.$this->campagne.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null

@@ -58,7 +58,7 @@ class parcellaireActions extends sfActions {
 
         if ($parcellaire->exist('etape') && $parcellaire->etape) {
             if ($parcellaire->etape == ParcellaireEtapes::ETAPE_PARCELLES) {
-                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation($parcellaire->isParcellaireCremant())));
+                $this->redirect('parcellaire_' . $parcellaire->etape, array('id' => $parcellaire->_id, 'appellation' => ParcellaireClient::getInstance()->getFirstAppellation($parcellaire->getTypeParcellaire())));
             }
             return $this->redirect('parcellaire_' . $parcellaire->etape, $parcellaire);
         }
@@ -145,7 +145,7 @@ class parcellaireActions extends sfActions {
             return $this->redirect('parcellaire_validation', $this->parcellaire);
         }
 
-        $this->firstAppellation = ParcellaireClient::getInstance()->getFirstAppellation($this->parcellaire->isParcellaireCremant());
+        $this->firstAppellation = ParcellaireClient::getInstance()->getFirstAppellation($this->parcellaire->getTypeParcellaire());
         return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $this->firstAppellation));
     }
 
@@ -157,13 +157,21 @@ class parcellaireActions extends sfActions {
             $this->parcellaire->save();
         }
 
-        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsAndVtSgnKeys($this->parcellaire->isParcellaireCremant());
+        $this->parcellaireAppellations = ParcellaireClient::getInstance()->getAppellationsAndVtSgnKeys($this->parcellaire->getTypeParcellaire());
 
         $this->appellation = $request->getParameter('appellation');
 
         $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
 
         $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
+        
+        $this->recapParcellaire = null;
+        if ($this->parcellaire->isIntentionCremant()) {
+        	$this->recapParcellaire = ParcellaireClient::getInstance()->find(ParcellaireClient::getInstance()->buildId($this->parcellaire->identifiant, $this->parcellaire->campagne, ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT));
+        	if ($this->recapParcellaire && !($this->recapParcellaire->validation || $this->recapParcellaire->validation_odg)) {
+        		$this->recapParcellaire = null;
+        	}
+        }
 
         $this->parcelles = array();
         if ($this->appellationNode == ParcellaireClient::APPELLATION_VTSGN) {
