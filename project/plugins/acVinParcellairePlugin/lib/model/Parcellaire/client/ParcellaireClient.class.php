@@ -128,7 +128,7 @@ class ParcellaireClient extends acCouchdbClient {
         } elseif ($type == self::TYPE_COUCHDB_PARCELLAIRE_CREMANT) {
             $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
         } elseif ($type == self::TYPE_COUCHDB_INTENTION_CREMANT) {
-            $dates = sfConfig::get('app_dates_ouverture_parcellaire_cremant');
+            $dates = sfConfig::get('app_dates_ouverture_intention_cremant');
         } else {
         	throw new sfException("Le type de parcellaire $type n'existe pas");
         }
