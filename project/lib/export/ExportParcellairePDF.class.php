@@ -58,10 +58,10 @@ class ExportParcellairePDF extends ExportPDF {
 
     protected function getHeaderTitle() {
     	if ($this->parcellaire->isIntentionCremant()) {
-    		return sprintf("Déclaration d'intention de production de crémant %s", $this->parcellaire->campagne);
+    		return sprintf("Déclaration d'intention de production AOC Crémant d'Alsace %s", $this->parcellaire->campagne);
     	}
         if($this->parcellaire->isParcellaireCremant()){
-            return sprintf("Déclaration d'affectation parcellaire crémant %s", $this->parcellaire->campagne);
+            return sprintf("Déclaration d'affectation parcellaire Crémant %s", $this->parcellaire->campagne);
         }
         return sprintf("Déclaration d'affectation parcellaire %s", $this->parcellaire->campagne);
     }

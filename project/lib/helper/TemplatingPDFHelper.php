@@ -169,6 +169,46 @@ function styleParcellaire() {
 ";
 }
 
+function styleIntentionCremant() {
+	return "
+    .table {
+        border: 1px solid #ffa633;
+    }
+
+    .tableAlt {
+        border: 1px solid #ffb85c;
+    }
+
+    .th {
+        font-weight: normal; border: 1px solid #ffa633; background-color: #fffbde; color: #ffa633;
+    }
+
+    .td {
+        border: 1px solid #ffa633; height:22px; text-align: left;
+    }
+
+    .tdAlt {
+        border: 1px solid #ffa633; height:22px; text-align: left; background-color: #fffbde;
+    }
+
+    .h2 {
+        text-align: left; font-size: 12pt; color: #ffa633;
+    }
+
+    .tdH2 {
+       border-bottom: 1px solid #ffa633;
+    }
+
+    .h3 {
+        background-color: #ffa633; color: white; font-weight: bold;
+    }
+
+    .h3Alt {
+        background-color: #ffb85c; color: #855619; font-weight: bold;
+    }
+";
+}
+
 
 function styleDegustation() {
     return "

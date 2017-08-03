@@ -1,11 +1,11 @@
 <?php include_partial('parcellaire/breadcrumb', array('parcellaire' => $parcellaire )); ?>
 <?php include_partial('parcellaire/step', array('step' => 'validation', 'parcellaire' => $parcellaire)) ?>
 <div class="page-header">
-    <h2>Validation de votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?></h2>
+    <h2>Validation de votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?> <?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?>AOC Crémant d'Alsace<?php else: ?>Crémant<?php endif; ?><?php endif; ?></h2>
 </div>
 
 <div class="row col-xs-12">
-    <h3>Merci de vérifier votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant())? ' crémant' : ''; ?>&nbsp;<?php echo $parcellaire->campagne; ?></h3>
+    <h3>Merci de vérifier votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?> AOC Crémant d'Alsace<?php else: ?> Crémant<?php endif; ?><?php endif; ?>&nbsp;<?php echo $parcellaire->campagne; ?></h3>
     <p class="text-muted">Une version PDF est téléchargeable en bas de cet écran.</p>
 </div>
 

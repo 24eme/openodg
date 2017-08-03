@@ -27,7 +27,7 @@
 	<ul class="nav nav-pills" style="margin: 0 0 20px 0;">
 		<li<?php if (!$category):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year))?>">Tous&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo count($history) - $decreases ?></a></li>
 		<?php foreach ($categories as $categorie => $nbDoc): ?>
-        <li<?php if ($category && $category == $categorie):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : ucfirst(strtolower($categorie)); ?>&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nbDoc ?></a></li>
+        <li<?php if ($category && $category == $categorie):?> class="active"<?php endif; ?>><a href="<?php echo url_for('pieces_historique', array('sf_subject' => $etablissement, 'annee' => $year, 'categorie' => $categorie))?>"><?php echo ($categorie == 'FICHIER')? 'Document' : str_replace('cremant', ' Crémant', ucfirst(strtolower($categorie))); ?>&nbsp;<span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo $nbDoc ?></a></li>
 		<?php endforeach; ?>
 	</ul>
 	<?php

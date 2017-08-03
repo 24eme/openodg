@@ -3,7 +3,7 @@
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
 <style>
-<?php echo styleParcellaire(); ?>
+<?php echo ($parcellaire->isIntentionCremant())? styleIntentionCremant() : styleParcellaire(); ?>
 </style>
 
 <span class="h3Alt">&nbsp;Exploitation&nbsp;</span><br/>

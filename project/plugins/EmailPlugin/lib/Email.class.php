@@ -157,7 +157,15 @@ class Email {
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($parcellaire->declarant->email);
         $titre = ($parcellaire->isIntentionCremant())? 'intention de production' : 'affectation parcellaire';
-        $subject = sprintf("Validation de votre déclaration d'$titre%s", ($parcellaire->isParcellaireCremant())? ' crémant' : '');
+        $complement = '';
+        if($parcellaire->isParcellaireCremant()) {
+        	if($parcellaire->isIntentionCremant()) {
+        		$complement = ' AOC Crémant d\'Alsace';
+        	} else {
+        		$complement = ' Crémant'; 
+        	}
+        } 
+        $subject = sprintf("Validation de votre déclaration d'$titre%s", $complement);
         $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
@@ -190,7 +198,15 @@ class Email {
         $reply_to = array(sfConfig::get('app_email_plugin_reply_to_adresse') => sfConfig::get('app_email_plugin_reply_to_name'));
         $to = array($acheteur->email);
         $titre = ($parcellaire->isIntentionCremant())? 'intention de production' : 'affectation parcellaire';
-        $subject = sprintf("Déclaration d'$titre%s de %s", ($parcellaire->isParcellaireCremant())? ' crémant' : '', $parcellaire->declarant->nom);
+        $complement = '';
+        if($parcellaire->isParcellaireCremant()) {
+        	if($parcellaire->isIntentionCremant()) {
+        		$complement = ' AOC Crémant d\'Alsace';
+        	} else {
+        		$complement = ' Crémant';
+        	}
+        }
+        $subject = sprintf("Déclaration d'$titre%s de %s", $complement, $parcellaire->declarant->nom);
         $body = $this->getBodyFromPartial('send_parcellaire_acheteur', array('parcellaire' => $parcellaire));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)

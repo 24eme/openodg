@@ -1,11 +1,11 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($intentionCremant && $intentionCremant->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-        <h3>Intention&nbsp;de production Crémant <?php echo $campagne ?>&nbsp;</h3>
+        <h3>Intention&nbsp;de production<br />AOC Crémant d'Alsace <?php echo $campagne ?>&nbsp;</h3>
         </div>
             <?php if ($intentionCremant && $intentionCremant->validation): ?>
         <div class="panel-body">
-                <p>Vous avez déjà validé votre déclaration d'intention de production crémant pour cette année.</p>
+                <p>Vous avez déjà validé votre déclaration d'intention de production pour cette année.</p>
         </div>
         <div class="panel-bottom">
                 <p>
@@ -19,7 +19,7 @@
         </div>
         <?php elseif ($intentionCremant):  ?>
         <div class="panel-body">
-                <p>Vous avez déjà débuté votre déclaration d'intention de production crémant pour cette année sans la valider.</p>
+                <p>Vous avez déjà débuté votre déclaration d'intention de production pour cette année sans la valider.</p>
         </div>
         <div class="panel-bottom">
             <p>
@@ -49,7 +49,7 @@
             </div>
         <?php else:  ?>
         <div class="panel-body">
-                <p>Aucune déclaration d'intention de production crémant n'a été débutée vous concernant cette année</p>
+                <p>Aucune déclaration d'intention de production n'a été débutée vous concernant cette année</p>
         </div>
         <div class="panel-bottom">
                 <p>

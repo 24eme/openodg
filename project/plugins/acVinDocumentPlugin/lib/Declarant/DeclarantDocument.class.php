@@ -70,9 +70,9 @@ class DeclarantDocument
             if($declarant->getDefinition()->exist('siret'))
                  $declarant->add('siret', $etablissement->siret);
         }
-        if ($etablissement->exist("telephone")) {
+        if ($etablissement->exist("telephone_bureau")) {
             if($declarant->getDefinition()->exist('telephone'))
-                 $declarant->add('telephone', $etablissement->telephone);
+                 $declarant->add('telephone', $etablissement->telephone_bureau);
         }
         if ($etablissement->exist("email")) {
             if($declarant->getDefinition()->exist('email'))
