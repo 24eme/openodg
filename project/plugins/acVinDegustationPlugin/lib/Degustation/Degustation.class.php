@@ -5,7 +5,7 @@
  */
 
 class Degustation extends BaseDegustation implements InterfacePieceDocument {
-	
+
 	protected $piece_document = null;
 
     public function __construct() {
@@ -31,7 +31,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 
         return $this->millesime;
     }
-    
+
     public function constructId() {
         $id = sprintf("%s-%s-%s-%s", DegustationClient::TYPE_COUCHDB, $this->identifiant, str_replace("-", "", $this->date_degustation), $this->appellation);
 
@@ -152,7 +152,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 
     public function isDeguste() {
           foreach($this->prelevements as $prelevement) {
-            if(!is_null($prelevement->anonymat_degustation)) {
+            if($prelevement->isDeguste()) {
                 return true;
             }
         }
@@ -389,17 +389,17 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
 
         return $this->_get('organisme');
     }
-	
+
 	protected function doSave() {
 		$this->piece_document->generatePieces();
 	}
-    
+
     /**** PIECES ****/
 
     public function getAllPieces() {
     	$pieces = array();
     	foreach ($this->prelevements as $key => $prelevement) {
-    		if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) { 
+    		if ($prelevement->exist('type_courrier') && $prelevement->type_courrier) {
 	    		if (!$this->getDateDegustation()) { continue; }
 	    		$pieces[] = array(
 	    			'identifiant' => $this->getIdentifiant(),
@@ -413,11 +413,11 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
     	}
     	return $pieces;
     }
-    
+
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
     }
-    
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('degustation_courrier_prelevement', $this->prelevements->get($source));
     }
@@ -425,6 +425,6 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return ($admin)? sfContext::getInstance()->getRouting()->generate('degustation_visualisation', array('id' => preg_replace('/DEGUSTATION-[a-zA-Z0-9]*-/', 'TOURNEE-', $id))) : null;
     }
-    
+
     /**** FIN DES PIECES ****/
 }

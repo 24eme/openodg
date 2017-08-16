@@ -85,7 +85,7 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
     }
 
     public function isPreleve() {
-        if($this->preleve && $this->hash_produit && $this->anonymat_degustation && $this->commission) {
+        if($this->preleve && $this->hash_produit && $this->isDeguste() && $this->commission) {
 
             return true;
         }
@@ -95,7 +95,12 @@ class DegustationPrelevement extends BaseDegustationPrelevement {
 
     public function isAffectationTerminee() {
 
-        return $this->commission && $this->anonymat_degustation;
+        return $this->commission && $this->isDeguste();
+    }
+
+    public function isDeguste() {
+
+        return !is_null($this->anonymat_degustation);
     }
 
     public function getCuveNettoye() {
