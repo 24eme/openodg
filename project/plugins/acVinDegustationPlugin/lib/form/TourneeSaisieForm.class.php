@@ -124,6 +124,9 @@ class TourneeSaisieForm extends acCouchdbForm {
             $prelevement->vtsgn = $vtsgn;
             $prelevement->libelle_produit = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getCouleur()->getLibelleComplet();
             $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleLong().(($prelevement->vtsgn) ? " ".$prelevement->vtsgn : null);
+            if($prelevement->hash_produit == $this->getDocument()->getProduitConfig()->getHash()) {
+                $prelevement->libelle = null;
+            }
             $prelevement->denomination_complementaire = null;
             if($value["denomination_complementaire"]) {
                 $prelevement->denomination_complementaire = $value["denomination_complementaire"];

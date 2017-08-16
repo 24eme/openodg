@@ -29,7 +29,8 @@
                                 <strong style="font-size: 32px;">{{ prelevement.anonymat_degustation }}</strong>
                             </div>
                             <div class="col-xs-4">
-                                <span class="lead">{{ prelevement.libelle }}</span>
+                                <span class="lead" ng-show="prelevement.libelle">{{ prelevement.libelle }}</span>
+                                <span ng-show="!prelevement.libelle">(Sans mention de cépage)</span>
                             </div>
                             <div class="col-xs-5 text-left">
                                 <span ng-show="prelevement.termine" ng-repeat="note_key in notes_key"><span>{{ notes[note_key] }} : <span>{{ prelevement.notes[note_key].note }}</span> <small ng-show="prelevement.notes[note_key].defauts.length">({{ prelevement.notes[note_key].defauts.join(', ') }})</small></span><br /></span>
@@ -66,7 +67,7 @@
         <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
             <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
-                <h2>Lot n° {{ prelevement.anonymat_degustation }} de {{ prelevement.libelle }}</h2>
+                <h2>Lot n° {{ prelevement.anonymat_degustation }} <span ng-show="prelevement.libelle">de {{ prelevement.libelle }}</span><small ng-show="!prelevement.libelle">(Sans mention de cépage)</small></h2>
             </div>
             <div class="row">
                 <div class="col-xs-12">

@@ -33,6 +33,8 @@ class TourneeSaisieDegustationForm extends acCouchdbForm {
             }
         }
 
+        $produits[$this->getDocument()->getProduitConfig()->getHash()] = "Sans mention de cépage";
+
         return $produits;
     }
 
