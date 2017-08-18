@@ -16,16 +16,17 @@ myUser extends sfBasicSecurityUser
     protected $etablissement = null;
     protected $compte = null;
 
+    public function signInOrigin($login_or_compte) {
+        $this->signIn($login_or_compte);
+    }
+
     public function signIn($identifiant)
     {
         $this->setAttribute(self::SESSION_LOGIN, $identifiant, self::NAMESPACE_AUTH);
         $this->setAuthenticated(true);
 
-        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
-
-        if($etablissement) {
-
-            $this->signInEtablissement($etablissement);
+        if($identifiant instanceof Compte) {
+            $this->signInCompte($identifiant);
 
             return;
         }
@@ -86,6 +87,11 @@ myUser extends sfBasicSecurityUser
     {
         if(is_null($this->compte)) {
             $id = $this->getAttribute(self::SESSION_COMPTE, null, self::NAMESPACE_AUTH);
+
+            if ($id instanceof Compte) {
+
+                return $id_or_doc;
+            }
 
             if(!$id) {
 

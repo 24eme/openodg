@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class SecurityFilter extends sfBasicSecurityFilter
 {
@@ -10,8 +10,12 @@ class SecurityFilter extends sfBasicSecurityFilter
 
         $auth = sfConfig::get("app_auth_mode");
 
-        if($auth == "CAS") {
+        if($auth == "HTTP_AD") {
+            $this->filter = new HttpAuth2ADSecurityFilter($context, array());
+        } elseif($auth == "CAS") {
             $this->filter = new CASSecurityFilter($context, array());
+        } elseif($auth == "NO_AUTH") {
+            $this->filter = new AutoAdminFilter($context, array());
         } else {
             $this->filter = new sfBasicSecurityFilter($context, array());
         }
