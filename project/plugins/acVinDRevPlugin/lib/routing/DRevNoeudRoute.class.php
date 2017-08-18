@@ -3,9 +3,9 @@ class DRevNoeudRoute extends DRevRoute {
 
     protected $noeud = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
         parent::getObjectForParameters($parameters);
-        
+
         $this->noeud = $this->drev->get("/declaration/certification/genre/" . $parameters["hash"]);
         if (!$this->noeud) {
 
@@ -14,9 +14,9 @@ class DRevNoeudRoute extends DRevRoute {
         return $this->noeud;
     }
 
-    protected function doConvertObjectToArray($object) {  
+    protected function doConvertObjectToArray($object = null) {  
         $parameters = array_merge(
-                        parent::doConvertObjectToArray($object->getDocument()), 
+                        parent::doConvertObjectToArray($object->getDocument()),
                         array("hash" => str_replace("/declaration/certification/genre/", "", $object->getHash()))
                         );
 

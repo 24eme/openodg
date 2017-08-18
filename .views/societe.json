@@ -1,0 +1,13 @@
+{
+   "language" : "javascript",
+   "views" : {
+      "export" : {
+         "map" : "function(doc) {\n     if (doc.type != \"Societe\") {\n         \n         return;\n     }\n \n     cooperative = \"NON\";\n     if (doc.cooperative) {\n         cooperative = \"OUI\";\n     }\n     \n     type_fournisseur = null;\n     if (doc.type_fournisseur) {\n       type_fournisseur = doc.type_fournisseur.join(\"|\");\n     }\n \n     emit([doc.interpro, \n           doc.statut, \n           doc.type_societe,\n           doc._id, \n           doc.identifiant], \n          [doc.code_comptable_client, \n           doc.code_comptable_fournisseur,\n           type_fournisseur,\n           doc.raison_sociale,\n           doc.raison_sociale_abregee,\n           cooperative,\n           doc.siret,\n           doc.code_naf,\n           doc.no_tva_intracommunautaire,\n           doc.enseignes.join(\"|\"),\n           doc.siege.adresse,\n     doc.siege.adresse_complementaire,\n           doc.siege.code_postal,\n           doc.siege.commune,\n           doc.siege.pays,\n     doc.telephone,\n           doc.fax,\n           doc.email\n           ]);\n }\n"
+      },
+      "all" : {
+         "map" : "function(doc) {\n     if (doc.type == \"Societe\") {\n         emit([doc.interpro, \n             doc.statut,\n             doc.type_societe,\n             doc._id, \n             doc.raison_sociale, \n             doc.identifiant, \n             doc.siret,\n             doc.siege.commune, \n             doc.siege.code_postal], null);\n     }\n }"
+      }
+   },
+   "_id" : "_design/societe"
+}
+{"ok":true,"id":"_design/societe","rev":"1-db0565da488779c1142078ba45879dbf"}

@@ -3,7 +3,7 @@ class ParcellaireRoute extends EtablissementRoute implements InterfaceDeclaratio
 
     protected $parcellaire = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
         $this->parcellaire = ParcellaireClient::getInstance()->find($parameters['id']);
         if (!$this->parcellaire) {
 
@@ -12,7 +12,7 @@ class ParcellaireRoute extends EtablissementRoute implements InterfaceDeclaratio
         return $this->parcellaire;
     }
 
-    protected function doConvertObjectToArray($object) {
+    protected function doConvertObjectToArray($object = null) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

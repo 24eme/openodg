@@ -6,7 +6,7 @@ sfCoreAutoload::register();
 class ProjectConfiguration extends sfProjectConfiguration
 {
     protected static $routing = null;
-    
+
     public function setup()
     {
         $this->enablePlugins('acCouchdbPlugin');
@@ -22,17 +22,20 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinParcellairePlugin');
         $this->enablePlugins('acVinTourneePlugin');
         $this->enablePlugins('acVinConstatsVTSGNPlugin');
-        $this->enablePlugins('EtablissementPlugin');
-        $this->enablePlugins('ComptePlugin');
+        //$this->enablePlugins('EtablissementPlugin');
+        //$this->enablePlugins('ComptePlugin');
         $this->enablePlugins('EmailPlugin');
         $this->enablePlugins('acExceptionNotifierPlugin');
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
-	$this->enablePlugins('FacturationPlugin');
+	    $this->enablePlugins('FacturationPlugin');
         $this->enablePlugins('acVinGenerationPlugin');
-    $this->enablePlugins('acVinAbonnementPlugin');
-	$this->enablePlugins('acVinTiragePlugin');
-	$this->enablePlugins('FichierPlugin');
+        $this->enablePlugins('acVinAbonnementPlugin');
+    	$this->enablePlugins('acVinTiragePlugin');
+    	$this->enablePlugins('FichierPlugin');
+        $this->enablePlugins('acVinSocietePlugin');
+        $this->enablePlugins('acVinEtablissementPlugin');
+        $this->enablePlugins('acVinComptePlugin');
     }
 
     public static function getAppRouting()

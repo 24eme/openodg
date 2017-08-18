@@ -3,7 +3,7 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
 
     protected $drev = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
 
         $this->drev = DRevClient::getInstance()->find($parameters['id']);
         if (!$this->drev) {
@@ -13,7 +13,7 @@ class DRevRoute extends EtablissementRoute implements InterfaceDeclarationRoute 
         return $this->drev;
     }
 
-    protected function doConvertObjectToArray($object) {
+    protected function doConvertObjectToArray($object = null) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

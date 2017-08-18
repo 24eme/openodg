@@ -3,7 +3,7 @@ class DRevMarcRoute extends EtablissementRoute implements InterfaceDeclarationRo
 
     protected $drevMarc = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
 
         $this->drevMarc = DRevMarcClient::getInstance()->find($parameters['id']);
         if (!$this->drevMarc) {
@@ -13,7 +13,7 @@ class DRevMarcRoute extends EtablissementRoute implements InterfaceDeclarationRo
         return $this->drevMarc;
     }
 
-    protected function doConvertObjectToArray($object) {
+    protected function doConvertObjectToArray($object = null) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

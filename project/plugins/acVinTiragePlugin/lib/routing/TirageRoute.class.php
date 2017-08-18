@@ -4,7 +4,7 @@ class TirageRoute extends EtablissementRoute implements InterfaceDeclarationRout
 
     protected $tirage = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
 
         $this->tirage = TirageClient::getInstance()->find($parameters['id']);
         if (!$this->tirage) {
@@ -14,7 +14,7 @@ class TirageRoute extends EtablissementRoute implements InterfaceDeclarationRout
         return $this->tirage;
     }
 
-    protected function doConvertObjectToArray($object) {
+    protected function doConvertObjectToArray($object = null) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

@@ -3,7 +3,7 @@ class FactureRoute extends CompteRoute implements InterfaceFacturationRoute {
 
     protected $facture = null;
 
-    protected function getObjectForParameters($parameters) {
+    protected function getObjectForParameters($parameters = null) {
 
         $this->facture = FactureClient::getInstance()->find($parameters['id']);
         if (!$this->facture) {
@@ -13,7 +13,7 @@ class FactureRoute extends CompteRoute implements InterfaceFacturationRoute {
         return $this->facture;
     }
 
-    protected function doConvertObjectToArray($object) {
+    protected function doConvertObjectToArray($object = null) {
         $parameters = array("id" => $object->_id);
         return $parameters;
     }

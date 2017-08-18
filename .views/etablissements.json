@@ -1,0 +1,20 @@
+{
+   "views" : {
+      "douane" : {
+         "map" : "function(doc) {\n   \tif (doc.type == \"Etablissement\") {\n   \t\temit(doc.service_douane, [\n \t\t\t  doc.interpro,\n   \t\t\t  doc._id, \n   \t\t\t  doc.nom, \n \t\t  \t  doc.identifiant, \n \t\t  \t  doc.raison_sociale, \n \t\t  \t  doc.siret, \n \t\t  \t  doc.cvi, \n   \t\t\t  doc.famille, \n \t\t  \t  doc.siege.commune, \n \t\t      doc.siege.code_postal]);\n  \t}\n }"
+      },
+      "all" : {
+         "reduce" : "function (keys, values, rereduce) {\n     \n \tif(!rereduce) {\n \t\treturn values.length;\n \t}\n \n \treturn sum(values);\n }\n",
+         "map" : "function(doc) {\n   \tif (doc.type != \"Etablissement\") {\n \n         return;\n     }\n \n     emit([doc.interpro, doc.statut, doc.famille, doc.id_societe, doc._id, doc.nom, doc.identifiant, doc.cvi, doc.region], [doc.raison_sociale, doc.siege.adresse, doc.siege.commune, doc.siege.code_postal, doc.no_accises, doc.carte_pro, doc.email, doc.telephone, doc.fax, doc.recette_locale.id_douane, doc.recette_locale.nom]);\n }\n"
+      },
+      "findByCvi" : {
+         "map" : "function(doc) {\n   \tif (doc.type == \"Etablissement\") {\n   \t\temit([doc.cvi],[doc.identifiant, doc.nom, doc.siege.commune]);\n       if (doc.no_accises) {\n         emit([doc.no_accises],[doc.identifiant, doc.nom, doc.siege.commune]);\n       }\n  \t}\n }\n"
+      },
+      "region" : {
+         "map" : "function(doc) {\n \n     if (doc.type != \"Etablissement\") {\n         \n         return ;     \n     }     \n     \n     if (doc.cooperative && doc.cooperative != \"0\") {\n         emit([\"COOPERATIVE\", doc.statut, doc.region, doc.siege.commune, doc.siege.code_postal, doc.cvi, doc.nom, doc.identifiant], 1);\n     } else {\n         emit([doc.famille, doc.statut, doc.region, doc.siege.commune, doc.siege.code_postal, doc.cvi, doc.nom, doc.identifiant], 1);\n     }\n }"
+      }
+   },
+   "_id" : "_design/etablissement",
+   "language" : "javascript"
+}
+{"ok":true,"id":"_design/etablissement","rev":"1-9e7f9b900135938bdf566063d265cdfc"}

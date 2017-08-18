@@ -24,7 +24,7 @@ test:
 
 all:
   .settings:
-    enabled_modules:        [default, Email, piece]
+    enabled_modules:        [default, Email, piece, compte]
     # Form security secret (CSRF protection)
     csrf_secret:            false
 
@@ -45,4 +45,4 @@ all:
     secure_action:          error403
 
     i18n:                   true
-    default_culture:        fr 
+    default_culture:        fr
