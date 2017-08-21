@@ -136,7 +136,7 @@
     };
     $.fn.initSelect2Autocomplete = function ()
     {
-        $(this).find('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
+        //$(this).find('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
     }
 
     $.fn.initSelect2AutocompleteRemote = function ()
@@ -665,6 +665,66 @@
         $(this).initSelect2Autocomplete();
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();
+
+        $(this).find(".select2autocomplete").each(function () {
+            console.log($(this))
+            var urlAjax = $(this).data('ajax');
+            var defaultValue = $(this).val();
+            var defaultValueSplitted = defaultValue.split(',');
+            var select2 = $(this);
+            $(this).select2({
+                onselected: function () {
+                },
+                initSelection: function (element, callback) {
+                    if (defaultValue != '') {
+                        callback({id: defaultValueSplitted[0], text: defaultValueSplitted[1]});
+                        select2.val(defaultValueSplitted[0]);
+                    }
+                },
+                placeholder: 'Entrer un nom',
+                minimumInputLength: 3,
+                formatInputTooShort: function (input, min) {
+                    var n = min - input.length;
+                    return  min + " caractère" + (n == 1 ? "" : "s") + " min";
+                },
+                formatNoMatches: function () {
+                    return "Aucun résultat";
+                },
+                formatSearching: function () {
+                    return "Recherche…";
+                },
+                allowClear: true,
+                ajax: {
+                    quietMillis: 150,
+                    url: urlAjax,
+                    dataType: 'json',
+                    type: "GET",
+                    data: function (term, page) {
+                        return {
+                            q: term
+                        };
+                    },
+                    results: function (data) {
+                        var results = [];
+                        $.each(data, function (index, item) {
+                            results.push({
+                                id: index,
+                                text: item
+                            });
+                        });
+                        return {
+                            results: results
+                        }
+
+                    }}
+            });
+        });
+
+        /*$(this).find(".select2SubmitOnChange").on("change", function (e) {
+            if (e.val) {
+                $(this).parents('form').submit();
+            }
+        });*/
     }
 
     /* =================================================================================== */

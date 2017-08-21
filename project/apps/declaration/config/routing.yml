@@ -46,6 +46,10 @@ declaration_export:
   url: /declarations/export
   param: { module: declaration, action: export }
 
+declaration_etablissement_selection:
+  url: /declarations-etablissement-selection
+  param: { module: declaration, action: etablissementSelection }
+
 declaration_etablissement:
   url: /declarations/:id
   param: { module: declaration, action: etablissement }

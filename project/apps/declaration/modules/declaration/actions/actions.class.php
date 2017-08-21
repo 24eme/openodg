@@ -10,7 +10,7 @@ class declarationActions extends sfActions {
         $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
         $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
 
-        $this->form = new LoginForm();
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -73,6 +73,17 @@ class declarationActions extends sfActions {
         $attachement = sprintf("attachment; filename=export_declarations_%s.csv", date('YmdHis'));
         $this->response->setContentType('text/csv');
         $this->response->setHttpHeader('Content-Disposition',$attachement );
+    }
+
+    public function executeEtablissementSelection(sfWebRequest $request) {
+        $form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $form->bind($request->getParameter($form->getName()));
+        if (!$form->isValid()) {
+
+            return $this->redirect('drm');
+        }
+
+        return $this->redirect('declaration_etablissement', $form->getEtablissement());
     }
 
     public function executeEtablissement(sfWebRequest $request) {

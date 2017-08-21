@@ -7,15 +7,15 @@ class ParcellaireClient extends acCouchdbClient {
     const TYPE_COUCHDB_PARCELLAIRE_CREMANT = "PARCELLAIRECREMANT";
     const TYPE_COUCHDB_INTENTION_CREMANT = "INTENTIONCREMANT";
     const DESTINATION_SUR_PLACE = "SUR_PLACE";
-    const DESTINATION_CAVE_COOPERATIVE = EtablissementClient::FAMILLE_CAVE_COOPERATIVE;
-    const DESTINATION_NEGOCIANT = EtablissementClient::FAMILLE_NEGOCIANT;
+    const DESTINATION_CAVE_COOPERATIVE = EtablissementFamilles::FAMILLE_COOPERATIVE;
+    const DESTINATION_NEGOCIANT = EtablissementFamilles::FAMILLE_NEGOCIANT;
     const APPELLATION_ALSACEBLANC = 'ALSACEBLANC';
     const APPELLATION_VTSGN = 'VTSGN';
     const APPELLATION_GRDCRU = 'GRDCRU';
     const APPELLATION_COMMUNALE = 'COMMUNALE';
     const APPELLATION_LIEUDIT = 'LIEUDIT';
     const APPELLATION_CREMANT = 'CREMANT';
-    
+
     public static $appellations_libelles = array(
             self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
             self::APPELLATION_GRDCRU => 'Grand Cru',
@@ -33,7 +33,7 @@ class ParcellaireClient extends acCouchdbClient {
     public static function getInstance() {
         return acCouchdbManager::getClient("Parcellaire");
     }
-    
+
     public static function getAppellationLibelle($appellationKey)
     {
     	return self::$appellations_libelles[str_replace('appellation_', '', $appellationKey)];
@@ -121,7 +121,7 @@ class ParcellaireClient extends acCouchdbClient {
         }
         return 'CREMANT';
     }
-    
+
     public function getDateOuverture($type = self::TYPE_COUCHDB) {
         if ($type == self::TYPE_COUCHDB) {
             $dates = sfConfig::get('app_dates_ouverture_parcellaire');

@@ -108,4 +108,9 @@ myUser extends sfBasicSecurityUser
     {
     	return $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
+
+    public function hasTeledeclaration() {
+
+        return false;
+    }
 }

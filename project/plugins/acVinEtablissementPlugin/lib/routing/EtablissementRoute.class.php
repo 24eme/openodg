@@ -5,7 +5,7 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
     protected $etablissement = null;
 
     protected function getObjectForParameters($parameters = null) {
-        $this->etablissement = EtablissementClient::getInstance()->find($parameters['identifiant']);
+        $this->etablissement = EtablissementClient::getInstance()->find($parameters['id']);
         $myUser = sfContext::getInstance()->getUser();
         if ($myUser->hasTeledeclaration() &&
                 $myUser->getCompte()->identifiant != $this->getEtablissement()->getSociete()->getMasterCompte()->identifiant) {
@@ -18,15 +18,15 @@ class EtablissementRoute extends sfObjectRoute implements InterfaceEtablissement
 
     protected function doConvertObjectToArray($object = null) {
 
-        return array("identifiant" => $object->getIdentifiant());
+        return array("id" => $object->getIdentifiant());
     }
 
     public function getEtablissement() {
-      
+
 	if (!$this->etablissement) {
            $this->etablissement = $this->getObject();
       	}
-      	
+
 	return $this->etablissement;
     }
 }
