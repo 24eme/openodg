@@ -40,11 +40,11 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
 
         $etablissement = $drev->getEtablissementObject();
 
-        if(!$etablissement->hasFamille(EtablissementClient::FAMILLE_PRODUCTEUR)) {
+        if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)) {
             $drev->add('non_recoltant', 1);
         }
 
-        if(!$etablissement->hasFamille(EtablissementClient::FAMILLE_CONDITIONNEUR)) {
+        if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_CONDITIONNEUR)) {
             $drev->add('non_conditionneur', 1);
         }
 

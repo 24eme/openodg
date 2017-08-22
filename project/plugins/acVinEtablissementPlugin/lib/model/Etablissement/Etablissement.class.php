@@ -387,4 +387,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
       return $this->getSociete()->hasLegalSignature();
     }
 
+    public function hasFamille($famille) {
+
+        return $this->famille == $famille;
+    }
+
 }
