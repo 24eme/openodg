@@ -41,7 +41,7 @@ class DeclarantDocument
         $declarant->nom .= $etablissement->nom;
         $declarant->raison_sociale = $etablissement->getRaisonSociale();
         $declarant->cvi = $etablissement->cvi;
-        if($etablissement->exist("no_accises")) {
+        if($etablissement->exist("no_accises") && $declarant->exist("no_accises")) {
             $declarant->no_accises = $etablissement->getNoAccises();
         }
         if($etablissement->exist("siege")) {
@@ -63,7 +63,7 @@ class DeclarantDocument
             $declarant->code_postal = $etablissement->code_postal;
         }
 
-        if($etablissement->exist("region")) {
+        if($etablissement->exist("region") && $declarant->exist('region')) {
             $declarant->region = $etablissement->getRegion();
         }
         if ($etablissement->exist("siret")) {
