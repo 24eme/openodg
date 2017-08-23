@@ -12,7 +12,7 @@ abstract class acCouchdbDocumentTree extends acCouchdbDocumentStorable {
 
    public static function freeInstance($document) {
      $class = get_called_class();
-     $definition = acCouchdbManager::getDefinitionHashTree('DRM', $class);
+     $definition = acCouchdbManager::getDefinitionHashTree($document->getDocumentDefinitionModel(), $class);
 
      return new $class($definition, $document, null);
    }
