@@ -2,9 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-//$conf = ConfigurationClient::getCurrent();
-
-$t = new lime_test(8);
+$t = new lime_test(16);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -65,6 +63,16 @@ $drev->validate();
 $drev->save();
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev à la date du jour comme date de validation");
+$t->is(count($drev->mouvements->get($viti->identifiant)), 6, "La DRev a 6 mouvements");
+
+$mouvement = $drev->mouvements->get($viti->identifiant)->getFirst();
+
+$t->ok($mouvement->produit_hash === $produit1->getHash() && $mouvement->produit_libelle === $produit1->getLibelleComplet(), "Le hash et le libellé du produit du mouvement sont corrects");
+$t->is($mouvement->quantite, $produit1->get($mouvement->type_hash), "La quantité du premier mouvement correspond à ce qui a été saisie dans la DRev");
+$t->ok($mouvement->facture === 0 && $mouvement->facturable === 1, "Le mouvement est non facturé et facturable");
+$t->ok($mouvement->date === $drev->validation && $mouvement->date_version === $drev->validation, "Les dates du mouvement sont égale à la date de validation de la DRev");
+
+$t->comment("Génération d'une modificatrice");
 
 $drevM1 = $drev->generateModificative();
 $drevM1->save();

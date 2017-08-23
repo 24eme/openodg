@@ -456,6 +456,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = $date;
+        $this->generateMouvements();
     }
 
     public function devalidate() {
@@ -765,9 +766,34 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsCalcule() {
-        $templateFactureId = "TEMPLATE-FACTURE-AOC-".$this->getCampagne();
+        $mouvements = array();
 
-        return array("E".$this->getIdentifiant() => array($templateFactureId => array("facturable" => 1, "facture" => 0)));
+        foreach($this->declaration->getProduits() as $produit) {
+            $mouvement = $this->createMouvementByProduitAndType($produit, "volume_revendique", "volume_revendique", "Volume revendiqué");
+            $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
+            $mouvement = $this->createMouvementByProduitAndType($produit, "superficie_revendique", "superficie_revendique", "Superficie revendiqué");
+            $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
+            $mouvement = $this->createMouvementByProduitAndType($produit, "superficie_vinifiee", "superficie_vinifiee", "Superficie vinifiée");
+            $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
+        }
+
+        return $mouvements;
+    }
+
+    public function createMouvementByProduitAndType($produit, $field, $type_hash, $type_libelle) {
+        $mouvement = DRevMouvement::freeInstance($this->getDocument());
+        $mouvement->facture = 0;
+        $mouvement->facturable = 1;
+        $mouvement->produit_libelle = $produit->getLibelleComplet();
+        $mouvement->produit_hash = $produit->getHash();
+        $mouvement->type_hash = $type_hash;
+        $mouvement->type_libelle = $type_libelle;
+        $mouvement->quantite = $produit->get($field);
+        $mouvement->version = $this->getDocument()->getVersion();
+        $mouvement->date = ($this->getDocument()->validation) ? ($this->getDocument()->validation) : date('Y-m-d');
+        $mouvement->date_version = $mouvement->date;
+
+        return $mouvement;
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {
@@ -993,9 +1019,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateModificative() {
-        $drm_modificatrice = $this->version_document->generateModificative();
+        $doc = $this->version_document->generateModificative();
 
-        return $drm_modificatrice;
+        return $doc;
     }
 
     public function generateNextVersion() {
