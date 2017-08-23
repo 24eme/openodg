@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(16);
+$t = new lime_test(18);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -82,3 +82,16 @@ $t->ok($drevM1->validation === null && $drevM1->validation_odg === null, "La dre
 
 $drevMaster = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($viti->identifiant, $campagne);
 $t->is($drevM1->_id, $drevMaster->_id, "La récupération de la drev master renvoi la drev ".$drevM1->_id);
+
+$produit1M1 = $drevM1->get($produit1->getHash());
+$produit1M1->superficie_vinifiee = 120;
+
+$t->comment("Validation de la modificatrice");
+
+$drevM1->validate();
+$drevM1->save();
+
+$t->is(count($drevM1->mouvements->get($viti->identifiant)), 1, "La DRev modificatrice a 1 un seul mouvement");
+
+$mouvementM1 = $drevM1->mouvements->get($viti->identifiant)->getFirst();
+$t->is($mouvementM1->quantite, $produit1M1->get($mouvementM1->type_hash) - $produit1->get($mouvementM1->type_hash), "La quantité du mouvement correspond à la différence entre les 2 DRev");

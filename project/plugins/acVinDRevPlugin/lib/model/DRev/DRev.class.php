@@ -769,18 +769,37 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mouvements = array();
 
         foreach($this->declaration->getProduits() as $produit) {
-            $mouvement = $this->createMouvementByProduitAndType($produit, "volume_revendique", "volume_revendique", "Volume revendiqué");
-            $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
-            $mouvement = $this->createMouvementByProduitAndType($produit, "superficie_revendique", "superficie_revendique", "Superficie revendiqué");
-            $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
-            $mouvement = $this->createMouvementByProduitAndType($produit, "superficie_vinifiee", "superficie_vinifiee", "Superficie vinifiée");
-            $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
+            $types_hash = array(
+                "volume_revendique" => "Volume revendiqué",
+                "superficie_revendique" => "Superficie revendiqué",
+                "superficie_vinifiee" => "Superficie vinifiée"
+            );
+
+            foreach($types_hash as $type_hash => $libelle) {
+                $mouvement = $this->createMouvementByProduitAndType($produit, $type_hash, $libelle);
+                if(!$mouvement) {
+
+                    continue;
+                }
+                $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
+            }
         }
 
         return $mouvements;
     }
 
-    public function createMouvementByProduitAndType($produit, $field, $type_hash, $type_libelle) {
+    public function createMouvementByProduitAndType($produit, $type_hash, $type_libelle) {
+        $quantite = $produit->get($type_hash);
+
+        if ($this->getDocument()->hasVersion() && $this->getDocument()->motherExist($produit->getHash() . '/' . $type_hash)) {
+            $quantite = $quantite - $this->getDocument()->motherGet($produit->getHash() . '/' . $type_hash);
+        }
+
+        if (!$quantite) {
+
+            return null;
+        }
+
         $mouvement = DRevMouvement::freeInstance($this->getDocument());
         $mouvement->facture = 0;
         $mouvement->facturable = 1;
@@ -788,7 +807,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $mouvement->produit_hash = $produit->getHash();
         $mouvement->type_hash = $type_hash;
         $mouvement->type_libelle = $type_libelle;
-        $mouvement->quantite = $produit->get($field);
+        $mouvement->quantite = $quantite;
         $mouvement->version = $this->getDocument()->getVersion();
         $mouvement->date = ($this->getDocument()->validation) ? ($this->getDocument()->validation) : date('Y-m-d');
         $mouvement->date_version = $mouvement->date;
@@ -965,8 +984,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function findDocumentByVersion($version) {
+        $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
+        if($this->version) {
+            $id .= "-".$this->version;
+        }
 
-        throw new sfException("Not implemented");
+        return DRevClient::getInstance()->find($id);
     }
 
     public function getMother() {
