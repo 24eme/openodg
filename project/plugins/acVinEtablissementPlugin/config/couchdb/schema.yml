@@ -57,8 +57,8 @@ Etablissement:
        commentaire: {  }
        crd_regime: { }
        adresse_compta: { }
+       siret: { }
        caution: { }
-       siret: { required: false }
        intitule: { required: false }
        declaration_commune: { required: false }
        declaration_commune: { required: false }

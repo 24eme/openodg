@@ -14,7 +14,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
   $drev->delete(false);
 }
 
-$campagne = date('Y')-1;
+$campagne = (date('Y')-1)."";
 
 //Début des tests
 $t->comment("création d'une DRev");
@@ -62,5 +62,15 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqu
 $t->comment("Validation");
 
 $drev->validate();
+$drev->save();
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev à la date du jour comme date de validation");
+
+$drevM1 = $drev->generateModificative();
+$drevM1->save();
+
+$t->is($drevM1->_id, $drev->_id."-M01", "L'id de la drev est ".$drev->_id."-M01");
+$t->ok($drevM1->validation === null && $drevM1->validation_odg === null, "La drev modificatrice est dévalidée");
+
+$drevMaster = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($viti->identifiant, $campagne);
+$t->is($drevM1->_id, $drevMaster->_id, "La récupération de la drev master renvoi la drev ".$drevM1->_id);

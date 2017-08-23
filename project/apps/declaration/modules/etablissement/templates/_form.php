@@ -160,12 +160,14 @@
                    <?php echo $etablissement->telephone_mobile; ?>
                 </span>
             </div>
+            <?php if($etablissement->exist('telephone_prive')): ?>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Tél. Privé</strong>
                 <span class="col-xs-8">
                    <?php echo $etablissement->telephone_prive; ?>
                 </span>
             </div>
+            <?php endif; ?>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Fax</strong>
                 <span class="col-xs-8">

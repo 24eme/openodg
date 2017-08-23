@@ -22,6 +22,16 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         return $doc;
     }
 
+    public function findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $drevs = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
+        foreach ($drevs as $id => $drev) {
+
+            return $this->find($id, $hydrate);
+        }
+
+        return null;
+    }
+
     public function findFacturable($identifiant, $campagne) {
     	$drev = $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
 
@@ -37,6 +47,8 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     {
         $drev = new DRev();
         $drev->initDoc($identifiant, $campagne);
+
+        $drev->storeDeclarant();
 
         $etablissement = $drev->getEtablissementObject();
 

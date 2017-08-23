@@ -54,8 +54,8 @@ foreach $file (@ARGV) {
 foreach $design (keys %views) {
 	if ($design) {
 	    open JSON, '> '.$tmpfile;
-	    print JSON to_json( $views{$design}, { ascii => 1, pretty => 1 } );
-	    print to_json( $views{$design}, { ascii => 1, pretty => 1 } );
+	    print JSON to_json( $views{$design}, { pretty => 1 } );
+	    print to_json( $views{$design}, { pretty => 1 } );
 	    close JSON;
 	    open(COUCH, 'curl -s -X PUT -d "@'.$tmpfile.'" '.$couchurl.'/_design/'.$design.' | ');
 	    print <COUCH>;

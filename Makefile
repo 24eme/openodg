@@ -9,10 +9,10 @@ all: .views/etablissements.json .views/societe.json .views/compte.json .views/de
 .views/compte.json: project/config/databases.yml project/plugins/acVinComptePlugin/lib/model/views/compte.all.reduce.view.js project/plugins/acVinComptePlugin/lib/model/views/compte.all.map.view.js  project/plugins/acVinComptePlugin/lib/model/views/compte.tags.reduce.view.js project/plugins/acVinComptePlugin/lib/model/views/compte.tags.map.view.js
 	perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinComptePlugin/lib/model/views/compte.all.reduce.view.js project/plugins/acVinComptePlugin/lib/model/views/compte.all.map.view.js project/plugins/acVinComptePlugin/lib/model/views/compte.tags.reduce.view.js project/plugins/acVinComptePlugin/lib/model/views/compte.tags.map.view.js > $@ || rm >@
 
-.views/declaration.json: project/config/databases.yml project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.map.view.js project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.reduce.view.js
-	perl bin/generate_views.pl project/config/databases.yml project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.reduce.view.js project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.map.view.js > $@ || rm >@
+.views/declaration.json: project/config/databases.yml project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.map.view.js project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.reduce.view.js project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.identifiant.map.view.js project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.identifiant.reduce.view.js
+	perl bin/generate_views.pl project/config/databases.yml project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.reduce.view.js project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.tous.map.view.js	project/plugins/DeclarationPlugin/lib/Declaration/view/declaration.identifiant.map.view.js > $@ || rm >@
 
-.views/piece.json: project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Piece/views/piece.all.map.view.js project/plugins/acVinDocumentPlugin/lib/Piece/views/piece.all.reduce.view.js 
+.views/piece.json: project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Piece/views/piece.all.map.view.js project/plugins/acVinDocumentPlugin/lib/Piece/views/piece.all.reduce.view.js
 		perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinDocumentPlugin/lib/Piece/views/piece.all.reduce.view.js  project/plugins/acVinDocumentPlugin/lib/Piece/views/piece.all.map.view.js > $@ || rm >@
 
 clean:
