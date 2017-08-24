@@ -18,7 +18,10 @@ class ExportDRevPDF extends ExportPDF {
         if(!is_null($this->drev->getProduitsCepageByAppellations())) {
             $this->printable_document->addPage($this->getPartial('drev/pdfCepages', array('drev' => $this->drev)));
         }
-        $this->printable_document->addPage($this->getPartial('drev/pdfLots', array('drev' => $this->drev)));
+
+        if(DRevConfiguration::getInstance()->hasPrelevements()) {
+            $this->printable_document->addPage($this->getPartial('drev/pdfLots', array('drev' => $this->drev)));
+        }
     }
 
     protected function getHeaderTitle() {
@@ -40,7 +43,7 @@ class ExportDRevPDF extends ExportPDF {
         if ($this->drev->isPapier() && $this->drev->validation && $this->drev->validation !== true) {
             $date = new DateTime($this->drev->validation);
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
-        }  
+        }
 
         return $header_subtitle;
     }

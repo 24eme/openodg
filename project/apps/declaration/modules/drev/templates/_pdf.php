@@ -70,23 +70,25 @@
         <?php endif; ?>
     <?php  endforeach; ?>
 </table>
-<br />
-<br />
-<br />
-<table cellspacing=0 cellpadding=0>
-<tr><td class="tdH2Big"><span class="h2">Dégustation conseil</span></td></tr>
-</table>
-<?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::CUVE)); ?>
-<br />
-<br />
-<?php if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0 || $drev->isNonConditionneurJustForThisMillesime()): ?>
-<br />
-<table cellspacing=0 cellpadding=0>
-<tr><td class="tdH2Big"><span class="h2">Contrôle externe</span></td></tr>
-</table>
-<?php if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0): ?>
-<?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::BOUTEILLE)); ?>
-<?php elseif($drev->isNonConditionneurJustForThisMillesime()): ?>
-<em>Ne conditionne pas de volume pour ce millésime.</em>
-<?php endif; ?>
+<?php if(DRevConfiguration::getInstance()->hasPrelevements()): ?>
+    <br />
+    <br />
+    <br />
+    <table cellspacing=0 cellpadding=0>
+    <tr><td class="tdH2Big"><span class="h2">Dégustation conseil</span></td></tr>
+    </table>
+    <?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::CUVE)); ?>
+    <br />
+    <br />
+    <?php if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0 || $drev->isNonConditionneurJustForThisMillesime()): ?>
+    <br />
+    <table cellspacing=0 cellpadding=0>
+    <tr><td class="tdH2Big"><span class="h2">Contrôle externe</span></td></tr>
+    </table>
+    <?php if(count($drev->getPrelevementsByDate(DRev::BOUTEILLE)) > 0): ?>
+    <?php include_partial('drev/pdfPrelevements', array('drev' => $drev, 'type' => DRev::BOUTEILLE)); ?>
+    <?php elseif($drev->isNonConditionneurJustForThisMillesime()): ?>
+    <em>Ne conditionne pas de volume pour ce millésime.</em>
+    <?php endif; ?>
+    <?php endif; ?>
 <?php endif; ?>
