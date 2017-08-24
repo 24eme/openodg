@@ -15,7 +15,7 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 $campagne = (date('Y')-1)."";
 
 //Début des tests
-$t->comment("création d'une DRev");
+$t->comment("Création d'une DRev");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
@@ -62,7 +62,7 @@ $t->comment("Validation");
 $drev->validate();
 $drev->save();
 
-$t->is($drev->validation, date('Y-m-d'), "La DRev à la date du jour comme date de validation");
+$t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
 $t->is(count($drev->mouvements->get($viti->identifiant)), 6, "La DRev a 6 mouvements");
 
 $mouvement = $drev->mouvements->get($viti->identifiant)->getFirst();
