@@ -330,7 +330,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function addPrelevement($key) {
-        return false;
+    	if(!DRevConfiguration::getInstance()->hasPrelevements()) {
+
+            return false;
+        }
+
         if (!in_array($key, $this->getPrelevementKeys())) {
 
             return null;
@@ -349,7 +353,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function addLotProduit($hash, $prefix) {
-        return false;
+        if(!DRevConfiguration::getInstance()->hasPrelevements()) {
+
+            return false;
+        }
+        
         $hash = $this->getConfiguration()->get($hash)->getHashRelation('lots');
         $key = $prefix . $this->getPrelevementsKeyByHash($hash);
 

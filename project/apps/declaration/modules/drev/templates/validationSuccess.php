@@ -38,7 +38,9 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">
-            <?php if(!$drev->isNonConditionneur()): ?>
+            <?php if(!DrevEtapes::getInstance()->exist(DrevEtapes::ETAPE_DEGUSTATION)): ?>
+                <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
+            <?php elseif(!$drev->isNonConditionneur()): ?>
                 <a href="<?php echo url_for("drev_controle_externe", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>
             <?php else: ?>
                 <a href="<?php echo url_for("drev_degustation_conseil", $drev) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a>

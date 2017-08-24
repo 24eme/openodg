@@ -222,6 +222,12 @@ class drevActions extends sfActions {
                 if ($request->getParameter('redirect', null)) {
                     return $this->redirect('drev_validation', $this->drev);
                 }
+
+                if(!DrevEtapes::getInstance()->exist(DrevEtapes::ETAPE_DEGUSTATION)) {
+
+                    return $this->redirect('drev_validation', $this->drev);
+                }
+
                 return $this->redirect('drev_degustation_conseil', $this->drev);
             }
         }

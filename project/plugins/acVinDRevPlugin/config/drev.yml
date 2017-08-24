@@ -1,0 +1,4 @@
+all:
+  configuration:
+    drev:
+      prelevements: false

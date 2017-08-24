@@ -6,15 +6,21 @@ abstract class Etapes
     abstract public function getRouteLinksHash() ;
     abstract public function getLibellesHash() ;
 
-    public function __construct() 
+    public function __construct()
     {
     }
-    
+
     public function getEtapes()
     {
         return array_keys($this->getEtapesHash());
     }
-    
+
+    public function exist($step) {
+        $etapes = $this->getEtapes();
+
+        return in_array($step, $etapes);
+    }
+
     public function getRouteLink($step) {
         return $this->getRouteLinksHash()[$step];
     }
@@ -29,7 +35,6 @@ abstract class Etapes
 
     public function getLast()
     {
-        echo ">getLast(): ";
         $a = $this->getEtapes();
         return $a[count($a)-1];
     }
@@ -44,13 +49,13 @@ abstract class Etapes
 		}
 		return $first;
 	}
-	
-	public function getNext($etape) 
+
+	public function getNext($etape)
 	{
 		if (!$etape) {
 			return $this->getFirst();
 		}
-		$etapes = $this->getEtapes(); 
+		$etapes = $this->getEtapes();
 		if (!in_array($etape, $etapes)) {
 			throw new sfException('Etape inconnu');
 		}
@@ -67,7 +72,7 @@ abstract class Etapes
 		}
 		return $next;
 	}
-	
+
 	public function isGt($etapeToTest, $etape)
 	{
         $etapes = $this->getEtapes();
@@ -86,7 +91,7 @@ abstract class Etapes
 		$keyToTest = array_search($etapeToTest, $etapes);
 		return ($keyToTest >= $key);
 	}
-	
+
 	public function isLt($etapeToTest, $etape)
 	{
 		return !$this->isGt($etapeToTest, $etape);
