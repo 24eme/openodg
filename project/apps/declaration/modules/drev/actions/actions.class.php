@@ -225,7 +225,7 @@ class drevActions extends sfActions {
 
                 if(!DrevEtapes::getInstance()->exist(DrevEtapes::ETAPE_DEGUSTATION)) {
 
-                    return $this->redirect('drev_validation', $this->drev);
+                    return $this->redirect('drev_vci', $this->drev);
                 }
 
                 return $this->redirect('drev_degustation_conseil', $this->drev);
@@ -303,6 +303,7 @@ class drevActions extends sfActions {
 
 
         if ($request->getParameter('redirect', null)) {
+
             return $this->redirect('drev_validation', $this->drev);
         }
 
@@ -337,6 +338,25 @@ class drevActions extends sfActions {
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
         return $this->redirect('drev_revendication_cepage', $this->noeud);
+    }
+
+    public function executeVci(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VCI))) {
+            $this->drev->save();
+        }
+
+        $this->form = new DRevVciForm($this->drev);
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        return $this->redirect('drev_validation', $this->drev);
+
     }
 
     public function executeDegustationConseil(sfWebRequest $request) {

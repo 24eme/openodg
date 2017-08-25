@@ -14,7 +14,7 @@ abstract class acCouchdbObjectForm extends sfFormObject implements acCouchdbForm
         $this->object = $object;
         $this->isNew = false;
         $this->docable = new acCouchdbFormDocable($this, $object->getDocument());
-        
+
         parent::__construct(array(), $options, $CSRFSecret);
         $this->updateDefaultsFromObject();
         $this->docable->init();
@@ -24,9 +24,9 @@ abstract class acCouchdbObjectForm extends sfFormObject implements acCouchdbForm
 
         return $this->docable;
     }
-    
+
     public function disabledRevisionVerification() {
-        
+
         $this->docable->disabledRevisionVerification();
     }
 
@@ -69,7 +69,6 @@ abstract class acCouchdbObjectForm extends sfFormObject implements acCouchdbForm
                 $defaults[$name] = $form->getDefaults();
             }
         }
-
         $this->setDefaults($defaults);
     }
 
@@ -191,10 +190,10 @@ abstract class acCouchdbObjectForm extends sfFormObject implements acCouchdbForm
 
         return ;
     }
-    
+
     public function updateObjectEmbeddedForms($values, $forms = null)
   	{
-  		
+
   		return ;
   	}
 

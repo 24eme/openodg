@@ -80,7 +80,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-primary btn-upper">Retourner à la validation <span class="glyphicon glyphicon-check"></span></button>
                 <?php else: ?>
-                <button type="submit" class="btn btn-primary btn-upper">Continuer <?php if($drev->isNonRecoltant()): ?>en saisissant les cépages<?php else: ?>vers la dégustation conseil<?php endif; ?> <span class="glyphicon glyphicon-chevron-right"></span></button>
+                <button type="submit" class="btn btn-primary btn-upper">Continuer <?php if($drev->isNonRecoltant()): ?>en saisissant les cépages<?php else: ?>vers la répartition du vci<?php endif; ?> <span class="glyphicon glyphicon-chevron-right"></span></button>
             <?php endif; ?>
 
         </div>

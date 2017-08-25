@@ -442,6 +442,16 @@ drev_revendication:
   requirements:
     sf_method: [get, post]
 
+drev_vci:
+  url: /drev/vci/:id/:appellation
+  param: { module: drev, action: vci, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_revendication_cepage:
   url: /drev/revendication/:id/cepage/:hash
   param: { module: drev, action: revendicationCepage }

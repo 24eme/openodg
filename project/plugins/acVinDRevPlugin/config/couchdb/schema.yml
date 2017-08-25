@@ -100,6 +100,9 @@ DRev:
                                                 superficie_revendique_vtsgn: { type: float, required: false }
                                                 superficie_vinifiee: { type: float, required: false }
                                                 superficie_vinifiee_vtsgn: { type: float, required: false }
+                                                vci: { type: float }
+                                                vci_destruction: { type: float }
+                                                vci_complement_dr: { type: float } 
                                                 detail:
                                                   type: collection
                                                   definition:
