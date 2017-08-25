@@ -9,8 +9,8 @@
 					<p>Confirmez-vous la validation de votre Déclaration de Revendication ?</p>
 				</div>
 				<div class="modal-footer">
-					<a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>
-					<a id="submit-confirmation-validation" class="btn btn-default btn pull-right">Confirmer</a>
+					<a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
+					<a id="submit-confirmation-validation" class="btn btn-success btn pull-right">Confirmer</a>
 				</div>
 		</div>
 	</div>

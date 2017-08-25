@@ -3,17 +3,17 @@
     <td><?php echo $produit->getLibelleComplet() ?> <?php if (!$vtsgn && $produit->canHaveVtsgn()):?><small class="text-muted">(hors VT/SGN)</small><?php elseif($vtsgn) : ?><span>VT/SGN</span><?php endif; ?></td>
     <?php if ($drev->hasDR()): ?>
         <?php if (!$produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->superficie_total): ?>
-            <td class="striped-success"></td>
-            <td class="striped-success"></td>
-            <td class="striped-success"></td>
+            <td class="info"></td>
+            <td class="info"></td>
+            <td class="info"></td>
         <?php else: ?>
-            <td class="text-right striped-success small">
+            <td class="text-right info small">
               <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->volume_sur_place); ?>&nbsp;<small>hl</small>
             </td>
-            <td class="text-right striped-success small">
+            <td class="text-right info small">
               <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->volume_total); ?>&nbsp;<small >hl</small>
             </td>
-            <td class="text-right striped-success small">
+            <td class="text-right info small">
               <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->usages_industriels_total); ?>&nbsp;<small>hl</small>
             </td>
     <?php endif; ?>

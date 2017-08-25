@@ -139,7 +139,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function hasDR() {
-
+        return true;
+        
         return $this->_attachments->exist('DR.csv');
     }
 
@@ -357,7 +358,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             return false;
         }
-        
+
         $hash = $this->getConfiguration()->get($hash)->getHashRelation('lots');
         $key = $prefix . $this->getPrelevementsKeyByHash($hash);
 

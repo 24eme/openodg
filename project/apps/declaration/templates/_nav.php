@@ -10,7 +10,7 @@
     <?php $compte = $route->getCompte(); ?>
     <?php $etablissement = $compte->getEtablissementObj(); ?>
 <?php endif; ?>
-
+<div class="container" style="padding-left: 0; padding-right: 0;">
 <nav id="menu_navigation" class="navbar navbar-default">
     <div class="navbar-header hidden-lg hidden-md">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -35,3 +35,4 @@
         </ul>
     </div>
 </nav>
+</div>
