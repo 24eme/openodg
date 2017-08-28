@@ -355,6 +355,15 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
         return $this->redirect('drev_validation', $this->drev);
 
     }
