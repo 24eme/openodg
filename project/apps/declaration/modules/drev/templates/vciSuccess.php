@@ -11,13 +11,20 @@
     <table class="table table-bordered table-striped table-condensed">
         <thead>
             <tr>
+                <th class="text-left"></th>
+                <th class="text-center col-xs-1">À utiliser</th>
+                <th class="text-center col-xs-1" colspan="4">Utilisation</th>
+                <th class="text-center col-xs-1">Constitué</th>
+                <th class="text-center col-xs-1">Cumul</th>
+            </tr>
+            <tr>
                 <th class="text-left col-xs-3">Appellation revendiquée</th>
                 <th class="text-center col-xs-1">Stock avant récolte</th>
-                <th class="text-center col-xs-1">Volume de l'année</th>
-                <th class="text-center col-xs-1">À détruire</th>
-                <th class="text-center col-xs-1">En complément de la DR</th>
+                <th class="text-center col-xs-1">Complément</th>
                 <th class="text-center col-xs-1">Substitution</th>
+                <th class="text-center col-xs-1">À détruire</th>
                 <th class="text-center col-xs-1">Rafraichi</th>
+                <th class="text-center col-xs-1">Cette année</th>
                 <th class="text-center col-xs-1">Stock après récolte</th>
             </tr>
         </thead>
@@ -28,11 +35,11 @@
                     <td><?php echo $produit->getLibelleComplet() ?></td>
                     <td><?php echo $formProduit['vci_stock_initial']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci_destruction']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci_complement_dr']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
+                    <td class="text-right"><?php echo $formProduit['vci_complement_dr']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_substitution']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci_rafraichi']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci_stock_final']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['vci_destruction']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
+                    <td class="text-right"><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl", "readonly" => "readonly")) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

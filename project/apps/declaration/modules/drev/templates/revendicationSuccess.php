@@ -41,20 +41,30 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->hasDR()): ?>
             <tr>
                 <th class="text-center col-xs-3"></th>
-                <th colspan="3" class="text-center info">Déclaration de Récolte</th>
+                <th colspan="4" class="text-center info">Déclaration de Récolte</th>
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
+                <th class="text-center col-xs-1">VCI</th>
             </tr>
             <?php endif; ?>
             <tr>
-                <th class="col-xs-3">Appellation revendiquée</th>
-                <?php if ($drev->hasDR()): ?>
+                <th>Appellation revendiquée</th>
+                <!--<?php if ($drev->hasDR()): ?>
                 <th class="col-xs-1 text-center info">Volume sur place<br /><small class="text-muted">(hl)</small></th>
                 <th class="col-xs-1 text-center info">Volume total<br /><small class="text-muted">(hl)</small></th>
                 <th class="col-xs-1 text-center info">Usages industriels<br /><small class="text-muted">(hl)</small></th>
                 <?php endif; ?>
                 <th class="col-xs-2 text-center" style="position: relative;">Superficie<br />Totale<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie totale en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="col-xs-2 text-center" style="position: relative;">Superficie<br />Vinifiée<br /><small class="text-muted">(ares)</small><a style="position: absolute; bottom: 0; right: 0px;" title="Cette superficie correspond à la superficie vinifiée en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-2 text-center" style="position: relative;">Volume<br />Revendiqué<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-2 text-center" style="position: relative;">Volume<br />Revendiqué<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>-->
+                <th class="text-center info col-xs-1">Superficie totale</th>
+                <th class="text-center info col-xs-1">Volume nets</th>
+                <th class="text-center info col-xs-1">Vendange fraiche</th>
+                <th class="text-center info col-xs-1">VCI Constitué</th>
+                <th class="col-xs-1 text-center" style="position: relative;">Superficie revendiqué<br /><small class="text-muted">(ares)</small><a style="position: absolute; bottom: 0; right: 0px;" title="Cette superficie correspond à la superficie vinifiée en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume net revendiqué sans VCI<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume net revendiqué avec VCI<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Stock VCI avant récolte<br /><small class="text-muted">(hl)</small><a title="Le volume revendiqué correspond au volume sur place de votre Déclaration de Récolte moins les usages industriels appliqués à votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+
             </tr>
         </thead>
         <tbody>
