@@ -3,6 +3,7 @@
 class EtablissementForm extends acCouchdbObjectForm
 {
 	protected $updatedValues;
+	protected $coordonneesEtablissement = null;
 
     public function __construct(\acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -47,6 +48,29 @@ class EtablissementForm extends acCouchdbObjectForm
         $this->widgetSchema->setNameFormat('etablissement[%s]');
     }
 
+	private function getCoordonneesEtablissement() {
+		if (!$this->coordonneesEtablissement) {
+			$this->coordonneesEtablissement = $this->getObject();
+		}
+		return $this->coordonneesEtablissement;
+	}
+
+	public function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $this->getCoordonneesEtablissement();
+        $this->setDefault('cvi', $this->coordonneesEtablissement->cvi);
+        $this->setDefault('adresse', $this->coordonneesEtablissement->adresse);
+        $this->setDefault('code_postal', $this->coordonneesEtablissement->code_postal);
+        $this->setDefault('commune', $this->coordonneesEtablissement->commune);
+        $this->setDefault('email', $this->coordonneesEtablissement->email);
+        $this->setDefault('siret', $this->coordonneesEtablissement->siret);
+        $this->setDefault('telephone_prive', $this->coordonneesEtablissement->telephone_perso);
+        $this->setDefault('telephone_bureau', $this->coordonneesEtablissement->telephone_bureau);
+        $this->setDefault('telephone_mobile', $this->coordonneesEtablissement->telephone_mobile);
+        $this->setDefault('fax', $this->coordonneesEtablissement->fax);
+
+    }
+
     public function save($con = null) {
 
         parent::save($con);
@@ -62,6 +86,17 @@ class EtablissementForm extends acCouchdbObjectForm
     		}
     	}
         parent::doUpdateObject($values);
+		$this->getObject()->setAdresse($values['adresse']);
+		$this->getObject()->setCodePostal($values['code_postal']);
+		$this->getObject()->setCommune($values['commune']);
+		$this->getObject()->setEmail($values['email']);
+		$this->getObject()->setSiret($values['siret']);
+		$this->getObject()->setCvi($values['cvi']);
+		$this->getObject()->setSiret($values['siret']);
+		$this->getObject()->setFax($values['fax']);
+		$this->getObject()->setTelephonePerso($values['telephone_prive']);
+		$this->getObject()->setTelephoneBureau($values['telephone_bureau']);
+		$this->getObject()->setTelephoneMobile($values['telephone_mobile']);
     }
 
     public function getUpdatedValues()

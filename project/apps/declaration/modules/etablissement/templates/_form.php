@@ -71,6 +71,7 @@
                     <?php echo $form["telephone_mobile"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <?php if(isset($form["telephone_prive"])): ?>
             <div class="form-group<?php if($form["telephone_prive"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["telephone_prive"]->renderError(); ?>
                 <?php echo $form["telephone_prive"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -78,6 +79,7 @@
                     <?php echo $form["telephone_prive"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <?php endif; ?>
             <div class="form-group<?php if($form["fax"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["fax"]->renderError(); ?>
                 <?php echo $form["fax"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
