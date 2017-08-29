@@ -1,0 +1,1402 @@
+{
+   "_id": "CONFIGURATION-2016",
+   "_rev": "10-63df0895fa5458247b79bef83fd2e0c7",
+   "type": "Configuration",
+   "campagne": "2016",
+   "declaration": {
+       "douane": {
+           "appellation_lieu": "001",
+           "type_aoc": "1",
+           "couleur": "B",
+           "qualite": "S ",
+           "qualite_vt": "D7",
+           "qualite_sgn": "D6"
+       },
+       "certification": {
+           "rendement": null,
+           "libelle": "AOP",
+           "douane": {
+           },
+           "genre": {
+               "rendement": null,
+               "libelle": null,
+               "douane": {
+               },
+               "appellation_CDR": {
+                   "appellation": "CRD",
+                   "libelle": "Cotes du Rhone Regional",
+                   "rendement": null,
+                   "rendement_appellation": 80,
+                   "mout": null,
+                   "douane": {
+                       "qualite": "S "
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_CVS": {
+                   "appellation": "CVS",
+                   "libelle": "CdR Villages sans NG",
+                   "rendement": null,
+                   "rendement_appellation": 80,
+                   "mout": null,
+                   "douane": {
+                       "qualite": "S "
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_CVG": {
+                   "appellation": "CVS",
+                   "libelle": "CdR Villages avec NG",
+                   "rendement": null,
+                   "rendement_appellation": 80,
+                   "mout": null,
+                   "douane": {
+                       "qualite": "S "
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_BEA": {
+                   "appellation": "BEA",
+                   "libelle": "Beaumes de Venise cru",
+                   "rendement": null,
+                   "rendement_appellation": 80,
+                   "mout": null,
+                   "douane": {
+                       "qualite": "S "
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": "5"
+                                   },
+                                   "libelle": null,
+                                   "rendement": 100,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_CDP": {
+                   "appellation": "CDP",
+                   "libelle": "Chateauneuf du Pape",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_CGR": {
+                   "appellation": "CGR",
+                   "libelle": "Chateau Grllet",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_COD": {
+                   "appellation": "COD",
+                   "libelle": "Condrieu",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_COR": {
+                   "appellation": "COD",
+                   "libelle": "Cornas",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_CRH": {
+                   "appellation": "CRH",
+                   "libelle": "Crozes Hermitage",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_GIG": {
+                   "appellation": "GIG",
+                   "libelle": "Gigondas",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_HER": {
+                   "appellation": "HER",
+                   "libelle": "Hermitage",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_LIR": {
+                   "appellation": "LIR",
+                   "libelle": "Lirac",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_RTA": {
+                   "appellation": "RTA",
+                   "libelle": "Rasteau",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_SJO": {
+                   "appellation": "SJO",
+                   "libelle": "Saint Joseph",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_SPT": {
+                   "appellation": "SPT",
+                   "libelle": "Saint Peray Tranquilles",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_TAV": {
+                   "appellation": "TAV",
+                   "libelle": "Tavel",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_VAC": {
+                   "appellation": "VAC",
+                   "libelle": "Vacqueyras",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_VBR": {
+                   "appellation": "VBR",
+                   "libelle": "Vinsobres",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_EFFSPE": {
+                   "appellation": "SPE",
+                   "libelle": "Saint Peray Effervescents",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_VDNVDB": {
+                   "appellation": "VDB",
+                   "libelle": "VDN Muscat de BdVenise",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               },
+               "appellation_VDNVDR": {
+                   "appellation": "VDN",
+                   "libelle": "VDN Rasteau",
+                   "rendement": null,
+                   "rendement_appellation": 75,
+                   "mout": null,
+                   "douane": {
+                       "appellation_lieu": "001",
+                       "couleur": "S",
+                       "code_cepage": "1"
+                   },
+                   "mention": {
+                       "libelle": null,
+                       "rendement": null,
+                       "rendement_mention": null,
+                       "douane": {
+                       },
+                       "lieu": {
+                           "rendement": null,
+                           "rendement_mention": null,
+                           "rendement_appellation": null,
+                           "libelle": null,
+                           "douane": {
+                           },
+                           "couleurRouge": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rouge",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurRose": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Rosé",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           },
+                           "couleurBlanc": {
+                               "rendement_couleur": null,
+                               "rendement": null,
+                               "libelle": "Blanc",
+                               "douane": {
+                               },
+                               "cepage_DEFAUT": {
+                                   "douane": {
+                                       "code_cepage": null
+                                   },
+                                   "libelle": null,
+                                   "rendement": null,
+                                   "libelle_long": null,
+                                   "no_vtsgn": 1
+                               }
+                           }
+                       }
+                   },
+                   "no_vtsgn": 1,
+                   "relations": {
+                       "lots": "appellation_ALSACE"
+                   },
+                   "no_acces": {
+                       "DREV_LOTS": 1,
+                       "DEGUSTATION": 1,
+                       "PARCELLAIRE": 1
+                   }
+               }
+           }
+       }
+   }
+}
