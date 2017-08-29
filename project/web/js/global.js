@@ -666,7 +666,7 @@
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();
 
-        /*$(this).find(".select2autocomplete").each(function () {
+        $(this).find(".select2autocompleteAjax").each(function () {
             console.log($(this))
             var urlAjax = $(this).data('ajax');
             var defaultValue = $(this).val();
@@ -718,7 +718,7 @@
 
                     }}
             });
-        });*/
+        });
 
         /*$(this).find(".select2SubmitOnChange").on("change", function (e) {
             if (e.val) {
