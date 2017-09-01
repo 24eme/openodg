@@ -1,6 +1,6 @@
 <?php
 
-class DRCsvFile 
+class DRCsvFile
 {
   const CSV_ACHETEUR_CVI = 0;
   const CSV_ACHETEUR_LIBELLE = 1;
@@ -18,6 +18,7 @@ class DRCsvFile
   const CSV_SUPERFICIE_TOTALE = 12;
   const CSV_VOLUME_TOTAL = 13;
   const CSV_USAGES_INDUSTRIELS_TOTAL = 14;
+  const CSV_VCI = 15;
   const CSV_HASH_PRODUIT = 18;
 
   private $file = null;
@@ -33,7 +34,7 @@ class DRCsvFile
     $this->ignore = $ignore_first_if_comment;
     if (!file_exists($file) && !preg_match('/^http/', $file))
       throw new Exception("Cannont access $file");
-      
+
     $this->file = $file;
     $handle = fopen($this->file, 'r');
     if (!$handle)
