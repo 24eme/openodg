@@ -15,6 +15,16 @@
 		<a class="pull-right" href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><span class="glyphicon glyphicon-file"></span></a>
 		<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 		<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;"><span class=" glyphicon glyphicon-eye-open"></span></a>
+		
+		<div class="btn-group">
+  			<button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class=" glyphicon glyphicon-eye-open"></span></button>
+		  	<ul class="dropdown-menu">
+		  		<li>test</li>
+		  	</ul>
+		</div>
+		
+		
+		
 		<?php endif; ?>
 	</span>
 </div>

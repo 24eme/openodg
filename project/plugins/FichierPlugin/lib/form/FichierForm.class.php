@@ -35,11 +35,12 @@ class FichierForm extends BaseForm
      	));
 
      	$this->widgetSchema->setLabels(array(
-     		'file' => ($fileRequired)? 'Document*' : 'Document',
+     		'file' => ($fileRequired)? 'Fichier*' : 'Fichier',
      		'libelle' => 'Libellé du document*',
      		'date_depot' => 'Date dépôt*',
      		'visibilite' => 'Visible par le déclarant'
      	));
+     	
         $this->widgetSchema->setNameFormat('fichier[%s]');
     }
     
