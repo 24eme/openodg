@@ -31,7 +31,7 @@ cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.xml | sed -e 's|<b:I
 ## ici retirer le head
 ## cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA_N.xml | grep -E '^<b:Identite_Identite>' | sed -r 's/(.*)<b:CleIdentite>([0-9]+)<\/b:CleIdentite>(.*)/\2###\1<b:CleIdentite>\2<\/b:CleIdentite>\3/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml
 
-cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA_N.xml | grep -E '^<b:Identite_Identite>' | sed -r 's/(.*)<b:CleIdentite>([0-9]+)<\/b:CleIdentite>(.*)/\2###\1<b:CleIdentite>\2<\/b:CleIdentite>\3/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml
+head -n 200 $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA_N.xml | grep -E '^<b:Identite_Identite>' | sed -r 's/(.*)<b:CleIdentite>([0-9]+)<\/b:CleIdentite>(.*)/\2###\1<b:CleIdentite>\2<\/b:CleIdentite>\3/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml
 
 echo "Création des xml entités";
 ###
