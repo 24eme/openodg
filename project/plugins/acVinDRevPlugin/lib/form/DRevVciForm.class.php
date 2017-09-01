@@ -3,7 +3,16 @@ class DRevVciForm extends acCouchdbObjectForm
 {
 	public function configure()
     {
-        $this->embedForm('produits', new DRevVciProduitsForm($this->getObject()->declaration->getProduits()));
+		$produits = array();
+
+		foreach($this->getObject()->declaration->getProduits() as $produit) {
+			if(!$produit->vci_stock_initial) {
+				continue;
+			}
+			$produits[$produit->getHash()] = $produit;
+		}
+
+		$this->embedForm('produits', new DRevVciProduitsForm($produits));
         $this->validatorSchema->setPostValidator(new DRevVciProduitValidator());
         $this->widgetSchema->setNameFormat('drev_vci[%s]');
     }

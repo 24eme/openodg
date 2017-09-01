@@ -75,13 +75,14 @@ class DRDouaneCsvFile {
         $csvFinal = "";
         foreach($produits as $produit) {
             if ($produit["L09_cave_particuliere"]) {
-                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $cvi,
                     "SUR PLACE",
                     $cvi,
                     $raisonSociale,
                     $produit["L01_code_douane"],
                     $produit["L00_libelle"],
+                    null,
                     null,
                     $produit["L02_mention_valorisante"],
                     ($produit["L09_cave_particuliere"] == $produit["L05_recolte_totale"]) ? $produit["L04_superficie"] : null,
@@ -95,13 +96,14 @@ class DRDouaneCsvFile {
             }
 
             foreach($produit["L06_L08_vente"] as $vente) {
-                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $vente["cvi"],
                     $vente["raisonSociale"],
                     $cvi,
                     $raisonSociale,
                     $produit["L01_code_douane"],
                     $produit["L00_libelle"],
+                    null,
                     null,
                     $produit["L02_mention_valorisante"],
                     ($vente["volume"] == $produit["L05_recolte_totale"]) ? $produit["L04_superficie"] : null,

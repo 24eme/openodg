@@ -140,7 +140,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function hasDR() {
         return true;
-        
+
         return $this->_attachments->exist('DR.csv');
     }
 
@@ -160,6 +160,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getCSV() {
         $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
         return $csv->getCsvAcheteur($this->identifiant);
+    }
+
+    public function importCSVDouane($csv) {
+        foreach($csv as $line) {
+            foreach($this->getConfigProduits() as $produitConfig) {
+                $produit_hash = $produitConfig->getHash();
+                break;
+            }
+            $produit = $this->addProduit($produit_hash);
+            $produitDetail = $produit->detail;
+            $produitDetail->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
+            $produitDetail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
+            $produitDetail->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
+            $produitDetail->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            $produitDetail->vci += (float) $line[DRCsvFile::CSV_VCI];
+        }
     }
 
     public function updateFromCSV($updateProduitRevendique = false, $updatePrelevements = false,  $csv = null) {
