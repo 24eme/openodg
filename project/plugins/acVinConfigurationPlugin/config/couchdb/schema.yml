@@ -303,6 +303,7 @@ Configuration:
                                                       libelle: {  }
                                                       libelle_long: { required: false }
                                                       rendement: { type: float }
+                                                      code_douane: { }
                                                       min_quantite: {type: float, required: false}
                                                       max_quantite: {type: float, required: false}
                                                       exclude_total: {type: integer, required: false}
@@ -314,4 +315,3 @@ Configuration:
                                                       no_dr: { type: integer, required: false }
                                                       no_ds: { type: integer, required: false }
                                                       auto_drev: { type: integer, required: false }
-

@@ -100,6 +100,8 @@ DRev:
                                                 superficie_revendique_vtsgn: { type: float, required: false }
                                                 superficie_vinifiee: { type: float, required: false }
                                                 superficie_vinifiee_vtsgn: { type: float, required: false }
+                                                volume_revendique_sans_vci: { type: float }
+                                                volume_revendique_avec_vci: { type: float }
                                                 vci_stock_initial: { type: float }
                                                 vci: { type: float }
                                                 vci_destruction: { type: float }
@@ -118,6 +120,7 @@ DRev:
                                                       volume_total: { type: float }
                                                       superficie_total: { type: float }
                                                       superficie_vinifiee: { type: float, required: false }
+                                                      vci: { type: float }
                                                 detail_vtsgn:
                                                   type: collection
                                                   required: false
