@@ -3,6 +3,8 @@
 class importEntiteFromXmlTask extends sfBaseTask
 {
 
+    protected $observationsCodifieesArr = array();
+
     protected $identifiant = null;
     protected $cvi = null;
 
@@ -29,6 +31,9 @@ class importEntiteFromXmlTask extends sfBaseTask
     protected $site_web = null;
     protected $telephone = null;
     protected $type_contact = null;
+
+    protected $siret = null;
+
 
     protected $observationsCodifiees = array();
 
@@ -63,7 +68,12 @@ EOF;
         $xml_content_str = file_get_contents($file_path);
 
         $xmlEntite = new SimpleXMLElement($xml_content_str);
+        $path_obs = dirname(__FILE__)."/../../../data/configuration/rhone/observationsCodifiees.csv";
+        $observationsCodifieesCsv = new CsvFile($path_obs);
 
+        foreach ($observationsCodifieesCsv->getCsv() as $row) {
+          $this->observationsCodifieesArr[$row[0]] = $row[1];
+        }
 
         foreach ($xmlEntite as $nameField => $field) {
 
@@ -72,6 +82,7 @@ EOF;
             $this->searchNomPrenom($nameField,$field);
             $this->searchCoordonnees($nameField,$field);
             $this->searchObservationsCodifiees($nameField,$field);
+            $this->searchSiret($nameField,$field);
 
         }
 
@@ -89,6 +100,15 @@ EOF;
       }
     }
 
+    public function searchSiret($nameField, $field){
+      if($nameField == "b:Siret"){
+        if(count($field)){
+          if(count($field) > 1){ var_dump($nameField,$field); continue; }
+        }
+        $this->siret = (string) $field;
+      }
+    }
+
   public function searchCvi($nameField, $field){
             if($nameField == "b:Evv" && boolval((string) $field)){
               $evvStr = (string) $field;
@@ -101,7 +121,7 @@ EOF;
                     if($cvi_c){
                       $cviReal = $cvi_c;
                       if($cviPrec && $cviPrec != $cvi_c){
-                        echo "lidentité  ".  $this->identifiant." a des cvis différents : ".$evvStr;
+                        echo "l'identité  ".  $this->identifiant." a des cvis différents : ".$evvStr."\n";
                       }
                     }
                     $cviPrec = $cvi_c;
@@ -213,7 +233,14 @@ EOF;
         $observationsCodifieesArray = ((array) $field);
         if(array_key_exists("b:Identite_ObservationCodifiee",$observationsCodifieesArray)){
           foreach ($observationsCodifieesArray["b:Identite_ObservationCodifiee"] as $obsCodifie) {
-            if(boolval((string) $obsCodifie)){ $this->observationsCodifiees[] = (string) $obsCodifie; }
+            if(boolval((string) $obsCodifie)){
+              $code = (string) $obsCodifie;
+              if(!array_key_exists($code,$this->observationsCodifieesArr)){
+                echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
+                continue;
+              }
+              $this->observationsCodifiees[] = $this->observationsCodifieesArr[$code];
+            }
           }
         }
       }
@@ -247,6 +274,8 @@ EOF;
         $societe->telephone = $this->telephone;
         $societe->email = $this->email;
         $societe->fax = $this->fax;
+
+        $societe->siret = $this->siret;
 
         $societe->save();
 
