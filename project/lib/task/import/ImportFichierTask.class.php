@@ -7,7 +7,7 @@ class ImportFichierTask extends sfBaseTask
     {
         $this->addArguments(array(
             new sfCommandArgument('identifiant', sfCommandArgument::REQUIRED, "Identifiant etablissment"),
-        	new sfCommandArgument('fichier', sfCommandArgument::REQUIRED, "Chemin du fichier"),
+        	new sfCommandArgument('fichiers', sfCommandArgument::REQUIRED, "Chemin des fichiers, séparateur : |"),
         ));
 
         $this->addOptions(array(
@@ -23,7 +23,7 @@ class ImportFichierTask extends sfBaseTask
 
         $this->namespace = 'import';
         $this->name = 'fichier';
-        $this->briefDescription = "Importe un fichier";
+        $this->briefDescription = "Importe des fichiers";
         $this->detailedDescription = <<<EOF
 EOF;
     }
@@ -33,14 +33,19 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         
-        $file = $arguments['fichier'];
+        $files = explode('|', $arguments['fichiers']);
         
-        if (!file_exists($file) || !is_file($file)) {
-        	echo sprintf("ERROR;Fichier introuvable ou non valide %s\n", $arguments['fichier']);
-        	return;
+        foreach ($files as $file) {
+	        if (!file_exists($file) || !is_file($file)) {
+	        	echo sprintf("ERROR;Fichier introuvable ou non valide %s\n", $file);
+	        	return;
+	        }
         }
         
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($arguments['identifiant']);
+        if (!$etablissement) {
+        	$etablissement = EtablissementClient::getInstance()->findByCvi($arguments['identifiant']);
+        }
         
         if(!$etablissement) {
             echo sprintf("ERROR;Etablissement introuvable %s\n", $arguments['identifiant']);
@@ -63,7 +68,9 @@ EOF;
         }
         try {
         	$fichier->save();
-        	$fichier->storeFichier($file);
+        	foreach ($files as $file) {
+        		$fichier->storeFichier($file);
+        	}
         	$fichier->save();
         } catch (Exception $e) {
         	echo sprintf("ERROR;%s\n",$e->getMessage());

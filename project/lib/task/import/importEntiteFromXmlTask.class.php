@@ -33,7 +33,7 @@ EOF;
         error_reporting(E_ERROR | E_PARSE);
 
         $xml_content_str = file_get_contents($file_path);
-
+        
         $xmlEntite = new SimpleXMLElement($xml_content_str);
 
         $societe = new societe();
