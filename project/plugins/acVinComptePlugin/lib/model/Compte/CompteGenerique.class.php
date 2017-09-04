@@ -120,6 +120,11 @@ abstract class CompteGenerique extends acCouchdbDocument {
         return $this->getTelephone();
     }
 
+    public function getTelephonePrive() {
+
+        return $this->getTelephonePerso();
+    }
+
     public function getTelephonePerso() {
         if (is_null($this->telephone_perso)) {
             $this->telephone_perso = $this->getMasterCompte()->telephone_perso;

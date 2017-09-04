@@ -6,7 +6,7 @@ class Configuration extends BaseConfiguration {
 
         return $this->declaration->getProduits();
     }
-    
+
     public function getTemplatesFactures()
     {
     	$factures = array();
@@ -17,7 +17,7 @@ class Configuration extends BaseConfiguration {
     	}
     	return $factures;
     }
-    
+
     public function getAppellationsLieuDit()
     {
       $result = array();
@@ -89,6 +89,17 @@ class Configuration extends BaseConfiguration {
     public function getRecolte() {
 
       return $this->getDeclaration();
+    }
+
+    public function findProductByCodeDouane($code_douane) {
+        foreach($this->getProduits() as $produit) {
+                if(preg_match('/^'.$produit->code_douane.'/', $code_douane)) {
+
+                    return $produit;
+                }
+        }
+
+        return false;
     }
 
     public function identifyProduct($appellation, $lieu, $cepage, $type_declaration = null) {
@@ -179,5 +190,5 @@ class Configuration extends BaseConfiguration {
       }
 
       return $produits;
-    } 
+    }
 }
