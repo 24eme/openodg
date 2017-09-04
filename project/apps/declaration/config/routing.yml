@@ -69,7 +69,7 @@ get_piece:
 # FICHIER
 
 pieces_historique:
-  url: /historique-documents/:id
+  url: /historique-documents/:identifiant
   param: { module: fichier, action: piecesHistorique }
   class: DeclarationDeclarantRoute
   options:
