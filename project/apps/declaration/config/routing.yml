@@ -51,7 +51,7 @@ declaration_etablissement_selection:
   param: { module: declaration, action: etablissementSelection }
 
 declaration_etablissement:
-  url: /declarations/:id
+  url: /declarations/:identifiant
   param: { module: declaration, action: etablissement }
   class: DeclarationDeclarantRoute
   options:
@@ -99,11 +99,11 @@ delete_fichier:
     sf_method: [get]
 
 upload_fichier:
-  url: /fichier/upload/:id
+  url: /fichier/upload/:identifiant
   param: { module: fichier, action: upload }
   class: DeclarationDeclarantRoute
   options:
-    model:    EtablissementDe
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get, post]
@@ -299,7 +299,7 @@ drev_pull_dr:
   param: { module: drev, action: pullDR }
 
 drev_create:
-  url: /drev/creation/:id
+  url: /drev/creation/:identifiant
   param: { module: drev, action: create }
   class: EtablissementRoute
   options:
@@ -309,7 +309,7 @@ drev_create:
     sf_method: [get]
 
 drev_create_papier:
-  url: /drev/creation-papier/:id
+  url: /drev/creation-papier/:identifiant
   param: { module: drev, action: createPapier }
   class: EtablissementRoute
   options:
