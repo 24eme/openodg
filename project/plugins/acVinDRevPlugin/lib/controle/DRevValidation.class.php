@@ -18,11 +18,11 @@ class DRevValidation extends DocumentValidation {
         /*
          * Warning
          */
-
         $this->addControle(self::TYPE_WARNING, 'dr_surface', 'La surface revendiquée est différente de celle déclarée de votre DR.');
         $this->addControle(self::TYPE_WARNING, 'dr_volume', 'Le volume revendiqué est différent de celui déclaré dans votre DR.');
 
         //$this->addControle(self::TYPE_WARNING, 'lot_vtsgn_sans_prelevement', 'Vous avez déclaré des lots VT/SGN sans spécifier de période de prélèvement.');
+
         $this->addControle(self::TYPE_WARNING, 'declaration_lots', 'Vous devez déclarer vos lots.');
 
         $this->addControle(self::TYPE_WARNING, 'revendication_cepage_sans_lot', 'Vous ne déclarez aucun lot pour un cépage que vous avez revendiqué. Si c\'est un lot qui a été replié en assemblage, ne tenez pas compte de ce point de vigilance.');
@@ -32,7 +32,8 @@ class DRevValidation extends DocumentValidation {
         /*
          * Error
          */
-        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', 'Vous devez saisir la superficie et le volume pour vos produits revendiqués');
+        $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', "Toutes les informations de revendication n'ont pas été saisies");
+        $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
 
         $this->addControle(self::TYPE_WARNING, 'volume_revendique_usages_inferieur_sur_place', 'Le volume revendiqué ne peut pas être inférieur au volume sur place déduit des usages industriels de votre DR');
 
@@ -58,14 +59,22 @@ class DRevValidation extends DocumentValidation {
     }
 
     public function controle() {
-        return true;
         $revendicationProduits = $this->document->declaration->getProduits();
         foreach ($revendicationProduits as $hash => $revendicationProduit) {
-            $this->controleWarningDrSurface($revendicationProduit);
-            $this->controleWarningDrVolume($revendicationProduit);
-            $this->controleErrorRevendicationIncomplete($revendicationProduit);
-            $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
-            $this->controleEngagementPressoir($revendicationProduit);
+            if(DRevConfiguration::getInstance()->hasPrelevements()) {
+                $this->controleWarningDrSurface($revendicationProduit);
+
+                $this->controleWarningDrVolume($revendicationProduit);
+                $this->controleErrorVolumeRevendiqueIncorrect($revendicationProduit);
+                $this->controleEngagementPressoir($revendicationProduit);
+                $this->controleErrorRevendicationIncomplete($revendicationProduit);
+            }
+            $this->controleVci($revendicationProduit);
+            $this->controleRevendication($revendicationProduit);
+        }
+
+        if(!DRevConfiguration::getInstance()->hasPrelevements()) {
+            return;
         }
 
         $this->controleWarningRevendicationLot();
@@ -262,12 +271,31 @@ class DRevValidation extends DocumentValidation {
 
             return;
         }
-        if (
-                ($produit->superficie_revendique !== null && $produit->volume_revendique === null) ||
-                ($produit->superficie_revendique === null && $produit->volume_revendique !== null)
-        ) {
-            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+
+        if (($produit->superficie_revendique !== null && $produit->volume_revendique === null) ||
+                ($produit->superficie_revendique === null && $produit->volume_revendique !== null)) {
+            $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(),       $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
+    }
+
+    protected function controleRevendication($produit) {
+        if($produit->superficie_revendique !== null && $produit->volume_revendique_sans_vci !== null && $produit->volume_revendique_avec_vci !== null) {
+            return;
+        }
+
+        $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+    }
+
+    protected function controleVci($produit) {
+        if(!$produit->vci_stock_initial) {
+
+            return;
+        }
+
+        if($produit->vci_stock_initial != $produit->getTotalVciUtilise()) {
+            $this->addPoint(self::TYPE_ERROR, 'vci_stock_utilise', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
+        }
+
     }
 
     protected function controleEngagementSv() {

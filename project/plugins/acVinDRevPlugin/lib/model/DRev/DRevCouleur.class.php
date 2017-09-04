@@ -196,6 +196,11 @@ class DRevCouleur extends BaseDRevCouleur
 		}
     }
 
+	public function getTotalVciUtilise() {
+
+		return $this->vci_complement_dr + $this->vci_substitution + $this->vci_rafraichi + $this->vci_destruction;
+	}
+
 	public function canHaveVtsgn() {
 
 		return $this->exist('detail_vtsgn');
@@ -225,7 +230,7 @@ class DRevCouleur extends BaseDRevCouleur
             return parent::isCleanable();
         }
 
-        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !$this->getTotalSuperficieVinifiee() && !count($this->getProduitsCepage())) {
+        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !$this->getTotalSuperficieVinifiee() && !count($this->getProduitsCepage() && !$this->detail->getTotalTotalSuperficie() && !$this->detail->volume_total)) {
 
             return true;
         }
