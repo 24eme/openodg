@@ -8,31 +8,12 @@
 </ol>
 
 <div class="page-header">
-    <h2><?php if($fichier->isNew()): ?>Ajout de fichier<?php else: ?>Modification du fichier<?php endif; ?></a></h2>
+    <h2><?php if($fichier->isNew()): ?>Ajout de document<?php else: ?>Modification du document<?php endif; ?></a></h2>
 </div>
 
 <form class="form-horizontal" role="form" action="<?php echo url_for("upload_fichier", array('fichier_id' => $fichier_id, 'sf_subject' => $etablissement)) ?>" method="post" enctype="multipart/form-data">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-
-    <div class="row">
-    	<div class="form-group <?php if($form['file']->hasError()): ?>has-error<?php endif; ?>">
-			<div class="col-xs-8 col-xs-offset-4">
-				<?php echo $form['file']->renderError() ?>
-			</div>
-			<div class="col-xs-3 col-xs-offset-1">
-				<?php echo $form['file']->renderLabel() ?>
-			</div>
-			<div class="col-xs-6">
-				<?php echo $form['file']->render() ?>
-			</div>
-			<?php if (!$fichier->isNew() && $fichier->hasAttachments()): ?>
-			<div class="col-xs-2">
-				<a href="<?php echo $fichier->generateUrlPiece() ?>"><span class="glyphicon glyphicon-file"></span>&nbsp;Voir le fichier</a>
-			</div>
-			<?php endif; ?>
-		</div>
-    </div>
 
     <div class="row">
     	<div class="form-group <?php if($form['libelle']->hasError()): ?>has-error<?php endif; ?>">
@@ -79,6 +60,40 @@
 				<?php echo $form['visibilite']->render() ?>
 			</div>
 		</div>
+    </div>
+
+    <div class="row">
+    	<div class="form-group <?php if($form['file']->hasError()): ?>has-error<?php endif; ?>">
+			<div class="col-xs-8 col-xs-offset-4">
+				<?php echo $form['file']->renderError() ?>
+			</div>
+			<div class="col-xs-3 col-xs-offset-1">
+				<?php echo $form['file']->renderLabel() ?>
+			</div>
+			<div class="col-xs-4">
+				<?php echo $form['file']->render() ?>
+			</div>
+			<div class="col-xs-2">
+				<button name="keep_page" type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
+			</div>
+		</div>
+    </div>
+    
+    <div class="row">
+    	<div class="form-group ">
+    		<div class="col-xs-8 col-xs-offset-4">
+		    	<?php foreach ($fichier->_attachments as $key => $file): ?>
+		    	<?php 
+		    		$infos = explode('.', $key);
+		    		$extention = (isset($infos[1]))? $infos[1] : "";
+		    	?>
+		    	<div class="btn-group" role="group">
+		    		<a href="<?php echo $fichier->generateUrlPiece() ?>?file=<?php echo $key ?>" class="btn btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo strtoupper($extention); ?></a>
+		    		<a class="btn btn-danger" href="<?php echo url_for('delete_fichier', $fichier) ?>?file=<?php echo $key ?>"><strong>X</strong></a>
+		    	</div>
+		    	<?php endforeach; ?>
+    		</div>
+    	</div>
     </div>
 
     <div class="row row-margin row-button">

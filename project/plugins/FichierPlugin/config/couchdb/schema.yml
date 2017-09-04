@@ -18,7 +18,6 @@ Fichier:
       identifiant: { }
       date_depot: { }
       libelle: { }
-      mime: { }
       visibilite: { type: integer }
       papier: { required: false, type: integer }
       pieces:
@@ -37,3 +36,16 @@ Fichier:
                   mime: { }
                   visibilite: { type: integer }
                   source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }
+
+LienSymbolique:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      fichier: {  }
+      type: {  }

@@ -66,7 +66,7 @@ EOF;
         error_reporting(E_ERROR | E_PARSE);
 
         $xml_content_str = file_get_contents($file_path);
-
+        
         $xmlEntite = new SimpleXMLElement($xml_content_str);
         $path_obs = dirname(__FILE__)."/../../../data/configuration/rhone/observationsCodifiees.csv";
         $observationsCodifieesCsv = new CsvFile($path_obs);

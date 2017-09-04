@@ -32,6 +32,6 @@
     <?php //include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php //include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php //include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
-    <?php //include_component('fichier', 'monEspace', array('etablissement' => $etablissement)); ?>
+    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement)); ?>
 </div>
 <?php include_partial('fichier/history', array('etablissement' => $etablissement, 'history' => PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant), 'limit' => Piece::LIMIT_HISTORY)); ?>
