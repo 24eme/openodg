@@ -38,6 +38,9 @@ class Elastica_ClusterTest extends Elastica_Test
         $this->assertInternalType('array', $state);
     }
 
+    /**
+     * @expectedException Elastica_Exception_Client
+     */
     public function testShutdown()
     {
         $this->markTestSkipped('This test shuts down the cluster which means the following tests would not work');
@@ -48,12 +51,7 @@ class Elastica_ClusterTest extends Elastica_Test
 
         sleep(5);
 
-        try {
-            $client->getStatus();
-            $this->fail('Should throw exception because cluster is shut down');
-        } catch (Elastica_Exception_Client $e) {
-            $this->assertTrue(true);
-        }
+        $client->getStatus();
     }
 
     public function testGetIndexNames()
@@ -76,5 +74,11 @@ class Elastica_ClusterTest extends Elastica_Test
         // Now index should exist
         $indexNames = $cluster->getIndexNames();
         $this->assertContains($index->getname(), $indexNames);
+    }
+
+    public function testGetHealth()
+    {
+        $client = new Elastica_Client();
+        $this->assertInstanceOf('Elastica_Cluster_Health', $client->getCluster()->getHealth());
     }
 }

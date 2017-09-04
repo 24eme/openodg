@@ -50,11 +50,15 @@ class Elastica_Type implements Elastica_Searchable
 
         $query = array();
 
-        if ($doc->getVersion() > 0) {
+        if ($doc->hasParam('_version')) {
             $query['version'] = $doc->getVersion();
         }
 
-        if (!is_null($doc->getParent())) {
+        if ($doc->hasParam('_version_type')) {
+            $query['version_type'] = $doc->getVersionType();
+        }
+
+        if ($doc->hasParam('_parent')) {
             $query['parent'] = $doc->getParent();
         }
 
@@ -64,6 +68,10 @@ class Elastica_Type implements Elastica_Searchable
 
         if ($doc->getPercolate()) {
             $query['percolate'] = $doc->getPercolate();
+        }
+
+        if ($doc->hasParam('_routing')) {
+            $query['routing'] = $doc->getRouting();
         }
 
         $type = Elastica_Request::PUT;
@@ -94,8 +102,9 @@ class Elastica_Type implements Elastica_Searchable
     /**
      * Uses _bulk to send documents to the server
      *
-     * @param array $docs Array of Elastica_Document
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/bulk/
+     * @param array|Elastica_Document[] $docs Array of Elastica_Document
+     * @return Elastica_Response
+     * @link http://www.elasticsearch.org/guide/reference/api/bulk.html
      */
     public function addDocuments(array $docs)
     {
@@ -109,15 +118,17 @@ class Elastica_Type implements Elastica_Searchable
     /**
      * Get the document from search index
      *
-     * @param  string            $id Document id
+     * @param  string            $id      Document id
+     * @param  array             $options Options for the get request.
+     * @throws Elastica_Exception_NotFound
      * @return Elastica_Document
      */
-    public function getDocument($id)
+    public function getDocument($id, $options = array())
     {
         $path = $id;
 
         try {
-            $result = $this->request($path, Elastica_Request::GET)->getData();
+            $result = $this->request($path, Elastica_Request::GET, array(), $options)->getData();
         } catch (Elastica_Exception_Response $e) {
             throw new Elastica_Exception_NotFound('doc id ' . $id . ' not found');
         }
@@ -158,6 +169,7 @@ class Elastica_Type implements Elastica_Searchable
      * Sets value type mapping for this type
      *
      * @param Elastica_Type_Mapping|array $mapping Elastica_Type_Mapping object or property array with all mappings
+     * @return Elastica_Response
      */
     public function setMapping($mapping)
     {
@@ -230,6 +242,7 @@ class Elastica_Type implements Elastica_Searchable
      * Deletes an entry by its unique identifier
      *
      * @param  int|string        $id Document id
+     * @throws InvalidArgumentException
      * @return Elastica_Response Response object
      * @link http://www.elasticsearch.org/guide/reference/api/delete.html
      */
@@ -257,6 +270,7 @@ class Elastica_Type implements Elastica_Searchable
      * Deletes entries in the db based on a query
      *
      * @param Elastica_Query|string $query Query object
+     * @return Elastica_Response
      * @link http://www.elasticsearch.org/guide/reference/api/delete-by-query.html
      */
     public function deleteByQuery($query)
@@ -285,7 +299,7 @@ class Elastica_Type implements Elastica_Searchable
      *
      * @param  Elastica_Document  $doc    Document to query for similar objects
      * @param  array              $params OPTIONAL Additional arguments for the query
-     * @param  Elastica_Query     $query  OPTIONAL Query to filter the moreLikeThis results
+     * @param string|array|Elastica_Query $query OPTIONAL Query to filter the moreLikeThis results
      * @return Elastica_ResultSet ResultSet with all results inside
      * @link http://www.elasticsearch.org/guide/reference/api/more-like-this.html
      */

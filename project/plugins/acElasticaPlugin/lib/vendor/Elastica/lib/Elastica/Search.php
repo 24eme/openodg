@@ -6,7 +6,7 @@
  * @package  Elastica
  * @author   Nicolas Ruflin <spam@ruflin.com>
  */
-class Elastica_Search
+class Elastica_Search implements Elastica_Searchable
 {
     /**
      * Array of indices
@@ -43,6 +43,7 @@ class Elastica_Search
      * Adds a index to the list
      *
      * @param  Elastica_Index|string $index Index object or string
+     * @throws Elastica_Exception_Invalid
      * @return Elastica_Search       Current object
      */
     public function addIndex($index)
@@ -146,6 +147,8 @@ class Elastica_Search
      * Creates new search object
      *
      * @param Elastica_Searchable $searchObject
+     * @throws Elastica_Exception_NotImplemented
+     * @return void
      */
     public static function create(Elastica_Searchable $searchObject)
     {
@@ -165,14 +168,15 @@ class Elastica_Search
         $indices = $this->getIndices();
 
         $path = '';
+        $types = $this->getTypes();
 
         if (empty($indices)) {
-            $path .= '_all';
+            if (!empty($types)) {
+                $path .= '_all';
+            }
         } else {
             $path .= implode(',', $indices);
         }
-
-        $types = $this->getTypes();
 
         if (!empty($types)) {
             $path .= '/' . implode(',', $types);
@@ -187,6 +191,7 @@ class Elastica_Search
      *
      * @param  mixed              $query
      * @param  int|array          $options OPTIONAL Limit or associative array of options (option=>value)
+     * @throws Elastica_Exception_Invalid
      * @return Elastica_ResultSet
      */
     public function search($query, $options = null)
@@ -204,11 +209,15 @@ class Elastica_Search
                         case 'limit' :
                             $query->setLimit($value);
                             break;
+						case 'explain':
+							$query->setExplain($value);
+							break;
                         case 'routing' :
-                            $params['routing'] = $value;
-                            break;
                         case 'search_type':
-                            $params['search_type'] = $value;
+                        case 'timeout':
+                        case 'size':
+                        case 'from':
+                            $params[$key] = $value;
                             break;
                         default:
                             throw new Elastica_Exception_Invalid('Invalid option ' . $key);
@@ -221,5 +230,19 @@ class Elastica_Search
         $response = $this->getClient()->request($path, Elastica_Request::GET, $query->toArray(), $params);
 
         return new Elastica_ResultSet($response);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count($query = '')
+    {
+        $query = Elastica_Query::create($query);
+        $path = $this->getPath();
+
+        $response = $this->getClient()->request($path, Elastica_Request::GET, $query->toArray(), array('search_type' => 'count'));
+        $resultSet = new Elastica_ResultSet($response);
+
+        return $resultSet->getTotalHits();
     }
 }

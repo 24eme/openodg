@@ -31,6 +31,7 @@ class Elastica_Index implements Elastica_Searchable
      *
      * @param Elastica_Client $client Client object
      * @param string          $name   Index name
+     * @throws Elastica_Exception_Invalid
      */
     public function __construct(Elastica_Client $client, $name)
     {
@@ -66,7 +67,7 @@ class Elastica_Index implements Elastica_Searchable
     /**
      * Return Index Stats
      *
-     * @return ELastica_Index_Stats
+     * @return Elastica_Index_Stats
      */
     public function getStats()
     {
@@ -100,8 +101,9 @@ class Elastica_Index implements Elastica_Searchable
     /**
      * Uses _bulk to send documents to the server
      *
-     * @param array $docs Array of Elastica_Document
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/bulk/
+     * @param array|Elastica_Document[] $docs Array of Elastica_Document
+     * @return Elastica_Response
+     * @link http://www.elasticsearch.org/guide/reference/api/bulk.html
      */
     public function addDocuments(array $docs)
     {
@@ -147,7 +149,7 @@ class Elastica_Index implements Elastica_Searchable
      *
      * @param  array $args OPTIONAL Additional arguments
      * @return array Server response
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/indices/optimize/
+     * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html
      */
     public function optimize($args = array())
     {
@@ -156,10 +158,10 @@ class Elastica_Index implements Elastica_Searchable
     }
 
     /**
-     * Refreshs the index
+     * Refreshes the index
      *
      * @return Elastica_Response Response object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/indices/refresh/
+     * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-refresh.html
      */
     public function refresh()
     {
@@ -173,8 +175,9 @@ class Elastica_Index implements Elastica_Searchable
      * @param bool|array $options OPTIONAL
      *                            bool=> Deletes index first if already exists (default = false).
      *                            array => Associative array of options (option=>value)
+     * @throws Elastica_Exception_Invalid
      * @return array Server response
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/indices/create_index/
+     * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-create-index.html
      */
     public function create(array $args = array(), $options = null)
     {
@@ -314,15 +317,16 @@ class Elastica_Index implements Elastica_Searchable
     {
         $path = '_aliases';
 
-        if ($replace) {
-            $status = new Elastica_Status($this->getClient());
+        $data = array( 'actions' => array( ) );
 
-            foreach ($status->getIndicesWithAlias($name) as $index) {
-                $index->removeAlias($name);
+        if ($replace) {
+            $status = new Elastica_Status( $this->getClient() );
+            foreach ( $status->getIndicesWithAlias( $name ) as $index ) {
+                $data['actions'][] = array('remove' => array('index' => $index->getName(), 'alias' => $name));
             }
         }
 
-        $data = array('actions' => array(array('add' => array('index' => $this->getName(), 'alias' => $name))));
+        $data['actions'][] = array('add' => array('index' => $this->getName(), 'alias' => $name));
 
         return $this->getClient()->request($path, Elastica_Request::POST, $data);
     }
@@ -346,7 +350,7 @@ class Elastica_Index implements Elastica_Searchable
     /**
      * Clears the cache of an index
      *
-     * @return Elastica_Response Reponse object
+     * @return Elastica_Response Response object
      * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-clearcache.html
      */
     public function clearCache()
@@ -357,9 +361,9 @@ class Elastica_Index implements Elastica_Searchable
     }
 
     /**
-     * Flushs the index to storage
+     * Flushes the index to storage
      *
-     * @return Elastica_Response Reponse object
+     * @return Elastica_Response Response object
      * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-flush.html
      */
     public function flush()
