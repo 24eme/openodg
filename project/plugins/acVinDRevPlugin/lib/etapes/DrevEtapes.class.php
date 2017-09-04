@@ -2,6 +2,7 @@
 class DrevEtapes extends Etapes
 {
 	const ETAPE_EXPLOITATION = 'exploitation';
+	const ETAPE_DR_DOUANE = 'dr_douane';
 	const ETAPE_REVENDICATION = 'revendication';
 	const ETAPE_VCI = 'vci';
 	const ETAPE_DEGUSTATION = 'degustation_conseil';
@@ -10,15 +11,17 @@ class DrevEtapes extends Etapes
 
 	public static $etapes = array(
             self::ETAPE_EXPLOITATION => 1,
-            self::ETAPE_REVENDICATION => 2,
-            self::ETAPE_VCI => 3,
-            self::ETAPE_DEGUSTATION => 4,
-            self::ETAPE_CONTROLE => 5,
-            self::ETAPE_VALIDATION => 6
+            self::ETAPE_DR_DOUANE => 2,
+            self::ETAPE_REVENDICATION => 3,
+            self::ETAPE_VCI => 4,
+            self::ETAPE_DEGUSTATION => 5,
+            self::ETAPE_CONTROLE => 6,
+            self::ETAPE_VALIDATION => 7
     );
 
 	public static $links = array(
             self::ETAPE_EXPLOITATION => 'drev_exploitation',
+            self::ETAPE_DR_DOUANE => 'drev_dr_douane',
             self::ETAPE_REVENDICATION => 'drev_revendication',
             self::ETAPE_VCI => 'drev_vci',
             self::ETAPE_DEGUSTATION => 'drev_degustation_conseil',
@@ -28,6 +31,7 @@ class DrevEtapes extends Etapes
 
 	public static $libelles = array(
             self::ETAPE_EXPLOITATION => "Exploitation",
+            self::ETAPE_DR_DOUANE => "Déclaration de récolte",
             self::ETAPE_REVENDICATION => "Revendication",
             self::ETAPE_VCI => "Répartition du VCI",
             self::ETAPE_DEGUSTATION => "Dégustation<br/>conseil",

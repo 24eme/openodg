@@ -368,6 +368,16 @@ drev_dr:
   requirements:
     sf_method: [get, post]
 
+drev_dr_douane:
+  url: /drev/dr_douane/:id
+  param: { module: drev, action: drDouane }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_dr_recuperation:
   url: /drev/dr-recuperation/:id
   param: { module: drev, action: drRecuperation }
