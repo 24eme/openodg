@@ -41,3 +41,11 @@ Fichier:
                     definition:
                       fields:
                         '*': { }
+
+LienSymbolique:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      fichier: {  }
+      type: {  }
