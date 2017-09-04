@@ -84,6 +84,19 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
     }
 
+    public function executeDrDouane(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if(!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        return $this->redirect('drev_revendication', $this->drev);
+    }
+
+
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $drev);
@@ -169,7 +182,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_dr', $this->drev);
         }
 
-        return $this->redirect('drev_revendication', $this->drev);
+        return $this->redirect('drev_dr_douane', $this->drev);
     }
 
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {

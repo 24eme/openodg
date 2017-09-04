@@ -5,6 +5,7 @@ class DRevRevendicationProduitDRForm extends acCouchdbObjectForm {
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
         $this->getDocable()->remove();
+        $this->getValidatorSchema()->setOption('allow_extra_fields', true);
     }
 
     public function configure() {
@@ -13,14 +14,14 @@ class DRevRevendicationProduitDRForm extends acCouchdbObjectForm {
             'superficie_total' => new sfWidgetFormInputFloat(),
             'volume_total' => new sfWidgetFormInputFloat(),
             'volume_sur_place' => new sfWidgetFormInputFloat(),
-            'vci' => new sfWidgetFormInputFloat(),
+            'usages_industriels_total' => new sfWidgetFormInputFloat(),
         ));
 
         $this->setValidators(array(
             'superficie_total' => new sfValidatorNumber(array('required' => false)),
             'volume_total' => new sfValidatorNumber(array('required' => false)),
             'volume_sur_place' => new sfValidatorNumber(array('required' => false)),
-            'vci' => new sfValidatorNumber(array('required' => false)),
+            'usages_industriels_total' => new sfValidatorNumber(array('required' => false)),
         ));
 
         $this->widgetSchema->setNameFormat('[%s]');

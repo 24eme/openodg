@@ -4,20 +4,22 @@ class fichierActions extends sfActions
 {
 	public function executeGet(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
+    	$fileParam = $request->getParameter('file', null);
 		$this->secureEtablissement($fichier->getEtablissementObject());
-    	if (!$fichier->hasAttachments()) {
+    	if (!$fichier->hasFichiers()) {
     		return $this->forward404("Aucun fichier pour ".$fichier->_id);
     	}
     	$filename = null;
     	foreach ($fichier->_attachments as $key => $attachment) {
-    		$filename = $key;
+    		if (!$fileParam || $fileParam == $key) {
+    			$filename = $key;
+    		}
     	}
     	$file = file_get_contents($fichier->getAttachmentUri($filename));
         if(!$file) {
             return $this->forward404($filename." n'existe pas pour ".$fichier->_id);
         }
-
-        $this->getResponse()->setHttpHeader('Content-Type', $fichier->getMime());
+        $this->getResponse()->setHttpHeader('Content-Type', $fichier->getMime($fileParam));
         $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="FICHIER-%s-%s"', $fichier->getIdentifiant(), $filename));
         $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
         $this->getResponse()->setHttpHeader('Pragma', '');
@@ -25,6 +27,13 @@ class fichierActions extends sfActions
         $this->getResponse()->setHttpHeader('Expires', '0');
 
         return $this->renderText($file);
+    }
+    
+    public function executeDelete(sfWebRequest $request) {
+    	$fichier = $this->getRoute()->getFichier();
+    	$fichier->deleteFichier($request->getParameter('file', null));
+    	$fichier->save();
+    	return $this->redirect('upload_fichier', array('fichier_id' => $fichier->_id, 'sf_subject' => $fichier->getEtablissementObject()));
     }
 
     public function executeUpload(sfWebRequest $request) {
@@ -44,8 +53,7 @@ class fichierActions extends sfActions
     	}
 
     	$this->form->save();
-
-    	return $this->redirect('declaration_etablissement', $this->etablissement);
+    	return ($request->hasParameter('keep_page'))? $this->redirect('upload_fichier', array('fichier_id' => $this->fichier->_id, 'sf_subject' => $this->etablissement)) : $this->redirect('declaration_etablissement', $this->etablissement);
     }
 
 	public function executePiecesHistorique(sfWebRequest $request) {

@@ -164,11 +164,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function importCSVDouane($csv) {
         foreach($csv as $line) {
-            foreach($this->getConfigProduits() as $produitConfig) {
-                $produit_hash = $produitConfig->getHash();
-                break;
+            $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_APPELLATION]);
+
+            if(!$produitConfig) {
+                continue;
             }
-            $produit = $this->addProduit($produit_hash);
+
+            $produit = $this->addProduit($produitConfig->getCouleur()->getHash());
             $produitDetail = $produit->detail;
             $produitDetail->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
             $produitDetail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];

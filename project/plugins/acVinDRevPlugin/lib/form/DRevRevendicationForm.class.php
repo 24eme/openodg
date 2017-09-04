@@ -17,4 +17,5 @@ class DRevRevendicationForm extends acCouchdbObjectForm
 
         $this->getObject()->getDocument()->updatePrelevementsFromRevendication();
     }
+
 }

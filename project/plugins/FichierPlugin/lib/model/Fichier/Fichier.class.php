@@ -25,9 +25,18 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     public function constructId() {
         $this->set('_id', 'FICHIER-' . $this->identifiant . '-' . $this->fichier_id);
     }
+    
+    public function getNbFichier()
+    {
+    	return count($this->_attachments);
+    }
 
-    public function hasAttachments() {
-    	return (count($this->_attachments) > 0);
+    public function hasFichiers() {
+    	return ($this->getNbFichier() > 0);
+    }
+
+    public function isMultiFichiers() {
+    	return ($this->getNbFichier() > 1);
     }
     
     public function initDoc($identifiant) {
@@ -46,21 +55,52 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     
     	return $this->exist('papier') && $this->get('papier');
     }
+
+    public function getMime($file = null)
+    {
+    	if (!$file) {
+    		foreach ($this->_attachments as $filename => $fileinfos) {
+    			$file = $filename;
+    		}
+    	}
+    	if ($file && $this->_attachments->exist($file)) {
+    		$fileinfos = $this->_attachments->get($file)->toArray();
+    		return $fileinfos['content_type'];
+    	}
+    	return null;
+    }
+    
+    public function getFichiers()
+    {
+    	$fichiers = array();
+    	foreach ($this->_attachments as $filename => $fileinfos) {
+    		$fichiers[] = $filename;
+    	}
+    	return $fichiers;
+    }
 	
 	protected function doSave() {
 		$this->piece_document->generatePieces();
 	}
 	
 	public function storeFichier($file) {
-		$this->remove('_attachments');
-		$this->add('_attachments');
 		if (!is_file($file)) {
 			throw new sfException($file." n'est pas un fichier valide");
 		}
 		$infos = pathinfo($file);
 		$extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
-		$this->mime = mime_content_type($file);
-		$this->storeAttachment($file, $this->mime, ($extension)? $this->fichier_id.'.'.$extension : $this->fichier_id);
+		$fileName = ($extension)? uniqid().'.'.$extension : uniqid();
+		$mime = mime_content_type($file);
+		$this->storeAttachment($file, $mime, $fileName);
+	}
+	
+	public function deleteFichier($filename = null) {
+		if (!$filename) {
+			$this->remove('_attachments');
+			$this->add('_attachments');
+		} elseif ($this->_attachments->exist($filename)) {
+			$this->_attachments->remove($filename);
+		}
 	}
 	
 	public function getDateDepotFormat($format = 'd/m/Y') {
@@ -79,9 +119,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getDateDepot(),
     		'libelle' => $this->getLibelle().' '.$complement,
-    		'mime' => $this->getMime(),
     		'visibilite' => $this->getVisibilite(),
-    		'source' => null
+    		'mime' => null,
+    		'source' => null,
+    		'fichiers' => $this->getFichiers()
     	));
     }
 

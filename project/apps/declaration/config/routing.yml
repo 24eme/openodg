@@ -66,10 +66,6 @@ get_piece:
   url: /piece/get/:doc_id/:piece_id
   param: { module: piece, action: get }
 
-forward_visu_piece:
-  url: /piece/visualisation/:doc_id
-  param: { module: piece, action: visualisation }
-
 # FICHIER
 
 pieces_historique:
@@ -85,6 +81,16 @@ pieces_historique:
 get_fichier:
   url: /fichier/get/:id
   param: { module: fichier, action: get }
+  class: FichierRoute
+  options:
+    model:    Fichier
+    type:     object
+  requirements:
+    sf_method: [get]
+
+delete_fichier:
+  url: /fichier/delete/:id
+  param: { module: fichier, action: delete }
   class: FichierRoute
   options:
     model:    Fichier
@@ -355,6 +361,16 @@ drev_devalidation:
 drev_dr:
   url: /drev/dr/:id
   param: { module: drev, action: dr }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_dr_douane:
+  url: /drev/dr_douane/:id
+  param: { module: drev, action: drDouane }
   class: DRevRoute
   options:
     model:    DRev
