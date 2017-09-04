@@ -38,8 +38,9 @@ class Elastica_Query extends Elastica_Param
      * If query is empty,
      *
      * @param  mixed          $query
+     * @throws Elastica_Exception_NotImplemented
      * @return Elastica_Query
-     **/
+     */
     public static function create($query)
     {
         switch (true) {
@@ -161,7 +162,7 @@ class Elastica_Query extends Elastica_Param
      *
      * @param  mixed          $highlight Add highlight argument
      * @return Elastica_Query Query object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/search/highlighting/
+     * @link http://www.elasticsearch.org/guide/reference/api/search/highlighting.html
      */
     public function addHighlight($highlight)
     {
@@ -197,7 +198,7 @@ class Elastica_Query extends Elastica_Param
      *
      * @param  bool           $explain OPTIONAL Enabled or disable explain (default = true)
      * @return Elastica_Query Current object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/search/explain/
+     * @link http://www.elasticsearch.org/guide/reference/api/search/explain.html
      */
     public function setExplain($explain = true)
     {
@@ -209,7 +210,7 @@ class Elastica_Query extends Elastica_Param
      *
      * @param  bool           $version OPTIONAL Enabled or disable version (default = true)
      * @return Elastica_Query Current object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/search/version/
+     * @link http://www.elasticsearch.org/guide/reference/api/search/version.html
      */
     public function setVersion($version = true)
     {
@@ -219,9 +220,9 @@ class Elastica_Query extends Elastica_Param
     /**
      * Sets the fields to be returned by the search
      *
-     * @param  array          $fields Fields to be returne
+     * @param  array          $fields Fields to be returned
      * @return Elastica_Query Current object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/search/fields/
+     * @link http://www.elasticsearch.org/guide/reference/api/search/fields.html
      */
     public function setFields(array $fields)
     {
@@ -233,7 +234,7 @@ class Elastica_Query extends Elastica_Param
      *
      * @param  array|Elastica_ScriptFields $scriptFields Script fields
      * @return Elastica_Query              Current object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/search/script_fields/
+     * @link http://www.elasticsearch.org/guide/reference/api/search/script-fields.html
      */
     public function setScriptFields($scriptFields)
     {
@@ -247,6 +248,7 @@ class Elastica_Query extends Elastica_Param
     /**
      * Adds a Script to the query
      *
+     * @param string $name
      * @param  Elastica_Script $script Script object
      * @return Elastica_Query  Query object
      */
@@ -262,11 +264,11 @@ class Elastica_Query extends Elastica_Param
      *
      * @param  array          $facets List of facet objects
      * @return Elastica_Query Query object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/search/facets
+     * @link http://www.elasticsearch.org/guide/reference/api/search/facets/
      */
     public function setFacets(array $facets)
     {
-        $this->_params['facets'] = array();
+        $this->_params['aggs'] = array();
         foreach ($facets as $facet) {
             $this->addFacet($facet);
         }
@@ -282,7 +284,7 @@ class Elastica_Query extends Elastica_Param
      */
     public function addFacet(Elastica_Facet_Abstract $facet)
     {
-        $this->_params['facets'][$facet->getName()] = $facet->toArray();
+        $this->_params['aggs'][$facet->getName()] = $facet->toArray();
 
         return $this;
     }
@@ -305,7 +307,8 @@ class Elastica_Query extends Elastica_Param
     /**
      * Allows filtering of documents based on a minimum score
      *
-     * @param  int|double     $minScore Minimum score to filter documents by
+     * @param  int     $minScore Minimum score to filter documents by
+     * @throws Elastica_Exception_Invalid
      * @return Elastica_Query Query object
      */
     public function setMinScore($minScore)

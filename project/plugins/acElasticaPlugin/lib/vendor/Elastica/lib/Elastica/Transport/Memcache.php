@@ -12,6 +12,8 @@ class Elastica_Transport_Memcache extends Elastica_Transport_Abstract
      * Makes calls to the elasticsearch server
      *
      * @param  array             $params Host, Port, ...
+     * @throws Elastica_Exception_Response
+     * @throws Elastica_Exception_Invalid
      * @return Elastica_Response Response object
      */
     public function exec(array $params)
@@ -58,11 +60,6 @@ class Elastica_Transport_Memcache extends Elastica_Transport_Abstract
         }
 
         $response = new Elastica_Response($responseString);
-
-        if (defined('DEBUG') && DEBUG) {
-            $response->setQueryTime($end - $start);
-            $response->setTransferInfo(curl_getinfo($conn));
-        }
 
         if ($response->hasError()) {
             throw new Elastica_Exception_Response($response);

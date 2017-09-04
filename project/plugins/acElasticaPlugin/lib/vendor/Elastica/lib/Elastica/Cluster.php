@@ -17,6 +17,20 @@ class Elastica_Cluster
     protected $_client = null;
 
     /**
+     * Cluster state response.
+     *
+     * @var Elastica_Response
+     */
+    protected $_response;
+
+    /**
+     * Cluster state data.
+     *
+     * @var array
+     */
+    protected $_data;
+
+    /**
      * Creates a cluster object
      *
      * @param Elastica_Client $client Connection client object
@@ -28,7 +42,7 @@ class Elastica_Cluster
     }
 
     /**
-     * Refreshs all cluster information (state)
+     * Refreshes all cluster information (state)
      */
     public function refresh()
     {
@@ -115,23 +129,24 @@ class Elastica_Cluster
     /**
      * Returns the cluster information (not implemented yet)
      *
-     * @param array $args Additional arguemtns
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/cluster/nodes_info/
+     * @param array $args Additional arguments
+     * @throws Elastica_Exception_NotImplemented
+     * @link http://www.elasticsearch.org/guide/reference/api/admin-cluster-nodes-info.html
      */
     public function getInfo(array $args)
     {
-        throw new Exception('not implemented yet');
+        throw new Elastica_Exception_NotImplemented('not implemented yet');
     }
 
     /**
      * Return Cluster health
      *
-     * @param array $args OPTIONAL
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/cluster/health/
+     * @return Elastica_Cluster_Health
+     * @link http://www.elasticsearch.org/guide/reference/api/admin-cluster-health.html
      */
-    public function getHealth($args = array())
+    public function getHealth()
     {
-        throw new Exception('not implemented yet');
+        return new Elastica_Cluster_Health($this->getClient());
     }
 
     /**
