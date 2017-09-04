@@ -55,13 +55,13 @@ curl -X PUT "http://$ESDOMAIN:$ESPORT/$ESINDEXGLOBAL/" -d '{
               }
             }
           }
-        } 
+        }
     },
     "mappings" : {
         "compte" : {
             "_all" : { "analyzer":"francais" },
             "properties" : {
-                "tags" : { 
+                "tags" : {
                     "properties" : {
                         "automatiques" : {
                             "type" : "multi_field",
