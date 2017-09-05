@@ -2,7 +2,7 @@
 $etapeMax = ($object->exist('etape') && $object->etape)? $object->etape : $object->getFirst();
 $stepNum = $etapes->getEtapeNum($etapeMax);
 ?>
-<nav class="navbar navbar-default ">
+<nav class="navbar navbar-default nav-step">
     <ul class="nav navbar-nav">
     <?php foreach ($etapes->getEtapesHash() as $k => $num): ?>
         <?php $actif = ($step == $k); ?>
