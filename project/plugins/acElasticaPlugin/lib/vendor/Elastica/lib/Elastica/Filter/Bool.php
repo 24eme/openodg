@@ -11,6 +11,11 @@
 class Elastica_Filter_Bool extends Elastica_Filter_Abstract
 {
     /**
+     * @var float
+     */
+    protected $_boost = 1.0;
+
+    /**
      * minimum number of matches
      *
      * @var int minimum number of matches
@@ -76,6 +81,7 @@ class Elastica_Filter_Bool extends Elastica_Filter_Abstract
      *
      * @param  string                         $type Filter type
      * @param  array|Elastica_Filter_Abstract $args Filter data
+     * @throws Elastica_Exception_Invalid
      * @return Elastica_Filter_Bool           Current object
      */
     protected function _addFilter($type, $args)
@@ -105,18 +111,18 @@ class Elastica_Filter_Bool extends Elastica_Filter_Abstract
         $args = array();
 
         if (!empty($this->_must)) {
-            $args['must'] = $this->_must;
+            $args['bool']['must'] = $this->_must;
         }
 
         if (!empty($this->_should)) {
-            $args['should'] = $this->_should;
+            $args['bool']['should'] = $this->_should;
         }
 
         if (!empty($this->_mustNot)) {
-            $args['must_not'] = $this->_mustNot;
+            $args['bool']['must_not'] = $this->_mustNot;
         }
 
-        return array('bool' => $args);
+        return $args;
     }
 
     /**

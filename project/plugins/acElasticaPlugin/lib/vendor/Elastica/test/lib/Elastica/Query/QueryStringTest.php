@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/../../../bootstrap.php';
 
-class Elastica_Query_QueryStringTest extends PHPUnit_Framework_TestCase
+class Elastica_Query_QueryStringTest extends Elastica_Test
 {
     public function testSearchMultipleFields()
     {
@@ -54,6 +54,27 @@ class Elastica_Query_QueryStringTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, $resultSet->count());
     }
 
+    /**
+     * Tests if search in multiple fields is possible
+     */
+    public function testSearchFields()
+    {
+        $index = $this->_createIndex();
+        $type = $index->getType('test');
+
+        $doc = new Elastica_Document(1, array('title' => 'hello world', 'firstname' => 'nicolas', 'lastname' => 'ruflin', 'price' => '102', 'year' => '2012'));
+        $type->addDocument($doc);
+        $index->refresh();
+
+        $query = new Elastica_Query_QueryString();
+        $query = $query->setQuery('ruf*');
+        $query = $query->setDefaultField('title');
+        $query = $query->setFields(array('title', 'firstname', 'lastname', 'price', 'year'));
+
+        $resultSet = $type->search($query);
+        $this->assertEquals(1, $resultSet->count());
+    }
+
     public function testSetDefaultOperator()
     {
         $operator = 'AND';
@@ -87,14 +108,12 @@ class Elastica_Query_QueryStringTest extends PHPUnit_Framework_TestCase
             $this->assertEquals($data['query_string']['rewrite'], $rewrite);
     }
 
+    /**
+     * @expectedException Elastica_Exception_Invalid
+     */
     public function testSetQueryStringInvalid()
     {
         $query = new Elastica_Query_QueryString();
-        try {
-            $query->setQueryString(array());
-            $this->fail('should throw exception because no string');
-        } catch (Elastica_Exception_Invalid $e) {
-            $this->assertTrue(true);
-        }
+        $query->setQueryString(array());
     }
 }

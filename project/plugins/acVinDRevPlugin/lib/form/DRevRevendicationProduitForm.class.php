@@ -4,6 +4,7 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
+        $this->getValidatorSchema()->setOption('allow_extra_fields', true);
         $this->getDocable()->remove();
     }
 

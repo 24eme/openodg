@@ -30,7 +30,7 @@
                         <td><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php if($doc->key[DeclarationTousView::KEY_DATE] && $doc->key[DeclarationTousView::KEY_DATE] !== true): ?><?php echo format_date($doc->key[DeclarationTousView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?><?php else: ?><small class="text-muted">Aucune</small><?php endif; ?></a></td>
                         <td><?php echo $doc->key[DeclarationTousView::KEY_CAMPAGNE]; ?></td>
                         <td><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php echo $doc->key[DeclarationTousView::KEY_TYPE]; ?></a></td>
-                        <td><a href="<?php echo url_for("declaration_etablissement", array("id" => "ETABLISSEMENT-". $doc->key[DeclarationTousView::KEY_IDENTIFIANT])); ?>"><?php echo $doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]; ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("declaration_etablissement", array("identifiant" => $doc->key[DeclarationTousView::KEY_IDENTIFIANT])); ?>"><?php echo $doc->key[DeclarationTousView::KEY_RAISON_SOCIALE]; ?> <small>(<?php echo $doc->key[DeclarationTousView::KEY_IDENTIFIANT]; ?>)</small></a></td>
                         <td class="text-center"><?php echo $doc->key[DeclarationTousView::KEY_MODE]; ?></td>
                         <td class="text-center"><a href="<?php echo url_for("declaration_doc", array("id" => $doc->id)); ?>"><?php echo $doc->key[DeclarationTousView::KEY_STATUT]; ?><?php if($doc->key[DeclarationTousView::KEY_INFOS]): ?><br /><small class="text-muted"><?php echo $doc->key[DeclarationTousView::KEY_INFOS] ?></small><?php endif; ?></a></td>
                     </tr>
@@ -38,7 +38,7 @@
             </tbody>
         </table>
         <div class="text-center">
-            <ul class="pagination pagination-lg" style="margin-top: 0;">
+            <ul class="pagination" style="margin-top: 0;">
                 <li <?php if ($page - 1  < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => (($page - 1) > 0) ? $page - 1 : 1)); ?>" aria-label="Previous"><span aria-hidden="true"><span class="glyphicon glyphicon-chevron-left"></span></span></a></li>
                 <li <?php if ($page -1 < 1) : ?>class="disabled"<?php endif; ?>><a href="<?php echo url_for('declaration', array('query' =>  $query, 'page' => 1)); ?>" aria-label="Previous"><span aria-hidden="true"><small>Première page</small></span</span></a></li>
                 <li><span aria-hidden="true"><small>Page <?php echo $page ?> / <?php echo $nbPage ?></span></small></li>

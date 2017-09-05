@@ -19,13 +19,13 @@
             </tr>
             <tr>
                 <th class="text-left col-xs-3">Appellation revendiquée</th>
-                <th class="text-center col-xs-1">Stock avant récolte</th>
-                <th class="text-center col-xs-1">Complément</th>
-                <th class="text-center col-xs-1">Substitution</th>
-                <th class="text-center col-xs-1">À détruire</th>
-                <th class="text-center col-xs-1">Rafraichi</th>
-                <th class="text-center col-xs-1">Cette année</th>
-                <th class="text-center col-xs-1">Stock après récolte</th>
+                <th style="position: relative;" class="text-center col-xs-1">Stock avant récolte<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Complément<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Substitution<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">À détruire<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Cette année<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1" >Stock après récolte<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>

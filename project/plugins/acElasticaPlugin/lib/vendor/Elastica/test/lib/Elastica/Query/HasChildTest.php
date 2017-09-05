@@ -5,18 +5,38 @@ class Elastica_Query_HasChildTest extends PHPUnit_Framework_TestCase
 {
     public function testToArray()
     {
-        $ids = new Elastica_Query_Ids();
-        $ids->setIds(12);
+        $q = new Elastica_Query_MatchAll();
 
         $type = 'test';
 
-        $query = new Elastica_Query_HasChild($ids, $type);
-        $query->setType($type);
+        $query = new Elastica_Query_HasChild($q, $type);
 
         $expectedArray = array(
             'has_child' => array(
+                'query' => $q->toArray(),
+                'type' => $type
+            )
+        );
+
+        $this->assertEquals($expectedArray, $query->toArray());
+    }
+
+    public function testSetScope()
+    {
+        $q = new Elastica_Query_MatchAll();
+
+        $type = 'test';
+
+        $scope = 'foo';
+
+        $query = new Elastica_Query_HasChild($q, $type);
+        $query->setScope($scope);
+
+        $expectedArray = array(
+            'has_child' => array(
+                'query' => $q->toArray(),
                 'type' => $type,
-                'query' => $ids->toArray(),
+                '_scope' => $scope
             )
         );
 

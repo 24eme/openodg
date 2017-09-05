@@ -33,6 +33,8 @@ class importEntiteFromXmlTask extends sfBaseTask
     protected $type_contact = null;
 
     protected $siret = null;
+    protected $date_archivage = null;
+    protected $groupe = null;
 
 
     protected $observationsCodifiees = array();
@@ -78,9 +80,11 @@ EOF;
         foreach ($xmlEntite as $nameField => $field) {
 
             $this->searchIdentifiant($nameField,$field);
+            $this->searchDateArchivage($nameField,$field);
             $this->searchCvi($nameField,$field);
             $this->searchNomPrenom($nameField,$field);
             $this->searchCoordonnees($nameField,$field);
+            $this->searchCommunications($nameField,$field);
             $this->searchObservationsCodifiees($nameField,$field);
             $this->searchSiret($nameField,$field);
 
@@ -98,6 +102,19 @@ EOF;
         }
         $this->identifiant = (string) $field;
       }
+    }
+
+
+    public function searchDateArchivage($nameField, $field){
+       if($nameField == "b:DateArchivage"){
+          if(count($field)){
+            if(count($field) > 1){ var_dump($nameField,$field); continue; }
+          }
+          $date = (string) $field;
+          if($date != "0001-01-01T00:00:00"){
+            $this->date_archivage = (new DateTime($date))->format("Y-m-d");
+          }
+        }
     }
 
     public function searchSiret($nameField, $field){
@@ -206,22 +223,26 @@ EOF;
                 }
                 if(array_key_exists("b:Fax",$comms)){
                   $this->fax = (string) $comms["b:Fax"];
+                  if(!$this->fax || ($this->fax == "__.__.__.__.__")){ $this->fax = null; }
                 }
                 if(array_key_exists("b:NumeroCommunication",$comms)){
                   $this->numeroCommunication = (string) $comms["b:NumeroCommunication"];
                 }
                 if(array_key_exists("b:Portable",$comms)){
                   $this->portable = (string) $comms["b:Portable"];
+                  if(!$this->portable || ($this->portable == "__.__.__.__.__")){ $this->portable = null; }
                 }
                 if(array_key_exists("b:SiteWeb",$comms)){
                   $this->site_web = (string) $comms["b:SiteWeb"];
                 }
                 if(array_key_exists("b:Telephone",$comms)){
                   $this->telephone = (string) $comms["b:Telephone"];
+                  if(!$this->telephone || ($this->telephone == "__.__.__.__.__")){ $this->telephone = null; }
                 }
                 if(array_key_exists("b:TypeContact",$comms)){
                   $this->type_contact = (string) $comms["b:TypeContact"];
                 }
+
               }
             }
     }
@@ -239,10 +260,13 @@ EOF;
                 echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                 continue;
               }
-              $this->observationsCodifiees[] = $this->observationsCodifieesArr[$code];
+              $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
             }
           }
         }
+      }
+      if($nameField == "b:LibelleGroupe"){
+          $this->groupe = (string) $field;
       }
     }
 
@@ -251,11 +275,14 @@ EOF;
       if(!$this->identifiant){
         echo "Le fichier xml $file_path n'a pas d'identifiant!\n"; exit;
       }
-      $societe->identifiant = sprintf("%06d",$this->identifiant);
+        $societe->identifiant = sprintf("%06d",$this->identifiant);
 
-      if(!$this->cvi){
-          echo "L'entité $this->identifiant n'a pas de CVI!\n"; exit;
-      }
+        if($this->cvi){
+          $societe->type_societe = "RESSORTISSANT" ;
+        }else{
+          $societe->type_societe =  "AUTRE" ;
+        }
+
         $societe->constructId();
         $societe->raison_sociale = $this->buildRaisonSociete();
 
@@ -276,34 +303,50 @@ EOF;
         $societe->fax = $this->fax;
 
         $societe->siret = $this->siret;
-
+        if($this->date_archivage){
+          $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
+        }
         $societe->save();
 
         $societe = SocieteClient::getInstance()->find($societe->_id);
 
+        if($this->cvi){
         $etablissement = $societe->createEtablissement('PRODUCTEUR');
         // $etablissement->setCompte($societe->getMasterCompte()->_id);
         $etablissement->constructId();
         $etablissement->cvi = $this->cvi;
-        if(count($this->observationsCodifiees)){
-          echo "mis à jour des observationsCodifiees pour le compte ".  $etablissement->getMasterCompte()->_id." ";
-          foreach($this->observationsCodifiees as $obs){
-            echo $obs." | ";
-            $etablissement->getMasterCompte()->addTag('observationsCodifiees',$obs);
-          }
-          echo "\n";
-        }
         $etablissement->nom = $this->buildRaisonSociete();
-        $compte = $etablissement->getMasterCompte();
-        $compte->nom = $this->nom;
-        $compte->prenom = $this->prenom;
 
-
-        $compte->telephone_mobile = $this->portable;
-        $compte->site_internet = $this->site_web ;
-        $compte->fonction = $this->type_contact;
+        $this->setTags($etablissement->getMasterCompte());
 
         $etablissement->save();
+      }
+
+      $compte = $societe->getMasterCompte();
+      $compte->nom = $this->nom;
+      $compte->prenom = $this->prenom;
+
+      $compte->telephone_mobile = $this->portable;
+      $compte->site_internet = $this->site_web;
+      $compte->fonction = $this->type_contact;
+      $compte->save();
+
+      echo "L'entité $this->identifiant CVI ($this->cvi)  C'est un compte =>  $compte->_id \n";
     }
+
+    public function setTags($c){
+      if($this->groupe){
+        $c->addTag('manuel',$this->groupe);
+      }
+      if(count($this->observationsCodifiees)){
+        echo "mis à jour des observationsCodifiees pour le compte ".  $c->_id." ";
+        foreach($this->observationsCodifiees as $obsKey => $obs){
+          $tag = $obs.' '.$obsKey;
+          echo $tag." | ";
+          $c->addTag('manuel',$tag);
+        }
+        echo "\n";
+    }
+  }
 
 }

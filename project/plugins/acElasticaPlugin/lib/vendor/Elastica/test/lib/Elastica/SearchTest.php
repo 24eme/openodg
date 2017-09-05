@@ -143,7 +143,7 @@ class Elastica_SearchTest extends Elastica_Test
         $type2 = $index1->getType('type2');
 
         // No index
-        $this->assertEquals('_all/_search', $search1->getPath());
+        $this->assertEquals('/_search', $search1->getPath());
 
         // Only index
         $search1->addIndex($index1);
@@ -283,5 +283,35 @@ class Elastica_SearchTest extends Elastica_Test
         } catch (Exception $ex) {
             $this->assertTrue($ex instanceof Elastica_Exception_Invalid);
         }
+    }
+
+
+    public function testCountRequest() {
+        $client = new Elastica_Client();
+        $search = new Elastica_Search($client);
+
+        $index = $client->getIndex('zero');
+        $index->create(array('index' => array('number_of_shards' => 1, 'number_of_replicas' => 0)), true);
+
+        $docs = array();
+        $docs[] = new Elastica_Document(1, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(2, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(3, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(4, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(5, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(6, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(7, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(8, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(9, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(10, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $docs[] = new Elastica_Document(11, array('id' => 1, 'email' => 'test@test.com', 'username' => 'farrelley'));
+        $type = $index->getType('zeroType');
+        $type->addDocuments($docs);
+        $index->refresh();
+
+        $search->addIndex($index)->addType($type);
+
+        $count = $search->count('farrelley');
+        $this->assertEquals(11, $count);
     }
 }

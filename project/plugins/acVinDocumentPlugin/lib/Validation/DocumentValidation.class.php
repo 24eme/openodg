@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 abstract class DocumentValidation
 {
@@ -13,7 +13,7 @@ abstract class DocumentValidation
     protected $controles = array();
 
     protected $points = array();
-    
+
     protected $noticeVigilance;
 
     public function __construct($document, $options = null)
@@ -39,6 +39,11 @@ abstract class DocumentValidation
         }
 
         $this->controles[sprintf("%s-%s", $type, $code)] = new DocumentValidationControle($type, $code, $message);
+    }
+
+    public function hasControle($type, $code) {
+
+        return array_key_exists(sprintf("%s-%s", $type, $code), $this->controles);
     }
 
     public function findControle($type, $code)
@@ -68,17 +73,26 @@ abstract class DocumentValidation
         return $this->points[$type];
     }
 
+    public function getPointsByCodes($type) {
+        $points = array();
+        foreach($this->getPoints($type) as $controle) {
+            $points[$controle->getCode()][] = $controle;
+        }
+
+        return $points;
+    }
+
     public function getEngagements()
     {
         return $this->getPoints('engagement');
     }
-    
+
     public function getVigilances()
     {
 
         return $this->getPoints('vigilance');
     }
-    
+
     public function getErreurs()
     {
 
@@ -89,7 +103,7 @@ abstract class DocumentValidation
     {
         return count($this->getEngagements()) > 0;
     }
-    
+
     public function hasVigilances()
     {
         return count($this->getVigilances()) > 0;
@@ -106,20 +120,20 @@ abstract class DocumentValidation
     }
 
     public function isValide() {
-      
+
         return !($this->hasErreurs());
     }
 
     protected function generateUrl($route, $params = array(), $absolute = false)
     {
-      return sfContext::getInstance()->getRouting()->generate($route, $params, $absolute);
+        return sfContext::getInstance()->getRouting()->generate($route, $params, $absolute);
     }
 
     protected function isTypeExist($type) {
 
         return in_array($type, $this->types);
     }
-    
+
     public function printNoticeVigilance()
     {
     	return $this->noticeVigilance;

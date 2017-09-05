@@ -2,7 +2,9 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(33);
+sfContext::createInstance($configuration);
+
+$t = new lime_test(42);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -14,12 +16,12 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 
 $campagne = (date('Y')-1)."";
 
-$t->comment("Création de la DR");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
 
-$t->comment("Récupération de la DR");
+$t->comment("Récupération des données à partir de la DR");
+
 $csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane.csv');
 $csvContent = $csv->convert();
 file_put_contents("/tmp/dr.csv", $csvContent);
@@ -27,17 +29,25 @@ $csv = new DRCsvFile("/tmp/dr.csv");
 $drev->importCSVDouane($csv->getCsvAcheteur("7523700100"));
 $drev->save();
 
-$produit1 = current($drev->getProduits());
+$t->is(count($drev->getProduits()), 2, "La DRev a repris 2 produits du csv de la DR");
+
+$produits = $drev->getProduits();
+
+$produit1 = current($produits);
 $produit_hash1 = $produit1->getHash();
 $produit1->vci_stock_initial = 3;
+next($produits);
+$produit2 = current($produits);
+$produit_hash2 = $produit2->getHash();
+
 $drev->save();
 
-$t->is(count($drev->getProduits()), 1, "La DRev à repris 1 produit du csv de la DR");
-$t->is($produit1->detail->superficie_total, 333.87, "La superficie total de la DR pour le produit est de 333.87");
-$t->is($produit1->detail->volume_total, 169.25, "Le volume total de la DR pour ce produit est de 169.25");
+$t->is($produit1->getLibelleComplet(), "Saint Joseph Rouge", "Le libelle du produit est Saint Joseph");
+$t->is($produit1->detail->superficie_total, 247.86, "La superficie total de la DR pour le produit est de 333.87");
+$t->is($produit1->detail->volume_total, 105.18, "Le volume total de la DR pour ce produit est de 169.25");
 $t->is($produit1->detail->vci, 2, "Le vci de la DR pour ce produit est de 2");
-$t->is($produit1->detail->volume_sur_place, 108.94, "Le volume sur place pour ce produit est de 108.94");
-$t->is($produit1->detail->usages_industriels_total, 4.32, "Les usages industriels la DR pour ce produit sont de 4.32");
+$t->is($produit1->detail->volume_sur_place, 105.18, "Le volume sur place pour ce produit est de 108.94");
+$t->is($produit1->detail->usages_industriels_total, 3.03, "Les usages industriels la DR pour ce produit sont de 4.32");
 
 $t->comment("Formulaire de revendication");
 
@@ -45,22 +55,25 @@ $form = new DRevRevendicationForm($drev);
 
 $defaults = $form->getDefaults();
 
-$t->is(count($form['produits']), 1, "La form a 1 produit");
-$t->is($form['produits'][$produit_hash1]['detail']['superficie_total']->getValue(), 333.87, "La superficie totale de la DR est 337.87");
-$t->is($form['produits'][$produit_hash1]['detail']['volume_total']->getValue(), 169.25, "La volume totale de la DR est 169.25");
-$t->is($form['produits'][$produit_hash1]['detail']['volume_sur_place']->getValue(), 108.94, "Le volume sur place pour ce produit est de 108.94");
-$t->is($form['produits'][$produit_hash1]['detail']['vci']->getValue(), 2, "Le vci la DR sont de 4.32");
-$t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), null, "La superficie revendique est null");
-$t->is($form['produits'][$produit_hash1]['volume_revendique_sans_vci']->getValue(), null, "Le volume revendique avec vci est null");
-$t->is($form['produits'][$produit_hash1]['volume_revendique_avec_vci']->getValue(), null, "Le volume revendique sans vci est null");
-$t->is($form['produits'][$produit_hash1]['vci_stock_initial']->getValue(), 3, "Le stock initial de la DR pour ce produit est de 3");
+$t->is(count($form['produits']), 2, "La form a 2 produits");
+$t->is($form['produits'][$produit_hash1]['detail']['superficie_total']->getValue(), $produit1->detail->superficie_total, "La superficie totale de la DR est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['detail']['volume_total']->getValue(), $produit1->detail->volume_total, "La volume totale de la DR est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['detail']['volume_sur_place']->getValue(), $produit1->detail->volume_sur_place, "Le volume sur place est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['detail']['usages_industriels_total']->getValue(), $produit1->detail->usages_industriels_total, "Les usages industriels la DR sont initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $produit1->superficie_revendique, "La superficie revendique est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['volume_revendique_sans_vci']->getValue(), $produit1->volume_revendique_sans_vci, "Le volume revendique avec vci est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['volume_revendique_avec_vci']->getValue(), $produit1->volume_revendique_avec_vci, "Le volume revendique sans vci est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['vci_stock_initial']->getValue(), 3, "Le stock initial VCI de la DR est initialisé dans le form");
 
 $values = array(
-    'produits' => array(
-        $produit_hash1 => array("superficie_revendique" => 200, "volume_revendique_sans_vci" => 100, "volume_revendique_avec_vci" => 100, 'vci_stock_initial' => 3, 'detail' => array('superficie_total' => 400)),
-    ),
+    'produits' => $form['produits']->getValue(),
     '_revision' => $drev->_rev,
 );
+
+$values['produits'][$produit_hash1]['superficie_revendique'] = 200;
+$values['produits'][$produit_hash1]['volume_revendique_sans_vci'] = 100;
+$values['produits'][$produit_hash1]['volume_revendique_avec_vci'] = 100;
+$values['produits'][$produit_hash1]['detail']['superficie_total'] = 257.86;
 
 $form->bind($values);
 
@@ -68,9 +81,11 @@ $t->ok($form->isValid(), "Le formulaire est valide");
 
 $form->save();
 
-$t->is($produit1->superficie_revendique, 200, "La superficie revendique est de 200");
-$t->is($produit1->vci_stock_initial, 3, "Le stock initial de la DR pour ce produit est de 3");
-$t->is($produit1->detail->superficie_total, 400, "La superficie total de la DR est de 400");
+$t->is($produit1->superficie_revendique, $values['produits'][$produit_hash1]['superficie_revendique'], "La superficie revendique est enregistré");
+$t->is($produit1->vci_stock_initial, $values['produits'][$produit_hash1]['vci_stock_initial'], "Le stock initial de la DR est enregistré");
+$t->is($produit1->detail->superficie_total, $values['produits'][$produit_hash1]['detail']['superficie_total'], "La superficie total de la DR est enregistré");
+$t->is($produit1->detail->volume_total, $values['produits'][$produit_hash1]['detail']['volume_total'], "Le volume total de la DR est enregistré");
+$t->is($produit1->detail->usages_industriels_total, $values['produits'][$produit_hash1]['detail']['usages_industriels_total'], "Les usages industriels de la DR ont été enregistrés");
 
 $t->comment("Formulaire du VCI");
 
@@ -78,7 +93,7 @@ $form = new DRevVciForm($drev);
 
 $defaults = $form->getDefaults();
 
-$t->is(count($form['produits']), 1, "La form a 1 produit");
+$t->is(count($form['produits']), 1, "La form a 1 seul produit");
 $t->is($form['produits'][$produit_hash1]['vci_stock_initial']->getValue(), 3, "Le stock VCI avant récolte du formulaire est de 3");
 $t->is($form['produits'][$produit_hash1]['vci']->getValue(), 0, "Le VCI du formulaire est de 0");
 $t->is($form['produits'][$produit_hash1]['vci_destruction']->getValue(), null, "Le VCI desctruction est nul");
@@ -89,7 +104,7 @@ $t->is($form['produits'][$produit_hash1]['vci_stock_final']->getValue(), null, "
 
 $values = array(
     'produits' => array(
-        $produit_hash1 => array("vci_stock_initial" => 3, "vci" => 12, "vci_destruction" => 1, "vci_complement_dr" => "2", "vci_substitution" => 0, "vci_rafraichi" => null, "vci_stock_final" => 10)
+        $produit_hash1 => array("vci_stock_initial" => 3, "vci" => 12, "vci_destruction" => 0, "vci_complement_dr" => "2", "vci_substitution" => 0, "vci_rafraichi" => null, "vci_stock_final" => 10),
     ),
     '_revision' => $drev->_rev,
 );
@@ -103,8 +118,32 @@ $form->save();
 $produit1 = $drev->get($produit_hash1);
 $t->is($produit1->vci_stock_initial, 3, "Le stock VCI avant récolte du produit du doc est de 3");
 $t->is($produit1->vci, 12, "Le VCI du produit du doc est de 12");
-$t->is($produit1->vci_destruction, 1, "Le VCI en destruction du produit du doc est de 1");
+$t->is($produit1->vci_destruction, null, "Le VCI en destruction du produit du doc est null");
 $t->is($produit1->vci_complement_dr, 2, "Le VCI en complément de la DR du produit du doc est de 2");
 $t->is($produit1->vci_substitution, 0, "Le VCI en substitution de la DR du produit du doc est de 0");
 $t->is($produit1->vci_rafraichi, null, "Le VCI rafraichi du produit du doc est nul");
 $t->is($produit1->vci_stock_final, 10, "Le VCI stock après récolte du produit du doc est 10");
+
+$t->comment("Validation");
+$drev->cleanDoc();
+$validation = new DRevValidation($drev);
+
+$erreurs = $validation->getPointsByCodes('erreur');
+
+//print_r($erreurs);
+
+$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == 'Ardèche Rouge' , "Un point bloquant est levé car les infos de revendications du produit ardèche rouge n'ont pas été saisi");
+
+$t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé cat le vci utilisé n'a pas été correctement réparti");
+
+$produit1->vci_rafraichi = 1;
+$produit2->superficie_revendique = 10;
+$produit2->volume_revendique_sans_vci = 20;
+$produit2->volume_revendique_avec_vci = 20;
+
+$validation = new DRevValidation($drev);
+$validation->controle();
+$erreurs = $validation->getPointsByCodes('erreur');
+
+$t->ok(!isset($erreurs['revendication_incomplete']), "Après correction dans la drev plus de point blocant sur le remplissage des données de revendication");
+$t->ok(!isset($erreurs['vci_stock_utilise']), "Après correction dans la drev plus de point blocant sur la repartition du vci");

@@ -66,6 +66,7 @@ class Elastica_Client
      * Sets specific config values (updates and keeps default values)
      *
      * @param array $config Params
+     * @return Elastica_Client
      */
     public function setConfig(array $config)
     {
@@ -81,6 +82,7 @@ class Elastica_Client
      * config array if not set
      *
      * @param  string       $key Config key
+     * @throws Elastica_Exception_Invalid
      * @return array|string Config value
      */
     public function getConfig($key = '')
@@ -189,10 +191,10 @@ class Elastica_Client
      * set inside the document, because for bulk settings documents,
      * documents can belong to any type and index
      *
-     * @param  array                      $docs Array of Elastica_Document
+     * @param  array|Elastica_Document[]  $docs Array of Elastica_Document
      * @return Elastica_Response          Response object
      * @throws Elastica_Exception_Invalid If docs is empty
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/bulk/
+     * @link http://www.elasticsearch.org/guide/reference/api/bulk.html
      */
     public function addDocuments(array $docs)
     {
@@ -202,29 +204,7 @@ class Elastica_Client
         $params = array();
 
         foreach ($docs as $doc) {
-
-            $indexInfo = array(
-                '_index' => $doc->getIndex(),
-                '_type' => $doc->getType(),
-                '_id' => $doc->getId()
-            );
-
-            $version = $doc->getVersion();
-            if (!empty($version)) {
-                $indexInfo['_version'] = $version;
-            }
-
-            $parent = $doc->getParent();
-            if (!is_null($parent)) {
-                $indexInfo['_parent'] = $parent;
-            }
-
-            $percolate = $doc->getPercolate();
-            if (!empty($percolate)) {
-                $indexInfo['percolate'] = $percolate;
-            }
-
-            $params[] = array('index' => $indexInfo);
+            $params[] = array('index' => $doc->getParams());
             $params[] = $doc->getData();
         }
 
@@ -267,7 +247,7 @@ class Elastica_Client
      * Bulk deletes documents (not implemented yet)
      *
      * @param  array              $docs Docs
-     * @throws Elastica_Exception
+     * @throws Elastica_Exception_NotImplemented
      */
     public function deleteDocuments(array $docs)
     {
@@ -301,9 +281,9 @@ class Elastica_Client
      * @param  array                 $ids   Document ids
      * @param  string|Elastica_Index $index Index name
      * @param  string|Elastica_Type  $type  Type of documents
+     * @throws Elastica_Exception_Invalid
      * @return Elastica_Response     Response object
-     * @throws Elastica_Exception    If ids is empty
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/bulk/
+     * @link http://www.elasticsearch.org/guide/reference/api/bulk.html
      */
     public function deleteIds(array $ids, $index, $type)
     {
@@ -342,15 +322,17 @@ class Elastica_Client
      * of the bulk operation. An example param array would be:
      *
      * array(
-     * 		array('index' => array('_index' => 'test', '_type' => 'user', '_id' => '1')),
-     * 		array('user' => array('name' => 'hans')),
-     * 		array('delete' => array('_index' => 'test', '_type' => 'user', '_id' => '2'))
+     *         array('index' => array('_index' => 'test', '_type' => 'user', '_id' => '1')),
+     *         array('user' => array('name' => 'hans')),
+     *         array('delete' => array('_index' => 'test', '_type' => 'user', '_id' => '2'))
      * );
      *
      * @param  array             $params Parameter array
-     * @return Elastica_Response Reponse object
+     * @throws Elastica_Exception_BulkResponse
+     * @throws Elastica_Exception_Invalid
+     * @return Elastica_Response Response object
      * @todo Test
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/bulk/
+     * @link http://www.elasticsearch.org/guide/reference/api/bulk.html
      */
     public function bulk(array $params)
     {
@@ -361,7 +343,7 @@ class Elastica_Client
         $path = '_bulk';
 
         $queryString = '';
-        foreach ($params as $index => $baseArray) {
+        foreach ($params as $baseArray) {
             // Always newline needed
             $queryString .= json_encode($baseArray) . PHP_EOL;
         }
@@ -404,7 +386,7 @@ class Elastica_Client
      *
      * @param  array             $args OPTIONAL Optional arguments
      * @return Elastica_Response Response object
-     * @link http://www.elasticsearch.com/docs/elasticsearch/rest_api/admin/indices/optimize/
+     * @link http://www.elasticsearch.org/guide/reference/api/admin-indices-optimize.html
      */
     public function optimizeAll($args = array())
     {
