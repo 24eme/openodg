@@ -18,7 +18,8 @@ class DRCsvFile
   const CSV_SUPERFICIE_TOTALE = 12;
   const CSV_VOLUME_TOTAL = 13;
   const CSV_USAGES_INDUSTRIELS_TOTAL = 14;
-  const CSV_VCI = 15;
+  const CSV_RECOLTE_NETTE = 15;
+  const CSV_VCI = 16;
   const CSV_HASH_PRODUIT = 18;
 
   private $file = null;

@@ -64,6 +64,9 @@ class DRDouaneCsvFile {
                 if($data[1] == "Récolte en cave particulière. Volume obtenu") {
                     $produits[$numColonne]["L09_cave_particuliere"] = $data[$i];
                 }
+                if($data[1] == "Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé") {
+                    $produits[$numColonne]["L15_recolte_nette"] = $data[$i];
+                }
                 if($data[1] == "Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels") {
                     $produits[$numColonne]["L16_usages_industriels"] = $data[$i];
                 }
@@ -75,7 +78,7 @@ class DRDouaneCsvFile {
         $csvFinal = "";
         foreach($produits as $produit) {
             if ($produit["L09_cave_particuliere"]) {
-                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $cvi,
                     "SUR PLACE",
                     $cvi,
@@ -91,12 +94,13 @@ class DRDouaneCsvFile {
                     $produit["L04_superficie"],
                     $produit["L05_recolte_totale"],
                     $produit["L16_usages_industriels"],
+                    $produit["L15_recolte_nette"],
                     $produit["L19_vci"]
                 );
             }
 
             foreach($produit["L06_L08_vente"] as $vente) {
-                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $vente["cvi"],
                     $vente["raisonSociale"],
                     $cvi,
@@ -112,6 +116,7 @@ class DRDouaneCsvFile {
                     $produit["L04_superficie"],
                     $produit["L05_recolte_totale"],
                     $produit["L16_usages_industriels"],
+                    $produit["L15_recolte_nette"],
                     $produit["L19_vci"]
                 );
             }
