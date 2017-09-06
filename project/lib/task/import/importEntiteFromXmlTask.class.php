@@ -330,6 +330,7 @@ EOF;
         $societe->raison_sociale = $this->buildRaisonSociete();
         $societe->add('date_modification', $this->date_modification);
         $societe->add('date_creation', $this->date_creation);
+        $societe->code_comptable_client = $societe->identifiant;
         $siege = $societe->getOrAdd('siege');
         $siege->adresse = $this->adresse1;
         if($this->addresse2 || $this->adresse3){

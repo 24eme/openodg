@@ -80,6 +80,7 @@ abstract class Etapes
         if (!$etapeToTest) {
 			return false;
 		}
+
 		if (!in_array($etapeToTest, $etapes)) {
 			throw new sfException('"'.$etapeToTest.'" : étape inconnu (arg1)');
 		}
