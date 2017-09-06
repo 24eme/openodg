@@ -94,7 +94,6 @@ EOF;
             $this->searchCommunications($nameField,$field);
             $this->searchObservationsCodifiees($nameField,$field);
             $this->searchSiret($nameField,$field);
-
         }
 
         $this->importEntite();
@@ -300,6 +299,16 @@ EOF;
                 continue;
               }
               $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
+            }elseif((get_class($obsCodifie) == 'SimpleXMLElement') && count($obsCodifie)){
+              $obsCod =(array) $obsCodifie;
+              if(array_key_exists("b:ObservationCodifiee",$obsCod)){
+                $code = (string) $obsCod["b:ObservationCodifiee"];
+                if(!array_key_exists($code,$this->observationsCodifieesArr)){
+                  echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
+                  continue;
+                }
+                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
+              }
             }
           }
         }
