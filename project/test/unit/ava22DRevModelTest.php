@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(18);
+$t = new lime_test(19);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -85,6 +85,8 @@ $t->is($drevM1->_id, $drevMaster->_id, "La récupération de la drev master renv
 
 $produit1M1 = $drevM1->get($produit1->getHash());
 $produit1M1->superficie_vinifiee = 120;
+
+$t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_vinifiee'), "La superficie vinifiee est marqué comme modifié par rapport à la précedente");
 
 $t->comment("Validation de la modificatrice");
 

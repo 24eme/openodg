@@ -147,3 +147,7 @@ h3 {
     background: #c694b0;
     opacity: 0.9;
 }
+
+.versionner {
+    outline: 1px dotted #ff0000 !important;
+}

@@ -33,7 +33,7 @@
 
 <?php if($drev->validation && !$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-warning">
-        Cette déclaration est en <strong>attente de validation</strong> par l'AVA
+        Cette déclaration est en <strong>attente de validation</strong> par l'ODG
     </div>
 <?php endif; ?>
 
