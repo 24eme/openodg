@@ -78,6 +78,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->declaration->getProduits($onlyActive);
     }
 
+    public function getProduitsVci() {
+
+        return $this->declaration->getProduitsVci();
+    }
+
     public function getConfigProduits() {
 
         return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationCouleur");
