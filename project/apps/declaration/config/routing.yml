@@ -548,6 +548,16 @@ drev_validation:
   requirements:
     sf_method: [get, post]
 
+drev_modificative:
+  url: /drev/modificative/:id
+  param: { module: drev, action: modificative }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_validation_admin:
   url: /drev/validation_admin/:id
   param: { module: drev, action: validationAdmin }

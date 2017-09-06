@@ -87,35 +87,40 @@ class drevActions extends sfActions {
     public function executeDrDouane(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR()) {
         	$this->form = new DRevUploadDrForm(FichierClient::getInstance()->createDoc($this->drev->identifiant), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
         } else {
         	$this->form = null;
         }
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
-        
+
         if ($this->form) {
 	        $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
 	        if (!$this->form->isValid()) {
 	        	return sfView::SUCCESS;
 	        }
+            if (!$this->form->getValue('file')) {
+
+                return $this->redirect('drev_revendication', $this->drev);
+            }
+
 	        $fichier = $this->form->save();
 	        $lienSymbolique = LienSymboliqueClient::getInstance()->createDoc('DR', $this->drev->identifiant, $this->drev->campagne, $fichier->_id);
 	        $lienSymbolique->save();
         }
 		$this->drev->save();
-        
+
         return $this->redirect('drev_set_dr', $this->drev);
     }
-    
+
     public function executeDrInDrev(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
 
         $csvFile = $this->drev->getDR('csv');
         $csv = new DRDouaneCsvFile($csvFile);
@@ -129,7 +134,7 @@ class drevActions extends sfActions {
         $csv = new DRCsvFile($path.$filename);
         $this->drev->importCSVDouane($csv->getCsvAcheteur($this->drev->declarant->cvi));
         $this->drev->save();
-    	
+
     }
 
 
@@ -215,7 +220,7 @@ class drevActions extends sfActions {
 
         if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
 
-            return $this->redirect('drev_dr', $this->drev);
+            //return $this->redirect('drev_dr', $this->drev);
         }
 
         return $this->redirect('drev_dr_douane', $this->drev);
@@ -674,7 +679,7 @@ class drevActions extends sfActions {
         }
 
         if($this->getUser()->isAdmin() && $this->drev->hasCompleteDocuments()) {
-            $this->drev->validateOdg();
+            //$this->drev->validateOdg();
         }
 
         $this->drev->save();
@@ -741,6 +746,15 @@ class drevActions extends sfActions {
         $service = $request->getParameter("service");
 
         return $this->redirect('drev_visualisation', array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null));
+    }
+
+    public function executeModificative(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $drev_modificative = $drev->generateModificative();
+        $drev_modificative->save();
+
+        return $this->redirect('drev_edit', $drev_modificative);
     }
 
     public function executePDF(sfWebRequest $request) {

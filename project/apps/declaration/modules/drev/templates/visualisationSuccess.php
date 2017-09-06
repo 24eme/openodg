@@ -33,7 +33,7 @@
 
 <?php if($drev->validation && !$drev->validation_odg && $sf_user->isAdmin()): ?>
     <div class="alert alert-warning">
-        Cette déclaration est en <strong>attente de validation</strong> par l'AVA
+        Cette déclaration est en <strong>attente de validation</strong> par l'ODG
     </div>
 <?php endif; ?>
 
@@ -43,11 +43,11 @@
 
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form)); ?>
 
-<div class="row">
+<!--<div class="row">
     <div class="col-xs-12">
         <?php include_partial('drev/documents', array('drev' => $drev, 'form' => isset($form) ? $form : null)); ?>
     </div>
-</div>
+</div>-->
 
 <div class="row row-margin row-button">
     <div class="col-xs-5">
@@ -70,11 +70,19 @@
         <?php if(!$drev->validation): ?>
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
-                <?php if($drev->hasCompleteDocuments()): ?>
-                <a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
+                <?php if($drev->hasCompleteDocuments() || true): ?>
+                <div class="btn-group">
+                <a href="" class="btn btn-default btn-upper dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>">Partiellement</a></li>
+                  <li><a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>">Totalement</a></li>
+                </ul>
+                </div>
                 <?php else: ?>
                     <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
                 <?php endif; ?>
+        <?php else: ?>
+            <a onclick="return confirm('Étes vous sûr de vouloir créer une modificatrice ?')" class="btn btn-default pull-right" href="<?php echo url_for('drev_modificative', $drev) ?>">Créer une modificatrice</a>
         <?php endif; ?>
     </div>
 </div>

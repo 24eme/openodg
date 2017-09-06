@@ -146,7 +146,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function hasDR() {
         return ($this->getDR())? true : false;
     }
-    
+
 	public function getDR($ext = null) {
 		$ls = LienSymboliqueClient::getInstance()->findByArgs('DR', $this->identifiant, $this->campagne);
 		if ($ls) {
@@ -159,7 +159,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		}
 		return null;
 	}
-	
+
     public function initDoc($identifiant, $campagne) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
@@ -781,6 +781,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
 		$this->piece_document->generatePieces();
+    foreach ($this->declaration->getProduitsVci() as $key => $produit) {
+      $produit->vci_stock_final = ((float) $produit->vci) + ((float) $produit->vci_rafraichi);
+    }
 	}
 
     /*
@@ -1028,7 +1031,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function findDocumentByVersion($version) {
         $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
-        if($this->version) {
+        if($version) {
             $id .= "-".$this->version;
         }
 
@@ -1106,6 +1109,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getSuivante() {
 
         throw new sfException("Not implemented");
+    }
+
+    public function isValidee() {
+
+        return $this->validation;
     }
 
     /**** FIN DE VERSION ****/

@@ -1,5 +1,5 @@
 <?php
-$etapeMax = ($object->exist('etape') && $object->etape)? $object->etape : $object->getFirst();
+$etapeMax = ($object->exist('etape') && $object->etape)? $object->etape : null;
 $stepNum = $etapes->getEtapeNum($etapeMax);
 ?>
 <nav class="navbar navbar-default nav-step">

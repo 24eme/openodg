@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(42);
+$t = new lime_test(51);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -26,6 +26,7 @@ $csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane.csv');
 $csvContent = $csv->convert();
 file_put_contents("/tmp/dr.csv", $csvContent);
 $csv = new DRCsvFile("/tmp/dr.csv");
+
 $drev->importCSVDouane($csv->getCsvAcheteur("7523700100"));
 $drev->save();
 
@@ -70,15 +71,15 @@ $values = array(
     '_revision' => $drev->_rev,
 );
 
-$values['produits'][$produit_hash1]['superficie_revendique'] = 200;
+$values['produits'][$produit_hash1]['superficie_revendique'] = 10;
 $values['produits'][$produit_hash1]['volume_revendique_sans_vci'] = 100;
 $values['produits'][$produit_hash1]['volume_revendique_avec_vci'] = 100;
-$values['produits'][$produit_hash1]['detail']['superficie_total'] = 257.86;
+$values['produits'][$produit_hash1]['detail']['superficie_total'] = 10;
+$values['produits'][$produit_hash2]['detail']['superficie_total'] = 300;
 
 $form->bind($values);
 
 $t->ok($form->isValid(), "Le formulaire est valide");
-
 $form->save();
 
 $t->is($produit1->superficie_revendique, $values['produits'][$produit_hash1]['superficie_revendique'], "La superficie revendique est enregistré");
@@ -104,7 +105,7 @@ $t->is($form['produits'][$produit_hash1]['vci_stock_final']->getValue(), null, "
 
 $values = array(
     'produits' => array(
-        $produit_hash1 => array("vci_stock_initial" => 3, "vci" => 12, "vci_destruction" => 0, "vci_complement_dr" => "2", "vci_substitution" => 0, "vci_rafraichi" => null, "vci_stock_final" => 10),
+        $produit_hash1 => array("vci_stock_initial" => 3, "vci" => 12, "vci_destruction" => 0, "vci_complement_dr" => "2", "vci_substitution" => 0, "vci_rafraichi" => null, "vci_stock_final" => null),
     ),
     '_revision' => $drev->_rev,
 );
@@ -122,7 +123,12 @@ $t->is($produit1->vci_destruction, null, "Le VCI en destruction du produit du do
 $t->is($produit1->vci_complement_dr, 2, "Le VCI en complément de la DR du produit du doc est de 2");
 $t->is($produit1->vci_substitution, 0, "Le VCI en substitution de la DR du produit du doc est de 0");
 $t->is($produit1->vci_rafraichi, null, "Le VCI rafraichi du produit du doc est nul");
-$t->is($produit1->vci_stock_final, 10, "Le VCI stock après récolte du produit du doc est 10");
+$t->is($produit1->vci_stock_final, 12, "Le VCI stock après récolte du produit du doc est 12");
+
+
+$vci_stock_final_calc = $produit1->vci + $produit1->vci_rafraichi;
+
+$t->is($produit1->vci_stock_final, $vci_stock_final_calc, "Le VCI stock après récolte du produit du doc est le même que le calculé");
 
 $t->comment("Validation");
 $drev->cleanDoc();
@@ -130,14 +136,24 @@ $validation = new DRevValidation($drev);
 
 $erreurs = $validation->getPointsByCodes('erreur');
 
-//print_r($erreurs);
+$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == 'Ardèche Rouge' , "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
 
-$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == 'Ardèche Rouge' , "Un point bloquant est levé car les infos de revendications du produit ardèche rouge n'ont pas été saisi");
+$t->ok(isset($erreurs['dr_rendement']) && count($erreurs['dr_rendement']) == 1 && $erreurs['dr_rendement'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le rendement sur la DR n'est pas respecté");
 
-$t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé cat le vci utilisé n'a pas été correctement réparti");
+$t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
 
+$t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
+
+$t->ok(isset($erreurs['vci_rendement_annee']) && count($erreurs['vci_rendement_annee']) == 1 && $erreurs['vci_rendement_annee'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
+
+$t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
+
+
+$produit1->superficie_revendique = 500;
+$produit1->detail->superficie_total = 500;
 $produit1->vci_rafraichi = 1;
-$produit2->superficie_revendique = 10;
+
+$produit2->superficie_revendique = 100;
 $produit2->volume_revendique_sans_vci = 20;
 $produit2->volume_revendique_avec_vci = 20;
 
@@ -146,4 +162,8 @@ $validation->controle();
 $erreurs = $validation->getPointsByCodes('erreur');
 
 $t->ok(!isset($erreurs['revendication_incomplete']), "Après correction dans la drev plus de point blocant sur le remplissage des données de revendication");
+$t->ok(!isset($erreurs['revendication_rendement']), "Après correction dans la drev plus de point blocant sur le rendement de la revendication");
+$t->ok(!isset($erreurs['dr_rendement']), "Après correction dans la drev plus de point blocant sur le rendement DR");
 $t->ok(!isset($erreurs['vci_stock_utilise']), "Après correction dans la drev plus de point blocant sur la repartition du vci");
+$t->ok(!isset($erreurs['vci_rendement_annee']), "Après correction dans la drev plus de point blocant sur le rendement à l'année du vci");
+$t->ok(!isset($erreurs['vci_rendement_total']), "Après correction dans la drev plus de point blocant sur le rendement total du vci");

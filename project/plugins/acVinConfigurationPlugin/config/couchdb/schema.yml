@@ -243,6 +243,10 @@ Configuration:
                                               fields:
                                                 rendement_couleur: { type: float }
                                                 rendement: { type: float }
+                                                rendement_dr: { type: float }
+                                                rendement_drev: { type: float }
+                                                rendement_vci_annee: { type: float }
+                                                rendement_vci_total: { type: float }
                                                 libelle: { }
                                                 libelle_long: { required: false }
                                                 drev: { type: integer, required: false }
