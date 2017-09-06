@@ -87,17 +87,17 @@ class drevActions extends sfActions {
     public function executeDrDouane(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR()) {
         	$this->form = new DRevUploadDrForm(FichierClient::getInstance()->createDoc($this->drev->identifiant), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
         } else {
         	$this->form = null;
         }
-        
+
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
-        
+
         if ($this->form) {
 	        $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
 	        if (!$this->form->isValid()) {
@@ -108,14 +108,14 @@ class drevActions extends sfActions {
 	        $lienSymbolique->save();
         }
 		$this->drev->save();
-        
+
         return $this->redirect('drev_set_dr', $this->drev);
     }
-    
+
     public function executeDrInDrev(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
 
         $csvFile = $this->drev->getDR('csv');
         $csv = new DRDouaneCsvFile($csvFile);
@@ -129,7 +129,7 @@ class drevActions extends sfActions {
         $csv = new DRCsvFile($path.$filename);
         $this->drev->importCSVDouane($csv->getCsvAcheteur($this->drev->declarant->cvi));
         $this->drev->save();
-    	
+
     }
 
 
@@ -215,7 +215,7 @@ class drevActions extends sfActions {
 
         if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
 
-            return $this->redirect('drev_dr', $this->drev);
+            //return $this->redirect('drev_dr', $this->drev);
         }
 
         return $this->redirect('drev_dr_douane', $this->drev);
