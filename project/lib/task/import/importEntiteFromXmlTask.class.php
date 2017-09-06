@@ -173,7 +173,6 @@ EOF;
   public function searchCvi($nameField, $field){
             if($nameField == "b:Evv" && boolval((string) $field)){
               $evvStr = (string) $field;
-              if(strpos($evvStr, ",")){
                 $evvArray = explode(',',$evvStr);
                 if(count($evvArray)){
                   $cviPrec = "";
@@ -184,14 +183,11 @@ EOF;
                       if($cviPrec && $cviPrec != $cvi_c){
                         echo "l'identité  ".  $this->identifiant." a des cvis différents : ".$evvStr."\n";
                       }
+                      $cviPrec = $cvi_c;
                     }
-                    $cviPrec = $cvi_c;
                   }
                 }
                 $this->cvi = $cviReal;
-              }else{
-                $this->cvi = (string) $evvStr;
-              }
             }
     }
 
@@ -203,7 +199,9 @@ EOF;
               $this->nom = (string) $field;
           }
           if($nameField == "b:Titre"){
-              $this->civilite = (string) $field.".";
+              if((string) $field){
+                $this->civilite = (string) $field.".";
+              }
           }
     }
 
