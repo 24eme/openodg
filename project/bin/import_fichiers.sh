@@ -13,8 +13,8 @@ SYMFODIR=$(pwd);
 
 LOGDATE=$SYMFODIR/$(date +%Y%m%d%H%M%S_import_data.log)
 
-#mkdir $TMPDIR/ODGRHONE_FICHIERS 2>/dev/null
-#scp $1 $TMPDIR/ODGRHONE_FICHIERS/
+mkdir $TMPDIR/ODGRHONE_FICHIERS 2>/dev/null
+scp $1 $TMPDIR/ODGRHONE_FICHIERS/
 
 
 echo "Création des fichiers";
