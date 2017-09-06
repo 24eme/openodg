@@ -457,6 +457,16 @@ drev_revendication:
     type:     object
   requirements:
     sf_method: [get, post]
+    
+drev_set_dr:
+  url: /drev/dr_douane_import/:id
+  param: { module: drev, action: drInDrev }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 drev_vci:
   url: /drev/vci/:id/:appellation

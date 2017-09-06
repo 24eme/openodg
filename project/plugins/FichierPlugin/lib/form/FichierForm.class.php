@@ -75,6 +75,7 @@ class FichierForm extends BaseForm
     	}
 
     	$this->fichier->save();
+    	return $this->fichier;
     }
     
     
