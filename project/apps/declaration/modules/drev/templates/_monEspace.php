@@ -29,7 +29,7 @@
         <?php elseif (!DRevClient::getInstance()->isOpen()): ?>
             <div class="panel-body">
                 <?php if(date('Y-m-d') > DRevClient::getInstance()->getDateOuvertureFin()): ?>
-                <p>Le Téléservice est fermé. Pour toute question, veuillez contacter directement l'AVA.</p>
+                <p>Le Téléservice est fermé. Pour toute question, veuillez contacter directement l'ODG.</p>
                 <?php else: ?>
                 <p>Le Téléservice sera ouvert à partir du <?php echo format_date(DRevClient::getInstance()->getDateOuvertureDebut(), "D", "fr_FR") ?>.</p>
                 <?php endif; ?>
