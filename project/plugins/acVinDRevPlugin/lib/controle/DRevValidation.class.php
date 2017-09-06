@@ -379,7 +379,7 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleRecolte($produit) {
-        if($produit->getConfig()->rendement_dr !== null && round(($produit->detail->volume_total / $produit->detail->superficie_total)*100, 2) > $produit->getConfig()->rendement_dr) {
+        if($produit->getConfig()->rendement_dr !== null && $produit->detail->volume_total && $produit->detail->superficie_total && round(($produit->detail->volume_total / $produit->detail->superficie_total)*100, 2) > $produit->getConfig()->rendement_dr) {
             $this->addPoint(self::TYPE_ERROR, 'dr_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
     }

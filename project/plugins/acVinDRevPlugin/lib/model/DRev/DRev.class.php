@@ -1031,7 +1031,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function findDocumentByVersion($version) {
         $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
-        if($this->version) {
+        if($version) {
             $id .= "-".$this->version;
         }
 
@@ -1109,6 +1109,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getSuivante() {
 
         throw new sfException("Not implemented");
+    }
+
+    public function isValidee() {
+
+        return $this->validation;
     }
 
     /**** FIN DE VERSION ****/
