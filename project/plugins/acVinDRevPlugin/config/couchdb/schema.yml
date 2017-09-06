@@ -119,6 +119,7 @@ DRev:
                                                       usages_industriels_total: { type: float }
                                                       volume_total: { type: float }
                                                       superficie_total: { type: float }
+                                                      recolte_nette: { type: float }
                                                       superficie_vinifiee: { type: float, required: false }
                                                       vci: { type: float }
                                                 detail_vtsgn:

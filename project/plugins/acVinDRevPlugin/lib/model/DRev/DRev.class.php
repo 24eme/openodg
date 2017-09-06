@@ -192,7 +192,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produitDetail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
             $produitDetail->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             $produitDetail->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+            $produitDetail->recolte_nette += (float) $line[DRCsvFile::CSV_RECOLTE_NETTE];
             $produitDetail->vci += (float) $line[DRCsvFile::CSV_VCI];
+            $produit->vci = $produitDetail->vci;
         }
     }
 

@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(51);
+$t = new lime_test(53);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -47,8 +47,10 @@ $t->is($produit1->getLibelleComplet(), "Saint Joseph Rouge", "Le libelle du prod
 $t->is($produit1->detail->superficie_total, 247.86, "La superficie total de la DR pour le produit est de 333.87");
 $t->is($produit1->detail->volume_total, 105.18, "Le volume total de la DR pour ce produit est de 169.25");
 $t->is($produit1->detail->vci, 2, "Le vci de la DR pour ce produit est de 2");
+$t->is($produit1->vci, 2, "Le vci de l'année de la DR pour ce produit est de 2");
 $t->is($produit1->detail->volume_sur_place, 105.18, "Le volume sur place pour ce produit est de 108.94");
 $t->is($produit1->detail->usages_industriels_total, 3.03, "Les usages industriels la DR pour ce produit sont de 4.32");
+$t->is($produit1->detail->recolte_nette, 104.1, "La récolte nette de la DR pour ce produit est de 104.1");
 
 $t->comment("Formulaire de revendication");
 
@@ -59,8 +61,8 @@ $defaults = $form->getDefaults();
 $t->is(count($form['produits']), 2, "La form a 2 produits");
 $t->is($form['produits'][$produit_hash1]['detail']['superficie_total']->getValue(), $produit1->detail->superficie_total, "La superficie totale de la DR est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['detail']['volume_total']->getValue(), $produit1->detail->volume_total, "La volume totale de la DR est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['detail']['recolte_nette']->getValue(), $produit1->detail->recolte_nette, "La récolté nette de la DR sont initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['detail']['volume_sur_place']->getValue(), $produit1->detail->volume_sur_place, "Le volume sur place est initialisé dans le form");
-$t->is($form['produits'][$produit_hash1]['detail']['usages_industriels_total']->getValue(), $produit1->detail->usages_industriels_total, "Les usages industriels la DR sont initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $produit1->superficie_revendique, "La superficie revendique est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['volume_revendique_sans_vci']->getValue(), $produit1->volume_revendique_sans_vci, "Le volume revendique avec vci est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['volume_revendique_avec_vci']->getValue(), $produit1->volume_revendique_avec_vci, "Le volume revendique sans vci est initialisé dans le form");
@@ -86,7 +88,7 @@ $t->is($produit1->superficie_revendique, $values['produits'][$produit_hash1]['su
 $t->is($produit1->vci_stock_initial, $values['produits'][$produit_hash1]['vci_stock_initial'], "Le stock initial de la DR est enregistré");
 $t->is($produit1->detail->superficie_total, $values['produits'][$produit_hash1]['detail']['superficie_total'], "La superficie total de la DR est enregistré");
 $t->is($produit1->detail->volume_total, $values['produits'][$produit_hash1]['detail']['volume_total'], "Le volume total de la DR est enregistré");
-$t->is($produit1->detail->usages_industriels_total, $values['produits'][$produit_hash1]['detail']['usages_industriels_total'], "Les usages industriels de la DR ont été enregistrés");
+$t->is($produit1->detail->recolte_nette, $values['produits'][$produit_hash1]['detail']['recolte_nette'], "La récolte nette de la DR a été enregistrée");
 
 $t->comment("Formulaire du VCI");
 
@@ -96,12 +98,12 @@ $defaults = $form->getDefaults();
 
 $t->is(count($form['produits']), 1, "La form a 1 seul produit");
 $t->is($form['produits'][$produit_hash1]['vci_stock_initial']->getValue(), 3, "Le stock VCI avant récolte du formulaire est de 3");
-$t->is($form['produits'][$produit_hash1]['vci']->getValue(), 0, "Le VCI du formulaire est de 0");
+$t->is($form['produits'][$produit_hash1]['vci']->getValue(), 2, "Le VCI du formulaire est de 0");
 $t->is($form['produits'][$produit_hash1]['vci_destruction']->getValue(), null, "Le VCI desctruction est nul");
 $t->is($form['produits'][$produit_hash1]['vci_complement_dr']->getValue(), null, "Le VCI en complément de la DR est nul");
 $t->is($form['produits'][$produit_hash1]['vci_substitution']->getValue(), null, "Le VCI en substitution est nul");
 $t->is($form['produits'][$produit_hash1]['vci_rafraichi']->getValue(), null, "Le VCI rafraichi est nul");
-$t->is($form['produits'][$produit_hash1]['vci_stock_final']->getValue(), null, "Le VCI stock après récolte est nul");
+$t->is($form['produits'][$produit_hash1]['vci_stock_final']->getValue(), 2, "Le VCI stock après récolte est nul");
 
 $values = array(
     'produits' => array(
