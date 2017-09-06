@@ -3,43 +3,43 @@
 function styleDRev() {
     return "
     .table {
-        border: 1px solid #c75268;
+        border: 1px solid #000;
     }
 
     .tableAlt {
-        border: 1px solid #f3c3d3;
+        border: 1px solid #aaa;
     }
 
     .th {
-        font-weight: normal; border: 1px solid #c75268; background-color: #f7dce5; color: #c75268;
+        font-weight: normal; border: 1px solid #000; background-color: #ccc; color: #000;
     }
 
     .td {
-        border: 1px solid #c75268; height:22px; text-align: left;
+        border: 1px solid #000; height:22px; text-align: left;
     }
 
     .tdAlt {
-        border: 1px solid #c75268; height:22px; text-align: left; background-color: #fbedf2;
+        border: 1px solid #000; height:22px; text-align: left; background-color: #ccc;
     }
 
     .h2 {
-        text-align: left; font-size: 12pt; color: #c75268;
+        text-align: left; font-size: 12pt; color: #000;
     }
 
     .tdH2 {
-       border-bottom: 1px solid #c75268; 
+       border-bottom: 1px solid #000;
     }
-    
+
     .tdH2Big {
        font-weight: bold; font-size: 24pt;
     }
 
     .h3 {
-        background-color: #c75268; color: white; font-weight: bold;
+        background-color: #000; color: white; font-weight: bold;
     }
 
     .h3Alt {
-        background-color: #f3c3d3; color: #c75268; font-weight: bold;   
+        background-color: #aaa; color: #000; font-weight: bold;
     }
 ";
 }

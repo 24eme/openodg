@@ -34,41 +34,45 @@
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; <?php if ($drev->canHaveSuperficieVinifiee()): ?><?php if(!$drev->isNonRecoltant()): ?>width: 280px;<?php else: ?>width: 400px;<?php endif; ?><?php else: ?><?php if(!$drev->isNonRecoltant()): ?>width: 400px;<?php else: ?>width: 520px;<?php endif; ?><?php endif; ?>">&nbsp;Appellation</th>
-        <?php if(!$drev->isNonRecoltant()): ?>
-        <th class="th" style="text-align: center; width: 120px;">Superficie totale</th>
-        <?php endif; ?>
-        <?php if ($drev->canHaveSuperficieVinifiee()): ?>
-        <th class="th" style="text-align: center; width: 120px;">Superficie vinifiée</th>
-        <?php endif; ?>
-        <th class="th" style="text-align: center; width: 120px;">Volume revendiqué</th>
+        <th class="th" style="text-align: left; width: 200px;">Appellation</th>
+        <th class="th" style="text-align: center; width: 88px;">Superficie revendiquée</th>
+        <th class="th" style="text-align: center; width: 88px;">Volume revendiqué sans VCI</th>
+        <th class="th" style="text-align: center; width: 88px;">Volume revendiqué avec VCI</th>
+        <th class="th" style="text-align: center; width: 88px;">VCI Constitué</th>
+        <th class="th" style="text-align: center; width: 88px;">Stock VCI</th>
     </tr>
     <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
-        <?php if($produit->volume_revendique|| $produit->superficie_revendique || ($produit->exist('superficie_vinifiee') && $produit->superficie_vinifiee)): ?>
-            <tr>
-                <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?><?php if($produit->canHaveVtsgn()): ?> <small>(hors VT/SGN)</small><?php endif; ?></td>
-                <?php if(!$drev->isNonRecoltant()): ?>
-                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-                <?php endif; ?>
-                <?php if ($drev->canHaveSuperficieVinifiee()): ?>
-                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->exist('superficie_vinifiee')): ?><?php echo sprintFloatFr($produit->superficie_vinifiee) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;<?php endif; ?>&nbsp;</td>
-                <?php endif; ?>
-                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-            </tr>
-        <?php endif; ?>
-        <?php if($produit->canHaveVtsgn() && ($produit->volume_revendique_vtsgn || $produit->superficie_revendique_vtsgn || ($produit->exist('superficie_vinifiee_vtsgn') && $produit->superficie_vinifiee_vtsgn))): ?>
-            <tr>
-                <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?> VT/SGN</td>
-                <?php if(!$drev->isNonRecoltant()): ?>
-                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique_vtsgn) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
-                <?php endif; ?>
-                <?php if ($drev->canHaveSuperficieVinifiee()): ?>
-                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->exist('superficie_vinifiee_vtsgn')): ?><?php echo sprintFloatFr($produit->superficie_vinifiee_vtsgn) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;<?php endif; ?>&nbsp;</td>
-                <?php endif; ?>
-                <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_vtsgn) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
-            </tr>
-        <?php endif; ?>
-    <?php  endforeach; ?>
+        <tr>
+            <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_sans_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_avec_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci): ?><?php echo sprintFloatFr($produit->vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_stock_final): ?><?php echo sprintFloatFr($produit->vci_stock_final) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+<br />
+<div><span class="h3">&nbsp;Répartition du VCI 2015&nbsp;</span></div>
+<table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+    <tr>
+        <th class="th" style="text-align: left; width: 200px;">Appellation</th>
+        <th class="th" style="text-align: center; width: 88px;">Stock VCI 2015</th>
+        <th class="th" style="text-align: center; width: 88px;">Complément</th>
+        <th class="th" style="text-align: center; width: 88px;">Substitution</th>
+        <th class="th" style="text-align: center; width: 88px;">A détruire</th>
+        <th class="th" style="text-align: center; width: 88px;">Rafraichi</th>
+    </tr>
+    <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
+        <tr>
+            <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_stock_initial): ?><?php echo sprintFloatFr($produit->vci_stock_initial) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_complement_dr): ?><?php echo sprintFloatFr($produit->vci_complement_dr) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_substitution): ?><?php echo sprintFloatFr($produit->vci_substitution) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_destruction): ?><?php echo sprintFloatFr($produit->vci_destruction) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_rafraichi): ?><?php echo sprintFloatFr($produit->vci_rafraichi) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+        </tr>
+    <?php endforeach; ?>
 </table>
 <?php if(DRevConfiguration::getInstance()->hasPrelevements()): ?>
     <br />

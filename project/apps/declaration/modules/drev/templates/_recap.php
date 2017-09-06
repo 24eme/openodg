@@ -23,7 +23,7 @@
                         <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_sans_vci') ?>"><?php echoFloat($produit->volume_revendique_sans_vci) ?> <small class="text-muted">hl</small></td>
                         <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_avec_vci') ?>"><?php echoFloat($produit->volume_revendique_avec_vci) ?> <small class="text-muted">hl</small></td>
                         <?php if($produit->hasVci()): ?>
-                            <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci') ?>"><?php echoFloat($produit->vci) ?> <small class="text-muted">hl</small></td>
+                            <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci') ?>"><?php if($produit->vci): ?><?php echoFloat($produit->vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                             <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_stock_final') ?>"><?php echoFloat($produit->vci_stock_final) ?> <small class="text-muted">hl</small></td>
                         <?php else: ?>
                             <td colspan="2" class="text-center <?php echo isVersionnerCssClass($produit, 'vci_stock_final') ?>"><small class="text-muted"><em>Pas de VCI</em></small></td>
