@@ -33,7 +33,7 @@
                 <?php $produit = $drev->get($hash); ?>
                 <tr class="produits">
                     <td><?php echo $produit->getLibelleComplet() ?></td>
-                    <td><?php echo $formProduit['vci_stock_initial']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['vci_stock_initial']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl", "readonly" => "readonly")) ?></td>
                     <td class="text-right"><?php echo $formProduit['vci_complement_dr']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_substitution']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_destruction']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
