@@ -28,18 +28,18 @@
                 <th style="position: relative;" class="text-center col-xs-1" >Stock après récolte<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="edit_vci">
             <?php foreach($form['produits'] as $hash => $formProduit): ?>
                 <?php $produit = $drev->get($hash); ?>
-                <tr>
+                <tr class="produits">
                     <td><?php echo $produit->getLibelleComplet() ?></td>
                     <td><?php echo $formProduit['vci_stock_initial']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
                     <td class="text-right"><?php echo $formProduit['vci_complement_dr']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_substitution']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_destruction']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl")) ?></td>
-                    <td class="text-right"><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right num_float', 'placeholder' => "hl", "readonly" => "readonly")) ?></td>
+                    <td><?php echo $formProduit['vci_rafraichi']->render(array('class' => 'form-control text-right num_float sum_stock_final', 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right num_float sum_stock_final', 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['vci_stock_final']->render(array('class' => 'form-control text-right num_float stock_final', 'placeholder' => "hl", "readonly" => "readonly")) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

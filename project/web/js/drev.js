@@ -131,6 +131,26 @@
         });
     }
 
+    $.initRepartitionCvi = function(){
+
+      $(".edit_vci tr.produits").each(function(){
+        var produits = $(this);
+        produits.find("input.sum_stock_final").change(function(){
+          var sum = 0.0;
+
+          produits.find('input.sum_stock_final').each(function(){
+            local = $(this).val();
+            if(!local){ local=0.0;}else{ local=parseFloat(local); }
+            sum=sum+local;
+          });
+          produits.find("input.stock_final").val(sum.toFixed(2));
+        });
+
+      });
+
+
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -141,6 +161,7 @@
         $.initBtnValidation();
         $.initFocusAndErrorToRevendicationField();
         $.initEventErrorRevendicationField();
+        $.initRepartitionCvi();
         $.initRevendicationFadeRow();
         $.initRevendicationEventsFadeInOut();
         $.initControleExterne();

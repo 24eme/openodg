@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(50);
+$t = new lime_test(51);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -80,7 +80,6 @@ $values['produits'][$produit_hash2]['detail']['superficie_total'] = 300;
 $form->bind($values);
 
 $t->ok($form->isValid(), "Le formulaire est valide");
-
 $form->save();
 
 $t->is($produit1->superficie_revendique, $values['produits'][$produit_hash1]['superficie_revendique'], "La superficie revendique est enregistré");
@@ -106,7 +105,7 @@ $t->is($form['produits'][$produit_hash1]['vci_stock_final']->getValue(), null, "
 
 $values = array(
     'produits' => array(
-        $produit_hash1 => array("vci_stock_initial" => 3, "vci" => 12, "vci_destruction" => 0, "vci_complement_dr" => "2", "vci_substitution" => 0, "vci_rafraichi" => null, "vci_stock_final" => 10),
+        $produit_hash1 => array("vci_stock_initial" => 3, "vci" => 12, "vci_destruction" => 0, "vci_complement_dr" => "2", "vci_substitution" => 0, "vci_rafraichi" => null, "vci_stock_final" => null),
     ),
     '_revision' => $drev->_rev,
 );
@@ -124,7 +123,12 @@ $t->is($produit1->vci_destruction, null, "Le VCI en destruction du produit du do
 $t->is($produit1->vci_complement_dr, 2, "Le VCI en complément de la DR du produit du doc est de 2");
 $t->is($produit1->vci_substitution, 0, "Le VCI en substitution de la DR du produit du doc est de 0");
 $t->is($produit1->vci_rafraichi, null, "Le VCI rafraichi du produit du doc est nul");
-$t->is($produit1->vci_stock_final, 10, "Le VCI stock après récolte du produit du doc est 10");
+$t->is($produit1->vci_stock_final, 12, "Le VCI stock après récolte du produit du doc est 12");
+
+
+$vci_stock_final_calc = $produit1->vci + $produit1->vci_rafraichi;
+
+$t->is($produit1->vci_stock_final, $vci_stock_final_calc, "Le VCI stock après récolte du produit du doc est le même que le calculé");
 
 $t->comment("Validation");
 $drev->cleanDoc();
