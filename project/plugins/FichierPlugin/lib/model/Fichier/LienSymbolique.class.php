@@ -10,7 +10,7 @@ class LienSymbolique extends BaseLienSymbolique {
 	protected $identifiant;
 	protected $annee;
 	
-    public function __construct($type, $identifiant, $annee) {
+    public function createDoc($type, $identifiant, $annee) {
     	$this->typeLien = $type;
     	$this->identifiant = $identifiant;
     	$this->annee = $annee;

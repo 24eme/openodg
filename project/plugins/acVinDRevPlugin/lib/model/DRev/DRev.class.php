@@ -139,11 +139,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function hasDR() {
-        return true;
-
-        return $this->_attachments->exist('DR.csv');
+        return ($this->getDR())? true : false;
     }
-
+    
+	public function getDR($ext = null) {
+		$ls = LienSymboliqueClient::getInstance()->findByArgs('DR', $this->identifiant, $this->campagne);
+		if ($ls) {
+			if ($ls->fichier) {
+				$fichier = FichierClient::getInstance()->find($ls->fichier);
+				if ($fichier) {
+					return ($ext)? $fichier->getFichier($ext) : $fichier;
+				}
+			}
+		}
+		return null;
+	}
+	
     public function initDoc($identifiant, $campagne) {
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;

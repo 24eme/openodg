@@ -78,6 +78,18 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     	}
     	return $fichiers;
     }
+    
+    public function getFichier($ext)
+    {
+    	foreach ($this->_attachments as $filename => $fileinfos) {
+    		if (preg_match('/([a-zA-Z0-9]*)\.([a-zA-Z0-9]*)$/', $filename, $m)) {
+    			if (strtolower($m[2]) == strtolower($ext)) {
+    				return $this->getAttachmentUri($filename);
+    			}
+    		}
+    	}
+    	return null;
+    }
 	
 	protected function doSave() {
 		$this->piece_document->generatePieces();
@@ -92,6 +104,36 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		$fileName = ($extension)? uniqid().'.'.$extension : uniqid();
 		$mime = mime_content_type($file);
 		$this->storeAttachment($file, $mime, $fileName);
+		if (strtolower($extension) == 'xls') {
+			$csvFile = self::convertXlsFile($file);
+			$this->storeFichier($csvFile);
+		}
+	}
+	
+	public static function convertXlsFile($file) {
+		if (!is_file($file)) {
+			throw new sfException($file." n'est pas un fichier valide");
+		}
+		$infos = pathinfo($file);
+		$extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
+		if (strtolower($extension) != 'xls') {
+			throw new sfException($file." n'est pas un fichier xls");
+		}
+		$path = sfConfig::get('sf_cache_dir').'/xls2csv/';
+		if (!is_dir($path)) {
+			exec('mkdir '.$path);
+		}
+		$filename = uniqid().'.csv';
+		
+		setlocale(LC_ALL,'fr_FR.UTF-8');
+		putenv('LC_ALL=fr_FR.UTF-8');
+		exec('xls2csv '.$file.' > '.$path.$filename);
+
+		if (!is_file($path.$filename)) {
+			throw new sfException("xls2csv n'a pas pu convertir le fichier ".$file);
+		}
+		 
+		return $path.$filename;
 	}
 	
 	public function deleteFichier($filename = null) {

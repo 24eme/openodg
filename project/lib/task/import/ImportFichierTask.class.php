@@ -35,7 +35,7 @@ EOF;
     {
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        
+        echo sfConfig::get('sf_cache_dir');exit;
         $file = $arguments['fichier'];
         
 	   	if (!file_exists($file) || !is_file($file)) {
@@ -91,8 +91,7 @@ EOF;
         	$fichier->storeFichier($file);
         	$fichier->save();
         	if ($options['lien_symbolique'] && !$ls) {
-        		$lienSymbolique = new LienSymbolique($options['type'], $etablissement->identifiant,  $options['annee']);
-        		$lienSymbolique->fichier = $fichier->_id;
+        		$lienSymbolique = LienSymboliqueClient::getInstance()->createDoc($options['type'], $etablissement->identifiant,  $options['annee'], $fichier->_id);
         		$lienSymbolique->save();
         	}
         } catch (Exception $e) {
