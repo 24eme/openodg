@@ -94,7 +94,6 @@ EOF;
             $this->searchCommunications($nameField,$field);
             $this->searchObservationsCodifiees($nameField,$field);
             $this->searchSiret($nameField,$field);
-
         }
 
         $this->importEntite();
@@ -173,23 +172,20 @@ EOF;
   public function searchCvi($nameField, $field){
             if($nameField == "b:Evv" && boolval((string) $field)){
               $evvStr = (string) $field;
-                $evvArray = explode(',',$evvStr);
-                if(count($evvArray)){
-                  $cviPrec = "";
-                  $cviReal = "";
+              $pattern = array("/^,/","/,$/","/[,]{2,}/");
+              $replace = array("","",",");
+              $evvStrPurged = preg_replace($pattern,$replace,$evvStr);
+              $evvArray = explode(',',$evvStrPurged);
+              if(count($evvArray) > 2 && (count(array_unique($evvArray)) > 1)){
+                echo "l'identité  ".  $this->identifiant." a des cvis différents : ".$evvStrPurged."\n";
+                exit;
+              }else{
                   foreach ($evvArray as $cvi_c) {
-                    if($cvi_c){
-                      $cviReal = $cvi_c;
-                      if($cviPrec && $cviPrec != $cvi_c){
-                        echo "l'identité  ".  $this->identifiant." a des cvis différents : ".$evvStr."\n";
-                      }
-                      $cviPrec = $cvi_c;
-                    }
+                      $this->cvi = $cvi_c;
                   }
-                }
-                $this->cvi = $cviReal;
             }
-    }
+        }
+   }
 
     protected function searchNomPrenom($nameField, $field){
           if($nameField == "b:Prenom"){
@@ -303,6 +299,16 @@ EOF;
                 continue;
               }
               $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
+            }elseif((get_class($obsCodifie) == 'SimpleXMLElement') && count($obsCodifie)){
+              $obsCod =(array) $obsCodifie;
+              if(array_key_exists("b:ObservationCodifiee",$obsCod)){
+                $code = (string) $obsCod["b:ObservationCodifiee"];
+                if(!array_key_exists($code,$this->observationsCodifieesArr)){
+                  echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
+                  continue;
+                }
+                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
+              }
             }
           }
         }
