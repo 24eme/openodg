@@ -35,7 +35,7 @@ EOF;
     {
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-        echo sfConfig::get('sf_cache_dir');exit;
+
         $file = $arguments['fichier'];
         
 	   	if (!file_exists($file) || !is_file($file)) {
