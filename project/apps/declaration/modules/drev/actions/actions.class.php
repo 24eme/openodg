@@ -87,13 +87,49 @@ class drevActions extends sfActions {
     public function executeDrDouane(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-
-        if(!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
+        
+        if (!$this->drev->hasDR()) {
+        	$this->form = new DRevUploadDrForm(FichierClient::getInstance()->createDoc($this->drev->identifiant), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
+        } else {
+        	$this->form = null;
         }
+        
+        if (!$request->isMethod(sfWebRequest::POST)) {
+        	return sfView::SUCCESS;
+        }
+        
+        if ($this->form) {
+	        $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
+	        if (!$this->form->isValid()) {
+	        	return sfView::SUCCESS;
+	        }
+	        $fichier = $this->form->save();
+	        $lienSymbolique = LienSymboliqueClient::getInstance()->createDoc('DR', $this->drev->identifiant, $this->drev->campagne, $fichier->_id);
+	        $lienSymbolique->save();
+        }
+		$this->drev->save();
+        
+        return $this->redirect('drev_set_dr', $this->drev);
+    }
+    
+    public function executeDrInDrev(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+        
 
-        return $this->redirect('drev_revendication', $this->drev);
+        $csvFile = $this->drev->getDR('csv');
+        $csv = new DRDouaneCsvFile($csvFile);
+        $csvContent = $csv->convert();
+        $path = sfConfig::get('sf_cache_dir').'/dr/';
+        $filename = 'DR-'.$this->drev->identifiant.'-'.$this->drev->campagne.'.csv';
+        if (!is_dir($path)) {
+        	exec('mkdir '.$path);
+        }
+        file_put_contents($path.$filename, $csvContent);
+        $csv = new DRCsvFile($path.$filename);
+        $this->drev->importCSVDouane($csv->getCsvAcheteur($this->drev->declarant->cvi));
+        $this->drev->save();
+    	
     }
 
 

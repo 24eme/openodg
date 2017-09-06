@@ -12,4 +12,12 @@ class LienSymboliqueClient extends acCouchdbClient {
     	$id = $type.'-' . $identifiant . '-' . $annee;
     	return $this->find($id);
     }
+    
+    public function createDoc($type, $etablissement, $annee, $lien)
+    {
+    	$lienSymbolique = new LienSymbolique();
+    	$lienSymbolique->createDoc($type, $etablissement, $annee);
+    	$lienSymbolique->fichier = $lien;
+    	return $lienSymbolique;
+    }
 }

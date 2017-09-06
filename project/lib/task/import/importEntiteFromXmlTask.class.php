@@ -38,6 +38,7 @@ class importEntiteFromXmlTask extends sfBaseTask
     protected $date_modification = null;
     protected $date_creation = null;
     protected $groupe = null;
+    protected $entite_juridique = null;
 
 
 
@@ -111,33 +112,19 @@ EOF;
     }
 
     public function searchType($nameField, $field){
+      $this->type_etablissement = "PRODUCTEUR";
+
       if($nameField == "b:Type"){
         if(count($field)){
           if(count($field) > 1){ var_dump($nameField,$field); continue; }
         }
         switch ((string) $field) {
           case 'P':
-          $this->type_etablissement = "PRODUCTEUR";
+          $this->entite_juridique = "Physique";
           break;
 
           case 'M':
-          $this->type_etablissement = "M";
-          break;
-
-          case 'N':
-          $this->type_etablissement = 'NEGOCIANT';
-          break;
-
-          case 'E':
-          $this->type_etablissement = 'ELABORATEUR';
-          break;
-
-          case 'C':
-          $this->type_etablissement = 'COOPERATIVE';
-          break;
-
-          default:
-              $this->type_etablissement = "PRODUCTEUR";.
+          $this->entite_juridique = "Morale";
           break;
         }
       }
