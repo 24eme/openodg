@@ -211,6 +211,11 @@ class DRevCouleur extends BaseDRevCouleur
 		return $this->exist('superficie_vinifiee');
 	}
 
+	public function hasVci() {
+
+		return $this->vci_stock_initial > 0;
+	}
+
 
     public function isProduit() {
 

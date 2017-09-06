@@ -33,8 +33,13 @@ class importEntiteFromXmlTask extends sfBaseTask
     protected $type_contact = null;
 
     protected $siret = null;
+    protected $type_etablissement = null;
     protected $date_archivage = null;
+    protected $date_modification = null;
+    protected $date_creation = null;
     protected $groupe = null;
+    protected $entite_juridique = null;
+
 
 
     protected $observationsCodifiees = array();
@@ -68,8 +73,9 @@ EOF;
         error_reporting(E_ERROR | E_PARSE);
 
         $xml_content_str = file_get_contents($file_path);
-        
+
         $xmlEntite = new SimpleXMLElement($xml_content_str);
+
         $path_obs = dirname(__FILE__)."/../../../data/configuration/rhone/observationsCodifiees.csv";
         $observationsCodifieesCsv = new CsvFile($path_obs);
 
@@ -80,7 +86,8 @@ EOF;
         foreach ($xmlEntite as $nameField => $field) {
 
             $this->searchIdentifiant($nameField,$field);
-            $this->searchDateArchivage($nameField,$field);
+            $this->searchType($nameField,$field);
+            $this->searchDates($nameField,$field);
             $this->searchCvi($nameField,$field);
             $this->searchNomPrenom($nameField,$field);
             $this->searchCoordonnees($nameField,$field);
@@ -104,8 +111,27 @@ EOF;
       }
     }
 
+    public function searchType($nameField, $field){
+      $this->type_etablissement = "PRODUCTEUR";
 
-    public function searchDateArchivage($nameField, $field){
+      if($nameField == "b:Type"){
+        if(count($field)){
+          if(count($field) > 1){ var_dump($nameField,$field); continue; }
+        }
+        switch ((string) $field) {
+          case 'P':
+          $this->entite_juridique = "Physique";
+          break;
+
+          case 'M':
+          $this->entite_juridique = "Morale";
+          break;
+        }
+      }
+    }
+
+
+    public function searchDates($nameField, $field){
        if($nameField == "b:DateArchivage"){
           if(count($field)){
             if(count($field) > 1){ var_dump($nameField,$field); continue; }
@@ -115,6 +141,24 @@ EOF;
             $this->date_archivage = (new DateTime($date))->format("Y-m-d");
           }
         }
+        if($nameField == "b:DateModification"){
+           if(count($field)){
+             if(count($field) > 1){ var_dump($nameField,$field); continue; }
+           }
+           $date = (string) $field;
+           if($date != "0001-01-01T00:00:00"){
+             $this->date_modification = (new DateTime($date))->format("Y-m-d");
+           }
+         }
+         if($nameField == "b:DateCreation"){
+            if(count($field)){
+              if(count($field) > 1){ var_dump($nameField,$field); continue; }
+            }
+            $date = (string) $field;
+            if($date != "0001-01-01T00:00:00"){
+              $this->date_creation = (new DateTime($date))->format("Y-m-d");
+            }
+          }
     }
 
     public function searchSiret($nameField, $field){
@@ -159,7 +203,7 @@ EOF;
               $this->nom = (string) $field;
           }
           if($nameField == "b:Titre"){
-              $this->civilite = (string) $field;
+              $this->civilite = (string) $field.".";
           }
     }
 
@@ -276,7 +320,6 @@ EOF;
         echo "Le fichier xml $file_path n'a pas d'identifiant!\n"; exit;
       }
         $societe->identifiant = sprintf("%06d",$this->identifiant);
-
         if($this->cvi){
           $societe->type_societe = "RESSORTISSANT" ;
         }else{
@@ -285,7 +328,8 @@ EOF;
 
         $societe->constructId();
         $societe->raison_sociale = $this->buildRaisonSociete();
-
+        $societe->add('date_modification', $this->date_modification);
+        $societe->add('date_creation', $this->date_creation);
         $siege = $societe->getOrAdd('siege');
         $siege->adresse = $this->adresse1;
         if($this->addresse2 || $this->adresse3){
@@ -311,7 +355,8 @@ EOF;
         $societe = SocieteClient::getInstance()->find($societe->_id);
 
         if($this->cvi){
-        $etablissement = $societe->createEtablissement('PRODUCTEUR');
+
+        $etablissement = $societe->createEtablissement($this->type_etablissement);
         // $etablissement->setCompte($societe->getMasterCompte()->_id);
         $etablissement->constructId();
         $etablissement->cvi = $this->cvi;
@@ -323,9 +368,8 @@ EOF;
       }
 
       $compte = $societe->getMasterCompte();
-      $compte->nom = $this->nom;
-      $compte->prenom = $this->prenom;
-
+      $compte->nom = $this->buildRaisonSociete();
+      $compte->updateNomAAfficher();
       $compte->telephone_mobile = $this->portable;
       $compte->site_internet = $this->site_web;
       $compte->fonction = $this->type_contact;
