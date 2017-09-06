@@ -215,7 +215,7 @@ class drevActions extends sfActions {
 
         if (!$this->drev->isNonRecoltant() && !$this->drev->hasDr() && !$this->drev->isPapier()) {
 
-            return $this->redirect('drev_dr', $this->drev);
+            //return $this->redirect('drev_dr', $this->drev);
         }
 
         return $this->redirect('drev_dr_douane', $this->drev);

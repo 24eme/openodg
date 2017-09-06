@@ -1,4 +1,6 @@
 <?php use_helper('Float') ?>
+<?php use_helper('Version') ?>
+
 <div class="row">
     <div class="col-xs-12">
         <h3>Revendication 2016</h3>
@@ -17,14 +19,14 @@
                 <?php foreach ($drev->declaration->getProduits() as $produit) : ?>
                     <tr>
                         <td><?php echo $produit->getLibelleComplet() ?></td>
-                        <td class="text-right"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ares</small></td>
-                        <td class="text-right"><?php echoFloat($produit->volume_revendique_sans_vci) ?> <small class="text-muted">hl</small></td>
-                        <td class="text-right"><?php echoFloat($produit->volume_revendique_avec_vci) ?> <small class="text-muted">hl</small></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ares</small></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_sans_vci') ?>"><?php echoFloat($produit->volume_revendique_sans_vci) ?> <small class="text-muted">hl</small></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_avec_vci') ?>"><?php echoFloat($produit->volume_revendique_avec_vci) ?> <small class="text-muted">hl</small></td>
                         <?php if($produit->hasVci()): ?>
-                            <td class="text-right"><?php echoFloat($produit->vci) ?> <small class="text-muted">hl</small></td>
-                            <td class="text-right"><?php echoFloat($produit->vci_stock_final) ?> <small class="text-muted">hl</small></td>
+                            <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci') ?>"><?php echoFloat($produit->vci) ?> <small class="text-muted">hl</small></td>
+                            <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_stock_final') ?>"><?php echoFloat($produit->vci_stock_final) ?> <small class="text-muted">hl</small></td>
                         <?php else: ?>
-                            <td colspan="2" class="text-center"><small class="text-muted"><em>Pas de VCI</em></small></td>
+                            <td colspan="2" class="text-center <?php echo isVersionnerCssClass($produit, 'vci_stock_final') ?>"><small class="text-muted"><em>Pas de VCI</em></small></td>
                         <?php endif; ?>
 
                     </tr>
@@ -48,12 +50,11 @@
                 <?php foreach ($drev->declaration->getProduitsVci() as $produit) : ?>
                     <tr>
                         <td><?php echo $produit->getLibelleComplet() ?></td>
-                        <td class="text-right"><?php echoFloat($produit->vci_stock_initial) ?> <small class="text-muted">hl</small></td>
-                        <td class="text-right"><?php echoFloat($produit->vci_complement_dr) ?> <small class="text-muted">hl</small></td>
-                        <td class="text-right"><?php echoFloat($produit->vci_substitution) ?> <small class="text-muted">hl</small></td>
-                        <td class="text-right"><?php echoFloat($produit->vci_destruction) ?> <small class="text-muted">hl</small></td>
-                        <td class="text-right"><?php echoFloat($produit->vci_rafraichi) ?> <small class="text-muted">hl</small></td>
-
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_stock_initial') ?>"><?php if($produit->vci_stock_initial): ?><?php echoFloat($produit->vci_stock_initial) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_complement_dr') ?>"><?php if($produit->vci_complement_dr): ?><?php echoFloat($produit->vci_complement_dr) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_substitution') ?>"><?php if($produit->vci_substitution): ?><?php echoFloat($produit->vci_substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_destruction') ?>"><?php if($produit->vci_destruction): ?><?php echoFloat($produit->vci_destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_rafraichi') ?>"><?php if($produit->vci_rafraichi): ?><?php echoFloat($produit->vci_rafraichi) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
