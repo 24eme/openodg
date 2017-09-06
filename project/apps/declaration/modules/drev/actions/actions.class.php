@@ -103,6 +103,11 @@ class drevActions extends sfActions {
 	        if (!$this->form->isValid()) {
 	        	return sfView::SUCCESS;
 	        }
+            if (!$this->form->getValue('file')) {
+
+                return $this->redirect('drev_revendication', $this->drev);
+            }
+
 	        $fichier = $this->form->save();
 	        $lienSymbolique = LienSymboliqueClient::getInstance()->createDoc('DR', $this->drev->identifiant, $this->drev->campagne, $fichier->_id);
 	        $lienSymbolique->save();
