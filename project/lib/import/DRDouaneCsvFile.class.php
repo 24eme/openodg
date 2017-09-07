@@ -65,10 +65,10 @@ class DRDouaneCsvFile {
                 if(preg_match('/vol. de vin avec AO\/IGP avec\/sans c/i', $data[1])) {
                     $produits[$numColonne]["L15_recolte_nette"] = $data[$i];
                 }
-                if(preg_match('/ en AOP à livrer aux usages industriels/i', $data[1])) {
+                if(preg_match('/livrer aux usages industriels/i', $data[1])) {
                     $produits[$numColonne]["L16_usages_industriels"] = $data[$i];
                 }
-                if(preg_match('/ mentaire individuel (VCI)/i', $data[1])) {
+                if(preg_match('/VCI/', $data[1])) {
                     $produits[$numColonne]["L19_vci"] = $data[$i];
                 }
             }
