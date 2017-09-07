@@ -65,8 +65,7 @@ class DRevValidation extends DocumentValidation {
     }
 
     public function controle() {
-        $revendicationProduits = $this->document->declaration->getProduits();
-        foreach ($revendicationProduits as $hash => $produit) {
+        foreach ($this->document->getProduits() as $hash => $produit) {
             if(DRevConfiguration::getInstance()->hasPrelevements()) {
                 $this->controleWarningDrSurface($produit);
 

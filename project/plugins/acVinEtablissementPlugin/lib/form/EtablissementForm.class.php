@@ -26,15 +26,15 @@ class EtablissementForm extends acCouchdbObjectForm
 
         $this->setValidators(array(
             'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
-            'raison_sociale' => new sfValidatorString(array("required" => true)),
-            'adresse' => new sfValidatorString(array("required" => true)),
-            'commune' => new sfValidatorString(array("required" => true)),
-            'code_postal' => new sfValidatorString(array("required" => true)),
+            'raison_sociale' => new sfValidatorString(array("required" => false)),
+            'adresse' => new sfValidatorString(array("required" => false)),
+            'commune' => new sfValidatorString(array("required" => false)),
+            'code_postal' => new sfValidatorString(array("required" => false)),
             'telephone_bureau' => new sfValidatorString(array("required" => false)),
             'telephone_mobile' => new sfValidatorString(array("required" => false)),
             'telephone_prive' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
-       	    'email' => new sfValidatorEmailStrict(array("required" => true)),
+       	    'email' => new sfValidatorEmailStrict(array("required" => false)),
         ));
 
         if(!$this->getOption("use_email")) {
@@ -58,7 +58,6 @@ class EtablissementForm extends acCouchdbObjectForm
 	public function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $this->getCoordonneesEtablissement();
-        $this->setDefault('cvi', $this->coordonneesEtablissement->cvi);
         $this->setDefault('adresse', $this->coordonneesEtablissement->adresse);
         $this->setDefault('code_postal', $this->coordonneesEtablissement->code_postal);
         $this->setDefault('commune', $this->coordonneesEtablissement->commune);
@@ -91,12 +90,10 @@ class EtablissementForm extends acCouchdbObjectForm
 		$this->getObject()->setCommune($values['commune']);
 		$this->getObject()->setEmail($values['email']);
 		$this->getObject()->setSiret($values['siret']);
-		$this->getObject()->setCvi($values['cvi']);
-		$this->getObject()->setSiret($values['siret']);
-		$this->getObject()->setFax($values['fax']);
 		$this->getObject()->setTelephonePerso($values['telephone_prive']);
 		$this->getObject()->setTelephoneBureau($values['telephone_bureau']);
 		$this->getObject()->setTelephoneMobile($values['telephone_mobile']);
+		$this->getObject()->setFax($values['fax']);
     }
 
     public function getUpdatedValues()

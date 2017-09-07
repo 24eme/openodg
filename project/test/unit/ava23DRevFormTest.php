@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(53);
+$t = new lime_test(54);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -51,6 +51,7 @@ $t->is($produit1->vci, 2, "Le vci de l'année de la DR pour ce produit est de 2"
 $t->is($produit1->detail->volume_sur_place, 105.18, "Le volume sur place pour ce produit est de 108.94");
 $t->is($produit1->detail->usages_industriels_total, 3.03, "Les usages industriels la DR pour ce produit sont de 4.32");
 $t->is($produit1->detail->recolte_nette, 104.1, "La récolte nette de la DR pour ce produit est de 104.1");
+$t->is($produit2->getLibelleComplet(), "CdR Villages avec NG Puymeras Rouge", "Le libelle du produit est CdR Villages avec NG Rouge Puymeras");
 
 $t->comment("Formulaire de revendication");
 
@@ -138,17 +139,17 @@ $validation = new DRevValidation($drev);
 
 $erreurs = $validation->getPointsByCodes('erreur');
 
-$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == 'Ardèche Rouge' , "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
+$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produit2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
 
 $t->ok(isset($erreurs['dr_rendement']) && count($erreurs['dr_rendement']) == 1 && $erreurs['dr_rendement'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le rendement sur la DR n'est pas respecté");
 
-$t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
+$t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
 
-$t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
+$t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 
-$t->ok(isset($erreurs['vci_rendement_annee']) && count($erreurs['vci_rendement_annee']) == 1 && $erreurs['vci_rendement_annee'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
+$t->ok(isset($erreurs['vci_rendement_annee']) && count($erreurs['vci_rendement_annee']) == 1 && $erreurs['vci_rendement_annee'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
 
-$t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
+$t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
 
 
 $produit1->superficie_revendique = 500;

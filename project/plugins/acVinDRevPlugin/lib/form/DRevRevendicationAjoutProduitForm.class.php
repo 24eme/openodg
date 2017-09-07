@@ -34,7 +34,7 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbObjectForm
                     continue;
                 }
 
-                $this->produits[$produit->getHash()] = $produit->getAppellation()->getLibelle().' '.$produit->getLibelle();
+                $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
         return array_merge(array('' => ''), $this->produits);

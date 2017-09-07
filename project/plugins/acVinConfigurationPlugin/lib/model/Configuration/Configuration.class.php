@@ -92,11 +92,18 @@ class Configuration extends BaseConfiguration {
     }
 
     public function findProductByCodeDouane($code_douane) {
+        $produitsByCodeDouane = array();
         foreach($this->getProduits() as $produit) {
-                if(preg_match('/^'.$produit->code_douane.'/', $code_douane)) {
+            $produitsByCodeDouane[$produit->code_douane] = $produit;
+        }
 
-                    return $produit;
-                }
+        krsort($produitsByCodeDouane);
+
+        foreach($produitsByCodeDouane as $produit) {
+            if(preg_match('/^'.$produit->code_douane.'/', $code_douane)) {
+
+                return $produit;
+            }
         }
 
         return false;

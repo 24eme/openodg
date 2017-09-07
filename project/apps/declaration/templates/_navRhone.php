@@ -10,6 +10,10 @@
     <?php $compte = $route->getCompte(); ?>
     <?php $etablissement = $compte->getEtablissementObj(); ?>
 <?php endif; ?>
+<?php if($route instanceof SocieteRoute): ?>
+    <?php $etablissement = $route->getEtablissement(); ?>
+    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
+<?php endif; ?>
 <nav id="menu_navigation" class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header hidden-lg hidden-md">
