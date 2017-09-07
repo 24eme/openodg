@@ -37,11 +37,11 @@ echo "Création des xml entités";
 ###
 ### DANS CETTE BOUCLE IL FAUDRA utiliser un identifiant unique ou répértorier les id en doublon!!!
 ###
-while read xml
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
   echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/$IDFIC.xml
-done < $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml
+done
 
 echo "Création des entités";
 for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/*.xml ; do
