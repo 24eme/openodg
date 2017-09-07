@@ -139,9 +139,9 @@ class drevActions extends sfActions {
         		$this->drev->save();
         	}
         } catch (Exception $e) {
-        	
+
         }
-        
+
 
     }
 
@@ -208,7 +208,7 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->form->save();
+        //$this->form->save();
 
         $this->drev->storeDeclarant();
         $this->drev->save();
