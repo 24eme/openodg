@@ -15,10 +15,10 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 ?>
 <div class="page-header">
     <?php if($drev->hasDR()): ?>
-        <a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>
+        <!--<a class="btn btn-sm btn-default-step pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-refresh"></span>&nbsp;&nbsp;Recharger les données de la Déclaration de Récolte</a>-->
     <?php endif; ?>
     <?php if(!$drev->isNonRecoltant() && !$drev->hasDR()): ?>
-        <a class="btn btn-warning btn-sm pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Récupérer les données de la Déclaration de Récolte</a>
+        <!--<a class="btn btn-warning btn-sm pull-right" href="<?php echo url_for("drev_dr_recuperation", $drev) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;&nbsp;Récupérer les données de la Déclaration de Récolte</a>-->
     <?php endif; ?>
     <h2>Revendication</h2>
 </div>
@@ -84,7 +84,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
-			<a href="<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?><?php echo url_for("drev_dr", $drev) ?><?php else: ?><?php echo url_for("drev_exploitation", $drev) ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+			<a href="<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?><?php echo url_for("drev_dr_douane", $drev) ?><?php else: ?><?php echo url_for("drev_exploitation", $drev) ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
