@@ -75,7 +75,7 @@ class DRDouaneCsvFile {
         }
         $csvFinal = "";
         foreach($produits as $produit) {
-            if ($produit["L09_cave_particuliere"]) {
+            //if ($produit["L09_cave_particuliere"]) {
                 $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                     $cvi,
                     "SUR PLACE",
@@ -95,7 +95,7 @@ class DRDouaneCsvFile {
                     $produit["L15_recolte_nette"],
                     $produit["L19_vci"]
                 );
-            }
+            //}
 
             foreach($produit["L06_L08_vente"] as $vente) {
                 $csvFinal .= sprintf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
