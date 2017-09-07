@@ -131,9 +131,14 @@ class drevActions extends sfActions {
         	exec('mkdir '.$path);
         }
         file_put_contents($path.$filename, $csvContent);
-        $csv = new DRCsvFile($path.$filename);
-        $this->drev->importCSVDouane($csv->getCsvAcheteur($this->drev->declarant->cvi));
-        $this->drev->save();
+        try {
+        	$csv = new DRCsvFile($path.$filename);
+        	$this->drev->importCSVDouane($csv->getCsvAcheteur($this->drev->declarant->cvi));
+        	$this->drev->save();
+        } catch (Exception $e) {
+        	
+        }
+        
 
     }
 

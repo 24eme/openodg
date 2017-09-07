@@ -21,7 +21,6 @@ class DRDouaneCsvFile {
         $raisonSociale = trim(preg_replace('/^(.+)\(.+\)$/', '\1', $csv[1][2]));
         $commune = trim(preg_replace('/^.+\((.+)\)$/', '\1', $csv[1][2]));
         $produits = array();
-
         $j = -1;
         foreach($csv as $data) {
             $j++;
@@ -33,23 +32,22 @@ class DRDouaneCsvFile {
                 if(!isset($produits[$numColonne])) {
                     $produits[$numColonne] = array("L06_L08_vente" => array());
                 }
-
-                if($data[1] == "Code produit") {
+                if(preg_match('/code produit/i', $data[1])) {
                     $produits[$numColonne]["L01_code_douane"] = $data[$i];
                 }
-                if($data[1] == "Libelle produit") {
+                if(preg_match('/libelle produit/i', $data[1])) {
                     $produits[$numColonne]["L00_libelle"] = $data[$i];
                 }
-                if($data[1] == "Mention valorisante") {
+                if(preg_match('/mention valorisante/i', $data[1])) {
                     $produits[$numColonne]["L02_mention_valorisante"] = $data[$i];
                 }
-                if($data[1] == "Zone viticole de récolte") {
+                if(preg_match('/zone viticole de/i', $data[1])) {
                     $produits[$numColonne]["L03_zone_viticole_recolte"] = $data[$i];
                 }
-                if($data[1] == "Superficie de récolte (Ha)") {
+                if(preg_match('/superficie de/i', $data[1])) {
                     $produits[$numColonne]["L04_superficie"] = $data[$i]*100;
                 }
-                if($data[1] == "Récolte totale") {
+                if(preg_match('/colte totale/i', $data[1])) {
                     $produits[$numColonne]["L05_recolte_totale"] = $csv[$j + 1][$i];
                 }
                 if(!preg_match("/[6-8]{1}-0/", $data[0]) && preg_match("/[6-8]{1}-[0-9]+/", $data[0]) && $data[$i]) {
@@ -61,16 +59,16 @@ class DRDouaneCsvFile {
                     $vente["volume"] = $data[$i];
                     $produits[$numColonne]["L06_L08_vente"][] = $vente;
                 }
-                if($data[1] == "Récolte en cave particulière. Volume obtenu") {
+                if(preg_match('/colte en cave particuli/i', $data[1])) {
                     $produits[$numColonne]["L09_cave_particuliere"] = $data[$i];
                 }
-                if($data[1] == "Vol. de vin avec AO/IGP avec/sans cépage dans la limite du rdt autorisé") {
+                if(preg_match('/vol. de vin avec AO\/IGP avec\/sans c/i', $data[1])) {
                     $produits[$numColonne]["L15_recolte_nette"] = $data[$i];
                 }
-                if($data[1] == "Vol. vin dépassement du rdt autorisé en AOP à livrer aux usages industriels") {
+                if(preg_match('/ en AOP à livrer aux usages industriels/i', $data[1])) {
                     $produits[$numColonne]["L16_usages_industriels"] = $data[$i];
                 }
-                if($data[1] == "Volume complémentaire individuel (VCI)") {
+                if(preg_match('/ mentaire individuel (VCI)/i', $data[1])) {
                     $produits[$numColonne]["L19_vci"] = $data[$i];
                 }
             }
