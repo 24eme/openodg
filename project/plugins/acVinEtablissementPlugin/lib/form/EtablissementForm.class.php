@@ -58,7 +58,6 @@ class EtablissementForm extends acCouchdbObjectForm
 	public function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $this->getCoordonneesEtablissement();
-        $this->setDefault('cvi', $this->coordonneesEtablissement->cvi);
         $this->setDefault('adresse', $this->coordonneesEtablissement->adresse);
         $this->setDefault('code_postal', $this->coordonneesEtablissement->code_postal);
         $this->setDefault('commune', $this->coordonneesEtablissement->commune);
@@ -91,12 +90,10 @@ class EtablissementForm extends acCouchdbObjectForm
 		$this->getObject()->setCommune($values['commune']);
 		$this->getObject()->setEmail($values['email']);
 		$this->getObject()->setSiret($values['siret']);
-		$this->getObject()->setCvi($values['cvi']);
-		$this->getObject()->setSiret($values['siret']);
-		$this->getObject()->setFax($values['fax']);
 		$this->getObject()->setTelephonePerso($values['telephone_prive']);
 		$this->getObject()->setTelephoneBureau($values['telephone_bureau']);
 		$this->getObject()->setTelephoneMobile($values['telephone_mobile']);
+		$this->getObject()->setFax($values['fax']);
     }
 
     public function getUpdatedValues()
