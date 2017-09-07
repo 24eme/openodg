@@ -12,7 +12,7 @@
 <?php endif; ?>
 <?php if($route instanceof SocieteRoute): ?>
     <?php $etablissement = $route->getEtablissement(); ?>
-    <?php $compte = $etablissement->getMasterCompte(); ?>
+    <?php $compte = $route->getSociete()->getMasterCompte(); ?>
 <?php endif; ?>
 <nav id="menu_navigation" class="navbar navbar-default">
     <div class="container">
