@@ -1,35 +1,35 @@
 <?php
 
-class DRevLieu extends BaseDRevLieu 
+class DRevLieu extends BaseDRevLieu
 {
 
 
-	public function getMention() 
+	public function getMention()
     {
         return $this->getParent();
     }
 
-    public function getAppellation() 
+    public function getAppellation()
     {
         return $this->getMention()->getParent();
     }
 
-    public function getChildrenNode() 
+    public function getChildrenNode()
     {
         return $this->getCouleurs();
     }
 
-    public function getProduits($onlyActive = false) 
+    public function getProduits($onlyActive = false)
     {
         if($this->getKey() != "lieu") {
 
-            return array();
+            //return array();
         }
 
         return parent::getProduits($onlyActive);
     }
 
-    public function getCouleurs() 
+    public function getCouleurs()
     {
         return $this->filter('^couleur');
     }

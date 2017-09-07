@@ -73,7 +73,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
     }
 
-    public function getProduits($onlyActive = false) {
+    public function getProduits($onlyActive = true) {
 
         return $this->declaration->getProduits($onlyActive);
     }

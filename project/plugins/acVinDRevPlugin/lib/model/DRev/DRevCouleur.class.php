@@ -39,13 +39,8 @@ class DRevCouleur extends BaseDRevCouleur
     }
 
     public function getProduitHash() {
-        if(!$this->getMention()->getConfig()->hasManyNoeuds()) {
 
-            return $this->getHash();
-        }
-
-
-        return $this->getMention()->getHash()."/lieu/".$this->getKey();
+		return $this->getHash();
     }
 
     public function getProduitsCepage() {
@@ -224,7 +219,7 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function isActive()
     {
-
+		return true;
 	    return ($this->getTotalVolumeRevendique() > 0 || $this->getTotalTotalSuperficie() > 0 || $this->getTotalSuperficieVinifiee() > 0);
     }
 
