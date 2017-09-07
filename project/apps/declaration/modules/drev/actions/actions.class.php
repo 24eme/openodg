@@ -133,8 +133,11 @@ class drevActions extends sfActions {
         file_put_contents($path.$filename, $csvContent);
         try {
         	$csv = new DRCsvFile($path.$filename);
-        	$this->drev->importCSVDouane($csv->getCsvAcheteur($this->drev->declarant->cvi));
-        	$this->drev->save();
+        	$etablissement = EtablissementClient::getInstance()->retrieveById($this->drev->identifiant);
+        	if ($etablissement) {
+        		$this->drev->importCSVDouane($csv->getCsvAcheteur($etablissement->cvi));
+        		$this->drev->save();
+        	}
         } catch (Exception $e) {
         	
         }
