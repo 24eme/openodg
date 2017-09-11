@@ -53,12 +53,12 @@ class declarationActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
         }
 
-         if($doc_type == "TIRAGE") {
+        if($doc_type == "TIRAGE") {
 
             return $this->redirect("tirage_visualisation", array("id" => $doc_id));
         }
