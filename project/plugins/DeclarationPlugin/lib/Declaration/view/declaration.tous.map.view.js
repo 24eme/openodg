@@ -99,5 +99,9 @@ function(doc) {
 	    type = "Parcellaire Crémant";
     }
 
+    if(doc._id.indexOf('INTENTIONCREMANT') > -1) {
+	    type = "Intention Crémant";
+    }
+
     emit([type, doc.campagne, mode, statut, doc.identifiant, date, infos, raison_sociale, commune, email], 1);
 }
