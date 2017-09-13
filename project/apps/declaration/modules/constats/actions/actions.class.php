@@ -273,13 +273,12 @@ class constatsActions extends sfActions {
             return sfView::SUCCESS;
         }
         $this->form->bind($request->getParameter($this->form->getName()));
-
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
 
-        return $this->redirect('rendezvous_declarant', $this->compte);
+        return $this->redirect('rendezvous_declarant', $this->form->getValue('compte'));
     }
 
     public function executeRendezvousDeclarantRemove(sfWebRequest $request) {
