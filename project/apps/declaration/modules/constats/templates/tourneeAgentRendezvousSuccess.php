@@ -4,7 +4,7 @@
 <?php use_javascript('lib/leaflet/leaflet.js'); ?>
 <?php use_stylesheet('/js/lib/leaflet/leaflet.css'); ?>
 <?php use_javascript('/js/lib/signature_pad.min.js'); ?>
-<?php use_javascript('tournee_vtsgn.js?201704271621'); ?>
+<?php use_javascript('tournee_vtsgn.js?201709131746'); ?>
 
 <ol class="breadcrumb hidden-xs hidden-sm">
   <li><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
