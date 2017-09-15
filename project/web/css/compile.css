@@ -7774,7 +7774,7 @@ div.date-picker div.input-group-addon {
   content: "\e0e6";
 }
 /**
- * Titles 
+ * Titles
  ******************************************/
 h1,
 .h1,
@@ -7808,7 +7808,7 @@ h4,
   padding: 0 0 15px;
 }
 /**
- * Texts 
+ * Texts
  ******************************************/
 /**
  * Lists
@@ -8310,6 +8310,10 @@ input[type="radio"] {
 #footer ul li + li:before {
   content: '|';
   padding: 0 15px;
+}
+input[type=number].input-lg {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 .opacity-xs {
   opacity: 0.8;
