@@ -1,0 +1,6 @@
+
+DR:
+  inheritance: Fichier
+  definition:
+    fields:
+      campagne: { }

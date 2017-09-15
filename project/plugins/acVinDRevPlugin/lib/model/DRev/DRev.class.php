@@ -148,14 +148,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
 	public function getDR($ext = null) {
-		$ls = LienSymboliqueClient::getInstance()->findByArgs('DR', $this->identifiant, $this->campagne);
-		if ($ls) {
-			if ($ls->fichier) {
-				$fichier = FichierClient::getInstance()->find($ls->fichier);
-				if ($fichier) {
-					return ($ext)? $fichier->getFichier($ext) : $fichier;
-				}
-			}
+		$fichier = DRClient::getInstance()->findByArgs($this->identifiant, $this->campagne);
+		if ($fichier) {
+			return ($ext)? $fichier->getFichier($ext) : $fichier;
 		}
 		return null;
 	}

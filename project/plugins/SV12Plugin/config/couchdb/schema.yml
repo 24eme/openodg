@@ -1,0 +1,6 @@
+
+SV12:
+  inheritance: Fichier
+  definition:
+    fields:
+      campagne: { }

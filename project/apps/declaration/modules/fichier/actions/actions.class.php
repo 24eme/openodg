@@ -20,7 +20,7 @@ class fichierActions extends sfActions
             return $this->forward404($filename." n'existe pas pour ".$fichier->_id);
         }
         $this->getResponse()->setHttpHeader('Content-Type', $fichier->getMime($fileParam));
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="FICHIER-%s-%s"', $fichier->getIdentifiant(), $filename));
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="%s-%s-%s"', strtoupper($fichier->type), $fichier->getIdentifiant(), $filename));
         $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
         $this->getResponse()->setHttpHeader('Pragma', '');
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');

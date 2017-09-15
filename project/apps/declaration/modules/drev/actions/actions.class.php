@@ -89,7 +89,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if (!$this->drev->hasDR()) {
-        	$this->form = new DRevUploadDrForm(FichierClient::getInstance()->createDoc($this->drev->identifiant), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
+        	$this->form = new DRevUploadDrForm(DRClient::getInstance()->createDoc($this->drev->identifiant), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
         } else {
         	$this->form = null;
         }
@@ -109,8 +109,6 @@ class drevActions extends sfActions {
             }
 
 	        $fichier = $this->form->save();
-	        $lienSymbolique = LienSymboliqueClient::getInstance()->createDoc('DR', $this->drev->identifiant, $this->drev->campagne, $fichier->_id);
-	        $lienSymbolique->save();
         }
 		$this->drev->save();
 
