@@ -32,7 +32,7 @@
 \def\TYPEFACTURE{<?php if($facture->isAvoir()): ?>AVOIR<?php else:?>FACTURE<?php endif; ?>}
 \def\NUMFACTURE{<?php echo $facture->numero_ava; ?>}
 \def\NUMADHERENT{<?php echo $facture->numero_adherent; ?>}
-\def\CAMPAGNE{<?php echo $facture->campagne; ?>}
+\def\CAMPAGNE{<?php echo ($facture->getCampageTemplate() + 1).""; ?>}
 \def\EMETTEURLIBELLE{<?php echo $facture->emetteur->service_facturation; ?>}
 \def\EMETTEURADRESSE{<?php echo $facture->emetteur->adresse; ?>}
 \def\EMETTEURCP{<?php echo $facture->emetteur->code_postal; ?>}

@@ -504,6 +504,20 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
+    public function getCampageTemplate() {
+
+        return preg_replace('/^[A-Z]+-[A-Z]+-[A-Z]+-/', '', $this->getTemplateId());
+    }
+
+    public function getTemplateId() {
+        foreach($this->templates as $template_id) {
+
+            return $template_id;
+        }
+
+        return null;
+    }
+
     public function getTemplate() {
         foreach($this->templates as $template_id) {
 
