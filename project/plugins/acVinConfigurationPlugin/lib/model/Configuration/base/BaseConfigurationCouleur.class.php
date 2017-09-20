@@ -4,28 +4,37 @@
  * 
  * Base model for ConfigurationCouleur
 
- * @property float $rendement_couleur
- * @property float $rendement
  * @property string $libelle
- * @property string $libelle_long
- * @property integer $drev
- * @property ConfigurationDouane $douane
- * @property acCouchdbJson $relations
+ * @property string $format_libelle
+ * @property string $code
+ * @property string $code_produit
+ * @property string $code_comptable
+ * @property string $code_douane
+ * @property acCouchdbJson $interpro
+ * @property acCouchdbJson $departements
+ * @property ConfigurationDetail $detail
+ * @property acCouchdbJson $cepages
 
- * @method float getRendementCouleur()
- * @method float setRendementCouleur()
- * @method float getRendement()
- * @method float setRendement()
  * @method string getLibelle()
  * @method string setLibelle()
- * @method string getLibelleLong()
- * @method string setLibelleLong()
- * @method integer getDrev()
- * @method integer setDrev()
- * @method ConfigurationDouane getDouane()
- * @method ConfigurationDouane setDouane()
- * @method acCouchdbJson getRelations()
- * @method acCouchdbJson setRelations()
+ * @method string getFormatLibelle()
+ * @method string setFormatLibelle()
+ * @method string getCode()
+ * @method string setCode()
+ * @method string getCodeProduit()
+ * @method string setCodeProduit()
+ * @method string getCodeComptable()
+ * @method string setCodeComptable()
+ * @method string getCodeDouane()
+ * @method string setCodeDouane()
+ * @method acCouchdbJson getInterpro()
+ * @method acCouchdbJson setInterpro()
+ * @method acCouchdbJson getDepartements()
+ * @method acCouchdbJson setDepartements()
+ * @method ConfigurationDetail getDetail()
+ * @method ConfigurationDetail setDetail()
+ * @method acCouchdbJson getCepages()
+ * @method acCouchdbJson setCepages()
  
  */
 

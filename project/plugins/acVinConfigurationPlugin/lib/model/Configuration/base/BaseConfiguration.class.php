@@ -8,10 +8,14 @@
  * @property string $_rev
  * @property string $type
  * @property string $campagne
- * @property string $virtual
- * @property string $dr_non_editable
- * @property acCouchdbJson $intitule
- * @property acCouchdbJson $motif_non_recolte
+ * @property acCouchdbJson $labels
+ * @property acCouchdbJson $contenances
+ * @property acCouchdbJson $factures
+ * @property acCouchdbJson $droits
+ * @property acCouchdbJson $mvts_favoris
+ * @property acCouchdbJson $correspondances
+ * @property acCouchdbJson $libelle_detail_ligne
+ * @property acCouchdbJson $alias
  * @property ConfigurationDeclaration $declaration
 
  * @method string get_id()
@@ -22,14 +26,22 @@
  * @method string setType()
  * @method string getCampagne()
  * @method string setCampagne()
- * @method string getVirtual()
- * @method string setVirtual()
- * @method string getDrNonEditable()
- * @method string setDrNonEditable()
- * @method acCouchdbJson getIntitule()
- * @method acCouchdbJson setIntitule()
- * @method acCouchdbJson getMotifNonRecolte()
- * @method acCouchdbJson setMotifNonRecolte()
+ * @method acCouchdbJson getLabels()
+ * @method acCouchdbJson setLabels()
+ * @method acCouchdbJson getContenances()
+ * @method acCouchdbJson setContenances()
+ * @method acCouchdbJson getFactures()
+ * @method acCouchdbJson setFactures()
+ * @method acCouchdbJson getDroits()
+ * @method acCouchdbJson setDroits()
+ * @method acCouchdbJson getMvtsFavoris()
+ * @method acCouchdbJson setMvtsFavoris()
+ * @method acCouchdbJson getCorrespondances()
+ * @method acCouchdbJson setCorrespondances()
+ * @method acCouchdbJson getLibelleDetailLigne()
+ * @method acCouchdbJson setLibelleDetailLigne()
+ * @method acCouchdbJson getAlias()
+ * @method acCouchdbJson setAlias()
  * @method ConfigurationDeclaration getDeclaration()
  * @method ConfigurationDeclaration setDeclaration()
  
