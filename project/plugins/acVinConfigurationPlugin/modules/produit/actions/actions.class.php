@@ -26,6 +26,7 @@ class produitActions extends sfActions
       $this->date = $request->getParameter('date');
       $this->config = ConfigurationClient::getConfiguration($this->date);
       $this->produits = $this->config->declaration->getProduits($this->date);
+      $this->notDisplayDroit = true;
   }
 
   public function executeModification(sfWebRequest $request)
