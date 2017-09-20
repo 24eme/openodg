@@ -778,9 +778,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
 		$this->piece_document->generatePieces();
-    foreach ($this->declaration->getProduitsVci() as $key => $produit) {
-      $produit->vci_stock_final = ((float) $produit->vci) + ((float) $produit->vci_rafraichi);
-    }
+        foreach ($this->declaration->getProduitsVci() as $key => $produit) {
+            $produit->vci_stock_final = ((float) $produit->vci) + ((float) $produit->vci_rafraichi);
+        }
+
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            $produit->volume_revendique_avec_vci = ((float) $produit->volume_revendique_sans_vci) + ((float) $produit->vci_complement_dr);
+        }
 	}
 
     /*
