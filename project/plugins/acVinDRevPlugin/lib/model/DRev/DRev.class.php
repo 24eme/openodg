@@ -148,14 +148,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
 	public function getDR($ext = null) {
-		$ls = LienSymboliqueClient::getInstance()->findByArgs('DR', $this->identifiant, $this->campagne);
-		if ($ls) {
-			if ($ls->fichier) {
-				$fichier = FichierClient::getInstance()->find($ls->fichier);
-				if ($fichier) {
-					return ($ext)? $fichier->getFichier($ext) : $fichier;
-				}
-			}
+		$fichier = DRClient::getInstance()->findByArgs($this->identifiant, $this->campagne);
+		if ($fichier) {
+			return ($ext)? $fichier->getFichier($ext) : $fichier;
 		}
 		return null;
 	}
@@ -783,9 +778,13 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
 		$this->piece_document->generatePieces();
-    foreach ($this->declaration->getProduitsVci() as $key => $produit) {
-      $produit->vci_stock_final = ((float) $produit->vci) + ((float) $produit->vci_rafraichi);
-    }
+        foreach ($this->declaration->getProduitsVci() as $key => $produit) {
+            $produit->vci_stock_final = ((float) $produit->vci) + ((float) $produit->vci_rafraichi);
+        }
+
+        foreach ($this->declaration->getProduits() as $key => $produit) {
+            $produit->volume_revendique_avec_vci = ((float) $produit->volume_revendique_sans_vci) + ((float) $produit->vci_complement_dr);
+        }
 	}
 
     /*

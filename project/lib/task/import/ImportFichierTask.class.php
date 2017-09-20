@@ -66,10 +66,14 @@ EOF;
         		echo sprintf("ERROR;Format année (Y) non valide %s\n", $options['annee']);
         		return;
         	}
-        	$ls = LienSymboliqueClient::getInstance()->findByArgs($options['type'], $etablissement->identifiant,  $options['annee']);
-        	$fichier = ($ls)? $ls->getFichierObject() : null; 
+        	$client = $this->getClientFromType($options['type']);
+        	if (!$client) {
+        		echo sprintf("ERROR;Type non valide %s\n", $options['type']);
+        		return;
+        	}
+        	$fichier = $client->findByArgs($etablissement->identifiant,  $options['annee']);
         	if (!$fichier) {
-        		$fichier = FichierClient::getInstance()->createDoc($etablissement->identifiant, $options['papier']);
+        		$fichier = $client->createDoc($etablissement->identifiant, $options['annee'], $options['papier']);
         	}
         	
         } else {
@@ -90,14 +94,28 @@ EOF;
         	}
         	$fichier->storeFichier($file);
         	$fichier->save();
-        	if ($options['lien_symbolique'] && !$ls) {
-        		$lienSymbolique = LienSymboliqueClient::getInstance()->createDoc($options['type'], $etablissement->identifiant,  $options['annee'], $fichier->_id);
-        		$lienSymbolique->save();
-        	}
         } catch (Exception $e) {
         	echo sprintf("ERROR;%s\n",$e->getMessage());
         	return;
         }
         echo sprintf("SUCCESS;Fichier importé;%s\n", $fichier->_id);
+    }
+    
+    public function getClientFromType($type)
+    {
+	    switch ($type) {
+		    case 'DR':
+		        $client = DRClient::getInstance();
+		        break;
+		    case 'SV11':
+		        $client = SV11Client::getInstance();
+		        break;
+		    case 'SV12':
+		        $client = SV12Client::getInstance();
+		        break;
+		    default:
+		    	$client = null;
+		}
+		return $client;
     }
 }

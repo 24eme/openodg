@@ -35,7 +35,7 @@ class DRevAjoutAppellationForm extends acCouchdbObjectForm
                     continue;
                 }
 
-                $this->produits[$produit->getHash()] = $produit->libelle;
+                $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
 
