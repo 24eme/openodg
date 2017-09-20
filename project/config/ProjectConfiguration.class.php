@@ -28,11 +28,12 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acExceptionNotifierPlugin');
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
-	    $this->enablePlugins('FacturationPlugin');
+	      $this->enablePlugins('FacturationPlugin');
         $this->enablePlugins('acVinGenerationPlugin');
         $this->enablePlugins('acVinAbonnementPlugin');
-    	$this->enablePlugins('acVinTiragePlugin');
-    	$this->enablePlugins('FichierPlugin');
+    	  $this->enablePlugins('acVinTiragePlugin');
+        $this->enablePlugins('acVinHabilitationPlugin');
+    	  $this->enablePlugins('FichierPlugin');
         $this->enablePlugins('acVinSocietePlugin');
         $this->enablePlugins('acVinEtablissementPlugin');
         $this->enablePlugins('acVinComptePlugin');

@@ -15,6 +15,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     const TYPE_DECLARATION_PARCELLAIRE = 'PARCELLAIRE';
     const TYPE_DECLARATION_DEGUSTATION = 'DEGUSTATION';
     const TYPE_DECLARATION_TIRAGE = 'TIRAGE';
+    const TYPE_HABILITATION_REVENDICATION = 'HABILITATION';
 
     protected function loadAllData() {
       parent::loadAllData();
@@ -27,6 +28,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $this->getProduitsFilter(self::TYPE_DECLARATION_PARCELLAIRE);
       $this->getProduitsFilter(self::TYPE_DECLARATION_DEGUSTATION);
       $this->getProduitsFilter(self::TYPE_DECLARATION_TIRAGE);
+      $this->getProduitsFilter(self::TYPE_HABILITATION_REVENDICATION);
       $this->getRendementAppellation();
       $this->getRendementCouleur();
       $this->getRendementCepage();
@@ -41,6 +43,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
       $this->getChildrenFilter(self::TYPE_DECLARATION_PARCELLAIRE);
       $this->getChildrenFilter(self::TYPE_DECLARATION_DEGUSTATION);
       $this->getChildrenFilter(self::TYPE_DECLARATION_TIRAGE);
+      $this->getChildrenFilter(self::TYPE_HABILITATION_REVENDICATION);
     }
 
     abstract public function getChildrenNode();

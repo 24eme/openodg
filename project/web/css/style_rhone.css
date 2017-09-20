@@ -48,6 +48,10 @@ a:hover {
     background: #fff;
 }
 
+.dropdown-menu {
+  z-index: 10000;
+}
+
 .page-header {
     margin-top: 15px;
 }

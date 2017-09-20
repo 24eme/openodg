@@ -457,7 +457,7 @@ drev_revendication:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 drev_set_dr:
   url: /drev/dr_douane_import/:id
   param: { module: drev, action: drInDrev }
@@ -1616,6 +1616,122 @@ generation_regenerate:
   param: { module: generation, action: regenerate }
   requirements:
     sf_method: [get]
+
+# habilitation
+
+habilitation:
+  url: /habilitation
+  param: { module: habilitation, action: index }
+
+habilitation_etablissement_selection:
+  url: /habilitations-etablissement-selection
+  param: { module: habilitation, action: etablissementSelection }
+
+
+habilitation_declarant:
+  url: /habilitation/declarant/:identifiant
+  param: { module: habilitation, action: declarant }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+
+habilitation_create:
+  url: /habilitation/creation/:identifiant
+  param: { module: habilitation, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
+habilitation_edition:
+  url: /habilitation/edition/:id
+  param: { module: habilitation, action: edition }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_ajout:
+  url: /habilitation/edition/:id/ajout
+  param: { module: habilitation, action: ajoutProduit }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_delete:
+  url: /habilitation/suppression/:id
+  param: { module: habilitation, action: delete }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+habilitation_validation:
+  url: /habilitation/validation/:id
+  param: { module: habilitation, action: validation }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_modificative:
+  url: /habilitation/modificative/:id
+  param: { module: habilitation, action: modificative }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+habilitation_confirmation:
+  url: /habilitation/confirmation/:id
+  param: { module: habilitation, action: confirmation }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_visualisation:
+  url: /habilitation/visualisation/:id
+  param: { module: habilitation, action: visualisation }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_export_pdf:
+  url: /habilitation/pdf/:id
+  param: { module: habilitation, action: PDF }
+  class: HabilitationRoute
+  options:
+    model:    Habilitation
+    type:     object
+  requirements:
+    sf_method: [get]
+
+
+
 
 #Export
 
