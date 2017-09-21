@@ -1,0 +1,136 @@
+#Habilitation
+Habilitation:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      identifiant: { }
+      validation: { }
+      validation_odg: { }
+      etape: { }
+      date: { }
+      non_recoltant: { required: false, type: integer }
+      non_conditionneur: { required: false, type: integer }
+      non_vinificateur: { required: false, type: integer }
+      papier: { required: false, type: integer }
+      automatique: { required: false, type: integer }
+      lecture_seule: { required: false }
+      version: {  }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
+      declaration:
+        type: collection
+        class: HabilitationDeclaration
+        inheritance: _HabilitationDeclarationNoeud
+        definition:
+          fields:
+            '*':
+              #------ Certification ------
+              type: collection
+              class: HabilitationCertification
+              inheritance: _HabilitationDeclarationNoeud
+              definition:
+                fields:
+                  libelle: { }
+                  '*':
+                  #------ Genre ------
+                    type: collection
+                    class: HabilitationGenre
+                    inheritance: _HabilitationDeclarationNoeud
+                    definition:
+                      fields:
+                        libelle: { }
+                        '*':
+                          # ------ Appellation ------
+                          type: collection
+                          class: HabilitationAppellation
+                          inheritance: _HabilitationDeclarationNoeud
+                          definition:
+                            fields:
+                              libelle: { }
+                              # ------- MENTION ----------
+                              'mention':
+                                type : collection
+                                class: HabilitationMention
+                                inheritance: _HabilitationDeclarationNoeud
+                                definition:
+                                  fields:
+                                    libelle: { }
+                                    # ------- LIEU ----------
+                                    '*':
+                                      type: collection
+                                      class: HabilitationLieu
+                                      inheritance: _HabilitationDeclarationNoeud
+                                      definition:
+                                        fields:
+                                          libelle: { }
+                                          # ------ Couleur ------
+                                          '*':
+                                            type: collection
+                                            class: HabilitationCouleur
+                                            inheritance: _HabilitationDeclarationNoeud
+                                            definition:
+                                              fields:
+                                                libelle: { }
+                                                # ------ Cépage ------
+                                                '*':
+                                                  type: collection
+                                                  class: HabilitationCepage
+                                                  inheritance: _HabilitationDeclarationNoeud
+                                                  definition:
+                                                    fields:
+                                                      libelle: { }
+                                                      details:
+                                                        type: collection
+                                                        class: HabilitationActivites
+                                                        definition:
+                                                          fields:
+                                                            '*':
+                                                              type: collection
+                                                              class: HabilitationActivite
+                                                              definition:
+                                                                fields:
+                                                                  date: {  }
+                                                                  commentaire: {  }
+                                                                  statut: {  }
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: HabilitationMouvement
+                    inheritance: Mouvement
+                    type: collection
+                    definition:
+                      fields:
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        produit_hash: {  }
+                        produit_libelle: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        detail_identifiant: {  }
+                        detail_libelle: {  }
+                        quantite: { type: float }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }

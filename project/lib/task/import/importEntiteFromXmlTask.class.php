@@ -4,6 +4,7 @@ class importEntiteFromXmlTask extends sfBaseTask
 {
 
     protected $observationsCodifieesArr = array();
+    protected $groups = array();
 
     protected $identifiant = null;
     protected $cvi = null;
@@ -12,25 +13,8 @@ class importEntiteFromXmlTask extends sfBaseTask
     protected $prenom = null;
     protected $civilite = null;
 
-    protected $adresse1 = null;
-    protected $adresse2 = null;
-    protected $adresse3 = null;
-    protected $adresseEtrangère = null;
-    protected $cleCoordonnee = null;
-    protected $canton = null;
-    protected $codePostal = null;
-    protected $commune = null;
-    protected $communeLibelle = null;
-    protected $libelleACheminement = null;
-    protected $pays = null;
-
-    protected $email = null;
-    protected $fax = null;
-    protected $numeroCommunication = null;
-    protected $portable = null;
-    protected $site_web = null;
-    protected $telephone = null;
-    protected $type_contact = null;
+    protected $coordonnees = array();
+    protected $communications = array();
 
     protected $siret = null;
     protected $type_etablissement = null;
@@ -85,15 +69,25 @@ EOF;
 
         foreach ($xmlEntite as $nameField => $field) {
 
-            $this->searchIdentifiant($nameField,$field);
-            $this->searchType($nameField,$field);
-            $this->searchDates($nameField,$field);
-            $this->searchCvi($nameField,$field);
-            $this->searchNomPrenom($nameField,$field);
+          $this->searchSimpleStringField($nameField, $field,"b:CleIdentite","identifiant");
+          $this->type_etablissement = "OPERATEUR";
+
+          $this->searchSimpleDateField($nameField, $field, "b:DateArchivage","date_archivage");
+          $this->searchSimpleDateField($nameField, $field, "b:DateModification","date_modification");
+          $this->searchSimpleDateField($nameField, $field, "b:DateCreation","date_creation");
+
+          $this->searchType($nameField,$field);
+          $this->searchCvi($nameField,$field);
+
+          $this->searchSimpleStringField($nameField, $field,"b:Prenom","prenom");
+          $this->searchSimpleStringField($nameField, $field,"b:RaisonSociale","nom");
+          $this->searchSimpleStringField($nameField, $field,"b:Titre","civilite");
+
             $this->searchCoordonnees($nameField,$field);
             $this->searchCommunications($nameField,$field);
             $this->searchObservationsCodifiees($nameField,$field);
             $this->searchSiret($nameField,$field);
+            $this->searchGroups($nameField,$field);
         }
 
         $this->importEntite();
@@ -101,22 +95,8 @@ EOF;
 
     }
 
-    public function searchIdentifiant($nameField, $field){
-      if($nameField == "b:CleIdentite"){
-        if(count($field)){
-          if(count($field) > 1){ var_dump($nameField,$field); continue; }
-        }
-        $this->identifiant = (string) $field;
-      }
-    }
-
     public function searchType($nameField, $field){
-      $this->type_etablissement = "PRODUCTEUR";
-
       if($nameField == "b:Type"){
-        if(count($field)){
-          if(count($field) > 1){ var_dump($nameField,$field); continue; }
-        }
         switch ((string) $field) {
           case 'P':
           $this->entite_juridique = "Physique";
@@ -130,35 +110,7 @@ EOF;
     }
 
 
-    public function searchDates($nameField, $field){
-       if($nameField == "b:DateArchivage"){
-          if(count($field)){
-            if(count($field) > 1){ var_dump($nameField,$field); continue; }
-          }
-          $date = (string) $field;
-          if($date != "0001-01-01T00:00:00"){
-            $this->date_archivage = (new DateTime($date))->format("Y-m-d");
-          }
-        }
-        if($nameField == "b:DateModification"){
-           if(count($field)){
-             if(count($field) > 1){ var_dump($nameField,$field); continue; }
-           }
-           $date = (string) $field;
-           if($date != "0001-01-01T00:00:00"){
-             $this->date_modification = (new DateTime($date))->format("Y-m-d");
-           }
-         }
-         if($nameField == "b:DateCreation"){
-            if(count($field)){
-              if(count($field) > 1){ var_dump($nameField,$field); continue; }
-            }
-            $date = (string) $field;
-            if($date != "0001-01-01T00:00:00"){
-              $this->date_creation = (new DateTime($date))->format("Y-m-d");
-            }
-          }
-    }
+
 
     public function searchSiret($nameField, $field){
       if($nameField == "b:Siret"){
@@ -187,20 +139,6 @@ EOF;
         }
    }
 
-    protected function searchNomPrenom($nameField, $field){
-          if($nameField == "b:Prenom"){
-              $this->prenom = (string) $field;
-          }
-          if($nameField == "b:RaisonSociale"){
-              $this->nom = (string) $field;
-          }
-          if($nameField == "b:Titre"){
-              if((string) $field){
-                $this->civilite = (string) $field.".";
-              }
-          }
-    }
-
     protected function buildRaisonSociete(){
       $raison_sociale = ($this->civilite)? $this->civilite." " : "";
       $raison_sociale .= ($this->prenom)? $this->prenom." " : "";;
@@ -208,84 +146,42 @@ EOF;
       return $raison_sociale;
     }
 
-    protected function searchCoordonnees($nameField, $field){
-            if($nameField == "b:Coordonnees"){
-              $coordonneesArray = ((array) $field);
-              if(array_key_exists("b:Identite_Coordonnee",$coordonneesArray)){
-                $coords = (array) $coordonneesArray["b:Identite_Coordonnee"];
-                if(array_key_exists("b:Adresse1",$coords)){
-                  $this->adresse1 = (string) $coords["b:Adresse1"];
-                }
-                if(array_key_exists("b:Adresse2",$coords)){
-                  $this->adresse2 = (string) $coords["b:Adresse2"];
-                }
-                  if(array_key_exists("b:Adresse3",$coords)){
-                  $this->adresse2 = (string) $coords["b:Adresse3"];
-                }
-                  if(array_key_exists("b:AdresseEtrangere",$coords)){
-                  $this->adresseEtrangere = filter_var(((string) $coords["b:AdresseEtrangere"]), FILTER_VALIDATE_BOOLEAN);
-                  $this->canton = (string) $coords["b:Canton"];
-                }
-                  if(array_key_exists("b:CleCoordonnee",$coords)){
-                  $this->cleCoordonnee = (string) $coords["b:CleCoordonnee"];
-                }
-                  if(array_key_exists("b:Canton",$coords)){
-                  $this->canton = (string) $coords["b:Canton"];
-                }
-                  if(array_key_exists("b:CodePostal",$coords)){
-                  $this->codePostal = (string) $coords["b:CodePostal"];
-                }
-                  if(array_key_exists("b:Commune",$coords)){
-                  $this->commune = (string) $coords["b:Commune"];
-                }
-                  if(array_key_exists("b:CommuneLibelle",$coords)){
-                  $this->communeLibelle = (string) $coords["b:CommuneLibelle"];
-                }
-                  if(array_key_exists("b:LibelleACheminement",$coords)){
-                  $this->libelleACheminement = (string) $coords["b:LibelleACheminement"];
-                }
-                if(array_key_exists("b:Pays",$coords)){
-                  $this->pays = (string) $coords["b:Pays"];
-                }
-              }
-            }
-    }
 
-    protected function searchCommunications($nameField, $field){
-            if($nameField == "b:Communications"){
-              $communicationsArray = ((array) $field);
-              if(array_key_exists("b:Identite_Communication",$communicationsArray)){
-                $comms = (array) $communicationsArray["b:Identite_Communication"];
-                if(array_key_exists("b:Email",$comms)){
-                  $this->email = (string) $comms["b:Email"];
-                }
-                if(array_key_exists("b:Fax",$comms)){
-                  $this->fax = (string) $comms["b:Fax"];
-                  if(!$this->fax || ($this->fax == "__.__.__.__.__")){ $this->fax = null; }
-                }
-                if(array_key_exists("b:NumeroCommunication",$comms)){
-                  $this->numeroCommunication = (string) $comms["b:NumeroCommunication"];
-                }
-                if(array_key_exists("b:Portable",$comms)){
-                  $this->portable = (string) $comms["b:Portable"];
-                  if(!$this->portable || ($this->portable == "__.__.__.__.__")){ $this->portable = null; }
-                }
-                if(array_key_exists("b:SiteWeb",$comms)){
-                  $this->site_web = (string) $comms["b:SiteWeb"];
-                }
-                if(array_key_exists("b:Telephone",$comms)){
-                  $this->telephone = (string) $comms["b:Telephone"];
-                  if(!$this->telephone || ($this->telephone == "__.__.__.__.__")){ $this->telephone = null; }
-                }
-                if(array_key_exists("b:TypeContact",$comms)){
-                  $this->type_contact = (string) $comms["b:TypeContact"];
-                }
+
+    protected function searchGroups($nameField, $field){
+            if($nameField == "b:Groupes"){
+              $groupesArray = ((array) $field);
+              foreach ($groupesArray as $key => $identiteGroup) {
+                $identiteGroup = (array) $identiteGroup;
+                if(count($identiteGroup) && get_class($identiteGroup[0]) == "SimpleXMLElement"){
+                  foreach ($identiteGroup as $key => $identGroup) {
+                    $identGroup = (array) $identGroup;
+                    $this->fillGroup($identGroup);
+                  }
+                }else{
+                    $this->fillGroup($identiteGroup);
+                  }
 
               }
             }
     }
 
-
+    protected function fillGroup($group){
+      if(array_key_exists("b:CleGroupe",$group)){
+      $groupeKey = (string) $group["b:CleGroupe"];
+        $this->groups[$groupeKey] = array();
+        $this->groups[$groupeKey]['key'] = $groupeKey;
+      }else{
+        echo "L'identité  ".  $this->identifiant." possède des définition de groupes mais il n'existe pas de clé de groupe :".print_r($group)." \n";
+        exit;
+      }
+      if(array_key_exists("b:LibelleGroupe",$group)){
+        $this->groups[$groupeKey]['libelle'] = (string) $group["b:LibelleGroupe"];
+      }
+      if(array_key_exists("b:Observations",$group)){
+        $this->groups[$groupeKey]['observation'] = (string) $group["b:Observations"];
+      }
+    }
 
     protected function searchObservationsCodifiees($nameField, $field){
       if($nameField == "b:ObservationCodifiee"){
@@ -318,6 +214,69 @@ EOF;
       }
     }
 
+    private function searchSimpleStringField($nameField, $field,$matchName,$fieldName){
+      if($nameField == $matchName){
+        if((string) $field){
+          $this->$fieldName = (string) $field;
+        }
+      }
+    }
+
+    private function searchSimpleDateField($nameField, $field,$matchName,$fieldName){
+      if($nameField == $matchName){
+         if(count($field)){
+           if(count($field) > 1){ var_dump($nameField,$field); continue; }
+         }
+         $date = (string) $field;
+         if($date != "0001-01-01T00:00:00"){
+           $this->$fieldName = (new DateTime($date))->format("Y-m-d");
+         }
+       }
+    }
+
+    private function searchArrayNamedField($nameField, $field,$matchName,$fieldName,$assoc){
+      if($nameField == $matchName){
+          $arrayMatched = ((array) $field);
+          if(count($arrayMatched)){
+            foreach ($arrayMatched as $fieldsXml) {
+              $obj = new stdClass();
+              $fieldsXmlArr = ((array) $fieldsXml);
+              foreach ($assoc as $key => $value) {
+                if(array_key_exists($key,$fieldsXmlArr)){
+                    $obj->$value = (string) $fieldsXmlArr[$key];
+                }
+              }
+              array_push($this->$fieldName,$obj);
+            }
+          }
+       }
+    }
+
+    protected function searchCoordonnees($nameField, $field){
+          $assoc = array("b:Adresse1" => "adresse1",
+                         "b:Adresse2" => "adresse2",
+                         "b:Adresse3" => "adresse3",
+                         "b:AdresseEtrangere" => "adresseEtrangere",
+                         "b:Canton" => "canton",
+                         "b:CleCoordonnee" => "cleCoordonnee",
+                         "b:Commune" => "commune",
+                         "b:CommuneLibelle" => "communeLibelle",
+                         "b:LibelleACheminement" => "libelleACheminement",
+                         "b:Pays" => "pays");
+          $this->searchArrayNamedField($nameField,$field,"b:Coordonnees","coordonnees",$assoc);
+    }
+
+    protected function searchCommunications($nameField, $field){
+      $assoc = array("b:Email" => "email",
+                     "b:Fax" => "fax",
+                     "b:NumeroCommunication" => "numeroCommunication",
+                     "b:Portable" => "portable",
+                     "b:SiteWeb" => "siteweb",
+                     "b:Telephone" => "telephone",
+                     "b:TypeContact" => "typeContact");
+      $this->searchArrayNamedField($nameField,$field,"b:Communications","communications",$assoc);
+      }
+
     protected function importEntite(){
       $societe = new societe();
       if(!$this->identifiant){
@@ -336,20 +295,25 @@ EOF;
         $societe->add('date_creation', $this->date_creation);
         $societe->code_comptable_client = $societe->identifiant;
         $siege = $societe->getOrAdd('siege');
-        $siege->adresse = $this->adresse1;
-        if($this->addresse2 || $this->adresse3){
-          $siege->adresse_complementaire = $this->adresse2.($this->adresse3)? " ".$this->addresse3 : '';
+
+        $coordonnees = $this->coordonnees[0];
+        $siege->adresse = $coordonnees->adresse1;
+        if($coordonnees->addresse2 || $coordonnees->adresse3){
+          $siege->adresse_complementaire = $coordonnees->adresse2.($coordonnees->adresse3)? " ".$coordonnees->addresse3 : '';
         }
-        $siege->code_postal = $this->codePostal;
-        $siege->commune = $this->communeLibelle;
-        if($this->adresseEtrangere){
-          $siege->pays = $this->pays;
+        $siege->code_postal = $coordonnees->codePostal;
+        $siege->commune = $coordonnees->communeLibelle;
+        if($coordonnees->adresseEtrangere){
+          $siege->pays = $coordonnees->pays;
         }else{
           $siege->pays = "France";
         }
-        $societe->telephone = $this->telephone;
-        $societe->email = $this->email;
-        $societe->fax = $this->fax;
+
+        $communication = $this->communications[0];
+
+        $societe->telephone = $communication->telephone;
+        $societe->email = $communication->email;
+        $societe->fax = $communication->fax;
 
         $societe->siret = $this->siret;
         if($this->date_archivage){
@@ -375,9 +339,9 @@ EOF;
       $compte = $societe->getMasterCompte();
       $compte->nom = $this->buildRaisonSociete();
       $compte->updateNomAAfficher();
-      $compte->telephone_mobile = $this->portable;
-      $compte->site_internet = $this->site_web;
-      $compte->fonction = $this->type_contact;
+      $compte->telephone_mobile = $coordonnees->portable;
+      $compte->site_internet = $coordonnees->site_web;
+      $compte->fonction = $coordonnees->type_contact;
       $compte->save();
 
       echo "L'entité $this->identifiant CVI ($this->cvi)  C'est un compte =>  $compte->_id \n";
@@ -388,13 +352,13 @@ EOF;
         $c->addTag('manuel',$this->groupe);
       }
       if(count($this->observationsCodifiees)){
-        echo "mis à jour des observationsCodifiees pour le compte ".  $c->_id." ";
+      //  echo "mis à jour des observationsCodifiees pour le compte ".  $c->_id." ";
         foreach($this->observationsCodifiees as $obsKey => $obs){
           $tag = $obs.' '.$obsKey;
-          echo $tag." | ";
+        //  echo $tag." | ";
           $c->addTag('manuel',$tag);
         }
-        echo "\n";
+      //  echo "\n";
     }
   }
 

@@ -1,9 +1,9 @@
 <?php
 
-class DRevCertification extends BaseDRevCertification 
+class DRevCertification extends BaseDRevCertification
 {
 
-    public function getChildrenNode() 
+    public function getChildrenNode()
     {
         return $this->getGenres();
     }
@@ -11,6 +11,6 @@ class DRevCertification extends BaseDRevCertification
     public function getGenres()
     {
         return $this->filter('^genre');
-    } 
+    }
 
 }
