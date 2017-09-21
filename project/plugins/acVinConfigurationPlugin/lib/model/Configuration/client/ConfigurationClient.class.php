@@ -91,6 +91,11 @@ class ConfigurationClient extends acCouchdbClient {
         CacheFunction::remove('model');
     }
 
+	public function getCampagneManager() {
+
+		return new CampagneManager('10-23', CampagneManager::FORMAT_PREMIERE_ANNEE);
+	}
+
     public function getCampagneVinicole() {
         if(is_null($this->campagne_vinicole_manager)) {
 

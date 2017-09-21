@@ -289,6 +289,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->_get('densite');
     }
 
+    public function getLibelleComplet() {
+
+        return $this->getLibelleFormat();
+    }
+
     public function getLibelleFormat($labels = array(), $format = "%format_libelle%", $label_separator = ", ") {
         if (!array_key_exists($format, $this->libelle_format)) {
             $format_libelle = $this->getFormatLibelleCalcule();
@@ -729,8 +734,9 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     /**** DR ****/
 
     public function getRendement() {
+        return 70;
 
-      return $this->getRendementCepage();
+        return $this->getRendementCepage();
     }
 
     public function getRendementNoeud() {
@@ -794,8 +800,18 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getRendementVci() {
-
+        return 5.0;
         return $this->getRendementByKey('rendement_vci');
+    }
+
+    public function getRendementVciTotal() {
+
+        return 15.0;
+    }
+
+    public function getRendementDrev() {
+
+        return 50.0;
     }
 
     public function hasRendementVci() {

@@ -70,7 +70,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
+        return ConfigurationClient::getInstance()->getConfiguration($this->campagne);
     }
 
     public function getProduits($onlyActive = true) {
@@ -85,7 +85,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getConfigProduits() {
 
-        return $this->getConfiguration()->declaration->getProduitsFilter(_ConfigurationDeclaration::TYPE_DECLARATION_DREV_REVENDICATION, "ConfigurationCouleur");
+        return $this->getConfiguration()->declaration->getProduits();
     }
 
     public function getConfigProduitsLots() {
@@ -159,7 +159,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->identifiant = $identifiant;
         $this->campagne = $campagne;
         $etablissement = $this->getEtablissementObject();
-        $this->declaration->add('certification')->add('genre');
     }
 
     public function initAppellations() {
@@ -310,19 +309,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function addProduit($hash, $add_appellation = true) {
-        $config = $this->getConfiguration()->get($hash);
-        if($add_appellation) {
-            $this->addAppellation($config->getAppellation()->getHash());
-        }
-        $produit = $this->getOrAdd($config->getHash());
+        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $produit = $this->add('declaration')->add($hashToAdd);
+
         $produit->getLibelle();
         $produit->add('superficie_vinifiee');
-        if($produit->getConfig()->hasProduitsVtsgn()) {
-            $produit->add('volume_revendique_vtsgn');
-            $produit->add('superficie_vinifiee_vtsgn');
-            $produit->add('superficie_revendique_vtsgn');
-            $produit->add('detail_vtsgn');
-        }
 
         return $produit;
     }
@@ -602,6 +593,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function updatePrelevementsFromRevendication() {
+        return;
         $prelevements_to_delete = array_flip($this->prelevement_keys);
         foreach ($this->declaration->getProduits() as $produit) {
             if (!$produit->getTotalVolumeRevendique()) {
@@ -777,7 +769,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
 	protected function doSave() {
-		$this->piece_document->generatePieces();
+        $this->piece_document->generatePieces();
         foreach ($this->declaration->getProduitsVci() as $key => $produit) {
             $produit->vci_stock_final = ((float) $produit->vci) + ((float) $produit->vci_rafraichi);
         }

@@ -70,10 +70,6 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $drev->updateFromDRev($drev_previous);
         }
 
-        if(count($drev->declaration->getAppellations()) == 0 && $drev->isNonRecoltant()) {
-            $drev->initAppellations();
-        }
-
         return $drev;
     }
 

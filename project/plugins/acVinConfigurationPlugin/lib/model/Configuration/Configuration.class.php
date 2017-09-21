@@ -153,6 +153,20 @@ class Configuration extends BaseConfiguration {
         return false;
     }
 
+    public function findProductByCodeDouane($code_douane) {
+        $produitsByCodeDouane = array();
+        foreach($this->getProduits() as $produit) {
+            $produitsByCodeDouane[$produit->code_douane] = $produit;
+        }
+        krsort($produitsByCodeDouane);
+        foreach($produitsByCodeDouane as $produit) {
+            if(preg_match('/^'.$produit->code_douane.'/', $code_douane)) {
+                return $produit;
+            }
+        }
+        return false;
+    }
+
     public function setLabelCsv($datas) {
         if ($datas[LabelCsvFile::CSV_LABEL_CODE] && !$this->labels->exist($datas[LabelCsvFile::CSV_LABEL_CODE])) {
             $this->labels->add($datas[LabelCsvFile::CSV_LABEL_CODE], $datas[LabelCsvFile::CSV_LABEL_LIBELLE]);
