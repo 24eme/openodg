@@ -170,12 +170,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getCSV() {
         $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
-        return $csv->getCsvAcheteur($this->identifiant);
+        return $csv->getCsv();
     }
 
     public function importCSVDouane($csv) {
         foreach($csv as $line) {
-            $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_APPELLATION]);
+            $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
                 continue;
@@ -183,13 +183,25 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $produit = $this->addProduit($produitConfig->getCouleur()->getHash());
             $produitDetail = $produit->detail;
-            $produitDetail->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
-            $produitDetail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
-            $produitDetail->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
-            $produitDetail->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
-            $produitDetail->recolte_nette += (float) $line[DRCsvFile::CSV_RECOLTE_NETTE];
-            $produitDetail->vci += (float) $line[DRCsvFile::CSV_VCI];
-            $produit->vci = $produitDetail->vci;
+            if($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE) {
+            	$produitDetail->volume_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            }
+            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND) {
+            	$produitDetail->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            }
+            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
+            	$produitDetail->superficie_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            }
+            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME)  {
+            	$produitDetail->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            }
+            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTENETTE) {
+            	$produitDetail->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            }
+            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
+            	$produitDetail->vci += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            	$produit->vci = $produitDetail->vci;
+            }
         }
     }
 
