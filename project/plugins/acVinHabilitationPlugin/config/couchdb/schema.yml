@@ -38,74 +38,25 @@ Habilitation:
         definition:
           fields:
             '*':
-              #------ Certification ------
               type: collection
-              class: HabilitationCertification
+              class: HabilitationCepage
               inheritance: _HabilitationDeclarationNoeud
               definition:
                 fields:
                   libelle: { }
-                  '*':
-                  #------ Genre ------
+                  details:
                     type: collection
-                    class: HabilitationGenre
-                    inheritance: _HabilitationDeclarationNoeud
+                    class: HabilitationActivites
                     definition:
                       fields:
-                        libelle: { }
                         '*':
-                          # ------ Appellation ------
                           type: collection
-                          class: HabilitationAppellation
-                          inheritance: _HabilitationDeclarationNoeud
+                          class: HabilitationActivite
                           definition:
                             fields:
-                              libelle: { }
-                              # ------- MENTION ----------
-                              'mention':
-                                type : collection
-                                class: HabilitationMention
-                                inheritance: _HabilitationDeclarationNoeud
-                                definition:
-                                  fields:
-                                    libelle: { }
-                                    # ------- LIEU ----------
-                                    '*':
-                                      type: collection
-                                      class: HabilitationLieu
-                                      inheritance: _HabilitationDeclarationNoeud
-                                      definition:
-                                        fields:
-                                          libelle: { }
-                                          # ------ Couleur ------
-                                          '*':
-                                            type: collection
-                                            class: HabilitationCouleur
-                                            inheritance: _HabilitationDeclarationNoeud
-                                            definition:
-                                              fields:
-                                                libelle: { }
-                                                # ------ Cépage ------
-                                                '*':
-                                                  type: collection
-                                                  class: HabilitationCepage
-                                                  inheritance: _HabilitationDeclarationNoeud
-                                                  definition:
-                                                    fields:
-                                                      libelle: { }
-                                                      details:
-                                                        type: collection
-                                                        class: HabilitationActivites
-                                                        definition:
-                                                          fields:
-                                                            '*':
-                                                              type: collection
-                                                              class: HabilitationActivite
-                                                              definition:
-                                                                fields:
-                                                                  date: {  }
-                                                                  commentaire: {  }
-                                                                  statut: {  }
+                              date: {  }
+                              commentaire: {  }
+                              statut: {  }
       mouvements:
         type: collection
         definition:

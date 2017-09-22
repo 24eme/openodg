@@ -32,21 +32,10 @@ class HabilitationCepageAjoutProduitForm extends acCouchdbObjectForm
             $produits = $this->getObject()->getConfiguration()->getProduits();
             $doc = $this->getObject()->getDocument();
             foreach ($produits as $produit) {
-                if ($doc->exist($produit->getHash()) && !$produit->hasLieuEditable()) {
+                if ($this->getObject()->exist($produit->getHash())) {
                     continue;
                 }
-                $libelle = '';
-                if ($produit->getAppellation()->libelle) {
-                    $libelle .= $produit->getAppellation()->libelle.' ';
-                }
-                if ($produit->getLieu()->libelle) {
-                    $libelle .= $produit->getLieu()->libelle.' - ';
-                }
-                if ($produit->getCouleur()->libelle) {
-                    $libelle .= $produit->getCouleur()->libelle;
-                }
-                $libelle .= $produit->libelle_long;
-                $this->produits[$produit->getHash()] = $libelle;
+                $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
 
@@ -65,7 +54,6 @@ class HabilitationCepageAjoutProduitForm extends acCouchdbObjectForm
             return;
         }
 
-        $noeud = $this->getObject()->getDocument()->addProduitCepage($values['hashref']);
-        
+        $noeud = $this->getObject()->getDocument()->addProduit($values['hashref']);
     }
 }

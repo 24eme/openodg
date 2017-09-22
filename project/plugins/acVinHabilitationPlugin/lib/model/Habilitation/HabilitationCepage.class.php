@@ -30,6 +30,20 @@ class HabilitationCepage extends BaseHabilitationCepage {
     $detailsNode->getOrAddDefaultActivities();
   }
 
+  public function getLibelle() {
+      if(!$this->_get('libelle')) {
+          $this->libelle = $this->getConfig()->getLibelleComplet();
+      }
+
+      return $this->_get('libelle');
+  }
+
+  public function getLibelleComplet()
+  {
+
+      return $this->getLibelle();
+  }
+
   public function getProduits($onlyActive = false)
   {
     if ($onlyActive && !$this->isActive()) {

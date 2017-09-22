@@ -70,32 +70,4 @@ abstract class _HabilitationDeclarationNoeud extends acCouchdbDocumentTree {
         return $produits;
     }
 
-    public function getProduitsCepage()
-    {
-        $produits = array();
-        foreach($this->getChildrenNode() as $key => $item) {
-            $produits = array_merge($produits, $item->getProduitsCepage());
-        }
-
-        return $produits;
-    }
-
-    public function getLibelle() {
-        if(is_null($this->_get('libelle'))) {
-            if($this->getConfig()->exist('libelle_long')) {
-                $this->_set('libelle', $this->getConfig()->libelle_long);
-            } else {
-                $this->_set('libelle', $this->getConfig()->libelle);
-            }
-        }
-
-        return $this->_get('libelle');
-    }
-
-    public function getLibelleComplet()
-    {
-    	$libelle = $this->getParent()->getLibelleComplet();
-    	return trim($libelle).' '.$this->libelle;
-    }
-
 }
