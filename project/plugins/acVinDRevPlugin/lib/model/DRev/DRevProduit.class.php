@@ -1,8 +1,12 @@
 <?php
 
-class DRevCouleur extends BaseDRevCouleur
+class DRevProduit extends BaseDRevProduit
 {
-
+	public function getConfig()
+	{
+		return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+	}
+	
 	public function getLibelle() {
 		if(!$this->_get('libelle')) {
 			$this->libelle = $this->getConfig()->getLibelleComplet();

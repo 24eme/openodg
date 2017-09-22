@@ -43,13 +43,11 @@ DRev:
       declaration:
         type: collection
         class: DRevDeclaration
-        inheritance: _DRevDeclarationNoeud
         definition:
           fields:
             '*':
               type: collection
-              class: DRevCouleur
-              inheritance: _DRevDeclarationNoeud
+              class: DRevProduit
               definition:
                 fields:
                   libelle: { }

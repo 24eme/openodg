@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseDRevCouleur
- * 
+ *
  * Base model for DRevCouleur
 
  * @property string $libelle
@@ -32,14 +32,14 @@
  * @method acCouchdbJson setDetail()
  * @method acCouchdbJson getDetailVtsgn()
  * @method acCouchdbJson setDetailVtsgn()
- 
+
  */
 
-abstract class BaseDRevCouleur extends _DRevDeclarationNoeud {
-                
+abstract class BaseDRevProduit extends acCouchdbDocumentTree {
+
     public function configureTree() {
        $this->_root_class_name = 'DRev';
        $this->_tree_class_name = 'DRevCouleur';
     }
-                
+
 }
