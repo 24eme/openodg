@@ -34,13 +34,11 @@ Habilitation:
       declaration:
         type: collection
         class: HabilitationDeclaration
-        inheritance: _HabilitationDeclarationNoeud
         definition:
           fields:
             '*':
               type: collection
-              class: HabilitationCepage
-              inheritance: _HabilitationDeclarationNoeud
+              class: HabilitationProduit
               definition:
                 fields:
                   libelle: { }
