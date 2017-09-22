@@ -27,7 +27,7 @@ $csvContent = $csv->convert();
 file_put_contents("/tmp/dr.csv", $csvContent);
 $csv = new DRCsvFile("/tmp/dr.csv");
 
-$drev->importCSVDouane($csv->getCsvAcheteur("7523700100"));
+$drev->importCSVDouane($csv->getCsv());
 $drev->save();
 
 $t->is(count($drev->getProduits()), 3, "La DRev a repris 5 produits du csv de la DR");
