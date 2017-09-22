@@ -1,46 +1,62 @@
 <?php
 
+function formatFloat($number, $defaultDecimalFormat = null, $maxDecimalAuthorized = null, $format = null, $milliSeparate = false) {
+
+    return FloatHelper::getInstance()->format($number, $defaultDecimalFormat, $maxDecimalAuthorized, $format, $milliSeparate);
+}
+
+function formatFloatFr($number, $defaultDecimalFormat = null, $maxDecimalAuthorized = null, $format = null, $milliSeparate = false) {
+
+    return FloatHelper::getInstance()->formatFr($number, $defaultDecimalFormat, $maxDecimalAuthorized, $format, $milliSeparate);
+}
+
+function sprintFloat($number, $format = "%01.02f", $milliSeparate = false)
+{
+    return formatFloat($number, null, null, $format, $milliSeparate);
+}
+
+function sprintFloatFr($float, $format = "%01.02f", $milliSeparate = false)
+{
+    return formatFloatFr($number, null, null, $format, $milliSeparate);
+}
+
+function echoFloat($number, $milliSeparate = false)
+{
+    echo formatFloat($number, null, null, null, $milliSeparate);
+}
+
+function echoFloatFr($number, $milliSeparate = false)
+{
+    echo formatFloatFr($number, null, null, null, $milliSeparate);
+}
+
+function echoLongFloat($number, $milliSeparate = false)
+{
+    echo formatFloat($number, 4, 4, null, $milliSeparate);
+}
+
+function echoLongFloatFr($number, $milliSeparate = false)
+{
+    echo formatFloatFr($number, 4, 4, null, $milliSeparate);
+}
+
+function echoSignedFloat($number)
+{
+    echo ($number>0)? '+'.formatFloat($number) : formatFloat($number);
+}
+
+function echoArialFloat($number) {
+
+    echo number_format($number, 2, '.', ' ');
+}
+
+function getArialFloat($number) {
+
+    return number_format($number, 2, '.', ' ');
+}
+
 function sprintInputFloat($float, $format = "%01.02f") {
     if (is_null($float) || $float === "")
         return null;
     return sprintFloat($float, $format);
-}
-
-function sprintFloat($float, $format = "%01.02f") {
-    if (is_null($float))
-        return null;
-    return sprintf($format, $float);
-}
-
-function sprintFloatFr($float, $format = "%01.02f") {
-
-    return preg_replace('/\./', ',', sprintFloat($float, $format));
-}
-
-function echoFloat($float) {
-    echo sprintFloat($float);
-}
-
-function echoLongFloat($float) {
-    echo sprintFloat($float, "%01.04f");
-}
-
-function echoLongFloatFr($float) {
-    echo sprintFloatFr($float, "%01.04f");
-}
-
-function echoFloatFr($float) {
-    echo sprintFloatFr($float);
-}
-
-function echoSignedFloat($float) {
-    echo ($float > 0) ? '+' . sprintFloat($float) : sprintFloat($float);
-}
-
-function echoArialFloat($float) {
-    echo number_format($float, 2, '.', ' ');
-}
-
-function getArialFloat($float) {
-    return number_format($float, 2, '.', ' ');
 }

@@ -48,6 +48,10 @@ a:hover {
     background: #fff;
 }
 
+.dropdown-menu {
+  z-index: 10000;
+}
+
 .page-header {
     margin-top: 15px;
 }
@@ -150,4 +154,8 @@ h3 {
 
 .versionner {
     outline: 1px dotted #ff0000 !important;
+}
+
+.table > tbody > tr > td.vertical-center, table > tbody > tr.vertical-center > td {
+    vertical-align: middle;
 }

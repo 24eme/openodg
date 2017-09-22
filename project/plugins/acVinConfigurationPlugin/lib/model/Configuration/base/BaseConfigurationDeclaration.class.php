@@ -4,19 +4,13 @@
  * 
  * Base model for ConfigurationDeclaration
 
- * @property string $no_usages_industriels
- * @property string $no_recapitulatif_couleur
- * @property ConfigurationDouane $douane
- * @property acCouchdbJson $relations
+ * @property ConfigurationDetail $detail
+ * @property acCouchdbJson $certifications
 
- * @method string getNoUsagesIndustriels()
- * @method string setNoUsagesIndustriels()
- * @method string getNoRecapitulatifCouleur()
- * @method string setNoRecapitulatifCouleur()
- * @method ConfigurationDouane getDouane()
- * @method ConfigurationDouane setDouane()
- * @method acCouchdbJson getRelations()
- * @method acCouchdbJson setRelations()
+ * @method ConfigurationDetail getDetail()
+ * @method ConfigurationDetail setDetail()
+ * @method acCouchdbJson getCertifications()
+ * @method acCouchdbJson setCertifications()
  
  */
 

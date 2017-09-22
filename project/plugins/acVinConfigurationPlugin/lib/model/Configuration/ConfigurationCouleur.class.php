@@ -1,54 +1,65 @@
 <?php
+/**
+ * Model for ConfigurationCouleur
+ *
+ */
 
 class ConfigurationCouleur extends BaseConfigurationCouleur {
 
-    public function getLieu() {
+	const TYPE_NOEUD = 'couleur';
 
+    public function getChildrenNode() {
+
+      return $this->cepages;
+    }
+
+    /**
+     *
+     * @return ConfigurationLieu
+     */
+    public function getLieu() {
         return $this->getParentNode();
     }
 
 	public function getMention() {
-
         return $this->getLieu()->getMention();
     }
 
-	public function getAppellation() {
-
-        return $this->getMention()->getAppellation();
+    public function hasCepage() {
+    	return (count($this->cepages) > 1 || (count($this->cepages) == 1 && $this->cepages->getFirst()->getKey() != Configuration::DEFAULT_KEY));
     }
 
-    public function getCepages() {
-      return $this->filter('^cepage');
+    public function setDonneesCsv($datas) {
+      parent::setDonneesCsv($datas);
+
+    	$this->getLieu()->setDonneesCsv($datas);
+    	$this->libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_COULEUR_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_COULEUR_LIBELLE] : null;
+      $this->code = $this->formatCodeFromCsv($datas[ProduitCsvFile::CSV_PRODUIT_COULEUR_CODE]);
+
+      $this->setDroitDouaneCsv($datas, ProduitCsvFile::CSV_PRODUIT_COULEUR_CODE_APPLICATIF_DROIT);
+      $this->setDroitCvoCsv($datas, ProduitCsvFile::CSV_PRODUIT_COULEUR_CODE_APPLICATIF_DROIT);
+
+      $this->setDepartementCsv($datas);
     }
 
-    public function getChildrenNode() {
+  	public function hasDepartements() {
+  		return false;
+  	}
+  	public function hasDroits() {
+  		return true;
+  	}
+  	public function hasLabels() {
+  		return false;
+  	}
+  	public function hasDetails() {
+  		return false;
+  	}
+  	public function getTypeNoeud() {
+  		return self::TYPE_NOEUD;
+  	}
 
-        return $this->getCepages();
-    }
+	public function getRendementNoeud() {
 
-    public function getRendementNoeud() {
-
-        return $this->getRendementCouleur();
-    }
-
-    public function getRendementDrev() {
-
-        return 50;
-    }
-
-    public function getRendementDr() {
-
-        return 70;
-    }
-
-    public function getRendementVciAnnee() {
-
-        return 5;
-    }
-
-    public function getRendementVciTotal() {
-
-        return 15;
-    }
-
+		return $this->getRendementCouleur();
+	}
 }

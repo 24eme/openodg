@@ -44,7 +44,7 @@
     <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ares</small>&nbsp;&nbsp;&nbsp;</td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ha</small>&nbsp;&nbsp;&nbsp;</td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_sans_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_avec_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci): ?><?php echo sprintFloatFr($produit->vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>

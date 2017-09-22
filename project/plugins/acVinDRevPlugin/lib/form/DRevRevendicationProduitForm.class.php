@@ -23,22 +23,20 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
         ));*/
 
         $this->setWidgets(array(
-            'superficie_revendique' => new sfWidgetFormInputFloat(),
-            'volume_revendique_sans_vci' => new sfWidgetFormInputFloat(),
-            'volume_revendique_avec_vci' => new sfWidgetFormInputFloat(),
-            'vci_stock_initial' => new sfWidgetFormInputFloat(),
+            'superficie_revendique' => new bsWidgetFormInputFloat(),
+            'volume_revendique_sans_vci' => new bsWidgetFormInputFloat(),
+            'vci_complement_dr' => new bsWidgetFormInputFloat(),
         ));
-        $this->widgetSchema->setLabels(array(
-            'superficie_revendique' => 'Superficie revendiqué (ares):',
+        /*$this->widgetSchema->setLabels(array(
+x            'superficie_revendique' => 'Superficie revendiqué (ares):',
             'volume_revendique_sans_vci' => 'Volume revendiqué sans VCI (hl):',
-            'volume_revendique_avec_vci' => 'Volume revendiqué avec VCI (hl):',
+            'vci_complement_dr' => 'Volume revendiqué avec VCI (hl):',
             'vci_stock_initial' => 'Stock VCI avant récolte (hl):',
-        ));
+        ));*/
         $this->setValidators(array(
             'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
             'volume_revendique_sans_vci' => new sfValidatorNumber(array('required' => false)),
-            'volume_revendique_avec_vci' => new sfValidatorNumber(array('required' => false)),
-            'vci_stock_initial' => new sfValidatorNumber(array('required' => false)),
+            'vci_complement_dr' => new sfValidatorNumber(array('required' => false)),
         ));
         $this->embedForm('detail', new DRevRevendicationProduitDRForm($this->getObject()->detail));
 
