@@ -70,7 +70,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getConfiguration() {
 
-        return ConfigurationClient::getInstance()->getConfiguration($this->campagne);
+        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-10-01');
     }
 
     public function getProduits($onlyActive = true) {
