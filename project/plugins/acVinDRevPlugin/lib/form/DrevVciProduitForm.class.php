@@ -8,11 +8,11 @@ class DRevVciProduitForm extends acCouchdbObjectForm {
     }
     public function configure() {
         $this->setWidgets(array(
-            'vci_stock_initial' => new sfWidgetFormInputFloat(),
-            'vci' => new sfWidgetFormInputFloat(),
-            'vci_destruction' => new sfWidgetFormInputFloat(),
-            'vci_substitution' => new sfWidgetFormInputFloat(),
-            'vci_rafraichi' => new sfWidgetFormInputFloat(),
+            'vci_stock_initial' => new bsWidgetFormInputFloat(),
+            'vci' => new bsWidgetFormInputFloat(),
+            'vci_destruction' => new bsWidgetFormInputFloat(),
+            'vci_substitution' => new bsWidgetFormInputFloat(),
+            'vci_rafraichi' => new bsWidgetFormInputFloat(),
         ));
         $this->setValidators(array(
             'vci_stock_initial' => new sfValidatorNumber(array('required' => false)),

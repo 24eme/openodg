@@ -662,6 +662,8 @@
     }
 
     $.fn.initAdvancedElements = function () {
+        $(this).find('.input-float').inputNumberFormat({'decimal': 4, 'decimalAuto': 2});
+        $(this).find('.input-integer').inputNumberFormat({'decimal': 0, 'decimalAuto': 0});
         $(this).initSelect2Autocomplete();
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();

@@ -23,9 +23,9 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
         ));*/
 
         $this->setWidgets(array(
-            'superficie_revendique' => new sfWidgetFormInputFloat(),
-            'volume_revendique_sans_vci' => new sfWidgetFormInputFloat(),
-            'vci_complement_dr' => new sfWidgetFormInputFloat(),
+            'superficie_revendique' => new bsWidgetFormInputFloat(),
+            'volume_revendique_sans_vci' => new bsWidgetFormInputFloat(),
+            'vci_complement_dr' => new bsWidgetFormInputFloat(),
         ));
         /*$this->widgetSchema->setLabels(array(
 x            'superficie_revendique' => 'Superficie revendiqué (ares):',
