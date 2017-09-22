@@ -3,6 +3,20 @@
 class DRevCouleur extends BaseDRevCouleur
 {
 
+	public function getLibelle() {
+		if(!$this->_get('libelle')) {
+			$this->libelle = $this->getConfig()->getLibelleComplet();
+		}
+
+		return $this->_get('libelle');
+	}
+
+	public function getLibelleComplet()
+	{
+
+		return $this->getLibelle();
+	}
+
 	public function getChildrenNode()
     {
         return $this->getCepages();
@@ -211,12 +225,6 @@ class DRevCouleur extends BaseDRevCouleur
 		return $this->vci_stock_initial > 0;
 	}
 
-
-    public function isProduit() {
-
-        return $this->getProduitHash() == $this->getHash();
-    }
-
     public function isActive()
     {
 		return true;
@@ -225,12 +233,7 @@ class DRevCouleur extends BaseDRevCouleur
 
     public function isCleanable() {
 
-        if(!$this->isProduit()) {
-
-            return parent::isCleanable();
-        }
-
-        if(!$this->getTotalVolumeRevendique() && !$this->getTotalTotalSuperficie() && !$this->getTotalSuperficieVinifiee() && !count($this->getProduitsCepage() && !$this->detail->getTotalTotalSuperficie() && !$this->detail->volume_total)) {
+        if(!$this->isActive()) {
 
             return true;
         }

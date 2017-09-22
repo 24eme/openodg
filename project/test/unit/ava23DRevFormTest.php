@@ -30,7 +30,7 @@ $csv = new DRCsvFile("/tmp/dr.csv");
 $drev->importCSVDouane($csv->getCsvAcheteur("7523700100"));
 $drev->save();
 
-$t->is(count($drev->getProduits()), 5, "La DRev a repris 5 produits du csv de la DR");
+$t->is(count($drev->getProduits()), 3, "La DRev a repris 5 produits du csv de la DR");
 
 $i = 0;
 $produits2Delete = array();
@@ -56,7 +56,7 @@ $produit_hash2 = $produit2->getHash();
 
 $drev->save();
 
-$t->is($produit1->getLibelleComplet(), "Saint Joseph Rouge", "Le libelle du produit est Saint Joseph");
+$t->is($produit1->getLibelleComplet(), "Tranquilles Saint Joseph Rouge", "Le libelle du produit est Tranquilles Saint Joseph Rouge");
 $t->is($produit1->detail->superficie_total, 247.86, "La superficie total de la DR pour le produit est de 333.87");
 $t->is($produit1->detail->volume_sur_place, 105.18, "Le volume sur place pour ce produit est de 108.94");
 $t->is($produit1->detail->usages_industriels_total, 3.03, "Les usages industriels la DR pour ce produit sont de 4.32");
@@ -64,7 +64,7 @@ $t->is($produit1->detail->recolte_nette, 104.1, "La récolte nette de la DR pour
 $t->is($produit1->detail->volume_total, 105.18, "Le volume total de la DR pour ce produit est de 169.25");
 $t->is($produit1->detail->vci, 2, "Le vci de la DR pour ce produit est de 2");
 $t->is($produit1->vci, 2, "Le vci de l'année de la DR pour ce produit est de 2");
-$t->is($produit2->getLibelleComplet(), "Collines Rhodaniennes Blanc", "Le libelle du produit est Collines Rhodaniennes Blanc");
+$t->is($produit2->getLibelleComplet(), "Tranquilles CdR Villages avec NG Vinsobres Blanc", "Le libelle du produit estTranquilles CdR Villages avec NG Vinsobres Blanc");
 
 $t->comment("Formulaire de revendication");
 
@@ -154,7 +154,7 @@ $erreurs = $validation->getPointsByCodes('erreur');
 
 $t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produit2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
 
-$t->ok(isset($erreurs['dr_rendement']) && count($erreurs['dr_rendement']) == 1 && $erreurs['dr_rendement'][0]->getInfo() == 'Saint Joseph Rouge' , "Un point bloquant est levé car le rendement sur la DR n'est pas respecté");
+$t->ok(isset($erreurs['dr_rendement']) && count($erreurs['dr_rendement']) == 1 && $erreurs['dr_rendement'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur la DR n'est pas respecté");
 
 $t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
 

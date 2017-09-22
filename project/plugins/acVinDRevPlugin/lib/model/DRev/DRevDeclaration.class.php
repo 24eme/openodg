@@ -30,4 +30,37 @@ class DRevDeclaration extends BaseDRevDeclaration
 		}
 	}
 
+	public function reorderByConf() {
+		$children = array();
+
+		foreach($this->getChildrenNode() as $hash => $child) {
+			$children[$hash] = $child->getData();
+		}
+
+		foreach($children as $hash => $child) {
+			$this->remove($hash);
+		}
+
+		foreach($this->getConfig()->getProduits() as $hash => $child) {
+			$hashProduit = str_replace("/declaration/", "", $hash);
+			if(!array_key_exists($hashProduit, $children)) {
+				continue;
+			}
+			$this->add($hashProduit, $children[$hashProduit]);
+		}
+	}
+
+	public function cleanNode() {
+		$hash_to_delete = array();
+		foreach($this->getChildrenNode() as $children) {
+			if($children->isCleanable()) {
+				$hash_to_delete[] = $children->getHash();
+			}
+		}
+
+		foreach($hash_to_delete as $hash) {
+			$this->getDocument()->remove($hash);
+		}
+	}
+
 }

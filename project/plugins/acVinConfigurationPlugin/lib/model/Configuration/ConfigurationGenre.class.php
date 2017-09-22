@@ -1,26 +1,42 @@
 <?php
+/**
+ * Model for ConfigurationGenre
+ *
+ */
 
 class ConfigurationGenre extends BaseConfigurationGenre {
-
-    public function getAppellations() {
-
-        return $this->filter('^appellation');
-    }
-
-    public function getMentions() {
-
-        return $this->getChildrenNodeDeep();
-    }
+    const TYPE_NOEUD = 'genre';
 
     public function getChildrenNode() {
 
-        return $this->getAppellations();
+        return $this->appellations;
     }
 
-    public function hasManyAppellations() {
+    public function getCertification() {
 
-        return $this->getChildrenNodeDeep()->hasManyNoeuds();
+ 	  return $this->getParentNode();
     }
 
+    public function getArrayAppellations() {
+        $appellations = array();
+        foreach($this->getChildrenNode() as $item) {
+            $appellations[$item->getHash()] = $item;
+        }
 
+        return $appellations;
+    }
+
+    public function setDonneesCsv($datas) {
+        parent::setDonneesCsv($datas);
+      	$this->getCertification()->setDonneesCsv($datas);
+      	$this->libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_GENRE_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_GENRE_LIBELLE] : null;
+        $this->code = $this->formatCodeFromCsv($datas[ProduitCsvFile::CSV_PRODUIT_GENRE_CODE]);
+
+      	$this->setDroitDouaneCsv($datas, ProduitCsvFile::CSV_PRODUIT_GENRE_CODE_APPLICATIF_DROIT);
+      	$this->setDroitCvoCsv($datas, ProduitCsvFile::CSV_PRODUIT_GENRE_CODE_APPLICATIF_DROIT);
+    }
+
+	public function getTypeNoeud() {
+		return self::TYPE_NOEUD;
+	}
 }

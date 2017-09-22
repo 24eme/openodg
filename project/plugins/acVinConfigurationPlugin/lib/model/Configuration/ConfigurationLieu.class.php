@@ -1,7 +1,27 @@
 <?php
+/**
+ * Model for ConfigurationLieu
+ *
+ */
 
 class ConfigurationLieu extends BaseConfigurationLieu {
 
+	  const TYPE_NOEUD = 'lieu';
+
+    protected function loadAllData() {
+        parent::loadAllData();
+        $this->hasCepage();
+    }
+
+    public function getChildrenNode() {
+
+      return $this->couleurs;
+    }
+
+	/**
+     *
+     * @return ConfigurationAppellation
+     */
     public function getMention() {
 
         return $this->getParentNode();
@@ -9,77 +29,56 @@ class ConfigurationLieu extends BaseConfigurationLieu {
 
     public function getAppellation() {
 
-        return $this->getMention()->getParentNode();
+        return $this->getMention()->getAppellation();
     }
 
-    public function getCouleurs() {
-        return $this->filter('^couleur');
+    public function getCertification() {
+
+        return $this->getAppellation()->getCertification();
     }
 
-    public function getChildrenNode() {
+    public function getLabels($interpro) {
 
-        return $this->getCouleurs();
+        return $this->getCertification()->getLabels($interpro);
     }
 
-    public function getCouleur() {
-        if ($this->getNbCouleurs() > 1) {
-            throw new sfException('Pas getCouleur si plusieurs couleurs');
-        }
-        return $this->_get('couleur');
+    public function hasCepage() {
+        return $this->store('has_cepage', array($this, 'hasCepageStore'));
     }
 
-    public function getNbCouleurs() {
-
-        return count($this->getCouleurs());
-    }
-
-    public function getCepagesFilter($type_declaration = null) {
-        $cepages = array();
-        foreach($this->getChildrenFilter($type_declaration) as $couleur) {
-            $cepages = array_merge($cepages, $couleur->getChildrenFilter($type_declaration));
+    public function hasCepageStore() {
+        foreach($this->couleurs as $couleur) {
+            if ($couleur->hasCepage()) {
+                return true;
+            }
         }
 
-        return $cepages;
+        return false;
     }
 
-    public function hasCepageRB() {
+	public function getRendementNoeud() {
 
-        return $this->getCepageRB() !== null;
+		return $this->getRendementAppellation();
+	}
+
+    public function setDonneesCsv($datas) {
+      parent::setDonneesCsv($datas);
+
+    	$this->getMention()->setDonneesCsv($datas);
+    	$this->libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_LIEU_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_LIEU_LIBELLE] : null;
+    	$this->code = $this->formatCodeFromCsv($datas[ProduitCsvFile::CSV_PRODUIT_LIEU_CODE]);
+    	$this->setDroitDouaneCsv($datas, ProduitCsvFile::CSV_PRODUIT_LIEU_CODE_APPLICATIF_DROIT);
+    	$this->setDroitCvoCsv($datas, ProduitCsvFile::CSV_PRODUIT_LIEU_CODE_APPLICATIF_DROIT);
+
+    	$this->setDepartementCsv($datas);
     }
 
-    public function getCepageRB() {
+  	public function getTypeNoeud() {
+  		return self::TYPE_NOEUD;
+  	}
 
-        $cepage_rebeche = array();
-        foreach ($this->filter('couleur') as $couleur)
-            if( $couleur->exist('cepage_RB'))
-                $cepage_rebeche[] = $couleur->get('cepage_RB');
+	public function getCouleurs() {
 
-        if( count($cepage_rebeche) > 1)
-            throw new sfException("getCepagesRB() ne peut retourner plus d'un cepage rebeche par appellation");
-
-        return (count($cepage_rebeche) == 1) ? $cepage_rebeche[0] : null;
-    }
-
-    public function getCepages() {
-        $cepage = array();
-        foreach ($this->getCouleurs() as $couleur) {
-            $cepage = array_merge($cepage, $couleur->getCepages()->toArray());
-        }
-        return $cepage;
-    }
-
-    public function hasManyCouleur() {
-        return (!$this->exist('couleur') || $this->filter('^couleur.+')->count() > 0);
-    }
-    
-    public function hasLieuEditable(){
-
-        return $this->getAppellation()->hasLieuEditable();
-    }
-
-    public function getRendementNoeud() {
-
-        return $this->getRendementAppellation();
-    }
-
+		return $this->_get('couleurs');
+	}
 }

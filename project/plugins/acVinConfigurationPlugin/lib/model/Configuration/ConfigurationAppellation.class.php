@@ -1,67 +1,55 @@
 <?php
+/**
+ * Model for ConfigurationAppellation
+ *
+ */
 
 class ConfigurationAppellation extends BaseConfigurationAppellation {
 
-    public function getMentions() {
-        return $this->filter('^mention');
-    }
-
-    public function getLieux() {
-
-        return $this->getChildrenNodeDeep();
-    }
+	  const TYPE_NOEUD = 'appellation';
 
     public function getChildrenNode() {
 
-        return $this->getMentions();
+      return $this->mentions;
     }
 
-    public function hasManyLieu() {
+    public function getGenre() {
 
-        return $this->getChildrenNodeDeep()->hasManyNoeuds();
+      return $this->getParentNode();
     }
 
-    public function hasLieuEditable() {
-        if ($this->exist('detail_lieu_editable') && $this->get('detail_lieu_editable'))
-            return true;
-        return false;
+    public function getCertification() {
+
+        return $this->getGenre()->getCertification();
     }
 
-    public function getNbMention() {
-        return count($this->getMentions());
+    public function setDonneesCsv($datas) {
+      parent::setDonneesCsv($datas);
+    	$this->getGenre()->setDonneesCsv($datas);
+    	$this->libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_DENOMINATION_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_DENOMINATION_LIBELLE] : null;
+      $this->code = $this->formatCodeFromCsv($datas[ProduitCsvFile::CSV_PRODUIT_DENOMINATION_CODE]);
+      $this->densite = ($datas[ProduitCsvFile::CSV_PRODUIT_DENSITE])? $datas[ProduitCsvFile::CSV_PRODUIT_DENSITE] : Configuration::DEFAULT_DENSITE;
+
+    	$this->setDroitDouaneCsv($datas, ProduitCsvFile::CSV_PRODUIT_DENOMINATION_CODE_APPLICATIF_DROIT);
+    	$this->setDroitCvoCsv($datas, ProduitCsvFile::CSV_PRODUIT_DENOMINATION_CODE_APPLICATIF_DROIT);
+
     }
 
-    public function hasManyMention(){
-        return ($this->filter('^mention')->count() > 1);
-    }
-    
-    public function hasCepageRB() {
-        foreach($this->getLieux() as $lieu) {
-            if($lieu->hasCepageRB()) {
-                return true;
-            }
+  	public function getTypeNoeud() {
+  		return self::TYPE_NOEUD;
+  	}
+
+	public function getMentions() {
+
+		return $this->_get('mentions');
+	}
+
+	public function hasLieuEditable() {
+        if(!$this->exist('attributs') || !$this->attributs->exist('detail_lieu_editable')) {
+            return 0;
         }
-       
-        return false;
-    }
 
-    public function getDistinctLieux()
-    {
-        $arrLieux = array();
-        foreach($this->getMentions() as $mention){
-            foreach( $mention->getLieux() as $key =>  $lieu){
-                if(!array_key_exists($key, $arrLieux)){
-                    $arrLieux[$key] = $lieu;
-                }
-            }
-        break;
-        }
-    return $arrLieux;
-    }
-    
-        public function getLibelleComplet($libelle_long = false) 
-    {
-        return $this->libelle;
+        return $this->attributs->get('detail_lieu_editable');
     }
 
 }

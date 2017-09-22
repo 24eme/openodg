@@ -2,14 +2,14 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(19);
+$t = new lime_test(21);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
-  $drev = DRevClient::getInstance()->find($k);
-  $drev->delete(false);
+    $drev = DRevClient::getInstance()->find($k);
+    $drev->delete(false);
 }
 
 $campagne = (date('Y')-1)."";
@@ -41,6 +41,17 @@ foreach($produits as $produit) {
 
 $produit1 = $drev->addProduit($produit_hash1);
 $produit2 = $drev->addProduit($produit_hash2);
+
+$drev->save();
+
+$drev->declaration->reorderByConf();
+
+$drev->save();
+
+$t->is($drev->exist($produit_hash1), true, "La produit ajouté existe");
+$t->is($drev->get($produit_hash1)->getHash(), $produit_hash1, "La produit ajouté est récupérable");
+$produit1 = $drev->get($produit_hash1);
+$produit2 = $drev->get($produit_hash2);
 
 $produit1->superficie_vinifiee = 100;
 $produit1->superficie_revendique = 200;

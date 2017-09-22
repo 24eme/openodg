@@ -2,10 +2,10 @@
 
 class CurrentClient extends acCouchdbClient {
   private static $current = array();
-  
+
   /**
    *
-   * @return CurrentClient 
+   * @return CurrentClient
    */
   public static function getInstance() {
       return acCouchdbManager::getClient("Current");
@@ -13,7 +13,7 @@ class CurrentClient extends acCouchdbClient {
 
   /**
    *
-   * @return Current 
+   * @return Current
    */
   public static function getCurrent() {
     if (self::$current == null) {
@@ -21,7 +21,11 @@ class CurrentClient extends acCouchdbClient {
     }
     return self::$current;
   }
-  
+
+  public function cacheResetConfiguration() {
+        CacheFunction::remove('model');
+  }
+
   /**
    *
    * @return Current
@@ -29,5 +33,15 @@ class CurrentClient extends acCouchdbClient {
   public function retrieveCurrent() {
     return parent::retrieveDocumentById('CURRENT');
   }
-  
+
+  public function getCurrentFromTheFuture() {
+
+      return sfContext::getInstance()->getUser()->getAttribute('back_to_the_future');
+  }
+
+  public function hasCurrentFromTheFuture() {
+
+      return sfContext::getInstance()->getUser()->hasAttribute('back_to_the_future');
+  }
+
 }

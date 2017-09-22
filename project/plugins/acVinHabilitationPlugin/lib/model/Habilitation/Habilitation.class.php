@@ -39,7 +39,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration();
+        return acCouchdbManager::getClient('Configuration')->getConfiguration();
     }
 
     public function getProduits($onlyActive = true) {
@@ -77,16 +77,11 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $etablissement = $this->getEtablissementObject();
     }
 
-    public function addProduitCepage($hash) {
-        $produit = $this->getOrAdd($hash);
-        $this->addProduit($produit->getHash());
-        return $produit->getOrAddDetailNode();
-    }
-
     public function addProduit($hash) {
-        $config = $this->getConfiguration()->get($hash);
-        $produit = $this->getOrAdd($config->getHash());
+        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $produit = $this->add('declaration')->add($hashToAdd);
         $produit->getLibelle();
+        $produit->getOrAddDetailNode();
         return $produit;
     }
 

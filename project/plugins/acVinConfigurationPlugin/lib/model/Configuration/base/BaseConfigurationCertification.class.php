@@ -4,22 +4,37 @@
  * 
  * Base model for ConfigurationCertification
 
- * @property float $rendement
  * @property string $libelle
- * @property string $libelle_long
- * @property acCouchdbJson $relations
- * @property ConfigurationDouane $douane
+ * @property string $format_libelle
+ * @property string $code
+ * @property string $code_produit
+ * @property string $code_comptable
+ * @property string $code_douane
+ * @property acCouchdbJson $departements
+ * @property acCouchdbJson $interpro
+ * @property acCouchdbJson $genres
+ * @property ConfigurationDetail $detail
 
- * @method float getRendement()
- * @method float setRendement()
  * @method string getLibelle()
  * @method string setLibelle()
- * @method string getLibelleLong()
- * @method string setLibelleLong()
- * @method acCouchdbJson getRelations()
- * @method acCouchdbJson setRelations()
- * @method ConfigurationDouane getDouane()
- * @method ConfigurationDouane setDouane()
+ * @method string getFormatLibelle()
+ * @method string setFormatLibelle()
+ * @method string getCode()
+ * @method string setCode()
+ * @method string getCodeProduit()
+ * @method string setCodeProduit()
+ * @method string getCodeComptable()
+ * @method string setCodeComptable()
+ * @method string getCodeDouane()
+ * @method string setCodeDouane()
+ * @method acCouchdbJson getDepartements()
+ * @method acCouchdbJson setDepartements()
+ * @method acCouchdbJson getInterpro()
+ * @method acCouchdbJson setInterpro()
+ * @method acCouchdbJson getGenres()
+ * @method acCouchdbJson setGenres()
+ * @method ConfigurationDetail getDetail()
+ * @method ConfigurationDetail setDetail()
  
  */
 

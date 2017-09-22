@@ -24,27 +24,6 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return false;
     }
 
-    public function reorderByConf() {
-        $children = array();
-
-        foreach($this->getChildrenNode() as $hash => $child) {
-            $children[$hash] = $child->getData();
-        }
-
-        foreach($children as $hash => $child) {
-            $this->remove($hash);
-        }
-
-        foreach($this->getConfig()->getChildrenNode() as $hash => $child) {
-            if(!array_key_exists($hash, $children)) {
-                continue;
-            }
-
-            $child_added = $this->add($hash, $children[$hash]);
-            $child_added->reorderByConf();
-        }
-    }
-
 	public function getChildrenNodeDeep($level = 1)
 	{
       if($this->getConfig()->hasManyNoeuds()) {
@@ -137,24 +116,6 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return false;
     }
 
-    public function getLibelle() {
-        if(is_null($this->_get('libelle'))) {
-            if($this->getConfig()->exist('libelle_long')) {
-                $this->_set('libelle', $this->getConfig()->libelle_long);
-            } else {
-                $this->_set('libelle', $this->getConfig()->libelle);
-            }
-        }
-
-        return $this->_get('libelle');
-    }
-
-    public function getLibelleComplet()
-    {
-    	$libelle = $this->getParent()->getLibelleComplet();
-    	return trim($libelle).' '.$this->libelle;
-    }
-
 	public function getTotalTotalSuperficie()
     {
     	$total = 0;
@@ -180,29 +141,6 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
             $total += $item->getTotalSuperficieVinifiee();
         }
         return $total;
-    }
-
-    public function isCleanable() {
-        if(count($this->getChildrenNode()) == 0) {
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public function cleanNode() {
-        $hash_to_delete = array();
-        foreach($this->getChildrenNode() as $children) {
-            $children->cleanNode();
-            if($children->isCleanable()) {
-                $hash_to_delete[] = $children->getHash();
-            }
-        }
-
-        foreach($hash_to_delete as $hash) {
-            $this->getDocument()->remove($hash);
-        }
     }
 
 }

@@ -24,7 +24,7 @@ test:
 
 all:
   .settings:
-    enabled_modules:        [default, Email, piece, compte, etablissement, societe, etablissement_autocomplete]
+    enabled_modules:        [default, Email, piece, compte, etablissement, societe, etablissement_autocomplete, produit]
     # Form security secret (CSRF protection)
     csrf_secret:            false
 
