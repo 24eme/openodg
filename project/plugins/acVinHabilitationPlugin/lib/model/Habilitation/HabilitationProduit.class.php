@@ -1,0 +1,60 @@
+<?php
+/**
+ * Model for HabilitationCepage
+ *
+ */
+
+class HabilitationProduit extends BaseHabilitationProduit {
+
+    public function getConfig()
+    {
+        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+    }
+
+    public function getChildrenNode()
+    {
+        return $this->details;
+    }
+
+    public function getProduitHash() {
+        if(strpos($this->getKey(),"_")) {
+            $nodes = explode("_",$this->getKey());
+
+            return $this->getCouleur()->getProduitHash()."/".$nodes[0]."/".$nodes[1];
+        }
+
+        return $this->getHash();
+    }
+
+    public function getOrAddDetailNode()
+    {
+        $detailsNode = $this->getOrAdd("details");
+        $detailsNode->getOrAddDefaultActivities();
+    }
+
+    public function getLibelle() {
+      if(!$this->_get('libelle')) {
+          $this->libelle = $this->getConfig()->getLibelleComplet();
+      }
+
+      return $this->_get('libelle');
+    }
+
+    public function getLibelleComplet()
+    {
+
+        return $this->getLibelle();
+    }
+
+    public function isActive()
+    {
+
+        return true;
+    }
+
+    public function getProduitHashStr(){
+
+        return KeyInflector::slugify($this->getHash());
+    }
+
+}

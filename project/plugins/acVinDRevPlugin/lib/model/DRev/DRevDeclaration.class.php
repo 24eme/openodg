@@ -6,16 +6,11 @@ class DRevDeclaration extends BaseDRevDeclaration
 	{
 		return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
 	}
-		
-	public function getChildrenNode()
-    {
-        return $this;
-    }
 
 	public function reorderByConf() {
 		$children = array();
 
-		foreach($this->getChildrenNode() as $hash => $child) {
+		foreach($this as $hash => $child) {
 			$children[$hash] = $child->getData();
 		}
 
@@ -34,9 +29,9 @@ class DRevDeclaration extends BaseDRevDeclaration
 
 	public function cleanNode() {
 		$hash_to_delete = array();
-		foreach($this->getChildrenNode() as $children) {
-			if($children->isCleanable()) {
-				$hash_to_delete[] = $children->getHash();
+		foreach($this as $child) {
+			if($child->isCleanable()) {
+				$hash_to_delete[] = $child->getHash();
 			}
 		}
 
@@ -48,8 +43,12 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getProduits($onlyActive = false)
     {
         $produits = array();
-        foreach($this->getChildrenNode() as $key => $item) {
-            $produits = array_merge($produits, $item->getProduits($onlyActive));
+        foreach($this as $key => $item) {
+			if ($onlyActive && !$item->isActive()) {
+
+	    		continue;
+	    	}
+            $produits[$item->getHash()] = $item;
         }
 
         return $produits;
@@ -96,7 +95,7 @@ class DRevDeclaration extends BaseDRevDeclaration
     public function getProduitsCepage()
     {
         $produits = array();
-        foreach($this->getChildrenNode() as $key => $item) {
+        foreach($this as $key => $item) {
             $produits = array_merge($produits, $item->getProduitsCepage());
         }
 
@@ -123,7 +122,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getTotalTotalSuperficie()
     {
     	$total = 0;
-        foreach($this->getChildrenNode() as $key => $item) {
+        foreach($this as $key => $item) {
             $total += $item->getTotalTotalSuperficie();
         }
         return $total;
@@ -132,7 +131,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getTotalVolumeRevendique()
     {
     	$total = 0;
-        foreach($this->getChildrenNode() as $key => $item) {
+        foreach($this as $key => $item) {
             $total += $item->getTotalVolumeRevendique();
         }
         return $total;
@@ -141,7 +140,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getTotalSuperficieVinifiee()
     {
     	$total = 0;
-        foreach($this->getChildrenNode() as $key => $item) {
+        foreach($this as $key => $item) {
             $total += $item->getTotalSuperficieVinifiee();
         }
         return $total;

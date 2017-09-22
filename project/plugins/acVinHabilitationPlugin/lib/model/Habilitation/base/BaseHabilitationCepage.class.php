@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseHabilitationCepage
- * 
+ *
  * Base model for HabilitationCepage
 
  * @property string $libelle
@@ -11,14 +11,14 @@
  * @method string setLibelle()
  * @method HabilitationActivites getDetails()
  * @method HabilitationActivites setDetails()
- 
+
  */
 
-abstract class BaseHabilitationCepage extends _HabilitationDeclarationNoeud {
-                
+abstract class BaseHabilitationProduit extends acCouchdbDocumentTree {
+
     public function configureTree() {
        $this->_root_class_name = 'Habilitation';
        $this->_tree_class_name = 'HabilitationCepage';
     }
-                
+
 }
