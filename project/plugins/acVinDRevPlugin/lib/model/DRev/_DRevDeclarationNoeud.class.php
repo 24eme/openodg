@@ -116,18 +116,6 @@ abstract class _DRevDeclarationNoeud extends acCouchdbDocumentTree {
         return false;
     }
 
-    public function getLibelle() {
-        if(is_null($this->_get('libelle'))) {
-            if($this->getConfig()->exist('libelle_long')) {
-                $this->_set('libelle', $this->getConfig()->libelle_long);
-            } else {
-                $this->_set('libelle', $this->getConfig()->libelle);
-            }
-        }
-
-        return $this->_get('libelle');
-    }
-
 	public function getTotalTotalSuperficie()
     {
     	$total = 0;
