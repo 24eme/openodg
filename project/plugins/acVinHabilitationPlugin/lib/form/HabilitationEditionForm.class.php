@@ -12,8 +12,8 @@ class HabilitationEditionForm extends acCouchdbObjectForm
     public function configure()
     {
       foreach ($this->produits as $key => $produit) {
-        foreach ($produit->details as $keyActivite => $activites) {
-          $idWidgets = $activites->getHashForKey();
+        foreach ($produit->activites as $keyActivite => $activite) {
+          $idWidgets = $activite->getHashForKey();
           $this->setWidget('statut_'.$idWidgets, new bsWidgetFormChoice(array('choices' => $this->getStatuts()), array("class"=>"select2 form-control")));
           $this->setWidget('date_'.$idWidgets, new sfWidgetFormInput(array(), array()));
           $this->setWidget('commentaire_'.$idWidgets, new sfWidgetFormInput());
@@ -38,11 +38,11 @@ class HabilitationEditionForm extends acCouchdbObjectForm
     protected function doUpdateObject($values)
     {
       foreach ($this->produits as $key => $produit) {
-        foreach ($produit->details as $keyActivite => $activites) {
-          $idWidgets = $activites->getHashForKey();
+        foreach ($produit->activites as $keyActivite => $activite) {
+          $idWidgets = $activite->getHashForKey();
           if (isset($values['statut_'.$idWidgets]) && !empty($values['statut_'.$idWidgets]) && isset($values['date_'.$idWidgets]) && !empty($values['date_'.$idWidgets])) {
             $hash = str_replace('-','/',$idWidgets);
-            $this->getObject()->getOrAdd($hash)->updateHabilitation($values['date_'.$idWidgets],$values['statut_'.$idWidgets],$values['commentaire_'.$idWidgets]);
+            $this->getObject()->get($hash)->updateHabilitation($values['date_'.$idWidgets],$values['statut_'.$idWidgets],$values['commentaire_'.$idWidgets]);
           }
         }
       }

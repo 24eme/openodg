@@ -42,7 +42,7 @@ Habilitation:
               definition:
                 fields:
                   libelle: { }
-                  details:
+                  activites:
                     type: collection
                     class: HabilitationActivites
                     definition:

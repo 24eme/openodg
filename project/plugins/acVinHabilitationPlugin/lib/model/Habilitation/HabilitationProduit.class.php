@@ -26,10 +26,12 @@ class HabilitationProduit extends BaseHabilitationProduit {
         return $this->getHash();
     }
 
-    public function getOrAddDetailNode()
+    public function initActivites()
     {
-        $detailsNode = $this->getOrAdd("details");
-        $detailsNode->getOrAddDefaultActivities();
+        $activitesNode = $this->add("activites");
+        foreach (HabilitationClient::$activites_libelles as $activite_key => $libelle) {
+          $activitesNode->add($activite_key);
+        }
     }
 
     public function getLibelle() {
