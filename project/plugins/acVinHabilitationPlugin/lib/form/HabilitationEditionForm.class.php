@@ -42,7 +42,7 @@ class HabilitationEditionForm extends acCouchdbObjectForm
           $idWidgets = $activites->getHashForKey();
           if (isset($values['statut_'.$idWidgets]) && !empty($values['statut_'.$idWidgets]) && isset($values['date_'.$idWidgets]) && !empty($values['date_'.$idWidgets])) {
             $hash = str_replace('-','/',$idWidgets);
-            $this->getObject()->getOrAdd($hash)->updateHabilitation($values['date_'.$idWidgets],$values['statut_'.$idWidgets],$values['commentaire_'.$idWidgets]);
+            $this->getObject()->get($hash)->updateHabilitation($values['date_'.$idWidgets],$values['statut_'.$idWidgets],$values['commentaire_'.$idWidgets]);
           }
         }
       }
