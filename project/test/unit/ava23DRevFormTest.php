@@ -81,7 +81,7 @@ $t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $
 $t->is($form['produits'][$produit_hash1]['volume_revendique_sans_vci']->getValue(), $produit1->volume_revendique_sans_vci, "Le volume revendique avec vci est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['vci_complement_dr']->getValue(), $produit1->vci_complement_dr, "Le volume de vci  en complément de récolte est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['has_stock_vci']->getValue(), true, "La checkbox de vci du premier produit est coché");
-$t->is($form['produits'][$produit_hash2]['has_stock_vci']->getValue(), false, "La checkbox de vci du 2ème produit n'est coché");
+$t->is($form['produits'][$produit_hash2]['has_stock_vci']->getValue(), false, "La checkbox de vci du 2ème produit n'est pas coché");
 
 
 $valuesRev = array(
@@ -108,8 +108,8 @@ $t->is($produit1->superficie_revendique, $valuesRev['produits'][$produit_hash1][
 $t->is($produit1->volume_revendique_sans_vci, $valuesRev['produits'][$produit_hash1]['volume_revendique_sans_vci'], "Le volume revendiqué sans VCI est enregistré");
 $t->is($produit1->vci_complement_dr, $valuesRev['produits'][$produit_hash1]['vci_complement_dr'], "Le vci complement DR est enregistré");
 $t->is($produit1->volume_revendique_avec_vci, $produit1->volume_revendique_sans_vci + $produit1->vci_complement_dr, "Le volume revendique avec vci est bien calcule à partir du complément DR");
-$t->ok($produit1->hasVci(), "Le produit 1 est bien déclaré ayant du vci");
-$t->ok($produit2->hasVci(), "Le produit 2 est bien déclaré ayant du vci");
+$t->ok($produit1->hasVci(), "Le produit 1 est déclaré ayant du vci");
+$t->ok($produit2->hasVci(), "Le produit 2 est déclaré ayant du vci");
 
 $form = new DRevRevendicationForm($drev);
 $valuesRev = array(
@@ -119,7 +119,7 @@ $valuesRev = array(
 
 $valuesRev['produits'][$produit_hash2]['has_stock_vci'] = false;
 
-$t->ok($produit2->hasVci(), "Le produit 2 est bien déclaré n'ayant plus de vci");
+$t->ok($produit2->hasVci(), "Le produit 2 est déclaré n'ayant plus de vci");
 
 $form->bind($valuesRev);
 $form->save();

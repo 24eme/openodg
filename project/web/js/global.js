@@ -732,11 +732,17 @@
     $.initTableCheckbox = function() {
         $('table td.pointer_checkbox').click(function() {
             var checkbox = $(this).find('input[type=checkbox]');
+            if(checkbox.attr('readonly')) {
+                return;
+            }
             checkbox.prop('checked',!checkbox.is(':checked'));
         });
 
         $('.table td.pointer_checkbox input[type=checkbox]').click(function(e) {
             e.stopPropagation();
+            if($(this).attr('readonly')) {
+                return false;
+            }
         });
     }
 
