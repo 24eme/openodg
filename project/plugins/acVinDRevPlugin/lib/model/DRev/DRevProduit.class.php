@@ -216,7 +216,7 @@ class DRevProduit extends BaseDRevProduit
 
 	public function hasVci() {
 
-		return $this->vci_stock_initial > 0;
+		return $this->vci_stock_initial !== null;
 	}
 
     public function isActive()

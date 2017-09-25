@@ -8,6 +8,11 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
         $this->getDocable()->remove();
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $this->setDefault('has_stock_vci',  $this->getObject()->hasVci());
+    }
+
     public function configure() {
         /*$this->setWidgets(array(
             'superficie_revendique' => new sfWidgetFormInputFloat(),
@@ -26,6 +31,7 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
             'superficie_revendique' => new bsWidgetFormInputFloat(),
             'volume_revendique_sans_vci' => new bsWidgetFormInputFloat(),
             'vci_complement_dr' => new bsWidgetFormInputFloat(),
+            'has_stock_vci' => new sfWidgetFormInputCheckbox(),
         ));
         /*$this->widgetSchema->setLabels(array(
 x            'superficie_revendique' => 'Superficie revendiqué (ares):',
@@ -37,6 +43,7 @@ x            'superficie_revendique' => 'Superficie revendiqué (ares):',
             'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
             'volume_revendique_sans_vci' => new sfValidatorNumber(array('required' => false)),
             'vci_complement_dr' => new sfValidatorNumber(array('required' => false)),
+            'has_stock_vci' => new sfValidatorBoolean(array('required' => false)),
         ));
         $this->embedForm('detail', new DRevRevendicationProduitDRForm($this->getObject()->detail));
 
@@ -79,6 +86,12 @@ x            'superficie_revendique' => 'Superficie revendiqué (ares):',
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
+
+        if($values['has_stock_vci'] && $this->getObject()->vci_stock_initial === null) {
+            $this->getObject()->vci_stock_initial = 0;
+        } elseif(!$values['has_stock_vci'] && $this->getObject()->vci_stock_initial === 0) {
+            $this->getObject()->vci_stock_initial = null;
+        }
     }
 
 }
