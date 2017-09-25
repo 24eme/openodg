@@ -47,6 +47,9 @@ x            'superficie_revendique' => 'Superficie revendiqué (ares):',
         ));
         $this->embedForm('detail', new DRevRevendicationProduitDRForm($this->getObject()->detail));
 
+        $this->getWidget('volume_revendique_sans_vci')->setAttribute('class', $this->getWidget('volume_revendique_sans_vci')->getAttribute('class').' input_sum_value');
+        $this->getWidget('vci_complement_dr')->setAttribute('class', $this->getWidget('vci_complement_dr')->getAttribute('class').' input_sum_value');
+
         if($this->getObject()->vci_stock_initial > 0) {
             $this->getWidget('has_stock_vci')->setAttribute('readonly', 'readonly');
         }

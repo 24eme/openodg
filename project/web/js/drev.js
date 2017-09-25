@@ -131,7 +131,7 @@
         });
     }
 
-    $.initRepartitionCvi = function(){
+    $.initCalculAuto = function(){
 
       $(".edit_vci tr.produits").each(function(){
         var produits = $(this);
@@ -148,6 +148,23 @@
 
       });
 
+        var sommeRevendication = function() {
+            $('#table-revendication tbody tr').each(function() {
+                var somme = 0;
+                $(this).find('.input_sum_value').each(function() {
+                    if($(this).val()) {
+                        somme += parseFloat($(this).val());
+                    }
+                })
+
+                $(this).find('.input_sum_total').val(somme.toFixed(2))
+            });
+
+        }
+
+        $('#table-revendication .input_sum_value').on('change', function() {
+            sommeRevendication();
+        });
 
     }
 
@@ -161,7 +178,7 @@
         $.initBtnValidation();
         $.initFocusAndErrorToRevendicationField();
         $.initEventErrorRevendicationField();
-        $.initRepartitionCvi();
+        $.initCalculAuto();
         $.initRevendicationFadeRow();
         $.initRevendicationEventsFadeInOut();
         $.initControleExterne();

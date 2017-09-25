@@ -10,7 +10,7 @@
     <?php include_partial('drev/revendicationFormInput', array('form' => $form, 'produit' => $produit, 'name' => 'volume_revendique_sans_vci', 'vtsgn' => $vtsgn, "placeholder" => "hl", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
     <?php include_partial('drev/revendicationFormInput', array('form' => $form, 'produit' => $produit, 'name' => 'vci_complement_dr', 'vtsgn' => $vtsgn, "placeholder" => "hl", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
     <td>
-        <input readonly="readonly" type="text" class="form-control text-right input-float" value="<?php echoFloat($produit->volume_revendique_avec_vci) ?>" />
+        <input readonly="readonly" type="text" class="form-control text-right input-float input_sum_total" value="<?php echoFloat($produit->volume_revendique_avec_vci) ?>" />
     </td>
     <?php include_partial('drev/revendicationFormInput', array('form' => $form, 'produit' => $produit, 'name' => 'has_stock_vci', 'vtsgn' => $vtsgn, 'placeholder' => null, 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class, 'tdClass' => 'text-center pointer_checkbox')); ?>
 </tr>

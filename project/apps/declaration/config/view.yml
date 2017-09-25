@@ -16,7 +16,7 @@ default:
 
   stylesheets:    [compile.css?201706281900: { media: all }, print.css: { media: print }, ../components/vins/vins.css: { media: all }]
 
-  javascripts:    [lib/jquery/jquery.min.js, lib/jquery.plugins.min.js?201709221633, lib/bootstrap/bootstrap.min.js, lib/bootstrap3-typeahead.min.js, lib/bootstrap-switch.min.js, global.js?201709250939, compte.js, drev.js?20151126, drevmarc.js, form.js, parcellaire.js, ava.js]
+  javascripts:    [lib/jquery/jquery.min.js, lib/jquery.plugins.min.js?201709221633, lib/bootstrap/bootstrap.min.js, lib/bootstrap3-typeahead.min.js, lib/bootstrap-switch.min.js, global.js?201709250939, compte.js, drev.js?201709251013, drevmarc.js, form.js, parcellaire.js, ava.js]
 
   has_layout:     true
   layout:         layout
