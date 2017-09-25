@@ -10,7 +10,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         while (($data = fgetcsv($handler)) !== FALSE) {
             $csv[] = self::clean($data);
         }
-        
+
         $doc = array();
         $cvi = null;
         $rs = null;
@@ -20,7 +20,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         $libellesLigne = null;
         $lies = null;
         $firstPage = true;
-        
+
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
@@ -60,9 +60,10 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = sprintf('%02d', ($v+1));
 	        			$produit[] = preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
 	        			if ($v == 8) {
-	        				$values[$v] = $values[$v] * 100;
-	        			}
-	        			$produit[] = self::numerizeVal($values[$v]);
+                            $produit[] = self::numerizeVal($values[$v], 4);
+	        			} else {
+                            $produit[] = self::numerizeVal($values[$v], 2);
+                        }
 	        			$produit[] = $values[1];
 	        			$produit[] = $values[0];
 	        			$produit[] = null;
@@ -72,14 +73,14 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         		}
         	}
         }
-        
+
         $doc[] = SV12CsvFile::CSV_TYPE_SV12;
         $doc[] = $this->campagne;
         $doc[] = $cvi;
         $doc[] = $rs;
         $doc[] = null;
         $doc[] = $commune;
-        
+
         $csv = '';
         foreach ($produits as $p) {
 	    	$csv .= implode(';', $doc).';'.implode(';', $p)."\n";
