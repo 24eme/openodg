@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(53);
+$t = new lime_test(58);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -27,7 +27,7 @@ $csvContent = $csv->convert();
 file_put_contents("/tmp/dr.csv", $csvContent);
 $csv = new DRCsvFile("/tmp/dr.csv");
 
-$drev->importCSVDouane($csv->getCsvAcheteur("7523700100"));
+$drev->importCSVDouane($csv->getCsv());
 $drev->save();
 
 $t->is(count($drev->getProduits()), 3, "La DRev a repris 5 produits du csv de la DR");
@@ -80,6 +80,9 @@ $t->is($form['produits'][$produit_hash1]['detail']['volume_sur_place']->getValue
 $t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $produit1->superficie_revendique, "La superficie revendique est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['volume_revendique_sans_vci']->getValue(), $produit1->volume_revendique_sans_vci, "Le volume revendique avec vci est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['vci_complement_dr']->getValue(), $produit1->vci_complement_dr, "Le volume de vci  en complément de récolte est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['has_stock_vci']->getValue(), true, "La checkbox de vci du premier produit est coché");
+$t->is($form['produits'][$produit_hash2]['has_stock_vci']->getValue(), false, "La checkbox de vci du 2ème produit n'est pas coché");
+
 
 $valuesRev = array(
     'produits' => $form['produits']->getValue(),
@@ -91,6 +94,7 @@ $valuesRev['produits'][$produit_hash1]['volume_revendique_sans_vci'] = 100;
 $valuesRev['produits'][$produit_hash1]['vci_complement_dr'] = 2;
 $valuesRev['produits'][$produit_hash1]['detail']['superficie_total'] = 10;
 $valuesRev['produits'][$produit_hash2]['detail']['superficie_total'] = 300;
+$valuesRev['produits'][$produit_hash2]['has_stock_vci'] = true;
 
 $form->bind($valuesRev);
 
@@ -103,8 +107,22 @@ $t->is($produit1->detail->recolte_nette, $valuesRev['produits'][$produit_hash1][
 $t->is($produit1->superficie_revendique, $valuesRev['produits'][$produit_hash1]['superficie_revendique'], "La superficie revendique est enregistré");
 $t->is($produit1->volume_revendique_sans_vci, $valuesRev['produits'][$produit_hash1]['volume_revendique_sans_vci'], "Le volume revendiqué sans VCI est enregistré");
 $t->is($produit1->vci_complement_dr, $valuesRev['produits'][$produit_hash1]['vci_complement_dr'], "Le vci complement DR est enregistré");
-
 $t->is($produit1->volume_revendique_avec_vci, $produit1->volume_revendique_sans_vci + $produit1->vci_complement_dr, "Le volume revendique avec vci est bien calcule à partir du complément DR");
+$t->ok($produit1->hasVci(), "Le produit 1 est déclaré ayant du vci");
+$t->ok($produit2->hasVci(), "Le produit 2 est déclaré ayant du vci");
+
+$form = new DRevRevendicationForm($drev);
+$valuesRev = array(
+    'produits' => $form['produits']->getValue(),
+    '_revision' => $drev->_rev,
+);
+
+$valuesRev['produits'][$produit_hash2]['has_stock_vci'] = false;
+
+$t->ok($produit2->hasVci(), "Le produit 2 est déclaré n'ayant plus de vci");
+
+$form->bind($valuesRev);
+$form->save();
 
 $t->comment("Formulaire du VCI");
 

@@ -8,7 +8,7 @@
     ?>
     <div class="<?php if ($global_error_class): ?>has-error<?php endif; ?>">
         <?php echo $form[$name.(($vtsgn) ? "_vtsgn" : null)]->renderError() ?>
-        <?php echo $form[$name.(($vtsgn) ? "_vtsgn" : null)]->render(array('class' => 'form-control text-right input-rounded num_float ' . $global_error_class, 'placeholder' => $placeholder)) ?>
+        <?php echo $form[$name.(($vtsgn) ? "_vtsgn" : null)]->render(array('placeholder' => $placeholder)) ?>
     </div>
     <?php /*else: ?>
         <?php echoFloat($produit->get("detail".(($vtsgn) ? "_vtsgn" : null))->get($name)); ?>

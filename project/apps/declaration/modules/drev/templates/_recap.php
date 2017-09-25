@@ -19,7 +19,7 @@
                 <?php foreach ($drev->declaration->getProduits() as $produit) : ?>
                     <tr>
                         <td><?php echo $produit->getLibelleComplet() ?></td>
-                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ares</small></td>
+                        <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small></td>
                         <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_sans_vci') ?>"><?php echoFloat($produit->volume_revendique_sans_vci) ?> <small class="text-muted">hl</small></td>
                         <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_avec_vci') ?>"><?php echoFloat($produit->volume_revendique_avec_vci) ?> <small class="text-muted">hl</small></td>
                         <?php if($produit->hasVci()): ?>

@@ -8,6 +8,11 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
         $this->getDocable()->remove();
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $this->setDefault('has_stock_vci',  $this->getObject()->hasVci());
+    }
+
     public function configure() {
         /*$this->setWidgets(array(
             'superficie_revendique' => new sfWidgetFormInputFloat(),
@@ -23,9 +28,10 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
         ));*/
 
         $this->setWidgets(array(
-            'superficie_revendique' => new sfWidgetFormInputFloat(),
-            'volume_revendique_sans_vci' => new sfWidgetFormInputFloat(),
-            'vci_complement_dr' => new sfWidgetFormInputFloat(),
+            'superficie_revendique' => new bsWidgetFormInputFloat(),
+            'volume_revendique_sans_vci' => new bsWidgetFormInputFloat(),
+            'vci_complement_dr' => new bsWidgetFormInputFloat(),
+            'has_stock_vci' => new sfWidgetFormInputCheckbox(),
         ));
         /*$this->widgetSchema->setLabels(array(
 x            'superficie_revendique' => 'Superficie revendiqué (ares):',
@@ -37,9 +43,16 @@ x            'superficie_revendique' => 'Superficie revendiqué (ares):',
             'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
             'volume_revendique_sans_vci' => new sfValidatorNumber(array('required' => false)),
             'vci_complement_dr' => new sfValidatorNumber(array('required' => false)),
+            'has_stock_vci' => new sfValidatorBoolean(array('required' => false)),
         ));
         $this->embedForm('detail', new DRevRevendicationProduitDRForm($this->getObject()->detail));
 
+        $this->getWidget('volume_revendique_sans_vci')->setAttribute('class', $this->getWidget('volume_revendique_sans_vci')->getAttribute('class').' input_sum_value');
+        $this->getWidget('vci_complement_dr')->setAttribute('class', $this->getWidget('vci_complement_dr')->getAttribute('class').' input_sum_value');
+
+        if($this->getObject()->vci_stock_initial > 0) {
+            $this->getWidget('has_stock_vci')->setAttribute('readonly', 'readonly');
+        }
 
         /*if ($this->getObject()->detail->superficie_total) {
             unset($this->widgetSchema['superficie_revendique']);
@@ -79,6 +92,12 @@ x            'superficie_revendique' => 'Superficie revendiqué (ares):',
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
+
+        if($values['has_stock_vci'] && $this->getObject()->vci_stock_initial === null) {
+            $this->getObject()->vci_stock_initial = 0;
+        } elseif(!$values['has_stock_vci'] && $this->getObject()->vci_stock_initial === 0) {
+            $this->getObject()->vci_stock_initial = null;
+        }
     }
 
 }

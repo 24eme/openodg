@@ -28,11 +28,11 @@
         <tbody>
             <?php foreach ($habilitation->getProduits() as $key => $produitCepage):
               $first = true;
-                foreach ($produitCepage->getDetails() as $keyDetails => $habilitationsNode):
+                foreach ($produitCepage->activites as $keyActivite => $habilitationsNode):
                 ?>
                 <tr>
                   <?php if($first): ?><td rowspan="<?php echo $nbActivites; ?>"><strong><?php echo $produitCepage->getLibelleComplet(); ?></strong></td><?php endif; $first = false; ?>
-                      <td><?php echo HabilitationClient::$activites_libelles[$keyDetails]; ?></td>
+                      <td><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></td>
                       <td class="text-center" ><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></td>
                       <td class="text-center" ><?php echo format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR"); ?></td>
                       <td class="text-center col-xs-1">
@@ -58,8 +58,8 @@
     echo $editForm->renderGlobalErrors();
 
     foreach ($habilitation->getProduits() as $key => $produitCepage):
-      foreach ($produitCepage->getDetails() as $keyDetails => $habilitationsNode):
-        include_partial('habilitation/popupEditionForm', array('url' => url_for('habilitation_edition', $habilitation), 'editForm' => $editForm,'idPopup' => 'editForm_'.$habilitationsNode->getHashForKey(), 'produitCepage' => $produitCepage, 'details' => $habilitationsNode));
+      foreach ($produitCepage->activites as $keyActivite => $activite):
+        include_partial('habilitation/popupEditionForm', array('url' => url_for('habilitation_edition', $habilitation), 'editForm' => $editForm,'idPopup' => 'editForm_'.$activite->getHashForKey(), 'produitCepage' => $produitCepage, 'details' => $activite));
       endforeach;
     endforeach;
     ?>

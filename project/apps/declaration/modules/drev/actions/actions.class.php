@@ -121,7 +121,7 @@ class drevActions extends sfActions {
 
 
         $csvFile = $this->drev->getDR('csv');
-        $csv = new DRDouaneCsvFile($csvFile);
+        $csv = new DRDouaneCsvFile($csvFile, $this->drev->campagne);
         $csvContent = $csv->convert();
         $path = sfConfig::get('sf_cache_dir').'/dr/';
         $filename = 'DR-'.$this->drev->identifiant.'-'.$this->drev->campagne.'.csv';
@@ -133,7 +133,7 @@ class drevActions extends sfActions {
         	$csv = new DRCsvFile($path.$filename);
         	$etablissement = EtablissementClient::getInstance()->retrieveById($this->drev->identifiant);
         	if ($etablissement) {
-        		$this->drev->importCSVDouane($csv->getCsvAcheteur($etablissement->cvi));
+        		$this->drev->importCSVDouane($csv->getCsv());
         		$this->drev->save();
         	}
         } catch (Exception $e) {

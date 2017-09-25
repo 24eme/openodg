@@ -1,7 +1,11 @@
 <?php
 
-class DRevCouleur extends BaseDRevCouleur
+class DRevProduit extends BaseDRevProduit
 {
+	public function getConfig()
+	{
+		return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+	}
 
 	public function getLibelle() {
 		if(!$this->_get('libelle')) {
@@ -40,16 +44,6 @@ class DRevCouleur extends BaseDRevCouleur
     public function getAppellation()
     {
     	return $this->getMention()->getAppellation();
-    }
-
-    public function getProduits($onlyActive = false)
-    {
-    	if ($onlyActive && !$this->isActive()) {
-
-    		return array();
-    	}
-
-        return array($this->getHash() => $this);
     }
 
     public function getProduitHash() {
@@ -222,7 +216,7 @@ class DRevCouleur extends BaseDRevCouleur
 
 	public function hasVci() {
 
-		return $this->vci_stock_initial > 0;
+		return $this->vci_stock_initial !== null;
 	}
 
     public function isActive()

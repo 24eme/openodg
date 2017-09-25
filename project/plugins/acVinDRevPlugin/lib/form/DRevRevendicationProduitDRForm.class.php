@@ -11,10 +11,10 @@ class DRevRevendicationProduitDRForm extends acCouchdbObjectForm {
     public function configure() {
 
         $this->setWidgets(array(
-            'superficie_total' => new sfWidgetFormInputFloat(),
-            'volume_total' => new sfWidgetFormInputFloat(),
-            'recolte_nette' => new sfWidgetFormInputFloat(),
-            'volume_sur_place' => new sfWidgetFormInputFloat(),
+            'superficie_total' => new bsWidgetFormInputFloat(),
+            'volume_total' => new bsWidgetFormInputFloat(),
+            'recolte_nette' => new bsWidgetFormInputFloat(),
+            'volume_sur_place' => new bsWidgetFormInputFloat(),
         ));
 
         $this->setValidators(array(

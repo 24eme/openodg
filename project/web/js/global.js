@@ -662,6 +662,8 @@
     }
 
     $.fn.initAdvancedElements = function () {
+        $(this).find('.input-float').inputNumberFormat({'decimal': 4, 'decimalAuto': 2});
+        $(this).find('.input-integer').inputNumberFormat({'decimal': 0, 'decimalAuto': 0});
         $(this).initSelect2Autocomplete();
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();
@@ -727,6 +729,23 @@
         });*/
     }
 
+    $.initTableCheckbox = function() {
+        $('table td.pointer_checkbox').click(function() {
+            var checkbox = $(this).find('input[type=checkbox]');
+            if(checkbox.attr('readonly')) {
+                return;
+            }
+            checkbox.prop('checked',!checkbox.is(':checked'));
+        });
+
+        $('.table td.pointer_checkbox input[type=checkbox]').click(function(e) {
+            e.stopPropagation();
+            if($(this).attr('readonly')) {
+                return false;
+            }
+        });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -743,6 +762,7 @@
         $.initModal();
         $.initDynamicCollection();
         $.initTypeahead();
+        $.initTableCheckbox();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip], span[data-toggle=tooltip]').tooltip({'container': 'body'});
