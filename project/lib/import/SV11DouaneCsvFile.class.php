@@ -10,7 +10,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         while (($data = fgetcsv($handler)) !== FALSE) {
             $csv[] = self::clean($data);
         }
-        
+
         $doc = array();
         $cvi = null;
         $rs = null;
@@ -19,7 +19,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         $communeTiers = null;
         $libellesLigne = null;
         $tabValues = array(3,4,9,10,11,12,13);
-        
+
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
 
@@ -51,10 +51,11 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
 	        			$produit[] = $values[8];
 	        			$produit[] = sprintf('%02d', ($v+1));
 	        			$produit[] = preg_replace('/ \(ha\)/i', '', self::cleanStr($libellesLigne[$v]));
-	        			if ($v == 3) {
-	        				$values[$v] = $values[$v] * 100;
-	        			}
-	        			$produit[] = self::numerizeVal($values[$v]);
+                        if ($v == 3) {
+                            $produit[] = self::numerizeVal($values[$v], 4);
+                        } else {
+                            $produit[] = self::numerizeVal($values[$v], 2);
+                        }
 	        			$produit[] = $values[1];
 	        			$produit[] = $values[0];
 	        			$produit[] = null;
@@ -64,14 +65,14 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         		}
         	}
         }
-        
+
         $doc[] = SV11CsvFile::CSV_TYPE_SV11;
         $doc[] = $this->campagne;
         $doc[] = $cvi;
         $doc[] = $rs;
         $doc[] = null;
         $doc[] = $commune;
-        
+
         $csv = '';
         foreach ($produits as $p) {
 	    	$csv .= implode(';', $doc).';'.implode(';', $p)."\n";
