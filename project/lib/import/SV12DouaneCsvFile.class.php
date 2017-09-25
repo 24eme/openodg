@@ -34,7 +34,7 @@ class SV12DouaneCsvFile extends DouaneImportCsvFile {
         			$commune = $m[1];
         		}
         		if (preg_match('/r.+capitulatif par fournisseur pour l\'evv[\s]*(.*)$/i', $values[0], $m)) {
-        			$rs = $m[1];
+        			$rs = "\"".html_entity_decode($m[1])."\"";
         		}
         		if (isset($values[4]) && !empty($values[4]) && preg_match('/libell.+[\s]*du[\s]*produit/i', $values[4])) {
         			$libellesLigne = $values;

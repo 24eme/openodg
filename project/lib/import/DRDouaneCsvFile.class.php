@@ -29,7 +29,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			$dr[] = DRCsvFile::CSV_TYPE_DR;
         			$dr[] = $this->campagne;
         			$dr[] = (isset($values[1]))? $values[1] : null;
-        			$dr[] = (isset($values[2]))? trim(preg_replace('/^(.+)\(.+\)$/', '\1', $values[2])) : null;
+        			$dr[] = (isset($values[2]))? "\"".html_entity_decode(trim(preg_replace('/^(.+)\(.+\)$/', '\1', $values[2])))."\"" : null;
         			$dr[] = null;
         			$dr[] = (isset($values[2]))? trim(preg_replace('/^.+\((.+)\)$/', '\1', $values[2])) : null;
         			continue;
