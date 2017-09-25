@@ -1,6 +1,7 @@
 <?php
 
 class SV12Client extends acCouchdbClient {
+	const TYPE_MODEL = 'SV12';
     public static function getInstance()
     {
       return acCouchdbManager::getClient("SV12");

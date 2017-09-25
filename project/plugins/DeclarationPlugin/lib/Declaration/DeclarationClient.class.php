@@ -49,6 +49,21 @@ class DeclarationClient
             return 'ExportFactureCSV';
         }
 
+        if($type == DRClient::TYPE_MODEL) {
+
+            return 'ExportDRCSV';
+        }
+
+        if($type == SV11Client::TYPE_MODEL) {
+
+            return 'ExportSV11CSV';
+        }
+
+        if($type == SV12Client::TYPE_MODEL) {
+
+            return 'ExportSV12CSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 

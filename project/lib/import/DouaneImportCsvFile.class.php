@@ -16,11 +16,11 @@ class DouaneImportCsvFile {
       }
       return $array;
     }
-    
-    public static function numerizeVal($val) {
-    	return (is_numeric($val))? str_replace('.', ',', sprintf('%01.2f', $val)) : $val;
+
+    public static function numerizeVal($val, $nbDecimal = 2) {
+    	return (is_numeric($val))? str_replace('.', ',', sprintf('%01.'.$nbDecimal.'f', $val)) : $val;
     }
-    
+
     public static function cleanStr($val) {
     	return str_replace(array("\r", "\r\n", "\n"), ' ', $val);
     }
