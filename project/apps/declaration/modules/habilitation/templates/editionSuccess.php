@@ -15,11 +15,11 @@
         <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
     <?php endif; ?>
 
-    <table class="table table-condensed" id="table-revendication">
+    <table class="table table-condensed table-bordered" id="table-revendication">
         <thead>
             <tr>
-                <th class="col-xs-5">Produits</th>
-                <th class="col-xs-2">Activités</th>
+                <th class="col-xs-3">Produits</th>
+                <th class="col-xs-5">Activités</th>
                 <th class="text-center col-xs-2">Statut</th>
                 <th class="text-center col-xs-2">Date</th>
                 <th class="text-center col-xs-1"></th>
