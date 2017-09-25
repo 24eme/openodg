@@ -1,7 +1,7 @@
 <?php
 
 class DRDouaneCsvFile extends DouaneImportCsvFile {
-	
+
     const EXPLOITANT = 'exploitant';
     const BAILLEUR = 'bailleur';
 
@@ -16,13 +16,13 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         while (($data = fgetcsv($handler)) !== FALSE) {
             $csv[] = self::clean($data);
         }
-        
+
         $dr = array();
         $produits = array();
         $exploitant = array();
         $bailleur = array();
         $libelleLigne = null;
-        
+
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
         		if (preg_match('/dnr/i', $values[0])) {
@@ -62,8 +62,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		if ($values[0] == 4) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
-        					$exploitant[$i][] = array(sprintf('%02d', $values[0]), preg_replace('/ \(ha\)/i', '', self::cleanStr($values[1])), self::numerizeVal($values[$i]*100), null, null, null, null);
-        					$bailleur[$i][] = array(sprintf('%02d', $values[0]), preg_replace('/ \(ha\)/i', '', self::cleanStr($values[1])), self::numerizeVal($values[$i]*100), null, null, null, null);
+        					$exploitant[$i][] = array(sprintf('%04d', $values[0]), preg_replace('/ \(ha\)/i', '', self::cleanStr($values[1])), self::numerizeVal($values[$i]), null, null, null, null);
+        					$bailleur[$i][] = array(sprintf('%04d', $values[0]), preg_replace('/ \(ha\)/i', '', self::cleanStr($values[1])), self::numerizeVal($values[$i]), null, null, null, null);
         				}
         			}
         			continue;
