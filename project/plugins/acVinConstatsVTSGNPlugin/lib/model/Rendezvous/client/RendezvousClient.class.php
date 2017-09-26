@@ -24,9 +24,9 @@ class RendezvousClient extends acCouchdbClient {
     }
 
     public function getRendezvousByCompte($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $ids = $this->startkey(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, "0000000000"))
-                        ->endkey(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, "9999999999"))
-                        ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+        $ids = $this->startkey(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, (date('Y') - 1)."08010000"))
+                    ->endkey(sprintf("%s-%s-%s", self::TYPE_COUCHDB, $identifiant, "9999999999"))
+                    ->execute(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $rendezvous = array();
 
         foreach ($ids as $id) {
