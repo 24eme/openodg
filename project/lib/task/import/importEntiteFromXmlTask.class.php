@@ -5,6 +5,7 @@ class importEntiteFromXmlTask extends sfBaseTask
 
     protected $observationsCodifieesArr = array();
     protected $groupeTagsArr = array();
+    protected $fonctionsArr = array();
 
     protected $groupeInterlocuteursArr = array();
 
@@ -13,6 +14,7 @@ class importEntiteFromXmlTask extends sfBaseTask
 
     protected $identifiant = null;
     protected $cvi = null;
+    protected $multipleCvi = array();
 
     protected $nom = null;
     protected $prenom = null;
@@ -76,6 +78,9 @@ EOF;
         $path_groupes_interlocuteurs = dirname(__FILE__)."/../../../data/configuration/rhone/groupes_interlocuteurs.csv";
         $groupesInterlocuteursCsv = new CsvFile($path_groupes_interlocuteurs);
 
+        $path_fonctions = dirname(__FILE__)."/../../../data/configuration/rhone/fonctions.csv";
+        $fonctionsCsv = new CsvFile($path_fonctions);
+
         foreach ($observationsCodifieesCsv->getCsv() as $row) {
           $this->observationsCodifieesArr[$row[0]] = $row[1];
         }
@@ -86,6 +91,10 @@ EOF;
 
         foreach ($groupesInterlocuteursCsv->getCsv() as $row) {
           $this->groupeInterlocuteursArr[$row[0]] = $row;
+        }
+
+        foreach ($fonctionsCsv->getCsv() as $row) {
+          $this->fonctionsArr[$row[0]] = $row[1];
         }
 
         foreach ($xmlEntite as $nameField => $field) {
@@ -111,7 +120,7 @@ EOF;
           $this->searchRefGroupsProfil($nameField,$field);
         }
 
-        if($this->cvi || $this->siret){
+        if($this->cvi  || count($this->multipleCvi) || $this->siret){
             $this->importSociete();
         }else{
           $this->importInterlocuteur();
@@ -152,9 +161,9 @@ EOF;
               $replace = array("","",",");
               $evvStrPurged = preg_replace($pattern,$replace,$evvStr);
               $evvArray = explode(',',$evvStrPurged);
-              if(count($evvArray) > 2 && (count(array_unique($evvArray)) > 1)){
-                echo "l'identité  ".  $this->identifiant." a des cvis différents : ".$evvStrPurged."\n";
-                exit;
+              if(count($evvArray) > 1 && (count(array_unique($evvArray)) > 1)){
+                echo "l'identité  ".  $this->identifiant." a des cvis différents : ".$evvStrPurged." plusieurs établissements\n";
+                $this->multipleCvi = array_unique($evvArray);
               }else{
                   foreach ($evvArray as $cvi_c) {
                       $this->cvi = $cvi_c;
@@ -176,22 +185,24 @@ EOF;
               foreach ($profilesArray as $key => $identitesProfils) {
                 $identitesProfilsArray = (array) $identitesProfils;
                 $refKeyGroup = $identitesProfilsArray["b:CleGroupe"];
+                $fonction = $identiteProfilArr["b:Fonction"];
                 if(array_key_exists($refKeyGroup,$this->groupeTagsArr)){
                   $this->groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
                   continue;
                   }
                 if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
-                  $this->groupeInterlocuteurs[] = $this->groupeInterlocuteursArr[$refKeyGroup];
+                  $this->groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction));
                 }
                 foreach ($identitesProfilsArray as $key => $identiteProfilsArray) {
                   $identiteProfilArr = (array) $identiteProfilsArray;
                   $refKeyGroup = $identiteProfilArr["b:CleGroupe"];
+                  $fonction = $identiteProfilArr["b:Fonction"];
                   if(array_key_exists($refKeyGroup,$this->groupeTagsArr)){
                     $this->groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
                     continue;
                     }
                   if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
-                    $this->groupeInterlocuteurs[] = $this->groupeInterlocuteursArr[$refKeyGroup];
+                    $this->groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction));
                   }
                 }
              }
@@ -297,7 +308,7 @@ EOF;
         }
         $societe = new societe();
         $societe->identifiant = sprintf("%06d",$this->identifiant);
-        if($this->cvi){
+        if($this->cvi || count($this->multipleCvi)){
           $societe->type_societe = "RESSORTISSANT" ;
         }else{
           $societe->type_societe =  "AUTRE" ;
@@ -345,9 +356,16 @@ EOF;
         $societe->save();
 
         $societe = SocieteClient::getInstance()->find($societe->_id);
-
-        if($this->cvi){
-
+        if($this->multipleCvi){
+          foreach ($this->multipleCvi as $cvi) {
+            $etablissement = $societe->createEtablissement($this->type_etablissement);
+            // $etablissement->setCompte($societe->getMasterCompte()->_id);
+            $etablissement->constructId();
+            $etablissement->cvi = $cvi;
+            $etablissement->nom = $this->buildRaisonSociete();
+            $etablissement->save();
+          }
+        }elseif($this->cvi){
         $etablissement = $societe->createEtablissement($this->type_etablissement);
         // $etablissement->setCompte($societe->getMasterCompte()->_id);
         $etablissement->constructId();
@@ -378,9 +396,12 @@ EOF;
             echo "La société $identifiantSoc n'est pas dans la base\n";
           }else{
             $compte = CompteClient::getInstance()->createCompteFromSociete($societe);
+
             $compte->prenom = $this->prenom;
             $compte->nom = $this->nom;
-            $compte->fonction = "Fonction?";
+
+            $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
+
 
             $coordonnees = $this->coordonnees[0];
 
@@ -410,7 +431,7 @@ EOF;
             $compte->fax = ($communication->fax && $communication->fax != "__.__.__.__.__")? $communication->fax : "";
             $compte->email = $communication->email;
             $compte->site_internet = $coordonnees->site_web;
-
+            $this->setTags($compte);
             $compte->save();
             echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
           }
