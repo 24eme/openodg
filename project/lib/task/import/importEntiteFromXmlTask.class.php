@@ -112,11 +112,11 @@ EOF;
           $this->searchSimpleStringField($nameField, $field,"b:Prenom","prenom");
           $this->searchSimpleStringField($nameField, $field,"b:RaisonSociale","nom");
           $this->searchSimpleStringField($nameField, $field,"b:Titre","civilite");
+          $this->searchSimpleStringField($nameField, $field,"b:Siret","siret");
 
           $this->searchCoordonnees($nameField,$field);
           $this->searchCommunications($nameField,$field);
           $this->searchObservationsCodifiees($nameField,$field);
-          $this->searchSiret($nameField,$field);
           $this->searchRefGroupsProfil($nameField,$field);
         }
 
@@ -142,17 +142,6 @@ EOF;
       }
     }
 
-
-
-
-    public function searchSiret($nameField, $field){
-      if($nameField == "b:Siret"){
-        if(count($field)){
-          if(count($field) > 1){ var_dump($nameField,$field); continue; }
-        }
-        $this->siret = (string) $field;
-      }
-    }
 
   public function searchCvi($nameField, $field){
             if($nameField == "b:Evv" && boolval((string) $field)){
@@ -250,7 +239,7 @@ EOF;
     private function searchSimpleDateField($nameField, $field,$matchName,$fieldName){
       if($nameField == $matchName){
          if(count($field)){
-           if(count($field) > 1){ var_dump($nameField,$field); continue; }
+           if(count($field) > 1){ echo "Champ ".$nameField." est multiple : ".implode(",",$field); return; }
          }
          $date = (string) $field;
          if($date != "0001-01-01T00:00:00"){
