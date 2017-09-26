@@ -21,6 +21,10 @@ class DRevVciProduitForm extends acCouchdbObjectForm {
             'vci_substitution' => new sfValidatorNumber(array('required' => false)),
             'vci_rafraichi' => new sfValidatorNumber(array('required' => false)),
         ));
+        
+        if($this->getObject()->detail->vci > 0) {
+        	$this->getWidget('vci')->setAttribute('readonly', 'readonly');
+        }
 
         $this->widgetSchema->setNameFormat('[%s]');
     }

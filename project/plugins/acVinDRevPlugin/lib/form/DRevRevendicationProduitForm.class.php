@@ -50,7 +50,7 @@ x            'superficie_revendique' => 'Superficie revendiqué (ares):',
         $this->getWidget('volume_revendique_sans_vci')->setAttribute('class', $this->getWidget('volume_revendique_sans_vci')->getAttribute('class').' input_sum_value');
         $this->getWidget('vci_complement_dr')->setAttribute('class', $this->getWidget('vci_complement_dr')->getAttribute('class').' input_sum_value');
 
-        if($this->getObject()->vci_stock_initial > 0) {
+        if($this->getObject()->hasVci(true)) {
             $this->getWidget('has_stock_vci')->setAttribute('readonly', 'readonly');
         }
 
@@ -93,10 +93,12 @@ x            'superficie_revendique' => 'Superficie revendiqué (ares):',
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
 
-        if($values['has_stock_vci'] && $this->getObject()->vci_stock_initial === null) {
+        if($values['has_stock_vci'] && !$this->getObject()->hasVci()) {
             $this->getObject()->vci_stock_initial = 0;
-        } elseif(!$values['has_stock_vci'] && $this->getObject()->vci_stock_initial === 0) {
-            $this->getObject()->vci_stock_initial = null;
+        }
+        if(!$values['has_stock_vci']) {
+        	$this->getObject()->vci_stock_initial = null;
+        	$this->getObject()->vci_stock_final = null;
         }
     }
 

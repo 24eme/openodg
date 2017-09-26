@@ -42,7 +42,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <tr>
                 <th class="text-center col-xs-3"></th>
                 <th colspan="4" class="text-center info">Déclaration de Récolte</th>
-                <th colspan="3" class="text-center">Déclaration de Revendication</th>
+                <th colspan="4" class="text-center">Déclaration de Revendication</th>
                 <th class="text-center col-xs-1">VCI</th>
             </tr>
             <?php endif; ?>
