@@ -28,7 +28,7 @@ class SocieteRouting {
             'action' => 'contactChosen')));
 
 
-        $r->prependRoute('societe_choose', new SocieteRoute('/societe/:identifiant/espace', array('module' => 'societe',
+        $r->prependRoute('societe_choose', new SocieteCompteRoute('/societe/:identifiant/espace', array('module' => 'societe',
             'action' => 'monEspace'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')
         ));
@@ -44,39 +44,39 @@ class SocieteRouting {
             'action' => 'societeNew')));
 
 
-        $r->prependRoute('societe_modification', new SocieteRoute('/societe/:identifiant/modification', array('module' => 'societe',
+        $r->prependRoute('societe_modification', new SocieteCompteRoute('/societe/:identifiant/modification', array('module' => 'societe',
             'action' => 'modification'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')
         ));
 
-        $r->prependRoute('societe_annulation', new SocieteRoute('/societe/:identifiant/annulation', array('module' => 'societe',
+        $r->prependRoute('societe_annulation', new SocieteCompteRoute('/societe/:identifiant/annulation', array('module' => 'societe',
             'action' => 'annulation'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')
         ));
 
 
-        $r->prependRoute('societe_visualisation', new SocieteRoute('/societe/:identifiant/visualisation', array('module' => 'societe',
+        $r->prependRoute('societe_visualisation', new SocieteCompteRoute('/societe/:identifiant/visualisation', array('module' => 'societe',
             'action' => 'visualisation'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')
         ));
 
-        $r->prependRoute('societe_addContact', new SocieteRoute('/societe/:identifiant/ajout-contact', array('module' => 'societe',
+        $r->prependRoute('societe_addContact', new SocieteCompteRoute('/societe/:identifiant/ajout-contact', array('module' => 'societe',
             'action' => 'addContact'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')
         ));
 
 
-        $r->prependRoute('societe_addEnseigne', new SocieteRoute('/societe/:identifiant/ajout-enseigne', array('module' => 'societe',
+        $r->prependRoute('societe_addEnseigne', new SocieteCompteRoute('/societe/:identifiant/ajout-enseigne', array('module' => 'societe',
             'action' => 'addEnseigne'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')
         ));
 
-          $r->prependRoute('societe_switch_statut', new SocieteRoute('/societe/:identifiant/switchStatus', array('module' => 'societe',
+          $r->prependRoute('societe_switch_statut', new SocieteCompteRoute('/societe/:identifiant/switchStatus', array('module' => 'societe',
             'action' => 'switchStatus'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')
         ));
 
-        
+
         $r->prependRoute('societe_upload', new sfRoute('/societe/upload-csv-rgt-en-attente', array('module' => 'societe',
             'action' => 'upload')));
 

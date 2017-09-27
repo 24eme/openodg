@@ -11,6 +11,7 @@ class DRevDocuments extends BaseDRevDocuments
 	const DOC_SV12 = 'SV12';
 	const DOC_SV = 'SV';
 	const DOC_PRESSOIR = 'PRESSOIR';
+	const DOC_VCI = 'VCI';
 	
 	const STATUT_EN_ATTENTE = 'EN ATTENTE';
 	const STATUT_RECU = 'RECU';
@@ -20,7 +21,8 @@ class DRevDocuments extends BaseDRevDocuments
 		self::DOC_SV11 => 'SV11',
 		self::DOC_SV12 => 'SV12',
 		self::DOC_SV => 'SV11 / SV12',
-		self::DOC_PRESSOIR => 'Carnet de Pressoir'
+		self::DOC_PRESSOIR => 'Carnet de Pressoir',
+		self::DOC_VCI => 'Justificatif de destruction de VCI'
 	);
 	
 	private static $_statut_libelles = array(

@@ -13,7 +13,7 @@ class EtablissementForm extends acCouchdbObjectForm
      public function configure() {
        $this->setWidgets(array(
             "siret" => new sfWidgetFormInput(array("label" => "N° SIRET")),
-            "raison_sociale" => new sfWidgetFormInput(array("label" => "Raison Sociale")),
+            //"raison_sociale" => new sfWidgetFormInput(array("label" => "Raison Sociale")),
             "adresse" => new sfWidgetFormInput(array("label" => "Adresse")),
             "commune" => new sfWidgetFormInput(array("label" => "Commune")),
             "code_postal" => new sfWidgetFormInput(array("label" => "Code Postal")),
@@ -26,7 +26,7 @@ class EtablissementForm extends acCouchdbObjectForm
 
         $this->setValidators(array(
             'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
-            'raison_sociale' => new sfValidatorString(array("required" => false)),
+            //'raison_sociale' => new sfValidatorString(array("required" => false)),
             'adresse' => new sfValidatorString(array("required" => false)),
             'commune' => new sfValidatorString(array("required" => false)),
             'code_postal' => new sfValidatorString(array("required" => false)),

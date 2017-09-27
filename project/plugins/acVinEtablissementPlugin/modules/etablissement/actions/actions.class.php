@@ -39,9 +39,22 @@ class etablissementActions extends sfCredentialActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->societe = $this->etablissement->getSociete();
         $this->contact = $this->etablissement->getContact();
+        $this->contact->updateCoordonneesLongLat();
+        $this->interlocuteurs = array();
+
+        foreach(SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true) as $interlocuteur) {
+            if(!$interlocuteur) {
+                continue;
+            }
+            if ($interlocuteur->isSocieteContact() || $interlocuteur->isEtablissementContact()) {
+                continue;
+            }
+            $this->interlocuteurs[$interlocuteur->_id] = $interlocuteur;
+        }
+
         $this->applyRights();
 
-        $this->redirect($this->generateUrl('societe_visualisation', array('sf_subject' => $this->etablissement->getSociete(), 'etablissement' => $this->etablissement->_id)) . '#' . $this->etablissement->_id);
+        //$this->redirect('etablissement_visualisation', array('sf_subject' => $this->etablissement));
     }
 
      public function executeSwitchStatus(sfWebRequest $request) {

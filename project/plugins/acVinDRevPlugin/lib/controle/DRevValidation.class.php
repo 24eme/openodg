@@ -62,6 +62,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie de votre Carnet de Pressoir');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Joindre une copie de votre justificatif de destruction de VCI');
     }
 
     public function controle() {
@@ -78,6 +79,7 @@ class DRevValidation extends DocumentValidation {
             $this->controleRecolte($produit);
             $this->controleVci($produit);
         }
+        $this->controleEngagementVCI();
 
         if(!DRevConfiguration::getInstance()->hasPrelevements()) {
             return;
@@ -282,6 +284,16 @@ class DRevValidation extends DocumentValidation {
                 ($produit->superficie_revendique === null && $produit->volume_revendique !== null)) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(),       $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
+    }
+    
+    protected function controleEngagementVCI() {
+        if($this->document->isPapier()) {
+            return;
+        }
+        if (!$this->document->hasVciDetruit()) {
+        	return;
+        }
+        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, '');
     }
 
     protected function controleEngagementSv() {

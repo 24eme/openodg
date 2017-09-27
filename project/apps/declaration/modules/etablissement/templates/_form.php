@@ -29,6 +29,7 @@
             <?php endif; ?>
         </div>
         <div class="col-xs-7">
+        	<?php if(isset($form['raison_sociale'])): ?>
             <div class="form-group<?php if($form["raison_sociale"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["raison_sociale"]->renderError(); ?>
                 <?php echo $form["raison_sociale"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -36,6 +37,14 @@
                     <?php echo $form["raison_sociale"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <?php else: ?>
+            <div class="form-group">
+                <strong class="col-xs-4 text-right">Raison Sociale</strong>
+                <span class="col-xs-8">
+                   <?php echo $etablissement->raison_sociale; ?>
+                </span>
+            </div>
+            <?php endif; ?>
             <div class="form-group<?php if($form["adresse"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["adresse"]->renderError(); ?>
                 <?php echo $form["adresse"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>

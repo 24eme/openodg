@@ -3,11 +3,7 @@
     <ol class="breadcrumb">
         <li><a href="<?php echo url_for('societe'); ?>">Contacts</a></li>
         <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="glyphicon glyphicon-calendar"></span>&nbsp;<?php echo $societe->raison_sociale; ?></a></li>
-
-        <li class="active">
-            <strong><?php echo (!$compte->isNew()) ? $compte->nom_a_afficher : 'Nouvel interlocuteur'; ?></strong>
-        </li>
-
+        <li class="active"><a href=""><?php echo (!$compte->isNew()) ? $compte->nom_a_afficher : 'Nouvel interlocuteur'; ?></a></li>
     </ol>
     <!-- #contacts -->
     <section id="contacts">
@@ -23,7 +19,7 @@
                         echo $compteForm->renderHiddenFields();
                         echo $compteForm->renderGlobalErrors();
                         ?>
-                       
+
                         <div class="form-group">
                             <?php echo $compteForm['civilite']->renderError(); ?>
                             <?php echo $compteForm['civilite']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -43,16 +39,16 @@
                             <?php echo $compteForm['fonction']->renderError(); ?>
                             <?php echo $compteForm['fonction']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                             <div class="col-xs-8"><?php echo $compteForm['fonction']->render(); ?></div>
-                        </div>                
+                        </div>
                         <div class="form-group">
                             <?php echo $compteForm['commentaire']->renderError(); ?>
                             <?php echo $compteForm['commentaire']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                             <div class="col-xs-8"><?php echo $compteForm['commentaire']->render(); ?></div>
-                        </div> 
+                        </div>
                     </div>
                 </div>
 
-               
+
                 <?php include_partial('compte/modificationCoordonnee', array('compteForm' => $compteForm, 'compteSociete' => $compte->getSociete()->getMasterCompte())) ?>
 
                 <div class="col-xs-6">
@@ -95,4 +91,4 @@ slot('colButtons');
 </div>
 <?php
 end_slot();
-?> 
+?>

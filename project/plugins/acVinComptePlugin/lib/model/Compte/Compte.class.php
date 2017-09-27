@@ -7,6 +7,8 @@
 class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     private $societe = NULL;
+    protected $lon = null;
+    protected $lat = null;
 
     public function constructId() {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
@@ -499,5 +501,86 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     public function getFax() {
         return $this->_get('fax');
     }
+
+    public function calculCoordonnees($adresse, $commune, $code_postal) {
+        $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
+        if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
+            return false;
+        }
+        $url = sfConfig::get('app_osm_url_search').'?q='.urlencode($adresse." ".$commune." ".$code_postal);
+        $file = file_get_contents($url);
+        $result = json_decode($file);
+        if(!count($result)){
+            return false;
+        }
+        if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
+            //echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
+        }
+        return array("lat" => $result->response->docs[0]->lat, "lon" => $result->response->docs[0]->lng);
+    }
+
+    public function updateCoordonneesLongLatByNoeud($noeud) {
+        $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
+        if(!$coordonnees) {
+            return false;
+        }
+        $noeud->lon = $coordonnees["lon"];
+        $noeud->lat = $coordonnees["lat"];
+        return true;
+    }
+
+    public function updateCoordonneesLongLat() {
+        $this->updateCoordonneesLongLatByNoeud($this);
+        if(!$this->exist('chais')) {
+
+            return true;
+        }
+        foreach($this->chais as $chai) {
+            if($chai->adresse == $this->adresse && $chai->commune == $this->commune) {
+                $chai->lon = $this->lon;
+                $chai->lat = $this->lat;
+                continue;
+            }
+            $this->updateCoordonneesLongLatByNoeud($chai);
+        }
+        return true;
+    }
+
+    public function getCoordonneesLatLon() {
+        $points = array();
+        if($this->lat && $this->lon) {
+            $points[$this->lat.$this->lon] = array($this->lat, $this->lon);
+        }
+        if(!$this->exist('chais')) {
+
+            return $points;
+        }
+        foreach($this->chais as $chai) {
+            if(!$chai->lat && $chai->lon) {
+                continue;
+            }
+            $points[$chai->lat.$chai->lon] = array($chai->lat, $chai->lon);
+        }
+        return $points;
+    }
+
+    public function getLon() {
+
+        return $this->lon;
+    }
+
+    public function setLon($lon) {
+        $this->lon = $lon;
+    }
+
+    public function getLat() {
+
+        return $this->lat;
+    }
+
+    public function setLat($lat) {
+        $this->lat = $lat;
+    }
+
 
 }

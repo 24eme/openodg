@@ -220,6 +220,10 @@ class DRevProduit extends BaseDRevProduit
 		}
 		return ($this->vci_stock_initial !== null || $this->vci_destruction !== null || $this->vci_complement_dr !== null || $this->vci_substitution !== null || $this->vci_rafraichi !== null || $this->vci !== null);
 	}
+	
+	public function hasVciDetruit() {
+		return ($this->vci_destruction && $this->vci_destruction > 0)? true : false;
+	}
 
     public function isActive()
     {

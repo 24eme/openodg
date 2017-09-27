@@ -1,9 +1,13 @@
 body {
-    background: #eadfcf;
+    background: #fff;
 }
 
 #header {
-    background: url(../images/bg/bg_rhone.jpg) #fff;
+    background: #f8f8f8;
+}
+
+#menu_navigation {
+    margin-bottom: 0;
 }
 
 #menu_navigation .container {
@@ -13,24 +17,28 @@ body {
 
 #menu_navigation ul.navbar-nav li a {
     font-size: 17px;
-    color: #7f0048;
+    color: #9f0038;
 }
 
 #menu_navigation ul.navbar-nav li#nav_item_operateur.disabled {
     opacity: 0.3;
 }
 
+#menu_navigation ul.navbar-nav li a {
+    /*border-top: 6px solid #f4ecf1;*/
+}
+
 #menu_navigation ul.navbar-nav li.active a {
     background: #fff !important;
-    border-bottom: 4px solid #7f0048;
+    border-bottom: 6px solid #9f0038;
 }
 
 a, .btn-link {
-    color: #7f0048;
+    color: #9f0038;
 }
 
 a:hover {
-    color: #802847;
+    color: #80002d;
 }
 
 #header .container {
@@ -74,48 +82,49 @@ h3 {
 
 .breadcrumb {
     background: #fdf9fa;
+    border: 1px solid #ffe9ef;
 }
 
 .btn-primary {
-    background: #7f0048;
-    border-color: #7f0048;
+    background: #9f0038;
+    border-color: #9f0038;
 }
 
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
-    background: #66003a;
-    border-color: #66003a;
+    background: #82002e;
+    border-color: #82002e;
 }
 .panel-primary {
-    border-color: #7f0048;
+    border-color: #9f0038;
 }
 .panel-primary .panel-heading {
-    border-color: #7f0048;
-    background: #7f0048;
+    border-color: #9f0038;
+    background: #9f0038;
 }
 
 .nav-step {
     background: #fff;
     border: none;
     counter-reset: steps;
-    border-bottom: 1px solid #7f0048;
+    border-bottom: 1px solid #80002d;
     font-size: 14px;
 }
 
 .nav-step ul.navbar-nav li, .nav-step ul.navbar-nav li:hover {
-    background: #a46187;
-    border-top: 1px solid #7f0048;
+    background: #c36d7f ;
+    border-top: 1px solid #80002d;
     position: relative;
     top: 1px;
     color: #fff;
 }
 
 .nav-step ul.navbar-nav li {
-    border-right: 1px solid #7f0048;
-    border-bottom: 1px solid #7f0048;
+    border-right: 1px solid #80002d;
+    border-bottom: 1px solid #80002d;
 }
 
 .nav-step ul.navbar-nav li:first-child {
-    border-left: 1px solid #7f0048;
+    border-left: 1px solid #80002d;
 }
 
 .nav-step ul.navbar-nav li a, .nav-step ul.navbar-nav li a:hover {
@@ -125,7 +134,7 @@ h3 {
 
 .nav-step ul.navbar-nav li.active a, .nav-step ul.navbar-nav li.active a:hover {
     background: #fff;
-    color: #6b453c;
+    color: #80002d;
 }
 
 .nav-step ul.navbar-nav li.active {
@@ -147,8 +156,8 @@ h3 {
 }
 
 .nav-step ul.navbar-nav li.disabled a, .nav-step ul.navbar-nav li.disabled a:hover {
-    color: #9a5b7f;
-    background: #c694b0;
+    color: #9a4b58;
+    background: #d7afb6;
     opacity: 0.9;
 }
 

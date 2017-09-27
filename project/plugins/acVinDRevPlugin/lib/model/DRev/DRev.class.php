@@ -529,7 +529,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function devalidate() {
         $this->validation = null;
         $this->validation_odg = null;
-        $this->add('etape', null);
+        $this->etape = null;
     }
 
     public function validateOdg($date = null) {
@@ -813,6 +813,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($this->declaration->getProduits() as $key => $produit) {
             $produit->volume_revendique_avec_vci = ((float) $produit->volume_revendique_sans_vci) + ((float) $produit->vci_complement_dr);
         }
+	}
+	
+	public function hasVciDetruit()
+	{
+		return $this->declaration->hasVciDetruit();
 	}
 
     /*

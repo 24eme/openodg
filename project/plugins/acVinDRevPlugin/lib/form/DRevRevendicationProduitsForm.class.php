@@ -12,7 +12,7 @@ class DRevRevendicationProduitsForm extends sfForm
    	public function configure()
     {
         foreach ($this->produits as $hash => $produit) {
-            $form = new DRevRevendicationProduitForm($produit);
+            $form = new DRevRevendicationProduitForm($produit, $this->getOptions());
             $this->embedForm($hash, $form);
         }
 
