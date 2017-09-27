@@ -96,7 +96,7 @@
                             <?php if ($etablissement->telephone_bureau) : ?>
                                 <div class="row">
                                     <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
-                                        Tél. bureau :
+                                        Tél.&nbsp;bureau&nbsp;:
                                     </div>
                                     <div style="margin-bottom: 5px" class="col-xs-9"><a href="callto:<?php echo $etablissement->telephone_bureau; ?>"><?php echo $etablissement->telephone_bureau; ?></a>
                                     </div>
@@ -115,7 +115,7 @@
                             <?php if ($etablissement->fax) : ?>
                                 <div class="row">
                                     <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
-                                        Fax :
+                                        Fax&nbsp;:
                                     </div>
                                     <div style="margin-bottom: 5px" class="col-xs-9">
                                         <a href="callto:<?php echo $etablissement->fax; ?>"><?php echo $etablissement->fax; ?></a>
@@ -125,7 +125,7 @@
                             <?php if ($etablissement->exist('site_internet') && $etablissement->site_internet) : ?>
                                 <div class="row">
                                     <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
-                                        Site Internet :
+                                        Site&nbsp;Internet&nbsp;:
                                     </div>
                                     <div style="margin-bottom: 5px" class="col-xs-9">
                                         <a href="<?php echo $etablissement->site_internet; ?>"><?php echo $etablissement->site_internet; ?></a>

@@ -461,7 +461,7 @@
             for (point_key in points) {
                 L.marker(points[point_key]).addTo(map);
             }
-            map.fitBounds(points, {padding: [10, 10], maxZoom: 13});
+            map.fitBounds(points, {padding: [10, 10], maxZoom: 12});
         });
     };
 
