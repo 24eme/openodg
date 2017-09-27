@@ -451,11 +451,12 @@
     $.initCarte = function ()
     {
         $('.carte').each(function () {
-            var map = L.map($(this).attr('id'), {minZoom: 6, zoom: 10, }).setView([48.100901, 7.361051], 9);
-            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            var map = L.map($(this).get(0), {minZoom: 6, zoom: 10, }).setView([46.9217784, 2.4344831], 1);
+            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
-                attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
+
             var points = JSON.parse($(this).attr('data-point'));
             for (point_key in points) {
                 L.marker(points[point_key]).addTo(map);

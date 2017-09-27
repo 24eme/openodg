@@ -162,12 +162,13 @@
         </div>
     </div>
     <div class="col-xs-4">
-        <div class="panel panel-default">
+        <div class="panel panel-default" style="margin-bottom: 10px;">
             <div class="panel-heading"><h3 class="panel-title">Société</h3></div>
             <div class="panel-body">
                 <?php include_partial('compte/visualisationBloc', array('compte' => $societe->getContact(), 'societe' => $societe, 'forceCoordonnee' => true, 'lead' => true)); ?>
             </div>
         </div>
+        <div class="carte" data-point='<?php echo json_encode(array_values($contact->getRawValue()->getCoordonneesLatLon())) ?>'  style="height: 180px; border-radius: 4px; margin-bottom: 10px;"></div>
         <div class="panel panel-default">
             <div class="panel-heading"><h3 class="panel-title">Contacts</h3></div>
             <div class="list-group">

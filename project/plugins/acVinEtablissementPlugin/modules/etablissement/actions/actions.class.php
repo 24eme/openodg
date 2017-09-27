@@ -39,6 +39,7 @@ class etablissementActions extends sfCredentialActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->societe = $this->etablissement->getSociete();
         $this->contact = $this->etablissement->getContact();
+        $this->contact->updateCoordonneesLongLat();
         $this->interlocuteurs = SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true);
         $this->applyRights();
 
