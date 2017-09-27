@@ -24,7 +24,7 @@ class DRevRevendicationProduitDRForm extends acCouchdbObjectForm {
             'volume_sur_place' => new sfValidatorNumber(array('required' => false)),
         ));
         
-        if ($this->getOption('disabled_dr')) {
+        if ($this->getOption('disabled_dr') && ($this->getObject()->superficie_total || $this->getObject()->volume_total || $this->getObject()->recolte_nette || $this->getObject()->volume_sur_place)) {
         	$this->getWidget('superficie_total')->setAttribute('readonly', 'readonly');
         	$this->getWidget('volume_total')->setAttribute('readonly', 'readonly');
         	$this->getWidget('recolte_nette')->setAttribute('readonly', 'readonly');
