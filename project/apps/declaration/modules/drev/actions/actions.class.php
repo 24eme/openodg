@@ -89,7 +89,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if (!$this->drev->hasDR()) {
-        	$this->form = new DRevUploadDrForm(DRClient::getInstance()->createDoc($this->drev->identifiant), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
+        	$this->form = new DRevUploadDrForm(DRClient::getInstance()->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
         } else {
         	$this->form = null;
         }
@@ -247,14 +247,14 @@ class drevActions extends sfActions {
             $this->drev->save();
         }
 
-        if ($this->drev->isNonRecoltant()) {
+        /*if ($this->drev->isNonRecoltant()) {
             if (!count($this->drev->declaration->getAppellations())) {
 
                 return $this->redirect('drev_revendication_recapitulatif', $this->drev);
             }
 
             return $this->redirect('drev_revendication_cepage', $this->drev->declaration->getAppellations()->getFirst());
-        }
+        }*/
 
         $this->appellation = false;
         if ($request->getParameter(('appellation'))) {
