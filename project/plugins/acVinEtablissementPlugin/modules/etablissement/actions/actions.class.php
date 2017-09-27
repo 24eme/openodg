@@ -39,9 +39,10 @@ class etablissementActions extends sfCredentialActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->societe = $this->etablissement->getSociete();
         $this->contact = $this->etablissement->getContact();
+        $this->interlocuteurs = SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true);
         $this->applyRights();
 
-        $this->redirect($this->generateUrl('societe_visualisation', array('sf_subject' => $this->etablissement->getSociete(), 'etablissement' => $this->etablissement->_id)) . '#' . $this->etablissement->_id);
+        //$this->redirect('etablissement_visualisation', array('sf_subject' => $this->etablissement));
     }
 
      public function executeSwitchStatus(sfWebRequest $request) {

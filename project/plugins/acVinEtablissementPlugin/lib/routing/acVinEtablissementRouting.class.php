@@ -22,15 +22,15 @@ class acVinEtablissementRouting {
             'action' => 'ajout'), array('sf_method' => array('get', 'post')), array('model' => 'Societe',
             'type' => 'object')));
 
-        $r->prependRoute('etablissement_modification', new EtablissementRoute('/etablissement/:identifiant/modification', array('module' => 'etablissement',
+        $r->prependRoute('etablissement_modification', new EtablissementCompteRoute('/etablissement/:identifiant/modification', array('module' => 'etablissement',
             'action' => 'modification'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')));
 
-        $r->prependRoute('etablissement_visualisation', new EtablissementRoute('/etablissement/:identifiant/visualisation', array('module' => 'etablissement',
+        $r->prependRoute('etablissement_visualisation', new EtablissementCompteRoute('/etablissement/:identifiant/visualisation', array('module' => 'etablissement',
             'action' => 'visualisation'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')));
 
-        $r->prependRoute('etablissement_switch_statut', new EtablissementRoute('/etablissement/:identifiant/switchStatus', array('module' => 'etablissement',
+        $r->prependRoute('etablissement_switch_statut', new EtablissementCompteRoute('/etablissement/:identifiant/switchStatus', array('module' => 'etablissement',
             'action' => 'switchStatus'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')
         ));

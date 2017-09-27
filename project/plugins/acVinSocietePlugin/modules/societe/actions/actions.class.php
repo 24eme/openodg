@@ -131,6 +131,12 @@ class societeActions extends sfCredentialActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->societe = $this->getRoute()->getSociete();
         $this->etablissements = $this->societe->getEtablissementsObj();
+
+        if(count($this->etablissements) == 1) {
+
+            return $this->redirect('etablissement_visualisation', $this->societe->getEtablissementPrincipal());
+        }
+
         $this->interlocuteurs = SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true);
 
         if($request->getParameter('etablissement')) {
