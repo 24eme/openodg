@@ -1,6 +1,5 @@
 <?php use_helper('Date'); ?>
 <?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation )); ?>
-<?php  $nbActivites = count(HabilitationClient::$activites_libelles); ?>
 <div class="page-header no-border">
     <h2>Habilitations</h2>
 </div>
@@ -13,7 +12,6 @@
 <?php endif; ?>
     <p>Veuillez saisir les données par appellations</p>
 
-
     <table class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
             <tr>
@@ -21,31 +19,34 @@
                 <th class="col-xs-3">Activités</th>
                 <th class="text-center col-xs-2">Statut</th>
                 <th class="text-center col-xs-3">Commentaire</th>
-                <th class="text-center col-xs-1"></th>
+                <th class="text-center col-xs-1"><span class="open-button glyphicon glyphicon-chevron-right" style="cursor: pointer;" ></span></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($habilitation->getProduits() as $key => $produitAppellation):
               $first = true;
               $hasHabilitations = $produitAppellation->hasHabilitations();
+              $nbActivites = $produitAppellation->nbActivites();
                 foreach ($produitAppellation->activites as $keyActivite => $habilitationsNode):
+                  $rowDisplayed = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
+                  $color = ($habilitationsNode->isHabilite())?  'bg-success' :'';
+                  $color = (!$color && $habilitationsNode->isRefus())? 'bg-danger' : $color;
+
                 ?>
-                <tr <?php echo ($hasHabilitations)? '' : 'style="display:none;"' ?> class="tr-open " data-id="<?php echo $produitAppellation->getHash(); ?>" >
+                <tr>
                   <?php if($first): ?>
-                    <td rowspan="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong><span data-id="<?php echo $produitAppellation->getHash(); ?>" class="close-button pull-right glyphicon glyphicon-chevron-down" style="cursor: pointer;" ></span></td>
+                    <td rowspan="<?php echo count(HabilitationClient::$activites_libelles); ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
                   <?php endif; $first = false; ?>
-                      <td class="<?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><strong><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></strong></td>
-                      <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut]." <br/>".format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
-                      <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
-                      <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?> col-xs-1">
+                      <td class="<?php echo $color; ?>" ><strong><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></strong></td>
+                      <td  class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut]." <br/>".format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?>
+                      </td>
+                      <td  class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?>
+                      </td>
+                      <td  class="text-center <?php echo $color; ?> col-xs-1">
                         <a class="btn btn-sm btn-default" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                       </td>
                 </tr>
               <?php endforeach; ?>
-              <tr <?php echo (!$hasHabilitations)? '' : 'style="display:none;"' ?> data-id="<?php echo $produitAppellation->getHash(); ?>" class="tr-collapsed" >
-                  <td><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong><span data-id="<?php echo $produitAppellation->getHash(); ?>" class="open-button pull-right glyphicon glyphicon-chevron-right" style="cursor: pointer;" ></span></td>
-                  <td colspan="4" class="text-center" ><spanstyle="font-style: italic">Aucune habilitations</span></td>
-              </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
