@@ -39,7 +39,7 @@
                 <?php if ($compte->email) : ?>
                     <div class="row">
                         <div class="col-xs-3">
-                            Email :
+                            Email&nbsp;:
                         </div>
                         <div class="col-xs-9">
                             <a href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
@@ -49,7 +49,7 @@
                 <?php if ($compte->telephone_perso) : ?>
                     <div class="row">
                         <div class="col-xs-3">
-                            Tél. perso :
+                            Tél.&nbsp;perso&nbsp;:
                         </div>
                         <div class="col-xs-9">
                             <a href="callto:<?php echo $compte->telephone_perso; ?>"><?php echo $compte->telephone_perso; ?></a>
@@ -59,7 +59,7 @@
                 <?php if ($compte->telephone_bureau) : ?>
                     <div class="row">
                         <div class="col-xs-3">
-                            Tél. bureau :
+                            Tél.&nbsp;bureau&nbsp;:
                         </div>
                         <div class="col-xs-9"><a href="callto:<?php echo $compte->telephone_bureau; ?>"><?php echo $compte->telephone_bureau; ?></a>
                         </div>
@@ -78,7 +78,7 @@
                 <?php if ($compte->fax) : ?>
                     <div class="row">
                         <div class="col-xs-3">
-                            Fax :
+                            Fax&nbsp;:
                         </div>
                         <div class="col-xs-9">
                             <a href="callto:<?php echo $compte->fax; ?>"><?php echo $compte->fax; ?></a>
@@ -88,7 +88,7 @@
                 <?php if ($compte->exist('site_internet') && $compte->site_internet) : ?>
                     <div class="row">
                         <div class="col-xs-3">
-                            Site Internet :
+                            Site&nbsp;Internet&nbsp;:
                         </div>
                         <div class="col-xs-9">
                             <a href="<?php echo $compte->site_internet; ?>"><?php echo $compte->site_internet; ?></a>
