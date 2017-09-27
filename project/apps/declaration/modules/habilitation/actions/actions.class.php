@@ -16,7 +16,6 @@ class habilitationActions extends sfActions {
 
       $this->form->bind($request->getParameter($this->form->getName()));
 
-      var_dump($this->form->getValue('etablissement')); exit;
       if(!$this->form->isValid()) {
 
           return sfView::SUCCESS;
@@ -37,8 +36,14 @@ class habilitationActions extends sfActions {
   }
 
   public function executeDeclarant(sfWebRequest $request) {
-      $this->etablissement = $this->getRoute()->getEtablissement();
-      $this->habilitationsHistory = HabilitationClient::getInstance()->getHistory($this->etablissement->identifiant);
+      $etablissement = $this->getRoute()->getEtablissement();
+      $habilitationsHistory = HabilitationClient::getInstance()->getHistory($etablissement->identifiant);
+      if (!count($habilitationsHistory)) {
+        return $this->redirect('habilitation_create', array('sf_subject' => $etablissement));
+      }
+      foreach ($habilitationsHistory as $h) {
+      }
+      return $this->redirect('habilitation_edition', array('id' => $h->_id));
   }
 
     public function executeCreate(sfWebRequest $request) {
@@ -49,19 +54,6 @@ class habilitationActions extends sfActions {
 
         return $this->redirect('habilitation_edition', $habilitation);
     }
-
-
-    public function executeDelete(sfWebRequest $request) {
-        $habilitation = $this->getRoute()->getHabilitation();
-        $etablissement = $habilitation->getEtablissementObject();
-        $this->secure(HabilitationSecurity::EDITION, $habilitation);
-
-        $habilitation->delete();
-        $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
-
-        return $this->redirect('declaration_etablissement', $etablissement);
-    }
-
 
     public function executeAjoutProduit(sfWebRequest $request) {
         $habilitation = $this->getRoute()->getHabilitation();
@@ -135,105 +127,6 @@ class habilitationActions extends sfActions {
 
         return $this->redirect('habilitation_validation', $this->habilitation);
     }
-
-    public function executeValidation(sfWebRequest $request) {
-        $this->habilitation = $this->getRoute()->getHabilitation();
-
-        $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
-
-        $this->habilitation->save();
-
-        $this->habilitation->cleanDoc();
-        $this->validation = new HabilitationValidation($this->habilitation);
-        $this->form = new HabilitationValidationForm($this->habilitation);
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
-        }
-
-        if (!$this->validation->isValide()) {
-
-            return sfView::SUCCESS;
-        }
-
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-
-
-        $this->habilitation->save();
-
-        if($this->getUser()->isAdmin()) {
-            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
-
-            return $this->redirect('Habilitation_visualisation', $this->habilitation);
-        }
-    }
-
-    public function executeVisualisation(sfWebRequest $request) {
-        $this->habilitation = $this->getRoute()->getHabilitation();
-        $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
-
-        $this->service = $request->getParameter('service');
-
-
-        if($this->getUser()->isAdmin() && $this->habilitation->validation && !$this->habilitation) {
-            $this->validation = new HabilitationValidation($this->habilitation);
-        }
-
-        $this->form = null;
-
-        if (!$request->isMethod(sfWebRequest::POST)) {
-
-            return sfView::SUCCESS;
-        }
-        $this->form->bind($request->getParameter($this->form->getName()));
-
-        if (!$this->form->isValid()) {
-
-            return sfView::SUCCESS;
-        }
-
-        $this->form->save();
-
-        return $this->redirect('habilitation_visualisation', $this->habilitation);
-    }
-
-    public function executeModificative(sfWebRequest $request) {
-        $habilitation = $this->getRoute()->getHabilitation();
-
-        $habilitation_modificative = $habilitation->generateModificative();
-        $habilitation_modificative->save();
-
-        return $this->redirect('habilitation_edition', $habilitation_modificative);
-    }
-
-    public function executePDF(sfWebRequest $request) {
-        $habilitation = $this->getRoute()->getHabilitation();
-        $this->secure(HabilitationSecurity::VISUALISATION, $habilitation);
-
-        if (!$habilitation->validation) {
-            $habilitation->cleanDoc();
-        }
-
-        $this->document = new ExportHabilitationPdf($habilitation, $this->getRequestParameter('output', 'pdf'), false);
-        $this->document->setPartialFunction(array($this, 'getPartial'));
-
-        if ($request->getParameter('force')) {
-            $this->document->removeCache();
-        }
-
-        $this->document->generate();
-
-        $this->document->addHeaders($this->getResponse());
-
-        return $this->renderText($this->document->output());
-    }
-
 
     protected function secure($droits, $doc) {
         if (!HabilitationSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
