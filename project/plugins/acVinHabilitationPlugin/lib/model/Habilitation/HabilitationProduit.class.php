@@ -59,6 +59,16 @@ class HabilitationProduit extends BaseHabilitationProduit {
         return KeyInflector::slugify($this->getHash());
     }
 
+    public function nbActivites(){
+      $cpt = 0;
+      foreach ($this->activites as $key => $activite) {
+        if($activite->hasStatut()){
+          $cpt++;
+        }
+      }
+      return $cpt;
+    }
+
 
     public function hasHabilitations(){
       foreach ($this->activites as $key => $activite) {
