@@ -514,7 +514,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return false;
         }
         if(KeyInflector::slugify($result->response->docs[0]->commune) != KeyInflector::slugify($commune)) {
-            echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
+            //echo sprintf("WARNING;Commune différent %s / %s;%s\n", $result->response->docs[0]->commune, $commune, $this->_id);
         }
         return array("lat" => $result->response->docs[0]->lat, "lon" => $result->response->docs[0]->lng);
     }
