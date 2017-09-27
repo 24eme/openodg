@@ -1,5 +1,5 @@
 <?php
-class HabilitationCepageAjoutProduitForm extends acCouchdbObjectForm
+class HabilitationAjoutProduitForm extends acCouchdbObjectForm
 {
     protected $produits;
 
@@ -29,13 +29,16 @@ class HabilitationCepageAjoutProduitForm extends acCouchdbObjectForm
     public function getProduits()
     {
         if (!$this->produits) {
-            $produits = $this->getObject()->getConfiguration()->getProduits();
             $doc = $this->getObject()->getDocument();
-            foreach ($produits as $produit) {
-                if ($this->getObject()->exist($produit->getHash())) {
+
+            foreach ($this->getObject()->getConfiguration()->getProduits() as $produit) {
+                if($produit->getNodeCahierDesCharges()){
+                  $produitAppellation = $produit->getNodeCahierDesCharges();
+                  if ($this->getObject()->exist($produitAppellation->getHash())) {
                     continue;
+                  }
+                  $this->produits[$produitAppellation->getHash()] = $produitAppellation->getLibelleComplet();
                 }
-                $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
 
