@@ -4,6 +4,7 @@
    "declaration": {
        "certifications": {
            "AOP": {
+               "format_libelle": "%a% %m% %l% %co% %ce%",
                "libelle": "AOP",
                "genres": {
                    "TRANQ": {
@@ -1555,6 +1556,7 @@
                    },
                    "VDN": {
                        "libelle": "Vin Doux Naturel",
+                       "format_libelle": "%g% %a% %m% %l% %co% %ce%",
                        "appellations": {
                            "VDB": {
                                "libelle": "Muscat de BdVenise",

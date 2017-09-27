@@ -170,16 +170,20 @@
         </div>
         <div class="carte" data-point='<?php echo json_encode(array_values($contact->getRawValue()->getCoordonneesLatLon())) ?>'  style="height: 180px; border-radius: 4px; margin-bottom: 10px;"></div>
         <div class="panel panel-default">
-            <div class="panel-heading"><h3 class="panel-title">Contacts</h3></div>
+            <div class="panel-heading"><h3 class="panel-title">Interlocuteurs</h3></div>
+            <?php if(count($interlocuteurs)): ?>
             <div class="list-group">
-                <?php foreach ($interlocuteurs as $interlocuteurId => $compte) : ?>
-                    <?php if(!$compte): continue; endif; ?>
-                    <?php if ($compte->isSocieteContact() || $compte->isEtablissementContact()): ?><?php continue; ?><?php endif; ?>
+                <?php foreach ($interlocuteurs as $interlocuteurId => $interlorcuteur) : ?>
                     <div class="list-group-item clearfix">
-                        <?php include_partial('compte/visualisationBloc', array('compte' => $compte)); ?>
+                        <?php include_partial('compte/visualisationBloc', array('compte' => $interlorcuteur)); ?>
                     </div>
                 <?php endforeach; ?>
             </div>
+            <?php else: ?>
+            <div class="panel-body">
+                Aucun interlocuteur (<a href="<?php echo url_for('compte_ajout', array('identifiant' => $societe->identifiant)); ?>">créer un interlocuteur</a>)
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
