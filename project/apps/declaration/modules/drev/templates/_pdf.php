@@ -69,7 +69,7 @@
     <?php endforeach; ?>
 </table>
 <br /><br />
-Les produits déclarés sont du millésime du VCI.
+Les produits déclarés sont du millésime du VCI
 <?php if($drev->hasVciDetruit()): ?>
 <br /><br />
 <span style="font-family: Dejavusans">☑</span> Je m'engage à justifier le volume de VCI à détruire auprès de l'ODG
