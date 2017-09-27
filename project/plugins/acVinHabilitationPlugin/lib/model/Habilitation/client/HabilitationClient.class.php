@@ -23,14 +23,14 @@ class HabilitationClient extends acCouchdbClient {
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
                                                   self::ACTIVITE_VRAC => "Vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
-                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente à la tireuse",
+                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse",
                                                 );
-    public static $statuts_libelles = array( self::STATUT_DEMANDE_ODG => "Demande à l'ODG",
-                                               self::STATUT_DEMANDE_INAO =>  "Demande à l'INAO",
+    public static $statuts_libelles = array( self::STATUT_DEMANDE_ODG => "Demande ODG",
+                                               self::STATUT_DEMANDE_INAO =>  "Demande INAO",
                                                self::STATUT_HABILITE => "Habilité",
                                                self::STATUT_SUSPENDU => "Suspendu",
                                                self::STATUT_REFUS => "Refus",
-                                               self::STATUT_RETRAIT => "Retrait de l'habilitation");
+                                               self::STATUT_RETRAIT => "Retrait");
 
     public static function getInstance()
     {

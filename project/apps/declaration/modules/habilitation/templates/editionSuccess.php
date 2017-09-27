@@ -17,9 +17,10 @@
     <table class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
             <tr>
-                <th class="col-xs-3">Produits</th>
-                <th class="col-xs-3">Activités</th>
-                <th class="text-center col-xs-2">Statut</th>
+                <th class="col-xs-2">Produits</th>
+                <th class="col-xs-1">Activités</th>
+                <th class="text-center col-xs-1">Statut</th>
+                <th class="text-center col-xs-1">Date</th>
                 <th class="text-center col-xs-3">Commentaire</th>
                 <th class="text-center col-xs-1"></th>
             </tr>
@@ -35,7 +36,8 @@
                     <td rowspan="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong><span data-id="<?php echo $produitAppellation->getHash(); ?>" class="close-button pull-right glyphicon glyphicon-chevron-down" style="cursor: pointer;" ></span></td>
                   <?php endif; $first = false; ?>
                       <td class="<?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><strong><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></strong></td>
-                      <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut]." <br/>".format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
+                      <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
+                      <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
                       <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
                       <td class="text-center <?php echo ($habilitationsNode->isHabilite())? "table-success" : ""; ?> col-xs-1">
                         <a class="btn btn-sm btn-default" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
