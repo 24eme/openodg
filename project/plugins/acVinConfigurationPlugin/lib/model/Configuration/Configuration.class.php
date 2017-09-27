@@ -156,7 +156,9 @@ class Configuration extends BaseConfiguration {
     public function findProductByCodeDouane($code_douane) {
         $produitsByCodeDouane = array();
         foreach($this->getProduits() as $produit) {
-            $produitsByCodeDouane[$produit->code_douane] = $produit;
+        	if ($produit->code_douane) {
+            	$produitsByCodeDouane[$produit->code_douane] = $produit;
+        	}
         }
         krsort($produitsByCodeDouane);
         foreach($produitsByCodeDouane as $produit) {

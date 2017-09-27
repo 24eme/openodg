@@ -30,7 +30,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         			$commune = $m[1];
         		}
         		if (preg_match('/r.+capitulatif par apporteur pour l\'evv[\s]*(.*)$/i', $values[0], $m)) {
-        			$rs = $m[1];
+        			$rs = "\"".html_entity_decode($m[1])."\"";
         		}
         		if (isset($values[7]) && !empty($values[7]) && preg_match('/libell.+[\s]*du[\s]*produit/i', $values[7])) {
         			$libellesLigne = $values;
@@ -57,7 +57,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
                             $produit[] = self::numerizeVal($values[$v], 2);
                         }
 	        			$produit[] = $values[1];
-	        			$produit[] = $values[0];
+	        			$produit[] = "\"".html_entity_decode($values[0])."\"";
 	        			$produit[] = null;
 	        			$produit[] = $communeTiers;
 	        			$produits[] = $produit;

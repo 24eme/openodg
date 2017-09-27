@@ -1,6 +1,7 @@
 <?php
 
 class DRClient extends acCouchdbClient {
+	const TYPE_MODEL = 'DR';
     public static function getInstance()
     {
       return acCouchdbManager::getClient("DR");

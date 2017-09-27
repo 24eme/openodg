@@ -214,9 +214,11 @@ class DRevProduit extends BaseDRevProduit
 		return $this->exist('superficie_vinifiee');
 	}
 
-	public function hasVci() {
-
-		return $this->vci_stock_initial !== null;
+	public function hasVci($saisie = false) {
+		if ($saisie) {
+			return ($this->vci_stock_initial || $this->vci_destruction || $this->vci_complement_dr || $this->vci_substitution || $this->vci_rafraichi || $this->vci);
+		}
+		return ($this->vci_stock_initial !== null || $this->vci_destruction !== null || $this->vci_complement_dr !== null || $this->vci_substitution !== null || $this->vci_rafraichi !== null || $this->vci !== null);
 	}
 
     public function isActive()

@@ -28,7 +28,7 @@ for path in $TMPDIR/ODGRHONE_FICHIERS/* ; do
 	IDENTIFIANT=$(echo $path | sed 's/\.[a-zA-Z0-9]*$//g' | cut -d '-' -f 3)
 	ANNEE=$(echo $path | cut -d '-' -f 2)
 	
-	php symfony import:fichier $IDENTIFIANT $path --libelle="$TYPE $ANNEE issue de Prodouane" --papier="1" --date_depot="$ANNEE-01-01" --type="$TYPE" --annee="$ANNEE" --lien_symbolique=true --trace
+	php symfony import:fichier $IDENTIFIANT $path --libelle="$TYPE $ANNEE issue de Prodouane" --papier="1" --date_depot="$ANNEE-12-15" --type="$TYPE" --annee="$ANNEE" --lien_symbolique=true --trace
 	
 done
 

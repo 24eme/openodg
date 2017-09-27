@@ -13,6 +13,7 @@ SYMFODIR=$(pwd);
 
 LOGDATE=$SYMFODIR/$(date +%Y%m%d%H%M%S_import_data.log)
 
+if [ ! -d "$TMPDIR/ODGRHONE_IDENTITES_DATA" ]; then
 
 scp $1 $TMPDIR/ODGRHONE_IDENTITES_DATA.xml.gz
 
@@ -38,21 +39,31 @@ echo "Création des xml entités";
 ###
 ### DANS CETTE BOUCLE ON CHERCHE LES DEFINITIONS DE GROUPES
 ###
-cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | grep "<b:Groupes>" | while read xml
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | grep -E "(<b:Siret>.+</b:Siret>|<b:Evv>.+</b:Evv>)" | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
-  echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/g_$IDFIC.xml
+  echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_$IDFIC.xml
 done
 
-cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | grep -v "<b:Groupes>" | while read xml
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml  | grep -v "<b:Siret>" | grep -v "<b:Evv>" | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
-  echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/s_$IDFIC.xml
+  echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_$IDFIC.xml
 done
 
 
-echo "Création des entités";
-for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/*.xml ; do
+
+
+fi
+
+echo "Création des entités de type Sociétés (Présence d'un Evv ou d'un Siret)"
+for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_*.xml ; do
   php symfony import:entite-from-xml --trace $path
 done
-#nom num coptable et cvi + tag
+
+
+
+echo "Autres entités appartenant à des groupes de référence";
+for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_*.xml ; do
+  php symfony import:entite-from-xml --trace $path
+done

@@ -12,10 +12,12 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
 
 
-    const STATUT_ATTENTE_ODG = "STATUT_ATTENTE_ODG";
-    const STATUT_ATTENTE_INAO = "STATUT_ATTENTE_INAO";
+    const STATUT_DEMANDE_ODG = "STATUT_DEMANDE_ODG";
+    const STATUT_DEMANDE_INAO = "STATUT_DEMANDE_INAO";
     const STATUT_HABILITE = "HABILITE";
-    const STATUT_PERTE_HABILITATION = "PERTE_HABILITATION";
+    const STATUT_SUSPENDU = "SUSPENTU";
+    const STATUT_REFUS = "REFUS";
+    const STATUT_RETRAIT = "RETRAIT";
 
     public static $activites_libelles = array( self::ACTIVITE_PRODUCTEUR => "Producteur",
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
@@ -23,10 +25,12 @@ class HabilitationClient extends acCouchdbClient {
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente à la tireuse",
                                                 );
-    public static $statuts_libelles = array( self::STATUT_ATTENTE_ODG => "En attente de l'ODG",
-                                               self::STATUT_ATTENTE_INAO =>  "En attente de l'INAO",
+    public static $statuts_libelles = array( self::STATUT_DEMANDE_ODG => "En attente de l'ODG",
+                                               self::STATUT_DEMANDE_INAO =>  "En attente de l'INAO",
                                                self::STATUT_HABILITE => "Habilité",
-                                               self::STATUT_PERTE_HABILITATION => "Perte de l'habilitation");
+                                               self::STATUT_SUSPENDU => "Suspendu",
+                                               self::STATUT_REFUS => "Refus",
+                                               self::STATUT_RETRAIT => "Retrait de l'habilitation");
 
     public static function getInstance()
     {
@@ -45,7 +49,7 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function findMasterByIdentifiant($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-            $habilitations = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, self::TYPE_MODEL);
+            $habilitations = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, null, self::TYPE_MODEL);
             foreach ($habilitations as $id => $habilitation) {
 
                 return $this->find($id, $hydrate);

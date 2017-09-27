@@ -179,6 +179,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if(!$produitConfig) {
                 continue;
             }
+            
+            if (!$line[DRCsvFile::CSV_VALEUR]) {
+            	continue;
+            }
 
             $produit = $this->addProduit($produitConfig->getCouleur()->getHash());
             $produitDetail = $produit->detail;
@@ -201,7 +205,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produitDetail->vci += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             	$produit->vci = $produitDetail->vci;
             }
+            /*
+             * Preremplissage DRev
+             */
+            if ($produitDetail->volume_total && $produitDetail->volume_sur_place && $produitDetail->volume_total == $produitDetail->volume_sur_place) {
+            	$produit->volume_revendique_sans_vci = $produitDetail->recolte_nette;
+            	$produit->superficie_revendique = $produitDetail->superficie_total;
+            }
         }
+        $this->updateFromPrecedente();
+    }
+    
+    public function updateFromPrecedente()
+    {
+    	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne - 1))) {
+    		foreach ($precedente->declaration as $hash => $p) {
+    			if ($this->declaration->exist($hash)) {
+    				$produit = $this->declaration->get($hash);
+    				$produit->vci_stock_initial = $p->vci_stock_final;    				
+    			}
+    		}
+    	}
     }
 
     public function updateFromCSV($updateProduitRevendique = false, $updatePrelevements = false,  $csv = null) {
