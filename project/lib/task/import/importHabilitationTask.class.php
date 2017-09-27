@@ -139,8 +139,8 @@ EOF;
           echo "ERROR: ".$r[self::CSV_PRODUIT]." not found\n";
           continue;
         }
-        $hab_produit = $habilitation->declaration->add($this->convert_produits[$r[self::CSV_PRODUIT]]);
-        $hab_produit->add('libelle', $r[self::CSV_PRODUIT]);
+        $hab_produit = $habilitation->addProduit($this->convert_produits[$r[self::CSV_PRODUIT]]);
+        //$hab_produit->add('libelle', $r[self::CSV_PRODUIT]);
         $hab_activites = $hab_produit->add('activites');
         if ($r[self::CSV_STATUT_VINIFICATEUR]) {
           $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->add('statut', $this->convert_statut[$r[self::CSV_STATUT_VINIFICATEUR]]);
