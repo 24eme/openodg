@@ -30,7 +30,7 @@
                 foreach ($produitAppellation->activites as $keyActivite => $habilitationsNode):
                   $rowDisplayed = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
                   $color = ($habilitationsNode->isHabilite())?  'bg-success' :'';
-                  $color = (!$color && $habilitationsNode->isRefus())? 'bg-danger' : $color;
+                  $color = (!$color && $habilitationsNode->isWrongHabilitation())? 'bg-danger' : $color;
 
                 ?>
                 <tr>
@@ -42,7 +42,7 @@
                       </td>
                       <td  class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?>
                       </td>
-                      <td  class="text-center <?php echo $color; ?> col-xs-1">
+                      <td class="text-center <?php echo $color; ?> col-xs-1">
                         <a class="btn btn-sm btn-default" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                       </td>
                 </tr>
