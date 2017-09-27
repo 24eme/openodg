@@ -40,7 +40,18 @@ class etablissementActions extends sfCredentialActions {
         $this->societe = $this->etablissement->getSociete();
         $this->contact = $this->etablissement->getContact();
         $this->contact->updateCoordonneesLongLat();
-        $this->interlocuteurs = SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true);
+        $this->interlocuteurs = array();
+
+        foreach(SocieteClient::getInstance()->getInterlocuteursWithOrdre($this->societe->identifiant, true) as $interlocuteur) {
+            if(!$interlocuteur) {
+                continue;
+            }
+            if ($interlocuteur->isSocieteContact() || $interlocuteur->isEtablissementContact()) {
+                continue;
+            }
+            $this->interlocuteurs[$interlocuteur->_id] = $interlocuteur;
+        }
+
         $this->applyRights();
 
         //$this->redirect('etablissement_visualisation', array('sf_subject' => $this->etablissement));
