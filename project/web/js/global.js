@@ -749,23 +749,19 @@
 
     $.initHabilitation = function() {
       $('.open-button').click(function(){
-        var id = $(this).attr("data-id");
-        $('.tr-open[data-id="'+id+'"]').each(function(){
+
+        $('tr').each(function(){
           $(this).show();
+          $(this).children('td[data-number]').each(function(){
+            $(this).attr('rowspan',$(this).attr("data-number"));
+          });
         });
-        $('.tr-collapsed[data-id="'+id+'"]').each(function(){
+          $('tr[data-hide="1"]').each(function(){
           $(this).hide();
         });
+
       });
-      $('.close-button').click(function(){
-        var id = $(this).attr("data-id");
-        $('.tr-collapsed[data-id="'+id+'"]').each(function(){
-          $(this).show();
-        });
-        $('.tr-open[data-id="'+id+'"]').each(function(){
-          $(this).hide();
-        });
-      });
+
     }
 
     /* =================================================================================== */
