@@ -138,8 +138,8 @@
                     <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                     <?php foreach ($contact->tags as $type_tag => $selected_tags) : ?>
                         <div style="margin-bottom: 10px;" class="row">
-                            <div class="col-xs-3 text-muted"><?php echo ucfirst($type_tag) ?> :</div>
-                            <div class="col-xs-9">
+                            <div class="col-xs-2 text-muted"><?php echo ucfirst($type_tag) ?>&nbsp;:</div>
+                            <div class="col-xs-10">
                                 <?php foreach ($selected_tags as $t): ?>
                                     <?php $targs['tags'] = implode(',', array($type_tag . ':' . $t)); ?>
                                     <div class="btn-group">
