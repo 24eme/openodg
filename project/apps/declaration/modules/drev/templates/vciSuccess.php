@@ -39,22 +39,28 @@
                     <td><?php echo $formProduit['vci_substitution']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_destruction']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_rafraichi']->render(array('class' => 'form-control text-right input-float  sum_stock_final', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right input-float sum_stock_final', 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right input-float sum_stock_final', 'place  osm:
+    url_search: "http://www.ideeslibres.org/Bano/q2.php"
+    return_format: "json"holder' => "hl")) ?></td>
                     <td><input readonly="readonly" type="text" class="form-control text-right input-float stock_final" value="<?php echoFloat($produit->vci_stock_final) ?>" /></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
-    </table>
+    </table>  osm:
+    url_search: "http://www.ideeslibres.org/Bano/q2.php"
+    return_format: "json"
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+            <a href="<?php  osm:
+    url_search: "http://www.ideeslibres.org/Bano/q2.php"
+    return_format: "json" echo url_for("drev_revendication", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
         <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
-            <button id="btn-validation" type="submit" class="btn btn-primary btn-upper">Retourner à la validation <span class="glyphicon glyphicon-check"></span></button>
+            <button id="btn-validation" type="submit" class="btn btn-primary btn-upper">Valider et retourner à la validation <span class="glyphicon glyphicon-check"></span></button>
             <?php else: ?>
-            <button type="submit" class="btn btn-primary btn-upper">Continuer vers la validation</span></button>
+            <button type="submit" class="btn btn-primary btn-upper">Valider et continuer</span>  <span class="glyphicon glyphicon-chevron-right"></span></button>
         <?php endif; ?>
     </div>
     </form>
