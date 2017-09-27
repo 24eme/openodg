@@ -47,6 +47,23 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    <h3>Historique</h3>
+    <table class="table table-condensed table-bordered" id="table-history">
+      <thead>
+        <tr>
+          <th class="col-xs-1">Date</th>
+          <th class="col-xs-10">Description de la modification</th>
+          <th class="col-xs-1">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>12/08/2017</<td><td>Côtes du Rhone : statut "vignification" changé de "Habilité" à "Retrait" (MON BEAU COMMENTAIRE)</td><td class="text-center"><a href="#">Voir</a></tr>
+        <tr><td>12/05/2017</<td><td>Côtes du Rhone : statut "vignification" changé de "demande INAO" à "Habilité" (MON BEAU COMMENTAIRE)</td><td class="text-center"><a href="#">Voir</a></tr>
+        <tr><td>12/03/2017</<td><td>Côtes du Rhone : statut "vignification" changé de "demande ODG" à "demande INAO" (MON BEAU COMMENTAIRE)</td><td class="text-center"><a href="#">Voir</a></tr>
+        <tr><td>12/01/2017</<td><td>Côte Rotie : statut "vignification" activé à "demande ODG"</td><td class="text-center"><a href="#">Voir</a></tr>
+        <tr><td>12/01/2017</<td><td>Création du produit Côte Rotie</td><td class="text-center"><a href="#">Voir</a></tr>
+      </tbody>
+    </table>
     <?php if ($ajoutForm->hasProduits()): ?>
         <div class="row">
             <div class="col-xs-12">
@@ -54,6 +71,7 @@
             </div>
         </div>
     <?php endif; ?>
+
 <form role="form" class="ajaxForm" action="<?php echo url_for("habilitation_edition", $habilitation) ?>" method="post">
     <?php
     echo $editForm->renderHiddenFields();
