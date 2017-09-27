@@ -25,8 +25,8 @@ class HabilitationClient extends acCouchdbClient {
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente à la tireuse",
                                                 );
-    public static $statuts_libelles = array( self::STATUT_DEMANDE_ODG => "En attente de l'ODG",
-                                               self::STATUT_DEMANDE_INAO =>  "En attente de l'INAO",
+    public static $statuts_libelles = array( self::STATUT_DEMANDE_ODG => "Demande à l'ODG",
+                                               self::STATUT_DEMANDE_INAO =>  "Demande à l'INAO",
                                                self::STATUT_HABILITE => "Habilité",
                                                self::STATUT_SUSPENDU => "Suspendu",
                                                self::STATUT_REFUS => "Refus",

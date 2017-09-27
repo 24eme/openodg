@@ -7,7 +7,7 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <h3>Liste de l'historique des habilitations</h3>
+        <h3>Historique des habilitations de <?php echo $etablissement->getNom(); ?> (<?php echo $etablissement->getIdentifiant() ?>)</h3>
         <?php if(count($habilitationsHistory)): ?>
         <table class="table table-striped table-bordered table-condensed">
             <thead>
@@ -22,9 +22,9 @@
             <tbody>
             <?php foreach ($habilitationsHistory as $habilitation): ?>
                     <tr>
-                        <td><a href="<?php echo url_for("degustation_visualisation", array('id' => str_replace("DEGUSTATION-".$habilitation->identifiant."-", "TOURNEE-", $degustation->_id))) ?>"><?php echo format_date($habilitation->date_degustation, "P", "fr_FR") ?></a></td>
-                        <td><?php echo $prelevement->libelle; ?> <?php echo $habilitation->millesime ?><small class="text-muted"><br /><?php echo $habilitation->libelle_produit ?>  </small></td>
-                        <td>
+                        <td><a href="<?php echo url_for("habilitation_edition", array('id' => $habilitation->_id)); ?>"><?php echo format_date($habilitation->date, "P", "fr_FR") ?></a></td>
+                        <td><small class="text-muted"><br /></small></td>
+                        <td></td>
                     </tr>
             <?php endforeach; ?>
             </tbody>

@@ -747,6 +747,27 @@
         });
     }
 
+    $.initHabilitation = function() {
+      $('.open-button').click(function(){
+        var id = $(this).attr("data-id");
+        $('.tr-open[data-id="'+id+'"]').each(function(){
+          $(this).show();
+        });
+        $('.tr-collapsed[data-id="'+id+'"]').each(function(){
+          $(this).hide();
+        });
+      });
+      $('.close-button').click(function(){
+        var id = $(this).attr("data-id");
+        $('.tr-collapsed[data-id="'+id+'"]').each(function(){
+          $(this).show();
+        });
+        $('.tr-open[data-id="'+id+'"]').each(function(){
+          $(this).hide();
+        });
+      });
+    }
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -770,6 +791,7 @@
         $('input[data-toggle=tooltip]').tooltip({'trigger': 'focus', 'container': 'body'});
         $.initEqualHeight();
         $.initCheckboxBtnGroup();
+        $.initHabilitation();
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
     });
 })(jQuery);
