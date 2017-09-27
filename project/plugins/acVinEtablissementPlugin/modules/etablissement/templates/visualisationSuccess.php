@@ -180,8 +180,8 @@
                 <?php endforeach; ?>
             </div>
             <?php else: ?>
-            <div class="panel-body">
-                Aucun interlocuteur (<a href="<?php echo url_for('compte_ajout', array('identifiant' => $societe->identifiant)); ?>">créer un interlocuteur</a>)
+            <div class="panel-body text-center">
+                <span class="text-muted">Aucun interlocuteur</span><br /><br /><a href="<?php echo url_for('compte_ajout', array('identifiant' => $societe->identifiant)); ?>">Créer un interlocuteur</a>
             </div>
             <?php endif; ?>
         </div>

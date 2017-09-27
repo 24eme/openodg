@@ -62,7 +62,23 @@ class importHabilitationTask extends sfBaseTask
 EOF;
 
         $this->convert_produits = array();
-        $this->convert_produits['côtes du Rhone'] = 'certifications/AOP/genres/TRANQ/appellations/CDR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
+        //awk -F ';' '{print $9}' data/habilitation.csv | sort | uniq -c | wc -l   =====> 17
+        $this->convert_produits['Beaumes de Venise'] = 'certifications/AOP/genres/TRANQ/appellations/BEA';
+        $this->convert_produits['CAIRANNE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG';
+        //$this->convert_produits['chateau grillet'] = '';
+        $this->convert_produits['condrieu'] = 'certifications/AOP/genres/TRANQ/appellations/COD';
+        $this->convert_produits['cornas'] = 'certifications/AOP/genres/TRANQ/appellations/COR';
+        $this->convert_produits['cote rotie'] = 'certifications/AOP/genres/TRANQ/appellations/CRO';
+        $this->convert_produits['côtes du Rhone'] = 'certifications/AOP/genres/TRANQ/appellations/CDR';
+        $this->convert_produits['côtes du Rhone village'] = 'certifications/AOP/genres/TRANQ/appellations/CVG';
+        $this->convert_produits['crozes hermitage'] = 'certifications/AOP/genres/TRANQ/appellations/CRH';
+        $this->convert_produits['gigondas'] = 'certifications/AOP/genres/TRANQ/appellations/GIG';
+        $this->convert_produits['grignan les adhémar'] = 'certifications/AOP/genres/TRANQ/appellations/GLA';
+        $this->convert_produits['hermitage'] = 'certifications/AOP/genres/TRANQ/appellations/HER';
+        //$this->convert_produits['muscat de Beaumes'] = '';
+        $this->convert_produits['st joseph'] = 'certifications/AOP/genres/TRANQ/appellations/SJO';
+        $this->convert_produits['st péray'] = 'certifications/AOP/genres/TRANQ/appellations/SPT';
+        $this->convert_produits['vinsobres'] = 'certifications/AOP/genres/TRANQ/appellations/VBR';
 
         $this->convert_statut = array();
         $this->convert_statut["Demande d'habilitation"] = HabilitationClient::STATUT_DEMANDE_INAO;
@@ -123,8 +139,8 @@ EOF;
           echo "ERROR: ".$r[self::CSV_PRODUIT]." not found\n";
           continue;
         }
-        $hab_produit = $habilitation->declaration->add($this->convert_produits[$r[self::CSV_PRODUIT]]);
-        $hab_produit->add('libelle', $r[self::CSV_PRODUIT]);
+        $hab_produit = $habilitation->addProduit($this->convert_produits[$r[self::CSV_PRODUIT]]);
+        //$hab_produit->add('libelle', $r[self::CSV_PRODUIT]);
         $hab_activites = $hab_produit->add('activites');
         if ($r[self::CSV_STATUT_VINIFICATEUR]) {
           $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->add('statut', $this->convert_statut[$r[self::CSV_STATUT_VINIFICATEUR]]);
