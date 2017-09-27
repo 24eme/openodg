@@ -17,7 +17,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
   }
 
   public function isWrongHabilitation(){
-      return ($this->statut == HabilitationClient::STATUT_REFUS) ($this->statut == HabilitationClient::STATUT_RETRAIT) ($this->statut == HabilitationClient::STATUT_SUSPENDU);
+      return ($this->statut == HabilitationClient::STATUT_REFUS) || ($this->statut == HabilitationClient::STATUT_RETRAIT) || ($this->statut == HabilitationClient::STATUT_SUSPENDU);
   }
 
   public function hasStatut(){
