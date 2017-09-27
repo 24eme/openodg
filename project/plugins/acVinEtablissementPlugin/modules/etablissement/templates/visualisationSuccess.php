@@ -28,7 +28,6 @@
                 <hr style="margin-top: 10px; margin-bottom: 15px;" />
                 <div class="row">
                     <div class="col-xs-5">
-                        <h5 style="margin-bottom: 15px; margin-top: 0px;" class="text-muted"><strong>Identités</strong></h5>
                         <div class="row">
                             <?php if ($etablissement->recette_locale && $etablissement->recette_locale->nom) : ?>
                                 <div style="font-weight: bold; margin-bottom: 5px;" class="col-xs-4 text-muted">Recette locale :</div>
@@ -60,7 +59,6 @@
                             </div>
                         </div>
                         <div class="col-xs-7" style="border-left: 1px solid #eee">
-                            <h5 style="margin-bottom: 15px; margin-top: 0px;" class="text-muted"><strong>Coordonnées</strong></h5>
                             <div class="row">
                                 <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
                                     Adresse&nbsp;:
