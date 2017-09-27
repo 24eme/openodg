@@ -67,6 +67,19 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         return $produitsVci;
     }
+    
+    public function hasVciDetruit()
+    {
+    	$has = false;
+    	$produits = $this->getProduits();
+    	foreach($produits as $produit) {
+    		if($produit->hasVciDetruit()) {
+    			$has = true;
+    			break;
+    		}
+    	}
+    	return $has;
+    }
 
     public function removeVolumeRevendique() {
 

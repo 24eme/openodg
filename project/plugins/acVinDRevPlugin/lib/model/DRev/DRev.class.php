@@ -814,6 +814,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit->volume_revendique_avec_vci = ((float) $produit->volume_revendique_sans_vci) + ((float) $produit->vci_complement_dr);
         }
 	}
+	
+	public function hasVciDetruit()
+	{
+		return $this->declaration->hasVciDetruit();
+	}
 
     /*
      * Facture
