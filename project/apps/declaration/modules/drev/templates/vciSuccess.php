@@ -14,19 +14,19 @@
             <tr>
                 <th class="text-left"></th>
                 <th class="text-center col-xs-1">À utiliser</th>
-                <th class="text-center col-xs-1" colspan="4">Utilisation du stock 2016</th>
+                <th class="text-center col-xs-1" colspan="4">Utilisation du stock <?php echo $drev->campagne ?></th>
                 <th class="text-center col-xs-1">Constitué</th>
                 <th class="text-center col-xs-1">Cumul</th>
             </tr>
             <tr>
                 <th class="text-left col-xs-3">Appellation revendiquée</th>
-                <th style="position: relative;" class="text-center col-xs-1">Stock 2016<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Stock <?php echo ($drev->campagne - 1) ?><br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Complément<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Substitution<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Destruction<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Cette année<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1" >Stock 2017<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1" >Stock <?php echo $drev->campagne ?><br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody class="edit_vci">
@@ -39,22 +39,16 @@
                     <td><?php echo $formProduit['vci_substitution']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_destruction']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['vci_rafraichi']->render(array('class' => 'form-control text-right input-float  sum_stock_final', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right input-float sum_stock_final', 'place  osm:
-    url_search: "http://www.ideeslibres.org/Bano/q2.php"
-    return_format: "json"holder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right input-float sum_stock_final', 'placeholder' => "hl")) ?></td>
                     <td><input readonly="readonly" type="text" class="form-control text-right input-float stock_final" value="<?php echoFloat($produit->vci_stock_final) ?>" /></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
-    </table>  osm:
-    url_search: "http://www.ideeslibres.org/Bano/q2.php"
-    return_format: "json"
+    </table>
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
-            <a href="<?php  osm:
-    url_search: "http://www.ideeslibres.org/Bano/q2.php"
-    return_format: "json" echo url_for("drev_revendication", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+            <a href="<?php echo url_for("drev_revendication", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
         <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
