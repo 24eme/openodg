@@ -263,7 +263,7 @@ class drevActions extends sfActions {
             $this->appellation_hash = str_replace('-', '/', str_replace('-' . $this->appellation_field, '', $this->appellation));
         }
 
-        $this->form = new DRevRevendicationForm($this->drev);
+        $this->form = new DRevRevendicationForm($this->drev, array('disabled_dr' => true));
         $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));

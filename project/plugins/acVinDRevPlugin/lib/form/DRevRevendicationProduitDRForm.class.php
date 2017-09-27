@@ -23,6 +23,13 @@ class DRevRevendicationProduitDRForm extends acCouchdbObjectForm {
             'recolte_nette' => new sfValidatorNumber(array('required' => false)),
             'volume_sur_place' => new sfValidatorNumber(array('required' => false)),
         ));
+        
+        if ($this->getOption('disabled_dr')) {
+        	$this->getWidget('superficie_total')->setAttribute('readonly', 'readonly');
+        	$this->getWidget('volume_total')->setAttribute('readonly', 'readonly');
+        	$this->getWidget('recolte_nette')->setAttribute('readonly', 'readonly');
+        	$this->getWidget('volume_sur_place')->setAttribute('readonly', 'readonly');
+        }
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
