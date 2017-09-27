@@ -119,7 +119,7 @@ EOF;
           $this->searchObservationsCodifiees($nameField,$field);
           $this->searchRefGroupsProfil($nameField,$field);
         }
-
+        
         if($this->cvi  || count($this->multipleCvi) || $this->siret){
             $this->importSociete();
         }else{
@@ -206,7 +206,7 @@ EOF;
           foreach ($observationsCodifieesArray["b:Identite_ObservationCodifiee"] as $obsCodifie) {
             if(boolval((string) $obsCodifie)){
               $code = (string) $obsCodifie;
-              if(!array_key_exists($code,$this->observationsCodifieesArr) && $this->observationsCodifieesArr[$code][2]){
+              if(!array_key_exists($code,$this->observationsCodifieesArr) || !$this->observationsCodifieesArr[$code][2]){
                 //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                 continue;
               }
@@ -215,7 +215,7 @@ EOF;
               $obsCod =(array) $obsCodifie;
               if(array_key_exists("b:ObservationCodifiee",$obsCod)){
                 $code = (string) $obsCod["b:ObservationCodifiee"];
-                if(!array_key_exists($code,$this->observationsCodifieesArr) && $this->observationsCodifieesArr[$code][2]){
+                if(!array_key_exists($code,$this->observationsCodifieesArr) || !$this->observationsCodifieesArr[$code][2]){
                   //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                   continue;
                 }
@@ -299,7 +299,7 @@ EOF;
         $societe = new societe();
         $societe->identifiant = sprintf("%06d",$this->identifiant);
         if($this->cvi || count($this->multipleCvi)){
-          $societe->type_societe = "RESSORTISSANT" ;
+          $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
         }else{
           $societe->type_societe =  "AUTRE" ;
         }
