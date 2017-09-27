@@ -14,19 +14,19 @@
             <tr>
                 <th class="text-left"></th>
                 <th class="text-center col-xs-1">À utiliser</th>
-                <th class="text-center col-xs-1" colspan="4">Utilisation du stock 2016</th>
+                <th class="text-center col-xs-1" colspan="4">Utilisation du stock <?php echo $drev->campagne ?></th>
                 <th class="text-center col-xs-1">Constitué</th>
                 <th class="text-center col-xs-1">Cumul</th>
             </tr>
             <tr>
                 <th class="text-left col-xs-3">Appellation revendiquée</th>
-                <th style="position: relative;" class="text-center col-xs-1">Stock 2016<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Stock <?php echo ($drev->campagne - 1) ?><br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Complément<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Substitution<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Destruction<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Cette année<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1" >Stock 2017<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1" >Stock <?php echo $drev->campagne ?><br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody class="edit_vci">
