@@ -29,7 +29,7 @@
                 foreach ($produitAppellation->activites as $keyActivite => $habilitationsNode):
                   $rowDisplayed = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
                   $color = ($habilitationsNode->isHabilite())?  'bg-success' :'';
-                  $color = (!$color && $habilitationsNode->isRefus())? 'bg-danger' : $color;
+                  $color = (!$color && $habilitationsNode->isWrongHabilitation())? 'bg-danger' : $color;
 
                 ?>
                 <tr>

@@ -15,9 +15,9 @@ class ExportDRevPDF extends ExportPDF {
 
     public function create() {
         $this->printable_document->addPage($this->getPartial('drev/pdf', array('drev' => $this->drev)));
-        if(!is_null($this->drev->getProduitsCepageByAppellations())) {
+        /*if(!is_null($this->drev->getProduitsCepageByAppellations())) {
             $this->printable_document->addPage($this->getPartial('drev/pdfCepages', array('drev' => $this->drev)));
-        }
+        }*/
 
         if(DRevConfiguration::getInstance()->hasPrelevements()) {
             $this->printable_document->addPage($this->getPartial('drev/pdfLots', array('drev' => $this->drev)));
