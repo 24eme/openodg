@@ -27,20 +27,19 @@
               $hasHabilitations = $produitAppellation->hasHabilitations();
               $nbActivites = $produitAppellation->nbActivites();
                 foreach ($produitAppellation->activites as $keyActivite => $habilitationsNode):
-                  $rowDisplayed = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
+                  $rowDisplayed = (!$habilitationsNode->hasStatut())? '1' :'';
                   $color = ($habilitationsNode->isHabilite())?  'bg-success' :'';
                   $color = (!$color && $habilitationsNode->isWrongHabilitation())? 'bg-danger' : $color;
-
                 ?>
-                <tr>
+                <tr data-hide="<?php echo $rowDisplayed ?>" >
                   <?php if($first): ?>
-                    <td rowspan="<?php echo count(HabilitationClient::$activites_libelles); ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
+                    <td rowspan="5" data-number="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
                   <?php endif; $first = false; ?>
                       <td class="<?php echo $color; ?>" ><strong><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></strong></td>
-                      <td class="text-center <?php echo $color; ?>" ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
+                      <td class="text-center <?php echo $color; ?>" <?php $rowDisplayed ?> ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
                       <td class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
                       <td class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
-                      <td class="text-center <?php echo $color; ?> col-xs-1">
+                      <td class="text-center <?php echo $color; ?> col-xs-1" >
                         <a class="btn btn-sm btn-default" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                       </td>
                 </tr>
