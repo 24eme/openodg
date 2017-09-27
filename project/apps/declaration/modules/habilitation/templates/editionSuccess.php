@@ -10,8 +10,6 @@
 <?php if ($sf_user->hasFlash('erreur')): ?>
   <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
 <?php endif; ?>
-    <p>Veuillez saisir les données par appellations</p>
-
     <table class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
             <tr>
@@ -53,7 +51,6 @@
     <?php if ($ajoutForm->hasProduits()): ?>
         <div class="row">
             <div class="col-xs-12">
-                <a class="btn btn-sm btn-default ajax pull-left" href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>" ><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;&nbsp;Retour</a>
                 <button class="btn btn-sm btn-default ajax pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
             </div>
         </div>
