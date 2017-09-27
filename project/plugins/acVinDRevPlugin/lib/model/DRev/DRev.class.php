@@ -173,15 +173,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function importCSVDouane($csv) {
+    	$todelete = array();
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
             if(!$produitConfig) {
                 continue;
-            }
-            
-            if (!$line[DRCsvFile::CSV_VALEUR]) {
-            	continue;
             }
 
             $produit = $this->addProduit($produitConfig->getCouleur()->getHash());
@@ -212,6 +209,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produit->volume_revendique_sans_vci = $produitDetail->recolte_nette;
             	$produit->superficie_revendique = $produitDetail->superficie_total;
             }
+        }
+        foreach ($this->declaration as $hash => $p) {
+        	if (!$p->detail->volume_sur_place) {
+        		if (!in_array($hash, $todelete)) {
+        			$todelete[] = $hash;
+        		}
+        	}
+        }
+        foreach ($todelete as $del) {
+        	$this->declaration->remove($del);
         }
         $this->updateFromPrecedente();
     }
