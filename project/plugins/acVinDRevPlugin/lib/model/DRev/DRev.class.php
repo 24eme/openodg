@@ -529,7 +529,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function devalidate() {
         $this->validation = null;
         $this->validation_odg = null;
-        $this->add('etape', null);
+        $this->etape = null;
     }
 
     public function validateOdg($date = null) {
