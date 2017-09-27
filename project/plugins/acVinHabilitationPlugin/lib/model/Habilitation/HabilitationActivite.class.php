@@ -11,4 +11,9 @@ class HabilitationActivite extends BaseHabilitationActivite {
       $this->statut = $statut;
       $this->commentaire = $commentaire;
   }
+
+  public function isHabilite(){
+    return ($this->statut == HabilitationClient::STATUT_HABILITE);
+  }
+
 }

@@ -82,7 +82,7 @@ EOF;
         $fonctionsCsv = new CsvFile($path_fonctions);
 
         foreach ($observationsCodifieesCsv->getCsv() as $row) {
-          $this->observationsCodifieesArr[$row[0]] = $row[1];
+          $this->observationsCodifieesArr[$row[0]] = $row;
         }
 
         foreach ($groupeTagsCsv->getCsv() as $row) {
@@ -119,7 +119,7 @@ EOF;
           $this->searchObservationsCodifiees($nameField,$field);
           $this->searchRefGroupsProfil($nameField,$field);
         }
-
+        
         if($this->cvi  || count($this->multipleCvi) || $this->siret){
             $this->importSociete();
         }else{
@@ -206,20 +206,20 @@ EOF;
           foreach ($observationsCodifieesArray["b:Identite_ObservationCodifiee"] as $obsCodifie) {
             if(boolval((string) $obsCodifie)){
               $code = (string) $obsCodifie;
-              if(!array_key_exists($code,$this->observationsCodifieesArr)){
-                 // echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
+              if(!array_key_exists($code,$this->observationsCodifieesArr) || !$this->observationsCodifieesArr[$code][2]){
+                //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                 continue;
               }
-              $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
+              $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code][2];
             }elseif((get_class($obsCodifie) == 'SimpleXMLElement') && count($obsCodifie)){
               $obsCod =(array) $obsCodifie;
               if(array_key_exists("b:ObservationCodifiee",$obsCod)){
                 $code = (string) $obsCod["b:ObservationCodifiee"];
-                if(!array_key_exists($code,$this->observationsCodifieesArr)){
-                  // echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
+                if(!array_key_exists($code,$this->observationsCodifieesArr) || !$this->observationsCodifieesArr[$code][2]){
+                  //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                   continue;
                 }
-                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
+                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code][2];
               }
             }
           }
@@ -272,6 +272,7 @@ EOF;
                          "b:Adresse3" => "adresse3",
                          "b:AdresseEtrangere" => "adresseEtrangere",
                          "b:Canton" => "canton",
+                         "b:CodePostal" => "codePostal",
                          "b:CleCoordonnee" => "cleCoordonnee",
                          "b:Commune" => "commune",
                          "b:CommuneLibelle" => "communeLibelle",
@@ -298,7 +299,7 @@ EOF;
         $societe = new societe();
         $societe->identifiant = sprintf("%06d",$this->identifiant);
         if($this->cvi || count($this->multipleCvi)){
-          $societe->type_societe = "RESSORTISSANT" ;
+          $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
         }else{
           $societe->type_societe =  "AUTRE" ;
         }
@@ -432,7 +433,7 @@ EOF;
       if(count($this->observationsCodifiees)){
         echo "OBS Codifiees ".implode(",",$this->observationsCodifiees)." ". $c->_id." \n";
         foreach($this->observationsCodifiees as $obsKey => $obs){
-          $tag = 'OBS '.$obs.' '.$obsKey;
+          $tag = 'OBS '.$obs;
           $c->addTag('manuel',$tag);
         }
     }

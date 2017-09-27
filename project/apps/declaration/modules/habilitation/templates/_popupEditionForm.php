@@ -10,33 +10,39 @@
 					<h4 class="modal-title" id="myModalLabel">Editer cette Activité</h4>
 				</div>
 				<div class="modal-body">
-					<div class="row">
-						<div class="col-xs-2 text-left">
+					<div class="row form-group">
+						<div class="col-xs-4 text-right control-label">
 							Produit :
 						</div>
-						<div class="col-xs-8 text-left">
+						<div class="col-xs-8 text-left form-control-static">
 							<strong><?php echo $produitCepage->getLibelleComplet(); ?></strong>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-xs-2 text-left">
+					<div class="row form-group">
+						<div class="col-xs-4  text-right control-label">
 							Activité :
 						</div>
-						<div class="col-xs-8 text-left">
+						<div class="col-xs-8 text-left form-control-static">
 							<strong><?php echo HabilitationClient::$activites_libelles[$details->getKey()]; ?></strong>
 						</div>
 					</div>
 					<div class="row form-group">
 						<span class="error"><?php echo $editForm['statut_'.$idKey]->renderError(); ?></span>
-						<div class="col-xs-10 col-xs-offset-1">
-							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)); ?>
+						<div class="col-xs-4 control-label  text-right">
+							Statut :
+						</div>
+						<div class="col-xs-8">
+							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "select2 select2-offscreen select2autocomplete", "required" => true)); ?>
 						</div>
 					</div>
-					<div class="row form-group">
+					<div class="row form-group" style="display:none;">
 							<span class="error"><?php echo $editForm['date_'.$idKey]->renderError(); ?></span>
-							<div class="col-xs-10 col-xs-offset-1" >
+							<div class="col-xs-4 control-label text-right">
+								Date :
+							</div>
+							<div class="col-xs-8" >
 								<div class="input-group date-picker">
-										<?php echo $editForm['date_'.$idKey]->render(array('placeholder' => "Date", "required" => "required" ,"class" => "form-control")); ?>
+										<?php echo $editForm['date_'.$idKey]->render(array('placeholder' => "Date", "required" => "required" ,"class" => "")); ?>
 										<div class="input-group-addon">
 												<span class="glyphicon-calendar glyphicon"></span>
 										</div>
@@ -45,8 +51,11 @@
 					</div>
 					<div class="row form-group">
 						<span class="error"><?php echo $editForm['commentaire_'.$idKey]->renderError(); ?></span>
-						<div class="col-xs-10 col-xs-offset-1">
-							<?php echo $editForm['commentaire_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control", "required" => false)); ?>
+						<div class="col-xs-4 control-label text-right">
+							Commentaire :
+						</div>
+						<div class="col-xs-8">
+							<?php echo $editForm['commentaire_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "", "required" => false)); ?>
 						</div>
 					</div>
 				</div>

@@ -35,6 +35,23 @@ class HabilitationEditionForm extends acCouchdbObjectForm
       return array_merge( array("" => ""), HabilitationClient::$statuts_libelles );
     }
 
+    protected function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        foreach ($this->produits as $key => $produit) {
+          foreach ($produit->activites as $keyActivite => $activite) {
+            $idWidgets = $activite->getHashForKey();
+            $date = Date::francizeDate($activite->date);
+            if(!$activite->date){
+              $date = Date::francizeDate($this->getObject()->getDate());
+            }
+            $this->setDefault('statut_'.$idWidgets, $activite->statut);
+            $this->setDefault('date_'.$idWidgets, $date);
+            $this->setDefault('commentaire_'.$idWidgets, $activite->commentaire);
+          }
+        }
+    }
+
+
     protected function doUpdateObject($values)
     {
       foreach ($this->produits as $key => $produit) {

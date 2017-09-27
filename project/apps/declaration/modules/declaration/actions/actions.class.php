@@ -111,7 +111,7 @@ class declarationActions extends sfActions {
 
         $facetToRowKey = array("Type" => DeclarationTousView::KEY_TYPE, "Campagne" => DeclarationTousView::KEY_CAMPAGNE, "Mode" => DeclarationTousView::KEY_MODE, "Statut" => DeclarationTousView::KEY_STATUT);
 
-        $this->query = $request->getParameter('query', array("Statut" => DeclarationTousView::STATUT_A_VALIDER));
+        $this->query = $request->getParameter('query', array());
         $this->docs = array();
 
         if(!$this->query || !count($this->query)) {

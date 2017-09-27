@@ -40,7 +40,6 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
   	}
 
 	public function getMentions() {
-
 		return $this->_get('mentions');
 	}
 
@@ -51,5 +50,9 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
 
         return $this->attributs->get('detail_lieu_editable');
     }
+
+		public function getCahierDesCharges(){
+			return true;
+		}
 
 }

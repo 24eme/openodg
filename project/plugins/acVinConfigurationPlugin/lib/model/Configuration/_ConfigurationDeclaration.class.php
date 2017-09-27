@@ -995,6 +995,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getAppellation()->hasLieuEditable();
     }
 
+    public function getCahierDesCharges() {
+
+        return $this->getAppellation()->getCahierDesCharges();
+    }
+
     public function hasManyLieu() {
         foreach($this->getChildrenNode() as $item) {
             if($item->hasManyLieu()) {

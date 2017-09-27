@@ -38,7 +38,7 @@ class habilitationActions extends sfActions {
 
   public function executeDeclarant(sfWebRequest $request) {
       $this->etablissement = $this->getRoute()->getEtablissement();
-      $this->habilitationsHistory = array();
+      $this->habilitationsHistory = HabilitationClient::getInstance()->getHistory($this->etablissement->identifiant);
   }
 
     public function executeCreate(sfWebRequest $request) {
@@ -67,7 +67,7 @@ class habilitationActions extends sfActions {
         $habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::EDITION, $habilitation);
 
-        $this->ajoutForm = new HabilitationCepageAjoutProduitForm($habilitation);
+        $this->ajoutForm = new HabilitationAjoutProduitForm($habilitation);
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
@@ -94,12 +94,10 @@ class habilitationActions extends sfActions {
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        if($this->habilitation->storeEtape($this->getEtape($this->habilitation, HabilitationEtapes::ETAPE_EDITION))) {
-            $this->habilitation->save();
-        }
+        $this->habilitation->save();
 
         $this->editForm = new HabilitationEditionForm($this->habilitation);
-        $this->ajoutForm = new HabilitationCepageAjoutProduitForm($this->habilitation);
+        $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->editForm->bind($request->getParameter($this->editForm->getName()));
 
@@ -113,10 +111,7 @@ class habilitationActions extends sfActions {
 
                     return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->habilitation->_id, "revision" => $this->habilitation->_rev))));
                 }
-
-                if ($request->getParameter('redirect', null)) {
-                    return $this->redirect('habilitation_validation', $this->habilitation);
-                }
+                return $this->redirect('habilitation_edition', $this->habilitation);
             }
         }
     }
@@ -146,9 +141,7 @@ class habilitationActions extends sfActions {
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        if($this->habilitation->storeEtape($this->getEtape($this->habilitation, HabilitationEtapes::ETAPE_VALIDATION))) {
-            $this->habilitation->save();
-        }
+        $this->habilitation->save();
 
         $this->habilitation->cleanDoc();
         $this->validation = new HabilitationValidation($this->habilitation);
@@ -241,13 +234,6 @@ class habilitationActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
-    protected function getEtape($habilitation, $etape) {
-        $habilitationEtapes = HabilitationEtapes::getInstance();
-        if (!$habilitation->exist('etape')) {
-            return $etape;
-        }
-        return ($habilitationEtapes->isLt($habilitation->etape, $etape)) ? $etape : $habilitation->etape;
-    }
 
     protected function secure($droits, $doc) {
         if (!HabilitationSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
