@@ -16,7 +16,6 @@ class habilitationActions extends sfActions {
 
       $this->form->bind($request->getParameter($this->form->getName()));
 
-      var_dump($this->form->getValue('etablissement')); exit;
       if(!$this->form->isValid()) {
 
           return sfView::SUCCESS;
