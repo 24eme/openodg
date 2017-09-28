@@ -6,11 +6,11 @@
 
 class TemplateFactureCotisation extends BaseTemplateFactureCotisation {
 
-	public function getTotal($document)
+	public function getTotal($mouvements)
 	{
 		$total = 0;
 		foreach ($this->details as $type => $detail) {
-			$total += $detail->getTotal($document);
+			$total += $detail->getTotal($mouvements);
 		}
 		return $total;
 	}

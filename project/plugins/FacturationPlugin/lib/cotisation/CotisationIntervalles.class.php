@@ -2,13 +2,13 @@
 class CotisationIntervalles extends CotisationVariable
 {
 	protected $intervalles;
-	
-	public function __construct($template, $document, $datas)
+
+	public function __construct($template, $mouvements, $datas)
 	{
-		parent::__construct($template, $document, $datas);
+		parent::__construct($template, $mouvements, $datas);
 		$this->intervalles = $datas->intervalles;
 	}
-	
+
 	public function getTotal()
 	{
 		$total = 0;

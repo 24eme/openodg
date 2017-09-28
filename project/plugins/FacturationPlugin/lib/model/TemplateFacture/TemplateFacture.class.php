@@ -33,6 +33,8 @@ class TemplateFacture extends BaseTemplateFacture
 				continue;
 			}
 
+			$mouvements = array($document->findMouvement($this->_id));
+
 			foreach ($this->cotisations as $key => $cotisation) {
 
 				$modele = $cotisation->modele;
@@ -51,7 +53,7 @@ class TemplateFacture extends BaseTemplateFacture
 					$docs = $detail->docs->toArray();
 					if (in_array($document->type, $docs)) {
 						$modele = $detail->modele;
-						$object = new $modele($template, $document, $detail);
+						$object = new $modele($template, $mouvements, $detail);
 
 						if ($key == 'syndicat_viticole') {
 							$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getTotal(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => 1);

@@ -7,9 +7,13 @@ class CotisationFixe extends CotisationBase
 	}
 
 	public function getQuantite() {
+		$value = null;
 		$callback = $this->callback;
+		foreach($this->mouvements as $mouvement) {
+			$value += $mouvement->$callback();
+		}
 
-		if($callback && round($this->document->$callback(), self::PRECISION) <= 0) {
+		if($callback && round($value, self::PRECISION) <= 0) {
 
 			return 0;
 		}
