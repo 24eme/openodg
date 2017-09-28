@@ -8,17 +8,17 @@ class DRevMouvement extends BaseDRevMouvement {
 
     public function getSurfaceFacturable()
 	{
-		return $this->getDocument()->declaration->getTotalTotalSuperficie();
+		return $this->getDocument()->getSurfaceFacturable();
 	}
 
 	public function getVolumeFacturable()
 	{
-		return $this->getDocument()->declaration->getTotalVolumeRevendique();
-	}
+		return $this->getDocument()->getVolumeFacturable();
+    }
 
 	public function getSurfaceVinifieeFacturable()
 	{
-		return $this->getDocument()->declaration->getTotalSuperficieVinifiee();
+		return $this->getDocument()->getSurfaceVinifieeFacturable();
 	}
 
 }

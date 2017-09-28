@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(24);
+$t = new lime_test(27);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 
@@ -136,7 +136,7 @@ $drevMaster = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($vit
 $t->is($drevM1->_id, $drevMaster->_id, "La récupération de la drev master renvoi la drev ".$drevM1->_id);
 
 $produit1M1 = $drevM1->get($produit1->getHash());
-$produit1M1->superficie_vinifiee = 120;
+$produit1M1->superficie_vinifiee = 180;
 
 $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_vinifiee'), "La superficie vinifiee est marqué comme modifié par rapport à la précedente");
 
@@ -147,3 +147,7 @@ $drevM1->save();
 $t->is(count($drevM1->mouvements->get($compteIdentifiant)), 1, "La DRev modificatrice a 1 un seul mouvement");
 
 $mouvementM1 = $drevM1->mouvements->get($compteIdentifiant)->getFirst();
+
+$t->is($mouvementM1->getSurfaceVinifieeFacturable(), $drevM1->declaration->getTotalSuperficieVinifiee() - $drev->declaration->getTotalSuperficieVinifiee(), "La superficie vinifiee facturable est de ". ($drevM1->declaration->getTotalSuperficieVinifiee() - $drev->declaration->getTotalSuperficieVinifiee()) . " ha");
+$t->is($mouvementM1->getSurfaceFacturable(), $drevM1->declaration->getTotalTotalSuperficie() - $drev->declaration->getTotalTotalSuperficie(), "La superficie revendique facturable est de ".($drevM1->declaration->getTotalTotalSuperficie() - $drev->declaration->getTotalTotalSuperficie()) . " ares");
+$t->is($mouvementM1->getVolumeFacturable(), $drevM1->declaration->getTotalVolumeRevendique() - $drev->declaration->getTotalVolumeRevendique(), "Le volume revendique facturable est de ". ($drevM1->declaration->getTotalVolumeRevendique() - $drev->declaration->getTotalVolumeRevendique()) . " hl");

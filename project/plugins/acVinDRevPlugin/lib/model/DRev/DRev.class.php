@@ -742,17 +742,35 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
      */
 	public function getSurfaceFacturable()
 	{
-		return $this->declaration->getTotalTotalSuperficie();
+        $totalPrecedenteVersion = 0;
+
+        if ($this->hasVersion()) {
+            $totalPrecedenteVersion = $this->getMother()->declaration->getTotalTotalSuperficie();
+        }
+
+		return $this->declaration->getTotalTotalSuperficie() - $totalPrecedenteVersion;
 	}
 
 	public function getVolumeFacturable()
 	{
-		return $this->declaration->getTotalVolumeRevendique();
+        $totalPrecedenteVersion = 0;
+
+        if ($this->hasVersion()) {
+            $totalPrecedenteVersion = $this->getMother()->declaration->getTotalVolumeRevendique();
+        }
+
+		return $this->declaration->getTotalVolumeRevendique() - $totalPrecedenteVersion;
 	}
 
 	public function getSurfaceVinifieeFacturable()
 	{
-		return $this->declaration->getTotalSuperficieVinifiee();
+        $totalPrecedenteVersion = 0;
+
+        if ($this->hasVersion()) {
+            $totalPrecedenteVersion = $this->getMother()->declaration->getTotalSuperficieVinifiee();
+        }
+
+		return $this->declaration->getTotalSuperficieVinifiee() - $totalPrecedenteVersion;
 	}
 
     /**** MOUVEMENTS ****/
