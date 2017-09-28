@@ -21,7 +21,7 @@ class TemplateFacture extends BaseTemplateFacture
 			$document = $this->getDocumentFacturable($doc, $compte->identifiant, $campagne);
 			if(!$document) {
 
-				throw new sfException(sprintf("Le document %s n'a pas été trouvé (%s-%s-%s)", strtoupper($doc), strtoupper($doc), $compte->identifiant, $campagne));
+				throw new sfException(sprintf("Le document %s n'a pas été trouvé (%s-%s-%s)", strtoupper($doc), strtoupper($doc), str_replace("E", "", $compte->identifiant), $campagne));
 			}
 
 			if(!count($document->mouvements)) {

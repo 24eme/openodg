@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(19);
+$t = new lime_test(24);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 
@@ -14,6 +14,8 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 
 $campagne = (date('Y')-1)."";
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
+$compte = $viti->getCompte();
+$societe = $compte;
 
 //Début des tests
 $t->comment("Création d'une DRev");
@@ -74,9 +76,10 @@ $t->comment("Validation");
 $drev->validate();
 $drev->save();
 
-$compteIdentifiant = $viti->getCompte()->identifiant;
+$compteIdentifiant = $societe->identifiant;
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
+$t->is($drev->validation_odg, null, "La DRev n'est pas encore validé par l'odg");
 $t->is(count($drev->mouvements->get($compteIdentifiant)), 1, "La DRev a 1 mouvement");
 
 $mouvement = $drev->mouvements->get($compteIdentifiant)->getFirst();
@@ -84,6 +87,42 @@ $mouvement = $drev->mouvements->get($compteIdentifiant)->getFirst();
 $t->is($mouvement->getKey(), $templateFacture->_id, "La clé du mouvement est ".$templateFacture->_id);
 $t->ok($mouvement->facture === 0, "Le mouvement est non facture");
 $t->ok($mouvement->facturable === 1, "Le mouvement est facturable");
+
+$drev->validateOdg();
+$drev->save();
+
+$t->is($drev->validation_odg, date('Y-m-d'), "La DRev est validé par l'odg");
+
+$t->comment("Facturation de la DRev");
+
+$dateFacturation = date('Y-m-d');
+
+$cotisations = $templateFacture->generateCotisations($compte, $templateFacture->campagne);
+$f = FactureClient::getInstance()->createDoc($cotisations, $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false));
+
+$superficieHaVinifie = 0;
+$superficieAresRevendique = 0;
+$volumeHlRevendique = 0;
+
+foreach($f->lignes->get('odg_ava')->details as $ligne) {
+    if(preg_match("/hectares vinifiés/", $ligne->libelle)) {
+        $superficieHaVinifie += $ligne->quantite;
+    }
+
+    if(preg_match("/Tranche de [0-9]+\.*[0-9]* ares \(([0-9]+\.*[0-9]*) ares\)/", $ligne->libelle, $matches)) {
+        $superficieAresRevendique += $matches[1]*1.0;
+    }
+};
+
+foreach($f->lignes->get('inao')->details as $ligne) {
+    if(preg_match("/hl de vin revendiqué/", $ligne->libelle)) {
+        $volumeHlRevendique += $ligne->quantite;
+    }
+};
+
+$t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "La superifcie vinifiée prise en compte dans la facture est de ".$drev->declaration->getTotalSuperficieVinifiee()." ha");
+$t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
+$t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La volume revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalVolumeRevendique()." hl");
 
 $t->comment("Génération d'une modificatrice");
 
@@ -101,9 +140,8 @@ $produit1M1->superficie_vinifiee = 120;
 
 $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_vinifiee'), "La superficie vinifiee est marqué comme modifié par rapport à la précedente");
 
-$t->comment("Validation de la modificatrice");
-
 $drevM1->validate();
+$drevM1->validateOdg();
 $drevM1->save();
 
 $t->is(count($drevM1->mouvements->get($compteIdentifiant)), 1, "La DRev modificatrice a 1 un seul mouvement");
