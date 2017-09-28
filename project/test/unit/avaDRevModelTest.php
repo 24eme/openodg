@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(27);
+$t = new lime_test(30);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 
@@ -17,7 +17,6 @@ $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-
 $compte = $viti->getCompte();
 $societe = $compte;
 
-//Début des tests
 $t->comment("Création d'une DRev");
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -99,6 +98,7 @@ $dateFacturation = date('Y-m-d');
 
 $cotisations = $templateFacture->generateCotisations($compte, $templateFacture->campagne);
 $f = FactureClient::getInstance()->createDoc($cotisations, $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false));
+$f->save();
 
 $superficieHaVinifie = 0;
 $superficieAresRevendique = 0;
@@ -124,6 +124,8 @@ $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
 $t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La volume revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalVolumeRevendique()." hl");
 
+$drev = DRevClient::getInstance()->find($drev->_id);
+
 $t->comment("Génération d'une modificatrice");
 
 $drevM1 = $drev->generateModificative();
@@ -144,6 +146,8 @@ $drevM1->validate();
 $drevM1->validateOdg();
 $drevM1->save();
 
+$drevM1 = DRevClient::getInstance()->find($drevM1->_id);
+
 $t->is(count($drevM1->mouvements->get($compteIdentifiant)), 1, "La DRev modificatrice a 1 un seul mouvement");
 
 $mouvementM1 = $drevM1->mouvements->get($compteIdentifiant)->getFirst();
@@ -151,3 +155,33 @@ $mouvementM1 = $drevM1->mouvements->get($compteIdentifiant)->getFirst();
 $t->is($mouvementM1->getSurfaceVinifieeFacturable(), $drevM1->declaration->getTotalSuperficieVinifiee() - $drev->declaration->getTotalSuperficieVinifiee(), "La superficie vinifiee facturable est de ". ($drevM1->declaration->getTotalSuperficieVinifiee() - $drev->declaration->getTotalSuperficieVinifiee()) . " ha");
 $t->is($mouvementM1->getSurfaceFacturable(), $drevM1->declaration->getTotalTotalSuperficie() - $drev->declaration->getTotalTotalSuperficie(), "La superficie revendique facturable est de ".($drevM1->declaration->getTotalTotalSuperficie() - $drev->declaration->getTotalTotalSuperficie()) . " ares");
 $t->is($mouvementM1->getVolumeFacturable(), $drevM1->declaration->getTotalVolumeRevendique() - $drev->declaration->getTotalVolumeRevendique(), "Le volume revendique facturable est de ". ($drevM1->declaration->getTotalVolumeRevendique() - $drev->declaration->getTotalVolumeRevendique()) . " hl");
+
+$t->comment("Facturation de la modificatrice");
+
+$cotisations = $templateFacture->generateCotisations($compte, $templateFacture->campagne);
+$f = FactureClient::getInstance()->createDoc($cotisations, $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false));
+$f->save();
+
+$superficieHaVinifie = 0;
+$superficieAresRevendique = 0;
+$volumeHlRevendique = 0;
+
+foreach($f->lignes->get('odg_ava')->details as $ligne) {
+    if(preg_match("/hectares vinifiés/", $ligne->libelle)) {
+        $superficieHaVinifie += $ligne->quantite;
+    }
+
+    if(preg_match("/Tranche de [0-9]+\.*[0-9]* ares \(([0-9]+\.*[0-9]*) ares\)/", $ligne->libelle, $matches)) {
+        $superficieAresRevendique += $matches[1]*1.0;
+    }
+};
+
+foreach($f->lignes->get('inao')->details as $ligne) {
+    if(preg_match("/hl de vin revendiqué/", $ligne->libelle)) {
+        $volumeHlRevendique += $ligne->quantite;
+    }
+};
+
+$t->is($superficieHaVinifie, $drevM1->getSurfaceVinifieeFacturable(), "La superficie vinifiée prise en compte dans la facture est de ".$drevM1->getSurfaceVinifieeFacturable()." ha");
+$t->is($superficieAresRevendique, $drevM1->getSurfaceFacturable(), "La superifcie revendiqué prise en compte dans la facture est de ".$drevM1->getSurfaceFacturable()." ares");
+$t->is($volumeHlRevendique, $drevM1->getVolumeFacturable(), "La volume revendiqué prise en compte dans la facture est de ".$drevM1->getVolumeFacturable()." hl");

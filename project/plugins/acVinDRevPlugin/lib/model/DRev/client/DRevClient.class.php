@@ -33,14 +33,21 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $campagne) {
-    	$drev = $this->find('DREV-'.str_replace("E", "", $identifiant).'-'.$campagne);
+        $identifiant = str_replace("E", "", $identifiant);
+        $campagne = $campagne."";
+        $drevs = array();
+        $ids = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
+        ksort($ids);
+        foreach ($ids as $id => $value) {
+            $drev = $this->find($id);
+            if(!$drev->validation_odg) {
 
-        if(!$drev->validation_odg) {
-
-            return null;
+                continue;
+            }
+            $drevs[$drev->_id] = $drev;
         }
 
-        return $drev;
+        return $drevs;
     }
 
     public function createDoc($identifiant, $campagne, $papier = false)

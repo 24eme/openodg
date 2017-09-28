@@ -956,8 +956,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function findDocumentByVersion($version) {
         $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
-        if($this->version) {
-            $id .= "-".$this->version;
+        if($version) {
+            $id .= "-".$version;
         }
 
         return DRevClient::getInstance()->find($id);

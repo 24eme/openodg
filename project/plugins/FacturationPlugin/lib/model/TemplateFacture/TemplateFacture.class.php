@@ -18,22 +18,32 @@ class TemplateFacture extends BaseTemplateFacture
 
 		$cotisations = array();
 		foreach ($this->docs as $doc) {
-			$document = $this->getDocumentFacturable($doc, $compte->identifiant, $campagne);
-			if(!$document) {
+			$documents = $this->getDocumentFacturable($doc, $compte->identifiant, $campagne);
+			if(!count($documents)) {
 
 				throw new sfException(sprintf("Le document %s n'a pas été trouvé (%s-%s-%s)", strtoupper($doc), strtoupper($doc), str_replace("E", "", $compte->identifiant), $campagne));
 			}
 
-			if(!count($document->mouvements)) {
-				$document->generateMouvements();
-				$document->save();
-			}
+			$mouvements = array();
+			foreach($documents as $doc) {
+				if(!count($doc->mouvements)) {
+					$document->generateMouvements();
+					$document->save();
+				}
 
-			if($document->isFactures() && !$force) {
-				continue;
-			}
+				$mouvement = $doc->findMouvement($this->_id, $compte->identifiant);
+				
+				if(!$mouvement) {
 
-			$mouvements = array($document->findMouvement($this->_id));
+					continue;
+				}
+
+				if((!$mouvement->isFacturable() || $mouvement->facture) && !$force) {
+					continue;
+				}
+
+				$mouvements[] = $mouvement;
+			}
 
 			foreach ($this->cotisations as $key => $cotisation) {
 
@@ -50,17 +60,17 @@ class TemplateFacture extends BaseTemplateFacture
 					$cotisations[$key]["origines"] = array();
 				}
 				foreach ($details as $type => $detail) {
-					$docs = $detail->docs->toArray();
-					if (in_array($document->type, $docs)) {
-						$modele = $detail->modele;
-						$object = new $modele($template, $mouvements, $detail);
+					$modele = $detail->modele;
+					$object = new $modele($template, $mouvements, $detail);
 
-						if ($key == 'syndicat_viticole') {
-							$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getTotal(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => 1);
-						} else {
-							$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getPrix(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => $object->getQuantite());
-						}
-						$cotisations[$key]["origines"][$document->_id] = array($this->_id);
+					if ($key == 'syndicat_viticole') {
+						$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getTotal(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => 1);
+					} else {
+						$cotisations[$key]["details"][] = array("libelle" => $object->getLibelle(), "taux" => $detail->tva, "prix" => $object->getPrix(), "total" => $object->getTotal(), "tva" => $object->getTva(), "quantite" => $object->getQuantite());
+					}
+
+					foreach($mouvements as $mouvement) {
+						$cotisations[$key]["origines"][$mouvement->getDocument()->_id] = array($this->_id);
 					}
 				}
 			}
