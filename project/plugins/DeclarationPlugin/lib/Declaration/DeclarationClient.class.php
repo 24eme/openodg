@@ -107,4 +107,24 @@ class DeclarationClient
 
         return $ids;
     }
+
+    public function viewByIdentifiantCampagneAndType($identifiant, $campagne, $type) {
+
+        $rows = acCouchdbManager::getClient()
+                        ->startkey(array($identifiant, $campagne, $type))
+                        ->endkey(array($identifiant, $campagne, $type, array()))
+                        ->reduce(false)
+                        ->getView("declaration", "identifiant")
+                ->rows;
+
+        $drms = array();
+
+        foreach ($rows as $row) {
+            $drms[$row->id] = $row->key;
+        }
+
+        krsort($drms);
+
+        return $drms;
+    }
 }

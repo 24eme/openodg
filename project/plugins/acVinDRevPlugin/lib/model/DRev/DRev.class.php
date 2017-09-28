@@ -4,7 +4,7 @@
  * Model for DRev
  *
  */
-class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
+class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument, InterfacePieceDocument {
 
     const CUVE = 'cuve_';
     const BOUTEILLE = 'bouteille_';
@@ -40,6 +40,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
 
     protected $declarant_document = null;
     protected $mouvement_document = null;
+    protected $version_document = null;
     protected $piece_document = null;
 
     public function __construct() {
@@ -55,11 +56,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
         $this->mouvement_document = new MouvementDocument($this);
+        $this->version_document = new VersionDocument($this);
         $this->piece_document = new PieceDocument($this);
     }
 
     public function constructId() {
-        $this->set('_id', 'DREV-' . $this->identifiant . '-' . $this->campagne);
+        $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
+        if($this->version) {
+            $id .= "-".$this->version;
+        }
+        $this->set('_id', $id);
     }
 
     public function getConfiguration() {
@@ -449,6 +455,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
         $this->validation = $date;
     }
 
+    public function devalidate() {
+        $this->validation = null;
+        $this->validation_odg = null;
+        $this->add('etape', null);
+    }
+
     public function validateOdg($date = null) {
         if(is_null($date)) {
             $date = date('Y-m-d');
@@ -819,4 +831,187 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceDecla
     }
 
     /**** FIN DES PIECES ****/
+
+    /**** VERSION ****/
+
+    public static function buildVersion($rectificative, $modificative) {
+
+        return VersionDocument::buildVersion($rectificative, $modificative);
+    }
+
+    public static function buildRectificative($version) {
+
+        return VersionDocument::buildRectificative($version);
+    }
+
+    public static function buildModificative($version) {
+
+        return VersionDocument::buildModificative($version);
+    }
+
+    public function getVersion() {
+
+        return $this->_get('version');
+    }
+
+    public function hasVersion() {
+
+        return $this->version_document->hasVersion();
+    }
+
+    public function isVersionnable() {
+        if (!$this->validation) {
+
+            return false;
+        }
+
+        return $this->version_document->isVersionnable();
+    }
+
+    public function getRectificative() {
+
+        return $this->version_document->getRectificative();
+    }
+
+    public function isRectificative() {
+
+        return $this->version_document->isRectificative();
+    }
+
+    public function isRectifiable() {
+
+        return false;
+    }
+
+    public function getModificative() {
+
+        return $this->version_document->getModificative();
+    }
+
+    public function isModificative() {
+
+        return $this->version_document->isModificative();
+    }
+
+    public function isModifiable() {
+        return $this->version_document->isModifiable();
+    }
+
+    public function isTeledeclareFacturee() {
+        return $this->isTeledeclare() && !$this->isNonFactures();
+    }
+
+    public function isTeledeclareNonFacturee() {
+        return $this->isTeledeclare() && $this->isNonFactures();
+    }
+
+    public function getPreviousVersion() {
+
+        return $this->version_document->getPreviousVersion();
+    }
+
+    public function getMasterVersionOfRectificative() {
+
+        throw new sfException("Not implemented");
+    }
+
+    public function needNextVersion() {
+
+        return $this->version_document->needNextVersion() || !$this->isSuivanteCoherente();
+    }
+
+    public function getMaster() {
+
+        return $this->version_document->getMaster();
+    }
+
+    public function isMaster() {
+
+        return $this->version_document->isMaster();
+    }
+
+    public function findMaster() {
+
+        return DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, $this->campagne);
+    }
+
+    public function findDocumentByVersion($version) {
+
+        throw new sfException("Not implemented");
+    }
+
+    public function getMother() {
+
+        return $this->version_document->getMother();
+    }
+
+    public function motherGet($hash) {
+
+        return $this->version_document->motherGet($hash);
+    }
+
+    public function motherExist($hash) {
+
+        return $this->version_document->motherExist($hash);
+    }
+
+    public function motherHasChanged() {
+        if ($this->declaration->total != $this->getMother()->declaration->total) {
+
+            return true;
+        }
+
+        if (count($this->getProduitsDetails($this->teledeclare)) != count($this->getMother()->getProduitsDetails($this->teledeclare))) {
+
+            return true;
+        }
+
+        if ($this->droits->douane->getCumul() != $this->getMother()->droits->douane->getCumul()) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getDiffWithMother() {
+
+        return $this->version_document->getDiffWithMother();
+    }
+
+    public function isModifiedMother($hash_or_object, $key = null) {
+
+        return $this->version_document->isModifiedMother($hash_or_object, $key);
+    }
+
+    public function generateRectificative() {
+
+        return $this->version_document->generateRectificative();
+    }
+
+    public function generateModificative() {
+        $drm_modificatrice = $this->version_document->generateModificative();
+
+        return $drm_modificatrice;
+    }
+
+    public function generateNextVersion() {
+
+        throw new sfException("Not implemented");
+    }
+
+    public function listenerGenerateVersion($document) {
+        $document->devalidate();
+    }
+
+    public function listenerGenerateNextVersion($document) {
+
+    }
+
+    public function getSuivante() {
+
+        throw new sfException("Not implemented");
+    }
+
+    /**** FIN DE VERSION ****/
 }

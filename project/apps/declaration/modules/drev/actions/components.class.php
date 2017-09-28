@@ -10,7 +10,8 @@ class drevComponents extends sfComponents {
                 $this->drev_non_ouverte = true;
             }
         }
-        $this->drev = DRevClient::getInstance()->find('DREV-' . $this->etablissement->identifiant . '-' . $this->campagne);
+        $this->drev = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->etablissement->identifiant, $this->campagne);
+
         $this->drevsHistory = DRevClient::getInstance()->getHistory($this->etablissement->identifiant);
     }
 
