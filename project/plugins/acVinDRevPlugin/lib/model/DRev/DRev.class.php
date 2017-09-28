@@ -222,14 +222,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
         $this->updateFromPrecedente();
     }
-    
+
     public function updateFromPrecedente()
     {
     	if ($precedente = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant, ($this->campagne - 1))) {
     		foreach ($precedente->declaration as $hash => $p) {
     			if ($this->declaration->exist($hash)) {
     				$produit = $this->declaration->get($hash);
-    				$produit->vci_stock_initial = $p->vci_stock_final;    				
+    				$produit->vci_stock_initial = $p->vci_stock_final;
     			}
     		}
     	}
@@ -821,7 +821,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $produit->volume_revendique_avec_vci = ((float) $produit->volume_revendique_sans_vci) + ((float) $produit->vci_complement_dr);
         }
 	}
-	
+
 	public function hasVciDetruit()
 	{
 		return $this->declaration->hasVciDetruit();
@@ -1073,7 +1073,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function findDocumentByVersion($version) {
         $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
         if($version) {
-            $id .= "-".$this->version;
+            $id .= "-".$version;
         }
 
         return DRevClient::getInstance()->find($id);
