@@ -453,6 +453,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = $date;
+        $this->generateMouvements();
     }
 
     public function devalidate() {
@@ -936,8 +937,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function findDocumentByVersion($version) {
+        $id = 'DREV-' . $this->identifiant . '-' . $this->campagne;
+        if($this->version) {
+            $id .= "-".$this->version;
+        }
 
-        throw new sfException("Not implemented");
+        return DRevClient::getInstance()->find($id);
     }
 
     public function getMother() {

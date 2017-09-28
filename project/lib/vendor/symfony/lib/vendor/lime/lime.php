@@ -684,34 +684,35 @@ class lime_output
   {
     if ($colorize)
     {
-            $colorizer = $this->colorizer;
+      $colorizer = $this->colorizer;
       $message = preg_replace_callback(
-        '/(?:^|\.)((?:not ok|dubious|errors) *\d*)\b/',
-        function ($match) use ($colorizer) {
-          return $colorizer->colorize($match[1], 'ERROR');
-        },
-        $message
-      );
+      		  '/(?:^|\.)((?:not ok|dubious|errors) *\d*)\b/',
+      		  function ($match) use ($colorizer) {
+      			    return $colorizer->colorize($match[1], 'ERROR');
+      			  },
+      			  $message
+      			);
       $message = preg_replace_callback(
-        '/(?:^|\.)(ok *\d*)\b/',
-        function ($match) use ($colorizer) {
-          return $colorizer->colorize($match[1], 'INFO');
-        },
-        $message
-      );
+      		  '/(?:^|\.)(ok *\d*)\b/',
+      		  function ($match) use ($colorizer) {
+      			    return $colorizer->colorize($match[1], 'INFO');
+      			  },
+      			  $message
+      			);
       $message = preg_replace_callback(
-        '/"(.+?)"/',+        function ($match) use ($colorizer) {
-          return $colorizer->colorize($match[1], 'PARAMETER');
-        },
-        $message
-      );
+      		  '/"(.+?)"/',
+      		  function ($match) use ($colorizer) {
+      			    return $colorizer->colorize($match[1], 'PARAMETER');
+      			  },
+      			  $message
+      			);
       $message = preg_replace_callback(
-        '/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/',
-        function ($match) use ($colorizer) {
-          return $colorizer->colorize($match[1].$match[2], 'PARAMETER');
-        },
-        $message
-      );
+      		  '/(\->|\:\:)?([a-zA-Z0-9_]+?)\(\)/',
+      		  function ($match) use ($colorizer) {
+      			    return $colorizer->colorize($match[1].$match[2], 'PARAMETER');
+      			  },
+      			  $message
+      			);
     }
 
     echo ($colorizer_parameter ? $this->colorizer->colorize($message, $colorizer_parameter) : $message)."\n";
