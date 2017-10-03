@@ -1,31 +1,26 @@
 <?php
 class CotisationTranche extends CotisationVariable
 {
-	protected $tranche;
-	protected $depart;
-	protected $complement;
 
-	public function __construct($template, $mouvement, $datas)
-	{
-		parent::__construct($template, $mouvement, $datas);
-		$this->tranche = $datas->tranche;
-		$this->depart = $datas->depart;
-		$this->complement = $datas->complement;
+	protected function getConfigDepart() {
+
+		return $this->getConfig()->depart;
+	}
+
+	protected function getConfigTranche() {
+
+		return $this->getConfig()->tranche;
 	}
 
 	public function getQuantite()
 	{
-		$quantite = (ceil((round($this->getCallbackValue(), self::PRECISION)) / $this->tranche) - $this->depart);
-		return ($quantite >= 0)? $quantite : 0;
-	}
+		$quantite = (ceil((round($this->getCallbackValue(), self::PRECISION)) / $this->getConfigTranche()) - $this->getConfigDepart());
 
-	public function getTotal()
-	{
-		return round(($this->prix * $this->getQuantite()) + $this->complement, self::PRECISION);
+		return ($quantite >= 0)? $quantite : 0;
 	}
 
 	public function getLibelle()
 	{
-		return str_replace('%tranche%',$this->tranche, parent::getLibelle());
+		return str_replace('%tranche%', $this->getConfigTranche(), parent::getLibelle());
 	}
 }

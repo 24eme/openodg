@@ -1,17 +1,9 @@
 <?php
-class CotisationFixe extends CotisationBase
+class CotisationFixe extends Cotisation
 {
-	public function getTotal()
-	{
-		return round($this->prix * $this->getQuantite(), self::PRECISION);
-	}
-
 	public function getQuantite() {
-		$value = null;
-		$callback = $this->callback;
-		foreach($this->mouvements as $mouvement) {
-			$value += $mouvement->$callback();
-		}
+		$callback = $this->getConfigCallback();
+		$value = $this->getDoc()->$callback();
 
 		if($callback && round($value, self::PRECISION) <= 0) {
 

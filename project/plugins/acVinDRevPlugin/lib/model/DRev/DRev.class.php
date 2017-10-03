@@ -773,7 +773,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 		return $this->declaration->getTotalSuperficieVinifiee() - $totalPrecedenteVersion;
 	}
 
+    public function isAdherentSyndicat() {
+
+        return $this->getEtablissementObject()->getCompte()->isAdherentSyndicat();
+    }
+
+    public function getSyndicatsViticole() {
+
+        return $this->getEtablissementObject()->getCompte()->getSyndicatsViticole();
+    }
+
     /**** MOUVEMENTS ****/
+
+    public function getTemplateFacture() {
+
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+    }
 
     public function getMouvements() {
 
@@ -781,9 +796,29 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getMouvementsCalcule() {
-        $templateFactureId = "TEMPLATE-FACTURE-AOC-".$this->getCampagne();
+        $templateFacture = $this->getTemplateFacture();
 
-        return array("E".$this->getIdentifiant() => array($templateFactureId => array("facturable" => 1, "facture" => 0)));
+        $cotisations = $templateFacture->generateCotisations($this);
+
+        $mouvements = array();
+
+        foreach($cotisations as $cotisation) {
+            $mouvement = array();
+            $mouvement['categorie'] = $cotisation->getCollectionKey();
+            $mouvement['type'] = $cotisation->getDetailKey();
+            $mouvement['libelle'] = $cotisation->getLibelle();
+            $mouvement['quantite'] = $cotisation->getQuantite();
+            $mouvement['taux'] = $cotisation->getPrix();
+            $mouvement['facture'] = 0;
+            $mouvement['facturable'] = 1;
+            $mouvement['date'] = $this->getCampagne().'-12-10';
+            $mouvement['date_version'] = $this->validation;
+            $mouvement['version'] = $this->version;
+
+            $mouvements[] = $mouvement;
+        }
+
+        return array("E".$this->getIdentifiant() => $mouvements);
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {

@@ -238,6 +238,16 @@ DRev:
                       fields:
                         facture: { type: integer }
                         facturable: { type: integer }
+                        categorie: {  }
+                        type: {  }
+                        libelle: {  }
+                        quantite: { type: float }
+                        taux: { type: float }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
       pieces:
         type: array_collection
         definition:

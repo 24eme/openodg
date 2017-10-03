@@ -79,11 +79,12 @@ $compteIdentifiant = $societe->identifiant;
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, null, "La DRev n'est pas encore validé par l'odg");
-$t->is(count($drev->mouvements->get($compteIdentifiant)), 1, "La DRev a 1 mouvement");
+
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 6, "La DRev a 6 mouvements");
 
 $mouvement = $drev->mouvements->get($compteIdentifiant)->getFirst();
 
-$t->is($mouvement->getKey(), $templateFacture->_id, "La clé du mouvement est ".$templateFacture->_id);
+$t->is($mouvement->categorie, "odg_ava", "La catégorie du mouvement est odg_ava");
 $t->ok($mouvement->facture === 0, "Le mouvement est non facture");
 $t->ok($mouvement->facturable === 1, "Le mouvement est facturable");
 
