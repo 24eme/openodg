@@ -97,8 +97,7 @@ $t->comment("Facturation de la DRev");
 
 $dateFacturation = date('Y-m-d');
 
-$cotisations = $templateFacture->generateCotisations($compte, $templateFacture->campagne);
-$f = FactureClient::getInstance()->createDoc($cotisations, $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false));
+$f = FactureClient::getInstance()->createDoc($drev->mouvements->get($compte->identifiant), $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false), $templateFacture);
 $f->save();
 
 $superficieHaVinifie = 0;
@@ -120,6 +119,10 @@ foreach($f->lignes->get('inao')->details as $ligne) {
         $volumeHlRevendique += $ligne->quantite;
     }
 };
+
+$t->is($f->lignes->get('odg_ava')->libelle, "Cotisation ODG-AVA", "Le libellé du groupe de ligne odg_ava est Cotisation ODG-AVA");
+$t->is($f->lignes->get('odg_ava')->produit_identifiant_analytique, "706300", "Le code comptable du groupe de ligne odg_ava est 706300");
+$t->ok($f->lignes->get('odg_ava')->origine_mouvements->exist($drev->_id), "Les origines du mouvements sont stockés");
 
 $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "La superifcie vinifiée prise en compte dans la facture est de ".$drev->declaration->getTotalSuperficieVinifiee()." ha");
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
@@ -149,18 +152,13 @@ $drevM1->save();
 
 $drevM1 = DRevClient::getInstance()->find($drevM1->_id);
 
-$t->is(count($drevM1->mouvements->get($compteIdentifiant)), 1, "La DRev modificatrice a 1 un seul mouvement");
+$t->is(count($drevM1->mouvements->get($compteIdentifiant)), 6, "La DRev modificatrice a 6 mouvements");
 
 $mouvementM1 = $drevM1->mouvements->get($compteIdentifiant)->getFirst();
 
-$t->is($mouvementM1->getSurfaceVinifieeFacturable(), $drevM1->declaration->getTotalSuperficieVinifiee() - $drev->declaration->getTotalSuperficieVinifiee(), "La superficie vinifiee facturable est de ". ($drevM1->declaration->getTotalSuperficieVinifiee() - $drev->declaration->getTotalSuperficieVinifiee()) . " ha");
-$t->is($mouvementM1->getSurfaceFacturable(), $drevM1->declaration->getTotalTotalSuperficie() - $drev->declaration->getTotalTotalSuperficie(), "La superficie revendique facturable est de ".($drevM1->declaration->getTotalTotalSuperficie() - $drev->declaration->getTotalTotalSuperficie()) . " ares");
-$t->is($mouvementM1->getVolumeFacturable(), $drevM1->declaration->getTotalVolumeRevendique() - $drev->declaration->getTotalVolumeRevendique(), "Le volume revendique facturable est de ". ($drevM1->declaration->getTotalVolumeRevendique() - $drev->declaration->getTotalVolumeRevendique()) . " hl");
-
 $t->comment("Facturation de la modificatrice");
 
-$cotisations = $templateFacture->generateCotisations($compte, $templateFacture->campagne);
-$f = FactureClient::getInstance()->createDoc($cotisations, $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false));
+$f = FactureClient::getInstance()->createDoc($drevM1->mouvements->get($compte->identifiant), $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false), $templateFacture);
 $f->save();
 
 $superficieHaVinifie = 0;
@@ -183,6 +181,19 @@ foreach($f->lignes->get('inao')->details as $ligne) {
     }
 };
 
-$t->is($superficieHaVinifie, $drevM1->getSurfaceVinifieeFacturable(), "La superficie vinifiée prise en compte dans la facture est de ".$drevM1->getSurfaceVinifieeFacturable()." ha");
-$t->is($superficieAresRevendique, $drevM1->getSurfaceFacturable(), "La superifcie revendiqué prise en compte dans la facture est de ".$drevM1->getSurfaceFacturable()." ares");
-$t->is($volumeHlRevendique, $drevM1->getVolumeFacturable(), "La volume revendiqué prise en compte dans la facture est de ".$drevM1->getVolumeFacturable()." hl");
+$surfaceVinifieeFacturableAttendu = $drevM1->getSurfaceVinifieeFacturable() - $drev->getSurfaceVinifieeFacturable();
+$surfaceFacturableAttendu = $drevM1->getSurfaceFacturable() - $drev->getSurfaceFacturable();
+$volumeFacturableAttendu = $drevM1->getVolumeFacturable() - $drev->getVolumeFacturable();
+
+$t->is($superficieHaVinifie, $surfaceVinifieeFacturableAttendu, "La superficie vinifiée prise en compte dans la facture est de ".$surfaceVinifieeFacturableAttendu." ha");
+$t->is($volumeHlRevendique, $volumeFacturableAttendu, "La volume revendiqué prise en compte dans la facture est de ".$volumeFacturableAttendu." hl");
+
+$t->comment("Génération d'une modificatrice sans modification");
+
+$drevM2 = $drevM1->generateModificative();
+$drevM2->save();
+$drevM2->validate();
+$drevM2->validateOdg();
+$drevM2->save();
+
+$t->is(count($drevM2->mouvements->get($compteIdentifiant)), 0, "La DRev modificatrice a aucun mouvement");

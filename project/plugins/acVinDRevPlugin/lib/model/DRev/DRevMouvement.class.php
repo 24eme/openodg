@@ -6,19 +6,10 @@
 
 class DRevMouvement extends BaseDRevMouvement {
 
-    public function getSurfaceFacturable()
-	{
-		return $this->getDocument()->getSurfaceFacturable();
-	}
+    public function getMD5Key() {
+        $key = $this->template."_".$this->categorie . '_' .$this->type_hash;
 
-	public function getVolumeFacturable()
-	{
-		return $this->getDocument()->getVolumeFacturable();
+        return $key;
     }
-
-	public function getSurfaceVinifieeFacturable()
-	{
-		return $this->getDocument()->getSurfaceVinifieeFacturable();
-	}
 
 }

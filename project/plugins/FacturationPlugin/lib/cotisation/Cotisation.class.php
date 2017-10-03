@@ -52,6 +52,11 @@ class Cotisation
 		return $this->doc;
 	}
 
+	public function getHash() {
+
+		return $this->getConfig()->getHash();
+	}
+
 	public function getCollectionKey() {
 
 		return $this->getConfigCollection()->getKey();

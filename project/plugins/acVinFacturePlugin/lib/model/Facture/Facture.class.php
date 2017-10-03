@@ -149,6 +149,26 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return ($ligne_0->{$champ} > $ligne_1->{$champ}) ? -1 : +1;
     }
 
+    public function storeLignesByMouvements($mouvements, $template) {
+        foreach ($mouvements as $key => $mouvement) {
+            $configCollection = $template->cotisations->get($mouvement->categorie);
+            $config = $configCollection->details->get($mouvement->type_hash);
+            $ligne = $this->lignes->add($mouvement->categorie);
+            $ligne->libelle = $configCollection->libelle;
+            $ligne->produit_identifiant_analytique = $configCollection->code_comptable;
+            $ligne->origine_mouvements->add($mouvement->getDocument()->_id)->add(null, $mouvement->getKey());
+            $d = $ligne->details->add();
+            $d->libelle = $mouvement["type_libelle"];
+            $d->quantite = $mouvement["quantite"];
+            $d->prix_unitaire = $mouvement["taux"];
+            $d->taux_tva = $config->tva;
+            /*$d->montant_tva = $detail["tva"];
+            $d->montant_ht = $detail["total"];*/
+
+            $ligne->updateTotaux();
+        }
+    }
+
     public function storeLignes($cotisations) {
     	foreach ($cotisations as $key => $cotisation) {
     		$ligne = $this->lignes->add($key);
@@ -420,16 +440,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-    public function storeTemplates() {
-        foreach ($this->getLignes() as $ligne) {
-            foreach ($ligne->origine_mouvements as $templates) {
-                foreach($templates as $template) {
-                    if (!array_key_exists($template, $this->templates)) {
-                        $this->templates->add($template, $template);
-                    }
-                }
-            }
-        }
+    public function storeTemplates($template) {
+        $this->templates->add($template->_id, $template->_id);
     }
 
     public function updateTotaux() {
@@ -650,11 +662,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
         return self::MESSAGE_DEFAULT;
     }
-    
+
     protected function doSave() {
     	$this->piece_document->generatePieces();
     }
-    
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -669,11 +681,11 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     		'source' => null
     	));
     }
-    
+
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
     }
-    
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('facturation_pdf', $this);
     }
@@ -681,7 +693,7 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return null;
     }
-    
+
     /**** FIN DES PIECES ****/
 
 

@@ -12,7 +12,7 @@ class TemplateFacture extends BaseTemplateFacture
 		$cotisations = array();
 		foreach ($this->cotisations as $config) {
 			foreach ($config->generateCotisations($document) as $cotisation) {
-				$cotisations[] = $cotisation;
+				$cotisations[$cotisation->getHash()] = $cotisation;
 			}
 		}
 

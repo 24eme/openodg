@@ -748,7 +748,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $totalPrecedenteVersion = $this->getMother()->declaration->getTotalTotalSuperficie();
         }
 
-		return $this->declaration->getTotalTotalSuperficie() - $totalPrecedenteVersion;
+		return $this->declaration->getTotalTotalSuperficie();
 	}
 
 	public function getVolumeFacturable()
@@ -759,7 +759,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $totalPrecedenteVersion = $this->getMother()->declaration->getTotalVolumeRevendique();
         }
 
-		return $this->declaration->getTotalVolumeRevendique() - $totalPrecedenteVersion;
+		return $this->declaration->getTotalVolumeRevendique();
 	}
 
 	public function getSurfaceVinifieeFacturable()
@@ -770,7 +770,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $totalPrecedenteVersion = $this->getMother()->declaration->getTotalSuperficieVinifiee();
         }
 
-		return $this->declaration->getTotalSuperficieVinifiee() - $totalPrecedenteVersion;
+		return $this->declaration->getTotalSuperficieVinifiee();
 	}
 
     public function isAdherentSyndicat() {
@@ -797,28 +797,49 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getMouvementsCalcule() {
         $templateFacture = $this->getTemplateFacture();
-
         $cotisations = $templateFacture->generateCotisations($this);
+
+        if($this->hasVersion()) {
+            $cotisationsPrec = $templateFacture->generateCotisations($this->getMother());
+        }
+
+        $identifiantCompte = "E".$this->getIdentifiant();
 
         $mouvements = array();
 
-        foreach($cotisations as $cotisation) {
-            $mouvement = array();
-            $mouvement['categorie'] = $cotisation->getCollectionKey();
-            $mouvement['type'] = $cotisation->getDetailKey();
-            $mouvement['libelle'] = $cotisation->getLibelle();
-            $mouvement['quantite'] = $cotisation->getQuantite();
-            $mouvement['taux'] = $cotisation->getPrix();
-            $mouvement['facture'] = 0;
-            $mouvement['facturable'] = 1;
-            $mouvement['date'] = $this->getCampagne().'-12-10';
-            $mouvement['date_version'] = $this->validation;
-            $mouvement['version'] = $this->version;
+        $rienAFacturer = true;
 
-            $mouvements[] = $mouvement;
+        foreach($cotisations as $cotisation) {
+            $mouvement = DRevMouvement::freeInstance($this);
+            $mouvement->categorie = $cotisation->getCollectionKey();
+            $mouvement->type_hash = $cotisation->getDetailKey();
+            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->quantite = $cotisation->getQuantite();
+            $mouvement->taux = $cotisation->getPrix();
+            $mouvement->facture = 0;
+            $mouvement->facturable = 1;
+            $mouvement->date = $this->getCampagne().'-12-10';
+            $mouvement->date_version = $this->validation;
+            $mouvement->version = $this->version;
+            $mouvement->template = $templateFacture->_id;
+
+            if(isset($cotisationsPrec[$cotisation->getHash()])) {
+                $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+            }
+
+            if($mouvement->quantite) {
+                $rienAFacturer = false;
+            }
+
+            $mouvements[$mouvement->getMD5Key()] = $mouvement;
         }
 
-        return array("E".$this->getIdentifiant() => $mouvements);
+        if($rienAFacturer) {
+            return array($identifiantCompte => array());
+
+        }
+
+        return array($identifiantCompte => $mouvements);
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {
@@ -827,6 +848,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateMouvements() {
+        if($this->hasVersion() && !count($this->getMother()->mouvements)) {
+            return;
+        }
 
         return $this->mouvement_document->generateMouvements();
     }
