@@ -14,8 +14,9 @@ class AbonnementClient extends acCouchdbClient implements FacturableClient {
     }
 
     public function findFacturable($identifiant, $periode) {
+        $abonnement = $this->find(sprintf("ABONNEMENT-%s-%s", $identifiant, $periode));
 
-        return $this->find(sprintf("ABONNEMENT-%s-%s", $identifiant, $periode));
+        return array($abonnement->_id => $abonnement);
     }
 
     public function findByIdentifiantAndDate($identifiant, $date_debut, $date_fin, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
@@ -45,7 +46,7 @@ class AbonnementClient extends acCouchdbClient implements FacturableClient {
         $factures = array();
 
         foreach($ids as $id) {
-            $factures[$id] = FactureClient::getInstance()->find($id, $hydrate);
+            $factures[$id] = AbonnementClient::getInstance()->find($id, $hydrate);
         }
 
         krsort($factures);

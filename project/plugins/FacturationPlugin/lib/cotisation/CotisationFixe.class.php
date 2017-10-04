@@ -3,9 +3,8 @@ class CotisationFixe extends Cotisation
 {
 	public function getQuantite() {
 		$callback = $this->getConfigCallback();
-		$value = $this->getDoc()->$callback();
-
-		if($callback && round($value, self::PRECISION) <= 0) {
+		
+		if($callback && round($this->getDoc()->$callback(), self::PRECISION) <= 0) {
 
 			return 0;
 		}
