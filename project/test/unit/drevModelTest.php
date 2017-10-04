@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(33);
+$t = new lime_test(34);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 
@@ -226,3 +226,9 @@ $f->save();
 $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommé");
+
+$t->comment("Génération d'une facture sans aucun mouvment à facturer");
+
+$f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
+
+$t->ok(!$f, "La facture n'a pas été créé");

@@ -151,12 +151,16 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
 
     public function storeLignesByMouvements($mouvements, $template) {
         foreach ($mouvements as $key => $mouvement) {
-            $configCollection = $template->cotisations->get($mouvement->categorie);
-            $config = $configCollection->details->get($mouvement->type_hash);
-            $ligne = $this->lignes->add($mouvement->categorie);
+            $configCollection = $template->cotisations->get($mouvement["categorie"]);
+            $config = $configCollection->details->get($mouvement["type_hash"]);
+            $ligne = $this->lignes->add($mouvement["categorie"]);
             $ligne->libelle = $configCollection->libelle;
             $ligne->produit_identifiant_analytique = $configCollection->code_comptable;
-            $ligne->origine_mouvements->add($mouvement->getDocument()->_id)->add(null, $mouvement->getKey());
+            foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
+                foreach($mouvKeys as $mouvKey) {
+                    $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
+                }
+            }
             $d = $ligne->details->add();
             $d->libelle = $mouvement["type_libelle"];
             $d->quantite = $mouvement["quantite"];
@@ -169,8 +173,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         }
     }
 
-    public function storeLignes($cotisations) {
-    	foreach ($cotisations as $key => $cotisation) {
+    public function storeLignes($mouvements) {
+    	foreach ($mouvements as $key => $cotisation) {
     		$ligne = $this->lignes->add($key);
     		$ligne->libelle = $cotisation["libelle"];
             $ligne->produit_identifiant_analytique = $cotisation["code_comptable"];

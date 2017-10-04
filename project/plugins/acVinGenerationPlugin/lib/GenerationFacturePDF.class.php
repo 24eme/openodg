@@ -45,6 +45,11 @@ class GenerationFacturePDF extends GenerationPDF {
             }
 
             $facture = FactureClient::getInstance()->createFactureByTemplate($template, $compte, $date_facturation, $message_communication);
+
+            if(!$facture) {
+                continue;
+            }
+
             $facture->save();
             $this->generation->somme += $facture->total_ttc;
             $this->generation->documents->add($cpt, $facture->_id);

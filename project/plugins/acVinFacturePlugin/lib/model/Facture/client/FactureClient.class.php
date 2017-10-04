@@ -45,19 +45,38 @@ class FactureClient extends acCouchdbClient {
 
     public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null) {
         $mouvements = $template->getMouvements($compte->identifiant);
+        $mouvements = $this->aggregateMouvements($mouvements);
 
-        return FactureClient::getInstance()->createDoc($this->aggregateMouvements($mouvements), $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
+        if(!count($mouvements)) {
+
+            return false;
+        }
+
+        return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
     }
 
     public function aggregateMouvements($mouvements) {
         $mouvementsAggreges = array();
 
-        foreach($mouvements as $mouvement) {
-            $key = $mouvement->template.$mouvement->categorie.$mouvement->type_hash.$mouvement->taux;
+        foreach($mouvements as $mouv) {
+            $key = $mouv->template.$mouv->categorie.$mouv->type_hash.$mouv->taux;
+
             if(!isset($mouvementsAggreges[$key])) {
-                $mouvementsAggreges[$key] = $mouvement;
+                $mouvementsAggreges[$key] = array(
+                    "categorie" => $mouv->categorie,
+                    "type_hash" => $mouv->type_hash,
+                    "type_libelle" => $mouv->type_libelle,
+                    "quantite" => $mouv->quantite,
+                    "taux" => $mouv->taux,
+                    "origines" => array($mouv->getDocument()->_id => array($mouv->getKey())),
+                );
             } else {
-                $mouvementsAggreges[$key]->quantite += $mouvement->quantite;
+                $mouvementsAggreges[$key]["type_libelle"] = $mouv->type_libelle;
+                $mouvementsAggreges[$key]["quantite"] += $mouv->quantite;
+                if(!isset($mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id])) {
+                    $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id] = array();
+                }
+                $mouvementsAggreges[$key]["origines"][$mouv->getDocument()->_id][] = $mouv->getKey();
             }
         }
 
@@ -78,6 +97,7 @@ class FactureClient extends acCouchdbClient {
         if(trim($message_communication)) {
           $facture->addOneMessageCommunication($message_communication);
         }
+
         return $facture;
     }
 
@@ -269,6 +289,12 @@ class FactureClient extends acCouchdbClient {
         }
 
         $f = $this->createFactureByTemplate($template, $compte, $date_facturation);
+
+        if(!$f) {
+
+            return false;
+        }
+
         $f->save();
 
         $generation->somme += $f->total_ttc;
