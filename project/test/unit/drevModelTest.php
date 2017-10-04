@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(34);
+$t = new lime_test(36);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 
@@ -214,6 +214,7 @@ $drevM4 = $drevM3->generateModificative();
 $drevM4->save();
 
 $produit1M4 = $drevM4->get($produit1->getHash());
+$produit1M4->superficie_revendique = 210;
 $produit1M4->volume_revendique = 140;
 
 $drevM4->validate();
@@ -226,6 +227,8 @@ $f->save();
 $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommé");
+$t->is(count($f->lignes->odg_ava->details), 3, "La cotisation odg ava à 3 lignes");
+$t->is($f->lignes->odg_ava->details[1]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
 
 $t->comment("Génération d'une facture sans aucun mouvment à facturer");
 
