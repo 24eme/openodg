@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(30);
+$t = new lime_test(33);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 
@@ -197,3 +197,32 @@ $drevM2->validateOdg();
 $drevM2->save();
 
 $t->is(count($drevM2->mouvements->get($compteIdentifiant)), 0, "La DRev modificatrice a aucun mouvement");
+
+$t->comment("Génération de 2 modificatrices");
+
+$drevM3 = $drevM2->generateModificative();
+$drevM3->save();
+
+$produit1M3 = $drevM3->get($produit1->getHash());
+$produit1M3->volume_revendique = 120;
+
+$drevM3->validate();
+$drevM3->validateOdg();
+$drevM3->save();
+
+$drevM4 = $drevM3->generateModificative();
+$drevM4->save();
+
+$produit1M4 = $drevM4->get($produit1->getHash());
+$produit1M4->volume_revendique = 140;
+
+$drevM4->validate();
+$drevM4->validateOdg();
+$drevM4->save();
+
+$f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
+$f->save();
+
+$t->ok($f->_rev, "La facture ".$f->_id." a une révision");
+$t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
+$t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommé");

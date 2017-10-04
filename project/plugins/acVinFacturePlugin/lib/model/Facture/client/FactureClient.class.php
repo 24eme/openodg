@@ -44,10 +44,24 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null) {
-
         $mouvements = $template->getMouvements($compte->identifiant);
 
-        return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
+        return FactureClient::getInstance()->createDoc($this->aggregateMouvements($mouvements), $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
+    }
+
+    public function aggregateMouvements($mouvements) {
+        $mouvementsAggreges = array();
+
+        foreach($mouvements as $mouvement) {
+            $key = $mouvement->template.$mouvement->categorie.$mouvement->type_hash.$mouvement->taux;
+            if(!isset($mouvementsAggreges[$key])) {
+                $mouvementsAggreges[$key] = $mouvement;
+            } else {
+                $mouvementsAggreges[$key]->quantite += $mouvement->quantite;
+            }
+        }
+
+        return array_values($mouvementsAggreges);
     }
 
     public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
@@ -67,8 +81,8 @@ class FactureClient extends acCouchdbClient {
         return $facture;
     }
 
-      public function regenerate($facture_or_id) {
-          throw new sfException("Pas encore adapté");
+    public function regenerate($facture_or_id) {
+        throw new sfException("Pas encore adapté");
         $facture = $facture_or_id;
 
         if(is_string($facture)) {
