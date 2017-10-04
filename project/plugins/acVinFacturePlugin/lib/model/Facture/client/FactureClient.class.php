@@ -43,6 +43,13 @@ class FactureClient extends acCouchdbClient {
         return $this->startkey('FACTURE-'.$idClient.'-'.$date.'00')->endkey('FACTURE-'.$idClient.'-'.$date.'99')->execute($hydrate);
     }
 
+    public function createFactureByTemplate($template, $compte, $date_facturation = null, $message_communication = null) {
+
+        $mouvements = $template->getMouvements($compte->identifiant);
+
+        return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
+    }
+
     public function createDoc($mouvements, $compte, $date_facturation = null, $message_communication = null, $arguments = array(), $template = null) {
         $facture = new Facture();
         $facture->storeDatesCampagne($date_facturation);
@@ -61,7 +68,7 @@ class FactureClient extends acCouchdbClient {
     }
 
       public function regenerate($facture_or_id) {
-
+          throw new sfException("Pas encore adapté");
         $facture = $facture_or_id;
 
         if(is_string($facture)) {
@@ -233,7 +240,7 @@ class FactureClient extends acCouchdbClient {
       return $mouvementsBySoc;
     }
 
-    public function createFactureByCompte($template, $compte_or_id, $date_facturation = null) {
+    public function createFactureByTemplateWithGeneration($template, $compte_or_id, $date_facturation = null) {
         $generation = new Generation();
         $generation->date_emission = date('Y-m-d-H:i');
         $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
@@ -247,41 +254,13 @@ class FactureClient extends acCouchdbClient {
             $compte = CompteClient::getInstance()->find($compte_or_id);
         }
 
-        $cotisations = $template->generateCotisations($compte, $template->campagne);
-
-        if(!count($cotisations)) {
-          return null;
-        }
-
-        $f = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, null, $template->arguments->toArray(true, false));
+        $f = $this->createFactureByTemplate($template, $compte, $date_facturation);
         $f->save();
 
         $generation->somme += $f->total_ttc;
         $generation->add('documents')->add($cpt, $f->_id);
         $generation->libelle = $compte->nom_a_afficher;
         $cpt++;
-
-        return $generation;
-    }
-
-    public function createFacturesBySoc($generationFactures, $date_facturation, $message_communication = null) {
-
-        $generation = new Generation();
-        $generation->date_emission = date('Y-m-d-H:i');
-        $generation->type_document = GenerationClient::TYPE_DOCUMENT_FACTURES;
-        $generation->documents = array();
-        $generation->somme = 0;
-        $cpt = 0;
-
-        foreach ($generationFactures as $societeID => $mouvementsSoc) {
-            $societe = SocieteClient::getInstance()->find($societeID);
-            $f = $this->createDoc($mouvementsSoc, $societe, $date_facturation, $message_communication);
-            $f->save();
-
-            $generation->somme += $f->total_ttc;
-            $generation->add('documents')->add($cpt, $f->_id);
-            $cpt++;
-        }
 
         return $generation;
     }

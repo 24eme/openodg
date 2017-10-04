@@ -90,6 +90,37 @@ class TemplateFacture extends BaseTemplateFacture
 	// 	return $cotisations;
 	// }
 
+	public function getMouvements($compteIdentifiant, $force = false) {
+		$mouvements = array();
+		foreach ($this->docs as $docModele) {
+			$documents = $this->getDocumentFacturable($docModele, $compteIdentifiant, $this->getCampagne());
+
+			foreach($documents as $doc) {
+				if(!count($doc->mouvements)) {
+					$document->generateMouvements();
+					$document->save();
+				}
+
+				if(!$doc->exist('mouvements/'.$compteIdentifiant)) {
+					continue;
+				}
+
+				$mouvs = $doc->mouvements->get($compteIdentifiant);
+
+				foreach($mouvs as $m) {
+					if((!$m->isFacturable() || $m->facture) && !$force) {
+
+						continue;
+					}
+
+					$mouvements[] = $m;
+				}
+			}
+		}
+
+		return $mouvements;
+	}
+
 	public function getDocumentFacturable($docModele, $identifiant, $campagne)
 	{
 		$client = acCouchdbManager::getClient($docModele);

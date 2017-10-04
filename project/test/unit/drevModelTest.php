@@ -97,7 +97,7 @@ $t->comment("Facturation de la DRev");
 
 $dateFacturation = date('Y-m-d');
 
-$f = FactureClient::getInstance()->createDoc($drev->mouvements->get($compte->identifiant), $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false), $templateFacture);
+$f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
 $f->save();
 
 $superficieHaVinifie = 0;
@@ -158,7 +158,7 @@ $mouvementM1 = $drevM1->mouvements->get($compteIdentifiant)->getFirst();
 
 $t->comment("Facturation de la modificatrice");
 
-$f = FactureClient::getInstance()->createDoc($drevM1->mouvements->get($compte->identifiant), $compte, $dateFacturation, null, $templateFacture->arguments->toArray(true, false), $templateFacture);
+$f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
 $f->save();
 
 $superficieHaVinifie = 0;
