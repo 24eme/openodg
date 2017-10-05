@@ -24,8 +24,6 @@ Abonnement:
                     type: collection
                     definition:
                       fields:
-                        facture: { type: integer }
-                        facturable: { type: integer }
                         categorie: {  }
                         type_hash: {  }
                         type_libelle: {  }

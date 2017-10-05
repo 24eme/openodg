@@ -54,6 +54,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
         }
 
         $this->validation = $date;
+        $this->generateMouvements();
     }
 
     public function isValide() {
@@ -96,7 +97,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     {
         return $this->volume_obtenu;
     }
-    
+
     protected function doSave() {
     	$this->piece_document->generatePieces();
     }
@@ -109,8 +110,47 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     }
 
     public function getMouvementsCalcule() {
+        $templateFacture = $this->getTemplateFacture();
+        $cotisations = $templateFacture->generateCotisations($this);
 
-        return array("E".$this->getIdentifiant() => array("TEMPLATE-FACTURE-MARC-".$this->campagne => array("facturable" => 1, "facture" => 0)));
+        $identifiantCompte = "E".$this->getIdentifiant();
+
+        $mouvements = array();
+
+        $rienAFacturer = true;
+
+        foreach($cotisations as $cotisation) {
+            $mouvement = DRevMarcMouvement::freeInstance($this);
+            $mouvement->categorie = $cotisation->getCollectionKey();
+            $mouvement->type_hash = $cotisation->getDetailKey();
+            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->quantite = $cotisation->getQuantite();
+            $mouvement->taux = $cotisation->getPrix();
+            $mouvement->facture = 0;
+            $mouvement->facturable = 1;
+            $mouvement->date = $this->getCampagne()."110-10";
+            $mouvement->date_version = $this->validation;
+            $mouvement->version = null;
+            $mouvement->template = $templateFacture->_id;
+
+            if($mouvement->quantite) {
+                $rienAFacturer = false;
+            }
+
+            $mouvements[$mouvement->getMD5Key()] = $mouvement;
+        }
+
+        if($rienAFacturer) {
+
+            return array($identifiantCompte => array());
+        }
+
+        return array($identifiantCompte => $mouvements);
+    }
+
+    public function getTemplateFacture() {
+
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-MARC-".$this->getCampagne());
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {
@@ -148,7 +188,7 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     }
 
     /**** FIN DES MOUVEMENTS ****/
-    
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -162,11 +202,11 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     		'source' => null
     	));
     }
-    
+
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
     }
-    
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('drevmarc_export_pdf', $this);
     }
@@ -174,6 +214,6 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', array('id' => $id));
     }
-    
+
     /**** FIN DES PIECES ****/
 }
