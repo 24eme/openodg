@@ -54,7 +54,16 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
         }
 
         $this->validation = $date;
-        $this->generateMouvements();
+    }
+
+    public function devalidate() {
+        $this->validation = null;
+        $this->validation_odg = null;
+        $this->remove('etape');
+        $this->add('etape');
+
+        $this->remove('mouvements');
+        $this->add('mouvements');
     }
 
     public function isValide() {
@@ -111,6 +120,11 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
 
     public function getMouvementsCalcule() {
         $templateFacture = $this->getTemplateFacture();
+
+        if(!$templateFacture) {
+            return array();
+        }
+
         $cotisations = $templateFacture->generateCotisations($this);
 
         $identifiantCompte = "E".$this->getIdentifiant();
@@ -159,6 +173,15 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     }
 
     public function generateMouvements() {
+        if(!$this->validation_odg) {
+
+            return false;
+        }
+
+        if(!$this->getTemplateFacture()) {
+
+            return false;
+        }
 
         return $this->mouvement_document->generateMouvements();
     }

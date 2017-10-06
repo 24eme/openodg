@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(19);
+$t = new lime_test(20);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -37,6 +37,10 @@ $drevMarc->save();
 $t->ok($drevMarc->_rev, "La drev marc ".$drevMarc->_id." a une révision ");
 $t->is($drevMarc->validation, date('Y-m-d'), "La date de validation est renseigné");
 $t->is($drevMarc->validation_odg, date('Y-m-d'), "La date de validation ODG est renseigné");
+$t->is(count($drevMarc->mouvements), 0, "Les mouvements n'ont pas été générés");
+
+$drevMarc->generateMouvements();
+$drevMarc->save();
 
 $t->ok($drevMarc->mouvements->exist($vitiCompte->identifiant), "Les mouvements ont été générés");
 $t->is(count($drevMarc->mouvements->get($vitiCompte->identifiant)), 2, "2 mouvements ont été générés");
