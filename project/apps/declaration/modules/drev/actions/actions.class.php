@@ -65,13 +65,10 @@ class drevActions extends sfActions {
 
     public function executeDevalidation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
-        if (!$this->getUser()->isAdmin()) {
-          $this->secure(DRevSecurity::DEVALIDATION , $drev);
-        }
 
-        $drev->validation = null;
-        $drev->validation_odg = null;
-        $drev->add('etape', null);
+        $this->secure(DRevSecurity::DEVALIDATION , $drev);
+
+        $drev->devalidate();
         $drev->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
@@ -663,7 +660,6 @@ class drevActions extends sfActions {
         $drev = $this->getRoute()->getDRev();
 
         $drev_modificative = $drev->generateModificative();
-        $drev_modificative->etape = null;
         $drev_modificative->save();
 
         return $this->redirect('drev_edit', $drev_modificative);

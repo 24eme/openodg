@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(36);
+$t = new lime_test(45);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 
@@ -72,6 +72,7 @@ $t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqu
 
 $t->comment("Validation");
 
+$drev->add('etape', 'validation');
 $drev->validate();
 $drev->save();
 
@@ -79,6 +80,18 @@ $compteIdentifiant = $societe->identifiant;
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, null, "La DRev n'est pas encore validé par l'odg");
+$t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
+
+$drev->validateOdg();
+$drev->save();
+
+$t->is($drev->validation_odg, date('Y-m-d'), "La DRev est validé par l'odg");
+$t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
+
+$t->comment("Génération des mouvments");
+
+$drev->generateMouvements();
+$drev->save();
 
 $t->is(count($drev->mouvements->get($compteIdentifiant)), 6, "La DRev a 6 mouvements");
 
@@ -88,10 +101,27 @@ $t->is($mouvement->categorie, "odg_ava", "La catégorie du mouvement est odg_ava
 $t->ok($mouvement->facture === 0, "Le mouvement est non facture");
 $t->ok($mouvement->facturable === 1, "Le mouvement est facturable");
 
-$drev->validateOdg();
+$t->comment("Dévalidation et Revalidation");
+
+$drev->devalidate();
 $drev->save();
 
-$t->is($drev->validation_odg, date('Y-m-d'), "La DRev est validé par l'odg");
+$t->is($drev->validation, null, "La DRev n'a plus de date validation");
+$t->is($drev->validation_odg, null, "La DRev n'a plus de date de validation par l'odg");
+$t->is($drev->etape, null, "L'étape est nul");
+$t->is(count($drev->mouvements), 0, "Les mouvements ont été supprimés");
+
+$drev->generateMouvements();
+$drev->save();
+
+$t->is(count($drev->mouvements), 0, "Aucun mouvment n'a été généré car la drev n'est pas validé");
+
+$drev->validate();
+$drev->validateOdg();
+$drev->generateMouvements();
+$drev->save();
+
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 6, "La DRev a 6 mouvements");
 
 $t->comment("Facturation de la DRev");
 
@@ -137,6 +167,7 @@ $drevM1->save();
 
 $t->is($drevM1->_id, $drev->_id."-M01", "L'id de la drev est ".$drev->_id."-M01");
 $t->ok($drevM1->validation === null && $drevM1->validation_odg === null, "La drev modificatrice est dévalidée");
+$t->is(count($drevM1->mouvements), 0, "Les mouvements ont été supprimés");
 
 $drevMaster = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($viti->identifiant, $campagne);
 $t->is($drevM1->_id, $drevMaster->_id, "La récupération de la drev master renvoi la drev ".$drevM1->_id);
@@ -148,8 +179,8 @@ $t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_vinifiee'), "
 
 $drevM1->validate();
 $drevM1->validateOdg();
+$drevM1->generateMouvements();
 $drevM1->save();
-
 $drevM1 = DRevClient::getInstance()->find($drevM1->_id);
 
 $t->is(count($drevM1->mouvements->get($compteIdentifiant)), 6, "La DRev modificatrice a 6 mouvements");
@@ -194,6 +225,7 @@ $drevM2 = $drevM1->generateModificative();
 $drevM2->save();
 $drevM2->validate();
 $drevM2->validateOdg();
+$drevM2->generateMouvements();
 $drevM2->save();
 
 $t->is(count($drevM2->mouvements->get($compteIdentifiant)), 0, "La DRev modificatrice a aucun mouvement");
@@ -226,11 +258,11 @@ $f->save();
 
 $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
-$t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommé");
+$t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommée");
 $t->is(count($f->lignes->odg_ava->details), 3, "La cotisation odg ava à 3 lignes");
 $t->is($f->lignes->odg_ava->details[1]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
 
-$t->comment("Génération d'une facture sans aucun mouvment à facturer");
+$t->comment("Génération d'une facture sans aucun mouvement à facturer");
 
 $f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
 

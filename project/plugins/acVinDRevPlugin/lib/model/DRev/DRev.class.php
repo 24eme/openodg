@@ -453,13 +453,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $this->updatePrelevements();
         $this->cleanDoc();
         $this->validation = $date;
-        $this->generateMouvements();
     }
 
     public function devalidate() {
         $this->validation = null;
         $this->validation_odg = null;
-        $this->add('etape', null);
+        $this->remove('etape');
+        $this->add('etape');
+
+        $this->remove('mouvements');
+        $this->add('mouvements');
     }
 
     public function validateOdg($date = null) {
@@ -797,6 +800,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getMouvementsCalcule() {
         $templateFacture = $this->getTemplateFacture();
+
+        if(!$templateFacture) {
+            return array();
+        }
+
         $cotisations = $templateFacture->generateCotisations($this);
 
         if($this->hasVersion()) {
@@ -848,8 +856,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function generateMouvements() {
-        if($this->hasVersion() && !count($this->getMother()->mouvements)) {
-            return;
+        if(!$this->validation_odg) {
+
+            return false;
+        }
+
+        if(!$this->getTemplateFacture()) {
+
+            return false;
         }
 
         return $this->mouvement_document->generateMouvements();
