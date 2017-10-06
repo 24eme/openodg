@@ -6,6 +6,7 @@ abstract class DocumentSecurity implements SecurityInterface {
     const VALIDATION_ADMIN = 'VALIDATION_ADMIN';
     const VISUALISATION = 'VISUALISATION';
     const DEVALIDATION = 'DEVALIDATION';
+    const MODIFICATRICE = 'MODIFICATRICE';
 
     protected $doc;
     protected $user;
@@ -55,7 +56,17 @@ abstract class DocumentSecurity implements SecurityInterface {
             return false;
         }
 
+        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->doc->validation) {
+
+            return false;
+        }
+
         if(in_array(self::VALIDATION_ADMIN, $droits) && $this->doc->validation_odg) {
+
+            return false;
+        }
+
+        if(in_array(self::DEVALIDATION, $droits) && !$this->doc->validation) {
 
             return false;
         }
@@ -71,6 +82,26 @@ abstract class DocumentSecurity implements SecurityInterface {
         }
 
         if(in_array(self::DEVALIDATION, $droits) && $this->doc instanceof InterfaceMouvementDocument && !$this->doc->isNonFactures()) {
+
+            return false;
+        }
+
+        if(in_array(self::MODIFICATRICE, $droits) && !$this->doc instanceof InterfaceVersionDocument) {
+
+            return false;
+        }
+
+        if(in_array(self::MODIFICATRICE, $droits) && !$this->doc->validation_odg) {
+
+            return false;
+        }
+
+        if(in_array(self::MODIFICATRICE, $droits) && $this->doc->isNonFactures()) {
+
+            return false;
+        }
+
+        if(in_array(self::MODIFICATRICE, $droits) && !$this->doc->isMaster()) {
 
             return false;
         }

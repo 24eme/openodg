@@ -11,7 +11,9 @@
 <div class="page-header no-border">
     <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
     <?php if($drev->isPapier()): ?>
-    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?></small>
+    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?>
+        <span class="btn btn-default-step btn-xs">Facturé</span>
+    <?php endif; ?></small></small>
     <?php elseif($drev->validation): ?>
     <small class="pull-right">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?>
         <span class="btn btn-default-step btn-xs">Facturé</span>
@@ -58,24 +60,25 @@
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
             </a>
     </div>
-
-    <div class="col-xs-2 text-right">
-        <?php if ($drev->validation && DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
-                    <a class="btn btn-xs btn-default-step pull-right" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
-        <?php elseif ($drev->validation && $sf_user->isAdmin() && !$drev->isLectureSeule()): ?>
-                  <a class="btn btn-xs btn-default-step pull-right hidden-xs" onClick="return confirm('Attention, cette DRev a sans doute été facturée. Si vous changez un volume, pensez à en faire part au service comptable !!');" href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Réouvrir</a>
+    <div class="col-xs-5 text-right">
+        <div class="btn-group">
+        <?php if (DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::DEVALIDATION)): ?>
+                    <a class="btn btn-default-step btn-lg" onclick='return confirm("Étes vous sûr de vouloir dévalider cette déclaration")' href="<?php echo url_for('drev_devalidation', $drev) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
         <?php endif; ?>
-    </div>
-    <div class="col-xs-3 text-right">
-        <?php if(!$drev->validation): ?>
-                <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-warning btn-lg"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
-        <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
+        <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::EDITION)): ?>
+                <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-default-step btn-lg"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
+        <?php endif; ?>
+        <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::VALIDATION_ADMIN)): ?>
                 <?php if($drev->hasCompleteDocuments()): ?>
                 <a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
                 <?php else: ?>
                     <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
                 <?php endif; ?>
         <?php endif; ?>
+        <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::MODIFICATRICE)): ?>
+            <a class="btn btn-lg btn-default-step" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier</a>
+        <?php endif; ?>
+        </div>
     </div>
 </div>
 

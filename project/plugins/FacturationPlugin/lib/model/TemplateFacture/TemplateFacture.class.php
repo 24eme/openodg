@@ -26,8 +26,8 @@ class TemplateFacture extends BaseTemplateFacture
 
 			foreach($documents as $doc) {
 				if(!count($doc->mouvements)) {
-					$document->generateMouvements();
-					$document->save();
+					$doc->generateMouvements();
+					$doc->save();
 				}
 
 				if(!$doc->exist('mouvements/'.$compteIdentifiant)) {

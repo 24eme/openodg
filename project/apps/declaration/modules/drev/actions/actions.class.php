@@ -659,6 +659,16 @@ class drevActions extends sfActions {
         return $this->redirect('drev_visualisation', array('sf_subject' => $this->drev, 'service' => isset($service) ? $service : null));
     }
 
+    public function executeModificative(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+
+        $drev_modificative = $drev->generateModificative();
+        $drev_modificative->etape = null;
+        $drev_modificative->save();
+
+        return $this->redirect('drev_edit', $drev_modificative);
+    }
+
     public function executePDF(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);

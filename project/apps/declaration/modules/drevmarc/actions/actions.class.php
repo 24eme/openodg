@@ -177,8 +177,8 @@ class drevmarcActions extends sfActions {
     }
 
     public function executeConfirmation(sfWebRequest $request) {
-        $this->secure(DRevMarcSecurity::VISUALISATION, $drevmarc);
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+        $this->secure(DRevMarcSecurity::VISUALISATION, $this->drevmarc);
     }
 
     public function executeVisualisation(sfWebRequest $request) {
