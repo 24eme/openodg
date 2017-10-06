@@ -204,5 +204,8 @@ abstract class acCouchdbDocument extends acCouchdbDocumentStorable {
             $this->_rev = null;
         }
         $this->_id = null;
+        if($this->exist('_attachments')) {
+            $this->remove('_attachments');
+        }
     }
 }
