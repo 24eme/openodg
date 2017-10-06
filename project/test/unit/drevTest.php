@@ -2,19 +2,24 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(45);
+$t = new lime_test(51);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
+$compte = $viti->getCompte();
 
-//Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $drev = DRevClient::getInstance()->find($k);
     $drev->delete(false);
 }
 
+foreach(FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, acCouchdbClient::HYDRATE_JSON) as $k => $v) {
+    $facture = FactureClient::getInstance()->find($k);
+    $facture->delete(false);
+}
+
+
 $campagne = (date('Y')-1)."";
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
-$compte = $viti->getCompte();
 $societe = $compte;
 
 $t->comment("Création d'une DRev");
@@ -29,6 +34,13 @@ $drev->storeDeclarant();
 $drev->save();
 
 $t->is($drev->declarant->raison_sociale, $viti->raison_sociale, "La raison sociale est celle du viti : ".$viti->raison_sociale);
+
+$t->comment("Stockage de la DR en attachments");
+
+$drev->storeAsAttachment("csv", "DR.csv", "text/csv");
+$drev->storeAsAttachment("pdf", "DR.pdf", "application/pdf");
+$t->is(file_get_contents($drev->getAttachmentUri('DR.csv')), "csv", "Le csv de la DR est récupérable");
+$t->is(file_get_contents($drev->getAttachmentUri('DR.pdf')), "pdf", "Le pdf de la DR est récupérable");
 
 $t->comment("Saisie des volumes");
 
@@ -81,6 +93,7 @@ $compteIdentifiant = $societe->identifiant;
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, null, "La DRev n'est pas encore validé par l'odg");
 $t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
+$t->is($drev->pieces[0]->libelle, "Revendication des appellations viticoles 2016 (Télédéclaration)", "Contrôle sur le libellé du document (pièces)");
 
 $drev->validateOdg();
 $drev->save();
@@ -165,6 +178,9 @@ $t->comment("Génération d'une modificatrice");
 $drevM1 = $drev->generateModificative();
 $drevM1->save();
 
+$t->is(file_get_contents($drevM1->getAttachmentUri('DR.csv')), "csv", "Le csv de la DR est récupérable");
+$t->is(file_get_contents($drevM1->getAttachmentUri('DR.pdf')), "pdf", "Le pdf de la DR est récupérable");
+
 $t->is($drevM1->_id, $drev->_id."-M01", "L'id de la drev est ".$drev->_id."-M01");
 $t->ok($drevM1->validation === null && $drevM1->validation_odg === null, "La drev modificatrice est dévalidée");
 $t->is(count($drevM1->mouvements), 0, "Les mouvements ont été supprimés");
@@ -181,6 +197,9 @@ $drevM1->validate();
 $drevM1->validateOdg();
 $drevM1->generateMouvements();
 $drevM1->save();
+
+$t->is($drevM1->pieces[0]->libelle, "Revendication des appellations viticoles 2016 Version 1 (Télédéclaration)", "Contrôle sur le libellé du document (pièces) de la modificatrice");
+
 $drevM1 = DRevClient::getInstance()->find($drevM1->_id);
 
 $t->is(count($drevM1->mouvements->get($compteIdentifiant)), 6, "La DRev modificatrice a 6 mouvements");

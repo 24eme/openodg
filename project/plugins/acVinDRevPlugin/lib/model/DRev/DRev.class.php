@@ -156,6 +156,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
     }
 
+    public function getAttachmentUri($filename) {
+        if(!$this->exist('_attachments/'.$filename) && preg_match('/^DR*/', $filename) && $this->hasVersion()) {
+
+            return $this->getMother()->getAttachmentUri($filename);
+        }
+
+        return parent::getAttachmentUri($filename);
+    }
+
     public function getCSV() {
         $csv = new DRCsvFile($this->getAttachmentUri('DR.csv'));
         return $csv->getCsvAcheteur($this->identifiant);
@@ -900,10 +909,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getAllPieces() {
     	$complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
     	$complement .= ($this->isSauvegarde())? ' Non facturé' : '';
-    	return (!$this->getValidation())? array() : array(array(
+        $version = ($this->hasVersion()) ? ' Version '.(str_replace("M", "", $this->version)*1) : "";
+
+        return (!$this->getValidation())? array() : array(array(
     		'identifiant' => $this->getIdentifiant(),
     		'date_depot' => $this->getValidation(),
-    		'libelle' => 'Revendication des appellations viticoles '.$this->campagne.' '.$complement,
+            'libelle' => 'Revendication des appellations viticoles '.$this->campagne.$version.' '.$complement,
     		'mime' => Piece::MIME_PDF,
     		'visibilite' => 1,
     		'source' => null
