@@ -30,7 +30,7 @@ class declarationActions extends sfActions {
     public function executeDoc(sfWebRequest $request) {
         $doc_id = $request->getParameter("id");
 
-        if(!preg_match("/^([A-Z]+)-([0-9]+)-[0-9]+$/", $doc_id, $matches)) {
+        if(!preg_match("/^([A-Z]+)-([0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
