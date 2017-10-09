@@ -844,6 +844,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
             }
 
+            if($this->hasVersion() && !$mouvement->quantite) {
+                continue;
+            }
+
             if($mouvement->quantite) {
                 $rienAFacturer = false;
             }

@@ -202,7 +202,7 @@ $t->is($drevM1->pieces[0]->libelle, "Revendication des appellations viticoles 20
 
 $drevM1 = DRevClient::getInstance()->find($drevM1->_id);
 
-$t->is(count($drevM1->mouvements->get($compteIdentifiant)), 6, "La DRev modificatrice a 6 mouvements");
+$t->is(count($drevM1->mouvements->get($compteIdentifiant)), 2, "La DRev modificatrice a 2 mouvements");
 
 $mouvementM1 = $drevM1->mouvements->get($compteIdentifiant)->getFirst();
 
@@ -222,12 +222,6 @@ foreach($f->lignes->get('odg_ava')->details as $ligne) {
 
     if(preg_match("/Tranche de [0-9]+\.*[0-9]* ares \(([0-9]+\.*[0-9]*) ares\)/", $ligne->libelle, $matches)) {
         $superficieAresRevendique += $matches[1]*1.0;
-    }
-};
-
-foreach($f->lignes->get('inao')->details as $ligne) {
-    if(preg_match("/hl de vin revendiqué/", $ligne->libelle)) {
-        $volumeHlRevendique += $ligne->quantite;
     }
 };
 
@@ -278,8 +272,8 @@ $f->save();
 $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M4->volume_revendique - $produit1M1->volume_revendique, "La quantité est sommée");
-$t->is(count($f->lignes->odg_ava->details), 3, "La cotisation odg ava à 3 lignes");
-$t->is($f->lignes->odg_ava->details[1]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
+$t->is(count($f->lignes->odg_ava->details), 1, "La cotisation odg ava à 1 ligne");
+$t->is($f->lignes->odg_ava->details[0]->libelle, "Tranche de 50 ares (".$drevM4->getSurfaceFacturable()." ares) à partir du 51ème are", "Le libellé provient de la dernière modificatrice");
 
 $t->comment("Génération d'une facture sans aucun mouvement à facturer");
 
