@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(55);
+$t = new lime_test(56);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -287,6 +287,7 @@ $drevM5->save();
 
 $produit1M5 = $drevM5->get($produit1->getHash());
 $produit1M5->superficie_revendique = 60;
+$produit1M5->superficie_vinifiee = 120;
 $produit1M5->volume_revendique = 90;
 
 $drevM5->validate();
@@ -298,5 +299,6 @@ $f->save();
 
 $t->ok($f->_rev, "La facture ".$f->_id." a une révision");
 $t->ok($f->isAvoir(), "La facture est un avoir");
+$t->ok($f->getTaxe() < 0, "La facture a de la TVA a payé");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M5->volume_revendique - $produit1M4->volume_revendique, "La quantité est sommée");
