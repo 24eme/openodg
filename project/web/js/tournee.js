@@ -969,7 +969,8 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.showCepage = function(prelevement) {
-        $scope.active = 'cepage_' + prelevement.anonymat_degustation;
+        console.log(prelevement);
+        $scope.active = 'cepage_' + prelevement.anonymat_degustation + prelevement.degustation_id + prelevement.hash_produit;
         $scope.transmission = false;
         if(!$('.select2-input').length) {
             $('.select2autocomplete').select2({allowClear: true, placeholder: true, openOnEnter: true});
