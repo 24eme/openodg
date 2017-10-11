@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
-$t = new lime_test(20);
+$t = new lime_test(31);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -19,7 +19,7 @@ $t->comment("Création d'une déclaration d'ouverture de travaux de disitilliati
 $dateDebutDistillation = date("Y")."-03-01";
 $dateFinDistillation = date("Y")."-03-31";
 
-$travauxMarc = TravauxMarcClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$travauxMarc = TravauxMarcClient::getInstance()->createDoc($viti->identifiant, $campagne, true);
 $travauxMarc->save();
 
 $t->is($travauxMarc->_id, "TRAVAUXMARC-".$viti->identifiant."-".$campagne, "L'id du doc est "."TRAVAUXMARC-".$viti->identifiant."-".$campagne);
@@ -131,14 +131,27 @@ if($travauxMarc->storeEtape(TravauxMarcEtapes::ETAPE_VALIDATION)) {
 }
 $t->is($travauxMarc->etape, TravauxMarcEtapes::ETAPE_VALIDATION, "L'étape est " . TravauxMarcEtapes::ETAPE_VALIDATION);
 
-$travauxMarc->validate();
+$formValidation = new TravauxMarcValidationForm($travauxMarc);
+
+$valuesValidation = array(
+    'date' => "01/12/".date('Y'),
+    '_revision' => $travauxMarc->_rev,
+);
+
+$formValidation->bind($valuesValidation);
+
+$t->ok($formValidation->isValid(), 'Le formulaire est valide');
+
+$t->is($travauxMarc->validation, null, "La date validation n'existe pas");
+
+$travauxMarc->validate($formValidation->getValue("date"));
 $travauxMarc->save();
 
-$t->is($travauxMarc->validation, date('Y-m-d'), "La date validation est la date du jour");
+$t->is($travauxMarc->validation, "2017-12-01", "La date validation est celle choisi dans le formulaire");
 
 $travauxMarc->validateOdg();
 $travauxMarc->save();
 
 $t->is($travauxMarc->validation_odg, date('Y-m-d'), "La date validation par l'odg est la date du jour");
 
-$t->is($travauxMarc->pieces[0]->libelle, "Déclaration d'ouverture des travaux de distillation ".$campagne." (Télédéclaration)", "Contrôle sur le libellé du document (pièces)");
+$t->is($travauxMarc->pieces[0]->libelle, "Déclaration d'ouverture des travaux de distillation ".$campagne." (Papier)", "Contrôle sur le libellé du document (pièces)");

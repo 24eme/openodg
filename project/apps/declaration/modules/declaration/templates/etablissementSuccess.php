@@ -32,6 +32,7 @@
 <div class="row">
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php include_component('parcellaire', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
     <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>

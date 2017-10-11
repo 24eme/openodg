@@ -559,6 +559,7 @@ drev_export_pdf:
     sf_method: [get]
 
 #DREVMARC
+
 drevmarc_create:
   url: /drevmarc/creation/:id
   param: { module: drevmarc, action: create }
@@ -669,13 +670,144 @@ drevmarc_devalidation:
   requirements:
     sf_method: [get]
 
-
 drevmarc_export_pdf:
   url: /drevmarc/pdf/:id
   param: { module: drevmarc, action: PDF }
   class: DRevMarcRoute
   options:
     model:    DRevMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
+#Travaux Marc
+
+travauxmarc_create:
+  url: /travauxmarc/creation/:id
+  param: { module: travauxmarc, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+travauxmarc_create_papier:
+  url: /travauxmarc/creation-papier/:id
+  param: { module: travauxmarc, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+travauxmarc_edit:
+  url: /travauxmarc/edition/:id
+  param: { module: travauxmarc, action: edit }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
+travauxmarc_exploitation:
+  url: /travauxmarc/exploitation/:id
+  param: { module: travauxmarc, action: exploitation }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+travauxmarc_fournisseurs:
+  url: /travauxmarc/fournisseurs/:id
+  param: { module: travauxmarc, action: fournisseurs }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+travauxmarc_distillation:
+  url: /travauxmarc/distillation/:id
+  param: { module: travauxmarc, action: distillation }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+travauxmarc_validation:
+  url: /travauxmarc/validation/:id
+  param: { module: travauxmarc, action: validation }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+travauxmarc_validation_admin:
+  url: /travauxmarc/validation_admin/:id
+  param: { module: travauxmarc, action: validationAdmin }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
+travauxmarc_confirmation:
+  url: /travauxmarc/confirmation/:id
+  param: { module: travauxmarc, action: confirmation }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+travauxmarc_visualisation:
+  url: /travauxmarc/visualisation/:id
+  param: { module: travauxmarc, action: visualisation }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+travauxmarc_delete:
+  url: /travauxmarc/suppression/:id
+  param: { module: travauxmarc, action: delete }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
+travauxmarc_devalidation:
+  url: /travauxmarc/devalidation/:id
+  param: { module: travauxmarc, action: devalidation }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
+    type:     object
+  requirements:
+    sf_method: [get]
+
+travauxmarc_export_pdf:
+  url: /travauxmarc/pdf/:id
+  param: { module: travauxmarc, action: PDF }
+  class: TravauxMarcRoute
+  options:
+    model:    TravauxMarc
     type:     object
   requirements:
     sf_method: [get]
@@ -1214,7 +1346,7 @@ parcellaire_cremant_create_papier:
     type:     object
   requirements:
     sf_method: [get]
-    
+
 intention_cremant_create:
   url: /intentionCremant/creation/:id
   param: { module: intentionCremant, action: create }

@@ -6,7 +6,7 @@ class TravauxMarcFournisseursForm extends acCouchdbObjectForm {
             $this->embedForm($fournisseur->getKey(), new TravauxMarcFournisseurForm($fournisseur));
         }
 
-        $this->widgetSchema->setNameFormat("travauxmarc_fournisseurs[%%s]");
+        $this->widgetSchema->setNameFormat("travauxmarc_fournisseurs[%s]");
     }
 
     public function bind(array $taintedValues = null, array $taintedFiles = null) {
@@ -18,7 +18,7 @@ class TravauxMarcFournisseursForm extends acCouchdbObjectForm {
         }
 
         foreach ($taintedValues as $key => $values) {
-            if (!is_array($values) || array_key_exists($key, $this)) {
+            if (!is_array($values) || array_key_exists($key, $this->embeddedForms)) {
                 continue;
             }
             $this->embedForm($key, new TravauxMarcFournisseurForm($this->getObject()->add()));

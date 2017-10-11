@@ -26,6 +26,8 @@ class TravauxMarcDistillationForm extends acCouchdbObjectForm
         $formAdresse->setValidator('commune', new sfValidatorString(array('required' => false)));
 
         $this->embedForm('adresse_distillation', $formAdresse);
+
+        $this->widgetSchema->setNameFormat("travauxmarc_distillation[%s]");
     }
 
 }
