@@ -285,7 +285,7 @@ class DRevValidation extends DocumentValidation {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(),       $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
     }
-    
+
     protected function controleEngagementVCI() {
         if($this->document->isPapier()) {
             return;
@@ -390,7 +390,7 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleRecolte($produit) {
-        if($produit->getConfig()->getRendement() !== null && $produit->detail->volume_total && $produit->detail->superficie_total && round(($produit->detail->volume_total / $produit->detail->superficie_total)*100, 2) > $produit->getConfig()->getRendement()) {
+        if($produit->getConfig()->getRendement() !== null && $produit->detail->volume_total && $produit->detail->superficie_total && round(($produit->detail->volume_total / $produit->detail->superficie_total), 2) > $produit->getConfig()->getRendement()) {
             $this->addPoint(self::TYPE_ERROR, 'dr_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
     }
@@ -401,7 +401,7 @@ class DRevValidation extends DocumentValidation {
             return;
         }
 
-        if($produit->getConfig()->rendement_drev !== null && round(($produit->volume_revendique_sans_vci / $produit->superficie_revendique)*100, 2) > $produit->getConfig()->rendement_drev) {
+        if($produit->getConfig()->rendement_drev !== null && round(($produit->volume_revendique_avec_vci / $produit->superficie_revendique), 2) > $produit->getConfig()->rendement_drev) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
 
@@ -417,11 +417,11 @@ class DRevValidation extends DocumentValidation {
             $this->addPoint(self::TYPE_ERROR, 'vci_stock_utilise', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 
-        if($produit->getConfig()->getRendementVci() !== null && round($produit->getConfig()->getRendementVci() * $produit->superficie_revendique / 100, 2) < round($produit->vci, 2)) {
+        if($produit->getConfig()->getRendementVci() !== null && round($produit->getConfig()->getRendementVci() * $produit->superficie_revendique, 2) < round($produit->vci, 2)) {
             $this->addPoint(self::TYPE_ERROR, 'vci_rendement_annee', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 
-        if($produit->getConfig()->rendement_vci_total !== null && round($produit->getConfig()->rendement_vci_total * $produit->superficie_revendique / 100, 2) < $produit->vci_stock_final) {
+        if($produit->getConfig()->rendement_vci_total !== null && round($produit->getConfig()->rendement_vci_total * $produit->superficie_revendique, 2) < $produit->vci_stock_final) {
             $this->addPoint(self::TYPE_ERROR, 'vci_rendement_total', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 

@@ -64,11 +64,11 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
             $drev->add('papier', 1);
         }
 
-        $drev_previous = $this->find(sprintf("DREV-%s-%s", $identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getPrevious($campagne)));
+        /*$drev_previous = $this->find(sprintf("DREV-%s-%s", $identifiant, ConfigurationClient::getInstance()->getCampagneManager()->getPrevious($campagne)));
 
         if($drev_previous) {
             $drev->updateFromDRev($drev_previous);
-        }
+        }*/
 
         return $drev;
     }

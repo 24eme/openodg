@@ -764,6 +764,25 @@
 
     }
 
+    $.initCoordonneesForms = function ()
+    {
+        $('#coordonnees_modification .panel-heading span.clickable').on("click", function (e) {
+            if ($(this).hasClass('panel-collapsed')) {
+                // expand the panel
+                $(this).parents('.panel').find('.panel-body').slideDown();
+                $(this).removeClass('panel-collapsed');
+                $(this).find('i').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+                $(this).find('.label-edit').html('Edition');
+            } else {
+                // collapse the panel
+                $(this).parents('.panel').find('.panel-body').slideUp();
+                $(this).addClass('panel-collapsed');
+                $(this).find('i').removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+                $(this).find('.label-edit').html('Editer');
+            }
+        });
+    };
+
     /* =================================================================================== */
     /* FUNCTIONS CALL */
     /* =================================================================================== */
@@ -781,6 +800,7 @@
         $.initDynamicCollection();
         $.initTypeahead();
         $.initTableCheckbox();
+        $.initCoordonneesForms();
         $('input.num_float').saisieNum(true);
         $('input.num_int').saisieNum(false);
         $('a[data-toggle=tooltip], button[data-toggle=tooltip], span[data-toggle=tooltip]').tooltip({'container': 'body'});

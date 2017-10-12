@@ -734,7 +734,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     /**** DR ****/
 
     public function getRendement() {
-        return 70;
+        return 100;
 
         return $this->getRendementCepage();
     }
@@ -811,7 +811,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getRendementDrev() {
 
-        return 50.0;
+        return 51.0;
     }
 
     public function hasRendementVci() {
