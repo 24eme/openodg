@@ -125,4 +125,24 @@ class TravauxMarc extends BaseTravauxMarc implements InterfaceDeclarantDocument,
     }
 
     /**** FIN DES PIECES ****/
+
+    public function getDateDistillationFr() {
+        $date = $this->getDateDistillationObject();
+
+        if (!$date) {
+
+            return null;
+        }
+
+        return $date->format('d/m/Y');
+    }
+
+    public function getDateDistillationObject() {
+        if (!$this->date_distillation) {
+
+            return null;
+        }
+
+        return new DateTime($this->date_distillation);
+    }
 }

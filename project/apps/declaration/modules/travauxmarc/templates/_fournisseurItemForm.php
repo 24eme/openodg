@@ -6,7 +6,7 @@
             <div class="input-group-addon">
                 <span class="glyphicon-calendar glyphicon"></span>
             </div>
-            </div>
+        </div>
     </td>
     <td><?php echo $form["quantite"]->render(array('class'=> "form-control text-right", 'placeholder' => "Quantité en kg", "data-norequired" => true)); ?></td>
     <td class="text-center">

@@ -8,11 +8,11 @@ class TravauxMarcDistillationForm extends acCouchdbObjectForm
         $this->setValidator('date_distillation', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)));
         $this->getWidget('date_distillation')->setLabel("");
 
-        $this->setWidget('distillation_prestataire', new sfWidgetFormInputCheckbox());
+        $this->setWidget('distillation_prestataire', new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-on-text' => 'Oui', 'data-off-text' => 'Non', 'data-on-color' => 'primary')));
         $this->setValidator('distillation_prestataire', new sfValidatorBoolean(array('required' => false)));
         $this->getWidget('distillation_prestataire')->setLabel("");
 
-        $this->setWidget('alambic_connu', new sfWidgetFormInputCheckbox());
+        $this->setWidget('alambic_connu', new sfWidgetFormInputCheckbox(array(), array('class' => 'bsswitch', 'data-on-text' => 'Oui', 'data-off-text' => 'Non', 'data-on-color' => 'primary')));
         $this->setValidator('alambic_connu', new sfValidatorBoolean(array('required' => false)));
         $this->getWidget('alambic_connu')->setLabel("");
 
@@ -29,5 +29,11 @@ class TravauxMarcDistillationForm extends acCouchdbObjectForm
 
         $this->widgetSchema->setNameFormat("travauxmarc_distillation[%s]");
     }
+
+    public function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $this->setDefault('date_distillation', $this->getObject()->getDateDistillationFr());
+    }
+
 
 }
