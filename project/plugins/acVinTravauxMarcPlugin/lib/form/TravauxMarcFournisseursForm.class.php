@@ -2,6 +2,7 @@
 
 class TravauxMarcFournisseursForm extends acCouchdbObjectForm {
     public function configure() {
+        $this->getObject()->add();
         foreach($this->getObject() as $fournisseur) {
             $this->embedForm($fournisseur->getKey(), new TravauxMarcFournisseurForm($fournisseur));
         }
@@ -32,6 +33,7 @@ class TravauxMarcFournisseursForm extends acCouchdbObjectForm {
         unset($valuesToUpdate['_revision']);
 
         foreach($valuesToUpdate as $key => $value) {
+            $valuesToUpdate[$key]['etablissement_id'] = str_replace("COMPTE-E", "ETABLISSEMENT-", $value['etablissement_id']);
             if($value['etablissement_id'] || $value['date_livraison'] || $value['quantite']) {
                 continue;
             }
@@ -48,6 +50,14 @@ class TravauxMarcFournisseursForm extends acCouchdbObjectForm {
         unset($this->widgetSchema[$key]);
         unset($this->validatorSchema[$key]);
         unset($this->embeddedForms[$key]);
+    }
+
+    public function getFormTemplate() {
+        $form = new TravauxMarcFournisseursForm($this->getObject());
+
+        $form->embedForm('var---nbItem---', new TravauxMarcFournisseurForm(TravauxMarcFournisseur::freeInstance($this->getObject()->getDocument())));
+
+        return $form['var---nbItem---'];
     }
 
 }

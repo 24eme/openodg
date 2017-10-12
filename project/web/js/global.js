@@ -80,9 +80,9 @@
             });
         }
     };
-    $.initDatePickers = function ()
+    $.fn.initDatePickers = function ()
     {
-        var datePickers = $('.date-picker');
+        var datePickers = $(this).find('.date-picker');
         datePickers.each(function ()
         {
             var currentDp = $(this);
@@ -103,7 +103,7 @@
                 currentDp.data('DateTimePicker').show();
             });
         });
-        var datePickers = $('.date-picker-all-days');
+        var datePickers = $(this).find('.date-picker-all-days');
         datePickers.each(function ()
         {
             var currentDp = $(this);
@@ -117,7 +117,7 @@
                 currentDp.data('DateTimePicker').show();
             });
         });
-        var datePickers = $('.date-picker-time');
+        var datePickers = $(this).find('.date-picker-time');
         datePickers.each(function ()
         {
             var currentDp = $(this);
@@ -522,6 +522,9 @@
         });
 
         $("#page").on('click', '.dynamic-element-delete', function () {
+            if($(this).attr('data-confirm') && !confirm($(this).attr('data-confirm'))) {
+                return false;
+            }
             $($(this).attr('data-line')).find('input').val("");
             $($(this).attr('data-line')).find('input').trigger('keyup');
             $($(this).attr('data-line')).remove();
@@ -665,6 +668,9 @@
         $(this).initSelect2Autocomplete();
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();
+        $(this).initDatePickers();
+        $(this).find('input.num_float').saisieNum(true);
+        $(this).find('input.num_int').saisieNum(false);
     }
 
     /* =================================================================================== */
@@ -673,7 +679,7 @@
     _doc.ready(function ()
     {
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
-        $.initDatePickers();
+        _doc.initDatePickers();
         _doc.initAdvancedElements();
         $.initSelect2AutocompletePermissif();
         $.initSelect2PermissifNoAjax();

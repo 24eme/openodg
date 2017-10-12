@@ -14,4 +14,10 @@ class TravauxMarcFournisseurForm extends acCouchdbObjectForm {
         $this->getWidget('quantite')->setLabel("Quantité de marc mise en oeuvre :");
     }
 
+    public function updateDefaultsFromObject() {
+        parent::updateDefaultsFromObject();
+        $this->setDefault('etablissement_id', str_replace('ETABLISSEMENT-', 'COMPTE-E', $this->getDefault('etablissement_id')));
+        $this->setDefault('date_livraison', $this->getObject()->getDateLivraisonFr());
+    }
+
 }
