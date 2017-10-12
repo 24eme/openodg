@@ -1,7 +1,7 @@
 <?php use_helper('Date'); ?>
 <?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation )); ?>
 <div class="page-header no-border">
-    <h2>Habilitations</h2>
+    <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -9,6 +9,9 @@
 <?php endif; ?>
 <?php if ($sf_user->hasFlash('erreur')): ?>
   <p class="alert alert-danger" role="alert"><?php echo $sf_user->getFlash('erreur') ?></p>
+<?php endif; ?>
+<?php if(!$habilitation->isLastOne()): ?>
+  <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
 <?php endif; ?>
     <table class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
@@ -18,7 +21,7 @@
                 <th class="text-center col-xs-1">Statut</th>
                 <th class="text-center col-xs-1">Date</th>
                 <th class="text-center col-xs-3">Commentaire</th>
-                <th class="text-center col-xs-1"><span class="open-button glyphicon glyphicon-chevron-right" style="cursor: pointer;" ></span></th>
+                <th class="text-center col-xs-1"><span class="open-button glyphicon glyphicon-eye-open" style="cursor: pointer;" ></span></th>
             </tr>
         </thead>
         <tbody>
@@ -47,6 +50,14 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php if ($ajoutForm->hasProduits()): ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
       <thead>
@@ -57,20 +68,16 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>12/08/2017</<td><td>Côtes du Rhone : statut "vinificateur" changé de "Habilité" à "Retrait" (MON BEAU COMMENTAIRE)</td><td class="text-center"><a href="#">Voir</a></tr>
-        <tr><td>12/05/2017</<td><td>Côtes du Rhone : statut "vinificateur" changé de "demande INAO" à "Habilité" (MON BEAU COMMENTAIRE)</td><td class="text-center"><a href="#">Voir</a></tr>
-        <tr><td>12/03/2017</<td><td>Côtes du Rhone : statut "vinificateur" changé de "demande ODG" à "demande INAO" (MON BEAU COMMENTAIRE)</td><td class="text-center"><a href="#">Voir</a></tr>
-        <tr><td>12/01/2017</<td><td>Côte Rotie : statut "vinificateur" activé à "demande ODG"</td><td class="text-center"><a href="#">Voir</a></tr>
-        <tr><td>12/01/2017</<td><td>Création du produit Côte Rotie</td><td class="text-center"><a href="#">Voir</a></tr>
+        <?php
+        foreach ($habilitation->getHistoriqueReverse() as $key => $historiqueDoc): ?>
+          <tr>
+            <td><?php echo Date::francizeDate($historiqueDoc["date"]); ?></<td>
+            <td><?php echo $historiqueDoc["description"]; ?> </td>
+            <td class="text-center"><a href="<?php echo url_for('habilitation_edition', array('id' => $historiqueDoc["iddoc"])); ?>">Voir</a></tr>
+        <?php endforeach; ?>
       </tbody>
     </table>
-    <?php if ($ajoutForm->hasProduits()): ?>
-        <div class="row">
-            <div class="col-xs-12">
-                <button class="btn btn-sm btn-default ajax pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
-            </div>
-        </div>
-    <?php endif; ?>
+
 
 <form role="form" class="ajaxForm" action="<?php echo url_for("habilitation_edition", $habilitation) ?>" method="post">
     <?php

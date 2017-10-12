@@ -21,7 +21,7 @@
  * @property string $version
  * @property acCouchdbJson $declarant
  * @property HabilitationDeclaration $declaration
- * @property acCouchdbJson $mouvements
+ * @property acCouchdbJson $historique
 
  * @method string getId()
  * @method string setId()
@@ -57,8 +57,8 @@
  * @method acCouchdbJson setDeclarant()
  * @method HabilitationDeclaration getDeclaration()
  * @method HabilitationDeclaration setDeclaration()
- * @method acCouchdbJson getMouvements()
- * @method acCouchdbJson setMouvements()
+ * @method acCouchdbJson getHistorique()
+ * @method acCouchdbJson setHistorique()
  
  */
  

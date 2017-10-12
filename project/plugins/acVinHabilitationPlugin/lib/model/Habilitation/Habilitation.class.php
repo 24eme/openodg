@@ -4,7 +4,7 @@
  *
  */
 
-class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceVersionDocument, InterfaceDeclarantDocument, InterfaceDeclaration, InterfaceMouvementDocument {
+class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclarantDocument, InterfaceDeclaration {
 
 
 
@@ -20,12 +20,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function __clone() {
         parent::__clone();
         $this->initDocuments();
+        $this->date = date("Y-m-d");
+        $this->constructId();
     }
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
-        $this->mouvement_document = new MouvementDocument($this);
-        $this->version_document = new VersionDocument($this);
     }
 
     public function constructId() {
@@ -80,10 +80,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function addProduit($hash) {
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $produit = $this->add('declaration')->add($hashToAdd);
-        $produit->getLibelle();
+        $produit_libelle = $produit->getLibelle();
         $produit->initActivites();
+        $this->addHistorique(HabilitationHistorique::ADD_PRODUIT,$produit_libelle);
         return $produit;
     }
+
 
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
@@ -119,282 +121,23 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
 	}
 
+  public function isLastOne(){
+    $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
+    return $this->_id == $last->_id;
+  }
+
+  protected function addHistorique($categorie,$complement){
+      $historiqueRow = $this->get('historique')->add(null);
+      $historiqueRow->iddoc = $this->_id;
+      $historiqueRow->date = $this->getDate();
+      $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
+      $historiqueRow->description = HabilitationHistorique::$actionsDescriptions[$categorie]." : ".$complement;
+  }
+
+  public function getHistoriqueReverse(){
+    $historiqueReverse = $this->getHistorique()->toArray(1,0);
+    $historiqueReverse = array_reverse($historiqueReverse);
+    return $historiqueReverse;
+  }
 
-    /**** MOUVEMENTS ****/
-
-    public function getMouvements() {
-
-        return $this->_get('mouvements');
-    }
-
-    public function getMouvementsCalcule() {
-        $mouvements = array();
-
-        foreach($this->declaration->getProduits() as $produit) {
-            $types_hash = array(
-                "volume_revendique" => "Volume revendiqué",
-                "superficie_revendique" => "Superficie revendiqué",
-                "superficie_vinifiee" => "Superficie vinifiée"
-            );
-
-            foreach($types_hash as $type_hash => $libelle) {
-                $mouvement = $this->createMouvementByProduitAndType($produit, $type_hash, $libelle);
-                if(!$mouvement) {
-
-                    continue;
-                }
-                $mouvements[$this->getDocument()->getIdentifiant()][$mouvement->getMD5Key()] = $mouvement;
-            }
-        }
-
-        return $mouvements;
-    }
-
-    public function createMouvementByProduitAndType($produit, $type_hash, $type_libelle) {
-        $quantite = $produit->get($type_hash);
-
-        if ($this->getDocument()->hasVersion() && $this->getDocument()->motherExist($produit->getHash() . '/' . $type_hash)) {
-            $quantite = $quantite - $this->getDocument()->motherGet($produit->getHash() . '/' . $type_hash);
-        }
-
-        if (!$quantite) {
-
-            return null;
-        }
-
-        $mouvement = HabilitationMouvement::freeInstance($this->getDocument());
-        $mouvement->facture = 0;
-        $mouvement->facturable = 1;
-        $mouvement->produit_libelle = $produit->getLibelleComplet();
-        $mouvement->produit_hash = $produit->getHash();
-        $mouvement->type_hash = $type_hash;
-        $mouvement->type_libelle = $type_libelle;
-        $mouvement->quantite = $quantite;
-        $mouvement->version = $this->getDocument()->getVersion();
-        $mouvement->date = ($this->getDocument()->validation) ? ($this->getDocument()->validation) : date('Y-m-d');
-        $mouvement->date_version = $mouvement->date;
-
-        return $mouvement;
-    }
-
-    public function getMouvementsCalculeByIdentifiant($identifiant) {
-
-        return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
-    }
-
-    public function generateMouvements() {
-
-        return $this->mouvement_document->generateMouvements();
-    }
-
-    public function findMouvement($cle, $id = null){
-      return $this->mouvement_document->findMouvement($cle, $id);
-    }
-
-    public function facturerMouvements() {
-
-        return $this->mouvement_document->facturerMouvements();
-    }
-
-    public function isFactures() {
-
-        return $this->mouvement_document->isFactures();
-    }
-
-    public function isNonFactures() {
-
-        return $this->mouvement_document->isNonFactures();
-    }
-
-    public function clearMouvements(){
-        $this->remove('mouvements');
-        $this->add('mouvements');
-    }
-
-    /**** FIN DES MOUVEMENTS ****/
-
-
-    /**** VERSION ****/
-
-    public static function buildVersion($rectificative, $modificative) {
-
-        return VersionDocument::buildVersion($rectificative, $modificative);
-    }
-
-    public static function buildRectificative($version) {
-
-        return VersionDocument::buildRectificative($version);
-    }
-
-    public static function buildModificative($version) {
-
-        return VersionDocument::buildModificative($version);
-    }
-
-    public function getVersion() {
-
-        return $this->_get('version');
-    }
-
-    public function hasVersion() {
-
-        return $this->version_document->hasVersion();
-    }
-
-    public function isVersionnable() {
-        if (!$this->validation) {
-
-            return false;
-        }
-
-        return $this->version_document->isVersionnable();
-    }
-
-    public function getRectificative() {
-
-        return $this->version_document->getRectificative();
-    }
-
-    public function isRectificative() {
-
-        return $this->version_document->isRectificative();
-    }
-
-    public function isRectifiable() {
-
-        return false;
-    }
-
-    public function getModificative() {
-
-        return $this->version_document->getModificative();
-    }
-
-    public function isModificative() {
-
-        return $this->version_document->isModificative();
-    }
-
-    public function isModifiable() {
-        return $this->version_document->isModifiable();
-    }
-
-    public function getPreviousVersion() {
-
-        return $this->version_document->getPreviousVersion();
-    }
-
-    public function getMasterVersionOfRectificative() {
-
-        throw new sfException("Not implemented");
-    }
-
-    public function needNextVersion() {
-
-        return $this->version_document->needNextVersion() || !$this->isSuivanteCoherente();
-    }
-
-    public function getMaster() {
-
-        return $this->version_document->getMaster();
-    }
-
-    public function isMaster() {
-
-        return $this->version_document->isMaster();
-    }
-
-    public function findMaster() {
-
-        return HabilitationClient::getInstance()->findMasterByIdentifiantAndCampagne($this->identifiant);
-    }
-
-    public function findDocumentByVersion($version) {
-        $id = HabilitationClient::TYPE_COUCHDB.'-'.$this->identifiant;
-        if($version) {
-            $id .= "-".$this->version;
-        }
-
-        return HabilitationClient::getInstance()->find($id);
-    }
-
-    public function getMother() {
-
-        return $this->version_document->getMother();
-    }
-
-    public function motherGet($hash) {
-
-        return $this->version_document->motherGet($hash);
-    }
-
-    public function motherExist($hash) {
-
-        return $this->version_document->motherExist($hash);
-    }
-
-    public function motherHasChanged() {
-        if ($this->declaration->total != $this->getMother()->declaration->total) {
-
-            return true;
-        }
-
-        if (count($this->getProduitsDetails($this->teledeclare)) != count($this->getMother()->getProduitsDetails($this->teledeclare))) {
-
-            return true;
-        }
-
-        if ($this->droits->douane->getCumul() != $this->getMother()->droits->douane->getCumul()) {
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public function getDiffWithMother() {
-
-        return $this->version_document->getDiffWithMother();
-    }
-
-    public function isModifiedMother($hash_or_object, $key = null) {
-
-        return $this->version_document->isModifiedMother($hash_or_object, $key);
-    }
-
-    public function generateRectificative() {
-
-        return $this->version_document->generateRectificative();
-    }
-
-    public function generateModificative() {
-        $doc = $this->version_document->generateModificative();
-
-        return $doc;
-    }
-
-    public function generateNextVersion() {
-
-        throw new sfException("Not implemented");
-    }
-
-    public function listenerGenerateVersion($document) {
-        $document->devalidate();
-    }
-
-    public function listenerGenerateNextVersion($document) {
-
-    }
-
-    public function getSuivante() {
-
-        throw new sfException("Not implemented");
-    }
-
-    public function isValidee() {
-
-        return $this->validation;
-    }
-
-    /**** FIN DE VERSION ****/
 }

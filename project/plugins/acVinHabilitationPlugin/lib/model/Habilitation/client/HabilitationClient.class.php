@@ -48,15 +48,6 @@ class HabilitationClient extends acCouchdbClient {
             return $doc;
         }
 
-        public function findMasterByIdentifiant($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-            $habilitations = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, null, self::TYPE_MODEL);
-            foreach ($habilitations as $id => $habilitation) {
-
-                return $this->find($id, $hydrate);
-            }
-
-            return null;
-        }
 
         public function createDoc($identifiant,$date)
         {
@@ -78,10 +69,24 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation;
         }
 
+        public function createOrGetDocFromHistory($habilitation_h){
+          if(date('Y-m-d') == $habilitation_h->getDate()){
+            return $habilitation_h;
+          }
+          $habilitation = clone $habilitation_h;
+          return $habilitation;
+        }
+
 
         public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s", $identifiant))
-                        ->endkey(sprintf(self::TYPE_COUCHDB."-%s_ZZZZZZZZZZZZZZ", $identifiant))
-                        ->execute($hydrate);
+            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
+                        ->endkey(sprintf(self::TYPE_COUCHDB."-%s-99999999", $identifiant))->execute($hydrate);
+        }
+
+        public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+          $history = $this->getHistory($identifiant, $hydrate);
+          foreach ($history as $id => $h) {
+          }
+          return $h;
         }
     }

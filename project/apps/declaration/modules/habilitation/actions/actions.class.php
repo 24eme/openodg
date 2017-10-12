@@ -5,7 +5,6 @@ class habilitationActions extends sfActions {
 
   public function executeIndex(sfWebRequest $request)
   {
-      //$this->lastHabilitations = ;
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
@@ -56,23 +55,27 @@ class habilitationActions extends sfActions {
     }
 
     public function executeAjoutProduit(sfWebRequest $request) {
-        $habilitation = $this->getRoute()->getHabilitation();
-        $this->secure(HabilitationSecurity::EDITION, $habilitation);
+        $this->habilitation = $this->getRoute()->getHabilitation();
+        $this->habilitation = HabilitationClient::getInstance()->createOrGetDocFromHistory($this->habilitation);
 
-        $this->ajoutForm = new HabilitationAjoutProduitForm($habilitation);
+        $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
+        $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
+        $newHabilitationDoc = $this->habilitation->isNew();
         $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+        if($newHabilitationDoc){
+          $this->ajoutForm->getObject()->_rev = null;
+        }
 
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
-
-            return $this->redirect('habilitation_edition', $habilitation);
+            return $this->redirect('habilitation_edition', $this->habilitation);
         }
 
         $this->ajoutForm->save();
 
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
-        return $this->redirect('habilitation_edition', $habilitation);
+        return $this->redirect('habilitation_edition', $this->habilitation);
     }
 
     public function executeHabilitationRecapitulatif(sfWebRequest $request) {
@@ -86,19 +89,26 @@ class habilitationActions extends sfActions {
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        $this->habilitation->save();
-
         $this->editForm = new HabilitationEditionForm($this->habilitation);
         $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
+
         if ($request->isMethod(sfWebRequest::POST)) {
-            $this->editForm->bind($request->getParameter($this->editForm->getName()));
+          $this->habilitation = HabilitationClient::getInstance()->createOrGetDocFromHistory($this->habilitation);
+          $newHabilitationDoc = $this->habilitation->isNew();
+
+          $this->editForm = new HabilitationEditionForm($this->habilitation);
+          $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
+          $this->editForm->bind($request->getParameter($this->editForm->getName()));
 
             if (!$this->editForm->isValid() && $request->isXmlHttpRequest()) {
+
                 return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->habilitation->_id, "revision" => $this->habilitation->_rev))));
             }
             if ($this->editForm->isValid()) {
+                if($newHabilitationDoc){
+                  $this->editForm->getObject()->_rev = null;
+                }
                 $this->editForm->save();
-
                 if ($request->isXmlHttpRequest()) {
 
                     return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->habilitation->_id, "revision" => $this->habilitation->_rev))));
@@ -108,25 +118,6 @@ class habilitationActions extends sfActions {
         }
     }
 
-    public function executeHabilitationAjoutProduit(sfWebRequest $request) {
-        $this->habilitation = $this->getRoute()->getHabilitation();
-        $this->secure(habilitationSecurity::EDITION, $this->habilitation);
-
-        $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
-        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
-
-        if (!$this->ajoutForm->isValid()) {
-            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
-
-            return $this->redirect('habilitation_edition', $this->habilitation);
-        }
-
-        $this->ajoutForm->save();
-
-        $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
-
-        return $this->redirect('habilitation_validation', $this->habilitation);
-    }
 
     protected function secure($droits, $doc) {
         if (!HabilitationSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
