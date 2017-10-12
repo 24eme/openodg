@@ -12,7 +12,7 @@ class TravauxMarcFournisseur extends BaseTravauxMarcFournisseur {
         $etablissement =  $this->getEtablissement();
         $this->nom = null;
         if($etablissement) {
-            $this->nom = $etablissement->nom;
+            $this->nom = CompteClient::getInstance()->makeLibelle($etablissement->getCompte());
         }
     }
 

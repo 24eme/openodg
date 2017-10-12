@@ -32,11 +32,7 @@
         <?php include_partial('travauxmarc/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
     <?php endif; ?>
 
-    <div class="row row-margin">
-        <div class="col-xs-12">
-            <?php include_partial('travauxmarc/recap', array('travauxmarc' => $travauxmarc)); ?>
-        </div>
-    </div>
+    <?php include_partial('travauxmarc/recap', array('travauxmarc' => $travauxmarc)); ?>
 
     <div class="row row-margin row-button">
         <div class="col-xs-4">
