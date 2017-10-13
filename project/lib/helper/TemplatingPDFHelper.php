@@ -87,39 +87,39 @@ function styleDRevMarc() {
 function styleTravauxMarc() {
     return "
     .table {
-        border: 1px solid #1b4f8f;
+        border: 1px solid #811a8a;
     }
 
     .tableAlt {
-        border: 1px solid #99CCFF;
+        border: 1px solid #fbceff;
     }
 
     .th {
-        font-weight: normal; border: 1px solid #1b4f8f; background-color: #D1F0FF; color: #1b4f8f;
+        font-weight: normal; border: 1px solid #811a8a; background-color: #fbceff; color: #811a8a;
     }
 
     .td {
-        border: 1px solid #1b4f8f; height:22px; text-align: left;
+        border: 1px solid #811a8a; height:22px; text-align: left;
     }
 
     .tdAlt {
-        border: 1px solid #1b4f8f; height:22px; text-align: left; background-color: #DAECFF;
+        border: 1px solid #811a8a; height:22px; text-align: left; background-color: #DAECFF;
     }
 
     .h2 {
-        text-align: left; font-size: 12pt; color: #1b4f8f;
+        text-align: left; font-size: 12pt; color: #811a8a;
     }
 
     .tdH2 {
-       border-bottom: 1px solid #1b4f8f;
+       border-bottom: 1px solid #811a8a;
     }
 
     .h3 {
-        background-color: #1b4f8f; color: white; font-weight: bold;
+        background-color: #811a8a; color: white; font-weight: bold;
     }
 
     .h3Alt {
-        background-color: #99CCFF; color: #00398E; font-weight: bold;
+        background-color: #fbceff; color: #811a8a; font-weight: bold;
     }
 ";
 }

@@ -4,19 +4,19 @@
 <table class="table table-striped">
     <tbody>
         <tr>
-            <td class="col-sm-6">Date de distillation</td>
+            <td class="col-sm-4"><strong>Date de distillation</strong></td>
             <td><?php echo $travauxmarc->getDateDistillationFr(); ?></td>
         </tr>
         <tr>
-            <td>Distillation par un prestataire</td>
+            <td><strong>Distillation par un prestataire</strong></td>
             <td><?php if($travauxmarc->distillation_prestataire): ?>Oui<?php else: ?>Non<?php endif; ?></td>
         </tr>
         <tr>
-            <td>L’alambic utilisé est celui de la DI</td>
+            <td><strong>L'alambic utilisé est celui de la DI</strong></td>
             <td><?php if($travauxmarc->alambic_connu): ?>Oui<?php else: ?>Non<?php endif; ?></td>
         </tr>
         <tr>
-            <td>Adresse de distillation</td>
+            <td><strong>Adresse de distillation</strong></td>
             <td>
                 <?php echo $travauxmarc->adresse_distillation->adresse ?><br />
                 <?php echo $travauxmarc->adresse_distillation->code_postal ?>
