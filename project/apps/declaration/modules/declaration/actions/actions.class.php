@@ -63,6 +63,11 @@ class declarationActions extends sfActions {
             return $this->redirect("tirage_visualisation", array("id" => $doc_id));
         }
 
+        if($doc_type == "TRAVAUXMARC") {
+
+            return $this->redirect("travauxmarc_visualisation", array("id" => $doc_id));
+        }
+
         return $this->forward404();
     }
 

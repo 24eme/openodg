@@ -1,7 +1,7 @@
 <tr id="travaux_marc_fournisseurs_item_<?php echo $form->getName() ?>" class="dynamic-element-item">
     <td><?php echo $form["etablissement_id"]->render(array("placeholder" => "Chercher un établissement", "data-norequired" => true)); ?></td>
     <td>
-        <div class="input-group date-picker-all-days">
+        <div class="input-group date-picker">
             <?php echo $form['date_livraison']->render(array('class' => 'form-control', 'placeholder' => 'Date de livraison', "data-norequired" => true)); ?>
             <div class="input-group-addon">
                 <span class="glyphicon-calendar glyphicon"></span>

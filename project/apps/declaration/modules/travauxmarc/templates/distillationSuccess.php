@@ -12,7 +12,7 @@
     <div class="form-group">
         <?php echo $form['date_distillation']->renderLabel("Date de distillation :", array('class' => 'control-label col-sm-4', 'style' => 'text-align: left; font-weight: normal;')); ?>
         <div class="col-sm-4">
-            <div class="input-group date-picker-all-days">
+            <div class="input-group date-picker">
                 <?php echo $form['date_distillation']->render(array('class' => 'form-control', 'placeholder' => 'Date de distillation')); ?>
                 <div class="input-group-addon">
                     <span class="glyphicon-calendar glyphicon"></span>
