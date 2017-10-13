@@ -19,12 +19,16 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-4">
+            <?php echo $form["date_distillation"]->renderError(); ?>
+        </div>
     </div>
 
     <div class="form-group">
         <?php echo $form['distillation_prestataire']->renderLabel("Distillation par un prestataire :", array('class' => 'control-label col-sm-4', 'style' => 'text-align: left; font-weight: normal;')); ?>
         <div class="col-sm-6">
             <?php echo $form['distillation_prestataire']->render(); ?>
+            <?php echo $form["distillation_prestataire"]->renderError(); ?>
         </div>
     </div>
     <div class="form-group">
@@ -32,6 +36,7 @@
 DI&nbsp;:", array('class' => 'control-label col-sm-4', 'style' => 'text-align: left; font-weight: normal;')); ?>
         <div class="col-sm-6">
             <?php echo $form['alambic_connu']->render(); ?>
+            <?php echo $form["alambic_connu"]->renderError(); ?>
         </div>
     </div>
 
@@ -39,12 +44,15 @@ DI&nbsp;:", array('class' => 'control-label col-sm-4', 'style' => 'text-align: l
         <?php echo $form['adresse_distillation']['adresse']->renderLabel("Adresse de distillation :", array('class' => 'control-label col-sm-4', 'style' => 'text-align: left; font-weight: normal;')); ?>
         <div class="col-sm-4">
             <?php echo $form['adresse_distillation']['adresse']->render(array('class' => 'form-control', 'placeholder' => 'Adresse')); ?>
+            <?php echo $form['adresse_distillation']['adresse']->renderError(); ?>
         </div>
         <div class="col-sm-2">
             <?php echo $form['adresse_distillation']['code_postal']->render(array('class' => 'form-control', 'placeholder' => 'Code postal')); ?>
+            <?php echo $form['adresse_distillation']['code_postal']->renderError(); ?>
         </div>
         <div class="col-sm-2">
             <?php echo $form['adresse_distillation']['commune']->render(array('class' => 'form-control', 'placeholder' => 'Commune')); ?>
+            <?php echo $form['adresse_distillation']['commune']->renderError(); ?>
         </div>
     </div>
 

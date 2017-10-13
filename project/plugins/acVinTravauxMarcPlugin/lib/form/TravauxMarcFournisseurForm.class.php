@@ -8,10 +8,11 @@ class TravauxMarcFournisseurForm extends acCouchdbObjectForm {
 
         $this->setWidget('date_livraison', new sfWidgetFormInput());
         $this->setValidator('date_livraison', new sfValidatorDate(array('date_output' => 'Y-m-d', 'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~', 'required' => false)));
+        $this->getValidator('date_livraison')->setMessage('bad_format', "Le format de la date n'est pas correct");
 
         $this->setWidget('quantite', new sfWidgetFormInputFloat());
         $this->setValidator('quantite', new sfValidatorNumber(array("required" => false)));
-        $this->getWidget('quantite')->setLabel("Quantité de marc mise en oeuvre :");
+
     }
 
     public function updateDefaultsFromObject() {
