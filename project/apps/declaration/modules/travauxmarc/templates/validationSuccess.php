@@ -29,7 +29,7 @@
     <?php endif; ?>
 
     <?php if ($validation->hasPoints()): ?>
-        <?php include_partial('travauxmarc/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
+        <?php include_partial('travauxmarc/pointsAttentions', array('travauxmarc' => $travauxmarc, 'validation' => $validation)); ?>
     <?php endif; ?>
 
     <?php include_partial('travauxmarc/recap', array('travauxmarc' => $travauxmarc)); ?>
