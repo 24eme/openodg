@@ -140,6 +140,52 @@ class Email {
         return $this->getMailer()->send($message);
     }
 
+    public function sendTravauxMarcValidation($travauxmarc) {
+        if (!$travauxmarc->declarant->email) {
+
+            return;
+        }
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($travauxmarc->declarant->email);
+        $subject = "Validation de votre déclaration d'ouverture des travaux de distillation";
+        $body = $this->getBodyFromPartial('send_travauxmarc_validation', array('travauxmarc' => $travauxmarc));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
+
+        return $this->getMailer()->send($message);
+    }
+
+    public function sendTravauxMarcConfirmee($travauxmarc) {
+        if (!$travauxmarc->declarant->email) {
+
+            return;
+        }
+
+        $pdf = new ExportTravauxMarcPDF($travauxmarc);
+        $pdf->setPartialFunction(array($this, 'getPartial'));
+        $pdf->generate();
+        $pdfAttachment = new Swift_Attachment($pdf->output(), $pdf->getFileName(), 'application/pdf');
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($travauxmarc->declarant->email);
+        $subject = "Validation définitive de votre déclaration d'ouverture des travaux de distillation";
+        $body = $this->getBodyFromPartial('send_travauxmarc_confirmee', array('travauxmarc' => $travauxmarc));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain')
+                ->attach($pdfAttachment);
+
+        return $this->getMailer()->send($message);
+    }
+
     public function sendParcellaireValidation($parcellaire) {
         if (!$parcellaire->declarant->email) {
 
@@ -162,9 +208,9 @@ class Email {
         	if($parcellaire->isIntentionCremant()) {
         		$complement = ' AOC Crémant d\'Alsace';
         	} else {
-        		$complement = ' Crémant'; 
+        		$complement = ' Crémant';
         	}
-        } 
+        }
         $subject = sprintf("Validation de votre déclaration d'$titre%s", $complement);
         $body = $this->getBodyFromPartial('send_parcellaire_validation', array('parcellaire' => $parcellaire));
         $message = Swift_Message::newInstance()

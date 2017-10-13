@@ -1,4 +1,4 @@
-<?php include_partial('drevmarc/breadcrumb', array('drevmarc' => $drevmarc )); ?>
+<?php include_partial('travauxmarc/breadcrumb', array('travauxmarc' => $travauxmarc )); ?>
 
 <div class="page-header">
     <h2>Confirmation de validation de votre déclaration</h2>
@@ -15,6 +15,6 @@
 
 <div class="row row-margin row-button">
     <div class="col-xs-4">
-        <a href="<?php echo url_for("declaration_etablissement", $drevmarc->getEtablissementObject()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
+        <a href="<?php echo url_for("declaration_etablissement", $travauxmarc->getEtablissementObject()) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
 </div>

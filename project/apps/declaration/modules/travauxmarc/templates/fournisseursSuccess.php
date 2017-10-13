@@ -36,6 +36,6 @@
 
     <div class="row row-margin row-button">
         <div class="col-xs-6"><a href="<?php echo url_for("travauxmarc_exploitation", $travauxmarc) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retourner <small>à l'étape précédente</small></a></div>
-        <div class="col-xs-6 text-right"><button type="submit" class="btn btn-default btn-lg btn-upper">Valider et continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button></div>
+        <div class="col-xs-6 text-right"><button type="submit" class="btn btn-default btn-lg btn-upper btn-dynamic-element-submit">Valider et continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button></div>
     </div>
 </form>

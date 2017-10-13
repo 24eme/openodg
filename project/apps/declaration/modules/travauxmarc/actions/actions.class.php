@@ -194,7 +194,7 @@ class travauxmarcActions extends sfActions {
         $this->travauxmarc->validate();
         $this->travauxmarc->save();
 
-        $this->sendDRevMarcValidation($this->travauxmarc);
+        $this->sendTravauxMarcValidation($this->travauxmarc);
 
         return $this->redirect('travauxmarc_confirmation', $this->travauxmarc);
     }
@@ -207,7 +207,7 @@ class travauxmarcActions extends sfActions {
         $this->travauxmarc->validation_odg = date('Y-m-d');
         $this->travauxmarc->save();
 
-        $this->sendDRevMarcConfirmee($this->travauxmarc);
+        $this->sendTravauxMarcConfirmee($this->travauxmarc);
 
         $this->getUser()->setFlash("notice", "La déclaration a bien été approuvée. Un email a été envoyé au télédéclarant.");
 
@@ -249,16 +249,16 @@ class travauxmarcActions extends sfActions {
         return ($travauxmarcEtapes->isLt($travaumarc->etape, $etape)) ? $etape : $travaumarc->etape;
     }
 
-    protected function sendDRevMarcValidation($travaumarc) {
-        $pdf = new ExportDRevMarcPdf($travaumarc, 'pdf', true);
+    protected function sendTravauxMarcValidation($travaumarc) {
+        $pdf = new ExportTravauxMarcPdf($travaumarc, 'pdf', true);
         $pdf->setPartialFunction(array($this, 'getPartial'));
         $pdf->removeCache();
         $pdf->generate();
-        Email::getInstance()->sendDRevMarcValidation($travaumarc);
+        Email::getInstance()->sendTravauxMarcValidation($travaumarc);
     }
 
-    protected function sendDrevMarcConfirmee($travaumarc) {
-        Email::getInstance()->sendDrevMarcConfirmee($travaumarc);
+    protected function sendTravauxMarcConfirmee($travaumarc) {
+        Email::getInstance()->sendTravauxMarcConfirmee($travaumarc);
     }
 
     protected function secureEtablissement($etablissement) {
