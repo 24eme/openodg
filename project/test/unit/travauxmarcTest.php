@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
-$t = new lime_test(34);
+$t = new lime_test(35);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -24,6 +24,7 @@ $travauxMarc->save();
 
 $t->is($travauxMarc->_id, "TRAVAUXMARC-".$viti->identifiant."-".$campagne, "L'id du doc est "."TRAVAUXMARC-".$viti->identifiant."-".$campagne);
 $t->ok($travauxMarc->_rev, "La révision existe");
+$t->ok($travauxMarc->isPapier(), "La déclaration est papier");
 
 $t->comment("Étape Exploitation");
 
@@ -156,7 +157,7 @@ $formValidation->bind($valuesValidation);
 
 $t->ok($formValidation->isValid(), 'Le formulaire est valide');
 
-$t->is($travauxMarc->validation, null, "La date validation n'existe pas");
+$t->is($travauxMarc->validation, null, "La date validation n'est pas rempli");
 
 $travauxMarc->validate($formValidation->getValue("date"));
 $travauxMarc->save();

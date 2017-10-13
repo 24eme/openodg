@@ -22,14 +22,14 @@ class TravauxMarcClient extends acCouchdbClient {
 
     public function createDoc($identifiant, $campagne, $papier = false)
     {
-        $drevmarc = new TravauxMarc();
-        $drevmarc->initDoc($identifiant, $campagne);
+        $travauxmarc = new TravauxMarc();
+        $travauxmarc->initDoc($identifiant, $campagne);
 
         if($papier) {
-            $drevmarc->add('papier', 1);
+            $travauxmarc->add('papier', 1);
         }
 
-        return $drevmarc;
+        return $travauxmarc;
     }
 
     public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {

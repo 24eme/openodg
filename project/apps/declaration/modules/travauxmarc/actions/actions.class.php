@@ -14,7 +14,7 @@ class travauxmarcActions extends sfActions {
     public function executeCreatePapier(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($etablissement);
-        $travauxmarc = TravauxMarcClient::getInstance()->createDoc($etablissement->identifiant, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent(), true));
+        $travauxmarc = TravauxMarcClient::getInstance()->createDoc($etablissement->identifiant, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()), true);
         $travauxmarc->save();
 
         return $this->redirect('travauxmarc_edit', $travauxmarc);
