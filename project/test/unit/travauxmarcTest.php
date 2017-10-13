@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
-$t = new lime_test(31);
+$t = new lime_test(34);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -84,11 +84,11 @@ $travauxMarc = TravauxMarcClient::getInstance()->find($travauxMarc->_id);
 $t->is(count($travauxMarc->fournisseurs), 2, "Le nombre de fournisseurs dans le doc est le même que celui du formulaire");
 $t->is($travauxMarc->fournisseurs[0]->quantite, 12, "La quantité a été enregistré");
 $t->is($travauxMarc->fournisseurs[0]->date_livraison, date('Y')."-11-01", "La date a été enregistré");
-$t->is($travauxMarc->fournisseurs[0]->nom, $viti->nom, "Le nom du viti a éte enregistré");
+$t->is($travauxMarc->fournisseurs[0]->nom, "ACTUALYS Jean (7523700100) à NEUILLY-SUR-SEINE (92200)", "Le nom du viti a éte enregistré");
 
 $t->is($travauxMarc->fournisseurs[1]->quantite, 24, "La quantité a été enregistré");
 $t->is($travauxMarc->fournisseurs[1]->date_livraison, date('Y')."-12-01", "La date a été enregistré");
-$t->is($travauxMarc->fournisseurs[1]->nom, $viti->nom, "Le nom du viti a éte enregistré");
+$t->is($travauxMarc->fournisseurs[1]->nom, "ACTUALYS Jean (7523700100) à NEUILLY-SUR-SEINE (92200)", "Le nom du viti a éte enregistré");
 
 $t->comment("Étape Distillation");
 
@@ -130,6 +130,20 @@ if($travauxMarc->storeEtape(TravauxMarcEtapes::ETAPE_VALIDATION)) {
     $travauxMarc->save();
 }
 $t->is($travauxMarc->etape, TravauxMarcEtapes::ETAPE_VALIDATION, "L'étape est " . TravauxMarcEtapes::ETAPE_VALIDATION);
+
+$travauxMarcAControler = clone $travauxMarc;
+
+$travauxMarcAControler->fournisseurs[0]->date_livraison = null;
+$travauxMarcAControler->date_distillation = null;
+$travauxMarcAControler->adresse_distillation->code_postal = null;
+
+$controle = new TravauxMarcValidation($travauxMarcAControler);
+
+$t->ok(!$controle->isValide(), "La déclaration a des points bloquants, elle n'est pas valide");
+$t->is(count($controle->getErreurs()), 3, "La déclaration a 3 erreurs");
+
+$controle = new TravauxMarcValidation($travauxMarc);
+$t->ok($controle->isValide(), "La déclaration est corrigé, elle est valide");
 
 $formValidation = new TravauxMarcValidationForm($travauxMarc);
 
