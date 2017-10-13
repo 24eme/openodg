@@ -1,6 +1,6 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!count($drevmarcsHistory) && !$etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
+<?php if (!$etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
     <?php return; ?>
 <?php endif; ?>
 

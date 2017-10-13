@@ -11,7 +11,6 @@ class drevmarcComponents extends sfComponents {
             }
         }
         $this->drevmarc = DRevMarcClient::getInstance()->find('DREVMARC-' . $this->etablissement->identifiant . '-' . $this->campagne);
-        $this->drevmarcsHistory = DRevMarcClient::getInstance()->getHistory($this->etablissement->identifiant);
     }
 
 }
