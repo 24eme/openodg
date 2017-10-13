@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
-$t = new lime_test(35);
+$t = new lime_test(38);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -170,3 +170,9 @@ $travauxMarc->save();
 $t->is($travauxMarc->validation_odg, date('Y-m-d'), "La date validation par l'odg est la date du jour");
 
 $t->is($travauxMarc->pieces[0]->libelle, "Déclaration d'ouverture des travaux de distillation ".$campagne." (Papier)", "Contrôle sur le libellé du document (pièces)");
+
+$t->comment("Création du document sur la campagne suivante");
+$travauxMarcSuivante = TravauxMarcClient::getInstance()->createDoc($viti->identifiant, ($campagne+1)."", true);
+$t->is($travauxMarcSuivante->adresse_distillation->adresse, $travauxMarc->adresse_distillation->adresse, "L'adresse a été reprise de la précédente déclaration");
+$t->is($travauxMarcSuivante->adresse_distillation->code_postal, $travauxMarc->adresse_distillation->code_postal, "Le code postal a été repris de la précédente déclaration");
+$t->is($travauxMarcSuivante->adresse_distillation->commune, $travauxMarc->adresse_distillation->commune, "La commune a été reprise de la précédente déclaration");

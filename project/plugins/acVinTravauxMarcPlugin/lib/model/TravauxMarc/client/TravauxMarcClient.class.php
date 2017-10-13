@@ -29,6 +29,11 @@ class TravauxMarcClient extends acCouchdbClient {
             $travauxmarc->add('papier', 1);
         }
 
+        $travauxmarcPrecedente = $this->find(self::TYPE_COUCHDB."-".$identifiant."-".($campagne-1));
+        if($travauxmarcPrecedente) {
+            $travauxmarc->adresse_distillation = $travauxmarcPrecedente->adresse_distillation;
+        }
+
         return $travauxmarc;
     }
 
