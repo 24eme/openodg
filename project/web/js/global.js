@@ -100,6 +100,7 @@
 
             currentDp.on('focus', 'input', function ()
             {
+                currentDp.data('DateTimePicker').hide();
                 currentDp.data('DateTimePicker').show();
             });
         });
@@ -114,6 +115,7 @@
                     });
             currentDp.on('focus', 'input', function ()
             {
+                currentDp.data('DateTimePicker').hide();
                 currentDp.data('DateTimePicker').show();
             });
         });
@@ -130,6 +132,7 @@
                     });
             currentDp.on('focus', 'input', function ()
             {
+                currentDp.data('DateTimePicker').hide();
                 currentDp.data('DateTimePicker').show();
             });
         });
