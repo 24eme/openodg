@@ -1,6 +1,6 @@
 <?php
 
-class DRevRevendicationProduitDRForm extends acCouchdbObjectForm {
+class DRevProduitRecolteForm extends acCouchdbObjectForm {
 
     public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
@@ -23,7 +23,7 @@ class DRevRevendicationProduitDRForm extends acCouchdbObjectForm {
             'recolte_nette' => new sfValidatorNumber(array('required' => false)),
             'volume_sur_place' => new sfValidatorNumber(array('required' => false)),
         ));
-        
+
         if ($this->getOption('disabled_dr') && ($this->getObject()->superficie_total || $this->getObject()->volume_total || $this->getObject()->recolte_nette || $this->getObject()->volume_sur_place)) {
         	$this->getWidget('superficie_total')->setAttribute('readonly', 'readonly');
         	$this->getWidget('volume_total')->setAttribute('readonly', 'readonly');

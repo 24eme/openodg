@@ -8,23 +8,19 @@ class DRevVciProduitForm extends acCouchdbObjectForm {
     }
     public function configure() {
         $this->setWidgets(array(
-            'vci_stock_initial' => new bsWidgetFormInputFloat(),
-            'vci' => new bsWidgetFormInputFloat(),
-            'vci_destruction' => new bsWidgetFormInputFloat(),
-            'vci_substitution' => new bsWidgetFormInputFloat(),
-            'vci_rafraichi' => new bsWidgetFormInputFloat(),
+            'stock_precedent' => new bsWidgetFormInputFloat(),
+            'destruction' => new bsWidgetFormInputFloat(),
+            'complement' => new bsWidgetFormInputFloat(),
+            'substitution' => new bsWidgetFormInputFloat(),
+            'rafraichi' => new bsWidgetFormInputFloat(),
         ));
         $this->setValidators(array(
-            'vci_stock_initial' => new sfValidatorNumber(array('required' => false)),
-            'vci' => new sfValidatorNumber(array('required' => false)),
-            'vci_destruction' => new sfValidatorNumber(array('required' => false)),
-            'vci_substitution' => new sfValidatorNumber(array('required' => false)),
-            'vci_rafraichi' => new sfValidatorNumber(array('required' => false)),
+            'stock_precedent' => new sfValidatorNumber(array('required' => false)),
+            'destruction' => new sfValidatorNumber(array('required' => false)),
+            'complement' => new sfValidatorNumber(array('required' => false)),
+            'substitution' => new sfValidatorNumber(array('required' => false)),
+            'rafraichi' => new sfValidatorNumber(array('required' => false)),
         ));
-        
-        if($this->getObject()->detail->vci > 0) {
-        	$this->getWidget('vci')->setAttribute('readonly', 'readonly');
-        }
 
         $this->widgetSchema->setNameFormat('[%s]');
     }

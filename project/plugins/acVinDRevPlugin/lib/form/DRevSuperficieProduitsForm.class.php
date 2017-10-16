@@ -1,5 +1,5 @@
 <?php
-class DRevVciProduitsForm extends BaseForm
+class DRevSuperficieProduitsForm extends sfForm
 {
     protected $produits;
 
@@ -12,7 +12,7 @@ class DRevVciProduitsForm extends BaseForm
    	public function configure()
     {
         foreach ($this->produits as $hash => $produit) {
-            $form = new DRevVciProduitForm($produit->vci);
+            $form = new DRevSuperficieProduitForm($produit, $this->getOptions());
             $this->embedForm($hash, $form);
         }
 
@@ -24,4 +24,6 @@ class DRevVciProduitsForm extends BaseForm
         	$embedForm->doUpdateObject($values[$key]);
         }
     }
+
+
 }

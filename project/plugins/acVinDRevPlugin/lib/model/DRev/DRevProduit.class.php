@@ -201,7 +201,7 @@ class DRevProduit extends BaseDRevProduit
 
 	public function getTotalVciUtilise() {
 
-		return $this->vci_complement_dr + $this->vci_substitution + $this->vci_rafraichi + $this->vci_destruction;
+		return $this->vci->complement + $this->vci->substitution + $this->vci->rafraichi + $this->vci->destruction;
 	}
 
 	public function canHaveVtsgn() {
@@ -216,13 +216,13 @@ class DRevProduit extends BaseDRevProduit
 
 	public function hasVci($saisie = false) {
 		if ($saisie) {
-			return ($this->vci_stock_initial || $this->vci_destruction || $this->vci_complement_dr || $this->vci_substitution || $this->vci_rafraichi || $this->vci);
+			return ($this->vci->stock_precedent || $this->vci->destruction || $this->vci->complement || $this->vci->substitution || $this->vci->rafraichi || $this->vci->constitue);
 		}
-		return ($this->vci_stock_initial !== null || $this->vci_destruction !== null || $this->vci_complement_dr !== null || $this->vci_substitution !== null || $this->vci_rafraichi !== null || $this->vci !== null);
+		return ($this->vci->stock_precedent !== null || $this->vci->destruction !== null || $this->vci->complement !== null || $this->vci->substitution !== null || $this->vci->rafraichi !== null || $this->vci->constitue !== null);
 	}
-	
+
 	public function hasVciDetruit() {
-		return ($this->vci_destruction && $this->vci_destruction > 0)? true : false;
+		return ($this->vci->destruction && $this->vci->destruction > 0)? true : false;
 	}
 
     public function isActive()
@@ -240,6 +240,14 @@ class DRevProduit extends BaseDRevProduit
 
         return false;
     }
+
+	public function update($params = array()) {
+		$this->vci->stock_final = null;
+		if($this->hasVci()) {
+			$this->vci->stock_final = ((float) $this->vci->rafraichi) + ((float) $this->vci->constitue);
+		}
+		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci);
+	}
 
 
 }
