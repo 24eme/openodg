@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
-$t = new lime_test(38);
+$t = new lime_test(39);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -176,3 +176,11 @@ $travauxMarcSuivante = TravauxMarcClient::getInstance()->createDoc($viti->identi
 $t->is($travauxMarcSuivante->adresse_distillation->adresse, $travauxMarc->adresse_distillation->adresse, "L'adresse a été reprise de la précédente déclaration");
 $t->is($travauxMarcSuivante->adresse_distillation->code_postal, $travauxMarc->adresse_distillation->code_postal, "Le code postal a été repris de la précédente déclaration");
 $t->is($travauxMarcSuivante->adresse_distillation->commune, $travauxMarc->adresse_distillation->commune, "La commune a été reprise de la précédente déclaration");
+
+$t->comment("Export CSV du document");
+
+$export = new ExportTravauxMarcCSV($travauxMarc, true);
+
+$csv = $export->export();
+
+$t->is(count(explode("\n", $csv)), 3+1, "Les csv a 3 lignes");
