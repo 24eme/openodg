@@ -17,7 +17,7 @@
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small></td>
-                <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_avec_vci') ?>"><?php echoFloat($produit->volume_revendique_avec_vci) ?> <small class="text-muted">hl</small></td>
+                <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_toral') ?>"><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small></td>
                 <td style="visibility: hidden;"></td>
             </tr>
         <?php endforeach; ?>
@@ -42,13 +42,13 @@
             <?php foreach ($drev->declaration->getProduitsVci() as $produit) : ?>
                 <tr>
                     <td><?php echo $produit->getLibelleComplet() ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_stock_initial') ?>"><?php if($produit->vci_stock_initial): ?><?php echoFloat($produit->vci_stock_initial) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_complement_dr') ?>"><?php if($produit->vci_complement_dr): ?><?php echoFloat($produit->vci_complement_dr) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_substitution') ?>"><?php if($produit->vci_substitution): ?><?php echoFloat($produit->vci_substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_destruction') ?>"><?php if($produit->vci_destruction): ?><?php echoFloat($produit->vci_destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_rafraichi') ?>"><?php if($produit->vci_rafraichi): ?><?php echoFloat($produit->vci_rafraichi) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci') ?>"><?php if($produit->vci): ?><?php echoFloat($produit->vci) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit, 'vci_stock_final') ?>"><?php if($produit->vci_stock_final): ?><?php echoFloat($produit->vci_stock_final) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_precedent') ?>"><?php if($produit->vci->stock_precedent): ?><?php echoFloat($produit->vci->stock_precedent) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'complement') ?>"><?php if($produit->vci->complement): ?><?php echoFloat($produit->vci->complement) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'substitution') ?>"><?php if($produit->vci->substitution): ?><?php echoFloat($produit->vci->substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'destruction') ?>"><?php if($produit->vci->destruction): ?><?php echoFloat($produit->vci->destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'rafraichi') ?>"><?php if($produit->vci->rafraichi): ?><?php echoFloat($produit->vci->rafraichi) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'constitue') ?>"><?php if($produit->vci->constitue): ?><?php echoFloat($produit->vci->constitue) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?>"><?php if($produit->vci->stock_final): ?><?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
