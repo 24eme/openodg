@@ -182,36 +182,35 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $produit = $this->addProduit($produitConfig->getCouleur()->getHash());
-            $produitDetail = $produit->detail;
+            $produitRecolte = $produit->recolte;
             if($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE) {
-            	$produitDetail->volume_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            	$produitRecolte->volume_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND) {
-            	$produitDetail->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            	$produitRecolte->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
-            	$produitDetail->superficie_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            	$produitRecolte->superficie_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME)  {
-            	$produitDetail->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            	$produitRecolte->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTENETTE) {
-            	$produitDetail->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
-            	$produitDetail->vci += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
-            	$produit->vci = $produitDetail->vci;
+            	$produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
+            	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
             /*
              * Preremplissage DRev
              */
-            if ($produitDetail->volume_total && $produitDetail->volume_sur_place && $produitDetail->volume_total == $produitDetail->volume_sur_place) {
-            	$produit->volume_revendique_sans_vci = $produitDetail->recolte_nette;
-            	$produit->superficie_revendique = $produitDetail->superficie_total;
+            if ($produitRecolte->volume_total && $produitRecolte->volume_sur_place && $produitRecolte->volume_total == $produitRecolte->volume_sur_place) {
+            	$produit->superficie_revendique = $produitRecolte->superficie_total;
             }
         }
         foreach ($this->declaration as $hash => $p) {
-        	if (!$p->detail->volume_sur_place) {
+        	if (!$p->recolte->volume_sur_place) {
         		if (!in_array($hash, $todelete)) {
         			$todelete[] = $hash;
         		}
@@ -356,7 +355,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $produit = $this->add('declaration')->add($hashToAdd);
 
         $produit->getLibelle();
-        $produit->add('superficie_vinifiee');
 
         return $produit;
     }
@@ -536,7 +534,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function devalidate() {
         $this->validation = null;
         $this->validation_odg = null;
-        $this->etape = null;
+        if($this->exist('etape')) {
+            $this->etape = null;
+        }
     }
 
     public function validateOdg($date = null) {
@@ -813,12 +813,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
         $this->piece_document->generatePieces();
-        foreach ($this->declaration->getProduitsVci() as $key => $produit) {
-            $produit->vci_stock_final = ((float) $produit->vci) + ((float) $produit->vci_rafraichi);
-        }
 
         foreach ($this->declaration->getProduits() as $key => $produit) {
-            $produit->volume_revendique_avec_vci = ((float) $produit->volume_revendique_sans_vci) + ((float) $produit->vci_complement_dr);
+            $produit->update();
         }
 	}
 

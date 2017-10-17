@@ -448,6 +448,16 @@ drev_revendication_appellation_ajout:
   requirements:
     sf_method: [post]
 
+drev_revendication_superficie:
+  url: /drev/revendication_superficie/:id/:appellation
+  param: { module: drev, action: revendicationSuperficie, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_revendication:
   url: /drev/revendication/:id/:appellation
   param: { module: drev, action: revendication, appellation: 0 }

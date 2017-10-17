@@ -52,4 +52,5 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbObjectForm
             $this->getObject()->declaration->reorderByConf();
         }
     }
+
 }
