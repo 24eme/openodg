@@ -396,7 +396,7 @@ class DRevValidation extends DocumentValidation {
     }
 
     protected function controleRevendication($produit) {
-        if($produit->superficie_revendique === null || $produit->volume_revendique_issu_recolte === null || $produit->volume_revendique_total === null) {
+        if($produit->superficie_revendique === null || $produit->volume_revendique_issu_recolte === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             return;
         }

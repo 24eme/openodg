@@ -85,6 +85,7 @@ $valuesRev = array(
 $valuesRev['produits'][$produit_hash1]['superficie_revendique'] = 10;
 $valuesRev['produits'][$produit_hash1]['detail']['superficie_total'] = 10;
 $valuesRev['produits'][$produit_hash2]['detail']['superficie_total'] = 300;
+$valuesRev['produits'][$produit_hash2]['superficie_revendique'] = 2;
 $valuesRev['produits'][$produit_hash2]['has_stock_vci'] = false;
 
 $form->bind($valuesRev);
@@ -106,18 +107,19 @@ $defaults = $form->getDefaults();
 $t->is(count($form['produits']), 1, "La form a 1 seul produit");
 $t->is($form['produits'][$produit_hash1]['stock_precedent']->getValue(), 3, "Le stock VCI avant récolte du formulaire est de 3");
 $t->is($form['produits'][$produit_hash1]['destruction']->getValue(), null, "Le VCI desctruction est nul");
-$t->is($form['produits'][$produit_hash1]['complement']->getValue(), null, "Le VCI en complément est de 2");
+$t->is($form['produits'][$produit_hash1]['complement']->getValue(), null, "Le VCI en complément est nul");
 $t->is($form['produits'][$produit_hash1]['substitution']->getValue(), null, "Le VCI en substitution est nul");
 $t->is($form['produits'][$produit_hash1]['rafraichi']->getValue(), null, "Le VCI rafraichi est nul");
 
 $valuesVCI = array(
     'produits' => array(
         $produit_hash1 => array(
-                                "stock_precedent" => 3,
-                                "destruction" => 0,
-                                "substitution" => 0,
-                                "complement" => 2,
-                                "rafraichi" => 1),
+            "stock_precedent" => 3,
+            "destruction" => 0,
+            "substitution" => 0,
+            "complement" => 1,
+            "rafraichi" => 2,
+        ),
     ),
     '_revision' => $drev->_rev,
 );
@@ -131,9 +133,11 @@ $form->save();
 $produit1 = $drev->get($produit_hash1);
 $t->is($produit1->vci->stock_precedent, 3, "Le stock VCI avant récolte du produit du doc est de 3");
 $t->is($produit1->vci->destruction, null, "Le VCI en destruction du produit du doc est null");
-$t->is($produit1->vci->complement, 2, "Le VCI en complément de la DR du produit du doc est de 2");
+$t->is($produit1->vci->complement, 1, "Le VCI en complément de la DR du produit du doc est de 2");
 $t->is($produit1->vci->substitution, 0, "Le VCI en substitution de la DR du produit du doc est de 0");
-$t->is($produit1->vci->rafraichi, 1, "Le VCI rafraichi du produit est de 1");
+$t->is($produit1->vci->rafraichi, 2, "Le VCI rafraichi du produit est de 1");
+$t->is($produit1->volume_revendique_issu_vci, $produit1->vci->complement + $produit1->vci->substitution + $produit1->vci->rafraichi, "Le volume revendiqué issu du vci est calculé à partir de la répartition vci");
+
 
 $t->comment("Formulaire de revendication");
 
@@ -153,7 +157,8 @@ $valuesRev = array(
     '_revision' => $drev->_rev,
 );
 
-$valuesRev['produits'][$produit_hash1]['volume_revendique_sans_vci'] = 100;
+$valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 100;
+$valuesRev['produits'][$produit_hash2]['volume_revendique_issu_recolte'] = 100;
 
 $form->bind($valuesRev);
 
@@ -163,17 +168,26 @@ $form->save();
 $t->is($produit1->recolte->superficie_total, $valuesRev['produits'][$produit_hash1]['recolte']['superficie_total'], "La superficie total de la DR est enregistré");
 $t->is($produit1->recolte->volume_total, $valuesRev['produits'][$produit_hash1]['recolte']['volume_total'], "Le volume total de la DR est enregistré");
 $t->is($produit1->recolte->recolte_nette, $valuesRev['produits'][$produit_hash1]['recolte']['recolte_nette'], "La récolte nette de la DR a été enregistrée");
-$t->is($produit1->volume_revendique_issu_recolte, $valuesRev['produits'][$produit_hash1]['volume_revendique_sans_vci'], "Le volume revendiqué sans VCI est enregistré");
-$t->is($produit1->volume_revendique_total, $produit1->volume_revendique_issu_recolte + $produit1->volume_revendique_issu_vci, "Le volume revendique avec vci est bien calcule à partir du complément DR");
+$t->is($produit1->volume_revendique_issu_recolte, $valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'], "Le volume revendiqué issu de la récolte est enregistré");
+$t->is($produit1->volume_revendique_total, $produit1->volume_revendique_issu_recolte + $produit1->volume_revendique_issu_vci, "Le volume revendique total est calculé");
 
 $t->comment("Validation");
-
-$t->is($produit1->vci->stock_final, 12, "Le VCI stock après récolte du produit du doc est 12");
-$vci_stock_final_calc = $produit1->vci->constitue + $produit1->vci->rafraichi;
-$t->is($produit1->vci->stock_final, $vci_stock_final_calc, "Le VCI stock après récolte du produit du doc est le même que le calculé");
+$t->is($produit1->vci->stock_final, 4, "Le stock VCI après récolte du produit du doc est 4");
+$t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->rafraichi, "Le VCI stock après récolte du produit du doc est le même que le calculé");
 
 $drev->cleanDoc();
 $validation = new DRevValidation($drev);
+
+$validation = new DRevValidation($drev);
+$validation->controle();
+$erreurs = $validation->getPointsByCodes('erreur');
+
+$t->ok(!isset($erreurs['revendication_incomplete']), "Après correction dans la drev plus de point blocant sur le remplissage des données de revendication");
+$t->ok(!isset($erreurs['revendication_rendement']), "Après correction dans la drev plus de point blocant sur le rendement de la revendication");
+$t->ok(!isset($erreurs['dr_rendement']), "Après correction dans la drev plus de point blocant sur le rendement DR");
+$t->ok(!isset($erreurs['vci_stock_utilise']), "Après correction dans la drev plus de point blocant sur la repartition du vci");
+$t->ok(!isset($erreurs['vci_rendement_annee']), "Après correction dans la drev plus de point blocant sur le rendement à l'année du vci");
+$t->ok(!isset($erreurs['vci_rendement_total']), "Après correction dans la drev plus de point blocant sur le rendement total du vci");
 
 $erreurs = $validation->getPointsByCodes('erreur');
 
@@ -197,14 +211,3 @@ $produit1->vci->rafraichi = 1;
 $produit2->superficie_revendique = 100;
 $produit2->volume_revendique_issu_recolte = 20;
 $produit2->volume_revendique_total = 20;
-
-$validation = new DRevValidation($drev);
-$validation->controle();
-$erreurs = $validation->getPointsByCodes('erreur');
-
-$t->ok(!isset($erreurs['revendication_incomplete']), "Après correction dans la drev plus de point blocant sur le remplissage des données de revendication");
-$t->ok(!isset($erreurs['revendication_rendement']), "Après correction dans la drev plus de point blocant sur le rendement de la revendication");
-$t->ok(!isset($erreurs['dr_rendement']), "Après correction dans la drev plus de point blocant sur le rendement DR");
-$t->ok(!isset($erreurs['vci_stock_utilise']), "Après correction dans la drev plus de point blocant sur la repartition du vci");
-$t->ok(!isset($erreurs['vci_rendement_annee']), "Après correction dans la drev plus de point blocant sur le rendement à l'année du vci");
-$t->ok(!isset($erreurs['vci_rendement_total']), "Après correction dans la drev plus de point blocant sur le rendement total du vci");
