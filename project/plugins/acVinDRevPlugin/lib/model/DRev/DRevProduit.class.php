@@ -204,6 +204,11 @@ class DRevProduit extends BaseDRevProduit
 		return $this->vci->complement + $this->vci->substitution + $this->vci->rafraichi + $this->vci->destruction;
 	}
 
+	public function getPlafondStockVci() {
+
+		return $this->superficie_revendique * $this->getConfig()->rendement_vci_total;
+	}
+
 	public function canHaveVtsgn() {
 
 		return $this->exist('detail_vtsgn');

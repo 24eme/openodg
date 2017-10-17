@@ -66,7 +66,11 @@ $t->is($produit1->vci->constitue, 2, "Le vci de l'année de la DR pour ce produi
 $t->is($produit2->getLibelleComplet(), "CdR Villages avec NG Puymeras Rouge", "Le libelle du produit estTranquilles CdR Villages avec NG Vinsobres Blanc");
 
 
-$t->comment('Formulaire des superficies');
+$t->comment('Formulaire de revendication des superficies');
+
+if($drev->storeEtape(DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE)) {
+    $drev->save();
+}
 
 $form = new DRevSuperficieForm($drev);
 
@@ -76,6 +80,9 @@ $t->is($form['produits'][$produit_hash1]['recolte']['superficie_total']->getValu
 $t->is($form['produits'][$produit_hash1]['superficie_revendique']->getValue(), $produit1->superficie_revendique, "La superficie revendique est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['has_stock_vci']->getValue(), true, "La checkbox de vci du premier produit est coché");
 $t->is($form['produits'][$produit_hash2]['has_stock_vci']->getValue(), false, "La checkbox de vci du 2ème produit n'est pas coché");
+$t->ok(!isset($form['produits'][$produit_hash1]['recolte']['volume_total']), "Le volume total de la DR n'est pas proposé dans le formulaire");
+$t->ok(!isset($form['produits'][$produit_hash1]['recolte']['recolte_nette']), "Le volume de récolte nette de la DR n'est pas proposé dans le formulaire");
+$t->ok(!isset($form['produits'][$produit_hash1]['recolte']['volume_sur_place']), "Le volume sur place de la DR n'est pas proposé dans le formulaire");
 
 $valuesRev = array(
     'produits' => $form['produits']->getValue(),
@@ -83,8 +90,8 @@ $valuesRev = array(
 );
 
 $valuesRev['produits'][$produit_hash1]['superficie_revendique'] = 10;
-$valuesRev['produits'][$produit_hash1]['detail']['superficie_total'] = 10;
-$valuesRev['produits'][$produit_hash2]['detail']['superficie_total'] = 300;
+$valuesRev['produits'][$produit_hash1]['recolte']['superficie_total'] = 10;
+$valuesRev['produits'][$produit_hash2]['recolte']['superficie_total'] = 300;
 $valuesRev['produits'][$produit_hash2]['superficie_revendique'] = 2;
 $valuesRev['produits'][$produit_hash2]['has_stock_vci'] = false;
 
@@ -99,6 +106,10 @@ $t->ok($produit1->hasVci(), "Le produit 1 est déclaré ayant du vci");
 $t->ok(!$produit2->hasVci(), "Le produit 2 n'est pas déclaré ayant du vci");
 
 $t->comment("Formulaire du VCI");
+
+if($drev->storeEtape(DrevEtapes::ETAPE_VCI)) {
+    $drev->save();
+}
 
 $form = new DRevVciForm($drev);
 
@@ -138,18 +149,22 @@ $t->is($produit1->vci->substitution, 0, "Le VCI en substitution de la DR du prod
 $t->is($produit1->vci->rafraichi, 2, "Le VCI rafraichi du produit est de 1");
 $t->is($produit1->volume_revendique_issu_vci, $produit1->vci->complement + $produit1->vci->substitution + $produit1->vci->rafraichi, "Le volume revendiqué issu du vci est calculé à partir de la répartition vci");
 
-
 $t->comment("Formulaire de revendication");
+
+if($drev->storeEtape(DrevEtapes::ETAPE_REVENDICATION)) {
+    $drev->save();
+}
 
 $form = new DRevRevendicationForm($drev);
 
 $defaults = $form->getDefaults();
 
 $t->is(count($form['produits']), count($drev->getProduits()), "La form à le même nombre de produit que dans la drev");
-$t->is($form['produits'][$produit_hash1]['recolte']['volume_total']->getValue(), $produit1->recolte->volume_total, "La volume totale de la DR est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['recolte']['volume_total']->getValue(), $produit1->recolte->volume_sur_place, "Le volume total récolté est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['recolte']['recolte_nette']->getValue(), $produit1->recolte->recolte_nette, "La récolté nette de la DR sont initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['recolte']['volume_sur_place']->getValue(), $produit1->recolte->volume_sur_place, "Le volume sur place est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['volume_revendique_issu_recolte']->getValue(), $produit1->volume_revendique_issu_recolte, "Le volume revendique issu de la DR est initialisé dans le form");
+$t->ok(!isset($form['produits'][$produit_hash1]['recolte']['superficie_total']), "La superficie totale de la DR n'est pas proposé dans le formulaire");
 
 
 $valuesRev = array(
@@ -165,13 +180,18 @@ $form->bind($valuesRev);
 $t->ok($form->isValid(), "Le formulaire est valide");
 $form->save();
 
-$t->is($produit1->recolte->superficie_total, $valuesRev['produits'][$produit_hash1]['recolte']['superficie_total'], "La superficie total de la DR est enregistré");
+$t->is($produit1->recolte->volume_sur_place, $valuesRev['produits'][$produit_hash1]['recolte']['volume_sur_place'], "La superficie total de la DR est enregistré");
 $t->is($produit1->recolte->volume_total, $valuesRev['produits'][$produit_hash1]['recolte']['volume_total'], "Le volume total de la DR est enregistré");
 $t->is($produit1->recolte->recolte_nette, $valuesRev['produits'][$produit_hash1]['recolte']['recolte_nette'], "La récolte nette de la DR a été enregistrée");
 $t->is($produit1->volume_revendique_issu_recolte, $valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'], "Le volume revendiqué issu de la récolte est enregistré");
 $t->is($produit1->volume_revendique_total, $produit1->volume_revendique_issu_recolte + $produit1->volume_revendique_issu_vci, "Le volume revendique total est calculé");
 
 $t->comment("Validation");
+
+if($drev->storeEtape(DrevEtapes::ETAPE_VALIDATION)) {
+    $drev->save();
+}
+
 $t->is($produit1->vci->stock_final, 4, "Le stock VCI après récolte du produit du doc est 4");
 $t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->rafraichi, "Le VCI stock après récolte du produit du doc est le même que le calculé");
 
