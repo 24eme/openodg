@@ -53,7 +53,6 @@ done
 
 
 
-
 fi
 
 echo "Création des entités de type Sociétés (Présence d'un Evv ou d'un Siret)"

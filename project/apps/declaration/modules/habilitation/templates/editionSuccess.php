@@ -30,19 +30,20 @@
               $hasHabilitations = $produitAppellation->hasHabilitations();
               $nbActivites = $produitAppellation->nbActivites();
                 foreach ($produitAppellation->activites as $keyActivite => $habilitationsNode):
-                  $rowDisplayed = (!$habilitationsNode->hasStatut())? '1' :'';
+                  $tdDisplayed = (!$habilitationsNode->hasStatut())? '1' :'';
+                  $tdHide = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
                   $color = ($habilitationsNode->isHabilite())?  'bg-success' :'';
                   $color = (!$color && $habilitationsNode->isWrongHabilitation())? 'bg-danger' : $color;
                 ?>
-                <tr data-hide="<?php echo $rowDisplayed ?>" >
+                <tr data-hide="<?php echo ($nbActivites)? '' : '1'; ?>" <?php echo ($nbActivites)? '' : 'style="display:none;"'; ?> >
                   <?php if($first): ?>
-                    <td rowspan="5" data-number="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
+                    <td data-hide="<?php echo (!$first)? $tdDisplayed : ''; ?>" "<?php echo (!$first)? 'style="display:none;"' : ''; ?>" rowspan="5" data-number="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
                   <?php endif; $first = false; ?>
-                      <td class="<?php echo $color; ?>" ><strong><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></strong></td>
-                      <td class="text-center <?php echo $color; ?>" <?php $rowDisplayed ?> ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
-                      <td class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
-                      <td class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
-                      <td class="text-center <?php echo $color; ?> col-xs-1" >
+                      <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="<?php echo $color; ?>" ><strong><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></strong></td>
+                      <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" <?php $rowDisplayed ?> ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
+                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
+                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
+                      <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?> col-xs-1" >
                         <a class="btn btn-sm btn-default" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
                       </td>
                 </tr>
@@ -63,7 +64,8 @@
       <thead>
         <tr>
           <th class="col-xs-1">Date</th>
-          <th class="col-xs-10">Description de la modification</th>
+          <th class="col-xs-1" style="border-right: none;"></th>
+          <th class="col-xs-9" style="border-left: none;">Description de la modification</th>
           <th class="col-xs-1">&nbsp;</th>
         </tr>
       </thead>
@@ -72,7 +74,10 @@
         foreach ($habilitation->getHistoriqueReverse() as $key => $historiqueDoc): ?>
           <tr>
             <td><?php echo Date::francizeDate($historiqueDoc["date"]); ?></<td>
-            <td><?php echo $historiqueDoc["description"]; ?> </td>
+
+            <td class="text-right text-muted" style="border-right: none;"><?php echo $historiqueDoc["auteur"]; ?> </td>
+            <td style="border-left: none;"><?php echo $historiqueDoc["description"]; ?><?php if($historiqueDoc["commentaire"]): ?> <span class="text-muted"><?php echo '('.$historiqueDoc["commentaire"].')'; ?></span><?php endif ?>
+            </td>
             <td class="text-center"><a href="<?php echo url_for('habilitation_edition', array('id' => $historiqueDoc["iddoc"])); ?>">Voir</a></tr>
         <?php endforeach; ?>
       </tbody>

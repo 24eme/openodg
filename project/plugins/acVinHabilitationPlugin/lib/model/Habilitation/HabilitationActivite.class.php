@@ -33,9 +33,14 @@ class HabilitationActivite extends BaseHabilitationActivite {
     $historiqueRow->iddoc = $this->getDocument()->_id;
     $historiqueRow->date = $date;
     $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
-    $historiqueRow->description = ($old_statut)? $produitLibelle." : activité \"".$activite."\", statut changé de \"".HabilitationClient::$statuts_libelles[$old_statut]."\" à \"".HabilitationClient::$statuts_libelles[$statut]."\""  :
-                                                 $produitLibelle." : activité \"".$activite."\", est passé en statut \"".HabilitationClient::$statuts_libelles[$statut]."\"";
-    $historiqueRow->description .= ($commentaire)? " (".$commentaire.")" : "";
+    if($old_statut == $statut){
+      $historiqueRow->description = $produitLibelle." : pour l'activité \"".$activite."\", le commentaire a changé";
+    }elseif (!$old_statut) {
+      $historiqueRow->description = $produitLibelle." : activité \"".$activite."\", est passé en statut \"".HabilitationClient::$statuts_libelles[$statut]."\"";
+    }else{
+      $historiqueRow->description = $produitLibelle." : activité \"".$activite."\", statut changé de \"".HabilitationClient::$statuts_libelles[$old_statut]."\" à \"".HabilitationClient::$statuts_libelles[$statut]."\"";
+    }
+    $historiqueRow->commentaire = $commentaire;
   }
 
 }

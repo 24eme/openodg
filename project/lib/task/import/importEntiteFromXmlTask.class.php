@@ -2,40 +2,54 @@
 
 class importEntiteFromXmlTask extends sfBaseTask
 {
+    const COORD_ADRESSE_1 = 0;
+    const COORD_ADRESSE_2 = 1;
+    const COORD_ADRESSE_3 = 2;
+    const COORD_ADRESSE_ETRANGERE = 3;
+    const COORD_CANTON = 4;
+    const COORD_CODEPOSTAL = 5;
+    const COORD_CLE = 6;
+    const COORD_COMMUNE = 7;
+    const COORD_COMMUNELIBELLE = 8;
+    const COORD_LIBELLEACHEMINEMEN = 9;
+    const COORD_PAYS = 10;
+
+    const COM_EMAIL = 0;
+    const COM_FAX = 1;
+    const COM_NUM = 2;
+    const COM_PORTABLE = 3;
+    const COM_SITEWEB = 4;
+    const COM_TEL = 5;
+    const COM_TYPECONTACT = 6;
+
+    protected $arrayXML = array();
 
     protected $observationsCodifieesArr = array();
     protected $groupeTagsArr = array();
     protected $fonctionsArr = array();
-
     protected $groupeInterlocuteursArr = array();
 
-    protected $groups = array();
-    protected $ref_groups = array();
-
-    protected $identifiant = null;
-    protected $cvi = null;
-    protected $multipleCvi = array();
-
-    protected $nom = null;
-    protected $prenom = null;
-    protected $civilite = null;
-
-    protected $coordonnees = array();
-    protected $communications = array();
-
-    protected $siret = null;
-    protected $type_etablissement = null;
-    protected $date_archivage = null;
-    protected $date_modification = null;
-    protected $date_creation = null;
-    protected $groupe = null;
-    protected $entite_juridique = null;
 
 
+    protected static $coordonneesKeys = array(self::COORD_ADRESSE_1 => "b:Adresse1",
+                                    self::COORD_ADRESSE_2 => "b:Adresse2",
+                                    self::COORD_ADRESSE_3 => "b:Adresse3",
+                                    self::COORD_ADRESSE_ETRANGERE => "b:AdresseEtrangere",
+                                    self::COORD_CANTON => "b:Canton",
+                                    self::COORD_CODEPOSTAL => "b:CodePostal",
+                                    self::COORD_CLE => "b:CleCoordonnee",
+                                    self::COORD_COMMUNE => "b:Commune",
+                                    self::COORD_COMMUNELIBELLE => "b:CommuneLibelle",
+                                    self::COORD_LIBELLEACHEMINEMEN => "b:LibelleACheminement",
+                                    self::COORD_PAYS => "b:Pays");
 
-    protected $observationsCodifiees = array();
-    protected $groupesTags = array();
-    protected $groupeInterlocuteurs = array();
+    protected static $communicationsKeys = array(self::COM_EMAIL => "b:Email",
+                                    self::COM_FAX => "b:Fax",
+                                    self::COM_NUM => "b:NumeroCommunication",
+                                    self::COM_PORTABLE => "b:Portable",
+                                    self::COM_SITEWEB => "b:SiteWeb",
+                                    self::COM_TEL => "b:Telephone",
+                                    self::COM_TYPECONTACT => "b:TypeContact");
 
     protected function configure()
     {
@@ -64,70 +78,225 @@ EOF;
         $file_path = $arguments['file_path'];
 
         error_reporting(E_ERROR | E_PARSE);
+        $this->initLoad($file_path);
+        $this->loadMatchFiles();
 
-        $xml_content_str = file_get_contents($file_path);
-
-        $xmlEntite = new SimpleXMLElement($xml_content_str);
-
-        $path_obs = dirname(__FILE__)."/../../../data/configuration/rhone/observationsCodifiees.csv";
-        $observationsCodifieesCsv = new CsvFile($path_obs);
-
-        $path_groupes_tags = dirname(__FILE__)."/../../../data/configuration/rhone/groupes_tags.csv";
-        $groupeTagsCsv = new CsvFile($path_groupes_tags);
-
-        $path_groupes_interlocuteurs = dirname(__FILE__)."/../../../data/configuration/rhone/groupes_interlocuteurs.csv";
-        $groupesInterlocuteursCsv = new CsvFile($path_groupes_interlocuteurs);
-
-        $path_fonctions = dirname(__FILE__)."/../../../data/configuration/rhone/fonctions.csv";
-        $fonctionsCsv = new CsvFile($path_fonctions);
-
-        foreach ($observationsCodifieesCsv->getCsv() as $row) {
-          $this->observationsCodifieesArr[$row[0]] = $row;
-        }
-
-        foreach ($groupeTagsCsv->getCsv() as $row) {
-          $this->groupeTagsArr[$row[0]] = $row;
-        }
-
-        foreach ($groupesInterlocuteursCsv->getCsv() as $row) {
-          $this->groupeInterlocuteursArr[$row[0]] = $row;
-        }
-
-        foreach ($fonctionsCsv->getCsv() as $row) {
-          $this->fonctionsArr[$row[0]] = $row[1];
-        }
-
-        foreach ($xmlEntite as $nameField => $field) {
-
-          $this->searchSimpleStringField($nameField, $field,"b:CleIdentite","identifiant");
-          $this->type_etablissement = "OPERATEUR";
-
-          $this->searchSimpleDateField($nameField, $field, "b:DateArchivage","date_archivage");
-          $this->searchSimpleDateField($nameField, $field, "b:DateModification","date_modification");
-          $this->searchSimpleDateField($nameField, $field, "b:DateCreation","date_creation");
-
-          $this->searchType($nameField,$field);
-          $this->searchCvi($nameField,$field);
-
-          $this->searchSimpleStringField($nameField, $field,"b:Prenom","prenom");
-          $this->searchSimpleStringField($nameField, $field,"b:RaisonSociale","nom");
-          $this->searchSimpleStringField($nameField, $field,"b:Titre","civilite");
-          $this->searchSimpleStringField($nameField, $field,"b:Siret","siret");
-
-          $this->searchCoordonnees($nameField,$field);
-          $this->searchCommunications($nameField,$field);
-          $this->searchObservationsCodifiees($nameField,$field);
-          $this->searchRefGroupsProfil($nameField,$field);
-        }
-        
-        if($this->cvi  || count($this->multipleCvi) || $this->siret){
-            $this->importSociete();
-        }else{
-          $this->importInterlocuteur();
-        }
+        $this->import();
 
     }
 
+    protected function import(){
+      if(!isset($this->arrayXML["b:CleIdentite"]) || !$this->arrayXML["b:CleIdentite"]){
+        echo "Le fichier xml $file_path n'a pas d'identifiant!\n"; exit;
+      }
+      $identifiant = $this->arrayXML["b:CleIdentite"];
+      $cvis = $this->getCvis($identifiant);
+      $siret = $this->arrayXML["b:Siret"];
+      if(is_array($siret) && !count($siret)){
+        $siret = "";
+      }
+      try{
+        if(count($cvis) || $siret){
+            $this->importSociete($identifiant,$cvis,$siret);
+        }else{
+          $this->importAsInterlocuteur($identifiant);
+        }
+      }catch(sfException $e){
+        echo "Problème avec ".$identifiant."\n";
+        echo $e;
+
+      }
+    }
+
+
+    protected function importSociete($identifiant,$cvis,$siret){
+
+            $societeIdentifiant = sprintf("%06d",$identifiant);
+            $soc = SocieteClient::getInstance()->find($societeIdentifiant);
+            if($soc){
+              $soc->delete();
+              // foreach ($soc->getEtablissementsObj() as $id => $obj) {
+              //   $etb = EtablissementClient::getInstance()->find($id);
+              //   if($etb){
+              //     acCouchdbManager::getClient()->delete($etb);
+              //   }
+              // }
+              // acCouchdbManager::getClient()->delete($soc);
+            }
+
+            $societe = new societe();
+            $societe->identifiant = $societeIdentifiant;
+            if($cvis){
+              $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
+            }else{
+              $societe->type_societe =  "AUTRE" ;
+            }
+            $groupeInterlocuteurs = $this->getRefsGroupsProfil();
+            if(count($groupeInterlocuteurs)){
+              foreach ($groupeInterlocuteurs as $key => $interloc) {
+                echo "/!\ Un profil trouvé : ".$identifiant." est aussi contact de la societe : ".$interloc[2]."  [".implode(",",$interloc)."] => importé quand même\n";
+              }
+            }
+            $societe->constructId();
+            $societe->raison_sociale = $this->buildRaisonSociete();
+
+            if($dateModification = $this->getSimpleDateField($this->arrayXML , 'b:DateModification')){
+              $societe->add('date_modification', $dateModification);
+            }
+            if($dateCreation = $this->getSimpleDateField($this->arrayXML, 'b:DateCreation')){
+              $societe->add('date_creation', $dateCreation);
+            }
+
+            $societe->code_comptable_client = $societe->identifiant;
+            $siege = $societe->getOrAdd('siege');
+            $societe->siret = $siret;
+
+            $societeCoordonnees = $this->getCoordonneesInArr($this->arrayXML['b:Coordonnees']['b:Identite_Coordonnee']);
+
+            $this->updateDocOrFieldWithCoordonnees($societe->siege,$societeCoordonnees);
+
+            $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
+
+            $societe->telephone = $societeCommunication[self::COM_TEL];
+            $societe->fax = $societeCommunication[self::COM_FAX];
+            $societe->email = $societeCommunication[self::COM_EMAIL];
+
+            $dateArchivage = $this->getSimpleDateField($this->arrayXML, 'b:DateArchivage');
+            if($dateArchivage){
+              $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
+            }
+            $societe->save();
+            $societe = SocieteClient::getInstance()->find($societe->_id);
+
+            $type_etablissement = "OPERATEUR";
+            if(count($cvis) > 1 ){
+              foreach ($cvis as $cvi) {
+                $etablissement = $societe->createEtablissement($type_etablissement);
+                $etablissement->constructId();
+                $etablissement->cvi = $cvi;
+                $etablissement->nom = $this->buildRaisonSociete();
+                $etablissement->save();
+              }
+            }elseif($cvis){
+            $etablissement = $societe->createEtablissement($type_etablissement);
+            $etablissement->constructId();
+            $etablissement->cvi = array_shift(array_values($cvis));
+            $etablissement->nom = $this->buildRaisonSociete();
+            $etablissement->save();
+          }
+
+          $compte = $societe->getMasterCompte();
+          $compte->nom = $this->buildRaisonSociete();
+          $compte->updateNomAAfficher();
+          $compte->email = $societeCommunication[self::COM_EMAIL];
+          $compte->telephone_mobile = $societeCommunication[self::COM_PORTABLE];
+          //$compte->telephone_perso = $societeCommunication[self::COM_TEL];
+          $compte->site_internet = $societeCommunication[self::COM_SITEWEB];
+          $compte->fonction = "";
+          $this->setTags($compte);
+          $compte->save();
+
+          echo "L'entité $identifiant CVI (".implode(",",$cvis).")  Compte =>  $compte->_id \n";
+
+        }
+
+        protected function importAsInterlocuteur($identifiant){
+          $groupeInterlocuteurs = $this->getRefsGroupsProfil();
+
+          if(count($groupeInterlocuteurs)){
+            foreach ($groupeInterlocuteurs as $key => $interloc) {
+              echo "INTERLOCUTEUR profil trouvé [".implode(",",$interloc)."] : ".$identifiant." est contact de la societe : ".$interloc[1]."\n";
+              $identifiantSoc = sprintf("%06d",$interloc[1]);
+              $societe = SocieteClient::getInstance()->find($identifiantSoc);
+              if(!$societe){
+                echo "La société $identifiantSoc n'est pas dans la base\n";
+              }else{
+                $compte = CompteClient::getInstance()->createCompteFromSociete($societe);
+
+                $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
+
+                $compte->nom = $this->arrayXML['b:RaisonSociale'];
+                $compte->prenom = $this->arrayXML['b:Prenom'];
+                $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
+
+                $interlocCoordonnees = $this->getCoordonneesInArr($interloc["b:Identite_Coordonnee"]);
+
+                $this->updateDocOrFieldWithCoordonnees($compte,$interlocCoordonnees);
+
+                $interlocCommunication = $this->getCommunicationsInArr($interloc["b:Identite_Communication"]);
+
+                $compte->email = $interlocCommunication[self::COM_EMAIL];
+                $compte->telephone_mobile = $interlocCommunication[self::COM_PORTABLE];
+                $compte->site_internet = $interlocCommunication[self::COM_SITEWEB];
+                $compte->save();
+                $this->setTags($compte);
+                echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
+
+              }
+            }
+          }
+        }
+
+    protected function updateDocOrFieldWithCoordonnees($doc_or_field,$coordsArr){
+      $doc_or_field->adresse = $coordsArr[self::COORD_ADRESSE_1];
+      if($coordsArr[self::COORD_ADRESSE_2]){
+        $doc_or_field->adresse_complementaire = $coordsArr[self::COORD_ADRESSE_2];
+      }
+      if($societeCoordonnees[self::COORD_ADRESSE_3]){
+        $doc_or_field->adresse_complementaire .= " ".$coordsArr[self::COORD_ADRESSE_3];
+      }
+      $doc_or_field->code_postal = $coordsArr[self::COORD_CODEPOSTAL];
+      $doc_or_field->commune = $coordsArr[self::COORD_COMMUNELIBELLE];
+      if(!$coordsArr[self::COORD_ADRESSE_ETRANGERE] || ($coordsArr[self::COORD_ADRESSE_ETRANGERE] == "false")){
+        $doc_or_field->pays = "France";
+      }else{
+        $doc_or_field->pays = $coordsArr[self::COORD_PAYS];
+      }
+      return $doc_or_field;
+    }
+
+    protected function initLoad($path){
+        $xml_content_str = file_get_contents($path);
+        $xml = simplexml_load_string($xml_content_str, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $this->arrayXML = json_decode($json,TRUE);
+        if(!$this->arrayXML || !count($this->arrayXML)){
+          echo "L'xml de path $path n'a pas été intégré\n";
+        }
+    }
+
+    protected function loadMatchFiles(){
+      $path_obs = dirname(__FILE__)."/../../../data/configuration/rhone/observationsCodifiees.csv";
+      $observationsCodifieesCsv = new CsvFile($path_obs);
+
+      $path_groupes_tags = dirname(__FILE__)."/../../../data/configuration/rhone/groupes_tags.csv";
+      $groupeTagsCsv = new CsvFile($path_groupes_tags);
+
+      $path_groupes_interlocuteurs = dirname(__FILE__)."/../../../data/configuration/rhone/groupes_interlocuteurs.csv";
+      $groupesInterlocuteursCsv = new CsvFile($path_groupes_interlocuteurs);
+
+      $path_fonctions = dirname(__FILE__)."/../../../data/configuration/rhone/fonctions.csv";
+      $fonctionsCsv = new CsvFile($path_fonctions);
+
+      foreach ($observationsCodifieesCsv->getCsv() as $row) {
+        $this->observationsCodifieesArr[$row[0]] = $row;
+      }
+
+      foreach ($groupeTagsCsv->getCsv() as $row) {
+        $this->groupeTagsArr[$row[0]] = $row;
+      }
+
+      foreach ($groupesInterlocuteursCsv->getCsv() as $row) {
+        $this->groupeInterlocuteursArr[$row[0]] = $row;
+      }
+
+      foreach ($fonctionsCsv->getCsv() as $row) {
+        $this->fonctionsArr[$row[0]] = $row[1];
+      }
+    }
+
+
+/*
     public function searchType($nameField, $field){
       if($nameField == "b:Type"){
         switch ((string) $field) {
@@ -141,80 +310,149 @@ EOF;
         }
       }
     }
-
-
-  public function searchCvi($nameField, $field){
-            if($nameField == "b:Evv" && boolval((string) $field)){
-              $evvStr = (string) $field;
+*/
+  protected function getCvis($identifiant){
+            $cviArr = array();
+            if(isset($this->arrayXML["b:Evv"]) && boolval((string) $this->arrayXML["b:Evv"])){
+              if(is_array($this->arrayXML["b:Evv"]) && !count($this->arrayXML["b:Evv"])){
+                return array();
+              }
+              $evvStr = (string) $this->arrayXML["b:Evv"];
               $pattern = array("/^,/","/,$/","/[,]{2,}/");
               $replace = array("","",",");
               $evvStrPurged = preg_replace($pattern,$replace,$evvStr);
               $evvArray = explode(',',$evvStrPurged);
               if(count($evvArray) > 1 && (count(array_unique($evvArray)) > 1)){
-                echo "l'identité  ".  $this->identifiant." a des cvis différents : ".$evvStrPurged." plusieurs établissements\n";
-                $this->multipleCvi = array_unique($evvArray);
+                echo "l'identité  ".  $identifiant." a des cvis différents : ".$evvStrPurged." plusieurs établissements\n";
+                $cviArr = array_unique($evvArray);
               }else{
                   foreach ($evvArray as $cvi_c) {
-                      $this->cvi = $cvi_c;
+                      $cviArr[$cvi_c] = $cvi_c;
                   }
+                }
             }
-        }
+            return $cviArr;
    }
 
     protected function buildRaisonSociete(){
-      $raison_sociale = ($this->civilite)? $this->civilite." " : "";
-      $raison_sociale .= ($this->prenom)? $this->prenom." " : "";;
-      $raison_sociale .= $this->nom;
+      $civilite = $this->arrayXML['b:Titre'];
+      $prenom = $this->arrayXML['b:Prenom'];
+      $nom = $this->arrayXML['b:RaisonSociale'];
+
+      $raison_sociale = ($civilite)? $civilite." " : "";
+      $raison_sociale .= ($prenom)? $prenom." " : "";;
+      $raison_sociale .= $nom;
       return $raison_sociale;
     }
 
-    protected function searchRefGroupsProfil($nameField, $field){
-            if($nameField == "b:Profils"){
-              $profilesArray = ((array) $field);
-              foreach ($profilesArray as $key => $identitesProfils) {
-                $identitesProfilsArray = (array) $identitesProfils;
-                $refKeyGroup = $identitesProfilsArray["b:CleGroupe"];
-                $fonction = $identiteProfilArr["b:Fonction"];
-                if(array_key_exists($refKeyGroup,$this->groupeTagsArr)){
-                  $this->groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
-                  continue;
-                  }
-                if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
-                  $this->groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction));
-                }
-                foreach ($identitesProfilsArray as $key => $identiteProfilsArray) {
-                  $identiteProfilArr = (array) $identiteProfilsArray;
-                  $refKeyGroup = $identiteProfilArr["b:CleGroupe"];
-                  $fonction = $identiteProfilArr["b:Fonction"];
-                  if(array_key_exists($refKeyGroup,$this->groupeTagsArr)){
-                    $this->groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
-                    continue;
-                    }
-                  if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
-                    $this->groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction));
-                  }
-                }
-             }
+
+    protected function getRefsGroupsProfil(){
+      $groupeInterlocuteurs = array();
+      if(isset($this->arrayXML['b:Profils']) && count($this->arrayXML['b:Profils'])){
+        foreach ($this->arrayXML['b:Profils'] as $key => $identitesProfils) {
+          foreach ($identitesProfils as $identiteProfil) {
+          $refKeyGroup = $identiteProfil["b:CleGroupe"];
+          $fonction = $identiteProfil["b:Fonction"];
+          if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
+            $groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction),$identiteProfil);
           }
+        }
       }
+    }
+    return $groupeInterlocuteurs;
+    }
 
+    protected function getTagsArrayFromProfil(){
+      $groupesTags = array();
+      if(isset($this->arrayXML['b:Profils']) && count($this->arrayXML['b:Profils'])){
+        foreach ($this->arrayXML['b:Profils'] as $key => $identitesProfils) {
+          foreach ($identitesProfils as $identitesProfil) {
+          $refKeyGroup = $identitesProfil["b:CleGroupe"];
+          if(array_key_exists($refKeyGroup,$this->groupeTagsArr)){
+            $groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
+            }
+          }
+        }
+      }
+      return $groupeTags;
+    }
 
-    protected function searchObservationsCodifiees($nameField, $field){
-      if($nameField == "b:ObservationCodifiee"){
-        $observationsCodifieesArray = ((array) $field);
+    private function getSimpleDateField($arr, $fieldName){
+      if(array_key_exists($fieldName,$arr)){
+         if(is_array($arr[$fieldName]) && count($arr[$fieldName])){
+           if(count($arr[$fieldName]) > 1){ echo "Champ ".$fieldName." est multiple : ".implode(",",$arr); return; }
+         }
+         $date = (string) $arr[$fieldName];
+         if($date != "0001-01-01T00:00:00"){
+           return (new DateTime($date))->format("Y-m-d");
+         }
+       }
+       return null;
+    }
+
+    protected function getCoordonneesInArr($arr){
+          $coordonnees = array();
+          foreach (self::$coordonneesKeys as $k => $keyName) {
+            if(array_key_exists($keyName,$arr)){
+              $coordonnees[$k] = $arr[$keyName];
+              if(is_array($arr[$keyName]) && !count($arr[$keyName])){
+                $coordonnees[$k] = "";
+              }
+            }
+          }
+          return $coordonnees;
+    }
+
+    protected function getCommunicationsInArr($arr, $identifiant){
+    $communications = array();
+    if(isset($arr['b:CleCommunication'])){
+      $this->buildCommunicationArr($arr,$communications);
+    }else{
+      echo "$identifiant : Clé communication multiple\n";
+      foreach ($arr as $key => $communicationArr) {
+        if(isset($communicationArr['b:CleCommunication'])){
+          $this->buildCommunicationArr($communicationArr,$communications);
+          break;
+        }
+      }
+    }
+    return $communications;
+    }
+
+    private function buildCommunicationArr($arr,&$communications){
+      foreach (self::$communicationsKeys as $k => $keyName) {
+        if(array_key_exists($keyName,$arr)){
+          if(is_array($arr[$keyName])){
+            $communications[$k] = explode(",",$arr[$keyName]);
+          }else{
+            $communications[$k] = ($arr[$keyName] !== '__.__.__.__.__')? $arr[$keyName] : "";
+          }
+        }
+      }
+    }
+
+    public function setTags($c){
+      $this->addObservationsCodifiees($c);
+
+      $this->addGroupesTags($c);
+
+    }
+
+    protected function addObservationsCodifiees($c){
+      $observationsCodifiees = array();
+      if(isset($this->arrayXML["b:ObservationCodifiee"]) && count($this->arrayXML["b:ObservationCodifiee"])){
+        $observationsCodifieesArray = $this->arrayXML["b:ObservationCodifiee"];
         if(array_key_exists("b:Identite_ObservationCodifiee",$observationsCodifieesArray)){
           foreach ($observationsCodifieesArray["b:Identite_ObservationCodifiee"] as $obsCodifie) {
-            if(boolval((string) $obsCodifie)){
-              $code = (string) $obsCodifie;
-              if(!array_key_exists($code,$this->observationsCodifieesArr) || !$this->observationsCodifieesArr[$code][2]){
-                //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
+            if(is_string($obsCodifie)){
+              if(!array_key_exists($obsCodifie,$this->observationsCodifieesArr) || !$this->observationsCodifieesArr[$obsCodifie][2]){
+                //echo "L'identité  ".  $c->identifiant." possède une observation codifié de code ".$obsCodifie." non trouvée dans les observations codifiées \n";
                 continue;
               }
-              $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code][2];
-            }elseif((get_class($obsCodifie) == 'SimpleXMLElement') && count($obsCodifie)){
-              $obsCod =(array) $obsCodifie;
-              if(array_key_exists("b:ObservationCodifiee",$obsCod)){
-                $code = (string) $obsCod["b:ObservationCodifiee"];
+              $observationsCodifiees[$obsCodifie] = $this->observationsCodifieesArr[$obsCodifie][2];
+            }else{
+              if(array_key_exists("b:ObservationCodifiee",$obsCodifie)){
+                $code = $obsCodifie["b:ObservationCodifiee"];
                 if(!array_key_exists($code,$this->observationsCodifieesArr) || !$this->observationsCodifieesArr[$code][2]){
                   //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                   continue;
@@ -225,225 +463,23 @@ EOF;
           }
         }
       }
-
-    }
-
-    private function searchSimpleStringField($nameField, $field,$matchName,$fieldName){
-      if($nameField == $matchName){
-        if((string) $field){
-          $this->$fieldName = (string) $field;
-        }
-      }
-    }
-
-    private function searchSimpleDateField($nameField, $field,$matchName,$fieldName){
-      if($nameField == $matchName){
-         if(count($field)){
-           if(count($field) > 1){ echo "Champ ".$nameField." est multiple : ".implode(",",$field); return; }
-         }
-         $date = (string) $field;
-         if($date != "0001-01-01T00:00:00"){
-           $this->$fieldName = (new DateTime($date))->format("Y-m-d");
-         }
-       }
-    }
-
-    private function searchArrayNamedField($nameField, $field,$matchName,$fieldName,$assoc){
-      if($nameField == $matchName){
-          $arrayMatched = ((array) $field);
-          if(count($arrayMatched)){
-            foreach ($arrayMatched as $fieldsXml) {
-              $obj = new stdClass();
-              $fieldsXmlArr = ((array) $fieldsXml);
-              foreach ($assoc as $key => $value) {
-                if(array_key_exists($key,$fieldsXmlArr)){
-                    $obj->$value = (string) $fieldsXmlArr[$key];
-                }
-              }
-              array_push($this->$fieldName,$obj);
-            }
-          }
-       }
-    }
-
-    protected function searchCoordonnees($nameField, $field){
-          $assoc = array("b:Adresse1" => "adresse1",
-                         "b:Adresse2" => "adresse2",
-                         "b:Adresse3" => "adresse3",
-                         "b:AdresseEtrangere" => "adresseEtrangere",
-                         "b:Canton" => "canton",
-                         "b:CodePostal" => "codePostal",
-                         "b:CleCoordonnee" => "cleCoordonnee",
-                         "b:Commune" => "commune",
-                         "b:CommuneLibelle" => "communeLibelle",
-                         "b:LibelleACheminement" => "libelleACheminement",
-                         "b:Pays" => "pays");
-          $this->searchArrayNamedField($nameField,$field,"b:Coordonnees","coordonnees",$assoc);
-    }
-
-    protected function searchCommunications($nameField, $field){
-      $assoc = array("b:Email" => "email",
-                     "b:Fax" => "fax",
-                     "b:NumeroCommunication" => "numeroCommunication",
-                     "b:Portable" => "portable",
-                     "b:SiteWeb" => "siteweb",
-                     "b:Telephone" => "telephone",
-                     "b:TypeContact" => "typeContact");
-      $this->searchArrayNamedField($nameField,$field,"b:Communications","communications",$assoc);
-      }
-
-    protected function importSociete(){
-        if(!$this->identifiant){
-          echo "Le fichier xml $file_path n'a pas d'identifiant!\n"; exit;
-        }
-        $societe = new societe();
-        $societe->identifiant = sprintf("%06d",$this->identifiant);
-        if($this->cvi || count($this->multipleCvi)){
-          $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
-        }else{
-          $societe->type_societe =  "AUTRE" ;
-        }
-
-        if(count($this->groupeInterlocuteurs)){
-          foreach ($this->groupeInterlocuteurs as $key => $interloc) {
-            echo "/!\ Un profil trouvé : ".$this->identifiant." est aussi contact de la societe : ".$interloc[2]."  [".implode(",",$interloc)."] => importé quand même\n";
-          }
-        }
-
-        $societe->constructId();
-        $societe->raison_sociale = $this->buildRaisonSociete();
-        $societe->add('date_modification', $this->date_modification);
-        $societe->add('date_creation', $this->date_creation);
-        $societe->code_comptable_client = $societe->identifiant;
-        $siege = $societe->getOrAdd('siege');
-
-        $coordonnees = $this->coordonnees[0];
-        $siege->adresse = $coordonnees->adresse1;
-        if($coordonnees->adresse2){
-          $siege->adresse_complementaire = $coordonnees->adresse2;
-        }
-        if($coordonnees->adresse3){
-          $siege->adresse_complementaire .= " ".$coordonnees->addresse3;
-        }
-        $siege->code_postal = $coordonnees->codePostal;
-        $siege->commune = $coordonnees->communeLibelle;
-        if(!$coordonnees->adresseEtrangere || ($coordonnees->adresseEtrangere == "false")){
-          $siege->pays = "France";
-        }else{
-          $siege->pays = $coordonnees->pays;
-        }
-
-        $communication = $this->communications[0];
-
-        $societe->telephone = ($communication->telephone && $communication->telephone != "__.__.__.__.__")? $communication->telephone : "";
-        $societe->fax = ($communication->fax && $communication->fax != "__.__.__.__.__")? $communication->fax : "";
-        $societe->email = $communication->email;
-
-        $societe->siret = $this->siret;
-        if($this->date_archivage){
-          $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
-        }
-        $societe->save();
-
-        $societe = SocieteClient::getInstance()->find($societe->_id);
-        if($this->multipleCvi){
-          foreach ($this->multipleCvi as $cvi) {
-            $etablissement = $societe->createEtablissement($this->type_etablissement);
-            // $etablissement->setCompte($societe->getMasterCompte()->_id);
-            $etablissement->constructId();
-            $etablissement->cvi = $cvi;
-            $etablissement->nom = $this->buildRaisonSociete();
-            $etablissement->save();
-          }
-        }elseif($this->cvi){
-        $etablissement = $societe->createEtablissement($this->type_etablissement);
-        // $etablissement->setCompte($societe->getMasterCompte()->_id);
-        $etablissement->constructId();
-        $etablissement->cvi = $this->cvi;
-        $etablissement->nom = $this->buildRaisonSociete();
-        $etablissement->save();
-      }
-
-      $compte = $societe->getMasterCompte();
-      $compte->nom = $this->buildRaisonSociete();
-      $compte->updateNomAAfficher();
-      $compte->telephone_mobile = $coordonnees->portable;
-      $compte->site_internet = $coordonnees->site_web;
-      $compte->fonction = $coordonnees->type_contact;
-      $this->setTags($compte);
-      $compte->save();
-
-      echo "L'entité $this->identifiant CVI ($this->cvi)  Compte =>  $compte->_id \n";
-    }
-
-    protected function importInterlocuteur(){
-      if(count($this->groupeInterlocuteurs)){
-        foreach ($this->groupeInterlocuteurs as $key => $interloc) {
-          echo "INTERLOCUTEUR profil trouvé [".implode(",",$interloc)."] : ".$this->identifiant." est contact de la societe : ".$interloc[1]."\n";
-          $identifiantSoc = sprintf("%06d",$interloc[1]);
-          $societe = SocieteClient::getInstance()->find($identifiantSoc);
-          if(!$societe){
-            echo "La société $identifiantSoc n'est pas dans la base\n";
-          }else{
-            $compte = CompteClient::getInstance()->createCompteFromSociete($societe);
-
-            $compte->prenom = $this->prenom;
-            $compte->nom = $this->nom;
-
-            $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
-
-
-            $coordonnees = $this->coordonnees[0];
-
-            $compte->adresse = $coordonnees->adresse1;
-
-            if($coordonnees->adresse2){
-              $compte->adresse_complementaire = $coordonnees->adresse2;
-            }
-            if($coordonnees->adresse3){
-              $compte->adresse_complementaire .= " ".$coordonnees->addresse3;
-            }
-
-            $compte->code_postal = $coordonnees->codePostal;
-
-            if(!$coordonnees->adresseEtrangere || ($coordonnees->adresseEtrangere == "false")){
-              $compte->pays = "France";
-            }else{
-              $compte->pays = $coordonnees->pays;
-            }
-
-            $compte->commune = $coordonnees->communeLibelle;
-
-            $communication = $this->communications[0];
-
-            $compte->telephone_bureau = ($communication->telephone && $communication->telephone != "__.__.__.__.__")? $communication->telephone : "";
-            $compte->telephone_mobile = ($communication->portable && $communication->portable != "__.__.__.__.__")? $coordonnees->portable : "";
-            $compte->fax = ($communication->fax && $communication->fax != "__.__.__.__.__")? $communication->fax : "";
-            $compte->email = $communication->email;
-            $compte->site_internet = $coordonnees->site_web;
-            $this->setTags($compte);
-            $compte->save();
-            echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
-          }
-        }
-      }
-    }
-
-    public function setTags($c){
-      if(count($this->observationsCodifiees)){
-        echo "OBS Codifiees ".implode(",",$this->observationsCodifiees)." ". $c->_id." \n";
-        foreach($this->observationsCodifiees as $obsKey => $obs){
+      if(count($observationsCodifiees)){
+        echo "OBS Codifiees ".implode(",",$observationsCodifiees)." ". $c->_id." \n";
+        foreach($observationsCodifiees as $obsKey => $obs){
           $tag = 'OBS '.$obs;
           $c->addTag('manuel',$tag);
+          }
         }
     }
-    if(count($this->groupesTags)){
-      echo "GROUPE Tags ". implode(",",$this->groupesTags) ." ".$c->_id." \n";
-      foreach($this->groupesTags as $grpKey => $grp){
-         $c->addTag('manuel',"GRP ".KeyInflector::unaccent(str_replace(array(")","("),array('',''),$grp)));
-       }
-    }
 
-  }
+    protected function addGroupesTags($c){
+      $groupesTags = $this->getTagsArrayFromProfil();
+      if(count($groupesTags)){
+        echo "GROUPE Tags ". implode(",",$groupesTags) ." ".$c->_id." \n";
+        foreach($groupesTags as $grpKey => $grp){
+           $c->addTag('manuel',"GRP ".KeyInflector::unaccent(str_replace(array(")","("),array('',''),$grp)));
+         }
+      }
+    }
 
 }
