@@ -13,34 +13,31 @@
         <thead>
             <tr>
                 <th class="text-left"></th>
-                <th class="text-center col-xs-1">À utiliser</th>
-                <th class="text-center col-xs-1" colspan="4">Utilisation du stock <?php echo $drev->campagne ?></th>
-                <th class="text-center col-xs-1">Constitué</th>
-                <th class="text-center col-xs-1">Cumul</th>
+                <th class="text-center col-xs-1"></th>
+                <th class="text-center col-xs-1"></th>
+                <th class="text-center col-xs-1" colspan="4">Utilisation</th>
             </tr>
             <tr>
                 <th class="text-left col-xs-3">Appellation revendiquée</th>
+                <th style="position: relative;" class="text-center col-xs-1">Plafond<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Stock <?php echo ($drev->campagne - 1) ?><br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Destruction<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Complément<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Substitution<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Destruction<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Cette année<br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1" >Stock <?php echo $drev->campagne ?><br />&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody class="edit_vci">
             <?php foreach($form['produits'] as $hash => $formProduit): ?>
                 <?php $produit = $drev->get($hash); ?>
                 <tr class="produits vertical-center">
-                    <td><?php echo $produit->getLibelleComplet() ?> <small class="text-muted">(<?php echoFloat($produit->detail->superficie_total) ?> ha)</small></td>
-                    <td><?php echo $formProduit['vci_stock_initial']->render(array( 'placeholder' => "hl")) ?></td>
-                    <td><input readonly="readonly" type="text" class="form-control text-right input-float" value="<?php echoFloat($produit->vci_complement_dr) ?>" /></td>
-                    <td><?php echo $formProduit['vci_substitution']->render(array( 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci_destruction']->render(array( 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci_rafraichi']->render(array('class' => 'form-control text-right input-float  sum_stock_final', 'placeholder' => "hl")) ?></td>
-                    <td><?php echo $formProduit['vci']->render(array('class' => 'form-control text-right input-float sum_stock_final', 'placeholder' => "hl")) ?></td>
-                    <td><input readonly="readonly" type="text" class="form-control text-right input-float stock_final" value="<?php echoFloat($produit->vci_stock_final) ?>" /></td>
+                    <td><?php echo $produit->getLibelleComplet() ?> <small class="text-muted">(<?php echoFloat($produit->recolte->superficie_total) ?> ha)</small></td>
+                    <td class="text-right"><?php echoFloat($produit->getPlafondStockVci()) ?> <small class="text-muted">hl</small></td>
+                    <td><?php echo $formProduit['stock_precedent']->render(array( 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['destruction']->render(array( 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['complement']->render(array( 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['substitution']->render(array( 'placeholder' => "hl")) ?></td>
+                    <td><?php echo $formProduit['rafraichi']->render(array('class' => 'form-control text-right input-float  sum_stock_final', 'placeholder' => "hl")) ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

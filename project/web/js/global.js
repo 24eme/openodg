@@ -748,17 +748,30 @@
     }
 
     $.initHabilitation = function() {
-      $('.open-button').click(function(){
 
-        $('tr').each(function(){
-          $(this).show();
-          $(this).children('td[data-number]').each(function(){
-            $(this).attr('rowspan',$(this).attr("data-number"));
+      $('.open-button').click(function(){
+        if($(this).css('opacity') == "1"){
+          $('tr:hidden').each(function(){
+            $(this).show();
           });
-        });
+          $('td:hidden').each(function(){
+            $(this).show();
+          });
+          $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-open');/*.addClass('glyphicon-eye-close');*/ });
+          $(this).css("opacity","0.6");
+        }else{
           $('tr[data-hide="1"]').each(function(){
-          $(this).hide();
-        });
+            $(this).hide();
+            });
+          $('td[data-hide="1"]').each(function(){
+            $(this).hide();
+          });
+          $(this).children('span').each(function(){ $(this).removeClass('glyphicon-eye-close').addClass('glyphicon-eye-open'); });
+          $(this).css("opacity","1");
+        }
+      });
+
+      $('.open-button').click(function(){
 
       });
 

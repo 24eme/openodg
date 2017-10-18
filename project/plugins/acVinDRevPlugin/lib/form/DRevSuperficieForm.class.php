@@ -3,7 +3,7 @@ class DRevSuperficieForm extends acCouchdbObjectForm
 {
 	public function configure()
     {
-		$this->embedForm('produits', new DRevSuperficieProduitsForm($this->getObject()->declaration->getProduits()));
+		$this->embedForm('produits', new DRevSuperficieProduitsForm($this->getObject()->declaration->getProduits(), array(), $this->getOptions()));
         $this->validatorSchema->setPostValidator(new DRevSuperficieProduitValidator());
         $this->widgetSchema->setNameFormat('drev_superficie[%s]');
     }

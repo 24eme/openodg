@@ -38,26 +38,19 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php endif; ?>
     <table class="table table-bordered table-striped table-condensed" id="table-revendication">
         <thead>
-            <?php if ($drev->hasDR()): ?>
             <tr>
                 <th class="text-center col-xs-3"></th>
-                <th colspan="4" class="text-center info">Déclaration de Récolte</th>
-                <th colspan="4" class="text-center">Déclaration de Revendication</th>
-                <th class="text-center col-xs-1">VCI</th>
+                <th colspan="3" class="text-center info">Déclaration de Récolte</th>
+                <th colspan="3" class="text-center">Déclaration de Revendication</th>
             </tr>
-            <?php endif; ?>
             <tr>
-                <th>Appellation revendiquée</th>
-                <th class="text-center info col-xs-1">Superficie totale (L4)<br /><small class="text-muted">(ha)</small></th>
+                <th class="col-xs-3">Appellation revendiquée</th>
                 <th class="text-center info col-xs-1">Volume récolté total (L5)<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center info col-xs-1">Récolte nette totale (L15)<br /><small class="text-muted">(hl)</small></th>
                 <th class="text-center info col-xs-1">Volume en cave part. (L9)<br /><small class="text-muted">(hl)</small></th>
-                <th class="col-xs-1 text-center" style="position: relative;">Superficie revendiqué<br /><small class="text-muted">(ha)</small><a style="position: absolute; bottom: 0; right: 0px;" title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué net<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-1 text-center" style="position: relative;">VCI en complément de récolte<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="text-center" style="width: 0;">VCI l'an dernier ?</th>
-
+                <th class="col-xs-2 text-center" style="position: relative;">Volume net revendiqué<br />issu de la récolte<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-2 text-center" style="position: relative;">Volume revendiqué<br />issu du VCI <br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-2 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>

@@ -23,7 +23,7 @@ class DRevSuperficieProduitForm extends acCouchdbObjectForm {
             'superficie_revendique' => new sfValidatorNumber(array('required' => false)),
             'has_stock_vci' => new sfValidatorBoolean(array('required' => false)),
         ));
-        $this->embedForm('recolte', new DRevProduitRecolteForm($this->getObject()->recolte, $this->getOptions()));
+        $this->embedForm('recolte', new DRevProduitRecolteForm($this->getObject()->recolte, array_merge($this->getOptions(), array('fields' => array('superficie_total')))));
 
         if($this->getObject()->hasVci(true)) {
             $this->getWidget('has_stock_vci')->setAttribute('readonly', 'readonly');

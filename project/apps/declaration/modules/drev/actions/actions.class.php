@@ -109,7 +109,7 @@ class drevActions extends sfActions {
 	    	return sfView::SUCCESS;
 	    }
         if (!$this->form->getValue('file')) {
-        	return $this->redirect('drev_revendication', $this->drev);
+        	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 		$fichier = $this->form->save();
 		$this->setDrInDrev($this->drev);
@@ -138,7 +138,6 @@ class drevActions extends sfActions {
         } catch (Exception $e) { }
 		return false;
     }
-
 
     public function executeDrRecuperation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
@@ -230,6 +229,35 @@ class drevActions extends sfActions {
         $this->isBlocked = count($this->drev->getProduits(true)) < 1;
     }
 
+    public function executeRevendicationSuperficie(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE))) {
+            $this->drev->save();
+        }
+
+        $this->ajoutForm = new DRevRevendicationAjoutProduitForm($this->drev);
+        $this->form = new DRevSuperficieForm($this->drev, array('disabled_dr' => true));
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->bind($request->getParameter($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+        }
+
+        $this->form->save();
+
+        return $this->redirect('drev_vci', $this->drev);
+
+    }
+
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
@@ -271,12 +299,13 @@ class drevActions extends sfActions {
                 }
 
                 if ($request->getParameter('redirect', null)) {
+
                     return $this->redirect('drev_validation', $this->drev);
                 }
 
                 if(!DrevEtapes::getInstance()->exist(DrevEtapes::ETAPE_DEGUSTATION)) {
 
-                    return $this->redirect('drev_vci', $this->drev);
+                    return $this->redirect('drev_validation', $this->drev);
                 }
 
                 return $this->redirect('drev_degustation_conseil', $this->drev);
@@ -314,14 +343,14 @@ class drevActions extends sfActions {
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
 
-            return $this->redirect('drev_revendication', $this->drev);
+            return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 
         $this->ajoutForm->save();
 
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
-        return $this->redirect('drev_revendication', $this->drev);
+        return $this->redirect('drev_revendication_superficie', $this->drev);
     }
 
     public function executeRevendicationCepage(sfWebRequest $request) {
@@ -415,7 +444,7 @@ class drevActions extends sfActions {
 
         $this->form->save();
 
-        return $this->redirect('drev_validation', $this->drev);
+        return $this->redirect('drev_revendication', $this->drev);
 
     }
 
@@ -820,7 +849,6 @@ class drevActions extends sfActions {
     protected function sendDrevConfirmee($drev) {
         Email::getInstance()->sendDrevConfirmee($drev);
     }
-
 
     protected function secure($droits, $doc) {
         if (!DRevSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {

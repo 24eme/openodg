@@ -22,10 +22,9 @@ rm -rf $TMPDIR/ODGRHONE_IDENTITES_DATA 2>/dev/null
 mkdir $TMPDIR/ODGRHONE_IDENTITES_DATA 2> /dev/null
 mkdir $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA 2> /dev/null
 gunzip $TMPDIR/ODGRHONE_IDENTITES_DATA.xml.gz
-mv /tmp/ODGRHONE_IDENTITES_DATA.xml $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.xml
+mv $TMPDIR/ODGRHONE_IDENTITES_DATA.xml $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.xml
 
-
-
+fi
 
  cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.xml | sed -e 's|<b:Identite_Identite>|\n<b:Identite_Identite>|g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA_N.xml
 
@@ -45,25 +44,19 @@ do
   echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_$IDFIC.xml
 done
 
+
 cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml  | grep -v "<b:Siret>" | grep -v "<b:Evv>" | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
   echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_$IDFIC.xml
 done
 
-
-
-
-fi
-
 echo "Création des entités de type Sociétés (Présence d'un Evv ou d'un Siret)"
 for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_*.xml ; do
   php symfony import:entite-from-xml --trace $path
 done
 
-
-
-echo "Autres entités appartenant à des groupes de référence";
+echo "Autres entités étant des sociétés autre ou des INTERLOCUTEURS";
 for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_*.xml ; do
   php symfony import:entite-from-xml --trace $path
 done
