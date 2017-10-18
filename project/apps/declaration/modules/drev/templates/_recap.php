@@ -29,13 +29,13 @@
         <thead>
             <tr>
                 <th class="col-xs-4">Appellation revendiquée</th>
-                <th class="text-center">Stock 2015</th>
+                <th class="text-center">Stock <?php echo $drev->campagne - 1 ?></th>
                 <th class="text-center">Complément</th>
                 <th class="text-center">Substitution</th>
                 <th class="text-center">A détruire</th>
                 <th class="text-center">Rafraichi</th>
                 <th class="text-center">Constitué</th>
-                <th class="text-center">Stock 2016</th>
+                <th class="text-center">Stock <?php echo $drev->campagne ?></th>
             </tr>
         </thead>
         <tbody>
