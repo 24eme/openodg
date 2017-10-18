@@ -367,6 +367,16 @@ drev_dr:
     type:     object
   requirements:
     sf_method: [get, post]
+    
+drev_scrape_dr:
+  url: /drev/scrape_dr/:id
+  param: { module: drev, action: scrapeDr }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
 
 drev_dr_douane:
   url: /drev/dr_douane/:id
@@ -451,16 +461,6 @@ drev_revendication_appellation_ajout:
 drev_revendication:
   url: /drev/revendication/:id/:appellation
   param: { module: drev, action: revendication, appellation: 0 }
-  class: DRevRoute
-  options:
-    model:    DRev
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-drev_set_dr:
-  url: /drev/dr_douane_import/:id
-  param: { module: drev, action: drInDrev }
   class: DRevRoute
   options:
     model:    DRev
