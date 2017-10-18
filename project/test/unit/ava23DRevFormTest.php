@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(58);
+$t = new lime_test(61);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -196,10 +196,8 @@ $t->is($produit1->vci->stock_final, 4, "Le stock VCI après récolte du produit 
 $t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->rafraichi, "Le VCI stock après récolte du produit du doc est le même que le calculé");
 
 $drev->cleanDoc();
-$validation = new DRevValidation($drev);
 
 $validation = new DRevValidation($drev);
-$validation->controle();
 $erreurs = $validation->getPointsByCodes('erreur');
 
 $t->ok(!isset($erreurs['revendication_incomplete']), "Après correction dans la drev plus de point blocant sur le remplissage des données de revendication");
@@ -209,25 +207,31 @@ $t->ok(!isset($erreurs['vci_stock_utilise']), "Après correction dans la drev pl
 $t->ok(!isset($erreurs['vci_rendement_annee']), "Après correction dans la drev plus de point blocant sur le rendement à l'année du vci");
 $t->ok(!isset($erreurs['vci_rendement_total']), "Après correction dans la drev plus de point blocant sur le rendement total du vci");
 
+
+$drevControle = clone $drev;
+
+$produitControle1 = $drevControle->get($produit1->getHash());
+$produitControle2 = $drevControle->get($produit2->getHash());
+
+$produitControle1->recolte->volume_total = 10000;
+$produitControle1->volume_revendique_total = 10000;
+$produitControle1->vci->rafraichi = 0;
+$produitControle1->vci->constitue = 10000;
+$produitControle1->vci->stock_final = 10000;
+$produitControle2->volume_revendique_issu_recolte = null;
+
+$validation = new DRevValidation($drevControle);
+
 $erreurs = $validation->getPointsByCodes('erreur');
 
-$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produit2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
+$t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produitControle2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
 
 $t->ok(isset($erreurs['dr_rendement']) && count($erreurs['dr_rendement']) == 1 && $erreurs['dr_rendement'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur la DR n'est pas respecté");
 
-$t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
+$t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
 
-$t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
+$t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 
-$t->ok(isset($erreurs['vci_rendement_annee']) && count($erreurs['vci_rendement_annee']) == 1 && $erreurs['vci_rendement_annee'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
+$t->ok(isset($erreurs['vci_rendement_annee']) && count($erreurs['vci_rendement_annee']) == 1 && $erreurs['vci_rendement_annee'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
 
-$t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == $produit1->getLibelleComplet() , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
-
-
-$produit1->superficie_revendique = 500;
-$produit1->recolte->superficie_total = 500;
-$produit1->vci->rafraichi = 1;
-
-$produit2->superficie_revendique = 100;
-$produit2->volume_revendique_issu_recolte = 20;
-$produit2->volume_revendique_total = 20;
+$t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
