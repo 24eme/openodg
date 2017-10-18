@@ -99,7 +99,12 @@ EOF;
         if(count($cvis) || $siret){
             $this->importSociete($identifiant,$cvis,$siret);
         }else{
-          $this->importAsInterlocuteur($identifiant);
+          $groupsProfil = $this->getRefsGroupsProfil();
+          if(count($groupsProfil)){
+            $this->importAsInterlocuteur($identifiant);
+          }else{
+            $this->importSociete($identifiant,$cvis,$siret);
+          }
         }
       }catch(sfException $e){
         echo "Problème avec ".$identifiant."\n";
@@ -115,13 +120,6 @@ EOF;
             $soc = SocieteClient::getInstance()->find($societeIdentifiant);
             if($soc){
               $soc->delete();
-              // foreach ($soc->getEtablissementsObj() as $id => $obj) {
-              //   $etb = EtablissementClient::getInstance()->find($id);
-              //   if($etb){
-              //     acCouchdbManager::getClient()->delete($etb);
-              //   }
-              // }
-              // acCouchdbManager::getClient()->delete($soc);
             }
 
             $societe = new societe();
@@ -149,7 +147,9 @@ EOF;
 
             $societe->code_comptable_client = $societe->identifiant;
             $siege = $societe->getOrAdd('siege');
+
             $societe->siret = $siret;
+
 
             $societeCoordonnees = $this->getCoordonneesInArr($this->arrayXML['b:Coordonnees']['b:Identite_Coordonnee']);
 
@@ -228,8 +228,8 @@ EOF;
                 $compte->email = $interlocCommunication[self::COM_EMAIL];
                 $compte->telephone_mobile = $interlocCommunication[self::COM_PORTABLE];
                 $compte->site_internet = $interlocCommunication[self::COM_SITEWEB];
-                $compte->save();
                 $this->setTags($compte);
+                $compte->save();
                 echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
 
               }
@@ -366,15 +366,30 @@ EOF;
       $groupesTags = array();
       if(isset($this->arrayXML['b:Profils']) && count($this->arrayXML['b:Profils'])){
         foreach ($this->arrayXML['b:Profils'] as $key => $identitesProfils) {
-          foreach ($identitesProfils as $identitesProfil) {
-          $refKeyGroup = $identitesProfil["b:CleGroupe"];
-          if(array_key_exists($refKeyGroup,$this->groupeTagsArr)){
-            $groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
+          if(isset($identitesProfils["b:CleGroupe"])){
+            $this->buildGroupesTags($groupesTags,$identitesProfils);
+          }else{
+            if(is_array($identitesProfils)){
+              foreach ($identitesProfils as $identitesProfil) {
+                $refKeyGroup = (isset($identitesProfil["b:CleGroupe"]))? $identitesProfil : null;
+                if($refKeyGroup){
+                  $this->buildGroupesTags($groupesTags,$identitesProfil);
+                }
+              }
             }
           }
         }
       }
-      return $groupeTags;
+      return $groupesTags;
+    }
+
+    private function buildGroupesTags(&$groupesTags,$identiteProfil){
+      $refKeyGroup = $identiteProfil["b:CleGroupe"];
+      if(!array_key_exists($refKeyGroup,$this->groupeTagsArr)){
+        return;
+      }
+      $groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
+      return $groupesTags;
     }
 
     private function getSimpleDateField($arr, $fieldName){
@@ -395,7 +410,7 @@ EOF;
           foreach (self::$coordonneesKeys as $k => $keyName) {
             if(array_key_exists($keyName,$arr)){
               $coordonnees[$k] = $arr[$keyName];
-              if(is_array($arr[$keyName]) && !count($arr[$keyName])){
+              if(is_array($arr[$keyName])){
                 $coordonnees[$k] = "";
               }
             }
@@ -477,7 +492,7 @@ EOF;
       if(count($groupesTags)){
         echo "GROUPE Tags ". implode(",",$groupesTags) ." ".$c->_id." \n";
         foreach($groupesTags as $grpKey => $grp){
-           $c->addTag('manuel',"GRP ".KeyInflector::unaccent(str_replace(array(")","("),array('',''),$grp)));
+           $c->addTag('manuel','GRP '.KeyInflector::unaccent(str_replace(array(")","("),array('',''),$grp)));
          }
       }
     }

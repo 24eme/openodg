@@ -7,5 +7,5 @@
     <p class="text-center"><img height="40" src="/images/loader.gif" alt="chargement en cours..." /></p>
 </div>
 <script type="text/javascript">
-	setTimeout(function(){document.location = "<?php echo url_for('drev_revendication', $drev) ?>";}, 3000);
+	setTimeout(function(){document.location = "<?php echo url_for('drev_dr', $drev) ?>";}, 1000);
 </script>

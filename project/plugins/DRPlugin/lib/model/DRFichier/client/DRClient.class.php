@@ -25,4 +25,14 @@ class DRClient extends acCouchdbClient {
 
         return $fichier;
     }
+    
+    public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
+    {
+    	$view = $this->startkey(sprintf(self::TYPE_MODEL."-%s-%s", "00000000", "0000"))
+    				 ->endkey(sprintf(self::TYPE_MODEL."-%s-%s", "99999999", "9999"));
+    	if ($limit) {
+    		$view->limit($limit);
+    	}
+    	return $view->execute($hydrate)->getDatas();
+    }
 }
