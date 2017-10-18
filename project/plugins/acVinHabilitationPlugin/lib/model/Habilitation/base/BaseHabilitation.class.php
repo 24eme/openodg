@@ -12,9 +12,6 @@
  * @property string $validation_odg
  * @property string $etape
  * @property string $date
- * @property integer $non_recoltant
- * @property integer $non_conditionneur
- * @property integer $non_vinificateur
  * @property integer $papier
  * @property integer $automatique
  * @property string $lecture_seule
@@ -39,12 +36,6 @@
  * @method string setEtape()
  * @method string getDate()
  * @method string setDate()
- * @method integer getNonRecoltant()
- * @method integer setNonRecoltant()
- * @method integer getNonConditionneur()
- * @method integer setNonConditionneur()
- * @method integer getNonVinificateur()
- * @method integer setNonVinificateur()
  * @method integer getPapier()
  * @method integer setPapier()
  * @method integer getAutomatique()

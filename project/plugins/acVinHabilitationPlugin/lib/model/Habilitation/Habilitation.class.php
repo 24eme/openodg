@@ -6,8 +6,6 @@
 
 class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclarantDocument, InterfaceDeclaration {
 
-
-
     protected $declarant_document = null;
     protected $mouvement_document = null;
     protected $version_document = null;
@@ -18,19 +16,28 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function __clone() {
+        if ($this->_id == $this->getTheoriticalId()) {
+          throw new sfException("La date de l'habilitation doit être différente de celle du document d'origine");
+        }
         parent::__clone();
         $this->initDocuments();
-        $this->date = date("Y-m-d");
         $this->constructId();
     }
 
+
+
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+        $this->historique = array();
+    }
+
+    private function getTheoriticalId() {
+      $date = str_ireplace("-","",$this->date);
+      return 'HABILITATION-' . $this->identifiant. '-'. $date;
     }
 
     public function constructId() {
-        $date = str_ireplace("-","",$this->date);
-        $id = 'HABILITATION-' . $this->identifiant. '-'. $date;
+        $id = $this->getTheoriticalId();
         if($this->version) {
             $id .= "-".$this->version;
         }
@@ -45,19 +52,15 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     public function getProduits($onlyActive = true) {
         return $this->declaration->getProduits($onlyActive);
     }
-
     public function isPapier() {
-
         return $this->exist('papier') && $this->get('papier');
     }
 
     public function isAutomatique() {
-
         return $this->exist('automatique') && $this->get('automatique');
     }
 
     public function isLectureSeule() {
-
         return $this->exist('lecture_seule') && $this->get('lecture_seule');
     }
 
@@ -82,7 +85,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $produit = $this->add('declaration')->add($hashToAdd);
         $produit_libelle = $produit->getLibelle();
         $produit->initActivites();
-        $this->addHistorique(HabilitationHistorique::ADD_PRODUIT,$produit_libelle);
+        $this->addHistoriqueNewProduit($produit_libelle);
         return $produit;
     }
 
@@ -126,18 +129,36 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     return $this->_id == $last->_id;
   }
 
-  protected function addHistorique($categorie,$complement){
-      $historiqueRow = $this->get('historique')->add(null);
-      $historiqueRow->iddoc = $this->_id;
-      $historiqueRow->date = $this->getDate();
-      $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
-      $historiqueRow->description = HabilitationHistorique::$actionsDescriptions[$categorie]." : ".$complement;
+  private function addHistoriqueNewProduit($complement){
+      $this->addHistorique("Ajout du produit : ".$complement);
   }
 
-  public function getHistoriqueReverse(){
-    $historiqueReverse = $this->getHistorique()->toArray(1,0);
+  public function addHistorique($description, $commentaire = '', $auteur = '') {
+    $historiqueRow = $this->get('historique')->add(null);
+    $historiqueRow->iddoc = $this->_id;
+    $historiqueRow->date = $this->getDate();
+    if (!$auteur && sfContext::getInstance()->getUser() && sfContext::getInstance()->getUser()->getCompte()) {
+      $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
+    }else{
+      $historiqueRow->auteur = $auteur;
+    }
+    $historiqueRow->description = $description;
+    $historiqueRow->commentaire = $commentaire;
+
+  }
+
+  public function getFullHistoriqueReverse(){
+    $historiqueReverse = $this->getFullHistorique();
     $historiqueReverse = array_reverse($historiqueReverse);
     return $historiqueReverse;
+  }
+
+  public function getFullHistorique() {
+    $historique = array();
+    foreach (HabilitationClient::getInstance()->getHistory($this->identifiant, $hydrate = acCouchdbClient::HYDRATE_JSON) as $hab) {
+      $historique = array_merge($historique, $hab->historique);
+    }
+      return $historique;
   }
 
 }

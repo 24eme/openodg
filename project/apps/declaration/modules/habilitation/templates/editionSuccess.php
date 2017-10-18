@@ -71,14 +71,13 @@
       </thead>
       <tbody>
         <?php
-        foreach ($habilitation->getHistoriqueReverse() as $key => $historiqueDoc): ?>
+        foreach ($habilitation->getFullHistoriqueReverse() as $historiqueDoc): ?>
           <tr>
-            <td><?php echo Date::francizeDate($historiqueDoc["date"]); ?></<td>
-
-            <td class="text-right text-muted" style="border-right: none;"><?php echo $historiqueDoc["auteur"]; ?> </td>
-            <td style="border-left: none;"><?php echo $historiqueDoc["description"]; ?><?php if($historiqueDoc["commentaire"]): ?> <span class="text-muted"><?php echo '('.$historiqueDoc["commentaire"].')'; ?></span><?php endif ?>
+            <td><?php echo Date::francizeDate($historiqueDoc->date); ?></<td>
+            <td class="text-right text-muted" style="border-right: none;"><?php echo $historiqueDoc->auteur; ?> </td>
+            <td style="border-left: none;"><?php echo $historiqueDoc->description; ?><?php if($historiqueDoc->commentaire): ?> <span class="text-muted"><?php echo '('.$historiqueDoc->commentaire.')'; ?></span><?php endif ?>
             </td>
-            <td class="text-center"><a href="<?php echo url_for('habilitation_edition', array('id' => $historiqueDoc["iddoc"])); ?>">Voir</a></tr>
+            <td class="text-center"><a href="<?php echo url_for('habilitation_edition', array('id' => $historiqueDoc->iddoc)); ?>">Voir</a></tr>
         <?php endforeach; ?>
       </tbody>
     </table>

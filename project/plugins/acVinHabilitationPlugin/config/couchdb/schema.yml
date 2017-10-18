@@ -10,9 +10,6 @@ Habilitation:
       validation_odg: { }
       etape: { }
       date: { }
-      non_recoltant: { required: false, type: integer }
-      non_conditionneur: { required: false, type: integer }
-      non_vinificateur: { required: false, type: integer }
       papier: { required: false, type: integer }
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }

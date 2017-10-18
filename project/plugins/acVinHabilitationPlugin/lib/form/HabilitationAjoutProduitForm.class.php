@@ -30,18 +30,13 @@ class HabilitationAjoutProduitForm extends acCouchdbObjectForm
     {
         if (!$this->produits) {
             $doc = $this->getObject()->getDocument();
-
-            foreach ($this->getObject()->getConfiguration()->getProduits() as $produit) {
-                if($produit->getNodeCahierDesCharges()){
-                  $produitAppellation = $produit->getNodeCahierDesCharges();
-                  if ($this->getObject()->exist($produitAppellation->getHash())) {
-                    continue;
-                  }
-                  $this->produits[$produitAppellation->getHash()] = $produitAppellation->getLibelleComplet();
+            foreach ($this->getObject()->getConfiguration()->getProduitsCahierDesCharges() as $produit) {
+                if ($this->getObject()->exist($produit->getHash())) {
+                  continue;
                 }
+                $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
-
         return array_merge(array('' => ''), $this->produits);
     }
 
