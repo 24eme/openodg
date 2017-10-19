@@ -36,7 +36,7 @@ class DrevEtapes extends Etapes
             self::ETAPE_EXPLOITATION => "Exploitation",
             self::ETAPE_DR_DOUANE => "Déclaration de récolte",
             self::ETAPE_REVENDICATION_SUPERFICIE => "Revendication des superficies",
-            self::ETAPE_VCI => "Répartition du VCI",
+            self::ETAPE_VCI => "Répartition du VCI %campagne%",
 			self::ETAPE_REVENDICATION => "Revendication",
             self::ETAPE_DEGUSTATION => "Dégustation<br/>conseil",
             self::ETAPE_CONTROLE => "Contrôle<br/>externe",
