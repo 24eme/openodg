@@ -479,13 +479,20 @@ EOF;
         }
       }
       if(count($observationsCodifiees)){
-        echo "OBS Codifiees ".implode(",",$observationsCodifiees)." ". $c->_id." \n";
+        echo "OBS Codifiees ".implode(",",implode(",",$observationsCodifiees))." ". $c->_id." \n";
         foreach($observationsCodifiees as $obsKey => $obs){
           $tag = 'OBS '.$obs[2];
           $c->addTag('manuel',$tag);
           if($obs[3]){
             $c->setStatut(SocieteClient::STATUT_SUSPENDU);
-          }
+            if($c->compte_type == "SOCIETE"){
+                foreach($c->getOrigines() as $origine) {
+                  $soc = SocieteClient::getInstance()->find($origine);
+                  $soc->setStatut(SocieteClient::STATUT_SUSPENDU);
+                  $soc->save();
+                }
+              }
+            }
           }
         }
     }
