@@ -45,18 +45,31 @@ do
 done
 
 
-cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml  | grep -v "<b:Siret>" | grep -v "<b:Evv>" | while read xml
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml  | grep -v "<b:Siret>" | grep -v "<b:Evv>" | grep "<b:Groupes><b:Identite_Groupe>" | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
-  echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_$IDFIC.xml
+  echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_groupes_$IDFIC.xml
 done
+
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml  | grep -v "<b:Siret>" | grep -v "<b:Evv>" | grep -v "<b:Groupes><b:Identite_Groupe>" | while read xml
+do
+  IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
+  echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_nogroupes_$IDFIC.xml
+done
+
+
 
 echo "Création des entités de type Sociétés (Présence d'un Evv ou d'un Siret)"
 for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_*.xml ; do
   php symfony import:entite-from-xml --trace $path
 done
 
-echo "Autres entités étant des sociétés autre ou des INTERLOCUTEURS";
-for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_*.xml ; do
+echo "Autres entités ayant des groupes";
+for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_groupes_*.xml ; do
+  php symfony import:entite-from-xml --trace $path
+done
+
+echo "Autres entités n'ayant pas de groupes";
+for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_nogroupes_*.xml ; do
   php symfony import:entite-from-xml --trace $path
 done
