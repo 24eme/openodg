@@ -479,8 +479,9 @@ EOF;
         }
       }
       if(count($observationsCodifiees)){
-        echo "OBS Codifiees ".implode(",",implode(",",$observationsCodifiees))." ". $c->_id." \n";
+        echo "OBS Codifiees ";
         foreach($observationsCodifiees as $obsKey => $obs){
+          echo implode(",",$obs)."   -   ";
           $tag = 'OBS '.$obs[2];
           $c->addTag('manuel',$tag);
           if($obs[3]){
@@ -492,8 +493,15 @@ EOF;
                   $soc->save();
                 }
               }
+              foreach ($c->getSociete()->getEtablissementsObj() as $etablissement) {
+                # code...
+                $etb = $etablissement->etablissement;
+                $etb->setStatut(SocieteClient::STATUT_SUSPENDU);
+                $etb->save();
+              }
             }
           }
+          echo $c->_id." \n";
         }
     }
 
