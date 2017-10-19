@@ -2,7 +2,7 @@
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'vci', 'drev' => $drev)) ?>
 
-    <div class="page-header"><h2>Répartition du VCI</h2></div>
+    <div class="page-header"><h2>Répartition du VCI <?php echo intval($drev->campagne) - 1 ?></h2></div>
 
     <form role="form" action="<?php echo url_for("drev_vci", $drev) ?>" method="post" class="ajaxForm" id="form_vci_drev_<?php echo $drev->_id; ?>">
 

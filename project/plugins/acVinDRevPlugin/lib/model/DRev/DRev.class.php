@@ -854,9 +854,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         foreach($this->declaration->getProduits() as $produit) {
             $types_hash = array(
-                "volume_revendique" => "Volume revendiqué",
                 "superficie_revendique" => "Superficie revendiqué",
-                "superficie_vinifiee" => "Superficie vinifiée"
+                "volume_revendique_total" => "Volume net revendiqué total",
             );
 
             foreach($types_hash as $type_hash => $libelle) {
