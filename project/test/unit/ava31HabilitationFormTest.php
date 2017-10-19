@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(10);
+$t = new lime_test(11);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -14,24 +14,28 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant, acCouc
   $drev->delete(false);
 }
 
-$date = date('Y-m-d');
-
-$t->comment("Création du doc");
-
+$t->comment("Création des docs");
+$date = '2012-01-01';
 $habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, $date);
 $habilitation->save();
 
-$t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id est bien construit");
+$t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc dans le passé est bien construit");
+
+$date = date('Y-m-d');
+$habilitation = HabilitationClient::getInstance()->createOrGetDocFromHistory($habilitation);
+$habilitation->save();
+$t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc actuel est bien construit");
+
 
 $produitConfig = null;
-foreach($habilitation->getConfiguration()->getProduits() as $p) {
+foreach($habilitation->getConfiguration()->getProduitsCahierDesCharges() as $p) {
     $produitConfig = $p;
     break;
 }
 
 $t->comment("Form d'ajout de produit");
 
-$form = new HabilitationCepageAjoutProduitForm($habilitation);
+$form = new HabilitationAjoutProduitForm($habilitation);
 
 $form->bind(array('hashref' => $produitConfig->getHash(), '_revision' => $habilitation->_rev));
 

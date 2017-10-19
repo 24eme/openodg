@@ -15,6 +15,17 @@ class Configuration extends BaseConfiguration {
         $this->set('_id', "CONFIGURATION");
     }
 
+    public function getProduitsCahierDesCharges() {
+      $produits = array();
+      foreach ($this->getProduits() as $produit) {
+          if($produit->getNodeCahierDesCharges()){
+            $produitAppellation = $produit->getNodeCahierDesCharges();
+            $produits[] = $produitAppellation;
+          }
+      }
+      return $produits;
+    }
+
     public function getProduits() {
 
         return $this->declaration->getProduits();

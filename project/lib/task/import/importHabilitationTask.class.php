@@ -71,17 +71,20 @@ EOF;
         $this->convert_produits['cote rotie'] = 'certifications/AOP/genres/TRANQ/appellations/CRO';
         $this->convert_produits['côtes du Rhone'] = 'certifications/AOP/genres/TRANQ/appellations/CDR';
         $this->convert_produits['côtes du Rhone village'] = 'certifications/AOP/genres/TRANQ/appellations/CVG';
+        //$this->convert_produits['cotes du vivarais'] = '';
         $this->convert_produits['crozes hermitage'] = 'certifications/AOP/genres/TRANQ/appellations/CRH';
         $this->convert_produits['gigondas'] = 'certifications/AOP/genres/TRANQ/appellations/GIG';
         $this->convert_produits['grignan les adhémar'] = 'certifications/AOP/genres/TRANQ/appellations/GLA';
         $this->convert_produits['hermitage'] = 'certifications/AOP/genres/TRANQ/appellations/HER';
+        //$this->convert_produits['lirac'] = '';
         //$this->convert_produits['muscat de Beaumes'] = '';
         $this->convert_produits['st joseph'] = 'certifications/AOP/genres/TRANQ/appellations/SJO';
         $this->convert_produits['st péray'] = 'certifications/AOP/genres/TRANQ/appellations/SPT';
+        //$this->convert_produits['vdn rasteau'] = '';
         $this->convert_produits['vinsobres'] = 'certifications/AOP/genres/TRANQ/appellations/VBR';
 
         $this->convert_statut = array();
-        $this->convert_statut["Demande d'habilitation"] = HabilitationClient::STATUT_DEMANDE_INAO;
+        $this->convert_statut["Demande d'habilitation"] = HabilitationClient::STATUT_DEMANDE;
         $this->convert_statut['Habilité'] = HabilitationClient::STATUT_HABILITE;
         $this->convert_statut['Refus'] = HabilitationClient::STATUT_REFUS;
         $this->convert_statut['Retrait'] = HabilitationClient::STATUT_RETRAIT;
@@ -105,7 +108,7 @@ EOF;
             if ($data[self::CSV_PRODUIT] == 'produit') {
               continue;
             }
-            if (isset($lastid) && $lastid != $data[self::CSV_ID_IDENTITE]) {
+            if (true || (isset($lastid) && $lastid != $data[self::CSV_ID_IDENTITE])) {
               $this->saveRows($rows);
               $rows = [];
             }
@@ -140,27 +143,22 @@ EOF;
           continue;
         }
         $hab_produit = $habilitation->addProduit($this->convert_produits[$r[self::CSV_PRODUIT]]);
-        //$hab_produit->add('libelle', $r[self::CSV_PRODUIT]);
+
         $hab_activites = $hab_produit->add('activites');
         if ($r[self::CSV_STATUT_VINIFICATEUR]) {
-          $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->add('statut', $this->convert_statut[$r[self::CSV_STATUT_VINIFICATEUR]]);
-          $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->add('date', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_VINIFICATEUR]));
+          $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->updateHabilitation($this->convert_statut[$r[self::CSV_STATUT_VINIFICATEUR]], '', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_VINIFICATEUR]));
         }
         if ($r[self::CSV_STATUT_PRODUCTEURS_DE_RAISINS]) {
-          $hab_activites->add(HabilitationClient::ACTIVITE_PRODUCTEUR)->add('statut', $this->convert_statut[$r[self::CSV_STATUT_PRODUCTEURS_DE_RAISINS]]);
-          $hab_activites->add(HabilitationClient::ACTIVITE_PRODUCTEUR)->add('date', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_PRODUCTEURS_DE_RAISINS]));
+          $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->updateHabilitation($this->convert_statut[$r[self::CSV_STATUT_PRODUCTEURS_DE_RAISINS]], '', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_PRODUCTEURS_DE_RAISINS]));
         }
         if ($r[self::CSV_STATUT_ACHAT_ET_VENTE]) {
-          $hab_activites->add(HabilitationClient::ACTIVITE_VRAC)->add('statut', $this->convert_statut[$r[self::CSV_STATUT_ACHAT_ET_VENTE]]);
-          $hab_activites->add(HabilitationClient::ACTIVITE_VRAC)->add('date', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_ACHAT_ET_VENTE]));
+          $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->updateHabilitation($this->convert_statut[$r[self::CSV_STATUT_ACHAT_ET_VENTE]], '', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_ACHAT_ET_VENTE]));
         }
         if ($r[self::CSV_STATUT_CONDITIONNEUR]) {
-          $hab_activites->add(HabilitationClient::ACTIVITE_CONDITIONNEUR)->add('statut', $this->convert_statut[$r[self::CSV_STATUT_CONDITIONNEUR]]);
-          $hab_activites->add(HabilitationClient::ACTIVITE_CONDITIONNEUR)->add('date', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_CONDITIONNEUR]));
+          $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->updateHabilitation($this->convert_statut[$r[self::CSV_STATUT_CONDITIONNEUR]], '', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_CONDITIONNEUR]));
         }
         if ($r[self::CSV_STATUT_VENTE_TIREUSE]) {
-          $hab_activites->add(HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE)->add('statut', $this->convert_statut[$r[self::CSV_STATUT_VENTE_TIREUSE]]);
-          $hab_activites->add(HabilitationClient::ACTIVITE_VENTE_A_LA_TIREUSE)->add('date', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_VENTE_TIREUSE]));
+          $hab_activites->add(HabilitationClient::ACTIVITE_VINIFICATEUR)->updateHabilitation($this->convert_statut[$r[self::CSV_STATUT_VENTE_TIREUSE]], '', preg_replace("/(\d+)\/(\d+)\/(\d\d\d\d)/", '\3-\2-\1', $r[self::CSV_DATE_VENTE_TIREUSE]));
         }
       }
       $habilitation->save();

@@ -71,3 +71,5 @@ all:
       "100 cl": 100
       "150 cl": 150
       "300 cl": 300
+  scrapy:
+    documents: "/.../.../prodouane_scrapy/documents"
