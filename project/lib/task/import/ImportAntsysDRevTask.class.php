@@ -127,6 +127,7 @@ class ImportAntsysDRevTask extends sfBaseTask
   }
 
   private function saveRows($rows) {
+    $campagne = "2015";
     $id = sprintf('%06d', $rows[0][self::CSV_ID]);
     echo "trying $id \n";
     $soc = SocieteClient::getInstance()->find($id);
@@ -139,25 +140,36 @@ class ImportAntsysDRevTask extends sfBaseTask
       echo "ERROR: pas d'établissement trouvé pour la société ".$id."\n";
       return false;
     }
-    $drev = DRevClient::getInstance()->createDoc($eta->identifiant, '2015');
+    if($drev = DRevClient::getInstance()->find('DREV-'.$eta->identifiant."-".$campagne, acCouchdbClient::HYDRATE_JSON)) {
+        DRevClient::getInstance()->deleteDoc($drev);
+    }
+    $drev = DRevClient::getInstance()->createDoc($eta->identifiant, $campagne, true);
     foreach($rows as $r) {
       if (!isset($this->convert_produits[$r[self::CSV_PRODUIT]])) {
-        echo "ERROR: produit "+ $r[self::CSV_PRODUIT] + " non trouvé\n";
+        echo "ERROR: produit " . $r[self::CSV_PRODUIT] . " non trouvé\n";
         continue;
       }
+      if(!$drev->declaration->getConfig()->exist($this->convert_produits[$r[self::CSV_PRODUIT]])) {
+        echo "ERROR: produit " . $this->convert_produits[$r[self::CSV_PRODUIT]] . " non trouvé dans la conf\n";
+        continue;
+      }
+
       $produit = $drev->addProduit($this->convert_produits[$r[self::CSV_PRODUIT]]);
       $produit->superficie_revendique = $r[self::CSV_SURFACE] * 1;
-      $produit->volume_revendique_sans_vci = $r[self::CSV_VOLUME] * 1;
+      $produit->volume_revendique_issu_recolte = $r[self::CSV_VOLUME] * 1;
       //$produit->volume_revendique_avec_vci = $r[self::CSV_VOLUME] * 1;
 
       //$produit-> = $r[self::CSV_VCI_ANNEE_PRECEDENTE];
       if (($r[self::CSV_VCI_RAFRAICHI]*1) + ($r[self::CSV_VCI_COMPLEMENT] * 1) + ($r[self::CSV_VCI_DETRUIT] * 1)) {
-        $produit->vci_stock_initial = $r[self::CSV_VCI_RAFRAICHI] - $r[self::CSV_VCI_DETRUIT] * 1;
-        $produit->vci_rafraichi = $r[self::CSV_VCI_RAFRAICHI]  * 1;
-        $produit->vci_complement_dr = $r[self::CSV_VCI_COMPLEMENT] * 1;
-        $produit->vci_destruction = $r[self::CSV_VCI_DETRUIT] * 1;
+        //$produit->vci->stock_precedent = $r[self::CSV_VCI_RAFRAICHI] - $r[self::CSV_VCI_DETRUIT] * 1;
+        $produit->vci->rafraichi = $r[self::CSV_VCI_RAFRAICHI]  * 1;
+        $produit->vci->complement = $r[self::CSV_VCI_COMPLEMENT] * 1;
+        $produit->vci->destruction = $r[self::CSV_VCI_DETRUIT] * 1;
       }
     }
+
+    $drev->validate($campagne."-12-10");
+    $drev->validateOdg($campagne."-12-10");
     $drev->save();
   }
 }
