@@ -7,9 +7,9 @@
     <thead>
         <tr>
             <th class="col-xs-6">Appellation revendiquée</th>
-            <th class="col-xs-2 text-center">Superficie revendiquée</th>
-            <th class="col-xs-2 text-center">Volume revendiqué<br />issu du VCI</th>
-            <th class="col-xs-2 text-center">Volume revendiqué<br />net total</th>
+            <th class="col-xs-2 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
+            <th class="col-xs-2 text-center">Volume revendiqué<br />issu du VCI<br /><small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Volume revendiqué<br />net total<br /><small class="text-muted">(hl)</small></th>
         </tr>
     </thead>
     <tbody>
@@ -29,13 +29,13 @@
         <thead>
             <tr>
                 <th class="col-xs-4">Appellation revendiquée</th>
-                <th class="text-center">Stock <?php echo $drev->campagne - 1 ?></th>
-                <th class="text-center">Complément</th>
-                <th class="text-center">Substitution</th>
-                <th class="text-center">A détruire</th>
-                <th class="text-center">Rafraichi</th>
-                <th class="text-center">Constitué</th>
-                <th class="text-center">Stock <?php echo $drev->campagne ?></th>
+                <th class="text-center">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center">Complément<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center">Substitution<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center">A détruire<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center">Rafraichi<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center">Constitué<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
             </tr>
         </thead>
         <tbody>

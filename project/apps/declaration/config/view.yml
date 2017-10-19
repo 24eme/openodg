@@ -7,9 +7,9 @@ default:
     X-UA-Compatible: IE=edge
 
   metas:
-    title:            "Plateforme de télédéclaration de l'AVA"
+    title:            "Plateforme de télédéclaration du syndicat Côtes-du-Rhône"
     charset:          "utf-8"
-    description:      "Plateforme de télédéclaration de l'AVA"
+    description:      "Plateforme de télédéclaration du syndicat Côtes-du-Rhône"
     robots:           "index,follow"
     content-language: "fr-FR"
     viewport:         "width=device-width, initial-scale=1"
