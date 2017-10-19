@@ -98,7 +98,7 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
         if ($this->drev->hasDR()) {
         	$this->setDrInDrev($this->drev);
-        	return $this->redirect('drev_revendication', $this->drev);
+        	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
         $this->form = new DRevUploadDrForm(DRClient::getInstance()->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
         if (!$request->isMethod(sfWebRequest::POST)) {
@@ -114,7 +114,7 @@ class drevActions extends sfActions {
 		$fichier = $this->form->save();
 		$this->setDrInDrev($this->drev);
 		$this->drev->save();
-        return $this->redirect('drev_revendication', $this->drev);
+        return $this->redirect('drev_revendication_superficie', $this->drev);
     }
 
     protected function setDrInDrev($drev) {
