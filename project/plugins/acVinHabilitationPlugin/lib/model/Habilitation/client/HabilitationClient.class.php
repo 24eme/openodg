@@ -12,8 +12,7 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
 
 
-    const STATUT_DEMANDE_ODG = "STATUT_DEMANDE_ODG";
-    const STATUT_DEMANDE_INAO = "STATUT_DEMANDE_INAO";
+    const STATUT_DEMANDE = "STATUT_DEMANDE";
     const STATUT_HABILITE = "HABILITE";
     const STATUT_SUSPENDU = "SUSPENTU";
     const STATUT_REFUS = "REFUS";
@@ -25,8 +24,7 @@ class HabilitationClient extends acCouchdbClient {
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse",
                                                 );
-    public static $statuts_libelles = array( self::STATUT_DEMANDE_ODG => "Demande ODG",
-                                               self::STATUT_DEMANDE_INAO =>  "Demande INAO",
+    public static $statuts_libelles = array( self::STATUT_DEMANDE => "Demande",
                                                self::STATUT_HABILITE => "Habilité",
                                                self::STATUT_SUSPENDU => "Suspendu",
                                                self::STATUT_REFUS => "Refus",
@@ -48,22 +46,28 @@ class HabilitationClient extends acCouchdbClient {
             return $doc;
         }
 
+        public function createDoc($identifiant, $date = '') {
+          if (!$date) {
+            $date = date('Y-m-d');
+          }
+          return $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+        }
 
-        public function createDoc($identifiant,$date)
+        public function createOrGetDocFromIdentifiantAndDate($identifiant, $date)
         {
-            $habilitation = new Habilitation();
-            $habilitation->initDoc($identifiant,$date);
-
-            $habilitation->storeDeclarant();
-
-            $etablissement = $habilitation->getEtablissementObject();
-
-            if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_PRODUCTEUR)) {
-                $habilitation->add('non_recoltant', 1);
+            $habilitation_found = $this->findPreviousByIdentifiantAndDate($identifiant, $date);
+            if ($habilitation_found && $habilitation_found->date === $date) {
+              return $habilitation_found;
             }
-
-            if(!$etablissement->hasFamille(EtablissementFamilles::FAMILLE_CONDITIONNEUR)) {
-                $habilitation->add('non_conditionneur', 1);
+            if (!$habilitation_found) {
+              $habilitation = new Habilitation();
+              $habilitation->initDoc($identifiant,$date);
+              $habilitation->storeDeclarant();
+              $etablissement = $habilitation->getEtablissementObject();
+            }else{
+              $habilitation_found->date = $date;
+              $habilitation = clone $habilitation_found;
+              $habilitation_found = null;
             }
 
             return $habilitation;
@@ -73,10 +77,24 @@ class HabilitationClient extends acCouchdbClient {
           if(date('Y-m-d') == $habilitation_h->getDate()){
             return $habilitation_h;
           }
+          $date = $habilitation_h->date;
+          $habilitation_h->date = date('Y-m-d');
           $habilitation = clone $habilitation_h;
+          $habilitation_h->date = $date;
           return $habilitation;
         }
 
+        public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+          $h = $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
+                    ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
+          if (!count($h)) {
+            return NULL;
+          }
+          $h = $h->getDocs();
+          end($h);
+          $doc = $h[key($h)];
+          return $doc;
+        }
 
         public function getHistory($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
             return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
@@ -85,8 +103,6 @@ class HabilitationClient extends acCouchdbClient {
 
         public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           $history = $this->getHistory($identifiant, $hydrate);
-          foreach ($history as $id => $h) {
-          }
-          return $h;
+          return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
         }
     }
