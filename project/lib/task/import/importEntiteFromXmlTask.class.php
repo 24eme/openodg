@@ -464,7 +464,7 @@ EOF;
                 //echo "L'identité  ".  $c->identifiant." possède une observation codifié de code ".$obsCodifie." non trouvée dans les observations codifiées \n";
                 continue;
               }
-              $observationsCodifiees[$obsCodifie] = $this->observationsCodifieesArr[$obsCodifie][2];
+              $observationsCodifiees[$obsCodifie] = $this->observationsCodifieesArr[$obsCodifie];
             }else{
               if(array_key_exists("b:ObservationCodifiee",$obsCodifie)){
                 $code = $obsCodifie["b:ObservationCodifiee"];
@@ -472,7 +472,7 @@ EOF;
                   //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                   continue;
                 }
-                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code][2];
+                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
               }
             }
           }
@@ -481,8 +481,11 @@ EOF;
       if(count($observationsCodifiees)){
         echo "OBS Codifiees ".implode(",",$observationsCodifiees)." ". $c->_id." \n";
         foreach($observationsCodifiees as $obsKey => $obs){
-          $tag = 'OBS '.$obs;
+          $tag = 'OBS '.$obs[2];
           $c->addTag('manuel',$tag);
+          if($obs[3]){
+            $c->setStatut(SocieteClient::STATUT_SUSPENDU);
+          }
           }
         }
     }

@@ -23,7 +23,7 @@ class DrevEtapes extends Etapes
 
 	public static $links = array(
             self::ETAPE_EXPLOITATION => 'drev_exploitation',
-            self::ETAPE_DR_DOUANE => 'drev_dr_douane',
+            self::ETAPE_DR_DOUANE => 'drev_scrape_dr',
 			self::ETAPE_REVENDICATION_SUPERFICIE => 'drev_revendication_superficie',
             self::ETAPE_VCI => 'drev_vci',
 			self::ETAPE_REVENDICATION => 'drev_revendication',
