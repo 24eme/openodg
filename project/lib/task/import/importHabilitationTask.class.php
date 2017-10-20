@@ -135,7 +135,7 @@ EOF;
               echo "ERROR: pas d'établissement trouvé pour la société ".$id."\n";
               continue;
             }
-            îf (!$data[self::CSV_HABILITATION_DATE]) {
+            if (!$data[self::CSV_HABILITATION_DATE]) {
               $data[self::CSV_HABILITATION_DATE] = date('Y-m-d');
             }
             $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $data[self::CSV_HABILITATION_DATE]);
