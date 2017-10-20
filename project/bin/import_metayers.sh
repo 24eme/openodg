@@ -2,7 +2,7 @@
 
 . bin/config.inc
 
-echo "Match des metayers"
+echo "Match des bailleurs et metayers"
 
 if ! test "$1"; then
     echo "Paramêtre de récupération des données obligatoire";
