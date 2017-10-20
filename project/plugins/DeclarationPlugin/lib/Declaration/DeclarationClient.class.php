@@ -64,6 +64,11 @@ class DeclarationClient
             return 'ExportSV12CSV';
         }
 
+        if($type == HabilitationClient::TYPE_MODEL) {
+
+            return 'ExportHabilitationCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
