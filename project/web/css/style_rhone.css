@@ -102,6 +102,27 @@ h3 {
     background: #9f0038;
 }
 
+.list-group-item.active, .list-group-item.active:hover {
+    background: #9f0038;
+    border-color: #9f0038;
+}
+
+.list-group-item.active a {
+    color: inherit;
+}
+
+.list-group-item.active .text-muted {
+    color: inherit;
+}
+
+.list-group-item.active .badge {
+    color: #9f0038;
+}
+
+.label-primary {
+    background: #9f0038;
+}
+
 .nav-step {
     background: #fff;
     border: none;

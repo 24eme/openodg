@@ -524,6 +524,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if(!$coordonnees) {
             return false;
         }
+
         $noeud->lon = $coordonnees["lon"];
         $noeud->lat = $coordonnees["lat"];
         return true;

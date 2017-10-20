@@ -125,6 +125,20 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $etablissements;
     }
 
+    public function getEtablissementsObject($withSuspendu = true) {
+        $etablissements = array();
+        foreach ($this->etablissements as $id => $obj) {
+            $etb = EtablissementClient::getInstance()->find($id);
+            if (!$withSuspendu) {
+                if (!$etb->isActif()) {
+                    continue;
+                }
+            }
+            $etablissements[$id] = $etb;
+        }
+        return $etablissements;
+    }
+
     public function getEtablissementPrincipal() {
         $etablissements = $this->getEtablissementsObj();
         if (!count($etablissements)) {

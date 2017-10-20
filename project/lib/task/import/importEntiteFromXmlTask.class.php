@@ -22,6 +22,9 @@ class importEntiteFromXmlTask extends sfBaseTask
     const COM_TEL = 5;
     const COM_TYPECONTACT = 6;
 
+    const TYPE_SOC_MORALE = "M";
+    const TYPE_SOC_PHYSIQUE = "P";
+
     protected $arrayXML = array();
 
     protected $observationsCodifieesArr = array();
@@ -101,7 +104,7 @@ EOF;
         }else{
           $groupsProfil = $this->getRefsGroupsProfil();
           if(count($groupsProfil)){
-            $this->importAsInterlocuteur($identifiant);
+            $this->importAsInterlocuteurOrSociete($identifiant);
           }else{
             $this->importSociete($identifiant,$cvis,$siret);
           }
@@ -200,40 +203,47 @@ EOF;
 
         }
 
-        protected function importAsInterlocuteur($identifiant){
+        protected function importAsInterlocuteurOrSociete($identifiant){
           $groupeInterlocuteurs = $this->getRefsGroupsProfil();
+          $typeSociete = $this->getTypeSociete();
+          if($typeSociete == self::TYPE_SOC_PHYSIQUE){
+              if(count($groupeInterlocuteurs)){
+              foreach ($groupeInterlocuteurs as $key => $interloc) {
+                echo "INTERLOCUTEUR profil trouvé [".implode(",",$interloc)."] : ".$identifiant." est contact de la societe : ".$interloc[1]."\n";
+                $identifiantSoc = sprintf("%06d",$interloc[1]);
+                $societe = SocieteClient::getInstance()->find($identifiantSoc);
+                if(!$societe){
+                  echo "La société $identifiantSoc n'est pas dans la base\n";
+                }else{
+                  $compte = CompteClient::getInstance()->createCompteFromSociete($societe);
 
-          if(count($groupeInterlocuteurs)){
-            foreach ($groupeInterlocuteurs as $key => $interloc) {
-              echo "INTERLOCUTEUR profil trouvé [".implode(",",$interloc)."] : ".$identifiant." est contact de la societe : ".$interloc[1]."\n";
-              $identifiantSoc = sprintf("%06d",$interloc[1]);
-              $societe = SocieteClient::getInstance()->find($identifiantSoc);
-              if(!$societe){
-                echo "La société $identifiantSoc n'est pas dans la base\n";
-              }else{
-                $compte = CompteClient::getInstance()->createCompteFromSociete($societe);
+                  $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
 
-                $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
+                  $compte->nom = $this->arrayXML['b:RaisonSociale'];
+                  $compte->prenom = $this->arrayXML['b:Prenom'];
+                  $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
 
-                $compte->nom = $this->arrayXML['b:RaisonSociale'];
-                $compte->prenom = $this->arrayXML['b:Prenom'];
-                $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
+                  $interlocCoordonnees = $this->getCoordonneesInArr($interloc["b:Identite_Coordonnee"]);
 
-                $interlocCoordonnees = $this->getCoordonneesInArr($interloc["b:Identite_Coordonnee"]);
+                  $this->updateDocOrFieldWithCoordonnees($compte,$interlocCoordonnees);
 
-                $this->updateDocOrFieldWithCoordonnees($compte,$interlocCoordonnees);
+                  $interlocCommunication = $this->getCommunicationsInArr($interloc["b:Identite_Communication"]);
 
-                $interlocCommunication = $this->getCommunicationsInArr($interloc["b:Identite_Communication"]);
+                  $compte->email = $interlocCommunication[self::COM_EMAIL];
+                  $compte->telephone_mobile = $interlocCommunication[self::COM_PORTABLE];
+                  $compte->site_internet = $interlocCommunication[self::COM_SITEWEB];
+                  $this->setTags($compte);
+                  $compte->save();
+                  echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
 
-                $compte->email = $interlocCommunication[self::COM_EMAIL];
-                $compte->telephone_mobile = $interlocCommunication[self::COM_PORTABLE];
-                $compte->site_internet = $interlocCommunication[self::COM_SITEWEB];
-                $this->setTags($compte);
-                $compte->save();
-                echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
-
+                }
               }
             }
+          }elseif($typeSociete == self::TYPE_SOC_MORALE){
+            echo "Import de la société autre $identifiant    ";
+            $this->importSociete($identifiant,array(),"");
+          }else{
+            echo "/!\ La société $identifiant a pour type :$typeSociete \n";
           }
         }
 
@@ -295,23 +305,14 @@ EOF;
       }
     }
 
-
-/*
-    public function searchType($nameField, $field){
-      if($nameField == "b:Type"){
-        switch ((string) $field) {
-          case 'P':
-          $this->entite_juridique = "Physique";
-          break;
-
-          case 'M':
-          $this->entite_juridique = "Morale";
-          break;
-        }
+    public function getTypeSociete(){
+      if(isset($this->arrayXML["b:Type"])){
+        return $this->arrayXML["b:Type"];
       }
+      return null;
     }
-*/
-  protected function getCvis($identifiant){
+
+    protected function getCvis($identifiant){
             $cviArr = array();
             if(isset($this->arrayXML["b:Evv"]) && boolval((string) $this->arrayXML["b:Evv"])){
               if(is_array($this->arrayXML["b:Evv"]) && !count($this->arrayXML["b:Evv"])){
@@ -332,7 +333,7 @@ EOF;
                 }
             }
             return $cviArr;
-   }
+    }
 
     protected function buildRaisonSociete(){
       $civilite = $this->arrayXML['b:Titre'];
@@ -350,16 +351,24 @@ EOF;
       $groupeInterlocuteurs = array();
       if(isset($this->arrayXML['b:Profils']) && count($this->arrayXML['b:Profils'])){
         foreach ($this->arrayXML['b:Profils'] as $key => $identitesProfils) {
-          foreach ($identitesProfils as $identiteProfil) {
-          $refKeyGroup = $identiteProfil["b:CleGroupe"];
-          $fonction = $identiteProfil["b:Fonction"];
-          if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
-            $groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction),$identiteProfil);
+          if(isset($identitesProfils["b:CleGroupe"])){
+            $refKeyGroup = $identitesProfils["b:CleGroupe"];
+            $fonction = $identitesProfils["b:Fonction"];
+            if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
+              $groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction),$identitesProfils);
+            }
+          }else{
+            foreach ($identitesProfils as $identiteProfil) {
+              $refKeyGroup = $identiteProfil["b:CleGroupe"];
+              $fonction = $identiteProfil["b:Fonction"];
+              if(array_key_exists($refKeyGroup,$this->groupeInterlocuteursArr)){
+                $groupeInterlocuteurs[] = array_merge($this->groupeInterlocuteursArr[$refKeyGroup],array($fonction),$identiteProfil);
+              }
+            }
           }
-        }
       }
     }
-    return $groupeInterlocuteurs;
+      return $groupeInterlocuteurs;
     }
 
     protected function getTagsArrayFromProfil(){
@@ -419,19 +428,19 @@ EOF;
     }
 
     protected function getCommunicationsInArr($arr, $identifiant){
-    $communications = array();
-    if(isset($arr['b:CleCommunication'])){
-      $this->buildCommunicationArr($arr,$communications);
-    }else{
-      echo "$identifiant : Clé communication multiple\n";
-      foreach ($arr as $key => $communicationArr) {
-        if(isset($communicationArr['b:CleCommunication'])){
-          $this->buildCommunicationArr($communicationArr,$communications);
-          break;
+      $communications = array();
+      if(isset($arr['b:CleCommunication'])){
+        $this->buildCommunicationArr($arr,$communications);
+      }else{
+        echo "$identifiant : Clé communication multiple\n";
+        foreach ($arr as $key => $communicationArr) {
+          if(isset($communicationArr['b:CleCommunication'])){
+            $this->buildCommunicationArr($communicationArr,$communications);
+            break;
+          }
         }
       }
-    }
-    return $communications;
+      return $communications;
     }
 
     private function buildCommunicationArr($arr,&$communications){
@@ -464,7 +473,7 @@ EOF;
                 //echo "L'identité  ".  $c->identifiant." possède une observation codifié de code ".$obsCodifie." non trouvée dans les observations codifiées \n";
                 continue;
               }
-              $observationsCodifiees[$obsCodifie] = $this->observationsCodifieesArr[$obsCodifie][2];
+              $observationsCodifiees[$obsCodifie] = $this->observationsCodifieesArr[$obsCodifie];
             }else{
               if(array_key_exists("b:ObservationCodifiee",$obsCodifie)){
                 $code = $obsCodifie["b:ObservationCodifiee"];
@@ -472,18 +481,36 @@ EOF;
                   //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                   continue;
                 }
-                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code][2];
+                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
               }
             }
           }
         }
       }
       if(count($observationsCodifiees)){
-        echo "OBS Codifiees ".implode(",",$observationsCodifiees)." ". $c->_id." \n";
+        echo "OBS Codifiees ";
         foreach($observationsCodifiees as $obsKey => $obs){
-          $tag = 'OBS '.$obs;
+          echo implode(",",$obs)."   -   ";
+          $tag = 'OBS '.$obs[2];
           $c->addTag('manuel',$tag);
+          if($obs[3]){
+            $c->setStatut(SocieteClient::STATUT_SUSPENDU);
+            if($c->compte_type == "SOCIETE"){
+                foreach($c->getOrigines() as $origine) {
+                  $soc = SocieteClient::getInstance()->find($origine);
+                  $soc->setStatut(SocieteClient::STATUT_SUSPENDU);
+                  $soc->save();
+                }
+              }
+              foreach ($c->getSociete()->getEtablissementsObj() as $etablissement) {
+                # code...
+                $etb = $etablissement->etablissement;
+                $etb->setStatut(SocieteClient::STATUT_SUSPENDU);
+                $etb->save();
+              }
+            }
           }
+          echo $c->_id." \n";
         }
     }
 

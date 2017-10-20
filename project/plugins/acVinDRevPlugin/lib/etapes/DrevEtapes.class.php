@@ -23,7 +23,7 @@ class DrevEtapes extends Etapes
 
 	public static $links = array(
             self::ETAPE_EXPLOITATION => 'drev_exploitation',
-            self::ETAPE_DR_DOUANE => 'drev_dr_douane',
+            self::ETAPE_DR_DOUANE => 'drev_scrape_dr',
 			self::ETAPE_REVENDICATION_SUPERFICIE => 'drev_revendication_superficie',
             self::ETAPE_VCI => 'drev_vci',
 			self::ETAPE_REVENDICATION => 'drev_revendication',
@@ -36,7 +36,7 @@ class DrevEtapes extends Etapes
             self::ETAPE_EXPLOITATION => "Exploitation",
             self::ETAPE_DR_DOUANE => "Déclaration de récolte",
             self::ETAPE_REVENDICATION_SUPERFICIE => "Revendication des superficies",
-            self::ETAPE_VCI => "Répartition du VCI",
+            self::ETAPE_VCI => "Répartition du VCI %campagne%",
 			self::ETAPE_REVENDICATION => "Revendication",
             self::ETAPE_DEGUSTATION => "Dégustation<br/>conseil",
             self::ETAPE_CONTROLE => "Contrôle<br/>externe",

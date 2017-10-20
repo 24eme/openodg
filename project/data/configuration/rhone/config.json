@@ -11,7 +11,7 @@
                        "libelle": "Tranquilles",
                        "appellations": {
                            "CDR": {
-                               "libelle": "Cotes du Rhone Regional",
+                               "libelle": "Côtes du Rhône",
                                "mentions": {
                                    "DEFAUT": {
                                        "libelle": null,
@@ -53,7 +53,7 @@
                                }
                            },
                            "CVS": {
-                               "libelle": "CdR Villages sans NG",
+                               "libelle": "Côtes du Rhône Villages",
                                "mentions": {
                                    "DEFAUT": {
                                        "libelle": null,
@@ -95,7 +95,7 @@
                                }
                            },
                            "CVG": {
-                               "libelle": "CdR Villages avec NG",
+                               "libelle": "Côtes du Rhône Villages",
                                "mentions": {
                                    "DEFAUT": {
                                        "libelle": null,
@@ -124,67 +124,6 @@
                                                        "cepages": {
                                                            "DEFAUT": {
                                                                "libelle": null
-                                                           }
-                                                       }
-                                                   }
-                                               }
-                                           },
-                                           "BDV": {
-                                               "libelle": "Beaumes de Venise",
-                                               "couleurs": {
-                                                   "rouge": {
-                                                       "libelle": "Rouge",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null
-                                                           }
-                                                       }
-                                                   },
-                                                   "rose": {
-                                                       "libelle": "Rosé",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null
-                                                           }
-                                                       }
-                                                   },
-                                                   "blanc": {
-                                                       "libelle": "Blanc",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null
-                                                           }
-                                                       }
-                                                   }
-                                               }
-                                           },
-                                           "CAI": {
-                                               "libelle": "Cairanne",
-                                               "couleurs": {
-                                                   "rouge": {
-                                                       "libelle": "Rouge",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null,
-                                                               "code_douane": "1R531S07"
-                                                           }
-                                                       }
-                                                   },
-                                                   "rose": {
-                                                       "libelle": "Rosé",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null,
-                                                               "code_douane": "1S531S07"
-                                                           }
-                                                       }
-                                                   },
-                                                   "blanc": {
-                                                       "libelle": "Blanc",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null,
-                                                               "code_douane": "1B531S07"
                                                            }
                                                        }
                                                    }
@@ -305,36 +244,6 @@
                                                            "DEFAUT": {
                                                                "libelle": null,
                                                                "code_douane": "1R531S19"
-                                                           }
-                                                       }
-                                                   }
-                                               }
-                                           },
-                                           "RAS": {
-                                               "libelle": "Rasteau",
-                                               "couleurs": {
-                                                   "rouge": {
-                                                       "libelle": "Rouge",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null,
-                                                               "code_douane": "1R531S10"
-                                                           }
-                                                       }
-                                                   },
-                                                   "rose": {
-                                                       "libelle": "Rosé",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null
-                                                           }
-                                                       }
-                                                   },
-                                                   "blanc": {
-                                                       "libelle": "Blanc",
-                                                       "cepages": {
-                                                           "DEFAUT": {
-                                                               "libelle": null
                                                            }
                                                        }
                                                    }
@@ -1044,7 +953,7 @@
                                }
                            },
                            "RTA": {
-                               "libelle": "RASTEAU",
+                               "libelle": "Rasteau",
                                "mentions": {
                                    "DEFAUT": {
                                        "libelle": null,
