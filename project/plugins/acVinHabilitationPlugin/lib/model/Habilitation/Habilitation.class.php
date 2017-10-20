@@ -137,11 +137,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     $historiqueRow = $this->get('historique')->add(null);
     $historiqueRow->iddoc = $this->_id;
     $historiqueRow->date = $this->getDate();
-    if (!$auteur && sfContext::getInstance()->getUser() && sfContext::getInstance()->getUser()->getCompte()) {
-      $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
-    }else{
-      $historiqueRow->auteur = $auteur;
-    }
+    $historiqueRow->auteur = $auteur;
+    try {
+      if (!$auteur && sfContext::getInstance() && sfContext::getInstance()->getUser() && sfContext::getInstance()->getUser()->getCompte()) {
+        $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
+      }
+    }catch(sfException $e) {}
     $historiqueRow->description = $description;
     $historiqueRow->commentaire = $commentaire;
 
