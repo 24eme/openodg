@@ -771,10 +771,9 @@
         }
       });
 
-      $('.open-button').click(function(){
-
-      });
-
+      if($('#ouvert:target').length) {
+        $('.open-button').click();
+      }
     }
 
     $.initCoordonneesForms = function ()

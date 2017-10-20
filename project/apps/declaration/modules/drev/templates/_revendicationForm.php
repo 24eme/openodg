@@ -7,10 +7,10 @@
     <?php include_partial('drev/revendicationFormInput', array('form' => $form['recolte'], 'produit' => $produit, 'name' => 'volume_sur_place', 'vtsgn' => $vtsgn, "placeholder" => "hl", "tdClass" => "info", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
     <?php include_partial('drev/revendicationFormInput', array('form' => $form['recolte'], 'produit' => $produit, 'name' => 'vci_constitue', 'vtsgn' => $vtsgn, "placeholder" => "hl", "tdClass" => "info", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
     <?php include_partial('drev/revendicationFormInput', array('form' => $form, 'produit' => $produit, 'name' => 'volume_revendique_issu_recolte', 'vtsgn' => $vtsgn, "placeholder" => "hl", 'global_error_id' => $global_error_id, 'global_error_class' => $global_error_class)); ?>
-    <td>
-        <input  readonly="readonly" type="text" class="form-control text-right input-float input_sum_value" value="<?php echoFloat($produit->volume_revendique_issu_vci) ?>" />
+    <td class="text-right">
+        <span class="input_sum_value"><?php if($produit->volume_revendique_issu_vci): ?><?php echoFloat($produit->volume_revendique_issu_vci) ?></span> <small class="text-muted">hl</small><?php endif; ?>
     </td>
-    <td>
-        <input readonly="readonly" type="text" class="form-control text-right input-float input_sum_total" value="<?php echoFloat($produit->volume_revendique_total) ?>" />
+    <td class="text-right">
+        <span class="input_sum_total"><?php if($produit->volume_revendique_total): ?><?php echoFloat($produit->volume_revendique_total) ?></span> <small class="text-muted">hl</small><?php endif; ?>
     </td>
 </tr>

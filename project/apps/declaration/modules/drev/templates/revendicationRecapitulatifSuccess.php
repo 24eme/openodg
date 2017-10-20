@@ -29,7 +29,7 @@ Vous devez déclarer vos volumes revendiqués par cépage pour pouvoir continuer
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?> <?php if ($produit->canHaveVtsgn()):?><small class="text-muted">(hors VT/SGN)</small><?php endif; ?></td>
                 <td class="text-center"><?php if($produit->exist('superficie_vinifiee')): ?><?php echoFloat($produit->superficie_vinifiee) ?> <small class="text-muted">ares</small><?php endif; ?></td>
-                <td class="text-center"><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small></td>
+                <td class="text-center"><?php if($produit->exist('volume_revendique')): ?><?php echoFloat($produit->volume_revendique) ?> <small class="text-muted">hl</small><?php endif; ?></td>
             </tr>
             <?php endif; ?>
             <?php if($produit->canHaveVtsgn() && $produit->volume_revendique_vtsgn > 0): ?>

@@ -154,10 +154,19 @@
                 $(this).find('.input_sum_value').each(function() {
                     if($(this).val()) {
                         somme += parseFloat($(this).val());
+                    } else {
+                    	if ($(this).text()) {
+                            somme += parseFloat($(this).text());
+                    	}
                     }
                 })
-
-                $(this).find('.input_sum_total').val(somme.toFixed(2))
+                if (!isNaN(somme)) {
+	                if ($(this).find('.input_sum_total').is( "input" )) {
+	                	$(this).find('.input_sum_total').val(somme.toFixed(2));
+	                } else {
+	                    $(this).find('.input_sum_total').text(somme.toFixed(2));
+	                }
+                }
             });
 
         }

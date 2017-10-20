@@ -69,6 +69,31 @@
                 <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>
+                <hr />
+                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Chais</strong></h5>
+                <?php if($etablissement->exist('chais')  && count($etablissement->chais)): ?>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="col-xs-6">Adresse</th>
+                            <th class="col-xs-5">Attributs</th>
+                            <th class="col-xs-1">Partagé</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($etablissement->chais as $chai): ?>
+                            <tr>
+                                <td><?php echo $chai->adresse ?><br />
+                                <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
+                                <td><?php echo implode(", ", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
+                                <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?php else: ?>
+                    <p class="text-muted">Aucun chai</p>
+                <?php endif; ?>
                 <?php if ($etablissement->commentaire) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
