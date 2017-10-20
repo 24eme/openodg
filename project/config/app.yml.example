@@ -72,4 +72,5 @@ all:
       "150 cl": 150
       "300 cl": 300
   scrapy:
+    bin: "/.../.../prodouane_scrapy/bin/download_douane.sh"
     documents: "/.../.../prodouane_scrapy/documents"
