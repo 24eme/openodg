@@ -35,13 +35,6 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
             $this->setValidator('code_comptable', new sfValidatorString(array('required' => false), array('required' => 'Champ obligatoire')));
         }
 
-        if ($this->getObject()->exist('densite')) {
-            $this->setWidget('densite', new bsWidgetFormInput());
-            $this->getWidget('densite')->setLabel("Densité :");
-            $this->setValidator('densite', new sfValidatorString(array('required' => true), array('required' => 'Champ obligatoire')));
-            $this->widgetSchema->setHelp('densite', "La densité par défaut est de 1.3, celle des crémant est de 1.5");
-        }
-
         if ($this->getObject()->hasDepartements()) {
             $this->embedForm(
                     'secteurs', new ProduitDepartementCollectionForm(null, array('departements' => $this->getNoeudDepartement(), 'nb' => $this->getOption('nbDepartement', null)))
@@ -67,6 +60,11 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
         if ($this->getObject()->hasDetails()) {
             $this->embedForm(
                     'detail', new ProduitDetailsForm($this->getObject()->getOrAdd('detail'))
+            );
+        }
+        if ($this->getObject()->hasRendements()) {
+            $this->embedForm(
+                    'attributs', new ProduitRendementsForm($this->getObject()->getOrAdd('attributs'))
             );
         }
 

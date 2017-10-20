@@ -14,4 +14,7 @@
 	<?php endif; ?>
 	<th style="width:15px;" class="center"><strong>Code douane</strong></th>
 	<th style="width:15px;" class="center"><strong>Code analytics</strong></th>
+	<th style="width:15px;" class="center"><strong>Rend.</strong></th>
+	<th style="width:15px;" class="center"><strong>Rend. VCI</strong></th>
+	<th style="width:15px;" class="center"><strong>Rend. VCI Tot.</strong></th>
 </tr>
