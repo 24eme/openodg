@@ -31,11 +31,7 @@ class sfCredentialActions extends sfActions {
             return;
         }
 
-        return array(SocieteClient::SUB_TYPE_VITICULTEUR,
-                     SocieteClient::SUB_TYPE_NEGOCIANT,
-                     SocieteClient::SUB_TYPE_COURTIER,
-                     SocieteClient::SUB_TYPE_HOTELRESTAURANT,
-                     SocieteClient::SUB_TYPE_AUTRE);
+        return array();
     }
 
 

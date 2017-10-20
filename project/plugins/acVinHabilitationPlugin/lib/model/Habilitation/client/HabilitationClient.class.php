@@ -8,6 +8,7 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_PRODUCTEUR = "PRODUCTEUR";
     const ACTIVITE_VINIFICATEUR = "VINIFICATEUR";
     const ACTIVITE_VRAC = "VRAC";
+    const ACTIVITE_ELABORATEUR = "ELABORATEUR";
     const ACTIVITE_CONDITIONNEUR = "CONDITIONNEUR";
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
 
@@ -22,7 +23,8 @@ class HabilitationClient extends acCouchdbClient {
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
                                                   self::ACTIVITE_VRAC => "Vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
-                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse",
+                                                  self::ACTIVITE_ELABORATEUR => "Élaborateur",
+                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse"
                                                 );
     public static $statuts_libelles = array( self::STATUT_DEMANDE => "Demande",
                                                self::STATUT_HABILITE => "Habilité",

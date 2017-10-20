@@ -38,6 +38,13 @@ class EtablissementClient extends acCouchdbClient {
     const NATURE_INAO_SOCIETE_COMMERCIALE = 'Société commerciale (négociant)';
     const NATURE_INAO_AUTRE = 'Autre';
 
+    const CHAI_ATTRIBUT_VINIFICATION = "VINIFICATION";
+    const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
+    const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
+    const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
+    const CHAI_ATTRIBUT_PRESTATAIRE = 'PRESTATAIRE';
+    const CHAI_ATTRIBUT_ELEVAGE = 'ELEVAGE';
+
     public static $statuts = array(self::STATUT_ACTIF => 'ACTIF',
         self::STATUT_SUSPENDU => 'SUSPENDU');
     public static $regimes_crds_libelles_longs = array(self::REGIME_CRD_PERSONNALISE => 'personnalisé (P)',

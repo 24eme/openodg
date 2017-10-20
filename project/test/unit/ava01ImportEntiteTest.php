@@ -50,9 +50,11 @@ $import_entite_task->run(array('file_path' => '/tmp/ODGRHONE_IDENTITES_DATA/IDEN
 $import_entite_task_ret = ob_get_contents();
 ob_end_clean();
 $societe9967 = SocieteClient::getInstance()->find("SOCIETE-009967");
+$etablissement9967 = EtablissementClient::getInstance()->find("ETABLISSEMENT-00996701");
 $compte996701 = CompteClient::getInstance()->find("COMPTE-00996701");
 $t->is($societe9967->statut, "SUSPENDU", "La societe 009967 est suspendu");
-$t->is($compte996701->statut, "SUSPENDU", "Le compte 009967 est suspendu");
+$t->is($etablissement9967->statut, "SUSPENDU", "L'etablissement 00996701 est suspendu");
+$t->is($compte996701->statut, "SUSPENDU", "Le compte 00996701 est suspendu");
 
 $etablissement16952 = EtablissementClient::getInstance()->find("ETABLISSEMENT-01695201");
 $t->isnt($etablissement16952, null, "L'etablissement 01695201 existe");
