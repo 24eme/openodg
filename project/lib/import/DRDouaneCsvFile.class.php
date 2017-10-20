@@ -9,6 +9,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	if (!in_array($type, array(self::BAILLEUR, self::EXPLOITANT))) {
     		throw new sfException("Type $type non reconnu.");
     	}
+    	if (!$this->filePath) {
+    		throw new sfException("La cible du fichier n'est pas spécifiée.");
+    	}
         $handler = fopen($this->filePath, 'r');
 
         $csv = array();

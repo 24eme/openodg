@@ -156,8 +156,10 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
   public function getFullHistorique() {
     $historique = array();
-    foreach (HabilitationClient::getInstance()->getHistory($this->identifiant, $hydrate = acCouchdbClient::HYDRATE_JSON) as $hab) {
-      $historique = array_merge($historique, $hab->historique);
+    foreach (HabilitationClient::getInstance()->getHistory($this->identifiant, $this->date, acCouchdbClient::HYDRATE_JSON) as $hab) {
+      if (isset($hab->historique)) {
+        $historique = array_merge($historique, $hab->historique);
+      }
     }
       return $historique;
   }
