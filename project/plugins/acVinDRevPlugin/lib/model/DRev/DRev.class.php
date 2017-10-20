@@ -144,11 +144,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function hasDR() {
-        return ($this->getDR())? true : false;
+        return ($this->getDR());
     }
 
 	public function getDR($ext = null) {
-		$fichier = DRClient::getInstance()->findByArgs($this->identifiant, $this->campagne);
+		$fichier = DRClient::getInstance()->find('DR-'.$this->identifiant.'-'.$this->campagne);
 		if ($fichier) {
 			return ($ext)? $fichier->getFichier($ext) : $fichier;
 		}
@@ -172,6 +172,36 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $csv->getCsv();
     }
 
+    public function importFromDR() {
+      if (count($this->declaration)) {
+        return false;
+      }
+      if (!$this->hasDR()) {
+        return false;
+      }
+      $csvFile = $this->getDR('csv');
+      if (!$csvFile) {
+        return false;
+      }
+      $csv = new DRDouaneCsvFile($csvFile, $this->campagne);
+      $csvContent = $csv->convert();
+      $path = sfConfig::get('sf_cache_dir').'/dr/';
+      $filename = 'DR-'.$this->identifiant.'-'.$this->campagne.'.csv';
+      if (!is_dir($path)) {
+        if (!mkdir($path)) {
+          throw new sfException('cannot create '.$path);
+        }
+      }
+      file_put_contents($path.$filename, $csvContent);
+      try {
+        $csv = new DRCsvFile($path.$filename);
+        $this->importCSVDouane($csv->getCsv());
+        $this->save();
+          return true;
+      } catch (Exception $e) { }
+      return false;
+    }
+
     public function importCSVDouane($csv) {
     	$todelete = array();
     	$this->remove('declaration');
@@ -183,7 +213,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-            $produit = $this->addProduit($produitConfig->getCouleur()->getHash());
+            $produit = $this->addProduit($produitConfig->getHash());
             $produitRecolte = $produit->recolte;
             if($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE) {
             	$produitRecolte->volume_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);

@@ -127,7 +127,7 @@ class ImportAntsysDRevTask extends sfBaseTask
   }
 
   private function saveRows($rows) {
-    $campagne = "2015";
+    $campagne = "2016";
     $id = sprintf('%06d', $rows[0][self::CSV_ID]);
     echo "trying $id \n";
     $soc = SocieteClient::getInstance()->find($id);
@@ -144,6 +144,7 @@ class ImportAntsysDRevTask extends sfBaseTask
         DRevClient::getInstance()->deleteDoc($drev);
     }
     $drev = DRevClient::getInstance()->createDoc($eta->identifiant, $campagne, true);
+    $drev->importFromDR();
     foreach($rows as $r) {
       if (!isset($this->convert_produits[$r[self::CSV_PRODUIT]])) {
         echo "ERROR: produit " . $r[self::CSV_PRODUIT] . " non trouvé\n";
