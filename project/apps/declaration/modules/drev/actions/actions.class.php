@@ -78,12 +78,12 @@ class drevActions extends sfActions {
 
         return $this->redirect($this->generateUrl('drev_edit', $drev));
     }
-    
+
     public function executeScrapeDr(sfWebRequest $request) {
     	$this->drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::EDITION, $this->drev);
     }
-    
+
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
@@ -96,16 +96,15 @@ class drevActions extends sfActions {
     public function executeDrDouane(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if ($this->drev->hasDR()) {
-        	$this->setDrInDrev($this->drev);
+        if ($this->drev->importFromDR()) {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
         $this->form = new DRevUploadDrForm(DRClient::getInstance()->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
-	   	$this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
-	    if (!$this->form->isValid()) {
+	   	  $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
+	       if (!$this->form->isValid()) {
 	    	return sfView::SUCCESS;
 	    }
         if (!$this->form->getValue('file')) {
@@ -117,26 +116,7 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication_superficie', $this->drev);
     }
 
-    protected function setDrInDrev($drev) {
-        $csvFile = $drev->getDR('csv');
-        $csv = new DRDouaneCsvFile($csvFile, $drev->campagne);
-        $csvContent = $csv->convert();
-        $path = sfConfig::get('sf_cache_dir').'/dr/';
-        $filename = 'DR-'.$drev->identifiant.'-'.$drev->campagne.'.csv';
-        if (!is_dir($path)) {
-        	exec('mkdir '.$path);
-        }
-        file_put_contents($path.$filename, $csvContent);
-        try {
-        	$csv = new DRCsvFile($path.$filename);
-        	$etablissement = EtablissementClient::getInstance()->retrieveById($drev->identifiant);
-        	if ($etablissement) {
-        		$drev->importCSVDouane($csv->getCsv());
-        		$drev->save();
-        		return true;
-        	}
-        } catch (Exception $e) { }
-		return false;
+    protected function ($drev) {
     }
 
     public function executeDrRecuperation(sfWebRequest $request) {
