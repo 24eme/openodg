@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-body">
+            <div class="panel-body" style="border-right: 6px solid #9f0038;">
                 <h2><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span>  <?php echo $etablissement->nom; ?></h2>
                 <hr/>
                 <div class="row">
