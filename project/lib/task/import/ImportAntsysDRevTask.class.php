@@ -40,9 +40,9 @@ class ImportAntsysDRevTask extends sfBaseTask
     $this->convert_produits['CDRV CHUSCLAN RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/CHU/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV CHUSCLAN RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/CHU/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['CDRV GADAGNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/GAD/couleurs/rouge/cepages/DEFAUT';
-    $this->convert_produits['CDR VILLAGES BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVS/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
-    $this->convert_produits['CDR VILLAGES RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVS/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
-    $this->convert_produits['CDR VILLAGES RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVS/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT';
+    $this->convert_produits['CDR VILLAGES BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
+    $this->convert_produits['CDR VILLAGES RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['CDR VILLAGES RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['CDRV LAUDUN BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/LAU/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['CDRV LAUDUN RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/LAU/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV LAUDUN RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/LAU/couleurs/rose/cepages/DEFAUT';
