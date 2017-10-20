@@ -75,7 +75,7 @@ class habilitationActions extends sfActions {
 
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
-        return $this->redirect('habilitation_edition', $this->habilitation);
+        return $this->redirect($this->generateUrl('habilitation_edition', $this->habilitation).'#ouvert');
     }
 
     public function executeHabilitationRecapitulatif(sfWebRequest $request) {

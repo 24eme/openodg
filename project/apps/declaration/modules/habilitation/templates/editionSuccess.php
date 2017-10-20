@@ -21,7 +21,7 @@
                 <th class="text-center col-xs-1">Statut</th>
                 <th class="text-center col-xs-1">Date</th>
                 <th class="text-center col-xs-3">Commentaire</th>
-                <th class="text-center col-xs-1"><span class="open-button glyphicon glyphicon-eye-open" style="cursor: pointer;" ></span></th>
+                <th class="text-center col-xs-1"><span id="ouvert" class="open-button glyphicon glyphicon-eye-open" style="cursor: pointer;" ></span></th>
             </tr>
         </thead>
         <tbody>
