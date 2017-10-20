@@ -32,7 +32,7 @@
                 <?php $produit = $drev->get($hash); ?>
                 <tr class="produits vertical-center">
                     <td><?php echo $produit->getLibelleComplet() ?> <small class="text-muted">(<?php echoFloat($produit->recolte->superficie_total) ?> ha)</small></td>
-                    <td class="text-right"><?php echoFloat($produit->getPlafondStockVci()) ?> <small class="text-muted">hl</small></td>
+                    <td class="text-right"><?php if($produit->getPlafondStockVci()): ?><?php echoFloat($produit->getPlafondStockVci()) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td><?php echo $formProduit['stock_precedent']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['destruction']->render(array( 'placeholder' => "hl")) ?></td>
                     <td><?php echo $formProduit['complement']->render(array( 'placeholder' => "hl")) ?></td>
