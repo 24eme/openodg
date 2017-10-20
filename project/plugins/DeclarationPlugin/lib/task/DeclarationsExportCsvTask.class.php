@@ -42,13 +42,17 @@ EOF;
             $doc = DeclarationClient::getInstance()->find($id);
             $export = DeclarationClient::getInstance()->getExportCsvObject($doc, false);
 
-            if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {               
+            if($arguments['validation'] && $doc->exist('validation') && !$doc->validation) {
+                continue;
+            }
+
+            if(method_exists($doc, "isExcluExportCsv") && $doc->isExcluExportCsv()) {
                 continue;
             }
 
             echo $export->export();
         }
 
-         
+
     }
 }

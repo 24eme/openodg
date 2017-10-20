@@ -66,7 +66,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getValidation() {
 
-        return $this->_get('validation');
+        return true;
     }
 
     public function getValidationOdg() {
@@ -163,5 +163,21 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
       return $historique;
   }
+
+    public function isExcluExportCsv() {
+        $etablissement = EtablissementClient::getInstance()->findByIdentifiant($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        if(!$etablissement || $etablissement->statut != EtablissementClient::STATUT_ACTIF) {
+
+            return true;
+        }
+
+        $lastHabilitation = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+        if($lastHabilitation->_id != $this->_id) {
+
+            return true;
+        }
+
+        return false;
+    }
 
 }
