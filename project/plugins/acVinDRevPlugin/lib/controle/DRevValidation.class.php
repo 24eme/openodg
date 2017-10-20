@@ -32,7 +32,6 @@ class DRevValidation extends DocumentValidation {
         /*
          * Error
          */
-        $this->addControle(self::TYPE_ERROR, 'dr_rendement', "Le rendement du volume de la déclaration de récolte n'est pas respecté");
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', "Toutes les informations de revendication n'ont pas été saisies");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
@@ -62,7 +61,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie de votre Carnet de Pressoir');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, ' Je m\'engage à transmettre le justificatif de destruction de VCI');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
     }
 
     public function controle() {
@@ -76,7 +75,6 @@ class DRevValidation extends DocumentValidation {
                 $this->controleErrorRevendicationIncomplete($produit);
             }
             $this->controleRevendication($produit);
-            $this->controleRecolte($produit);
             $this->controleVci($produit);
         }
         $this->controleEngagementVCI();
@@ -389,19 +387,13 @@ class DRevValidation extends DocumentValidation {
         }
     }
 
-    protected function controleRecolte($produit) {
-        if($produit->getConfig()->getRendement() !== null && $produit->recolte->volume_total && $produit->recolte->superficie_total && round(($produit->recolte->volume_total / $produit->recolte->superficie_total), 2) > $produit->getConfig()->getRendement()) {
-            $this->addPoint(self::TYPE_ERROR, 'dr_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-        }
-    }
-
     protected function controleRevendication($produit) {
         if($produit->superficie_revendique === null || $produit->volume_revendique_issu_recolte === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
             return;
         }
 
-        if($produit->getConfig()->rendement_drev !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 2) > $produit->getConfig()->rendement_drev) {
+        if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 2) > $produit->getConfig()->rendement_drev) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
 

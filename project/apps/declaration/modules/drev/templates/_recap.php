@@ -8,8 +8,8 @@
         <tr>
             <th class="col-xs-6">Appellation revendiquée</th>
             <th class="col-xs-2 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
-            <th class="col-xs-2 text-center">Volume revendiqué<br />issu du VCI<br /><small class="text-muted">(hl)</small></th>
             <th class="col-xs-2 text-center">Volume revendiqué<br />net total<br /><small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Dont issu du VCI<br /><small class="text-muted">(hl)</small></th>
         </tr>
     </thead>
     <tbody>
@@ -17,8 +17,8 @@
             <tr>
                 <td><?php echo $produit->getLibelleComplet() ?></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'superficie_revendique') ?>"><?php echoFloat($produit->superficie_revendique) ?> <small class="text-muted">ha</small></td>
-                <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small></td>
                 <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_toral') ?>"><?php echoFloat($produit->volume_revendique_total) ?> <small class="text-muted">hl</small></td>
+                <td class="text-right <?php echo isVersionnerCssClass($produit, 'volume_revendique_issu_vci') ?>"><?php echoFloat($produit->volume_revendique_issu_vci) ?> <small class="text-muted">hl</small></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
