@@ -699,6 +699,10 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function hasLabels() {
         return false;
     }
+    
+    public function hasRendements() {
+    	return false;
+    }
 
     public function hasDetails() {
         return false;
@@ -734,9 +738,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     /**** DR ****/
 
     public function getRendement() {
-        return 100;
-
-        return $this->getRendementCepage();
+        return $this->getRendementByKey('rendement');
     }
 
     public function getRendementNoeud() {
@@ -769,7 +771,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->hasRendementByKey('rendement_couleur');
     }
 
-    public function hasRendementCepage() {
+    public function hasRendement() {
 
         return $this->hasRendementByKey('rendement');
     }
@@ -800,13 +802,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
 
     public function getRendementVci() {
-        return 5.0;
         return $this->getRendementByKey('rendement_vci');
     }
 
     public function getRendementVciTotal() {
-
-        return 15.0;
+        return $this->getRendementByKey('rendement_vci_total');
     }
 
     public function getRendementDrev() {
@@ -817,6 +817,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function hasRendementVci() {
 
         return $this->hasRendementByKey('rendement_vci');
+    }
+
+    public function hasRendementVciTotal() {
+
+        return $this->hasRendementByKey('rendement_vci_total');
     }
 
     public function hasRendementNoeud() {
@@ -857,7 +862,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
             return $this->attributs->_get($key);
         }
 
-        return $this->getParentNode()->get($key);
+        return $this->getParentNode()->findRendementByKeyStorable($key);
     }
 
     protected function hasRendementByKey($key) {

@@ -1,3 +1,4 @@
+<?php use_helper('Float') ?>
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for("produits") ?>">Produits</a></li>
     <li class="active"><a href="<?php echo url_for("produits", array('date' => $date)) ?>"><?php echo $date ?></a></li>

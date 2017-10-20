@@ -107,6 +107,10 @@ h3 {
     border-color: #9f0038;
 }
 
+.list-group-item.active-bordered {
+    border-left: 6px solid #9f0038 !important;
+}
+
 .list-group-item.active a {
     color: inherit;
 }
