@@ -7,7 +7,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Date de la dernière modification;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;;Produit;Activité;Statut;Date\n";
+        return "Date de la dernière modification;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;;Produit;Activité;Statut;Date\n";
     }
 
     public function __construct($habilitation, $header = true) {
@@ -23,7 +23,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
     public function export() {
         $csv = "";
 
-        $ligneBase = sprintf("%s;\"%s\";\"%s\";%s;%s;\"%s\";%s;%s", $this->habilitation->date, $this->habilitation->declarant->cvi, $this->habilitation->declarant->siret, $this->habilitation->declarant->raison_sociale, $this->habilitation->declarant->adresse, $this->habilitation->declarant->code_postal, $this->habilitation->declarant->commune, $this->habilitation->declarant->email);
+        $ligneBase = sprintf("%s;\"%s\";\"%s\";\"%s\";%s;%s;\"%s\";%s;%s", $this->habilitation->date, $this->habilitation->identifiant, $this->habilitation->declarant->cvi, $this->habilitation->declarant->siret, $this->habilitation->declarant->raison_sociale, $this->habilitation->declarant->adresse, $this->habilitation->declarant->code_postal, $this->habilitation->declarant->commune, $this->habilitation->declarant->email);
 
         foreach($this->habilitation->getProduits() as $produit) {
             foreach($produit->activites as $activite) {

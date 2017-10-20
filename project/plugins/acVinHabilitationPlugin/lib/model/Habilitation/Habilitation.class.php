@@ -66,7 +66,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getValidation() {
 
-        return $this->_get('validation');
+        return true;
     }
 
     public function getValidationOdg() {
