@@ -2,7 +2,7 @@
 
 . bin/config.inc
 
-echo "Match des metayers"
+echo "Match des bailleurs et metayers"
 
 if ! test "$1"; then
     echo "Paramêtre de récupération des données obligatoire";
@@ -21,4 +21,4 @@ scp $1"/metayers.csv" $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv
 fi
 
 
-php symfony import:relations-etablissements $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv
+php symfony import:relations-etablissements $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv  --application="declaration"
