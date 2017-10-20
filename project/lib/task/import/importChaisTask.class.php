@@ -75,6 +75,7 @@ EOF;
         echo "ERROR: pas d'établissement trouvé pour $id\n";
         return;
       }
+        $etablissement->remove('chais');
       foreach ($chais as $i => $c) {
         $mychai = $etablissement->add('chais')->add($i);
         $mychai->adresse = $c[self::CSV_ADRESSE];
