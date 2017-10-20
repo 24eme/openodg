@@ -28,7 +28,7 @@
             <?php foreach ($habilitation->getProduits() as $key => $produitAppellation):
               $first = true;
               $hasHabilitations = $produitAppellation->hasHabilitations();
-              $nbActivites = $produitAppellation->nbActivites();
+              $nbActivites = $produitAppellation->getNbActivitesSaisies();
                 foreach ($produitAppellation->activites as $keyActivite => $habilitationsNode):
                   $tdDisplayed = (!$habilitationsNode->hasStatut())? '1' :'';
                   $tdHide = (!$habilitationsNode->hasStatut())? 'style="display:none;"' :'';
@@ -37,7 +37,7 @@
                 ?>
                 <tr data-hide="<?php echo ($nbActivites)? '' : '1'; ?>" <?php echo ($nbActivites)? '' : 'style="display:none;"'; ?> >
                   <?php if($first): ?>
-                    <td data-hide="<?php echo (!$first)? $tdDisplayed : ''; ?>" "<?php echo (!$first)? 'style="display:none;"' : ''; ?>" rowspan="5" data-number="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
+                    <td data-hide="<?php echo (!$first)? $tdDisplayed : ''; ?>" "<?php echo (!$first)? 'style="display:none;"' : ''; ?>" rowspan="<?php echo $produitAppellation->getNbActivites(); ?>" data-number="<?php echo $nbActivites; ?>"><strong><?php echo $produitAppellation->getLibelleComplet(); ?></strong></td>
                   <?php endif; $first = false; ?>
                       <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="<?php echo $color; ?>" ><strong><?php echo HabilitationClient::$activites_libelles[$keyActivite]; ?></strong></td>
                       <td data-hide="<?php echo $tdDisplayed ?>" <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" <?php $rowDisplayed ?> ><strong><?php echo ($habilitationsNode->statut)? HabilitationClient::$statuts_libelles[$habilitationsNode->statut] : ''; ?></strong></td>
