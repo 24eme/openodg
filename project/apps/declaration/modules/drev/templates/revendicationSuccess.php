@@ -65,10 +65,6 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         </tbody>
     </table>
 
-    <?php if ($ajoutForm->hasProduits()): ?>
-        <button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
-    <?php endif; ?>
-
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
 			<a href="<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?><?php echo url_for("drev_dr_douane", $drev) ?><?php else: ?><?php echo url_for("drev_exploitation", $drev) ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
@@ -82,5 +78,3 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         </div>
     </div>
 </form>
-
-<?php include_partial('drev/popupAjoutForm', array('url' => url_for('drev_revendication_ajout', $drev), 'form' => $ajoutForm)); ?>

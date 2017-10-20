@@ -9,7 +9,7 @@
     <?php else: ?>
     <p class="text-center" style="margin-top: 20px;">Les données de la DR ont correctement été importées.</p>
     <?php endif; ?>
-    <form action="<?php echo (!$drev->hasDR())? url_for('drev_dr', $drev) : url_for('drev_revendication_superficie', $drev); ?>" method="get" id="form">
+    <form action="<?php echo url_for('drev_dr', $drev); ?>" method="get" id="form">
     	<div style="margin-top: 20px;" class="row row-margin row-button">
         	<div class="col-xs-6">
             	<a href="<?php echo url_for('drev_exploitation', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>

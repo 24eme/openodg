@@ -42,6 +42,15 @@ class ConfigurationCertification extends BaseConfigurationCertification {
         return $this->getDocument()->labels;
     }
 
+    protected function findRendementByKeyStorable($key) {
+        if ($this->exist('attributs') && $this->attributs->exist($key) && $this->attributs->_get($key)) {
+
+            return $this->attributs->_get($key);
+        }
+
+        return null;
+    }
+
     public function setDonneesCsv($datas) {
       parent::setDonneesCsv($datas);
     	$this->libelle = ($datas[ProduitCsvFile::CSV_PRODUIT_CATEGORIE_LIBELLE])? $datas[ProduitCsvFile::CSV_PRODUIT_CATEGORIE_LIBELLE] : null;

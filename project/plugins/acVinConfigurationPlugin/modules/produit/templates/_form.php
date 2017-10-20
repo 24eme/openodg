@@ -31,14 +31,6 @@
                                     <?php echo $form['code']->renderLabel(null, array('class' => 'col-xs-4')); ?>
                                     <div class="col-xs-8"><?php echo $form['code']->render(); ?></div>
                                 </div>
-                    <?php if ($form->getObject()->exist('densite')): ?>
-                                    <div class="form-group <?php if ($form['densite']->hasError()): ?>has-error<?php endif; ?>" >
-                                    <?php echo $form['densite']->renderError(); ?>
-                                        <?php echo $form['densite']->renderLabel(null, array('class' => 'col-xs-4')); ?>
-                                        <div class="col-xs-8"><?php echo $form['densite']->render(); ?>
-                                        <span class="text-muted"><?php echo $form['densite']->renderHelp() ?></span></div>
-                                    </div>
-                    <?php endif; ?>
                     <?php if ($form->getObject()->hasCodes()): ?>
                                     <div class="form-group <?php if ($form['code_produit']->hasError()): ?>has-error<?php endif; ?>" >
                                         <?php echo $form['code_produit']->renderError() ?>
@@ -64,6 +56,39 @@
                 </div>
             </div>
         </div>
+        
+        <?php if ($form->getObject()->hasRendements()): ?>
+        <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label>Rendements</label></h3>
+                    </div>
+                    <div class="panel-body">
+                    	<div class="col-sm-4">
+							<div class="form-group <?php if ($form['attributs']['rendement']->hasError()): ?>has-error<?php endif; ?>" >
+								<?php echo $form['attributs']['rendement']->renderError() ?>
+				                <?php echo $form['attributs']['rendement']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+				                <div class="col-xs-6"><?php echo $form['attributs']['rendement']->render(); ?></div>
+				            </div>
+			            </div>
+                    	<div class="col-sm-4">
+				            <div class="form-group <?php if ($form['attributs']['rendement_vci']->hasError()): ?>has-error<?php endif; ?>" >
+				                <?php echo $form['attributs']['rendement_vci']->renderError() ?>
+				                <?php echo $form['attributs']['rendement_vci']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_vci']->render(); ?></div>
+				            </div>
+			            </div>
+                    	<div class="col-sm-4">
+				            <div class="form-group <?php if ($form['attributs']['rendement_vci_total']->hasError()): ?>has-error<?php endif; ?>" >
+				                <?php echo $form['attributs']['rendement_vci_total']->renderError() ?>
+				                <?php echo $form['attributs']['rendement_vci_total']->renderLabel(null, array('class' => 'col-xs-6')); ?>
+				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_vci_total']->render(); ?></div>
+				            </div>
+				        </div>
+			        </div>
+                </div>
+        </div>
+        <?php endif; ?>
         <?php if ($form->getObject()->hasDepartements()): ?>
             <div class="col-sm-12">
                 <div class="panel panel-default">

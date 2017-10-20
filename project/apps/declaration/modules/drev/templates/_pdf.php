@@ -32,12 +32,14 @@
         <th class="th" style="text-align: left; width: 247px;">Appellation</th>
         <th class="th" style="text-align: center; width: 170px;">Superficie revendiquée</th>
         <th class="th" style="text-align: center; width: 170px;">Volume revendiqué net total</th>
+        <th class="th" style="text-align: center; width: 170px;">Dont issu du VCI</th>
     </tr>
     <?php foreach($drev->declaration->getProduits(true) as $produit): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
             <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->superficie_revendique) ?>&nbsp;<small>ha</small>&nbsp;&nbsp;&nbsp;</td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_avec_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_total) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php echo sprintFloatFr($produit->volume_revendique_issu_vci) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;</td>
         </tr>
     <?php endforeach; ?>
 </table>
@@ -50,7 +52,7 @@
         <th class="th" style="text-align: center; width: 100px;">Stock <?php echo ($drev->campagne - 1) ?></th>
         <th class="th" style="text-align: center; width: 100px;">Complément</th>
         <th class="th" style="text-align: center; width: 100px;">Substitution</th>
-        <th class="th" style="text-align: center; width: 100px;">Destruction</th>
+        <th class="th" style="text-align: center; width: 100px;">A détruire</th>
         <th class="th" style="text-align: center; width: 100px;">Rafraichi</th>
         <th class="th" style="text-align: center; width: 100px;">Constitué</th>
         <th class="th" style="text-align: center; width: 100px;">Stock <?php echo $drev->campagne ?></th>
@@ -58,13 +60,13 @@
     <?php foreach($drev->declaration->getProduitsVci(true) as $produit): ?>
         <tr>
             <td class="td" style="text-align:left;"><?php echo tdStart() ?>&nbsp;<?php echo $produit->getLibelleComplet() ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_stock_initial): ?><?php echo sprintFloatFr($produit->vci_stock_initial) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_complement_dr): ?><?php echo sprintFloatFr($produit->vci_complement_dr) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_substitution): ?><?php echo sprintFloatFr($produit->vci_substitution) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_destruction): ?><?php echo sprintFloatFr($produit->vci_destruction) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_rafraichi): ?><?php echo sprintFloatFr($produit->vci_rafraichi) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci): ?><?php echo sprintFloatFr($produit->vci_rafraichi) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
-            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci_stock_final): ?><?php echo sprintFloatFr($produit->vci_rafraichi) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->stock_precedent): ?><?php echo sprintFloatFr($produit->vci->stock_precedent) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->complement): ?><?php echo sprintFloatFr($produit->vci->complement) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->substitution): ?><?php echo sprintFloatFr($produit->vci->substitution) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->destruction): ?><?php echo sprintFloatFr($produit->vci->destruction) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->rafraichi): ?><?php echo sprintFloatFr($produit->vci->rafraichi) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->constitue): ?><?php echo sprintFloatFr($produit->vci->constitue) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
+            <td class="td" style="text-align:right;"><?php echo tdStart() ?><?php if($produit->vci->stock_final): ?><?php echo sprintFloatFr($produit->vci->stock_final) ?>&nbsp;<small>hl</small>&nbsp;&nbsp;&nbsp;<?php endif; ?></td>
         </tr>
     <?php endforeach; ?>
 </table>
@@ -72,7 +74,7 @@
 Les produits déclarés sont du millésime du VCI
 <?php if($drev->hasVciDetruit()): ?>
 <br /><br />
-<span style="font-family: Dejavusans">☑</span> Je m'engage à justifier le volume de VCI à détruire auprès de l'ODG
+<span style="font-family: Dejavusans">☑</span> Je m'engage à transmettre le justificatif de destruction de VCI
 <?php endif; ?>
 <?php else: ?>
 <br />

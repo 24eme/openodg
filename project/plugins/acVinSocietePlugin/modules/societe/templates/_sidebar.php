@@ -1,7 +1,7 @@
 <div class="panel panel-default" style="margin-bottom: 10px;">
     <div class="panel-heading"><h3 class="panel-title">Société</h3></div>
     <div class="list-group">
-        <div class="list-group-item clearfix <?php if($societe->_id == $activeObject->_id): ?>active<?php endif; ?>">
+        <div class="list-group-item clearfix <?php if($societe->_id == $activeObject->_id): ?>active-bordered<?php endif; ?>">
             <?php include_partial('societe/bloc', array('societe' => $societe)); ?>
         </div>
     </div>
@@ -10,7 +10,7 @@
     <div class="panel-heading"><h3 class="panel-title">Établissements</h3></div>
     <div class="list-group">
         <?php foreach($etablissements as $etablissement): ?>
-            <div class="list-group-item clearfix <?php if($etablissement->_id == $activeObject->_id): ?>active<?php endif; ?>">
+            <div class="list-group-item clearfix <?php if($etablissement->_id == $activeObject->_id): ?>active-bordered<?php endif; ?>">
                 <?php include_partial('etablissement/bloc', array('etablissement' => $etablissement)); ?>
             </div>
         <?php endforeach; ?>
@@ -27,7 +27,7 @@
     <?php if(count($interlocuteurs)): ?>
     <div class="list-group">
         <?php foreach ($interlocuteurs as $interlocuteurId => $interlorcuteur) : ?>
-            <div class="list-group-item clearfix <?php if($interlorcuteur->_id == $activeObject->_id): ?>active<?php endif; ?>">
+            <div class="list-group-item clearfix <?php if($interlorcuteur->_id == $activeObject->_id): ?>active-bordered<?php endif; ?>">
                 <?php include_partial('compte/bloc', array('compte' => $interlorcuteur)); ?>
             </div>
         <?php endforeach; ?>

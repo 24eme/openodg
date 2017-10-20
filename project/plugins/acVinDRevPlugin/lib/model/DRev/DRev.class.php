@@ -174,6 +174,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function importCSVDouane($csv) {
     	$todelete = array();
+    	$this->remove('declaration');
+    	$this->add('declaration');
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
