@@ -112,3 +112,21 @@ Etablissement:
                    adresse: {  }
                    commune: {  }
                    code_postal: {  }
+       chais:
+         type: array_collection
+         required: false
+         definition:
+           fields:
+             '*':
+               type: collection
+               definition:
+                 fields:
+                   adresse: { }
+                   commune: { }
+                   code_postal: { }
+                   partage: boolean
+                   attributs:
+                     type: collection
+                     definition:
+                       fields:
+                          '*': { }
