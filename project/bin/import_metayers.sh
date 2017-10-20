@@ -21,4 +21,4 @@ scp $1"/metayers.csv" $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv
 fi
 
 
-php symfony import:relations-etablissements $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv
+php symfony import:relations-etablissements $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv  --application="declaration"

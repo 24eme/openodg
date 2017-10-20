@@ -46,7 +46,11 @@ EOF;
             }
 
             $data = str_getcsv($line, ';');
-            if(("24150" == $data[self::ETABLISSEMENT_ID]) || ("42921" == $data[self::ETABLISSEMENT_ID]) || ("44659" == $data[self::ETABLISSEMENT_ID]) || ("16068" == $data[self::ETABLISSEMENT_ID]) || ("16068" == $data[self::ETABLISSEMENT_ID])){
+            if($data[self::ETABLISSEMENT_TYPE] == "bailleur"){
+              echo "Pas d'import Bailleur !!\n";
+              continue;
+            }
+            if(("24150" == $data[self::ETABLISSEMENT_ID]) || ("42921" == $data[self::ETABLISSEMENT_ID]) || ("44659" == $data[self::ETABLISSEMENT_ID]) || ("16068" == $data[self::ETABLISSEMENT_ID]) || ("16068" == $data[self::ETABLISSEMENT_ID])){
               echo $data[self::ETABLISSEMENT_ID]."A Virer !!\n";
               continue ;
             }
@@ -90,7 +94,7 @@ EOF;
             $cvi = trim($dataLine[self::ETABLISSEMENT_CVI]);
             $etb->cvi = $cvi;
             echo "L'etablissement $etb->_id vas avoir le CVI $cvi \n";
-      //      $etb->save();
+            $etb->save();
             return ;
           }
         }
@@ -102,7 +106,7 @@ EOF;
             $cvi = trim($dataLine[self::ETABLISSEMENT_CVI]);
             $etb->cvi = $cvi;
             echo "/!\ On assigne le cvi au premier etb ? $etb->_id  \n";
-        //    $etb->save();
+            $etb->save();
             return ;
             }
           }
@@ -119,6 +123,6 @@ EOF;
         $etb->nom = $societe->raison_sociale;
         $etb->cvi = trim($dataLine[self::ETABLISSEMENT_CVI]);
         echo "L'etablissement $etb->_id de cvi $etb->cvi a été créé \n";
-    //    return $etb->save();
+        return $etb->save();
     }
 }

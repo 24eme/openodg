@@ -61,15 +61,15 @@ done
 
 echo "Création des entités de type Sociétés (Présence d'un Evv ou d'un Siret)"
 for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_*.xml ; do
-  php symfony import:entite-from-xml --trace $path
+  php symfony import:entite-from-xml --trace $path --application="declaration"
 done
 
 echo "Autres entités ayant des groupes";
 for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_groupes_*.xml ; do
-  php symfony import:entite-from-xml --trace $path
+  php symfony import:entite-from-xml --trace $path --application="declaration"
 done
 
 echo "Autres entités n'ayant pas de groupes";
 for path in $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_nogroupes_*.xml ; do
-  php symfony import:entite-from-xml --trace $path
+  php symfony import:entite-from-xml --trace $path --application="declaration"
 done

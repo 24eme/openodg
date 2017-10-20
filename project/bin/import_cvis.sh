@@ -21,4 +21,4 @@ scp $1"/cvi.csv" $TMPDIR/ODGRHONE_CVI_DATA/cvi.csv
 fi
 
 
-php symfony import:etablissements-cvis $TMPDIR/ODGRHONE_CVI_DATA/cvi.csv --trace
+php symfony import:etablissements-cvis $TMPDIR/ODGRHONE_CVI_DATA/cvi.csv --trace  --application="declaration"
