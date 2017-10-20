@@ -61,7 +61,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, 'Joindre une copie de votre SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, 'Joindre une copie de votre SV11 ou SV12');
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_PRESSOIR, 'Joindre une copie de votre Carnet de Pressoir');
-        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, ' Je m\'engage à transmettre le justificatif de destruction de VCI');
+        $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
     }
 
     public function controle() {
