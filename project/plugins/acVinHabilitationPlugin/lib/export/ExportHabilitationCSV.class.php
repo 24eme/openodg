@@ -23,7 +23,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
     public function export() {
         $csv = "";
 
-        $ligneBase = sprintf("%s;\"%s\";\"%s\";\"%s\";%s;%s;\"%s\";%s;%s", $this->habilitation->date, $this->habilitation->identifiant, $this->habilitation->declarant->cvi, $this->habilitation->declarant->siret, $this->habilitation->declarant->raison_sociale, $this->habilitation->declarant->adresse, $this->habilitation->declarant->code_postal, $this->habilitation->declarant->commune, $this->habilitation->declarant->email);
+        $ligneBase = sprintf("%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->habilitation->date, $this->habilitation->identifiant, $this->habilitation->declarant->cvi, $this->habilitation->declarant->siret, $this->habilitation->declarant->raison_sociale, $this->habilitation->declarant->adresse, $this->habilitation->declarant->code_postal, $this->habilitation->declarant->commune, $this->habilitation->declarant->email);
 
         foreach($this->habilitation->getProduits() as $produit) {
             foreach($produit->activites as $activite) {
