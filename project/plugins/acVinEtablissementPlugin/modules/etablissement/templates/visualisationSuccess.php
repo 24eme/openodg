@@ -85,7 +85,7 @@
                             <tr>
                                 <td><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
-                                <td><?php echo implode(", ", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
+                                <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
                                 <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
                             </tr>
                         <?php endforeach; ?>
