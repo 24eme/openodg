@@ -7,7 +7,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Date de la dernière modification;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;;Produit;Activité;Statut;Date\n";
+        return "Date de la dernière modification;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Produit;Activité;Statut;Date\n";
     }
 
     public function __construct($habilitation, $header = true) {
