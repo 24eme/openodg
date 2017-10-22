@@ -15,14 +15,21 @@ class HabilitationSecurity extends DocumentSecurity implements SecurityInterface
             $droits = array($droits);
         }
 
-        $authorized = parent::isAuthorized($droits);
+        if(!$this->user->isAdmin() && $this->user->getEtablissement()->identifiant != $this->doc->identifiant) {
 
-        if(!$authorized) {
+            $lienSymbolique = DeclarationClient::getInstance()->find(str_replace($this->doc->identifiant, $this->user->getEtablissement()->identifiant, $this->doc->_id), acCouchdbClient::HYDRATE_JSON, true);
 
-            return false;
+            if(!$lienSymbolique || $lienSymbolique->type != "LS") {
+                return false;
+            }
+
+            if($lienSymbolique->pointeur != $this->doc->_id) {
+
+                return false;
+            }
         }
 
-        if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->doc->hasCompleteDocuments()) {
+        if(!$authorized) {
 
             return false;
         }
