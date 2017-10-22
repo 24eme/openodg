@@ -29,11 +29,6 @@ class HabilitationSecurity extends DocumentSecurity implements SecurityInterface
             }
         }
 
-        if(!$authorized) {
-
-            return false;
-        }
-
         return true;
     }
 
