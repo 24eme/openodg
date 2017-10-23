@@ -99,6 +99,24 @@
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
                 <pre><?php echo $etablissement->commentaire; ?></pre>
                 <?php endif; ?>
+                <hr />
+                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Relations</strong></h5>
+                <table class="table table-condensed table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="col-xs-5">Nom</th>
+                            <th class="col-xs-6">Relation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
+                            <tr>
+                                <td><a href="<?php url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
+                                <td><?php echo $liaison->type_liaison ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
