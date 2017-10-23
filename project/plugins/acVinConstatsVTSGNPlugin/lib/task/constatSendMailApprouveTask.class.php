@@ -37,7 +37,7 @@ EOF;
             return;
         }
 
-        $constat = $constats->constast->get($arguments['constat_key']);
+        $constat = $constats->constats->get($arguments['constat_key']);
 
         if(!$contat) {
 
