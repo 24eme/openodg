@@ -57,6 +57,6 @@ EOF;
         }
 
         $constats->save();
-        echo "Mail envoyé à ".$this->getDocument()->email."\n";
+        echo "Mail envoyé à ".$constats->getDocument()->email."\n";
     }
 }
