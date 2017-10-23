@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(61);
+$t = new lime_test(60);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -241,4 +241,7 @@ $t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_t
 $t->comment("Export CSV");
 
 $export = new ExportDRevCSV($drev);
-$export->export();
+
+$csvContent = $export->export();
+echo $csvContent;
+$t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");
