@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(21);
+$t = new lime_test(20);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -53,19 +53,16 @@ $t->is($drev->get($produit_hash1)->getHash(), $produit_hash1, "La produit ajout�
 $produit1 = $drev->get($produit_hash1);
 $produit2 = $drev->get($produit_hash2);
 
-$produit1->superficie_vinifiee = 100;
 $produit1->superficie_revendique = 200;
-$produit1->volume_revendique = 80;
+$produit1->volume_revendique_issu_recolte = 80;
 
-$produit2->superficie_vinifiee = 150;
 $produit2->superficie_revendique = 150;
-$produit2->volume_revendique = 110;
+$produit2->volume_revendique_issu_recolte = 110;
 
 $drev->save();
 
 $t->is(count($drev->getProduits()), 2, "La drev a 2 produits");
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est 350");
-$t->is($drev->declaration->getTotalSuperficieVinifiee(), 250, "La superficie vinifié totale est 250");
 $t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est 190");
 
 $t->comment("Validation");
@@ -74,7 +71,7 @@ $drev->validate();
 $drev->save();
 
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
-$t->is(count($drev->mouvements->get($viti->identifiant)), 6, "La DRev a 6 mouvements");
+$t->is(count($drev->mouvements->get($viti->identifiant)), 4, "La DRev a 6 mouvements");
 
 $mouvement = $drev->mouvements->get($viti->identifiant)->getFirst();
 
@@ -95,9 +92,9 @@ $drevMaster = DRevClient::getInstance()->findMasterByIdentifiantAndCampagne($vit
 $t->is($drevM1->_id, $drevMaster->_id, "La récupération de la drev master renvoi la drev ".$drevM1->_id);
 
 $produit1M1 = $drevM1->get($produit1->getHash());
-$produit1M1->superficie_vinifiee = 120;
+$produit1M1->superficie_revendique = 120;
 
-$t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_vinifiee'), "La superficie vinifiee est marqué comme modifié par rapport à la précedente");
+$t->ok($drevM1->isModifiedMother($produit1->getHash(), 'superficie_revendique'), "La superficie vinifiee est marqué comme modifié par rapport à la précedente");
 
 $t->comment("Validation de la modificatrice");
 

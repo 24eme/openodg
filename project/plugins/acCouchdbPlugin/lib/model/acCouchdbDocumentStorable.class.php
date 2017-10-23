@@ -19,4 +19,8 @@ class acCouchdbDocumentStorable extends acCouchdbJson
         parent::reset($this);
         $this->_storage = array();
     }
+
+    public function clearStorage() {
+        $this->_storage = array();
+    }
 }
