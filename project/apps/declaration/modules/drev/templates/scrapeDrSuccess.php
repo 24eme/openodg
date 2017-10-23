@@ -5,7 +5,7 @@
     <h2>Récupération des données de la Déclaration de Récolte</h2>
     <?php if (!$drev->hasDR()): ?>
     <p class="text-center" style="margin-top: 20px;">Traitement des données Prodouane en cours</p>
-    <p class="text-center"><img height="40" src="/images/loader.gif" alt="chargement en cours..." /></p>
+    <p class="text-center"><img src="/images/douane2odgrhone.gif" alt="chargement en cours..." /></p>
     <?php else: ?>
     <p class="text-center" style="margin-top: 20px;">Les données de la DR ont correctement été importées.</p>
     <?php endif; ?>
