@@ -111,7 +111,7 @@
                     <tbody>
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
                             <tr>
-                                <td><a href="<?php url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
+                                <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
                                 <td><?php echo $liaison->type_liaison ?></td>
                             </tr>
                         <?php endforeach; ?>
