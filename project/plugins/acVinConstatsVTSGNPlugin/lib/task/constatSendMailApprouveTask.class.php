@@ -39,7 +39,7 @@ EOF;
 
         $constat = $constats->constats->get($arguments['constat_key']);
 
-        if(!$contat) {
+        if(!$constat) {
 
             return;
         }
