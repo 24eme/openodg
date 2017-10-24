@@ -12,7 +12,7 @@
     <table class="table table-bordered table-condensed table-striped">
         <thead>
             <tr>
-                <th class="col-xs-6">Fournisseur</th>
+                <th class="col-xs-5">Nom du fournisseur</th>
                 <th class="col-xs-3">Date de livraison</th>
                 <th class="col-xs-3">Quantité de marc (kg)</th>
                 <th></th>

@@ -18,15 +18,15 @@ class ExportTravauxMarcPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration d'ouverture des travaux de distillation Marc d'Alsace Gw %s", $this->travauxmarc->campagne);
+        return sprintf("Déclaration d'ouverture des travaux de distillation %s", $this->travauxmarc->campagne);
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("%s\n\n", $this->travauxmarc->declarant->nom);
+        $header_subtitle = sprintf("de Marc d'Alsace Gewurztraminer\n%s\n", $this->travauxmarc->declarant->nom);
         if (!$this->travauxmarc->isPapier() && $this->travauxmarc->validation && $this->travauxmarc->campagne >= "2014") {
             $date = new DateTime($this->travauxmarc->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-        } else {
+        } elseif(!$this->travauxmarc->isPapier()) {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }
 

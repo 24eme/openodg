@@ -18,7 +18,7 @@ class ExportTravauxMarcCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Date de distillation;Distillation par un prestataire;Alambic décrit dans la DI;Adresse de distillation;Code postal de distillation;Commune de distillation;Fournisseur identifiant;Fournisseur nom;Date de livraison;Quantité de marc livré (en kg);Type de déclaration\n";
+        return "Campagne;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Date de distillation;Distillation par un prestataire;Alambic décrit dans la DI;Adresse de distillation;Code postal de distillation;Commune de distillation;Nom du fournisseur;Date de livraison;Quantité de marc livré (en kg);Type de déclaration\n";
     }
 
     public function __construct($travauxmarc, $header = true) {
@@ -42,7 +42,7 @@ class ExportTravauxMarcCSV implements InterfaceDeclarationExportCsv {
         $ligneBase = sprintf("%s;%s;%s;\"%s\";\"%s\";%s;%s;%s;%s;%s;%s;\"%s\";%s;%s", $this->travauxmarc->campagne, $this->travauxmarc->declarant->cvi, $this->travauxmarc->declarant->siret, $this->travauxmarc->declarant->raison_sociale, $this->travauxmarc->declarant->adresse, $this->travauxmarc->declarant->code_postal, $this->travauxmarc->declarant->commune, $this->travauxmarc->declarant->email, $this->travauxmarc->date_distillation, $this->travauxmarc->distillation_prestataire, $this->travauxmarc->alambic_connu, $this->travauxmarc->adresse_distillation->adresse, $this->travauxmarc->adresse_distillation->code_postal, $this->travauxmarc->adresse_distillation->commune);
 
         foreach($this->travauxmarc->fournisseurs as $fournisseur) {
-            $csv .= $ligneBase.sprintf(";%s;\"%s\";%s;%s;%s\n", str_replace("ETABLISSEMENT-", "", $fournisseur->etablissement_id), $fournisseur->nom, $fournisseur->date_livraison, $this->formatFloat($fournisseur->quantite), $mode);
+            $csv .= $ligneBase.sprintf(";\"%s\";%s;%s;%s\n", $fournisseur->nom, $fournisseur->date_livraison, $this->formatFloat($fournisseur->quantite), $mode);
         }
 
         if(!count($this->travauxmarc->fournisseurs)) {

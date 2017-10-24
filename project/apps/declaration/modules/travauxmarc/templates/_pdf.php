@@ -60,9 +60,9 @@
 <div><span class="h3">&nbsp;Fournisseur de marcs&nbsp;</span></div>
 <table class="table" border="0" cellspacing=0 cellpadding=0 style="text-align: left;">
     <tr>
-        <th class="th" style="width: 409px;">Nom</th>
-        <th class="th" style="width: 114px; text-align: center;">Date de livraison</th>
-        <th class="th" style="width: 114px; text-align: center;">Quantité de marcs<br /><small>(en kg)</small></th>
+        <th class="th" style="width: 339px;">Nom</th>
+        <th class="th" style="width: 149px; text-align: center;">Date de livraison</th>
+        <th class="th" style="width: 149px; text-align: center;">Quantité de marcs <small>(en kg)</small></th>
     </tr>
     <?php foreach ($travauxmarc->fournisseurs as $fournisseur): ?>
     <tr>

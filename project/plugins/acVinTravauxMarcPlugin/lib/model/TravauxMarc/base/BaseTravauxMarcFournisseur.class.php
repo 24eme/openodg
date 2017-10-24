@@ -1,10 +1,9 @@
 <?php
 /**
  * BaseTravauxMarcFournisseur
- * 
+ *
  * Base model for TravauxMarcFournisseur
 
- * @property string $etablissement_id
  * @property string $nom
  * @property string $date_livraison
  * @property string $quantite

@@ -23,7 +23,7 @@ class TravauxMarcValidation extends DocumentValidation
     {
         $fournisseurComplet = true;
         foreach($this->document->fournisseurs as $fournisseur) {
-            if($fournisseur->etablissement_id && $fournisseur->date_livraison && $fournisseur->quantite) {
+            if($fournisseur->nom && $fournisseur->date_livraison && $fournisseur->quantite) {
                 continue;
             }
             $fournisseurComplet = false;

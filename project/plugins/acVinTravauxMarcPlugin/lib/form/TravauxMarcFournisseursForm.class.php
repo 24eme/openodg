@@ -33,8 +33,7 @@ class TravauxMarcFournisseursForm extends acCouchdbObjectForm {
         unset($valuesToUpdate['_revision']);
 
         foreach($valuesToUpdate as $key => $value) {
-            $valuesToUpdate[$key]['etablissement_id'] = str_replace("COMPTE-E", "ETABLISSEMENT-", $value['etablissement_id']);
-            if($value['etablissement_id'] || $value['date_livraison'] || $value['quantite']) {
+            if($value['nom'] || $value['date_livraison'] || $value['quantite']) {
                 continue;
             }
 

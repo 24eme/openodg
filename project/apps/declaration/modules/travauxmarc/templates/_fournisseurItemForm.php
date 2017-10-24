@@ -1,7 +1,7 @@
 <tr id="travaux_marc_fournisseurs_item_<?php echo $form->getName() ?>" class="dynamic-element-item">
     <td>
-        <?php echo $form["etablissement_id"]->render(array("placeholder" => "Chercher un établissement", "data-norequired" => true)); ?>
-        <?php echo $form["etablissement_id"]->renderError(); ?>
+        <?php echo $form["nom"]->render(array("class" => "form-control", "placeholder" => "Nom du fournisseur", "data-norequired" => true)); ?>
+        <?php echo $form["nom"]->renderError(); ?>
     </td>
     <td>
         <div class="input-group date-picker">

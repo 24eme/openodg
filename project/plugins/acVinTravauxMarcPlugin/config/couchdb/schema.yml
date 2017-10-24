@@ -17,7 +17,6 @@ TravauxMarc:
               type: collection
               definition:
                 fields:
-                  etablissement_id: { }
                   nom: { }
                   date_livraison: { }
                   quantite: { }

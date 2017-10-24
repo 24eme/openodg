@@ -58,17 +58,17 @@ $formFournisseurs = new TravauxMarcFournisseursForm($travauxMarc->fournisseurs);
 
 $valuesFormFournissseurs = array(
     array(
-        'etablissement_id' => "ETABLISSEMENT-7523700100",
+        'nom' => "ACTUALYS Jean",
         'date_livraison' => "01/11/".date('Y'),
         'quantite' => 12,
     ),
     array(
-        'etablissement_id' => "ETABLISSEMENT-7523700100",
+        'nom' => "ACTUALYS Jean",
         'date_livraison' => "01/12/".date('Y'),
         'quantite' => 24,
     ),
     array(
-        'etablissement_id' => null,
+        'nom' => null,
         'date_livraison' => null,
         'quantite' => null,
     ),
@@ -84,13 +84,13 @@ $formFournisseurs->save();
 $travauxMarc = TravauxMarcClient::getInstance()->find($travauxMarc->_id);
 
 $t->is(count($travauxMarc->fournisseurs), 2, "Le nombre de fournisseurs dans le doc est le même que celui du formulaire");
+$t->is($travauxMarc->fournisseurs[0]->nom, "ACTUALYS Jean", "Le nom du viti a éte enregistré");
 $t->is($travauxMarc->fournisseurs[0]->quantite, 12, "La quantité a été enregistré");
 $t->is($travauxMarc->fournisseurs[0]->date_livraison, date('Y')."-11-01", "La date a été enregistré");
-$t->is($travauxMarc->fournisseurs[0]->nom, "ACTUALYS Jean (7523700100) à NEUILLY-SUR-SEINE (92200)", "Le nom du viti a éte enregistré");
 
+$t->is($travauxMarc->fournisseurs[1]->nom, "ACTUALYS Jean", "Le nom du viti a éte enregistré");
 $t->is($travauxMarc->fournisseurs[1]->quantite, 24, "La quantité a été enregistré");
 $t->is($travauxMarc->fournisseurs[1]->date_livraison, date('Y')."-12-01", "La date a été enregistré");
-$t->is($travauxMarc->fournisseurs[1]->nom, "ACTUALYS Jean (7523700100) à NEUILLY-SUR-SEINE (92200)", "Le nom du viti a éte enregistré");
 
 $t->comment("Étape Distillation");
 
