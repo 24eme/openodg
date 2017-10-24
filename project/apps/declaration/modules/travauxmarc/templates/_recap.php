@@ -12,7 +12,7 @@
             <td><?php if($travauxmarc->distillation_prestataire): ?>Oui<?php else: ?>Non<?php endif; ?></td>
         </tr>
         <tr>
-            <td><strong>L'alambic utilisé est celui de la DI</strong></td>
+            <td><strong>L'alambic&nbsp;utilisé&nbsp;est&nbsp;celui&nbsp;décrit&nbsp;dans&nbsp;la&nbsp;DI</strong></td>
             <td><?php if($travauxmarc->alambic_connu): ?>Oui<?php else: ?>Non<?php endif; ?></td>
         </tr>
         <tr>

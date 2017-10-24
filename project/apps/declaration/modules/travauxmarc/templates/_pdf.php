@@ -48,7 +48,7 @@
         <td class="td"><?php echo tdStart() ?>&nbsp;<?php if($travauxmarc->distillation_prestataire): ?>Oui<?php else: ?>Non<?php endif; ?></td>
     </tr>
     <tr>
-        <td class="th" style="text-align: left;"><?php echo tdStart() ?>&nbsp;L'alambic utilisé est celui décrit dans la DI</td>
+        <td class="th" style="text-align: left;"><?php echo tdStart() ?>&nbsp;L'alambic utilisé est celui décrit dans la déclaration<br />&nbsp;d'identification</td>
         <td class="td"><?php echo tdStart() ?>&nbsp;<?php if($travauxmarc->alambic_connu): ?>Oui<?php else: ?>Non<?php endif; ?></td>
     </tr>
     <tr>

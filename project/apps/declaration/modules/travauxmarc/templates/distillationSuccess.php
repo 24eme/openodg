@@ -32,8 +32,8 @@
         </div>
     </div>
     <div class="form-group">
-        <?php echo $form['alambic_connu']->renderLabel("L'alambic&nbsp;utilisé&nbsp;est&nbsp;décrit&nbsp;dans&nbsp;la
-DI&nbsp;:", array('class' => 'control-label col-sm-4', 'style' => 'text-align: left; font-weight: normal;')); ?>
+        <?php echo $form['alambic_connu']->renderLabel("L'alambic&nbsp;utilisé&nbsp;est&nbsp;celui&nbsp;décrit<br />dans&nbsp;la
+déclaration&nbsp;d'identification&nbsp;:", array('class' => 'control-label col-sm-4', 'style' => 'text-align: left; font-weight: normal; padding-top:0;')); ?>
         <div class="col-sm-6">
             <?php echo $form['alambic_connu']->render(); ?>
             <?php echo $form["alambic_connu"]->renderError(); ?>

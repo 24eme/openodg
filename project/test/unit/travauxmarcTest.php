@@ -3,11 +3,11 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
-$t = new lime_test(39);
+$t = new lime_test(41);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
-$campagne = (date('Y')-1)."";
+$campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
 
 foreach(TravauxMarcClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $travauxMarc = TravauxMarcClient::getInstance()->find($k);
@@ -101,7 +101,7 @@ $t->is($travauxMarc->etape, TravauxMarcEtapes::ETAPE_DISTILLATION, "L'étape est
 $formDistillation = new TravauxMarcDistillationForm($travauxMarc);
 
 $valuesDistillation = array(
-    'date_distillation' => "01/03/".(date('Y')+1),
+    'date_distillation' => "30/04/".(date('Y')+1),
     'distillation_prestataire' => '1',
     'alambic_connu' => '1',
     'adresse_distillation' => array('adresse' => '48 rue Jacques Dulud',
@@ -118,7 +118,7 @@ $formDistillation->save();
 
 $travauxMarc = TravauxMarcClient::getInstance()->find($travauxMarc->_id);
 
-$t->is($travauxMarc->date_distillation, (date('Y')+1)."-03-01", "La date de distillation a été enregistré");
+$t->is($travauxMarc->date_distillation, (date('Y')+1)."-04-30", "La date de distillation a été enregistré");
 $t->is($travauxMarc->distillation_prestataire, true , "La coche prestataire a été enregistré");
 $t->is($travauxMarc->alambic_connu, true, "La coche alambic a été enregistré");
 $t->is($travauxMarc->adresse_distillation->adresse, $valuesDistillation["adresse_distillation"]["adresse"], "L'adresse a été enregistré");
@@ -143,8 +143,14 @@ $controle = new TravauxMarcValidation($travauxMarcAControler);
 $t->ok(!$controle->isValide(), "La déclaration a des points bloquants, elle n'est pas valide");
 $t->is(count($controle->getErreurs()), 3, "La déclaration a 3 erreurs");
 
+$travauxMarcAControler = clone $travauxMarc;
+$travauxMarcAControler->date_distillation = ($campagne + 1) . "-05-01";
+$controle = new TravauxMarcValidation($travauxMarcAControler);
+$t->is(count($controle->getVigilances()), 1, "La déclaration a 1 un point de vigilance");
+
 $controle = new TravauxMarcValidation($travauxMarc);
 $t->ok($controle->isValide(), "La déclaration est corrigé, elle est valide");
+$t->is(count($controle->getVigilances()), 0, "La déclaration n'a pas de point de vigilance");
 
 $formValidation = new TravauxMarcValidationForm($travauxMarc);
 

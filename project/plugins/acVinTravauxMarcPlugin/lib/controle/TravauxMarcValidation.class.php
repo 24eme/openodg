@@ -14,6 +14,8 @@ class TravauxMarcValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'fournisseurs_imcomplet', "Le tableau de déclaration de vos fournisseurs n'est pas complet");
         $this->addControle(self::TYPE_ERROR, 'distillation_date', "La date de distillation n'a pas été complétée");
         $this->addControle(self::TYPE_ERROR, 'distillation_adresse', "L'adresse de distillation n'est pas complète");
+
+        $this->addControle(self::TYPE_WARNING, 'distillation_date_trop_ancienne', "Selon le cahier des charges, les opérations de distillation doivent avoir lieu au plus tard le 30 avril de l’année qui suit celle de la récolte");
     }
 
     public function controle()
@@ -32,6 +34,10 @@ class TravauxMarcValidation extends DocumentValidation
 
         if(!$this->document->date_distillation) {
             $this->addPoint(self::TYPE_ERROR, 'distillation_date', "Distillation", $this->generateUrl('travauxmarc_distillation', $this->document));
+        }
+
+        if($this->document->date_distillation && $this->document->date_distillation > ($this->document->campagne + 1) . '-04-30') {
+            $this->addPoint(self::TYPE_WARNING, 'distillation_date_trop_ancienne', "Distillation", $this->generateUrl('travauxmarc_distillation', $this->document));
         }
 
         if(!$this->document->adresse_distillation->adresse || !$this->document->adresse_distillation->code_postal || !$this->document->adresse_distillation->commune) {
