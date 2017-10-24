@@ -1,7 +1,7 @@
 <?php use_helper("Date"); ?>
 <?php use_javascript('lib/angular.min.js') ?>
 <?php use_javascript('lib/angular-local-storage.min.js') ?>
-<?php use_javascript('tournee.js?201505110953'); ?>
+<?php use_javascript('tournee.js?201710101634'); ?>
 
 <ol class="breadcrumb hidden-xs hidden-sm">
   <li><a href="<?php echo url_for('degustation'); ?>">Dégustation</a></li>
@@ -64,7 +64,7 @@
             </div>
         </section>
 
-        <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation">
+        <section ng-repeat="prelevement in prelevements" ng-show="active == 'cepage_' + prelevement.anonymat_degustation + prelevement.degustation_id + prelevement.hash_produit">
             <div href="" ng-click="precedent()" class="pull-left hidden-print"><span style="font-size: 30px" class="eleganticon arrow_carrot-left"></span></div>
             <div class="page-header text-center">
                 <h2>Lot n° {{ prelevement.anonymat_degustation }} <span ng-show="prelevement.libelle">de {{ prelevement.libelle }}</span><small ng-show="!prelevement.libelle">(Sans mention de cépage)</small></h2>

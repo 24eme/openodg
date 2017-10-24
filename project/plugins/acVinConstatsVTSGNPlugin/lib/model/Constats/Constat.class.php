@@ -191,7 +191,7 @@ class Constat extends BaseConstat {
         return true;
     }
 
-    private function sendMailConstatsApprouves() {
+    public function sendMailConstatsApprouves() {
         if (!$this->send_mail_required) {
             $this->send_mail_required = true;
             if ($this->getDocument()->email) {
