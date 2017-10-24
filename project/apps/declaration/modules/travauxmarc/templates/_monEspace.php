@@ -7,7 +7,7 @@
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel <?php if ($travauxmarc && $travauxmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-            <h3>Ouverture de travaux de distillation <?php echo $campagne; ?></h3>
+            <h3>Ouverture&nbsp;travaux&nbsp;de&nbsp;distillation Marc&nbsp;d'Alsace&nbsp;Gw&nbsp;<?php echo $campagne; ?></h3>
         </div>
         <?php if ($travauxmarc && $travauxmarc->validation): ?>
             <div class="panel-body">

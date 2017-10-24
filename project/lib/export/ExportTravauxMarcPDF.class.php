@@ -18,7 +18,7 @@ class ExportTravauxMarcPDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration d'ouverture des travaux de distillation %s", $this->travauxmarc->campagne);
+        return sprintf("Déclaration d'ouverture des travaux de distillation Marc d'Alsace Gw %s", $this->travauxmarc->campagne);
     }
 
     protected function getHeaderSubtitle() {
