@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 sfContext::createInstance($configuration);
 
-$t = new lime_test(41);
+$t = new lime_test(42);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
@@ -25,6 +25,7 @@ $travauxMarc->save();
 $t->is($travauxMarc->_id, "TRAVAUXMARC-".$viti->identifiant."-".$campagne, "L'id du doc est "."TRAVAUXMARC-".$viti->identifiant."-".$campagne);
 $t->ok($travauxMarc->_rev, "La révision existe");
 $t->ok($travauxMarc->isPapier(), "La déclaration est papier");
+$t->ok($travauxMarc->adresse_distillation->adresse == $viti->adresse && $travauxMarc->adresse_distillation->code_postal == $viti->code_postal && $travauxMarc->adresse_distillation->commune == $viti->commune,  "L'adresse de distillation est celle de l'établissement");
 
 $t->comment("Étape Exploitation");
 
@@ -104,9 +105,9 @@ $valuesDistillation = array(
     'date_distillation' => "30/04/".(date('Y')+1),
     'distillation_prestataire' => '1',
     'alambic_connu' => '1',
-    'adresse_distillation' => array('adresse' => '48 rue Jacques Dulud',
-                                    'code_postal' => '92200',
-                                    'commune' => 'Neuilly-sur-Seine'),
+    'adresse_distillation' => array('adresse' => $viti->adresse,
+                                    'code_postal' => $viti->code_postal,
+                                    'commune' => $viti->commune),
     '_revision' => $travauxMarc->_rev,
 );
 
@@ -145,8 +146,11 @@ $t->is(count($controle->getErreurs()), 3, "La déclaration a 3 erreurs");
 
 $travauxMarcAControler = clone $travauxMarc;
 $travauxMarcAControler->date_distillation = ($campagne + 1) . "-05-01";
+$travauxMarcAControler->adresse_distillation->adresse = "48 Jacques Dulud";
+$travauxMarcAControler->adresse_distillation->code_postal = "92200";
+$travauxMarcAControler->adresse_distillation->commune = "Neuilly-sur-Seine";
 $controle = new TravauxMarcValidation($travauxMarcAControler);
-$t->is(count($controle->getVigilances()), 1, "La déclaration a 1 un point de vigilance");
+$t->is(count($controle->getVigilances()), 2, "La déclaration a 2 un point de vigilance");
 
 $controle = new TravauxMarcValidation($travauxMarc);
 $t->ok($controle->isValide(), "La déclaration est corrigé, elle est valide");

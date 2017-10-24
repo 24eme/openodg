@@ -222,6 +222,10 @@ class travauxmarcActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->travauxmarc = $this->getRoute()->getTravauxMarc();
         $this->secure(TravauxMarcSecurity::VISUALISATION, $this->travauxmarc);
+
+        if($this->getUser()->isAdmin() && $this->travauxmarc->validation && !$this->travauxmarc->validation_odg) {
+            $this->validation = new TravauxMarcValidation($this->travauxmarc);
+        }
     }
 
     public function executePDF(sfWebRequest $request) {

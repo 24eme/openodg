@@ -32,6 +32,11 @@ class TravauxMarcClient extends acCouchdbClient {
         $travauxmarcPrecedente = $this->find(self::TYPE_COUCHDB."-".$identifiant."-".($campagne-1));
         if($travauxmarcPrecedente) {
             $travauxmarc->adresse_distillation = $travauxmarcPrecedente->adresse_distillation;
+        } else {
+            $etablissement = $travauxmarc->getEtablissementObject();
+            $travauxmarc->adresse_distillation->adresse = $etablissement->adresse;
+            $travauxmarc->adresse_distillation->code_postal = $etablissement->code_postal;
+            $travauxmarc->adresse_distillation->commune = $etablissement->commune;
         }
 
         return $travauxmarc;
