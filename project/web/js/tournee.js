@@ -951,17 +951,14 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     $scope.showNext = function(prelevement) {
         var finded = false;
         var prelevements_sorted = $filter('orderBy')($scope.prelevements, ['anonymat_degustation']);
-        console.log(prelevements_sorted);
         for (prelevement_key in prelevements_sorted) {
             if(finded) {
                 $scope.showCepage(prelevements_sorted[prelevement_key]);
                 return;
             }
-            console.log(prelevements_sorted[prelevement_key].anonymat_degustation);
             if(prelevements_sorted[prelevement_key].anonymat_degustation == prelevement.anonymat_degustation) {
                 finded = true;
 
-                console.log('finded');
             }
         }
 
@@ -969,7 +966,6 @@ myApp.controller('degustationCtrl', ['$scope', '$rootScope', '$http', 'localStor
     }
 
     $scope.showCepage = function(prelevement) {
-        console.log(prelevement);
         $scope.active = 'cepage_' + prelevement.anonymat_degustation + prelevement.degustation_id + prelevement.hash_produit;
         $scope.transmission = false;
         if(!$('.select2-input').length) {
