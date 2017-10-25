@@ -191,6 +191,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $id, 'sf_subject' => $fichier->getEtablissementObject()));
     }
 
+    public static function isVisualisationMasterUrl($admin = false) {
+    	return false;
+    }
+
     /**** FIN DES PIECES ****/
 
 }
