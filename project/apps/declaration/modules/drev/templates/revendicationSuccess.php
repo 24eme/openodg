@@ -1,6 +1,6 @@
 <?php use_helper('Float') ?>
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
-<?php include_partial('drev/step', array('step' => 'revendication', 'drev' => $drev)) ?>
+<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION, 'drev' => $drev)) ?>
 
 <?php
 $global_error_with_infos = "";
