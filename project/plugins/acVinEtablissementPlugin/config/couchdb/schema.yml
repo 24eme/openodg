@@ -34,8 +34,10 @@ Etablissement:
                  definition:
                    fields:
                      id_etablissement: { }
-                     libelle_etablissement: {}
+                     libelle_etablissement: { }
                      type_liaison: { }
+                     cvi: { }
+                     ppm: { }
                      aliases:
                        type: collection
                        definition:
@@ -47,6 +49,7 @@ Etablissement:
        raison_sociale: {  }
        nom: {  }
        cvi: {  }
+       ppm: {  }
        no_accises: {  }
        carte_pro: {  }
        famille: {  }
