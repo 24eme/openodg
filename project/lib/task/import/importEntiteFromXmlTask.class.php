@@ -99,7 +99,7 @@ EOF;
       if(is_array($siret) && !count($siret)){
         $siret = "";
       }
-      if(is_array($ppm) && !count($ppm)){
+      if(is_array($ppm)){
         $ppm = "";
       }
       try{
