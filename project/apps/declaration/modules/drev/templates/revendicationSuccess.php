@@ -1,6 +1,6 @@
 <?php use_helper('Float') ?>
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
-<?php include_partial('drev/step', array('step' => 'revendication', 'drev' => $drev)) ?>
+<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION, 'drev' => $drev)) ?>
 
 <?php
 $global_error_with_infos = "";
@@ -67,7 +67,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
         <div class="col-xs-6">
-			<a href="<?php if(!$drev->isNonRecoltant() && !$drev->hasDr()): ?><?php echo url_for("drev_dr_douane", $drev) ?><?php else: ?><?php echo url_for("drev_exploitation", $drev) ?><?php endif; ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
+			<a href="<?php echo (count($drev->getProduitsVci())) ? url_for('drev_vci', $drev) : url_for('drev_revendication_superficie', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>

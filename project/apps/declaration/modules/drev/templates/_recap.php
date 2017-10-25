@@ -6,10 +6,10 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th class="col-xs-6">Appellation revendiquée</th>
-            <th class="col-xs-2 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
-            <th class="col-xs-2 text-center">Volume revendiqué<br />net total<br /><small class="text-muted">(hl)</small></th>
-            <th class="col-xs-2 text-center">Dont issu du VCI<br /><small class="text-muted">(hl)</small></th>
+            <th class="col-xs-4">Appellation revendiquée</th>
+            <th class="col-xs-3 text-center">Superficie revendiquée<br /><small class="text-muted">(ha)</small></th>
+            <th class="col-xs-3 text-center">Volume revendiqué net total<br /><small class="text-muted">(hl)</small></th>
+            <th class="col-xs-2 text-center">Dont VCI<br /><small class="text-muted">(hl)</small></th>
         </tr>
     </thead>
     <tbody>
@@ -24,18 +24,18 @@
     </tbody>
 </table>
 <?php if(count($drev->declaration->getProduitsVci())): ?>
-    <h3>Répartition du VCI</h3>
+    <h3>Gestion du VCI</h3>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th class="col-xs-4">Appellation revendiquée</th>
-                <th class="text-center">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center">Complément<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center">Substitution<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center">A détruire<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center">Rafraichi<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center">Constitué<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Stock <?php echo $drev->campagne - 1 ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">A détruire<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Complément<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Substitution<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Constitué&nbsp;<?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
+                <th class="text-center col-xs-1">Stock <?php echo $drev->campagne ?><br /><small class="text-muted">(hl)</small></th>
             </tr>
         </thead>
         <tbody>
@@ -43,9 +43,9 @@
                 <tr>
                     <td><?php echo $produit->getLibelleComplet() ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_precedent') ?>"><?php if($produit->vci->stock_precedent): ?><?php echoFloat($produit->vci->stock_precedent) ?> <small class="text-muted">hl</small><?php endif; ?></td>
+                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'destruction') ?>"><?php if($produit->vci->destruction): ?><?php echoFloat($produit->vci->destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'complement') ?>"><?php if($produit->vci->complement): ?><?php echoFloat($produit->vci->complement) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'substitution') ?>"><?php if($produit->vci->substitution): ?><?php echoFloat($produit->vci->substitution) ?> <small class="text-muted">hl</small><?php endif; ?></td>
-                    <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'destruction') ?>"><?php if($produit->vci->destruction): ?><?php echoFloat($produit->vci->destruction) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'rafraichi') ?>"><?php if($produit->vci->rafraichi): ?><?php echoFloat($produit->vci->rafraichi) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'constitue') ?>"><?php if($produit->vci->constitue): ?><?php echoFloat($produit->vci->constitue) ?> <small class="text-muted">hl</small><?php endif; ?></td>
                     <td class="text-right <?php echo isVersionnerCssClass($produit->vci, 'stock_final') ?>"><?php if($produit->vci->stock_final): ?><?php echoFloat($produit->vci->stock_final) ?> <small class="text-muted">hl</small><?php endif; ?></td>

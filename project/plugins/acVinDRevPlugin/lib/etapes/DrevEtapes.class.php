@@ -3,9 +3,9 @@ class DrevEtapes extends Etapes
 {
 	const ETAPE_EXPLOITATION = 'exploitation';
 	const ETAPE_DR_DOUANE = 'dr_douane';
-	const ETAPE_REVENDICATION_SUPERFICIE = 'revendication_superficie';
+	const ETAPE_REVENDICATION_SUPERFICIE = 'superficie';
 	const ETAPE_VCI = 'vci';
-	const ETAPE_REVENDICATION = 'revendication';
+	const ETAPE_REVENDICATION = 'volume';
 	const ETAPE_DEGUSTATION = 'degustation_conseil';
 	const ETAPE_CONTROLE = 'controle_externe';
 	const ETAPE_VALIDATION = 'validation';
@@ -35,9 +35,9 @@ class DrevEtapes extends Etapes
 	public static $libelles = array(
             self::ETAPE_EXPLOITATION => "Exploitation",
             self::ETAPE_DR_DOUANE => "Déclaration de récolte",
-            self::ETAPE_REVENDICATION_SUPERFICIE => "Revendication des superficies",
+            self::ETAPE_REVENDICATION_SUPERFICIE => "Superficies",
             self::ETAPE_VCI => "Répartition du VCI %campagne%",
-			self::ETAPE_REVENDICATION => "Revendication",
+			self::ETAPE_REVENDICATION => "Volumes",
             self::ETAPE_DEGUSTATION => "Dégustation<br/>conseil",
             self::ETAPE_CONTROLE => "Contrôle<br/>externe",
             self::ETAPE_VALIDATION => "Validation"
@@ -78,6 +78,16 @@ class DrevEtapes extends Etapes
     {
 
 		return $this->filterItems(self::$libelles);
+    }
+
+	public function isEtapeDisabled($etape, $doc) {
+
+		if($etape == self::ETAPE_VCI && !count($doc->getProduitsVci())) {
+
+			return true;
+		}
+
+        return parent::isEtapeDisabled($etape, $doc);
     }
 
 }
