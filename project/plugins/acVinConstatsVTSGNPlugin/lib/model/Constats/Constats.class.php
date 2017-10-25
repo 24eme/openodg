@@ -104,6 +104,10 @@ class Constats extends BaseConstats implements InterfacePieceDocument {
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return null;
     }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+    	return false;
+    }
     
     /**** FIN DES PIECES ****/
 

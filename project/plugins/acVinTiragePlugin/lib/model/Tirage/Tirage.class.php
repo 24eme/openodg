@@ -319,6 +319,10 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return sfContext::getInstance()->getRouting()->generate('tirage_visualisation', array('id' => $id));
     }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+    	return true;
+    }
     
     /**** FIN DES PIECES ****/
 
