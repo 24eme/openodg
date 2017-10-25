@@ -231,6 +231,11 @@ class drevActions extends sfActions {
 
         $this->form->save();
 
+        if ($this->drev->exist('etape') && $this->drev->etape == DrevEtapes::ETAPE_VALIDATION) {
+
+            return $this->redirect('drev_validation', $this->drev);
+        }
+
         return $this->redirect('drev_vci', $this->drev);
 
     }
@@ -275,17 +280,7 @@ class drevActions extends sfActions {
                     return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
                 }
 
-                if ($request->getParameter('redirect', null)) {
-
-                    return $this->redirect('drev_validation', $this->drev);
-                }
-
-                if(!DrevEtapes::getInstance()->exist(DrevEtapes::ETAPE_DEGUSTATION)) {
-
-                    return $this->redirect('drev_validation', $this->drev);
-                }
-
-                return $this->redirect('drev_degustation_conseil', $this->drev);
+                return $this->redirect('drev_validation', $this->drev);
             }
         }
     }
@@ -425,6 +420,11 @@ class drevActions extends sfActions {
         }
 
         $this->form->save();
+
+        if ($this->drev->exist('etape') && $this->drev->etape == DrevEtapes::ETAPE_VALIDATION) {
+
+            return $this->redirect('drev_validation', $this->drev);
+        }
 
         return $this->redirect('drev_revendication', $this->drev);
 
