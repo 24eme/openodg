@@ -97,4 +97,9 @@ abstract class Etapes
 	{
 		return !$this->isGt($etapeToTest, $etape);
 	}
+
+    public function isEtapeDisabled($etape, $doc) {
+
+        return false;
+    }
 }

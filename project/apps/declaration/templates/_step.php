@@ -7,7 +7,8 @@ $stepNum = $etapes->getEtapeNum($etapeMax);
     <?php foreach ($etapes->getEtapesHash() as $k => $num): ?>
         <?php $actif = ($step == $k); ?>
         <?php $past = ($etapes->isGt($etapeMax, $k)); ?>
-        <li class="<?php if($actif): ?>active<?php endif; ?> <?php if (!$past && !$actif): ?>disabled<?php endif; ?> <?php if ($past && !$actif): ?>visited<?php endif; ?>">
+        <?php $disabled = ($etapes->isEtapeDisabled($k, $object)); ?>
+        <li style="<?php if($disabled): ?>opacity: 0.7;<?php endif; ?>" class="<?php if($actif): ?>active<?php endif; ?> <?php if ((!$past && !$actif) || $disabled): ?>disabled<?php endif; ?> <?php if ($past && !$actif): ?>visited<?php endif; ?>">
                 <a href="<?php
     if (isset($routeparams) && isset($routeparams[$etapes->getRouteLink($k)])) {
        echo url_for($etapes->getRouteLink($k), $routeparams[$etapes->getRouteLink($k)]->getRawValue());

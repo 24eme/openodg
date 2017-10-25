@@ -35,7 +35,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_ERROR, 'revendication_incomplete', "Toutes les informations de revendication n'ont pas été saisies");
         $this->addControle(self::TYPE_ERROR, 'revendication_rendement', "Le rendement sur le volume revendiqué n'est pas respecté");
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
-        $this->addControle(self::TYPE_ERROR, 'vci_rendement_annee', "Le vci de l'annéee dépasse le rendement autorisé");
+        $this->addControle(self::TYPE_WARNING, 'vci_rendement_annee', "Le vci de l'annéee dépasse le rendement autorisé");
         $this->addControle(self::TYPE_ERROR, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé");
 
 
@@ -409,7 +409,7 @@ class DRevValidation extends DocumentValidation {
         }
 
         if($produit->getConfig()->getRendementVci() !== null && round($produit->getConfig()->getRendementVci() * $produit->superficie_revendique, 2) < round($produit->vci->constitue, 2)) {
-            $this->addPoint(self::TYPE_ERROR, 'vci_rendement_annee', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
+            $this->addPoint(self::TYPE_WARNING, 'vci_rendement_annee', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 
         if($produit->getConfig()->rendement_vci_total !== null && round($produit->getConfig()->rendement_vci_total * $produit->superficie_revendique, 2) < $produit->vci->stock_final) {
