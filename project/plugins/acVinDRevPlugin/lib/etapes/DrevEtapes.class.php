@@ -80,4 +80,14 @@ class DrevEtapes extends Etapes
 		return $this->filterItems(self::$libelles);
     }
 
+	public function isEtapeDisabled($etape, $doc) {
+
+		if($etape == self::ETAPE_VCI && !count($doc->getProduitsVci())) {
+
+			return true;
+		}
+
+        return parent::isEtapeDisabled($etape, $doc);
+    }
+
 }

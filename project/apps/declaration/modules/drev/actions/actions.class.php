@@ -401,6 +401,11 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
+        if(!count($this->drev->getProduitsVci())) {
+
+            return $this->redirect('drev_revendication', $this->drev);
+        }
+
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VCI))) {
             $this->drev->save();
         }
