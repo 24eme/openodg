@@ -162,6 +162,8 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if ($this->isEtablissementContact()) {
             $this->addTag('automatique', 'Etablissement');
             $this->addTag('automatique', $this->getEtablissement()->famille);
+            $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
+            $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
         }
         if (!$this->isEtablissementContact() && !$this->isSocieteContact()) {
             $this->addTag('automatique', 'Interlocuteur');

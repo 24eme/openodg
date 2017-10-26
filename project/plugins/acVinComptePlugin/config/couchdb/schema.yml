@@ -53,6 +53,12 @@ Compte:
             email: {  }
             telephone: {  }
             fax: {  }
+      etablissement_informations:
+        type: collection
+        definition:
+          fields:
+            cvi: { }
+            ppm: { }
       interpro: {  }
       statut: {  }
       tags:
