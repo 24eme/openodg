@@ -129,8 +129,8 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		
 		$filename = uniqid().'.csv';
 		
-		setlocale(LC_ALL,'fr_FR.UTF-8');
-		putenv('LC_ALL=fr_FR.UTF-8');
+		//setlocale(LC_ALL,'fr_FR.UTF-8');
+		//putenv('LC_ALL=fr_FR.UTF-8');
 		exec('xls2csv '.$file.' > '.$path.$filename);
 
 		if (!is_file($path.$filename)) {
