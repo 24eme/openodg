@@ -22,7 +22,7 @@ class ExportTravauxMarcPDF extends ExportPDF {
     }
 
     protected function getHeaderSubtitle() {
-        $header_subtitle = sprintf("d'AOC Marc d'Alsace Gewurztraminer\n%s\n", $this->travauxmarc->declarant->nom);
+        $header_subtitle = sprintf("de l'AOC Marc d'Alsace Gewurztraminer\n%s\n", $this->travauxmarc->declarant->nom);
         if (!$this->travauxmarc->isPapier() && $this->travauxmarc->validation && $this->travauxmarc->campagne >= "2014") {
             $date = new DateTime($this->travauxmarc->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
