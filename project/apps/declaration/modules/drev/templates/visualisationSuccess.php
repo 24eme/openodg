@@ -76,7 +76,7 @@
                 <?php endif; ?>
         <?php endif; ?>
         <?php if(DRevSecurity::getInstance($sf_user, $drev->getRawValue())->isAuthorized(DRevSecurity::MODIFICATRICE)): ?>
-            <a class="btn btn-lg btn-default-step" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier</a>
+            <!--<a class="btn btn-lg btn-default-step" href="<?php echo url_for('drev_modificative', $drev) ?>">Modifier</a>-->
         <?php endif; ?>
         </div>
     </div>
