@@ -99,7 +99,7 @@ EOF;
       if(is_array($siret) && !count($siret)){
         $siret = "";
       }
-      if(is_array($ppm) && !count($ppm)){
+      if(is_array($ppm)){
         $ppm = "";
       }
       try{
@@ -203,6 +203,9 @@ EOF;
           $compte = $societe->getMasterCompte();
           $compte->nom = $this->buildRaisonSociete();
           $compte->updateNomAAfficher();
+          $compte->civilite = (!is_array($this->arrayXML['b:Titre']))? $this->arrayXML['b:Titre'] : "";
+          $compte->prenom = (!is_array($this->arrayXML['b:Prenom']))? $this->arrayXML['b:Prenom'] : "";
+          $compte->nom = $this->arrayXML['b:RaisonSociale'];
           $compte->email = $societeCommunication[self::COM_EMAIL];
           $compte->telephone_mobile = $societeCommunication[self::COM_PORTABLE];
           //$compte->telephone_perso = $societeCommunication[self::COM_TEL];
@@ -352,9 +355,8 @@ EOF;
       $prenom = $this->arrayXML['b:Prenom'];
       $nom = $this->arrayXML['b:RaisonSociale'];
 
-      $raison_sociale = ($civilite)? $civilite." " : "";
-      $raison_sociale .= ($prenom)? $prenom." " : "";;
-      $raison_sociale .= $nom;
+      $raison_sociale = $nom;
+      $raison_sociale .= ($prenom)? " ".$prenom    : "";
       return $raison_sociale;
     }
 
