@@ -95,9 +95,8 @@
                     <p class="text-muted">Aucun chai</p>
                 <?php endif; ?>
                 <?php if ($etablissement->commentaire) : ?>
-                <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <pre><?php echo $etablissement->commentaire; ?></pre>
+                <pre><?php echo html_entity_decode($etablissement->commentaire); ?></pre>
                 <?php endif; ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Relations</strong></h5>
