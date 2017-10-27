@@ -46,12 +46,12 @@ foreach($produits2Delete as $hash) {
 
 $produits = $drev->getProduits();
 
+$produit2 = current($produits);
+$produit_hash2 = $produit2->getHash();
+next($produits);
 $produit1 = current($produits);
 $produit_hash1 = $produit1->getHash();
 $produit1->vci->stock_precedent = 3;
-next($produits);
-$produit2 = current($produits);
-$produit_hash2 = $produit2->getHash();
 
 $drev->save();
 
@@ -63,8 +63,7 @@ $t->is($produit1->recolte->recolte_nette, 104.1, "La récolte nette de la DR pou
 $t->is($produit1->recolte->volume_total, 105.18, "Le volume total de la DR pour ce produit est de 169.25");
 $t->is($produit1->recolte->vci_constitue, 2, "Le vci de la DR pour ce produit est de 2");
 $t->is($produit1->vci->constitue, 2, "Le vci de l'année de la DR pour ce produit est de 2");
-$t->is($produit2->getLibelleComplet(), "CdR Villages avec NG Puymeras Rouge", "Le libelle du produit estTranquilles CdR Villages avec NG Vinsobres Blanc");
-
+$t->is($produit2->getLibelleComplet(), "Côtes du Rhône Villages Puymeras Rouge", "Le libelle du produit estTranquilles CdR Villages avec NG Puymeras Rouge");
 
 $t->comment('Formulaire de revendication des superficies');
 
@@ -227,6 +226,7 @@ $produitControle2->volume_revendique_issu_recolte = null;
 $validation = new DRevValidation($drevControle);
 
 $erreurs = $validation->getPointsByCodes('erreur');
+$vigilances = $validation->getPointsByCodes('vigilance');
 
 $t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produitControle2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
 
@@ -234,7 +234,7 @@ $t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendicati
 
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 
-$t->ok(isset($erreurs['vci_rendement_annee']) && count($erreurs['vci_rendement_annee']) == 1 && $erreurs['vci_rendement_annee'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
+$t->ok(isset($vigilances['vci_rendement_annee']) && count($vigilances['vci_rendement_annee']) == 1 && $vigilances['vci_rendement_annee'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
 
 $t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
 
@@ -243,5 +243,5 @@ $t->comment("Export CSV");
 $export = new ExportDRevCSV($drev);
 
 $csvContent = $export->export();
-echo $csvContent;
+
 $t->is(count(explode("\n", $csvContent)), 4, "L'export fait 4 lignes");

@@ -44,10 +44,6 @@ $produit2 = $drev->addProduit($produit_hash2);
 
 $drev->save();
 
-$drev->declaration->reorderByConf();
-
-$drev->save();
-
 $t->is($drev->exist($produit_hash1), true, "La produit ajouté existe");
 $t->is($drev->get($produit_hash1)->getHash(), $produit_hash1, "La produit ajouté est récupérable");
 $produit1 = $drev->get($produit_hash1);

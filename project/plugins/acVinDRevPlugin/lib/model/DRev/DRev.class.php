@@ -296,8 +296,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->updatePrelevementsFromRevendication();
             $this->updateLotsFromCepage();
         }
-
-        $this->declaration->reorderByConf();
     }
 
     public function updateFromDRev($drev) {
@@ -360,8 +358,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $this->getOrAdd($lot->hash_produit)->addDetailNode();
             }
         }
-
-        $this->declaration->reorderByConf();
     }
 
     public function addAppellation($hash) {
@@ -385,11 +381,15 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function addProduit($hash, $add_appellation = true) {
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $exist = $this->exist('declaration/'.$hashToAdd);
         $produit = $this->add('declaration')->add($hashToAdd);
-
         $produit->getLibelle();
 
-        return $produit;
+        if(!$exist) {
+            $this->declaration->reorderByConf();
+        }
+
+        return $this->get($produit->getHash());
     }
 
     public function addProduitCepage($hash, $lieu = null, $add_appellation = true) {
