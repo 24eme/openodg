@@ -9,9 +9,9 @@ $t = new lime_test(11);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
-foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
-  $drev = HabilitationClient::getInstance()->find($k);
-  $drev->delete(false);
+foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
+  $habilitation = HabilitationClient::getInstance()->find($k);
+  $habilitation->delete(false);
 }
 
 $t->comment("Création des docs");

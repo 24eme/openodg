@@ -98,13 +98,9 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-          return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
-                      ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);//acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
-          $history = array();
-          foreach($ids as $id) {
-                $history[] = HabilitationClient::getInstance()->find($id, $hydrate);
-          }
-          return $history;
+
+            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
+                      ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
         }
 
         public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
