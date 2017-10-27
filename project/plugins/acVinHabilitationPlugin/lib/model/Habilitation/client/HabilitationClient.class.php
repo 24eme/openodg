@@ -111,4 +111,15 @@ class HabilitationClient extends acCouchdbClient {
           $history = $this->getHistory($identifiant, $hydrate);
           return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
         }
+
+        public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+          $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-00000000-00000000")
+                      ->endkey(self::TYPE_COUCHDB."-99999999-99999999")->execute($hydrate);
+          $etbIds = array();
+          foreach ($allHabilitations as $habilitation) {
+            $etbIds[$habilitation->getIdentifiant()] = $habilitation->getIdentifiant();
+          }
+          krsort($etbIds);
+          return array_unique($etbIds);
+        }
     }
