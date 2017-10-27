@@ -9,7 +9,7 @@ $t = new lime_test(10);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
-foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
+foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
   $drev = HabilitationClient::getInstance()->find($k);
   $drev->delete(false);
 }
@@ -39,7 +39,7 @@ $t->is(count($habilitation->declaration), 1, "l'ajout de produit créer bien un 
 $produit = $habilitation->get($produitConfig->getHash());
 $t->ok($produit, "le produit ajouté a bien la hash choisie");
 $t->is($produit->getLibelle(), $produitConfig->getLibelleComplet(), "Le libellé du produit a été enregistré dans le doc");
-$t->is(count($produit->activites), 5, "La liste d'activité a été initialisé à 5");
+$t->is(count($produit->activites), 6, "La liste d'activité a été initialisé à 6");
 $t->is(count($habilitation->historique), 1, "l'ajout du produit a créé un historique");
 
 $activiteKey = null;
