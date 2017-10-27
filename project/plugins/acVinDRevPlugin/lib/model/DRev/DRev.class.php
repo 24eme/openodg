@@ -185,6 +185,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
       $csv = new DRDouaneCsvFile($csvFile, $this->campagne);
       $csvContent = $csv->convert();
+      $bailleurs = $csv->bailleurs;
       $path = sfConfig::get('sf_cache_dir').'/dr/';
       $filename = 'DR-'.$this->identifiant.'-'.$this->campagne.'.csv';
       if (!is_dir($path)) {
@@ -195,14 +196,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       file_put_contents($path.$filename, $csvContent);
       try {
         $csv = new DRCsvFile($path.$filename);
-        $this->importCSVDouane($csv->getCsv());
+        $this->importCSVDouane($csv->getCsv(), $bailleurs);
         $this->save();
           return true;
       } catch (Exception $e) { }
       return false;
     }
 
-    public function importCSVDouane($csv) {
+    public function importCSVDouane($csv, $bailleurs) {
     	$todelete = array();
     	$this->remove('declaration');
     	$this->add('declaration');
@@ -221,7 +222,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND) {
             	$produitRecolte->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
+            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE && !in_array($line[DRCsvFile::CSV_PRODUIT_INAO], $bailleurs)) {
             	$produitRecolte->superficie_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
             if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME)  {

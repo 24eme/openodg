@@ -4,6 +4,8 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
 
     const EXPLOITANT = 'exploitant';
     const BAILLEUR = 'bailleur';
+    
+    public $bailleurs = array();
 
     public function convert($type = self::EXPLOITANT) {
     	if (!in_array($type, array(self::BAILLEUR, self::EXPLOITANT))) {
@@ -105,6 +107,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         				if ($values[$i]) {
         					if ($i%2) {
         						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($values[$i]), null, null, null, null);
+        						if ($values[0] == 21) {
+        							$this->bailleurs[$produits[$i][7]] = $produits[$i][7];
+        						}
         					} else {
         						$bailleur[$i-1][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($values[$i]), null, null, null, null);
         					}
