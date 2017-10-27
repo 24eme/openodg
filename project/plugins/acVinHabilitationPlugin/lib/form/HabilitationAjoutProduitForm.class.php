@@ -30,7 +30,7 @@ class HabilitationAjoutProduitForm extends acCouchdbObjectForm
     {
         if (!$this->produits) {
             $doc = $this->getObject()->getDocument();
-            foreach ($this->getObject()->getConfiguration()->getProduitsCahierDesCharges() as $produit) {
+            foreach ($doc->getProduitsConfig() as $produit) {
                 if ($this->getObject()->exist($produit->getHash())) {
                   continue;
                 }
