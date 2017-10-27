@@ -1,9 +1,49 @@
 <?php use_helper('Date'); ?>
-<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation )); ?>
+<?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
+  $etablissement = $habilitation->getEtablissementObject();
+  $compte = $habilitation->getEtablissementObject()->getMasterCompte();
+ ?>
 <div class="page-header no-border">
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
+<div class="row">
+  <div class="col-xs-12">
 
+<div class="panel panel-default">
+  <div class="panel-body">
+    <h4><span class="glyphicon glyphicon-home"></span> <?php  echo $etablissement->getNom()." - ".$etablissement->getIdentifiant(); ?><?php  if($etablissement->getCvi()){ echo ' - Cvi : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - Siret : '.$etablissement->getSiret(); } ?></h4>
+    <div class="row">
+        <div class="col-xs-12">
+          <div class="row">
+              <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
+                Adresse&nbsp;:
+              </div>
+              <div style="margin-bottom: 5px" class="col-xs-9">
+                <address style="margin-bottom: 0;">
+                  <?php echo $compte->getAdresse(); ?><?php echo ($compte->getAdresseComplementaire())? " ".$compte->getAdresseComplementaire() : ''; ?>
+                  <span><?php echo ' '.$compte->getCodePostal(); ?></span><?php echo ' '.$compte->getCommune(); ?><small class="text-muted">(<?php echo ' '.$compte->getPays(); ?>)</small>
+                </address>
+              </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+          <div class="row">
+              <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
+                Contact&nbsp;:
+              </div>
+              <div style="margin-bottom: 5px" class="col-xs-9">
+                  <?php echo ($compte->getEmail())? "<a href='mailto:".$compte->getEmail()."'>".$compte->getEmail()."</a> / " : ''; ?>
+                  <?php echo ($compte->getTelephoneBureau())? "<a href='callto:".$compte->getTelephoneBureau()."'>".$compte->getTelephoneBureau()."</a> / " : ''; ?>
+                  <?php echo ($compte->getTelephoneMobile())? "<a href='callto:".$compte->getTelephoneMobile()."'>".$compte->getTelephoneMobile()."</a>" : ''; ?>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
 <?php if ($sf_user->hasFlash('notice')): ?>
   <div class="alert alert-success" role="alert"><?php echo $sf_user->getFlash('notice') ?></div>
 <?php endif; ?>

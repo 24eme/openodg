@@ -138,14 +138,28 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public function findByCvi($cvi) {
-        $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi));
-
-        if (!count($rows)) {
-            return null;
-        }
-
-        return $this->find($rows[0]->id);
+      return $this->findByCviOrAcciseOrPPM($cvi);
     }
+    
+    public function findByPPM($ppm) {
+      return $this->findByCviOrAcciseOrPPM($ppm);
+    }
+
+    public function findByAccise($accise) {
+      return $this->findByCviOrAcciseOrPPM($accise);
+    }
+
+    public function findByCviOrAcciseOrPPM($cvi_or_accise_or_ppm){
+      $rows = EtablissementFindByCviView::getInstance()->findByCvi(str_replace(' ', '', $cvi_or_accise_or_ppm));
+
+      if (!count($rows)) {
+          return null;
+      }
+
+      return $this->find($rows[0]->id);
+    }
+
+
 
     public function getId($id_or_identifiant) {
         $id = $id_or_identifiant;

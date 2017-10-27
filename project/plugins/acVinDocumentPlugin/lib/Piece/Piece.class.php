@@ -19,4 +19,14 @@ abstract class Piece extends acCouchdbDocumentTree
 		}
 		return null;
 	}
+	
+	public static function isVisualisationMasterUrl($id, $isadmin = false)
+	{
+		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
+			$doc = $m[1];
+			return $doc::isVisualisationMasterUrl($isadmin);
+		
+		}
+		return false;
+	}
 }

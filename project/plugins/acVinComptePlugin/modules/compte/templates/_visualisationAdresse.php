@@ -65,7 +65,7 @@
             Site&nbsp;Internet&nbsp;:
         </div>
         <div style="margin-bottom: 5px" class="col-xs-9">
-            <a href="<?php echo $compte->site_internet; ?>"><?php echo $compte->site_internet; ?></a>
+            <a href="<?php echo "http://".str_replace(array("http://","https://"),array("",""),$compte->site_internet); ?>"><?php echo $compte->site_internet; ?></a>
         </div>
     </div>
 <?php endif; ?>

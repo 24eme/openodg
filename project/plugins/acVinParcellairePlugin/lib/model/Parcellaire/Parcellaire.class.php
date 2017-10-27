@@ -467,6 +467,10 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return sfContext::getInstance()->getRouting()->generate('parcellaire_visualisation', array('id' => $id));
     }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+    	return true;
+    }
     
     /**** FIN DES PIECES ****/
 

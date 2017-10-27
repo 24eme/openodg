@@ -129,8 +129,8 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		
 		$filename = uniqid().'.csv';
 		
-		setlocale(LC_ALL,'fr_FR.UTF-8');
-		putenv('LC_ALL=fr_FR.UTF-8');
+		//setlocale(LC_ALL,'fr_FR.UTF-8');
+		//putenv('LC_ALL=fr_FR.UTF-8');
 		exec('xls2csv '.$file.' > '.$path.$filename);
 
 		if (!is_file($path.$filename)) {
@@ -189,6 +189,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		$fichier = FichierClient::getInstance()->find($id);
 
     	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $id, 'sf_subject' => $fichier->getEtablissementObject()));
+    }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/

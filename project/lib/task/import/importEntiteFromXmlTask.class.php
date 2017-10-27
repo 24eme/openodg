@@ -95,18 +95,22 @@ EOF;
       $identifiant = $this->arrayXML["b:CleIdentite"];
       $cvis = $this->getCvis($identifiant);
       $siret = $this->arrayXML["b:Siret"];
+      $ppm = $this->arrayXML["b:NumPPM"];
       if(is_array($siret) && !count($siret)){
         $siret = "";
       }
+      if(is_array($ppm)){
+        $ppm = "";
+      }
       try{
-        if(count($cvis) || $siret){
-            $this->importSociete($identifiant,$cvis,$siret);
+        if(count($cvis) || $siret || $ppm){
+            $this->importSociete($identifiant,$cvis,$siret,$ppm);
         }else{
           $groupsProfil = $this->getRefsGroupsProfil();
           if(count($groupsProfil)){
             $this->importAsInterlocuteurOrSociete($identifiant);
           }else{
-            $this->importSociete($identifiant,$cvis,$siret);
+            $this->importSociete($identifiant,$cvis,$siret,$ppm);
           }
         }
       }catch(sfException $e){
@@ -117,7 +121,7 @@ EOF;
     }
 
 
-    protected function importSociete($identifiant,$cvis,$siret){
+    protected function importSociete($identifiant,$cvis,$siret,$ppm){
 
             $societeIdentifiant = sprintf("%06d",$identifiant);
             $soc = SocieteClient::getInstance()->find($societeIdentifiant);
@@ -172,11 +176,12 @@ EOF;
             $societe = SocieteClient::getInstance()->find($societe->_id);
 
             $type_etablissement = "OPERATEUR";
-            if(count($cvis) > 1 ){
+            if(count($cvis) > 1){
               foreach ($cvis as $cvi) {
                 $etablissement = $societe->createEtablissement($type_etablissement);
                 $etablissement->constructId();
                 $etablissement->cvi = $cvi;
+                $etablissement->ppm = $ppm;
                 $etablissement->nom = $this->buildRaisonSociete();
                 $etablissement->save();
               }
@@ -184,6 +189,13 @@ EOF;
             $etablissement = $societe->createEtablissement($type_etablissement);
             $etablissement->constructId();
             $etablissement->cvi = array_shift(array_values($cvis));
+            $etablissement->ppm = $ppm;
+            $etablissement->nom = $this->buildRaisonSociete();
+            $etablissement->save();
+          }elseif($ppm){
+            $etablissement = $societe->createEtablissement($type_etablissement);
+            $etablissement->constructId();
+            $etablissement->ppm = $ppm;
             $etablissement->nom = $this->buildRaisonSociete();
             $etablissement->save();
           }
@@ -191,6 +203,9 @@ EOF;
           $compte = $societe->getMasterCompte();
           $compte->nom = $this->buildRaisonSociete();
           $compte->updateNomAAfficher();
+          $compte->civilite = (!is_array($this->arrayXML['b:Titre']))? $this->arrayXML['b:Titre'] : "";
+          $compte->prenom = (!is_array($this->arrayXML['b:Prenom']))? $this->arrayXML['b:Prenom'] : "";
+          $compte->nom = $this->arrayXML['b:RaisonSociale'];
           $compte->email = $societeCommunication[self::COM_EMAIL];
           $compte->telephone_mobile = $societeCommunication[self::COM_PORTABLE];
           //$compte->telephone_perso = $societeCommunication[self::COM_TEL];
@@ -340,9 +355,8 @@ EOF;
       $prenom = $this->arrayXML['b:Prenom'];
       $nom = $this->arrayXML['b:RaisonSociale'];
 
-      $raison_sociale = ($civilite)? $civilite." " : "";
-      $raison_sociale .= ($prenom)? $prenom." " : "";;
-      $raison_sociale .= $nom;
+      $raison_sociale = $nom;
+      $raison_sociale .= ($prenom)? " ".$prenom    : "";
       return $raison_sociale;
     }
 

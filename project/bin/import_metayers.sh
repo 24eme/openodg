@@ -17,8 +17,8 @@ LOGDATE=$SYMFODIR/$(date +%Y%m%d%H%M%S_import_metayers.log)
 if [ ! -d "$TMPDIR/ODGRHONE_METAYERS_DATA" ]; then
 rm -rf $TMPDIR/ODGRHONE_METAYERS_DATA
 mkdir $TMPDIR/ODGRHONE_METAYERS_DATA 2> /dev/null
-scp $1"/metayers.csv" $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv
+scp $1"/bailleurs_metayers_dr.csv" $TMPDIR/ODGRHONE_METAYERS_DATA/bailleurs_metayers_dr.csv
 fi
 
 
-php symfony import:relations-etablissements $TMPDIR/ODGRHONE_METAYERS_DATA/metayers.csv  --application="declaration"
+php symfony import:relations-etablissements $TMPDIR/ODGRHONE_METAYERS_DATA/bailleurs_metayers_dr.csv  --application="declaration"
