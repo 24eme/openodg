@@ -143,6 +143,12 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->type_liaison = $type;
         $liaison->id_etablissement = $etablissement->_id;
         $liaison->libelle_etablissement = $etablissement->nom;
+        if($etablissement->exist('ppm') && $etablissement->ppm){
+          $liaison->ppm = $etablissement->ppm;
+        }
+        if($etablissement->exist('cvi') && $etablissement->cvi){
+          $liaison->cvi = $etablissement->cvi;
+        }
         return $liaison;
     }
 
