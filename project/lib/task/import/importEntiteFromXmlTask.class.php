@@ -203,9 +203,6 @@ EOF;
           $compte = $societe->getMasterCompte();
           $compte->nom = $this->buildRaisonSociete();
           $compte->updateNomAAfficher();
-          $compte->civilite = (!is_array($this->arrayXML['b:Titre']))? $this->arrayXML['b:Titre'] : "";
-          $compte->prenom = (!is_array($this->arrayXML['b:Prenom']))? $this->arrayXML['b:Prenom'] : "";
-          $compte->nom = $this->arrayXML['b:RaisonSociale'];
           $compte->email = $societeCommunication[self::COM_EMAIL];
           $compte->telephone_mobile = $societeCommunication[self::COM_PORTABLE];
           //$compte->telephone_perso = $societeCommunication[self::COM_TEL];
@@ -235,6 +232,7 @@ EOF;
                   $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
 
                   $compte->nom = $this->arrayXML['b:RaisonSociale'];
+                  var_dump($compte->nom);
                   $compte->prenom = $this->arrayXML['b:Prenom'];
                   $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
 
