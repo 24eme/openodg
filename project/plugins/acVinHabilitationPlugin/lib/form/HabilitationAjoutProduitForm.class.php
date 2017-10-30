@@ -19,19 +19,25 @@ class HabilitationAjoutProduitForm extends acCouchdbObjectForm
             'activites' => new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $activites)),
             'statut' => new sfWidgetFormChoice(array('choices' => $statuts)),
             'commentaire' => new sfWidgetFormChoice(array('choices' => $statuts)),
+            'date' => new sfWidgetFormInput(array(), array())
         ));
         $this->widgetSchema->setLabels(array(
             'hashref' => 'Produit: ',
             'activites' => 'Activités: ',
             'statut' => 'Statut: ',
             'commentaire' => 'Commentaire: ',
+            'date' => 'Date: ',
         ));
 
         $this->setValidators(array(
             'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucun produit saisi.")),
             'activites' => new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($activites))),
             'statut' => new sfValidatorChoice(array('required' => false, 'choices' => array_keys($statuts))),
-            'commentaire' => new sfValidatorString(array("required" => false))
+            'commentaire' => new sfValidatorString(array("required" => false)),
+            'date' => new sfValidatorDate(
+                    array('date_output' => 'Y-m-d',
+                'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
+                'required' => false))
         ));
 
         $this->widgetSchema->setNameFormat('habilitation_ajout_produit[%s]');
@@ -78,7 +84,7 @@ class HabilitationAjoutProduitForm extends acCouchdbObjectForm
         }
         foreach ($noeud->getActivites() as $key => $activite) {
           if(in_array($key,$values["activites"])){
-              $activite->updateHabilitation($values['statut']);
+              $activite->updateHabilitation($values['statut'],$values['commentaire'],$values['date']);
           }
         }
     }

@@ -411,7 +411,7 @@ EOF;
       if(!array_key_exists($refKeyGroup,$this->groupeTagsArr)){
         return;
       }
-      $groupesTags[] = $this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2];
+      $groupesTags[] = array_merge(array($this->groupeTagsArr[$refKeyGroup][1]." ".$this->groupeTagsArr[$refKeyGroup][2]),$identiteProfil);
       return $groupesTags;
     }
 
@@ -505,7 +505,7 @@ EOF;
         echo "OBS Codifiees ";
         foreach($observationsCodifiees as $obsKey => $obs){
           echo implode(",",$obs)."   -   ";
-          $tag = 'OBS '.$obs[2];
+          $tag = ''.$obs[2];
           $c->addTag('manuel',$tag);
           if($obs[3]){
             $c->setStatut(SocieteClient::STATUT_SUSPENDU);
@@ -531,9 +531,11 @@ EOF;
     protected function addGroupesTags($c){
       $groupesTags = $this->getTagsArrayFromProfil();
       if(count($groupesTags)){
-        echo "GROUPE Tags ". implode(",",$groupesTags) ." ".$c->_id." \n";
+        echo "Association au groupe ". implode(",",$groupesTags) ." ".$c->_id." \n";
         foreach($groupesTags as $grpKey => $grp){
-           $c->addTag('manuel','GRP '.KeyInflector::unaccent(str_replace(array(")","("),array('',''),$grp)));
+          $fonction = (array_key_exists($grp["b:Fonction"],$this->fonctionsArr))? $this->fonctionsArr[$grp["b:Fonction"]] : $grp["b:Fonction"];
+          $grpName = KeyInflector::unaccent(str_replace(array(")","("),array('',''),$grp[0]));
+          $c->addInGroupes($grpName,$fonction);
          }
       }
     }
