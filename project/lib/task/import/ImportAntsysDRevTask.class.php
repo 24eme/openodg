@@ -5,14 +5,15 @@ class ImportAntsysDRevTask extends sfBaseTask
   protected $types_ignore = array();
 
   const CSV_ID = 0;
-  const CSV_PRODUIT = 1;
-  const CSV_SURFACE = 2;
-  const CSV_VOLUME = 3;
-  const CSV_VOLUME_SANS_VCI = 4;
-  const CSV_VCI_ANNEE_PRECEDENTE = 5;
-  const CSV_VCI_RAFRAICHI = 6;
-  const CSV_VCI_COMPLEMENT = 7;
-  const CSV_VCI_DETRUIT = 8;
+  const CSV_ANNEE = 1;
+  const CSV_PRODUIT = 2;
+  const CSV_SURFACE = 3;
+  const CSV_VOLUME = 4;
+  const CSV_VOLUME_SANS_VCI = 5;
+  const CSV_VCI_ANNEE_PRECEDENTE = 6;
+  const CSV_VCI_RAFRAICHI = 7;
+  const CSV_VCI_COMPLEMENT = 8;
+  const CSV_VCI_DETRUIT = 9;
 
   protected function configure()
   {
@@ -127,7 +128,7 @@ class ImportAntsysDRevTask extends sfBaseTask
   }
 
   private function saveRows($rows) {
-    $campagne = "2016";
+    $campagne = $rows[0][self::CSV_ANNEE];
     $id = sprintf('%06d', $rows[0][self::CSV_ID]);
     echo "trying $id \n";
     $soc = SocieteClient::getInstance()->find($id);
@@ -169,8 +170,8 @@ class ImportAntsysDRevTask extends sfBaseTask
       }
     }
 
-    $drev->validate($campagne."-12-10");
-    $drev->validateOdg($campagne."-12-10");
+    $drev->validate($campagne."-12-15");
+    $drev->validateOdg($campagne."-12-15");
     $drev->save();
   }
 }
