@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(20);
+$t = new lime_test(26);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -40,18 +40,30 @@ foreach($produits as $produit) {
 }
 
 $produit1 = $drev->addProduit($produit_hash1);
+
 $produit2 = $drev->addProduit($produit_hash2);
 
-$drev->save();
+$produit3 = $drev->addProduit($produit_hash2, "BIO");
 
-$drev->declaration->reorderByConf();
-
+$produit_hash1 = $produit1->getHash();
+$produit_hash2 = $produit2->getHash();
+$produit_hash3 = $produit3->getHash();
 $drev->save();
 
 $t->is($drev->exist($produit_hash1), true, "La produit ajouté existe");
 $t->is($drev->get($produit_hash1)->getHash(), $produit_hash1, "La produit ajouté est récupérable");
+
+$t->is($drev->get($produit_hash2)->getKey(), "DEFAUT", "La clé du produit est DEFAUT");
+$t->is($drev->get($produit_hash2)->denomination_complementaire, null, "La dénomination complémentaire est null");
+$t->is($drev->get($produit_hash2)->libelle, $drev->get($produit_hash2)->getConfig()->getLibelleComplet(), "Le libellé est enregistré");
+
+$t->ok($drev->get($produit_hash3)->getKey() != "DEFAUT", "La clé du produit bio n'est pas DEFAUT");
+$t->is($drev->get($produit_hash3)->denomination_complementaire, "BIO", "La dénomination complémentaire est BIO");
+$t->is($drev->get($produit_hash3)->libelle, $drev->get($produit_hash3)->getConfig()->getLibelleComplet()." BIO", "La dénomination complémentaire est dans le libellé");
+
 $produit1 = $drev->get($produit_hash1);
 $produit2 = $drev->get($produit_hash2);
+$produit3 = $drev->get($produit_hash3);
 
 $produit1->superficie_revendique = 200;
 $produit1->volume_revendique_issu_recolte = 80;
@@ -61,7 +73,7 @@ $produit2->volume_revendique_issu_recolte = 110;
 
 $drev->save();
 
-$t->is(count($drev->getProduits()), 2, "La drev a 2 produits");
+$t->is(count($drev->getProduits()), 3, "La drev a 3 produits");
 $t->is($drev->declaration->getTotalTotalSuperficie(), 350, "La supeficie revendiqué totale est 350");
 $t->is($drev->declaration->getTotalVolumeRevendique(), 190, "Le volume revendiqué totale est 190");
 

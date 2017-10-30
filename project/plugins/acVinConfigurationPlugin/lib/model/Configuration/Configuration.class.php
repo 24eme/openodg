@@ -20,7 +20,7 @@ class Configuration extends BaseConfiguration {
       foreach ($this->getProduits() as $produit) {
           if($produit->getNodeCahierDesCharges()){
             $produitAppellation = $produit->getNodeCahierDesCharges();
-            $produits[] = $produitAppellation;
+            $produits[$produitAppellation->getHash()] = $produitAppellation;
           }
       }
       return $produits;

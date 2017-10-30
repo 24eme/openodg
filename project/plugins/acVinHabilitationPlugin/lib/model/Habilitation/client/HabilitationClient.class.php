@@ -98,17 +98,24 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-          return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
-                      ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);//acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
-          $history = array();
-          foreach($ids as $id) {
-                $history[] = HabilitationClient::getInstance()->find($id, $hydrate);
-          }
-          return $history;
+
+            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
+                      ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
         }
 
         public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
           $history = $this->getHistory($identifiant, $hydrate);
           return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
+        }
+
+        public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+          $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-00000000-00000000")
+                      ->endkey(self::TYPE_COUCHDB."-99999999-99999999")->execute($hydrate);
+          $etbIds = array();
+          foreach ($allHabilitations as $habilitation) {
+            $etbIds[$habilitation->getIdentifiant()] = $habilitation->getIdentifiant();
+          }
+          krsort($etbIds);
+          return array_unique($etbIds);
         }
     }

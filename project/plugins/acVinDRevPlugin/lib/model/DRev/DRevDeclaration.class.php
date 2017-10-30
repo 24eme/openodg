@@ -29,10 +29,23 @@ class DRevDeclaration extends BaseDRevDeclaration
 
 	public function cleanNode() {
 		$hash_to_delete = array();
-		foreach($this as $child) {
-			if($child->isCleanable()) {
-				$hash_to_delete[] = $child->getHash();
+		foreach($this->getProduits() as $produit) {
+			if($produit->isCleanable()) {
+				$hash_to_delete[] = $produit->getHash();
 			}
+		}
+
+		foreach($hash_to_delete as $hash) {
+			$this->getDocument()->remove($hash);
+		}
+
+		$hash_to_delete = array();
+		foreach($this as $child) {
+			if(count($child) > 0) {
+				continue;
+			}
+
+			$hash_to_delete[] = $produit->getHash();
 		}
 
 		foreach($hash_to_delete as $hash) {
@@ -43,12 +56,14 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getProduits($onlyActive = false)
     {
         $produits = array();
-        foreach($this as $key => $item) {
-			if ($onlyActive && !$item->isActive()) {
+        foreach($this as $key => $items) {
+			foreach($items as $item) {
+				if ($onlyActive && !$item->isActive()) {
 
-	    		continue;
-	    	}
-            $produits[$item->getHash()] = $item;
+		    		continue;
+		    	}
+	            $produits[$item->getHash()] = $item;
+			}
         }
 
         return $produits;
@@ -67,7 +82,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 
         return $produitsVci;
     }
-    
+
     public function hasVciDetruit()
     {
     	$has = false;
@@ -105,16 +120,6 @@ class DRevDeclaration extends BaseDRevDeclaration
 
     }
 
-    public function getProduitsCepage()
-    {
-        $produits = array();
-        foreach($this as $key => $item) {
-            $produits = array_merge($produits, $item->getProduitsCepage());
-        }
-
-        return $produits;
-    }
-
     public function hasVtsgn() {
         foreach($this->getProduits() as $produit) {
             if($produit->canHaveVtsgn() && $produit->volume_revendique_vtsgn) {
@@ -135,7 +140,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getTotalTotalSuperficie()
     {
     	$total = 0;
-        foreach($this as $key => $item) {
+        foreach($this->getProduits() as $key => $item) {
             $total += $item->getTotalTotalSuperficie();
         }
         return $total;
@@ -144,7 +149,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getTotalVolumeRevendique()
     {
     	$total = 0;
-        foreach($this as $key => $item) {
+        foreach($this->getProduits() as $key => $item) {
             $total += $item->getTotalVolumeRevendique();
         }
         return $total;
@@ -153,7 +158,7 @@ class DRevDeclaration extends BaseDRevDeclaration
 	public function getTotalSuperficieVinifiee()
     {
     	$total = 0;
-        foreach($this as $key => $item) {
+        foreach($this->getProduits() as $key => $item) {
             $total += $item->getTotalSuperficieVinifiee();
         }
         return $total;

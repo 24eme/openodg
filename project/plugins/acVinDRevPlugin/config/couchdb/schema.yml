@@ -47,37 +47,43 @@ DRev:
           fields:
             '*':
               type: collection
-              class: DRevProduit
+              class: DRevDeclaration
               definition:
                 fields:
-                  libelle: { }
-                  superficie_revendique: { type: float }
-                  volume_revendique_issu_recolte: { type: float }
-                  volume_revendique_issu_vci: { type: float }
-                  volume_revendique_total: { type: float }
-                  vci:
+                  '*':
                     type: collection
+                    class: DRevProduit
                     definition:
                       fields:
-                        stock_precedent: { type: float }
-                        destruction: { type: float }
-                        complement: { type: float }
-                        substitution: { type: float }
-                        rafraichi: { type: float }
-                        constitue: { type: float }
-                        stock_final: { type: float }
-                  recolte:
-                    type: collection
-                    definition:
-                      fields:
-                        volume_sur_place: { type: float }
-                        volume_sur_place_revendique: { type: float }
-                        usages_industriels_sur_place: { type: float }
-                        usages_industriels_total: { type: float }
-                        volume_total: { type: float }
-                        superficie_total: { type: float }
-                        recolte_nette: { type: float }
-                        vci_constitue: { type: float }
+                        libelle: { }
+                        denomination_complementaire: { }
+                        superficie_revendique: { type: float }
+                        volume_revendique_issu_recolte: { type: float }
+                        volume_revendique_issu_vci: { type: float }
+                        volume_revendique_total: { type: float }
+                        vci:
+                          type: collection
+                          definition:
+                            fields:
+                              stock_precedent: { type: float }
+                              destruction: { type: float }
+                              complement: { type: float }
+                              substitution: { type: float }
+                              rafraichi: { type: float }
+                              constitue: { type: float }
+                              stock_final: { type: float }
+                        recolte:
+                          type: collection
+                          definition:
+                            fields:
+                              volume_sur_place: { type: float }
+                              volume_sur_place_revendique: { type: float }
+                              usages_industriels_sur_place: { type: float }
+                              usages_industriels_total: { type: float }
+                              volume_total: { type: float }
+                              superficie_total: { type: float }
+                              recolte_nette: { type: float }
+                              vci_constitue: { type: float }
       prelevements:
         type: collection
         definition:

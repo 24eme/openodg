@@ -690,8 +690,8 @@ class drevActions extends sfActions {
             $this->drev->validate();
         }
 
-        if($this->getUser()->isAdmin() && $this->drev->hasCompleteDocuments()) {
-            //$this->drev->validateOdg();
+        if($this->getUser()->isAdmin() && !$this->validation->hasPoints() && $this->drev->hasCompleteDocuments()) {
+            $this->drev->validateOdg();
         }
 
         $this->drev->save();
@@ -720,7 +720,7 @@ class drevActions extends sfActions {
 
         $documents = $this->drev->getOrAdd('documents');
 
-        if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
+        if($this->getUser()->isAdmin() && $this->drev->validation) {
             $this->validation = new DRevValidation($this->drev);
         }
 

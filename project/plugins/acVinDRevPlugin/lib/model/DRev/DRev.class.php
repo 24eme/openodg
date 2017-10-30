@@ -14,6 +14,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     const BOUTEILLE_ALSACE = 'bouteille_ALSACE';
     const BOUTEILLE_GRDCRU = 'bouteille_GRDCRU';
     const BOUTEILLE_VTSGN = 'bouteille_VTSGN';
+    const DEFAULT_KEY = 'DEFAUT';
 
     public static $prelevement_libelles = array(
         self::CUVE => "Dégustation conseil",
@@ -242,7 +243,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             	$produit->superficie_revendique = $produitRecolte->superficie_total;
             }
         }
-        foreach ($this->declaration as $hash => $p) {
+        foreach ($this->declaration->getProduits() as $hash => $p) {
         	if (!$p->recolte->volume_sur_place) {
         		if (!in_array($hash, $todelete)) {
         			$todelete[] = $hash;
@@ -296,8 +297,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             $this->updatePrelevementsFromRevendication();
             $this->updateLotsFromCepage();
         }
-
-        $this->declaration->reorderByConf();
     }
 
     public function updateFromDRev($drev) {
@@ -360,8 +359,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $this->getOrAdd($lot->hash_produit)->addDetailNode();
             }
         }
-
-        $this->declaration->reorderByConf();
     }
 
     public function addAppellation($hash) {
@@ -383,13 +380,27 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $appellation;
     }
 
-    public function addProduit($hash, $add_appellation = true) {
-        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
-        $produit = $this->add('declaration')->add($hashToAdd);
+    public function addProduit($hash, $denominationComplementaire = null) {
+        $detailKey = self::DEFAULT_KEY;
 
+        if($denominationComplementaire){
+            $detailKey = substr(hash("sha1", KeyInflector::slugify(trim($denominationComplementaire))), 0, 7);
+        }
+
+        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $exist = $this->exist('declaration/'.$hashToAdd);
+        $produit = $this->add('declaration')->add($hashToAdd)->add($detailKey);
+        $produit->denomination_complementaire = null;
+        if($denominationComplementaire) {
+            $produit->denomination_complementaire = $denominationComplementaire;
+        }
         $produit->getLibelle();
 
-        return $produit;
+        if(!$exist) {
+            $this->declaration->reorderByConf();
+        }
+
+        return $this->get($produit->getHash());
     }
 
     public function addProduitCepage($hash, $lieu = null, $add_appellation = true) {

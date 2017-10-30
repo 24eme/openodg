@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(9);
+$t = new lime_test(43);
 $t->comment("Lancement d'un import light");
 
 $import_entite_task = new importEntiteFromXmlTask($this->dispatcher, $this->formatter);
@@ -49,6 +49,7 @@ ob_start();
 $import_entite_task->run(array('file_path' => '/tmp/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_9967.xml'),array());
 $import_entite_task_ret = ob_get_contents();
 ob_end_clean();
+
 $societe9967 = SocieteClient::getInstance()->find("SOCIETE-009967");
 $etablissement9967 = EtablissementClient::getInstance()->find("ETABLISSEMENT-00996701");
 $compte996701 = CompteClient::getInstance()->find("COMPTE-00996701");
@@ -96,3 +97,56 @@ $compte01419902 = CompteClient::getInstance()->find("COMPTE-01419902");
 $t->isnt($compte01419902, null, "Le compte 01419902 existe en tant qu'interlocuteur");
 
 $t->is($compte01419902->nom, "PALY", "Son nom est bon.");
+
+
+
+$t->comment("Import de la societe 19499 pour tester les groupes");
+ob_start();
+$import_entite_task->run(array('file_path' => '/tmp/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_19499.xml'),array());
+$import_entite_task_ret = ob_get_contents();
+ob_end_clean();
+
+$societe19499 = SocieteClient::getInstance()->find("SOCIETE-019499");
+$t->isnt($societe19499, null, "La societe 014199 existe");
+$t->is($societe19499->raison_sociale,"LES COTEAUX DU MORTIER (EARL)", "La societe 019499 a la bonne raison sociale");
+
+$t->comment("Import de l'interlocuteur 20104 de la societe 19499 pour tester les groupes");
+ob_start();
+$import_entite_task->run(array('file_path' => '/tmp/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_nogroupes_20104.xml'),array());
+$import_entite_task_ret = ob_get_contents();
+ob_end_clean();
+
+// Compte interlocuteur
+$compte01949902 = CompteClient::getInstance()->find("COMPTE-01949902");
+$t->isnt($compte01949902, null, "Le compte 01949902 existe en tant qu'interlocuteur");
+$t->is($compte01949902->nom, "AGIER", "Son nom est bon.");
+
+$typeg = "groupes";
+$tag_0 = "Assemblee Generale 2014 ";
+$tag_1 = "Conseil d'Administration 2014 ";
+$tag_s0 = "assemblee_generale_2014_";
+$tag_s1 = "conseil_d_administration_2014_";
+
+$t->ok($compte01949902->exist('groupes'),"Le compte 01949902 possède la clé groupe ");
+
+$t->ok(count($compte01949902->groupes),"Le compte 01949902 a des groupes ");
+
+$t->ok($compte01949902->groupes->exist($tag_0),"Le compte 01949902 possède le groupe : ".$tag_0."");
+$t->ok($compte01949902->groupes->exist($tag_1),"Le compte 01949902 possède le groupe : ".$tag_1."");
+
+$fct0 = "Délégué";
+$fct1 = "Suppléant";
+
+if($compte01949902->groupes->exist($tag_0) && $compte01949902->groupes->exist($tag_1)){
+  $t->is($compte01949902->groupes->$tag_0,$fct0,"Le compte 01949902 a la fct $fct0 dans le groupe $tag_0");
+  $t->is($compte01949902->groupes->$tag_1,$fct1,"Le compte 01949902 a la fct $fct1 dans le groupe $tag_1");
+}
+
+$t->ok(array_key_exists($typeg,$compte01949902->getTags()->toArray(1,0)),"Le compte 01949902 a un type de tag : ".$typeg."");
+
+foreach ($compte01949902->getTags() as $typet => $t_t){
+  if($typet == $typeg){
+    $t->ok(in_array($tag_s0,$t_t->toArray(1,0)),"Le compte 01949902 possède le tag : ".$tag_0."");
+    $t->ok(in_array($tag_s1,$t_t->toArray(1,0)),"Le compte 01949902 possède le tag : ".$tag_1."");
+  }
+}

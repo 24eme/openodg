@@ -58,9 +58,6 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php foreach ($form['produits'] as $key => $embedForm): ?>
                 <?php $produit = $drev->get($key); ?>
                 <?php include_partial("drev/revendicationForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => false)); ?>
-                <?php if(isset($embedForm['superficie_revendique_vtsgn']) || isset($embedForm['volume_revendique_vtsgn'])): ?>
-                    <?php include_partial("drev/revendicationForm", array('produit' => $produit, 'form' => $embedForm, 'drev' => $drev, 'appellation' => $appellation, 'global_error_id' => $global_error_id, 'vtsgn' => true)); ?>
-                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
