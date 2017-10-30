@@ -22,11 +22,12 @@ $drev->save();
 $t->comment("Récupération des données à partir de la DR");
 
 $csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane.csv');
+$bailleurs = $csv->bailleurs;
 $csvContent = $csv->convert();
 file_put_contents("/tmp/dr.csv", $csvContent);
 $csv = new DRCsvFile("/tmp/dr.csv");
 
-$drev->importCSVDouane($csv->getCsv());
+$drev->importCSVDouane($csv->getCsv(), $bailleurs);
 $drev->save();
 
 $t->is(count($drev->getProduits()), 2, "La DRev a repris 2 produits du csv de la DR");
