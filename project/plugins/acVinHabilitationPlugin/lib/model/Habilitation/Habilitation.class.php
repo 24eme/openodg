@@ -49,6 +49,11 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return acCouchdbManager::getClient('Configuration')->getConfiguration();
     }
 
+    public function getProduitsConfig() {
+
+        return $this->getConfiguration()->getProduitsCahierDesCharges();
+    }
+
     public function getProduits($onlyActive = true) {
         return $this->declaration->getProduits($onlyActive);
     }
@@ -82,11 +87,17 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function addProduit($hash) {
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $exist = $this->exist('declaration/'.$hashToAdd);
         $produit = $this->add('declaration')->add($hashToAdd);
         $produit_libelle = $produit->getLibelle();
         $produit->initActivites();
         $this->addHistoriqueNewProduit($produit_libelle);
-        return $produit;
+
+        if(!$exist) {
+            $this->declaration->reorderByConf();
+        }
+
+        return $this->get($produit->getHash());
     }
 
 
@@ -179,5 +190,25 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         return false;
     }
+
+    public function reorderByConf() {
+		$children = array();
+
+		foreach($this as $hash => $child) {
+			$children[$hash] = $child->getData();
+		}
+
+		foreach($children as $hash => $child) {
+			$this->remove($hash);
+		}
+
+		foreach($this->getConfig()->getProduits() as $hash => $child) {
+			$hashProduit = str_replace("/declaration/", "", $hash);
+			if(!array_key_exists($hashProduit, $children)) {
+				continue;
+			}
+			$this->add($hashProduit, $children[$hashProduit]);
+		}
+	}
 
 }

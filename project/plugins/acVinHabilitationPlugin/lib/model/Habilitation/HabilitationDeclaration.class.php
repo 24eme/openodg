@@ -22,7 +22,7 @@ class HabilitationDeclaration extends BaseHabilitationDeclaration {
             $this->remove($hash);
         }
 
-        foreach($this->getConfig()->getProduits() as $hash => $child) {
+        foreach($this->getDocument()->getProduitsConfig() as $hash => $child) {
             $hashProduit = str_replace("/declaration/", "", $hash);
             if(!array_key_exists($hashProduit, $children)) {
                 continue;
