@@ -70,6 +70,15 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return preg_replace('/[^a-z0-9éàùèêëïç]+/', '_', $tag);
     }
 
+    public function addInGroupes($grp,$fct){
+        $allGrps = $this->getOrAdd('groupes');
+        if($allGrps->exist($grp)){
+          return;
+        }
+        $allGrps->add($grp,$fct);
+        $this->addTag('groupes', $grp);
+    }
+
     public function addTag($type, $tag) {
         $tags = $this->add('tags')->add($type)->toArray(true, false);
         $tags[] = Compte::transformTag($tag);

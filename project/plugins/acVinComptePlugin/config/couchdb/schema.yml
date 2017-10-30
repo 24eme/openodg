@@ -61,6 +61,11 @@ Compte:
             ppm: { }
       interpro: {  }
       statut: {  }
+      groupes:
+        type: collection
+        definition:
+          fields:
+            '*': {}
       tags:
         type: collection
         definition:
