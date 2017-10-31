@@ -85,53 +85,7 @@
         var datePickers = $('.date-picker');
         datePickers.each(function ()
         {
-            var currentDp = $(this);
-            hasValue = currentDp.find('input').val();
-            currentDp.datetimepicker
-                    ({
-                        language: 'fr',
-                        pickTime: false,
-                        useCurrent: false,
-                        calendarWeeks: true,
-                    });
-            if (!hasValue) {
-                currentDp.find('input').val('');
-            }
-
-            currentDp.on('focus', 'input', function ()
-            {
-                currentDp.data('DateTimePicker').show();
-            });
-        });
-        var datePickers = $('.date-picker-all-days');
-        datePickers.each(function ()
-        {
-            var currentDp = $(this);
-            currentDp.datetimepicker
-                    ({
-                        language: 'fr',
-                        pickTime: false
-                    });
-            currentDp.on('focus', 'input', function ()
-            {
-                currentDp.data('DateTimePicker').show();
-            });
-        });
-        var datePickers = $('.date-picker-time');
-        datePickers.each(function ()
-        {
-            var currentDp = $(this);
-            currentDp.datetimepicker
-                    ({
-                        language: 'fr',
-                        pickDate: false,
-                        useCurrent: false,
-                        minuteStepping: 5
-                    });
-            currentDp.on('focus', 'input', function ()
-            {
-                currentDp.data('DateTimePicker').show();
-            });
+            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY' });
         });
     };
     $.fn.initSelect2Autocomplete = function ()

@@ -36,6 +36,17 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<span class="error"><?php echo $form['date']->renderError() ?></span>
+						<div class="col-xs-10 col-xs-offset-1">
+							<div class="input-group date-picker">
+								<?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"class" => "col-xs-12")) ?>
+								<div class="input-group-addon">
+										<span class="glyphicon-calendar glyphicon"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
 						<span class="error"><?php echo $form['statut']->renderError() ?></span>
 						<div class="col-xs-10 col-xs-offset-1">
 						<?php echo $form['statut']->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
