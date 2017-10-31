@@ -16,7 +16,7 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
     const STATUT_HABILITE = "HABILITE";
-    const STATUT_SUSPENDU = "SUSPENTU";
+    const STATUT_SUSPENDU = "SUSPENDU";
     const STATUT_REFUS = "REFUS";
     const STATUT_RETRAIT = "RETRAIT";
     const STATUT_ANNULE = "ANNULÉ";
