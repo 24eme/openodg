@@ -207,10 +207,25 @@ class compteActions extends sfCredentialActions {
 
     public function executeRemovetag(sfWebRequest $request) {
       if (!$this->addremovetag($request, true)) {
-		return ;
+		      return ;
       }
       $this->args['tags'] = implode(',', array_diff($this->selected_rawtags, array('manuel:'.$request->getParameter('tag'))));
       return $this->redirect('compte_search', $this->args);
+    }
+
+    public function executeGroupes(sfWebRequest $request){
+      $index = acElasticaManager::getType('COMPTE');
+      $this->groupeName = $request->getParameter('groupeName');
+      $request->addRequestParameters(array('tags' => "groupes:".$this->groupeName));
+
+      $q = $this->initSearch($request);
+		  $elasticaFacet 	= new acElasticaFacetTerms('groupes');
+		  $elasticaFacet->setField( 'doc.tags.groupes');
+		  $elasticaFacet->setSize(100);
+		  $q->addFacet($elasticaFacet);
+      $q->setLimit(5000);
+      $resset = $index->search($q);
+      $this->results = $resset->getResults();
     }
 
     public function executeSearch(sfWebRequest $request) {
@@ -221,7 +236,7 @@ class compteActions extends sfCredentialActions {
       $q = $this->initSearch($request);
       $q->setLimit($res_by_page);
       $q->setFrom($from);
-      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'automatique' => 'doc.tags.automatique');
+      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique');
       foreach($facets as $nom => $f) {
 		$elasticaFacet 	= new acElasticaFacetTerms($nom);
 		$elasticaFacet->setField($f);
@@ -230,7 +245,6 @@ class compteActions extends sfCredentialActions {
       }
 
       $index = acElasticaManager::getType('COMPTE');
-
       $resset = $index->search($q);
 
       $this->results = $resset->getResults();
