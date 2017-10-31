@@ -26,6 +26,7 @@ class DRevValidation extends DocumentValidation {
         $this->addControle(self::TYPE_WARNING, 'lot_sans_cepage_revendique', 'Vous avez déclaré un lot pour un cépage que vous n\'avez pas revendiqué.');
 
         $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation.');
+        $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous revendiquez plus de volume que celui qui figure sur votre DR en L15');
 
         /*
          * Error
@@ -395,6 +396,10 @@ class DRevValidation extends DocumentValidation {
         }
         if (!$produit->isHabilite()) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        }
+
+        if ($produit->recolte->volume_sur_place_revendique && ($produit->recolte->volume_sur_place_revendique >= $produit->volume_revendique_issu_recolte)) {
+          $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
 
     }
