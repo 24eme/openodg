@@ -9,23 +9,23 @@ class ConfigurationProduit
 	protected static $codeCouleurs = array('Rouge' => 'rouge', 'Blanc' => 'blanc', 'Rosé' => 'rose');
 	protected static $libellesNoeud = array (
     	'certification' => 'Catégorie',
-	    'genre' => 'Genre', 
+	    'genre' => 'Genre',
 	    'appellation' => 'Dénomination',
-	    'mention' => 'Mention', 
-	    'lieu' => 'Lieu', 
-	    'couleur' => 'Couleur', 
+	    'mention' => 'Mention',
+	    'lieu' => 'Lieu',
+	    'couleur' => 'Couleur',
 	    'cepage' => 'Cépage'
     );
-	
+
 	protected $datas;
 	protected $appellations;
 	protected $lieux;
 	protected $cepages;
-	
+
 	const APPELLATION_KEY = 6;
 	const LIEU_KEY = 8;
 	const CEPAGE_KEY = 12;
-	
+
 	public function __construct($interpro) {
 		$this->datas = ConfigurationClient::getInstance()->findProduitsForAdmin($interpro);
 		$this->appellations = array('' => '');
@@ -33,7 +33,7 @@ class ConfigurationProduit
 		$this->cepages = array('' => '');
 		$this->loadDatas();
 	}
-	
+
 	private function loadDatas() {
     	foreach ($this->datas->rows as $produit) {
     		$hash = $produit->key[8];
@@ -55,6 +55,9 @@ class ConfigurationProduit
     public function getAppellations() {
     	return $this->appellations;
     }
+		public function getNodeCahierDesCharges() {
+				return $this->getAppellation();
+		}
     public function getLieux() {
     	return $this->lieux;
     }

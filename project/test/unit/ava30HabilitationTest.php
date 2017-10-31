@@ -58,7 +58,7 @@ $t->is(count($habilitation->historique), 2, "la modification de l'activité a é
 
 $t->comment("Changement d'activité");
 
-$habProduit->activites[$activiteKey]->updateHabilitation(HabilitationClient::STATUT_HABILITE , "INAO OK");
+$habProduit->updateHabilitation($activiteKey, HabilitationClient::STATUT_HABILITE , "INAO OK");
 $habilitation->save();
 $t->is($habProduit->activites[$activiteKey]->statut, HabilitationClient::STATUT_HABILITE, "le statut de l'activité a été changée");
 $t->is(count($habilitation->historique), 3, "la modification de l'activité a été enregistrée dans l'historique");
