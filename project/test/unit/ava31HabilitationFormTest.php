@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(15);
+$t = new lime_test(17);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -56,7 +56,9 @@ $t->comment("Form d'ajout de produit avec activité");
 $activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR,HabilitationClient::ACTIVITE_VINIFICATEUR,HabilitationClient::ACTIVITE_VRAC);
 $form = new HabilitationAjoutProduitForm($habilitation);
 $statut = HabilitationClient::STATUT_DEMANDE_HABILITATION;
-$form->bind(array('hashref' => $produitConfig_1->getHash(), 'statut' => $statut, 'activites' => $activites, '_revision' => $habilitation->_rev));
+$date = "07/09/1985";
+$dateIso = "1985-09-07";
+$form->bind(array('hashref' => $produitConfig_1->getHash(), 'statut' => $statut, 'date' => $date, 'activites' => $activites, '_revision' => $habilitation->_rev));
 
 $t->ok($form->isValid(), "Le formulaire d'ajout est valide");
 $form->save();
@@ -66,12 +68,19 @@ $t->ok($habilitation->exist($produitConfig_1->getHash()), "Le produit ajouté es
 
 $HabilitationActivites = $habilitation->get($produitConfig_1->getHash())->activites;
 $activite_tmp = array();
+$dates = array();
 foreach ($HabilitationActivites as $key => $activite) {
   if($activite->statut == $statut){
     $activite_tmp[] = $key;
+    $dates[$activite->date] = $activite->date;
   }
 }
 $t->ok(count($activite_tmp) == 3, "Le produit a 3 activites en demande");
+
+$t->ok(count($dates) == 1, "Le produit a ses activites avec une seule date");
+$f_date = array_pop($dates);
+$t->is($f_date,$dateIso, "Le produit a ses activites avec la date $date");
+
 
 $produit = $habilitation->get($produitConfig_0->getHash());
 $activiteKey = null;
