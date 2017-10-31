@@ -89,7 +89,7 @@ EOF;
         $this->convert_produits['vinsobres'] = 'certifications/AOP/genres/TRANQ/appellations/VBR';
 
         $this->convert_statut = array();
-        $this->convert_statut["Demande d'habilitation"] = HabilitationClient::STATUT_DEMANDE;
+        $this->convert_statut["Demande d'habilitation"] = HabilitationClient::STATUT_DEMANDE_HABILITATION;
         $this->convert_statut['Habilité'] = HabilitationClient::STATUT_HABILITE;
         $this->convert_statut['Refus'] = HabilitationClient::STATUT_REFUS;
         $this->convert_statut['Retrait'] = HabilitationClient::STATUT_RETRAIT;

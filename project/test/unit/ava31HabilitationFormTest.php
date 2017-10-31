@@ -55,7 +55,7 @@ $t->ok($habilitation->exist($produitConfig_0->getHash()), "Le produit ajouté es
 $t->comment("Form d'ajout de produit avec activité");
 $activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR,HabilitationClient::ACTIVITE_VINIFICATEUR,HabilitationClient::ACTIVITE_VRAC);
 $form = new HabilitationAjoutProduitForm($habilitation);
-$statut = HabilitationClient::STATUT_DEMANDE;
+$statut = HabilitationClient::STATUT_DEMANDE_HABILITATION;
 $form->bind(array('hashref' => $produitConfig_1->getHash(), 'statut' => $statut, 'activites' => $activites, '_revision' => $habilitation->_rev));
 
 $t->ok($form->isValid(), "Le formulaire d'ajout est valide");

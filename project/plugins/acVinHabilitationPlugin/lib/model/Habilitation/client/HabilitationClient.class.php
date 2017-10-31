@@ -13,11 +13,13 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
 
 
-    const STATUT_DEMANDE = "STATUT_DEMANDE";
+    const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
+    const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
     const STATUT_HABILITE = "HABILITE";
     const STATUT_SUSPENDU = "SUSPENTU";
     const STATUT_REFUS = "REFUS";
     const STATUT_RETRAIT = "RETRAIT";
+    const STATUT_ANNULE = "ANNULÉ";
 
     public static $activites_libelles = array( self::ACTIVITE_PRODUCTEUR => "Producteur",
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
@@ -26,11 +28,13 @@ class HabilitationClient extends acCouchdbClient {
                                                   self::ACTIVITE_ELABORATEUR => "Élaborateur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse"
                                                 );
-    public static $statuts_libelles = array( self::STATUT_DEMANDE => "Demande",
-                                               self::STATUT_HABILITE => "Habilité",
-                                               self::STATUT_SUSPENDU => "Suspendu",
-                                               self::STATUT_REFUS => "Refus",
-                                               self::STATUT_RETRAIT => "Retrait");
+    public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
+                                             self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
+                                             self::STATUT_HABILITE => "Habilité",
+                                             self::STATUT_SUSPENDU => "Suspendu",
+                                             self::STATUT_REFUS => "Refus",
+                                             self::STATUT_ANNULE => "Annulé",
+                                             self::STATUT_RETRAIT => "Retrait");
 
     public static function getInstance()
     {

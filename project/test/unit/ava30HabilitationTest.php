@@ -51,7 +51,7 @@ $activite = $produit->activites->get($activiteKey);
 
 $t->comment("Ajout d'activité");
 
-$habProduit->activites[$activiteKey]->updateHabilitation(HabilitationClient::STATUT_DEMANDE, "dossier reçu");
+$habProduit->activites[$activiteKey]->updateHabilitation(HabilitationClient::STATUT_DEMANDE_HABILITATION, "dossier reçu");
 $habilitation->save();
 $t->is($habProduit->activites[$activiteKey]->date, $date, "l'activité a été changée");
 $t->is(count($habilitation->historique), 2, "la modification de l'activité a été enregistrée dans l'historique");
