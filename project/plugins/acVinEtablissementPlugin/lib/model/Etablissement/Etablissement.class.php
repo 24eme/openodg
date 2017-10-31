@@ -136,7 +136,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return ($this->nom) ? $this->nom : $this->raison_sociale;
     }
 
-    public function addLiaison($type, $etablissement) {
+    public function addLiaison($type, $etablissement,$saveOther = true) {
         if (!in_array($type, EtablissementClient::listTypeLiaisons()))
             throw new sfException("liaison type \"$type\" unknown");
         $liaison = $this->liaisons_operateurs->add($type . '_' . $etablissement->_id);
@@ -148,6 +148,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         }
         if($etablissement->exist('cvi') && $etablissement->cvi){
           $liaison->cvi = $etablissement->cvi;
+        }
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_BAILLEUR)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_METAYER,$this,false);
+          $etablissement->save();
+        }
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_METAYER)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR,$this,false);
+          $etablissement->save();
         }
         return $liaison;
     }
