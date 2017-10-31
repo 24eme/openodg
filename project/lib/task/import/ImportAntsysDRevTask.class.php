@@ -5,14 +5,15 @@ class ImportAntsysDRevTask extends sfBaseTask
   protected $types_ignore = array();
 
   const CSV_ID = 0;
-  const CSV_PRODUIT = 1;
-  const CSV_SURFACE = 2;
-  const CSV_VOLUME = 3;
-  const CSV_VOLUME_SANS_VCI = 4;
-  const CSV_VCI_ANNEE_PRECEDENTE = 5;
-  const CSV_VCI_RAFRAICHI = 6;
-  const CSV_VCI_COMPLEMENT = 7;
-  const CSV_VCI_DETRUIT = 8;
+  const CSV_ANNEE = 1;
+  const CSV_PRODUIT = 2;
+  const CSV_SURFACE = 3;
+  const CSV_VOLUME = 4;
+  const CSV_VOLUME_SANS_VCI = 5;
+  const CSV_VCI_ANNEE_PRECEDENTE = 6;
+  const CSV_VCI_RAFRAICHI = 7;
+  const CSV_VCI_COMPLEMENT = 8;
+  const CSV_VCI_DETRUIT = 9;
 
   protected function configure()
   {
@@ -36,7 +37,7 @@ class ImportAntsysDRevTask extends sfBaseTask
     //$this->convert_produits['chateau grillet'] = '';
     $this->convert_produits['CAIRANNE BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CAR/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['CAIRANNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CAR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
-    $this->convert_produits['CDRV CAIRANNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/CAI/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['CDRV CAIRANNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CAI/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV CHUSCLAN RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/CHU/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV CHUSCLAN RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/CHU/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['CDRV GADAGNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/GAD/couleurs/rouge/cepages/DEFAUT';
@@ -53,7 +54,10 @@ class ImportAntsysDRevTask extends sfBaseTask
     $this->convert_produits['CDRV ROAIX RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/ROX/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV ROAIX RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/ROX/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['CDRV ROCHEGUDE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/ROC/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['CDRV ROCHEGUDE BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/ROC/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['CDRV ROUSSET RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/RLV/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['CDRV ROUSSET BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/RLV/couleurs/blanc/cepages/DEFAUT';
+    $this->convert_produits['CDRV ROUSSET RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/RLV/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['CDRV SABLET BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/SAB/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['CDRV SABLET RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/SAB/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV SABLET RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/SAB/couleurs/rose/cepages/DEFAUT';
@@ -71,6 +75,8 @@ class ImportAntsysDRevTask extends sfBaseTask
     $this->convert_produits['CDRV SUZE LA ROUSSE Rouge'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/SLR/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV VAISON LA ROMAINE Rouge'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/VLR/couleurs/DEFAUT/cepages/DEFAUT';
     $this->convert_produits['CDRV VALREAS RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/VAL/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['CDRV VALREAS BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/VAL/couleurs/blanc/cepages/DEFAUT';
+    $this->convert_produits['CDRV VALREAS RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/VAL/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['CDRV VISAN BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/VIS/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['CDRV VISAN RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/VIS/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV VISAN RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/VIS/couleurs/rose/cepages/DEFAUT';
@@ -87,6 +93,7 @@ class ImportAntsysDRevTask extends sfBaseTask
     $this->convert_produits['HERMITAGE BLC'] = 'certifications/AOP/genres/TRANQ/appellations/HER/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['HERMITAGE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/HER/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['LIRAC RGE'] = 'certifications/AOP/genres/TRANQ/appellations/LIR/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
+    $this->convert_produits['LIRAC RSE'] = 'certifications/AOP/genres/TRANQ/appellations/LIR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['ST JOSEPH BLC'] = 'certifications/AOP/genres/TRANQ/appellations/SJO/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['ST JOSEPH RGE'] = 'certifications/AOP/genres/TRANQ/appellations/SJO/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['ST PERAY BLC MOUS.'] = 'certifications/AOP/genres/EFF/appellations/SPE/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
@@ -95,9 +102,12 @@ class ImportAntsysDRevTask extends sfBaseTask
     $this->convert_produits['VACQUEYRAS RGE'] = 'certifications/AOP/genres/TRANQ/appellations/VAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['VACQUEYRAS RSE'] = 'certifications/AOP/genres/TRANQ/appellations/VAC/mentions/DEFAUT/lieux/DEFAUT/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['VINSOBRES RGE'] = 'certifications/AOP/genres/TRANQ/appellations/VBR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['BEAUMES DE VENISE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/BEA/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['CHATEAU GRILLET BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CGR/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
     //        $this->convert_produits['VDT INT AIRE BLC'] = '';
     //        $this->convert_produits['VDT INT AIRE RGE'] = '';
     //        $this->convert_produits['VDT INT AIRE RSE'] = '';
+
   }
 
   protected function execute($arguments = array(), $options = array())
@@ -127,7 +137,7 @@ class ImportAntsysDRevTask extends sfBaseTask
   }
 
   private function saveRows($rows) {
-    $campagne = "2016";
+    $campagne = $rows[0][self::CSV_ANNEE];
     $id = sprintf('%06d', $rows[0][self::CSV_ID]);
     echo "trying $id \n";
     $soc = SocieteClient::getInstance()->find($id);
@@ -169,8 +179,8 @@ class ImportAntsysDRevTask extends sfBaseTask
       }
     }
 
-    $drev->validate($campagne."-12-10");
-    $drev->validateOdg($campagne."-12-10");
+    $drev->validate($campagne."-12-15");
+    $drev->validateOdg($campagne."-12-15");
     $drev->save();
   }
 }

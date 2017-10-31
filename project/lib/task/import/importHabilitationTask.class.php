@@ -70,22 +70,22 @@ EOF;
         //awk -F ';' '{print $9}' data/habilitation.csv | sort | uniq -c | wc -l   =====> 17
         $this->convert_produits['Beaumes de Venise'] = 'certifications/AOP/genres/TRANQ/appellations/BEA';
         $this->convert_produits['CAIRANNE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG';
-        //$this->convert_produits['chateau grillet'] = '';
+        $this->convert_produits['chateau grillet'] = 'certifications/AOP/genres/TRANQ/appellations/CGR';
         $this->convert_produits['condrieu'] = 'certifications/AOP/genres/TRANQ/appellations/COD';
         $this->convert_produits['cornas'] = 'certifications/AOP/genres/TRANQ/appellations/COR';
         $this->convert_produits['cote rotie'] = 'certifications/AOP/genres/TRANQ/appellations/CRO';
         $this->convert_produits['côtes du Rhone'] = 'certifications/AOP/genres/TRANQ/appellations/CDR';
         $this->convert_produits['côtes du Rhone village'] = 'certifications/AOP/genres/TRANQ/appellations/CVG';
-        //$this->convert_produits['cotes du vivarais'] = '';
+        $this->convert_produits['cotes du vivarais'] = 'certifications/AOP/genres/TRANQ/appellations/VIV';
         $this->convert_produits['crozes hermitage'] = 'certifications/AOP/genres/TRANQ/appellations/CRH';
         $this->convert_produits['gigondas'] = 'certifications/AOP/genres/TRANQ/appellations/GIG';
         $this->convert_produits['grignan les adhémar'] = 'certifications/AOP/genres/TRANQ/appellations/GLA';
         $this->convert_produits['hermitage'] = 'certifications/AOP/genres/TRANQ/appellations/HER';
-        //$this->convert_produits['lirac'] = '';
-        //$this->convert_produits['muscat de Beaumes'] = '';
+        $this->convert_produits['lirac'] = 'certifications/AOP/genres/TRANQ/appellations/LIR';
+        $this->convert_produits['muscat de Beaumes'] = 'certifications/AOP/genres/VDN/appellations/VDB';
         $this->convert_produits['st joseph'] = 'certifications/AOP/genres/TRANQ/appellations/SJO';
         $this->convert_produits['st péray'] = 'certifications/AOP/genres/TRANQ/appellations/SPT';
-        //$this->convert_produits['vdn rasteau'] = '';
+        $this->convert_produits['vdn rasteau'] = 'certifications/AOP/genres/VDN/appellations/VDR';
         $this->convert_produits['vinsobres'] = 'certifications/AOP/genres/TRANQ/appellations/VBR';
 
         $this->convert_statut = array();
