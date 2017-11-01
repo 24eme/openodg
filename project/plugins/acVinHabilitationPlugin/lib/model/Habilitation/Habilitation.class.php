@@ -38,9 +38,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function constructId() {
         $id = $this->getTheoriticalId();
-        if($this->version) {
-            $id .= "-".$this->version;
-        }
+
         $this->set('_id', $id);
     }
 
