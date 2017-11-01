@@ -103,6 +103,7 @@
                 <?php endif; ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Relations</strong></h5>
+                <?php if($etablissement->exist('liaisons_operateurs')  && count($etablissement->liaisons_operateurs)): ?>
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
@@ -119,6 +120,9 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php else: ?>
+                    <p class="text-muted">Aucune relation</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
