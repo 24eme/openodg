@@ -25,7 +25,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function getLogin() {
-        return preg_replace("/^[0-9]{6}([0-9]+)$/", "", $this->identifiant);
+        return preg_replace("/^([0-9]{6})([0-9]+)$/", '\1', $this->identifiant);
     }
 
     public function getMasterCompte() {

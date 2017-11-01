@@ -4,13 +4,17 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(60);
+$t = new lime_test(64);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
+}
+
+foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
+    HabilitationClient::getInstance()->deleteDoc(HabilitationClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
 }
 
 $campagne = (date('Y')-1)."";
@@ -197,8 +201,13 @@ $t->is($produit1->vci->stock_final, $produit1->vci->constitue + $produit1->vci->
 
 $drev->cleanDoc();
 
+$habilitation = HabilitationClient::getInstance()->createDoc($viti->identifiant, $drev->getDate());
+$habilitation->addProduit($produit1->getConfig()->getHash())->updateHabilitation(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::STATUT_HABILITE);
+$habilitation->save();
+
 $validation = new DRevValidation($drev);
 $erreurs = $validation->getPointsByCodes('erreur');
+$vigilances = $validation->getPointsByCodes('vigilance');
 
 $produit1->getConfig()->add('attributs')->add('rendement', 50);
 $produit1->getConfig()->add('attributs')->add('rendement_vci', 5);
@@ -210,13 +219,17 @@ $t->ok(!isset($erreurs['revendication_rendement']), "Pas de point blocant sur le
 $t->ok(!isset($erreurs['vci_stock_utilise']), "Pas de point blocant sur la repartition du vci");
 $t->ok(!isset($erreurs['vci_rendement_annee']), "Pas de point blocant sur le rendement à l'année du vci");
 $t->ok(!isset($erreurs['vci_rendement_total']), "Pas de point blocant sur le rendement total du vci");
+$t->is(count($vigilances['declaration_habilitation']), 1, "Pas de point de vigilance sur l'habilitation du premier produit");
+$t->ok(!isset($vigilences['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
 
 $drevControle = clone $drev;
-
+$habilitation->updateHabilitation($produit1->getConfig()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::STATUT_RETRAIT);
+$habilitation->save();
 $produitControle1 = $drevControle->get($produit1->getHash());
 $produitControle2 = $drevControle->get($produit2->getHash());
 
-$produitControle1->recolte->volume_total = 10000;
+$produitControle1->recolte->volume_sur_place_revendique = 1000;
+$produitControle1->recolte->volume_total = 1000;
 $produitControle1->volume_revendique_total = 10000;
 $produitControle1->vci->rafraichi = 0;
 $produitControle1->vci->constitue = 10000;
@@ -230,14 +243,13 @@ $erreurs = $validation->getPointsByCodes('erreur');
 $vigilances = $validation->getPointsByCodes('vigilance');
 
 $t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendication_incomplete']) == 1 && $erreurs['revendication_incomplete'][0]->getInfo() == $produitControle2->getLibelleComplet(), "Un point bloquant est levé car les infos de revendications n'ont pas été saisi");
-
 $t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
-
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
-
 $t->ok(isset($vigilances['vci_rendement_annee']) && count($vigilances['vci_rendement_annee']) == 1 && $vigilances['vci_rendement_annee'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
-
 $t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
+$t->is(count($vigilances['declaration_habilitation']), 1, "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
+$t->is(count($vigilances['declaration_volume_l15']), 1, "Point vigilance sur le respect de la ligne l15");
+
 
 $t->comment("Export CSV");
 

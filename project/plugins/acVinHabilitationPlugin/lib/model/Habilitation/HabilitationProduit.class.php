@@ -79,4 +79,16 @@ class HabilitationProduit extends BaseHabilitationProduit {
       }
       return false;
     }
+
+    public function updateHabilitation($activite, $statut, $commentaire = "", $date = ''){
+        if (!$this->exist('activites')) {
+          $this->initActivites();
+        }
+        if (!$this->activites->exist($activite)) {
+          throw new sfException('activite '.$activite.' non supportée');
+        }
+        return $this->activites[$activite]->updateHabilitation($statut, $commentaire, $date);
+    }
+
+
 }

@@ -31,6 +31,17 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
                   $drm->delete(false);
                   $t->is(DRMClient::getInstance()->find($id), null, "Suppression de la DRM ".$id);
               }
+              foreach (HabilitationClient::getInstance()->getHistory($etabl->etablissement->identifiant) as $id => $h) {
+                  $h = HabilitationClient::getInstance()->find($id);
+                  $h->delete(false);
+                  $t->is(HabilitationClient::getInstance()->find($id), null, "Suppression de l'habilitation ".$id);
+              }
+              foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $id => $d) {
+                  $d = DRevClient::getInstance()->find($id);
+                  $d->delete(false);
+                  $t->is(DRevClient::getInstance()->find($id), null, "Suppression de la drev ".$id);
+              }
+
           }
         }
         foreach (FactureSocieteView::getInstance()->findBySociete($soc) as $id => $facture) {

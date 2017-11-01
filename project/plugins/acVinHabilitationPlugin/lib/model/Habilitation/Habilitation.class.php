@@ -46,7 +46,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->getConfiguration();
+        return acCouchdbManager::getClient('Configuration')->getConfiguration($this->date);
     }
 
     public function getProduitsConfig() {
@@ -86,7 +86,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function addProduit($hash) {
-        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $hash = preg_replace("|/declaration/|", '', $hash);
+        $node = $this->getConfiguration()->get('/declaration/'.$hash)->getNodeCahierDesCharges();
+        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
         $exist = $this->exist('declaration/'.$hashToAdd);
         $produit = $this->add('declaration')->add($hashToAdd);
         $produit_libelle = $produit->getLibelle();
@@ -210,5 +212,16 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 			$this->add($hashProduit, $children[$hashProduit]);
 		}
 	}
+
+  public function isHabiliteFor($hash_produit, $activite) {
+    if (!$this->addProduit($hash_produit)->exist('activites')) {
+      return false;
+    }
+    return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
+  }
+
+  public function updateHabilitation($hash_produit, $activite, $statut, $commentaire = "", $date = ''){
+    return $this->addProduit($hash_produit)->updateHabilitation($activite, $statut, $commentaire, $date);
+  }
 
 }

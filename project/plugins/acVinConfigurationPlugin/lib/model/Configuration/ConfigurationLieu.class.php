@@ -32,6 +32,11 @@ class ConfigurationLieu extends BaseConfigurationLieu {
         return $this->getMention()->getAppellation();
     }
 
+		public function getNodeCahierDesCharges() {
+
+        return $this->getAppellation();
+    }
+
     public function getCertification() {
 
         return $this->getAppellation()->getCertification();

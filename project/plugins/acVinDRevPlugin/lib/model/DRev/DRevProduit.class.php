@@ -98,5 +98,13 @@ class DRevProduit extends BaseDRevProduit
 		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci);
 	}
 
+	public function isHabilite() {
+		$hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->document->identifiant, $this->document->getDate());
+		if (!$hab) {
+			return false;
+		}
+		return $hab->isHabiliteFor($this->getProduitHash(), HabilitationClient::ACTIVITE_VINIFICATEUR);
+	}
+
 
 }

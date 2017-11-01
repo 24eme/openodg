@@ -27,6 +27,11 @@ class ConfigurationMention extends BaseConfigurationMention {
         return $this->getParentNode();
     }
 
+		public function getNodeCahierDesCharges() {
+
+        return $this->getAppellation();
+    }
+
     public function getCertification() {
 
         return $this->getAppellation()->getCertification();
