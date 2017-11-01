@@ -49,7 +49,7 @@
 
     <div class="col-sm-3 col-xs-12">
         <p class="text-muted"><i><?php echo $nbResultats ?> déclaration<?php if ($nbResultats > 1): ?>s<?php endif; ?></i></p>
-        <p><a href="<?php //echo url_for('habilitation_export', array('query' => $query)) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
+        <p><a href="<?php echo url_for('habilitation_export', array('query' => $query)) ?>" class="btn btn-default btn-default-step btn-block btn-upper"><span class="glyphicon glyphicon-export"></span>&nbsp;&nbsp;Exporter en CSV</a>
         </p>
         <?php if($query && count($query) > 0): ?>
         <p>

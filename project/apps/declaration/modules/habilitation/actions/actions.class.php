@@ -124,6 +124,14 @@ class habilitationActions extends sfActions {
         }
     }
 
+    public function executeExport(sfWebRequest $request) {
+        $this->buildSearch($request);
+
+        $this->setLayout(false);
+        $attachement = sprintf("attachment; filename=export_habilitations_%s.csv", date('YmdHis'));
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
+    }
 
     protected function secure($droits, $doc) {
         if (!HabilitationSecurity::getInstance($this->getUser(), $doc)->isAuthorized($droits)) {
