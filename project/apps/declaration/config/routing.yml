@@ -1632,6 +1632,7 @@ generation_regenerate:
 habilitation:
   url: /habilitation
   param: { module: habilitation, action: index }
+  class: HabilitationGeneralRoute
 
 habilitation_export:
   url: /habilitation/export
