@@ -131,17 +131,22 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-
-
-	protected function doSave() {
-
-	}
-
   public function isLastOne(){
     $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
     return $this->_id == $last->_id;
   }
 
+  public function getPrevious() {
+      $date = new DateTime($this->date);
+      $date->modify('-1 day');
+      $precedente = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date->format('Y-m-d'));
+      if($precedente && $precedente->_id == $this->_id) {
+
+          return null;
+      }
+
+      return $precedente;
+  }
   private function addHistoriqueNewProduit($complement){
       $this->addHistorique("Ajout du produit : ".$complement);
   }
@@ -222,6 +227,16 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
   public function updateHabilitation($hash_produit, $activite, $statut, $commentaire = "", $date = ''){
     return $this->addProduit($hash_produit)->updateHabilitation($activite, $statut, $commentaire, $date);
+  }
+
+  public function save() {
+      parent::save();
+      $precedente = $this->getPrevious();
+
+      if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
+          $precedente->add('lecture_seule', true);
+          $precedente->save();
+      }
   }
 
 }

@@ -4,6 +4,11 @@ function(doc) {
         return;
     }
 
+    if(doc.lecture_seule) {
+
+        return;
+    }
+
     for(hash in doc.declaration) {
 	    var produit = doc.declaration[hash];
 
