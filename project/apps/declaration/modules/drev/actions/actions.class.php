@@ -791,6 +791,24 @@ class drevActions extends sfActions {
         return $this->renderText($this->document->output());
     }
 
+    public function executeXML(sfWebRequest $request) {
+        $drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $drev);
+        if (!$drev->validation) {
+            $drev->cleanDoc();
+        }
+		$xml = $this->getPartial('drev/xml', array('drev' => $drev));
+        $this->getResponse()->setHttpHeader('md5', md5($xml));
+        $this->getResponse()->setHttpHeader('LastDocDate', date('r'));
+        $this->getResponse()->setHttpHeader('Last-Modified', date('r'));
+        $this->getResponse()->setHttpHeader('Pragma', '');
+        $this->getResponse()->setHttpHeader('Cache-Control', 'public');
+        $this->getResponse()->setHttpHeader('Expires', '0');
+        $this->getResponse()->setContentType('text/xml');
+        $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev.".xml");
+        return $this->renderText($xml);
+    }
+
     public function executeDrPdf(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VISUALISATION, $drev);

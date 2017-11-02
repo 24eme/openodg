@@ -105,6 +105,20 @@ class DRevProduit extends BaseDRevProduit
 		}
 		return $hab->isHabiliteFor($this->getProduitHash(), HabilitationClient::ACTIVITE_VINIFICATEUR);
 	}
+	
+	public function getCodeCouleur()
+	{
+		if (preg_match('/\/rouge\//', $this->getHash())) {
+			return 1;
+		}
+		if (preg_match('/\/rose\//', $this->getHash())) {
+			return 2;
+		}
+		if (preg_match('/\/blanc\//', $this->getHash())) {
+			return 3;
+		}
+		return null;
+	}
 
 
 }
