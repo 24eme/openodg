@@ -75,7 +75,7 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
 
         $csv = '';
         foreach ($produits as $p) {
-	    	$csv .= implode(';', $doc).';'.implode(';', $p)."\n";
+	    	$csv .= implode(';', $doc).';;;'.implode(';', $p)."\n";
         }
         return $csv;
     }
