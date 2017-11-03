@@ -40,8 +40,12 @@ class etablissementActions extends sfCredentialActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->societe = $this->etablissement->getSociete();
         $this->applyRights();
+        $this->compte = $this->etablissement->getMasterCompte();
+        if((!$this->compte->lat && !$this->compte->lon) || !$this->compte->hasLatLonChais()){
+          $this->compte->updateCoordonneesLongLat(true);
+          $this->compte->save();
 
-        //$this->redirect('etablissement_visualisation', array('sf_subject' => $this->etablissement));
+        }
     }
 
      public function executeSwitchStatus(sfWebRequest $request) {

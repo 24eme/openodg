@@ -40,6 +40,8 @@ Compte:
       type_societe: { required: false }
       teledeclaration_active: { required: false }
       gecos: { required: false }
+      lat: {  }
+      lon: {  }
       societe_informations:
         type: collection
         definition:
