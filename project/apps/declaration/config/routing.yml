@@ -607,6 +607,16 @@ drev_export_pdf:
     type:     object
   requirements:
     sf_method: [get]
+    
+drev_export_xml:
+  url: /drev/xml/:id
+  param: { module: drev, action: XML }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
 
 #DREVMARC
 drevmarc_create:

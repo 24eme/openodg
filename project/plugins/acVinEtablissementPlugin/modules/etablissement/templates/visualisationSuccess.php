@@ -86,7 +86,7 @@
                     <tbody>
                         <?php foreach($etablissement->chais as $chai): ?>
                             <tr>
-                                <td><?php echo $chai->adresse ?><br />
+                                <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                 <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
                                 <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
