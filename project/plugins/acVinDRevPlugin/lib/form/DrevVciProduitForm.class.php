@@ -29,4 +29,18 @@ class DRevVciProduitForm extends acCouchdbObjectForm {
         parent::doUpdateObject($values);
     }
 
+    protected function updateDefaultsFromObject() {
+      parent::updateDefaultsFromObject();
+      $defaults = $this->getDefaults();
+      if (is_null($defaults['destruction'])) {
+          $defaults['destruction'] = $defaults['stock_precedent'] - $this->getObject()->getParent()->getPlafondStockVci();
+          if ($defaults['destruction'] < 0) {
+            unset($defaults['destruction']);
+          }
+      }
+      $this->setDefaults($defaults);
+    }
+
+
+
 }
