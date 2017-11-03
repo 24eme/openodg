@@ -61,14 +61,14 @@ class compteActions extends sfCredentialActions {
         $this->compte = $this->getRoute()->getCompte();
         $this->societe = $this->compte->getSociete();
         $this->applyRights();
-
+        if(!$this->compte->lat && !$this->compte->lon){
+          $this->compte->updateCoordonneesLongLat();
+          $this->compte->save();
+        }
         if($this->compte->isEtablissementContact()) {
-
             return $this->redirect('etablissement_visualisation', $this->compte->getEtablissement());
         }
-
         if($this->compte->isSocieteContact()) {
-
             return $this->redirect('societe_visualisation',array('identifiant' => $this->societe->identifiant));
         }
     }
