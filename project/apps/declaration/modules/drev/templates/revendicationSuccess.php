@@ -44,14 +44,14 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
             </tr>
             <tr>
-                <th class="col-xs-2">Appellation revendiquée</th>
-                <th class="text-center info col-xs-1">Volume récolté total (L5)<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center info col-xs-1">Récolte nette totale (L15)<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center info col-xs-1">Volume en cave part. (L9)<br /><small class="text-muted">(hl)</small></th>
-                <th class="text-center info col-xs-1">Volume VCI constitué (L19)<br /><small class="text-muted">(hl)</small></th>
-                <th class="col-xs-2 text-center" style="position: relative;">Volume net revendiqué<br />issu de la récolte<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-2 text-center" style="position: relative;">Volume revendiqué<br />issu du VCI <br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-2 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-3">Appellation revendiquée</th>
+                <th class="text-center info col-xs-1">Volume récolté total<br/>(L5)<br/><small class="text-muted">(hl)</small></th>
+                <th class="text-center info col-xs-1">Récolte nette totale<br/>(L15)<br/><small class="text-muted">(hl)</small></th>
+                <th class="text-center info col-xs-1">Volume en cave part.<br/>(L9)<br/><small class="text-muted">(hl)</small></th>
+                <th class="text-center info col-xs-1">Volume VCI constitué<br/>(L19)<br/><small class="text-muted">(hl)</small></th>
+                <th class="col-xs-2 text-center" style="position: relative;">Volume <br/>revendiqué net <br />issu de la récolte<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué<br />issu du VCI <br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>
