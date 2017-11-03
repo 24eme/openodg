@@ -130,8 +130,13 @@ class societeActions extends sfCredentialActions {
 
     public function executeVisualisation(sfWebRequest $request) {
         $this->societe = $this->getRoute()->getSociete();
-
         $this->applyRights();
+        $this->societe_compte = $this->societe->getMasterCompte();
+        if(!$this->societe_compte->lat && !$this->societe_compte->lon){
+          $compte = CompteClient::getInstance()->find($this->societe_compte->_id);
+          $compte->updateCoordonneesLongLat();
+          $compte->save();
+        }
     }
 
     public function executeAnnulation(sfWebRequest $request) {

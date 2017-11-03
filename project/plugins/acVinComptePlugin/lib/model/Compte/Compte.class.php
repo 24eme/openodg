@@ -7,8 +7,6 @@
 class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     private $societe = NULL;
-    protected $lon = null;
-    protected $lat = null;
 
     public function constructId() {
         $this->set('_id', 'COMPTE-' . $this->identifiant);
@@ -513,6 +511,19 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return $this->_get('fax');
     }
 
+    public function getDistances($lat1, $lon1, $lat2, $lon2)
+    {
+		 $rlo1 = deg2rad($lon1);
+	  	$rla1 = deg2rad($lat1);
+	  	$rlo2 = deg2rad($lon2);
+	  	$rla2 = deg2rad($lat2);
+	 	 $dlo = ($rlo2 - $rlo1) / 2;
+	 	  $dla = ($rla2 - $rla1) / 2;
+    	$a = (sin($dla) * sin($dla)) + cos($rla1) * cos($rla2) * (sin($dlo) * sin($dlo));
+    	$d = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    	return (6378137 * $d);
+    }
+
     public function calculCoordonnees($adresse, $commune, $code_postal) {
         $adresse = trim(preg_replace("/B[\.]*P[\.]* [0-9]+/", "", $adresse));
         if (!preg_match('/^http.*\./', sfConfig::get('app_osm_url_search'))) {
@@ -530,10 +541,21 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return array("lat" => $result->response->docs[0]->lat, "lon" => $result->response->docs[0]->lng);
     }
 
-    public function updateCoordonneesLongLatByNoeud($noeud) {
+    public function updateCoordonneesLongLatByNoeud($noeud,$latCompare = false,$lonCompare = false) {
+      
         $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
+
         if(!$coordonnees) {
             return false;
+        }
+        if($latCompare && $lonCompare){
+          if(round($this->getDistances($coordonnees["lat"], $coordonnees["lon"],$latCompare,$lonCompare)) > 20000){
+            $coordonnees = $this->calculCoordonnees("", $noeud->commune, $noeud->code_postal);
+          }
+          if(round($this->getDistances($coordonnees["lat"], $coordonnees["lon"],$latCompare,$lonCompare)) > 20000){
+            $coordonnees["lon"] = null;
+            $coordonnees["lat"] = null;
+          }
         }
 
         $noeud->lon = $coordonnees["lon"];
@@ -541,19 +563,26 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return true;
     }
 
-    public function updateCoordonneesLongLat() {
+    public function updateCoordonneesLongLat($etbSave = false) {
         $this->updateCoordonneesLongLatByNoeud($this);
-        if(!$this->exist('chais')) {
-
+        if(!$etb = $this->getEtablissement()){
+          return true;
+        }
+        if(!$etb->exist('chais')) {
             return true;
         }
-        foreach($this->chais as $chai) {
+        foreach($etb->chais as $chai) {
             if($chai->adresse == $this->adresse && $chai->commune == $this->commune) {
                 $chai->lon = $this->lon;
                 $chai->lat = $this->lat;
                 continue;
             }
-            $this->updateCoordonneesLongLatByNoeud($chai);
+
+            $this->updateCoordonneesLongLatByNoeud($chai,$this->lat,$this->lon);
+
+        }
+        if($etbSave){
+          $etb->save();
         }
         return true;
     }
@@ -568,7 +597,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return $points;
         }
         foreach($this->chais as $chai) {
-            if(!$chai->lat && $chai->lon) {
+            if(!$chai->lat && !$chai->lon) {
                 continue;
             }
             $points[$chai->lat.$chai->lon] = array($chai->lat, $chai->lon);
@@ -576,23 +605,17 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return $points;
     }
 
-    public function getLon() {
-
-        return $this->lon;
+    public function hasLatLonChais(){
+      $latLong = true;
+      if(!$this->getEtablissement() || !$this->getEtablissement()->exist('chais')) {
+          return true;
+      }
+      foreach($this->getEtablissement()->chais as $chai) {
+          if(!$chai->lon && !$chai->lat) {
+            return false;
+          }
+      }
+      return true;
     }
-
-    public function setLon($lon) {
-        $this->lon = $lon;
-    }
-
-    public function getLat() {
-
-        return $this->lat;
-    }
-
-    public function setLat($lat) {
-        $this->lat = $lat;
-    }
-
 
 }
