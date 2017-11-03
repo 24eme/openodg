@@ -7,7 +7,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Produit;Activité;Statut;Date;Id du doc\n";
+        return "Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Produit;Activité;Statut;Date;Id du doc;Commentaire\n";
     }
 
     public function __construct($habilitation, $header = true) {
@@ -31,7 +31,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                     continue;
                 }
 
-                $csv .= $ligneBase.";".$produit->libelle.";".$activite->getKey().";".$activite->statut.";".$activite->date.";".$this->habilitation->_id."\n";
+                $csv .= $ligneBase.";".$produit->libelle.";".$activite->getKey().";".$activite->statut.";".$activite->date.";".$this->habilitation->_id.";".$activite->commentaire."\n";
             }
         }
 
