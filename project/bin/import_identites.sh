@@ -38,20 +38,20 @@ echo "Création des xml entités";
 ###
 ### DANS CETTE BOUCLE ON CHERCHE LES DEFINITIONS DE GROUPES
 ###
-cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | grep -E "(<b:Siret>.+</b:Siret>|<b:Evv>.+</b:Evv>|<b:NumPPM>.+</b:NumPPM>)" | while read xml
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | grep -iv "VIRER[^NE]" | grep -E "(<b:Siret>.+</b:Siret>|<b:Evv>.+</b:Evv>|<b:NumPPM>.+</b:NumPPM>)" | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
   echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_$IDFIC.xml
 done
 
 
-cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml  | grep -v "<b:Siret>" | grep -v "<b:Evv>" | grep -v "<b:NumPPM>" | grep "<b:Groupes><b:Identite_Groupe>" | while read xml
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | grep -iv "VIRER[^NE]" | grep -v "<b:Siret>" | grep -v "<b:Evv>" | grep -v "<b:NumPPM>" | grep "<b:Groupes><b:Identite_Groupe>" | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
   echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_groupes_$IDFIC.xml
 done
 
-cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml  | grep -v "<b:Siret>" | grep -v "<b:Evv>" | grep -v "<b:NumPPM>" | grep -v "<b:Groupes><b:Identite_Groupe>" | while read xml
+cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.tmp.xml | grep -iv "VIRER[^NE]" | grep -v "<b:Siret>" | grep -v "<b:Evv>" | grep -v "<b:NumPPM>" | grep -v "<b:Groupes><b:Identite_Groupe>" | while read xml
 do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
   echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_nogroupes_$IDFIC.xml
