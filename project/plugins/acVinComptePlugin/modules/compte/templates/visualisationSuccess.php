@@ -11,7 +11,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-9">
-                        <h4>Compte n° <?php echo $compte->identifiant; ?></h4>
+                        <h4><span class="glyphicon glyphicon-user"></span> Compte n° <?php echo $compte->identifiant; ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
                         <div class="btn-group">
@@ -26,7 +26,12 @@
                 </div>
             </div>
             <div class="panel-body" style="border-right: 6px solid #9f0038;">
-                <h2><span class="glyphicon glyphicon-user"></span> <?php echo $compte->nom_a_afficher; ?></h2>
+                <h2> 
+                	<?php echo $compte->nom_a_afficher; ?>
+                	<?php if ($compte->isSuspendu()): ?>
+					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->statut; ?></small></span>
+					<?php endif; ?>
+                </h2>
                 <hr/>
                 <div class="row">
                     <div class="col-xs-5">
