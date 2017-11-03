@@ -47,7 +47,7 @@ class DeclarantDocument
         if($etablissement->exist("siege")) {
             $declarant->adresse = $etablissement->siege->adresse;
             if ($etablissement->siege->exist("adresse_complementaire")) {
-                $declarant->adresse .= ' ; '.$etablissement->siege->adresse_complementaire;
+                $declarant->adresse .= ' − '.$etablissement->siege->adresse_complementaire;
             }
             $declarant->commune = $etablissement->siege->commune;
             $declarant->code_postal = $etablissement->siege->code_postal;

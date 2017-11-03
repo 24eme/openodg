@@ -175,7 +175,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function importFromDR() {
       if (count($this->declaration)) {
-        return false;
+        return true;
       }
       if (!$this->hasDR()) {
         return false;

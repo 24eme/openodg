@@ -3,9 +3,9 @@ class DrevEtapes extends Etapes
 {
 	const ETAPE_EXPLOITATION = 'exploitation';
 	const ETAPE_DR_DOUANE = 'dr_douane';
-	const ETAPE_REVENDICATION_SUPERFICIE = 'superficie';
+	const ETAPE_REVENDICATION_SUPERFICIE = 'revendication_superficie';
 	const ETAPE_VCI = 'vci';
-	const ETAPE_REVENDICATION = 'volume';
+	const ETAPE_REVENDICATION = 'revendication';
 	const ETAPE_DEGUSTATION = 'degustation_conseil';
 	const ETAPE_CONTROLE = 'controle_externe';
 	const ETAPE_VALIDATION = 'validation';

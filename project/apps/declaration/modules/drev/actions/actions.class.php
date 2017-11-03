@@ -60,7 +60,7 @@ class drevActions extends sfActions {
         $drev->delete();
         $this->getUser()->setFlash("notice", "La déclaration a été supprimée avec succès.");
 
-        return $this->redirect('declaration_etablissement', $etablissement);
+        return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant, 'campagne' => $drev->campagne));
     }
 
     public function executeDevalidation(sfWebRequest $request) {

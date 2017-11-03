@@ -8,10 +8,6 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
         $this->getDocable()->remove();
     }
 
-    protected function updateDefaultsFromObject() {
-        parent::updateDefaultsFromObject();
-    }
-
     public function configure() {
         $this->setWidgets(array(
             'volume_revendique_issu_recolte' => new bsWidgetFormInputFloat(),
@@ -29,7 +25,20 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
     }
 
     public function doUpdateObject($values) {
-        parent::doUpdateObject($values);
+      parent::doUpdateObject($values);
     }
 
-}
+    protected function updateDefaultsFromObject() {
+      parent::updateDefaultsFromObject();
+      $defaults = $this->getDefaults();
+      if (is_null($defaults['volume_revendique_issu_recolte']) && ($this->getObject()->recolte->volume_total == $this->getObject()->recolte->volume_sur_place)) {
+        $defaults['volume_revendique_issu_recolte'] = $this->getObject()->recolte->recolte_nette - $this->getObject()->vci->rafraichi - $this->getObject()->vci->substitution;
+        if ($defaults['volume_revendique_issu_recolte'] < 0) {
+          unset($defaults['volume_revendique_issu_recolte']);
+        }
+      }
+      $this->setDefaults($defaults);
+    }
+
+
+  }

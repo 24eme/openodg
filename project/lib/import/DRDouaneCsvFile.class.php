@@ -1,16 +1,10 @@
 <?php
 
 class DRDouaneCsvFile extends DouaneImportCsvFile {
-
-    const EXPLOITANT = 'exploitant';
-    const BAILLEUR = 'bailleur';
     
     public $bailleurs = array();
 
-    public function convert($type = self::EXPLOITANT) {
-    	if (!in_array($type, array(self::BAILLEUR, self::EXPLOITANT))) {
-    		throw new sfException("Type $type non reconnu.");
-    	}
+    public function convert($type = null) {
     	if (!$this->filePath) {
     		throw new sfException("La cible du fichier n'est pas spécifiée.");
     	}
@@ -23,6 +17,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         }
 
         $dr = array();
+        $baillage = array();
         $produits = array();
         $exploitant = array();
         $bailleur = array();
@@ -68,7 +63,6 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
         					$exploitant[$i][] = array(sprintf('%02d', $values[0]), preg_replace('/ \(ha\)/i', '', self::cleanStr($values[1])), self::numerizeVal($values[$i], 4), null, null, null, null);
-        					$bailleur[$i][] = array(sprintf('%02d', $values[0]), preg_replace('/ \(ha\)/i', '', self::cleanStr($values[1])), self::numerizeVal($values[$i], 4), null, null, null, null);
         				}
         			}
         			continue;
@@ -94,25 +88,40 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
         					if ($i%2) {
-        						$exploitant[$i][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^acheteur n°([0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^acheteur n°[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
+        						$exploitant[$i][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^acheteur n.+(FR[0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^acheteur n.+FR[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
         					} else {
-        						$bailleur[$i-1][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^acheteur n°([0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^acheteur n°[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
+        						$bailleur[$i-1][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^acheteur n.+(FR[0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^acheteur n.+FR[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
         					}
         				}
         			}
         			continue;
         		}
-        		if (is_numeric($values[0]) && $values[0] > 8) {
+        		if (is_numeric($values[0]) && $values[0] > 8 && $values[0] < 20) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
         					if ($i%2) {
         						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($values[$i]), null, null, null, null);
-        						if ($values[0] == 21) {
-        							$this->bailleurs[$produits[$i][7]] = $produits[$i][7];
-        						}
         					} else {
         						$bailleur[$i-1][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($values[$i]), null, null, null, null);
         					}
+        				}
+        			}
+        			continue;
+        		}
+
+        		if ($values[0] == 20 || $values[0] == 21) {
+        			for ($i = 2; $i < count($values); $i++) {
+        				if (isset($values[$i]) && $values[$i]) {
+        					$baillage[$i][] = $values[$i];
+        				}
+        			}
+        			continue;
+        		}
+
+        		if (is_numeric($values[0]) && $values[0] > 21) {
+        			for ($i = 2; $i < count($values); $i++) {
+        				if ($values[$i]) {
+        					$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::cleanStr($values[$i]), null, null, null, null);
         				}
         			}
         			continue;
@@ -121,11 +130,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         }
         $csv = '';
         foreach ($produits as $k => $p) {
-        	if (isset(${$type}[$k])) {
-	        	foreach (${$type}[$k] as $e) {
-	        		$csv .= implode(';', $dr).';'.implode(';', $p).';'.implode(';', $e)."\n";
+	        foreach ($exploitant[$k] as $sk => $e) {
+	        	$csv .= implode(';', $dr).';;;'.implode(';', $p).';'.implode(';', $e)."\n";
+	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
+	        		$csv .= implode(';', $dr).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk])."\n";
 	        	}
-        	}
+	        }
         }
         return $csv;
     }
