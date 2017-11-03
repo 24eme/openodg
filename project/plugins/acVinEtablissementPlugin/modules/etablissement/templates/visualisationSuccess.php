@@ -68,7 +68,7 @@
                 </div>
                 <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
-                <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>
+                <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>              
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Chais</strong></h5>
                 <?php if($etablissement->exist('chais')  && count($etablissement->chais)): ?>
