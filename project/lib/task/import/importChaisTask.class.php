@@ -79,6 +79,7 @@ EOF;
       foreach ($chais as $i => $c) {
         $mychai = $etablissement->add('chais')->add($i);
         $mychai->adresse = $c[self::CSV_ADRESSE];
+        $mychai->nom = ($c[self::CSV_INTITULE])? $c[self::CSV_INTITULE] : $c[self::CSV_COMMUNE];
         if ($c[self::CSV_ADRESSE_2]) {
           $mychai->adresse .= ' - '.$c[self::CSV_ADRESSE_2];
         }

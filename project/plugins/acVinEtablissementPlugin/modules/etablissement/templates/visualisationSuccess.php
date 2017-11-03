@@ -71,7 +71,7 @@
                 <?php include_partial('compte/visualisationLogin', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
-                <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>              
+                <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Chais</strong></h5>
                 <?php if($etablissement->exist('chais')  && count($etablissement->chais)): ?>
@@ -86,7 +86,7 @@
                     <tbody>
                         <?php foreach($etablissement->chais as $chai): ?>
                             <tr>
-                                <td><?php echo $chai->adresse ?><br />
+                                <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                 <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
                                 <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
