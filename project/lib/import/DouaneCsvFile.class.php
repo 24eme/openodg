@@ -26,7 +26,7 @@ class DouaneCsvFile
   const CSV_TIERS_CODE_COMMUNE = 22;
   const CSV_TIERS_COMMUNE = 23;
   
-  const CSV_ENTETES = '#Type;Campagne;CVI;Raison Sociale;Code Commune;Commune;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Raison Sociale Tiers;Code Commune Tiers;Commune Tiers'."\n";
+  const CSV_ENTETES = '#Type;Campagne;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Raison Sociale Tiers;Code Commune Tiers;Commune Tiers'."\n";
 
   protected $file = null;
   protected $separator = null;
