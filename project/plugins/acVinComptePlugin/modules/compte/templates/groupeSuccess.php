@@ -14,7 +14,8 @@
                       <h4>Détail du groupe « <?php echo str_replace('_',' ',$groupeName); ?> »</h4>
                   </div>
                   <div class="col-xs-1 ">
-                    <a href=""><span class="glyphicon glyphicon-export"></span></a>
+                    <a href="<?php echo url_for('compte_search', array('tags' => $filtre)) ; ?>"><span class="glyphicon glyphicon-search"></span></a> &nbsp;
+                    <a href="<?php echo url_for('compte_search_csv', array('tags' => $filtre)) ; ?>"><span class="glyphicon glyphicon-export"></span></a>
                   </div>
               </div>
             </div>
