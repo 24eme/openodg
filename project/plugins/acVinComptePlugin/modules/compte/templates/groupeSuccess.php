@@ -1,16 +1,20 @@
 <?php use_helper('Compte'); ?>
 
 <ol class="breadcrumb">
-    <li class="active"><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
-    <li class="active"><a href="<?php echo url_for('compte_groupes', array("groupeName" => $groupeName)); ?>"><?php echo str_replace('_',' ',$groupeName); ?></a></li>
+    <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
+    <li>Groupes</li>
+    <li class="active"><a href="<?php echo url_for('compte_groupe', array("groupeName" => $groupeName)); ?>"><?php echo str_replace('_',' ',$groupeName); ?></a></li>
 </ol>
 <div class="row">
   <div class="col-xs-12">
     <div class="panel panel-default">
           <div class="panel-heading">
               <div class="row">
-                  <div class="col-xs-12">
-                      <h4>Groupe : <?php echo str_replace('_',' ',$groupeName); ?></h4>
+                  <div class="col-xs-11 ">
+                      <h4>Détail du groupe « <?php echo str_replace('_',' ',$groupeName); ?> »</h4>
+                  </div>
+                  <div class="col-xs-1 ">
+                    <a href=""><span class="glyphicon glyphicon-export"></span></a>
                   </div>
               </div>
             </div>
@@ -27,11 +31,7 @@
                               <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo $data['doc']['nom_a_afficher']; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
                               </span>
                          </div><div class="col-xs-4 text-right">
-                           <?php foreach ($data['doc']['groupes'] as $key => $value):
-                                   if(Compte::transformTag($key) == $groupeName): ?>
-                                     <small class="text-muted label label-primary"><?php echo $value ?></small>
-                                   <?php endif; ?>
-                                 <?php endforeach; ?>
+                               <small class="text-muted label label-primary"><?php echo $data['doc']['groupes'][$groupeName] ?></small>
                           </div>
                         </div>
                       </div>
