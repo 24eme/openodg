@@ -155,8 +155,8 @@
                     if($(this).val()) {
                         somme += parseFloat($(this).val());
                     } else {
-                    	if ($(this).text()) {
-                            somme += parseFloat($(this).text());
+                    	if (parseFloat($(this).text())) {
+                        somme += parseFloat($(this).text());
                     	}
                     }
                 })
