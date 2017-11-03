@@ -67,6 +67,9 @@
                     </div>
                 </div>
                 <hr />
+                <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
+                <?php include_partial('compte/visualisationLogin', array('compte' => $etablissement->getMasterCompte())); ?>
+                <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>              
                 <hr />
@@ -100,6 +103,7 @@
                 <?php endif; ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Relations</strong></h5>
+                <?php if($etablissement->exist('liaisons_operateurs')  && count($etablissement->liaisons_operateurs)): ?>
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
@@ -116,6 +120,9 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php else: ?>
+                    <p class="text-muted">Aucune relation</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>

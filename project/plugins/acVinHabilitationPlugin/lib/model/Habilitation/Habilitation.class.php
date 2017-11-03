@@ -38,15 +38,13 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
     public function constructId() {
         $id = $this->getTheoriticalId();
-        if($this->version) {
-            $id .= "-".$this->version;
-        }
+
         $this->set('_id', $id);
     }
 
     public function getConfiguration() {
 
-        return acCouchdbManager::getClient('Configuration')->getConfiguration();
+        return acCouchdbManager::getClient('Configuration')->getConfiguration($this->date);
     }
 
     public function getProduitsConfig() {
@@ -86,7 +84,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
     public function addProduit($hash) {
-        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $hash = preg_replace("|/declaration/|", '', $hash);
+        $node = $this->getConfiguration()->get('/declaration/'.$hash)->getNodeCahierDesCharges();
+        $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
         $exist = $this->exist('declaration/'.$hashToAdd);
         $produit = $this->add('declaration')->add($hashToAdd);
         $produit_libelle = $produit->getLibelle();
@@ -129,17 +129,22 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
-
-
-	protected function doSave() {
-
-	}
-
   public function isLastOne(){
     $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
     return $this->_id == $last->_id;
   }
 
+  public function getPrevious() {
+      $date = new DateTime($this->date);
+      $date->modify('-1 day');
+      $precedente = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, $date->format('Y-m-d'));
+      if($precedente && $precedente->_id == $this->_id) {
+
+          return null;
+      }
+
+      return $precedente;
+  }
   private function addHistoriqueNewProduit($complement){
       $this->addHistorique("Ajout du produit : ".$complement);
   }
@@ -210,5 +215,26 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 			$this->add($hashProduit, $children[$hashProduit]);
 		}
 	}
+
+  public function isHabiliteFor($hash_produit, $activite) {
+    if (!$this->addProduit($hash_produit)->exist('activites')) {
+      return false;
+    }
+    return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
+  }
+
+  public function updateHabilitation($hash_produit, $activite, $statut, $commentaire = "", $date = ''){
+    return $this->addProduit($hash_produit)->updateHabilitation($activite, $statut, $commentaire, $date);
+  }
+
+  public function save() {
+      parent::save();
+      $precedente = $this->getPrevious();
+
+      if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
+          $precedente->add('lecture_seule', true);
+          $precedente->save();
+      }
+  }
 
 }

@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(10);
+$t = new lime_test(24);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -22,6 +22,7 @@ $habilitation->save();
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id est bien construit ".$habilitation->_id );
 $t->is(count($habilitation->declaration), 0, "l'habilitation est vierge de produit");
 $t->is(count($habilitation->historique), 0, "l'habilitation est vierge d'historique");
+$t->is($habilitation->isLectureSeule(), false, "l'habilitation n'est pas en lecture seule");
 
 
 $produitConfig = null;
@@ -58,7 +59,7 @@ $t->is(count($habilitation->historique), 2, "la modification de l'activité a é
 
 $t->comment("Changement d'activité");
 
-$habProduit->activites[$activiteKey]->updateHabilitation(HabilitationClient::STATUT_HABILITE , "INAO OK");
+$habProduit->updateHabilitation($activiteKey, HabilitationClient::STATUT_HABILITE , "INAO OK");
 $habilitation->save();
 $t->is($habProduit->activites[$activiteKey]->statut, HabilitationClient::STATUT_HABILITE, "le statut de l'activité a été changée");
 $t->is(count($habilitation->historique), 3, "la modification de l'activité a été enregistrée dans l'historique");
@@ -70,6 +71,8 @@ $habilitation->save();
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id est bien construit ".$habilitation->_id );
 $t->is(count($habilitation->declaration), 1, "l'habilitation n'est pas vierge de produit");
 $t->is(count($habilitation->historique), 0, "l'habilitation est vierge d'historique");
+$t->is($habilitation->isLectureSeule(), false, "l'habilitation n'est pas en lecture seule");
+$t->is($habilitation->getPrevious()->isLectureSeule(), true, "l'habilitation précédente est en lecture seule");
 
 $habProduit = $habilitation->get($produitConfig->getHash());
 $habProduit->activites[$activiteKey]->updateHabilitation(HabilitationClient::STATUT_SUSPENDU , "ne respecte pas le cahier des charges");

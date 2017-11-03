@@ -1,4 +1,4 @@
-all: .views/etablissements.json .views/societe.json .views/compte.json .views/declaration.json .views/piece.json .views/generation.json
+all: .views/etablissements.json .views/societe.json .views/compte.json .views/declaration.json .views/piece.json .views/generation.json .views/habilitation.json
 
 .views/societe.json: project/config/databases.yml project/plugins/acVinSocietePlugin/lib/model/views/societe.all.reduce.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.all.map.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.export.map.view.js .views
 	perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinSocietePlugin/lib/model/views/societe.all.reduce.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.all.map.view.js project/plugins/acVinSocietePlugin/lib/model/views/societe.export.map.view.js > $@ || rm >@
@@ -17,6 +17,9 @@ all: .views/etablissements.json .views/societe.json .views/compte.json .views/de
 
 .views/generation.json: project/config/databases.yml project/plugins/acVinGenerationPlugin/lib/model/views/generation.history.reduce.view.js project/plugins/acVinGenerationPlugin/lib/model/views/generation.history.map.view.js project/plugins/acVinGenerationPlugin/lib/model/views/generation.creation.reduce.view.js project/plugins/acVinGenerationPlugin/lib/model/views/generation.creation.map.view.js
 		perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinGenerationPlugin/lib/model/views/generation.history.reduce.view.js project/plugins/acVinGenerationPlugin/lib/model/views/generation.history.map.view.js project/plugins/acVinGenerationPlugin/lib/model/views/generation.creation.reduce.view.js project/plugins/acVinGenerationPlugin/lib/model/views/generation.creation.map.view.js > $@ || rm >@
+
+.views/habilitation.json: project/config/databases.yml project/plugins/acVinHabilitationPlugin/lib/model/Habilitation/views/habilitation.activites.reduce.view.js project/plugins/acVinHabilitationPlugin/lib/model/Habilitation/views/habilitation.activites.map.view.js
+		perl bin/generate_views.pl project/config/databases.yml project/plugins/acVinHabilitationPlugin/lib/model/Habilitation/views/habilitation.activites.reduce.view.js  project/plugins/acVinHabilitationPlugin/lib/model/Habilitation/views/habilitation.activites.map.view.js > $@ || rm >@
 
 .views:
 	mkdir .views

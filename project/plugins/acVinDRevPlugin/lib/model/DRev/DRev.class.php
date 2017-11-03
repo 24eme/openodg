@@ -1201,5 +1201,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->validation;
     }
 
+    public function getDate() {
+      return $this->campagne.'-12-01';
+    }
+
     /**** FIN DE VERSION ****/
 }

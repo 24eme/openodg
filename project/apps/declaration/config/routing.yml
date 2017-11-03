@@ -367,7 +367,7 @@ drev_dr:
     type:     object
   requirements:
     sf_method: [get, post]
-    
+
 drev_scrape_dr:
   url: /drev/scrape_dr/:id
   param: { module: drev, action: scrapeDr }
@@ -601,6 +601,16 @@ drev_visualisation:
 drev_export_pdf:
   url: /drev/pdf/:id
   param: { module: drev, action: PDF }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+    
+drev_export_xml:
+  url: /drev/xml/:id
+  param: { module: drev, action: XML }
   class: DRevRoute
   options:
     model:    DRev
@@ -1632,6 +1642,11 @@ generation_regenerate:
 habilitation:
   url: /habilitation
   param: { module: habilitation, action: index }
+  class: HabilitationGeneralRoute
+
+habilitation_export:
+  url: /habilitation/export
+  param: { module: habilitation, action: export }
 
 habilitation_etablissement_selection:
   url: /habilitations-etablissement-selection

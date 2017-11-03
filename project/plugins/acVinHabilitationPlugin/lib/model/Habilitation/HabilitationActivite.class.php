@@ -20,15 +20,9 @@ class HabilitationActivite extends BaseHabilitationActivite {
     return ($this->statut == HabilitationClient::STATUT_HABILITE) || ($this->statut == HabilitationClient::STATUT_DEMANDE_RETRAIT);
   }
 
-  public function isDeshabilite(){
-    return ($this->statut == HabilitationClient::STATUT_RETRAIT) || ($this->statut == HabilitationClient::STATUT_SUSPENDU) || ($this->statut == HabilitationClient::STATUT_REFUS);
-  }
-
   public function isNonhabilite(){
     return ($this->statut == HabilitationClient::STATUT_DEMANDE_HABILITATION) || ($this->statut == HabilitationClient::STATUT_ANNULE) || !($this->statut);
   }
-
-
 
   public function isWrongHabilitation(){
       return ($this->statut == HabilitationClient::STATUT_REFUS) || ($this->statut == HabilitationClient::STATUT_RETRAIT) || ($this->statut == HabilitationClient::STATUT_SUSPENDU);

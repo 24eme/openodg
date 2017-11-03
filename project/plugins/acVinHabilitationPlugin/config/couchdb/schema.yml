@@ -6,14 +6,14 @@ Habilitation:
       _rev: { }
       type: { }
       identifiant: { }
-      validation: { }
-      validation_odg: { }
-      etape: { }
+      validation: { required: false }
+      validation_odg: { required: false }
+      etape: { required: false }
       date: { }
       papier: { required: false, type: integer }
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
-      version: {  }
+      version: { required: false }
       declarant:
         type: collection
         definition:

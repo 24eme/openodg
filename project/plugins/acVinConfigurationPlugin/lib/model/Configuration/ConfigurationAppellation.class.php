@@ -22,6 +22,9 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
 
         return $this->getGenre()->getCertification();
     }
+		public function getNodeCahierDesCharges() {
+        return $this;
+    }
 
     public function setDonneesCsv($datas) {
       parent::setDonneesCsv($datas);
@@ -50,7 +53,7 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
 
         return $this->attributs->get('detail_lieu_editable');
     }
-    
+
     public function hasRendements()
     {
     	return true;

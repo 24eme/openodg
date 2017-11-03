@@ -98,5 +98,27 @@ class DRevProduit extends BaseDRevProduit
 		$this->volume_revendique_total = ((float) $this->volume_revendique_issu_recolte) + ((float) $this->volume_revendique_issu_vci);
 	}
 
+	public function isHabilite() {
+		$hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->document->identifiant, $this->document->getDate());
+		if (!$hab) {
+			return false;
+		}
+		return $hab->isHabiliteFor($this->getProduitHash(), HabilitationClient::ACTIVITE_VINIFICATEUR);
+	}
+	
+	public function getCodeCouleur()
+	{
+		if (preg_match('/\/rouge\//', $this->getHash())) {
+			return 1;
+		}
+		if (preg_match('/\/rose\//', $this->getHash())) {
+			return 2;
+		}
+		if (preg_match('/\/blanc\//', $this->getHash())) {
+			return 3;
+		}
+		return null;
+	}
+
 
 }
