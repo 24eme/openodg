@@ -8,4 +8,4 @@ if ! test "$repertoire"; then
   exit 1;
 fi
 
-cat $csv | sed 's/ *\([0-9][0-9][0-9][0-9]\) *$/;\1/' | sed 's/ *\.pdf//' | sed 's/id=/;/' | awk -F ";" '{print "php symfony import:fichier --application=declaration  --libelle=\""$2"\" --type=\""$6"\" --date_depot=\""$5"\" --visibilite=false --papier=true --annee=\""$7"\" "sprintf("%06d01", $1)" '$repertoire'"$4".pdf"}'
+cat $csv | sed 's/ *\([0-9][0-9][0-9][0-9]\) *$/;\1/' | sed 's/ *\.pdf//' | sed 's/id=/;/' | awk -F ";" '{print "php symfony import:fichier --application=declaration  --libelle=\""$2"\" --type=\""$6"\" --date_depot=\""$5"\" --visibilite=0 --papier=1 --annee=\""$7"\" "sprintf("%06d01", $1)" '$repertoire'"$4".pdf"}' | sh
