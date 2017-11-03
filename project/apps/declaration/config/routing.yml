@@ -732,22 +732,6 @@ drevmarc_export_pdf:
 
 #Mon compte
 
-compte_teledeclarant_creation:
-  url: /compte
-  param: { module: compte_teledeclarant, action: creation }
-
-compte_creation_confirmation:
-  url: /compte-creation-confirmation
-  param: { module: compte_teledeclarant, action: creationConfirmation }
-
-compte_mot_de_passe_oublie:
-  url: /mot_de_passe_oublie
-  param: { module: compte_teledeclarant, action: motDePasseOublie }
-
-compte_teledeclarant_premiere_connexion:
-  url: /compte-premiere-connexion
-  param: { module: compte_teledeclarant, action: premiereConnexion }
-
 mon_compte:
   url: /mon-compte
   param: { module: compte_teledeclarant, action: modification }
@@ -755,76 +739,6 @@ mon_compte:
 redirect_to_mon_compte_civa:
   url: /mon-compte-civa
   param: { module: compte_teledeclarant, action: redirectToMonCompteCiva }
-
-#Compte et etablissement admin
-
-# compte_recherche:
-#   url: /compte/recherche
-#   param: { module: compte, action: recherche }
-#   class: ContactsRoute
-#
-# compte_recherche_avancee:
-#   url: /compte/recherche-avancee
-#   param: { module: compte, action: rechercheAvancee }
-#   class: ContactsRoute
-#
-# compte_recherche_json:
-#   url: /compte/recherche.json
-#   param: { module: compte, action: rechercheJson }
-#
-# compte_recherche_csv:
-#   url: /compte/recherche.csv
-#   param: { module: compte, action: rechercheCsv }
-#
-# compte_creation:
-#   url: /compte/creation/:type_compte
-#   param: { module: compte, action: creation }
-#
-# compte_visualisation:
-#   url: /compte/visualisation/:id
-#   param: { module: compte, action: visualisation }
-#   class: ContactsCompteRoute
-#   options:
-#     model:    Compte
-#     type:     object
-#   requirements:
-#     sf_method: [get]
-#
-# compte_modification:
-#   url: /compte/modification/:id
-#   param: { module: compte, action: modification }
-#   class: CompteRoute
-#   options:
-#     model:    Compte
-#     type:     object
-#   requirements:
-#     sf_method: [get,post]
-#
-# compte_tags_manuels:
-#   url: /compte-tags-manuels
-#   param: { module: compte, action: allTagsManuels }
-#   requirements:
-#     sf_method: [get]
-#
-# compte_archiver:
-#   url: /compte-archiver/:id
-#   param: { module: compte, action: archiver }
-#   class: CompteRoute
-#   options:
-#     model:    Compte
-#     type:     object
-#   requirements:
-#     sf_method: [get]
-#
-# compte_desarchiver:
-#   url: /compte-desarchiver/:id
-#   param: { module: compte, action: desarchiver }
-#   class: CompteRoute
-#   options:
-#     model:    Compte
-#     type:     object
-#   requirements:
-#     sf_method: [get]
 
 # Dégustation
 
