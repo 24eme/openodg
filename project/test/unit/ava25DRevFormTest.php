@@ -11,6 +11,7 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
+    DRClient::getInstance()->deleteDoc(DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON));
 }
 
 foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
@@ -19,18 +20,19 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 
 $campagne = (date('Y')-1)."";
 
-
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
 
 $t->comment("Récupération des données à partir de la DR");
 
-$csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane.csv');
-$csvContent = $csv->convert();
-file_put_contents("/tmp/dr.csv", $csvContent);
-$csv = new DRCsvFile("/tmp/dr.csv");
+$dr = DRClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
+$dr->setDateDepot("$campagne-12-15");
+$dr->save();
+$dr->storeFichier(dirname(__FILE__).'/../data/dr_douane.csv');
+$dr->save();
 
-$drev->importCSVDouane($csv->getCsv());
+$drev->importFromDocumentDouanier();
 $drev->save();
 
 $t->is(count($drev->getProduits()), 2, "La DRev a repris 2 produits du csv de la DR");
