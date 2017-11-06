@@ -8,7 +8,7 @@ class myUser extends sfBasicSecurityUser
     const SESSION_USURPATION_URL_BACK = "USURPATION_URL_BACK";
     const NAMESPACE_COMPTE = "COMPTE";
     const NAMESPACE_COMPTE_ORIGIN = "COMPTE_ORIGIN";
-    const CREDENTIAL_ADMIN = "admin";
+    const CREDENTIAL_ADMIN = "ADMIN";
     const CREDENTIAL_TOURNEE = "tournee";
     const CREDENTIAL_CONTACT = "contact";
 
