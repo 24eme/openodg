@@ -1,8 +1,6 @@
 <?php
 
 class DRDouaneCsvFile extends DouaneImportCsvFile {
-    
-    public $bailleurs = array();
 
     public function convert($type = null) {
     	if (!$this->filePath) {

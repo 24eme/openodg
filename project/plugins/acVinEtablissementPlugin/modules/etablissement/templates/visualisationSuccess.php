@@ -11,7 +11,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-9">
-                        <h4>Établissement n° <?php echo $etablissement->identifiant; ?></h4>
+                        <h4><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> Établissement n° <?php echo $etablissement->identifiant; ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
                         <div class="btn-group">
@@ -26,7 +26,12 @@
                 </div>
             </div>
             <div class="panel-body" style="border-right: 6px solid #9f0038;">
-                <h2><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span>  <?php echo $etablissement->nom; ?></h2>
+                <h2>
+                	<?php echo $etablissement->nom; ?>
+                	<?php if ($etablissement->getMasterCompte()->isSuspendu()): ?>
+					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $etablissement->getMasterCompte()->statut; ?></small></span>
+					<?php endif; ?>
+                </h2>
                 <hr/>
                 <div class="row">
                     <div class="col-xs-5">

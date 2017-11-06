@@ -37,7 +37,7 @@ class ImportAntsysDRevTask extends sfBaseTask
     //$this->convert_produits['chateau grillet'] = '';
     $this->convert_produits['CAIRANNE BLC'] = 'certifications/AOP/genres/TRANQ/appellations/CAR/mentions/DEFAUT/lieux/DEFAUT/couleurs/blanc/cepages/DEFAUT';
     $this->convert_produits['CAIRANNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CAR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
-    $this->convert_produits['CDRV CAIRANNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CAI/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
+    $this->convert_produits['CDRV CAIRANNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CAR/mentions/DEFAUT/lieux/DEFAUT/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV CHUSCLAN RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/CHU/couleurs/rouge/cepages/DEFAUT';
     $this->convert_produits['CDRV CHUSCLAN RSE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/CHU/couleurs/rose/cepages/DEFAUT';
     $this->convert_produits['CDRV GADAGNE RGE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG/mentions/DEFAUT/lieux/GAD/couleurs/rouge/cepages/DEFAUT';
