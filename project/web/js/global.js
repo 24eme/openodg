@@ -406,7 +406,7 @@
     {
         $('.carte').each(function () {
             var map = L.map($(this).get(0), {minZoom: 6, zoom: 10, }).setView([46.9217784, 2.4344831], 1);
-            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);

@@ -11,6 +11,10 @@ $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')-
 //Suppression des DRev précédentes
 foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     DRevClient::getInstance()->deleteDoc(DRevClient::getInstance()->find($k, acCouchdbClient::HYDRATE_JSON));
+    $dr = DRClient::getInstance()->find(str_replace("DREV-", "DR-", $k), acCouchdbClient::HYDRATE_JSON);
+    if($dr) { DRClient::getInstance()->deleteDoc($dr); }
+    $sv12 = SV12Client::getInstance()->find(str_replace("DREV-", "SV12-", $k), acCouchdbClient::HYDRATE_JSON);
+    if($sv12) { SV12Client::getInstance()->deleteDoc($sv12); }
 }
 
 foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
@@ -19,19 +23,19 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 
 $campagne = (date('Y')-1)."";
 
-
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $drev->save();
 
 $t->comment("Récupération des données à partir de la DR");
 
-$csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane.csv');
-$bailleurs = $csv->bailleurs;
-$csvContent = $csv->convert();
-file_put_contents("/tmp/dr.csv", $csvContent);
-$csv = new DRCsvFile("/tmp/dr.csv");
+$dr = DRClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
+$dr->setDateDepot("$campagne-12-15");
+$dr->save();
+$dr->storeFichier(dirname(__FILE__).'/../data/dr_douane.csv');
+$dr->save();
 
-$drev->importCSVDouane($csv->getCsv(), $bailleurs);
+$drev->importFromDocumentDouanier();
 $drev->save();
 
 $t->is(count($drev->getProduits()), 2, "La DRev a repris 2 produits du csv de la DR");
@@ -167,7 +171,7 @@ $t->is(count($form['produits']), count($drev->getProduits()), "La form à le mê
 $t->is($form['produits'][$produit_hash1]['recolte']['volume_total']->getValue(), $produit1->recolte->volume_sur_place, "Le volume total récolté est initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['recolte']['recolte_nette']->getValue(), $produit1->recolte->recolte_nette, "La récolté nette de la DR sont initialisé dans le form");
 $t->is($form['produits'][$produit_hash1]['recolte']['volume_sur_place']->getValue(), $produit1->recolte->volume_sur_place, "Le volume sur place est initialisé dans le form");
-$t->is($form['produits'][$produit_hash1]['volume_revendique_issu_recolte']->getValue(), $produit1->volume_revendique_issu_recolte, "Le volume revendique issu de la DR est initialisé dans le form");
+$t->is($form['produits'][$produit_hash1]['volume_revendique_issu_recolte']->getValue(), $produit1->recolte->recolte_nette - $produit1->vci->rafraichi - $produit1->vci->substitution, "Le volume revendique issu de la DR est bien calculé et initialisé dans le form");
 $t->ok(!isset($form['produits'][$produit_hash1]['recolte']['superficie_total']), "La superficie totale de la DR n'est pas proposé dans le formulaire");
 
 

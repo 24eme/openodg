@@ -40,6 +40,7 @@ DRev:
             telephone: { }
             fax: { }
             email: { }
+            famille: { }
       declaration:
         type: collection
         class: DRevDeclaration

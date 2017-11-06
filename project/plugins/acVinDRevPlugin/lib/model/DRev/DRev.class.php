@@ -148,13 +148,39 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return ($this->getDR());
     }
 
-	public function getDR($ext = null) {
-		$fichier = DRClient::getInstance()->find('DR-'.$this->identifiant.'-'.$this->campagne);
-		if ($fichier) {
-			return ($ext)? $fichier->getFichier($ext) : $fichier;
-		}
-		return null;
-	}
+    public function getDR() {
+
+        return $this->getDocumentDouanier();
+    }
+
+    public function getDocumentDouanier($ext = null) {
+        $fichier = DRClient::getInstance()->find('DR-'.$this->identifiant.'-'.$this->campagne);
+        if ($fichier) {
+            return ($ext)? $fichier->getFichier($ext) : $fichier;
+        }
+
+        $fichier = SV12Client::getInstance()->find('SV12-'.$this->identifiant.'-'.$this->campagne);
+        if ($fichier) {
+            return ($ext)? $fichier->getFichier($ext) : $fichier;
+        }
+
+        $fichier = SV11Client::getInstance()->find('SV11-'.$this->identifiant.'-'.$this->campagne);
+        if ($fichier) {
+            return ($ext)? $fichier->getFichier($ext) : $fichier;
+        }
+
+        return null;
+    }
+
+    public function hasDocumentDouanier() {
+        return ($this->getDocumentDouanier());
+    }
+
+    public function getDocumentDouanierType() {
+        $document = $this->getDocumentDouanier();
+
+        return ($document) ? $document->type : null;
+    }
 
     public function initDoc($identifiant, $campagne) {
         $this->identifiant = $identifiant;
@@ -174,21 +200,28 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function importFromDR() {
+
+        return $this->importFromDocumentDouanier();
+    }
+
+    public function importFromDocumentDouanier() {
       if (count($this->declaration)) {
         return true;
       }
-      if (!$this->hasDR()) {
+      if (!$this->hasDocumentDouanier()) {
         return false;
       }
-      $csvFile = $this->getDR('csv');
+
+      $typeDocumentDouanier = $this->getDocumentDouanierType();
+
+      $csvFile = $this->getDocumentDouanier('csv');
       if (!$csvFile) {
         return false;
       }
-      $csv = new DRDouaneCsvFile($csvFile, $this->campagne);
-      $csvContent = $csv->convert();
-      $bailleurs = $csv->bailleurs;
+      $csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->campagne);
+      $csvContent = $csvOrigine->convert();
       $path = sfConfig::get('sf_cache_dir').'/dr/';
-      $filename = 'DR-'.$this->identifiant.'-'.$this->campagne.'.csv';
+      $filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
       if (!is_dir($path)) {
         if (!mkdir($path)) {
           throw new sfException('cannot create '.$path);
@@ -196,18 +229,19 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
       file_put_contents($path.$filename, $csvContent);
       try {
-        $csv = new DRCsvFile($path.$filename);
-        $this->importCSVDouane($csv->getCsv(), $bailleurs);
+        $csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
+        $this->importCSVDouane($csv->getCsv());
         $this->save();
           return true;
       } catch (Exception $e) { }
       return false;
     }
 
-    public function importCSVDouane($csv, $bailleurs) {
+    public function importCSVDouane($csv) {
     	$todelete = array();
     	$this->remove('declaration');
     	$this->add('declaration');
+        $bailleurs = array();
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
@@ -216,43 +250,68 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $produit = $this->addProduit($produitConfig->getHash());
+
+            if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
+                $bailleurs[$produit->getHash()] = $produit->getHash();
+                continue;
+            }
+
             $produitRecolte = $produit->recolte;
-            if($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE) {
+
+            if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTE) {
             	$produitRecolte->volume_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_USAGESIND) {
             	$produitRecolte->usages_industriels_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE && !in_array($line[DRCsvFile::CSV_PRODUIT_INAO], $bailleurs)) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
             	$produitRecolte->superficie_total += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME)  {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VOLUME)  {
             	$produitRecolte->volume_sur_place += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTENETTE) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_RECOLTENETTE) {
             	$produitRecolte->recolte_nette += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             }
-            if ($line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
+            if ($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && $line[DRCsvFile::CSV_LIGNE_CODE] == DRCsvFile::CSV_LIGNE_CODE_VCI) {
             	$produitRecolte->vci_constitue += VarManipulator::floatize($line[DRCsvFile::CSV_VALEUR]);
             	$produit->vci->constitue = $produitRecolte->vci_constitue;
             }
-            /*
-             * Preremplissage DRev
-             */
-            if ($produitRecolte->volume_total && $produitRecolte->volume_sur_place && $produitRecolte->volume_total == $produitRecolte->volume_sur_place) {
-            	$produit->superficie_revendique = $produitRecolte->superficie_total;
+
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
+                $produitRecolte->superficie_total += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
+            }
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_VOLUME_VENDANGE_FRAICHE) {
+                $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
+                $produitRecolte->volume_total += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
+            }
+
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
+                $produitRecolte->superficie_total += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
+            }
+
+            if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE) {
+                $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
+                $produitRecolte->volume_total += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
             }
         }
+
         foreach ($this->declaration->getProduits() as $hash => $p) {
         	if (!$p->recolte->volume_sur_place) {
         		if (!in_array($hash, $todelete)) {
         			$todelete[] = $hash;
+                    continue;
         		}
         	}
+
+            if ($produit->recolte->volume_total && $produit->recolte->volume_sur_place && $produit->recolte->volume_total == $produit->recolte->volume_sur_place && !in_array($produit->getHash(), $bailleurs)) {
+                $produit->superficie_revendique = $produit->recolte->superficie_total;
+            }
         }
         foreach ($todelete as $del) {
         	$this->declaration->remove($del);
         }
+
         $this->updateFromPrecedente();
     }
 

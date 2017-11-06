@@ -24,4 +24,20 @@ class DouaneImportCsvFile {
     public static function cleanStr($val) {
     	return str_replace(array("\r", "\r\n", "\n"), ' ', $val);
     }
+
+    public static function getNewInstanceFromType($type, $file, $campagne = null)  {
+        switch ($type) {
+            case 'DR':
+
+                return new DRDouaneCsvFile($file, $campagne);
+            case 'SV11':
+
+                return new SV11DouaneCsvFile($file, $campagne);
+            case 'SV12':
+
+                return new SV12DouaneCsvFile($file, $campagne);
+        }
+
+        return null;
+    }
 }
