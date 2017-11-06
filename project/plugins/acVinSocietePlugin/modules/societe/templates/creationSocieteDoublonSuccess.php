@@ -1,4 +1,5 @@
 <!-- #principal -->
+<?php use_helper('Compte') ?>
 <section class="row">
     <ol class="breadcrumb">
         <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
