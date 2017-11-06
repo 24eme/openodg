@@ -74,6 +74,16 @@ class DrevEtapes extends Etapes
 		return $this->filterItems(self::$links);
     }
 
+	public function getLibelle($step, $doc = null) {
+
+		if($step == self::ETAPE_DR_DOUANE) {
+			
+			return $doc->getDocumentDouanierTypeLibelle();
+		}
+
+		return parent::getLibelle($step, $doc);
+    }
+
     public function getLibellesHash()
     {
 

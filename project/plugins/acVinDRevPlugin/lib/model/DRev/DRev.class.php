@@ -153,7 +153,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->getDocumentDouanier();
     }
 
-    public function getDocumentDouanier($ext = null) {
+    public function getDocumentDouanier($ext = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $fichier = DRClient::getInstance()->find('DR-'.$this->identifiant.'-'.$this->campagne);
         if ($fichier) {
             return ($ext)? $fichier->getFichier($ext) : $fichier;
@@ -177,9 +177,39 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDocumentDouanierType() {
-        $document = $this->getDocumentDouanier();
+        if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
+
+            return "DR";
+        }
+
+        if($this->declarant->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
+
+            return "SV11";
+        }
+
+        if($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT) {
+
+            return "SV12";
+        }
+
+        $document = $this->getDocumentDouanier(null, acCouchdbClient::HYDRATE_JSON);
 
         return ($document) ? $document->type : null;
+    }
+
+    public function getDocumentDouanierTypeLibelle() {
+
+        if(!$this->getDocumentDouanierType()) {
+
+            return "Données de la récolte";
+        }
+
+        if($this->getDocumentDouanierType() == "DR") {
+
+            return "Déclaration de récolte";
+        }
+
+        return $this->getDocumentDouanierType();
     }
 
     public function initDoc($identifiant, $campagne) {
@@ -244,7 +274,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $bailleurs = array();
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
-
             if(!$produitConfig) {
                 continue;
             }
@@ -284,6 +313,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DouaneCsvFile::CSV_TYPE] == SV12CsvFile::CSV_TYPE_SV12 && $line[SV12CsvFile::CSV_LIGNE_CODE] == SV12CsvFile::CSV_LIGNE_CODE_VOLUME_VENDANGE_FRAICHE) {
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_total += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
+                $produitRecolte->volume_sur_place += VarManipulator::floatize($line[SV12CsvFile::CSV_VALEUR]);
             }
 
             if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_SUPERFICIE) {
@@ -293,6 +323,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if ($line[DouaneCsvFile::CSV_TYPE] == SV11CsvFile::CSV_TYPE_SV11 && $line[SV11CsvFile::CSV_LIGNE_CODE] == SV11CsvFile::CSV_LIGNE_CODE_VOLUME_APTE) {
                 $produitRecolte->recolte_nette += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
                 $produitRecolte->volume_total += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
+                $produitRecolte->volume_sur_place += VarManipulator::floatize($line[SV11CsvFile::CSV_VALEUR]);
             }
         }
 
@@ -304,8 +335,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         		}
         	}
 
-            if ($produit->recolte->volume_total && $produit->recolte->volume_sur_place && $produit->recolte->volume_total == $produit->recolte->volume_sur_place && !in_array($produit->getHash(), $bailleurs)) {
-                $produit->superficie_revendique = $produit->recolte->superficie_total;
+            if ($p->recolte->volume_total && $p->recolte->volume_sur_place && round($p->recolte->volume_total, 4) == round($p->recolte->volume_sur_place, 4) && !in_array($p->getHash(), $bailleurs)) {
+                $p->superficie_revendique = $p->recolte->superficie_total;
             }
         }
         foreach ($todelete as $del) {
@@ -613,6 +644,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function storeDeclarant() {
         $this->declarant_document->storeDeclarant();
+
+        if($this->getDocumentDouanierType() == "DR") {
+            $this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR;
+        } elseif($this->getDocumentDouanierType() == "SV11") {
+            $this->declarant->famille == EtablissementFamilles::FAMILLE_COOPERATIVE;
+        } elseif($this->getDocumentDouanierType() == "SV12") {
+            $this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT;
+        } elseif($this->getEtablissementObject()->famille) {
+            $this->declarant->famille = $this->getEtablissementObject()->famille;
+        }
     }
 
     public function storeEtape($etape) {
@@ -926,7 +967,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	{
 		return $this->declaration->hasVciDetruit();
 	}
-	
+
 	public function getDateValidation($format = 'Y-m-d')
 	{
 		if ($this->validation) {
