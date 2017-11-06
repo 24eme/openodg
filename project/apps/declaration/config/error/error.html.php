@@ -6,34 +6,38 @@
 <!--[if IE 9 ]><html class="no-js ie9" lang="fr"><![endif]-->
 <!--[if gt IE 9]><!--><html class="no-js" lang="fr"><!--<![endif]-->
 <!-- ####### PLEASE KEEP ####### -->
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="X-Ua-Compatible" content="IE=edge" />
-    <meta name="title" content="Plateforme de télédéclaration de l&#039;AVA" />
-    <meta name="charset" content="utf-8" />
-    <meta name="description" content="Plateforme de télédéclaration de l&#039;AVA" />
-    <meta name="robots" content="index,follow" />
-    <meta name="content-language" content="fr-FR" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Plateforme de télédéclaration de l&#039;AVA</title>
-    
-    <link rel="shortcut icon" type="image/x-icon" href="favico.ico" />
-    <link rel="icon" type="image/x-icon" href="favico.ico" />
-    <link rel="icon" type="image/png" href="favico.png" />
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-Ua-Compatible" content="IE=edge" />
+        <meta name="title" content="Plateforme de télédéclaration du syndicat Côtes-du-Rhône" />
+<meta name="charset" content="utf-8" />
+<meta name="description" content="Plateforme de télédéclaration du syndicat Côtes-du-Rhône" />
+<meta name="robots" content="index,follow" />
+<meta name="content-language" content="fr-FR" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Plateforme de télédéclaration du syndicat Côtes-du-Rhône</title>
 
-    <link rel="stylesheet" type="text/css" media="all" href="/css/compile.css?201412041035" />
-    <link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
-    
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" type="image/x-icon" href="/favico.ico" />
+        <link rel="icon" type="image/x-icon" href="/favico.ico" />
+        <link rel="icon" type="image/png" href="/favico.png" />
 
-    <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
-    <script type="text/javascript" src="/js/lib/device.min.js"></script>
+        <link rel="stylesheet" type="text/css" media="all" href="/css/compile.css?201706281900" />
+<link rel="stylesheet" type="text/css" media="print" href="/css/print.css" />
+<link rel="stylesheet" type="text/css" media="all" href="/css/../components/vins/vins.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="/js/lib/leaflet/leaflet.css" />
 
-    <!--[if lt IE 9]>
-        <script type="text/javascript" src="/js/lib/respond.min.js"></script>
-    <![endif]-->
-</head>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
+        <link href="/css/style_rhone.css" rel="stylesheet" type="text/css">
+
+        <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
+        <script type="text/javascript" src="/js/lib/device.min.js"></script>
+
+        <!--[if lt IE 9]>
+            <script type="text/javascript" src="/js/lib/respond.min.js"></script>
+        <![endif]-->
+    </head>
     <body role="document">
+
         <!-- ####### PLEASE KEEP ####### -->
         <!--[if lte IE 7 ]>
         <div id="message_ie">
@@ -44,29 +48,21 @@
         <![endif]-->
         <!-- ####### PLEASE KEEP ####### -->
 
-        <!-- #page -->
-        <div id="page" class="container">
 
-            <div id="bg-page">
-                <img src="/images/bg/bg_global.jpg" alt="" />
-            </div>
+                        <header id="header">
+    <div class="container" style="position: relative; background-color: #002b6f; text-align: center;">
+    	<a href="/">
+        	<img style="height: 80px; border-left: 2px solid #fff;" class="pull-right" src="/images/logo_odgrhone.png" />
+        	<img style="height: 80px;" class="pull-left" src="/images/bg/bg_rhone_site.jpg" />
+        	<span style="color: #fff; font-size: 20px; padding-right: 130px; padding-top: 7px; display: inline-block;"><span style="color: #fff; font-size: 17px;">Espace professionnel<br /></span><span style="color: #fff">syndicat-cotesdurhone<strong style="color: #9f0038;">.</strong><span style="color: #9b9b9b">com</span></span></span>
+    	</a>
+    </div>
+</header>
 
-            <!-- #header -->
-            <header id="header" class="container" role="banner">
 
-                <h1 class="sr-only">Bienvenue sur le portail de l'association des viticulteurs d'alsace</h1>
-                    
-                <div id="logo">
-                    <a href="/" title="AVA - Association des viticulteurs d'alsace | Retour à la page d'accueil">
-                        <img src="/images/logo_site.png" alt="AVA - Association des viticulteurs d'alsace" />
-                    </a>
-                </div>
-                                                               
-            </header>
-            <!-- end #header -->
-            
-            <!-- #content -->
-            <section id="content" class="container">
+ <section id="content" class="container">
+ 
+
                 <div class="page-header no-border">
 
                 <h2><span class="glyphicon glyphicon-warning-sign"></span>&nbsp;&nbsp;Une erreur est survenue</h2>
@@ -92,29 +88,37 @@
                     
                 </div>
             </div>
-            </section>
+ 
+ </section>
 
-                <!-- #footer -->
-            <footer id="footer" class="container" role="contentinfo">
+
+
+            <footer id="footer" class="container hidden-xs hidden-sm text-center" role="contentinfo" style="margin-top: 40px;">
                 <nav role="navigation">
-                    <ul>
+                    <ul class="list-inline" style="font-size: 13px;">
                         <li><a href="/contact">Contact</a></li>
                         <li><a href="/mentions-legales">Mentions légales</a></li>
                     </ul>
                 </nav>
             </footer>
             <!-- end #footer -->
-        
-        </div>
+
         <!-- end #page -->
 
+        <div class="alert hidden alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
+        <div class="alert hidden alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
         <script type="text/javascript" src="/js/lib/jquery/jquery.min.js"></script>
-        <script type="text/javascript" src="/js/lib/jquery.plugins.min.js"></script>
-        <script type="text/javascript" src="/js/lib/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/js/global.js?201412041035"></script>
-        <script type="text/javascript" src="/js/compte.js"></script>
-        <script type="text/javascript" src="/js/drev.js"></script>
-        <script type="text/javascript" src="/js/drevmarc.js"></script>
-        <script type="text/javascript" src="/js/form.js"></script>
+<script type="text/javascript" src="/js/lib/jquery.plugins.min.js?201709221633"></script>
+<script type="text/javascript" src="/js/lib/bootstrap/bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/lib/bootstrap3-typeahead.min.js"></script>
+<script type="text/javascript" src="/js/lib/bootstrap-switch.min.js"></script>
+<script type="text/javascript" src="/js/lib/leaflet/leaflet.js"></script>
+<script type="text/javascript" src="/js/global.js?201711052339"></script>
+<script type="text/javascript" src="/js/compte.js"></script>
+<script type="text/javascript" src="/js/drev.js?201709251013"></script>
+<script type="text/javascript" src="/js/drevmarc.js"></script>
+<script type="text/javascript" src="/js/form.js"></script>
+<script type="text/javascript" src="/js/parcellaire.js"></script>
+<script type="text/javascript" src="/js/ava.js"></script>
     </body>
 </html>
