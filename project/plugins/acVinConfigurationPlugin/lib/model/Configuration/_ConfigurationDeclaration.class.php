@@ -701,7 +701,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     }
     
     public function hasRendements() {
-    	return false;
+    	return true;
     }
 
     public function hasDetails() {
