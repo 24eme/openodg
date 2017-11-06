@@ -48,11 +48,6 @@
                                         <div class="col-xs-8"><?php echo $form['code_comptable']->render(); ?></div>
                                     </div>
                     <?php endif; ?>
-                                <div class="form-group <?php if ($form['produit_non_interpro']->hasError()): ?>has-error<?php endif; ?>" > 
-                                    <?php echo $form['produit_non_interpro']->renderError() ?>
-                                    <?php echo $form['produit_non_interpro']->renderLabel(null, array('class' => 'col-xs-4')); ?>
-                                    <div class="col-xs-8"><?php echo $form['produit_non_interpro']->render(); ?></div>
-                                </div>
                 </div>
             </div>
         </div>
