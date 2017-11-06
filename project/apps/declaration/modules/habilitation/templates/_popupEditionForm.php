@@ -32,7 +32,7 @@
 							Statut :
 						</div>
 						<div class="col-xs-6">
-							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "select2 select2-offscreen select2autocomplete col-xs-12", "required" => true)); ?>
+							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "select2 select2-offscreen select2autocomplete", "required" => true)); ?>
 						</div>
 					</div>
 					<div class="row form-group" >
@@ -42,7 +42,7 @@
 							</div>
 							<div class="col-xs-6" >
 								<div class="input-group date-picker">
-										<?php echo $editForm['date_'.$idKey]->render(array('placeholder' => "Date", "required" => "required" ,"class" => "col-xs-12")); ?>
+										<?php echo $editForm['date_'.$idKey]->render(array('placeholder' => "Date", "required" => "required" ,"class" => "form-control")); ?>
 										<div class="input-group-addon">
 												<span class="glyphicon-calendar glyphicon"></span>
 										</div>
@@ -55,7 +55,7 @@
 							Commentaire :
 						</div>
 						<div class="col-xs-6">
-							<?php echo $editForm['commentaire_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "col-xs-12	", "required" => false)); ?>
+							<?php echo $editForm['commentaire_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control", "required" => false)); ?>
 						</div>
 					</div>
 				</div>
