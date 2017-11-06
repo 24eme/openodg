@@ -21,17 +21,15 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
 
 $campagne = (date('Y')-1)."";
 
-$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
-$drev->save();
-
-$t->comment("Récupération des données à partir de la SV12");
-
 $dr = SV12Client::getInstance()->createDoc($viti->identifiant, $campagne);
 $dr->setLibelle("SV12 $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");
 $dr->save();
 $dr->storeFichier(dirname(__FILE__).'/../data/sv12_douane.csv');
 $dr->save();
+
+$drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
+$drev->save();
 
 $drev->importFromDocumentDouanier();
 $drev->save();

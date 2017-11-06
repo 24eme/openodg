@@ -274,7 +274,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $bailleurs = array();
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
-
             if(!$produitConfig) {
                 continue;
             }
@@ -336,8 +335,8 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         		}
         	}
 
-            if ($produit->recolte->volume_total && $produit->recolte->volume_sur_place && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4) && !in_array($produit->getHash(), $bailleurs)) {
-                $produit->superficie_revendique = $produit->recolte->superficie_total;
+            if ($p->recolte->volume_total && $p->recolte->volume_sur_place && round($p->recolte->volume_total, 4) == round($p->recolte->volume_sur_place, 4) && !in_array($p->getHash(), $bailleurs)) {
+                $p->superficie_revendique = $p->recolte->superficie_total;
             }
         }
         foreach ($todelete as $del) {
@@ -968,7 +967,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	{
 		return $this->declaration->hasVciDetruit();
 	}
-	
+
 	public function getDateValidation($format = 'Y-m-d')
 	{
 		if ($this->validation) {
