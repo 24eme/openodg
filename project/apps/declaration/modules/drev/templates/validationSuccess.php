@@ -17,7 +17,7 @@
             <?php endif; ?>
             <?php echo $form["date"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
             <div class="col-xs-4">
-                <div class="input-group date-picker-all-days">
+                <div class="input-group date-picker">
                     <?php echo $form["date"]->render(array("class" => "form-control")); ?>
                     <div class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
