@@ -70,6 +70,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function addInGroupes($grp,$fct){
         $grp = str_replace(array('.', ')', '('), array('','',''), $grp);
+        $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
         $allGrps = $this->getOrAdd('groupes');
         if($allGrps->exist($grp)){
           return;

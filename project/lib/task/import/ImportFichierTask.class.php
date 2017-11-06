@@ -22,6 +22,7 @@ class ImportFichierTask extends sfBaseTask
         	new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         	new sfCommandOption('annee', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         	new sfCommandOption('lien_symbolique', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', false),
+        	new sfCommandOption('date_import', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         ));
 
         $this->namespace = 'import';
@@ -64,6 +65,10 @@ EOF;
         		echo sprintf("ERROR;Type et année obligatoire pour la création du lien symbolique\n");
         		return;
         	}
+        	if (!$options['date_import']) {
+        		echo sprintf("ERROR;Date d'import obligatoire pour la création du lien symbolique\n");
+        		return;
+        	}
           if (!preg_match('/^[0-9]{4}$/', $options['annee'])) {
             echo sprintf("ERROR;Format année (Y) non valide %s\n", $options['annee']);
             return;
@@ -74,8 +79,13 @@ EOF;
         		return;
         	}
         	$fichier = $client->findByArgs($etablissement->identifiant,  $options['annee']);
+        	if ($fichier && $fichier->date_import != $options['date_import']) {
+        		$fichier->delete();
+        		$fichier = null;
+        	}
         	if (!$fichier) {
         		$fichier = $client->createDoc($etablissement->identifiant, $options['annee'], $options['papier']);
+        		$fichier->date_import = $options['date_import'];
         	}
 
         } else {

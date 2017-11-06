@@ -274,6 +274,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         $bailleurs = array();
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
+
             if(!$produitConfig) {
                 continue;
             }
@@ -345,7 +346,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         foreach ($todelete as $del) {
         	$this->declaration->remove($del);
         }
-
         $this->updateFromPrecedente();
     }
 
@@ -1270,7 +1270,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDate() {
-      return $this->campagne.'-12-15';
+      return $this->campagne.'-12-10';
     }
 
     /**** FIN DE VERSION ****/
