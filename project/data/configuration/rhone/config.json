@@ -268,8 +268,8 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
+                                   "rendement": 51,
+                                   "rendement_vci": 0,
                                    "rendement_vci_total": 15
                                }
                            },
@@ -320,9 +320,9 @@
                                        ],
                                        "lieux": {
                                            "DEFAUT": {
-                                               "libelle": null,
-                                               "format_libelle": null,
-                                               "code": null,
+                                               "libelle": "",
+                                               "format_libelle": "",
+                                               "code": "",
                                                "code_produit": null,
                                                "code_comptable": null,
                                                "code_douane": null,
@@ -473,12 +473,17 @@
                                                            }
                                                        }
                                                    }
+                                               },
+                                               "attributs": {
+                                                   "rendement": 44,
+                                                   "rendement_vci": 0,
+                                                   "rendement_vci_total": 12
                                                }
                                            },
                                            "CHU": {
                                                "libelle": "Chusclan",
-                                               "format_libelle": null,
-                                               "code": null,
+                                               "format_libelle": "",
+                                               "code": "",
                                                "code_produit": null,
                                                "code_comptable": null,
                                                "code_douane": null,
@@ -585,6 +590,11 @@
                                                            }
                                                        }
                                                    }
+                                               },
+                                               "attributs": {
+                                                   "rendement": 41,
+                                                   "rendement_vci": 0,
+                                                   "rendement_vci_total": 12
                                                }
                                            },
                                            "GAD": {
@@ -2851,9 +2861,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 41,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 12
                                }
                            },
                            "BEA": {
@@ -2974,9 +2984,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "CDP": {
@@ -3141,9 +3151,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "CGR": {
@@ -3264,9 +3274,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 37,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "COD": {
@@ -3387,15 +3397,15 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 44,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "COR": {
                                "libelle": "Cornas",
-                               "format_libelle": null,
-                               "code": null,
+                               "format_libelle": "",
+                               "code": "",
                                "code_produit": null,
                                "code_comptable": null,
                                "code_douane": null,
@@ -3409,7 +3419,8 @@
                                            ],
                                            "cvo": [
                                            ]
-                                       }
+                                       },
+                                       "produit_non_interpro": false
                                    }
                                },
                                "departements": [
@@ -3507,6 +3518,11 @@
                                            }
                                        }
                                    }
+                               },
+                               "attributs": {
+                                   "rendement": 40,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "CRO": {
@@ -3627,9 +3643,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 44,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "CRH": {
@@ -3794,9 +3810,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 47,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "GIG": {
@@ -3961,9 +3977,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "HER": {
@@ -4080,8 +4096,8 @@
                                                    },
                                                    "blanc": {
                                                        "libelle": "Blanc",
-                                                       "format_libelle": null,
-                                                       "code": null,
+                                                       "format_libelle": "",
+                                                       "code": "",
                                                        "code_produit": null,
                                                        "code_comptable": null,
                                                        "code_douane": null,
@@ -4120,17 +4136,100 @@
                                                                    }
                                                                }
                                                            }
+                                                       },
+                                                       "attributs": {
+                                                           "rendement": 45,
+                                                           "rendement_vci": null,
+                                                           "rendement_vci_total": null
                                                        }
                                                    }
+                                               }
+                                           },
+                                           "PAI": {
+                                               "libelle": "Paille",
+                                               "format_libelle": "",
+                                               "code": "",
+                                               "code_produit": null,
+                                               "code_comptable": null,
+                                               "code_douane": null,
+                                               "interpro": {
+                                                   "INTERPRO-declaration": {
+                                                       "labels": [
+                                                       ],
+                                                       "droits": {
+                                                           "douane": [
+                                                           ],
+                                                           "cvo": [
+                                                           ]
+                                                       }
+                                                   }
+                                               },
+                                               "departements": [
+                                               ],
+                                               "couleurs": {
+                                                   "blanc": {
+                                                       "libelle": "Blanc",
+                                                       "format_libelle": null,
+                                                       "code": null,
+                                                       "code_produit": null,
+                                                       "code_comptable": null,
+                                                       "code_douane": null,
+                                                       "interpro": {
+                                                           "INTERPRO-declaration": {
+                                                               "labels": [
+                                                               ],
+                                                               "droits": {
+                                                                   "douane": [
+                                                                   ],
+                                                                   "cvo": [
+                                                                   ]
+                                                               }
+                                                           }
+                                                       },
+                                                       "departements": [
+                                                       ],
+                                                       "cepages": {
+                                                           "HER": {
+                                                               "libelle": "",
+                                                               "format_libelle": "",
+                                                               "code": "",
+                                                               "code_produit": "",
+                                                               "code_comptable": "",
+                                                               "code_douane": "1B541L01",
+                                                               "cepages_autorises": [
+                                                               ],
+                                                               "interpro": {
+                                                                   "INTERPRO-declaration": {
+                                                                       "droits": {
+                                                                           "douane": [
+                                                                           ],
+                                                                           "cvo": [
+                                                                           ]
+                                                                       }
+                                                                   }
+                                                               },
+                                                               "attributs": {
+                                                                   "rendement": null,
+                                                                   "rendement_vci": null,
+                                                                   "rendement_vci_total": null
+                                                               }
+                                                           }
+                                                       }
+                                                   }
+                                               },
+                                               "attributs": {
+                                                   "rendement": 15,
+                                                   "rendement_vci": 0,
+                                                   "rendement_vci_total": 0
                                                }
                                            }
                                        }
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 40,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "LIR": {
@@ -4339,9 +4438,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": null,
+                                   "rendement_vci_total": null
                                }
                            },
                            "RTA": {
@@ -4462,9 +4561,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "SJO": {
@@ -4581,8 +4680,8 @@
                                                    },
                                                    "blanc": {
                                                        "libelle": "Blanc",
-                                                       "format_libelle": null,
-                                                       "code": null,
+                                                       "format_libelle": "",
+                                                       "code": "",
                                                        "code_produit": null,
                                                        "code_comptable": null,
                                                        "code_douane": null,
@@ -4621,6 +4720,11 @@
                                                                    }
                                                                }
                                                            }
+                                                       },
+                                                       "attributs": {
+                                                           "rendement": 45,
+                                                           "rendement_vci": null,
+                                                           "rendement_vci_total": null
                                                        }
                                                    }
                                                }
@@ -4629,9 +4733,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 42,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "SPT": {
@@ -4752,9 +4856,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 50,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "TAV": {
@@ -4875,9 +4979,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "VAC": {
@@ -5086,9 +5190,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "VBR": {
@@ -5209,9 +5313,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "GLA": {
@@ -5420,9 +5524,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "VIV": {
@@ -5631,9 +5735,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "CAR": {
@@ -5750,8 +5854,8 @@
                                                    },
                                                    "blanc": {
                                                        "libelle": "Blanc",
-                                                       "format_libelle": null,
-                                                       "code": null,
+                                                       "format_libelle": "",
+                                                       "code": "",
                                                        "code_produit": null,
                                                        "code_comptable": null,
                                                        "code_douane": null,
@@ -5790,6 +5894,11 @@
                                                                    }
                                                                }
                                                            }
+                                                       },
+                                                       "attributs": {
+                                                           "rendement": 40,
+                                                           "rendement_vci": null,
+                                                           "rendement_vci_total": null
                                                        }
                                                    }
                                                }
@@ -5798,9 +5907,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 38,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            }
                        }
@@ -5945,9 +6054,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": 57,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            }
                        }
@@ -6180,9 +6289,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            },
                            "VDR": {
@@ -6199,6 +6308,8 @@
                                        ],
                                        "droits": {
                                            "douane": [
+                                           ],
+                                           "cvo": [
                                            ]
                                        },
                                        "produit_non_interpro": false
@@ -6389,9 +6500,9 @@
                                    }
                                },
                                "attributs": {
-                                   "rendement": 100,
-                                   "rendement_vci": 5,
-                                   "rendement_vci_total": 15
+                                   "rendement": -1,
+                                   "rendement_vci": 0,
+                                   "rendement_vci_total": 0
                                }
                            }
                        }
