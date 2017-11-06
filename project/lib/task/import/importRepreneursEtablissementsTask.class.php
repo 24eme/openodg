@@ -119,12 +119,12 @@ EOF;
           if($etbRepris){
             $lien =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('etablissement_visualisation',$etbRepris)."\" data-relative=\"true\">".$etbRepris->nom." (".$etbRepris->identifiant.")</a>";
 
-            $etbRepreneur->addCommentaire("Repreneur de l'établissement ".$lien." <br/>");
+            $etbRepreneur->addCommentaire("Repreneur de l'établissement ".$lien."");
             $etbRepreneur->save();
 
 
             $etbRepris->setStatut(SocieteClient::STATUT_SUSPENDU);
-            $etbRepris->addCommentaire("Repris par l'établissement ".$lienRepreneur." <br/>");
+            $etbRepris->addCommentaire("Repris par l'établissement ".$lienRepreneur."");
             $etbRepris->save();
 
             $etbCompte = $etbRepris->getMasterCompte();
@@ -140,14 +140,14 @@ EOF;
 
           }elseif($socReprise){
             $lien =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('societe_visualisation',$socReprise)."\" data-relative=\"true\">".$socReprise->raison_sociale." (".$socReprise->identifiant.")</a>";
-            $etbRepreneur->addCommentaire("Repreneur de la societe ".$lien." <br/>");
+            $etbRepreneur->addCommentaire("Repreneur de la societe ".$lien."");
             $etbRepreneur->save();
 
             $socReprise->setStatut(SocieteClient::STATUT_SUSPENDU);
             $socReprise->save();
             $socCompte = $socReprise->getMasterCompte();
             $socCompte->setStatut(SocieteClient::STATUT_SUSPENDU);
-            $socCompte->addCommentaire("Repris par l'établissement ".$lienRepreneur." <br/>");
+            $socCompte->addCommentaire("Repris par l'établissement ".$lienRepreneur."");
             $socCompte->save();
           }
 
