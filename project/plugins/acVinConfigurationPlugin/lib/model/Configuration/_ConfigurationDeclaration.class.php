@@ -362,11 +362,6 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
         return $this->getTauxCVO($date) > 0;
     }
 
-    public function isActif($date) {
-
-        return $this->isCVOActif($date) && $this->isDouaneActif($date);
-    }
-
     public function getTauxCVO($date) {
         try {
             $droit_produit = $this->getDroitCVO($date);
@@ -807,6 +802,11 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function getRendementVciTotal() {
         return $this->getRendementByKey('rendement_vci_total');
+    }
+    
+    public function isActif()
+    {
+    	return ($this->getRendement() == -1 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;
     }
 
     public function getRendementDrev() {

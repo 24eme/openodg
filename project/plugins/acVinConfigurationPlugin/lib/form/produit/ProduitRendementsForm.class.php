@@ -2,9 +2,9 @@
 class ProduitRendementsForm extends acCouchdbObjectForm {
 
     public function configure() {
-            $this->setWidget('rendement', new bsWidgetFormInputFloat());
-            $this->setWidget('rendement_vci', new bsWidgetFormInputFloat());
-            $this->setWidget('rendement_vci_total', new bsWidgetFormInputFloat());
+            $this->setWidget('rendement', new bsWidgetFormInput());
+            $this->setWidget('rendement_vci', new bsWidgetFormInput());
+            $this->setWidget('rendement_vci_total', new bsWidgetFormInput());
 
             $this->getWidget('rendement')->setLabel("Rendement :");
             $this->getWidget('rendement_vci')->setLabel("Rendement VCI :");

@@ -9,7 +9,7 @@ class ProduitNouveauForm extends BaseForm {
     protected static $noeudPermissif = array('appellation', 'lieu', 'cepage');
 	
 	
-	public function __construct($configuration, $interpro, $defaults = array(), $options = array(), $CSRFSecret = null) {
+	public function __construct($configuration, $defaults = array(), $options = array(), $CSRFSecret = null) {
 		$this->configuration = $configuration;
 		parent::__construct($defaults, $options, $CSRFSecret);
 	}
