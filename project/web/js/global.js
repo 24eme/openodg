@@ -775,5 +775,9 @@
         $.initCheckboxBtnGroup();
         $.initHabilitation();
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
+
+        $("input[type='text']").on("click", function () {
+        	$(this).select();
+        });
     });
 })(jQuery);
