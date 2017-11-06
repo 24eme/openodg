@@ -39,7 +39,7 @@
 						<span class="error"><?php echo $form['date']->renderError() ?></span>
 						<div class="col-xs-10 col-xs-offset-1">
 							<div class="input-group date-picker">
-								<?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"class" => "col-xs-12")) ?>
+								<?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"class" => "form-control")) ?>
 								<div class="input-group-addon">
 										<span class="glyphicon-calendar glyphicon"></span>
 								</div>
