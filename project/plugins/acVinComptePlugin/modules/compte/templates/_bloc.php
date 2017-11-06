@@ -2,7 +2,7 @@
 <h4 style="margin-top: 0;">
 	<a href="<?php echo url_for('compte_visualisation', $compte) ?>"><?php echo ($compte->nom_a_afficher) ? $compte->nom_a_afficher : $compte->nom; ?></a>
 	<?php if ($compte->isSuspendu()): ?>
-    <span class="label label-default pull-right"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->statut; ?></small></span>
+    <span class="label label-default pull-right"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->getStatutLibelle(); ?></small></span>
 <?php endif; ?>
 </h4>
 <?php if($compte->fonction): ?>

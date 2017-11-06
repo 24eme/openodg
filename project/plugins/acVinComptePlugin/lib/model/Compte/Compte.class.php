@@ -305,6 +305,10 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return CompteClient::STATUT_TELEDECLARANT_INACTIF;
     }
 
+    public function getStatutLibelle(){
+      return CompteClient::$statutsLibelles[$this->getStatut()];
+    }
+
     /**
      *
      * @param string $mot_de_passe
@@ -542,7 +546,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function updateCoordonneesLongLatByNoeud($noeud,$latCompare = false,$lonCompare = false) {
-      
+
         $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
 
         if(!$coordonnees) {

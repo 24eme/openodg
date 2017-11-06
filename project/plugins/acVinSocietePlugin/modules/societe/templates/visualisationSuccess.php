@@ -17,7 +17,7 @@
                             <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li<?php echo ($societe->isSuspendu() || $societe->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $societe->isSuspendu()) ? 'javascript:void(0)' : url_for('societe_modification', $societe); ?>">Editer</a></li>
-                                <li<?php echo ($societe->isSuspendu() || $societe->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $societe->isSuspendu())? 'javascript:void(0)' : url_for('societe_switch_statut', array('identifiant' => $societe->identifiant)); ?>">Suspendre</a></li>
+                                <li<?php echo ($societe->isSuspendu() || $societe->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $societe->isSuspendu())? 'javascript:void(0)' : url_for('societe_switch_statut', array('identifiant' => $societe->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($societe->isSuspendu() || $societe->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $societe->isActif())? 'javascript:void(0)' : url_for('societe_switch_statut', array('identifiant' => $societe->identifiant)); ?>">Activer</a></li>
                             </ul>
                         </div>
@@ -28,7 +28,7 @@
                 <h2>
                 	<?php echo $societe->raison_sociale; ?>
                 	<?php if ($societe->getMasterCompte()->isSuspendu()): ?>
-					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $societe->getMasterCompte()->statut; ?></small></span>
+					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $societe->getMasterCompte()->getStatutLibelle(); ?></small></span>
 					<?php endif; ?>
                 </h2>
                 <hr/>

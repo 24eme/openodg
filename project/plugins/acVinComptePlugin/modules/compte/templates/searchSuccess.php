@@ -24,7 +24,7 @@
                     </span>
                 </div>
                 <div>
-                    <label for="contacts_all">Inclure les contacts suspendus </label>
+                    <label for="contacts_all">Inclure les contacts archivés </label>
                     <input type="checkbox" value="1" name="contacts_all" id="contacts_all"<?php if($contacts_all) echo " CHECKED"; ?>/>
                 </div>
 			</div>
@@ -67,7 +67,7 @@
                     <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo $data['doc']['nom_a_afficher']; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
                     </span>
                </div><div class="col-xs-4 text-right">
-<?php if(isset($societe_informations['type']) && $societe_informations['type']): ?><small class="text-muted label label-primary"><?php echo $societe_informations['type'] ?></small><?php endif; if ($data['doc']['statut'] != 'ACTIF') echo ' &nbsp; <small class="text-muted label label-default">'.$data['doc']['statut'].'</small>'; ?>
+<?php if(isset($societe_informations['type']) && $societe_informations['type']): ?><small class="text-muted label label-primary"><?php echo $societe_informations['type'] ?></small><?php endif; if ($data['doc']['statut'] != 'ACTIF') echo ' &nbsp; <small class="text-muted label label-default">'.CompteClient::$statutsLibelles[$data['doc']['statut']].'</small>'; ?>
                 </div>
                 <div class="col-xs-6">
                     <?php echo $data['doc']['adresse']; ?> <?php if ($data['doc']['adresse_complementaire']): ?><small>(<?php echo $data['doc']['adresse_complementaire']; ?>)</small><?php endif; ?><br />
