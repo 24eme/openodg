@@ -1,116 +1,127 @@
 <?php
 
-class
-myUser extends sfBasicSecurityUser
+class myUser extends sfBasicSecurityUser
 {
 
-    const SESSION_LOGIN = "LOGIN";
-    const SESSION_ETABLISSEMENT = "ETABLISSEMENT";
-    const SESSION_COMPTE = "COMPTE";
-    const NAMESPACE_AUTH = "AUTH";
-
-    const CREDENTIAL_ADMIN = 'admin';
-    const CREDENTIAL_TOURNEE = 'tournee';
-    const CREDENTIAL_CONTACT = 'contact';
-
-    protected $etablissement = null;
-    protected $compte = null;
+    const SESSION_COMPTE_LOGIN = "COMPTE_LOGIN";
+    const SESSION_COMPTE_DOC = "COMPTE_DOC_ID";
+    const SESSION_USURPATION_URL_BACK = "USURPATION_URL_BACK";
+    const NAMESPACE_COMPTE = "COMPTE";
+    const NAMESPACE_COMPTE_ORIGIN = "COMPTE_ORIGIN";
+    const CREDENTIAL_ADMIN = "admin";
+    const CREDENTIAL_TOURNEE = "tournee";
+    const CREDENTIAL_CONTACT = "contact";
 
     public function signInOrigin($login_or_compte) {
+
+        $compte = $this->registerCompteByNamespace($login_or_compte, self::NAMESPACE_COMPTE_ORIGIN);
+
+        $this->setAuthenticated(true);
         $this->signIn($login_or_compte);
     }
 
-    public function signIn($identifiant)
-    {
-        $this->setAttribute(self::SESSION_LOGIN, $identifiant, self::NAMESPACE_AUTH);
-        $this->setAuthenticated(true);
+    public function signIn($login_or_compte) {
+        $compte = $this->registerCompteByNamespace($login_or_compte, self::NAMESPACE_COMPTE);
 
-        if($identifiant instanceof Compte) {
-            $this->signInCompte($identifiant);
-
-            return;
-        }
-
-        $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
-
-        if($compte) {
-            $this->signInCompte($compte);
-
-            return;
+        if ($compte && $compte->exist('droits')) {
+            foreach ($compte->droits as $droit) {
+                $roles = Roles::getRoles($droit);
+                $this->addCredentials($roles);
+            }
         }
     }
 
-    public function signInCompte($compte) {
-        $this->compte = null;
-        $this->setAttribute(self::SESSION_COMPTE, $compte->_id, self::NAMESPACE_AUTH);
+    protected function registerCompteByNamespace($login_or_compte, $namespace) {
 
-        foreach($compte->droits as $droit => $value) {
-            $this->addCredential($droit);
+        if (is_object($login_or_compte) && $login_or_compte instanceof Compte) {
+            $compte = $login_or_compte;
+            $login = $compte->getLogin();
+        } else {
+
+            $compte = CompteClient::getInstance()->findByLogin($login_or_compte);
+            $login = $login_or_compte;
         }
+
+        if(!$compte) {
+            throw new sfException("Le compte est nul : ".$compte->_id);
+        }
+
+        $this->setAttribute(self::SESSION_COMPTE_LOGIN, $login, $namespace);
+
+        if ($compte->isNew()) {
+            $this->setAttribute(self::SESSION_COMPTE_DOC, $compte, $namespace);
+        } else {
+            $this->setAttribute(self::SESSION_COMPTE_DOC, $compte->_id, $namespace);
+        }
+
+        return $compte;
     }
 
-    public function signInEtablissement($etablissement) {
-        $this->etablissement = null;
-        $this->setAttribute(self::SESSION_ETABLISSEMENT, $etablissement->_id, self::NAMESPACE_AUTH);
+    public function signOut() {
+        $this->clearCredentials();
+        $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_COMPTE);
     }
 
-    public function signOutEtablissement()
-    {
-        $this->setAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH);
-        $this->etablissement = null;
-    }
-
-    public function signOut()
-    {
+    public function signOutOrigin() {
+        $this->signOut();
         $this->setAuthenticated(false);
         $this->clearCredentials();
-        $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_AUTH);
+        $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_COMPTE_ORIGIN);
     }
 
-    public function getEtablissement()
-    {
-        if(is_null($this->etablissement)) {
-            $id = $this->getAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH);
+    public function getCompte() {
 
-            if(!$id) {
-
-                return null;
-            }
-
-            $this->etablissement = EtablissementClient::getInstance()->find($id);
-        }
-
-        return $this->etablissement;
+        return $this->getCompteByNamespace(self::NAMESPACE_COMPTE);
     }
 
-    public function getCompte()
-    {
-        if(is_null($this->compte)) {
-            $id = $this->getAttribute(self::SESSION_COMPTE, null, self::NAMESPACE_AUTH);
+    public function getCompteOrigin() {
 
-            if ($id instanceof Compte) {
+        return $this->getCompteByNamespace(self::NAMESPACE_COMPTE_ORIGIN);
+    }
 
-                return $id_or_doc;
-            }
+    protected function getCompteByNamespace($namespace) {
+        $id_or_doc = $this->getAttribute(self::SESSION_COMPTE_DOC, null, $namespace);
 
-            if(!$id) {
-
-                return null;
-            }
-
-            $this->compte = CompteClient::getInstance()->find($id);
+        if (!$id_or_doc) {
+            return null;
         }
 
-        return $this->compte;
+        if ($id_or_doc instanceof Compte) {
+
+            return $id_or_doc;
+        }
+
+        return CompteClient::getInstance()->find($id_or_doc);
+    }
+
+    public function usurpationOn($login_or_compte, $url_back) {
+        $this->signOut();
+        $this->signIn($login_or_compte);
+        $this->setAttribute(self::SESSION_USURPATION_URL_BACK, $url_back);
+    }
+
+    public function usurpationOff() {
+        $this->signOut();
+        $this->signIn($this->getCompteOrigin());
+
+        $url_back = $this->getAttribute(self::SESSION_USURPATION_URL_BACK);
+        $this->getAttributeHolder()->remove(self::SESSION_USURPATION_URL_BACK);
+
+        return $url_back;
+    }
+
+    public function isUsurpationCompte() {
+
+        return $this->getAttribute(self::SESSION_COMPTE_LOGIN, null, self::NAMESPACE_COMPTE) != $this->getAttribute(self::SESSION_COMPTE_LOGIN, null, self::NAMESPACE_COMPTE_ORIGIN);
     }
 
     public function isAdmin()
     {
-    	return $this->hasCredential(self::CREDENTIAL_ADMIN);
+       return $this->hasCredential(self::CREDENTIAL_ADMIN);
     }
 
     public function hasTeledeclaration() {
-
-        return false;
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin();
     }
+
 }

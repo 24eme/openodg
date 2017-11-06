@@ -5,17 +5,29 @@
 
 # Auth
 
-auth_login:
-  url: /login
+auth_login_no_cas:
+  url: /login_no_cas
   param: { module: auth, action: login }
 
 auth_logout:
   url: /logout
   param: { module: auth, action: logout }
 
+auth_deconnexion_usurpation:
+  url: /deconnexion_usurpation
+  param: { module: auth, action: deconnexionUsurpation }
+
 auth_state:
   url: /auth/state
   param: { module: auth, action: state }
+
+common_homepage:
+  url: /
+  param: { module: common, action: accueil }
+
+common_accueil:
+  url: /
+  param: { module: common, action: accueil }
 
 accueil:
   url: /
@@ -59,6 +71,17 @@ declaration_etablissement:
     type:     object
   requirements:
     sf_method: [get]
+
+
+declaration_usurpation:
+  url: /declarations-usurpation/:identifiant
+  param: { module: declaration, action: usurpation }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    EtablissementRoute
+    type:     object
+  requirements:
+    sf_method: [get, post]
 
 # PIECE
 
