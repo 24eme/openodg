@@ -67,7 +67,7 @@
                 <?php if ($societe->commentaire) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <pre><?php echo $societe->commentaire; ?></pre>
+                <pre><?php echo html_entity_decode($societe->commentaire); ?></pre>
                 <?php endif; ?>
             </div>
         </div>
