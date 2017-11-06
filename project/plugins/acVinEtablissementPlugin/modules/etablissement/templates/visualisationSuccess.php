@@ -108,6 +108,9 @@
                 <?php else: ?>
                     <p class="text-muted">Aucun chai</p>
                 <?php endif; ?>
+                <div class="text-right">
+                  <a href="<?php echo url_for("etablissement_ajout_chai", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un chai</a>
+                </div>
                 <?php if ($etablissement->commentaire) : ?>
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
                 <pre><?php echo html_entity_decode($etablissement->commentaire); ?></pre>
