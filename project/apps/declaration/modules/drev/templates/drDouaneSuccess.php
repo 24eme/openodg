@@ -2,7 +2,7 @@
 
 <?php include_partial('drev/step', array('step' => 'dr_douane', 'drev' => $drev)) ?>
 <div class="page-header">
-    <h2>Récupération des données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?></h2>
+    <h2>Récupération des <?php echo strtolower($drev->getDocumentDouanierTypeLibelle()) ?> <a href="<?php echo url_for('drev_scrape_dr', $drev) ?>" class="pull-right btn btn-warning btn-xs">Récupérer sur Prodouane, si disponible</a></h2>
 </div>
 <form method="post" enctype="multipart/form-data">
 <?php if ($form): ?>
@@ -11,7 +11,7 @@
 	<p>Les données de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> ne sont pas disponibles sur le site de Prodouane. Merci de bien vouloir nous fournir le fichier XLS de votre <?php echo $drev->getDocumentDouanierTypeLibelle() ?> afin de poursuivre la saisie de vos revendications.</p>
     <div class="row" style="margin: 20px 0;">
     	<div class="form-group <?php if($form['file']->hasError()): ?>has-error<?php endif; ?>">
-			<div class="col-xs-11 col-xs-offset-1">
+			<div class="col-xs-11 col-xs-offset-1 text-danger">
 				<?php echo $form['file']->renderError() ?>
 			</div>
 			<div class="col-xs-1">

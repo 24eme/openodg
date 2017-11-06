@@ -209,6 +209,10 @@ class drevActions extends sfActions {
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        
+        if (!$this->drev->hasDR()) {
+        	return $this->redirect('drev_dr_douane', $this->drev);
+        }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE))) {
             $this->drev->save();
@@ -243,6 +247,10 @@ class drevActions extends sfActions {
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        
+        if (!$this->drev->hasDR()) {
+        	return $this->redirect('drev_dr_douane', $this->drev);
+        }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION))) {
             $this->drev->save();
@@ -395,6 +403,10 @@ class drevActions extends sfActions {
     public function executeVci(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        
+        if (!$this->drev->hasDR()) {
+        	return $this->redirect('drev_dr_douane', $this->drev);
+        }
 
         if(!count($this->drev->getProduitsVci())) {
 
@@ -644,8 +656,11 @@ class drevActions extends sfActions {
 
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
-
         $this->secure(DRevSecurity::EDITION, $this->drev);
+        
+        if (!$this->drev->hasDR()) {
+        	return $this->redirect('drev_dr_douane', $this->drev);
+        }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION))) {
             $this->drev->save();
