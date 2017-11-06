@@ -551,8 +551,7 @@ EOF;
         echo "Association au groupe ". implode(",",$groupesTags) ." ".$c->_id." \n";
         foreach($groupesTags as $grpKey => $grp){
           $fonction = (array_key_exists($grp["b:Fonction"],$this->fonctionsArr))? $this->fonctionsArr[$grp["b:Fonction"]] : $grp["b:Fonction"];
-          $grpName = KeyInflector::unaccent(str_replace(array(")","("),array('',''),$grp[0]));
-          $c->addInGroupes($grpName,$fonction);
+          $c->addInGroupes($grp[0],$fonction);
          }
       }
     }

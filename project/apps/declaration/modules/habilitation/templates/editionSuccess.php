@@ -11,7 +11,7 @@
 
 <div class="panel panel-default">
   <div class="panel-body">
-    <h4><span class="glyphicon glyphicon-home"></span> <?php  echo $etablissement->getNom()." - ".$etablissement->getIdentifiant(); ?><?php  if($etablissement->getCvi()){ echo ' - Cvi : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - Siret : '.$etablissement->getSiret(); } ?></h4>
+    <h4><span class="glyphicon glyphicon-home"></span> <?php  echo $etablissement->getNom()." - ".$etablissement->getIdentifiant(); ?><?php  if($etablissement->getCvi()){ echo ' - CVI : '.$etablissement->getCvi(); } ?><?php  if($etablissement->getSiret()){ echo ' - Siret : '.$etablissement->getSiret(); } ?></h4>
     <div class="row">
         <div class="col-xs-12">
           <div class="row">

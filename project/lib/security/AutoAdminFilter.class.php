@@ -23,7 +23,7 @@ class AutoAdminFilter extends sfBasicSecurityFilter
     $user->clearCredentials();
     $user->setAuthenticated(true);
 
-    $rights = 'admin';
+    $rights = 'ADMIN';
 
     $user->setAttribute('AUTH_USER', $rights);
     $user->setAttribute('AUTH_DESC', $rights);
