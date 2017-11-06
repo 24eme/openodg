@@ -1,7 +1,5 @@
-<?php use_helper('TemplatingPDF') ?>
-<?php use_helper('Float') ?>
-<?php use_helper("Date"); ?>
-<?php
+<?php use_helper('TemplatingPDF');  use_helper('Float'); use_helper("Date"); use_helper("Compte");
+
 $compte = $constats->getCompte();
 $telFaxRowDecr = "&nbsp;";
 $telFaxRow = "";
@@ -41,7 +39,7 @@ $libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Sélection de Grains Nobles' 
                 </tr>
                 <tr>
                     <td>&nbsp;Adresse : <i><?php echo $constats->adresse ?></i></td>
-                    <td>SIRET : <i><?php echo $constats->getCompte()->siret ?></i></td>
+                    <td>SIRET : <i><?php echo formatSIRET($constats->getCompte()->siret); ?></i></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Commune : <i><?php echo $constats->code_postal ?>, <?php echo $constats->commune ?></i></td>

@@ -1,6 +1,7 @@
-<?php use_helper('TemplatingPDF') ?>
-<?php use_helper('Float') ?>
-<?php use_helper("Date"); ?>
+<?php use_helper('TemplatingPDF');
+ use_helper('Float');
+ use_helper('Compte');
+ use_helper("Date"); ?>
 <style>
 <?php echo styleDRev(); ?>
 </style>
@@ -16,7 +17,7 @@
     <tr>
         <td>&nbsp;Adresse : <i><?php echo $drev->declarant->adresse ?></i></td>
         <td>&nbsp;Email : <i><?php echo $drev->declarant->email ?></i></td>
-        <td>SIRET : <i><?php echo $drev->declarant->siret ?></i></td>
+        <td>SIRET : <i><?php echo formatSIRET($drev->declarant->siret); ?></i></td>
     </tr>
     <tr>
         <td>&nbsp;Commune : <i><?php echo $drev->declarant->code_postal ?> <?php echo $drev->declarant->commune ?></i></td>

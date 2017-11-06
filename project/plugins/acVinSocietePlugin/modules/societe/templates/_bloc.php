@@ -7,7 +7,7 @@
 <?php endif; ?>
 </h4>
 <?php if($societe->siret): ?>
-    <span class="col-xs-3 text-muted">Siret&nbsp;:</span><span class="col-xs-9"><?php echo $societe->siret; ?></span>
+    <span class="col-xs-3 text-muted">SIRET&nbsp;:</span><span class="col-xs-9"><?php echo formatSIRET($societe->siret); ?></span>
 <?php endif; ?>
 
 <?php include_partial('compte/blocCoordonnees', array('compte' => $compte, 'forceCoordonnee' => true)); ?>
