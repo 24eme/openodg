@@ -82,4 +82,11 @@ class etablissementActions extends sfCredentialActions {
       }
     }
 
+    public function executeChaiAjout(sfWebRequest $request) {
+      $this->etablissement = $this->getRoute()->getEtablissement();
+      $newChai = $this->etablissement->getOrAdd('chais')->add();
+      $this->etablissement->save();
+      return $this->redirect('etablissement_edition_chai', array('identifiant' => $this->etablissement->identifiant, 'num' => $newChai->getKey()));
+    }
+
 }

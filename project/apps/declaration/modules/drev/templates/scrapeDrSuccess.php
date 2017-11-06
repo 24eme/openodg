@@ -15,7 +15,7 @@
             	<a href="<?php echo url_for('drev_exploitation', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         	</div>
         	<div class="col-xs-6 text-right">
-            	<button type="submit" class="btn btn-primary btn-upper" <?php if (!$drev->hasDocumentDouanier()): ?>disabled="disabled"<?php endif; ?>>Valider et continuer  <span class="glyphicon glyphicon-chevron-right"></span></button>
+                <button type="submit" class="btn btn-primary btn-upper" <?php if (!$drev->hasDocumentDouanier()): ?>disabled="disabled"<?php endif; ?>>Valider et continuer  <span class="glyphicon glyphicon-chevron-right"></span></button>
             </div>
 		</div>
     </form>

@@ -125,7 +125,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeExport(sfWebRequest $request) {
-        $this->buildSearch($request);
+        $this->buildSearch($request, array(HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE));
 
         $this->setLayout(false);
         $attachement = sprintf("attachment; filename=export_habilitations_%s.csv", date('YmdHis'));
@@ -150,7 +150,7 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch(sfWebRequest $request) {
+    protected function buildSearch(sfWebRequest $request, $sortKeys = array(HabilitationActiviteView::KEY_DATE, HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE)) {
         $rows = acCouchdbManager::getClient()
                     ->group(true)
                     ->group_level(3)
@@ -211,8 +211,12 @@ class habilitationActions extends sfActions {
         ksort($this->facets["Produit"]);
 
         uasort($this->docs, function($a, $b) {
-
-            return $a->key[HabilitationActiviteView::KEY_DATE] < $b->key[HabilitationActiviteView::KEY_DATE];
+            foreach($sortKeys as $sortKey) {
+                if($a->key[$sortKey] < $b->key[$sortKey]) {
+                    return true;
+                }
+            }
+            return false;
         });
     }
 
