@@ -138,7 +138,7 @@ EOF;
             if($cvis){
               $societe->type_societe = SocieteClient::TYPE_OPERATEUR ;
             }else{
-              $societe->type_societe =  "AUTRE" ;
+              $societe->type_societe =  SocieteClient::TYPE_AUTRE ;
             }
             $groupeInterlocuteurs = $this->getRefsGroupsProfil();
             if(count($groupeInterlocuteurs)){
@@ -247,7 +247,6 @@ EOF;
                   $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
 
                   $compte->nom = $this->arrayXML['b:RaisonSociale'];
-                  var_dump($compte->nom);
                   $compte->prenom = $this->arrayXML['b:Prenom'];
                   $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
 

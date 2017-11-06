@@ -277,6 +277,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if(!$produitConfig) {
                 continue;
             }
+            if (!$produitConfig->isActif()) {
+            	continue;
+            }
 
             $produit = $this->addProduit($produitConfig->getHash());
 
@@ -391,6 +394,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function updateFromDRev($drev) {
         foreach ($drev->getProduits() as $produit) {
+        	if (!$produit->getConfig()->isActif()) {
+        		continue;
+        	}
             $this->addAppellation($produit->getAppellation()->getHash());
             if(!$produit->superficie_revendique && !$produit->volume_revendique) {
                 continue;
@@ -400,54 +406,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
             $p->superficie_revendique = $produit->superficie_revendique;
-        }
-
-        if ($drev->prelevements->exist(self::CUVE_ALSACE) && count($drev->prelevements->get(self::CUVE_ALSACE)->lots) > 0) {
-            foreach ($drev->getProduits() as $produit) {
-                $hash_rev_lot = $drev->getConfiguration()->get($produit->getHash())->getHashRelation('lots');
-
-                foreach ($drev->prelevements->get(self::CUVE_ALSACE)->lots as $lot) {
-
-                    $this->addLotProduit($lot->hash_produit, self::CUVE);
-
-                    if (!preg_match("|" . $hash_rev_lot . "|", $lot->hash_produit)) {
-
-                        continue;
-                    }
-
-                    $hash = str_replace($hash_rev_lot, $produit->getHash(), $lot->hash_produit);
-
-                    if (!$drev->getConfiguration()->exist($hash)) {
-
-                        continue;
-                    }
-
-                    if ($drev->getConfiguration()->get($hash)->getAppellation()->hasManyLieu()) {
-
-                        continue;
-                    }
-
-                    if ($drev->getConfiguration()->get($hash)->getAppellation()->hasLieuEditable()) {
-
-                        continue;
-                    }
-
-                    $this->getOrAdd($hash)->addDetailNode();
-                }
-            }
-        }
-
-        if ($drev->prelevements->exist(self::CUVE_GRDCRU)) {
-            foreach ($drev->prelevements->get(self::CUVE_GRDCRU)->lots as $lot) {
-                if (!$drev->getConfiguration()->exist($lot->hash_produit)) {
-
-                    continue;
-                }
-
-                $this->addLotProduit($lot->hash_produit, self::CUVE);
-
-                $this->getOrAdd($lot->hash_produit)->addDetailNode();
-            }
         }
     }
 

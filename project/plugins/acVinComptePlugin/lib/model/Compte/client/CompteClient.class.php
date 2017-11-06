@@ -13,6 +13,9 @@ class CompteClient extends acCouchdbClient {
     const STATUT_TELEDECLARANT_OUBLIE = "OUBLIE";
     const STATUT_TELEDECLARANT_INACTIF = "INACTIF";
 
+    public static $statutsLibelles = array( self::STATUT_ACTIF => "Actif",
+                                           self::STATUT_SUSPENDU => "Archivé");
+
     public static function getInstance() {
         return acCouchdbManager::getClient("Compte");
     }
