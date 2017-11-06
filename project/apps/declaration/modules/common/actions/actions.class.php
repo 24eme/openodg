@@ -18,17 +18,12 @@ class commonActions extends sfActions {
             return $this->redirect('compte_recherche');
         }
 
-        if(!$this->getUser()->getEtablissement()) {
+        if(!$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()) {
 
             return $this->forwardSecure();
         }
 
-        if($this->getUser()->getEtablissement()->needEmailConfirmation()) {
-
-            return $this->redirect('compte_teledeclarant_premiere_connexion');
-        }
-
-        return $this->redirect('declaration_etablissement', $this->getUser()->getEtablissement());
+        return $this->redirect('declaration_etablissement', $this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal());
     }
 
     public function executeContact(sfWebRequest $request) {

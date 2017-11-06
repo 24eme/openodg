@@ -43,10 +43,8 @@
             <?php //echo include_partial('global/headerAVA'); ?>
             <?php echo include_partial('global/headerRhone'); ?>
 
-            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
-                <?php include_partial('global/navRhone'); ?>
-                <?php //include_partial('global/nav'); ?>
-            <?php endif; ?>
+            <?php include_partial('global/navRhone'); ?>
+            <?php //include_partial('global/nav'); ?>
 
             <section id="content" class="container">
                 <?php echo $sf_content ?>

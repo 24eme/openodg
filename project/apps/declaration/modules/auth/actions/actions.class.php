@@ -1,16 +1,16 @@
 <?php
 
-class authActions extends sfActions
-{
+class authActions extends sfActions {
 
-    public function executeLogin(sfWebRequest $request)
-    {
-        if(sfConfig::get("app_auth_mode") != 'NO_CAS') {
+    public function executeLogin(sfWebRequest $request) {
+        if (sfConfig::get("app_auth_mode") != 'NO_CAS') {
+
 
             return $this->forward404();
         }
 
-        $this->form = new LoginForm(array(), array("use_compte" => true));
+        $this->form = new TeledeclarationCompteLoginForm(null, array('comptes_type' => array('Compte'), false));
+
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -19,26 +19,43 @@ class authActions extends sfActions
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
-        if(!$this->form->isValid()) {
+        if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
 
-        $this->getUser()->signIn(preg_replace("/COMPTE-[E]*/", "", $this->form->getValue('login')));
+        $idCompte = $this->form->process()->identifiant;
+        $idSociete = $this->form->process()->getSociete()->getIdentifiant();
+        $this->getUser()->signInOrigin($this->form->getValue("login"));
 
-        return $this->redirect('accueil');
+        return $this->redirect('common_accueil');
     }
 
     public function executeLogout(sfWebRequest $request) {
-        $this->getUser()->signOut();
+        $this->getUser()->signOutOrigin();
+        $urlBack = $this->generateUrl('common_accueil', array(), true);
 
-        $urlBack = $this->generateUrl('accueil', array(), true);
-
-        if(sfConfig::get("app_auth_mode") == 'CAS') {
+        if (sfConfig::get("app_auth_mode") == 'CAS') {
             acCas::processLogout($urlBack);
         }
 
-        return $this->redirect($urlBack);
+          return $this->redirect('common_accueil');
+    }
+
+    public function executeDeconnexionUsurpation(sfWebRequest $request) {
+        $url_back = $this->getUser()->usurpationOff();
+
+        if ($url_back) {
+
+            return $this->redirect($url_back);
+        }
+
+        $this->redirect('common_homepage');
+    }
+
+
+    public function executeForbidden(sfWebRequest $request) {
+
     }
 
     public function executeState(sfWebRequest $request)
@@ -47,4 +64,5 @@ class authActions extends sfActions
 
         return $this->renderText(json_encode(array("authenticated" => $this->getUser()->isAuthenticated())));
     }
+
 }
