@@ -122,7 +122,8 @@
                     <thead>
                         <tr>
                             <th class="col-xs-5">Nom</th>
-                            <th class="col-xs-6">Relation</th>
+                            <th class="col-xs-3">Relation</th>
+                            <th class="col-xs-4">Numéro CVI/PPM</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,6 +131,7 @@
                             <tr>
                                 <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
                                 <td><?php echo $liaison->type_liaison ?></td>
+                                <td><?php echo ($liaison->cvi)? 'CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
