@@ -2,7 +2,7 @@
 
 class Roles
 {
-    const ADMIN = 'admin';
+    const ADMIN = 'ADMIN';
     const OPERATEUR = 'operateur';
 
     const TRANSACTION = 'transactions';
@@ -75,7 +75,7 @@ class Roles
 
         if(isset(self::$hierarchy[$role])) {
             foreach(self::$hierarchy[$role] as $r) {
-                $roles = array_merge($roles, self::getRoles($r));
+                //$roles = array_merge($roles, self::getRoles($r));
             }
 
         }

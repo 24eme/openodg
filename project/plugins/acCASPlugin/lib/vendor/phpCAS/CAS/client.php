@@ -547,13 +547,9 @@ class CASClient
 	function isHttps() {
 		//if ( isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ) {
 		//0.4.24 by Hinnack
-		if ( isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
-			return true;
-		} else {
-			return false;
-		}
+		return true;
 	}
-	
+
 	// ########################################################################
 	//  CONSTRUCTOR
 	// ########################################################################
