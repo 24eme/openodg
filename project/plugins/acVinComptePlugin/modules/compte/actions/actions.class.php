@@ -232,6 +232,8 @@ class compteActions extends sfCredentialActions {
       $res_by_page = 30;
       $page = $request->getParameter('page', 1);
       $from = $res_by_page * ($page - 1);
+      
+      $this->contacts_all = $request->getParameter('contacts_all');
 
       $q = $this->initSearch($request);
       $q->setLimit($res_by_page);
