@@ -6,8 +6,10 @@ make clean
 make
 cd -
 . bin/config.inc
-curl -X POST -d @data/configuration/rhone/current.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
+curl -X POST -d @data/configuration/rhone/config_previous.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
 curl -X POST -d @data/configuration/rhone/config.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
+curl -X POST -d @data/configuration/rhone/current.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
+
 
 php symfony cc
 bash bin/import_identites.sh ~/odgrhone_identite_antsys.xml.gz > /tmp/importEntites_$$.log
@@ -23,7 +25,6 @@ php symfony import:AntsysDRev --application=declaration ~/scrapping/data/drev.cs
 php symfony import:Habilitations --application=declaration ~/scrapping/data/habilitation.csv > /tmp/habilitation_$$.log
 
 php symfony compte:updateTagsFromHabilitations --application="declaration" > /tmp/habilitation_tags_$$.log
-
 
 bash bin/importDocuments.sh ~/prodouane_scrapy/phantomjs_scrapping/data/documents.csv ~/prodouane_scrapy/phantomjs_scrapping/documents/ > /tmp/documents_$$.log
 
