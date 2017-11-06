@@ -49,6 +49,10 @@
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">CVI : </div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?></div>
                                 <?php endif; ?>
+                                <?php if ($etablissement->ppm): ?>
+                                    <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">PPM : </div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->ppm; ?></div>
+                                <?php endif; ?>
                                 <?php if ($etablissement->no_accises): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">N°&nbsp;d'accise&nbsp;:&nbsp;</div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->no_accises; ?></div>
