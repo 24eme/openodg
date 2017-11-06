@@ -305,6 +305,10 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return CompteClient::STATUT_TELEDECLARANT_INACTIF;
     }
 
+    public function getStatutLibelle(){
+      return CompteClient::$statutsLibelles[$this->getStatut()];
+    }
+
     /**
      *
      * @param string $mot_de_passe

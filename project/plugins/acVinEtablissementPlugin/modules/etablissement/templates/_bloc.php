@@ -3,7 +3,7 @@
 <h4 style="margin-top: 0;">
 	<a href="<?php echo url_for('etablissement_visualisation', $etablissement) ?>"><?php echo $etablissement->nom; ?></a>
 	<?php if ($compte->isSuspendu()): ?>
-    <span class="label label-default pull-right"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->statut; ?></small></span>
+    <span class="label label-default pull-right"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->getStatutLibelle(); ?></small></span>
 <?php endif; ?>
 </h4>
 <?php if($etablissement->cvi): ?>
