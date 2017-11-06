@@ -54,11 +54,6 @@ class ConfigurationAppellation extends BaseConfigurationAppellation {
         return $this->attributs->get('detail_lieu_editable');
     }
 
-    public function hasRendements()
-    {
-    	return true;
-    }
-
 		public function getCahierDesCharges(){
 			return true;
 		}
