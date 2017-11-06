@@ -40,7 +40,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
         <thead>
             <tr>
                 <th class="text-center col-xs-2"></th>
-                <th colspan="4" class="text-center info">Déclaration de Récolte</th>
+                <th colspan="4" class="text-center info"><?php echo $drev->getDocumentDouanierTypeLibelle(); ?></th>
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
             </tr>
             <tr>
