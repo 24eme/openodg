@@ -968,6 +968,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 	{
 		return $this->declaration->hasVciDetruit();
 	}
+	
+	public function getDateValidation($format = 'Y-m-d')
+	{
+		if ($this->validation) {
+			$date = new DateTime($this->validation);
+		} else {
+			$date = new DateTime($this->getDate());
+		}
+		return $date->format($format);
+	}
 
     /*
      * Facture
@@ -1303,7 +1313,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     }
 
     public function getDate() {
-      return $this->campagne.'-12-01';
+      return $this->campagne.'-12-15';
     }
 
     /**** FIN DE VERSION ****/

@@ -70,6 +70,12 @@ class EtablissementClient extends acCouchdbClient {
     public static $caution_libelles = array(self::CAUTION_DISPENSE => 'Dispensé',
         self::CAUTION_CAUTION => 'Caution');
 
+    public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
+                                                  self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
+                                                  self::CHAI_ATTRIBUT_STOCKAGE => 'Lieu de stockage',
+                                                  self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
+                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement');
+
     public static function getInstance() {
         return acCouchdbManager::getClient("Etablissement");
     }
@@ -140,7 +146,7 @@ class EtablissementClient extends acCouchdbClient {
     public function findByCvi($cvi) {
       return $this->findByCviOrAcciseOrPPM($cvi);
     }
-    
+
     public function findByPPM($ppm) {
       return $this->findByCviOrAcciseOrPPM($ppm);
     }
