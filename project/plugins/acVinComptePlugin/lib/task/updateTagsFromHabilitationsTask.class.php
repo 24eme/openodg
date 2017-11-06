@@ -67,9 +67,9 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
               echo "affecte au compte ".$compte->_id." le produit ".$prod->getLibelle()."\n";
             }
           }
-          foreach ($activiteTags as $activiteTag) {
-            $compte->addTag("activite", KeyInflector::unaccent(str_replace("'","",$activitetag)));
-            echo "affecte au compte ".$compte->_id." l'activité ".$activitetag."\n";
+          foreach ($activiteTags as $activiteTagToSet) {
+            $compte->addTag("activite", KeyInflector::unaccent(str_replace("'","",$activiteTagToSet)));
+            echo "affecte au compte ".$compte->_id." l'activité ".$activiteTagToSet."\n";
           }
           foreach ($statutsTags as $statutTags) {
             $compte->addTag("statuts", KeyInflector::unaccent(str_replace("'","",$statutTags)));

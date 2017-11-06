@@ -111,7 +111,7 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
 		$fichier = $this->form->save();
-		//$this->setDrInDrev($this->drev);
+		$this->drev->importFromDR();
 		$this->drev->save();
         return $this->redirect('drev_revendication_superficie', $this->drev);
     }

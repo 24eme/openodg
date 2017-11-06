@@ -25,21 +25,21 @@ class CASSecurityFilter extends sfBasicSecurityFilter
    *
    * @param sfFilterChain $filterChain
    */
-  public function execute ($filterChain)
-  {
-      if (!$this->context->getUser()->isAuthenticated() && $this->request->getParameter('ticket')) {
-          acCas::processAuth();
-          $this->getContext()->getUser()->signIn(acCas::getUser());
-      }
+   public function execute ($filterChain)
+   {
+          if (!$this->context->getUser()->isAuthenticated() && ($this->request->getParameter('ticket') || isset($_SESSION["phpCAS"]["user"]))) {
+           acCas::processAuth();
+           $this->getContext()->getUser()->signInOrigin(acCas::getUser());
+       }
 
-      parent::execute($filterChain);
-  }
+       parent::execute($filterChain);
+   }
 
-  protected function forwardToLoginAction()
-  {
-      $this->controller->redirect(sfConfig::get('app_cas_url') . '/login?service=' . str_replace("https://", "http://", $this->request->getUri()));
+   protected function forwardToLoginAction()
+   {
+       $this->controller->redirect(sfConfig::get('app_cas_url') . '/login?service=' . $this->request->getUri());
 
-      throw new sfStopException();
-  }
- 
+       throw new sfStopException();
+   }
+
 }

@@ -2,7 +2,7 @@
 
 class Roles
 {
-    const ADMIN = 'admin';
+    const ADMIN = 'ADMIN';
     const OPERATEUR = 'operateur';
 
     const TRANSACTION = 'transactions';
@@ -50,7 +50,7 @@ class Roles
         );
 
     protected static $hierarchy = array(
-        self::ADMIN => array(self::OPERATEUR, self::TRANSACTION),
+        self::ADMIN => array(self::CONTACT),
         self::OPERATEUR => array(),
         self::TRANSACTION => array(self::CONTRAT,
                                    self::DRM,
