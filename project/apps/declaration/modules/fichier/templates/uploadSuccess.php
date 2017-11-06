@@ -89,7 +89,7 @@
 		    	?>
 		    	<div class="btn-group" role="group">
 		    		<a href="<?php echo $fichier->generateUrlPiece() ?>?file=<?php echo $key ?>" class="btn btn-default"><span class="glyphicon glyphicon-file"></span>&nbsp;<?php echo strtoupper($extention); ?></a>
-		    		<a class="btn btn-danger" href="<?php echo url_for('delete_fichier', $fichier) ?>?file=<?php echo $key ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce fichier');"><strong>X</strong></a>
+		    		<a class="btn btn-danger" href="<?php echo url_for('delete_fichier', $fichier) ?>?file=<?php echo $key ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce fichier ?');"><strong>X</strong></a>
 		    	</div>
 		    	<?php endforeach; ?>
     		</div>
