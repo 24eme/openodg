@@ -85,7 +85,7 @@
         var datePickers = $('.date-picker');
         datePickers.each(function ()
         {
-            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY' });
+            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true });
         });
     };
     $.fn.initSelect2Autocomplete = function ()
