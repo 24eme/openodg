@@ -14,6 +14,8 @@ class FichierClient extends acCouchdbClient {
         if($papier) {
             $fichier->add('papier', 1);
         }
+        
+        $fichier->date_import = date('Y-m-d');
 
         return $fichier;
     }

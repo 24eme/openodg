@@ -17,6 +17,7 @@ Fichier:
       fichier_id: { }
       identifiant: { }
       date_depot: { }
+      date_import: { }
       libelle: { }
       visibilite: { type: integer }
       papier: { required: false, type: integer }
