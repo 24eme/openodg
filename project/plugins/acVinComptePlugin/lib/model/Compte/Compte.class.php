@@ -542,7 +542,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public function updateCoordonneesLongLatByNoeud($noeud,$latCompare = false,$lonCompare = false) {
-      
+
         $coordonnees = $this->calculCoordonnees($noeud->adresse, $noeud->commune, $noeud->code_postal);
 
         if(!$coordonnees) {

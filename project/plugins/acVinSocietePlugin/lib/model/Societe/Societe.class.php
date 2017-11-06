@@ -375,6 +375,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
             $compteMaster = $this->createCompteSociete();
         }
 
+        if(count($this->etablissements)){
+          $this->type_societe = SocieteClient::TYPE_OPERATEUR;
+        }else{
+          $this->type_societe = SocieteClient::TYPE_AUTRE;
+        }
         parent::save();
 
         SocieteClient::getInstance()->setSingleton($this);
