@@ -86,7 +86,7 @@ EOF;
         $etablissementSocRepreneuse = $socRepreneur->getEtablissementsObj();
 
         if(count($etablissementSocRepris)){
-          echo "La societe reprise d'id $idRepris a plusieurs etablissements la base on va choisir le premier etb";
+          echo "La societe reprise d'id $idRepris a plusieurs etablissements la base on va choisir le premier etb\n";
           foreach ($etablissementSocRepris as $etb) {
             $etbRepris = $etb->etablissement;
             break;
@@ -94,7 +94,7 @@ EOF;
         }
 
         if(count($etablissementSocRepreneuse)){
-            echo "La societe repreneur d'id $idRepreneur a plusieurs etablissements la base  on va choisir le premier etb ";
+            echo "La societe repreneur d'id $idRepreneur a plusieurs etablissements la base  on va choisir le premier etb \n";
             foreach ($etablissementSocRepreneuse as $etb) {
               $etbRepreneur = $etb->etablissement;
               break;
@@ -106,7 +106,7 @@ EOF;
         }
 
         if(!count($etablissementSocRepreneuse)){
-          echo "La societe repreneur d'id $idRepreneur n'a aucun etablissement la base création d'un etablissement ";
+          echo "La societe repreneur d'id $idRepreneur n'a aucun etablissement la base création d'un etablissement \n";
           $etbRepreneur = $socRepreneur->createEtablissement( "OPERATEUR");
           $etbRepreneur->nom = $socRepreneur->getRaisonSociale();
         }
@@ -114,11 +114,10 @@ EOF;
 
 
         if($etbRepreneur){
-
-          $lienRepreneur =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('etablissement_visualisation',$etbRepreneur,true)."\">".$etbRepreneur->nom." (".$etbRepreneur->identifiant.")</a>";
+          $lienRepreneur =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('etablissement_visualisation',$etbRepreneur)."\" data-relative=\"true\">".$etbRepreneur->nom." (".$etbRepreneur->identifiant.")</a>";
 
           if($etbRepris){
-            $lien =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('etablissement_visualisation',$etbRepris,true)."\">".$etbRepris->nom." (".$etbRepris->identifiant.")</a>";
+            $lien =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('etablissement_visualisation',$etbRepris)."\" data-relative=\"true\">".$etbRepris->nom." (".$etbRepris->identifiant.")</a>";
 
             $etbRepreneur->setCommentaire("Repreneur de l'établissement ".$lien."");
             $etbRepreneur->save();
@@ -139,8 +138,8 @@ EOF;
             $socCompte->setStatut(SocieteClient::STATUT_SUSPENDU);
             $socCompte->save();
 
-          }elseif($socReprise){
-            $lien =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('societe_visualisation',$socReprise,true)."\">".$socReprise->raison_sociale." (".$socReprise->identifiant.")</a>";
+          }elseif($socReprise){ 
+            $lien =  "<a href=\"".sfContext::getInstance()->getRouting()->generate('societe_visualisation',$socReprise)."\" data-relative=\"true\">".$socReprise->raison_sociale." (".$socReprise->identifiant.")</a>";
             $etbRepreneur->setCommentaire("Repreneur de la societe ".$lien."");
             $etbRepreneur->save();
 
@@ -153,6 +152,8 @@ EOF;
           }
 
           echo "Lien créée \n";
+        }else{
+          echo "\n";
         }
         return;
 

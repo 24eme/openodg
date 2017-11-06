@@ -56,7 +56,7 @@
                 <?php if ($compte->commentaire) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <pre><?php echo $compte->commentaire; ?></pre>
+                <pre><?php echo html_entity_decode($compte->commentaire); ?></pre>
                 <?php endif; ?>
             </div>
         </div>
