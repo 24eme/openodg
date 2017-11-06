@@ -1,3 +1,4 @@
+<?php use_helper('Compte') ?>
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
 <div class="row">
@@ -23,7 +24,7 @@
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
                 <span class="col-xs-9">
-                   <?php echo $etablissement->siret; ?>
+                   <?php echo formatSIRET($etablissement->siret); ?>
                 </span>
             </div>
             <?php endif; ?>
@@ -120,7 +121,7 @@
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
                 <span class="col-xs-9">
-                   <?php echo $etablissement->siret; ?>
+                   <?php echo formatSIRET($etablissement->siret); ?>
                 </span>
             </div>
 <?php if(isset($extra)): ?>

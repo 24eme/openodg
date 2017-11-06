@@ -2,6 +2,7 @@
 <?php use_helper('Parcellaire') ?>
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Compte') ?>
 <style>
 <?php echo ($parcellaire->isIntentionCremant())? styleIntentionCremant() : styleParcellaire(); ?>
 </style>
@@ -16,7 +17,7 @@
                 </tr>
                 <tr>
                     <td>&nbsp;Adresse : <i><?php echo $parcellaire->declarant->adresse ?></i></td>
-                    <td>N° SIRET : <i><?php echo $parcellaire->declarant->siret ?></i></td>
+                    <td>N° SIRET : <i><?php echo formatSIRET($parcellaire->declarant->siret); ?></i></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Commune : <i><?php echo $parcellaire->declarant->code_postal ?>, <?php echo $parcellaire->declarant->commune ?></i></td>
