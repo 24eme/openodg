@@ -31,8 +31,13 @@ class fichierActions extends sfActions
     
     public function executeDelete(sfWebRequest $request) {
     	$fichier = $this->getRoute()->getFichier();
+        $etablissement = $fichier->getEtablissementObject();
     	$fichier->deleteFichier($request->getParameter('file', null));
     	$fichier->save();
+    	if (!$fichier->getNbFichier()) {
+    		$fichier->delete();
+    		return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant));
+    	}
     	return $this->redirect('upload_fichier', array('fichier_id' => $fichier->_id, 'sf_subject' => $fichier->getEtablissementObject()));
     }
 
