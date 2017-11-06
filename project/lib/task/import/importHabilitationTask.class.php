@@ -132,8 +132,10 @@ EOF;
             }
             $eta = $soc->getEtablissementPrincipal();
             if (!$eta) {
-              echo "ERROR: pas d'établissement trouvé pour la société ".$id."\n";
-              continue;
+              $eta = $soc->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
+              $eta->nom = $soc->raison_sociale;
+              $eta->save();
+              echo "WARNING: établissement créé pour la société ".$id."\n";
             }
             if (!$data[self::CSV_HABILITATION_DATE]) {
               $data[self::CSV_HABILITATION_DATE] = date('Y-m-d');

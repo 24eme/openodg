@@ -18,7 +18,7 @@
                             <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li<?php echo ($compte->isSuspendu() || $compte->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->isSuspendu() || $compte->isSuspendu()) ? 'javascript:void(0)' : url_for('compte_modification', $compte); ?>">Editer</a></li>
-                                <li<?php echo ($compte->isSuspendu() || $compte->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->isSuspendu() || $compte->isSuspendu())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Suspendre</a></li>
+                                <li<?php echo ($compte->isSuspendu() || $compte->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->isSuspendu() || $compte->isSuspendu())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($compte->isSuspendu() || $compte->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->isSuspendu() || $compte->isActif())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Activer</a></li>
                             </ul>
                         </div>
@@ -26,10 +26,10 @@
                 </div>
             </div>
             <div class="panel-body" style="border-right: 6px solid #9f0038;">
-                <h2> 
+                <h2>
                 	<?php echo $compte->nom_a_afficher; ?>
                 	<?php if ($compte->isSuspendu()): ?>
-					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->statut; ?></small></span>
+					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->getStatutLibelle(); ?></small></span>
 					<?php endif; ?>
                 </h2>
                 <hr/>

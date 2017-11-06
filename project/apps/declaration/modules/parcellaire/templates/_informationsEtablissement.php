@@ -1,5 +1,5 @@
 
-    <div class="panel panel-primary" > 
+    <div class="panel panel-primary" >
         <div class="panel-body">
 
             <div class="row form-horizontal" id="parcellaire_infos_visualisation" >
@@ -32,7 +32,7 @@
                         <div class="col-sm-6"></div>
                         <div class="col-xs-6 text-right">
                             <a href="#" class="btn btn-default btn-lg btn-upper" id="parcellaire_infos_modification_btn" ><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Modifier</a>
-                        </div>               
+                        </div>
                     </div>
                 </div>
             </div>
@@ -53,9 +53,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="cvi" class="col-sm-6 control-label">Cvi :</label>
+                            <label for="cvi" class="col-sm-6 control-label">CVI :</label>
                             <div class="col-sm-6 text-right">
-                                <input type="text" class="form-control" id="cvi" placeholder="Cvi" value="">
+                                <input type="text" class="form-control" id="cvi" placeholder="CVI" value="">
                             </div>
                         </div>
                         <div class="form-group">
@@ -68,11 +68,10 @@
                             <div class="col-sm-6"></div>
                             <div class="col-xs-6 text-right">
                                 <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider</button>
-                            </div>               
+                            </div>
                         </div>
                     </div>
                 </div>
             </form>
         </div>
-    </div>  
-
+    </div>
