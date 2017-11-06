@@ -59,7 +59,7 @@
                 <?php elseif($sf_user->isAuthenticated()): ?>
                  <li><a tabindex="-1" href="<?php echo url_for("compte_teledeclarant_modification") ?>"><span class="glyphicon glyphicon-user"></span></a></li>
                 <?php endif; ?>
-                <?php if ($etablissement && $route instanceof InterfaceDeclarationRoute && !$sf_user->isUsurpationCompte()) : ?>
+                <?php if ($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN) && $etablissement && $route instanceof InterfaceDeclarationRoute && !$sf_user->isUsurpationCompte()) : ?>
                      <li><a tabindex="-1" href="<?php echo url_for('declaration_usurpation', array('identifiant' => $etablissement->identifiant)) ?>"><span class="glyphicon glyphicon-cloud-upload"></span></a></li>
                 <?php endif; ?>
                 <?php if ($sf_user->isUsurpationCompte()): ?>
