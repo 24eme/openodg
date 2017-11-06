@@ -9,7 +9,13 @@ class HabilitationActiviteView extends acCouchdbView
     const KEY_IDENTIFIANT = 4;
     const KEY_RAISON_SOCIALE = 5;
     const KEY_CVI = 6;
-    const KEY_PRODUIT_HASH = 7;
+    const KEY_SIRET = 7;
+    const KEY_PRODUIT_HASH = 8;
+    const KEY_COMMENTAIRE = 9;
+    const KEY_ADRESSE = 10;
+    const KEY_CODE_POSTAL = 11;
+    const KEY_COMMUNE = 12;
+    const KEY_EMAIL = 13;
 
     public static function getInstance() {
 
