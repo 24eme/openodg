@@ -39,6 +39,11 @@ class acVinEtablissementRouting {
             'action' => 'chaiModification'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')
         ));
+        $r->prependRoute('etablissement_ajout_chai', new EtablissementCompteRoute('/etablissement/:identifiant/chai-ajout', array('module' => 'etablissement',
+            'action' => 'chaiAjout'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
+            'type' => 'object')
+        ));
+
     }
 
 }
