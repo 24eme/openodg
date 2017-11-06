@@ -24,7 +24,6 @@ mkdir $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA 2> /dev/null
 gunzip $TMPDIR/ODGRHONE_IDENTITES_DATA.xml.gz
 mv $TMPDIR/ODGRHONE_IDENTITES_DATA.xml $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.xml
 
-fi
 
  cat $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA.xml | sed -e 's|<b:Identite_Identite>|\n<b:Identite_Identite>|g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/ODGRHONE_IDENTITES_DATA_N.xml
 
@@ -56,6 +55,7 @@ do
   IDFIC=$(echo $xml | sed -r 's/([0-9]+)###(.*)/\1/g')
   echo $xml | sed -r 's/([0-9]+)###(.*)/\2/g' > $TMPDIR/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/autres_nogroupes_$IDFIC.xml
 done
+fi
 
 
 echo "Création des entités de type Sociétés (Présence d'un Evv ou d'un Siret ou d'un PPM)"

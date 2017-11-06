@@ -25,6 +25,10 @@ class importEntiteFromXmlTask extends sfBaseTask
     const TYPE_SOC_MORALE = "M";
     const TYPE_SOC_PHYSIQUE = "P";
 
+    const FAMILLE_NVINI = "NVINI";
+    const FAMILLE_CCAIR = "CCAIR";
+    const FAMILLE_CCCDR = "CCCDR";
+
     protected $arrayXML = array();
 
     protected $observationsCodifieesArr = array();
@@ -175,7 +179,18 @@ EOF;
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
 
-            $type_etablissement = "OPERATEUR";
+            $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+            $observationsCodifiees = $this->extractObservationsCodifiees();
+            if(array_key_exists(self::FAMILLE_NVINI,$observationsCodifiees)){
+              $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+            }
+            elseif(array_key_exists(self::FAMILLE_CCAIR,$observationsCodifiees)){
+              $type_etablissement = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            }
+            elseif(array_key_exists(self::FAMILLE_CCCDR,$observationsCodifiees)){
+              $type_etablissement = EtablissementFamilles::FAMILLE_COOPERATIVE;
+            }
+            
             if(count($cvis) > 1){
               foreach ($cvis as $cvi) {
                 $etablissement = $societe->createEtablissement($type_etablissement);
@@ -474,7 +489,7 @@ EOF;
 
     }
 
-    protected function addObservationsCodifiees($c){
+    public function extractObservationsCodifiees(){
       $observationsCodifiees = array();
       if(isset($this->arrayXML["b:ObservationCodifiee"]) && count($this->arrayXML["b:ObservationCodifiee"])){
         $observationsCodifieesArray = $this->arrayXML["b:ObservationCodifiee"];
@@ -493,12 +508,17 @@ EOF;
                   //echo "L'identité  ".  $this->identifiant." possède une observation codifié de code ".$code." non trouvé dans les observations codifiées \n";
                   continue;
                 }
-                $this->observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
+                $observationsCodifiees[$code] = $this->observationsCodifieesArr[$code];
               }
             }
           }
         }
       }
+      return $observationsCodifiees;
+    }
+
+    protected function addObservationsCodifiees($c){
+      $observationsCodifiees = $this->extractObservationsCodifiees();
       if(count($observationsCodifiees)){
         echo "OBS Codifiees ";
         foreach($observationsCodifiees as $obsKey => $obs){
