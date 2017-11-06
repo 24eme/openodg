@@ -1,20 +1,31 @@
 <?php $hasManuel = false; ?>
     <div style="margin-bottom: 10px;" class="row">
-      <?php foreach ($compte->tags as $type_tag => $selected_tags) : ?>
+        <div class="col-xs-2 text-muted">Groupes&nbsp;:</div>
+        <div class="col-xs-10">
+            <?php foreach($compte->groupes as $nom => $fonction) : ?>
+              <div class="btn-group">
+                <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_groupe', array("groupeName" => $nom)); ?>"><?php echo $nom; ?></a>
+                <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => $nom)); ?>"><?php echo $fonction; ?></a>
+              </div>
+            <?php endforeach; ?>
+        </div>
+
+      <?php foreach ($compte->tags as $type_tag => $tags) :
+        if ($type_tag == 'groupes') {continue;}
+        ?>
         <div class="col-xs-2 text-muted"><?php echo ucfirst($type_tag) ?>&nbsp;:</div>
             <div class="col-xs-10">
-                <?php foreach ($selected_tags as $t): ?>
+                <?php foreach ($tags as $t): ?>
                     <?php $targs['tags'] = implode(',', array($type_tag . ':' . $t)); ?>
                     <div class="btn-group">
-                        <a class="btn btn-sm <?php if($type_tag == "automatique"): ?>btn-link<?php endif; ?> <?php if($type_tag == "groupes"): ?>btn-default<?php endif; ?> <?php if($type_tag == "manuel"): ?>btn-default<?php endif; ?>"
-                          href="<?php if($type_tag == 'groupes'){ echo url_for('compte_groupes', array("groupeName" => $t)); }else{ echo url_for('compte_search', $targs); } ?>">
+                        <a class="btn btn-sm <?php if($type_tag == "automatique"): ?>btn-link<?php endif; ?> <?php if($type_tag == "manuel"): ?>btn-default<?php endif; ?>"
+                          href="<?php echo url_for('compte_search', $targs); ?>">
                           <?php echo ucfirst(str_replace('_', ' ', $t)) ?>
                         </a>
                         <?php $targs['tag'] = $t; ?>
                         <?php $targs['q'] = $compte->identifiant ?>
-                        <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', $targs) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?>
-                    </span>
-                </div>
+                        <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', $targs) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
+                    </div>
             <?php endforeach; ?>
             <?php if($type_tag == 'manuel'): ?>
               <?php $hasManuel = true; ?>

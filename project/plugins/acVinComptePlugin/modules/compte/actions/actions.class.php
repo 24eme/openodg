@@ -213,14 +213,14 @@ class compteActions extends sfCredentialActions {
       return $this->redirect('compte_search', $this->args);
     }
 
-    public function executeGroupes(sfWebRequest $request){
+    public function executeGroupe(sfWebRequest $request){
       $index = acElasticaManager::getType('COMPTE');
       $this->groupeName = $request->getParameter('groupeName');
-      $request->addRequestParameters(array('tags' => "groupes:".$this->groupeName));
-
+      $this->filtre = "groupes:".Compte::transformTag($this->groupeName);
+      $request->addRequestParameters(array('tags' => $this->filtre));
       $q = $this->initSearch($request);
 		  $elasticaFacet 	= new acElasticaFacetTerms('groupes');
-		  $elasticaFacet->setField( 'doc.tags.groupes');
+		  $elasticaFacet->setField('doc.tags.groupes');
 		  $elasticaFacet->setSize(100);
 		  $q->addFacet($elasticaFacet);
       $q->setLimit(5000);
