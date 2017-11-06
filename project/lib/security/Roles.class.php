@@ -50,7 +50,7 @@ class Roles
         );
 
     protected static $hierarchy = array(
-        self::ADMIN => array(self::OPERATEUR, self::TRANSACTION),
+        self::ADMIN => array(self::CONTACT),
         self::OPERATEUR => array(),
         self::TRANSACTION => array(self::CONTRAT,
                                    self::DRM,
@@ -75,7 +75,7 @@ class Roles
 
         if(isset(self::$hierarchy[$role])) {
             foreach(self::$hierarchy[$role] as $r) {
-                //$roles = array_merge($roles, self::getRoles($r));
+                $roles = array_merge($roles, self::getRoles($r));
             }
 
         }

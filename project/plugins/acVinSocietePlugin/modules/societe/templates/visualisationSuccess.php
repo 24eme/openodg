@@ -44,8 +44,8 @@
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $societe->code_comptable_client; ?></div>
                             <?php endif; ?>
                             <?php if ($societe->siret): ?>
-                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Siret&nbsp;:</div>
-                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $societe->siret; ?></div>
+                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">SIRET&nbsp;:</div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($societe->siret); ?></div>
                             <?php endif; ?>
                             <?php if ($societe->code_naf): ?>
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Code naf&nbsp;:</div>

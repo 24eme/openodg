@@ -3,6 +3,7 @@
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
 <?php use_helper('Date') ?>
+<?php use_helper('Compte') ?>
 <style>
 <?php echo styleTirage(); ?>
 </style>
@@ -16,7 +17,7 @@
                 </tr>
                 <tr>
                     <td>&nbsp;Adresse : <i><?php echo $tirage->declarant->adresse ?></i></td>
-                    <td>N° SIRET : <i><?php echo $tirage->declarant->siret ?></i></td>
+                    <td>N° SIRET : <i><?php echo formatSIRET($tirage->declarant->siret); ?></i></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Commune : <i><?php echo $tirage->declarant->code_postal ?> <?php echo $tirage->declarant->commune ?></i></td>

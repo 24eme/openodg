@@ -38,7 +38,7 @@
                 </div>
                 <div class="list-group-item">
                     <ul class="list-inline">
-                        <li><attr>N° SIRET :</attr> <?php echo $societeDoublee->key[SocieteAllView::KEY_SIRET]; ?></li>
+                        <li><attr>N° SIRET :</attr> <?php echo formatSIRET($societeDoublee->key[SocieteAllView::KEY_SIRET]); ?></li>
                     </ul>
                 </div> 
             </div>

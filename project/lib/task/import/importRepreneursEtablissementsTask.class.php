@@ -107,7 +107,7 @@ EOF;
 
         if(!count($etablissementSocRepreneuse)){
           echo "La societe repreneur d'id $idRepreneur n'a aucun etablissement la base création d'un etablissement \n";
-          $etbRepreneur = $socRepreneur->createEtablissement( "OPERATEUR");
+          $etbRepreneur = $socRepreneur->createEtablissement( EtablissementFamilles::FAMILLE_PRODUCTEUR);
           $etbRepreneur->nom = $socRepreneur->getRaisonSociale();
         }
 

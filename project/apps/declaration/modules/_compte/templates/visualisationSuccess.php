@@ -1,4 +1,4 @@
-<?php echo use_helper('Date'); ?>
+<?php echo use_helper('Date'); echo use_helper('Compte'); ?>
 
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for('compte_recherche'); ?>">Contacts</a></li>
@@ -53,7 +53,7 @@
                         <div class="row">
                             <label class="col-xs-6">SIRET / SIREN</label>
                             <div class="col-xs-6">
-                                <?php echo $compte->siret; ?>
+                                <?php echo formatSIRET($compte->siret); ?>
                             </div>
                         </div>
                     <?php endif; ?>

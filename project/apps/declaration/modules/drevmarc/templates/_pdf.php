@@ -2,6 +2,7 @@
 <?php use_helper('DRevMarc') ?>
 <?php use_helper('TemplatingPDF') ?>
 <?php use_helper('Float') ?>
+<?php use_helper('Compte') ?>
 <style>
 <?php echo styleDRevMarc(); ?>
 </style>
@@ -11,12 +12,12 @@
             <table border="0">
                 <tr>
                     <td style="width: 420px;">&nbsp;Nom : <i><?php echo $drevmarc->declarant->raison_sociale ?></i></td>
-                    
+
                     <td><?php if($drevmarc->declarant->cvi): ?>N° CVI : <i><?php echo $drevmarc->declarant->cvi ?></i><?php else: ?>&nbsp;<?php endif; ?></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Adresse : <i><?php echo $drevmarc->declarant->adresse ?></i></td>
-                    <td>N° SIRET : <i><?php echo $drevmarc->declarant->siret ?></i></td>
+                    <td>N° SIRET : <i><?php echo formatSIRET($drevmarc->declarant->siret) ?></i></td>
                 </tr>
                 <tr>
                     <td>&nbsp;Commune : <i><?php echo $drevmarc->declarant->code_postal ?> <?php echo $drevmarc->declarant->commune ?></i></td>
