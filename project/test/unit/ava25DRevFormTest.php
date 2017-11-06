@@ -15,6 +15,8 @@ foreach(DRevClient::getInstance()->getHistory($viti->identifiant, acCouchdbClien
     if($dr) { DRClient::getInstance()->deleteDoc($dr); }
     $sv12 = SV12Client::getInstance()->find(str_replace("DREV-", "SV12-", $k), acCouchdbClient::HYDRATE_JSON);
     if($sv12) { SV12Client::getInstance()->deleteDoc($sv12); }
+    $sv11 = SV11Client::getInstance()->find(str_replace("DREV-", "SV11-", $k), acCouchdbClient::HYDRATE_JSON);
+    if($sv11) { SV11Client::getInstance()->deleteDoc($sv11); }
 }
 
 foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {

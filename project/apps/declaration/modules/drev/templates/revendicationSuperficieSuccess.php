@@ -13,7 +13,7 @@
         <thead>
         	<tr>
                 <th class="text-center col-xs-2"></th>
-                <th class="text-center info">Déclaration de Récolte</th>
+                <th class="text-center info"><?php echo $drev->getDocumentDouanierTypeLibelle(); ?></th>
                 <th colspan="2" class="text-center">Déclaration de Revendication</th>
             </tr>
             <tr>
