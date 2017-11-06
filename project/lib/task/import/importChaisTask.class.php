@@ -66,16 +66,31 @@ EOF;
             $last_id = $data[0];
             $chais[] = $data;
         }
+        $this->saveChais($chais);
     }
 
     protected function saveChais($chais) {
       $id = sprintf('ETABLISSEMENT-%06d01', $chais[0][self::CSV_ID_EXTRAVITIS]);
       $etablissement = EtablissementClient::getInstance()->find($id);
       if (!$etablissement) {
+        foreach ($chais as $i => $c) {
+          if ($c[self::CSV_TYPE] == 'Négoce') {
+            $id = sprintf('SOCIETE-%06d', $chais[0][self::CSV_ID_EXTRAVITIS]);
+            $societe = SocieteClient::getInstance()->find($id);
+            if (!$societe) {
+              echo "ERROR: pas de société trouvée pour $id\n";
+              return;
+            }
+            $etablissement = $societe->createEtablissement(EtablissementFamilles::FAMILLE_NEGOCIANT);
+            $etablissement->nom = $societe->raison_sociale;
+          }
+        }
+      }
+      if (!$etablissement) {
         echo "ERROR: pas d'établissement trouvé pour $id\n";
         return;
       }
-        $etablissement->remove('chais');
+      $etablissement->remove('chais');
       foreach ($chais as $i => $c) {
         $mychai = $etablissement->add('chais')->add($i);
         $mychai->adresse = $c[self::CSV_ADRESSE];
