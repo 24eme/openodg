@@ -27,7 +27,8 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         $this->setWidget('region', new bsWidgetFormChoice(array('choices' => self::getRegions())));
         $this->setWidget('nature_inao', new bsWidgetFormChoice(array('choices' => self::getNaturesInao())));
         $this->setWidget('no_accises', new bsWidgetFormInput());
-        $this->setWidget('commentaire', new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));        $this->setWidget('site_fiche', new bsWidgetFormInput());
+        $this->setWidget('commentaire', new bsWidgetFormTextarea(array(), array('style' => 'width: 100%;resize:none;')));
+        $this->setWidget('site_fiche', new bsWidgetFormInput());
 
         $this->widgetSchema->setLabel('famille', 'Famille *');
         $this->widgetSchema->setLabel('nom', "Nom de l'établissement *");

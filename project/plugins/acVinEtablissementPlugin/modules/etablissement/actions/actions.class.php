@@ -67,4 +67,19 @@ class etablissementActions extends sfCredentialActions {
         return $this->redirect('etablissement_visualisation', array('identifiant' => $this->etablissement->identifiant));
     }
 
+    public function executeChaiModification(sfWebRequest $request) {
+      $this->etablissement = $this->getRoute()->getEtablissement();
+      $this->societe = $this->etablissement->getSociete();
+      $this->num = $request->getParameter('num');
+      $this->chai = $this->etablissement->get('chais')->get($this->num);
+      $this->form = new EtablissementChaiModificationForm($this->chai);
+      if ($request->isMethod(sfWebRequest::POST)) {
+          $this->form->bind($request->getParameter($this->form->getName()));
+          if ($this->form->isValid()) {
+              $this->form->save();
+              $this->redirect('etablissement_visualisation', array('identifiant' => $this->etablissement->identifiant));
+          }
+      }
+    }
+
 }
