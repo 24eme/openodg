@@ -210,7 +210,7 @@ class habilitationActions extends sfActions {
         ksort($this->facets["Activité"]);
         ksort($this->facets["Produit"]);
 
-        uasort($this->docs, function($a, $b) {
+        uasort($this->docs, function($a, $b) use ($sortKeys) {
             foreach($sortKeys as $sortKey) {
                 if($a->key[$sortKey] < $b->key[$sortKey]) {
                     return true;

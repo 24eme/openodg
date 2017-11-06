@@ -68,10 +68,6 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
             );
         }
 
-        $this->setWidget('produit_non_interpro', new bsWidgetFormInputCheckbox());
-        $this->widgetSchema->setLabel('produit_non_interpro', 'Produit hors Interpro : ');
-        $this->setValidator('produit_non_interpro', new sfValidatorString(array('required' => false)));
-
         $this->widgetSchema->setNameFormat('produit_definition[%s]');
         $this->mergePostValidator(new ProduitDefinitionValidatorSchema($this->getObject()));
     }
@@ -146,9 +142,6 @@ class ProduitDefinitionForm extends acCouchdbObjectForm {
     public function save($con = null) {
         $object = parent::save($con);
         $values = $this->getValues();
-        $produit_non_interpro = isset($values['produit_non_interpro']) && $values['produit_non_interpro'];
-
-        $this->getNoeudInterpro($object)->add('produit_non_interpro', $produit_non_interpro);
 
         if ($object->hasDepartements()) {
             $object->remove('departements');

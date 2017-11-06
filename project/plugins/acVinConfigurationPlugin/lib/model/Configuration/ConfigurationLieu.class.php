@@ -86,4 +86,9 @@ class ConfigurationLieu extends BaseConfigurationLieu {
 
 		return $this->_get('couleurs');
 	}
+
+    public function hasRendements()
+    {
+    	return true;
+    }
 }
