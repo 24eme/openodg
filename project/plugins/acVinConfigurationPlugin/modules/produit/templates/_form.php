@@ -63,21 +63,21 @@
 							<div class="form-group <?php if ($form['attributs']['rendement']->hasError()): ?>has-error<?php endif; ?>" >
 								<?php echo $form['attributs']['rendement']->renderError() ?>
 				                <?php echo $form['attributs']['rendement']->renderLabel(null, array('class' => 'col-xs-6')); ?>
-				                <div class="col-xs-6"><?php echo $form['attributs']['rendement']->render(); ?></div>
+				                <div class="col-xs-6"><?php echo $form['attributs']['rendement']->render(array('class' => 'form-control text-right')); ?></div>
 				            </div>
 			            </div>
                     	<div class="col-sm-4">
 				            <div class="form-group <?php if ($form['attributs']['rendement_vci']->hasError()): ?>has-error<?php endif; ?>" >
 				                <?php echo $form['attributs']['rendement_vci']->renderError() ?>
 				                <?php echo $form['attributs']['rendement_vci']->renderLabel(null, array('class' => 'col-xs-6')); ?>
-				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_vci']->render(); ?></div>
+				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_vci']->render(array('class' => 'form-control text-right')); ?></div>
 				            </div>
 			            </div>
                     	<div class="col-sm-4">
 				            <div class="form-group <?php if ($form['attributs']['rendement_vci_total']->hasError()): ?>has-error<?php endif; ?>" >
 				                <?php echo $form['attributs']['rendement_vci_total']->renderError() ?>
 				                <?php echo $form['attributs']['rendement_vci_total']->renderLabel(null, array('class' => 'col-xs-6')); ?>
-				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_vci_total']->render(); ?></div>
+				                <div class="col-xs-6"><?php echo $form['attributs']['rendement_vci_total']->render(array('class' => 'form-control text-right')); ?></div>
 				            </div>
 				        </div>
 			        </div>

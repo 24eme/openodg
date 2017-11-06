@@ -33,6 +33,9 @@ class DrevRevendicationAjoutProduitForm extends acCouchdbObjectForm
                 if ($this->getObject()->exist($produit->getHash())) {
                     continue;
                 }
+                if (!$produit->isActif()) {
+                	continue;
+                }
 
                 $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
