@@ -119,7 +119,7 @@ EOF;
 
     public function createEtablissement($dataLine,$societe){
         $id = $dataLine[self::ETABLISSEMENT_ID];
-        $etb = $societe->createEtablissement('OPERATEUR');
+        $etb = $societe->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
         $etb->nom = $societe->raison_sociale;
         $etb->cvi = trim($dataLine[self::ETABLISSEMENT_CVI]);
         echo "L'etablissement $etb->_id de cvi $etb->cvi a été créé \n";
