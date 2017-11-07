@@ -32,7 +32,6 @@ class myUser extends sfBasicSecurityUser
     }
 
     protected function registerCompteByNamespace($login_or_compte, $namespace) {
-
         if (is_object($login_or_compte) && $login_or_compte instanceof Compte) {
             $compte = $login_or_compte;
             $login = $compte->getLogin();
@@ -43,13 +42,13 @@ class myUser extends sfBasicSecurityUser
         }
 
         if(!$compte) {
-            throw new sfException("Le compte est nul : ".$compte->_id);
+            throw new sfException("Le compte est nul : ".$login_or_compte);
         }
 
         $this->setAttribute(self::SESSION_COMPTE_LOGIN, $login, $namespace);
 
         if ($compte->isNew()) {
-            $this->setAttribute(self::SESSION_COMPTE_DOC, $compte, $namespace);
+            $this->setAttribute(self::SESSION_COMPTE_DOC, $compte->_id, $namespace);
         } else {
             $this->setAttribute(self::SESSION_COMPTE_DOC, $compte->_id, $namespace);
         }
