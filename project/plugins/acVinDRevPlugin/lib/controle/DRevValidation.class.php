@@ -19,9 +19,10 @@ class DRevValidation extends DocumentValidation
         /*
          * Warning
          */
-        $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation.');
+        $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous revendiquez un volume différent de celui qui figure sur votre DR en L15');
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_annee', "Le vci de l'annéee dépasse le rendement autorisé");
+        $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
         /*
          * Error
          */
@@ -45,8 +46,17 @@ class DRevValidation extends DocumentValidation
             $this->controleRevendication($produit);
             $this->controleVci($produit);
         }
+        $this->controleNeant();
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
+    }
+
+    protected function controleNeant()
+    {
+    	if(count($this->document->getProduits()) > 0) {
+    		return;
+    	}
+    	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
     }
 
     protected function controleEngagementVCI() 
@@ -88,7 +98,7 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->volume_revendique_total != $produit->recolte->recolte_nette && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
-          $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->volume_revendique_total > ($produit->recolte->recolte_nette + $produit->vci->complement)) {
         	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
