@@ -33,6 +33,10 @@ accueil:
   url: /
   param: { module: common, action: accueil }
 
+setflash:
+  url: /afficher_message
+  param: { module: global, action: setFlash }
+
 # Common
 
 contact:
