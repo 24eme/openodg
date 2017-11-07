@@ -64,7 +64,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     }
 
     public static function transformTag($tag) {
-        $tag = strtolower($tag);
+        $tag = strtolower(KeyInflector::unaccent($tag));
         return preg_replace('/[^a-z0-9éàùèêëïç]+/', '_', $tag);
     }
 

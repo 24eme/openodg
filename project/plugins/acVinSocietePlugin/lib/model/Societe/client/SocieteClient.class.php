@@ -65,7 +65,7 @@ class SocieteClient extends acCouchdbClient {
                 SocieteAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', CompteClient::STATUT_SUSPENDU, array($type), $raison_sociale));
     }
 
-    public function createSociete($raison_sociale, $type) {
+    public function createSociete($raison_sociale, $type = SocieteClient::TYPE_AUTRE) {
         $societe = new Societe();
         $societe->raison_sociale = $raison_sociale;
         $societe->type_societe = $type;

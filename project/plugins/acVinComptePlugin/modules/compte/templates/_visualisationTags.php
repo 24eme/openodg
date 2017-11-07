@@ -1,7 +1,7 @@
 <?php $hasManuel = false; ?>
     <div style="margin-bottom: 10px;">
-      <div class="row">
-        <div class="col-xs-2 text-muted" style="padding: 5px;">Groupes&nbsp;:</div>
+      <div class="row" style="margin-bottom: 10px;">
+        <div class="col-xs-2 text-muted">Groupes&nbsp;:</div>
         <div class="col-xs-10">
             <?php foreach($compte->groupes as $nom => $fonction) : ?>
               <div class="btn-group">
@@ -9,13 +9,16 @@
                 <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => $nom)); ?>"><?php echo $fonction; ?></a>
               </div>
             <?php endforeach; ?>&nbsp;
+            <?php if(!count($compte->groupes)): ?>
+                <span class="text-muted">Aucun</span>
+            <?php endif;?>
         </div>
       </div>
       <?php foreach ($compte->tags as $type_tag => $tags) :
         if ($type_tag == 'groupes') {continue;}
         ?>
-        <div class="row">
-          <div class="col-xs-2 text-muted" style="padding: 5px;"><?php echo ucfirst($type_tag) ?>&nbsp;:</div>
+        <div class="row" style="margin-bottom: 10px;">
+          <div class="col-xs-2 text-muted"><?php echo ucfirst($type_tag) ?>&nbsp;:</div>
           <div class="col-xs-10">
             <?php foreach ($tags as $t): ?>
                 <?php $targs['tags'] = implode(',', array($type_tag . ':' . $t)); ?>
@@ -48,8 +51,8 @@
       </div>
       <?php endforeach; ?>
       <?php if(!$hasManuel): ?>
-      <div class="row">
-        <div class="col-xs-2 text-muted" style="padding: 5px;">Manuel&nbsp;:</div>
+      <div class="row" style="margin-bottom: 5px;">
+        <div class="col-xs-2 text-muted">Manuel&nbsp;:</div>
         <div class="col-xs-10">
             <div class="btn-group">
               <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => $compte->identifiant, "tags" => "")); ?>" method="GET">
