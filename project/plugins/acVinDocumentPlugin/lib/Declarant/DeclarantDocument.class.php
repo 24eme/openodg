@@ -9,7 +9,7 @@ class DeclarantDocument
     {
         $this->document = $document;
     }
-    
+
     public function getIdentifiant()
     {
         return $this->document->identifiant;
@@ -19,9 +19,9 @@ class DeclarantDocument
     {
         return $this->document->declarant;
     }
-    
+
     public function getEtablissementObject() {
-        
+
         return $this->document->getEtablissementObject();
     }
 
@@ -46,7 +46,7 @@ class DeclarantDocument
         }
         if($etablissement->exist("siege")) {
             $declarant->adresse = $etablissement->siege->adresse;
-            if ($etablissement->siege->exist("adresse_complementaire")) {
+            if ($etablissement->siege->exist("adresse_complementaire") && $etablissement->siege->adresse_complementaire) {
                 $declarant->adresse .= ' − '.$etablissement->siege->adresse_complementaire;
             }
             $declarant->commune = $etablissement->siege->commune;

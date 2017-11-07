@@ -2,7 +2,7 @@
 <?php use_helper('PointsAides'); ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
-<?php include_partial('drev/step', array('step' => 'vci', 'drev' => $drev)) ?>
+<?php include_partial('drev/step', array('step' => 'vci', 'drev' => $drev, 'ajax' => true)) ?>
 
     <div class="page-header"><h2>Répartition du VCI <?php echo intval($drev->campagne) - 1 ?></h2></div>
 

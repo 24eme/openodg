@@ -62,8 +62,8 @@
 
         <!-- end #page -->
 
-        <div class="alert hidden alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
-        <div class="alert hidden alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
+        <div class="alert alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
+        <div class="alert alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
         <?php include_javascripts() ?>
     </body>
 </html>

@@ -173,7 +173,6 @@ EOF;
 
             $societe->siret = $siret;
 
-
             $societeCoordonnees = $this->getCoordonneesInArr($this->arrayXML['b:Coordonnees']['b:Identite_Coordonnee']);
 
             $this->updateDocOrFieldWithCoordonnees($societe->siege,$societeCoordonnees);
@@ -235,6 +234,7 @@ EOF;
           //$compte->telephone_perso = $societeCommunication[self::COM_TEL];
           $compte->site_internet = $societeCommunication[self::COM_SITEWEB];
           $compte->fonction = "";
+          $compte->num_interne = "".$identifiant;
           $this->setTags($compte);
           $compte->save();
 
@@ -271,6 +271,7 @@ EOF;
                   $compte->email = $interlocCommunication[self::COM_EMAIL];
                   $compte->telephone_mobile = $interlocCommunication[self::COM_PORTABLE];
                   $compte->site_internet = $interlocCommunication[self::COM_SITEWEB];
+                  $compte->num_interne = "".$identifiant;
                   $this->setTags($compte);
                   $compte->save();
                   echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
