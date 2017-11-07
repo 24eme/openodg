@@ -249,6 +249,28 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->importFromDocumentDouanier();
     }
     
+    public function getCsvFromDocumentDouanier() {
+    	if (!$this->hasDocumentDouanier()) {
+    		return null;
+    	}
+    	$csvFile = $this->getDocumentDouanier('csv');
+    	if (!$csvFile) {
+    		return  null;
+    	}
+    	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->campagne);
+    	$csvContent = $csvOrigine->convert();
+    	$path = sfConfig::get('sf_cache_dir').'/dr/';
+    	$filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
+    	if (!is_dir($path)) {
+    		if (!mkdir($path)) {
+    			throw new sfException('cannot create '.$path);
+    		}
+    	}
+    	file_put_contents($path.$filename, $csvContent);
+    	$csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
+    	return $csv->getCsv();
+    }
+    
     public function getFictiveFromDocumentDouanier() {
     	$drev = clone $this;
     	$drev->remove('declaration');
@@ -257,37 +279,40 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return $drev;
     }
 
+    public function getProduitsBailleur() {
+    	$csv = $this->getCsvFromDocumentDouanier();
+    	$bailleurs = array();
+    	foreach($csv as $line) {
+    		$produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
+    		if(!$produitConfig) {
+    			continue;
+    		}
+    		if (!$produitConfig->isActif()) {
+    			continue;
+    		}
+    		$produit = $this->addProduit($produitConfig->getHash());
+    	
+    		if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
+    			$bailleurs[$produit->getHash()] = $produit->getHash();
+    		}
+    	}
+    	return $bailleurs;
+    }
+
     public function importFromDocumentDouanier($save = true) {
       if (count($this->declaration)) {
         return true;
       }
-      if (!$this->hasDocumentDouanier()) {
-        return false;
+      $csv = $this->getCsvFromDocumentDouanier();
+      if (!$csv) {
+      	return false;
       }
-
-      $typeDocumentDouanier = $this->getDocumentDouanierType();
-
-      $csvFile = $this->getDocumentDouanier('csv');
-      if (!$csvFile) {
-        return false;
-      }
-      $csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->campagne);
-      $csvContent = $csvOrigine->convert();
-      $path = sfConfig::get('sf_cache_dir').'/dr/';
-      $filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
-      if (!is_dir($path)) {
-        if (!mkdir($path)) {
-          throw new sfException('cannot create '.$path);
-        }
-      }
-      file_put_contents($path.$filename, $csvContent);
-      try {
-        $csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
-        $this->importCSVDouane($csv->getCsv());
+	  try {
+        $this->importCSVDouane($csv);
         if ($save) {
         	$this->save();
         }
-          return true;
+        return true;
       } catch (Exception $e) { }
       return false;
     }
