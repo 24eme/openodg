@@ -72,11 +72,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
 			       <a href="<?php echo url_for('drev_revendication_reset', $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-refresh"></span> recalculer les volumes</a>
         </div>
         <div class="col-xs-4 text-right">
-            <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
-                <button id="btn-validation" type="submit" class="btn btn-primary btn-upper">Valider et retourner à la validation <span class="glyphicon glyphicon-check"></span></button>
-                <?php else: ?>
                 <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
-            <?php endif; ?>
         </div>
     </div>
 </form>
