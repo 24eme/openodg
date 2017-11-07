@@ -257,6 +257,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	if (!$csvFile) {
     		return  null;
     	}
+    	$typeDocumentDouanier = $this->getDocumentDouanierType();
     	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->campagne);
     	$csvContent = $csvOrigine->convert();
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
