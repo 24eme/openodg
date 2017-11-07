@@ -285,18 +285,8 @@ class compteActions extends sfCredentialActions {
       $q = $this->initSearch($request);
       $q->setLimit($res_by_page);
       $q->setFrom($from);
-<<<<<<< HEAD
       $this->addTagFacetsToQuerry($q);
-=======
-      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique');
-      foreach($facets as $nom => $f) {
-		      $elasticaFacet 	= new acElasticaFacetTerms($nom);
-		      $elasticaFacet->setField($f);
-		      $elasticaFacet->setSize(100);
-		      $q->addFacet($elasticaFacet);
-      }
 
->>>>>>> 9f2d074c3dc581dc2199c783c0b44e4b0ef86120
       $index = acElasticaManager::getType('COMPTE');
       $resset = $index->search($q);
 
