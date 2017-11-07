@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(43);
+$t = new lime_test(46);
 $t->comment("Lancement d'un import light");
 
 $import_entite_task = new importEntiteFromXmlTask($this->dispatcher, $this->formatter);
@@ -49,6 +49,7 @@ ob_start();
 $import_entite_task->run(array('file_path' => '/tmp/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_9967.xml'),array());
 $import_entite_task_ret = ob_get_contents();
 ob_end_clean();
+echo $import_entite_task_ret;
 
 $societe9967 = SocieteClient::getInstance()->find("SOCIETE-009967");
 $etablissement9967 = EtablissementClient::getInstance()->find("ETABLISSEMENT-00996701");
@@ -106,6 +107,18 @@ $import_entite_task->run(array('file_path' => '/tmp/ODGRHONE_IDENTITES_DATA/IDEN
 $import_entite_task_ret = ob_get_contents();
 ob_end_clean();
 
+ob_start();
+$import_entite_task->run(array('file_path' => '/tmp/ODGRHONE_IDENTITES_DATA/IDENTITES_DATA/evvSiret_45453.xml'),array());
+$import_entite_task_ret = ob_get_contents();
+ob_end_clean();
+$societe45453 = SocieteClient::getInstance()->find("SOCIETE-045453");
+$t->isnt($societe45453, null, "La societe 045453 existe");
+$t->is($societe45453->siege->adresse, "VINIFICATEUR", "La societe 045453 a pour adresse VINIFICATEUR");
+$t->is($societe45453->siege->adresse_complementaire, "100 COTEAUX DE BASSENON − DOMAINE RHONE 2 VALLEES", "La societe 045453 a pour adresse complementaire 100 COTEAUX DE BASSENON DOMAINE RHONE 2 VALLEES");
+
+
+
+
 $societe19499 = SocieteClient::getInstance()->find("SOCIETE-019499");
 $t->isnt($societe19499, null, "La societe 014199 existe");
 $t->is($societe19499->raison_sociale,"LES COTEAUX DU MORTIER (EARL)", "La societe 019499 a la bonne raison sociale");
@@ -122,10 +135,10 @@ $t->isnt($compte01949902, null, "Le compte 01949902 existe en tant qu'interlocut
 $t->is($compte01949902->nom, "AGIER", "Son nom est bon.");
 
 $typeg = "groupes";
-$tag_0 = "Assemblee Generale 2014 ";
-$tag_1 = "Conseil d'Administration 2014 ";
-$tag_s0 = "assemblee_generale_2014_";
-$tag_s1 = "conseil_d_administration_2014_";
+$tag_0 = "Assemblée Générale 2014";
+$tag_1 = "Conseil d'Administration 2014";
+$tag_s0 = "assemblee_generale_2014";
+$tag_s1 = "conseil_d_administration_2014";
 
 $t->ok($compte01949902->exist('groupes'),"Le compte 01949902 possède la clé groupe ");
 

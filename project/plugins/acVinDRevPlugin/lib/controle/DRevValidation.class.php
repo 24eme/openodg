@@ -19,9 +19,12 @@ class DRevValidation extends DocumentValidation
         /*
          * Warning
          */
-        $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation.');
+        $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous revendiquez un volume différent de celui qui figure sur votre DR en L15');
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_annee', "Le vci de l'annéee dépasse le rendement autorisé");
+        $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
+        $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre DR");
+        $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         /*
          * Error
          */
@@ -41,12 +44,51 @@ class DRevValidation extends DocumentValidation
 
     public function controle() 
     {
+    	$produits = array();
         foreach ($this->document->getProduits() as $hash => $produit) {
             $this->controleRevendication($produit);
             $this->controleVci($produit);
+            $produits[$hash] = $produit;
         }
+        $this->controleNeant();
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
+        $this->controleProduitsDocumentDouanier($produits);
+        $this->controleSurfaceBailleur();
+    }
+
+    protected function controleNeant()
+    {
+    	if(count($this->document->getProduits()) > 0) {
+    		return;
+    	}
+    	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+    }
+
+    protected function controleProduitsDocumentDouanier($produits)
+    {
+    	$drev = $this->document->getFictiveFromDocumentDouanier();
+    	$hasDiff = false;
+    	foreach ($drev->getProduits() as $hash => $produit) {
+    		if (!array_key_exists($hash, $produits)) {
+    			$hasDiff = true;
+    		}
+    	}
+    	if ($hasDiff) {
+    		$this->addPoint(self::TYPE_WARNING, 'declaration_produits_incoherence', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+    	}
+    }
+
+    protected function controleSurfaceBailleur()
+    {
+    	$bailleurs = $this->document->getProduitsBailleur();
+    	foreach ($this->document->getProduits() as $hash => $produit) {
+    		if (in_array($hash, $bailleurs)) {
+    			if (round($produit->recolte->superficie_total,2) == round($produit->superficie_revendique,2)) {
+    				$this->addPoint(self::TYPE_WARNING, 'declaration_surface_bailleur', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+    			}
+    		}
+    	}
     }
 
     protected function controleEngagementVCI() 
@@ -88,7 +130,7 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->volume_revendique_total != $produit->recolte->recolte_nette && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
-          $this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->volume_revendique_total > ($produit->recolte->recolte_nette + $produit->vci->complement)) {
         	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
