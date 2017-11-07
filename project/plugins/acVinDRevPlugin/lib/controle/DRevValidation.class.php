@@ -24,6 +24,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_annee', "Le vci de l'annéee dépasse le rendement autorisé");
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
         $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre DR");
+        $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
         /*
          * Error
          */
@@ -53,6 +54,7 @@ class DRevValidation extends DocumentValidation
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
         $this->controleProduitsDocumentDouanier($produits);
+        $this->controleSurfaceBailleur();
     }
 
     protected function controleNeant()
@@ -74,6 +76,18 @@ class DRevValidation extends DocumentValidation
     	}
     	if ($hasDiff) {
     		$this->addPoint(self::TYPE_WARNING, 'declaration_produits_incoherence', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+    	}
+    }
+
+    protected function controleSurfaceBailleur()
+    {
+    	$bailleurs = $this->document->getProduitsBailleur();
+    	foreach ($this->document->getProduits() as $hash => $produit) {
+    		if (in_array($hash, $bailleurs)) {
+    			if (round($produit->recolte->superficie_total,2) == round($produit->superficie_revendique,2)) {
+    				$this->addPoint(self::TYPE_WARNING, 'declaration_surface_bailleur', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+    			}
+    		}
     	}
     }
 

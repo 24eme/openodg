@@ -2,7 +2,7 @@
 <?php use_helper('PointsAides'); ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
-<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, 'drev' => $drev)) ?>
+<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE, 'drev' => $drev, 'ajax' => true)) ?>
 
     <div class="page-header"><h2>Revendication <?php echo $drev->campagne; ?> de la superficie</h2></div>
 
