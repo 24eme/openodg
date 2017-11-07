@@ -40,7 +40,7 @@ $compteviti = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compteviti->addTag('test', 'test');
 $compteviti->addTag('test', 'test_viti');
 $compteviti->save();
-$t->is($compteviti->tags->automatique->toArray(true, false), array('societe', 'operateur'), "Création de société viti crée un compte du même type");
+$t->is($compteviti->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société viti crée un compte du même type");
 
 $societenegocvo = SocieteClient::getInstance()->createSociete("société négo de la région test", SocieteClient::TYPE_OPERATEUR);
 $societenegocvo->pays = "FR";
@@ -52,7 +52,7 @@ $compte = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compte->addTag('test', 'test');
 $compte->addTag('test', 'test_nego_region');
 $compte->save();
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'operateur'), "Création de société négo crée un compte du même type");
+$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société négo crée un compte du même type");
 
 $societenegocvo = SocieteClient::getInstance()->createSociete("société négo 2 de la région test", SocieteClient::TYPE_OPERATEUR);
 $societenegocvo->pays = "FR";
@@ -64,7 +64,7 @@ $compte = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compte->addTag('test', 'test');
 $compte->addTag('test', 'test_nego_region_2');
 $compte->save();
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'operateur'), "Création de société négo 2 crée un compte du même type");
+$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société négo 2 crée un compte du même type");
 
 $societenegohors = SocieteClient::getInstance()->createSociete("société négo hors région test", SocieteClient::TYPE_OPERATEUR);
 $societenegohors->pays = "BE";
@@ -76,7 +76,7 @@ $compte = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compte->addTag('test', 'test');
 $compte->addTag('test', 'test_nego_horsregion');
 $compte->save();
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'operateur'), "Création de société négo hors région crée un compte du même type");
+$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société négo hors région crée un compte du même type");
 
 $societecourtier = SocieteClient::getInstance()->createSociete("société courtier test", SocieteClient::TYPE_COURTIER);
 $societecourtier->pays = "FR";
@@ -88,7 +88,7 @@ $compte = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compte->addTag('test', 'test_courtier');
 $compte->addTag('test', 'test');
 $compte->save();
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'intermediaire'), "Création de société courtier crée un compte du même type");
+$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société courtier crée un compte du même type");
 
 $societeintermediaire = SocieteClient::getInstance()->createSociete("société intermédiaire test", SocieteClient::TYPE_COURTIER);
 $societeintermediaire->pays = "FR";
@@ -100,7 +100,7 @@ $compte = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compte->addTag('test', 'test_intermediaire');
 $compte->addTag('test', 'test');
 $compte->save();
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'intermediaire'), "Création de société intermédiaire crée un compte du même type");
+$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société intermédiaire crée un compte du même type");
 
 $societeintermediaire = SocieteClient::getInstance()->createSociete("société cooperative test", SocieteClient::TYPE_OPERATEUR);
 $societeintermediaire->pays = "FR";
@@ -112,7 +112,7 @@ $compte = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compte->addTag('test', 'test_cooperative');
 $compte->addTag('test', 'test');
 $compte->save();
-$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'operateur'), "Création de société intermédiaire crée un compte du même type");
+$t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société intermédiaire crée un compte du même type");
 
 $societeviti->date_modification = '2017-01-01';
 $societeviti->save();

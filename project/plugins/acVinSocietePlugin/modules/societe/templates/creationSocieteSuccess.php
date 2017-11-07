@@ -3,7 +3,7 @@
 <section id="principal">
     <ol class="breadcrumb">
         <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
-        <li class="active"><strong>Création d'une société</strong></li>
+        <li class="active"><a href="">Création d'une société</a></li>
 
     </ol>
     <!-- #contenu_etape -->
@@ -16,11 +16,6 @@
                         <?php echo $form['raison_sociale']->renderError(); ?>
                         <?php echo $form['raison_sociale']->renderLabel(null, array("class" => "col-xs-6 control-label")); ?>
                         <div class="col-xs-6"><?php echo $form['raison_sociale']->render(array("class" => "form-control first-focus", "autofocus" => "autofocus")); ?></div>
-                    </div>
-                    <div class="form-group<?php if ($form['type']->hasError()): ?> has-error<?php endif; ?>">
-                        <?php echo $form['type']->renderError(); ?>
-                        <?php echo $form['type']->renderLabel(null, array('class' => 'col-xs-6 control-label')); ?>
-                        <div class="col-xs-6"><?php echo $form['type']->render(); ?></div>
                     </div>
                     <div class="text-right col-xs-12"><button id="btn_rechercher" type="submit" class="btn btn-success">Créer</button></div>
                 </div>
