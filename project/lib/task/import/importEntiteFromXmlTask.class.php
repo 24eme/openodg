@@ -36,6 +36,8 @@ class importEntiteFromXmlTask extends sfBaseTask
     protected $fonctionsArr = array();
     protected $groupeInterlocuteursArr = array();
 
+    public static $civilites = array("M" => "M", "MME" => "Mme", "MLLE" => "Mlle", "EURL" => "EURL", "INC" => "INC", "MTR" => "Maitre", "SIR" => "Sir", "MM" => "Messieurs");
+
 
 
     protected static $coordonneesKeys = array(self::COORD_ADRESSE_1 => "b:Adresse1",
@@ -257,6 +259,8 @@ EOF;
                   $compte = CompteClient::getInstance()->createCompteFromSociete($societe);
 
                   $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
+
+                  $compte->civilite = (array_key_exists($this->arrayXML['b:Titre'],self::$civilites))? self::$civilites[$this->arrayXML['b:Titre']] : null;
 
                   $compte->nom = $this->arrayXML['b:RaisonSociale'];
                   $compte->prenom = $this->arrayXML['b:Prenom'];
