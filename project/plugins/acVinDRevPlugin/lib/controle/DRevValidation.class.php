@@ -23,6 +23,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous revendiquez un volume différent de celui qui figure sur votre DR en L15');
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_annee', "Le vci de l'annéee dépasse le rendement autorisé");
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
+        $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre DR");
         /*
          * Error
          */
@@ -42,13 +43,16 @@ class DRevValidation extends DocumentValidation
 
     public function controle() 
     {
+    	$produits = array();
         foreach ($this->document->getProduits() as $hash => $produit) {
             $this->controleRevendication($produit);
             $this->controleVci($produit);
+            $produits[$hash] = $produit;
         }
         $this->controleNeant();
         $this->controleEngagementVCI();
         $this->controleEngagementSv();
+        $this->controleProduitsDocumentDouanier($produits);
     }
 
     protected function controleNeant()
@@ -57,6 +61,20 @@ class DRevValidation extends DocumentValidation
     		return;
     	}
     	$this->addPoint(self::TYPE_WARNING, 'declaration_neant', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+    }
+
+    protected function controleProduitsDocumentDouanier($produits)
+    {
+    	$drev = $this->document->getFictiveFromDocumentDouanier();
+    	$hasDiff = false;
+    	foreach ($drev->getProduits() as $hash => $produit) {
+    		if (!array_key_exists($hash, $produits)) {
+    			$hasDiff = true;
+    		}
+    	}
+    	if ($hasDiff) {
+    		$this->addPoint(self::TYPE_WARNING, 'declaration_produits_incoherence', '', $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+    	}
     }
 
     protected function controleEngagementVCI() 
