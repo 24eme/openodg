@@ -248,8 +248,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return $this->importFromDocumentDouanier();
     }
+    
+    public function getFictiveFromDocumentDouanier() {
+    	$drev = clone $this;
+    	$drev->remove('declaration');
+    	$drev->add('declaration');
+    	$drev->importFromDocumentDouanier(false);
+    	return $drev;
+    }
 
-    public function importFromDocumentDouanier() {
+    public function importFromDocumentDouanier($save = true) {
       if (count($this->declaration)) {
         return true;
       }
@@ -276,7 +284,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       try {
         $csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
         $this->importCSVDouane($csv->getCsv());
-        $this->save();
+        if ($save) {
+        	$this->save();
+        }
           return true;
       } catch (Exception $e) { }
       return false;

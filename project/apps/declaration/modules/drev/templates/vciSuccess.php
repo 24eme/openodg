@@ -6,6 +6,8 @@
 
     <div class="page-header"><h2>Répartition du VCI <?php echo intval($drev->campagne) - 1 ?></h2></div>
 
+    <?php echo include_partial('global/flash'); ?>
+
     <form role="form" action="<?php echo url_for("drev_vci", $drev) ?>" method="post" class="ajaxForm" id="form_vci_drev_<?php echo $drev->_id; ?>">
 
     <?php echo $form->renderHiddenFields(); ?>
