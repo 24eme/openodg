@@ -96,6 +96,9 @@
                 <?php endif; ?>
                 <?php if ($form->getTypeCompte() == SocieteClient::TYPE_OPERATEUR): ?>
                   <div class="col-xs-12">
+                    <p class="well"><strong>Aidez-nous</strong> à améliorer les informations vous concernant en remplissant ou modifiant les éléments suivants&nbsp;:</p>
+                  </div>
+                  <div class="col-xs-12">
                       <div class="row">
                         <div class="col-xs-12">
                           <?php echo $form['siret']->renderError() ?>
@@ -111,22 +114,38 @@
                       </div>
                       <br/>
                     </div>
-                      <div class="col-xs-12">
+                    <div class="col-xs-12">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <?php echo $form['cvi']->renderError() ?>
+                          </div>
+                        </div>
                           <div class="row">
-                            <div class="col-xs-12">
-                              <?php echo $form['num_accises']->renderError() ?>
-                            </div>
+                          <div class="col-xs-4 text-right">
+                            <?php echo $form['cvi']->renderLabel() ?>
                           </div>
-                            <div class="row">
-                            <div class="col-xs-4 text-right">
-                              <?php echo $form['num_accises']->renderLabel() ?>
-                            </div>
-                            <div class="col-xs-4 col-xs-offset-2 text-left">
-                              <?php echo $form['num_accises']->render(array('class' => "form-control")) ?>
-                            </div>
+                          <div class="col-xs-4 col-xs-offset-2 text-left">
+                            <?php echo $form['cvi']->render(array('class' => "form-control")) ?>
                           </div>
-                          <br/>
-                      </div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <?php echo $form['ppm']->renderError() ?>
+                          </div>
+                        </div>
+                          <div class="row">
+                          <div class="col-xs-4 text-right">
+                            <?php echo $form['ppm']->renderLabel() ?>
+                          </div>
+                          <div class="col-xs-4 col-xs-offset-2 text-left">
+                            <?php echo $form['ppm']->render(array('class' => "form-control")) ?>
+                          </div>
+                        </div>
+                        <br/>
+                    </div>
                 <?php endif; ?>
           <div class="col-xs-12 text-right">
             <button class="btn btn-success" type="submit">Valider</button>

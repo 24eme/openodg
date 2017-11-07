@@ -8,6 +8,11 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
         $this->typeCompte = $doc->getSociete()->type_societe;
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
+        $defaults['cvi'] = $doc->etablissement_informations->cvi;
+        $defaults['ppm'] = $doc->etablissement_informations->ppm;
+        $defaults['siret'] = $doc->getSociete()->siret;
+
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
     public function configure() {
@@ -31,15 +36,24 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
                 'min_length' => 'Le numéro de SIRET doit être constitué de 14 chiffres',
                 'max_length' => 'Le numéro de SIRET doit être constitué de 14 chiffres')));
 
-            $this->setWidget('num_accises', new sfWidgetFormInputText());
-            $this->getWidget('num_accises')->setLabel("Numéro d'ACCISE :");
-            $this->setValidator('num_accises', new sfValidatorRegex(array('required' => false,
-                'pattern' => "/^[0-9A-Za-z]{13}$/",
-                'min_length' => 13,
-                'max_length' => 13), array('required' => "Le numéro d'ACCISE est obligatoire",
-                'invalid' => "Le numéro d'ACCISE doit être constitué de 13 caractères alphanumériques",
-                'min_length' => "Le numéro d'ACCISE doit être constitué de 13 caractères alphanumériques",
-                'max_length' => "Le numéro d'ACCISE doit être constitué de 13 caractères alphanumériques")));
+            $this->setWidget('cvi', new sfWidgetFormInputText());
+            $this->getWidget('cvi')->setLabel("Numéro CVI/EVV :");
+            $this->setValidator('cvi', new sfValidatorRegex(array('required' => false,
+                'pattern' => "/^[0-9A-Za-z]{10}$/",
+                'min_length' => 10,
+                'max_length' => 10), array('required' => "Le numéro de CVI/EVV est obligatoire",
+                'invalid' => "Le numéro CVI/EVV doit être constitué de 10 caractères alphanumériques",
+                'min_length' => "Le numéro CVI/EVV doit être constitué de 10 caractères alphanumériques",
+                'max_length' => "Le numéro CVI/EVV doit être constitué de 10 caractères alphanumériques")));
+            $this->setWidget('ppm', new sfWidgetFormInputText());
+            $this->getWidget('ppm')->setLabel("Numéro PPM :");
+            $this->setValidator('ppm', new sfValidatorRegex(array('required' => false,
+                'pattern' => "/^[A-Za-z][0-9A-Za-z]{8}$/",
+                'min_length' => 9,
+                'max_length' => 9), array('required' => "Le numéro de CVI/EVV est obligatoire",
+                'invalid' => "Le numéro PPM doit être constitué de 9 caractères alphanumériques",
+                'min_length' => "Le numéro PPM doit être constitué de 9 caractères alphanumériques",
+                'max_length' => "Le numéro PPM doit être constitué de 9 caractères alphanumériques")));
         }
     }
 
@@ -60,6 +74,14 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
         if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('siret'))) {
             $societe->siret = $this->getValue('siret');
             $societe->save();
+        }
+        if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('cvi'))) {
+            $etbPrincipal->cvi = $this->getValue('cvi');
+            $etbPrincipal->save();
+        }
+        if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('ppm'))) {
+            $etbPrincipal->ppm = $this->getValue('ppm');
+            $etbPrincipal->save();
         }
     }
 
