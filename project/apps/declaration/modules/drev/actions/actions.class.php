@@ -87,8 +87,8 @@ class drevActions extends sfActions {
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if (!$this->drev->hasDR()) {
-        	FichierClient::getInstance()->scrapeAndSaveFiles($this->drev->getEtablissementObject(), DRCsvFile::CSV_TYPE_DR, $this->drev->campagne);
+        if (!$this->drev->hasDocumentDouanier()) {
+        	FichierClient::getInstance()->scrapeAndSaveFiles($this->drev->getEtablissementObject(), $this->drev->getDocumentDouanierType(), $this->drev->campagne);
         }
         return $this->redirect('drev_dr_douane', $this->drev);
     }
@@ -99,7 +99,11 @@ class drevActions extends sfActions {
         if ($this->drev->importFromDR()) {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
-        $this->form = new DRevUploadDrForm(DRClient::getInstance()->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
+        $client = $this->drev->getDocumentDouanierClient();
+        if (!$client) {
+        	throw new sfException('Client not found');
+        }
+        $this->form = new DRevUploadDrForm($client->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne));
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
@@ -210,7 +214,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         
-        if (!$this->drev->hasDR()) {
+        if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
 
@@ -248,7 +252,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         
-        if (!$this->drev->hasDR()) {
+        if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
 
@@ -404,7 +408,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         
-        if (!$this->drev->hasDR()) {
+        if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
 
@@ -658,7 +662,7 @@ class drevActions extends sfActions {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         
-        if (!$this->drev->hasDR()) {
+        if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
 

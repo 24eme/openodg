@@ -6,6 +6,10 @@
     <span class="label label-default pull-right"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->getStatutLibelle(); ?></small></span>
 <?php endif; ?>
 </h4>
+<?php if($etablissement->famille): ?>
+    <span class="col-xs-3 text-muted">Famille&nbsp;:</span><span class="col-xs-9"><?php echo EtablissementFamilles::$familles[$etablissement->famille]; ?></span>
+<?php endif; ?>
+
 <?php if($etablissement->cvi): ?>
     <span class="col-xs-3 text-muted">CVI&nbsp;:</span><span class="col-xs-9"><?php echo $etablissement->cvi; ?></span>
 <?php endif; ?>

@@ -13,7 +13,7 @@
                   <div class="col-xs-11 ">
                       <h4>Détail du groupe « <?php echo str_replace('_',' ',$groupeName); ?> »</h4>
                   </div>
-                  <div class="col-xs-1 ">
+                  <div class="col-xs-1">
                     <a href="<?php echo url_for('compte_search', array('tags' => $filtre)) ; ?>"><span class="glyphicon glyphicon-search"></span></a> &nbsp;
                     <a href="<?php echo url_for('compte_search_csv', array('tags' => $filtre)) ; ?>"><span class="glyphicon glyphicon-export"></span></a>
                   </div>
@@ -37,6 +37,9 @@
                         </div>
                       </div>
               <?php endforeach; ?>
+            </div>
+            <div class="col-xs-12 text-right" style="padding-bottom:5px;" >
+              <a href="<?php echo url_for('compte_groupe_ajout', array('groupeName' => $groupeName)) ; ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un membre</a>
             </div>
         </div>
   </div>

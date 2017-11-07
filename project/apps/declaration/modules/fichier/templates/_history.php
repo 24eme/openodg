@@ -12,8 +12,6 @@
 		<?php if (Piece::isVisualisationMasterUrl($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 			<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 				<a href="<?php echo $urlVisu ?>"><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
-			<?php else: ?>
-				<?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?>
 			<?php endif; ?>
 		<?php else: ?>
 			<?php if(count($document->value[PieceAllView::VALUES_FICHIERS]) > 1): ?>
@@ -49,8 +47,6 @@
 		<?php endif; ?>
 		<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 			<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;"><span class="glyphicon glyphicon-edit"></span></a>
-		<?php else: ?>
-			<?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?>
 		<?php endif; ?>
 	</span>
 </div>

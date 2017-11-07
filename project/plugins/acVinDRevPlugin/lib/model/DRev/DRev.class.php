@@ -179,22 +179,37 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     public function getDocumentDouanierType() {
         if($this->declarant->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
 
-            return "DR";
+            return DRCsvFile::CSV_TYPE_DR;
         }
 
         if($this->declarant->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
 
-            return "SV11";
+            return SV11CsvFile::CSV_TYPE_SV11;
         }
 
-        if($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT) {
+        if($this->declarant->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR) {
 
-            return "SV12";
+            return SV12CsvFile::CSV_TYPE_SV12;
         }
 
         $document = $this->getDocumentDouanier(null, acCouchdbClient::HYDRATE_JSON);
 
         return ($document) ? $document->type : null;
+    }
+    
+    public function getDocumentDouanierClient()
+    {
+    	$type = $this->getDocumentDouanierType();
+    	if ($type == DRCsvFile::CSV_TYPE_DR) {
+    		return DRClient::getInstance();
+    	}
+    	if ($type == SV11CsvFile::CSV_TYPE_SV11) {
+    		return SV11Client::getInstance();
+    	}
+    	if ($type == SV12CsvFile::CSV_TYPE_SV12) {
+    		return SV12Client::getInstance();
+    	}
+    	return null;
     }
 
     public function getDocumentDouanierTypeLibelle() {
