@@ -228,11 +228,28 @@ class compteActions extends sfCredentialActions {
       $this->results = $resset->getResults();
     }
 
+    public function executeGroupeAjout(sfWebRequest $request){
+      $this->groupeName = $request->getParameter('groupeName');
+      $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
+      if ($request->isMethod(sfWebRequest::POST)) {
+          $this->form->bind($request->getParameter($this->form->getName()));
+          if ($this->form->isValid()) {
+              $values = $this->form->getValues();
+
+              $etb = EtablissementClient::getInstance()->find($values['id_etablissement']);
+              $compte = $etb->getMasterCompte();
+              $compte->addInGroupes($this->groupeName,$values['fonction']);
+              $compte->save();
+              $this->redirect('compte_groupe', array('groupeName' => $this->groupeName));
+          }
+      }
+    }
+
     public function executeSearch(sfWebRequest $request) {
       $res_by_page = 30;
       $page = $request->getParameter('page', 1);
       $from = $res_by_page * ($page - 1);
-      
+
       $this->contacts_all = $request->getParameter('contacts_all');
 
       $q = $this->initSearch($request);
@@ -240,10 +257,10 @@ class compteActions extends sfCredentialActions {
       $q->setFrom($from);
       $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique');
       foreach($facets as $nom => $f) {
-		$elasticaFacet 	= new acElasticaFacetTerms($nom);
-		$elasticaFacet->setField($f);
-		$elasticaFacet->setSize(100);
-		$q->addFacet($elasticaFacet);
+		      $elasticaFacet 	= new acElasticaFacetTerms($nom);
+		      $elasticaFacet->setField($f);
+		      $elasticaFacet->setSize(100);
+		      $q->addFacet($elasticaFacet);
       }
 
       $index = acElasticaManager::getType('COMPTE');

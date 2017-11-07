@@ -48,13 +48,17 @@ class acVinCompteRouting {
         $r->prependRoute('compte_teledeclarant_modification_oublie', new sfRoute('/teledeclarant/mot_de_passe_oublie', array('module' => 'compte_teledeclarant', 'action' => 'modificationOublie')));
         $r->prependRoute('reglementation_generale_des_transactions',  new sfRoute('/contrats/reglementation_generale_des_transactions', array('module' => 'compte_teledeclarant', 'action' => 'reglementationGenerale')));
 
-	$r->prependRoute('compte_groupe', new sfRoute('/compte/groupe/:groupeName', array('module' => 'compte', 'action' => 'groupe')));
   $r->prependRoute('compte_groupes', new sfRoute('/compte/groupes', array('module' => 'compte', 'action' => 'groupes')));
+	$r->prependRoute('compte_groupe', new sfRoute('/compte/groupe/:groupeName', array('module' => 'compte', 'action' => 'groupe')));
+  $r->prependRoute('compte_groupe_ajout', new sfRoute('/compte/groupe/:groupeName/ajout', array('module' => 'compte', 'action' => 'groupeAjout')));
 
 	$r->prependRoute('compte_search', new SearchRoute('/compte/search', array('module' => 'compte', 'action' => 'search')));
 	$r->prependRoute('compte_search_csv', new SearchRoute('/compte/search/csv', array('module' => 'compte', 'action' => 'searchcsv')));
 	$r->prependRoute('compte_addtag', new SearchRoute('/compte/search/addtag', array('module' => 'compte', 'action' => 'addtag')));
 	$r->prependRoute('compte_removetag', new SearchRoute('/compte/search/removetag', array('module' => 'compte', 'action' => 'removetag')));
+
+  $r->prependRoute('compte_autocomplete_all', new sfRoute('/compte/autocomplete/:interpro_id/tous', array('module' => 'compte',
+      'action' => 'fullautocomplete')));
 
         $r->prependRoute('compte_ajout', new SocieteRoute('/compte/:identifiant/nouveau',
                         array('module' => 'compte',

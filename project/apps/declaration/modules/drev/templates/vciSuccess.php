@@ -1,4 +1,6 @@
 <?php use_helper('Float'); ?>
+<?php use_helper('PointsAides'); ?>
+
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => 'vci', 'drev' => $drev)) ?>
 
@@ -19,12 +21,12 @@
             </tr>
             <tr>
                 <th class="text-left col-xs-3">Appellation revendiquée</th>
-                <th style="position: relative;" class="text-center col-xs-1">Plafond<br /><small class="text-muted">(hl)</small>&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Stock <?php echo ($drev->campagne - 1) ?><br /><small class="text-muted">(hl)</small>&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Destruction<br /><small class="text-muted">(hl)</small>&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Complément<br /><small class="text-muted">(hl)</small>&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Substitution<br /><small class="text-muted">(hl)</small>&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small>&nbsp;<a title="A définir" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Plafond<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'plafond_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Stock <?php echo ($drev->campagne - 1) ?><br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'stock_vci_precedent') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Destruction<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'destruction_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Complément<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'complement_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Substitution<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'substitution_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th style="position: relative;" class="text-center col-xs-1">Rafraichi<br /><small class="text-muted">(hl)</small>&nbsp;<a title="<?php echo getPointAideText('drev', 'rafraichi_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody class="edit_vci">

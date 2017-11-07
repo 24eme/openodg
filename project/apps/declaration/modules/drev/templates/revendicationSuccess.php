@@ -1,4 +1,6 @@
 <?php use_helper('Float') ?>
+<?php use_helper('PointsAides'); ?>
+
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 <?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION, 'drev' => $drev)) ?>
 
@@ -45,13 +47,13 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             </tr>
             <tr>
                 <th class="col-xs-3">Appellation revendiquée</th>
-                <th class="text-center info col-xs-1">Volume récolté total<br/>(L5)<br/><small class="text-muted">(hl)</small></th>
-                <th class="text-center info col-xs-1">Récolte nette totale<br/>(L15)<br/><small class="text-muted">(hl)</small></th>
-                <th class="text-center info col-xs-1">Volume en cave part.<br/>(L9)<br/><small class="text-muted">(hl)</small></th>
-                <th class="text-center info col-xs-1">Volume VCI constitué<br/>(L19)<br/><small class="text-muted">(hl)</small></th>
-                <th class="col-xs-2 text-center" style="position: relative;">Volume <br/>revendiqué net <br />issu de la récolte<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué<br />issu du VCI <br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
-                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="text-center info col-xs-1" style="position: relative;">Volume récolté total<br/>(L5)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_recolte_total') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="text-center info col-xs-1" style="position: relative;">Récolte nette totale<br/>(L15)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'recolte_nette_totale') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="text-center info col-xs-1" style="position: relative;">Volume en cave part.<br/>(L9)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_cave_particuliere') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="text-center info col-xs-1" style="position: relative;">Volume VCI constitué<br/>(L19)<br/><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'vci_constitue') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-2 text-center" style="position: relative;">Volume <br/>revendiqué net <br />issu de la récolte<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_issu_recolte') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute  ; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué<br />issu du VCI <br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_issu_vci') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
+                <th class="col-xs-1 text-center" style="position: relative;">Volume revendiqué net total<br /><small class="text-muted">(hl)</small><a title="<?php echo getPointAideText('drev', 'volume_revendique_net_total') ?>" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md" style="position: absolute; bottom: 0; right: 0px;"><span class="glyphicon glyphicon-question-sign"></span></a></th>
             </tr>
         </thead>
         <tbody>
