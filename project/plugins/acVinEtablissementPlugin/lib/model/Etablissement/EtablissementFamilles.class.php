@@ -26,11 +26,9 @@ class EtablissementFamilles
 
     protected static $familles = array(
     	self::FAMILLE_PRODUCTEUR => "Producteur",
+        self::FAMILLE_COOPERATIVE => "Coopérative",
     	self::FAMILLE_NEGOCIANT => "Négociant",
-    	self::FAMILLE_COOPERATIVE => "Coopérative",
-    	self::FAMILLE_COURTIER => "Courtier",
-		  self::FAMILLE_REPRESENTANT => "Representant",
-      self::FAMILLE_OPERATEUR => "Opérateur"
+    	self::FAMILLE_NEGOCIANT_VINIFICATEUR => "Négociant Vinificateur",
     );
 
     protected static $type_societe_famille = array(
