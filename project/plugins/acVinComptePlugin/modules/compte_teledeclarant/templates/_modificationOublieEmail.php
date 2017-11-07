@@ -3,8 +3,8 @@ $interpro = strtoupper(sfConfig::get('app_teledeclaration_interpro'));
 ?>
 Madame, Monsieur,
 
-Votre mot de passe sur l'espace professionnel de l'<?php echo $interpro; ?> vient d'etre modifié.
+Votre mot de passe sur l'espace professionnel vient d'etre modifié.
 
-Cordialement,
+Le Syndicat Général des Vignerons réunis des Côtes du Rhône
+Gestiondesdonnees@syndicat-cotesdurhone.com
 
-L'espace professionnel de l'<?php echo $interpro; ?>
