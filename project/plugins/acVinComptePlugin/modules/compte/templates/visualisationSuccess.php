@@ -11,7 +11,7 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-9">
-                        <h4><span class="glyphicon glyphicon-user"></span> Compte n° <?php echo $compte->identifiant; ?></h4>
+                        <h4><span class="glyphicon glyphicon-user"></span> Compte de <?php echo $compte->getNomAAfficher(); ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
                         <div class="btn-group">
