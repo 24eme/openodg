@@ -11,7 +11,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_teledeclaration
 
 SocieteClient::getInstance()->clearSingleton();
 
-$t = new lime_test(50);
+$t = new lime_test(51);
 
 $t->comment("Création de la société");
 
@@ -44,7 +44,7 @@ $etablissement2->save();
 $etablissement3 = $societe->createEtablissement(EtablissementFamilles::FAMILLE_NEGOCIANT);
 $etablissement3->nom = "établissement négociant test télédéclaration 2";
 $etablissement3->telephone = "0101010101";
-$etablissement3->no_accises = "FR1215";
+$etablissement3->cvi = "9876543210";
 $etablissement3->save();
 
 $etablissement4 = $societe->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
@@ -54,7 +54,7 @@ $etablissement4->save();
 $t->comment("Formulaire de création du compte avec une société qui n'a pas d'email");
 
 $form = new CompteTeledeclarantCreationForm(CompteClient::getInstance()->find($compte01->_id));
-$form->bind(array('_revision' => $compte01->_rev, 'email' => 'email@email.fr', 'mdp1' => 'testtest', 'mdp2' => 'testtest', 'siret' => "12345678912345", 'num_accises' => "FR12345678912"));
+$form->bind(array('_revision' => $compte01->_rev, 'email' => 'email@email.fr', 'mdp1' => 'testtest', 'mdp2' => 'testtest', 'siret' => "12345678912345", 'cvi' => "1234567890", "ppm" => "PM5414545"));
 
 $t->ok($form->isValid(), "Le formulaire est valide");
 
@@ -78,15 +78,16 @@ $t->is($societe->siret, "12345678912345", "Le siret a bien été enregistré dan
 $t->is($etablissement->compte, $compte->_id, "L'établissement a le même compte que la société");
 $t->is($etablissement->email, "email@email.fr", "L'établissement a l'email email@email.fr");
 $t->is($etablissement->teledeclaration_email, "email@email.fr", "L'établissement a l'email de télédéclaration email@email.fr");
-$t->is($etablissement->no_accises, "FR12345678912", "Le numéro d'accises a bien été enregistré dans l'établissement");
+$t->is($etablissement->cvi, "1234567890", "Le CVI a bien été enregistré dans l'établissement");
+$t->is($etablissement->ppm, "PM5414545", "Le PPM a bien été enregistré dans l'établissement");
 
 $t->is($etablissement2->email, "emaildejaesxistant@email.fr", "L'email de l'établissement n°2 n'a pas bougé");
 $t->is($etablissement2->teledeclaration_email, "email@email.fr", "L'établissement n°2 a l'email de télédéclaration email@email.fr");
-$t->is($etablissement2->no_accises, null, "Le numéro d'accises n'a pas bougé pour l'établissement 2");
+$t->is($etablissement2->cvi, null, "Le CVI n'a pas bougé pour l'établissement 2");
 
 $t->is($etablissement3->email, "email@email.fr", "L'email de l'établissement n°3 est email@email.fr");
 $t->is($etablissement3->teledeclaration_email, "email@email.fr", "L'établissement n°3 a l'email de télédéclaration email@email.fr");
-$t->is($etablissement3->no_accises, "FR1215", "Le numéro d'accises n'a pas bougé pour l'établissement n°3");
+$t->is($etablissement3->cvi, "9876543210", "Le CVI n'a pas bougé pour l'établissement n°3");
 
 $t->comment("Formulaire de création du compte avec une société qui a déjà un email");
 
@@ -98,7 +99,7 @@ $form = new CompteTeledeclarantCreationForm(CompteClient::getInstance()->find($c
 
 $t->is($form->getDefault('email') , "email@email.fr", "L'email a bien été pré-rempli dans le formulaire");
 
-$form->bind(array('_revision' => $compte->_rev, 'email' => 'courriel@courriel.fr', 'mdp1' => 'testtest', 'mdp2' => 'testtest', 'siret' => null, 'num_accises' => null));
+$form->bind(array('_revision' => $compte->_rev, 'email' => 'courriel@courriel.fr', 'mdp1' => 'testtest', 'mdp2' => 'testtest', 'cvi' => null, 'ppm' => null));
 $form->save();
 
 $t->ok($form->isValid(), "Le formulaire est valide");
@@ -119,7 +120,7 @@ $t->ok(!$societe->exist('teledeclaration_email'), "La société n'a pas d'email 
 
 $t->is($etablissement->compte, $compte->_id, "L'établissement a le même compte que la société");
 $t->is($etablissement->email, "email@email.fr", "L'email de l'établissement n'a pas bougé");
-$t->is($etablissement->no_accises, "FR12345678912", "Le numéro d'accises de l'établissement n'a pas bougé");
+$t->is($etablissement->cvi, "1234567890", "Le CVI de l'établissement n'a pas bougé");
 $t->is($etablissement->teledeclaration_email, "courriel@courriel.fr", "L'établissement a l'email de télédéclaration courriel@courriel.fr");
 $t->is($societe->siret, "12345678912345", "Le siret de la société n'a pas bougé");
 

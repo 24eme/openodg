@@ -19,9 +19,6 @@ class SocieteModificationForm extends CompteGeneriqueForm {
         $this->setWidget('raison_sociale', new bsWidgetFormInput());
         $this->setWidget('code_comptable_client', new bsWidgetFormInput());
 
-        $this->setWidget('type_societe', new bsWidgetFormChoice(array('choices' => $this->getSocieteTypes(), 'expanded' => false)));
-        $this->setValidator('type_societe', new sfValidatorChoice(array('required' => true, 'choices' => $this->getSocieteTypesValid())));
-
         if ($this->getObject()->isNegoOrViti()) {
 
             $this->setWidget('cooperative', new bsWidgetFormChoice(array('choices' => $this->getCooperative(), 'multiple' => false, 'expanded' => true)));

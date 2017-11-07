@@ -37,10 +37,10 @@ class SocieteRouting {
             'action' => 'creationSociete')));
 
 
-        $r->prependRoute('societe_creation_doublon', new sfRoute('/societe-creation-doublon/:type/:raison_sociale', array('module' => 'societe',
+        $r->prependRoute('societe_creation_doublon', new sfRoute('/societe-creation-doublon/:raison_sociale', array('module' => 'societe',
             'action' => 'creationSocieteDoublon')));
 
-        $r->prependRoute('societe_nouvelle', new sfRoute('/societe-nouvelle/:type/:raison_sociale', array('module' => 'societe',
+        $r->prependRoute('societe_nouvelle', new sfRoute('/societe-nouvelle/:raison_sociale', array('module' => 'societe',
             'action' => 'societeNew')));
 
 

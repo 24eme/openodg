@@ -81,7 +81,7 @@ $id = $etablissementcourtier->getSociete()->getidentifiant();
 $comptecourtier = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $comptecourtier->addTag('test', 'test');
 $comptecourtier->save();
-$t->is($comptecourtier->tags->automatique->toArray(true, false), array('societe', 'intermediaire', 'etablissement', 'courtier'), "Création d'un etablissement courtier met à jour le compte");
+$t->is($comptecourtier->tags->automatique->toArray(true, false), array('societe', 'operateur', 'courtier', 'etablissement'), "Création d'un etablissement courtier met à jour le compte");
 
 $societeintermediaire = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_intermediaire')->getSociete();
 $etablissementintermediaire = $societeintermediaire->createEtablissement(EtablissementFamilles::FAMILLE_REPRESENTANT);
@@ -92,7 +92,7 @@ $id = $etablissementintermediaire->getSociete()->getidentifiant();
 $compteintermediaire = CompteClient::getInstance()->findByIdentifiant($id.'01');
 $compteintermediaire->addTag('test', 'test');
 $compteintermediaire->save();
-$t->is($compteintermediaire->tags->automatique->toArray(true, false), array('societe', 'intermediaire', 'etablissement', 'representant'), "Création d'un etablissement intermediaire met à jour le compte");
+$t->is($compteintermediaire->tags->automatique->toArray(true, false), array('societe', 'operateur', 'representant', 'etablissement'), "Création d'un etablissement intermediaire met à jour le compte");
 
 $societecoop = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_cooperative')->getSociete();
 $etablissementcoop = $societecoop->createEtablissement(EtablissementFamilles::FAMILLE_COOPERATIVE);
