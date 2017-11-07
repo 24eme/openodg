@@ -213,7 +213,7 @@ class drevActions extends sfActions {
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
@@ -248,10 +248,21 @@ class drevActions extends sfActions {
 
     }
 
+    public function executeResetVolumes(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+        foreach ($this->drev->getProduits() as $prod) {
+          $prod->volume_revendique_issu_recolte = $prod->getTheoriticalVolumeRevendiqueIssuRecole();
+        }
+        $this->drev->updatePrelevementsFromRevendication();
+        $this->drev->save();
+        return $this->redirect('drev_revendication', $this->drev);
+    }
+
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
@@ -407,7 +418,7 @@ class drevActions extends sfActions {
     public function executeVci(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
@@ -661,7 +672,7 @@ class drevActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
