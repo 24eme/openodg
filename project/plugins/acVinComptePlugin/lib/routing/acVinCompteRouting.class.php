@@ -49,6 +49,8 @@ class acVinCompteRouting {
         $r->prependRoute('reglementation_generale_des_transactions',  new sfRoute('/contrats/reglementation_generale_des_transactions', array('module' => 'compte_teledeclarant', 'action' => 'reglementationGenerale')));
 
   $r->prependRoute('compte_groupes', new sfRoute('/compte/groupes', array('module' => 'compte', 'action' => 'groupes')));
+
+  $r->prependRoute('compte_new_groupe', new sfRoute('/compte/ajout-groupe', array('module' => 'compte', 'action' => 'groupeNew')));
 	$r->prependRoute('compte_groupe', new sfRoute('/compte/groupe/:groupeName', array('module' => 'compte', 'action' => 'groupe')));
   $r->prependRoute('compte_groupe_ajout', new sfRoute('/compte/groupe/:groupeName/ajout', array('module' => 'compte', 'action' => 'groupeAjout')));
 

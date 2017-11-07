@@ -228,6 +228,19 @@ class compteActions extends sfCredentialActions {
       $this->results = $resset->getResults();
     }
 
+    public function executeGroupeNew(sfWebRequest $request){
+
+      $this->form = new CompteNewGroupeForm();
+      if ($request->isMethod(sfWebRequest::POST)) {
+          $this->form->bind($request->getParameter($this->form->getName()));
+          if ($this->form->isValid()) {
+            $values = $this->form->getValues();
+            $this->groupeName = $values['nom_groupe'];
+            $this->redirect('compte_groupe', array('groupeName' => $this->groupeName));
+          }
+      }
+    }
+
     public function executeGroupeAjout(sfWebRequest $request){
       $this->groupeName = $request->getParameter('groupeName');
       $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
