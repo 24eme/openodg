@@ -24,7 +24,7 @@ class EtablissementFamilles
     const SOUS_FAMILLE_UNION = "UNION";
     const SOUS_FAMILLE_VINIFICATEUR = "VINIFICATEUR";
 
-    protected static $familles = array(
+    public static $familles = array(
     	self::FAMILLE_PRODUCTEUR => "Producteur",
         self::FAMILLE_COOPERATIVE => "Coopérative",
     	self::FAMILLE_NEGOCIANT => "Négociant",

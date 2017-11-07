@@ -36,6 +36,10 @@
                 <div class="row">
                     <div class="col-xs-5">
                         <div class="row">
+                            <?php if ($etablissement->famille) : ?>
+                                <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Famille :</div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo EtablissementFamilles::$familles[$etablissement->famille]; ?></div>
+                            <?php endif; ?>
                             <?php if ($etablissement->recette_locale && $etablissement->recette_locale->nom) : ?>
                                 <div style="font-weight: bold; margin-bottom: 5px;" class="col-xs-4 text-muted">Recette locale :</div>
                                 <div style="margin-bottom: 5px;" class="col-xs-8"><a href="<?php echo url_for('societe_visualisation', SocieteClient::getInstance()->find($etablissement->recette_locale->id_douane)); ?>">
@@ -46,7 +50,7 @@
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->identifiant; ?></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->cvi): ?>
-                                    <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">CVI : </div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">CVI :</div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->ppm): ?>
