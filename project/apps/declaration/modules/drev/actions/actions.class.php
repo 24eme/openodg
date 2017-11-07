@@ -213,7 +213,7 @@ class drevActions extends sfActions {
     public function executeRevendicationSuperficie(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
@@ -232,12 +232,21 @@ class drevActions extends sfActions {
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
+        if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
+               return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+        }
+
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
 
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+           return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+       }
 
         if ($this->drev->exist('etape') && $this->drev->etape == DrevEtapes::ETAPE_VALIDATION) {
 
@@ -251,7 +260,7 @@ class drevActions extends sfActions {
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
@@ -407,7 +416,7 @@ class drevActions extends sfActions {
     public function executeVci(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
@@ -430,12 +439,21 @@ class drevActions extends sfActions {
 
         $this->form->bind($request->getParameter($this->form->getName()));
 
+        if (!$this->form->isValid() && $request->isXmlHttpRequest()) {
+               return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+        }
+
         if (!$this->form->isValid()) {
 
             return sfView::SUCCESS;
         }
 
         $this->form->save();
+
+        if ($request->isXmlHttpRequest()) {
+
+           return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->drev->_id, "revision" => $this->drev->_rev))));
+       }
 
         if ($this->drev->exist('etape') && $this->drev->etape == DrevEtapes::ETAPE_VALIDATION) {
 
@@ -661,7 +679,7 @@ class drevActions extends sfActions {
     public function executeValidation(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        
+
         if (!$this->drev->hasDR() && $this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }

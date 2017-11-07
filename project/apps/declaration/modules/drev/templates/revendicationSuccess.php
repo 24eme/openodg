@@ -2,7 +2,7 @@
 <?php use_helper('PointsAides'); ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
-<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION, 'drev' => $drev)) ?>
+<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION, 'drev' => $drev, 'ajax' => true)) ?>
 
 <?php
 $global_error_with_infos = "";
