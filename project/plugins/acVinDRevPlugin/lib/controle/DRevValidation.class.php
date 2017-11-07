@@ -77,6 +77,7 @@ class DRevValidation extends DocumentValidation {
             $this->controleVci($produit);
         }
         $this->controleEngagementVCI();
+        $this->controleEngagementSv();
 
         if(!DRevConfiguration::getInstance()->hasPrelevements()) {
             return;
@@ -295,28 +296,22 @@ class DRevValidation extends DocumentValidation {
 
     protected function controleEngagementSv() {
         if($this->document->isPapier()) {
-
             return;
         }
-
-        if (!$this->document->isNonRecoltant()) {
-
-            return;
+        
+        if ($this->document->hasDocumentDouanier()) {
+        	return;
         }
 
-        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_CAVE_COOPERATIVE)) {
+        if ($this->document->getDocumentDouanierType() == SV11CsvFile::CSV_TYPE_SV11) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV11, '');
-
             return;
         }
 
-        if ($this->etablissement->hasFamille(EtablissementClient::FAMILLE_NEGOCIANT)) {
+        if ($this->document->getDocumentDouanierType() == SV12CsvFile::CSV_TYPE_SV12) {
             $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV12, '');
-
             return;
         }
-
-        $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_SV, '');
     }
 
     protected function controleErrorVolumeRevendiqueIncorrect($produit) {
