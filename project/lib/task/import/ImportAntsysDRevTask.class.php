@@ -167,8 +167,8 @@ class ImportAntsysDRevTask extends sfBaseTask
 
       $produit = $drev->addProduit($this->convert_produits[$r[self::CSV_PRODUIT]]);
       $produit->superficie_revendique = $r[self::CSV_SURFACE] * 1;
-      $produit->volume_revendique_issu_recolte = $r[self::CSV_VOLUME] * 1;
-      //$produit->volume_revendique_avec_vci = $r[self::CSV_VOLUME] * 1;
+      $produit->volume_revendique_issu_recolte = $r[self::CSV_VOLUME_SANS_VCI] * 1;
+      $produit->volume_revendique_total = $r[self::CSV_VOLUME] * 1;
 
       //$produit-> = $r[self::CSV_VCI_ANNEE_PRECEDENTE];
       if (($r[self::CSV_VCI_RAFRAICHI]*1) + ($r[self::CSV_VCI_COMPLEMENT] * 1) + ($r[self::CSV_VCI_DETRUIT] * 1)) {
