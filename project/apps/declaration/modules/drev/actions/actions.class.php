@@ -691,7 +691,7 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        if (!$this->validation->isValide()) {
+        if (!$this->validation->isValide() && $this->drev->isTeledeclare()) {
 
             return sfView::SUCCESS;
         }

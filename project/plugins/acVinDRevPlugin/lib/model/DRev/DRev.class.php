@@ -1159,6 +1159,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $this->version_document->isModifiable();
     }
 
+    public function isTeledeclare() {
+        return !$this->isPapier();
+    }
+
     public function isTeledeclareFacturee() {
         return $this->isTeledeclare() && !$this->isNonFactures();
     }
