@@ -22,7 +22,7 @@
     <tr>
         <td>&nbsp;Commune : <i><?php echo $drev->declarant->code_postal ?> <?php echo $drev->declarant->commune ?></i></td>
         <td></td>
-        <td></td>
+        <td>&nbsp;N° Adhérent :<i><?php echo preg_replace('/..$/', '', $drev->identifiant); ?></td>
     </tr>
 </table>
 </td></tr></table>

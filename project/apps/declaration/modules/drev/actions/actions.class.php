@@ -257,6 +257,17 @@ class drevActions extends sfActions {
 
     }
 
+    public function executeResetVolumes(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+        foreach ($this->drev->getProduits() as $prod) {
+          $prod->volume_revendique_issu_recolte = $prod->getTheoriticalVolumeRevendiqueIssuRecole();
+        }
+        $this->drev->updatePrelevementsFromRevendication();
+        $this->drev->save();
+        return $this->redirect('drev_revendication', $this->drev);
+    }
+
     public function executeRevendication(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
@@ -698,7 +709,7 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        if (!$this->validation->isValide()) {
+        if (!$this->validation->isValide() && $this->drev->isTeledeclare()) {
 
             return sfView::SUCCESS;
         }
