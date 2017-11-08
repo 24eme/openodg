@@ -12,15 +12,15 @@ $t->comment("Il existe 032874 avec pour raison_sociale ARSIC BILIANA");
 
 $societe32874 = SocieteClient::getInstance()->find("SOCIETE-032874");
 $t->isnt($societe32874, null, "La société 032874 existe");
-$t->is($societe32874->raison_sociale, "ARSIC BILIANA", "La société 032874 s'appelle avec la bonne raison sociale");
+$t->is($societe32874->raison_sociale, "BILIANA", "La société 032874 s'appelle avec la bonne raison sociale");
 
 $societe45013 = SocieteClient::getInstance()->find("SOCIETE-045013");
 $t->isnt($societe32874, null, "La société 045013 existe");
-$t->is($societe32874->raison_sociale, "ARSIC BILIANA", "La société 045013 s'appelle avec la bonne raison sociale");
+$t->is($societe32874->raison_sociale, "BILIANA", "La société 045013 s'appelle avec la bonne raison sociale");
 
 $etablissement04501301 = EtablissementClient::getInstance()->find("ETABLISSEMENT-04501301");
 $t->isnt($etablissement04501301, null, "L'etablissement 04501301 existe");
-$t->is($etablissement04501301->nom, "ARSIC BILIANA", "L'etablissement 04501301 s'appelle avec la bon nom");
+$t->is($etablissement04501301->nom, "BILIANA", "L'etablissement 04501301 s'appelle avec la bon nom");
 
 $t->comment("Les enfants de Cecilius (04546601) en demande d'habilitation alors que habilité depuis 20/09");
 
@@ -49,3 +49,8 @@ $t->comment("Existance de Denis A");
 
 $t->ok(CompteClient::getInstance()->find('COMPTE-00144202'), "L'intelocuteur de son EARL existe");
 $t->ok(CompteClient::getInstance()->find('COMPTE-01449002'), "L'intelocuteur du syndicat de CAIRANNE");
+
+$t->comment("04020601 apparaît l'unique activité conditionneur alors qu'elle en a d'autres");
+$compte04020601 = CompteClient::getInstance()->find("COMPTE-04020601");
+$activitesTags04020601 = $compte04020601->getOrAdd('tags')->getOrAdd('activite')->toArray(1,0);
+$t->is(count($activitesTags04020601), 3, "04020601 a plus activité");
