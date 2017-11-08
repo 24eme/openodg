@@ -6,6 +6,7 @@ Compte:
       _rev: { }
       type: { }
       identifiant: { }
+      num_interne: {  }
       mot_de_passe: { }
       civilite: { }
       prenom: { }

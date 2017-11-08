@@ -18,7 +18,7 @@
         <?php include_stylesheets() ?>
 
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,600" rel="stylesheet" type="text/css">
-        <link href="/css/style_rhone.css" rel="stylesheet" type="text/css">
+        <link href="/css/style_rhone.css?201710081436" rel="stylesheet" type="text/css">
 
         <script type="text/javascript" src="/js/lib/modernizr-2.8.2.js"></script>
         <script type="text/javascript" src="/js/lib/device.min.js"></script>
@@ -62,8 +62,8 @@
 
         <!-- end #page -->
 
-        <div class="alert hidden alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
-        <div class="alert hidden alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
+        <div class="alert alert-danger notification" id="ajax_form_error_notification">Une erreur est survenue</div>
+        <div class="alert alert-success notification" id="ajax_form_progress_notification">Enregistrement en cours ...</div>
         <?php include_javascripts() ?>
     </body>
 </html>

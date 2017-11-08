@@ -38,7 +38,7 @@
                         <div class="row">
                             <?php if ($etablissement->famille) : ?>
                                 <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Famille :</div>
-                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo EtablissementFamilles::$familles[$etablissement->famille]; ?></div>
+                                <div style="margin-bottom: 5px;" class="col-xs-8"><?php if(isset(EtablissementFamilles::$familles[$etablissement->famille])):?><?php echo EtablissementFamilles::$familles[$etablissement->famille]; ?><?php else: ?><?php echo $etablissement->famille ?><?php endif; ?></div>
                             <?php endif; ?>
                             <?php if ($etablissement->recette_locale && $etablissement->recette_locale->nom) : ?>
                                 <div style="font-weight: bold; margin-bottom: 5px;" class="col-xs-4 text-muted">Recette locale :</div>

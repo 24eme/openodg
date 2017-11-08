@@ -36,6 +36,8 @@ class importEntiteFromXmlTask extends sfBaseTask
     protected $fonctionsArr = array();
     protected $groupeInterlocuteursArr = array();
 
+    public static $civilites = array("M" => "M", "MME" => "Mme", "MLLE" => "Mlle", "EURL" => "EURL", "INC" => "INC", "MTR" => "Maitre", "SIR" => "Sir", "MM" => "Messieurs");
+
 
 
     protected static $coordonneesKeys = array(self::COORD_ADRESSE_1 => "b:Adresse1",
@@ -132,6 +134,18 @@ EOF;
             if($soc){
               $soc->delete();
             }
+            for ($i=1; $i < 100 ; $i++) {
+              $compte = CompteClient::getInstance()->find("COMPTE-".$societeIdentifiant.sprintf("%02d",$i));
+              if($compte){
+                $compte->delete();
+              }
+            }
+            for ($i=1; $i < 100 ; $i++) {
+              $etb = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societeIdentifiant.sprintf("%02d",$i));
+              if($etb){
+                $etb->delete();
+              }
+            }
 
             $societe = new societe();
             $societe->identifiant = $societeIdentifiant;
@@ -160,7 +174,6 @@ EOF;
             $siege = $societe->getOrAdd('siege');
 
             $societe->siret = $siret;
-
 
             $societeCoordonnees = $this->getCoordonneesInArr($this->arrayXML['b:Coordonnees']['b:Identite_Coordonnee']);
 
@@ -223,6 +236,7 @@ EOF;
           //$compte->telephone_perso = $societeCommunication[self::COM_TEL];
           $compte->site_internet = $societeCommunication[self::COM_SITEWEB];
           $compte->fonction = "";
+          $compte->num_interne = "".$identifiant;
           $this->setTags($compte);
           $compte->save();
 
@@ -246,6 +260,8 @@ EOF;
 
                   $societeCommunication = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
 
+                  $compte->civilite = (array_key_exists($this->arrayXML['b:Titre'],self::$civilites))? self::$civilites[$this->arrayXML['b:Titre']] : null;
+
                   $compte->nom = $this->arrayXML['b:RaisonSociale'];
                   $compte->prenom = $this->arrayXML['b:Prenom'];
                   $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
@@ -259,6 +275,7 @@ EOF;
                   $compte->email = $interlocCommunication[self::COM_EMAIL];
                   $compte->telephone_mobile = $interlocCommunication[self::COM_PORTABLE];
                   $compte->site_internet = $interlocCommunication[self::COM_SITEWEB];
+                  $compte->num_interne = "".$identifiant;
                   $this->setTags($compte);
                   $compte->save();
                   echo "La société $identifiantSoc a un nouvel interlocuteur : $compte->nom \n";
@@ -276,11 +293,10 @@ EOF;
 
     protected function updateDocOrFieldWithCoordonnees($doc_or_field,$coordsArr){
       $doc_or_field->adresse = $coordsArr[self::COORD_ADRESSE_1];
-      if($coordsArr[self::COORD_ADRESSE_2]){
-        $doc_or_field->adresse_complementaire = $coordsArr[self::COORD_ADRESSE_2];
-      }
-      if($societeCoordonnees[self::COORD_ADRESSE_3]){
-        $doc_or_field->adresse_complementaire .= " ".$coordsArr[self::COORD_ADRESSE_3];
+      $doc_or_field->adresse_complementaire = $coordsArr[self::COORD_ADRESSE_2];
+
+      if($coordsArr[self::COORD_ADRESSE_3]){
+        $doc_or_field->adresse_complementaire .= " − ".$coordsArr[self::COORD_ADRESSE_3];
       }
       $doc_or_field->code_postal = $coordsArr[self::COORD_CODEPOSTAL];
       $doc_or_field->commune = $coordsArr[self::COORD_COMMUNELIBELLE];

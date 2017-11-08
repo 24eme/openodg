@@ -2,7 +2,7 @@
 <?php use_helper('PointsAides'); ?>
 
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
-<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION, 'drev' => $drev)) ?>
+<?php include_partial('drev/step', array('step' => DrevEtapes::ETAPE_REVENDICATION, 'drev' => $drev, 'ajax' => true)) ?>
 
 <?php
 $global_error_with_infos = "";
@@ -24,6 +24,8 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
     <?php endif; ?>
     <h2>Revendication</h2>
 </div>
+
+<?php echo include_partial('global/flash'); ?>
 
 <form role="form" action="<?php echo url_for("drev_revendication", $drev) ?>" method="post" class="ajaxForm" id="form_revendication_drev_<?php echo $drev->_id; ?>">
     <?php echo $form->renderHiddenFields(); ?>

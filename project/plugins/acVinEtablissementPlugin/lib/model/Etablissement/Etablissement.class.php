@@ -143,6 +143,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->type_liaison = $type;
         $liaison->id_etablissement = $etablissement->_id;
         $liaison->libelle_etablissement = $etablissement->nom;
+        $compte = $this->getMasterCompte();
+        $compte->addTag('manuel',$type);
+        $compte->save();
         if($etablissement->exist('ppm') && $etablissement->ppm){
           $liaison->ppm = $etablissement->ppm;
         }
@@ -152,10 +155,16 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_BAILLEUR)){
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_METAYER,$this,false);
           $etablissement->save();
+          $compteOther = $etablissement->getMasterCompte();
+          $compteOther->addTag('manuel',EtablissementClient::TYPE_LIAISON_METAYER);
+          $compteOther->save();
         }
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_METAYER)){
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR,$this,false);
           $etablissement->save();
+          $compteOther = $etablissement->getMasterCompte();
+          $compteOther->addTag('manuel',EtablissementClient::TYPE_LIAISON_BAILLEUR);
+          $compteOther->save();
         }
         return $liaison;
     }
