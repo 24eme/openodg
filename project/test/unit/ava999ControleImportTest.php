@@ -37,10 +37,15 @@ $t->is($etablisement0707000160->famille, "NEGOCIANT_VINIFICATEUR", "La famille d
 $etablisement0707000150 = EtablissementClient::getInstance()->findByCvi("0707000150");
 $t->is($etablisement0707000150->famille, "PRODUCTEUR", "La famille du CVI 0707000150 négociant vinificateur");
 
-$t->comment("La drev du 35292 doit être sur l'établissement (Négociant vinificateur) avec le CVI 0707000160");
+$t->comment("La drev du 035292 doit être sur l'établissement (Négociant vinificateur) avec le CVI 0707000160");
 
 $drev035292NV = DRevClient::getInstance()->find('DREV-'.$etablisement0707000160->identifiant.'-2016');
 $t->ok($drev035292NV, "La DRev du négociant vinificateur 0707000160 existe");
 
 $drev035292P = DRevClient::getInstance()->find('DREV-'.$etablisement0707000150->_id.'-2016');
 $t->ok($drev035292P, "La DRev du producteur 0707000150 n'existe pas");
+
+$t->comment("Existance de Denis A");
+
+$t->ok(CompteClient::getInstance()->find('COMPTE-00144202'), "L'intelocuteur de son EARL existe");
+$t->ok(CompteClient::getInstance()->find('COMPTE-01449002'), "L'intelocuteur du syndicat de CAIRANNE");
