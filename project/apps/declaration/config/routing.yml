@@ -495,6 +495,16 @@ drev_revendication_superficie:
   requirements:
     sf_method: [get, post]
 
+drev_revendication_reset:
+  url: /drev/revendication/:id/reset
+  param: { module: drev, action: resetVolumes, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 drev_revendication:
   url: /drev/revendication/:id/:appellation
   param: { module: drev, action: revendication, appellation: 0 }
@@ -634,7 +644,7 @@ drev_export_pdf:
     type:     object
   requirements:
     sf_method: [get]
-    
+
 drev_export_xml:
   url: /drev/xml/:id
   param: { module: drev, action: XML }

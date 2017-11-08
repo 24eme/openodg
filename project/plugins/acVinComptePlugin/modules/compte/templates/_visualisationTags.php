@@ -35,9 +35,12 @@
             <?php if($type_tag == 'manuel'): ?>
               <?php $hasManuel = true; ?>
                 <div class="btn-group">
+                  <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()):
+                    echo "<span class='text-muted'> Ajout de tag impossible pour un contact archivé</span>";
+                  else: ?>
                   <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => $compte->identifiant, "tags" => "")); ?>" method="GET">
                     <div class="input-group input-group-sm col-xs-12">
-                      <input id="creer_tag" name="tag" class="tags form-control" type="text" />
+                      <input id="creer_tag" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
                       <input type="hidden" name="q" value="<?php echo $compte->identifiant;?>"/>
                       <input type="hidden" name="tags" value=""/>
                       <span class="input-group-btn">
@@ -45,6 +48,7 @@
                       </span>
                     </div>
                   </form>
+                <?php endif; ?>
                 </div>
             <?php endif; ?>&nbsp;
         </div>
@@ -55,9 +59,12 @@
         <div class="col-xs-2 text-muted">Manuel&nbsp;:</div>
         <div class="col-xs-10">
             <div class="btn-group">
+              <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()):
+                echo "<span class='text-muted'> Ajout de tag impossible pour un contact archivé</span>";
+              else: ?>
               <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => $compte->identifiant, "tags" => "")); ?>" method="GET">
                 <div class="input-group input-group-sm col-xs-12">
-                  <input id="creer_tag" name="tag" class="tags form-control" type="text" />
+                  <input id="creer_tag" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
                   <input type="hidden" name="q" value="<?php echo $compte->identifiant;?>"/>
                   <input type="hidden" name="tags" value=""/>
                   <span class="input-group-btn">
@@ -65,6 +72,7 @@
                   </span>
                 </div>
               </form>
+            <?php endif; ?>
             </div>
         </div>
       </div>

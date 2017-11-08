@@ -11,15 +11,15 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-9">
-                        <h4><span class="glyphicon glyphicon-user"></span> Compte n° <?php echo $compte->identifiant; ?></h4>
+                        <h4><span class="glyphicon glyphicon-user"></span> Compte de <?php echo $compte->getNomAAfficher(); ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
                         <div class="btn-group">
                             <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li<?php echo ($compte->isSuspendu() || $compte->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->isSuspendu() || $compte->isSuspendu()) ? 'javascript:void(0)' : url_for('compte_modification', $compte); ?>">Editer</a></li>
-                                <li<?php echo ($compte->isSuspendu() || $compte->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->isSuspendu() || $compte->isSuspendu())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Archiver</a></li>
-                                <li<?php echo ($compte->isSuspendu() || $compte->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->isSuspendu() || $compte->isActif())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Activer</a></li>
+                                <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu()) ? 'javascript:void(0)' : url_for('compte_modification', $compte); ?>">Editer</a></li>
+                                <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Archiver</a></li>
+                                <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isActif())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Activer</a></li>
                             </ul>
                         </div>
                     </div>

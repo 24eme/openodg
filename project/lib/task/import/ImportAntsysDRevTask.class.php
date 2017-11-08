@@ -154,7 +154,11 @@ class ImportAntsysDRevTask extends sfBaseTask
         DRevClient::getInstance()->deleteDoc($drev);
     }
     $drev = DRevClient::getInstance()->createDoc($eta->identifiant, $campagne, true);
-    $drev->importFromDR();
+    try {
+      $drev->importFromDR();
+    }catch(Exception $e) {
+      echo "WARNING: ".$eta->identifiant." erreur lors de l'import du document douanier\n";
+    }
     foreach($rows as $r) {
       if (!isset($this->convert_produits[$r[self::CSV_PRODUIT]])) {
         echo "ERROR: produit " . $r[self::CSV_PRODUIT] . " non trouvé\n";

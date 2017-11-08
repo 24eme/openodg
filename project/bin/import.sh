@@ -26,4 +26,6 @@ php symfony import:Habilitations --application=declaration ~/scrapping/data/habi
 
 php symfony compte:updateTagsFromHabilitations --application="declaration" > /tmp/habilitation_tags_$$.log
 
+curl -X POST -d @data/COMPTE-connexion.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
+
 bash bin/importDocuments.sh ~/prodouane_scrapy/phantomjs_scrapping/data/documents.csv ~/prodouane_scrapy/phantomjs_scrapping/documents/ > /tmp/documents_$$.log
