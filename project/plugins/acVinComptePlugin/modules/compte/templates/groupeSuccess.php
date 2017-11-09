@@ -31,8 +31,8 @@
                               <span class="lead"><span class="<?php echo comptePictoCssClass($data['doc']) ?>"></span></span>
                               <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo $data['doc']['nom_a_afficher']; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
                               </span>
-                         </div><div class="col-xs-4 text-right">
-                               <small class="text-muted label label-primary"><?php echo $data['doc']['groupes'][$groupeName] ?></small>
+                         </div><div class="col-xs-4 text-right">                           
+                               <small class="text-muted label label-primary"><?php  $rawValue = $data['doc']['groupes']->getRawValue(); echo $rawValue[$groupeName]; ?></small>
                           </div>
                         </div>
                       </div>

@@ -151,8 +151,8 @@ $fct0 = "Délégué";
 $fct1 = "Suppléant";
 
 if($compte01949902->groupes->exist($tag_0) && $compte01949902->groupes->exist($tag_1)){
-  $t->is($compte01949902->groupes->$tag_0,$fct0,"Le compte 01949902 a la fct $fct0 dans le groupe $tag_0");
-  $t->is($compte01949902->groupes->$tag_1,$fct1,"Le compte 01949902 a la fct $fct1 dans le groupe $tag_1");
+  $t->is($compte01949902->groupes->$tag_0->fonction,$fct0,"Le compte 01949902 a la fct $fct0 dans le groupe $tag_0");
+  $t->is($compte01949902->groupes->$tag_1->fonction,$fct1,"Le compte 01949902 a la fct $fct1 dans le groupe $tag_1");
 }
 
 $t->ok(array_key_exists($typeg,$compte01949902->getTags()->toArray(1,0)),"Le compte 01949902 a un type de tag : ".$typeg."");

@@ -68,7 +68,12 @@ Compte:
         type: collection
         definition:
           fields:
-            '*': {}
+            '*':
+              type: collection
+              definition:
+                fields:
+                  groupe_nom: { }
+                  fonction: { }
       tags:
         type: collection
         definition:
