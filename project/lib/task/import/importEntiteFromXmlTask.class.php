@@ -134,18 +134,6 @@ EOF;
             if($soc){
               $soc->delete();
             }
-            for ($i=1; $i < 100 ; $i++) {
-              $compte = CompteClient::getInstance()->find("COMPTE-".$societeIdentifiant.sprintf("%02d",$i));
-              if($compte){
-                $compte->delete();
-              }
-            }
-            for ($i=1; $i < 100 ; $i++) {
-              $etb = EtablissementClient::getInstance()->find("ETABLISSEMENT-".$societeIdentifiant.sprintf("%02d",$i));
-              if($etb){
-                $etb->delete();
-              }
-            }
 
             $societe = new societe();
             $societe->identifiant = $societeIdentifiant;
