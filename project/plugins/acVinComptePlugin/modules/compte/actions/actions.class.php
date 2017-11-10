@@ -221,9 +221,8 @@ class compteActions extends sfCredentialActions {
       $q = $this->initSearch($request);
 		  $elasticaFacet 	= new acElasticaFacetTerms('groupes');
 		  $elasticaFacet->setField('doc.tags.groupes');
-		  $elasticaFacet->setSize(100);
+		  $elasticaFacet->setSize(250);
 		  $q->addFacet($elasticaFacet);
-      $q->setLimit(5000);
       $resset = $index->search($q);
       $this->results = $resset->getResults();
     }
@@ -241,11 +240,20 @@ class compteActions extends sfCredentialActions {
       foreach($facets as $nom => $f) {
         $elasticaFacet 	= new acElasticaFacetTerms($nom);
         $elasticaFacet->setField($f);
+        $elasticaFacet->setSize(150);
         $q->addFacet($elasticaFacet);
       }
     }
 
-    public function executeGroupeNew(sfWebRequest $request){
+    public function executeGroupes(sfWebRequest $request){
+      $q = new acElasticaQuery();
+      $elasticaFacet   = new acElasticaFacetTerms('groupes');
+      $elasticaFacet->setField('doc.groupes.nom');
+      $elasticaFacet->setSize(250);
+      $q->addFacet($elasticaFacet);
+      $index = acElasticaManager::getType('COMPTE');
+      $resset = $index->search($q);
+      $this->facets = $resset->getFacets();
 
       $this->form = new CompteNewGroupeForm();
       if ($request->isMethod(sfWebRequest::POST)) {

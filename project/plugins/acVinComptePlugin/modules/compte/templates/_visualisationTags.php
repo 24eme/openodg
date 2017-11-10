@@ -5,8 +5,8 @@
         <div class="col-xs-10">
             <?php foreach($compte->groupes as $key => $grp) : ?>
               <div class="btn-group">
-                <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_groupe', array("groupeName" => $key)); ?>"><?php echo $grp->groupe_nom; ?></a>
-                <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => $key)); ?>"><?php echo $grp->fonction; ?></a>
+                <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_groupe', array("groupeName" => $grp->nom)); ?>"><?php echo $grp->nom; ?></a>
+                <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => $grp->nom)); ?>"><?php echo $grp->fonction; ?></a>
               </div>
             <?php endforeach; ?>&nbsp;
             <?php if(!count($compte->groupes)): ?>
