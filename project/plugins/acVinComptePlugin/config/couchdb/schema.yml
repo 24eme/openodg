@@ -65,14 +65,14 @@ Compte:
       interpro: {  }
       statut: {  }
       groupes:
-        type: collection
+        type: array_collection
         definition:
           fields:
             '*':
               type: collection
               definition:
                 fields:
-                  groupe_nom: { }
+                  nom: { }
                   fonction: { }
       tags:
         type: collection

@@ -11,7 +11,7 @@
           <div class="panel-heading">
               <div class="row">
                   <div class="col-xs-11 ">
-                      <h4>Détail du groupe « <?php echo str_replace('_',' ',$groupeName); ?> »</h4>
+                      <h4>Détail du groupe « <?php echo str_replace('_',' ',$groupeName); ?> » <span class="badge"><?php echo count($results); ?></span></h4>
                   </div>
                   <div class="col-xs-1">
                     <a href="<?php echo url_for('compte_search', array('tags' => $filtre)) ; ?>"><span class="glyphicon glyphicon-search"></span></a> &nbsp;
@@ -21,8 +21,17 @@
             </div>
             <div class="panel-body">
               <div class="list-group" id="list-item">
-              <?php foreach($results as $res): ?>
-                <?php $data = $res->getData(); ?>
+              <?php foreach($results as $res):
+                      $data = $res->getData();
+                      $rawValue = $data['doc']['groupes']->getRawValue();
+                      $fct = "";
+                      foreach ($rawValue as $grp) {
+                        if($grp["nom"] == $groupeName){
+                          $fct = $grp["fonction"];
+                          break;
+                        }
+                      }
+                 ?>
                       <?php $societe_informations = (isset($data['doc']['societe_informations'])) ? $data['doc']['societe_informations'] : null; ?>
                       <div class="list-group-item <?php if ($data['doc']['statut'] != 'ACTIF') echo 'disabled'; ?>">
                           <div class="row">
@@ -31,8 +40,8 @@
                               <span class="lead"><span class="<?php echo comptePictoCssClass($data['doc']) ?>"></span></span>
                               <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo $data['doc']['nom_a_afficher']; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
                               </span>
-                         </div><div class="col-xs-4 text-right">                           
-                               <small class="text-muted label label-primary"><?php  $rawValue = $data['doc']['groupes']->getRawValue(); echo $rawValue[$groupeName]; ?></small>
+                         </div><div class="col-xs-4 text-right">
+                               <small class="text-muted label label-primary"><?php  echo $fct; ?></small>
                           </div>
                         </div>
                       </div>
