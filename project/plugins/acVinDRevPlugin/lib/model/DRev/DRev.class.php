@@ -196,7 +196,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
         return ($document) ? $document->type : null;
     }
-    
+
     public function getDocumentDouanierClient()
     {
     	$type = $this->getDocumentDouanierType();
@@ -244,11 +244,11 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $csv->getCsv();
     }
 
-    public function importFromDR() {
+    public function importFromDR($save = true) {
 
-        return $this->importFromDocumentDouanier();
+        return $this->importFromDocumentDouanier($save);
     }
-    
+
     public function getCsvFromDocumentDouanier() {
     	if (!$this->hasDocumentDouanier()) {
     		return null;
@@ -271,7 +271,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$csv = DouaneCsvFile::getNewInstanceFromType($typeDocumentDouanier, $path.$filename);
     	return $csv->getCsv();
     }
-    
+
     public function getFictiveFromDocumentDouanier() {
     	$drev = clone $this;
     	$drev->remove('declaration');
@@ -292,7 +292,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     			continue;
     		}
     		$produit = $this->addProduit($produitConfig->getHash());
-    	
+
     		if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
     			$bailleurs[$produit->getHash()] = $produit->getHash();
     		}

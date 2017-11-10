@@ -46,12 +46,19 @@ class importHabilitationTask extends sfBaseTask
 #  const CSV_FIN_SUSPENTION_VENTE_TIREUSE = 35;
 #  const CSV_HISTORIQUE_VENTE_TIREUSE = 36;
 
+  const CSV_DOSSIER_ID = 0;
+  const CSV_DOSSIER_LIBELLE = 1;
+  const CSV_DOSSIER_DATE = 2;
+  const CSV_DOSSIER_UTILISATEUR = 3;
+
+
     protected $types_ignore = array();
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('file', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('fichier_habilitations', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
+            new sfCommandArgument('fichier_dossiers', sfCommandArgument::REQUIRED, "Fichier csv pour l'import"),
         ));
 
         $this->addOptions(array(
@@ -110,7 +117,18 @@ EOF;
         $databaseManager = new sfDatabaseManager($this->configuration);
         $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
         $datas = array();
-        foreach(file($arguments['file']) as $line) {
+        $date_dossiers = array();
+        foreach(file($arguments['fichier_dossiers']) as $line) {
+          $data = str_getcsv($line, ';');
+          $date = preg_replace('/^(\d\d)[\/-](\d\d)[\/-](\d\d\d\d).*/', '$3-$2-$1', $data[self::CSV_DOSSIER_DATE]);
+          if (preg_match('/^\d\d\d\d-\d\d-\d\d$/', $date)) {
+            $date_dossiers[$data[self::CSV_DOSSIER_ID]] = $date;
+          }
+          if (preg_match('/demande habilitation/i', $data[self::CSV_DOSSIER_LIBELLE])) {
+            continue;
+          }
+        }
+        foreach(file($arguments['fichier_habilitations']) as $line) {
             $line = str_replace("\n", "", $line);
             if(preg_match("/^000000#/", $line)) {
                 continue;
@@ -138,7 +156,11 @@ EOF;
               echo "WARNING: établissement créé pour la société ".$id."\n";
             }
             if (!$data[self::CSV_HABILITATION_DATE]) {
-              $data[self::CSV_HABILITATION_DATE] = date('Y-m-d');
+              if ($date_dossiers[self::CSV_ID_IDENTITE]) {
+                $data[self::CSV_HABILITATION_DATE] = $date_dossiers[self::CSV_ID_IDENTITE];
+              }else{
+                $data[self::CSV_HABILITATION_DATE] = '2000-01-01';
+              }
             }
             $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $data[self::CSV_HABILITATION_DATE]);
             $hab_activites = $habilitation->addProduit($this->convert_produits[$data[self::CSV_PRODUIT]])->add('activites');
