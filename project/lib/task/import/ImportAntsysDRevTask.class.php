@@ -14,6 +14,7 @@ class ImportAntsysDRevTask extends sfBaseTask
   const CSV_VCI_RAFRAICHI = 7;
   const CSV_VCI_COMPLEMENT = 8;
   const CSV_VCI_DETRUIT = 9;
+  const CSV_CVI = 10;
 
   protected function configure()
   {
@@ -146,10 +147,17 @@ class ImportAntsysDRevTask extends sfBaseTask
       return false;
     }
     $eta = $soc->getEtablissementPrincipal();
+
+    if(!$eta || (isset($rows[0][self::CSV_CVI]) && $eta->cvi != $rows[0][self::CSV_CVI])) {
+        $eta = EtablissementClient::getInstance()->findByCvi($rows[0][self::CSV_CVI]);
+        echo "INFO;Établissement trouvé par le cvi ".$rows[0][self::CSV_CVI]." : identifiant $id, etablissement : $eta->_id\n";
+    }
+
     if (!$eta) {
       echo "ERROR: pas d'établissement trouvé pour la société ".$id."\n";
       return false;
     }
+
     if($drev = DRevClient::getInstance()->find('DREV-'.$eta->identifiant."-".$campagne, acCouchdbClient::HYDRATE_JSON)) {
         DRevClient::getInstance()->deleteDoc($drev);
     }
