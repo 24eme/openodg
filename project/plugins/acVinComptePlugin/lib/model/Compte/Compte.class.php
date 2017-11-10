@@ -75,7 +75,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if($allGrps->exist($grp)){
           return;
         }
-        $allGrps->add($grp,$fct);
+        $grpNode = $allGrps->add($grp);
+        $grpNode->nom = $grp;
+        $grpNode->fonction = $fct;
         $this->addTag('groupes', $grp);
     }
 

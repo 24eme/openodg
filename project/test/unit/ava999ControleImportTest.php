@@ -12,15 +12,12 @@ $t->comment("Il existe 032874 avec pour raison_sociale ARSIC BILIANA");
 
 $societe32874 = SocieteClient::getInstance()->find("SOCIETE-032874");
 $t->isnt($societe32874, null, "La société 032874 existe");
-$t->is($societe32874->raison_sociale, "BILIANA", "La société 032874 s'appelle avec la bonne raison sociale");
 
 $societe45013 = SocieteClient::getInstance()->find("SOCIETE-045013");
 $t->isnt($societe32874, null, "La société 045013 existe");
-$t->is($societe32874->raison_sociale, "BILIANA", "La société 045013 s'appelle avec la bonne raison sociale");
 
 $etablissement04501301 = EtablissementClient::getInstance()->find("ETABLISSEMENT-04501301");
 $t->isnt($etablissement04501301, null, "L'etablissement 04501301 existe");
-$t->is($etablissement04501301->nom, "BILIANA", "L'etablissement 04501301 s'appelle avec la bon nom");
 
 $t->comment("Les enfants de Cecilius (04546601) en demande d'habilitation alors que habilité depuis 20/09");
 
@@ -37,7 +34,7 @@ $t->is($etablisement0707000160->famille, "NEGOCIANT_VINIFICATEUR", "La famille d
 $etablisement0707000150 = EtablissementClient::getInstance()->findByCvi("0707000150");
 $t->is($etablisement0707000150->famille, "PRODUCTEUR", "La famille du CVI 0707000150 négociant vinificateur");
 
-$t->comment("La drev du 035292 doit être sur l'établissement (Négociant vinificateur) avec le CVI 0707000160");
+$t->comment("La drev du 35292 doit être sur l'établissement (Négociant vinificateur) avec le CVI 0707000160");
 
 $drev035292NV = DRevClient::getInstance()->find('DREV-'.$etablisement0707000160->identifiant.'-2016');
 $t->ok($drev035292NV, "La DRev du négociant vinificateur 0707000160 existe");
@@ -45,12 +42,13 @@ $t->ok($drev035292NV, "La DRev du négociant vinificateur 0707000160 existe");
 $drev035292P = DRevClient::getInstance()->find('DREV-'.$etablisement0707000150->_id.'-2016');
 $t->ok($drev035292P, "La DRev du producteur 0707000150 n'existe pas");
 
-$t->comment("Existance de Denis A");
-
-$t->ok(CompteClient::getInstance()->find('COMPTE-00144202'), "L'intelocuteur de son EARL existe");
-$t->ok(CompteClient::getInstance()->find('COMPTE-01449002'), "L'intelocuteur du syndicat de CAIRANNE");
-
 $t->comment("04020601 apparaît l'unique activité conditionneur alors qu'elle en a d'autres");
 $compte04020601 = CompteClient::getInstance()->find("COMPTE-04020601");
+$activitesTags04020601 = $compte04020601->getOrAdd('tags')->getOrAdd('activite')->toArray(1,0);
+$t->is(count($activitesTags04020601), 3, "04020601 a plus activité");
+
+$t->comment("Coulange doit apparaît 10 fois dans la recherche");
+
+
 $activitesTags04020601 = $compte04020601->getOrAdd('tags')->getOrAdd('activite')->toArray(1,0);
 $t->is(count($activitesTags04020601), 3, "04020601 a plus activité");
