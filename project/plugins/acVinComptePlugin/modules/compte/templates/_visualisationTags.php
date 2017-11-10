@@ -28,7 +28,6 @@
                       <?php echo ucfirst(str_replace('_', ' ', $t)) ?>
                     </a>
                     <?php $targs['tag'] = $t; ?>
-                    <?php $targs['q'] = $compte->identifiant ?>
                     <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', $targs) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
                 </div>
             <?php endforeach; ?>
