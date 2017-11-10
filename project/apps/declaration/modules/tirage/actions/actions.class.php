@@ -192,7 +192,7 @@ class tirageActions extends sfActions {
                         "?" .
                         http_build_query(array(
                             'url' => $this->generateUrl('tirage_dr_import', $tirage, true),
-                            'id' => sprintf('DR-%s-%s', $tirage->identifiant, $tirage->campagne))));
+                            'id' => sprintf('DR-%s-%s', $tirage->identifiant, (preg_match('/^[0-9]+$/'), $tirage->millesime) ? $tirage->millesime : $tirage->campagne))));
     }
 
     public function executeDrImport(sfWebRequest $request) {
