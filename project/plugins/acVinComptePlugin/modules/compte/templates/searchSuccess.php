@@ -136,9 +136,9 @@
 		           <div class="list-group">
                     <?php foreach($ftype['buckets'] as $f): ?>
                         <?php if (preg_match('/^(export|produit)_/', $f['key'])) { continue; } ?>
-
     					<?php
-                $targs = $args_copy->getRawValue();
+                            $targs = $args_copy->getRawValue();
+                            $sargs = $args_copy->getRawValue();
     						$targs['tags'] = implode(',', array_merge($selected_rawtags->getRawValue(), array($type.':'.$f['key'])));
     						$sargs['tags'] = implode(',', array_diff($selected_rawtags->getRawValue(), array($type.':'.$f['key'])));
     						$active = (isset($selected_typetags->getRawValue()[$type]) && in_array($f['key'], $selected_typetags->getRawValue()[$type]))? 'active' : '';
