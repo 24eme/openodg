@@ -44,6 +44,11 @@ class acVinEtablissementRouting {
             'type' => 'object')
         ));
 
+        $r->prependRoute('etablissement_suppression_chai', new EtablissementCompteRoute('/etablissement/:identifiant/chai-suppression/:num', array('module' => 'etablissement',
+            'action' => 'chaiSuppression'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
+            'type' => 'object')
+        ));
+
     }
 
 }
