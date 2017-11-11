@@ -25,19 +25,19 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
 
         $this->setWidget('nom', new bsWidgetFormInput());
         $this->widgetSchema->setLabel('nom', 'Nom :');
-        $this->setValidator('nom', new sfValidatorString(array('required' => true)));
+        $this->setValidator('nom', new sfValidatorString(array('required' => false)));
 
         $this->setWidget('adresse', new bsWidgetFormInput());
         $this->widgetSchema->setLabel('adresse', 'Adresse :');
-        $this->setValidator('adresse', new sfValidatorString(array('required' => true)));
+        $this->setValidator('adresse', new sfValidatorString(array('required' => false)));
 
         $this->setWidget('commune', new bsWidgetFormInput());
         $this->widgetSchema->setLabel('commune', 'Commune :');
-        $this->setValidator('commune', new sfValidatorString(array('required' => true)));
+        $this->setValidator('commune', new sfValidatorString(array('required' => false)));
 
         $this->setWidget('code_postal', new bsWidgetFormInput());
         $this->widgetSchema->setLabel('code_postal', 'Code Postal :');
-        $this->setValidator('code_postal', new sfValidatorString(array('required' => true)));
+        $this->setValidator('code_postal', new sfValidatorString(array('required' => false)));
 
         $this->setWidget('partage', new bsWidgetFormInputCheckbox());
         $this->widgetSchema->setLabel('partage', 'Partagé :');

@@ -39,7 +39,7 @@
                   else: ?>
                   <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => $compte->identifiant, "tags" => "")); ?>" method="GET">
                     <div class="input-group input-group-sm col-xs-12">
-                      <input id="creer_tag" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
+                      <input id="creer_tag" required="required" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
                       <input type="hidden" name="q" value="<?php echo $compte->identifiant;?>"/>
                       <input type="hidden" name="tags" value=""/>
                       <span class="input-group-btn">
@@ -63,7 +63,7 @@
               else: ?>
               <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => $compte->identifiant, "tags" => "")); ?>" method="GET">
                 <div class="input-group input-group-sm col-xs-12">
-                  <input id="creer_tag" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
+                  <input id="creer_tag" required="required" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
                   <input type="hidden" name="q" value="<?php echo $compte->identifiant;?>"/>
                   <input type="hidden" name="tags" value=""/>
                   <span class="input-group-btn">
