@@ -294,10 +294,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     		if (!$produitConfig->isActif()) {
     			continue;
     		}
-    		$produit = $this->addProduit($produitConfig->getHash());
 
     		if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
-    			$bailleurs[$produit->getHash()] = $produit->getHash();
+    			$bailleurs[$produitConfig->getHash()] = $produitConfig->getHash();
     		}
     	}
     	return $bailleurs;

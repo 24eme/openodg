@@ -82,8 +82,8 @@ class DRevValidation extends DocumentValidation
     protected function controleSurfaceBailleur()
     {
     	$bailleurs = $this->document->getProduitsBailleur();
-    	foreach ($this->document->getProduits() as $hash => $produit) {
-    		if (in_array($hash, $bailleurs)) {
+    	foreach ($this->document->getProduits() as $produit) {
+    		if (in_array($produit->getConfig()->getHash(), $bailleurs)) {
     			if (round($produit->recolte->superficie_total,2) == round($produit->superficie_revendique,2)) {
     				$this->addPoint(self::TYPE_WARNING, 'declaration_surface_bailleur', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
     			}

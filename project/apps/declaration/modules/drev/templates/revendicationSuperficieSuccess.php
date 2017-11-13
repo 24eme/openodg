@@ -31,7 +31,10 @@
             <?php foreach($form['produits'] as $hash => $formProduit): ?>
                 <?php $produit = $drev->get($hash); ?>
                 <tr class="produits vertical-center">
-                    <td><?php echo $produit->getLibelleComplet() ?></td>
+                    <td>
+                    	<a href="<?php echo url_for('drev_revendication_cepage_suppression', array('id' => $drev->_id, 'hash' => str_replace('/', '_', $produit->getHash()))) ?>" onclick='return confirm("Êtes vous sûr de vouloir supprimer le produit <?php echo $produit->getLibelleComplet() ?> de votre DRev <?php echo $drev->campagne ?> ?");'><span class="glyphicon glyphicon-remove-sign text-muted"></span></a>
+                    	<?php echo $produit->getLibelleComplet() ?>
+                    </td>
                     <td class="info"><?php echo $formProduit['recolte']['superficie_total']->render(array( 'placeholder' => "ha")) ?></td>
                     <td><?php echo $formProduit['superficie_revendique']->render(array( 'placeholder' => "ha")) ?></td>
                     <td class="text-center pointer_checkbox"><?php echo $formProduit['has_stock_vci']->render() ?></td>
