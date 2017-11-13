@@ -11,13 +11,14 @@
 <div class="page-header no-border">
     <h2>Déclaration de Revendication <?php echo $drev->campagne ?>
     <?php if($drev->isPapier()): ?>
-    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?></small>
+    <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($drev->validation && $drev->validation !== true): ?> reçue le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
+      <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturé</span><?php endif; ?>
     <?php elseif($drev->validation): ?>
-    <small class="pull-right">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?><?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?>
-        <span class="btn btn-default-step btn-xs">Facturé</span>
-    <?php endif; ?></small>
+    <small class="pull-right">Télédéclaration<?php if($drev->validation && $drev->validation !== true): ?> validée le <?php echo format_date($drev->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
+      <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?><span class="btn btn-default-step btn-xs">Facturé</span><?php endif; ?>
     <?php endif; ?>
-
+    <?php if ($sf_user->isAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'OI le ".format_date($drev->envoi_oi, 'dd/MM/yyyy') ; } ?>
+  </small>
     </h2>
 </div>
 
