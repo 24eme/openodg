@@ -18,7 +18,7 @@ class EtablissementRelationForm extends acCouchdbForm {
     }
 
     public function save() {
-        $this->getDocument()->addLiaison($this->getValue('type_liaison'), $this->getValue('id_etablissement'));
+        $this->getDocument()->addLiaison($this->getValue('type_liaison'), $this->getValue('id_etablissement'), true);
         $this->getDocument()->save();
     }
 

@@ -160,18 +160,38 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_BAILLEUR)){
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_METAYER,$this,false);
           $etablissement->save();
-          $compteOther = $etablissement->getMasterCompte();
-          $compteOther->addTag('manuel',EtablissementClient::TYPE_LIAISON_METAYER);
-          $compteOther->save();
         }
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_METAYER)){
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR,$this,false);
           $etablissement->save();
-          $compteOther = $etablissement->getMasterCompte();
-          $compteOther->addTag('manuel',EtablissementClient::TYPE_LIAISON_BAILLEUR);
-          $compteOther->save();
         }
         return $liaison;
+    }
+
+    public function removeLiaison($key, $removeOther = true) {
+        if(!$this->liaisons_operateurs->exist($key)) {
+
+            return;
+        }
+
+        $liaison = $this->liaisons_operateurs->get($key);
+        if($removeOther && $liaison->type_liaison == EtablissementClient::TYPE_LIAISON_BAILLEUR) {
+            $etablissement = EtablissementClient::getInstance()->find($liaison->id_etablissement);
+            $etablissement->removeLiaison(EtablissementClient::TYPE_LIAISON_METAYER."_".$this->_id, false);
+            $etablissement->save();
+        }
+
+        if($removeOther && $liaison->type_liaison == EtablissementClient::TYPE_LIAISON_METAYER) {
+            $etablissement = EtablissementClient::getInstance()->find($liaison->id_etablissement);
+            $etablissement->removeLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR."_".$this->_id, false);
+            $etablissement->save();
+        }
+
+        $compte = $this->getMasterCompte();
+        $compte->removeTags('manuel', array($liaison->type_liaison));
+        $compte->save();
+        $this->liaisons_operateurs->remove($key);
+
     }
 
     public function isNegociant() {

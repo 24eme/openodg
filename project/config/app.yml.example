@@ -74,3 +74,8 @@ all:
   scrapy:
     bin: "/.../.../prodouane_scrapy/bin/download_douane.sh"
     documents: "/.../.../prodouane_scrapy/documents"
+  oi:
+    login: utilisateur
+    mdp: motdepasse
+    domain_action: actions.example.org
+    url_http: http://actions.example.org/Service.asmx
