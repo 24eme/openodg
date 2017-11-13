@@ -104,7 +104,7 @@
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                 <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
                                 <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
-                                <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm glyphicon glyphicon-pencil"></a></td>
+                                <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -128,6 +128,7 @@
                             <th class="col-xs-5">Nom</th>
                             <th class="col-xs-3">Relation</th>
                             <th class="col-xs-4">Numéro CVI/PPM</th>
+                            <th class="col-xs-1"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,6 +137,7 @@
                                 <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
                                 <td><?php echo $liaison->type_liaison ?></td>
                                 <td><?php echo ($liaison->cvi)? 'CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
+                                <td class="text-center"><a onclick="return confirm('Étes vous sûr de vouloir supprimer la relations ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

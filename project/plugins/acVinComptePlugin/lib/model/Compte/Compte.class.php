@@ -89,15 +89,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->get('tags')->add($type, array_values($tags));
     }
 
-    public function removeTag($type, $tags) {
-        $tag = Compte::transformTag($tag);
-        $tags_existant = $this->add('tags')->add($type)->toArray(true, false);
-
-        $tags_existant = array_diff($tags_existant, $tags);
-        $this->get('tags')->remove($type);
-        $this->get('tags')->add($type, array_values($tags));
-    }
-
     public function removeTags($type, $tags) {
         foreach ($tags as $k => $tag)
             $tags[$k] = Compte::transformTag($tag);
