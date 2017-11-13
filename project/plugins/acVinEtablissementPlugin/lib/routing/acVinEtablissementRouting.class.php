@@ -39,6 +39,7 @@ class acVinEtablissementRouting {
             'action' => 'chaiModification'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')
         ));
+
         $r->prependRoute('etablissement_ajout_chai', new EtablissementCompteRoute('/etablissement/:identifiant/chai-ajout', array('module' => 'etablissement',
             'action' => 'chaiAjout'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')
@@ -46,6 +47,11 @@ class acVinEtablissementRouting {
 
         $r->prependRoute('etablissement_suppression_chai', new EtablissementCompteRoute('/etablissement/:identifiant/chai-suppression/:num', array('module' => 'etablissement',
             'action' => 'chaiSuppression'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
+            'type' => 'object')
+        ));
+
+        $r->prependRoute('etablissement_ajout_relation', new EtablissementCompteRoute('/etablissement/:identifiant/relation-ajout', array('module' => 'etablissement',
+            'action' => 'relationAjout'), array('sf_method' => array('get', 'post')), array('model' => 'Etablissement',
             'type' => 'object')
         ));
 

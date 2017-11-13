@@ -143,6 +143,9 @@
                 <?php else: ?>
                     <p class="text-muted">Aucune relation</p>
                 <?php endif; ?>
+                <div class="text-right">
+                  <a href="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter une relation</a>
+                </div>
             </div>
         </div>
     </div>
