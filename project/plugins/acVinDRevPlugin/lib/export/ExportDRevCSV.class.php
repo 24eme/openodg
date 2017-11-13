@@ -19,6 +19,10 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
         return $this->drev->_id . '_' . $this->drev->_rev . '.csv';
     }
+    
+    public function protectStr($str) {
+    	return str_replace('"', '\"', $str);
+    }
 
     public function export() {
         $csv = "";
@@ -32,7 +36,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $mode = 'AUTOMATIQUE';
         }
 
-        $ligne_base = sprintf("%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->drev->campagne, $this->drev->identifiant, $this->drev->declarant->cvi, $this->drev->declarant->siret, $this->drev->declarant->raison_sociale, $this->drev->declarant->adresse, $this->drev->declarant->code_postal, $this->drev->declarant->commune, $this->drev->declarant->email);
+        $ligne_base = sprintf("%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->drev->campagne, $this->drev->identifiant, $this->drev->declarant->cvi, $this->drev->declarant->siret, $this->protectStr($this->drev->declarant->raison_sociale), $this->protectStr($this->drev->declarant->adresse), $this->drev->declarant->code_postal, $this->protectStr($this->drev->declarant->commune), $this->drev->declarant->email);
 
         foreach($this->drev->declaration->getProduits() as $produit) {
             $libelle_complet = $produit->getLibelleComplet();
