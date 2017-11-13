@@ -86,9 +86,9 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
         					if ($i%2) {
-        						$exploitant[$i][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^acheteur n.+(FR[0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^acheteur n.+FR[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
+        						$exploitant[$i][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^Acheteur n°([0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^Acheteur n°[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
         					} else {
-        						$bailleur[$i-1][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^acheteur n.+(FR[0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^acheteur n.+FR[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
+        						$bailleur[$i-1][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^Acheteur n°([0-9]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^Acheteur n°[0-9]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
         					}
         				}
         			}
