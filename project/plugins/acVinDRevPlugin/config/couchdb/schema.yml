@@ -19,6 +19,7 @@ DRev:
       identifiant: { }
       validation: { }
       validation_odg: { }
+      envoi_oi: { required: false}
       non_recoltant: { required: false, type: integer }
       non_conditionneur: { required: false, type: integer }
       non_vinificateur: { required: false, type: integer }
