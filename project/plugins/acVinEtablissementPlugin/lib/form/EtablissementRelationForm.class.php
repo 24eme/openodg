@@ -6,7 +6,7 @@ class EtablissementRelationForm extends acCouchdbForm {
         parent::configure();
 
         $this->setWidget('type_liaison', new sfWidgetFormChoice(array('expanded' => false, 'multiple' => false, 'choices' => $this->getLiaisonsChoice())));
-        $this->widgetSchema->setLabel('type_liaison', 'Type de liaison :');
+        $this->widgetSchema->setLabel('type_liaison', 'Relation :');
         $this->setValidator('type_liaison', new sfValidatorChoice(array('required' => true, 'multiple' => false, 'choices' => array_keys($this->getLiaisonsChoice()))));
 
         $this->setWidget('id_etablissement', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration')));
