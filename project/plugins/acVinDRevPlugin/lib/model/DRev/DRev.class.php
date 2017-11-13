@@ -282,6 +282,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function getProduitsBailleur() {
     	$csv = $this->getCsvFromDocumentDouanier();
+      if (!$csv) {
+        return array();
+      }
     	$bailleurs = array();
     	foreach($csv as $line) {
     		$produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
