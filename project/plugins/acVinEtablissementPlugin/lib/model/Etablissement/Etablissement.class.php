@@ -137,6 +137,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function addLiaison($type, $etablissement,$saveOther = true) {
+
+        if(!$etablissement instanceof Etablissement) {
+            $etablissement = EtablissementClient::getInstance()->find($etablissement);
+        }
+
         if (!in_array($type, EtablissementClient::listTypeLiaisons()))
             throw new sfException("liaison type \"$type\" unknown");
         $liaison = $this->liaisons_operateurs->add($type . '_' . $etablissement->_id);

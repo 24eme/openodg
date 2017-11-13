@@ -92,10 +92,13 @@
               </div>
                 <hr />
                 <div class="row">
-                  <div class="col-xs-6">
+                  <div class="col-xs-4">
                     <a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default">Annuler</a>
                   </div>
-                  <div class="col-xs-6 text-right">
+                  <div class="col-xs-4 text-center">
+                    <a onclick='return confirm("Étes vous sur de vouloir supprimer ce chai ?")' href="<?php echo url_for('etablissement_suppression_chai', array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default">Supprimer ce chai</a>
+                  </div>
+                  <div class="col-xs-4 text-right">
                         <button id="btn_valider" type="submit" class="btn btn-success">
                             Valider le chai
                         </button>
