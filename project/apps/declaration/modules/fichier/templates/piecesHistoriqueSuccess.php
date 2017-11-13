@@ -31,9 +31,7 @@
 		<?php endforeach; ?>
 	</ul>
 	<?php
-		foreach ($history as $document): ?>
-        <?php if(!$document->key[PieceAllView::KEYS_VISIBILITE] && !$sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): continue; endif; ?>
-    <?php
+		foreach ($history as $document):
 			if ($category && preg_match('/^([a-zA-Z]*)\-./', $document->id, $m)) {
 				if ($m[1] != $category) { continue; }
 			}

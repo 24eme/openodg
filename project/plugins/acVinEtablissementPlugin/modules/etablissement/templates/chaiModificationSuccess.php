@@ -61,8 +61,7 @@
                   <div class="form-group">
                     <?php echo $form['partage']->renderError() ?>
                     <?php echo $form['partage']->renderLabel(null, array('class' => 'col-xs-4  control-label')); ?>
-                    <div class="col-xs-6 text-right"><?php echo $form['partage']->render(); ?></div>
-    						   </div>
+                    <div class="col-xs-6 text-left checkbox" style="padding-left: 30px;"><?php echo $form['partage']->render(); ?></div> </div>
               </div>
               <div class="row" style="padding-top:10px;">
                 <div class="form-group">
@@ -81,7 +80,7 @@
     											<div class="col-xs-4 control-label">
     												<strong><?php echo EtablissementClient::$chaisAttributsLibelles[$key]." :"; ?></strong>
     											</div>
-    											<div class="col-xs-6 text-right">
+    											<div class="col-xs-6 text-left checkbox" style="padding-left: 30px;">
     												<input class="" type="checkbox" id="<?php echo $attributsWidget->renderId() ?>_<?php echo $key ?>" name="<?php echo $attributsWidget->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($attributsWidget->getValue()) && in_array($key, array_keys($attributsWidget->getValue()))): ?>checked="checked"<?php endif; ?> />
     											</div>
     										</div>
