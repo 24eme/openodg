@@ -51,7 +51,7 @@ class acVinCompteRouting {
 
   $r->prependRoute('compte_tags', new sfRoute('/compte/tags', array('module' => 'compte', 'action' => 'tags')));
 
-  $r->prependRoute('compte_groupes', new sfRoute('/compte/ajout-groupe', array('module' => 'compte', 'action' => 'groupes')));
+  $r->prependRoute('compte_groupes', new sfRoute('/compte/groupes', array('module' => 'compte', 'action' => 'groupes')));
 	$r->prependRoute('compte_groupe', new sfRoute('/compte/groupe/:groupeName', array('module' => 'compte', 'action' => 'groupe')));
   $r->prependRoute('compte_groupe_ajout', new sfRoute('/compte/groupe/:groupeName/ajout', array('module' => 'compte', 'action' => 'groupeAjout')));
 
