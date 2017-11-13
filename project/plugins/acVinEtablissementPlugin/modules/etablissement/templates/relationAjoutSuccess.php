@@ -41,6 +41,11 @@
                             <div class="col-xs-7"><?php echo $form['id_etablissement']->render(array('class' => 'form-control select2autocompleteAjax input-md', 'placeholder' => 'Séléctionner un établissement')); ?></div>
                         </div>
                     </div>
+                    <div class="checkbox">
+                       <span class="col-xs-offset-4">
+                            <span class="glyphicon glyphicon-check"></span> Créer la relation inverse <small class="text-muted">(Uniquement pour les relations bailleur/métayer)</small>
+                       </span>
+                     </div>
                     <hr />
                     <div class="row">
                         <div class="col-xs-4">
