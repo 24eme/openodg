@@ -16,7 +16,7 @@ class PieceAllView extends acCouchdbView
     public static function getInstance() {
         return acCouchdbManager::getView('piece', 'all');
     }
-
+    
  	public function getAll() {
         return $this->client->getView($this->design, $this->view)->rows;
  	}
