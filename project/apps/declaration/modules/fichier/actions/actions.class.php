@@ -6,6 +6,9 @@ class fichierActions extends sfActions
     	$fichier = $this->getRoute()->getFichier();
     	$fileParam = $request->getParameter('file', null);
 		$this->secureEtablissement($fichier->getEtablissementObject());
+		if(!$fichier->visibilite && !$this->getUser()->hasCredential(myUser::CREDENTIAL_ADMIN)) {
+			return $this->forwardSecure();
+		}
     	if (!$fichier->hasFichiers()) {
     		return $this->forward404("Aucun fichier pour ".$fichier->_id);
     	}
