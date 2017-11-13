@@ -38,14 +38,14 @@ class DRevDeclaration extends BaseDRevDeclaration
 		foreach($hash_to_delete as $hash) {
 			$this->getDocument()->remove($hash);
 		}
-
+	
 		$hash_to_delete = array();
-		foreach($this as $child) {
-			if(count($child) > 0) {
+		foreach($this as $children) {
+			if(count($children) > 0) {
 				continue;
 			}
 
-			$hash_to_delete[] = $produit->getHash();
+			$hash_to_delete[] = $children->getHash();
 		}
 
 		foreach($hash_to_delete as $hash) {
