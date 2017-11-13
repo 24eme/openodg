@@ -9,18 +9,18 @@ class PieceAllView extends acCouchdbView
     const KEYS_LIBELLE = 3;
     const KEYS_MIME = 4;
     const KEYS_SOURCE = 5;
-    
+
     const VALUES_KEY = 0;
     const VALUES_FICHIERS = 1;
 
     public static function getInstance() {
         return acCouchdbManager::getView('piece', 'all');
     }
-    
+
  	public function getAll() {
         return $this->client->getView($this->design, $this->view)->rows;
  	}
-    
+
     public function getPiecesByEtablissement($etablissement, $allVisibilite = false, $startdate = null, $enddate = null) {
     	$start = array($etablissement);
     	$end = array($etablissement);

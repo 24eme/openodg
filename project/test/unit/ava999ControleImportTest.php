@@ -40,7 +40,7 @@ $drev035292NV = DRevClient::getInstance()->find('DREV-'.$etablisement0707000160-
 $t->ok($drev035292NV, "La DRev du négociant vinificateur 0707000160 existe");
 
 $drev035292P = DRevClient::getInstance()->find('DREV-'.$etablisement0707000150->_id.'-2016');
-$t->ok($drev035292P, "La DRev du producteur 0707000150 n'existe pas");
+$t->ok(!$drev035292P, "La DRev du producteur 0707000150 n'existe pas");
 
 $t->comment("04020601 apparaît l'unique activité conditionneur alors qu'elle en a d'autres");
 $compte04020601 = CompteClient::getInstance()->find("COMPTE-04020601");
