@@ -4,10 +4,10 @@
         <div class="col-xs-2 text-muted">Groupes&nbsp;:</div>
         <div class="col-xs-10">
             <?php foreach($compte->groupes as $key => $grp) : ?>
-              <div class="btn-group">
+              <div class="btn-group" style="padding-bottom : 3px;">
                 <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_groupe', array("groupeName" => $grp->nom)); ?>"><?php echo $grp->nom; ?></a>
                 <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => $grp->nom)); ?>"><?php echo $grp->fonction; ?></a>
-              </div>
+              </div><br/>
             <?php endforeach; ?>&nbsp;
             <?php if(!count($compte->groupes)): ?>
                 <span class="text-muted">Aucun</span>

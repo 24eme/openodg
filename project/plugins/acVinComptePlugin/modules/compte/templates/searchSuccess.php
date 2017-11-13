@@ -159,7 +159,7 @@
 		<form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', $args_copy->getRawValue()); ?>" method="GET">
         <div class="input-group">
             <input id="creer_tag" name="tag" class="form-control" required="required" type="text" placeholder="Saisir le nom du tag" />
-			<span class="input-group-btn">
+			      <span class="input-group-btn">
                 <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
             </span>
         </div>
