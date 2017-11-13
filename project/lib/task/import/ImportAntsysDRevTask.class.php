@@ -193,6 +193,7 @@ class ImportAntsysDRevTask extends sfBaseTask
 
     $drev->validate($campagne."-12-15");
     $drev->validateOdg($campagne."-12-15");
+    $drev->add('envoi_oi', $campagne."-12-15");
     $drev->save();
   }
 }

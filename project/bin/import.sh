@@ -24,11 +24,12 @@ fi
 if test $task = "CONTACTS" ; then
 
 php symfony import:etablissements-cvis  --application="declaration" ~/scrapping/data/cvi.csv > /tmp/importCvis_$$.log
-php symfony import:Habilitations --application="declaration" ~/scrapping/data/habilitation.csv  ~/scrapping/data/dossiers.csv > /tmp/habilitation_$$.log
+php symfony import:Habilitations --application="declaration" ~/scrapping/data/habilitation.csv > /tmp/habilitation_$$.log
 php symfony import:Chais --application="declaration"  ~/scrapping/data/chais.csv > /tmp/importChais_$$.log
 php symfony import:relations-etablissements --application="declaration" ~/scrapping/data/bailleurs_metayers_dr.csv > /tmp/importMetayers_$$.log
 php symfony import:repreneurs --application="declaration" ~/scrapping/data/reprise_repreneur.csv > /tmp/importRepreneurs_$$.log
 php symfony import:Commentaires --application="declaration" ~/scrapping/data/commentaires.csv > /tmp/importCommentaires_$$.log
+php symfony import:adresses-exploitations --application="declaration" ~/scrapping/data/exploitations.csv  > /tmp/importAdresseExploitation_$$.log
 
 fi
 
