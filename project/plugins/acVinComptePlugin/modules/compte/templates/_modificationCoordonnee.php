@@ -66,7 +66,7 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
             </span>
         </div>
         <div class="panel-body  <?php echo ($isSameContactThanSociete) ? ' collapse ' : ''; ?>">
-            <div class="form-group">
+            <div class="form-group <?php if($compteForm['email']->hasError()): ?> has-error<?php endif; ?>">
 
                 <?php echo $compteForm['email']->renderLabel(null, array('class' => 'col-xs-4 control-label')); ?>
 
@@ -113,7 +113,7 @@ $isSameContactThanSociete = !$isCompteSociete && $compteForm->getObject()->isSam
         </div>
     </div>
 
-    <?php if ($isCompteSociete) : ?>
+    <?php if (false && $isCompteSociete) : ?>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4 class="panel-title">Droits</h4><span class="pull-right" style="margin-top: -20px; font-size: 15px;" >

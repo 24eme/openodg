@@ -55,7 +55,7 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         $this->setValidator('commune', new sfValidatorString(array('required' => false)));
         $this->setValidator('pays', new sfValidatorChoice(array('required' => false, 'choices' => array_keys(self::getCountryList()))));
         $this->setValidator('droits', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys(self::getDroits()))));
-        $this->setValidator('email', new sfValidatorString(array('required' => false)));
+        $this->setValidator('email', new sfValidatorEmail(array('required' => false), array('invalid' => 'Adresse email invalide.')));
         $this->setValidator('telephone_perso', new sfValidatorString(array('required' => false)));
         $this->setValidator('telephone_bureau', new sfValidatorString(array('required' => false)));
         $this->setValidator('telephone_mobile', new sfValidatorString(array('required' => false)));

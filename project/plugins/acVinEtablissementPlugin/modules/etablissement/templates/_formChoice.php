@@ -6,7 +6,12 @@
     <div class="col-xs-10">
     <div class="form-group<?php if($form['identifiant']->hasError()): ?> has-error<?php endif; ?>">
         <?php echo $form['identifiant']->renderError(); ?>
-        <?php echo $form['identifiant']->render(array('class' => 'form-control select2SubmitOnChange select2autocompleteAjax input-md', 'placeholder' => 'Rechercher', "autofocus" => "autofocus")); ?>
+        <?php
+          $options = array('class' => 'form-control select2SubmitOnChange select2autocompleteAjax input-md', 'placeholder' => 'Rechercher', "autofocus" => "autofocus");
+          if (isset($noautofocus) && $noautofocus) {
+            unset($options['autofocus']);
+          }
+          echo $form['identifiant']->render($options); ?>
     </div>
     </div>
     <div class="col-xs-2">

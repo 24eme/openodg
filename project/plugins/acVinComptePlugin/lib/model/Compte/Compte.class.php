@@ -629,8 +629,10 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
           return true;
       }
       foreach($this->getEtablissement()->chais as $chai) {
-          if(!$chai->lon && !$chai->lat) {
-            return false;
+          if ($chai->commune) {
+            if(!$chai->lon && !$chai->lat) {
+              return false;
+            }
           }
       }
       return true;
