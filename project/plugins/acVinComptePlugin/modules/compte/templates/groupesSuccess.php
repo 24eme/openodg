@@ -2,7 +2,7 @@
 
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
-    <li>Liste des groupes</li>
+    <li><a href="<?php echo url_for('compte_groupes'); ?>">Liste des groupes</a></li>
 </ol>
 
 <h1>La liste des groupes</h1>

@@ -123,13 +123,22 @@ class compteActions extends sfCredentialActions {
 
     public function executeSearchcsv(sfWebRequest $request) {
       $index = acElasticaManager::getType('COMPTE');
-
+      $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
+      $this->selected_typetags = array();
+      foreach ($this->selected_rawtags as $t) {
+		      if (preg_match('/^([^:]+):(.+)$/', $t, $m)) {
+    	  		if (!isset($this->selected_typetags[$m[1]])) {
+    	    		$this->selected_typetags[$m[1]] = array();
+    	  		}
+    	  		$this->selected_typetags[$m[1]][] = $m[2];
+    		}
+      }
       $q = $this->initSearch($request);
       $q->setLimit(5000);
       $resset = $index->search($q);
       $this->results = $resset->getResults();
       $this->setLayout(false);
-      $filename = 'export';
+      $filename = 'export_contacts';
 
 //      $filename.=str_replace(',', '_', $this->q).'_';
 //      if(count($this->args['tags'])){

@@ -81,6 +81,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->identifiant = $identifiant;
         $this->date = $date;
         $etablissement = $this->getEtablissementObject();
+        $this->constructId();
     }
 
     public function addProduit($hash) {
@@ -124,13 +125,16 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
 
-   public function getEtablissementObject() {
+    public function getEtablissementObject() {
 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
   public function isLastOne(){
-    $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant);
+    $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
+    if(!$last) {
+        return true;
+    }
     return $this->_id == $last->_id;
   }
 
@@ -223,18 +227,27 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     return $this->addproduit($hash_produit)->activites[$activite]->isHabilite();
   }
 
-  public function updateHabilitation($hash_produit, $activite, $statut, $commentaire = "", $date = ''){
-    return $this->addProduit($hash_produit)->updateHabilitation($activite, $statut, $commentaire, $date);
+  public function updateHabilitation($hash_produit, $activites, $statut, $commentaire = "", $date = ''){
+        foreach($activites as $activite) {
+            $this->addProduit($hash_produit)->updateHabilitation($activite, $statut, $commentaire, $date);
+        }
   }
 
-  public function save() {
-      parent::save();
-      $precedente = $this->getPrevious();
+    public function save($force = false) {
+        $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
 
-      if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
-          $precedente->add('lecture_seule', true);
-          $precedente->save();
-      }
-  }
+        $this->constructId();
+        if(!$force && $last && $last->_id > $this->_id) {
+            throw new sfException("Une habilitation avec une date supérieur existe déjà : ".$last->_id);
+        }
+
+        parent::save();
+        $precedente = $this->getPrevious();
+
+        if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
+            $precedente->add('lecture_seule', true);
+            $precedente->save(true);
+        }
+    }
 
 }
