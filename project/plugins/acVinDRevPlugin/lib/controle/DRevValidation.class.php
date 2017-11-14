@@ -1,5 +1,5 @@
 <?php
-class DRevValidation extends DocumentValidation 
+class DRevValidation extends DocumentValidation
 {
     const TYPE_ERROR = 'erreur';
     const TYPE_WARNING = 'vigilance';
@@ -7,14 +7,14 @@ class DRevValidation extends DocumentValidation
 
     protected $etablissement = null;
 
-    public function __construct($document, $options = null) 
+    public function __construct($document, $options = null)
     {
         $this->etablissement = $document->getEtablissementObject();
         parent::__construct($document, $options);
         $this->noticeVigilance = true;
     }
 
-    public function configure() 
+    public function configure()
     {
         /*
          * Warning
@@ -42,7 +42,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, 'Je m\'engage à transmettre le justificatif de destruction de VCI');
     }
 
-    public function controle() 
+    public function controle()
     {
     	$produits = array();
         foreach ($this->document->getProduits() as $hash => $produit) {
@@ -91,7 +91,7 @@ class DRevValidation extends DocumentValidation
     	}
     }
 
-    protected function controleEngagementVCI() 
+    protected function controleEngagementVCI()
     {
         if($this->document->isPapier()) {
             return;
@@ -102,7 +102,7 @@ class DRevValidation extends DocumentValidation
         $this->addPoint(self::TYPE_ENGAGEMENT, DRevDocuments::DOC_VCI, '');
     }
 
-    protected function controleEngagementSv() 
+    protected function controleEngagementSv()
     {
         if($this->document->isPapier()) {
             return;
@@ -118,12 +118,12 @@ class DRevValidation extends DocumentValidation
         }
     }
 
-    protected function controleRevendication($produit) 
+    protected function controleRevendication($produit)
     {
         if($produit->superficie_revendique === null || $produit->volume_revendique_issu_recolte === null) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
-        if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 2) > $produit->getConfig()->getRendement()) {
+        if($produit->getConfig()->getRendement() !== null && $produit->superficie_revendique && round(($produit->volume_revendique_total / $produit->superficie_revendique), 2) > $produit->getConfig()->getRendement()) {
             $this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if (!$produit->isHabilite()) {
@@ -141,7 +141,7 @@ class DRevValidation extends DocumentValidation
 
     }
 
-    protected function controleVci($produit) 
+    protected function controleVci($produit)
     {
         if(!$produit->hasVci()) {
             return;

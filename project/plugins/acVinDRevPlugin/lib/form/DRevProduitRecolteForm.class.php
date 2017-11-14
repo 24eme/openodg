@@ -44,7 +44,7 @@ class DRevProduitRecolteForm extends acCouchdbObjectForm {
 
         if ($this->getOption('disabled_dr') && $dejaSaisi) {
             foreach($this as $key => $item) {
-                $this->getWidget($key)->setAttribute('readonly', 'readonly');
+                $this->getWidget($key)->setAttribute('disabled', 'disabled');
             }
         }
 
