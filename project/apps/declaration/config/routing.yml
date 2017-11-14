@@ -544,6 +544,16 @@ drev_revendication_cepage_ajout:
     type:     object
   requirements:
     sf_method: [post]
+    
+drev_revendication_cepage_suppression:
+  url: /drev/revendication/:id/cepage/:hash/suppression
+  param: { module: drev, action: revendicationCepageSuppressionProduit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
 
 drev_degustation_conseil:
   url: /drev/degustation-conseil/:id
