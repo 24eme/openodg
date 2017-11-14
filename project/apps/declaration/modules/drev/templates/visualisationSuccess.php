@@ -39,7 +39,7 @@
 <?php endif; ?>
 
 <?php if(isset($validation) && $validation->hasPoints()): ?>
-    <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation)); ?>
+    <?php include_partial('drev/pointsAttentions', array('drev' => $drev, 'validation' => $validation, 'noLink' => true)); ?>
 <?php endif; ?>
 
 <?php include_partial('drev/recap', array('drev' => $drev, 'form' => $form)); ?>

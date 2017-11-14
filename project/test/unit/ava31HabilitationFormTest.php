@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(17);
+$t = new lime_test(15);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -22,7 +22,7 @@ $habilitation->save();
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc dans le passé est bien construit");
 
 $date = date('Y-m-d');
-$habilitation = HabilitationClient::getInstance()->createOrGetDocFromHistory($habilitation);
+$habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($habilitation->identifiant, $date);
 $habilitation->save();
 $t->is($habilitation->_id, 'HABILITATION-'.$viti->identifiant.'-'.str_replace("-", "", $date), "L'id d'un doc actuel est bien construit");
 
@@ -46,27 +46,26 @@ $form = new HabilitationAjoutProduitForm($habilitation);
 
 $form->bind(array('hashref' => $produitConfig_0->getHash(), '_revision' => $habilitation->_rev));
 
-$t->ok($form->isValid(), "Le formulaire d'ajout est valide");
-$form->save();
-
-$t->ok(count($habilitation->getProduits()) == 1, "Le produit a été ajouté au document");
-$t->ok($habilitation->exist($produitConfig_0->getHash()), "Le produit ajouté est correct");
+$t->ok(!$form->isValid(), "Le formulaire d'ajout est valide");
 
 $t->comment("Form d'ajout de produit avec activité");
 $activites = array(HabilitationClient::ACTIVITE_PRODUCTEUR,HabilitationClient::ACTIVITE_VINIFICATEUR,HabilitationClient::ACTIVITE_VRAC);
 $form = new HabilitationAjoutProduitForm($habilitation);
 $statut = HabilitationClient::STATUT_DEMANDE_HABILITATION;
-$date = "07/09/1985";
-$dateIso = "1985-09-07";
-$form->bind(array('hashref' => $produitConfig_1->getHash(), 'statut' => $statut, 'date' => $date, 'activites' => $activites, '_revision' => $habilitation->_rev));
+$date = "07/09/".(date('Y')+1);
+$dateIso = (date('Y')+1)."-09-07";
+
+$form->bind(array('hashref' => $produitConfig_0->getHash(), 'statut' => $statut, 'date' => $date, 'activites' => $activites, '_revision' => $habilitation->_rev));
 
 $t->ok($form->isValid(), "Le formulaire d'ajout est valide");
 $form->save();
 
-$t->ok(count($habilitation->getProduits()) == 2, "Le produit a été ajouté au document");
-$t->ok($habilitation->exist($produitConfig_1->getHash()), "Le produit ajouté est correct");
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($habilitation->identifiant);
 
-$HabilitationActivites = $habilitation->get($produitConfig_1->getHash())->activites;
+$t->is(count($habilitation->getProduits()), 1, "Le produit a été ajouté au document");
+$t->ok($habilitation->exist($produitConfig_0->getHash()), "Le produit ajouté est correct");
+
+$HabilitationActivites = $habilitation->get($produitConfig_0->getHash())->activites;
 $activite_tmp = array();
 $dates = array();
 foreach ($HabilitationActivites as $key => $activite) {
@@ -81,6 +80,7 @@ $t->ok(count($dates) == 1, "Le produit a ses activites avec une seule date");
 $f_date = array_pop($dates);
 $t->is($f_date,$dateIso, "Le produit a ses activites avec la date $date");
 
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($habilitation->identifiant);
 
 $produit = $habilitation->get($produitConfig_0->getHash());
 $activiteKey = null;
@@ -102,13 +102,26 @@ foreach(HabilitationClient::$statuts_libelles as $key => $statutLibelle) {
 }
 $commentaire = "Test commentaire unitaire";
 
+$date = "07/09/".(date('Y')+2);
+$dateIso = (date('Y')+2)."-09-07";
+
 $form = new HabilitationEditionForm($habilitation);
 $hashForKey = $activite->getHashForKey();
-$form->bind(array('date_'.$hashForKey => date('d/m/Y'), 'statut_'.$hashForKey => $statutKey, 'commentaire_'.$hashForKey => $commentaire, '_revision' => $habilitation->_rev));
+$form->bind(array('date_'.$hashForKey => $date, 'statut_'.$hashForKey => $statutKey, 'commentaire_'.$hashForKey => $commentaire, '_revision' => $habilitation->_rev));
 
 $t->ok($form->isValid(), "Le formulaire d'edition est valide");
 $form->save();
 
-$t->is($activite->date, date('Y-m-d'), "La date enregistré est ".date('Y-m-d'));
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($habilitation->identifiant);
+
+$produit = $habilitation->get($produitConfig_0->getHash());
+$activiteKey = null;
+foreach(HabilitationClient::$activites_libelles as $key => $activiteLiebelle) {
+    $activiteKey = key(HabilitationClient::$activites_libelles);
+    break;
+}
+$activite = $produit->activites->get($activiteKey);
+
+$t->is($activite->date, $dateIso, "La date enregistré est ".$dateIso);
 $t->is($activite->statut, $statutKey, "La statut enregistré est ".$statutKey);
 $t->is($activite->commentaire, $commentaire, "La commentaire enregistré est ".$commentaire);

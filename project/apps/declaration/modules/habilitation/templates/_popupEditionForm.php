@@ -3,8 +3,8 @@
 		<div class="modal-content">
 			<form method="post" action="<?php echo $url ?>" role="form" class="form-horizontal">
 				<?php $idKey = $details->getHashForKey(); ?>
-        <?php echo $editForm->renderHiddenFields(); ?>
-        <?php echo $editForm->renderGlobalErrors(); ?>
+        		<?php echo $editForm->renderHiddenFields(); ?>
+        		<?php echo $editForm->renderGlobalErrors(); ?>
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">Editer cette Activité</h4>
