@@ -28,13 +28,17 @@ class DRevSuperficieProduitForm extends acCouchdbObjectForm {
         $this->embedForm('recolte', new DRevProduitRecolteForm($this->getObject()->recolte, array_merge($this->getOptions(), array('fields' => array('superficie_total')))));
 
         if($this->getObject()->hasVci(true)) {
-            $this->getWidget('has_stock_vci')->setAttribute('readonly', 'readonly');
+            $this->getWidget('has_stock_vci')->setAttribute('disabled', 'disabled');
         }
 
         $this->widgetSchema->setNameFormat('[%s]');
     }
 
     public function doUpdateObject($values) {
+        if ($this->getOption('disabled_dr')) {
+          unset($values['recolte']);
+        }
+
         parent::doUpdateObject($values);
 
         if($values['has_stock_vci'] && !$this->getObject()->hasVci()) {
