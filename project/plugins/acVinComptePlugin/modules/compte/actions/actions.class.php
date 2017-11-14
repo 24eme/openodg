@@ -233,6 +233,7 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeGroupe(sfWebRequest $request){
+      $request->setParameter('contacts_all',true);
       $index = acElasticaManager::getType('COMPTE');
       $this->groupeName = $request->getParameter('groupeName');
       $this->filtre = "groupes:".Compte::transformTag($this->groupeName);
