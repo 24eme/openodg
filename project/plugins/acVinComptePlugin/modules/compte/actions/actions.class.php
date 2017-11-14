@@ -129,7 +129,7 @@ class compteActions extends sfCredentialActions {
       $resset = $index->search($q);
       $this->results = $resset->getResults();
       $this->setLayout(false);
-      $filename = 'export';
+      $filename = 'export_contacts';
 
 //      $filename.=str_replace(',', '_', $this->q).'_';
 //      if(count($this->args['tags'])){
