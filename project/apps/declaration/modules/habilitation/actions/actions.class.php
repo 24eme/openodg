@@ -40,16 +40,24 @@ class habilitationActions extends sfActions {
       return $this->redirect('habilitation_declarant', $form->getEtablissement());
   }
 
-  public function executeDeclarant(sfWebRequest $request) {
-      $etablissement = $this->getRoute()->getEtablissement();
-      $habilitationsHistory = HabilitationClient::getInstance()->getHistory($etablissement->identifiant);
-      if (!count($habilitationsHistory)) {
-        return $this->redirect('habilitation_create', array('sf_subject' => $etablissement));
-      }
-      foreach ($habilitationsHistory as $h) {
-      }
-      return $this->redirect('habilitation_edition', array('id' => $h->_id));
-  }
+    public function executeDeclarant(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+
+        $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
+
+        $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
+        $this->editForm = new HabilitationEditionForm($this->habilitation);
+
+        $this->setTemplate('habilitation');
+    }
+
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->habilitation = $this->getRoute()->getHabilitation();
+        $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
+
+        $this->setTemplate('habilitation');
+    }
 
     public function executeCreate(sfWebRequest $request) {
         $etablissement = $this->getRoute()->getEtablissement();
@@ -60,68 +68,58 @@ class habilitationActions extends sfActions {
         return $this->redirect('habilitation_edition', $habilitation);
     }
 
-    public function executeAjoutProduit(sfWebRequest $request) {
-        $this->habilitation = $this->getRoute()->getHabilitation();
-        $this->habilitation = HabilitationClient::getInstance()->createOrGetDocFromHistory($this->habilitation);
+    public function executeAjout(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
+
         $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
-        $newHabilitationDoc = $this->habilitation->isNew();
-        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
-        if($newHabilitationDoc){
-          $this->ajoutForm->getObject()->_rev = null;
+
+
+        if (!$request->isMethod(sfWebRequest::POST)) {
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
         }
+
+        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
 
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
-            return $this->redirect('habilitation_edition', $this->habilitation);
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
         }
 
         $this->ajoutForm->save();
 
         $this->getUser()->setFlash("notice", 'Le produit a été ajouté avec succès.');
 
-        return $this->redirect($this->generateUrl('habilitation_edition', $this->habilitation).'#ouvert');
-    }
-
-    public function executeHabilitationRecapitulatif(sfWebRequest $request) {
-        $this->habilitation = $this->getRoute()->getHabilitation();
-        $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
-
-        $this->isBlocked = count($this->habilitation->getProduits(true)) < 1;
+        return $this->redirect($this->generateUrl('habilitation_declarant', $this->etablissement));
     }
 
     public function executeEdition(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
         $this->editForm = new HabilitationEditionForm($this->habilitation);
-        $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
 
-        if ($request->isMethod(sfWebRequest::POST)) {
-          $this->habilitation = HabilitationClient::getInstance()->createOrGetDocFromHistory($this->habilitation);
-          $newHabilitationDoc = $this->habilitation->isNew();
+        if (!$request->isMethod(sfWebRequest::POST)) {
 
-          $this->editForm = new HabilitationEditionForm($this->habilitation);
-          $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
-          $this->editForm->bind($request->getParameter($this->editForm->getName()));
-
-            if (!$this->editForm->isValid() && $request->isXmlHttpRequest()) {
-
-                return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->habilitation->_id, "revision" => $this->habilitation->_rev))));
-            }
-            if ($this->editForm->isValid()) {
-                if($newHabilitationDoc){
-                  $this->editForm->getObject()->_rev = null;
-                }
-                $this->editForm->save();
-                if ($request->isXmlHttpRequest()) {
-
-                    return $this->renderText(json_encode(array("success" => true, "document" => array("id" => $this->habilitation->_id, "revision" => $this->habilitation->_rev))));
-                }
-                return $this->redirect('habilitation_edition', $this->habilitation);
-            }
+            return $this->redirect('habilitation_declarant', $this->etablissement);
         }
+
+        $this->editForm->bind($request->getParameter($this->editForm->getName()));
+
+        if (!$this->editForm->isValid()) {
+            $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
+
+        $this->editForm->save();
+
+        return $this->redirect('habilitation_declarant', $this->etablissement);
     }
 
     public function executeExport(sfWebRequest $request) {

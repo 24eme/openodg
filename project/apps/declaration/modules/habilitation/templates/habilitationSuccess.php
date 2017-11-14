@@ -85,14 +85,17 @@
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->statut)? format_date($habilitationsNode->date, "dd/MM/yyyy", "fr_FR") : ''; ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?>" ><?php echo ($habilitationsNode->commentaire); ?></td>
                       <td data-hide="<?php echo $tdDisplayed ?>"  <?php echo $tdHide ?> class="text-center <?php echo $color; ?> col-xs-1" >
+                        <?php if(isset($editForm)): ?>
                         <a class="btn btn-sm btn-default" data-toggle="modal" data-target="#editForm_<?php echo $habilitationsNode->getHashForKey(); ?>" type="button"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <?php endif; ?>
                       </td>
                 </tr>
               <?php endforeach; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
-    <?php if ($ajoutForm->hasProduits()): ?>
+
+    <?php if (isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
         <div class="row">
             <div class="col-xs-12">
                 <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
@@ -118,12 +121,12 @@
             <td class="text-right text-muted" style="border-right: none;"><?php echo $historiqueDoc->auteur; ?> </td>
             <td style="border-left: none;"><?php echo $historiqueDoc->description; ?><?php if($historiqueDoc->commentaire): ?> <span class="text-muted"><?php echo '('.$historiqueDoc->commentaire.')'; ?></span><?php endif ?>
             </td>
-            <td class="text-center"><a href="<?php echo url_for('habilitation_edition', array('id' => $historiqueDoc->iddoc)); ?>">Voir</a></tr>
+            <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => $historiqueDoc->iddoc)); ?>">Voir</a></tr>
         <?php endforeach; ?>
       </tbody>
     </table>
 
-
+<?php if(isset($editForm)): ?>
 <form role="form" class="ajaxForm" action="<?php echo url_for("habilitation_edition", $habilitation) ?>" method="post">
     <?php
     echo $editForm->renderHiddenFields();
@@ -136,5 +139,8 @@
     endforeach;
     ?>
 </form>
+<?php endif; ?>
 
-<?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $habilitation), 'form' => $ajoutForm)); ?>
+<?php if(isset($ajoutForm)): ?>
+<?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $etablissement), 'form' => $ajoutForm)); ?>
+<?php endif; ?>

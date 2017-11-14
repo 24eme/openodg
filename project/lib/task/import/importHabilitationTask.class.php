@@ -152,7 +152,7 @@ EOF;
             if ($statut = $this->convert_statuts[$data[self::CSV_HABILITATION_TYPE]]) {
               $hab_activites->add($statut)->updateHabilitation($this->convert_statut[$data[self::CSV_HABILITATION_STATUT]], '', $data[self::CSV_HABILITATION_DATE]);
             }
-            $habilitation->save();
+            $habilitation->save(true);
             echo $habilitation->_id."\n";
         }
     }

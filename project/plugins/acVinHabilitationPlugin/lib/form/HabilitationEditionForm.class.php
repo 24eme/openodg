@@ -1,12 +1,24 @@
 <?php
-class HabilitationEditionForm extends acCouchdbObjectForm
+class HabilitationEditionForm extends acCouchdbForm
 {
     protected $produits;
 
-    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null)
+    public function __construct(acCouchdbDocument $doc, $defaults = array(), $options = array(), $CSRFSecret = null)
     {
-        $this->produits = $object->getProduits();
-        parent::__construct($object, $options, $CSRFSecret);
+        $this->produits = $doc->getProduits();
+        foreach ($this->produits as $key => $produit) {
+          foreach ($produit->activites as $keyActivite => $activite) {
+            $idWidgets = $activite->getHashForKey();
+            $date = Date::francizeDate($activite->date);
+            if(!$activite->date){
+              $date = Date::francizeDate($doc->getDate());
+            }
+            $defaults['statut_'.$idWidgets] = $activite->statut;
+            $defaults['date_'.$idWidgets] = $date;
+            $defaults['commentaire'.$idWidgets] = $activite->commentaire;
+          }
+        }
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
     public function configure()
@@ -32,36 +44,30 @@ class HabilitationEditionForm extends acCouchdbObjectForm
     }
 
     public function getStatuts(){
-      return array_merge( array("" => ""), HabilitationClient::$statuts_libelles );
+
+        return array_merge(array("" => ""), HabilitationClient::$statuts_libelles);
     }
 
-    protected function updateDefaultsFromObject() {
-        parent::updateDefaultsFromObject();
-        foreach ($this->produits as $key => $produit) {
-          foreach ($produit->activites as $keyActivite => $activite) {
-            $idWidgets = $activite->getHashForKey();
-            $date = Date::francizeDate($activite->date);
-            if(!$activite->date){
-              $date = Date::francizeDate($this->getObject()->getDate());
-            }
-            $this->setDefault('statut_'.$idWidgets, $activite->statut);
-            $this->setDefault('date_'.$idWidgets, $date);
-            $this->setDefault('commentaire_'.$idWidgets, $activite->commentaire);
-          }
-        }
-    }
-
-
-    protected function doUpdateObject($values)
+    public function save()
     {
-      foreach ($this->produits as $key => $produit) {
-        foreach ($produit->activites as $keyActivite => $activite) {
-          $idWidgets = $activite->getHashForKey();
-          if (isset($values['statut_'.$idWidgets]) && !empty($values['statut_'.$idWidgets]) && isset($values['date_'.$idWidgets]) && !empty($values['date_'.$idWidgets])) {
-            $hash = str_replace('-','/',$idWidgets);
-            $this->getObject()->get($hash)->updateHabilitation($values['statut_'.$idWidgets],$values['commentaire_'.$idWidgets],$values['date_'.$idWidgets]);
-          }
+        $values = $this->getValues();
+        foreach ($this->produits as $key => $produit) {
+            foreach ($produit->activites as $keyActivite => $activite) {
+                $idWidgets = $activite->getHashForKey();
+                if (!isset($values['statut_'.$idWidgets]) || empty($values['statut_'.$idWidgets]) || !isset($values['date_'.$idWidgets]) || empty($values['date_'.$idWidgets])) {
+                  continue;
+                }
+
+                $hash = str_replace('-','/',$idWidgets);
+                $values = $this->getValues();
+                $activite = $this->getDocument()->get($hash);
+                HabilitationClient::getInstance()->updateAndSaveHabilitation($this->getDocument()->identifiant,
+                                                                    $activite->getProduitHash(),
+                                                                    $values['date_'.$idWidgets],
+                                                                    array($activite->getKey()),
+                                                                    $values['statut_'.$idWidgets],
+                                                                    $values['commentaire_'.$idWidgets]);
+            }
         }
-      }
     }
 }
