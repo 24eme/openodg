@@ -49,7 +49,6 @@ class ProduitNouveauForm extends BaseForm {
     }
 
     public static function getItems($noeud) {
-
         return ConfigurationClient::getCurrent()->declaration->getKeys($noeud);
     }
 
@@ -67,6 +66,7 @@ class ProduitNouveauForm extends BaseForm {
             $widget = new bsWidgetFormInput();
             $widget->setAttribute('class', 'form-control select2permissifNoAjax');
             $widget->setAttribute('data-choices', self::getLibelles4Permissif($noeud));
+            $widget->setAttribute('placeholder', 'Rechercher ou ajouter un nouvel élément');
             return $widget;
         }
 

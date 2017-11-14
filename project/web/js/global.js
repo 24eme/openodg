@@ -197,23 +197,22 @@
     $.initSelect2PermissifNoAjax = function ()
     {
         if ($('.select2permissifNoAjax').length) {
-            $('.select2permissifNoAjax').select2({
-                data: JSON.parse($('.select2permissifNoAjax').attr('data-choices')),
-                multiple: false,
-                placeholder: true,
-                allowClear: true,
-                createSearchChoice: function (term, data) {
-                    if ($(data).filter(function () {
-                        return this.text.localeCompare(this.text) === 0;
-                    }).length === 0) {
-                        return {id: term, text: term + ' (nouveau)'};
-                    }
-                }
-            }).on("select2-open", function (e) {
-                $('.select2-input').attr('placeholder', 'Rechercher ou ajouter un nouvel élément');
-            }).on("select2-close", function (e) {
-                $('.select2-input').attr('placeholder', null);
-            });
+        	$('.select2permissifNoAjax').each(function() {
+        	    var element = $(this);
+        	    element.select2({
+	                data: JSON.parse(element.attr('data-choices')),
+	                multiple: false,
+	                placeholder: true,
+	                allowClear: true,
+	                createSearchChoice: function (term, data) {
+	                    if ($(data).filter(function () {
+	                        return this.text.localeCompare(this.text) === 0;
+	                    }).length === 0) {
+	                        return {id: term, text: term + ' (nouveau)'};
+	                    }
+	                }
+	            });
+        	});
         }
     }
 
