@@ -5,8 +5,9 @@
         <div class="col-xs-10">
             <?php foreach($compte->groupes as $key => $grp) : ?>
               <div class="btn-group" style="padding-bottom : 3px;">
-                <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_groupe', array("groupeName" => $grp->nom)); ?>"><?php echo $grp->nom; ?></a>
-                <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => $grp->nom)); ?>"><?php echo $grp->fonction; ?></a>
+                <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_groupe', array("groupeName" => sfOutputEscaper::unescape($grp->nom))); ?>"><?php echo $grp->nom; ?></a>
+                <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => sfOutputEscaper::unescape($grp->nom))); ?>"><?php echo $grp->fonction; ?></a>
+                <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removegroupe', array("groupeName" => sfOutputEscaper::unescape($grp->nom), "identifiant" => $compte->identifiant, "retour" => "visu")); ?>"><span class="glyphicon glyphicon-trash"/></a>
               </div><br/>
             <?php endforeach; ?>&nbsp;
             <?php if(!count($compte->groupes)): ?>

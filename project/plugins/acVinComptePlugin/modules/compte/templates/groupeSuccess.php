@@ -35,14 +35,18 @@
                       <?php $societe_informations = (isset($data['doc']['societe_informations'])) ? $data['doc']['societe_informations'] : null; ?>
                       <div class="list-group-item <?php if ($data['doc']['statut'] != 'ACTIF') echo 'disabled'; ?>">
                           <div class="row">
-                          <div class="col-xs-8">
+                          <div class="col-xs-6">
                               <?php if($data['doc']['compte_type'] == 'INTERLOCUTEUR'): ?><small class="text-muted"><span class="glyphicon glyphicon-calendar"></span> <?php if(isset($societe_informations['raison_sociale'])): echo $societe_informations['raison_sociale']; endif; ?></small><br/><?php endif; ?>
                               <span class="lead"><span class="<?php echo comptePictoCssClass($data['doc']) ?>"></span></span>
                               <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo $data['doc']['nom_a_afficher']; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
                               </span>
-                         </div><div class="col-xs-4 text-right">
+                         </div>
+                         <div class="col-xs-4 text-right">
                                <small class="text-muted label label-primary"><?php  echo $fct; ?></small>
                           </div>
+                          <div class="col-xs-2 text-right">
+                                <a class="btn btn-default" href="<?php echo url_for('compte_removegroupe', array('identifiant' => $data['doc']['identifiant'], 'groupeName' => $groupeName)); ?>"><span class="glyphicon glyphicon-trash"></span></a>
+                           </div>
                         </div>
                       </div>
               <?php endforeach; ?>
