@@ -424,6 +424,18 @@ class drevActions extends sfActions {
         return $this->redirect('drev_revendication_cepage', $this->noeud);
     }
 
+    public function executeRevendicationCepageSuppressionProduit(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::EDITION, $this->drev);
+
+        if ($this->hash = str_replace('_', '/', $request->getParameter('hash'))) {
+        	$this->drev->remove($this->hash);
+        	$this->drev->save();
+        }
+
+        return $this->redirect('drev_revendication_superficie', $this->drev);
+    }
+
     public function executeVci(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);

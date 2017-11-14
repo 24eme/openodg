@@ -129,7 +129,32 @@
     </div>
 
 	<div class="col-xs-12">
-            <?php $tagsManuels = array(); foreach($facets as $type => $ftype): ?>
+    <?php
+    foreach($facets as $type => $ftype):
+      if (count($ftype['buckets'])): ?>
+           <?php foreach($ftype['buckets'] as $f):
+             $targs = $args_copy->getRawValue();
+             $sargs = $args_copy->getRawValue();
+             $sargs['tags'] = implode(',', array_diff($selected_rawtags->getRawValue(), array($type.':'.$f['key'])));
+          if($type == 'groupes' && (isset($selected_typetags->getRawValue()[$type]) && in_array($f['key'], $selected_typetags->getRawValue()[$type]))): ?>
+          <div class="list-group">
+            <a class="list-group-item list-group-item-xs active" href="<?php echo url_for('compte_search', $sargs); ?>"><?php echo str_replace('_', ' ', $f['key']) ?> <span class="badge" style="position: absolute; right: 10px;"><?php echo $f['doc_count'] ?></span></a>
+          </div>
+        <?php endif;
+        endforeach;
+      endif;
+    endforeach;
+    if($contacts_all):
+      $sargs_archived = $sargs;
+      unset($sargs_archived["contacts_all"]);
+    ?>
+    <div class="list-group">
+      <a class="list-group-item list-group-item-xs active" href="<?php echo url_for('compte_search', $sargs_archived) ?>" >Avec archivés</a>
+    </div>
+    <?php endif; ?>
+
+            <?php $tagsManuels = array();
+            foreach($facets as $type => $ftype): ?>
                 <?php if (count($ftype['buckets'])): ?>
                   <?php if($type == 'groupes'){ continue; } ?>
                 <h4>Tags <?php echo $type ?></h4>
@@ -159,7 +184,7 @@
 		<form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', $args_copy->getRawValue()); ?>" method="GET">
         <div class="input-group">
             <input id="creer_tag" name="tag" class="form-control" required="required" type="text" placeholder="Saisir le nom du tag" />
-			<span class="input-group-btn">
+			      <span class="input-group-btn">
                 <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-plus"></span></button>
             </span>
         </div>

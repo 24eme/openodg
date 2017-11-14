@@ -15,7 +15,6 @@ if($compte->getSociete()->isTransaction()){
     <h4 class="titre_principal">Mon compte</h4>
   </div>
    <div class="panel-body">
-    <div class="col-xs-12 well">Pour changer des informations supplémentaire, veuillez passer par votre interprofession.</div>
     <br/>
 
         <div id="modification_compte" class="col-xs-12">

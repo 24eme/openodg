@@ -141,6 +141,37 @@ class compteActions extends sfCredentialActions {
       $this->response->setHttpHeader('Content-Disposition',$attachement );
     }
 
+    private function addRemoveGroupe(sfWebRequest $request, $remove = false) {
+      $compteAjout = $request->getParameter('compte_groupe_ajout');
+      $groupe = $request->getParameter('groupeName');
+      $retour = $request->getParameter('retour',null);
+      $compteId = $compteAjout["id_etablissement"];
+      if($request->getParameter('identifiant',null)){
+        $compteId = $request->getParameter('identifiant');
+      }
+
+      $index = acElasticaManager::getType('COMPTE');
+      $qs = new acElasticaQueryQueryString("* doc.tags.groupes:".Compte::transformTag($groupe)." doc.identifiant:".$compteId);
+      $q = new acElasticaQuery();
+      $q->setQuery($qs);
+      $resset = $index->search($q);
+      $nbres = $resset->getTotalHits();
+      $this->setTemplate('addremovetag');
+
+      if (!$remove && !$nbres) {
+        $this->restants = 1;
+        return false;
+      }
+      if ($remove && $nbres) {
+        $this->restants = 1;
+        return false;
+      }
+      if($retour){
+        return $this->redirect('compte_visualisation', array('identifiant' => $compteId));
+      }
+      return true;
+    }
+
     private function addremovetag(sfWebRequest $request, $remove = false) {
       $index = acElasticaManager::getType('COMPTE');
       $tag = Compte::transformTag($request->getParameter('tag'));
@@ -180,7 +211,6 @@ class compteActions extends sfCredentialActions {
 	}
       }
       $q = $this->initSearch($request, $tag, !$remove);
-      //$q->setLimit(1000000);
       $resset = $index->search($q);
 
       $nbimpactes = $resset->getTotalHits();
@@ -200,7 +230,7 @@ class compteActions extends sfCredentialActions {
 
     public function executeAddtag(sfWebRequest $request) {
       if (!$this->addremovetag($request, false)) {
-		return ;
+		      return ;
       }
       return $this->redirect('compte_search', $this->args);
     }
@@ -213,18 +243,49 @@ class compteActions extends sfCredentialActions {
       return $this->redirect('compte_search', $this->args);
     }
 
-    public function executeGroupe(sfWebRequest $request){
+      public function executeGroupe(sfWebRequest $request){
+      $request->setParameter('contacts_all',true);
       $index = acElasticaManager::getType('COMPTE');
       $this->groupeName = $request->getParameter('groupeName');
       $this->filtre = "groupes:".Compte::transformTag($this->groupeName);
       $request->addRequestParameters(array('tags' => $this->filtre));
       $q = $this->initSearch($request);
+      $q->setLimit(4000);
 		  $elasticaFacet 	= new acElasticaFacetTerms('groupes');
 		  $elasticaFacet->setField('doc.tags.groupes');
 		  $elasticaFacet->setSize(250);
 		  $q->addFacet($elasticaFacet);
       $resset = $index->search($q);
       $this->results = $resset->getResults();
+
+      $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
+      if ($request->isMethod(sfWebRequest::POST)) {
+          $this->form->bind($request->getParameter($this->form->getName()));
+          if ($this->form->isValid()) {
+              $values = $this->form->getValues();
+
+              $etb = EtablissementClient::getInstance()->find($values['id_etablissement']);
+              $compte = $etb->getMasterCompte();
+              $compte->addInGroupes($this->groupeName,$values['fonction']);
+              $compte->save();
+              if (!$this->addRemoveGroupe($request, false)) {
+                return ;
+              }
+              $this->redirect('compte_groupe', array('groupeName' => $this->groupeName));
+          }
+      }
+    }
+
+    public function executeRemovegroupe(sfWebRequest $request) {
+      $groupeName = $request->getParameter('groupeName');
+      $identifiant = $request->getParameter('identifiant');
+      $compte = CompteClient::getInstance()->find("COMPTE-".$identifiant);
+      $compte->removeGroupes($groupeName);
+      $compte->save();
+      if (!$this->addRemoveGroupe($request, true)) {
+                return ;
+      }
+      $this->redirect('compte_groupe', array('groupeName' => $groupeName));
     }
 
     public function executeTags(sfWebRequest $request) {
@@ -266,22 +327,6 @@ class compteActions extends sfCredentialActions {
       }
     }
 
-    public function executeGroupeAjout(sfWebRequest $request){
-      $this->groupeName = $request->getParameter('groupeName');
-      $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
-      if ($request->isMethod(sfWebRequest::POST)) {
-          $this->form->bind($request->getParameter($this->form->getName()));
-          if ($this->form->isValid()) {
-              $values = $this->form->getValues();
-
-              $etb = EtablissementClient::getInstance()->find($values['id_etablissement']);
-              $compte = $etb->getMasterCompte();
-              $compte->addInGroupes($this->groupeName,$values['fonction']);
-              $compte->save();
-              $this->redirect('compte_groupe', array('groupeName' => $this->groupeName));
-          }
-      }
-    }
 
     public function executeSearch(sfWebRequest $request) {
       $res_by_page = 30;

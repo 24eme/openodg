@@ -72,13 +72,32 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $grp = str_replace(array('.', ')', '('), array('','',''), $grp);
         $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
         $allGrps = $this->getOrAdd('groupes');
-        if($allGrps->exist($grp)){
-          return;
-        }
-        $grpNode = $allGrps->add($grp);
+        $grpNode = $allGrps->add();
         $grpNode->nom = $grp;
         $grpNode->fonction = $fct;
         $this->addTag('groupes', $grp);
+    }
+
+    public function removeGroupes($grp){
+        $grp = str_replace(array('.', ')', '('), array('','',''), $grp);
+        $grp = preg_replace('/^ */', '', preg_replace('/ *$/', '', $grp));
+        $allGrps = $this->getOrAdd('groupes');
+        $grp_to_keep = array();
+        foreach ($allGrps as $oldGrp) {
+          if($oldGrp->nom != $grp){
+            $grp_to_keep[] = $oldGrp;
+          }
+        }
+        $this->remove("groupes");
+        $this->getOrAdd('groupes');
+        $this->get('tags')->remove('groupes');
+        foreach ($grp_to_keep as $newgrp) {
+          $this->groupes->add(null,$newgrp);
+          $newgrpNom = str_replace(array('.', ')', '('), array('','',''), $newgrp->nom);
+          $newgrpNom = preg_replace('/^ */', '', preg_replace('/ *$/', '', $newgrpNom));
+          $this->addTag('groupes', $newgrpNom);
+        }
+
     }
 
     public function addTag($type, $tag) {
