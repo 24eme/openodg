@@ -7,7 +7,7 @@
     <p class="text-center" style="margin-top: 20px;">Traitement des données Prodouane en cours</p>
     <p class="text-center"><img src="/images/douane2odgrhone.gif" alt="chargement en cours..." /></p>
     <?php else: ?>
-    <p class="text-center" style="margin-top: 20px;">Les données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?> ont correctement été importées.</p>
+    <p class="text-center" style="margin-top: 20px; padding: 150px;">Les données de la <?php echo $drev->getDocumentDouanierTypeLibelle() ?> ont correctement été importées.</p>
     <?php endif; ?>
     <form action="<?php echo url_for('drev_dr', $drev); ?>" method="get" id="form">
     	<div style="margin-top: 20px;" class="row row-margin row-button">

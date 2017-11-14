@@ -16,6 +16,11 @@ class HabilitationActivite extends BaseHabilitationActivite {
       $this->commentaire = $commentaire;
   }
 
+  public function getProduitHash() {
+
+      return $this->getParent()->getParent()->getHash();
+  }
+
   public function isHabilite(){
     return ($this->statut == HabilitationClient::STATUT_HABILITE) || ($this->statut == HabilitationClient::STATUT_DEMANDE_RETRAIT);
   }

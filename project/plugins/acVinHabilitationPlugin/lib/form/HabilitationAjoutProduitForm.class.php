@@ -1,13 +1,7 @@
 <?php
-class HabilitationAjoutProduitForm extends acCouchdbObjectForm
+class HabilitationAjoutProduitForm extends acCouchdbForm
 {
-    protected $produits;
-
-    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null)
-    {
-        $this->produits = array();
-        parent::__construct($object, $options, $CSRFSecret);
-    }
+    protected $produits = array();
 
     public function configure()
     {
@@ -31,13 +25,13 @@ class HabilitationAjoutProduitForm extends acCouchdbObjectForm
 
         $this->setValidators(array(
             'hashref' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($produits)),array('required' => "Aucun produit saisi.")),
-            'activites' => new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($activites))),
-            'statut' => new sfValidatorChoice(array('required' => false, 'choices' => array_keys($statuts))),
-            'commentaire' => new sfValidatorString(array("required" => false)),
+            'activites' => new sfValidatorChoice(array('required' => true, 'multiple' => true, 'choices' => array_keys($activites))),
             'date' => new sfValidatorDate(
                     array('date_output' => 'Y-m-d',
-                'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
-                'required' => false))
+                          'date_format' => '~(?P<day>\d{2})/(?P<month>\d{2})/(?P<year>\d{4})~',
+                          'required' => true)),
+            'statut' => new sfValidatorChoice(array('required' => true, 'choices' => array_keys($statuts))),
+            'commentaire' => new sfValidatorString(array("required" => false)),
         ));
 
         $this->widgetSchema->setNameFormat('habilitation_ajout_produit[%s]');
@@ -46,9 +40,8 @@ class HabilitationAjoutProduitForm extends acCouchdbObjectForm
     public function getProduits()
     {
         if (!$this->produits) {
-            $doc = $this->getObject()->getDocument();
-            foreach ($doc->getProduitsConfig() as $produit) {
-                if ($this->getObject()->exist($produit->getHash())) {
+            foreach ($this->getDocument()->getProduitsConfig() as $produit) {
+                if ($this->getDocument()->exist($produit->getHash())) {
                   continue;
                 }
                 $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
@@ -63,29 +56,22 @@ class HabilitationAjoutProduitForm extends acCouchdbObjectForm
     }
 
     public function getActivites(){
-      return array_merge(HabilitationClient::$activites_libelles );
+      return array_merge( HabilitationClient::$activites_libelles);
     }
 
     public function getStatuts(){
-      return array_merge( array("" => ""), HabilitationClient::$statuts_libelles );
+      return array_merge(array("" => ""), HabilitationClient::$statuts_libelles);
     }
 
-
-
-    protected function doUpdateObject($values)
+    public function save()
     {
-        if (!isset($values['hashref']) || empty($values['hashref'])) {
-            return;
-        }
+        $values = $this->getValues();
 
-        $noeud = $this->getObject()->getDocument()->addProduit($values['hashref']);
-        if(!isset($values['statut']) || empty($values['statut']) || !isset($values["activites"]) || !count($values["activites"])){
-            return;
-        }
-        foreach ($noeud->getActivites() as $key => $activite) {
-          if(in_array($key,$values["activites"])){
-              $activite->updateHabilitation($values['statut'],$values['commentaire'],$values['date']);
-          }
-        }
+        HabilitationClient::getInstance()->updateAndSaveHabilitation($this->getDocument()->identifiant,
+                                                              $values['hashref'],
+                                                              $values['date'],
+                                                              $values["activites"],
+                                                              $values['statut'],
+                                                              $values['commentaire']);
     }
 }

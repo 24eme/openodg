@@ -79,17 +79,6 @@ class HabilitationClient extends acCouchdbClient {
             return $habilitation;
         }
 
-        public function createOrGetDocFromHistory($habilitation_h){
-          if(date('Y-m-d') == $habilitation_h->getDate()){
-            return $habilitation_h;
-          }
-          $date = $habilitation_h->date;
-          $habilitation_h->date = date('Y-m-d');
-          $habilitation = clone $habilitation_h;
-          $habilitation_h->date = $date;
-          return $habilitation;
-        }
-
         public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
           $h = $this->getHistory($identifiant, $date, $hydrate);
           if (!count($h)) {
@@ -108,8 +97,20 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-          $history = $this->getHistory($identifiant, $hydrate);
-          return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
+            $history = $this->getHistory($identifiant, $hydrate);
+
+            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
+        }
+
+        public function getLastHabilitationOrCreate($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+            $habilitation = $this->getLastHabilitation($identifiant);
+
+            if(!$habilitation) {
+
+                $habilitation = $this->createDoc($identifiant);
+            }
+
+            return $habilitation;
         }
 
         public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
@@ -121,5 +122,12 @@ class HabilitationClient extends acCouchdbClient {
           }
           krsort($etbIds);
           return array_unique($etbIds);
+        }
+
+        public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activite, $statut, $commentaire = "") {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($etablissementIdentifiant, $date);
+
+            $habilitation->updateHabilitation($hash_produit, $activite, $statut, $commentaire, $date);
+            $habilitation->save();
         }
     }
