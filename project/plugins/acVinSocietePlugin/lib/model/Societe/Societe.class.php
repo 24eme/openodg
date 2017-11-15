@@ -521,7 +521,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       $newStatus = "";
       $this->save();
 
-      if($this->isActif()){
+      if($this->isActif() || !$this->statut){
          $newStatus = SocieteClient::STATUT_SUSPENDU;
       }
       if($this->isSuspendu()){
@@ -535,7 +535,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       foreach ($this->etablissements as $keyEtablissement => $etablissement) {
           $etablissement = EtablissementClient::getInstance()->find($keyEtablissement);
           $etablissement->setStatut($newStatus);
-          $etablissement->save();
       }
       $this->setStatut($newStatus);
       $this->save();
