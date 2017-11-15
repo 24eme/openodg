@@ -14,8 +14,13 @@ foreach ($results as $res) {
 
   $societe_informations = $data['doc']['societe_informations'];
   $groupesAndFonction = CompteClient::getGroupesAndFonction($data['doc']['groupes'],$groupe);
+  $id_societe = preg_replace('/SOCIETE-/', '', $data['doc']['id_societe']);
+  $mot_de_passe = $data['doc']['mot_de_passe'];
+  if(!$mot_de_passe){
+    $mot_de_passe = compteClient::getInstance()->find("COMPTE-".$id_societe."01",acCouchdbClient::HYDRATE_JSON)->mot_de_passe;
+  }
 
-  $csv .= '"'.preg_replace('/SOCIETE-/', '', $data['doc']['id_societe']). '";';
+  $csv .= '"'.$id_societe. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom_a_afficher']). '";';
   $csv .= '"'.CompteClient::getInstance()->createTypeFromOrigines($data['doc']['origines']).'";';
   $csv .= '"'.$data['doc']['civilite']. '";';
@@ -49,7 +54,7 @@ foreach ($results as $res) {
   $csv .= '"'.$societe_informations['telephone']. '";';
   $csv .= '"'.$societe_informations['fax']. '";';
   $csv .= '"'.$societe_informations['email']. '";';
-  $csv .= '"'.(preg_match("/\{TEXT\}/", $data['doc']['mot_de_passe'])) ? str_replace("{TEXT}", "", $data['doc']['mot_de_passe']) : null . '"';
+  $csv .= '"'.(preg_match("/\{TEXT\}/", $data['doc']['mot_de_passe'])) ? str_replace("{TEXT}", "", $mot_de_passe) : null . '"';
   $csv .= "\n";
 }
 echo utf8_decode($csv);
