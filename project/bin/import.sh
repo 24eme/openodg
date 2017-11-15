@@ -2,14 +2,15 @@
 
 task=$1
 
+. bin/config.inc
+
+if test $task = "XML" ; then
+    
 cd ..
 git pull
 make clean
 make
 cd -
-. bin/config.inc
-
-if test $task = "XML" ; then
 
 curl -X POST -d @data/configuration/rhone/config_previous.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
 curl -X POST -d @data/configuration/rhone/config.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
