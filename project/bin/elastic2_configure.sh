@@ -21,14 +21,26 @@ fi
 
 curl -s -X PUT -d '@/tmp/filter.json' http://$COUCHHOST:$COUCHPORT/$COUCHBASE/_design/app > /dev/null
 
+REV=$(curl -s http://$COUCHHOST:$COUCHPORT/$COUCHBASEPP/_design/app | sed 's/.*_rev":"//' | sed 's/".*//')
+if test "$REV" ; then
+    curl -s -X DELETE "http://$COUCHHOST:$COUCHPORT/$COUCHBASEPP/_design/app?rev=$REV" > /dev/null
+fi
+
+curl -s -X PUT -d '@/tmp/filter.json' http://$COUCHHOST:$COUCHPORT/$COUCHBASEPP/_design/app > /dev/null
+
 
 if curl -s http://$ELASTHOST:$ELASTPORT/$ELASTBASE | grep -v "IndexMissingException" > /dev/null 2>&1 ; then
     curl -s -X DELETE http://$ELASTHOST:$ELASTPORT/$ELASTBASE > /dev/null
 fi
 
+if curl -s http://$ELASTHOST:$ELASTPORT/$ELASTBASEPP | grep -v "IndexMissingException" > /dev/null 2>&1 ; then
+    curl -s -X DELETE http://$ELASTHOST:$ELASTPORT/$ELASTBASEPP > /dev/null
+fi
+
 curl -s -XPUT "http://$ELASTHOST:$ELASTPORT/$ELASTBASE" -d '@data/elk/elasticsearch.mapping' > /dev/null
+curl -s -XPUT "http://$ELASTHOST:$ELASTPORT/$ELASTBASEPP" -d '@data/elk/elasticsearch.mapping' > /dev/null
 
 
-cat data/elk/logstash.conf | sed "s/ELASTHOST/$ELASTHOST/g" | sed "s/ELASTPORT/$ELASTPORT/g" | sed "s/ELASTBASE/$ELASTBASE/g" | sed "s/COUCHHOST/$COUCHHOST/g" | sed "s/COUCHPORT/$COUCHPORT/g" | sed "s/COUCHBASE/$COUCHBASE/g" > "/tmp/"$ELASTBASE".conf"
+cat data/elk/logstash.conf | sed "s/ELASTHOST/$ELASTHOST/g" | sed "s/ELASTPORT/$ELASTPORT/g" | sed "s/ELASTBASE/$ELASTBASE/g" | sed "s/ELASTBASEPP/$ELASTBASEPP/g" | sed "s/COUCHHOST/$COUCHHOST/g" | sed "s/COUCHPORT/$COUCHPORT/g" | sed "s/COUCHBASE/$COUCHBASE/g" | sed "s/COUCHBASEPP/$COUCHBASEPP/g" > "/tmp/"$ELASTBASE".conf"
 echo write logstash configuration in /etc/logstash/conf.d
 sudo mv "/tmp/"$ELASTBASE".conf" /etc/logstash/conf.d
