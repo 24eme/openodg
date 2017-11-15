@@ -401,7 +401,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
         }
         foreach ($todelete as $del) {
-        	$this->declaration->remove($del);
+            $this->remove($del);
         }
         $this->updateFromPrecedente();
     }
