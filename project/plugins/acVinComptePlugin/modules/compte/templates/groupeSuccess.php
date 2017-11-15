@@ -66,7 +66,7 @@
             <div class="panel-body">
               <div class="list-group" id="list-item">
                 <h3>Sélection d'un opérateur</h3>
-                <form method="post" class="form-horizontal" action="<?php echo url_for('compte_groupe',array('groupeName' => $groupeName)); ?>">
+                <form method="post" class="form-horizontal" action="<?php echo url_for('compte_groupe',array('groupeName' => sfOutputEscaper::unescape($groupeName))); ?>">
                     <?php echo $form->renderHiddenFields() ?>
                     <?php echo $form->renderGlobalErrors() ?>
                     <div class="col-xs-7" style="margin-right: 10px;">

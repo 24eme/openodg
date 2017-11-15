@@ -280,7 +280,7 @@ class compteActions extends sfCredentialActions {
               if (!$this->addRemoveGroupe($request, false)) {
                 return ;
               }
-              $this->redirect('compte_groupe', array('groupeName' => $this->groupeName));
+              $this->redirect('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($this->groupeName)));
           }
       }
     }
@@ -294,7 +294,7 @@ class compteActions extends sfCredentialActions {
       if (!$this->addRemoveGroupe($request, true)) {
                 return ;
       }
-      $this->redirect('compte_groupe', array('groupeName' => $groupeName));
+      $this->redirect('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($groupeName)));
     }
 
     public function executeTags(sfWebRequest $request) {
