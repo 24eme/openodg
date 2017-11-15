@@ -145,7 +145,7 @@
       endif;
     endforeach;
     if($contacts_all):
-      $sargs_archived = $sargs;
+      $sargs_archived = isset($sargs) ? $sargs : array();
       unset($sargs_archived["contacts_all"]);
     ?>
     <div class="list-group">
