@@ -5,7 +5,7 @@ task=$1
 . bin/config.inc
 
 if test $task = "XML" ; then
-    
+
 cd ..
 git pull
 make clean
@@ -22,7 +22,7 @@ bash bin/import_identites.sh ~/odgrhone_identite_antsys.xml.gz > /tmp/importEnti
 
 fi
 
-if test $task = "CONTACTS" ; then
+if test $task = "FIN" ; then
 
 php symfony import:etablissements-cvis  --application="declaration" ~/scrapping/data/cvi.csv > /tmp/importCvis_$$.log
 php symfony import:Habilitations --application="declaration" ~/scrapping/data/habilitation.csv > /tmp/habilitation_$$.log
@@ -31,10 +31,6 @@ php symfony import:relations-etablissements --application="declaration" ~/scrapp
 php symfony import:repreneurs --application="declaration" ~/scrapping/data/reprise_repreneur.csv > /tmp/importRepreneurs_$$.log
 php symfony import:Commentaires --application="declaration" ~/scrapping/data/commentaires.csv > /tmp/importCommentaires_$$.log
 php symfony import:adresses-exploitations --application="declaration" ~/scrapping/data/exploitations.csv  > /tmp/importAdresseExploitation_$$.log
-
-fi
-
-if test $task = "DOCUMENTS" ; then
 
 bash bin/import_fichiers.sh /home/actualys/prodouane_scrapy/documents/ > /tmp/importDouane_$$.log
 
