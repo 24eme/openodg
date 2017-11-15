@@ -41,6 +41,6 @@ curl -s -XPUT "http://$ELASTHOST:$ELASTPORT/$ELASTBASE" -d '@data/elk/elasticsea
 curl -s -XPUT "http://$ELASTHOST:$ELASTPORT/$ELASTBASEPP" -d '@data/elk/elasticsearch.mapping' > /dev/null
 
 
-cat data/elk/logstash.conf | sed "s/ELASTHOST/$ELASTHOST/g" | sed "s/ELASTPORT/$ELASTPORT/g" | sed "s/ELASTBASE/$ELASTBASE/g" | sed "s/ELASTBASEPP/$ELASTBASEPP/g" | sed "s/COUCHHOST/$COUCHHOST/g" | sed "s/COUCHPORT/$COUCHPORT/g" | sed "s/COUCHBASE/$COUCHBASE/g" | sed "s/COUCHBASEPP/$COUCHBASEPP/g" > "/tmp/"$ELASTBASE".conf"
+cat data/elk/logstash.conf | sed "s/ELASTHOST/$ELASTHOST/g" | sed "s/ELASTPORT/$ELASTPORT/g" | sed "s/ELASTBASEPP/$ELASTBASEPP/g" | sed "s/ELASTBASE/$ELASTBASE/g" | sed "s/COUCHHOST/$COUCHHOST/g" | sed "s/COUCHPORT/$COUCHPORT/g" | sed "s/COUCHBASEPP/$COUCHBASEPP/g" | sed "s/COUCHBASE/$COUCHBASE/g" > "/tmp/"$ELASTBASE".conf"
 echo write logstash configuration in /etc/logstash/conf.d
 sudo mv "/tmp/"$ELASTBASE".conf" /etc/logstash/conf.d
