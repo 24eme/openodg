@@ -87,6 +87,7 @@ class declarationActions extends sfActions {
     }
 
     public function executeEtablissement(sfWebRequest $request) {
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->secureEtablissement($this->etablissement);
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());

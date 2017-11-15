@@ -19,11 +19,11 @@
 		</p>
 		<p>
 			<strong>RCS</strong> : 778 904 599 00033<br />
-			<strong>Numéro de TVA</strong> : FR08778904599<br /> 
+			<strong>Numéro de TVA</strong> : FR08778904599<br />
 			<strong>Code APE</strong> : 9412Z
 		</p>
 		<p>
-			<strong>Directeur de la publication :</strong><br />         
+			<strong>Directeur de la publication :</strong><br />
 			Frédéric Bach - Directeur de l'AVA
 		</p>
 	</div>
@@ -47,14 +47,6 @@
 		</p>
 		<p><strong>Envoyer un e-mail</strong></p>
 		<p>info@ava-aoc.fr</p>
-	</div>
-	<div class="col-xs-12">
-		<h3>Liens Hypertextes</h3>
-		<p>ava-aoc.fr propose de nombreux liens vers d'autres sites.  Nous indiquons systématiquement vers quel site nous vous proposons  d'aller. Cependant, ces pages web dont les adresses sont régulièrement  vérifiées ne font pas partie du portail : elles n'engagent pas la  responsabilité de la rédaction du site.</p>
-	</div>
-	<div class="col-xs-12">
-		<h3>Établir un lien</h3>
-		<p>Tout site public ou privé est autorisé à établir, sans  autorisation préalable, un lien vers les informations diffusées sur ava-aoc.fr.</p>
 	</div>
 	<div class="col-xs-12">
 		<h3>Conception</h3>

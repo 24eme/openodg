@@ -87,6 +87,15 @@ class CompteClient extends acCouchdbClient {
         return self::TYPE_COMPTE_INTERLOCUTEUR;
     }
 
+    public static function getGroupesAndFonction($groupesArr,$groupeName){
+      foreach ($groupesArr as $grp) {
+        if(Compte::transformTag(sfOutputEscaper::unescape($grp['nom'])) == $groupeName){
+          return array('nom' => sfOutputEscaper::unescape($grp['nom']), 'fonction' => $grp['fonction']);
+        }
+      }
+      return array('nom' => '', 'fonction' => '');
+    }
+
     public function findOrCreateCompteSociete($societe) {
         $compte = null;
         if ($societe->compte_societe) {

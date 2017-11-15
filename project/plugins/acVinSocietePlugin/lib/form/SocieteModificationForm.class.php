@@ -51,7 +51,7 @@ class SocieteModificationForm extends CompteGeneriqueForm {
             $this->setValidator('cooperative', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCooperative()))));
         }
 
-        $this->setValidator('siret', new sfValidatorString(array('required' => false)));
+        $this->setValidator('siret', new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")));
         $this->setValidator('code_naf', new sfValidatorString(array('required' => false)));
         $this->setValidator('no_tva_intracommunautaire', new sfValidatorString(array('required' => false)));
 
