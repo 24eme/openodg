@@ -66,7 +66,7 @@ EOF;
     protected function updateCommunications($identifiant){
        $communications = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
 
-       if(!array_key_exists($communications,"PRINCIPAL")){
+       if(!array_key_exists($communications,"PRINCIPALE")){
          echo $this->file_path." : Aucun traitement : pas de communication principale\n";
        }
 
