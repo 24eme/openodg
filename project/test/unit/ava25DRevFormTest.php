@@ -233,17 +233,17 @@ $t->ok(!isset($erreurs['revendication_incomplete']), "Pas de point blocant sur l
 $t->ok(!isset($erreurs['revendication_rendement']), "Pas de point blocant sur le rendement de la revendication");
 $t->ok(!isset($erreurs['vci_stock_utilise']), "Pas de point blocant sur la repartition du vci");
 $t->ok(!isset($erreurs['vci_rendement_annee']), "Pas de point blocant sur le rendement à l'année du vci");
-$t->ok(!isset($erreurs['vci_rendement_total']), "Pas de point blocant sur le rendement total du vci");
+$t->ok(!isset($vigilances['vci_rendement_total']), "Pas de point de vigilance sur le rendement total du vci");
 $t->ok(!isset($erreurs['declaration_volume_l15_complement']), "Pas de point blocant sur le respect de la ligne l15");
 $t->ok(!isset($erreurs['vci_substitue_rafraichi']), "Pas de point blocant sur la subsitution ni le rafraichissement du volume de VCI");
 $t->ok(!isset($erreurs['revendication_superficie']), "Pas de point blocant sur la superficie declarée sur la DR et la DRev");
 
 $t->is(count($vigilances['declaration_habilitation']), 1, "Pas de point de vigilance sur l'habilitation du premier produit");
-$t->ok(!isset($vigilences['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
-$t->ok(!isset($vigilences['declaration_neant']), "Pas de point vigilance sur la declaration neant");
-$t->ok(!isset($vigilences['declaration_produits_incoherence']), "Pas de point vigilance sur les produits declarés sur la DR et la DRev");
-$t->ok(!isset($vigilences['declaration_surface_bailleur']), "Pas de point vigilance sur la repartition de la surface avec le bailleur");
-$t->ok(!isset($vigilences['vci_complement']), "Pas de point vigilance sur le complement vci");
+$t->ok(!isset($vigilances['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
+$t->ok(!isset($vigilances['declaration_neant']), "Pas de point vigilance sur la declaration neant");
+$t->ok(!isset($vigilances['declaration_produits_incoherence']), "Pas de point vigilance sur les produits declarés sur la DR et la DRev");
+$t->ok(!isset($vigilances['declaration_surface_bailleur']), "Pas de point vigilance sur la repartition de la surface avec le bailleur");
+$t->ok(!isset($vigilances['vci_complement']), "Pas de point vigilance sur le complement vci");
 
 $drevControle = clone $drev;
 $habilitation->updateHabilitation($produit1->getConfig()->getHash(), array(HabilitationClient::ACTIVITE_VINIFICATEUR), HabilitationClient::STATUT_RETRAIT);
@@ -274,7 +274,7 @@ $t->ok(isset($erreurs['revendication_incomplete']) && count($erreurs['revendicat
 $t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendication_rendement']) == 1 && $erreurs['revendication_rendement'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le rendement sur le revendiqué n'est pas respecté");
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 $t->ok(isset($vigilances['vci_rendement_annee']) && count($vigilances['vci_rendement_annee']) == 1 && $vigilances['vci_rendement_annee'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
-$t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
+$t->ok(isset($vigilances['vci_rendement_total']) && count($vigilances['vci_rendement_total']) == 1 && $vigilances['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le stock vci final déclaré ne respecte pas le rendement total");
 $t->ok(isset($vigilances['declaration_habilitation']), "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
 $t->is(count($vigilances['declaration_volume_l15']), 1, "Point vigilance sur le respect de la ligne l15");
 
