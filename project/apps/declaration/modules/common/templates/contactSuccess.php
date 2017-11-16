@@ -5,8 +5,8 @@
 	<div class="col-xs-12">
 		<p>Pour toute suggestion ou demande d'information, merci de nous contacter par e-mail ou téléphone :</p>
 		<p>
-			<strong>Tél.</strong> : (33) 03 89 20 16 50<br />
-			<strong>E-mail</strong> : info@ava-aoc.fr
+			<strong>Tél.</strong> : (33) 04 90 27 24 24<br />
+			<strong>E-mail</strong> : syndicat-cotesdurhone@syndicat-cotesdurhone.com
 		</p>
 	</div>
 </div>
