@@ -251,7 +251,7 @@ EOF;
                   $compte->civilite = (array_key_exists($this->arrayXML['b:Titre'],self::$civilites))? self::$civilites[$this->arrayXML['b:Titre']] : null;
 
                   $compte->nom = $this->arrayXML['b:RaisonSociale'];
-                  $compte->prenom = $this->arrayXML['b:Prenom'];
+                  $compte->prenom = (is_array($this->arrayXML['b:Prenom']))? '' : $this->arrayXML['b:Prenom'];
                   $compte->fonction = (array_key_exists($interloc[7],$this->fonctionsArr))? $this->fonctionsArr[$interloc[7]] : $interloc[7];
 
                   $interlocCoordonnees = $this->getCoordonneesInArr($interloc["b:Identite_Coordonnee"]);

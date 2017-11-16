@@ -149,8 +149,24 @@ class ImportAntsysDRevTask extends sfBaseTask
     $eta = $soc->getEtablissementPrincipal();
 
     if(!$eta || (isset($rows[0][self::CSV_CVI]) && $eta->cvi != $rows[0][self::CSV_CVI])) {
-        $eta = EtablissementClient::getInstance()->findByCvi($rows[0][self::CSV_CVI]);
-        echo "INFO;Établissement trouvé par le cvi ".$rows[0][self::CSV_CVI]." : identifiant $id, etablissement : $eta->_id\n";
+        $eta2 = EtablissementClient::getInstance()->findByCvi($rows[0][self::CSV_CVI]);
+        if($eta2) {
+            echo "INFO;Établissement trouvé par le cvi ".$rows[0][self::CSV_CVI]." : identifiant $id, etablissement : ". $eta2->_id . "\n";
+            $drevEta2 = DRevClient::getInstance()->find('DREV-'.$eta2->identifiant."-".$campagne, acCouchdbClient::HYDRATE_JSON);
+            $drevEta = null;
+            if($eta) {
+                $drevEta = DRevClient::getInstance()->find('DREV-'.$eta->identifiant."-".$campagne, acCouchdbClient::HYDRATE_JSON);
+            }
+            if($drevEta2 && $drevEta) {
+                echo "ERROR;identifiant $id, une DRev existe déjà pour l'étabissement ".$eta->_id." et ".$eta2->_id."\n";
+
+                return false;
+            } elseif($drevEta2 && !$drevEta) {
+                echo "INFO;La drev est quand même importé sur l'identifiant ".$id."\n";
+            } else {
+                $eta = $eta2;
+            }
+        }
     }
 
     if (!$eta) {
@@ -159,7 +175,9 @@ class ImportAntsysDRevTask extends sfBaseTask
     }
 
     if($drev = DRevClient::getInstance()->find('DREV-'.$eta->identifiant."-".$campagne, acCouchdbClient::HYDRATE_JSON)) {
-        DRevClient::getInstance()->deleteDoc($drev);
+        echo "La DREV existe déjà ".$id."\n";
+        return false;
+        //DRevClient::getInstance()->deleteDoc($drev);
     }
     $drev = DRevClient::getInstance()->createDoc($eta->identifiant, $campagne, true);
     try {
