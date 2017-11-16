@@ -69,10 +69,6 @@ EOF;
          echo $this->file_path." : Aucune clé communication\n";
          return;
        }
-       if(!array_key_exists("PRINCIPALE",$communications)){
-         echo $this->file_path." : Aucun traitement : pas de communication principale\n";
-         return;
-       }
 
        foreach ($communications as $key => $communication) {
          echo $this->file_path.";".$communication[self::COM_TYPECONTACT].";".$communication[self::COM_EMAIL].";".$communication[self::COM_FAX].";".$communication[self::COM_PORTABLE].";".$communication[self::COM_TEL].";".$communication[self::COM_SITEWEB].";".$communication[self::COM_NUM]."\n";
@@ -89,8 +85,7 @@ EOF;
           if(isset($communicationArr['b:CleCommunication'])){
             $com = array();
             $this->buildCommunicationArr($communicationArr,$com);
-            $numC = strtoupper($com[self::COM_TYPECONTACT]);
-            $communications[$numC] = $com;
+            $communications[] = $com;
           }
         }
       }
