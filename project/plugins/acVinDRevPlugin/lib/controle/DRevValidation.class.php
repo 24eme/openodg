@@ -25,6 +25,7 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
         $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre DR");
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
+        $this->addControle(self::TYPE_WARNING, 'vci_complement', "Vous ne complétez pas votre volume malgré votre stock VCI disponible");
         /*
          * Error
          */
@@ -147,6 +148,9 @@ class DRevValidation extends DocumentValidation
         }
         if ($produit->superficie_revendique > $produit->recolte->superficie_total) {
         	$this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        }
+        if ($produit->getConfig()->getRendement() > $produit->volume_revendique_issu_recolte && $produit->vci->stock_precedent > 0 && $produit->vci->stock_precedent > $produit->vci->complement) {
+        	$this->addPoint(self::TYPE_WARNING, 'vci_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
 
     }

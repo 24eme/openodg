@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(75);
+$t = new lime_test(77);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -243,9 +243,10 @@ $t->ok(!isset($vigilences['declaration_volume_l15']), "Pas de point vigilance su
 $t->ok(!isset($vigilences['declaration_neant']), "Pas de point vigilance sur la declaration neant");
 $t->ok(!isset($vigilences['declaration_produits_incoherence']), "Pas de point vigilance sur les produits declarés sur la DR et la DRev");
 $t->ok(!isset($vigilences['declaration_surface_bailleur']), "Pas de point vigilance sur la repartition de la surface avec le bailleur");
+$t->ok(!isset($vigilences['vci_complement']), "Pas de point vigilance sur le complement vci");
 
 $drevControle = clone $drev;
-$habilitation->updateHabilitation($produit1->getConfig()->getHash(), HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::STATUT_RETRAIT);
+$habilitation->updateHabilitation($produit1->getConfig()->getHash(), array(HabilitationClient::ACTIVITE_VINIFICATEUR), HabilitationClient::STATUT_RETRAIT);
 $habilitation->save();
 $produitControle1 = $drevControle->get($produit1->getHash());
 $produitControle2 = $drevControle->get($produit2->getHash());
@@ -260,6 +261,7 @@ $produitControle1->vci->substitution = 50000;
 $produitControle1->vci->constitue = 10000;
 $produitControle1->vci->stock_final = 10000;
 $produitControle1->superficie_revendique = 50;
+$produitControle1->volume_revendique_issu_recolte = 5;
 
 $produitControle2->volume_revendique_issu_recolte = null;
 
@@ -273,12 +275,13 @@ $t->ok(isset($erreurs['revendication_rendement']) && count($erreurs['revendicati
 $t->ok(isset($erreurs['vci_stock_utilise']) && count($erreurs['vci_stock_utilise']) == 1 && $erreurs['vci_stock_utilise'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le vci utilisé n'a pas été correctement réparti");
 $t->ok(isset($vigilances['vci_rendement_annee']) && count($vigilances['vci_rendement_annee']) == 1 && $vigilances['vci_rendement_annee'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point de vigilance est levé car le vci déclaré de l'année ne respecte pas le rendement de l'annee");
 $t->ok(isset($erreurs['vci_rendement_total']) && count($erreurs['vci_rendement_total']) == 1 && $erreurs['vci_rendement_total'][0]->getInfo() == $produitControle1->getLibelleComplet() , "Un point bloquant est levé car le stock vci final déclaré ne respecte pas le rendement total");
-$t->is(count($vigilances['declaration_habilitation']), 2, "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
+$t->ok(isset($vigilances['declaration_habilitation']), "Des points de vigilences sur les habilitations des deux produits (un en retrait, l'autre non déclaré dans l'habilitation)");
 $t->is(count($vigilances['declaration_volume_l15']), 1, "Point vigilance sur le respect de la ligne l15");
 
 $t->is(count($erreurs['declaration_volume_l15_complement']), 1, "Point bloquant sur le respect de la ligne l15");
 $t->is(count($erreurs['revendication_superficie']), 1, "Point bloquant sur la superficie declarée sur la DR et la DRev");
 $t->is(count($erreurs['vci_substitue_rafraichi']), 1, "VCI rafraichi / subsitue non respect de la ligne l15");
+$t->is(count($vigilances['vci_complement']), 1, "Point vigilance sur le complement vci");
 
 
 $drevControle->remove($produit1->getHash());
