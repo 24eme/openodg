@@ -65,8 +65,13 @@ EOF;
 
     protected function updateCommunications($identifiant){
        $communications = $this->getCommunicationsInArr($this->arrayXML['b:Communications']['b:Identite_Communication'],$identifiant);
+       if(!$communications){
+         echo $this->file_path." : Aucune clé communication\n";
+         return;
+       }
        if(!array_key_exists("PRINCIPALE",$communications)){
          echo $this->file_path." : Aucun traitement : pas de communication principale\n";
+         return;
        }
 
        foreach ($communications as $key => $communication) {
