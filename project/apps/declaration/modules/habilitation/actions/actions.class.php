@@ -48,6 +48,7 @@ class habilitationActions extends sfActions {
 
         $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
         $this->editForm = new HabilitationEditionForm($this->habilitation);
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
         $this->setTemplate('habilitation');
     }
@@ -55,6 +56,7 @@ class habilitationActions extends sfActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->habilitation = $this->getRoute()->getHabilitation();
         $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
         $this->setTemplate('habilitation');
     }

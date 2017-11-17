@@ -7,6 +7,14 @@
 <div class="page-header no-border">
     <h2>Habilitations<?php if(!$habilitation->isLastOne()): ?> au <?php echo Date::francizeDate($habilitation->getDate()); ?><?php endif; ?></h2>
 </div>
+
+<div class="row row-margin">
+    <div class="col-xs-12">
+        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('habilitation_etablissement_selection'),  'noautofocus' => true)); ?>
+    </div>
+</div>
+
+
 <div class="row">
   <div class="col-xs-12">
 
