@@ -3,7 +3,7 @@
 class FichierForm extends BaseForm
 {
 	protected $fichier;
-	
+
 	public function __construct($fichier, $defaults = array(), $options = array(), $CSRFSecret = null)
 	{
 		$this->fichier = $fichier;
@@ -15,11 +15,12 @@ class FichierForm extends BaseForm
 			$defaults['date_depot'] = date('d/m/Y');
 			$defaults['visibilite'] = 1;
 		}
+		$this->options = $options;
 		parent::__construct($defaults, $options, $CSRFSecret);
 	}
-    
+
      public function configure() {
-       
+
      	$this->setWidgets(array(
      		'file' => new sfWidgetFormInputFile(array('label' => 'Document')),
      		'libelle' => new sfWidgetFormInputText(),
@@ -40,12 +41,12 @@ class FichierForm extends BaseForm
      		'date_depot' => 'Date dépôt*',
      		'visibilite' => 'Visible par le déclarant'
      	));
-     	
+
         $this->widgetSchema->setNameFormat('fichier[%s]');
     }
-    
+
     public function save() {
-    	
+
     	$file = $this->getValue('file');
     	if (!$file && $this->fichier->isNew()) {
     		throw new sfException("Une erreur lors de l'upload est survenue");
@@ -53,7 +54,7 @@ class FichierForm extends BaseForm
     	if ($file && !$file->isSaved()) {
     		$file->save();
     	}
-    	
+
     	$this->fichier->setLibelle($this->getValue('libelle'));
     	$this->fichier->setDateDepot($this->getValue('date_depot'));
     	$this->fichier->setVisibilite(($this->getValue('visibilite'))? 1 : 0);
@@ -77,6 +78,6 @@ class FichierForm extends BaseForm
     	$this->fichier->save();
     	return $this->fichier;
     }
-    
-    
+
+
 }
