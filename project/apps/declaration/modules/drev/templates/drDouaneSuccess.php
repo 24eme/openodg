@@ -2,7 +2,7 @@
 
 <?php include_partial('drev/step', array('step' => 'dr_douane', 'drev' => $drev)) ?>
 <div class="page-header">
-    <h2>Récupération des <?php echo strtolower($drev->getDocumentDouanierTypeLibelle()) ?> <a href="<?php echo url_for('drev_scrape_dr', $drev) ?>" class="pull-right btn btn-warning btn-xs">Récupérer sur Prodouane, si disponible</a></h2>
+    <h2>Récupération de la <?php echo strtolower($drev->getDocumentDouanierTypeLibelle()) ?> <a href="<?php echo url_for('drev_scrape_dr', $drev) ?>" class="pull-right btn btn-warning btn-xs">Récupérer sur Prodouane, si disponible</a></h2>
 </div>
 <form method="post" enctype="multipart/form-data">
 <?php if ($form): ?>

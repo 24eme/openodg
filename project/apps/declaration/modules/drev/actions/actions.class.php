@@ -103,7 +103,7 @@ class drevActions extends sfActions {
         if (!$client) {
         	throw new sfException('Client not found');
         }
-        $this->form = new DRevUploadDrForm($client->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'DR importée depuis la saisie de la DRev '.$this->drev->campagne), array("papier" => $this->drev->isPapier()));
+        $this->form = new DRevUploadDrForm($client->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne), array("papier" => $this->drev->isPapier()));
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
