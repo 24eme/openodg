@@ -222,6 +222,13 @@ class drevActions extends sfActions {
         	return $this->redirect('drev_dr_douane', $this->drev);
         }
 
+        if (!count($this->drev->declaration)) {
+            $drev_previous = DRevClient::getInstance()->find(sprintf("DREV-%s-%s", $this->drev->identifiant, $this->drev->campagne - 1));
+            if($drev_previous) {
+                  $this->drev->updateFromDRev($drev_previous);
+            }
+        }
+
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION_SUPERFICIE))) {
             $this->drev->save();
         }
