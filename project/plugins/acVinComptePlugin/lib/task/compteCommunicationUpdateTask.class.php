@@ -66,12 +66,22 @@ EOF;
         echo  $data[self::COM_ID]." société ".$societe->_id." n'a pas de compte";
         return;
       }
+      $compte->societe_informations->email = $data[self::COM_EMAIL];
+      $compte->societe_informations->telephone = $data[self::COM_TEL];
+      $compte->societe_informations->fax = $data[self::COM_FAX];
+
       $compte->email = $data[self::COM_EMAIL];
       $compte->fax = $data[self::COM_FAX];
       $compte->telephone_bureau = $data[self::COM_TEL];
       $compte->telephone_mobile = $data[self::COM_PORTABLE];
       $compte->site_internet = $data[self::COM_SITEWEB];
       $compte->save();
+
+      $societe->email = $data[self::COM_EMAIL];
+      $societe->telephone = $data[self::COM_TEL];
+      $societe->fax = $data[self::COM_FAX];
+      $societe->save();
+
       echo $data[self::COM_ID]." société ".$societe->_id." updated :".implode(",",$data);
     }
 
