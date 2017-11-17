@@ -58,12 +58,12 @@ EOF;
       //A TRAITER
       $societe = SocieteClient::getInstance()->find('SOCIETE-'.sprintf("%06d",$data[self::COM_ID]));
       if(!$societe){
-        echo  $data[self::COM_ID]." société non trouvée";
+        echo  $data[self::COM_ID]." société non trouvée\n";
         return;
       }
       $compte = $societe->getMasterCompte();
       if(!$compte){
-        echo  $data[self::COM_ID]." société ".$societe->_id." n'a pas de compte";
+        echo  $data[self::COM_ID]." société ".$societe->_id." n'a pas de compte\n";
         return;
       }
       $compte->societe_informations->email = $data[self::COM_EMAIL];
