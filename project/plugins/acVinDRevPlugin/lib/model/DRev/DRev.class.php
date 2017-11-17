@@ -455,13 +455,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         		continue;
         	}
           $p = $this->addProduit($produit->getProduitHash(), $produit->denomination_complementaire);
-          if(!$produit->superficie_revendique && !$produit->volume_revendique) {
-              continue;
-          }
-          if($this->isNonRecoltant()) {
-              continue;
-          }
-          $p->superficie_revendique = $produit->superficie_revendique;
         }
     }
 

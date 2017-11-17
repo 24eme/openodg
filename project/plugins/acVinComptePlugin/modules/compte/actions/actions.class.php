@@ -134,29 +134,22 @@ class compteActions extends sfCredentialActions {
           		$this->selected_typetags[$m[1]][] = $m[2];
         	}
         }
+        
         $q = $this->initSearch($request);
         $resset = $index->search($q);
         $nbTotal = $resset->getTotalHits();
-        $nbQueries = floor($nbTotal/1000) - 1;
-        $this->results = array();
-        for($i=0;$i < $nbQueries;$i++) {
-            $q = $this->initSearch($request);
-            $q->setLimit(1000);
-            $q->setFrom($i*1000);
-            $resset = $index->search($q);
-            $this->results = array_merge($this->results, $resset->getResults());
+        if ($nbTotal > 1000000) {
+        	throw new sfException('Trop de résultat ES pour l\'export CSV');
         }
+        $q = $this->initSearch($request);
+        $q->setSize($nbTotal);
+        $resset = $index->search($q);
+        $this->results = $resset->getResults();
         $this->setLayout(false);
         $filename = 'export_contacts';
-
-//      $filename.=str_replace(',', '_', $this->q).'_';
-//      if(count($this->args['tags'])){
-//          $filename.= str_replace(',', '_', $this->args['tags']);
-//      }
-
         $attachement = "attachment; filename=".$filename.".csv";
         $this->response->setContentType('text/csv');
-        $this->response->setHttpHeader('Content-Disposition',$attachement );
+        $this->response->setHttpHeader('Content-Disposition',$attachement);
     }
 
     private function addRemoveGroupe(sfWebRequest $request, $remove = false) {
