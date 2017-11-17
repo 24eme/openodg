@@ -26,7 +26,12 @@ class DRevRevendicationProduitForm extends acCouchdbObjectForm {
 
     public function doUpdateObject($values) {
       if ($this->getOption('disabled_dr')) {
-        unset($values['recolte']);
+          foreach($this->getEmbeddedForm('recolte')->getWidgetSchema()->getFields() as $key => $item) {
+              if(!$item->getAttribute('disabled')) {
+                  continue;
+              }
+              unset($values['recolte'][$key]);
+          }
       }
       parent::doUpdateObject($values);
     }

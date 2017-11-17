@@ -44,7 +44,7 @@
     </table>
 
     <?php if ($ajoutForm->hasProduits()): ?>
-        <button class="btn btn-sm btn-default" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
+        <button class="btn btn-sm btn-default ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une appellation</button>
     <?php endif; ?>
 
     <div style="margin-top: 20px;" class="row row-margin row-button">
