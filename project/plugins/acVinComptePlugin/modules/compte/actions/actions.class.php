@@ -122,32 +122,41 @@ class compteActions extends sfCredentialActions {
     }
 
     public function executeSearchcsv(sfWebRequest $request) {
-      $index = acElasticaManager::getType('COMPTE');
-      $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
-      $this->selected_typetags = array();
-      foreach ($this->selected_rawtags as $t) {
-		      if (preg_match('/^([^:]+):(.+)$/', $t, $m)) {
-    	  		if (!isset($this->selected_typetags[$m[1]])) {
-    	    		$this->selected_typetags[$m[1]] = array();
-    	  		}
-    	  		$this->selected_typetags[$m[1]][] = $m[2];
-    		}
-      }
-      $q = $this->initSearch($request);
-      $q->setLimit(50000);
-      $resset = $index->search($q);
-      $this->results = $resset->getResults();
-      $this->setLayout(false);
-      $filename = 'export_contacts';
+        ini_set('memory_limit', '1G');
+        $index = acElasticaManager::getType('COMPTE');
+        $this->selected_rawtags = array_unique(array_diff(explode(',', $request->getParameter('tags')), array('')));
+        $this->selected_typetags = array();
+        foreach ($this->selected_rawtags as $t) {
+              if (preg_match('/^([^:]+):(.+)$/', $t, $m)) {
+          		if (!isset($this->selected_typetags[$m[1]])) {
+            		$this->selected_typetags[$m[1]] = array();
+          		}
+          		$this->selected_typetags[$m[1]][] = $m[2];
+        	}
+        }
+        $q = $this->initSearch($request);
+        $resset = $index->search($q);
+        $nbTotal = $resset->getTotalHits();
+        $nbQueries = floor($nbTotal/1000) - 1;
+        $this->results = array();
+        for($i=0;$i < $nbQueries;$i++) {
+            $q = $this->initSearch($request);
+            $q->setLimit(1000);
+            $q->setFrom($i*1000);
+            $resset = $index->search($q);
+            $this->results = array_merge($this->results, $resset->getResults());
+        }
+        $this->setLayout(false);
+        $filename = 'export_contacts';
 
 //      $filename.=str_replace(',', '_', $this->q).'_';
 //      if(count($this->args['tags'])){
 //          $filename.= str_replace(',', '_', $this->args['tags']);
 //      }
 
-      $attachement = "attachment; filename=".$filename.".csv";
-      $this->response->setContentType('text/csv');
-      $this->response->setHttpHeader('Content-Disposition',$attachement );
+        $attachement = "attachment; filename=".$filename.".csv";
+        $this->response->setContentType('text/csv');
+        $this->response->setHttpHeader('Content-Disposition',$attachement );
     }
 
     private function addRemoveGroupe(sfWebRequest $request, $remove = false) {
