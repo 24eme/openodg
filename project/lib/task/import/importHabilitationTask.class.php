@@ -75,7 +75,7 @@ EOF;
         $this->convert_produits = array();
         //awk -F ';' '{print $9}' data/habilitation.csv | sort | uniq -c | wc -l   =====> 17
         $this->convert_produits['Beaumes de Venise'] = 'certifications/AOP/genres/TRANQ/appellations/BEA';
-        $this->convert_produits['CAIRANNE'] = 'certifications/AOP/genres/TRANQ/appellations/CVG';
+        $this->convert_produits['CAIRANNE'] = 'certifications/AOP/genres/TRANQ/appellations/CAR';
         $this->convert_produits['chateau grillet'] = 'certifications/AOP/genres/TRANQ/appellations/CGR';
         $this->convert_produits['condrieu'] = 'certifications/AOP/genres/TRANQ/appellations/COD';
         $this->convert_produits['cornas'] = 'certifications/AOP/genres/TRANQ/appellations/COR';
