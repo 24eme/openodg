@@ -134,7 +134,7 @@ class compteActions extends sfCredentialActions {
     		}
       }
       $q = $this->initSearch($request);
-      $q->setLimit(5000);
+      $q->setLimit(50000);
       $resset = $index->search($q);
       $this->results = $resset->getResults();
       $this->setLayout(false);
@@ -361,31 +361,31 @@ class compteActions extends sfCredentialActions {
       $this->last_page = ceil($this->nb_results / $res_by_page);
       $this->current_page = $page;
     }
-    
+
     public function executeSearchadvanced(sfWebRequest $request) {
     	$this->form = new CompteRechercheAvanceeForm();
-    
+
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    
+
     		return sfView::SUCCESS;
     	}
-    
+
     	$this->form->bind($request->getParameter($this->form->getName()));
-    
+
     	if (!$this->form->isValid()) {
-    
+
     		return sfView::SUCCESS;
     	}
-    
+
     	$identifiants = explode("\n", preg_replace("/^\n/", "",  preg_replace("/\n$/", "", preg_replace("/([^0-9\n]+|\n\n)/", "", str_replace("\n", "\n", $this->form->getValue('identifiants'))))));
-    
+
     	foreach($identifiants as $index => $identifiant) {
     		$identifiants[$index] = trim($identifiant);
     		if(!$identifiants[$index]) {
     			unset($identifiants[$index]);
     		}
     	}
-    
+
     	return $this->redirect('compte_search', array("q" => "(doc.num_interne:" . implode(" OR doc.num_interne:", $identifiants) . ")", "contacts_all" => 1));
     }
 }
