@@ -90,14 +90,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
         $exist = $this->exist('declaration/'.$hashToAdd);
         $produit = $this->add('declaration')->add($hashToAdd);
-        $produit_libelle = $produit->getLibelle();
-        $produit->initActivites();
-        $this->addHistoriqueNewProduit($produit_libelle);
-
         if(!$exist) {
+            $produit_libelle = $produit->getLibelle();
+            $produit->initActivites();
+            $this->addHistoriqueNewProduit($produit_libelle);
             $this->declaration->reorderByConf();
         }
-
         return $this->get($produit->getHash());
     }
 
