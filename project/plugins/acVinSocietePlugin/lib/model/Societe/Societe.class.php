@@ -348,7 +348,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         } else {
             $compte->statut = CompteClient::STATUT_ACTIF;
         }
-        $compte->mot_de_passe = "{TEXT}" . sprintf("%04d", rand(0, 9999));
+        $compte->mot_de_passe = "{TEXT}" . sprintf("%04d", rand(1000, 9999));
         $compte->addOrigine($this->_id);
         $this->addCompte($compte, -1);
         $compte->nom = $this->raison_sociale;
@@ -521,7 +521,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       $newStatus = "";
       $this->save();
 
-      if($this->isActif()){
+      if($this->isActif() || !$this->statut){
          $newStatus = SocieteClient::STATUT_SUSPENDU;
       }
       if($this->isSuspendu()){
@@ -535,7 +535,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       foreach ($this->etablissements as $keyEtablissement => $etablissement) {
           $etablissement = EtablissementClient::getInstance()->find($keyEtablissement);
           $etablissement->setStatut($newStatus);
-          $etablissement->save();
       }
       $this->setStatut($newStatus);
       $this->save();

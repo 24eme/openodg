@@ -280,7 +280,7 @@ class compteActions extends sfCredentialActions {
               if (!$this->addRemoveGroupe($request, false)) {
                 return ;
               }
-              $this->redirect('compte_groupe', array('groupeName' => $this->groupeName));
+              $this->redirect('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($this->groupeName)));
           }
       }
     }
@@ -294,7 +294,7 @@ class compteActions extends sfCredentialActions {
       if (!$this->addRemoveGroupe($request, true)) {
                 return ;
       }
-      $this->redirect('compte_groupe', array('groupeName' => $groupeName));
+      $this->redirect('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($groupeName)));
     }
 
     public function executeTags(sfWebRequest $request) {
@@ -360,5 +360,32 @@ class compteActions extends sfCredentialActions {
 
       $this->last_page = ceil($this->nb_results / $res_by_page);
       $this->current_page = $page;
+    }
+    
+    public function executeSearchadvanced(sfWebRequest $request) {
+    	$this->form = new CompteRechercheAvanceeForm();
+    
+    	if (!$request->isMethod(sfWebRequest::POST)) {
+    
+    		return sfView::SUCCESS;
+    	}
+    
+    	$this->form->bind($request->getParameter($this->form->getName()));
+    
+    	if (!$this->form->isValid()) {
+    
+    		return sfView::SUCCESS;
+    	}
+    
+    	$identifiants = explode("\n", preg_replace("/^\n/", "",  preg_replace("/\n$/", "", preg_replace("/([^0-9\n]+|\n\n)/", "", str_replace("\n", "\n", $this->form->getValue('identifiants'))))));
+    
+    	foreach($identifiants as $index => $identifiant) {
+    		$identifiants[$index] = trim($identifiant);
+    		if(!$identifiants[$index]) {
+    			unset($identifiants[$index]);
+    		}
+    	}
+    
+    	return $this->redirect('compte_search', array("q" => "(doc.num_interne:" . implode(" OR doc.num_interne:", $identifiants) . ")", "contacts_all" => 1));
     }
 }

@@ -51,7 +51,7 @@ class etablissementActions extends sfCredentialActions {
      public function executeSwitchStatus(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $newStatus = "";
-        if($this->etablissement->isActif()){
+        if($this->etablissement->isActif() || !$this->etablissement->statut){
            $newStatus = SocieteClient::STATUT_SUSPENDU;
         }
         if($this->etablissement->isSuspendu()){

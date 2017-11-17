@@ -16,7 +16,7 @@ $nomModifieSociete = "société viti test contacts modifiées";
 $nomEtablissement = "établissement viti test contacts";
 $nomModifieEtablissement = "établissement viti test contacts modifiés";
 
-$t = new lime_test(30);
+$t = new lime_test(35);
 $t->comment("Création d'une société");
 
 $societe = SocieteClient::getInstance()->createSociete($nomSociete, SocieteClient::TYPE_OPERATEUR);
@@ -61,6 +61,27 @@ $t->is($societe->getMasterCompte()->nom, $societe->raison_sociale, "Le nom du co
 $t->is($societe->getMasterCompte()->nom, $societe->getMasterCompte()->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte sont identiques");
 $t->is($societe->getMasterCompte()->_id, $etablissement->getMasterCompte()->_id, "La société et l'établissement ont le même id");
 $t->ok(in_array("etablissement", CompteClient::getInstance()->find($societe->getMasterCompte()->_id)->tags->automatique->toArray(true, false)), "Le compte de la société possède le tag \"etablissement\"");
+
+$t->comment("Test synchro des suspension");
+
+$etbId = $etablissement->_id;
+$etablissement->statut = CompteClient::STATUT_SUSPENDU;
+$etablissement->save();
+
+$etbCompte = $etablissement->getMasterCompte();
+$t->is($etablissement->getSociete()->statut, CompteClient::STATUT_SUSPENDU, "La société de l'établissement est suspendu");
+$t->is($etablissement->statut, CompteClient::STATUT_SUSPENDU, "L'établissement est suspendu");
+$t->is($etbCompte->statut, CompteClient::STATUT_SUSPENDU, "Le compte est suspendu");
+
+
+
+$etablissement = EtablissementClient::getInstance()->find($etbId);
+$etablissement->statut = CompteClient::STATUT_ACTIF;
+$etablissement->save();
+$t->is($etablissement->statut, CompteClient::STATUT_ACTIF, "L'établissement est actif");
+$etbCompte = $etablissement->getMasterCompte();
+$t->is($etbCompte->statut, CompteClient::STATUT_ACTIF, "Le compte est actif");
+
 
 $t->comment("Modification de la raison sociale de la société");
 

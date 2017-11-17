@@ -213,8 +213,11 @@ class habilitationActions extends sfActions {
                 if($a->key[$sortKey] < $b->key[$sortKey]) {
                     return true;
                 }
+                if($a->key[$sortKey] > $b->key[$sortKey]) {
+                    return false;
+                }
             }
-            return false;
+            return true;
         });
     }
 

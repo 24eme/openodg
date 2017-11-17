@@ -22,14 +22,12 @@
           <div class="col-xs-2 text-muted"><?php echo ucfirst($type_tag) ?>&nbsp;:</div>
           <div class="col-xs-10">
             <?php foreach ($tags as $t): ?>
-                <?php $targs['tags'] = implode(',', array($type_tag . ':' . $t)); ?>
                 <div class="btn-group">
                     <a class="btn btn-sm <?php if($type_tag == "automatique"): ?>btn-link<?php endif; ?> <?php if($type_tag == "manuel"): ?>btn-default<?php endif; ?>"
-                      href="<?php echo url_for('compte_search', $targs); ?>">
+                      href="<?php echo url_for('compte_search', array('tags' => implode(',', array($type_tag . ':' . $t)))); ?>">
                       <?php echo ucfirst(str_replace('_', ' ', $t)) ?>
                     </a>
-                    <?php $targs['tag'] = $t; ?>
-                    <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', $targs) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
+                    <?php if ($type_tag == 'manuel'): ?><a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removetag', array('q' => "doc.identifiant:".$compte->identifiant, 'tag' => $t)) ?>"><span class="glyphicon glyphicon-trash"></span></a><?php endif; ?></span>
                 </div>
             <?php endforeach; ?>
             <?php if($type_tag == 'manuel'): ?>

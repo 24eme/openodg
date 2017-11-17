@@ -255,6 +255,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
     public function save() {
         $societe = $this->getSociete();
+
         if(!$this->getCompte()){
             $this->compte = $societe->getMasterCompte()->_id;
         }
@@ -301,6 +302,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         }
 
         parent::save();
+
+        if($this->getMasterCompte()->_id == $societe->getMasterCompte()->_id){
+          $societe->setStatut($this->getStatut());
+          $this->getMasterCompte()->setStatut($this->getStatut());
+        }
 
         $societe->save();
 
