@@ -55,20 +55,41 @@ EOF;
     }
 
     protected function compteCommunicationUpdate($data){
-      //A TRAITER
       $societe = SocieteClient::getInstance()->find('SOCIETE-'.sprintf("%06d",$data[self::COM_ID]));
+
+      $interloc = false;
+      $compte = null;
       if(!$societe){
-        echo  $data[self::COM_ID]." société non trouvée\n";
+        echo  $data[self::COM_ID]." société non trouvée on cherche en ES \n";
+        $index = acElasticaManager::getType('COMPTE');
+        $qs = new acElasticaQueryQueryString('doc.num_interne:'.$data[self::COM_ID]);
+        $q = new acElasticaQuery();
+        $q->setQuery($qs);
+        $resset = $index->search($q);
+        $result = $resset->getResults();
+        foreach ($result as $rowCompte) {
+          $dataES = $rowCompte->getData();
+          $identifiant = $dataES['doc']['identifiant'];
+          $c = CompteClient::getInstance()->find("COMPTE-".$identifiant);
+          if($c->num_interne == $data[self::COM_ID]){
+            $compte = $c;
+            $interloc = true;
+            break;
+          }
+        }
+      }else{
+        $compte = $societe->getMasterCompte();
         return;
       }
-      $compte = $societe->getMasterCompte();
       if(!$compte){
-        echo  $data[self::COM_ID]." société ".$societe->_id." n'a pas de compte\n";
+        echo  $data[self::COM_ID]." société n'a pas de compte\n";
         return;
       }
-      $compte->societe_informations->email = $data[self::COM_EMAIL];
-      $compte->societe_informations->telephone = $data[self::COM_TEL];
-      $compte->societe_informations->fax = $data[self::COM_FAX];
+      if(!$interloc){
+        $compte->societe_informations->email = $data[self::COM_EMAIL];
+        $compte->societe_informations->telephone = $data[self::COM_TEL];
+        $compte->societe_informations->fax = $data[self::COM_FAX];
+      }
 
       $compte->email = $data[self::COM_EMAIL];
       $compte->fax = $data[self::COM_FAX];
@@ -77,12 +98,13 @@ EOF;
       $compte->site_internet = $data[self::COM_SITEWEB];
       $compte->save();
 
-      $societe->email = $data[self::COM_EMAIL];
-      $societe->telephone = $data[self::COM_TEL];
-      $societe->fax = $data[self::COM_FAX];
-      $societe->save();
-
-      echo $data[self::COM_ID]." société ".$societe->_id." updated :".implode(",",$data);
+      if(!$interloc){
+        $societe->email = $data[self::COM_EMAIL];
+        $societe->telephone = $data[self::COM_TEL];
+        $societe->fax = $data[self::COM_FAX];
+        $societe->save();
+      }
+      echo $data[self::COM_ID]." : compte ".$compte->identifiant." updated :".implode(",",$data);
     }
 
 
