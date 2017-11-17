@@ -18,6 +18,7 @@
       <?php if($drev->isSauvegarde()): ?> <span class="text-danger">Non facturable</span><?php endif; ?> <?php if(!$drev->isNonFactures()): ?><span class="btn btn-default-step btn-xs">Facturé</span><?php endif; ?>
     <?php endif; ?>
     <?php if ($sf_user->isAdmin() && $drev->exist('envoi_oi') && $drev->envoi_oi) { echo ", envoyée à l'OI le ".format_date($drev->envoi_oi, 'dd/MM/yyyy') ; } ?>
+    <?php if ($sf_user->isAdmin() && (!$drev->exist('envoi_oi') || !$drev->envoi_oi) && $drev->isValidee()): ?><a href="<?php echo url_for('drev_send_oi', $drev); ?>" onclick='return confirm("Êtes vous sûr de vouloir envoyer la DRev à l\'OI ?");'  class="btn btn-default btn-xs btn-warning"><span class="glyphicon glyphicon-copy"></span> Envoyer à l'OI</a><?php endif; ?>
   </small>
     </h2>
 </div>
