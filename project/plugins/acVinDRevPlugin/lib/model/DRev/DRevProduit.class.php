@@ -30,8 +30,7 @@ class DRevProduit extends BaseDRevProduit
     }
 
     public function getProduitHash() {
-
-		return $this->getParent()->getHash();
+			return $this->getParent()->getHash();
     }
 
     public function getTotalTotalSuperficie()
