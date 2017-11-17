@@ -22,7 +22,7 @@
 						<libelle_produit value="<?php echo $produit->getLibelleComplet(); ?>" />
 						<code_syndicat_vin value="<?php echo $produit->getCodeCouleur(); ?>" />
 						<surface value="<?php echo $produit->superficie_revendique; ?>" />
-						<volume value="<?php echo $produit->volume_revendique_total; ?>" />
+						<volume value="<?php echo $produit->volume_revendique_total * 100; ?>" />
 						<vsi value="0" />
 					</ligne>
 <?php endforeach; ?>
