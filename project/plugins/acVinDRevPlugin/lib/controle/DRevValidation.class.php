@@ -34,8 +34,10 @@ class DRevValidation extends DocumentValidation
         $this->addControle(self::TYPE_ERROR, 'vci_stock_utilise', "Le stock de vci n'a pas été correctement reparti");
         $this->addControle(self::TYPE_WARNING, 'vci_rendement_total', "Le stock de vci final dépasse le rendement autorisé : vous devrez impérativement détruire Stock final - Plafond VCI Hls");
         $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_complement', 'Vous revendiquez un volume supérieur à celui qui figure sur votre DR en L15');
+        $this->addControle(self::TYPE_ERROR, 'declaration_volume_l15_dr', 'Certaines informations provenant de votre DR sont manquantes');
         $this->addControle(self::TYPE_ERROR, 'vci_substitue_rafraichi', 'Vous ne pouvez ni subsituer ni rafraichir un volume de VCI supérieur à celui qui figure sur votre DR en L15');
         $this->addControle(self::TYPE_ERROR, 'revendication_superficie', 'Vous revendiquez une superficie supérieur à celle qui figure sur votre DR en L4');
+        $this->addControle(self::TYPE_ERROR, 'revendication_superficie_dr', 'Les données de superficie provenant de votre DR sont manquantes');
         /*
          * Engagement
          */
@@ -86,9 +88,9 @@ class DRevValidation extends DocumentValidation
     	$bailleurs = $this->document->getProduitsBailleur();
     	foreach ($this->document->getProduits() as $produit) {
     		if (in_array($produit->getConfig()->getHash(), $bailleurs)) {
-    			if (round($produit->recolte->superficie_total,2) == round($produit->superficie_revendique,2)) {
-    				$this->addPoint(self::TYPE_WARNING, 'declaration_surface_bailleur', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
-    			}
+	    		if (round($produit->recolte->superficie_total,2) == round($produit->superficie_revendique,2)) {
+	    			$this->addPoint(self::TYPE_WARNING, 'declaration_surface_bailleur', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+	    		}
     		}
     	}
     }
@@ -137,17 +139,25 @@ class DRevValidation extends DocumentValidation
         if (!$produit->isHabilite()) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
-        if ($produit->volume_revendique_total != $produit->recolte->recolte_nette && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
-          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        if (!$produit->recolte->recolte_nette) {
+        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+        } else {
+	        if ($produit->volume_revendique_total != $produit->recolte->recolte_nette && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
+	          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+	        }
+	        if ($produit->volume_revendique_total > ($produit->recolte->recolte_nette + $produit->vci->complement) && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
+	        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
+	        }
+	        if (($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
+	        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
+	        }
         }
-        if ($produit->volume_revendique_total > ($produit->recolte->recolte_nette + $produit->vci->complement) && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
-        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
-        }
-        if (($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
-        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
-        }
-        if ($produit->superficie_revendique > $produit->recolte->superficie_total) {
-        	$this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        if (!$produit->recolte->superficie_total) {
+        	$this->addPoint(self::TYPE_ERROR, 'revendication_superficie_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+        } else {
+	        if ($produit->superficie_revendique > $produit->recolte->superficie_total) {
+	        	$this->addPoint(self::TYPE_ERROR, 'revendication_superficie', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
+	        }
         }
         if ($produit->getConfig()->getRendement() > $produit->volume_revendique_issu_recolte && $produit->vci->stock_precedent > 0 && $produit->vci->stock_precedent > $produit->vci->complement) {
         	$this->addPoint(self::TYPE_WARNING, 'vci_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
