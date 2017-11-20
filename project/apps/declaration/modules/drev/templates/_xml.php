@@ -24,7 +24,7 @@
 						<code_syndicat_vin value="<?php echo $codeProduit; ?>" />
 						<surface value="<?php echo $produit->superficie_revendique; ?>" />
 						<volume value="<?php echo $produit->volume_revendique_total * 100; ?>" />
-						<vsi value="<?php echo $produit->volume_revendique_issu_vci * 100; ?>" />
+						<vsi value="0" />
 					</ligne>
 	<?php endif; ?>
 <?php endforeach; ?>
