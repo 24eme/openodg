@@ -4,7 +4,7 @@ class DRevOI
 	public $drev;
 	
 	public function __construct(DRev $drev) {
-		if (!$drev->isValidee()) {
+		if (!$drev->validation_odg) {
 			throw new sfException('DRev non validée');
 		}
 		$this->drev = $drev;
