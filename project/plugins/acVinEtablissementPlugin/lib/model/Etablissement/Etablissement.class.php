@@ -445,9 +445,5 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         return $this->famille == $famille;
     }
-    
-    public function _get($key) {
-    	return $this->getField($key);
-    }
 
 }
