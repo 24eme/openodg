@@ -79,7 +79,6 @@ EOF;
         }
       }else{
         $compte = $societe->getMasterCompte();
-        return;
       }
       if(!$compte){
         echo  $data[self::COM_ID]." société n'a pas de compte\n";

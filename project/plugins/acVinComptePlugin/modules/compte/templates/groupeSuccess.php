@@ -78,8 +78,9 @@
                     <div class="col-xs-2">
                       <div class="form-group <?php if($form['fonction']->hasError()): ?> has-error<?php endif; ?>">
                           <?php echo $form["fonction"]->renderError(); ?>
-                              <?php echo $form["fonction"]->render(array("class" => "form-control select2 input-md",
-                                  "placeholder" => "Fonction"));
+                              <?php echo $form["fonction"]->render(array("class" => "form-control select2 select2permissifNoAjax",
+                              "placeholder" => "Ajouter la fonction (liste permissive)",
+                              "data-choices" => json_encode($form->getFonctionsForAutocomplete())));
                               ?>
                       </div>
                     </div>
