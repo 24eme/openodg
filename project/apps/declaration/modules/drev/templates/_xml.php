@@ -17,14 +17,16 @@
 				<date_saisie value="<?php echo $drev->getDateValidation() ?>" />
 				<lignes>
 <?php foreach ($drev->declaration->getProduits() as $produit): ?>
+	<?php if ($codeProduit = $produit->getConfig()->getCodeProduit()): ?>
 					<ligne>
 						<code_cvi_vin value="<?php echo $produit->getConfig()->getCodeDouane(); ?>" />
 						<libelle_produit value="<?php echo $produit->getLibelleComplet(); ?>" />
-						<code_syndicat_vin value="<?php echo $produit->getCodeCouleur(); ?>" />
+						<code_syndicat_vin value="<?php echo $codeProduit; ?>" />
 						<surface value="<?php echo $produit->superficie_revendique; ?>" />
 						<volume value="<?php echo $produit->volume_revendique_total * 100; ?>" />
 						<vsi value="0" />
 					</ligne>
+	<?php endif; ?>
 <?php endforeach; ?>
 				</lignes>
 			</drev>
