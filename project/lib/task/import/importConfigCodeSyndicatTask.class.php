@@ -43,14 +43,12 @@ EOF;
 
         $conf = ConfigurationClient::getCurrent();
         foreach($conf->getProduits() as $p) {
-          if (preg_match('/Côtes du Rhône/', $p->getLibelleComplet())) {
             if (isset($assoc[$p->code_douane])) {
               $p->code_produit = $assoc[$p->code_douane];
               echo $p->getLibelleComplet()." => ".$p->code_produit."\n";
             }else{
               echo "RIEN TROUVÉ pour ".$p->getLibelleComplet()."\n";
             }
-          }
         }
         $conf->save();
         echo $conf->_id." sauvé\n";
