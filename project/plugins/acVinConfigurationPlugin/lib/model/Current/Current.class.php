@@ -17,7 +17,9 @@ class Current extends BaseCurrent {
     }
 
     public function getConfigurationId($date) {
-        foreach($this->configurations as $confDate => $confId) {
+        $c = $this->configurations->toArray(true, false);
+        krsort($c);
+        foreach($c as $confDate => $confId) {
             if($date >= $confDate) {
 
                 return $confId;
