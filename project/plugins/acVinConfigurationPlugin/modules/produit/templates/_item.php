@@ -62,4 +62,9 @@
 			<?php echo sprintFloat($produit->getRendementVciTotal()) ?>
 		</a>
 	</td>
+	<td class="text-right">
+		<a href="<?php echo url_for('produit_modification', array('noeud' => $produit->getAppellation()->getTypeNoeud(), 'hash' => $produit->getHashForKey())) ?>">
+			<?php echo $produit->code_produit; ?>
+		</a>
+	</td>
 </tr>
