@@ -17,4 +17,5 @@
 	<th style="width:15px;" class="center"><strong>Rend.</strong></th>
 	<th style="width:15px;" class="center"><strong>Rend. VCI</strong></th>
 	<th style="width:15px;" class="center"><strong>Rend. VCI Tot.</strong></th>
+	<th style="width:15px;" class="center"><strong>Code OI</strong></th>
 </tr>
