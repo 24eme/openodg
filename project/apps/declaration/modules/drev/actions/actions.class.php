@@ -761,7 +761,7 @@ class drevActions extends sfActions {
             $this->drev->validate();
         }
 
-        if($this->getUser()->isAdmin() && !$this->validation->hasPoints() && $this->drev->hasCompleteDocuments()) {
+        if($this->getUser()->isAdmin()) {
             $this->drev->validateOdg();
         }
 
@@ -879,6 +879,14 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev.".xml");
         return $this->renderText($xml);
     }
+    
+    public function executeSendoi(sfWebRequest $request) {
+    	$drev = $this->getRoute()->getDRev();
+    	$this->secure(DRevSecurity::VISUALISATION, $drev);
+    	$drevOi = new DRevOI($drev);
+    	$drevOi->send();
+    	return $this->redirect('drev_visualisation', $this->drev);
+    }
 
     public function executeDrPdf(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRev();
@@ -900,7 +908,11 @@ class drevActions extends sfActions {
 
         return $this->renderText($file);
     }
-
+    
+    public function executeMain()
+    {
+    }
+    
     protected function getEtape($drev, $etape) {
         $drevEtapes = DrevEtapes::getInstance();
         if (!$drev->exist('etape')) {

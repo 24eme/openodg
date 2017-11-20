@@ -665,6 +665,16 @@ drev_export_xml:
   requirements:
     sf_method: [get]
 
+drev_send_oi:
+  url: /drev/oi/:id
+  param: { module: drev, action: sendoi }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 #DREVMARC
 drevmarc_create:
   url: /drevmarc/creation/:id
