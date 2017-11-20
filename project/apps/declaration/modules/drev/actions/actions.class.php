@@ -885,7 +885,7 @@ class drevActions extends sfActions {
     	$this->secure(DRevSecurity::VISUALISATION, $drev);
     	$drevOi = new DRevOI($drev);
     	$drevOi->send();
-    	return $this->redirect('drev_visualisation', $this->drev);
+    	return $this->redirect('drev_visualisation', $drev);
     }
 
     public function executeDrPdf(sfWebRequest $request) {

@@ -19,6 +19,7 @@ class DRevOI
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, sfConfig::get('app_oi_url_http'));
 		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $this->getXml());
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		
@@ -30,6 +31,9 @@ class DRevOI
 				$result .= "\n". curl_error($ch);
 			}
 			throw new sfException($result);
+		} else {
+			$stderr = fopen("php://stderr", "w"); 
+			fwrite($stderr, "Retour envoi oi : ".$output);
 		}
 		$this->drev->add('envoi_oi', date('c'));
 		$this->drev->save();
