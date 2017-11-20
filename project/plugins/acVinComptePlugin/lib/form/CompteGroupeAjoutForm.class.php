@@ -29,9 +29,9 @@ class CompteGroupeAjoutForm extends baseForm {
       $this->widgetSchema->setLabel('id_etablissement', 'Compte');
       $this->setValidator('id_etablissement', new ValidatorEtablissement(array('required' => true)));
 
-      $this->setWidget('fonction', new bsWidgetFormChoice(array('choices' => $this->getFonctionList()), array("class"=>"select2 form-control")));
+      $this->setWidget('fonction', new bsWidgetFormInput());
       $this->widgetSchema->setLabel('fonction', 'Fonction');
-      $this->setValidator('fonction', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getFonctionList()))));
+      $this->setValidator('fonction', new sfValidatorString(array('required' => true)));
 
       $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);
       $this->widgetSchema->setNameFormat('compte_groupe_ajout[%s]');
@@ -39,6 +39,32 @@ class CompteGroupeAjoutForm extends baseForm {
 
     public function getFonctionList(){
       return $this->fonctionsArr;
+    }
+
+    public function getFonctionsForAutocomplete(){
+      $q = new acElasticaQuery();
+      $elasticaFacet   = new acElasticaFacetTerms('groupes');
+      $elasticaFacet->setField('doc.groupes.fonction');
+      $elasticaFacet->setSize(250);
+      $q->addFacet($elasticaFacet);
+
+      $index = acElasticaManager::getType('COMPTE');
+      $resset = $index->search($q);
+      $results = $resset->getResults();
+      $this->facets = $resset->getFacets();
+
+      ksort($this->facets);
+      $entries = array();
+      foreach ($this->facets["groupes"]["buckets"] as $facet) {
+          if($facet["key"]){
+            $entry = new stdClass();
+            $entry->id = trim($facet["key"]);
+            $entry->text = trim($facet["key"]);
+            $entries[] = $entry;
+        }
+      }
+
+      return $entries;
     }
 
 }

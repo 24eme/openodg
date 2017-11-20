@@ -73,13 +73,7 @@
                 <a href="<?php echo url_for("drev_edit", $drev) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Continuer la saisie</a>
         <?php elseif(!$drev->validation_odg && $sf_user->isAdmin()): ?>
                 <?php if($drev->hasCompleteDocuments() || true): ?>
-                <div class="btn-group">
-                <a href="" class="btn btn-default btn-upper dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>">Partiellement</a></li>
-                  <li><a href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>">Totalement</a></li>
-                </ul>
-                </div>
+                <a onclick='return confirm("Êtes vous sûr de vouloir approuver cette déclaration ?");' href="<?php echo url_for("drev_validation_admin", array("sf_subject" => $drev, "service" => isset($service) ? $service : null)) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-ok-sign"></span>&nbsp;&nbsp;Approuver</a>
                 <?php else: ?>
                     <button type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Enregistrer</button>
                 <?php endif; ?>
