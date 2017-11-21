@@ -133,7 +133,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		//putenv('LC_ALL=fr_FR.UTF-8');
 		exec('xls2csv '.$file.' > '.$path.$filename);
 
-		if (!is_file($path.$filename)) {
+		if (!filesize($path.$filename)) {
 			throw new sfException("xls2csv n'a pas pu convertir le fichier ".$file);
 		}
 		 
