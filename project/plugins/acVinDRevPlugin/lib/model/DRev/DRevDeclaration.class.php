@@ -30,4 +30,15 @@ class DRevDeclaration extends BaseDRevDeclaration
 		}
 	}
 
+	public function hasVci() {
+		foreach($this->getProduits() as $produit) {
+			if($produit->hasVci()) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }

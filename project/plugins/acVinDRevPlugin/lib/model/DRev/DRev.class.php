@@ -497,19 +497,20 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     protected function updateProduitDetailFromCSV($csv) {
         $this->resetProduitDetail();
         foreach ($csv as $line) {
+            $hashProduit = DRCsvFile::getHashProduitByLine($line);
 
             if (!preg_match("/^TOTAL/", $line[DRCsvFile::CSV_LIEU]) && !preg_match("/^TOTAL/", $line[DRCsvFile::CSV_CEPAGE])) {
 
                 continue;
             }
 
-            $line[DRCsvFile::CSV_HASH_PRODUIT] = preg_replace("/(mentionVT|mentionSGN)/", "mention", $line[DRCsvFile::CSV_HASH_PRODUIT]);
+            $hashProduit = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hashProduit);
 
-            if (!$this->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $line[DRCsvFile::CSV_HASH_PRODUIT]))) {
+            if (!$this->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $hashProduit))) {
                 continue;
             }
 
-            $config = $this->getConfiguration()->get($line[DRCsvFile::CSV_HASH_PRODUIT])->getNodeRelation('revendication');
+            $config = $this->getConfiguration()->get($hashProduit)->getNodeRelation('revendication');
 
             if ($config instanceof ConfigurationAppellation && !$config->mention->lieu->hasManyCouleur()) {
                 $config = $config->mention->lieu->couleur;
@@ -524,7 +525,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $produit = $this->addProduit($config->getHash());
-
             $produitDetail = $produit->detail;
             if($line[DRCsvFile::CSV_VTSGN]) {
                 $produitDetail = $produit->detail_vtsgn;
@@ -532,8 +532,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
             $produitDetail->volume_total += (float) $line[DRCsvFile::CSV_VOLUME_TOTAL];
             $produitDetail->usages_industriels_total += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS_TOTAL];
+            if(preg_match("/^[0-9\.,]+$/", $line[DRCsvFile::CSV_VCI_TOTAL]) && ((float) $line[DRCsvFile::CSV_VCI_TOTAL]) > 0) {
+                $produitDetail->vci_total += (float) $line[DRCsvFile::CSV_VCI_TOTAL];
+            }
             $produitDetail->superficie_total += (float) $line[DRCsvFile::CSV_SUPERFICIE_TOTALE];
             $produitDetail->volume_sur_place += (float) $line[DRCsvFile::CSV_VOLUME];
+
             if (!$produitDetail->exist('superficie_vinifiee')) {
             	$produitDetail->add('superficie_vinifiee');
             }
@@ -546,6 +550,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 $produitDetail->usages_industriels_sur_place = -1;
             } elseif ($produitDetail->usages_industriels_sur_place != -1) {
                 $produitDetail->usages_industriels_sur_place += (float) $line[DRCsvFile::CSV_USAGES_INDUSTRIELS];
+            }
+
+            if(preg_match("/^[0-9\.,]+$/", $line[DRCsvFile::CSV_VCI]) && ((float) $line[DRCsvFile::CSV_VCI]) > 0) {
+                $produitDetail->vci_sur_place += (float) $line[DRCsvFile::CSV_VCI];
             }
         }
 
@@ -625,7 +633,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
                 continue;
             }
 
-            $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $line[DRCsvFile::CSV_HASH_PRODUIT])));
+            $hashProduit = DRCsvFile::getHashProduitByLine($line);
+
+            $hash = preg_replace("|/detail/.+$|", "", preg_replace('|/recolte.|', '/declaration/', preg_replace("|/detail/[0-9]+$|", "", $hashProduit)));
             $hash = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hash);
 
             if (!$this->getConfiguration()->exist($hash)) {

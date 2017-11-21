@@ -41,7 +41,7 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
             <?php if ($drev->hasDR()): ?>
             <tr>
                 <th class="text-center col-xs-<?php if ($drev->hasDR()): ?>4<?php else: ?>6<?php endif; ?>"></th>
-                <th colspan="3" class="text-center striped-success small">Déclaration de Récolte</th>
+                <th colspan="<?php if($drev->declaration->hasVci()): ?>4<?php else: ?>3<?php endif; ?>" class="text-center striped-success small">Déclaration de Récolte</th>
                 <th colspan="3" class="text-center">Déclaration de Revendication</th>
             </tr>
             <?php endif; ?>
@@ -51,6 +51,9 @@ $global_error_msg = str_replace($global_error_id, '', $global_error_with_infos);
                 <th class="col-xs-1 text-center striped-success small">Volume sur place</th>
                 <th class="col-xs-1 text-center striped-success small">Volume total</th>
                 <th class="col-xs-1 text-center striped-success small">Usages industriels</th>
+                    <?php if($drev->declaration->hasVci()): ?>
+                    <th class="col-xs-1 text-center striped-success small">VCI</th>
+                    <?php endif ?>
                 <?php endif; ?>
                 <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Superficie&nbsp;Totale<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie totale en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>
                 <th class="<?php if ($drev->hasDR()): ?>manual-width small<?php else: ?>col-xs-2<?php endif; ?> text-center">Superficie&nbsp;Vinifiée<br /><small class="text-muted">(ares)</small><a title="Cette superficie correspond à la superficie vinifiée en production de votre exploitation" data-placement="auto" data-toggle="tooltip" class="btn-tooltip btn btn-md pull-right"><span class="glyphicon glyphicon-question-sign"></span></a></th>

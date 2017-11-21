@@ -6,6 +6,9 @@
             <td class="striped-success"></td>
             <td class="striped-success"></td>
             <td class="striped-success"></td>
+            <?php if($drev->declaration->hasVci()): ?>
+            <td class="striped-success"></td>
+            <?php endif; ?>
         <?php else: ?>
             <td class="text-right striped-success small">
               <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->volume_sur_place); ?>&nbsp;<small>hl</small>
@@ -16,6 +19,13 @@
             <td class="text-right striped-success small">
               <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->usages_industriels_total); ?>&nbsp;<small>hl</small>
             </td>
+            <?php if($drev->declaration->hasVci()): ?>
+            <td class="text-right striped-success small">
+                <?php if ($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->vci_total): ?>
+                    <?php echoFloat($produit->get('detail'.(($vtsgn) ? "_vtsgn" : null))->vci_total); ?>&nbsp;<small>hl</small>
+                <?php endif; ?>
+            </td>
+            <?php endif; ?>
     <?php endif; ?>
     <?php endif; ?>
     <td class="text-center">

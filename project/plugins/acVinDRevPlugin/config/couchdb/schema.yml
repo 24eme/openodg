@@ -111,6 +111,8 @@ DRev:
                                                       volume_total: { type: float }
                                                       superficie_total: { type: float }
                                                       superficie_vinifiee: { type: float, required: false }
+                                                      vci_sur_place: { type: float }
+                                                      vci_total: { type: float }
                                                 detail_vtsgn:
                                                   type: collection
                                                   required: false
@@ -123,6 +125,8 @@ DRev:
                                                       volume_total: { type: float }
                                                       superficie_total: { type: float }
                                                       superficie_vinifiee: { type: float, required: false }
+                                                      vci_sur_place: { type: float }
+                                                      vci_total: { type: float }
                                                 # ------ Cépage ------
                                                 '*':
                                                   type: collection

@@ -153,12 +153,12 @@ class DRevCouleur extends BaseDRevCouleur
 		}
 
         if(!is_null($this->detail->volume_sur_place) && !is_null($this->detail->usages_industriels_sur_place)) {
-            $this->detail->volume_sur_place_revendique = $this->detail->volume_sur_place - $this->detail->usages_industriels_sur_place;
+            $this->detail->volume_sur_place_revendique = $this->detail->volume_sur_place - $this->detail->usages_industriels_sur_place - $this->detail->vci_sur_place;
         }
 
 		if($this->canHaveVtsgn()) {
 			if(!is_null($this->detail_vtsgn->volume_sur_place) && !is_null($this->detail_vtsgn->usages_industriels_sur_place)) {
-            	$this->detail_vtsgn->volume_sur_place_revendique = $this->detail_vtsgn->volume_sur_place - $this->detail_vtsgn->usages_industriels_sur_place;
+				$this->detail_vtsgn->volume_sur_place_revendique = $this->detail_vtsgn->volume_sur_place - $this->detail_vtsgn->usages_industriels_sur_place - $this->detail_vtsgn->vci_sur_place;
         	}
 		}
     }
@@ -205,6 +205,10 @@ class DRevCouleur extends BaseDRevCouleur
 		return $this->exist('superficie_vinifiee');
 	}
 
+	public function hasVci() {
+
+		return $this->detail->vci_total || ($this->exist('detail_vtsgn') && $this->detail_vtsgn->vci_total > 0);
+	}
 
     public function isProduit() {
 
