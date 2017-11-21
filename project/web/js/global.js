@@ -622,8 +622,7 @@
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();
 
-        $(this).find(".select2autocompleteAjax").each(function () {
-            console.log($(this))
+        $(this).find(".select2autocompleteAjax").each(function () {            
             var urlAjax = $(this).data('ajax');
             var defaultValue = $(this).val();
             var defaultValueSplitted = defaultValue.split(',');

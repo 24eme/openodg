@@ -1,15 +1,6 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of class WidgetSociete
- * @author mathurin
- */
-class WidgetCompte extends sfWidgetFormChoice
+class WidgetCompte extends bsWidgetFormInput
 {
     protected $identifiant = null;
 
@@ -18,17 +9,15 @@ class WidgetCompte extends sfWidgetFormChoice
         parent::__construct($options, $attributes);
 
         $this->setAttribute('data-ajax', $this->getUrlAutocomplete());
-        $this->setOption('choices', $this->getChoices());
     }
 
     protected function configure($options = array(), $attributes = array())
     {
-        parent::configure($options, $attributes);
+      parent::configure($options, $attributes);
 
-        $this->setOption('choices', array());
-        $this->addRequiredOption('interpro_id', null);
-        if(!count($attributes))
-	  $this->setAttribute('class', 'autocomplete'); 
+      $this->addRequiredOption('interpro_id', null);
+      if(!count($attributes))
+        $this->setAttribute('class', 'autocomplete');
     }
 
     public function setOption($name, $value) {
@@ -42,10 +31,20 @@ class WidgetCompte extends sfWidgetFormChoice
     }
 
     public function render($name, $value = null, $attributes = array(), $errors = array())
-    {
-        $this->identifiant = $value;
+  {
+      $this->identifiant = $value;
 
-        return parent::render($name, $value, $attributes, $errors);
-    }
-    
+      if($this->identifiant) {
+          $compte = CompteClient::getInstance()->find($this->identifiant);
+
+          if(!$compte) {
+              $value = null;
+          } else {
+              $value = $compte->_id.",".$compte->nom;
+          }
+      }
+
+      return parent::render($name, $value, $attributes, $errors);
+  }
+
 }

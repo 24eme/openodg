@@ -7,8 +7,6 @@
 class CompteGroupeAjoutForm extends baseForm {
 
 
-    protected $fonctionsArr = array();
-
   	public function __construct($interpro_id, $defaults = array(), $options = array(), $CSRFSecret = null)
   	{
   		$this->interpro_id = $interpro_id;
@@ -18,16 +16,10 @@ class CompteGroupeAjoutForm extends baseForm {
     public function configure()
     {
 
-      $path_fonctions = dirname(__FILE__)."/../../../../data/configuration/rhone/fonctions.csv";
-      $fonctionsCsv = new CsvFile($path_fonctions);
-
-      foreach ($fonctionsCsv->getCsv() as $row) {
-        $this->fonctionsArr[$row[1]] = $row[1];
-      }
-
-      $this->setWidget('id_etablissement', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration'), array('class' => 'select2autocomplete form-control')));
-      $this->widgetSchema->setLabel('id_etablissement', 'Compte');
-      $this->setValidator('id_etablissement', new ValidatorEtablissement(array('required' => true)));
+      $this->setWidget('id_compte', new WidgetCompte(array('interpro_id' => $this->interpro_id)));
+      $this->widgetSchema->setLabel('id_compte', 'Compte');
+      $this->setValidator('id_compte', new ValidatorCompte(array('required' => true)));
+      $this->validatorSchema['id_compte']->setMessage('required', 'Le choix d\'un compte est obligatoire');
 
       $this->setWidget('fonction', new bsWidgetFormInput());
       $this->widgetSchema->setLabel('fonction', 'Fonction');
@@ -37,9 +29,6 @@ class CompteGroupeAjoutForm extends baseForm {
       $this->widgetSchema->setNameFormat('compte_groupe_ajout[%s]');
     }
 
-    public function getFonctionList(){
-      return $this->fonctionsArr;
-    }
 
     public function getFonctionsForAutocomplete(){
       $q = new acElasticaQuery();

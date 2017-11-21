@@ -134,7 +134,7 @@ class compteActions extends sfCredentialActions {
           		$this->selected_typetags[$m[1]][] = $m[2];
         	}
         }
-        
+
         $q = $this->initSearch($request);
         $resset = $index->search($q);
         $nbTotal = $resset->getTotalHits();
@@ -156,13 +156,13 @@ class compteActions extends sfCredentialActions {
       $compteAjout = $request->getParameter('compte_groupe_ajout');
       $groupe = $request->getParameter('groupeName');
       $retour = $request->getParameter('retour',null);
-      $compteId = $compteAjout["id_etablissement"];
+      $compteIdentifiant = str_replace("COMPTE-","",$compteAjout["id_compte"]);
       if($request->getParameter('identifiant',null)){
-        $compteId = $request->getParameter('identifiant');
+        $compteIdentifiant = $request->getParameter('identifiant');
       }
 
       $index = acElasticaManager::getType('COMPTE');
-      $qs = new acElasticaQueryQueryString("* doc.tags.groupes:".Compte::transformTag($groupe)." doc.identifiant:".$compteId);
+      $qs = new acElasticaQueryQueryString("* doc.tags.groupes:".Compte::transformTag($groupe)." doc.identifiant:".$compteIdentifiant);
       $q = new acElasticaQuery();
       $q->setQuery($qs);
       $resset = $index->search($q);
@@ -178,7 +178,7 @@ class compteActions extends sfCredentialActions {
         return false;
       }
       if($retour){
-        return $this->redirect('compte_visualisation', array('identifiant' => $compteId));
+        return $this->redirect('compte_visualisation', array('identifiant' => str_replace("COMPTE-","",$compteIdentifiant)));
       }
       return true;
     }
@@ -274,9 +274,7 @@ class compteActions extends sfCredentialActions {
           $this->form->bind($request->getParameter($this->form->getName()));
           if ($this->form->isValid()) {
               $values = $this->form->getValues();
-
-              $etb = EtablissementClient::getInstance()->find($values['id_etablissement']);
-              $compte = $etb->getMasterCompte();
+              $compte = CompteClient::getInstance()->find($values['id_compte']);
               $compte->addInGroupes($this->groupeName,$values['fonction']);
               $compte->save();
               if (!$this->addRemoveGroupe($request, false)) {
@@ -290,9 +288,10 @@ class compteActions extends sfCredentialActions {
     public function executeRemovegroupe(sfWebRequest $request) {
       $groupeName = $request->getParameter('groupeName');
       $identifiant = $request->getParameter('identifiant');
-      $compte = CompteClient::getInstance()->find("COMPTE-".$identifiant);
+      $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
       $compte->removeGroupes($groupeName);
       $compte->save();
+      $request->addRequestParameters(array('id_compte' => "COMPTE-".$identifiant));
       if (!$this->addRemoveGroupe($request, true)) {
                 return ;
       }

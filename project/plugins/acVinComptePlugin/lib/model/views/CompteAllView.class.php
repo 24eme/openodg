@@ -20,7 +20,7 @@ class CompteAllView extends acCouchdbView {
     const KEY_COMMUNE = 6;
     const KEY_CODE_POSTAL = 7;
     const KEY_COMPTE_TYPE = 8;
-    
+
     public static function getInstance() {
         return acCouchdbManager::getView('compte', 'all', 'Compte');
     }
@@ -32,7 +32,7 @@ class CompteAllView extends acCouchdbView {
 	return $this->findByInterproVIEW($interpro);
       }
     }
-    
+
     public function findByInterproAndStatut($interpro, $q = null, $limit = 100, $statut = CompteClient::STATUT_ACTIF) {
       try {
 	return $this->findByInterproELASTIC($interpro, $q, $limit, array(sprintf('statut:%s', $statut)));
@@ -66,12 +66,23 @@ class CompteAllView extends acCouchdbView {
     private function elasticRes2View($results) {
       $res = array();
       foreach ($results->getResults() as $er) {
-	$r = $er->getData();
-	$e = new stdClass();
-	$e->id = $r['_id'];
-	$e->key = array($r['interpro'], $r['statut'], $r['_id'], $r['nom_a_afficher'], $r['identifiant'], $r['adresse'], $r['commune'], $r['code_postal'], $r['compte_type']);
-	$e->value = null;
-	$res[] = $e;
+      //  $r = $er->getData();
+      //  $e = new stdClass();
+      //  $e->id = $r['_id'];
+      //  $e->key = array($r['interpro'], $r['statut'], $r['_id'], $r['nom_a_afficher'], $r['identifiant'], $r['adresse'], $r['commune'], $r['code_postal'], $r['compte_type']);
+      //  $e->value = null;
+      //  $res[] = $e;
+      //
+    	$r = $er->getData();
+    	$e = new stdClass();
+    	$e->id = "COMPTE-".$r["doc"]['identifiant'];
+    	$e->key = array($r["doc"]['interpro'],
+                      $r["doc"]['statut'], "COMPTE-".$r["doc"]['identifiant'],
+                      $r["doc"]['nom_a_afficher'], $r["doc"]['identifiant'],
+                      $r["doc"]['adresse'], $r["doc"]['commune'],
+                      $r["doc"]['code_postal'], $r["doc"]['compte_type']);
+    	$e->value = null;
+    	$res[] = $e;
       }
       return $res;
     }
@@ -89,14 +100,14 @@ class CompteAllView extends acCouchdbView {
 //                        ->endkey(array($interpro,$id, array()))
 //                        ->getView($this->design, $this->view);
 //    }
-//    
+//
       public function findByInterproAndStatutVIEW($interpro,$statut) {
         return $this->client->startkey(array($interpro,$statut))
                         ->endkey(array($interpro,$statut, array()))
                         ->getView($this->design, $this->view)->rows;
     }
-    
-    
+
+
     public static function makeLibelle($datas) {
         $libelle = '';
         if (isset($datas[self::KEY_NOM_A_AFFICHER]) && $nom = $datas[self::KEY_NOM_A_AFFICHER]) {
@@ -114,7 +125,7 @@ class CompteAllView extends acCouchdbView {
         if (isset($datas[self::KEY_COMMUNE]) && $commune = $datas[self::KEY_COMMUNE]) {
             $libelle .= ' / ' . $commune;
         }
-        
+
         if (isset($datas[self::KEY_CODE_POSTAL]) && $cp = $datas[self::KEY_CODE_POSTAL]) {
             $libelle .= ' / ' . $cp;
         }
@@ -126,4 +137,3 @@ class CompteAllView extends acCouchdbView {
     }
 
 }
-

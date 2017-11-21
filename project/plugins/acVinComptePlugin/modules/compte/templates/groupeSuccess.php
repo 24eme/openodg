@@ -70,9 +70,9 @@
                     <?php echo $form->renderHiddenFields() ?>
                     <?php echo $form->renderGlobalErrors() ?>
                     <div class="col-xs-7" style="margin-right: 10px;">
-                      <div class="form-group <?php if($form['id_etablissement']->hasError()): ?> has-error<?php endif; ?>">
-                          <?php echo $form['id_etablissement']->renderError(); ?>
-                          <?php echo $form['id_etablissement']->render(array('class' => 'form-control select2autocompleteAjax input-md', 'placeholder' => 'Rechercher', "autofocus" => "autofocus")); ?>
+                      <div class="form-group <?php if($form['id_compte']->hasError()): ?> has-error<?php endif; ?>">
+                          <?php echo $form['id_compte']->renderError(); ?>
+                          <?php echo $form['id_compte']->render(array('class' => 'form-control select2autocompleteAjax', 'placeholder' => 'Rechercher', "autofocus" => "autofocus")); ?>
                       </div>
                     </div>
                     <div class="col-xs-2">
