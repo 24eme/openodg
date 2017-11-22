@@ -13,6 +13,7 @@ class EtablissementForm extends acCouchdbObjectForm
      public function configure() {
        $this->setWidgets(array(
             "siret" => new sfWidgetFormInput(array("label" => "N° SIRET")),
+		        "ppm" => new sfWidgetFormInput(array("label" => "N° PPM")),
             //"raison_sociale" => new sfWidgetFormInput(array("label" => "Raison Sociale")),
             "adresse" => new sfWidgetFormInput(array("label" => "Adresse")),
             "commune" => new sfWidgetFormInput(array("label" => "Commune")),
@@ -24,6 +25,7 @@ class EtablissementForm extends acCouchdbObjectForm
             "email" => new sfWidgetFormInput(array("label" => "Email")),
         ));
 
+				$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
         $this->setValidators(array(
             'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
             //'raison_sociale' => new sfValidatorString(array("required" => false)),
@@ -35,6 +37,14 @@ class EtablissementForm extends acCouchdbObjectForm
             'telephone_prive' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
        	    'email' => new sfValidatorEmailStrict(array("required" => false)),
+						'ppm' =>  new sfValidatorRegex(array('required' => false,
+                                                                 'pattern' => "/^[A-Z]{1}[0-9]{8}$/",
+                                                                 'min_length' => 9,
+                                                                 'max_length' => 9),
+                                                           array('invalid' => $ppmMsg,
+                                                                 'min_length' => $ppmMsg,
+                                                                 'max_length' => $ppmMsg,
+																															 )),
         ));
 
         if(!$this->getOption("use_email")) {

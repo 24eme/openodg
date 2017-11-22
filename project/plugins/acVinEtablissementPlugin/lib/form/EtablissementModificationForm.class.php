@@ -51,6 +51,21 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
             $this->widgetSchema->setLabel('cvi', 'CVI');
             $cviMsg = 'Le CVI doit impérativement être constitué de 10 chiffres';
             $this->setValidator('cvi', new sfValidatorString(array('required' => false, 'min_length' => 10, 'max_length' => 10),array('min_length' => $cviMsg, 'max_length' => $cviMsg)));
+
+            $this->setWidget('ppm', new bsWidgetFormInput());
+            $this->widgetSchema->setLabel('ppm', 'PPM');
+            $ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
+            $this->setValidator('ppm', new sfValidatorRegex(array('required' => false,
+                                                                 'pattern' => "/^[A-Z]{1}[0-9]{8}$/",
+                                                                 'min_length' => 9,
+                                                                 'max_length' => 9),
+                                                           array('invalid' => $ppmMsg,
+                                                                 'min_length' => $ppmMsg,
+                                                                 'max_length' => $ppmMsg,
+                                                                 )
+                                                            )
+                                                          );
+
          } else {
             $this->setWidget('carte_pro', new bsWidgetFormInput());
             $this->widgetSchema->setLabel('carte_pro', 'N° Carte professionnelle');
