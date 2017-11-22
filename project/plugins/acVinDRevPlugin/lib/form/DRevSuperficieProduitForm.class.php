@@ -9,9 +9,7 @@ class DRevSuperficieProduitForm extends acCouchdbObjectForm {
     }
 
     protected function updateDefaultsFromObject() {
-        if ($this->getObject()->getDocument()->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) {
-          parent::updateDefaultsFromObject();
-        }
+        parent::updateDefaultsFromObject();
         $this->setDefault('has_stock_vci',  $this->getObject()->hasVci());
     }
 

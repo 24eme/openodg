@@ -87,36 +87,38 @@ class drevActions extends sfActions {
     public function executeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if (!$this->drev->hasDocumentDouanier()) {
-        	FichierClient::getInstance()->scrapeAndSaveFiles($this->drev->getEtablissementObject(), $this->drev->getDocumentDouanierType(), $this->drev->campagne);
-        }
+        try {
+          if (!$this->drev->hasDocumentDouanier()) {
+          	FichierClient::getInstance()->scrapeAndSaveFiles($this->drev->getEtablissementObject(), $this->drev->getDocumentDouanierType(), $this->drev->campagne);
+          }
+        }catch(Exception $e) {}
         return $this->redirect('drev_dr_douane', $this->drev);
     }
 
     public function executeDrDouane(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
-        if ($this->drev->importFromDR()) {
-        	return $this->redirect('drev_revendication_superficie', $this->drev);
-        }
         $client = $this->drev->getDocumentDouanierClient();
         if (!$client) {
         	throw new sfException('Client not found');
         }
         $this->form = new DRevUploadDrForm($client->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne), array("papier" => $this->drev->isPapier()));
+        if ($this->drev->importFromDR()) {
+          return $this->redirect('drev_revendication_superficie', $this->drev);
+        }
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
-	   	  $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
-	       if (!$this->form->isValid()) {
-	    	return sfView::SUCCESS;
-	    }
+	   	     $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
+	      if (!$this->form->isValid()) {
+	    	  return sfView::SUCCESS;
+	      }
         if (!$this->form->getValue('file')) {
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
-		$fichier = $this->form->save();
-		$this->drev->importFromDR();
-		$this->drev->save();
+		    $fichier = $this->form->save();
+		      $this->drev->importFromDR();
+		    $this->drev->save();
         return $this->redirect('drev_revendication_superficie', $this->drev);
     }
 
