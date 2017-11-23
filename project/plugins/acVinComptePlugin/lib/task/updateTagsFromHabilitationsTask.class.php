@@ -47,6 +47,12 @@ class updateTagsFromHabilitationsTask extends sfBaseTask {
           $h = HabilitationClient::getInstance()->getLastHabilitation($etbWithHabilitation);
           $etb = EtablissementCLient::getInstance()->find($h->getIdentifiant());
           $compte = CompteClient::getInstance()->find($etb->getCompte());
+          $compte->tags->remove('produit');
+          $compte->tags->add('produit');
+          $compte->tags->remove('activite');
+          $compte->tags->add('activite');
+          $compte->tags->remove('statuts');
+          $compte->tags->add('statuts');
           $activiteTags = array();
           $statutsTags = array();
           foreach ($h->getProduits(false) as $prod) {
