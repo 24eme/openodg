@@ -62,6 +62,26 @@ class Email {
         return $this->getMailer()->send($message);
     }
 
+    public function sendDrevPapierConfirmee($drev) {
+        if (!$drev->declarant->email) {
+
+            return;
+        }
+
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = array($drev->declarant->email);
+        $subject = 'Récéption de votre Déclaration de Revendication';
+        $body = $this->getBodyFromPartial('send_drev_confirmee_papier', array('drev' => $drev));
+        $message = Swift_Message::newInstance()
+                ->setFrom($from)
+                ->setTo($to)
+                ->setSubject($subject)
+                ->setBody($body)
+                ->setContentType('text/plain');
+
+        return $this->getMailer()->send($message);
+    }
+
     public function sendDRevRappelDocuments($drev) {
         if (!$drev->declarant->email) {
 

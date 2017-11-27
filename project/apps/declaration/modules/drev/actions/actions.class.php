@@ -769,6 +769,13 @@ class drevActions extends sfActions {
 
         $this->drev->save();
 
+        if($this->getUser()->isAdmin() && $this->drev->isPapier()) {
+            Email::getInstance()->sendDrevPapierConfirmee($this->drev);
+            $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
+
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
         if($this->getUser()->isAdmin()) {
             $this->getUser()->setFlash("notice", "La déclaration a bien été validée");
 
