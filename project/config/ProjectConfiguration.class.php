@@ -13,7 +13,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinLibPlugin');
         $this->enablePlugins('acTCPDFPlugin');
         $this->enablePlugins('acCASPlugin');
-        $this->enablePlugins('acVinConfigurationPlugin');
+        $this->enablePlugins('avaVinConfigurationPlugin');
         $this->enablePlugins('DeclarationPlugin');
         $this->enablePlugins('avaVinDRevPlugin');
         $this->enablePlugins('acVinDRevMarcPlugin');
