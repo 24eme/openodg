@@ -1,0 +1,51 @@
+#Etablissement
+Etablissement:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      identifiant: {  }
+      raison_sociale: {  }
+      nom: { required: false }
+      cvi: {  }
+      siren: {  }
+      siret: {  }
+      email: {  }
+      telephone_bureau: {  }
+      telephone_mobile: {  }
+      telephone_prive: {  }
+      fax: {  }
+      adresse: {  }
+      code_postal: {  }
+      code_insee: { required: false }
+      commune: {  }
+      date_premiere_connexion: { required: false }
+      compte_id: {  }
+      familles:
+        type: collection
+        definition:
+          fields:
+            '*': { }
+      chais:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
+                  attributs:
+                    type: collection
+                    definition:
+                      fields:
+                         '*': { }
+
+      droits:
+        type: array_collection
+        definition:
+          fields:
+             '*': { }

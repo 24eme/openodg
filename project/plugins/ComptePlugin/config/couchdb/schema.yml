@@ -1,0 +1,136 @@
+#Compte
+Compte:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      identifiant: {  }
+      identifiant_interne: {  }
+      type_compte: {  }
+      code_insee: { required: false }
+      civilite: {  }
+      nom: {  }
+      prenom: {  }
+      raison_sociale: { }
+      nom_a_afficher: { }
+      adresse: { }
+      adresse_complement_destinataire: { }
+      adresse_complement_lieu: { }
+      code_postal: { }
+      commune: { }
+      cedex: { required: false }
+      pays: { }
+      telephone_bureau: { }
+      telephone_prive: { }
+      telephone_mobile: { }
+      fax: { }
+      email: { }
+      web: { required: false }
+      siret: { }
+      siren: { }
+      cvi: { }
+      etablissement: { }
+      commentaires: { }
+      statut: { }
+      numero_archive: { }
+      campagne_archive: { }
+      date_archivage: { }
+      date_creation: { }
+      no_accises: { }
+      lat: { }
+      lon: { }
+      droits:
+        type: collection
+        required: false
+        definition:
+          fields:
+             '*': { }
+      chais:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  adresse: { }
+                  commune: { }
+                  code_postal: { }
+                  lat: { }
+                  lon: { }
+                  attributs:
+                    type: collection
+                    definition:
+                      fields:
+                         '*': { }
+      formations:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  produit_hash: { }
+                  produit_libelle: { }
+                  annee: { }
+                  heures: { }
+      infos:
+        type: collection
+        definition:
+          fields:
+            'attributs':
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
+            'automatiques':
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
+            'produits':
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
+            'manuels':
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
+            'syndicats':
+              type: collection
+              definition:
+                fields:
+                  '*' : { }
+      tags:
+        type: collection
+        definition:
+          fields:
+            'attributs':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }
+            'automatiques':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }
+            'produits':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }
+            'manuels':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }
+            'syndicats':
+              type: array_collection
+              definition:
+                fields:
+                  '*' : { }
