@@ -28,6 +28,15 @@
                 </span>
             </div>
             <?php endif; ?>
+            <?php if(isset($form['ppm'])): ?>
+            <div class="form-group<?php if($form["ppm"]->hasError()): ?> has-error<?php endif; ?>">
+                <?php echo $form["ppm"]->renderError(); ?>
+                <?php echo $form["ppm"]->renderLabel("N°&nbsp;PPM", array("class" => "col-xs-3 control-label")); ?>
+                <div class="col-xs-9">
+                    <?php echo $form["ppm"]->render(array("class" => "form-control")); ?>
+                </div>
+            </div>
+          <?php endif; ?>
         </div>
         <div class="col-xs-7">
         	<?php if(isset($form['raison_sociale'])): ?>
@@ -122,6 +131,12 @@
                 <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
                 <span class="col-xs-9">
                    <?php echo formatSIRET($etablissement->siret); ?>
+                </span>
+            </div>
+            <div class="form-group">
+                <strong class="col-xs-3 text-right">N°&nbsp;PPM</strong>
+                <span class="col-xs-9">
+                   <?php echo ($etablissement->ppm)? $etablissement->ppm : " (non communiqué)"; ?>
                 </span>
             </div>
 <?php if(isset($extra)): ?>

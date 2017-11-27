@@ -243,6 +243,12 @@ class compteActions extends sfCredentialActions {
       if (!$this->addremovetag($request, false)) {
 		      return ;
       }
+
+      if($request->getParameter('retour')) {
+
+          return $this->redirect($request->getParameter('retour'));
+      }
+
       return $this->redirect('compte_search', $this->args);
     }
 

@@ -36,11 +36,12 @@
                   <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()):
                     echo "<span class='text-muted'> Ajout de tag impossible pour un contact archivé</span>";
                   else: ?>
-                  <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => $compte->identifiant, "tags" => "")); ?>" method="GET">
+                  <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => "doc.identifiant:".$compte->identifiant)); ?>" method="GET">
                     <div class="input-group input-group-sm col-xs-12">
-                      <input id="creer_tag" required="required" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
-                      <input type="hidden" name="q" value="<?php echo $compte->identifiant;?>"/>
-                      <input type="hidden" name="tags" value=""/>
+                      <input id="creer_tag" name="tag" class="tags form-control select2 select2permissifNoAjax" placeholder="Ajouter un tag (liste permissive)" data-choices='<?php echo json_encode(CompteClient::getInstance()->getAllTagsManuel()); ?>'    type="text">
+
+                      <input type="hidden" name="q" value="doc.identifiant:<?php echo $compte->identifiant;?>"/>
+                      <input type="hidden" name="retour" value="<?php echo url_for('compte_visualisation', $compte) ?>"/>
                       <span class="input-group-btn">
                         <button class="btn btn-default" type="submit">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
                       </span>
@@ -60,11 +61,11 @@
               <?php if ($compte->isSuspendu() || $compte->getSociete()->isSuspendu()):
                 echo "<span class='text-muted'> Ajout de tag impossible pour un contact archivé</span>";
               else: ?>
-              <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => $compte->identifiant, "tags" => "")); ?>" method="GET">
+              <form class="form_ajout_tag" action="<?php echo url_for('compte_addtag', array("q" => "doc.identifiant:".$compte->identifiant)); ?>" method="GET">
                 <div class="input-group input-group-sm col-xs-12">
-                  <input id="creer_tag" required="required" name="tag" class="tags form-control" placeholder="Ajouter un tag" type="text" />
-                  <input type="hidden" name="q" value="<?php echo $compte->identifiant;?>"/>
-                  <input type="hidden" name="tags" value=""/>
+                  <input id="creer_tag" required="required" name="tag" class="tags form-control select2 select2permissifNoAjax" placeholder="Ajouter un tag (liste permissive)" data-choices='<?php echo json_encode(CompteClient::getInstance()->getAllTagsManuel()); ?>'  type="text">
+                  <input type="hidden" name="q" value="doc.identifiant:<?php echo $compte->identifiant;?>"/>
+                  <input type="hidden" name="retour" value="<?php echo url_for('compte_visualisation', $compte) ?>"/>
                   <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
                   </span>

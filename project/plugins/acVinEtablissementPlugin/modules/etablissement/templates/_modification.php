@@ -14,7 +14,7 @@
         <?php echo $etablissementForm['nom']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
         <div class="col-xs-8"><?php echo $etablissementForm['nom']->render(); ?></div>
     </div>
-    
+
     <div class="form-group<?php if($etablissementForm['nature_inao']->hasError()): ?> has-error<?php endif; ?>">
         <?php echo $etablissementForm['nature_inao']->renderError(); ?>
         <?php echo $etablissementForm['nature_inao']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -31,6 +31,11 @@
             <?php echo $etablissementForm['cvi']->renderError(); ?>
             <?php echo $etablissementForm['cvi']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
             <div class="col-xs-8"><?php echo $etablissementForm['cvi']->render(); ?></div>
+        </div>
+        <div class="form-group<?php if($etablissementForm['ppm']->hasError()): ?> has-error<?php endif; ?>">
+            <?php echo $etablissementForm['ppm']->renderError(); ?>
+            <?php echo $etablissementForm['ppm']->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <div class="col-xs-8"><?php echo $etablissementForm['ppm']->render(); ?></div>
         </div>
     <?php endif; ?>
      <?php if ($etablissement->isCourtier()): ?>

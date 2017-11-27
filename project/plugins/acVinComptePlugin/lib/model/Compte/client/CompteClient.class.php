@@ -67,9 +67,31 @@ class CompteClient extends acCouchdbClient {
         }
     }
 
-    public function getAllTags() {
-        return array('TAG0' => 'TAG0', 'TAG1' => 'TAG1');
-    }
+    public function getAllTagsManuel() {
+          $q = new acElasticaQuery();
+          $elasticaFacet   = new acElasticaFacetTerms('tags');
+          $elasticaFacet->setField('doc.tags.manuel');
+          $elasticaFacet->setSize(250);
+          $q->addFacet($elasticaFacet);
+
+          $index = acElasticaManager::getType('COMPTE');
+          $resset = $index->search($q);
+          $results = $resset->getResults();
+          $this->facets = $resset->getFacets();
+
+          ksort($this->facets);
+
+          $entries = array();
+          foreach ($this->facets["tags"]["buckets"] as $facet) {
+              if($facet["key"]){
+                $entry = new stdClass();
+                $entry->id = trim($facet["key"]);
+                $entry->text = trim(str_replace("_",' ',$facet["key"]));
+                $entries[] = $entry;
+            }
+          }
+          return $entries;
+      }
 
     public function createTypeFromOrigines($origines) {
         foreach ($origines as $o) {

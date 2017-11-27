@@ -72,11 +72,11 @@ class CompteLdap extends acVinLdap {
       if ($compte->code_postal)
           $info['postalCode']       = $compte->code_postal;
       if ($compte->telephone_bureau)
-          $info['telephoneNumber']  = $compte->telephone_bureau;
+          $info['telephoneNumber']  = str_replace("_", "", $compte->telephone_bureau);
       if ($compte->fax)
-          $info['facsimileTelephoneNumber'] = $compte->fax;
+          $info['facsimileTelephoneNumber'] = str_replace("_", "", $compte->fax);
       if ($compte->telephone_mobile)
-          $info['mobile']           = $compte->telephone_mobile;
+          $info['mobile']           = str_replace("_", "", $compte->telephone_mobile);
       if ($compte->exist('mot_de_passe')) {
 	        $info['userPassword']  = $compte->mot_de_passe;
 	        if(!$compte->isActif()) {
