@@ -1,6 +1,6 @@
 <?php
 
-class acVinConfigurationPluginConfiguration extends sfPluginConfiguration
+class rhoneVinConfigurationPluginConfiguration extends sfPluginConfiguration
 {
   public function initialize()
   {
