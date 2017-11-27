@@ -1,0 +1,20 @@
+all:
+  configuration:
+    points_aides:
+      drev:
+        superficie_totale: "Inscrivez la superficie récoltée en ha indiquée dans la Déclaration de récolte (Ligne 4)"
+        superficie_revendique: "La superficie revendiquée en ha correspond à la surface indiquée sur la déclaration de récolte. En cas de production partielle en cave particulière, veuillez indiquer la surface proportionnelle au volume produit"
+        possede_vci: "Cette case doit être obligatoirement cochée si vous avez du VCI en stock car elle permet d'activer le soufflet intitulé 'Répartition du VCI'"
+        plafond_vci: "C'est le plafond de volume maximum autorisé de  VCI en hl. IL correspond au résultat de la surface * volume autorisé de VCI (hl) fixé par décret."
+        stock_vci_precedent: "Le stock 2016 est indiqué dans le registre de suivi du VCI. Il correspond au stock de VCI 2016 à la date de la déclaration de revendication."
+        destruction_vci: "Le VCI est à détruire avant le 15 décembre de l'année qui suit l'année de sa production.  Ce volume est calculé automatiquement en cas de dépassement sauf si vous décidez de détruire un volume de VCI."
+        complement_vci: "Le volume de VCI en complément de récolte permet d'atteindre le rendement de base de l'appellation. Il ne peut pas le dépasser."
+        substitution_vci: "En cas de déficit qualitatif du millésime, le VCI peut se substituer à un volume équivalent de vin du millésime en cours."
+        rafraichi_vci: "Si vous n'utilisez pas votre VCI en complément de récolte ou en substitution et si vous n'en détruisez pas, il faut obligatoirement rafraichir le VCI."
+        volume_recolte_total: "Inscrivez le volume récolté en hl indiqué dans la Déclaration de récolte (Ligne 5)"
+        recolte_nette_totale: "Inscrivez le volume de récolte nette totale en hl indiqué dans la Déclaration de récolte (Ligne 15)"
+        volume_cave_particuliere: "Inscrivez le volume apporté en cave particulière en hl indiqué dans la Déclaration de récolte (Ligne 9)"
+        vci_constitue: "Inscrivez le volume VCI consitué. Il est indiqué dans la Déclaration de récolte (Ligne 19)."
+        volume_revendique_net_issu_recolte: "Le volume revendiqué net issu de la récolte correspond au volume total revendiqué pour le millésime en cours auquel le volume de VCI rafraichi a été soustrait."
+        volume_revendique_issu_vci: "Inscrivez le volume VCI revendiqué. Il est généré automatiquement à partir du volet 'répartition du VCI'."
+        volume_revendique_net_total: "Le volume revendiqué total net correspond à la somme du volume revendiqué net issu de la récolte  et le VCI utilisé en complément de récolte."
