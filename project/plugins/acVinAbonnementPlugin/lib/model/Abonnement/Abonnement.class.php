@@ -35,12 +35,46 @@ class Abonnement extends BaseAbonnement {
 
     public function getTemplateFacture() {
 
-        return "TEMPLATE-FACTURE-ABONNEMENT-".str_replace("-", "", $this->getDateDebut())."-".str_replace("-", "", $this->getDateFin());
+        return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-ABONNEMENT-".str_replace("-", "", $this->getDateDebut())."-".str_replace("-", "", $this->getDateFin()));
     }
 
     public function getMouvementsCalcule() {
+        $templateFacture = $this->getTemplateFacture();
+        $cotisations = $templateFacture->generateCotisations($this);
 
-        return array($this->getIdentifiant() => array($this->getTemplateFacture() => array("facturable" => 1, "facture" => 0)));
+        $identifiantCompte = $this->getIdentifiant();
+
+        $mouvements = array();
+
+        $rienAFacturer = true;
+
+        foreach($cotisations as $cotisation) {
+            $mouvement = AbonnementMouvement::freeInstance($this);
+            $mouvement->categorie = $cotisation->getCollectionKey();
+            $mouvement->type_hash = $cotisation->getDetailKey();
+            $mouvement->type_libelle = $cotisation->getLibelle();
+            $mouvement->quantite = $cotisation->getQuantite();
+            $mouvement->taux = $cotisation->getPrix();
+            $mouvement->facture = 0;
+            $mouvement->facturable = 1;
+            $mouvement->date = $this->date_debut;
+            $mouvement->date_version = $this->date_debut;
+            $mouvement->version = null;
+            $mouvement->template = $templateFacture->_id;
+
+            if($mouvement->quantite) {
+                $rienAFacturer = false;
+            }
+
+            $mouvements[$mouvement->getMD5Key()] = $mouvement;
+        }
+
+        if($rienAFacturer) {
+
+            return array($identifiantCompte => array());
+        }
+
+        return array($identifiantCompte => $mouvements);
     }
 
     public function getMouvementsCalculeByIdentifiant($identifiant) {

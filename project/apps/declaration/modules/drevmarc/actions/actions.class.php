@@ -43,11 +43,9 @@ class drevmarcActions extends sfActions {
 
     public function executeDevalidation(sfWebRequest $request) {
         $drev = $this->getRoute()->getDRevMarc();
-
         $this->secure(DRevMarcSecurity::DEVALIDATION, $drev);
 
-        $drev->validation = null;
-        $drev->validation_odg = null;
+        $drev->devalidate();
         $drev->save();
 
         $this->getUser()->setFlash("notice", "La déclaration a été dévalidé avec succès.");
@@ -177,8 +175,8 @@ class drevmarcActions extends sfActions {
     }
 
     public function executeConfirmation(sfWebRequest $request) {
-        $this->secure(DRevMarcSecurity::VISUALISATION, $drevmarc);
         $this->drevmarc = $this->getRoute()->getDRevMarc();
+        $this->secure(DRevMarcSecurity::VISUALISATION, $this->drevmarc);
     }
 
     public function executeVisualisation(sfWebRequest $request) {

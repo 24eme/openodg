@@ -26,16 +26,16 @@ class ExportDRevMarcPDF extends ExportPDF {
         if (!$this->drevmarc->isPapier() && $this->drevmarc->validation && $this->drevmarc->campagne >= "2014") {
             $date = new DateTime($this->drevmarc->validation);
             $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
-        } else {
+        } elseif(!$this->drevmarc->isPapier()) {
             $header_subtitle .= sprintf("Exemplaire brouillon");
         }
 
         if ($this->drevmarc->isPapier() && $this->drevmarc->validation && $this->drevmarc->validation !== true) {
             $date = new DateTime($this->drevmarc->validation);
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
-        } 
+        }
 
-        return $header_subtitle;        
+        return $header_subtitle;
     }
 
     protected function getConfig() {

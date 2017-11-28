@@ -38,7 +38,7 @@
                 <?php echo $form["date_paiement"]->renderError(); ?>
                 <?php echo $form["date_paiement"]->renderLabel("Date du paiement", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-5">
-                    <div class="input-group date-picker">
+                    <div class="input-group date-picker-week">
                         <?php echo $form["date_paiement"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>

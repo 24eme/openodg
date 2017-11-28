@@ -1,5 +1,8 @@
-<?php use_helper('TemplatingPDF');  use_helper('Float'); use_helper("Date"); use_helper("Compte");
-
+<?php use_helper('TemplatingPDF') ?>
+<?php use_helper('Float') ?>
+<?php use_helper("Date"); ?>
+<?php use_helper("Compte"); ?>
+<?php
 $compte = $constats->getCompte();
 $telFaxRowDecr = "&nbsp;";
 $telFaxRow = "";
@@ -64,24 +67,24 @@ $libelle_vtsgn = ($constat->type_vtsgn == 'SGN')? 'Sélection de Grains Nobles' 
 <div><span class="h3">&nbsp;Constat&nbsp;</span></div>
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: left; width: 280px;vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Mention&nbsp;<?php echo tdStart() ?></th>         
-        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $libelle_vtsgn; ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>      
+        <th class="th" style="text-align: left; width: 280px;vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Mention&nbsp;<?php echo tdStart() ?></th>
+        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $libelle_vtsgn; ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>
     </tr>
     <tr>
-        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Produit&nbsp;<?php echo tdStart() ?></th>         
-        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->produit_libelle ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>      
+        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Produit&nbsp;<?php echo tdStart() ?></th>
+        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->produit_libelle ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>
     </tr>
     <tr>
-        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Dénomination complémentaire&nbsp;<?php echo tdStart() ?></th>         
-        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->denomination_lieu_dit ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>      
+        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Dénomination complémentaire&nbsp;<?php echo tdStart() ?></th>
+        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->denomination_lieu_dit ?>&nbsp;&nbsp;<?php echo tdStart() ?></th>
     </tr>
     <tr>
-        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Volume&nbsp;<?php echo tdStart() ?></th>         
-        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->volume_obtenu ?>&nbsp;hl&nbsp;&nbsp;<?php echo tdStart() ?></th>      
+        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Volume&nbsp;<?php echo tdStart() ?></th>
+        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->volume_obtenu ?>&nbsp;hl&nbsp;&nbsp;<?php echo tdStart() ?></th>
     </tr>
     <tr>
-        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;T.A.V.N.(*)&nbsp;<?php echo tdStart() ?></th>         
-        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->degre_potentiel_volume ?>&nbsp;°&nbsp;&nbsp;<?php echo tdStart() ?></th>      
+        <th class="th" style="text-align: left; width: 280px;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;T.A.V.N.(*)&nbsp;<?php echo tdStart() ?></th>
+        <th class="td" style="text-align: right; width: 358px;"><?php echo tdStart() ?><?php echo tdStart() ?><?php echo $constat->degre_potentiel_volume ?>&nbsp;°&nbsp;&nbsp;<?php echo tdStart() ?></th>
     </tr>
 </table>
 <br />

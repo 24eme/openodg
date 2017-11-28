@@ -1,11 +1,11 @@
 <?php use_helper('Date'); ?>
 
-<?php if (!count($drevmarcsHistory) && $etablissement->famille != EtablissementFamilles::FAMILLE_DISTILLATEUR): ?>
+<?php if (!$etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
     <?php return; ?>
 <?php endif; ?>
 
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <?php if ($etablissement->famille == EtablissementFamilles::FAMILLE_DISTILLATEUR): ?>
+    <?php if ($etablissement->hasFamille(EtablissementClient::FAMILLE_DISTILLATEUR)): ?>
         <div class="block_declaration panel <?php if ($drevmarc && $drevmarc->validation): ?>panel-success<?php else: ?>panel-primary<?php endif; ?>">
             <div class="panel-heading">
                 <h3>Revendication Marc&nbsp;d'Alsace&nbsp;Gw&nbsp;<?php echo $campagne; ?></h3>

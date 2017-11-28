@@ -1,0 +1,317 @@
+
+Current:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {  }
+      campagne: {  }
+
+Configuration:
+  definition:
+    fields:
+      _id: {  }
+      _rev: {  }
+      type: {}
+      campagne: {}
+      virtual : {required: false}
+      dr_non_editable: {required: false}
+      factures:
+        required: false
+        type: collection
+        definition:
+          fields:
+            '*': {  }
+      intitule:
+        type: array_collection
+        definition:
+          fields:
+            '*': {  }
+      communes:
+        type: collection
+        definition:
+          fields:
+            '*': {  }
+      motif_non_recolte:
+        type: collection
+        definition:
+          fields:
+            '*': {  }
+      declaration:
+        type: collection
+        class: ConfigurationDeclaration
+        inheritance: _ConfigurationDeclaration
+        definition:
+          fields:
+            no_usages_industriels: { required: false}
+            no_recapitulatif_couleur: { required: false}
+            relations:
+              required: false
+              type: collection
+              definition:
+                fields:
+                  '*': {  }
+            no_acces:
+              required: false
+              type: collection
+              definition:
+                fields:
+                  '*': { type: integer }
+            douane :
+              type: collection
+              class: ConfigurationDouane
+              definition:
+                fields:
+                  type_aoc: {required: false}
+                  couleur: {required: false}
+                  appellation_lieu: {required: false}
+                  qualite: {required: false}
+                  qualite_vt: {required: false}
+                  qualite_sgn: {required: false}
+                  qualite_aoc: {required: false}
+                  code_cepage: {required: false}
+            '*':
+              # ------- Certification ---------
+              type: collection
+              class: ConfigurationCertification
+              inheritance: _ConfigurationDeclaration
+              definition:
+                fields:
+                  rendement: { type: float }
+                  libelle: { }
+                  libelle_long: { required: false }
+                  relations:
+                    required: false
+                    type: collection
+                    definition:
+                      fields:
+                        '*': {  }
+                  no_acces:
+                    required: false
+                    type: collection
+                    definition:
+                      fields:
+                        '*': { type: integer }
+                  douane:
+                    type: collection
+                    class: ConfigurationDouane
+                    definition:
+                      fields:
+                        '*': {  }
+                  '*':
+                  # ------- Genre ---------
+                    type: collection
+                    class: ConfigurationGenre
+                    inheritance: _ConfigurationDeclaration
+                    definition:
+                      fields:
+                        rendement: { type: float }
+                        libelle: { }
+                        libelle_long: { required: false }
+                        relations:
+                          required: false
+                          type: collection
+                          definition:
+                            fields:
+                              '*': {  }
+                        no_acces:
+                          required: false
+                          type: collection
+                          definition:
+                            fields:
+                              '*': { type: integer }
+                        douane:
+                          type: collection
+                          class: ConfigurationDouane
+                          definition:
+                            fields:
+                              '*': {  }
+                        '*':
+                        # ------- APPELLATION ---------
+                          type: collection
+                          class: ConfigurationAppellation
+                          inheritance: _ConfigurationDeclaration
+                          definition:
+                            fields:
+                              appellation: { }
+                              libelle: {  }
+                              libelle_long: { required: false }
+                              rendement : { type: float }
+                              rendement_appellation: { type: float }
+                              mout: {type: integer}
+                              auto_ds: {type: integer, required: false}
+                              no_total_cepage: {type: integer, required: false}
+                              detail_lieu_editable: {type: integer, required: false}
+                              exclude_total: {type: integer, required: false}
+                              no_vtsgn: {required: false}
+                              relations:
+                                required: false
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*': {  }
+                              no_acces:
+                                required: false
+                                type: collection
+                                definition:
+                                  fields:
+                                    '*': { type: integer }
+                              douane :
+                                type: collection
+                                class: ConfigurationDouane
+                                definition:
+                                  fields:
+                                    type_aoc: {required: false}
+                                    couleur: {required: false}
+                                    appellation_lieu: {required: false}
+                                    qualite: {required: false}
+                                    qualite_aoc: {required: false}
+                                    code_cepage: {required: false}
+                                    no_dr: { type: integer, required: false }
+                                    no_ds: { type: integer, required: false }
+                              # ------- MENTION ----------
+                              '*':
+                                type : collection
+                                class: ConfigurationMention
+                                inheritance: _ConfigurationDeclaration
+                                definition:
+                                  fields:
+                                    libelle: {  }
+                                    libelle_long: { required: false }
+                                    rendement: { type: float  }
+                                    rendement_mention: { type: float  }
+                                    relations:
+                                      required: false
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          '*': {  }
+                                    no_acces:
+                                      required: false
+                                      type: collection
+                                      definition:
+                                        fields:
+                                          '*': { type: integer }
+                                    douane :
+                                      type: collection
+                                      class: ConfigurationDouane
+                                      definition:
+                                        fields:
+                                          '*': {  }
+                                    '*':
+                                    # ------------ LIEU --------------
+                                      type: collection
+                                      class: ConfigurationLieu
+                                      inheritance: _ConfigurationDeclaration
+                                      definition:
+                                        fields:
+                                          rendement: {type: float}
+                                          rendement_mention: { type: float  }
+                                          rendement_appellation: { type: float }
+                                          libelle: { }
+                                          libelle_long: { required: false }
+                                          douane :
+                                            type: collection
+                                            class: ConfigurationDouane
+                                            definition:
+                                              fields:
+                                                type_aoc: {required: false}
+                                                couleur: {required: false}
+                                                appellation_lieu: {required: false}
+                                                qualite: {required: false}
+                                                code_cepage: {required: false}
+                                                no_dr: { type: integer, required: false }
+                                                no_ds: { type: integer, required: false }
+                                          relations:
+                                            required: false
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                '*': {  }
+                                          no_acces:
+                                            required: false
+                                            type: collection
+                                            definition:
+                                              fields:
+                                                '*': {  }
+                                          # ------------ COULEUR --------------
+                                          '*' :
+                                            type: collection
+                                            class: ConfigurationCouleur
+                                            inheritance: _ConfigurationDeclaration
+                                            definition:
+                                              fields:
+                                                rendement_couleur: { type: float }
+                                                rendement: { type: float }
+                                                libelle: { }
+                                                libelle_long: { required: false }
+                                                drev: { type: integer, required: false }
+                                                douane :
+                                                  type: collection
+                                                  class: ConfigurationDouane
+                                                  definition:
+                                                    fields:
+                                                      type_aoc: {required: false}
+                                                      couleur: {required: false}
+                                                      appellation_lieu: {required: false}
+                                                      qualite: {required: false}
+                                                      code_cepage: {required: false}
+                                                      no_dr: { type: integer, required: false }
+                                                      no_ds: { type: integer, required: false }
+                                                relations:
+                                                  required: false
+                                                  type: collection
+                                                  definition:
+                                                    fields:
+                                                      '*': {  }
+                                                no_acces:
+                                                  required: false
+                                                  type: collection
+                                                  definition:
+                                                    fields:
+                                                      '*': {  }
+                                                '*':
+                                                # ------------ CEPAGE -------------
+                                                  type: collection
+                                                  class: ConfigurationCepage
+                                                  inheritance: _ConfigurationDeclaration
+                                                  definition:
+                                                    fields:
+                                                      no_vtsgn: {required: false}
+                                                      douane :
+                                                        type: collection
+                                                        class: ConfigurationDouane
+                                                        definition:
+                                                          fields:
+                                                            type_aoc: {required: false}
+                                                            couleur: {required: false}
+                                                            appellation_lieu: {required: false}
+                                                            qualite: {required: false}
+                                                            code_cepage: {required: false}
+                                                      relations:
+                                                        required: false
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*': {  }
+                                                      no_acces:
+                                                        required: false
+                                                        type: collection
+                                                        definition:
+                                                          fields:
+                                                            '*': {  }
+                                                      libelle: {  }
+                                                      libelle_long: { required: false }
+                                                      rendement: { type: float }
+                                                      min_quantite: {type: float, required: false}
+                                                      max_quantite: {type: float, required: false}
+                                                      exclude_total: {type: integer, required: false}
+                                                      superficie_optionnelle: { type: integer, required: false }
+                                                      no_negociant : { type: integer, required: false }
+                                                      no_cooperative : { type: integer, required: false }
+                                                      no_mout : { type: integer, required: false }
+                                                      no_motif_non_recolte : { type: integer, required: false }
+                                                      no_dr: { type: integer, required: false }
+                                                      no_ds: { type: integer, required: false }
+                                                      auto_drev: { type: integer, required: false }
+

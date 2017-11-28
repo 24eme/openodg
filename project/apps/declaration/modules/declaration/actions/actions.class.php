@@ -10,7 +10,11 @@ class declarationActions extends sfActions {
         $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
         $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
 
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        } elseif(class_exists("LoginForm")) {
+            $this->form = new LoginForm();
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -30,7 +34,7 @@ class declarationActions extends sfActions {
     public function executeDoc(sfWebRequest $request) {
         $doc_id = $request->getParameter("id");
 
-        if(!preg_match("/^([A-Z]+)-([0-9]+)-[0-9]+$/", $doc_id, $matches)) {
+        if(!preg_match("/^([A-Z]+)-([0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
@@ -53,14 +57,19 @@ class declarationActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
         }
 
-         if($doc_type == "TIRAGE") {
+        if($doc_type == "TIRAGE") {
 
             return $this->redirect("tirage_visualisation", array("id" => $doc_id));
+        }
+
+        if($doc_type == "TRAVAUXMARC") {
+
+            return $this->redirect("travauxmarc_visualisation", array("id" => $doc_id));
         }
 
         return $this->forward404();

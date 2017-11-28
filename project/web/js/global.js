@@ -80,12 +80,66 @@
             });
         }
     };
-    $.initDatePickers = function ()
+    $.fn.initDatePickers = function ()
     {
-        var datePickers = $('.date-picker');
+        var datePickers = $(this).find('.date-picker');
         datePickers.each(function ()
         {
             $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true, showTodayButton: true });
+        });
+        var datePickers = $(this).find('.date-picker-week');
+        datePickers.each(function ()
+        {
+            var currentDp = $(this);
+            hasValue = currentDp.find('input').val();
+            currentDp.datetimepicker
+                    ({
+                        language: 'fr',
+                        pickTime: false,
+                        useCurrent: false,
+                        calendarWeeks: true,
+                    });
+            if (!hasValue) {
+                currentDp.find('input').val('');
+            }
+
+            currentDp.on('focus', 'input', function ()
+            {
+                currentDp.data('DateTimePicker').hide();
+                currentDp.data('DateTimePicker').show();
+            });
+        });
+        var datePickers = $(this).find('.date-picker-all-days');
+        datePickers.each(function ()
+        {
+            var currentDp = $(this);
+            currentDp.datetimepicker
+                    ({
+                        language: 'fr',
+                        pickTime: false
+                    });
+            currentDp.on('focus', 'input', function ()
+            {
+                currentDp.data('DateTimePicker').hide();
+                currentDp.data('DateTimePicker').show();
+            });
+        });
+        var datePickers = $(this).find('.date-picker-time');
+        datePickers.each(function ()
+        {
+            var currentDp = $(this);
+            currentDp.datetimepicker
+                    ({
+                        language: 'fr',
+                        pickDate: false,
+                        useCurrent: false,
+                        minuteStepping: 5
+                    });
+            currentDp.on('focus', 'input', function ()
+            {
+                currentDp.data('DateTimePicker').hide();
+                currentDp.data('DateTimePicker').show();
+            });
         });
     };
     $.fn.initSelect2Autocomplete = function ()
@@ -131,12 +185,6 @@
 
                     return item.text;
                 }});
-        });
-
-        $(this).find(".select2SubmitOnChange").on("change", function (e) {
-            if (e.val || $(this).val()) {
-                $(this).parents('form').submit();
-            }
         });
     }
 
@@ -476,6 +524,9 @@
         });
 
         $("#page").on('click', '.dynamic-element-delete', function () {
+            if($(this).attr('data-confirm') && !confirm($(this).attr('data-confirm'))) {
+                return false;
+            }
             $($(this).attr('data-line')).find('input').val("");
             $($(this).attr('data-line')).find('input').trigger('keyup');
             $($(this).attr('data-line')).remove();
@@ -622,7 +673,7 @@
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();
 
-        $(this).find(".select2autocompleteAjax").each(function () {            
+        $(this).find(".select2autocompleteAjax").each(function () {
             var urlAjax = $(this).data('ajax');
             var defaultValue = $(this).val();
             var defaultValueSplitted = defaultValue.split(',');
@@ -675,11 +726,15 @@
             });
         });
 
-        /*$(this).find(".select2SubmitOnChange").on("change", function (e) {
-            if (e.val) {
+        $(this).initDatePickers();
+        $(this).find('input.num_float').saisieNum(true);
+        $(this).find('input.num_int').saisieNum(false);
+
+        $(this).find(".select2SubmitOnChange").on("change", function (e) {
+            if (e.val || $(this).val()) {
                 $(this).parents('form').submit();
             }
-        });*/
+        });
     }
 
     $.initTableCheckbox = function() {
@@ -753,7 +808,7 @@
     _doc.ready(function ()
     {
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
-        $.initDatePickers();
+        _doc.initDatePickers();
         _doc.initAdvancedElements();
         $.initSelect2AutocompletePermissif();
         $.initSelect2PermissifNoAjax();

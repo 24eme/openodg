@@ -13,34 +13,16 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinLibPlugin');
         $this->enablePlugins('acTCPDFPlugin');
         $this->enablePlugins('acCASPlugin');
-        $this->enablePlugins('rhoneVinConfigurationPlugin');
         $this->enablePlugins('DeclarationPlugin');
-        $this->enablePlugins('rhoneVinDRevPlugin');
-        $this->enablePlugins('acVinDRevMarcPlugin');
-        $this->enablePlugins('acVinDegustationPlugin');
+        $this->enablePlugins('FichierPlugin');
+        $this->enablePlugins('acVinGenerationPlugin');
         $this->enablePlugins('acVinDocumentPlugin');
-        $this->enablePlugins('acVinParcellairePlugin');
-        $this->enablePlugins('acVinTourneePlugin');
-        $this->enablePlugins('acVinConstatsVTSGNPlugin');
         $this->enablePlugins('acLdapPlugin');
-        //$this->enablePlugins('EtablissementPlugin');
-        //$this->enablePlugins('ComptePlugin');
         $this->enablePlugins('EmailPlugin');
         $this->enablePlugins('acExceptionNotifierPlugin');
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
-	      $this->enablePlugins('FacturationPlugin');
-        $this->enablePlugins('acVinGenerationPlugin');
-        $this->enablePlugins('acVinAbonnementPlugin');
-    	  $this->enablePlugins('acVinTiragePlugin');
-        $this->enablePlugins('acVinHabilitationPlugin');
-    	  $this->enablePlugins('FichierPlugin');
-        $this->enablePlugins('acVinSocietePlugin');
-        $this->enablePlugins('acVinEtablissementPlugin');
-        $this->enablePlugins('acVinComptePlugin');
-        $this->enablePlugins('DRPlugin');
-        $this->enablePlugins('SV11Plugin');
-        $this->enablePlugins('SV12Plugin');
+        $this->enablePlugins('FacturationPlugin');
     }
 
     public static function getAppRouting()

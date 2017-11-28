@@ -78,12 +78,12 @@
 			</div>
 		</div>
     </div>
-    
+
     <div class="row">
     	<div class="form-group ">
     		<div class="col-xs-8 col-xs-offset-4">
 		    	<?php foreach ($fichier->_attachments as $key => $file): ?>
-		    	<?php 
+		    	<?php
 		    		$infos = explode('.', $key);
 		    		$extention = (isset($infos[1]))? $infos[1] : "";
 		    	?>

@@ -37,7 +37,7 @@
 <br />
 <br />
 <div><span class="h3">&nbsp;Période de distillation&nbsp;</span></div>
-<table class="table" border="1" cellspacing=2 cellpadding=0 style="text-align: right;">   
+<table class="table" border="1" cellspacing=2 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="td" style="border-top: none; text-align: center; width: 637px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Du&nbsp;<?php echo format_date($drevmarc->debut_distillation, "D", "fr_FR"); ?>&nbsp;au&nbsp;<?php echo format_date($drevmarc->fin_distillation, "D", "fr_FR"); ?>&nbsp;<?php echo tdStart() ?></th>
     </tr>
@@ -46,7 +46,7 @@
 <br />
 
 <div><span class="h3">&nbsp;Revendication&nbsp;</span></div>
-<table class="table" border="1" cellspacing=2 cellpadding=0 style="text-align: right;">   
+<table class="table" border="1" cellspacing=2 cellpadding=0 style="text-align: right;">
     <tr>
         <th class="th" style="border-top: none; text-align: left; width: 357px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;Quantité de marc mis en oeuvre<?php echo tdStart() ?></th>
         <td class="td" style="border-top: none; text-align: center; width: 280px; vertical-align: middle;"><?php echo tdStart() ?><?php echo tdStart() ?>&nbsp;<?php echo getQtemarc($drevmarc); ?><?php echo tdStart() ?></td>

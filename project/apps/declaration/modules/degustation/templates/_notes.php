@@ -62,7 +62,7 @@
                                     <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->renderError(); ?>
                                     <?php echo $form[$note->operateur->cvi.$note->prelevement->getHashForKey()]->render(array('class' => 'form-control select2')); ?>
                                 <div id="<?php echo 'visite_date_degustation_courrier_' . $note->operateur->cvi.$note->prelevement->getHashForKey(); ?>" style="<?php echo ($note->prelevement->exist('type_courrier') && $note->prelevement->type_courrier == DegustationClient::COURRIER_TYPE_VISITE)? '' : 'display:none;' ?>" >
-                                <div style="padding-top: 10px;" class="input-group date-picker" >
+                                <div style="padding-top: 10px;" class="input-group date-picker-week" >
                                         <?php echo $form['visite_date_' . $note->operateur->cvi.$note->prelevement->getHashForKey()]->renderError(); ?>
                                         <?php echo $form['visite_date_' . $note->operateur->cvi.$note->prelevement->getHashForKey()]->render(array('class' => 'form-control')); ?>
                                         <div class="input-group-addon">

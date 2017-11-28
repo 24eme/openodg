@@ -2,13 +2,13 @@
 
 class DRevMarcClient extends acCouchdbClient implements FacturableClient {
 
-    const TYPE_MODEL = "DRevMarc"; 
+    const TYPE_MODEL = "DRevMarc";
     const TYPE_COUCHDB = "DREVMARC";
 
     public static function getInstance()
     {
       return acCouchdbManager::getClient("DRevMarc");
-    } 
+    }
 
     public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
         $doc = parent::find($id, $hydrate, $force_return_ls);
@@ -24,16 +24,16 @@ class DRevMarcClient extends acCouchdbClient implements FacturableClient {
     public function findFacturable($identifiant, $campagne) {
         $drev = $this->find('DREVMARC-'.str_replace("E", "", $identifiant).'-'.$campagne);
 
-        if(!$drev->validation) {
+        if(!$drev->validation_odg) {
 
-            return null;
+            return array();
         }
 
-        return $drev;
+        return array($drev->_id => $drev);
     }
-    
-    public function createDoc($identifiant, $campagne, $papier = false) 
-    {  
+
+    public function createDoc($identifiant, $campagne, $papier = false)
+    {
         $drevmarc = new DRevMarc();
         $drevmarc->initDoc($identifiant, $campagne);
 
@@ -71,6 +71,6 @@ class DRevMarcClient extends acCouchdbClient implements FacturableClient {
             $date = date('Y-m-d');
         }
 
-        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin(); 
+        return $date >= $this->getDateOuvertureDebut() && $date <= $this->getDateOuvertureFin();
     }
 }

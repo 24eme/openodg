@@ -54,28 +54,28 @@ EOF;
             return;
         }
 
-        $csv = new DRCsvFile($arguments['csv']);
+        $csv = new DRCIVACsvFile($arguments['csv']);
 
         $lines = array();
         foreach($csv->getCsv() as $line) {
-            if($line[DRCsvFile::CSV_ACHETEUR_CVI] != $drev->identifiant) {
+            if($line[DRCIVACsvFile::CSV_ACHETEUR_CVI] != $drev->identifiant) {
                 continue;
             }
 
-            if($line[DRCsvFile::CSV_CEPAGE] != "TOTAL") {
+            if($line[DRCIVACsvFile::CSV_CEPAGE] != "TOTAL") {
                 continue;
             }
             $lines[] = $line;
         }
 
         foreach($lines as $line) {
-            if($line[DRCsvFile::CSV_SUPERFICIE] == "") {
+            if($line[DRCIVACsvFile::CSV_SUPERFICIE] == "") {
                 echo "ERREUR;Toutes les superficies ne sont pas renseignés;".$drev->_id."\n";
 
                 return;
             }
-            $line[DRCsvFile::CSV_HASH_PRODUIT] = preg_replace("/(mentionVT|mentionSGN)/", "mention", $line[DRCsvFile::CSV_HASH_PRODUIT]);
-            if (!$drev->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $line[DRCsvFile::CSV_HASH_PRODUIT]))) {
+            $line[DRCIVACsvFile::CSV_HASH_PRODUIT] = preg_replace("/(mentionVT|mentionSGN)/", "mention", $line[DRCIVACsvFile::CSV_HASH_PRODUIT]);
+            if (!$drev->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $line[DRCIVACsvFile::CSV_HASH_PRODUIT]))) {
                 continue;
             }
         }
@@ -91,9 +91,9 @@ EOF;
 
         foreach($lines as $line) {
             //var_dump($line);
-            $superficie = $line[DRCsvFile::CSV_SUPERFICIE];
+            $superficie = $line[DRCIVACsvFile::CSV_SUPERFICIE];
             //var_dump($superficie)."\n";
-            $hash = preg_replace("/(mentionVT|mentionSGN)/", "mention", $line[DRCsvFile::CSV_HASH_PRODUIT]);
+            $hash = preg_replace("/(mentionVT|mentionSGN)/", "mention", $line[DRCIVACsvFile::CSV_HASH_PRODUIT]);
             if (!$drev->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $hash))) {
                 continue;
             }
@@ -112,11 +112,11 @@ EOF;
             $produit = $drev->get($configHash);
 
             $vtsgn = null;
-            if((preg_match("/mentionVT/",$line[DRCsvFile::CSV_HASH_PRODUIT]))) {
+            if((preg_match("/mentionVT/",$line[DRCIVACsvFile::CSV_HASH_PRODUIT]))) {
                 $vtsgn = "VT";
             }
 
-            if((preg_match("/mentionSGN/",$line[DRCsvFile::CSV_HASH_PRODUIT]))) {
+            if((preg_match("/mentionSGN/",$line[DRCIVACsvFile::CSV_HASH_PRODUIT]))) {
                 $vtsgn = "SGN";
             }
 

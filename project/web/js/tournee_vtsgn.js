@@ -23,7 +23,7 @@ myApp.controller('tournee_vtsgnCtrl', ['$window', '$scope', '$rootScope', '$http
             {'hash': 'appellation_ALSACEBLANC', 'libelle': 'AOC Alsace blanc'},
             {'hash': 'appellation_COMMUNALE', 'libelle': 'AOC Alsace Communale'},
             {'hash': 'appellation_LIEUDIT', 'libelle': 'AOC Alsace Lieu-dit'},
-            {'hash': 'appellation_GRDCRU', 'libelle': 'AOC Alsace Grands Crus'}
+            {'hash': 'appellation_GRDCRU', 'libelle': 'AOC Alsace Grand Cru'}
         ];
 
         $scope.produitsCepage = [

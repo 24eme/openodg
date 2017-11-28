@@ -34,11 +34,20 @@
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
 <div class="row">
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
-    <?php //include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
-    <?php //include_component('parcellaire', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
-    <?php //include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
-    <?php //include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
-    <?php //include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php if(class_exists("DRevMarc")): ?>
+    <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
+    <?php if(class_exists("TravauxMarc")): ?>
+    <?php include_component('travauxmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
+    <?php if(class_exists("Parcellaire")): ?>
+    <?php include_component('parcellaire', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('parcellaireCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php include_component('intentionCremant', 'monEspace', array('etablissement' => $etablissement, 'campagne' => ConfigurationClient::getInstance()->getCampagneManager()->getNext($campagne))); ?>
+    <?php endif; ?>
+    <?php if(class_exists("Tirage")): ?>
+    <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+    <?php endif; ?>
     <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement)); ?>
 </div>
 <?php include_partial('fichier/history', array('etablissement' => $etablissement, 'history' => PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)), 'limit' => Piece::LIMIT_HISTORY)); ?>

@@ -15,7 +15,7 @@
                 <?php echo $form["date"]->renderError(); ?>
                 <?php echo $form["date"]->renderLabel("Date de dégustation", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-sm-6 col-xs-8">
-                    <div class="input-group date-picker">
+                    <div class="input-group date-week">
                         <?php echo $form["date"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>
@@ -43,7 +43,7 @@
                 <?php echo $form["date_prelevement_debut"]->renderError(); ?>
                 <?php echo $form["date_prelevement_debut"]->renderLabel("Date de début des prélévements", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-sm-6 col-xs-8">
-                    <div class="input-group date-picker">
+                    <div class="input-group date-picker-week">
                         <?php echo $form["date_prelevement_debut"]->render(array("class" => "form-control")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>

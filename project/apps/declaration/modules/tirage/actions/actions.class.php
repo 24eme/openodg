@@ -192,7 +192,7 @@ class tirageActions extends sfActions {
                         "?" .
                         http_build_query(array(
                             'url' => $this->generateUrl('tirage_dr_import', $tirage, true),
-                            'id' => sprintf('DR-%s-%s', $tirage->identifiant, $tirage->campagne))));
+                            'id' => sprintf('DR-%s-%s', $tirage->identifiant, $tirage->getCampagneDR()))));
     }
 
     public function executeDrImport(sfWebRequest $request) {
@@ -418,7 +418,7 @@ class tirageActions extends sfActions {
         }
 
         $this->getResponse()->setHttpHeader('Content-Type', 'application/pdf');
-        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="DR-%s-%s.pdf"', $tirage->identifiant, $tirage->campagne));
+        $this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="DR-%s-%s.pdf"', $tirage->identifiant, $tirage->getCampagneDR()));
         $this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
         $this->getResponse()->setHttpHeader('Pragma', '');
         $this->getResponse()->setHttpHeader('Cache-Control', 'public');
