@@ -240,62 +240,6 @@ generation_regenerate:
   requirements:
     sf_method: [get]
 
-# habilitation
-
-habilitation:
-  url: /habilitation
-  param: { module: habilitation, action: index }
-  class: HabilitationGeneralRoute
-
-habilitation_export:
-  url: /habilitation/export
-  param: { module: habilitation, action: export }
-
-habilitation_etablissement_selection:
-  url: /habilitations-etablissement-selection
-  param: { module: habilitation, action: etablissementSelection }
-
-
-habilitation_declarant:
-  url: /habilitation/declarant/:identifiant
-  param: { module: habilitation, action: declarant }
-  class: EtablissementRoute
-  options:
-    model:    Etablissement
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-habilitation_visualisation:
-  url: /habilitation/visualisation/:id
-  param: { module: habilitation, action: visualisation }
-  class: HabilitationRoute
-  options:
-    model:    Habilitation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-habilitation_edition:
-  url: /habilitation/edition/:id
-  param: { module: habilitation, action: edition }
-  class: HabilitationRoute
-  options:
-    model:    Habilitation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
-habilitation_ajout:
-  url: /habilitation/declarant/:identifiant/ajout
-  param: { module: habilitation, action: ajout }
-  class: EtablissementRoute
-  options:
-    model:    Habilitation
-    type:     object
-  requirements:
-    sf_method: [get, post]
-
 #Export
 
 export:
