@@ -14,26 +14,6 @@ redirect_to_mon_compte_civa:
   url: /mon-compte-civa
   param: { module: compte_teledeclarant, action: redirectToMonCompteCiva }
 
-#Génération
-
-generation_view:
-  url: /generation/:type_document/:date_emission
-  param: { module: generation, action: view }
-  requirements:
-    sf_method: [get]
-
-generation_delete:
-  url: /generation/:type_document/:date_emission/delete
-  param: { module: generation, action: delete }
-  requirements:
-    sf_method: [get]
-
-generation_regenerate:
-  url: /generation/:type_document/:date_emission/regenerer
-  param: { module: generation, action: regenerate }
-  requirements:
-    sf_method: [get]
-
 #Défaut
 
 default_index:
