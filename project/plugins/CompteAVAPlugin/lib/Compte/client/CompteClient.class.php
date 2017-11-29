@@ -80,6 +80,11 @@ class CompteClient extends acCouchdbClient {
         return acCouchdbManager::getClient(self::TYPE_MODEL);
     }
 
+    public function findByLogin($identifiant) {
+
+        return $this->findByIdentifiant($identifiant);
+    }
+
     public function findByIdentifiant($identifiant) {
 
         return $this->find(self::TYPE_COUCHDB . '-' . $identifiant);
