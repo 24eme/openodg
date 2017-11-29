@@ -7,6 +7,7 @@ class rhoneConfiguration extends sfApplicationConfiguration
     {
         parent::setup();
 
+        $this->enablePlugins('AppPlugin');
         $this->enablePlugins('rhoneVinDRevPlugin');
         $this->enablePlugins('rhoneVinConfigurationPlugin');
         $this->enablePlugins('acVinHabilitationPlugin');
