@@ -1,0 +1,47 @@
+# PIECE
+
+get_piece:
+  url: /piece/get/:doc_id/:piece_id
+  param: { module: piece, action: get }
+
+# FICHIER
+
+pieces_historique:
+  url: /historique-documents/:identifiant
+  param: { module: fichier, action: piecesHistorique }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+get_fichier:
+  url: /fichier/get/:id
+  param: { module: fichier, action: get }
+  class: FichierRoute
+  options:
+    model:    Fichier
+    type:     object
+  requirements:
+    sf_method: [get]
+
+delete_fichier:
+  url: /fichier/delete/:id
+  param: { module: fichier, action: delete }
+  class: FichierRoute
+  options:
+    model:    Fichier
+    type:     object
+  requirements:
+    sf_method: [get]
+
+upload_fichier:
+  url: /fichier/upload/:identifiant
+  param: { module: fichier, action: upload }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
