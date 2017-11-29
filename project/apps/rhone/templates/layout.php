@@ -39,18 +39,15 @@
         <![endif]-->
         <!-- ####### PLEASE KEEP ####### -->
 
+            <?php echo include_partial('global/header'); ?>
 
-            <?php //echo include_partial('global/headerAVA'); ?>
-            <?php echo include_partial('global/headerRhone'); ?>
-
-            <?php include_partial('global/navRhone'); ?>
-            <?php //include_partial('global/nav'); ?>
+            <?php include_partial('global/nav'); ?>
 
             <section id="content" class="container">
                 <?php if(sfConfig::get('app_instance') == 'preprod' ): ?>
                   <div><p style="color:red; text-align:center; font-weight: bold;">Preproduction (la base est succeptible d'être supprimée à tout moment)</p></div>
                 <?php endif; ?>
-                
+
                 <?php echo $sf_content ?>
             </section>
 
