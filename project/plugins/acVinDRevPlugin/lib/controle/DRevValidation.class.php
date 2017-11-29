@@ -142,10 +142,10 @@ class DRevValidation extends DocumentValidation
         if (!$produit->recolte->recolte_nette) {
         	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } else {
-	        if ($produit->volume_revendique_total != $produit->recolte->recolte_nette && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
+	        if (round($produit->volume_revendique_total, 2) != round($produit->recolte->recolte_nette, 2) && round($produit->recolte->volume_total, 2) == round($produit->recolte->volume_sur_place, 2)) {
 	          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
-	        if ($produit->volume_revendique_total > ($produit->recolte->recolte_nette + $produit->vci->complement) && $produit->recolte->volume_total == $produit->recolte->volume_sur_place) {
+	        if (round($produit->volume_revendique_total, 2) > round($produit->recolte->recolte_nette + $produit->vci->complement, 2) && round($produit->recolte->volume_total, 2) == round($produit->recolte->volume_sur_place, 2)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
 	        if (($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
@@ -170,7 +170,7 @@ class DRevValidation extends DocumentValidation
         if(!$produit->hasVci()) {
             return;
         }
-        if($produit->vci->stock_precedent != $produit->getTotalVciUtilise()) {
+        if(round($produit->vci->stock_precedent, 2) != round($produit->getTotalVciUtilise(), 2)) {
             $this->addPoint(self::TYPE_ERROR, 'vci_stock_utilise', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
         if($produit->getConfig()->getRendementVci() !== null && round($produit->getConfig()->getRendementVci() * $produit->superficie_revendique, 2) < round($produit->vci->constitue, 2)) {
