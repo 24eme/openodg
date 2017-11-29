@@ -3,22 +3,6 @@
 class rhoneConfiguration extends sfApplicationConfiguration
 {
 
-    public function setup()
-    {
-        parent::setup();
-
-        $this->enablePlugins('AppPlugin');
-        $this->enablePlugins('acVinDRevPlugin');
-        $this->enablePlugins('acVinConfigurationPlugin');
-        $this->enablePlugins('acVinHabilitationPlugin');
-        $this->enablePlugins('acVinComptePlugin');
-        $this->enablePlugins('acVinSocietePlugin');
-        $this->enablePlugins('acVinEtablissementPlugin');
-        $this->enablePlugins('DRPlugin');
-        $this->enablePlugins('SV11Plugin');
-        $this->enablePlugins('SV12Plugin');
-    }
-
     public function configure()
     {
         $configCache = $this->getConfigCache();
