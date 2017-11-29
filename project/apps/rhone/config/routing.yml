@@ -49,43 +49,7 @@ mentions_legales:
 
 # Déclaration
 
-declaration:
-  url: /declaration
-  param: { module: declaration, action: index }
-  class: DeclarationRoute
 
-declaration_doc:
-  url: /declaration/doc
-  param: { module: declaration, action: doc }
-
-declaration_export:
-  url: /declarations/export
-  param: { module: declaration, action: export }
-
-declaration_etablissement_selection:
-  url: /declarations-etablissement-selection
-  param: { module: declaration, action: etablissementSelection }
-
-declaration_etablissement:
-  url: /declarations/:identifiant
-  param: { module: declaration, action: etablissement }
-  class: DeclarationDeclarantRoute
-  options:
-    model:    EtablissementRoute
-    type:     object
-  requirements:
-    sf_method: [get]
-
-
-declaration_usurpation:
-  url: /declarations-usurpation/:identifiant
-  param: { module: declaration, action: usurpation }
-  class: DeclarationDeclarantRoute
-  options:
-    model:    EtablissementRoute
-    type:     object
-  requirements:
-    sf_method: [get, post]
 
 # PIECE
 
@@ -239,22 +203,6 @@ generation_regenerate:
   param: { module: generation, action: regenerate }
   requirements:
     sf_method: [get]
-
-#Export
-
-export:
-  url: /export
-  param: { module: export, action: index }
-  requirements:
-    sf_method: [get, post]
-  class: ExportRoute
-
-export_generation:
-  url: /export/generation/:id
-  param: { module: export, action: generation }
-  requirements:
-    sf_method: [get]
-  class: ExportRoute
 
 #Défaut
 
