@@ -1,6 +1,6 @@
 <?php
 
-class rhoneVinDRevPluginConfiguration extends sfPluginConfiguration
+class acVinDRevPluginConfiguration extends sfPluginConfiguration
 {
     public function setup() {
         if ($this->configuration instanceof sfApplicationConfiguration) {

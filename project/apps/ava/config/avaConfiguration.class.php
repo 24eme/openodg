@@ -10,10 +10,10 @@ class avaConfiguration extends sfApplicationConfiguration
         $this->enablePlugins('EtablissementPlugin');
         $this->enablePlugins('acVinAbonnementPlugin');
         $this->enablePlugins('acVinTiragePlugin');
-        $this->enablePlugins('avaVinDRevPlugin');
+        $this->enablePlugins('acVinDRevAVAPlugin');
         $this->enablePlugins('acVinDRevMarcPlugin');
         $this->enablePlugins('acVinTravauxMarcPlugin');
-        $this->enablePlugins('avaVinConfigurationPlugin');
+        $this->enablePlugins('acVinConfigurationAVAPlugin');
         $this->enablePlugins('acVinDegustationPlugin');
         $this->enablePlugins('acVinParcellairePlugin');
         $this->enablePlugins('acVinTourneePlugin');
