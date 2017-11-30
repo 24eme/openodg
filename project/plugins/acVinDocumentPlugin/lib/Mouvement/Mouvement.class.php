@@ -12,7 +12,7 @@ abstract class Mouvement extends acCouchdbDocumentTree
         $this->_set('produit_hash',  $value);
         if(!$this->produit_libelle && $this->exist('denomination_complementaire')) {
             $this->produit_libelle = $this->getProduitConfig()->getLibelleFormat($this->denomination_complementaire, "%format_libelle%");
-        } elseif(!$this->exist('denomination_complementaire')) {
+        } elseif(!$this->produit_libelle && !$this->exist('denomination_complementaire')) {
             $this->produit_libelle = $this->getProduitConfig()->getLibelleFormat(array(), "%format_libelle%");
         }
     }
