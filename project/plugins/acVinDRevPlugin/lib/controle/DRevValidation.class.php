@@ -139,7 +139,7 @@ class DRevValidation extends DocumentValidation
         if (!$produit->isHabilite()) {
             $this->addPoint(self::TYPE_WARNING, 'declaration_habilitation', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
-        if (!$produit->recolte->recolte_nette) {
+        if (!$produit->recolte->recolte_nette && !$this->document->isPapier()) {
         	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } else {
 	        if (round($produit->volume_revendique_total, 2) != round($produit->recolte->recolte_nette, 2) && round($produit->recolte->volume_total, 2) == round($produit->recolte->volume_sur_place, 2)) {
