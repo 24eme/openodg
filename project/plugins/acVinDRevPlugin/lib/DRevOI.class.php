@@ -2,12 +2,14 @@
 class DRevOI
 {
 	public $drev;
+	public $context;
 	
-	public function __construct(DRev $drev) {
+	public function __construct(DRev $drev, $context = null) {
 		if (!$drev->validation_odg) {
 			throw new sfException('DRev non validée');
 		}
 		$this->drev = $drev;
+		$this->context = ($context) ? $context : sfContext::getInstance();
 	}
 	
 	public function send()
@@ -41,6 +43,6 @@ class DRevOI
 	}
 	
 	protected function getXml() {
-		return sfContext::getInstance()->getController()->getAction('drev', 'main')->getPartial('drev/xml', array('drev' => $this->drev));
+		return $this->context->getController()->getAction('drev', 'main')->getPartial('drev/xml', array('drev' => $this->drev));
 	}
 }
