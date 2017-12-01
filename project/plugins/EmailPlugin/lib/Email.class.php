@@ -478,8 +478,8 @@ class Email {
 
     public function sendNotificationModificationsExploitation($etablissement, $updatedValues) {
 
-        $from = array('noreply@ava-aoc.fr' => sfConfig::get('app_email_plugin_from_name'));
-        $to = sfConfig::get('app_email_plugin_from_adresse');
+        $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
+        $to = sfConfig::get('app_email_plugin_to_notification');
 
         $subject = "Modification des informations d'exploitation";
         $body = $this->getBodyFromPartial('send_notification_modifications_exploitation', array('etablissement' => $etablissement, 'updatedValues' => $updatedValues));
