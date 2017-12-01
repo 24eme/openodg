@@ -20,7 +20,7 @@ parcellaire_devalidation:
     sf_method: [get]
 
 parcellaire_create:
-  url: /parcellaire/creation/:id
+  url: /parcellaire/creation/:identifiant
   param: { module: parcellaire, action: create }
   class: EtablissementRoute
   options:
@@ -30,7 +30,7 @@ parcellaire_create:
     sf_method: [get]
 
 parcellaire_create_papier:
-  url: /parcellaire/creation-papier/:id
+  url: /parcellaire/creation-papier/:identifiant
   param: { module: parcellaire, action: createPapier }
   class: EtablissementRoute
   options:
@@ -40,7 +40,7 @@ parcellaire_create_papier:
     sf_method: [get]
 
 parcellaire_cremant_create:
-  url: /parcellaireCremant/creation/:id
+  url: /parcellaireCremant/creation/:identifiant
   param: { module: parcellaireCremant, action: create }
   class: EtablissementRoute
   options:
@@ -50,7 +50,7 @@ parcellaire_cremant_create:
     sf_method: [get]
 
 parcellaire_cremant_create_papier:
-  url: /parcellaireCremant/creation-papier/:id
+  url: /parcellaireCremant/creation-papier/:identifiant
   param: { module: parcellaireCremant, action: createPapier }
   class: EtablissementRoute
   options:
@@ -60,7 +60,7 @@ parcellaire_cremant_create_papier:
     sf_method: [get]
 
 intention_cremant_create:
-  url: /intentionCremant/creation/:id
+  url: /intentionCremant/creation/:identifiant
   param: { module: intentionCremant, action: create }
   class: EtablissementRoute
   options:
@@ -70,7 +70,7 @@ intention_cremant_create:
     sf_method: [get]
 
 intention_cremant_create_papier:
-  url: /intentionCremant/creation-papier/:id
+  url: /intentionCremant/creation-papier/:identifiant
   param: { module: intentionCremant, action: createPapier }
   class: EtablissementRoute
   options:

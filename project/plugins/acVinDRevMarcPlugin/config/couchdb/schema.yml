@@ -69,7 +69,7 @@ DRevMarc:
                   date_depot: { }
                   libelle: { }
                   mime: { }
-                  visibilite: { type: inte1ger }
+                  visibilite: { type: integer }
                   source: { }
                   fichiers:
                     type: array_collection

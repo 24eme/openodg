@@ -15,7 +15,7 @@ drev_pull_dr:
   param: { module: drev, action: pullDR }
 
 drev_create:
-  url: /drev/creation/:id
+  url: /drev/creation/:identifiant
   param: { module: drev, action: create }
   class: EtablissementRoute
   options:
@@ -25,7 +25,7 @@ drev_create:
     sf_method: [get]
 
 drev_create_papier:
-  url: /drev/creation-papier/:id
+  url: /drev/creation-papier/:identifiant
   param: { module: drev, action: createPapier }
   class: EtablissementRoute
   options:

@@ -5,7 +5,7 @@
   <li class="active"><a href=""><?php echo $campagne ?>-<?php echo $campagne +1 ?></a></li>
 </ol>
 
-<?php if ($sf_user->isAdmin()): ?>
+<?php if ($sf_user->isAdmin() && class_exists("EtablissementChoiceForm")): ?>
 <div class="row row-margin">
     <div class="col-xs-12">
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('declaration_etablissement_selection'), 'noautofocus' => true)); ?>

@@ -22,32 +22,32 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acExceptionNotifierPlugin');
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
-        $this->enablePlugins('AppPlugin');
 
-        // Spécifique Rhône
-        $this->enablePlugins('acVinDRevPlugin');
-        $this->enablePlugins('acVinConfigurationPlugin');
-        $this->enablePlugins('acVinHabilitationPlugin');
-        $this->enablePlugins('acVinComptePlugin');
-        $this->enablePlugins('acVinSocietePlugin');
-        $this->enablePlugins('acVinEtablissementPlugin');
-        $this->enablePlugins('DRPlugin');
-        $this->enablePlugins('SV11Plugin');
-        $this->enablePlugins('SV12Plugin');
-
-        // Spécifique AVA
-        /*$this->enablePlugins('CompteAVAPlugin');
-        $this->enablePlugins('EtablissementAVAPlugin');
-        $this->enablePlugins('acVinDRevAVAPlugin');
-        $this->enablePlugins('acVinConfigurationAVAPlugin');
-        $this->enablePlugins('acVinAbonnementPlugin');
-        $this->enablePlugins('acVinTiragePlugin');
-        $this->enablePlugins('acVinDRevMarcPlugin');
-        $this->enablePlugins('acVinTravauxMarcPlugin');
-        $this->enablePlugins('acVinDegustationPlugin');
-        $this->enablePlugins('acVinParcellairePlugin');
-        $this->enablePlugins('acVinTourneePlugin');
-        $this->enablePlugins('acVinConstatsVTSGNPlugin');*/
+        if(isset($_ENV["APPLICATION"]) && $_ENV["APPLICATION"] == "ava") {
+            $this->enablePlugins('CompteAVAPlugin');
+            $this->enablePlugins('EtablissementAVAPlugin');
+            $this->enablePlugins('acVinDRevAVAPlugin');
+            $this->enablePlugins('acVinConfigurationAVAPlugin');
+            $this->enablePlugins('acVinAbonnementPlugin');
+            $this->enablePlugins('acVinTiragePlugin');
+            $this->enablePlugins('acVinDRevMarcPlugin');
+            $this->enablePlugins('acVinTravauxMarcPlugin');
+            $this->enablePlugins('acVinDegustationPlugin');
+            $this->enablePlugins('acVinParcellairePlugin');
+            $this->enablePlugins('acVinTourneePlugin');
+            $this->enablePlugins('acVinConstatsVTSGNPlugin');
+        } else {
+            $this->enablePlugins('AppPlugin');
+            $this->enablePlugins('acVinDRevPlugin');
+            $this->enablePlugins('acVinConfigurationPlugin');
+            $this->enablePlugins('acVinHabilitationPlugin');
+            $this->enablePlugins('acVinComptePlugin');
+            $this->enablePlugins('acVinSocietePlugin');
+            $this->enablePlugins('acVinEtablissementPlugin');
+            $this->enablePlugins('DRPlugin');
+            $this->enablePlugins('SV11Plugin');
+            $this->enablePlugins('SV12Plugin');
+        }
     }
 
     public static function getAppRouting()

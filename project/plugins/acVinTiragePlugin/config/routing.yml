@@ -1,6 +1,6 @@
 
 tirage_create:
-  url: /tirage/creation/:id
+  url: /tirage/creation/:identifiant
   param: { module: tirage, action: create }
   class: EtablissementRoute
   options:
@@ -10,7 +10,7 @@ tirage_create:
     sf_method: [get]
 
 tirage_create_papier:
-  url: /tirage/creation-papier/:id
+  url: /tirage/creation-papier/:identifiant
   param: { module: tirage, action: createPapier }
   class: EtablissementRoute
   options:

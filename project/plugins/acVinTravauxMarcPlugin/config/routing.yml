@@ -1,5 +1,5 @@
 travauxmarc_create:
-  url: /travauxmarc/creation/:id
+  url: /travauxmarc/creation/:identifiant
   param: { module: travauxmarc, action: create }
   class: EtablissementRoute
   options:
@@ -9,7 +9,7 @@ travauxmarc_create:
     sf_method: [get]
 
 travauxmarc_create_papier:
-  url: /travauxmarc/creation-papier/:id
+  url: /travauxmarc/creation-papier/:identifiant
   param: { module: travauxmarc, action: createPapier }
   class: EtablissementRoute
   options:

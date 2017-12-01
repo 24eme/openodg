@@ -24,7 +24,7 @@ test:
 
 all:
   .settings:
-    enabled_modules:        [default, Email, piece, drev, compte, etablissement]
+    enabled_modules:        [default, Email, piece, drev, compte, compte_teledeclarant, etablissement, declaration, drevmarc, travauxmarc, parcellaire, parcellaireCremant, intentionCremant, tirage, fichier, degustation, constats, facturation]
     # Form security secret (CSRF protection)
     csrf_secret:            false
 

@@ -1,5 +1,5 @@
 drevmarc_create:
-  url: /drevmarc/creation/:id
+  url: /drevmarc/creation/:identifiant
   param: { module: drevmarc, action: create }
   class: EtablissementRoute
   options:
@@ -9,7 +9,7 @@ drevmarc_create:
     sf_method: [get]
 
 drevmarc_create_papier:
-  url: /drevmarc/creation-papier/:id
+  url: /drevmarc/creation-papier/:identifiant
   param: { module: drevmarc, action: createPapier }
   class: EtablissementRoute
   options:
