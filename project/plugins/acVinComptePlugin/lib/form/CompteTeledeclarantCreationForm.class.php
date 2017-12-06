@@ -3,15 +3,16 @@
 class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
 
     private $typeCompte;
+    protected $updatedValues;
 
     public function __construct($doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
         $this->typeCompte = $doc->getSociete()->type_societe;
+        $this->updatedValues = array();
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
         $defaults['cvi'] = $doc->etablissement_informations->cvi;
         $defaults['ppm'] = $doc->etablissement_informations->ppm;
         $defaults['siret'] = $doc->getSociete()->siret;
-
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
@@ -63,31 +64,66 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
 
         $etbPrincipal = $societe->getEtablissementPrincipal();
         if (($this->typeCompte == SocieteClient::TYPE_COURTIER) && ($this->getValue('carte_pro'))) {
-            $etbPrincipal->carte_pro = $this->getValue('carte_pro');
-            $etbPrincipal->save();
+            if ($etbPrincipal->exist('carte_pro') && $this->getValue('carte_pro') != $etbPrincipal->carte_pro) {
+                $this->updatedValues['carte_pro'] = array($etbPrincipal->carte_pro, $this->getValue('carte_pro'));
+            }
+            if (!$this->getOption('noSaveChangement', false)) {
+                $etbPrincipal->carte_pro = $this->getValue('carte_pro');
+                $etbPrincipal->save();
+            }
         }
         if ($this->typeCompte == SocieteClient::TYPE_OPERATEUR && $this->getValue('num_accises')) {
-            $etbPrincipal->no_accises = strtoupper($this->getValue('num_accises'));
-            $etbPrincipal->save();
+            if ($etbPrincipal->exist('num_accises') && $this->getValue('num_accises') != $etbPrincipal->num_accises) {
+                $this->updatedValues['num_accises'] = array($etbPrincipal->num_accises, $this->getValue('num_accises'));
+            }
+            if (!$this->getOption('noSaveChangement', false)) {
+                $etbPrincipal->no_accises = strtoupper($this->getValue('num_accises'));
+                $etbPrincipal->save();
+            }
         }
 
         if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('siret'))) {
-            $societe->siret = $this->getValue('siret');
-            $societe->save();
+            if ($societe->exist('siret') && $this->getValue('siret') != $societe->siret) {
+                $this->updatedValues['siret'] = array($societe->siret, $this->getValue('siret'));
+            }
+            if (!$this->getOption('noSaveChangement', false)) {
+                $societe->siret = $this->getValue('siret');
+                $societe->save();
+            }
         }
         if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('cvi'))) {
-            $etbPrincipal->cvi = $this->getValue('cvi');
-            $etbPrincipal->save();
+            if ($etbPrincipal->exist('cvi') && $this->getValue('cvi') != $etbPrincipal->cvi) {
+                $this->updatedValues['cvi'] = array($etbPrincipal->cvi, $this->getValue('cvi'));
+            }
+            if (!$this->getOption('noSaveChangement', false)) {
+                $etbPrincipal->cvi = $this->getValue('cvi');
+                $etbPrincipal->save();
+            }
         }
         if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('ppm'))) {
-            $etbPrincipal->ppm = $this->getValue('ppm');
-            $etbPrincipal->save();
+            if ($etbPrincipal->exist('ppm') && $this->getValue('ppm') != $etbPrincipal->ppm) {
+                $this->updatedValues['ppm'] = array($etbPrincipal->ppm, $this->getValue('ppm'));
+            }
+            if (!$this->getOption('noSaveChangement', false)) {
+                $etbPrincipal->ppm = $this->getValue('ppm');
+                $etbPrincipal->save();
+            }
         }
     }
 
     public function getTypeCompte() {
 
         return $this->typeCompte;
+    }
+
+    public function getUpdatedValues()
+    {
+        return $this->updatedValues;
+    }
+
+    public function hasUpdatedValues()
+    {
+        return (count($this->updatedValues) > 0);
     }
 
 }

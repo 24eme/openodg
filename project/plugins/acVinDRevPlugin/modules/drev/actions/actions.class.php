@@ -170,7 +170,7 @@ class drevActions extends sfActions {
 
         $this->etablissement = $this->drev->getEtablissementObject();
 
-        $this->form = new EtablissementForm($this->etablissement, array("use_email" => !$this->drev->isPapier()));
+        $this->form = new EtablissementForm($this->drev->declarant, array("use_email" => !$this->drev->isPapier()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -185,9 +185,6 @@ class drevActions extends sfActions {
         }
 
         $this->form->save();
-
-        $this->drev->storeDeclarant();
-        $this->drev->save();
 
         if ($this->form->hasUpdatedValues() && !$this->drev->isPapier()) {
         	Email::getInstance()->sendNotificationModificationsExploitation($this->drev->getEtablissementObject(), $this->form->getUpdatedValues());
@@ -888,7 +885,7 @@ class drevActions extends sfActions {
         $this->getResponse()->setHttpHeader('Content-Disposition', "attachment; filename=".$drev->_id."_".$drev->_rev.".xml");
         return $this->renderText($xml);
     }
-    
+
     public function executeSendoi(sfWebRequest $request) {
     	$drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::VISUALISATION, $drev);
@@ -917,11 +914,11 @@ class drevActions extends sfActions {
 
         return $this->renderText($file);
     }
-    
+
     public function executeMain()
     {
     }
-    
+
     protected function getEtape($drev, $etape) {
         $drevEtapes = DrevEtapes::getInstance();
         if (!$drev->exist('etape')) {

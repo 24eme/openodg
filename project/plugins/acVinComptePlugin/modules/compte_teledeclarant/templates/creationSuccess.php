@@ -10,8 +10,8 @@
         <?php
         $libelle = "Merci d'indiquer votre e-mail, votre mot de passe";
         $libelle .= ($form->getTypeCompte() == SocieteClient::TYPE_COURTIER)? " et votre numéro de carte professionnelle" : "";
-        $libelle .= ($form->getTypeCompte() == SocieteClient::TYPE_OPERATEUR)?
-                    " et votre numéro de SIRET" : "";
+        /*$libelle .= ($form->getTypeCompte() == SocieteClient::TYPE_OPERATEUR && isset($form['siret']))?
+                    //" et votre numéro de SIRET" : "";*/
         $libelle .= " :";
         ?>
           <div class="row">

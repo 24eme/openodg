@@ -4,11 +4,11 @@
 <div class="row">
     <div id="row_form_exploitation" class="row col-xs-offset-1 col-xs-10 <?php if(!$form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
-            <?php if($etablissement->cvi): ?>
+            <?php if($form->getObject()->cvi): ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;CVI</strong>
                 <span class="col-xs-9">
-                   <?php echo $etablissement->cvi; ?>
+                   <?php echo $form->getObject()->cvi; ?>
                 </span>
             </div>
             <?php endif; ?>
@@ -24,7 +24,7 @@
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
                 <span class="col-xs-9">
-                   <?php echo formatSIRET($etablissement->siret); ?>
+                   <?php echo formatSIRET($form->getObject()->siret); ?>
                 </span>
             </div>
             <?php endif; ?>
@@ -51,7 +51,7 @@
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Raison Sociale</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->raison_sociale; ?>
+                   <?php echo $form->getObject()->raison_sociale; ?>
                 </span>
             </div>
             <?php endif; ?>
@@ -76,29 +76,13 @@
                     <?php echo $form["code_postal"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group<?php if($form["telephone_bureau"]->hasError()): ?> has-error<?php endif; ?>">
-                <?php echo $form["telephone_bureau"]->renderError(); ?>
-                <?php echo $form["telephone_bureau"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <div class="form-group<?php if($form["telephone"]->hasError()): ?> has-error<?php endif; ?>">
+                <?php echo $form["telephone"]->renderError(); ?>
+                <?php echo $form["telephone"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
-                    <?php echo $form["telephone_bureau"]->render(array("class" => "form-control")); ?>
+                    <?php echo $form["telephone"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group<?php if($form["telephone_mobile"]->hasError()): ?> has-error<?php endif; ?>">
-                <?php echo $form["telephone_mobile"]->renderError(); ?>
-                <?php echo $form["telephone_mobile"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-8">
-                    <?php echo $form["telephone_mobile"]->render(array("class" => "form-control")); ?>
-                </div>
-            </div>
-            <?php if(isset($form["telephone_prive"])): ?>
-            <div class="form-group<?php if($form["telephone_prive"]->hasError()): ?> has-error<?php endif; ?>">
-                <?php echo $form["telephone_prive"]->renderError(); ?>
-                <?php echo $form["telephone_prive"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-                <div class="col-xs-8">
-                    <?php echo $form["telephone_prive"]->render(array("class" => "form-control")); ?>
-                </div>
-            </div>
-            <?php endif; ?>
             <div class="form-group<?php if($form["fax"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["fax"]->renderError(); ?>
                 <?php echo $form["fax"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -119,24 +103,24 @@
     </div>
     <div id="row_info_exploitation" class="row col-xs-12 <?php if($form->isBound()): ?>hidden<?php endif; ?>">
         <div class="col-xs-5">
-            <?php if($etablissement->cvi): ?>
+            <?php if($form->getObject()->cvi): ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;CVI</strong>
                 <span class="col-xs-9">
-                   <?php echo $etablissement->cvi; ?>
+                   <?php echo $form->getObject()->cvi; ?>
                 </span>
             </div>
             <?php endif; ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;SIRET</strong>
                 <span class="col-xs-9">
-                   <?php echo formatSIRET($etablissement->siret); ?>
+                   <?php echo formatSIRET($form->getObject()->siret); ?>
                 </span>
             </div>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;PPM</strong>
                 <span class="col-xs-9">
-                   <?php echo ($etablissement->ppm)? $etablissement->ppm : " (non communiqué)"; ?>
+                   <?php echo ($form->getObject()->ppm)? $form->getObject()->ppm : " (non communiqué)"; ?>
                 </span>
             </div>
 <?php if(isset($extra)): ?>
@@ -154,58 +138,44 @@
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Raison Sociale</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->raison_sociale; ?>
+                   <?php echo $form->getObject()->raison_sociale; ?>
                 </span>
             </div>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Adresse</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->adresse; ?>
+                   <?php echo $form->getObject()->adresse; ?>
                 </span>
             </div>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Commune</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->commune; ?>
+                   <?php echo $form->getObject()->commune; ?>
                 </span>
             </div>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Code Postal</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->code_postal; ?>
+                   <?php echo $form->getObject()->code_postal; ?>
                 </span>
             </div>
             <div class="form-group">
-                <strong class="col-xs-4 text-right">Tél. Fixe</strong>
+                <strong class="col-xs-4 text-right">Téléphone</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->telephone_bureau; ?>
+                   <?php echo $form->getObject()->telephone; ?>
                 </span>
             </div>
-            <div class="form-group">
-                <strong class="col-xs-4 text-right">Tél. Mobile</strong>
-                <span class="col-xs-8">
-                   <?php echo $etablissement->telephone_mobile; ?>
-                </span>
-            </div>
-            <?php if($etablissement->exist('telephone_prive')): ?>
-            <div class="form-group">
-                <strong class="col-xs-4 text-right">Tél. Privé</strong>
-                <span class="col-xs-8">
-                   <?php echo $etablissement->telephone_prive; ?>
-                </span>
-            </div>
-            <?php endif; ?>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Fax</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->fax; ?>
+                   <?php echo $form->getObject()->fax; ?>
                 </span>
             </div>
             <?php if(isset($form["email"])): ?>
             <div class="form-group">
                 <strong class="col-xs-4 text-right">Email</strong>
                 <span class="col-xs-8">
-                   <?php echo $etablissement->email; ?>
+                   <?php echo $form->getObject()->email; ?>
                 </span>
             </div>
             <?php endif; ?>
