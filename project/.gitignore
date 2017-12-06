@@ -7,5 +7,6 @@ web/declaration_dev.php
 cache/[^.]*
 log/[^.]*
 data/*
+.~*
 !data/configuration/
 !data/elk

@@ -1,41 +1,57 @@
 <?php require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(30);
 
 $csv = new SV12DouaneCsvFile(dirname(__FILE__).'/../data/sv12_douane.csv');
 
 
-$csv = $csv->convert();
+$csvConvert = $csv->convert();
 
-$lines = explode("\n", $csv);
+$lines = explode("\n", $csvConvert);
 
-$t->is($lines[0], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B525;CONDRIEU;;07;Quantité de VF;2700,00;7523700100;\"ACTUALYS JEAN\";;SARRAS", "La ligne 0 est ok");
-$t->is($lines[1], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B525;CONDRIEU;;09;Superficie de récolte;0,4579;7523700100;\"ACTUALYS JEAN\";;SARRAS", "La ligne 1 est ok");
-$t->is($lines[2], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B525;CONDRIEU;;10;Volume issu de VF;19,42;7523700100;\"ACTUALYS JEAN\";;SARRAS", "La ligne 2 est ok");
-$t->is($lines[3], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B541;Hermitage ou Ermitage bl;;07;Quantité de VF;850,00;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 3 est ok");
-$t->is($lines[4], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B541;Hermitage ou Ermitage bl;;09;Superficie de récolte;0,1484;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 4 est ok");
-$t->is($lines[5], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B541;Hermitage ou Ermitage bl;;10;Volume issu de VF;6,75;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 5 est ok");
-$t->is($lines[6], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;07;Quantité de VF;7000,00;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 6 est ok");
-$t->is($lines[7], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;09;Superficie de récolte;1,0800;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 7 est ok");
-$t->is($lines[8], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;10;Volume issu de VF;54,00;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 8 est ok");
-$t->is($lines[9], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R526;CORNAS;;07;Quantité de VF;3000,00;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 9 est ok");
-$t->is($lines[10], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R526;CORNAS;;09;Superficie de récolte;0,5495;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 10 est ok");
-$t->is($lines[11], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R526;CORNAS;;10;Volume issu de VF;23,00;7523700101;\"ACTUALYS JEAN 1\";;MERCUROL-VEAUNES", "La ligne 11 est ok");
-$t->is($lines[12], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B542;Crozes-Hermitage bl;;07;Quantité de VF;5000,00;7523700102;\"ACTUALYS JEAN 2\";;MERCUROL-VEAUNES", "La ligne 12 est ok");
-$t->is($lines[13], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B542;Crozes-Hermitage bl;;09;Superficie de récolte;0,8866;7523700102;\"ACTUALYS JEAN 2\";;MERCUROL-VEAUNES", "La ligne 13 est ok");
-$t->is($lines[14], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B542;Crozes-Hermitage bl;;10;Volume issu de VF;30,96;7523700102;\"ACTUALYS JEAN 2\";;MERCUROL-VEAUNES", "La ligne 14 est ok");
-$t->is($lines[15], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;07;Quantité de VF;5528,00;7523700102;\"ACTUALYS JEAN 2\";;MERCUROL-VEAUNES", "La ligne 15 est ok");
-$t->is($lines[16], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;09;Superficie de récolte;0,7200;7523700102;\"ACTUALYS JEAN 2\";;MERCUROL-VEAUNES", "La ligne 16 est ok");
-$t->is($lines[17], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;10;Volume issu de VF;37,14;7523700102;\"ACTUALYS JEAN 2\";;MERCUROL-VEAUNES", "La ligne 17 est ok");
-$t->is($lines[18], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B542;Crozes-Hermitage bl;;07;Quantité de VF;800,00;7523700103;\"ACTUALYS JEAN 3\";;VINSOBRES", "La ligne 18 est ok");
-$t->is($lines[19], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B542;Crozes-Hermitage bl;;09;Superficie de récolte;0,2550;7523700103;\"ACTUALYS JEAN 3\";;VINSOBRES", "La ligne 19 est ok");
-$t->is($lines[20], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1B542;Crozes-Hermitage bl;;10;Volume issu de VF;5,04;7523700103;\"ACTUALYS JEAN 3\";;VINSOBRES", "La ligne 20 est ok");
-$t->is($lines[21], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;07;Quantité de VF;15454,00;7523700103;\"ACTUALYS JEAN 3\";;VINSOBRES", "La ligne 21 est ok");
-$t->is($lines[22], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;09;Superficie de récolte;2,2352;7523700103;\"ACTUALYS JEAN 3\";;VINSOBRES", "La ligne 22 est ok");
-$t->is($lines[23], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;10;Volume issu de VF;112,86;7523700103;\"ACTUALYS JEAN 3\";;VINSOBRES", "La ligne 23 est ok");
-$t->is($lines[24], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;07;Quantité de VF;2000,00;7523700104;\"ACTUALYS JEAN 4\";;SAINT-BARDOUX", "La ligne 24 est ok");
-$t->is($lines[25], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;09;Superficie de récolte;0,3234;7523700104;\"ACTUALYS JEAN 4\";;SAINT-BARDOUX", "La ligne 25 est ok");
-$t->is($lines[26], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;10;Volume issu de VF;16,00;7523700104;\"ACTUALYS JEAN 4\";;SAINT-BARDOUX", "La ligne 26 est ok");
-$t->is($lines[27], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;07;Quantité de VF;2082,00;7523700105;\"ACTUALYS JEAN 5\";;ROCHE-DE-GLUN", "La ligne 27 est ok");
-$t->is($lines[28], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;09;Superficie de récolte;0,3120;7523700105;\"ACTUALYS JEAN 5\";;ROCHE-DE-GLUN", "La ligne 28 est ok");
-$t->is($lines[29], "SV12;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R542;Crozes-Hermitage rg;;10;Volume issu de VF;15,00;7523700105;\"ACTUALYS JEAN 5\";;ROCHE-DE-GLUN", "La ligne 29 est ok");
+$t = new lime_test((count($lines) - 1)*10);
+
+$linesAObtenir = array(
+     array('produit' => '1B525', 'produit_libelle' => 'CONDRIEU', 'values' => array(2700, 0.4579, 19.42, 19.42)),
+     array('produit' => '1B541', 'produit_libelle' => 'Hermitage ou Ermitage bl', 'values' => array(850,0.1484,6.75,6.75)),
+     array('produit' => '1R542', 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(7000, 1.08, 54, 54)),
+     array('produit' => '1R526', 'produit_libelle' => 'CORNAS', 'values' => array(3000, 0.5495, 23, 23)),
+     array('produit' => '1B542', 'produit_libelle' => 'Crozes-Hermitage bl', 'values' => array(5000, 0.8866, 30.96, 30.96)),
+     array('produit' => '1R542', 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(5528, 0.72, 37.14, 37.14)),
+     array('produit' => '1B542', 'produit_libelle' => 'Crozes-Hermitage bl', 'values' => array(800, 0.255, 5.04, 5.04)),
+     array('produit' => '1R542', 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(15454, 2.2352, 112.86, 112.86)),
+     array('produit' => '1R542', 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(2000, 0.3234, 16, 16)),
+     array('produit' => '1R542', 'produit_libelle' => 'Crozes-Hermitage rg', 'values' => array(2082, 0.312, 15, 15)),
+);
+
+$typesLigne = array(
+    array("libelle" => "Quantité de VF", "numero" => "07"),
+    array("libelle" => "Superficie de récolte", "numero" => "09"),
+    array("libelle" => "Volume issu de VF", "numero" => "10"),
+    array("libelle" => "Total produit", "numero" => "12"),
+);
+
+$i = 0;
+foreach($lines as $line) {
+    if(!$line) {
+        continue;
+    }
+
+    $line = explode(";", $line);
+    $t->is($line[SV12CsvFile::CSV_TYPE], "SV12", "Le type de la ligne est SV12");
+    $t->is($line[SV12CsvFile::CSV_CAMPAGNE], "2017", "La campagne est 2017");
+    $t->is($line[SV12CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
+    $t->is($line[SV12CsvFile::CSV_RECOLTANT_LIBELLE], "\"ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
+    $t->is($line[SV12CsvFile::CSV_RECOLTANT_COMMUNE], "NEUILLY", "Le commune est NEUILLY");
+
+    $ligneAObtenir = $linesAObtenir[floor($i/4)];
+    $rest = fmod($i, 4);
+    $valueAObtenir = $ligneAObtenir['values'][$rest];
+
+    $t->is($line[SV12CsvFile::CSV_PRODUIT_INAO], $ligneAObtenir['produit'], "Le code produit est ".$ligneAObtenir['produit']);
+    $t->is($line[SV12CsvFile::CSV_PRODUIT_LIBELLE], $ligneAObtenir['produit_libelle'], "Le code produit est ".$ligneAObtenir['produit_libelle']);
+    $t->is($line[SV12CsvFile::CSV_LIGNE_CODE], $typesLigne[$rest]['numero'], "Le numéro du type de la ligne est ".$typesLigne[$rest]['numero']);
+    $t->is($line[SV12CsvFile::CSV_LIGNE_LIBELLE], $typesLigne[$rest]['libelle'], "La ligne est de type ".$typesLigne[$rest]['libelle']);
+    $t->is(round(str_replace(",", ".", $line[SV12CsvFile::CSV_VALEUR]), 4), round($valueAObtenir, 4), "La valeur est ".$valueAObtenir);
+
+    $i++;
+}
