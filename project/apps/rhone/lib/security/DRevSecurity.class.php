@@ -16,7 +16,7 @@ class DRevSecurity extends DocumentSecurity implements SecurityInterface {
         }
 
         $authorized = parent::isAuthorized($droits);
-    
+
         if(!$authorized) {
 
             return false;
@@ -24,7 +24,7 @@ class DRevSecurity extends DocumentSecurity implements SecurityInterface {
 
         if(in_array(self::VALIDATION_ADMIN, $droits) && !$this->doc->hasCompleteDocuments()) {
 
-            return false;
+            //return false;
         }
 
         return true;
