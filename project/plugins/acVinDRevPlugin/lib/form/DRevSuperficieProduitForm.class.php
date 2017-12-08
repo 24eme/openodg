@@ -47,7 +47,7 @@ class DRevSuperficieProduitForm extends acCouchdbObjectForm {
         if($values['has_stock_vci'] && !$this->getObject()->hasVci()) {
             $this->getObject()->vci->stock_precedent = 0;
         }
-        if(!$values['has_stock_vci']) {
+        if(!$values['has_stock_vci'] && !$this->getObject()->hasVci(true)) {
         	$this->getObject()->vci->stock_precedent = null;
         }
     }

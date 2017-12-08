@@ -128,7 +128,7 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->superficie_revendique > 0) {
-	        if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 2) > $produit->getConfig()->getRendement()) {
+	        if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 4) > $produit->getConfig()->getRendement()) {
 	        	$this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
         } else{
@@ -145,13 +145,14 @@ class DRevValidation extends DocumentValidation
         } elseif ($this->document->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR && !$produit->recolte->recolte_nette) {
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } else {
+
 	        if (round($produit->volume_revendique_total, 2) != round($produit->recolte->recolte_nette, 2) && round($produit->recolte->volume_total, 2) == round($produit->recolte->volume_sur_place, 2)) {
 	          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
 	        if (round($produit->volume_revendique_total, 2) > round($produit->recolte->recolte_nette + $produit->vci->complement, 2) && round($produit->recolte->volume_total, 2) == round($produit->recolte->volume_sur_place, 2)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
-	        if (($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
+	        if ($produit->recolte->recolte_nette && ($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'vci_substitue_rafraichi', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
 	        }
         }
