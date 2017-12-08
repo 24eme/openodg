@@ -21,7 +21,6 @@ class DRevValidation extends DocumentValidation
          */
         $this->addControle(self::TYPE_WARNING, 'declaration_habilitation', 'Vous avez déclaré du volume sans habilitation');
         $this->addControle(self::TYPE_WARNING, 'declaration_volume_l15', 'Vous revendiquez plus de volume que celui qui figure sur votre déclaration douanière en L15');
-        $this->addControle(self::TYPE_WARNING, 'vci_rendement_annee', "Le vci de l'annéee dépasse le rendement autorisé");
         $this->addControle(self::TYPE_WARNING, 'declaration_neant', "Vous n'avez déclaré aucun produit");
         $this->addControle(self::TYPE_WARNING, 'declaration_produits_incoherence', "Vous ne déclarez pas tous les produits de votre déclaration douanière");
         $this->addControle(self::TYPE_WARNING, 'declaration_surface_bailleur', "Vous n'avez pas reparti votre part de surface avec le bailleur");
@@ -88,7 +87,7 @@ class DRevValidation extends DocumentValidation
     	$bailleurs = $this->document->getProduitsBailleur();
     	foreach ($this->document->getProduits() as $produit) {
     		if (in_array($produit->getConfig()->getHash(), $bailleurs)) {
-	    		if (round($produit->recolte->superficie_total,2) == round($produit->superficie_revendique,2)) {
+	    		if (round($produit->recolte->superficie_total,4) == round($produit->superficie_revendique,4)) {
 	    			$this->addPoint(self::TYPE_WARNING, 'declaration_surface_bailleur', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication_superficie', array('sf_subject' => $this->document)));
 	    		}
     		}
@@ -128,11 +127,11 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ERROR, 'revendication_incomplete', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         }
         if ($produit->superficie_revendique > 0) {
-	        if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 4) > $produit->getConfig()->getRendement()) {
+	        if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total / $produit->superficie_revendique), 2) > round($produit->getConfig()->getRendement(), 2)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
         } else{
-        	if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total), 2) > $produit->getConfig()->getRendement()) {
+        	if($produit->getConfig()->getRendement() !== null && round(($produit->volume_revendique_total), 4) > round($produit->getConfig()->getRendement(), 4)) {
         		$this->addPoint(self::TYPE_ERROR, 'revendication_rendement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         	}
         }
@@ -146,10 +145,10 @@ class DRevValidation extends DocumentValidation
             $this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_dr', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
         } else {
 
-	        if (round($produit->volume_revendique_total, 2) != round($produit->recolte->recolte_nette, 2) && round($produit->recolte->volume_total, 2) == round($produit->recolte->volume_sur_place, 2)) {
+	        if (round($produit->volume_revendique_total, 4) != round($produit->recolte->recolte_nette, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4)) {
 	          	$this->addPoint(self::TYPE_WARNING, 'declaration_volume_l15', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
-	        if (round($produit->volume_revendique_total, 2) > round($produit->recolte->recolte_nette + $produit->vci->complement, 2) && round($produit->recolte->volume_total, 2) == round($produit->recolte->volume_sur_place, 2)) {
+	        if (round($produit->volume_revendique_total, 4) > round($produit->recolte->recolte_nette + $produit->vci->complement, 4) && round($produit->recolte->volume_total, 4) == round($produit->recolte->volume_sur_place, 4)) {
 	        	$this->addPoint(self::TYPE_ERROR, 'declaration_volume_l15_complement', $produit->getLibelleComplet(), $this->generateUrl('drev_revendication', array('sf_subject' => $this->document)));
 	        }
 	        if ($produit->recolte->recolte_nette && ($produit->recolte->recolte_nette + $produit->vci->complement) < ($produit->vci->substitution + $produit->vci->rafraichi)) {
@@ -174,15 +173,12 @@ class DRevValidation extends DocumentValidation
         if(!$produit->hasVci()) {
             return;
         }
-        if(round($produit->vci->stock_precedent, 2) != round($produit->getTotalVciUtilise(), 2)) {
+        if(round($produit->vci->stock_precedent, 4) != round($produit->getTotalVciUtilise(), 4)) {
             $this->addPoint(self::TYPE_ERROR, 'vci_stock_utilise', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
         }
-        if($produit->getConfig()->getRendementVci() !== null && round($produit->getConfig()->getRendementVci() * $produit->superficie_revendique, 2) < round($produit->vci->constitue, 2)) {
-            $this->addPoint(self::TYPE_WARNING, 'vci_rendement_annee', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
-        }
-        if($produit->getConfig()->rendement_vci_total !== null && round($produit->getPlafondStockVci(), 2) < $produit->vci->stock_final) {
+        if($produit->getConfig()->rendement_vci_total !== null && round($produit->getPlafondStockVci(), 4) < $produit->vci->stock_final) {
             $point = $this->addPoint(self::TYPE_WARNING, 'vci_rendement_total', $produit->getLibelleComplet(), $this->generateUrl('drev_vci', array('sf_subject' => $this->document)));
-            $vol = $produit->vci->stock_final - round($produit->getPlafondStockVci(), 2);
+            $vol = $produit->vci->stock_final - round($produit->getPlafondStockVci(), 4);
             $point->setMessage($point->getMessage() . " soit $vol hl");
         }
     }
