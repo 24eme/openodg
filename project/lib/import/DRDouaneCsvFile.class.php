@@ -52,7 +52,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		if ($values[0] == 2) {
         			for ($i = 2; $i < count($values); $i++) {
         				if (isset($produits[$i])) {
-        					$produits[$i][] = ($values[$i])? $values[$i] : null;
+                            $produits[$i][] = ($values[$i])? str_replace(";", "", $values[$i]) : null;
         				}
         			}
         			continue;
