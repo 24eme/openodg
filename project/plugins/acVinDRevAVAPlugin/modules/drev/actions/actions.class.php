@@ -88,8 +88,9 @@ class drevActions extends sfActions {
         return $this->redirect(sfConfig::get('app_url_dr_recuperation') .
                         "?" .
                         http_build_query(array(
+                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne),
                             'url' => $this->generateUrl('drev_dr_import', $drev, true),
-                            'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne))));
+                        )));
     }
 
     public function executeDrImport(sfWebRequest $request) {
