@@ -90,10 +90,23 @@ class HabilitationClient extends acCouchdbClient {
           return $doc;
         }
 
-        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        public function findNextByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+            $h = $this->getHistory($identifiant, '9999-99-99', acCouchdbClient::HYDRATE_JSON, $date);
+            $docs = $h->getDocs();
+            foreach($docs as $doc) {
+                if($doc->date > $date) {
 
-            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-00000000", $identifiant))
-                      ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
+                    return $this->find($doc->_id, $hydrate);
+                }
+            }
+
+            return null;
+        }
+
+        public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = "0000-00-00") {
+
+            return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $dateDebut)))
+                        ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
         }
 
         public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
@@ -124,10 +137,52 @@ class HabilitationClient extends acCouchdbClient {
           return array_unique($etbIds);
         }
 
-        public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activite, $statut, $commentaire = "") {
-            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($etablissementIdentifiant, $date);
+        public function updateAndSaveHabilitation($etablissementIdentifiant, $hash_produit, $date, $activites, $statut, $commentaire = "") {
+            $last = HabilitationClient::getInstance()->getLastHabilitation($etablissementIdentifiant);
+            $habilitation = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($etablissementIdentifiant, $date);
 
-            $habilitation->updateHabilitation($hash_produit, $activite, $statut, $commentaire, $date);
+            if($habilitation->_id < $last->_id) {
+                foreach($activites as $activiteKey) {
+                    if(!$last->exist($hash_produit)) {
+                        continue;
+                    }
+
+                    if(!$habilitation->exist($hash_produit)) {
+                        continue;
+                    }
+
+                    if(!$last->get($hash_produit)->activites->exist($activiteKey)) {
+                        continue;
+                    }
+
+                    if(!$habilitation->get($hash_produit)->activites->exist($activiteKey)) {
+                        continue;
+                    }
+
+                    $activiteLast = $last->get($hash_produit)->activites->get($activiteKey);
+                    $activite = $habilitation->get($hash_produit)->activites->get($activiteKey);
+
+                    if($activiteLast->statut == $activite->statut && $activiteLast->date == $activite->date) {
+                        continue;
+                    }
+
+                    throw new sfException("Une habilitation différente avec une date supérieur existe déjà");
+                }
+            }
+
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($etablissementIdentifiant, $date);
+            $habilitation->updateHabilitation($hash_produit, $activites, $statut, $commentaire, $date);
             $habilitation->save();
+
+            $dateCourante = $date;
+            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($etablissementIdentifiant, $dateCourante)) {
+                if(!$habilitationSuivante || $habilitationSuivante->_id <= $habilitation->_id) {
+                    break;
+                }
+
+                $habilitationSuivante->updateHabilitation($hash_produit, $activites, $statut, $commentaire, $date);
+                $habilitationSuivante->save();
+                $dateCourante = $habilitationSuivante->date;
+            }
         }
     }

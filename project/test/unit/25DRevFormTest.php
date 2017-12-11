@@ -70,7 +70,7 @@ $drev->save();
 $t->is($produit1->getLibelleComplet(), "Saint Joseph Rouge", "Le libelle du produit est Saint Joseph Rouge");
 $t->is($produit1->recolte->superficie_total, 2.4786, "La superficie total de la DR pour le produit est de 333.87");
 $t->is($produit1->recolte->volume_sur_place, 105.18, "Le volume sur place pour ce produit est de 108.94");
-$t->is($produit1->recolte->usages_industriels_total, 3.03, "Les usages industriels la DR pour ce produit sont de 4.32");
+$t->is($produit1->recolte->usages_industriels_total, 3.03, "Les usages industriels la DR pour ce produit sont de 3.03");
 $t->is($produit1->recolte->recolte_nette, 104.1, "La récolte nette de la DR pour ce produit est de 104.1");
 $t->is($produit1->recolte->volume_total, 105.18, "Le volume total de la DR pour ce produit est de 169.25");
 $t->is($produit1->recolte->vci_constitue, 2, "Le vci de la DR pour ce produit est de 2");
@@ -186,7 +186,7 @@ $valuesRev = array(
     '_revision' => $drev->_rev,
 );
 
-$valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 100;
+$valuesRev['produits'][$produit_hash1]['volume_revendique_issu_recolte'] = 101.1;
 $valuesRev['produits'][$produit_hash2]['volume_revendique_issu_recolte'] = 100;
 
 $form->bind($valuesRev);

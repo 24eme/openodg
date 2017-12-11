@@ -4,9 +4,9 @@ $t = new lime_test(65);
 
 $csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane.csv');
 $csvExploitant = $csv->convert();
-$csvBailleur = $csv->convert(DRDouaneCsvFile::BAILLEUR);
+$csvBailleur = $csv->convert();
 
-$t->diag("Tests sur les données Exploitant");
+$t->diag("Tests sur les données Exploitants");
 $lines = explode("\n", $csvExploitant);
 $t->is($lines[0], "DR;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R545;Saint-Joseph rouge;;04;Superficie de récolte;2,4786;;;;", "La ligne 1 exploitant est ok");
 $t->is($lines[1], "DR;2017;7523700100;\"ACTUALYS JEAN\";;NEUILLY;;;;;;;;;;1R545;Saint-Joseph rouge;;05;Récolte totale;105,18;;;;", "La ligne 2 exploitant est ok");

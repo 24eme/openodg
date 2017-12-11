@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(24);
+$t = new lime_test(30);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -14,7 +14,7 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
   $drev->delete(false);
 }
 
-$t->comment("Création d'une doc dans le passé");
+$t->comment("Création d'un doc dans le passé");
 $date = '2000-10-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
 $habilitation->save();
@@ -43,11 +43,7 @@ $t->is($produit->getLibelle(), $produitConfig->getLibelleComplet(), "Le libellé
 $t->is(count($produit->activites), 6, "La liste d'activité a été initialisé à 6");
 $t->is(count($habilitation->historique), 1, "l'ajout du produit a créé un historique");
 
-$activiteKey = null;
-foreach(HabilitationClient::$activites_libelles as $key => $activiteLiebelle) {
-  $activiteKey = key(HabilitationClient::$activites_libelles);
-  break;
-}
+$activiteKey = HabilitationClient::ACTIVITE_PRODUCTEUR;
 $activite = $produit->activites->get($activiteKey);
 
 $t->comment("Ajout d'activité");
@@ -85,3 +81,43 @@ $t->is(count($full), 4, "l'historique complet contient toutes les modifications"
 $t->is($full[count($full)-1]->date, $habilitation->historique[0]->date, "l'historique complet est dans le bon ordre");
 $full = $habilitation->getFullHistoriqueReverse();
 $t->is($full[0]->date, $habilitation->historique[0]->date, "l'historique complet invsersé est dans le bon ordre");
+
+$t->comment("Habilitation d'une autre activité à une nouvelle date supérieur à la dernière");
+$date = '2012-10-01';
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array(HabilitationClient::ACTIVITE_VINIFICATEUR), HabilitationClient::STATUT_DEMANDE_HABILITATION);
+
+$id = "HABILITATION-".$viti->identifiant."-".str_replace("-", "", $date);
+$habilitation = HabilitationClient::getInstance()->find($id);
+
+$t->is($habilitation->_id, $id, "L'habilitation a été crée à la bonne date ".$id);
+
+$idLast = $id;
+
+$t->comment("Insertion d'une habilitation entre deux autres");
+
+$habilitationLastBefore = HabilitationClient::getInstance()->find($idLast);
+
+$date = '2011-10-01';
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), HabilitationClient::STATUT_HABILITE);
+
+$id = "HABILITATION-".$viti->identifiant."-".str_replace("-", "", $date);
+$habilitation = HabilitationClient::getInstance()->find($id);
+
+$t->is($habilitation->_id, $id, "L'habilitation a été crée à la bonne date ".$id);
+$t->ok($habilitation->isLectureSeule(), "L'habilitation est en lecture seule");
+
+$habilitationLast = HabilitationClient::getInstance()->find($idLast);
+
+$t->is($habilitationLast->get($produitConfig->getHash())->activites->get($activiteKey)->statut, HabilitationClient::STATUT_HABILITE, "Le statut a été répliqué sur la dernière habilitation");
+$t->is($habilitationLast->get($produitConfig->getHash())->activites->get($activiteKey)->date, $date, "La date a été répliqué sur la dernière habilitation");
+$t->is(count($habilitationLast->historique), count($habilitationLastBefore->historique), "La ligne d'historique n'a pas été créé dans la dernière habilitation");
+
+$t->comment("Insertion d'une habilitation au début avec perte de logique");
+$date = '2009-10-01';
+
+try {
+HabilitationClient::getInstance()->updateAndSaveHabilitation($viti->identifiant, $produitConfig->getHash(), $date, array($activiteKey), HabilitationClient::STATUT_RETRAIT);
+    $t->fail("L'habitation n'a pas pu être créer car il y a une perte de logique");
+} catch (Exception $e) {
+    $t->pass("L'habitation n'a pas pu être créer car il y a une perte de logique");
+}

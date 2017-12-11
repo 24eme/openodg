@@ -36,7 +36,7 @@ $t->is($drev->getDocumentDouanierType(), "SV11", "Le document douanier de la DRe
 $drev->importFromDocumentDouanier();
 $drev->save();
 
-$t->is(count($drev->getProduits()), 6, "La DRev a repris 6 produits du csv de la SV11");
+$t->is(count($drev->getProduits()), 2, "La DRev a repris 2 produits du csv de la SV11");
 
 $produits = $drev->getProduits();
 
