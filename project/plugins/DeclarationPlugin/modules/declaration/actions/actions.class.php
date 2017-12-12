@@ -96,12 +96,14 @@ class declarationActions extends sfActions {
     }
 
     public function executeEtablissement(sfWebRequest $request) {
-        if(class_exists("EtablissementChoiceForm")) {
-            $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
-        }
-        
         $this->etablissement = $this->getRoute()->getEtablissement();
+
         $this->secureEtablissement($this->etablissement);
+
+        if(class_exists("EtablissementChoiceForm")) {
+            $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
+        }
+
         $this->campagne = $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrent());
         if(!$this->getUser()->isAdmin() && $this->campagne != ConfigurationClient::getInstance()->getCampagneManager()->getCurrent()) {
 
