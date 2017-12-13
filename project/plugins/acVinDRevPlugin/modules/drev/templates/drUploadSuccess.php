@@ -2,7 +2,7 @@
 
 <?php include_partial('drev/step', array('step' => 'dr_douane', 'drev' => $drev)) ?>
 <div class="page-header">
-    <h2>Récupération de la <?php echo strtolower($drev->getDocumentDouanierTypeLibelle()) ?> <a href="<?php echo url_for('drev_scrape_dr', $drev) ?>" class="pull-right btn btn-warning btn-xs">Récupérer sur Prodouane, si disponible</a></h2>
+    <h2>Récupération de la <?php echo strtolower($drev->getDocumentDouanierTypeLibelle()) ?> <?php if(!$drev->hasDocumentDouanier()): ?><a href="<?php echo url_for('drev_dr', $drev) ?>" class="pull-right btn btn-warning btn-xs">Récupérer sur Prodouane, si disponible</a><?php endif; ?></h2>
 </div>
 <form method="post" enctype="multipart/form-data">
 <?php if ($form): ?>
@@ -28,11 +28,7 @@
 <div class="row row-margin row-button">
     <div class="col-xs-6"><a href="<?php echo url_for("drev_exploitation", $drev) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
     <div class="col-xs-6 text-right">
-        <?php if ($drev->exist('etape') && $drev->etape == DrevEtapes::ETAPE_VALIDATION): ?>
-            <button id="btn-validation" type="submit" class="btn btn-primary btn-upper">Retourner à la validation <span class="glyphicon glyphicon-check"></span></button>
-        <?php else: ?>
-            <button type="submit" class="btn btn-primary btn-upper">Continuer vers la revendication <span class="glyphicon glyphicon-chevron-right"></span></button>
-        <?php endif; ?>
+        <button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
     </div>
 </div>
 </form>

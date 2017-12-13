@@ -79,46 +79,75 @@ class drevActions extends sfActions {
         return $this->redirect($this->generateUrl('drev_edit', $drev));
     }
 
-    public function executeScrapeDr(sfWebRequest $request) {
+    public function executeDr(sfWebRequest $request) {
     	$this->drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::EDITION, $this->drev);
+
+        $imported = $this->drev->importFromDocumentDouanier();
+
+        if($imported) {
+            exit;
+            $this->drev->save();
+        }
     }
 
-    public function executeDr(sfWebRequest $request) {
+    public function executeScrapeDr(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
+
         try {
-          if (!$this->drev->hasDocumentDouanier()) {
           	FichierClient::getInstance()->scrapeAndSaveFiles($this->drev->getEtablissementObject(), $this->drev->getDocumentDouanierType(), $this->drev->campagne);
-          }
-        }catch(Exception $e) {}
-        return $this->redirect('drev_dr_douane', $this->drev);
+        } catch(Exception $e) {
+        }
+
+        if (!$this->drev->hasDocumentDouanier()) {
+
+            return $this->redirect('drev_dr_upload', $this->drev);
+        }
+
+        $this->drev->importFromDocumentDouanier(true);
+        $this->drev->save();
+
+        return $this->redirect('drev_revendication_superficie', $this->drev);
     }
 
-    public function executeDrDouane(sfWebRequest $request) {
+    public function executeDrUpload(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::EDITION, $this->drev);
         $client = $this->drev->getDocumentDouanierClient();
         if (!$client) {
         	throw new sfException('Client not found');
         }
-        $this->form = new DRevUploadDrForm($client->createDoc($this->drev->identifiant, $this->drev->campagne), array('libelle' => 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne), array("papier" => $this->drev->isPapier()));
-        if ($this->drev->importFromDR()) {
-          return $this->redirect('drev_revendication_superficie', $this->drev);
+
+        $fichier = $client->findByArgs($this->drev->identifiant, $this->drev->campagne);
+
+        if(!$fichier) {
+            $fichier = $client->createDoc($this->drev->identifiant, $this->drev->campagne);
         }
+
+        $this->form = new DRevUploadDrForm($fichier, array('libelle' => 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne), array("papier" => $this->drev->isPapier()));
+
         if (!$request->isMethod(sfWebRequest::POST)) {
         	return sfView::SUCCESS;
         }
-	   	     $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
-	      if (!$this->form->isValid()) {
-	    	  return sfView::SUCCESS;
-	      }
+
+        $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
+
+        if (!$this->form->isValid()) {
+
+            return sfView::SUCCESS;
+	    }
+
         if (!$this->form->getValue('file')) {
+
         	return $this->redirect('drev_revendication_superficie', $this->drev);
         }
-		    $fichier = $this->form->save();
-		      $this->drev->importFromDR();
-		    $this->drev->save();
+
+        $this->form->save();
+
+        $this->drev->importFromDocumentDouanier(true);
+	    $this->drev->save();
+
         return $this->redirect('drev_revendication_superficie', $this->drev);
     }
 
@@ -131,33 +160,6 @@ class drevActions extends sfActions {
                         http_build_query(array(
                             'url' => $this->generateUrl('drev_dr_import', $drev, true),
                             'id' => sprintf('DR-%s-%s', $drev->identifiant, $drev->campagne))));
-    }
-
-    public function executeDrImport(sfWebRequest $request) {
-        $this->drev = $this->getRoute()->getDRev();
-        $this->secure(DRevSecurity::EDITION, $this->drev);
-
-        umask(0002);
-        $cache_dir = sfConfig::get('sf_cache_dir') . '/dr';
-        if (!file_exists($cache_dir)) {
-            mkdir($cache_dir);
-        }
-
-        if (!$request->getParameter('csv') || !$request->getParameter('pdf')) {
-
-            return sfView::SUCCESS;
-        }
-
-        file_put_contents($cache_dir . "/DR.csv", base64_decode($request->getParameter('csv')));
-        $this->drev->storeAttachment($cache_dir . "/DR.csv", "text/csv");
-
-        file_put_contents($cache_dir . "/DR.pdf", base64_decode($request->getParameter('pdf')));
-        $this->drev->storeAttachment($cache_dir . "/DR.pdf", "application/pdf");
-
-        $this->drev->updateFromCSV(true, true);
-        $this->drev->save();
-
-        return $this->redirect($this->generateUrl('drev_revendication', $this->drev));
     }
 
     public function executeExploitation(sfWebRequest $request) {
@@ -199,7 +201,7 @@ class drevActions extends sfActions {
             return $this->redirect('drev_validation', $this->drev);
         }
 
-        return $this->redirect('drev_scrape_dr', $this->drev);
+        return $this->redirect('drev_dr', $this->drev);
     }
 
     public function executeRevendicationRecapitulatif(sfWebRequest $request) {
@@ -210,7 +212,8 @@ class drevActions extends sfActions {
     }
 
     private function needDrDouane() {
-      return (!$this->drev->hasDR() && ($this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) && !$this->drev->isPapier());
+
+        return (!$this->drev->hasDocumentDouanier() && ($this->drev->getDocumentDouanierType() == DRCsvFile::CSV_TYPE_DR) && !$this->drev->isPapier());
     }
 
     public function executeRevendicationSuperficie(sfWebRequest $request) {
@@ -218,7 +221,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if ($this->needDrDouane()) {
-        	return $this->redirect('drev_dr_douane', $this->drev);
+
+        	return $this->redirect('drev_dr_upload', $this->drev);
         }
 
         if (!count($this->drev->declaration)) {
@@ -283,7 +287,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if ($this->needDrDouane()) {
-        	return $this->redirect('drev_dr_douane', $this->drev);
+
+        	return $this->redirect('drev_dr_upload', $this->drev);
         }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_REVENDICATION))) {
@@ -451,7 +456,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if ($this->needDrDouane()) {
-        	return $this->redirect('drev_dr_douane', $this->drev);
+
+        	return $this->redirect('drev_dr_upload', $this->drev);
         }
 
         if(!count($this->drev->getProduitsVci())) {
@@ -714,7 +720,8 @@ class drevActions extends sfActions {
         $this->secure(DRevSecurity::EDITION, $this->drev);
 
         if ($this->needDrDouane()) {
-        	return $this->redirect('drev_dr_douane', $this->drev);
+
+        	return $this->redirect('drev_dr_upload', $this->drev);
         }
 
         if($this->drev->storeEtape($this->getEtape($this->drev, DrevEtapes::ETAPE_VALIDATION))) {

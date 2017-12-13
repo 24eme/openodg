@@ -94,9 +94,9 @@ drev_scrape_dr:
   requirements:
     sf_method: [get]
 
-drev_dr_douane:
-  url: /drev/dr_douane/:id
-  param: { module: drev, action: drDouane }
+drev_dr_upload:
+  url: /drev/dr_upload/:id
+  param: { module: drev, action: drUpload }
   class: DRevRoute
   options:
     model:    DRev

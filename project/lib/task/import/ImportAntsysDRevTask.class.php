@@ -181,7 +181,7 @@ class ImportAntsysDRevTask extends sfBaseTask
     }
     $drev = DRevClient::getInstance()->createDoc($eta->identifiant, $campagne, true);
     try {
-      $drev->importFromDR(false);
+      $drev->importFromDocumentDouanier();
     }catch(Exception $e) {
       echo "WARNING: ".$eta->identifiant." erreur lors de l'import du document douanier\n";
     }
