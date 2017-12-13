@@ -86,7 +86,6 @@ class drevActions extends sfActions {
         $imported = $this->drev->importFromDocumentDouanier();
 
         if($imported) {
-            exit;
             $this->drev->save();
         }
     }
@@ -145,7 +144,20 @@ class drevActions extends sfActions {
 
         $this->form->save();
 
-        $this->drev->importFromDocumentDouanier(true);
+        try {
+            $this->drev->importFromDocumentDouanier(true);
+        } catch(Exception $e) {
+
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
+
+            if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
+                $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteur (plutôt que celui organisé par produit).";
+            }
+
+            $this->getUser()->setFlash('error', $message);
+
+            return $this->redirect('drev_dr_upload', $this->drev);
+        }
 	    $this->drev->save();
 
         return $this->redirect('drev_revendication_superficie', $this->drev);
