@@ -1,5 +1,6 @@
 WORKINGDIR=/data/work/rhone/project
-SYMFONYTASKOPTIONS="--application=rhone --env=prod"
+PROJET=generique
+SYMFONYTASKOPTIONS="--application=generique --env=dev"
 COUCHDBDOMAIN=localhost
 COUCHHOST=$COUCHDBDOMAIN
 COUCHDBPORT=5984
