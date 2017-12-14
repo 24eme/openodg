@@ -83,7 +83,17 @@ class drevActions extends sfActions {
     	$this->drev = $this->getRoute()->getDRev();
     	$this->secure(DRevSecurity::EDITION, $this->drev);
 
-        $imported = $this->drev->importFromDocumentDouanier();
+        try {
+            $imported = $this->drev->importFromDocumentDouanier();
+        } catch (Exception $e) {
+            $message = 'Le fichier que vous avez importé ne semble pas contenir les données attendus.';
+            if($this->drev->getDocumentDouanierType() != DRCsvFile::CSV_TYPE_DR) {
+                $message .= " Pour les SV11 et les SV12 veillez à bien utiliser le fichier organisé par apporteur (plutôt que celui organisé par produit).";
+            }
+            $this->getUser()->setFlash('error', $message);
+
+            return $this->redirect('drev_dr_upload', $this->drev);
+        }
 
         if($imported) {
             $this->drev->save();
