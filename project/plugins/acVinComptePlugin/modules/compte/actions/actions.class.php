@@ -60,6 +60,7 @@ class compteActions extends sfCredentialActions {
     public function executeVisualisation(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
         $this->societe = $this->compte->getSociete();
+        $this->formAjoutGroupe = new CompteGroupeAjoutForm('INTERPRO-declaration');
         $this->applyRights();
         if(!$this->compte->lat && !$this->compte->lon){
           $this->compte->updateCoordonneesLongLat();
@@ -183,6 +184,8 @@ class compteActions extends sfCredentialActions {
       return true;
     }
 
+
+
     private function addremovetag(sfWebRequest $request, $remove = false) {
       $index = acElasticaManager::getType('COMPTE');
       $tag = Compte::transformTag($request->getParameter('tag'));
@@ -252,6 +255,40 @@ class compteActions extends sfCredentialActions {
       return $this->redirect('compte_search', $this->args);
     }
 
+    public function executeAddingroupe(sfWebRequest $request) {
+      $identifiant = $request->getParameter('identifiant');
+      $this->groupe = $request->getParameter('groupe');
+      if(!$this->groupe){
+        return $this->redirect('compte_visualisation', array('identifiant' => str_replace("COMPTE-","",$identifiant)));
+      }
+      $allGroupes = CompteClient::getInstance()->getAllTagsGroupes();
+      foreach ($allGroupes as $grp) {
+       if($grp->id == $this->groupe){
+         $request->setParameter('groupeName',$grp->text);
+         $this->groupeName = $request->getParameter('groupeName');
+       }
+      }
+      $this->compte = CompteClient::getInstance()->find('COMPTE-'.$identifiant);
+      $formRequest = $request->getParameter('compte_groupe_ajout');
+      $formRequest['id_compte'] = 'COMPTE-'.$identifiant;
+      $request->setParameter('compte_groupe_ajout',$formRequest);
+      $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
+      if ($request->isMethod(sfWebRequest::POST)) {
+          $this->form->bind($request->getParameter($this->form->getName()));
+          if ($this->form->isValid()) {
+              $values = $this->form->getValues();
+              $compte = CompteClient::getInstance()->find($values['id_compte']);
+              $compte->addInGroupes($this->groupeName,$values['fonction']);
+              $compte->save();
+              $request->setParameter('retour',true);
+              if (!$this->addRemoveGroupe($request, false)) {
+                  return $this->redirect('compte_visualisation', array('identifiant' => str_replace("COMPTE-","",$identifiant)));
+              }
+              return $this->redirect('compte_visualisation', array('identifiant' => str_replace("COMPTE-","",$identifiant)));
+          }
+      }
+    }
+
     public function executeRemovetag(sfWebRequest $request) {
       if (!$this->addremovetag($request, true)) {
 		      return ;
@@ -260,7 +297,7 @@ class compteActions extends sfCredentialActions {
       return $this->redirect('compte_search', $this->args);
     }
 
-      public function executeGroupe(sfWebRequest $request){
+    public function executeGroupe(sfWebRequest $request){
       $request->setParameter('contacts_all',true);
       $index = acElasticaManager::getType('COMPTE');
       $this->groupeName = $request->getParameter('groupeName');
@@ -274,7 +311,6 @@ class compteActions extends sfCredentialActions {
 		  $q->addFacet($elasticaFacet);
       $resset = $index->search($q);
       $this->results = $resset->getResults();
-
       $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
       if ($request->isMethod(sfWebRequest::POST)) {
           $this->form->bind($request->getParameter($this->form->getName()));
@@ -284,7 +320,7 @@ class compteActions extends sfCredentialActions {
               $compte->addInGroupes($this->groupeName,$values['fonction']);
               $compte->save();
               if (!$this->addRemoveGroupe($request, false)) {
-                return ;
+                  return ;
               }
               $this->redirect('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($this->groupeName)));
           }
