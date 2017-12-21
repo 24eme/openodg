@@ -367,8 +367,11 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $this->_get('date_modification');
     }
 
-    public function save() {
+    protected function doSave() {
         $this->add('date_modification', date('Y-m-d'));
+    }
+
+    public function save() {
         $this->interpro = "INTERPRO-declaration";
         $compteMaster = $this->getMasterCompte();
         if (!$compteMaster) {

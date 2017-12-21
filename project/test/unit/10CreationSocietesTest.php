@@ -20,7 +20,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(9);
+$t = new lime_test(11);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -35,8 +35,10 @@ $societeviti->code_postal = $codePostalRegion;
 $societeviti->commune = "Neuilly sur seine";
 $societeviti->insee = "94512";
 $societeviti->save();
+$t->is($societeviti->date_modification, date('Y-m-d'), "La date de modification de la société à la date du jour");
 $id = $societeviti->getidentifiant();
 $compteviti = CompteClient::getInstance()->findByIdentifiant($id.'01');
+$t->is($compteviti->date_modification, date('Y-m-d'), "La date de modification du compte à la date du jour");
 $compteviti->addTag('test', 'test');
 $compteviti->addTag('test', 'test_viti');
 $compteviti->save();
