@@ -9,10 +9,23 @@
                 <a class="btn btn-sm btn-primary" href="<?php echo url_for('compte_groupe', array("groupeName" => sfOutputEscaper::unescape($grp->nom))); ?>"><?php echo $grp->fonction; ?></a>
                 <a class="btn btn-sm btn-default" href="<?php echo url_for('compte_removegroupe', array("groupeName" => sfOutputEscaper::unescape($grp->nom), "identifiant" => $compte->identifiant, "retour" => "visu")); ?>"><span class="glyphicon glyphicon-trash"/></a>
               </div><br/>
-            <?php endforeach; ?>&nbsp;
-            <?php if(!count($compte->groupes)): ?>
-                <span class="text-muted">Aucun</span>
-            <?php endif;?>
+            <?php endforeach; ?>
+            <?php if(isset($formAjoutGroupe)): ?>
+              <form method="GET" class="form-horizontal" action="<?php echo url_for('compte_addingroupe',array('identifiant'=> $compte->getIdentifiant())); ?>">
+                  <?php echo $formAjoutGroupe->renderHiddenFields() ?>
+                  <?php echo $formAjoutGroupe->renderGlobalErrors() ?>
+                  <div class="btn-group">
+                    <input type="hidden" name="compte_groupe_ajout[id_compte]" value="COMPTE-<?php echo $compte->identifiant;?>"/>
+                    <div class="input-group input-group-sm col-xs-12">
+                      <input id="ajout_groupe" name="groupe" class="tags form-control select2 select2permissifNoAjax" placeholder="Ajouter un le compte dans un groupe" data-choices='<?php echo json_encode(CompteClient::getInstance()->getAllTagsGroupes($compte->groupes),JSON_HEX_APOS); ?>'    type="text">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">&nbsp;<span class="glyphicon glyphicon-plus"></span></button>
+                      </span>
+                    </div>
+                    <input type="hidden" name="retour" value="<?php echo url_for('compte_visualisation', $compte) ?>"/>
+                </div>
+              </form>
+             <?php endif; ?>
         </div>
       </div>
       <?php foreach ($compte->tags as $type_tag => $tags) :
