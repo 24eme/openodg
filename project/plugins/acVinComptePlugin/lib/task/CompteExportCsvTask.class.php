@@ -44,7 +44,7 @@ EOF;
                 $login = $compte->login;
             }
 
-            if(!preg_match("/^[0-9]+$/", "", $login)) {
+            if(!preg_match("/^[0-9]+$/", $login)) {
                 continue;
             }
 
