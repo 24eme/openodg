@@ -44,6 +44,10 @@ EOF;
                 $login = $compte->login;
             }
 
+            if(!preg_match("/^[0-9]+$/", "", $login)) {
+                continue;
+            }
+
             $societe = SocieteClient::getInstance()->find($compte->id_societe, acCouchdbClient::HYDRATE_JSON);
             $date_modification = $societe->date_modification;
 
@@ -55,7 +59,7 @@ EOF;
 
             $i++;
 
-            if($i > 1000) {
+            if($i > 200) {
                 sleep(1);
                 $i = 0;
             }
