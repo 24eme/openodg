@@ -18,7 +18,7 @@
                     </div>
                 <?php endif; ?>
             </div>
-        <?php elseif (($drev && DRevClient::getInstance()->isOpen()) || $sf_user->isAdmin()): ?>
+        <?php elseif ($drev && (DRevClient::getInstance()->isOpen() || $sf_user->isAdmin())): ?>
             <div class="panel-body">
                 <p>Votre déclaration de revendication viticole a été débutée pour cette année sans avoir été validée.</p>
                 <div style="margin-top: 50px;">
