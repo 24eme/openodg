@@ -5412,6 +5412,15 @@ td.visible-print {
   text-align: center;
   border-radius: 4px;
 }
+.bootstrap-datetimepicker-widget table thead > tr > th + th,
+.bootstrap-datetimepicker-widget table tbody > tr > td + td {
+  border-left: none;
+}
+.bootstrap-datetimepicker-widget table thead > tr > th {
+  color: inherit;
+  font-weight: bold;
+  border-bottom: none;
+}
 .bootstrap-datetimepicker-widget th.cw {
   color: #a9a8a8;
   background: #efefec;

@@ -7,14 +7,15 @@ Compte:
       type: { }
       identifiant: { }
       num_interne: {  }
-      mot_de_passe: { }
       civilite: { }
       prenom: { }
       nom: { }
-      mot_de_passe: { }
       nom_a_afficher: {}
       fonction: { }
       commentaire: { }
+      mot_de_passe: { }
+      login: { required: false }
+      date_modification: { required: false  }
       origines:
         type: array_collection
         definition:

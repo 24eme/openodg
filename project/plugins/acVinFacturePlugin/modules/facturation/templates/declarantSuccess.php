@@ -33,7 +33,7 @@
                 <?php echo $form["date_facturation"]->renderError(); ?>
                 <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
-                    <div class="input-group date-picker">
+                    <div class="input-group date-picker-week">
                         <?php echo $form["date_facturation"]->render(array("class" => "form-control", "placeholder" => "Date de facturation")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>
