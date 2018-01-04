@@ -128,6 +128,16 @@
         border-radius: 4px;
     }
 
+    table thead > tr > th + th, table tbody > tr > td + td {
+        border-left: none;
+    }
+
+    table thead > tr > th {
+        color: inherit;
+        font-weight: bold;
+        border-bottom: none;
+    }
+
     th.cw {
         color: @gray-light;
         background: @gray-lighter;

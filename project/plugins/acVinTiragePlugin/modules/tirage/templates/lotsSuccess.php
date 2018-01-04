@@ -38,7 +38,7 @@ $hasError = ($global_error_msg != "");
                         <?php endif; ?>
 						<label class="col-xs-5 control-label">du</label>
 						<div class="col-xs-7">
-							<div class="input-group date-picker">
+							<div class="input-group date-picker-week">
 								<?php echo $form["date_mise_en_bouteille_debut"]->render(array("class" => "form-control")); ?>
                                 <div class="input-group-addon">
                                 	<span class="glyphicon glyphicon-calendar"></span>
@@ -52,7 +52,7 @@ $hasError = ($global_error_msg != "");
                         <?php endif; ?>
 						<label class="col-xs-5 control-label">au</label>
 						<div class="col-xs-7">
-							<div class="input-group date-picker">
+							<div class="input-group date-picker-week">
 								<?php echo $form["date_mise_en_bouteille_fin"]->render(array("class" => "form-control")); ?>
                                 <div class="input-group-addon">
                                 	<span class="glyphicon glyphicon-calendar"></span>

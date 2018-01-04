@@ -22,10 +22,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         return $this->societe;
     }
 
-    public function getLogin() {
-        return preg_replace("/^([0-9]{6})([0-9]+)$/", '\1', $this->identifiant);
-    }
-
     public function getMasterCompte() {
         if ($this->isSameAdresseThanSociete()) {
             return $this->getSociete()->getContact();
@@ -225,6 +221,19 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->autoUpdateLdap();
     }
 
+    protected function doSave() {
+        $this->add('date_modification', date('Y-m-d'));
+    }
+
+    public function getDateModification() {
+        if(!$this->exist('date_modification')) {
+
+            return $this->getSociete()->date_modification;
+        }
+
+        return $this->_get('date_modification');
+    }
+
     public function isSocieteContact() {
         return ($this->getSociete()->compte_societe == $this->_id);
     }
@@ -327,6 +336,20 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
      *
      * @param string $mot_de_passe
      */
+
+    public function getLogin() {
+        if($this->exist('login')) {
+
+            return $this->_get('login');
+        }
+
+        if(!$this->mot_de_passe) {
+            return null;
+        }
+
+        return preg_replace("/^([0-9]{6})([0-9]+)$/", '\1', $this->identifiant);
+    }
+
     public function setMotDePasseSSHA($mot_de_passe) {
         mt_srand((double) microtime() * 1000000);
         $salt = pack("CCCC", mt_rand(), mt_rand(), mt_rand(), mt_rand());

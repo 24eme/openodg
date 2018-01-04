@@ -85,60 +85,35 @@
         var datePickers = $(this).find('.date-picker');
         datePickers.each(function ()
         {
-            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true, showTodayButton: true });
+            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true, showTodayButton: true, useCurrent: false  });
         });
         var datePickers = $(this).find('.date-picker-week');
         datePickers.each(function ()
         {
-            var currentDp = $(this);
-            hasValue = currentDp.find('input').val();
-            currentDp.datetimepicker
+            $(this).datetimepicker
                     ({
-                        language: 'fr',
-                        pickTime: false,
-                        useCurrent: false,
+                        locale: 'fr',
                         calendarWeeks: true,
+                        format: 'DD/MM/YYYY',
+                        allowInputToggle: true,
+                        useCurrent: false
                     });
-            if (!hasValue) {
-                currentDp.find('input').val('');
-            }
-
-            currentDp.on('focus', 'input', function ()
-            {
-                currentDp.data('DateTimePicker').hide();
-                currentDp.data('DateTimePicker').show();
-            });
         });
         var datePickers = $(this).find('.date-picker-all-days');
         datePickers.each(function ()
         {
-            var currentDp = $(this);
-            currentDp.datetimepicker
-                    ({
-                        language: 'fr',
-                        pickTime: false
-                    });
-            currentDp.on('focus', 'input', function ()
-            {
-                currentDp.data('DateTimePicker').hide();
-                currentDp.data('DateTimePicker').show();
-            });
+            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true, useCurrent: false });
         });
         var datePickers = $(this).find('.date-picker-time');
         datePickers.each(function ()
         {
-            var currentDp = $(this);
-            currentDp.datetimepicker
-                    ({
-                        language: 'fr',
-                        pickDate: false,
-                        useCurrent: false,
-                        minuteStepping: 5
-                    });
-            currentDp.on('focus', 'input', function ()
-            {
-                currentDp.data('DateTimePicker').hide();
-                currentDp.data('DateTimePicker').show();
+            $(this).datetimepicker
+            ({
+                locale: 'fr',
+                format: 'LT',
+                useCurrent: false,
+                allowInputToggle: true,
+                stepping: 5
             });
         });
     };

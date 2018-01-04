@@ -19,7 +19,7 @@
         <div class="col-xs-10 col-xs-offset-1">
             <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
                 <?php echo $form['date']->renderError(); ?>
-                <div class="input-group date-picker" >
+                <div class="input-group date-picker-week" >
                     <?php echo $form['date']->render(array('class' => 'form-control')); ?>
                     <div class="input-group-addon">
                         <span class="glyphicon-calendar glyphicon"></span>

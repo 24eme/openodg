@@ -18,7 +18,7 @@ $url = ($creation) ? url_for('rendezvous_creation', array('id' => 'COMPTE-' . $r
             <div class="col-sm-6 col-xs-12" >
                 <div class="form-group <?php if ($form["date"]->hasError()): ?>has-error<?php endif; ?>">
 
-                    <div class="input-group date-picker " >
+                    <div class="input-group date-picker-week" >
                         <?php echo $form['date']->render(array('class' => 'form-control', 'placeholder' => "Date du rendez-vous", "required" => "required")); ?>
                         <div class="input-group-addon">
                             <span class="glyphicon-calendar glyphicon"></span>
