@@ -255,6 +255,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$typeDocumentDouanier = $this->getDocumentDouanierType();
     	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->campagne);
     	$csvContent = $csvOrigine->convert();
+    	if (!$$csvContent) {
+    		return null;
+    	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
     	if (!is_dir($path)) {
@@ -1133,6 +1136,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/
