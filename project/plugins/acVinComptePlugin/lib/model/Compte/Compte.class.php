@@ -339,11 +339,10 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function getLogin() {
         if($this->exist('login')) {
-
             return $this->_get('login');
         }
 
-        if(!$this->mot_de_passe) {
+        if(!$this->mot_de_passe && !$this->getSociete()->getContact()->mot_de_passe) {
             return null;
         }
 
