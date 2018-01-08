@@ -29,7 +29,7 @@ EOF;
 
         $comptes = CompteAllView::getInstance()->findByInterproVIEW('INTERPRO-declaration');
 
-        echo "Date de modifications;Identifiant / Login;Nom / Raison sociale;Adresse;Adresse complémentaire;Code postal;Commune;Code INSEE;Téléphone bureau;Téléphone mobile;Téléphone perso;Fax;Email;SIRET;CVI;Statut;Id du doc\n";
+        echo "Date de modifications;Identifiant / Login;Nom / Raison sociale;Adresse;Adresse complémentaire;Code postal;Commune;Code INSEE;Téléphone bureau;Téléphone mobile;Téléphone perso;Fax;Email;Site Internet;SIRET;CVI;Statut;Coopérative;Id du doc\n";
         $i = 0;
         foreach($comptes as $row) {
             $compte = CompteClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
@@ -55,12 +55,20 @@ EOF;
                 $date_modification = $compte->date_modification;
             }
 
-            echo $date_modification.";".$login.";\"".str_replace('"', '\"', $compte->nom_a_afficher)."\";\"".str_replace('"', '\"', $compte->adresse)."\";\"".str_replace('"', '\"',$compte->adresse_complementaire)."\";".$compte->code_postal.";\"".str_replace('"', '\"',$compte->commune)."\";".$compte->insee.";".$compte->telephone_bureau.";".$compte->telephone_mobile.";".$compte->telephone_perso.";".$compte->fax.";".$compte->email.";".$societe->siret.";".$compte->etablissement_informations->cvi.";".$compte->statut.";".$compte->_id."\n";
+            $cooperative = "0";
+            if($compte->tags && $compte->tags->automatique){
+              foreach ($compte->tags->automatique as $t) {
+                if($t == "cooperative"){
+                  $cooperative = "1";
+                }
+              }
+            }
+            echo $date_modification.";".$login.";\"".str_replace('"', '\"', $compte->nom_a_afficher)."\";\"".str_replace('"', '\"', $compte->adresse)."\";\"".str_replace('"', '\"',$compte->adresse_complementaire)."\";".$compte->code_postal.";\"".str_replace('"', '\"',$compte->commune)."\";".$compte->insee.";".$compte->telephone_bureau.";".$compte->telephone_mobile.";".$compte->telephone_perso.";".$compte->fax.";".$compte->email.";".str_replace("\n",'',str_replace('"','\"',$compte->site_internet)).";".$societe->siret.";".$compte->etablissement_informations->cvi.";".$compte->statut.";".$cooperative.";".$compte->_id."\n";
 
             $i++;
 
             if($i > 200) {
-                sleep(1);
+              //  sleep(1);
                 $i = 0;
             }
         }
