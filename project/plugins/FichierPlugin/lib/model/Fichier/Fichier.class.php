@@ -81,7 +81,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 
 		public function getFichier($ext) {
 			$fileinfos = $this->getFileinfos($ext);
-			return $this->getAttachmentUri($filename);
+			return $this->getAttachmentUri($fileinfos['filename']);
 		}
 
     public function getFileinfos($ext)
@@ -89,6 +89,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     	foreach ($this->_attachments as $filename => $fileinfos) {
     		if (preg_match('/([a-zA-Z0-9]*)\.([a-zA-Z0-9]*)$/', $filename, $m)) {
     			if (strtolower($m[2]) == strtolower($ext)) {
+    				$fileinfos->add('filename', $filename);
     				return $fileinfos;
     			}
     		}
@@ -210,6 +211,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     }
 
     public static function isVisualisationMasterUrl($admin = false) {
+    	return false;
+    }
+
+    public static function isPieceEditable($admin = false) {
     	return false;
     }
 
