@@ -505,8 +505,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             }
 
             $hashProduit = preg_replace("/(mentionVT|mentionSGN)/", "mention", $hashProduit);
+            $hashProduit = preg_replace('|/recolte.|', '/declaration/', $hashProduit);
 
-            if (!$this->getConfiguration()->exist(preg_replace('|/recolte.|', '/declaration/', $hashProduit))) {
+            if (!$this->getConfiguration()->exist($hashProduit)) {
                 continue;
             }
 
