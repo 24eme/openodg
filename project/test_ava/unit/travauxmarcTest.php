@@ -7,7 +7,7 @@ $t = new lime_test(42);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
-$campagne = ConfigurationClient::getInstance()->getCampagneManager()->getCurrent();
+$campagne = date("Y")."";
 
 foreach(TravauxMarcClient::getInstance()->getHistory($viti->identifiant, acCouchdbClient::HYDRATE_ON_DEMAND) as $k => $v) {
     $travauxMarc = TravauxMarcClient::getInstance()->find($k);
@@ -172,7 +172,7 @@ $t->is($travauxMarc->validation, null, "La date validation n'est pas rempli");
 $travauxMarc->validate($formValidation->getValue("date"));
 $travauxMarc->save();
 
-$t->is($travauxMarc->validation, "2017-12-01", "La date validation est celle choisi dans le formulaire");
+$t->is($travauxMarc->validation, date('Y')."-12-01", "La date validation est celle choisi dans le formulaire");
 
 $travauxMarc->validateOdg();
 $travauxMarc->save();
