@@ -63,7 +63,7 @@ EOF;
                 }
               }
             }
-            echo $date_modification.";".$login.";\"".str_replace('"', '\"', $compte->nom_a_afficher)."\";\"".str_replace('"', '\"', $compte->adresse)."\";\"".str_replace('"', '\"',$compte->adresse_complementaire)."\";".$compte->code_postal.";\"".str_replace('"', '\"',$compte->commune)."\";".$compte->insee.";".$compte->telephone_bureau.";".$compte->telephone_mobile.";".$compte->telephone_perso.";".$compte->fax.";".$compte->email.";".str_replace("\n",'',str_replace('"','\"',$compte->site_internet)).";".$societe->siret.";".$compte->etablissement_informations->cvi.";".$compte->statut.";".$cooperative.";".$compte->_id."\n";
+            echo $date_modification.";".$login.";\"".str_replace('"', '', $compte->nom_a_afficher)."\";\"".str_replace('"', '', $compte->adresse)."\";\"".str_replace('"', '',$compte->adresse_complementaire)."\";".$compte->code_postal.";\"".str_replace('"','',$compte->commune)."\";".$compte->insee.";".$compte->telephone_bureau.";".$compte->telephone_mobile.";".$compte->telephone_perso.";".$compte->fax.";".$compte->email.";\"".str_replace("\n",'',str_replace('"','',$compte->site_internet))."\";".$societe->siret.";".$compte->etablissement_informations->cvi.";".$compte->statut.";".$cooperative.";".$compte->_id."\n";
 
             $i++;
 
