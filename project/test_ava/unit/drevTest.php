@@ -92,7 +92,7 @@ $compteIdentifiant = $societe->identifiant;
 $t->is($drev->validation, date('Y-m-d'), "La DRev a la date du jour comme date de validation");
 $t->is($drev->validation_odg, null, "La DRev n'est pas encore validé par l'odg");
 $t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
-$t->is($drev->pieces[0]->libelle, "Revendication des appellations viticoles 2016 (Télédéclaration)", "Contrôle sur le libellé du document (pièces)");
+$t->is($drev->pieces[0]->libelle, "Revendication des appellations viticoles ".$drev->campagne." (Télédéclaration)", "Contrôle sur le libellé du document (pièces)");
 
 $drev->validateOdg();
 $drev->save();
@@ -100,7 +100,7 @@ $drev->save();
 $t->is($drev->validation_odg, date('Y-m-d'), "La DRev est validé par l'odg");
 $t->is(count($drev->mouvements), 0, "La DRev n'a pas de mouvements");
 
-$t->comment("Génération des mouvments");
+$t->comment("Génération des mouvements");
 
 $drev->generateMouvements();
 $drev->save();
@@ -197,7 +197,7 @@ $drevM1->validateOdg();
 $drevM1->generateMouvements();
 $drevM1->save();
 
-$t->is($drevM1->pieces[0]->libelle, "Revendication des appellations viticoles 2016 Version 1 (Télédéclaration)", "Contrôle sur le libellé du document (pièces) de la modificatrice");
+$t->is($drevM1->pieces[0]->libelle, "Revendication des appellations viticoles ".$drev->campagne." Version 1 (Télédéclaration)", "Contrôle sur le libellé du document (pièces) de la modificatrice");
 
 $drevM1 = DRevClient::getInstance()->find($drevM1->_id);
 
