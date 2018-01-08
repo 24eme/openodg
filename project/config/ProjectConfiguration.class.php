@@ -23,7 +23,7 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
 
-        if(isset($_ENV["APPLICATION"]) && $_ENV["APPLICATION"] == "ava") {
+        if(getenv("APPLICATION") == "ava") {
             $this->enablePlugins('CompteAVAPlugin');
             $this->enablePlugins('EtablissementAVAPlugin');
             $this->enablePlugins('acVinDRevAVAPlugin');
@@ -53,15 +53,15 @@ class ProjectConfiguration extends sfProjectConfiguration
     public function setRootDir($rootDir)
     {
         parent::setRootDir($rootDir);
-        
-        if(isset($_ENV["APPLICATION"]) && $_ENV["APPLICATION"] == "ava") {
+
+        if(getenv("APPLICATION") == "ava") {
             sfConfig::set('sf_test_dir', sfConfig::get('sf_root_dir')."/test_ava");
         }
     }
 
     public function setCacheDir($cacheDir)
     {
-        if(isset($_ENV["APPLICATION"]) && $_ENV["APPLICATION"] == "ava") {
+        if(getenv("APPLICATION") == "ava") {
             sfConfig::set('sf_cache_dir', $cacheDir.DIRECTORY_SEPARATOR."ava");
         } else {
             parent::setCacheDir($cacheDir);
