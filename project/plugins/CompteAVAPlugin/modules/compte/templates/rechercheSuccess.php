@@ -19,7 +19,7 @@
             </ul>
     </div>
     <div class="col-sm-3 col-xs-12">
-    <a class="btn btn-default btn-default-step  btn-sm btn-block btn-upper" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherce avancée</a>
+    <a class="btn btn-default btn-default-step  btn-sm btn-block btn-upper" href="<?php echo url_for("compte_recherche_avancee") ?>"><span class="glyphicon glyphicon-zoom-in"></span>&nbsp;&nbsp;Recherche avancée</a>
     </div>
     <div class="col-sm-9 col-xs-12" style="padding-top: 10px;">
         <form action="<?php echo url_for("compte_recherche", $argsForm) ?>" method="get" class="form-horizontal">
