@@ -27,7 +27,7 @@ class PieceAllView extends acCouchdbView
 		if($startdate) {
 			$start[] = $startdate;
 		}
-		if($end) {
+		if($enddate) {
 			$end[] = $enddate;
 		}
 
