@@ -29,7 +29,7 @@ class TourneeSaisieValidation extends DocumentValidation {
         }
 
         foreach($this->document->getDegustationsObject() as $degustation) {
-            $drev = DrevClient::getInstance()->find($degustation->drev);
+            $drev = DRevClient::getInstance()->find($degustation->drev);
             foreach($degustation->prelevements as $prelevement) {
                 $finded = false;
                 foreach($drev->prelevements as $prelevementDrev) {

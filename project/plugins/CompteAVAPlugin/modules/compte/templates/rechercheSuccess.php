@@ -135,13 +135,13 @@
                 <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="text-danger"><small><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Annuler tous les filtres</small></a>
             </p>
             <?php endif; ?>
-            <?php foreach ($facets as $type => $ftype): ?>
-                <?php if (count($ftype['terms'])): ?>
+            <?php foreach ($facets->getRawValue() as $type => $ftype): ?>
+                <?php if (count($ftype['buckets'])): ?>
                     <h5><small><?php echo $facets_libelle[$type] ?></small></h5>
                     <div class="list-group" style="max-height: 200px; overflow: auto;">
                         <?php
-                        foreach ($ftype['terms'] as $f):
-                            $tag = $type . ':' . $f['term'];
+                        foreach ($ftype['buckets'] as $f):
+                            $tag = $type . ':' . $f['key'];
                             $argsTemplate = $args->getRawValue();
                             if (!in_array($tag, $argsTemplate['tags'])) {
                                 $argsTemplate['tags'][] = $tag;
@@ -149,9 +149,9 @@
                             ?>
                             <?php if(in_array($tag, $args['tags']->getRawValue())): ?>
                                 <?php $argsTemplate['tags'] = array_diff($argsTemplate['tags'], array($tag)); ?>
-                                <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item list-group-item-warning" style="padding: 8px 8px"><small class="pull-right"><span class="glyphicon glyphicon-trash"></span></small><small><?php echo $f['term'] ?></small>&nbsp;</a>
+                                <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item list-group-item-warning" style="padding: 8px 8px"><small class="pull-right"><span class="glyphicon glyphicon-trash"></span></small><small><?php echo $f['key'] ?></small>&nbsp;</a>
                             <?php else: ?>
-                                <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item" style="padding: 8px 8px"><span class="badge"><small><?php echo $f['count'] ?></small></span><small><?php echo $f['term'] ?></small>&nbsp;</a>
+                                <a href="<?php echo url_for('compte_recherche', $argsTemplate) ?>" class="list-group-item" style="padding: 8px 8px"><span class="badge"><small><?php echo $f['doc_count'] ?></small></span><small><?php echo $f['key'] ?></small>&nbsp;</a>
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </div>

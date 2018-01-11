@@ -71,7 +71,6 @@ class compteActions extends sfActions {
         $elasticaFacet = new acElasticaFacetTerms('manuels');
         $elasticaFacet->setField('tags.manuels');
         $elasticaFacet->setSize(200);
-        $elasticaFacet->setOrder('count');
         $q->addFacet($elasticaFacet);
         $index = acElasticaManager::getType('compte');
         $resset = $index->search($q);
@@ -102,7 +101,6 @@ class compteActions extends sfActions {
             $elasticaFacet = new acElasticaFacetTerms($nom);
             $elasticaFacet->setField($f);
             $elasticaFacet->setSize(200);
-            $elasticaFacet->setOrder('count');
             $q->addFacet($elasticaFacet);
         }
 
@@ -110,7 +108,7 @@ class compteActions extends sfActions {
         $resset = $index->search($q);
         $this->results = $resset->getResults();
         $this->nb_results = $resset->getTotalHits();
-        $this->facets = $resset->getFacets();
+        $this->facets = array_reverse($resset->getFacets());
 
         $this->last_page = ceil($this->nb_results / $res_by_page);
         $this->current_page = $page;

@@ -1,5 +1,5 @@
 <?php use_helper("Date"); ?>
-<?php use_javascript("constats.js?201504020331", "last") ?>
+<?php use_javascript("constats.js?201801111220", "last") ?>
 
 <ol class="breadcrumb">
   <li class="active"><a href="<?php echo url_for('constats',array('jour' => date('Y-m-d'))); ?>">Constats VT-SGN</a></li>
@@ -46,9 +46,12 @@
                     Jour
                 </div>
                 <div class="col-xs-6">
-                    <div class="date-picker" >
-                        <?php echo $formDate['date']->render(array('class' => 'form-control date')); ?>
-                        <div class="btn btn-default btn-default-step"><span class="glyphicon-calendar glyphicon"></span></div>
+                    <div class="input-group date-picker-week" >
+                        <?php echo $formDate['date']->render(array('class' => 'form-control date', 'style' => 'width: 0; padding: 0;')); ?>
+                        <span class="input-group-addon" style="width: 0; cursor: pointer;">
+                            <span class="glyphicon glyphicon-calendar">
+                            </span>
+                        </span>
                     </div>
                 </div>
 

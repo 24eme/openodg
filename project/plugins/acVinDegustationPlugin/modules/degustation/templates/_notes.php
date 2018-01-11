@@ -22,7 +22,7 @@
             <?php foreach ($tournee->getNotes() as $note): ?>
                 <tr>
                     <td><?php echo $note->prelevement->anonymat_degustation; ?><?php if($note->prelevement->courrier_envoye): ?><br /><span class="glyphicon glyphicon-send"></span><?php endif; ?></td>
-                    <td><a href="<?php echo url_for('degustation_declarant', array('id' => "ETABLISSEMENT-".$note->operateur->cvi)); ?>"><?php echo $note->operateur->raison_sociale; ?></a><br />
+                    <td><a href="<?php echo url_for('degustation_declarant', array('identifiant' => $note->operateur->cvi)); ?>"><?php echo $note->operateur->raison_sociale; ?></a><br />
                     <small class="text-muted"><?php echo $note->operateur->cvi ?></small><br />
                     <small class="text-muted"><?php echo $note->operateur->commune ?></small>
                     </td>
