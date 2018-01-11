@@ -49,6 +49,11 @@ class DeclarationClient
             return 'ExportFactureCSV';
         }
 
+        if(class_exists("TravauxMarcClient") && $type == TravauxMarcClient::TYPE_MODEL) {
+
+            return 'ExportTravauxMarcCSV';
+        }
+
         if(class_exists("DRClient") && $type == DRClient::TYPE_MODEL) {
 
             return 'ExportDRCSV';

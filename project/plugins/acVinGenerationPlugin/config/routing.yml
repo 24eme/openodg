@@ -15,3 +15,9 @@ generation_regenerate:
   param: { module: generation, action: regenerate }
   requirements:
     sf_method: [get]
+
+generation_reload:
+  url: /generation/:type_document/:date_emission/reload
+  param: { module: generation, action: reload }
+  requirements:
+    sf_method: [get]
