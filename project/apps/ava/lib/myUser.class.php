@@ -18,7 +18,7 @@ myUser extends sfBasicSecurityUser
 
     public function signInOrigin($identifiant) {
 
-        return parent::signIn($identifiant);
+        return $this->signIn($identifiant);
     }
 
     public function signIn($identifiant)
