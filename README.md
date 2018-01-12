@@ -1,14 +1,14 @@
-AVA
+OpenODG
 ===
 
-Projet de dématérialisation informatique des activités de l'Association des Viticulteurs d'Alsace
+Projet de dématérialisation informatique des activités d'un syndicat viticole.
 
-Aperçu de l'application
+Aperçu de l'application pour l'Association des Viticulteurs d'Alsace
 -----------------------
 
 ![Organisation d'une tournée](doc/captures/organisation-tournee.jpg)
 
-[Voir toutes les captures d'écran de l'application](doc/captures/Interfaces.md)
+[Voir plus de captures d'écran de l'application](doc/captures/Interfaces.md)
 
 License utilisée
 ----------------
@@ -18,7 +18,10 @@ Ce logiciel est mis à disposition en [licence AGPL](LICENSE)
 Projet déployé
 ---------------
 
-Le projet est actuellement en cours d'utilisation par l'AVA. Il est accessible à ses adhérents depuis http://declaration.ava-aoc.fr/
+Le projet est actuellement en cours d'utilisation par  : 
+
+* Association des Viticulteurs d'Alsace : https://declaration.ava-aoc.fr/
+* Syndicat des Côtes du Rhône : https://declaration.syndicat-cotesdurhone.com/
 
 Technologies utilisées
 ----------------------
