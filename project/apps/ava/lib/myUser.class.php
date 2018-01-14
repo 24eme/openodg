@@ -1,6 +1,6 @@
 <?php
 
-class 
+class
 myUser extends sfBasicSecurityUser
 {
 
@@ -16,13 +16,18 @@ myUser extends sfBasicSecurityUser
     protected $etablissement = null;
     protected $compte = null;
 
-    public function signIn($identifiant) 
+    public function signInOrigin($identifiant) {
+
+        return $this->signIn($identifiant);
+    }
+
+    public function signIn($identifiant)
     {
         $this->setAttribute(self::SESSION_LOGIN, $identifiant, self::NAMESPACE_AUTH);
         $this->setAuthenticated(true);
 
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($identifiant);
-        
+
         if($etablissement) {
 
             $this->signInEtablissement($etablissement);
@@ -53,26 +58,26 @@ myUser extends sfBasicSecurityUser
         $this->setAttribute(self::SESSION_ETABLISSEMENT, $etablissement->_id, self::NAMESPACE_AUTH);
     }
 
-    public function signOutEtablissement() 
+    public function signOutEtablissement()
     {
         $this->setAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH);
         $this->etablissement = null;
     }
 
-    public function signOut() 
+    public function signOut()
     {
         $this->setAuthenticated(false);
         $this->clearCredentials();
         $this->getAttributeHolder()->removeNamespace(self::NAMESPACE_AUTH);
     }
 
-    public function getEtablissement() 
+    public function getEtablissement()
     {
         if(is_null($this->etablissement)) {
             $id = $this->getAttribute(self::SESSION_ETABLISSEMENT, null, self::NAMESPACE_AUTH);
 
             if(!$id) {
-                
+
                 return null;
             }
 
@@ -82,13 +87,13 @@ myUser extends sfBasicSecurityUser
         return $this->etablissement;
     }
 
-    public function getCompte() 
+    public function getCompte()
     {
         if(is_null($this->compte)) {
             $id = $this->getAttribute(self::SESSION_COMPTE, null, self::NAMESPACE_AUTH);
 
             if(!$id) {
-                
+
                 return null;
             }
 
@@ -97,7 +102,7 @@ myUser extends sfBasicSecurityUser
 
         return $this->compte;
     }
-    
+
     public function isAdmin()
     {
     	return $this->hasCredential(self::CREDENTIAL_ADMIN);
