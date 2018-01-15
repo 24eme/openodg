@@ -13,34 +13,59 @@ class ProjectConfiguration extends sfProjectConfiguration
         $this->enablePlugins('acVinLibPlugin');
         $this->enablePlugins('acTCPDFPlugin');
         $this->enablePlugins('acCASPlugin');
-        $this->enablePlugins('acVinConfigurationPlugin');
         $this->enablePlugins('DeclarationPlugin');
-        $this->enablePlugins('acVinDRevPlugin');
-        $this->enablePlugins('acVinDRevMarcPlugin');
-        $this->enablePlugins('acVinDegustationPlugin');
+        $this->enablePlugins('FichierPlugin');
+        $this->enablePlugins('acVinGenerationPlugin');
         $this->enablePlugins('acVinDocumentPlugin');
-        $this->enablePlugins('acVinParcellairePlugin');
-        $this->enablePlugins('acVinTourneePlugin');
-        $this->enablePlugins('acVinConstatsVTSGNPlugin');
         $this->enablePlugins('acLdapPlugin');
-        //$this->enablePlugins('EtablissementPlugin');
-        //$this->enablePlugins('ComptePlugin');
         $this->enablePlugins('EmailPlugin');
         $this->enablePlugins('acExceptionNotifierPlugin');
         $this->enablePlugins('acElasticaPlugin');
         $this->enablePlugins('acVinFacturePlugin');
-	      $this->enablePlugins('FacturationPlugin');
-        $this->enablePlugins('acVinGenerationPlugin');
-        $this->enablePlugins('acVinAbonnementPlugin');
-    	  $this->enablePlugins('acVinTiragePlugin');
-        $this->enablePlugins('acVinHabilitationPlugin');
-    	  $this->enablePlugins('FichierPlugin');
-        $this->enablePlugins('acVinSocietePlugin');
-        $this->enablePlugins('acVinEtablissementPlugin');
-        $this->enablePlugins('acVinComptePlugin');
-        $this->enablePlugins('DRPlugin');
-        $this->enablePlugins('SV11Plugin');
-        $this->enablePlugins('SV12Plugin');
+
+        if(getenv("APPLICATION") == "ava") {
+            $this->enablePlugins('CompteAVAPlugin');
+            $this->enablePlugins('EtablissementAVAPlugin');
+            $this->enablePlugins('acVinDRevAVAPlugin');
+            $this->enablePlugins('acVinConfigurationAVAPlugin');
+            $this->enablePlugins('acVinAbonnementPlugin');
+            $this->enablePlugins('acVinTiragePlugin');
+            $this->enablePlugins('acVinDRevMarcPlugin');
+            $this->enablePlugins('acVinTravauxMarcPlugin');
+            $this->enablePlugins('acVinDegustationPlugin');
+            $this->enablePlugins('acVinParcellairePlugin');
+            $this->enablePlugins('acVinTourneePlugin');
+            $this->enablePlugins('acVinConstatsVTSGNPlugin');
+        } else {
+            $this->enablePlugins('AppPlugin');
+            $this->enablePlugins('acVinDRevPlugin');
+            $this->enablePlugins('acVinConfigurationPlugin');
+            $this->enablePlugins('acVinHabilitationPlugin');
+            $this->enablePlugins('acVinComptePlugin');
+            $this->enablePlugins('acVinSocietePlugin');
+            $this->enablePlugins('acVinEtablissementPlugin');
+            $this->enablePlugins('DRPlugin');
+            $this->enablePlugins('SV11Plugin');
+            $this->enablePlugins('SV12Plugin');
+        }
+    }
+
+    public function setRootDir($rootDir)
+    {
+        parent::setRootDir($rootDir);
+
+        if(getenv("APPLICATION") == "ava") {
+            sfConfig::set('sf_test_dir', sfConfig::get('sf_root_dir')."/test_ava");
+        }
+    }
+
+    public function setCacheDir($cacheDir)
+    {
+        if(getenv("APPLICATION") == "ava") {
+            sfConfig::set('sf_cache_dir', $cacheDir.DIRECTORY_SEPARATOR."ava");
+        } else {
+            parent::setCacheDir($cacheDir);
+        }
     }
 
     public static function getAppRouting()

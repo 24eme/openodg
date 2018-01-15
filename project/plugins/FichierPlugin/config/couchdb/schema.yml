@@ -19,6 +19,7 @@ Fichier:
       date_depot: { }
       date_import: { }
       libelle: { }
+      mime: { required: false }
       visibilite: { type: integer }
       papier: { required: false, type: integer }
       pieces:

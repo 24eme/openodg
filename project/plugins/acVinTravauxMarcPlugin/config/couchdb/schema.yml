@@ -1,0 +1,70 @@
+#TravauxMarc
+TravauxMarc:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      etape: { }
+      fournisseurs:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: TravauxMarcFournisseur
+              type: collection
+              definition:
+                fields:
+                  nom: { }
+                  date_livraison: { }
+                  quantite: { }
+      date_distillation: { }
+      distillation_prestataire: { }
+      alambic_connu: { }
+      adresse_distillation:
+        type: collection
+        definition:
+          fields:
+            adresse: { }
+            commune: { }
+            code_postal: { }
+      validation: { }
+      validation_odg: { }
+      papier: { required: false, type: integer }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: TravauxMarcPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

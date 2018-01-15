@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -47,8 +47,7 @@
 
 
     $.initTourneesRecapDate = function () {
-
-        $('#tourneesRecapDateForm .date-picker').change(function () {
+        $('#tourneesRecapDateForm').on('dp.change', '.date-picker-week', function () {
             $('#tourneesRecapDateForm').submit();
         });
     }
@@ -64,4 +63,3 @@
     });
 
 })(jQuery);
-

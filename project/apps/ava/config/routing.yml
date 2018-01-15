@@ -1,0 +1,41 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/10-Routing
+
+# default rules
+
+# Auth
+
+auth_login:
+  url: /login
+  param: { module: auth, action: login }
+
+auth_logout:
+  url: /logout
+  param: { module: auth, action: logout }
+
+auth_state:
+  url: /auth/state
+  param: { module: auth, action: state }
+
+accueil:
+  url: /
+  param: { module: common, action: accueil }
+
+# Common
+
+contact:
+  url: /contact
+  param: { module: common, action: contact }
+
+mentions_legales:
+  url: /mentions-legales
+  param: { module: common, action: mentionsLegales }
+
+#Défaut
+
+default_index:
+  url:   /:module
+  param: { action: index }
+
+default:
+  url:   /:module/:action/*

@@ -22,6 +22,7 @@ CS 60093
 
 Vous pouvez à tout moment revenir sur votre compte pour consulter votre document : <?php echo sfContext::getInstance()->getRouting()->generate('drev_visualisation', $drev, true); ?>
 
+
 Votre déclaration sera transmise à l’organisme de contrôle.
 
 Pour toute question, n'hésitez pas à contacter votre syndicat.

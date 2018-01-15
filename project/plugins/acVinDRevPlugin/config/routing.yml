@@ -1,0 +1,365 @@
+drev_index:
+  url: /drev
+  param: { module: drev, action: index }
+
+drev_request_dr:
+  url: /drev/dr/request
+  param: { module: drev, action: requestDR }
+
+drev_push_dr:
+  url: /drev/dr/push
+  param: { module: drev, action: pushDR }
+
+drev_pull_dr:
+  url: /drev/dr/pull
+  param: { module: drev, action: pullDR }
+
+drev_create:
+  url: /drev/creation/:identifiant
+  param: { module: drev, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_create_papier:
+  url: /drev/creation-papier/:identifiant
+  param: { module: drev, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_edit:
+  url: /drev/edition/:id
+  param: { module: drev, action: edit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_edit:
+  url: /drev/edition/:id
+  param: { module: drev, action: edit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_delete:
+  url: /drev/suppression/:id
+  param: { module: drev, action: delete }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_devalidation:
+  url: /drev/devalidation/:id
+  param: { module: drev, action: devalidation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_dr:
+  url: /drev/dr/:id
+  param: { module: drev, action: dr }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_scrape_dr:
+  url: /drev/scrape_dr/:id
+  param: { module: drev, action: scrapeDr }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_dr_upload:
+  url: /drev/dr_upload/:id
+  param: { module: drev, action: drUpload }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_dr_recuperation:
+  url: /drev/dr-recuperation/:id
+  param: { module: drev, action: drRecuperation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_dr_import:
+  url: /drev/dr-import/:id
+  param: { module: drev, action: drImport }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_dr_pdf:
+  url: /drev/dr-pdf/:id
+  param: { module: drev, action: drPdf }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_exploitation:
+  url: /drev/exploitation/:id
+  param: { module: drev, action: exploitation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_recapitulatif:
+  url: /drev/drev_revendication-recapitulatif/:id
+  param: { module: drev, action: revendicationRecapitulatif }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_ajout:
+  url: /drev/revendication/:id/ajout
+  param: { module: drev, action: revendicationAjoutProduit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_appellation_ajout:
+  url: /drev/revendication/:id/appellation_ajout
+  param: { module: drev, action: revendicationAjoutAppellation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [post]
+
+drev_revendication_superficie:
+  url: /drev/revendication_superficie/:id/:appellation
+  param: { module: drev, action: revendicationSuperficie, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_reset:
+  url: /drev/revendication/:id/reset
+  param: { module: drev, action: resetVolumes, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication:
+  url: /drev/revendication/:id/:appellation
+  param: { module: drev, action: revendication, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_vci:
+  url: /drev/vci/:id/:appellation
+  param: { module: drev, action: vci, appellation: 0 }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_cepage:
+  url: /drev/revendication/:id/cepage/:hash
+  param: { module: drev, action: revendicationCepage }
+  class: DRevNoeudRoute
+  options:
+    model:    DRevAppellation
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_revendication_cepage_ajout:
+  url: /drev/revendication/:id/cepage/:hash/ajout
+  param: { module: drev, action: revendicationCepageAjoutProduit }
+  class: DRevNoeudRoute
+  options:
+    model:    DRevAppellation
+    type:     object
+  requirements:
+    sf_method: [post]
+
+drev_revendication_cepage_suppression:
+  url: /drev/revendication/:id/cepage/:hash/suppression
+  param: { module: drev, action: revendicationCepageSuppressionProduit }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_degustation_conseil:
+  url: /drev/degustation-conseil/:id
+  param: { module: drev, action: degustationConseil }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_lots:
+  url: /drev/lots/:id/:prelevement
+  param: { module: drev, action: lots }
+  class: DRevPrelevementRoute
+  options:
+    model:    DRevPrelevement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_lots_ajout:
+  url: /drev/lots/:id/:prelevement/ajout
+  param: { module: drev, action: lotsAjoutProduit }
+  class: DRevPrelevementRoute
+  options:
+    model:    DRevPrelevement
+    type:     object
+  requirements:
+    sf_method: [post]
+
+drev_controle_externe:
+  url: /drev/controle-externe/:id
+  param: { module: drev, action: controleExterne }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_validation:
+  url: /drev/validation/:id
+  param: { module: drev, action: validation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_modificative:
+  url: /drev/modificative/:id
+  param: { module: drev, action: modificative }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_validation_admin:
+  url: /drev/validation_admin/:id
+  param: { module: drev, action: validationAdmin }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_confirmation:
+  url: /drev/confirmation/:id
+  param: { module: drev, action: confirmation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_visualisation:
+  url: /drev/visualisation/:id
+  param: { module: drev, action: visualisation }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+drev_export_pdf:
+  url: /drev/pdf/:id
+  param: { module: drev, action: PDF }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_export_xml:
+  url: /drev/xml/:id
+  param: { module: drev, action: XML }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
+drev_send_oi:
+  url: /drev/oi/:id
+  param: { module: drev, action: sendoi }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]

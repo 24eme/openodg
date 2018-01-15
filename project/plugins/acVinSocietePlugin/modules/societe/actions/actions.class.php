@@ -6,7 +6,19 @@ class societeActions extends sfCredentialActions {
         $interpro = $request->getParameter('interpro_id');
         $q = $request->getParameter('q');
         $limit = $request->getParameter('limit', 100);
-        $json = $this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit);
+
+        $qs = new acElasticaQueryQueryString($q);
+        $elkquery = new acElasticaQuery();
+        $elkquery->setQuery($qs);
+        $elkquery->setLimit($limit);
+
+        $index = acElasticaManager::getType('COMPTE');
+        $resset = $index->search($elkquery);
+        $this->resultsElk = $resset->getResults();
+
+        $jsonElastic = $this->matchCompteElastic($this->resultsElk, $limit);
+        $json = array_merge($jsonElastic,$this->matchCompte(CompteAllView::getInstance()->findByInterpro($interpro, $q, $limit), $q, $limit));
+
         return $this->renderText(json_encode($json));
     }
 
@@ -193,6 +205,29 @@ class societeActions extends sfCredentialActions {
             }
         }
         return $json;
+    }
+
+    protected function matchCompteElastic($res,$limit)
+    {
+      $json = array();
+      foreach ($res as $key => $one_row) {
+        $data = $one_row->getData();
+
+        $text = $data['doc']['nom_a_afficher'];
+        $text .= ' ('.$data['doc']['adresse'];
+        $text .= ($data['doc']['adresse_complementaire'])? ' - '.$data['doc']['adresse_complementaire'] : "";
+        $text .= ' / '.$data['doc']['commune'].' / '.$data['doc']['code_postal'].') ' ;
+        $text .= $data['doc']['compte_type']." - ".$data['doc']['identifiant'];
+        if($data['doc']['societe_informations']['raison_sociale'] && (substr($data['doc']['identifiant'], -2) != "01")){
+          $text .= " à ".$data['doc']['societe_informations']['raison_sociale'];
+        }
+
+        $json["COMPTE-".$data['doc']['identifiant']] = $text;
+        if (count($json) >= $limit) {
+          break;
+        }
+      }
+      return $json;
     }
 
     protected function matchSociete($view_res, $term, $limit) {

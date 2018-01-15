@@ -37,14 +37,14 @@ class acCouchdbManager {
         self::getInstance()->_client = new acCouchdbClient($dsn, $dbname);
 		if (!self::getInstance()->_client->databaseExists())
 	  		throw new Exception($dbname." does not exist");
-		
+
 		return self::getInstance()->_client;
     }
 
     /**
      *
      * @param string $model
-     * @return acCouchdbClient 
+     * @return acCouchdbClient
      */
     public static function getClient($model = null) {
         if (is_null($model)) {
@@ -82,7 +82,7 @@ class acCouchdbManager {
 
     	return self::getInstance()->_views[$key];
     }
-    
+
     public static function getSchema() {
         if (is_null(self::getInstance()->_schema)) {
             self::getInstance()->_schema = sfYaml::load(self::getInstance()->getSchemaYaml());
@@ -97,8 +97,8 @@ class acCouchdbManager {
 
     public static function getDefinition($model) {
         if (!isset(self::getInstance()->_definition[$model])) {
-            self::getInstance()->_definition[$model] = acCouchdbJsonDefinitionParser::parse($model, 
-                                                                                            self::getInstance()->getSchema(), 
+            self::getInstance()->_definition[$model] = acCouchdbJsonDefinitionParser::parse($model,
+                                                                                            self::getInstance()->getSchema(),
                                                                                             new acCouchdbJsonDefinition($model, ''));
         }
 
@@ -108,7 +108,7 @@ class acCouchdbManager {
     public static function getDefinitionByHash($model, $hash) {
         if (!isset(self::getInstance()->_definition_hash[$model][$hash])) {
             self::getInstance()->_definition_hash[$model][$hash] = self::getDefinition($model)->getDefinitionByHash($hash);
-        } 
+        }
 
         return self::getInstance()->_definition_hash[$model][$hash];
     }
@@ -117,7 +117,7 @@ class acCouchdbManager {
         if (!isset(self::getInstance()->_definition_tree_hash[$class_tree])) {
             self::getInstance()->_definition_tree_hash[$class_tree] = self::getDefinition($model)->getDefinitionByClassName($class_tree);
         }
-        
+
         return self::getInstance()->_definition_tree_hash[$class_tree];
     }
 

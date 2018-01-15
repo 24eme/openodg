@@ -5,7 +5,7 @@ class DRClient extends acCouchdbClient {
     public static function getInstance()
     {
       return acCouchdbManager::getClient("DR");
-    }  
+    }
 
     public function findByArgs($identifiant, $annee)
     {
@@ -18,14 +18,14 @@ class DRClient extends acCouchdbClient {
         $fichier = new DR();
         $fichier->campagne = $campagne;
         $fichier->initDoc($identifiant);
-        
+
         if($papier) {
             $fichier->add('papier', 1);
         }
 
         return $fichier;
     }
-    
+
     public function findAll($limit = null, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT)
     {
     	$view = $this->startkey(sprintf(self::TYPE_MODEL."-%s-%s", "00000000", "0000"))

@@ -244,11 +244,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         return $csv->getCsv();
     }
 
-    public function importFromDR($save = true) {
-
-        return $this->importFromDocumentDouanier($save);
-    }
-
     public function getCsvFromDocumentDouanier() {
     	if (!$this->hasDocumentDouanier()) {
     		return null;
@@ -260,6 +255,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$typeDocumentDouanier = $this->getDocumentDouanierType();
     	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->campagne);
     	$csvContent = $csvOrigine->convert();
+    	if (!$csvContent) {
+    		return null;
+    	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
     	if (!is_dir($path)) {
@@ -276,7 +274,7 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	$drev = clone $this;
     	$drev->remove('declaration');
     	$drev->add('declaration');
-    	$drev->importFromDocumentDouanier(false);
+    	$drev->importFromDocumentDouanier();
     	return $drev;
     }
 
@@ -302,9 +300,9 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return $bailleurs;
     }
 
-    public function importFromDocumentDouanier($save = true) {
-      if (count($this->declaration)) {
-        return true;
+    public function importFromDocumentDouanier($force = false) {
+      if (!$force & count($this->declaration)) {
+        return false;
       }
       $csv = $this->getCsvFromDocumentDouanier();
       if (!$csv) {
@@ -312,9 +310,6 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
       }
 	  try {
         $this->importCSVDouane($csv);
-        if ($save) {
-        	$this->save();
-        }
         return true;
       } catch (Exception $e) { }
       return false;
@@ -322,9 +317,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public function importCSVDouane($csv) {
     	$todelete = array();
-    	$this->remove('declaration');
-    	$this->add('declaration');
         $bailleurs = array();
+
+        $preserve = false;
+        if(count($this->declaration) > true) {
+            $preserve = true;
+        }
+
+        $produitsImporte = array();
         foreach($csv as $line) {
             $produitConfig = $this->getConfiguration()->findProductByCodeDouane($line[DRCsvFile::CSV_PRODUIT_INAO]);
 
@@ -340,6 +340,12 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
             if($line[DouaneCsvFile::CSV_TYPE] == DRCsvFile::CSV_TYPE_DR && trim($line[DRCsvFile::CSV_BAILLEUR_PPM])) {
                 $bailleurs[$produit->getHash()] = $produit->getHash();
                 continue;
+            }
+
+            if(!array_key_exists($produit->getHash(), $produitsImporte)) {
+                $produit->remove('recolte');
+                $produit->add('recolte');
+                $produitsImporte[$produit->getHash()] = $produit;
             }
 
             $produitRecolte = $produit->recolte;
@@ -389,20 +395,26 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
         }
 
         foreach ($this->declaration->getProduits() as $hash => $p) {
-        	if (!$p->recolte->volume_sur_place) {
-        		if (!in_array($hash, $todelete)) {
-        			$todelete[] = $hash;
-                    continue;
-        		}
+        	if (!$p->recolte->volume_sur_place && !$p->superficie_revendique && !$p->volume_revendique_total && !$p->hasVci()) {
+    			$todelete[$hash] = $hash;
+                continue;
         	}
+        }
 
+        foreach ($todelete as $del) {
+            $this->remove($del);
+        }
+
+        if($preserve) {
+            return;
+        }
+
+        foreach ($this->declaration->getProduits() as $hash => $p) {
             if ($p->recolte->volume_total && $p->recolte->volume_sur_place && round($p->recolte->volume_total, 4) == round($p->recolte->volume_sur_place, 4) && !in_array($p->getHash(), $bailleurs)) {
                 $p->superficie_revendique = $p->recolte->superficie_total;
             }
         }
-        foreach ($todelete as $del) {
-            $this->remove($del);
-        }
+
         $this->updateFromPrecedente();
     }
 
@@ -1124,6 +1136,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/

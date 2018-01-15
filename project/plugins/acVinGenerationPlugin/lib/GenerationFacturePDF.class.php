@@ -44,22 +44,12 @@ class GenerationFacturePDF extends GenerationPDF {
                 continue;
             }
 
-            try {
-                /*if(!$compte->cvi) {
-                    throw new sfException(sprintf("Ce compte n'a pas de numéro CVI"));
-                }*/
+            $facture = FactureClient::getInstance()->createFactureByTemplate($template, $compte, $date_facturation, $message_communication);
 
-              $cotisations = $template->generateCotisations($compte, $template->campagne);
-            } catch (Exception $e) {
-              $this->generation->message .= sprintf("%s (%s) : %s\n", $compte->nom_a_afficher, $compte->_id, $e->getMessage());
-              $this->generation->save();
-              continue;
-            }
-            if(!count($cotisations)) {
+            if(!$facture) {
                 continue;
             }
 
-            $facture = FactureClient::getInstance()->createDoc($cotisations, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false));
             $facture->save();
             $this->generation->somme += $facture->total_ttc;
             $this->generation->documents->add($cpt, $facture->_id);

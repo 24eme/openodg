@@ -24,5 +24,14 @@ Abonnement:
                     type: collection
                     definition:
                       fields:
+                        categorie: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        quantite: { type: float }
+                        taux: { type: float }
                         facture: { type: integer }
                         facturable: { type: integer }
+                        template: { }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }

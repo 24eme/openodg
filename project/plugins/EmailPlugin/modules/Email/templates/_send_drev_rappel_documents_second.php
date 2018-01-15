@@ -14,7 +14,7 @@ Rappel des documents restant à envoyer :
 
 <?php endforeach; ?>
 
-Le ou les document(s) annexes peuvent nous être envoyés par mail (m.parisot@ava-aoc.fr) ou par voie postale :
+Le ou les document(s) annexes peuvent nous être envoyés par mail (<?php echo sfConfig::get('app_email_plugin_reply_to_adresse'); ?>) ou par voie postale :
 
 Association des Viticulteurs d'Alsace
 12 avenue de la Foire Aux Vins

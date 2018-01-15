@@ -306,7 +306,7 @@ class sfProjectConfiguration
    * Sets the enabled plugins.
    *
    * @param array $plugins An array of plugin names
-   * 
+   *
    * @throws LogicException If plugins have already been loaded
    */
   public function setPlugins(array $plugins)
@@ -339,7 +339,7 @@ class sfProjectConfiguration
         $plugins = array($plugins);
       }
     }
-    
+
     $this->setPlugins(array_merge($this->plugins, $plugins));
   }
 
@@ -347,7 +347,7 @@ class sfProjectConfiguration
    * Disables a plugin.
    *
    * @param array|string $plugins A plugin name or a plugin list
-   * 
+   *
    * @throws LogicException If plugins have already been loaded
    */
   public function disablePlugins($plugins)
@@ -381,7 +381,7 @@ class sfProjectConfiguration
    * Enabled all installed plugins except the one given as argument.
    *
    * @param array|string $plugins A plugin name or a plugin list
-   * 
+   *
    * @throws LogicException If plugins have already been loaded
    */
   public function enableAllPluginsExcept($plugins = array())
@@ -467,7 +467,7 @@ class sfProjectConfiguration
 
   /**
    * Returns an array of paths for all available plugins.
-   * 
+   *
    * @return array
    */
   public function getAllPluginPaths()
@@ -497,11 +497,11 @@ class sfProjectConfiguration
 
   /**
    * Manually sets the location of a particular plugin.
-   * 
+   *
    * This method can be used to ease functional testing of plugins. It is not
    * intended to support sharing plugins between projects, as many plugins
    * save project specific code (to /lib/form/base, for example).
-   * 
+   *
    * @param string $plugin
    * @param string $path
    */
@@ -512,9 +512,9 @@ class sfProjectConfiguration
 
   /**
    * Returns the configuration for the requested plugin.
-   * 
+   *
    * @param   string $name
-   * 
+   *
    * @return  sfPluginConfiguration
    */
   public function getPluginConfiguration($name)
@@ -564,7 +564,7 @@ class sfProjectConfiguration
 
   /**
    * Returns true if these is an active configuration.
-   * 
+   *
    * @return boolean
    */
   static public function hasActive()

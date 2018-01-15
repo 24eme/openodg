@@ -98,7 +98,11 @@ class DRevProduit extends BaseDRevProduit
 	}
 
 	public function isHabilite() {
-		$hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->document->identifiant, $this->document->getDate());
+		$date = date('Y-m-d');
+		if($this->document->isValidee()){
+			$date = $this->document->validation;
+		}
+		$hab = HabilitationClient::getInstance()->findPreviousByIdentifiantAndDate($this->document->identifiant, $date);
 		if (!$hab) {
 			return false;
 		}

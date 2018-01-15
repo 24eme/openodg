@@ -6,10 +6,14 @@ abstract class Mouvement extends acCouchdbDocumentTree
     const TYPE_HASH_CONTRAT_RAISIN = VracClient::TYPE_TRANSACTION_RAISINS;
     const TYPE_HASH_CONTRAT_MOUT = VracClient::TYPE_TRANSACTION_MOUTS;*/
 
+    protected $origines = array();
+
     public function setProduitHash($value) {
         $this->_set('produit_hash',  $value);
-        if(!$this->produit_libelle){
+        if(!$this->produit_libelle && $this->exist('denomination_complementaire')) {
             $this->produit_libelle = $this->getProduitConfig()->getLibelleFormat($this->denomination_complementaire, "%format_libelle%");
+        } elseif(!$this->produit_libelle && !$this->exist('denomination_complementaire')) {
+            $this->produit_libelle = $this->getProduitConfig()->getLibelleFormat(array(), "%format_libelle%");
         }
     }
 
@@ -102,7 +106,6 @@ abstract class Mouvement extends acCouchdbDocumentTree
         return $this->getDocument()->_id;
     }
 
-
     public function getId() {
 
         return $this->getDocument()->_id.'/mouvements/'.$this->getKey();
@@ -119,5 +122,15 @@ abstract class Mouvement extends acCouchdbDocumentTree
         }
 
         return $this->detail_libelle;
+    }
+
+    public function getOrigines() {
+
+        return $this->origines;
+    }
+
+    public function setOrigines($origines) {
+
+        $this->origines = $origines;
     }
 }

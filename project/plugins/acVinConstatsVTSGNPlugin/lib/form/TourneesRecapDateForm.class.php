@@ -16,9 +16,9 @@ class TourneesRecapDateForm extends sfForm {
     public function __construct($defaults = array(), $options = array(), $CSRFSecret = null) {
         parent::__construct($defaults, $options, $CSRFSecret);
     }
-    
+
    public function configure() {
-        $this->setWidget('date', new sfWidgetFormInputHidden(array(), array()));
+        $this->setWidget('date', new sfWidgetFormInput(array(), array()));
 
         $this->widgetSchema->setLabel('date', 'Date');
 

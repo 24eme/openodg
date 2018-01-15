@@ -19,52 +19,57 @@ class DeclarationClient
     }
 
     public function getExportCsvClassName($type) {
-        if($type == DRevClient::TYPE_MODEL) {
+        if(class_exists("DRevClient") && $type == DRevClient::TYPE_MODEL) {
 
             return 'ExportDRevCSV';
         }
 
-        if($type == ParcellaireClient::TYPE_MODEL) {
+        if(class_exists("ParcellaireClient") && $type == ParcellaireClient::TYPE_MODEL) {
 
             return 'ExportParcellaireCSV';
         }
 
-        if($type == TirageClient::TYPE_MODEL) {
+        if(class_exists("TirageClient") && $type == TirageClient::TYPE_MODEL) {
 
             return 'ExportTirageCSV';
         }
 
-        if($type == DRevMarcClient::TYPE_MODEL) {
+        if(class_exists("DRevMarcClient") && $type == DRevMarcClient::TYPE_MODEL) {
 
             return 'ExportDRevMarcCSV';
         }
 
-        if($type == ConstatsClient::TYPE_MODEL) {
+        if(class_exists("ConstatsClient") && $type == ConstatsClient::TYPE_MODEL) {
 
             return 'ExportConstatsCSV';
         }
 
-        if($type == FactureClient::TYPE_MODEL) {
+        if(class_exists("FactureClient") && $type == FactureClient::TYPE_MODEL) {
 
             return 'ExportFactureCSV';
         }
 
-        if($type == DRClient::TYPE_MODEL) {
+        if(class_exists("TravauxMarcClient") && $type == TravauxMarcClient::TYPE_MODEL) {
+
+            return 'ExportTravauxMarcCSV';
+        }
+
+        if(class_exists("DRClient") && $type == DRClient::TYPE_MODEL) {
 
             return 'ExportDRCSV';
         }
 
-        if($type == SV11Client::TYPE_MODEL) {
+        if(class_exists("SV11Client") && $type == SV11Client::TYPE_MODEL) {
 
             return 'ExportSV11CSV';
         }
 
-        if($type == SV12Client::TYPE_MODEL) {
+        if(class_exists("SV12Client") && $type == SV12Client::TYPE_MODEL) {
 
             return 'ExportSV12CSV';
         }
 
-        if($type == HabilitationClient::TYPE_MODEL) {
+        if(class_exists("HabilitationClient") && $type == HabilitationClient::TYPE_MODEL) {
 
             return 'ExportHabilitationCSV';
         }

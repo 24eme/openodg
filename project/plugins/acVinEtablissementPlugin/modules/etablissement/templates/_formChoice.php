@@ -7,7 +7,7 @@
     <div class="form-group<?php if($form['identifiant']->hasError()): ?> has-error<?php endif; ?>">
         <?php echo $form['identifiant']->renderError(); ?>
         <?php
-          $options = array('class' => 'form-control select2SubmitOnChange select2autocompleteAjax input-md', 'placeholder' => 'Rechercher', "autofocus" => "autofocus");
+          $options = array('required' => 'required', 'class' => 'form-control select2SubmitOnChange select2autocompleteAjax input-md', 'placeholder' => 'Rechercher', "autofocus" => "autofocus");
           if (isset($noautofocus) && $noautofocus) {
             unset($options['autofocus']);
           }

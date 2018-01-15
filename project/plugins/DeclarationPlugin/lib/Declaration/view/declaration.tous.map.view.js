@@ -1,6 +1,6 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Tirage") {
+    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Tirage" && doc.type != "TravauxMarc") {
 
         return;
     }
@@ -97,6 +97,10 @@ function(doc) {
 
     if(doc._id.indexOf('PARCELLAIRECREMANT') > -1) {
 	    type = "Parcellaire Crémant";
+    }
+
+    if(doc._id.indexOf('INTENTIONCREMANT') > -1) {
+	    type = "Intention Crémant";
     }
 
     emit([type, doc.campagne, mode, statut, doc.identifiant, date, infos, raison_sociale, commune, email], 1);

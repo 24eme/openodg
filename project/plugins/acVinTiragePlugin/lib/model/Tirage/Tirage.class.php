@@ -283,11 +283,11 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
         }
         return $sommeTotal;
     }
-    
+
     protected function doSave() {
     	$this->piece_document->generatePieces();
     }
-    
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -307,11 +307,11 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     		'source' => null
     	));
     }
-    
+
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
     }
-    
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('tirage_export_pdf', $this);
     }
@@ -323,7 +323,12 @@ class Tirage extends BaseTirage implements InterfaceDeclarantDocument, Interface
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
     }
-    
+
     /**** FIN DES PIECES ****/
+
+    public function getCampagneDR() {
+
+        return preg_match('/^[0-9]+$/', $this->millesime) ? $this->millesime : $this->campagne;
+    }
 
 }

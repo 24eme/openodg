@@ -52,7 +52,7 @@
                 </div>
                 <hr />
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
-                <?php include_partial('compte/visualisationTags', array('compte' => $compte)); ?>
+                <?php include_partial('compte/visualisationTags', array('compte' => $compte, 'formAjoutGroupe' => $formAjoutGroupe)); ?>
                 <?php if ($compte->commentaire) : ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>

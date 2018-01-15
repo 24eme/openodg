@@ -91,7 +91,38 @@ class CompteClient extends acCouchdbClient {
             }
           }
           return $entries;
+    }
+
+    public function getAllTagsGroupes($groupesActuels = array()) {
+      $q = new acElasticaQuery();
+      $elasticaFacet   = new acElasticaFacetTerms('groupes');
+      $elasticaFacet->setField('doc.groupes.nom');
+      $elasticaFacet->setSize(250);
+      $q->addFacet($elasticaFacet);
+      $index = acElasticaManager::getType('COMPTE');
+      $resset = $index->search($q);
+      $facets = $resset->getFacets();
+
+      $all_grps = array();
+      foreach ($facets as $key  => $ftype) {
+        foreach ($ftype['buckets'] as $f) {
+          $grpName = $f['key'];
+          $entrie = new stdClass();
+           $entrie->id = $grpName;
+           $entrie->text = $grpName;
+           $found = false;
+          foreach ($groupesActuels as $grpActKey => $grp) {
+             if(Compte::transformTag(sfOutputEscaper::unescape($grp->nom)) == Compte::transformTag(sfOutputEscaper::unescape($grpName))){              
+              $found = true;
+             }
+          }
+          if(!$found){
+            $all_grps[] = $entrie;
+          }
+        }
       }
+      return $all_grps;
+    }
 
     public function createTypeFromOrigines($origines) {
         foreach ($origines as $o) {

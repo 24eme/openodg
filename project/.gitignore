@@ -2,10 +2,11 @@ bin/config.inc
 config/app.yml
 config/databases.yml
 config/properties.ini
-apps/declaration/config/factories.yml
+apps/*/config/factories.yml
 web/declaration_dev.php
 cache/[^.]*
 log/[^.]*
 data/*
+.~*
 !data/configuration/
 !data/elk

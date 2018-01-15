@@ -73,7 +73,7 @@ class compte_teledeclarantActions extends sfActions {
         $this->forward404Unless($this->compte);
         $this->forward404Unless($this->compte->getStatutTeledeclarant() == CompteClient::STATUT_TELEDECLARANT_NOUVEAU);
 
-        $this->form = new CompteTeledeclarantCreationForm($this->compte);
+        $this->form = new CompteTeledeclarantCreationForm($this->compte, array(), array('noSaveChangement' => true));
 
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
@@ -87,6 +87,10 @@ class compte_teledeclarantActions extends sfActions {
                     $message = $this->getMailer()->composeAndSend(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $emailCible, "Confirmation de création de votre compte", $this->getPartial('compte_teledeclarant/creationEmail', array('compte' => $this->compte)));
                 } catch (Exception $e) {
                     $this->getUser()->setFlash('error', "Problème de configuration : l'email n'a pu être envoyé");
+                }
+
+                if ($this->form->hasUpdatedValues()) {
+                    Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
                 }
 
                 return $this->redirect('common_homepage');

@@ -24,8 +24,13 @@ class PieceAllView extends acCouchdbView
     public function getPiecesByEtablissement($etablissement, $allVisibilite = false, $startdate = null, $enddate = null) {
     	$start = array($etablissement);
     	$end = array($etablissement);
-    	$start[] = ($startdate)? $startdate : $this->getStartISODateForView();
-    	$end[] = ($enddate)? $enddate : $this->getEndISODateForView();
+		if($startdate) {
+			$start[] = $startdate;
+		}
+		if($enddate) {
+			$end[] = $enddate;
+		}
+
     	$end[] = array();
     	$visibles = array_reverse($this->client
     			->startkey(array_merge(array(1), $start))

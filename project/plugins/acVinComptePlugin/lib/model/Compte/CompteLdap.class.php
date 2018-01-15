@@ -68,13 +68,13 @@ class CompteLdap extends acVinLdap {
 	       $info['street']        .= " \n ".preg_replace('/;/', '\n', $compte->adresse_complementaire);
       }
       if ($compte->commune)
-          $info['l']                = $compte->commune;
+          $info['l']                = trim($compte->commune);
       if ($compte->code_postal)
-          $info['postalCode']       = $compte->code_postal;
+          $info['postalCode']       = trim($compte->code_postal);
       if ($compte->telephone_bureau)
-          $info['telephoneNumber']  = str_replace("_", "", $compte->telephone_bureau);
+          $info['telephoneNumber']  = trim(str_replace("_", "", $compte->telephone_bureau));
       if ($compte->fax)
-          $info['facsimileTelephoneNumber'] = str_replace("_", "", $compte->fax);
+          $info['facsimileTelephoneNumber'] = trim(str_replace("_", "", $compte->fax));
       if ($compte->telephone_mobile)
           $info['mobile']           = str_replace("_", "", $compte->telephone_mobile);
       if ($compte->exist('mot_de_passe')) {

@@ -11,7 +11,7 @@ cd $WORKINGDIR
 
 for i in {1..30}
 do
-    php symfony project:send-emails --env=prod --message-limit=1
+    php symfony project:send-emails $SYMFONYTASKOPTIONS --message-limit=1
     sleep 1
 done
 

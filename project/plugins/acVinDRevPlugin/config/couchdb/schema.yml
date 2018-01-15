@@ -29,11 +29,13 @@ DRev:
       version: {  }
       declarant:
         type: collection
+        class: DRevDeclarant
         definition:
           fields:
             nom: { }
             raison_sociale: { }
             cvi: { }
+            ppm: { }
             siret: { }
             adresse: { }
             commune: { }

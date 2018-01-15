@@ -5,7 +5,7 @@
  */
 
 class Fichier extends BaseFichier implements InterfacePieceDocument {
-	
+
     protected $piece_document = null;
 
     public function __construct() {
@@ -25,7 +25,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     public function constructId() {
         $this->set('_id', 'FICHIER-' . $this->identifiant . '-' . $this->fichier_id);
     }
-    
+
     public function getNbFichier()
     {
     	return count($this->_attachments);
@@ -38,7 +38,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     public function isMultiFichiers() {
     	return ($this->getNbFichier() > 1);
     }
-    
+
     public function initDoc($identifiant) {
     	$this->identifiant = $identifiant;
     	$this->fichier_id = uniqid();
@@ -47,12 +47,12 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     }
 
     public function getEtablissementObject() {
-    
+
     	return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
     }
 
     public function isPapier() {
-    
+
     	return $this->exist('papier') && $this->get('papier');
     }
 
@@ -69,7 +69,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     	}
     	return null;
     }
-    
+
     public function getFichiers()
     {
     	$fichiers = array();
@@ -78,38 +78,57 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     	}
     	return $fichiers;
     }
-    
-    public function getFichier($ext)
+
+		public function getFichier($ext) {
+			$fileinfos = $this->getFileinfos($ext);
+			return $this->getAttachmentUri($fileinfos['filename']);
+		}
+
+    public function getFileinfos($ext)
     {
     	foreach ($this->_attachments as $filename => $fileinfos) {
     		if (preg_match('/([a-zA-Z0-9]*)\.([a-zA-Z0-9]*)$/', $filename, $m)) {
     			if (strtolower($m[2]) == strtolower($ext)) {
-    				return $this->getAttachmentUri($filename);
+    				$fileinfos->add('filename', $filename);
+    				return $fileinfos;
     			}
     		}
     	}
     	return null;
     }
-	
+
 	protected function doSave() {
 		$this->piece_document->generatePieces();
 	}
-	
+
 	public function storeFichier($file) {
 		if (!is_file($file)) {
 			throw new sfException($file." n'est pas un fichier valide");
 		}
-		$infos = pathinfo($file);
-		$extension = (isset($infos['extension']) && $infos['extension'])? strtolower($infos['extension']): null;
+		$pathinfos = pathinfo($file);
+		$extension = (isset($pathinfos['extension']) && $pathinfos['extension'])? strtolower($pathinfos['extension']): null;
 		$fileName = ($extension)? uniqid().'.'.$extension : uniqid();
-		$mime = mime_content_type($file);
-		$this->storeAttachment($file, $mime, $fileName);
-		if (strtolower($extension) == 'xls') {
-			$csvFile = self::convertXlsFile($file);
-			$this->storeFichier($csvFile);
+		$couchinfos = $this->getFileinfos($pathinfos['extension']);
+		$store4real = true;
+		if (isset($couchinfos['digest'])) {
+			$digest = explode('-', $couchinfos['digest']);
+			if ($digest[1] == base64_encode(hex2bin(md5_file($file)))) {
+				$store4real = false;
+			}else{
+				$this->deleteFichier($couchinfos->getKey());
+				$this->save();
+			}
+		}
+		if ($store4real) {
+			$mime = mime_content_type($file);
+			$this->storeAttachment($file, $mime, $fileName);
+			if (strtolower($extension) == 'xls') {
+				$csvFile = self::convertXlsFile($file);
+				$this->storeFichier($csvFile);
+			}
 		}
 	}
-	
+
 	public static function convertXlsFile($file) {
 		if (!is_file($file)) {
 			throw new sfException($file." n'est pas un fichier valide");
@@ -126,9 +145,9 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		if (!is_dir($path)) {
 			throw new sfException($path." n'a pas pu être créé");
 		}
-		
+
 		$filename = uniqid().'.csv';
-		
+
 		//setlocale(LC_ALL,'fr_FR.UTF-8');
 		//putenv('LC_ALL=fr_FR.UTF-8');
 		exec('xls2csv '.$file.' > '.$path.$filename);
@@ -136,10 +155,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		if (!filesize($path.$filename)) {
 			throw new sfException("xls2csv n'a pas pu convertir le fichier ".$file);
 		}
-		 
+
 		return $path.$filename;
 	}
-	
+
 	public function deleteFichier($filename = null) {
 		if (!$filename) {
 			$this->remove('_attachments');
@@ -148,7 +167,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 			$this->_attachments->remove($filename);
 		}
 	}
-	
+
 	public function getDateDepotFormat($format = 'd/m/Y') {
 		if ($this->date_depot) {
 			$date = new DateTime($this->date_depot);
@@ -156,7 +175,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		}
 		return null;
 	}
-    
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -192,6 +211,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     }
 
     public static function isVisualisationMasterUrl($admin = false) {
+    	return false;
+    }
+
+    public static function isPieceEditable($admin = false) {
     	return false;
     }
 

@@ -41,6 +41,12 @@ class DeclarantDocument
         $declarant->nom .= $etablissement->nom;
         $declarant->raison_sociale = $etablissement->getRaisonSociale();
         $declarant->cvi = $etablissement->cvi;
+
+        if ($etablissement->exist("ppm")) {
+            if($declarant->getDefinition()->exist('ppm'))
+                 $declarant->add('ppm', $etablissement->ppm);
+        }
+
         if($etablissement->exist("no_accises") && $declarant->exist("no_accises")) {
             $declarant->no_accises = $etablissement->getNoAccises();
         }
@@ -73,6 +79,9 @@ class DeclarantDocument
         if ($etablissement->exist("telephone_bureau")) {
             if($declarant->getDefinition()->exist('telephone'))
                  $declarant->add('telephone', $etablissement->telephone_bureau);
+        } elseif ($etablissement->exist("telephone")) {
+            if($declarant->getDefinition()->exist('telephone'))
+                 $declarant->add('telephone', $etablissement->telephone);
         }
         if ($etablissement->exist("email")) {
             if($declarant->getDefinition()->exist('email'))

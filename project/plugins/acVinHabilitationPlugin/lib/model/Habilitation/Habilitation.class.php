@@ -84,7 +84,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->constructId();
     }
 
-    public function addProduit($hash) {
+    public function addProduit($hash, $date = null) {
         $hash = preg_replace("|/declaration/|", '', $hash);
         $node = $this->getConfiguration()->get('/declaration/'.$hash)->getNodeCahierDesCharges();
         $hashToAdd = preg_replace("|/declaration/|", '', $node->getHash());
@@ -93,7 +93,9 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         if(!$exist) {
             $produit_libelle = $produit->getLibelle();
             $produit->initActivites();
-            $this->addHistoriqueNewProduit($produit_libelle);
+            if($date == $this->date || !$date) {
+                $this->addHistoriqueNewProduit($produit_libelle);
+            }
             $this->declaration->reorderByConf();
         }
         return $this->get($produit->getHash());
@@ -227,16 +229,17 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
   public function updateHabilitation($hash_produit, $activites, $statut, $commentaire = "", $date = ''){
         foreach($activites as $activite) {
-            $this->addProduit($hash_produit)->updateHabilitation($activite, $statut, $commentaire, $date);
+            $this->addProduit($hash_produit, $date)->updateHabilitation($activite, $statut, $commentaire, $date);
         }
   }
 
-    public function save($force = false) {
+    public function save() {
+        $this->constructId();
+
         $last = HabilitationClient::getInstance()->getLastHabilitation($this->identifiant, acCouchdbClient::HYDRATE_JSON);
 
-        $this->constructId();
-        if(!$force && $last && $last->_id > $this->_id) {
-            throw new sfException("Une habilitation avec une date supérieur existe déjà : ".$last->_id);
+        if($last && $last->_id > $this->_id) {
+            $this->add('lecture_seule', true);
         }
 
         parent::save();
@@ -244,7 +247,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
 
         if(!$this->isLectureSeule() && $precedente && !$precedente->isLectureSeule()) {
             $precedente->add('lecture_seule', true);
-            $precedente->save(true);
+            $precedente->save();
         }
     }
 

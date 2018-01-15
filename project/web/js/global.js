@@ -80,12 +80,41 @@
             });
         }
     };
-    $.initDatePickers = function ()
+    $.fn.initDatePickers = function ()
     {
-        var datePickers = $('.date-picker');
+        var datePickers = $(this).find('.date-picker');
         datePickers.each(function ()
         {
-            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true, showTodayButton: true });
+            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true, showTodayButton: true, useCurrent: false  });
+        });
+        var datePickers = $(this).find('.date-picker-week');
+        datePickers.each(function ()
+        {
+            $(this).datetimepicker
+                    ({
+                        locale: 'fr',
+                        calendarWeeks: true,
+                        format: 'DD/MM/YYYY',
+                        allowInputToggle: true,
+                        useCurrent: false
+                    });
+        });
+        var datePickers = $(this).find('.date-picker-all-days');
+        datePickers.each(function ()
+        {
+            $(this).datetimepicker({ locale: 'fr', format: 'DD/MM/YYYY', allowInputToggle: true, useCurrent: false });
+        });
+        var datePickers = $(this).find('.date-picker-time');
+        datePickers.each(function ()
+        {
+            $(this).datetimepicker
+            ({
+                locale: 'fr',
+                format: 'LT',
+                useCurrent: false,
+                allowInputToggle: true,
+                stepping: 5
+            });
         });
     };
     $.fn.initSelect2Autocomplete = function ()
@@ -131,12 +160,6 @@
 
                     return item.text;
                 }});
-        });
-
-        $(this).find(".select2SubmitOnChange").on("change", function (e) {
-            if (e.val || $(this).val()) {
-                $(this).parents('form').submit();
-            }
         });
     }
 
@@ -476,6 +499,9 @@
         });
 
         $("#page").on('click', '.dynamic-element-delete', function () {
+            if($(this).attr('data-confirm') && !confirm($(this).attr('data-confirm'))) {
+                return false;
+            }
             $($(this).attr('data-line')).find('input').val("");
             $($(this).attr('data-line')).find('input').trigger('keyup');
             $($(this).attr('data-line')).remove();
@@ -622,7 +648,7 @@
         $(this).initSelect2AutocompleteRemote();
         $(this).initBlocCondition();
 
-        $(this).find(".select2autocompleteAjax").each(function () {            
+        $(this).find(".select2autocompleteAjax").each(function () {
             var urlAjax = $(this).data('ajax');
             var defaultValue = $(this).val();
             var defaultValueSplitted = defaultValue.split(',');
@@ -675,11 +701,15 @@
             });
         });
 
-        /*$(this).find(".select2SubmitOnChange").on("change", function (e) {
-            if (e.val) {
+        $(this).initDatePickers();
+        $(this).find('input.num_float').saisieNum(true);
+        $(this).find('input.num_int').saisieNum(false);
+
+        $(this).find(".select2SubmitOnChange").on("change", function (e) {
+            if (e.val || $(this).val()) {
                 $(this).parents('form').submit();
             }
-        });*/
+        });
     }
 
     $.initTableCheckbox = function() {
@@ -753,7 +783,7 @@
     _doc.ready(function ()
     {
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
-        $.initDatePickers();
+        _doc.initDatePickers();
         _doc.initAdvancedElements();
         $.initSelect2AutocompletePermissif();
         $.initSelect2PermissifNoAjax();

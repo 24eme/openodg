@@ -7,7 +7,9 @@
 class HabilitationActivite extends BaseHabilitationActivite {
 
   public function updateHabilitation($statut, $commentaire = "", $date = ''){
-      $this->addHistoriqueActiviteChanges($this->statut,$statut,$commentaire);
+      if($date == $this->getDocument()->date || !$date) {
+        $this->addHistoriqueActiviteChanges($this->statut,$statut,$commentaire);
+      }
       if (!$date) {
         $date = $this->getDocument()->getDate();
       }
