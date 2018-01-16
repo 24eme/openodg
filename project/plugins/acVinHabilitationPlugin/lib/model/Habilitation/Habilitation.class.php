@@ -24,7 +24,29 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $this->constructId();
     }
 
+    public function getDeclarant(){
+        $etablissement = EtablissementClient::getInstance()->find($this->identifiant);
+        if(!$etablissement){
+          return null;
+        }
+        $compte = CompteClient::getInstance()->find($etablissement->getCompte());
 
+        $declarant = new stdClass();
+        $declarant->nom = $etablissement->nom;
+        $declarant->raison_sociale = $etablissement->raison_sociale;
+        $declarant->cvi = $etablissement->cvi;
+        $declarant->siret = $etablissement->getSociete()->siret;
+        $declarant->adresse = $compte->adresse;
+        $declarant->adresse_complementaire = $compte->adresse_complementaire;
+        $declarant->commune = $compte->commune;
+        $declarant->code_postal = $compte->code_postal;
+        $declarant->telephone_bureau = $compte->telephone_bureau;
+        $declarant->telephone_mobile = $compte->telephone_mobile;
+        $declarant->email = $compte->email ;
+
+        return $declarant;
+
+    }
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
