@@ -24,6 +24,9 @@
 			  		?>
 			  		<li><a href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>?file=<?php echo $file ?>"><?php echo strtoupper($extention) ?></a></li>
 			  		<?php endforeach; ?>
+			  		<?php if ($urlCsv = Piece::getUrlGenerationCsvPiece($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+			  		<li><a href="<?php echo $urlCsv ?>">CSV Généré</a></li>
+			  		<?php endif; ?>
 			  	</ul>
 			<?php else: ?>
 			<a href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><?php echo $document->key[PieceAllView::KEYS_LIBELLE] ?></a>
@@ -41,12 +44,18 @@
 		  		?>
 		  		<li><a href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>?file=<?php echo $file ?>"><?php echo strtoupper($extention) ?></a></li>
 		  		<?php endforeach; ?>
+		  		<?php if ($urlCsv = Piece::getUrlGenerationCsvPiece($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+		  		<li><a href="<?php echo $urlCsv ?>">CSV Généré</a></li>
+		  		<?php endif; ?>
 		  	</ul>
 		<?php else: ?>
 		<a class="pull-right" href="<?php echo url_for('get_piece', array('doc_id' => $document->id, 'piece_id' => $document->value[PieceAllView::VALUES_KEY])) ?>"><span class="glyphicon glyphicon-file"></span></a>
 		<?php endif; ?>
 		<?php if ($urlVisu = Piece::getUrlVisualisation($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
 			<a class="pull-right" href="<?php echo $urlVisu ?>" style="margin: 0 10px;"><span class="glyphicon glyphicon-edit"></span></a>
+		<?php endif; ?>
+		<?php if (Piece::isPieceEditable($document->id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+			<a class="pull-right" href="<?php echo url_for('edit_fichier', array('id' => $document->id)) ?>"><span class="glyphicon glyphicon-user"></span></a>
 		<?php endif; ?>
 	</span>
 </div>

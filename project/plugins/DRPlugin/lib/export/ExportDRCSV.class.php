@@ -26,7 +26,9 @@ class ExportDRCSV implements InterfaceDeclarationExportCsv
         if($this->header) {
             $csv .= self::getHeaderCsv();
         }
-        if ($file = $this->doc->getFichier('csv')) {
+        if ($this->doc->exist('donnees') && count($this->doc->donnees) >= 1) {
+        	$csv .= DRDouaneCsvFile::convertByDonnees($this->doc);
+        } elseif ($file = $this->doc->getFichier('csv')) {
         	$c = new DRDouaneCsvFile($file, $this->doc->campagne);
         	$csv .= $c->convert();
         }

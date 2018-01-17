@@ -148,8 +148,6 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 
 		$filename = uniqid().'.csv';
 
-		//setlocale(LC_ALL,'fr_FR.UTF-8');
-		//putenv('LC_ALL=fr_FR.UTF-8');
 		exec('xls2csv '.$file.' > '.$path.$filename);
 
 		if (!filesize($path.$filename)) {
@@ -196,18 +194,25 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
     }
 
     public function generateUrlPiece($source = null) {
-    	return sfContext::getInstance()->getRouting()->generate('get_fichier', $this);
+    	return ($this->getNbFichier() > 0)? sfContext::getInstance()->getRouting()->generate('get_fichier', $this) : sfContext::getInstance()->getRouting()->generate('csvgenerate_fichier', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
 		if(!$admin) {
-
 			return null;
 		}
 
 		$fichier = FichierClient::getInstance()->find($id);
+    	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $fichier->_id, 'sf_subject' => $fichier->getEtablissementObject()));
+    }
 
-    	return sfContext::getInstance()->getRouting()->generate('upload_fichier', array('fichier_id' => $id, 'sf_subject' => $fichier->getEtablissementObject()));
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+		if(!$admin) {
+			return null;
+		}
+
+		$fichier = FichierClient::getInstance()->find($id);
+    	return sfContext::getInstance()->getRouting()->generate('csvgenerate_fichier', $fichier);
     }
 
     public static function isVisualisationMasterUrl($admin = false) {

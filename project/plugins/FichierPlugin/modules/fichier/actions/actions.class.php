@@ -43,6 +43,24 @@ class fichierActions extends sfActions
     	}
     	return $this->redirect('upload_fichier', array('fichier_id' => $fichier->_id, 'sf_subject' => $fichier->getEtablissementObject()));
     }
+    
+    public function executeCsvgenerate(sfWebRequest $request) {
+    	$fichier = $this->getRoute()->getFichier();
+    	$csv = "";
+    	if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $fichier->_id, $m)) {
+    		$className = DeclarationClient::getInstance()->getExportCsvClassName($m[1]);
+    		$csvOrigine = new $className($fichier);
+    		$csv .= $csvOrigine->export();
+    	}
+    	$this->getResponse()->setHttpHeader('Content-Type', 'text/csv');
+    	$this->getResponse()->setHttpHeader('Content-disposition', sprintf('attachment; filename="%s.csv"', $fichier->_id));
+    	$this->getResponse()->setHttpHeader('Content-Transfer-Encoding', 'binary');
+    	$this->getResponse()->setHttpHeader('Pragma', '');
+    	$this->getResponse()->setHttpHeader('Cache-Control', 'public');
+    	$this->getResponse()->setHttpHeader('Expires', '0');
+    	
+    	return $this->renderText($csv);
+    }
 
     public function executeUpload(sfWebRequest $request) {
     	$this->etablissement = $this->getRoute()->getEtablissement();
@@ -90,6 +108,72 @@ class fichierActions extends sfActions
 			}
 		}
 		ksort($this->categories);
+	}
+	
+	public function executeEdit(sfWebRequest $request) {
+    	$this->fichier = $this->getRoute()->getFichier();
+        $this->etablissement = $this->fichier->getEtablissementObject();
+		
+        $this->fichier->generateDonnees();
+        
+        $this->form = new FichierDonneesForm($this->fichier);
+        
+        if (!$request->isMethod(sfWebRequest::POST)) {
+        	return sfView::SUCCESS;
+        }
+        
+        $this->form->bind($request->getParameter($this->form->getName()));
+        
+        if (!$this->form->isValid()) {
+        	return sfView::SUCCESS;
+        }
+        
+        $this->form->save();
+
+        $this->getUser()->setFlash("notice", "Modifications prises en compte avec succès.");
+
+        return $this->redirect($this->generateUrl('edit_fichier', $this->fichier));
+	}
+	
+	public function executeNew(sfWebRequest $request) {
+    	$this->etablissement = $this->getRoute()->getEtablissement();
+    	$this->campagne = $request->getParameter('campagne');
+    	$this->type = $request->getParameter('type');
+
+    	if (!$this->campagne) {
+    		return $this->forward404("La création d'un fichier nécessite la campagne");
+    	}
+
+    	if (!$this->type) {
+    		return $this->forward404("La création d'un fichier nécessite le type");
+    	}
+    	
+    	$client = $this->type.'Client';
+    	if ($doc = $client::getInstance()->findByArgs($this->etablissement->identifiant, $this->campagne)) {
+    		return $this->redirect($this->generateUrl('edit_fichier', $doc));
+    	}
+		
+        $doc = $client::getInstance()->createDoc($this->etablissement->identifiant, $this->campagne, true);
+        if ($doc->exist('libelle')) $doc->libelle = $this->type.' '.$this->campagne.' saisie interne';
+        if ($doc->exist('visibilite')) $doc->visibilite = 0;
+        if ($doc->exist('date_depot')) $doc->date_depot = date('Y-m-d');
+        if ($doc->exist('date_import')) $doc->date_import = date('Y-m-d');
+        $doc->save();
+        
+        return $this->redirect($this->generateUrl('edit_fichier', $doc));
+	}
+	
+	public function executeScrape(sfWebRequest $request) {
+		$this->etablissement = $this->getRoute()->getEtablissement();
+		$this->campagne = $request->getParameter('campagne');
+		$this->type = $request->getParameter('type');
+	
+		try {
+			FichierClient::getInstance()->scrapeAndSaveFiles($this->etablissement, $this->type, $this->campagne);
+		} catch(Exception $e) {
+		}
+	
+		return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant));
 	}
 
 	protected function secureEtablissement($etablissement) {

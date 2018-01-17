@@ -426,8 +426,16 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
     	return ($admin)? sfContext::getInstance()->getRouting()->generate('degustation_visualisation', array('id' => preg_replace('/DEGUSTATION-[a-zA-Z0-9]*-/', 'TOURNEE-', $id))) : null;
     }
 
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
     public static function isVisualisationMasterUrl($admin = false) {
-    	return ($admin)? true : false;
+    	return false;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/
