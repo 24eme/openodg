@@ -125,6 +125,13 @@
             $(this).parents(element).remove();
             return false;
         });
+    	
+    	$('#drLignes').on('click', 'a.btn_rm_ligne_template', function()
+        {
+        	var element = $(this).attr('data-container');
+            $(this).parents(element).remove();
+            return false;
+        });
     };
 
     $.initCollectionAddTemplate = function(element, regexp_replace, callback)
@@ -140,13 +147,35 @@
     		for(key in params) {
     			bloc_html = bloc_html.replace(new RegExp(key, "g"), params[key]);
     		}
-            var bloc = $($(this).attr('data-container')).append(bloc_html);
-            if(callback) {
-            	callback(bloc);
+    		var result = $(bloc_html);
+            var bloc = $($(this).attr('data-container')).append(result);
+            
+            if(callback && $(this).attr('data-callback')) {
+            	callback(result);
             }
+            
+            result.initAdvancedElements();
+            
             return false;
         });
     };
+    
+    var drAddTemplateCb = function(bloc)
+    {
+    	var produit = bloc.prev().find('select.liste-produits').val();
+    	var complement = bloc.prev().find('input.complement-produit').val();
+    	var bailleur = bloc.prev().find('input.bailleur-produit').val();
+    	var bailleurNom = bloc.prev().find('input.bailleur-produit').prev().find('span.select2-chosen').text();
+    	var categorie = bloc.prev().find('select.categorie-produit').val();
+    	
+    	bloc.find('select.liste-produits').val(produit);
+    	bloc.find('input.complement-produit').val(complement);
+    	if (bailleur) {
+    		bloc.find('input.bailleur-produit').val(bailleur+','+bailleurNom);
+    	}
+    	bloc.find('select.categorie-produit').find('option[value="'+categorie+'"]').next().prop('selected', true);
+    	
+    }
 
     /* =================================================================================== */
     /* FUNCTIONS CALL */
@@ -155,7 +184,7 @@
     {
         $.initAjaxPost();
         $.initAjaxCouchdbForm();
-        $.initCollectionAddTemplate('.btn_ajouter_ligne_template', /var---nbItem---/g, null);
+        $.initCollectionAddTemplate('.btn_ajouter_ligne_template', /var---nbItem---/g, drAddTemplateCb);
         $.initCollectionDeleteTemplate();
 
         var ajaxForm = $('form.ajaxForm');

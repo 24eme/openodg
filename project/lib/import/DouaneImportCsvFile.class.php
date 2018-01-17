@@ -4,10 +4,12 @@ class DouaneImportCsvFile {
 
     protected $filePath = null;
     protected $campagne = null;
+    protected $configuration = null;
 
     public function __construct($filePath, $campagne = null) {
         $this->filePath = $filePath;
         $this->campagne = ($campagne)? $campagne : date('Y');
+        $this->configuration = ConfigurationClient::getConfiguration();
     }
 
     public static function clean($array) {
@@ -28,13 +30,10 @@ class DouaneImportCsvFile {
     public static function getNewInstanceFromType($type, $file, $campagne = null)  {
         switch ($type) {
             case 'DR':
-
                 return new DRDouaneCsvFile($file, $campagne);
             case 'SV11':
-
                 return new SV11DouaneCsvFile($file, $campagne);
             case 'SV12':
-
                 return new SV12DouaneCsvFile($file, $campagne);
         }
 
