@@ -238,11 +238,19 @@ class DRevMarc extends BaseDRevMarc implements InterfaceDeclarantDocument, Inter
     	return sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', array('id' => $id));
     }
 
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
     /**** FIN DES PIECES ****/
 
     public static function isVisualisationMasterUrl($admin = false) {
 
         return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
 }

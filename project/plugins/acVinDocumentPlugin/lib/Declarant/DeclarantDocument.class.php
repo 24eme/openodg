@@ -42,9 +42,8 @@ class DeclarantDocument
         $declarant->raison_sociale = $etablissement->getRaisonSociale();
         $declarant->cvi = $etablissement->cvi;
 
-        if ($etablissement->exist("ppm")) {
-            if($declarant->getDefinition()->exist('ppm'))
-                 $declarant->add('ppm', $etablissement->ppm);
+        if ($declarant instanceof stdClass) {
+          return;
         }
 
         if($etablissement->exist("no_accises") && $declarant->exist("no_accises")) {
@@ -72,6 +71,12 @@ class DeclarantDocument
         if($etablissement->exist("region") && $declarant->exist('region')) {
             $declarant->region = $etablissement->getRegion();
         }
+
+        if ($etablissement->exist("ppm")) {
+          if($declarant->getDefinition()->exist('ppm'))
+          $declarant->add('ppm', $etablissement->ppm);
+        }
+
         if ($etablissement->exist("siret")) {
             if($declarant->getDefinition()->exist('siret'))
                  $declarant->add('siret', $etablissement->siret);
@@ -83,6 +88,7 @@ class DeclarantDocument
             if($declarant->getDefinition()->exist('telephone'))
                  $declarant->add('telephone', $etablissement->telephone);
         }
+
         if ($etablissement->exist("email")) {
             if($declarant->getDefinition()->exist('email'))
                $declarant->add('email', $etablissement->email);

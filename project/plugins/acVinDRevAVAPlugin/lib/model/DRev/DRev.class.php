@@ -948,8 +948,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return sfContext::getInstance()->getRouting()->generate('drev_visualisation', array('id' => $id));
     }
 
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/

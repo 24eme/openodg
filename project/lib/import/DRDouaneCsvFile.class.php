@@ -20,7 +20,6 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         $exploitant = array();
         $bailleur = array();
         $libelleLigne = null;
-
         foreach ($csv as $key => $values) {
         	if (is_array($values) && count($values) > 0) {
         		if (preg_match('/dnr/i', $values[0])) {
@@ -35,7 +34,12 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		if ($values[0] == 1) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
-        					$produits[$i] = array(null, null, null, null, null, null, null);
+        					$produit = $this->configuration->findProductByCodeDouane($values[$i]);
+        					if (!$produit) {
+        						$produits[$i] = array(null, null, null, null, null, null, null);
+        					} else {
+        						$produits[$i] = array($produit->getCertification()->getKey(), $produit->getGenre()->getKey(), $produit->getAppellation()->getKey(), $produit->getMention()->getKey(), $produit->getLieu()->getKey(), $produit->getCouleur()->getKey(), $produit->getCepage()->getKey());
+        					}
         					$produits[$i][] = $values[$i];
         				}
         			}
@@ -135,6 +139,70 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
 	        	}
 	        }
         }
+        return $csv;
+    }
+    
+    public static function convertByDonnees($dr) {
+    	if (!$dr->exist('donnees') || count($dr->donnees) < 1) {
+    		return null;
+    	}
+    	$csv = '';
+    	$configuration = ConfigurationClient::getCurrent();
+    	$categories = sfConfig::get('app_dr_categories');
+    	$etablissementClient = EtablissementClient::getInstance();
+    	$etablissement = $etablissementClient->find($dr->identifiant);
+    	if (!$etablissement) {
+    		return null;
+    	}
+    	$drInfos = array();
+    	$produits = array();
+    	$drInfos[] = DRCsvFile::CSV_TYPE_DR;
+    	$drInfos[] = $dr->campagne;
+    	$drInfos[] = $etablissement->cvi;
+    	$drInfos[] = $etablissement->raison_sociale;
+    	$drInfos[] = null;
+    	$drInfos[] = $etablissement->siege->commune;
+    	
+    	foreach ($dr->donnees as $donnee) {
+    		if ($produit = $configuration->declaration->get($donnee->produit)) {
+    			$p = array();
+    			if ($donnee->bailleur && $b = $etablissementClient->find($donnee->bailleur)) {
+    				$p[] = $b->raison_sociale;
+    				$p[] = $b->ppm;
+    			} else {
+    				$p[] = null;
+    				$p[] = null;
+    			}
+    			$p[] = $produit->getCertification()->getKey();
+    			$p[] = $produit->getGenre()->getKey();
+    			$p[] = $produit->getAppellation()->getKey();
+    			$p[] = $produit->getMention()->getKey();
+    			$p[] = $produit->getLieu()->getKey();
+    			$p[] = $produit->getCouleur()->getKey();
+    			$p[] = $produit->getCepage()->getKey();
+    			$p[] = $produit->code_douane;
+    			$p[] = $produit->getLibelleFormat();
+    			$p[] = $donnee->complement;
+    			$p[] = $donnee->categorie;
+    			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
+    			$p[] = $donnee->valeur;
+    			if ($donnee->tiers && $t = $etablissementClient->find($donnee->tiers)) {
+    				$p[] = $t->cvi;
+    				$p[] = $t->raison_sociale;
+    				$p[] = null;
+    				$p[] = $t->siege->commune;
+    			} else {
+    				$p[] = null;
+    				$p[] = null;
+    				$p[] = null;
+    				$p[] = null;
+    			}
+    			$produits[] = $p;
+    		}
+    	}
+    	foreach ($produits as $k => $p) {
+    		$csv .= implode(';', $drInfos).';'.implode(';', $p)."\n";
+    	}
         return $csv;
     }
 }
