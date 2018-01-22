@@ -117,6 +117,26 @@ class DeclarationClient
         return $ids;
     }
 
+    public function getIdsWithSearchFilter($type, $campagne, $ids_list) {
+      $identifiants_etb = explode(',',$ids_list);
+      $ids = array();
+      foreach ($identifiants_etb as $key => $identifiant) {
+        $etablissement = etablissementClient::getInstance()->find('ETABLISSEMENT-'.$identifiant);
+        if(!$etablissement){
+          throw new sfException("L'établissement d'identifiant ".$identifiant." n'a pas été trouvé dans la base. ");
+        }
+        $rows = acCouchdbManager::getClient()
+                    ->startkey(array($type, $campagne,$identifiant))
+                    ->endkey(array($type, $campagne,$identifiant, array()))
+                    ->reduce(false)
+                    ->getView('declaration', 'export')->rows;
+        foreach($rows as $row) {
+            $ids[] = $row->id;
+        }
+      }
+      return $ids;
+    }
+
     public function getIdsByIdentifiant($identifiant) {
         $ids = array();
 

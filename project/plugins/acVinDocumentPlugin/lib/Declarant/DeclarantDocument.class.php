@@ -42,10 +42,6 @@ class DeclarantDocument
         $declarant->raison_sociale = $etablissement->getRaisonSociale();
         $declarant->cvi = $etablissement->cvi;
 
-        if ($declarant instanceof stdClass) {
-          return;
-        }
-
         if($etablissement->exist("no_accises") && $declarant->exist("no_accises")) {
             $declarant->no_accises = $etablissement->getNoAccises();
         }
