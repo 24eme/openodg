@@ -30,7 +30,7 @@
                 <div <?php if($exist): ?>data-state="active"<?php endif; ?> class="list-group-item list-group-item-item col-xs-12 <?php if(!$exist): ?>clickable<?php else: ?>list-group-item-success<?php endif; ?>">
                 <div class="row">
                     <div class="col-xs-6"><?php echo $operateur->raison_sociale ?> <small>(<?php echo $operateur->cvi ?>)</small> <small class="text-muted"><?php echo $operateur->commune ?></small></div>
-                    <div class="col-xs-2 text-right"><!--<small class="text-muted">Prélevé le</small> 2012, 2014--> <?php if($operateur->reporte): ?><span class="label label-warning">Report du <?php echo format_date($operateur->reporte, "D", "fr_FR") ?></span><?php elseif($derniereDegustation=$operateur->getLastDegustationDate()): ?><span class="label label-info">Dégusté en <?php echo format_date($derniereDegustation, "yyyy   ", "fr_FR") ?></span><?php endif; ?></div>
+                    <div class="col-xs-2 text-right"><!--<small class="text-muted">Prélevé le</small> 2012, 2014--> <?php if($operateur->reporte): ?><span class="label label-warning">Report du <?php echo format_date($operateur->reporte, "D", "fr_FR") ?></span><?php elseif ($operateur->force): ?><span class="label label-warning">Prélèvement forcé</span><?php elseif($derniereDegustation=$operateur->getLastDegustationDate()): ?><span class="label label-info">Dégusté en <?php echo format_date($derniereDegustation, "yyyy   ", "fr_FR") ?></span><?php endif; ?></div>
                     <div class="col-xs-3 text-right">
                         <small class="text-muted">Pour le </small> <?php echo format_date($operateur->date_demande, "D", "fr_FR") ?>
                     </div>

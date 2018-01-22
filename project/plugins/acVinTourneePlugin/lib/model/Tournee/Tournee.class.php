@@ -412,7 +412,6 @@ class Tournee extends BaseTournee {
 
     public function updateOperateursFromDRev() {
         $prelevements = TourneeClient::getInstance()->getPrelevementsFiltered($this->appellation, $this->date_prelevement_debut, $this->date_prelevement_fin, $this->getCampagne());
-
         foreach ($prelevements as $prelevement) {
             $degustation = $this->addOperateurFromDRev($prelevement->_id);
         }

@@ -83,6 +83,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
         $prelevement = $drev->prelevements->{"cuve_".$this->appellation};
         $this->date_demande = $prelevement->date;
         $this->lots = array();
+				$this->add('force', ($prelevement->exist('force') && $prelevement->force));
 
         if($this->appellation == "VTSGN") {
             $vtsgn_items = array("vt" => "VT", "sgn" => "SGN");
@@ -117,7 +118,7 @@ class Degustation extends BaseDegustation implements InterfacePieceDocument {
             }
             $lot->vtsgn = $l->vtsgn;
             $lot->volume_revendique = $l->volume_revendique;
-            $lot->prelevement = 0;
+						$lot->prelevement = ($this->exist('force') && $this->force);
         }
     }
 

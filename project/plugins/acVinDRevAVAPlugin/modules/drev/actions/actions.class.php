@@ -634,7 +634,9 @@ class drevActions extends sfActions {
             return sfView::SUCCESS;
         }
 
-        $this->form->save();
+        if($this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) {
+          $this->form->save();
+        }
         $changeforce = 0;
         foreach ($this->drev->getPrelevementsOrdered() as $prelevementsOrdered) {
           foreach ($prelevementsOrdered->prelevements as $prelevement) {
