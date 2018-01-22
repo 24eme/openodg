@@ -7,7 +7,7 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Produit;Activité;Statut;Date;Id du doc;Commentaire\n";
+        return "Nom Opérateur (Raison Sociale);Identifiant;Produit (libellé appellation);CVI Opérateur;Siret Opérateur;Adresse (etablissement);Code postal  (etablissement);Commune (etablissement);Téléphone fixe (etablissement);Téléphone mobile (etablissement);Email (etablissement);Adresse (société);Code postal (société);Commune (société);Téléphone fixe (société);Téléphone mobile (société);Email (société);Activité;Statut;Date;Id du doc;Commentaire\n";
     }
 
     public function __construct($habilitation, $header = true) {
@@ -27,7 +27,27 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
     public function export() {
         $csv = "";
 
-        $ligneBase = sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->habilitation->identifiant, $this->habilitation->declarant->cvi, $this->habilitation->declarant->siret, $this->protectStr($this->habilitation->declarant->raison_sociale), $this->protectStr($this->habilitation->declarant->adresse), $this->habilitation->declarant->code_postal, $this->protectStr($this->habilitation->declarant->commune), $this->habilitation->declarant->email);
+        $declarant = $this->habilitation->getDeclarant();
+        $raison_sociale = $this->protectStr($this->habilitation->getDeclarant()->raison_sociale);
+        $identifiant = $this->habilitation->identifiant;
+        //libellé appellation
+        $cvi = $declarant->cvi;
+        $siret = $declarant->siret;
+
+        $adresse = $this->protectStr($declarant->adresse);
+        $code_postal = $declarant->code_postal;
+        $commune = $this->protectStr($declarant->commune);
+        $tel_fixe = $declarant->telephone_bureau;
+        $tel_portable =$declarant->telephone_mobile;
+        $email = $declarant->email;
+
+        $adresse_societe = $this->protectStr($declarant->adresse_societe);
+        $code_postal_societe = $declarant->code_postal_societe;
+        $commune_societe = $this->protectStr($declarant->commune_societe);
+        $tel_fixe_societe = $declarant->telephone_bureau_societe;
+        $tel_portable_societe =$declarant->telephone_mobile_societe;
+        $email_societe = $declarant->email_societe;
+
 
         foreach($this->habilitation->getProduits() as $produit) {
             foreach($produit->activites as $activite) {
@@ -35,10 +55,33 @@ class ExportHabilitationCSV implements InterfaceDeclarationExportCsv {
                     continue;
                 }
 
-                $csv .= $ligneBase.";".$produit->libelle.";".$activite->getKey().";".$activite->statut.";".$activite->date.";".$this->habilitation->_id.";".$activite->commentaire."\n";
+                $csv .= sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+                      $raison_sociale,
+                      $identifiant,
+                      $produit->libelle,
+                      $cvi,
+                      $siret,
+                      $adresse,
+                      $code_postal,
+                      $commune,
+                      $tel_fixe,
+                      $tel_portable,
+                      $email,
+
+                      $adresse_societe,
+                      $code_postal_societe,
+                      $commune_societe,
+                      $tel_fixe_societe,
+                      $tel_portable_societe,
+                      $email_societe,
+
+                      $activite->getKey(),
+                      $activite->statut,
+                      $activite->date,
+                      $this->habilitation->_id,
+                      $activite->commentaire);
             }
         }
-
         return $csv;
     }
 

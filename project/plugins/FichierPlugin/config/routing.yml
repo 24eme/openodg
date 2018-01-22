@@ -45,3 +45,43 @@ upload_fichier:
     type:     object
   requirements:
     sf_method: [get, post]
+
+csvgenerate_fichier:
+  url: /fichier/csvgenerate/:id
+  param: { module: fichier, action: csvgenerate }
+  class: FichierRoute
+  options:
+    model:    Fichier
+    type:     object
+  requirements:
+    sf_method: [get]
+
+edit_fichier:
+  url: /fichier/edit/:id
+  param: { module: fichier, action: edit }
+  class: FichierRoute
+  options:
+    model:    Fichier
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+new_fichier:
+  url: /fichier/new/:identifiant
+  param: { module: fichier, action: new }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+scrape_fichier:
+  url: /fichier/scrape/:identifiant
+  param: { module: fichier, action: scrape }
+  class: DeclarationDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]

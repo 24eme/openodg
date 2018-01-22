@@ -48,6 +48,6 @@
     <?php if(class_exists("Tirage")): ?>
     <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
-    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement)); ?>
+    <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
 </div>
 <?php include_partial('fichier/history', array('etablissement' => $etablissement, 'history' => PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)), 'limit' => Piece::LIMIT_HISTORY)); ?>

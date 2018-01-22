@@ -124,8 +124,16 @@ class TravauxMarc extends BaseTravauxMarc implements InterfaceDeclarantDocument,
     	return sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', array('id' => $id));
     }
 
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/

@@ -25,9 +25,12 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($docs as $doc): ?>
+                <?php foreach($docs as $doc):
+                  $habilitation = HabilitationClient::getInstance()->find($doc->id);
+                  $declarant = $habilitation->getDeclarant();
+                   ?>
                     <tr>
-                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])); ?>"><?php echo $doc->key[HabilitationActiviteView::KEY_RAISON_SOCIALE]; ?> <small>(<?php echo $doc->key[HabilitationActiviteView::KEY_CVI]; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $declarant->cvi; ?>)</small></a></td>
                         <td><?php echo $doc->key[HabilitationActiviteView::KEY_PRODUIT_LIBELLE]; ?></td>
                         <td><?php echo $doc->key[HabilitationActiviteView::KEY_ACTIVITE]; ?></td>
                         <td><a href="<?php echo url_for('habilitation_declarant', array('identifiant' => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])) ?>"><?php echo $doc->key[HabilitationActiviteView::KEY_STATUT]; ?></a></td>

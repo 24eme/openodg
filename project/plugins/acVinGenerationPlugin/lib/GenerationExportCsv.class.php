@@ -9,18 +9,25 @@ class GenerationExportCsv extends GenerationAbstract
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_ENCOURS);
 
         if(!$this->generation->arguments->exist('type_document')) {
-            
+
             throw new sfException("Le type de document est requis");
         }
 
         if(!$this->generation->arguments->exist('campagne')) {
-            
+
             throw new sfException("La campagne est requise");
+        }
+
+        $ids_etbs = null;
+        if($this->generation->arguments->exist('search')) {
+          $ids_etbs = $this->generation->arguments->search;
         }
 
         $validation = ($this->generation->arguments->exist('validation')) ? $this->generation->arguments->exist('validation') : true;
 
-        $ids = DeclarationClient::getInstance()->getIds($this->generation->arguments->type_document, $this->generation->arguments->campagne);
+        $ids = ($ids_etbs)?
+                    DeclarationClient::getInstance()->getIdsWithSearchFilter($this->generation->arguments->type_document, $this->generation->arguments->campagne,$ids_etbs)
+                  : DeclarationClient::getInstance()->getIds($this->generation->arguments->type_document, $this->generation->arguments->campagne);
 
         $webfile = "/generation/".$this->generation->date_emission.".csv";
         $file = sfConfig::get('sf_web_dir').$webfile;
@@ -30,14 +37,14 @@ class GenerationExportCsv extends GenerationAbstract
         fwrite($handle, "\xef\xbb\xbf"); //UTF8 BOM (pour windows)
 
         $className = DeclarationClient::getInstance()->getExportCsvClassName($this->generation->arguments->type_document);
-          
+
         fwrite($handle, $className::getHeaderCsv());
 
         $batch_size = 500;
 
         $batch_i = 1;
         foreach($ids as $id) {
-            
+
             if(!$id) {
                 throw new sfException(sprintf("Document id vide"));
             }
@@ -72,15 +79,15 @@ class GenerationExportCsv extends GenerationAbstract
 
         $this->generation->setStatut(GenerationClient::GENERATION_STATUT_GENERE);
 
-        $this->generation->add('fichiers')->add(urlencode($webfile), 
+        $this->generation->add('fichiers')->add(urlencode($webfile),
         'CSV de '.count($this->generation->documents).' documents');
 
         $this->generation->save();
     }
 
     public function getDocumentName() {
-        
+
         return 'CSV';
     }
 
-} 
+}

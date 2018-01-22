@@ -698,7 +698,15 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     	return null;
     }
 
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
     public static function isVisualisationMasterUrl($admin = false) {
+    	return false;
+    }
+
+    public static function isPieceEditable($admin = false) {
     	return false;
     }
 

@@ -19,12 +19,31 @@ abstract class Piece extends acCouchdbDocumentTree
 		}
 		return null;
 	}
+
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
+			$doc = $m[1];
+			return $doc::getUrlGenerationCsvPiece($id, $admin);
+
+		}
+		return null;
+    }
 	
 	public static function isVisualisationMasterUrl($id, $isadmin = false)
 	{
 		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
 			$doc = $m[1];
 			return $doc::isVisualisationMasterUrl($isadmin);
+		
+		}
+		return false;
+	}
+	
+	public static function isPieceEditable($id, $isadmin = false)
+	{
+		if (preg_match('/^([a-zA-Z0-9]+)-.*$/', $id, $m)) {
+			$doc = $m[1];
+			return $doc::isPieceEditable($isadmin);
 		
 		}
 		return false;
