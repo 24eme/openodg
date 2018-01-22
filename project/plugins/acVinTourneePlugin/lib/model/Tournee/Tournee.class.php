@@ -261,8 +261,10 @@ class Tournee extends BaseTournee {
             if (count($degustation->prelevements) > 0) {
                 continue;
             }
+            $nblots = 0;
             foreach ($degustation->lots as $lot) {
                 if (!$lot->prelevement) {
+                    $nblots += $lot->nb;
                     continue;
                 }
                 for ($i = 0; $i < $lot->nb; $i++) {
@@ -271,7 +273,7 @@ class Tournee extends BaseTournee {
                     $j++;
                 }
             }
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 1; $i <= $nblots || $i <= 3; $i++) {
                 $prelevement = $degustation->prelevements->add();
                 $prelevement->anonymat_prelevement = $j;
                 $prelevement->preleve = 0;
