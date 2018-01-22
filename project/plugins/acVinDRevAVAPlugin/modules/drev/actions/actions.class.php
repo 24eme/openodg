@@ -621,7 +621,7 @@ class drevActions extends sfActions {
             $this->validation = new DRevValidation($this->drev);
         }
 
-        $this->form = (count($documents->toArray()) && !$this->drev->hasCompleteDocuments() && $this->getUser()->isAdmin() && $this->drev->validation && !$this->drev->validation_odg) ? new DRevDocumentsForm($documents) : null;
+        $this->form = ($this->getUser()->isAdmin()) ? new DRevDocumentsForm($documents) : null;
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -635,6 +635,22 @@ class drevActions extends sfActions {
         }
 
         $this->form->save();
+        $changeforce = 0;
+        foreach ($this->drev->getPrelevementsOrdered() as $prelevementsOrdered) {
+          foreach ($prelevementsOrdered->prelevements as $prelevement) {
+            if ($request->getParameter('forceprelevement'. $prelevement->getHashForKey()) && (!$prelevement->exist('force')  || !$prelevement->force)) {
+              $prelevement->add('force', 1);
+              $changeforce = 1;
+            }
+            if (!$request->getParameter('forceprelevement'. $prelevement->getHashForKey()) && $prelevement->exist('force')  && $prelevement->force) {
+              $prelevement->add('force', 0);
+              $changeforce = 1;
+            }
+          }
+        }
+        if ($changeforce) {
+          $this->drev->save();
+        }
 
         return $this->redirect('drev_visualisation', $this->drev);
     }
