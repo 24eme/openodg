@@ -14,7 +14,7 @@
                 <td class="text-center"><a class="text-success" href="<?php echo url_for("drev_dr_pdf", $drev) ?>" target="_blank">Télécharger</a></td>
             </tr>
         <?php endif; ?>
-    	<?php if (isset($form)): ?>
+    	<?php if (isset($form) && !$drev->validation_odg): ?>
     		<?php foreach ($form->getEmbeddedForms() as $key => $documentForm): ?>
 	        <tr>
 	            <td class="text-left"><?php echo DRevDocuments::getDocumentLibelle($key) ?></td>

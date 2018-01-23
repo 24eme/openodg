@@ -35,6 +35,7 @@
                 <div class="col-xs-2">
                     <?php echo $form["nombre_operateurs_a_prelever"]->render(array("class" => "form-control")); ?>
                 </div>
+                <label class="control-label text-muted" style="font-weight: normal;"> + <strong><?php echo $nb_force ?></strong> forcées</label>
                 <label class="control-label text-muted" style="font-weight: normal;"> + <strong><?php echo $nb_reports ?></strong> reports de la précédente tournée</label>
             </div>
         </div>
