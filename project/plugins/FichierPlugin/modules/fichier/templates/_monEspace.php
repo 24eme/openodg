@@ -16,7 +16,7 @@
             </div>
     </div>
 </div>
-<?php if ($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR): ?>
+<?php if (class_exists("DRClient") && $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel panel-info">
         <div class="panel-heading">
