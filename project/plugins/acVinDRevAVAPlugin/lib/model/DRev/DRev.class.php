@@ -758,6 +758,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
 		$this->piece_document->generatePieces();
+  }
+  public function save($con = null) {
+    if ($this->exist('non_conditionneur') && $this->non_conditionneur) {
+      if ($this->prelevements->exist('cuve_ALSACE')) {
+        $this->prelevements->cuve_ALSACE->add('force', 1);
+      }
+    }
+    parent::save($con);
 	}
 
     /*
