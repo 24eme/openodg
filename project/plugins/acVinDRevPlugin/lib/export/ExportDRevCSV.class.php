@@ -37,7 +37,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
         }
 
         $ligne_base = sprintf("%s;\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->drev->campagne, $this->drev->identifiant, $this->drev->declarant->cvi, $this->drev->declarant->siret, $this->protectStr($this->drev->declarant->raison_sociale), $this->protectStr($this->drev->declarant->adresse), $this->drev->declarant->code_postal, $this->protectStr($this->drev->declarant->commune), $this->drev->declarant->email);
-        $date_envoi_oi = $this->drev->envoi_oi;
+        $date_envoi_oi = ($this->drev->exists('envoi_oi') && $this->drev->envoi_oi)? $this->drev->envoi_oi : "";
         if($date_envoi_oi){
           $date_envoi_oi = date_create($date_envoi_oi)->format('Y-m-d H:i:s');
         }
