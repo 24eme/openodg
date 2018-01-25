@@ -81,7 +81,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 
 		public function getFichier($ext) {
 			$fileinfos = $this->getFileinfos($ext);
-			return $this->getAttachmentUri($fileinfos['filename']);
+			return ($fileinfos['filename'])? $this->getAttachmentUri($fileinfos['filename']) : null;
 		}
 
     public function getFileinfos($ext)
