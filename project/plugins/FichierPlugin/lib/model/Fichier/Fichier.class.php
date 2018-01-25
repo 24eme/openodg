@@ -122,10 +122,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		if ($store4real) {
 			$mime = mime_content_type($file);
 			$this->storeAttachment($file, $mime, $fileName);
-			if (strtolower($extension) == 'xls') {
-				$csvFile = self::convertXlsFile($file);
-				$this->storeFichier($csvFile);
-			}
+		}
+		if (strtolower($extension) == 'xls') {
+			$csvFile = self::convertXlsFile($file);
+			$this->storeFichier($csvFile);
 		}
 	}
 
