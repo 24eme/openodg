@@ -173,7 +173,7 @@ class fichierActions extends sfActions
 		} catch(Exception $e) {
 		}
 	
-		return $this->redirect('declaration_etablissement', array('identifiant' => $etablissement->identifiant));
+		return $this->redirect('declaration_etablissement', array('identifiant' => $this->etablissement->identifiant));
 	}
 
 	protected function secureEtablissement($etablissement) {
