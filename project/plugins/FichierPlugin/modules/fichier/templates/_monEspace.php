@@ -10,7 +10,7 @@
         </div>
             <div class="panel-body">
                 <p>Espace de téléversement de document pour le déclarant.</p>
-                <div style="margin-top: 50px; margin-bottom: 26px;">
+                <div style="margin-top: 50px; margin-bottom: 27px;">
                 	<a class="btn btn-block btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>">Ajouter un document</a>
                 </div>
             </div>
