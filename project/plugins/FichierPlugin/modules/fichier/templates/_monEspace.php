@@ -25,7 +25,7 @@
             <div class="panel-body">
                 <p>Espace de saisie de la Déclaration de Récolte pour le déclarant.</p>
                 <div style="margin-top: 50px; margin-bottom: 26px;">
-                	<a class="btn btn-block btn-default" href="<?php echo ($dr)? url_for('edit_fichier', $dr) : url_for('new_fichier', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'type' => DRClient::TYPE_MODEL)); ?>"><?php echo ($dr)? 'Modifier la déclaration' : 'Saisir la déclaration'; ?></a>
+                	<a class="btn btn-block btn-default" href="<?php echo ($dr)? url_for('edit_fichier', $dr) : url_for('new_fichier', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'type' => DRClient::TYPE_MODEL)); ?>"><?php echo ($dr)? ($dr->exist('donnees'))? 'Poursuivre les modifications' : 'Modifier la déclaration' : 'Saisir la déclaration'; ?></a>
                 	<?php if(!$dr): ?>
                 	<a class="btn btn-xs btn-default btn-block pull-right" href="<?php echo url_for('scrape_fichier', array('sf_subject' => $etablissement, 'campagne' => $campagne, 'type' => DRClient::TYPE_MODEL)) ?>"><span class="glyphicon glyphicon-cloud-download"></span>&nbsp;&nbsp;Importer depuis Prodouane</a>
                 	<?php endif; ?>
