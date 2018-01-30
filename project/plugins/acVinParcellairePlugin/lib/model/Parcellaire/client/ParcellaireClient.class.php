@@ -79,7 +79,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getHistory($identifiant, $type = self::TYPE_COUCHDB, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()) . "";
+        $campagne_to = "9999";
 
         $id = "$type-%s-%s";
         return $this->startkey(sprintf($id, $identifiant, $campagne_from))
@@ -88,6 +88,9 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function getAppellationsAndVtSgnKeys($type = self::TYPE_COUCHDB) {
+
+        return array();
+        
         if ($type == self::TYPE_COUCHDB) {
 	        return array_merge(array(
 	            self::APPELLATION_GRDCRU => 'Grand Cru',

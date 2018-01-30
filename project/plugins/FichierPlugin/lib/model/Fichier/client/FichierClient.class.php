@@ -57,7 +57,7 @@ class FichierClient extends acCouchdbClient {
     		throw new sfException("$annee is not a valid year for scrapy file");
     	}
     	if (!$etablissement->cvi || !preg_match('/^[0-9]{10}$/', $etablissement->cvi)) {
-    		throw new sfException($etablissement->cvi." is not a valid cvi for scrapy file");
+    		throw new sfException("CVI : ".$etablissement->cvi." is not a valid cvi for scrapy file");
     	}
     	$scrapyBin = sfConfig::get("app_scrapy_bin");
     	$t = strtolower($type);
@@ -77,7 +77,7 @@ class FichierClient extends acCouchdbClient {
     	return $files;
     }
 
-    private function getClientFromType($type)
+    public function getClientFromType($type)
     {
     	switch ($type) {
     		case 'DR':

@@ -1,47 +1,39 @@
-<?php
-$libelleLieuDitCepage = "Saisissez un lieu-dit/cépage";
-if($appellation == ParcellaireClient::APPELLATION_VTSGN){
-$libelleLieuDitCepage = "Saisissez un cépage";
-}
-?>
 <h3>Identification du produit</h3>
 <br/>
-<?php if (isset($form['lieuCepage'])): ?>
-    <span class="error"><?php echo $form['lieuCepage']->renderError() ?></span>
-    <div class="form-group row">
-        <div class="col-xs-3">
-            <?php echo $form['lieuCepage']->renderLabel(); ?>
-        </div>
-        <div class="col-xs-1">
-            <a class="btn-tooltip btn btn-lg" data-toggle="tooltip" data-placement="auto" title="" data-original-title="Le choix du lieu-dit/cépage peut se faire en recherchant directement dans le champ" >
-                <span class="glyphicon glyphicon-question-sign"></span>
-            </a>
-        </div>
-        <div class="col-xs-8">
-            <?php echo $form['lieuCepage']->render(array("placeholder" => $libelleLieuDitCepage, "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
-        </div>
-    </div>
-<?php else: ?>
-    <span class="error"><?php echo $form['lieuDit']->renderError() ?></span>
+<?php if (isset($form['produit'])): ?>
+    <span class="error"><?php echo $form['produit']->renderError() ?></span>
     <div class="form-group row">
         <div class="col-xs-4">
-            <?php echo $form['lieuDit']->renderLabel(); ?>
+            <?php echo $form['produit']->renderLabel(); ?>
         </div>
         <div class="col-xs-8">
-            <?php
-            echo $form['lieuDit']->render(array("placeholder" => "Saisissez un lieu dit", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
-                "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
-                "required" => true))
-            ?>
+            <?php echo $form['produit']->render(array("placeholder" => 'Séléctionner un produit', "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
         </div>
     </div>
+<?php endif; ?>
+<?php if (isset($form['cepage'])): ?>
     <span class="error"><?php echo $form['cepage']->renderError() ?></span>
     <div class="form-group row">
         <div class="col-xs-4">
             <?php echo $form['cepage']->renderLabel(); ?>
         </div>
         <div class="col-xs-8">
-            <?php echo $form['cepage']->render(array("placeholder" => "Saisissez cépage", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+            <?php echo $form['cepage']->render(array("placeholder" => "Séléctionner un cépage", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+        </div>
+    </div>
+<?php endif; ?>
+<?php if (isset($form['lieudit'])): ?>
+    <span class="error"><?php echo $form['lieudit']->renderError() ?></span>
+    <div class="form-group row">
+        <div class="col-xs-4">
+            <?php echo $form['lieudit']->renderLabel(); ?>
+        </div>
+        <div class="col-xs-8">
+            <?php
+            echo $form['lieudit']->render(array("placeholder" => "Saisissez un lieu dit", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
+                "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
+                "required" => true))
+            ?>
         </div>
     </div>
 <?php endif; ?>

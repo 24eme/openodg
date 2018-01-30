@@ -4,18 +4,11 @@
  * Model for ParcellaireCepageDetail
  *
  */
-class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
+class ParcellaireProduitDetail extends BaseParcellaireProduitDetail {
 
-    public function getGenre() {
-        return $this->getParent();
-    }
+    public function getProduit() {
 
-    public function getChildrenNode() {
-        return $this->getMentions();
-    }
-
-    public function getMentions() {
-        return $this->filter('^mention');
+        return $this->getParent()->getParent();
     }
 
     public function addAcheteur($acheteur) {
@@ -39,7 +32,7 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $acheteursCvi;
     }
 
-    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
+    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
 		if ($active && !$this->getActive()) {
 			return array();
 		}
@@ -67,21 +60,6 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return $this->getCepage()->getAppellation();
     }
 
-    public function getCepage() {
-
-        return $this->getParent()->getParent();
-    }
-
-    public function getCepageLibelle() {
-
-        return $this->getCepage()->getLibelle();
-    }
-
-    public function getCouleur() {
-
-        return $this->getCepage()->getCouleur();
-    }
-
     public function isCleanable() {
     	if (!$this->getActive()) {
     		return true;
@@ -98,9 +76,24 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         return !$this->isCleanable();
     }
 
+    public function getProduitLibelle() {
+
+        return $this->getProduit()->getLibelle();
+    }
+
+    public function getCepage() {
+
+        return $this->getProduit()->getConfig()->getCepage();
+    }
+
+    public function getCepageLibelle() {
+
+        return $this->getCepage()->getLibelle();
+    }
+
     public function getLieuNode() {
 
-        return $this->getCouleur()->getLieu();
+        return $this->getProduit()->getConfig()->getLieu();
     }
 
     public function cleanNode() {

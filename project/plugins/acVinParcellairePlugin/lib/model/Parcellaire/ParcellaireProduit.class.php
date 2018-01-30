@@ -4,43 +4,34 @@
  * Model for ParcellaireCepage
  *
  */
-class ParcellaireCepage extends BaseParcellaireCepage {
+class ParcellaireProduit extends BaseParcellaireProduit {
 
-    public function getChildrenNode() {
-        
-        return $this->detail;
+    public function getConfig() {
+
+        return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
     }
 
-    public function getLieu() {
+    public function getLibelle() {
+		if(!$this->_get('libelle')) {
+			$this->libelle = $this->getConfig()->getLibelleComplet();
+		}
 
-        return $this->getCouleur()->getLieu();
-    }
+		return $this->_get('libelle');
+	}
 
-    public function getCouleur() {
+    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
 
-        return $this->getParent();
-    }
-
-    public function getProduits($onlyActive = false) {
-        if ($onlyActive && !$this->isAffectee()) {
-
-            return array();
-        }
-
-        return array($this->getHash() => $this);
-    }
-
-    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
-    	
     	if ($onlyVtSgn && !$this->getConfig()->hasVtsgn()) {
     		return array();
     	}
-    
-    	return parent::getProduitsCepageDetails($onlyVtSgn, $active);
-    }
 
-    public function getAppellation() {
-        return $this->getCouleur()->getAppellation();
+        $details = array();
+
+        foreach ($this->detail as $item) {
+            $details = array_merge($details, $item->getProduitsDetails($onlyVtSgn, $active));
+        }
+
+    	return $details;
     }
 
     public function getAcheteursNode($lieu = null, $cviFilter = null) {
@@ -121,12 +112,22 @@ class ParcellaireCepage extends BaseParcellaireCepage {
     }
 
     public function addAcheteurFromNode($acheteur, $lieu = null) {
-        
+
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addDetailNode($key, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
-        $detail = $this->getDetailNode($key);
+    public function addParcelle($cepage, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
+        $cepage = KeyInflector::slugify($cepage);
+        $commune = KeyInflector::slugify($commune);
+        $section = KeyInflector::slugify($section);
+        $numero_parcelle = KeyInflector::slugify($numero_parcelle);
+        $key = KeyInflector::slugify($cepage.'-'.$commune . '-' . $section . '-' . $numero_parcelle);
+
+        if ($lieu) {
+            $key.='-' . KeyInflector::slugify($lieu);
+        }
+
+        $detail = $this->detail->exist($key);
         if($detail) {
 
             return $detail;
@@ -141,20 +142,28 @@ class ParcellaireCepage extends BaseParcellaireCepage {
         }
         $detail->lieu = $lieu;
         $detail->departement = $dpt;
+
         return $detail;
     }
-    
-    public function getDetailNode($key) {
-       foreach ($this->detail as $parcelleKey => $detail) {
-            
 
-            if($parcelleKey ==  $key) {                
-             
-                return $detail;
+    public function isAffectee($lieu = null) {
+        foreach($this->detail as $detail) {
+            if($detail->isAffectee($lieu)) {
+                return true;
             }
         }
 
-        return null;
+        return false;
     }
-    
+
+
+    public function isCleanable() {
+        if (count($this->detail) == 0) {
+
+            return true;
+        }
+
+        return false;
+    }
+
 }
