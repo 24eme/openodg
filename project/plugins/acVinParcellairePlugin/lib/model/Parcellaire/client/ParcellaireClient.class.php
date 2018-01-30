@@ -7,8 +7,8 @@ class ParcellaireClient extends acCouchdbClient {
     const TYPE_COUCHDB_PARCELLAIRE_CREMANT = "PARCELLAIRECREMANT";
     const TYPE_COUCHDB_INTENTION_CREMANT = "INTENTIONCREMANT";
     const DESTINATION_SUR_PLACE = "SUR_PLACE";
-    const DESTINATION_CAVE_COOPERATIVE = EtablissementClient::FAMILLE_CAVE_COOPERATIVE;
-    const DESTINATION_NEGOCIANT = EtablissementClient::FAMILLE_NEGOCIANT;
+    const DESTINATION_CAVE_COOPERATIVE = EtablissementFamilles::FAMILLE_COOPERATIVE;
+    const DESTINATION_NEGOCIANT = EtablissementFamilles::FAMILLE_NEGOCIANT;
     const APPELLATION_ALSACEBLANC = 'ALSACEBLANC';
     const APPELLATION_VTSGN = 'VTSGN';
     const APPELLATION_GRDCRU = 'GRDCRU';
@@ -54,15 +54,12 @@ class ParcellaireClient extends acCouchdbClient {
         return $this->findOrCreate($etablissement->identifiant, $campagne, $type);
     }
 
-    public function findOrCreate($cvi, $campagne, $type = self::TYPE_COUCHDB) {
-        if (strlen($cvi) != 10) {
-            throw new sfException("Le CVI doit avoir 10 caractères : $cvi");
-        }
+    public function findOrCreate($identifiant, $campagne, $type = self::TYPE_COUCHDB) {
         if (strlen($campagne) != 4)
             throw new sfException("La campagne doit être une année et non " . $campagne);
-        $parcellaire = $this->find($this->buildId($cvi, $campagne, $type));
+        $parcellaire = $this->find($this->buildId($identifiant, $campagne, $type));
         if (is_null($parcellaire)) {
-            $parcellaire = $this->createDoc($cvi, $campagne, $type);
+            $parcellaire = $this->createDoc($identifiant, $campagne, $type);
         }
 
         return $parcellaire;
@@ -82,7 +79,7 @@ class ParcellaireClient extends acCouchdbClient {
 
     public function getHistory($identifiant, $type = self::TYPE_COUCHDB, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
         $campagne_from = "0000";
-        $campagne_to = ConfigurationClient::getInstance()->getCampagneManager()->getPrevious(ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()) . "";
+        $campagne_to = "9999";
 
         $id = "$type-%s-%s";
         return $this->startkey(sprintf($id, $identifiant, $campagne_from))
@@ -91,6 +88,9 @@ class ParcellaireClient extends acCouchdbClient {
     }
 
     public function getAppellationsAndVtSgnKeys($type = self::TYPE_COUCHDB) {
+
+        return array();
+        
         if ($type == self::TYPE_COUCHDB) {
 	        return array_merge(array(
 	            self::APPELLATION_GRDCRU => 'Grand Cru',

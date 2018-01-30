@@ -13,10 +13,7 @@
  */
 class ParcellaireAjoutParcelleForm extends ParcellaireParcelleForm {
 
-    protected $appellationKey;
-
-    public function __construct(acCouchdbJson $object, $appellationKey, $options = array(), $CSRFSecret = null) {
-        $this->appellationKey = $appellationKey;
+    public function __construct(acCouchdbJson $object, $options = array(), $CSRFSecret = null) {
         parent::__construct($object, $options, $CSRFSecret);
     }
 
@@ -26,16 +23,9 @@ class ParcellaireAjoutParcelleForm extends ParcellaireParcelleForm {
         $this->widgetSchema->setNameFormat('parcellaire_ajout_parcelle[%s]');
     }
 
-    public function getAppellationNode() {
-		if ($this->appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
-			return $this->getObject()->getAppellationNodeFromAppellationKey(ParcellaireClient::APPELLATION_ALSACEBLANC, true);
-		}
-        return $this->getObject()->getAppellationNodeFromAppellationKey($this->appellationKey, true);
-    }
-
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
     }
-    
+
 
 }
