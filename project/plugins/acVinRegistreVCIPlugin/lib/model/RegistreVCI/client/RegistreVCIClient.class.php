@@ -18,6 +18,12 @@ class RegistreVCIClient extends acCouchdbClient {
       return $sens[$m];
     }
 
+    public static function MOUVEMENT_LIBELLE($m) {
+      $sens = array(self::MOUVEMENT_CONSTITUE => 'Constitué', self::MOUVEMENT_RAFRAICHI => 'Rafraîchi', self::MOUVEMENT_COMPLEMENT => 'Complément', self::MOUVEMENT_DESTRUCTION => 'Destruction', self::MOUVEMENT_SUBSTITUTION => 'Substitution');
+      return $sens[$m];
+    }
+
+
     public static function getInstance()
     {
       return acCouchdbManager::getClient("RegistreVCI");
