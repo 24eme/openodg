@@ -27,7 +27,7 @@ class ParcellaireValidation extends DocumentValidation {
 
     public function controle() {
         $parcelles = array();
-        foreach ($this->document->declaration->getProduitsCepageDetails() as $detailk => $detailv) {
+        foreach ($this->document->declaration->getProduitsDetails() as $detailk => $detailv) {
             if(!$detailv->isAffectee()) {
                 continue;
             }
@@ -53,7 +53,7 @@ class ParcellaireValidation extends DocumentValidation {
             }
         }
         $uniqParcelles = array();
-        foreach ($this->document->declaration->getProduitsCepageDetails() as $pid => $detail) {
+        foreach ($this->document->declaration->getProduitsDetails() as $pid => $detail) {
             if(!$detail->isAffectee()) {
                 continue;
             }

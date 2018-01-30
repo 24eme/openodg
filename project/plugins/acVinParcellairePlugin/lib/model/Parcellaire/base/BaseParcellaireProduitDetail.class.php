@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseParcellaireCepageDetail
- * 
+ *
  * Base model for ParcellaireCepageDetail
 
  * @property float $superficie
@@ -32,14 +32,14 @@
  * @method integer setActive()
  * @method integer getVtsgn()
  * @method integer setVtsgn()
- 
+
  */
 
-abstract class BaseParcellaireCepageDetail extends acCouchdbDocumentTree {
-                
+abstract class BaseParcellaireProduitDetail extends acCouchdbDocumentTree {
+
     public function configureTree() {
        $this->_root_class_name = 'Parcellaire';
-       $this->_tree_class_name = 'ParcellaireCepageDetail';
+       $this->_tree_class_name = 'ParcellaireProduitDetail';
     }
-                
+
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * BaseParcellaireCepage
- * 
- * Base model for ParcellaireCepage
+ * BaseParcellaieProduit
+ *
+ * Base model for ParcellaieProduit
 
  * @property string $libelle
  * @property acCouchdbJson $acheteurs
@@ -14,14 +14,14 @@
  * @method acCouchdbJson setAcheteurs()
  * @method acCouchdbJson getDetail()
  * @method acCouchdbJson setDetail()
- 
+
  */
 
-abstract class BaseParcellaireCepage extends _ParcellaireDeclarationNoeud {
-                
+abstract class BaseParcellaireProduit extends acCouchdbDocumentTree {
+
     public function configureTree() {
        $this->_root_class_name = 'Parcellaire';
-       $this->_tree_class_name = 'ParcellaireCepage';
+       $this->_tree_class_name = 'ParcellaireProduit';
     }
-                
+
 }

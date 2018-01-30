@@ -6,24 +6,14 @@
  */
 class ParcellaireDeclaration extends BaseParcellaireDeclaration {
 
-    public function getChildrenNode() {
-        return $this->getCertifications();
-    }
-
-    public function getCertifications() {
-        return $this->filter('^certification');
-    }
-
     public function getAppellations() {
-        if (!$this->exist('certification')) {
-            return array();
-        }
-        return $this->getChildrenNodeDeep(2)->getAppellations();
+
+        return null;
     }
-    
+
     public function getAppellationsOrderParcellaire() {
         $appellations = $this->getAppellations();
-       
+
         $appellationOrdered = array();
 
         if(!$appellations) {
@@ -33,12 +23,71 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         foreach (ParcellaireClient::getInstance()->getAppellationsKeys($this->getDocument()->getTypeParcellaire()) as $app_key => $app_name) {
            if(array_key_exists('appellation_'.$app_key, $appellations->toArray(1,0))){
                $appellationOrdered['appellation_'.$app_key] = $appellations['appellation_'.$app_key];
-           }      
+           }
         }
-        
+
         return $appellationOrdered;
     }
-    
+
+    public function getProduits($onlyActive = false) {
+        $produits = array();
+        foreach ($this as $key => $produit) {
+            if ($onlyActive && !$produit->isAffectee()) {
+
+                return array();
+            }
+            $produits[$produit->getHash()] = $produit;
+        }
+
+        return $produits;
+    }
+
+    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
+        $details = array();
+        foreach ($this->getProduits() as $item) {
+            $details = array_merge($details, $item->getProduitsDetails($onlyVtSgn, $active));
+        }
+
+        return $details;
+    }
+
+    public function getProduitsWithLieuEditable()
+    {
+        return array();
+        $produits = array();
+        foreach($this->getProduits() as $hash => $produit) {
+            if(!count($produit->detail)) {
+                continue;
+            }
+
+            $lieu_editable = $produit->getLieuxEditable();
+            if(!count($lieu_editable)) {
+
+                $produits[$hash] = $produit;
+            }
+
+            foreach($produit->getLieuxEditable() as $lieu_key => $lieu) {
+                $produits[str_replace("/lieu/", "/lieu".$lieu_key."/", $hash)] = $produit;
+            }
+        }
+
+        return $produits;
+    }
+
+    public function getLieuxEditable() {
+        $lieux = array();
+
+        foreach ($this->getProduitsDetails() as $detail) {
+            if(!$detail->lieu) {
+                continue;
+            }
+
+            $lieux[KeyInflector::slugify(trim($detail->lieu))] = $detail->lieu;
+        }
+
+        return $lieux;
+    }
+
     public function getLieux() {
         if (!$this->exist('certification')) {
             return array();
@@ -52,6 +101,96 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
             }
         }
         return $lieuArray;
+    }
+
+    public function getProduitsDetailsSortedByParcelle($byfullkey = true) {
+        $parcelles = $this->getProduitsDetails();
+        if ($byfullkey) {
+            usort($parcelles, 'ParcellaireDeclaration::sortParcellesByFullKey');
+        }else{
+            usort($parcelles, 'ParcellaireDeclaration::sortParcellesByCommune');
+        }
+        return $parcelles;
+    }
+
+    public function getAcheteursNode($lieu = null, $cviFilter = null) {
+        $acheteurs = array();
+        foreach($this->getProduits() as $produit) {
+            $acheteursParcelle = $produit->getAcheteursNode($lieu, $cviFilter);
+            if(count($acheteursParcelle) == 0) {
+                continue;
+            }
+
+            $acheteurs = array_merge_recursive($acheteurs, $acheteursParcelle);
+        }
+
+        return $acheteurs;
+    }
+
+    public function cleanNode() {
+        $hash_to_delete = array();
+        foreach ($this->getProduits() as $produit) {
+            $produit->cleanNode();
+            if ($produit->isCleanable()) {
+                $hash_to_delete[] = $produit->getHash();
+            }
+        }
+
+        foreach ($hash_to_delete as $hash) {
+            $this->getDocument()->remove($hash);
+        }
+    }
+
+    public function hasVtsgn() {
+        foreach ($this->getProduitsDetails() as $detail) {
+            if ($detail->getVtsgn()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function reorderByConf() {
+        $children = array();
+
+        foreach ($this->getChildrenNode() as $hash => $child) {
+            $children[$hash] = $child->getData();
+        }
+
+        foreach ($children as $hash => $child) {
+            $this->remove($hash);
+        }
+
+        foreach ($this->getConfig()->getChildrenNode() as $hash => $child) {
+            if (!array_key_exists($hash, $children)) {
+                continue;
+            }
+
+            $child_added = $this->add($hash, $children[$hash]);
+            $child_added->reorderByConf();
+        }
+    }
+
+    public function getPreviousAppellationKey() {
+
+        return null;
+    }
+
+    public function getNextAppellationKey() {
+
+        return null;
+    }
+
+    static function sortParcellesByFullKey($detail0, $detail1) {
+        return strcmp($detail0->getLibelleComplet().' '.$detail0->getParcelleIdentifiant(),
+        $detail1->getLibelleComplet().' '.$detail1->getParcelleIdentifiant());
+    }
+
+    static function sortParcellesByCommune($detail0, $detail1) {
+        return strcmp($detail0->getParcelleIdentifiant().' '.$detail0->getLibelleComplet(),
+        $detail1->getParcelleIdentifiant().' '.$detail1->getLibelleComplet());
     }
 
 }
