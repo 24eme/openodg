@@ -39,6 +39,15 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_CAVE_APPORTEURID = 23;
     const CSV_CAVE_COOP = 24;
 
+    public static $chaisAttributsTrad = array("Eleveur de DGC" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
+                                              "Conditionneur" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
+                                              "Détenteur de vin en vrac" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                              "Vinificateur" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                              "Producteur de moût" => EtablissementClient::CHAI_PRODUCTEUR_DE_MOUT,
+                                              "Producteur de raisins" =>  EtablissementClient::CHAI_PRODUCTEUR_DE_RAISIN);
+
+
+
     protected function configure()
     {
         $this->addArguments(array(
@@ -97,10 +106,13 @@ EOF;
             $soc = SocieteClient::getInstance()->find($identifiant);
             if(!$soc){
                 $soc = $this->importSociete($data,$identifiant);
+                $etb = $this->importEtablissement($soc,$data,$identifiant);
+                $this->addChaiForEtablissement($etb,$data);
             }else{
+              $etb = $soc->getEtablissementPrincipal();
               echo "La société : ".$identifiant." est déjà dans la base => on va alimenter les chais\n";
+              $this->addChaiForEtablissement($etb,$data);
             }
-            $etb = $this->importEtablissement($soc,$data,$identifiant);
       }
 
     protected function importSociete($data,$identifiant){
@@ -141,7 +153,7 @@ EOF;
             }else{
               $societe->setStatut(SocieteClient::STATUT_ACTIF);
             }
-            
+
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
             return $societe;
@@ -159,7 +171,7 @@ EOF;
           $etablissement->save();
 
           $compte = $societe->getMasterCompte();
-          $compte->nom = $this->buildRaisonSociete();
+          $compte->nom = $this->buildRaisonSociete($data);
           $compte->updateNomAAfficher();
           $compte->email = $societeCommunication[self::CSV_EMAIL];
           $compte->telephone = $societeCommunication[self::CSV_TELEPHONE];
@@ -170,7 +182,28 @@ EOF;
           $compte->save();
 
           echo "L'entité $identifiant CVI (".$cvi.")  Compte =>  $compte->_id \n";
+          return $etablissement;
 
+        }
+
+        protected function addChaiForEtablissement($etb,$data){
+          $newChai = $etb->getOrAdd('chais')->add();
+          $newChai->nom = $data[self::CSV_CHAIS_VILLE];
+          $newChai->adresse = $data[self::CSV_CHAIS_ADRESSE_1];
+          if($data[self::CSV_CHAIS_ADRESSE_2]) $newChai->adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_2];
+          if($data[self::CSV_CHAIS_ADRESSE_3]) $newChai->adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
+          $newChai->commune = $data[self::CSV_CHAIS_VILLE];
+          $newChai->code_postal = $data[self::CSV_CHAIS_CP];
+          $activites = explode(';',$data[self::CSV_ACTIVITES]);
+          foreach ($activites as $activite) {
+            if(!array_key_exists(trim($activite),self::$chaisAttributsTrad)){
+              var_dump($activite); exit;
+            }
+            $activiteKey = self::$chaisAttributsTrad[trim($activite)];
+            $newChai->getOrAdd('attributs')->add($activiteKey,EtablissementClient::$chaisAttributsLibelles[$activiteKey]);
+          }
+          $etb->save();
+          return $etb;
         }
 
     protected function buildRaisonSociete($data){
