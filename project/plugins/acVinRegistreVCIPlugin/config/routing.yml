@@ -1,0 +1,9 @@
+registrevci_visualisation:
+  url: /registrevci/visualisation/:id
+  param: { module: registrevci, action: visualisation }
+  class: RegistreVCIRoute
+  options:
+    model:    RegistreVCI
+    type:     object
+  requirements:
+    sf_method: [get, post]

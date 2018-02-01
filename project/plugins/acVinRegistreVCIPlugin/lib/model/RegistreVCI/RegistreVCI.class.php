@@ -47,6 +47,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument {
           $mvt->detail_hash = $nDetail->stockage_identifiant;
           $mvt->detail_libelle = $nDetail->getLibelle();
           $mvt->volume = $volume;
+          $mvt->mouvement_type = $mouvement_type;
           $mvt->stock_resultant = $nDetail->stock_final;
           if (RegistreVCIClient::MOUVEMENT_SENS($mouvement_type) > 0) {
             $mvt->date = $this->campagne.'-10-15';
