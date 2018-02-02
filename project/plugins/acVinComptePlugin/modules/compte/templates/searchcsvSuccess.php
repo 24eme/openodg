@@ -1,5 +1,5 @@
 <?php
-$csv = "# id société ; nom complet ; type ; civilité ; nom ; prénom ; adresse ; adresse complémentaire ; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone perso ; fax ; email ; commentaire ; nom groupe ; fonction ; type société ; société raison sociale ; société adresse ; société adresse complémentaire ; société code postal ; société commune ; société téléphone ; société fax ; société email; code de création \n";
+$csv = "# id société ; nom complet ; type ; numéro interne ; civilité ; nom ; prénom ; adresse ; adresse complémentaire ; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone perso ; fax ; email ; commentaire ; nom groupe ; fonction ; type société ; société raison sociale ; société adresse ; société adresse complémentaire ; société code postal ; société commune ; société téléphone ; société fax ; société email; code de création \n";
 $groupe = null;
 if(isset($selected_typetags) && (count($selected_typetags->getRawValue()) == 1)){
   $tags = $selected_typetags->getRawValue();
@@ -23,11 +23,12 @@ foreach ($results as $res) {
   $csv .= '"'.$id_societe. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom_a_afficher']). '";';
   $csv .= '"'.CompteClient::getInstance()->createTypeFromOrigines($data['doc']['origines']).'";';
+  $csv .= '"'.$data['doc']['num_interne']. '";';
   $csv .= '"'.$data['doc']['civilite']. '";';
-  $csv .= '"'.sfOutputEscaper::unescape($data['doc']['prenom']). '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom']). '";';
+  $csv .= '"'.sfOutputEscaper::unescape($data['doc']['prenom']). '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['adresse']). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($data['doc']['adresse_complementaire']). '";';
+  $csv .= '"'.sfOutputEscaper::unescape(str_replace('−', '-',$data['doc']['adresse_complementaire'])). '";';
   $csv .= '"'.$data['doc']['code_postal']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['commune']). '";';
   $csv .= '"'.$data['doc']['pays']. '";';
