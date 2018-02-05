@@ -47,12 +47,11 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                         <thead>
                             <tr>
                                 <th class="col-xs-1">Affectée</th>
-                                <th class="col-xs-2">Produit</th>
+                                <th class="col-xs-3">Produit</th>
                                 <th class="col-xs-2">Commune</th>
                                 <th class="col-xs-1">Section</th>
                                 <th class="col-xs-1">Numéro</th>
-                                <th class="col-xs-2"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Appellation<?php else: ?>Lieu-dit<?php endif; ?></th>
-                                <th class="col-xs-2"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
+                                <th class="col-xs-3"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
                                 <th class="col-xs-1">Superficie</th>
                             </tr>
                         </thead>
@@ -80,15 +79,6 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                     <td><?php echo $parcelle->getCommune(); ?></td>
                                     <td><?php echo $parcelle->getSection(); ?></td>
                                     <td><?php echo $parcelle->getNumeroParcelle(); ?></td>
-                                    <td>
-                                        <?php
-                                        if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {
-                                            echo ParcellaireClient::getAppellationLibelle($parcelle->getAppellation()->getKey());
-                                        } else {
-                                            echo $parcelle->getLieuLibelle();
-                                        }
-                                        ?>
-                                    </td>
                                     <td>
                                         <?php
                                         if ($appellation == ParcellaireClient::APPELLATION_VTSGN) {

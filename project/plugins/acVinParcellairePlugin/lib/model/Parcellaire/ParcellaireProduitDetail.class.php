@@ -57,7 +57,7 @@ class ParcellaireProduitDetail extends BaseParcellaireProduitDetail {
     }
 
     public function getAppellation() {
-        return $this->getCepage()->getAppellation();
+        return $this->getProduit()->getConfig()->getAppellation();
     }
 
     public function isCleanable() {
@@ -81,14 +81,14 @@ class ParcellaireProduitDetail extends BaseParcellaireProduitDetail {
         return $this->getProduit()->getLibelle();
     }
 
-    public function getCepage() {
+  /*  public function getCepage() {
 
         return $this->getProduit()->getConfig()->getCepage();
     }
-
+*/
     public function getCepageLibelle() {
 
-        return $this->getCepage()->getLibelle();
+        return $this->getCepage(); //->getLibelle();
     }
 
     public function getLieuNode() {

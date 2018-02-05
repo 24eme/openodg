@@ -116,31 +116,30 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $commune, $section , $numero_parcelle, $lieu = null,$dpt = null) {
+    public function addParcelle($cepage, $commune, $section , $numero_parcelle, $dpt = null) {
         $cepage = KeyInflector::slugify($cepage);
         $commune = KeyInflector::slugify($commune);
         $section = KeyInflector::slugify($section);
         $numero_parcelle = KeyInflector::slugify($numero_parcelle);
         $key = KeyInflector::slugify($cepage.'-'.$commune . '-' . $section . '-' . $numero_parcelle);
-
+/*
         if ($lieu) {
             $key.='-' . KeyInflector::slugify($lieu);
         }
-
-        $detail = $this->detail->exist($key);
-        if($detail) {
-
-            return $detail;
-        }
+*/
+        // if($this->detail->exist($key)) {
+        //
+        //     return $this->detail->get($key);
+        // }
 
         $detail = $this->detail->add($key);
         $detail->commune = $commune;
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
-        if($lieu){
-           $lieu = strtoupper($lieu);
-        }
-        $detail->lieu = $lieu;
+        // if($lieu){
+        //    $lieu = strtoupper($lieu);
+        // }
+        // $detail->lieu = $lieu;
         $detail->departement = $dpt;
 
         return $detail;
@@ -164,6 +163,18 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         }
 
         return false;
+    }
+
+    public function cleanNode() {
+
+    }
+
+    public function getSuperficieTotale(){
+      $total = 0.0;
+      foreach ($this->getDetail() as $detail) {
+        $total += $detail->superficie;
+      }
+      return $total;
     }
 
 }

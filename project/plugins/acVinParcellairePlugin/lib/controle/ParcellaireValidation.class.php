@@ -57,7 +57,7 @@ class ParcellaireValidation extends DocumentValidation {
             if(!$detail->isAffectee()) {
                 continue;
             }
-            $keyParcelle = $detail->getCepage()->getHash() . '/' . $detail->getCommune() . '-' . $detail->getSection() . '-' . $detail->getNumeroParcelle();
+            $keyParcelle = $detail->getCepage() . '/' . $detail->getCommune() . '-' . $detail->getSection() . '-' . $detail->getNumeroParcelle();
             if (array_key_exists($keyParcelle, $uniqParcelles)) {
                 $this->addPoint(self::TYPE_ERROR, 'parcelle_doublon', 'parcelle n°' . $detail->getSection() . ' ' . $detail->getNumeroParcelle() . ' à ' . $detail->getCommune() . ' déclarée en ' . $detail->getLibelleComplet(), $this->generateUrl('parcellaire_parcelles', array('id' => $this->document->_id,
                             'appellation' => preg_replace('/appellation_/', '', $detailv->getAppellation()->getKey()),

@@ -127,8 +127,18 @@
                                 "code": null,
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "1R530",
-                                "cepages_autorises": [],
+                                "code_douane": "1R582S",
+                                "cepages_autorises": ["CABERNET SAUVIGNON N",
+                                                      "CALITOR NOIR N",
+                                                      "CARIGNAN N",
+                                                      "CINSAUT N",
+                                                      "GRENACHE BLANC B",
+                                                      "GRENACHE N",
+                                                      "MOURVEDRE N",
+                                                      "SYRAH N",
+                                                      "TIBOUREN N",
+                                                      "UGNI BLANC B",
+                                                      "VERMENTINO B"],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -164,8 +174,18 @@
                                 "code": null,
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "1S530",
-                                "cepages_autorises": [],
+                                "code_douane": "1S582S",
+                                "cepages_autorises": ["CABERNET SAUVIGNON N",
+                                                      "CALITOR NOIR N",
+                                                      "CARIGNAN N",
+                                                      "CINSAUT N",
+                                                      "GRENACHE BLANC B",
+                                                      "GRENACHE N",
+                                                      "MOURVEDRE N",
+                                                      "SYRAH N",
+                                                      "TIBOUREN N",
+                                                      "UGNI BLANC B",
+                                                      "VERMENTINO B"],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {
@@ -201,8 +221,18 @@
                                 "code": null,
                                 "code_produit": null,
                                 "code_comptable": null,
-                                "code_douane": "1B530",
-                                "cepages_autorises": [],
+                                "code_douane": "1B582S",
+                                "cepages_autorises": ["CABERNET SAUVIGNON N",
+                                                      "CALITOR NOIR N",
+                                                      "CARIGNAN N",
+                                                      "CINSAUT N",
+                                                      "GRENACHE BLANC B",
+                                                      "GRENACHE N",
+                                                      "MOURVEDRE N",
+                                                      "SYRAH N",
+                                                      "TIBOUREN N",
+                                                      "UGNI BLANC B",
+                                                      "VERMENTINO B"],
                                 "interpro": {
                                   "INTERPRO-declaration": {
                                     "droits": {

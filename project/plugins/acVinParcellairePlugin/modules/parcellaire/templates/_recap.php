@@ -6,14 +6,14 @@ if ($last) {
     $lastParcellesKeysByAppellations = $last->getAllParcellesKeysByAppellations()->getRawValue();
 }
 ?>
-<?php if (count($parcellaire->declaration->getAppellationsOrderParcellaire()) > 0): ?>
+<?php if (count($parcellaire->declaration) > 0): ?>
     <div class="row">
         <div class="col-xs-12">
             <?php
-            foreach ($parcellaire->declaration->getAppellationsOrderParcellaire() as $kappellation => $appellation):
-                ?><h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $appellation->getLibelleComplet()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $appellation->getSuperficieTotale() . ' ares'; ?></span></h3>
+            foreach ($parcellaire->declaration as $parcellesProduit):
+                ?><h3><strong> <?php echo "Appellation " . preg_replace('/AOC Alsace blanc/', 'AOC Alsace blanc VT/SGN', $parcellesProduit->getLibelle()); ?></strong> <span class="small right" style="text-align: right;"><?php echo $parcellesProduit->getSuperficieTotale() . ' ares'; ?></span></h3>
                 <?php
-                if (!$appellation->getSuperficieTotale()) {
+                if (!$parcellesProduit->getSuperficieTotale()) {
                     echo "<i class='text-muted'>Vous n'avez pas affecté de parcelles pour cette appellation</i>";
                     continue;
                 }
@@ -21,9 +21,9 @@ if ($last) {
                 <table class="table table-striped table-condensed">
                     <tbody>
                         <?php
-                        $appellation_details = $appellation->getDetailsSortedByParcelle();
+
                         $detailsHashes = array();
-                        foreach ($appellation_details as $detail):
+                        foreach ($parcellesProduit->detail as $detail):
                             if ($detail->isCleanable()) {
                                 continue;
                             }
@@ -69,41 +69,42 @@ if ($last) {
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
                                 <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
-                                    <?php echo $detail->getLieuLibelle(); ?>
-                                </td>   
+                                    <?php echo $detail->commune.' ('.$detail->code_insee.')'; ?>
+                                </td>
                                 <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getCepageLibelle();  ?>
                                 </td>
                                 <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
                                 <td class="col-xs-3 <?php echo $classparcelle ?>" style="text-align: right; <?php echo $styleparcelle; ?>">
                                     <?php echo $detail->getParcelleIdentifiant(); ?>
-                                </td>   
+                                </td>
                                 <td class="col-xs-1 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
                                     <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
-                                </td>   
-                            </tr> 
+                                </td>
+                            </tr>
                             <?php
                         endforeach;
 
-                        if ($lastParcellesKeysByAppellations && array_key_exists($appellation->gethash(), $lastParcellesKeysByAppellations)):
-                            foreach ($lastParcellesKeysByAppellations[$appellation->gethash()] as $hashDetail => $detail):
+                        if ($lastParcellesKeysByAppellations && array_key_exists($parcellesProduit->gethash(), $lastParcellesKeysByAppellations)):
+                            foreach ($lastParcellesKeysByAppellations[$parcellesProduit->gethash()] as $hashDetail => $detail):
                                 if (!array_key_exists($hashDetail, $detailsHashes)):
+
                                     ?>
                                     <tr class="" style="opacity: 0.4">
                                         <td class="col-xs-3" style="text-decoration: line-through;">
                                             <?php echo $detail->getLieuLibelle(); ?>
-                                        </td>   
+                                        </td>
                                         <td class="col-xs-3" style="text-decoration: line-through;">
-                                            <?php echo $detail->getCepageLibelle(); ?>
-                                        </td>   
+                                            <?php echo $detail->getCepage(); ?>
+                                        </td>
                                         <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->getVtsgn()) ? 'VT/SGN' : '&nbsp;'; ?> </td>
                                         <td class="col-xs-3" style="text-align: right; text-decoration: line-through;">
                                             <?php echo $detail->getParcelleIdentifiant(); ?>
-                                        </td>   
+                                        </td>
                                         <td class="col-xs-1" style="text-align: right; text-decoration: line-through;">
                                             <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
-                                        </td>   
-                                    </tr>    
+                                        </td>
+                                    </tr>
                                     <?php
                                 endif;
                             endforeach;
@@ -113,7 +114,7 @@ if ($last) {
                 </table>
                 <p class="text-muted">Ces raisins sont destinés à être vinifiés <?php
                     $libelledestination = array('SUR_PLACE' => 'sur place', 'CAVE_COOPERATIVE' => 'en caves coopératives', 'NEGOCIANT' => 'par des négociants');
-                    $acheteurs = $appellation->getAcheteursNode();
+                    $acheteurs = $parcellesProduit->getAcheteursNode();
                     $i = 0;
                     foreach ($acheteurs as $type => $acheteurs) {
                         if ($i > 0)

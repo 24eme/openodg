@@ -98,6 +98,10 @@ Parcellaire:
                               departement: {  }
                               active: { type: integer }
                               vtsgn: { type: integer }
+                              code_insee: { required: false }
+                              ecart_rang: { required: false }
+                              ecart_pieds: { required: false }
+                              campagne_plantation: { required: false }
       pieces:
         type: array_collection
         definition:
