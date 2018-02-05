@@ -39,6 +39,7 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_CAVE_APPORTEURID = 23;
     const CSV_CAVE_COOP = 24;
 
+/*
     public static $chaisAttributsTrad = array("Eleveur de DGC" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
                                               "Conditionneur" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
                                               "Détenteur de vin en vrac" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
@@ -46,7 +47,7 @@ class importEntitesFromCSVTask extends sfBaseTask
                                               "Producteur de moût" => EtablissementClient::CHAI_PRODUCTEUR_DE_MOUT,
                                               "Producteur de raisins" =>  EtablissementClient::CHAI_PRODUCTEUR_DE_RAISIN);
 
-
+*/
 
     protected function configure()
     {
