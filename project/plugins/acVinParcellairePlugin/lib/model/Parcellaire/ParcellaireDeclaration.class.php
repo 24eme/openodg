@@ -11,6 +11,11 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return null;
     }
 
+    public function getConfig()
+  	{
+  		return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
+  	}
+
     public function getAppellationsOrderParcellaire() {
         $appellations = $this->getAppellations();
 
@@ -38,6 +43,12 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
             }
             $produits[$produit->getHash()] = $produit;
         }
+
+        return $produits;
+    }
+
+    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
+        $produits = array();
 
         return $produits;
     }
@@ -153,25 +164,24 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
     }
 
     public function reorderByConf() {
-        $children = array();
+  		$children = array();
 
-        foreach ($this->getChildrenNode() as $hash => $child) {
-            $children[$hash] = $child->getData();
-        }
+  		foreach($this as $hash => $child) {
+  			$children[$hash] = $child->getData();
+  		}
 
-        foreach ($children as $hash => $child) {
-            $this->remove($hash);
-        }
+  		foreach($children as $hash => $child) {
+  			$this->remove($hash);
+  		}
 
-        foreach ($this->getConfig()->getChildrenNode() as $hash => $child) {
-            if (!array_key_exists($hash, $children)) {
-                continue;
-            }
-
-            $child_added = $this->add($hash, $children[$hash]);
-            $child_added->reorderByConf();
-        }
-    }
+  		foreach($this->getConfig()->getProduits() as $hash => $child) {
+  			$hashProduit = str_replace("/declaration/", "", $hash);
+  			if(!array_key_exists($hashProduit, $children)) {
+  				continue;
+  			}
+  			$this->add($hashProduit, $children[$hashProduit]);
+  		}
+  	}
 
     public function getPreviousAppellationKey() {
 

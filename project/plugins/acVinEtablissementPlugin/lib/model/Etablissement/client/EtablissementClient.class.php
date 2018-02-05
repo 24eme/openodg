@@ -45,6 +45,9 @@ class EtablissementClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
     const CHAI_ATTRIBUT_PRESTATAIRE = 'PRESTATAIRE';
     const CHAI_ATTRIBUT_ELEVAGE = 'ELEVAGE';
+    const CHAI_PRODUCTEUR_DE_RAISIN = 'PRODUCTEURRAISINS';
+    const CHAI_PRODUCTEUR_DE_MOUT = 'PRODUCTEURMOUTS';
+    const CHAI_DETENTEUR_VRAC = 'DETENTEURVRAC';
 
     public static $statuts = array(self::STATUT_ACTIF => 'ACTIF',
         self::STATUT_SUSPENDU => 'SUSPENDU');
@@ -74,7 +77,10 @@ class EtablissementClient extends acCouchdbClient {
                                                   self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
                                                   self::CHAI_ATTRIBUT_STOCKAGE => 'Lieu de stockage',
                                                   self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
-                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement');
+                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement',
+                                                  self::CHAI_PRODUCTEUR_DE_RAISIN => 'Producteur de raisins',
+                                                  self::CHAI_PRODUCTEUR_DE_MOUT => 'Producteur de moûts',
+                                                  self::CHAI_DETENTEUR_VRAC => 'Détenteur de vin en vrac');
 
     public static function getInstance() {
         return acCouchdbManager::getClient("Etablissement");

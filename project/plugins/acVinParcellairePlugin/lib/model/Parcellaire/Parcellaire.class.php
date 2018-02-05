@@ -137,6 +137,19 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         $this->declaration = $parcellairePrev->declaration;
     }
 
+    public function addProduit($hash) {
+        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $exist = $this->exist('declaration/'.$hashToAdd);
+      
+        $produit = $this->add('declaration')->add($hashToAdd);
+
+        if(!$exist) {
+            $this->declaration->reorderByConf();
+        }
+
+        return $this->get($produit->getHash());
+    }
+
     public function getConfigProduits() {
 
         return $this->getConfiguration()->declaration->getProduits();
