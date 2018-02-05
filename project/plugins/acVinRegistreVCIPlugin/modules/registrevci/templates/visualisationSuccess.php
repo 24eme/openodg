@@ -53,5 +53,6 @@
           <td class="text-right"><?php echo echoFloat($d->stock_resultant); ?></td>
       </tr>
 <?php endforeach; ?>
+      </table>
     </div>
 </div>
