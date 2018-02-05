@@ -17,6 +17,7 @@
  * @property string $version
  * @property RegistreVCIDeclaration $declaration
  * @property acCouchdbJson $mouvements
+ * @property acCouchdbJson $pieces
 
  * @method string getId()
  * @method string setId()
@@ -44,6 +45,8 @@
  * @method RegistreVCIDeclaration setDeclaration()
  * @method acCouchdbJson getMouvements()
  * @method acCouchdbJson setMouvements()
+ * @method acCouchdbJson getPieces()
+ * @method acCouchdbJson setPieces()
  
  */
  

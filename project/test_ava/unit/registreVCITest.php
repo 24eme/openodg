@@ -92,4 +92,15 @@ $t->is($registre->mouvements[4]->volume, 5, 'volume enregistré dans le mouvemnt
 $t->is($registre->mouvements[4]->stock_resultant, 0, 'stock enregistré dans le mouvemnt');
 $t->is($registre->mouvements[4]->date, ($registre->campagne + 1).'-12-31', 'date du mouvement à la date de la fin de l\'année suivante');
 
+$t->comment("Produits avec une chaine de caractere au lieu d'un noeud de la conf");
+$registre->addMouvement($produit_hash, RegistreVCIClient::MOUVEMENT_COMPLEMENT, 5, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+$t->is($registre->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_final, -5, "L'ajout d'un mouvement avec un hash impacte le stock du detail");
+
+$t->comment("Ajout d'un mouvement stocké hors cave particulière");
+$registre->addMouvement($produit_hash, RegistreVCIClient::MOUVEMENT_CONSTITUE, 5, $registre->identifiant);
+$t->is($registre->declaration->get($produit_hash)->details->get($registre->identifiant)->stock_final, 5, "L'ajout d'un mouvement dans un autre lieu impact le stock du detail");
+$t->is($registre->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_final, -5, "L'ajout du mouvement n'impacte le stock CAVE PARTICULIERE");
+$t->is($registre->declaration->get($produit_hash)->stock_final, 0, "L'ajout de ce mouvement impacte le stock du produit");
+$t->isnt($registre->mouvements[6]->detail_libelle, 'Cave particulière', 'libelle détail pas cave particulière');
+
 $registre->save();

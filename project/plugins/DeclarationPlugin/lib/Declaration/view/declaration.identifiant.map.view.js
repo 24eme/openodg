@@ -1,7 +1,7 @@
 function(doc) {
 
-    if(doc.type != "DRev" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Tirage" && doc.type != "TravauxMarc") {
-
+    if(doc.type != "DRev" && doc.type != "RegistreVCI" && doc.type != "DRevMarc" && doc.type != "Parcellaire" && doc.type != "Tirage" && doc.type != "TravauxMarc") {
+      
         return;
     }
 

@@ -50,6 +50,14 @@ class RegistreVCIClient extends acCouchdbClient {
         return null;
     }
 
+    public function findMasterByIdentifiantAndCampagneOrCreate($identifiant, $campagne, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+      $r = $this->findMasterByIdentifiantAndCampagne($identifiant, $campagne, $hydrate);
+      if (!$r) {
+        $r = $this->createDoc($identifiant, $campagne);
+      }
+      return $r;
+    }
+
     public function createDoc($identifiant, $campagne)
     {
         $registre = new RegistreVCI();

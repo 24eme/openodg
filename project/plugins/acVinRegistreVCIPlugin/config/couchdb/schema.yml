@@ -5,7 +5,7 @@ RegistreVCI:
       _rev: { }
       type: { }
       campagne: { }
-      identifiant: { }
+      identifiant: { type: string }
       validation: { }
       validation_odg: { }
       papier: { required: false, type: integer }
@@ -66,3 +66,24 @@ RegistreVCI:
                   mouvement_type: {}
                   volume: {}
                   stock_resultant: {}
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: RegistreVCIPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { type: string }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

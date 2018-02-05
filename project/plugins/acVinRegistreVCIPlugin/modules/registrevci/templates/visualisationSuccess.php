@@ -16,7 +16,7 @@
             <th class="text-center col-md-1">Complément</th>
             <th class="text-center col-md-1">Substitution</th>
             <th class="text-center col-md-1">Destruction</th>
-            <th class="text-center col-md-2">Stock</th>
+            <th class="text-center col-md-1">Stock</th>
         </tr></thead>
 <?php foreach ($registre->declaration as $ph => $p) : ?>
       <tr>
@@ -39,9 +39,9 @@
             <th class="col-md-3">Produit</th>
             <th class="col-md-1">Date</th>
         	  <th class="col-md-2">Lieu</th>
-            <th class="col-md-2">Type de mouvement</th>
+            <th class="col-md-1">Type de mvmt</th>
             <th class="col-md-1">Volume</th>
-            <th class="col-md-2">Stock résultant</th>
+            <th class="col-md-1">Stock résultant</th>
         </tr></thead>
 <?php foreach ($registre->mouvements as $i => $d): ?>
       <tr>

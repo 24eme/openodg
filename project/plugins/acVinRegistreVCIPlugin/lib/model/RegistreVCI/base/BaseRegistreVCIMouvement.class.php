@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseRegistreVCIMouvement
- *
+ * 
  * Base model for RegistreVCIMouvement
 
  * @property string $date
@@ -29,14 +29,14 @@
  * @method string setVolume()
  * @method string getStockResultant()
  * @method string setStockResultant()
-
+ 
  */
 
 abstract class BaseRegistreVCIMouvement extends acCouchdbDocumentTree {
-
+                
     public function configureTree() {
        $this->_root_class_name = 'RegistreVCI';
        $this->_tree_class_name = 'RegistreVCIMouvement';
     }
-
+                
 }
