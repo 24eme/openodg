@@ -34,6 +34,17 @@ class ExportDRCSV implements InterfaceDeclarationExportCsv
         }
         return $csv;
     }
+    
+    public function getCsv() {
+    	$csv = array();
+    	$datas = explode(PHP_EOL, $this->export());
+    	foreach ($datas as $data) {
+    		if ($data) {
+    			$csv[] = explode(';', $data);
+    		}
+    	}
+    	return $csv;
+    }
 
     protected function formatFloat($value) {
 

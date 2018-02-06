@@ -1,6 +1,6 @@
 <?php
 
-class myUser extends sfBasicSecurityUser
+class myUser extends AppUser
 {
 
     const SESSION_COMPTE_LOGIN = "COMPTE_LOGIN";

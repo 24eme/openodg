@@ -1,0 +1,89 @@
+RegistreVCI:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { type: string }
+      validation: { }
+      validation_odg: { }
+      papier: { required: false, type: integer }
+      automatique: { required: false, type: integer }
+      lecture_seule: { required: false }
+      version: {  }
+      declaration:
+        type: collection
+        class: RegistreVCIDeclaration
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: RegistreVCIProduit
+              definition:
+                fields:
+                  libelle: { }
+                  stock_precedent: { type: float }
+                  destruction: { type: float }
+                  complement: { type: float }
+                  substitution: { type: float }
+                  rafraichi: { type: float }
+                  constitue: { type: float }
+                  stock_final: { type: float }
+                  details:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          class: RegistreVCIProduitDetail
+                          definition:
+                            fields:
+                              stockage_libelle: {}
+                              stockage_identifiant: {}
+                              denomination_complementaire: {}
+                              stock_precedent: { type: float }
+                              destruction: { type: float }
+                              complement: { type: float }
+                              substitution: { type: float }
+                              rafraichi: { type: float }
+                              constitue: { type: float }
+                              stock_final: { type: float }
+      mouvements:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: RegistreVCIMouvement
+              definition:
+                fields:
+                  date: { }
+                  produit_hash: {}
+                  produit_libelle: {}
+                  detail_hash: {}
+                  detail_libelle: {}
+                  mouvement_type: {}
+                  volume: {}
+                  stock_resultant: {}
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: RegistreVCIPiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { type: string }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

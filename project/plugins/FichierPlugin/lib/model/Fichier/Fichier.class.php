@@ -81,7 +81,7 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 
 		public function getFichier($ext) {
 			$fileinfos = $this->getFileinfos($ext);
-			return $this->getAttachmentUri($fileinfos['filename']);
+			return ($fileinfos['filename'])? $this->getAttachmentUri($fileinfos['filename']) : null;
 		}
 
     public function getFileinfos($ext)
@@ -122,10 +122,10 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 		if ($store4real) {
 			$mime = mime_content_type($file);
 			$this->storeAttachment($file, $mime, $fileName);
-			if (strtolower($extension) == 'xls') {
-				$csvFile = self::convertXlsFile($file);
-				$this->storeFichier($csvFile);
-			}
+		}
+		if (strtolower($extension) == 'xls') {
+			$csvFile = self::convertXlsFile($file);
+			$this->storeFichier($csvFile);
 		}
 	}
 
