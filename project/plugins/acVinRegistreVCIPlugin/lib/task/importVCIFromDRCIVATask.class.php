@@ -54,7 +54,7 @@ EOF;
         $datas = array();
         $date_dossiers = array();
         foreach(file($arguments['fichier_dr_civa']) as $line) {
-          $line = str_replace('"', '', $line);
+          $line = str_replace('\\', '', str_replace('"', '', $line));
           $line = rtrim($line);
           $csv = explode(';', $line);
 
@@ -104,8 +104,10 @@ EOF;
                     continue;
                   }
                   if ($unvci['VOLUME'] * 1.0 > 0) {
-                    echo "add ".preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT']))." ".$unvci['VOLUME'] ."\n";
-                    $registre->addMouvement(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, $csv[self::DRCIVA_CVI_ACHETEUR] ? $csv[self::DRCIVA_CVI_ACHETEUR] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+                    echo "add ".preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT']))." ".$unvci['VOLUME'] ." ";
+                    echo ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_NOM'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE;
+                    echo "\n";
+                    $registre->addMouvement(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
                   }
                 }
               }

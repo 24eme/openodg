@@ -34,7 +34,7 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
   public function addMouvement($mouvement_type, float $volume, $lieu_id) {
     if (!$this->details->exist($lieu_id)) {
       $detail = $this->add('details')->add($lieu_id);
-      if ($lieu_id == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
+      if (!$lieu_id || $lieu_id == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
         $detail->stockage_libelle = "Cave particulière";
       }else{
         $e = EtablissementClient::getInstance()->findByIdentifiant($lieu_id);
@@ -59,21 +59,63 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
     throw new sfException('Not callable, use addMouvement');
   }
   public function setRafraichi($v) {
-    throw new sfException('Not collable, use addMouvement');
+    throw new sfException('Not callable, use addMouvement');
   }
   public function setComplement($v) {
-    throw new sfException('Not collable, use addMouvement');
+    throw new sfException('Not callable, use addMouvement');
   }
   public function setSubstitue($v) {
-    throw new sfException('Not collable, use addMouvement');
+    throw new sfException('Not callable, use addMouvement');
   }
   public function setDetruit($v) {
-    throw new sfException('Not collable, use addMouvement');
+    throw new sfException('Not callable, use addMouvement');
   }
   public function setStockFinal($v) {
-    throw new sfException('Not collable, use addMouvement');
+    throw new sfException('Not callable, use addMouvement');
   }
 
+  public function getAppellation() {
+    return $this->getConfig()->getAppellation();
+  }
 
+  public function freeIncr($mvt, $v) {
+    if (!$this->isPseudoAppellation()) {
+      throw new sfException('Not callable from a real produit');
+    }
+    $this->_set($mvt, $this->get($mvt) + $v);
+  }
+
+  private $pseudo_appellation = null;
+  private $pseudo_produit = null;
+  private $pseudo_registre = null;
+
+  public function isPseudoAppellation() {
+    return (isset($this->pseudo_appellation) && $this->pseudo_appellation);
+  }
+
+  public function getPseudoAppellation() {
+    if (!$this->pseudo_produit) {
+      throw new sfException("Should be a pseudo appellation");
+    }
+    return $this->pseudo_produit;
+  }
+
+  public function setIsPseudoAppellation($registre, $produit) {
+      $this->pseudo_appellation = 1;
+      $this->pseudo_produit = $produit;
+      $this->pseudo_registre = $registre;
+      $this->libelle = $this->pseudo_produit->getLibelle();
+  }
+
+  public function getSuperficieFromDrev() {
+    if (!$this->pseudo_registre) {
+      throw new sfException('Not callable from a real produit');
+    }
+    $drev = $this->pseudo_registre->getDRev();
+    if (!$drev) {
+      return 'XXX';
+    }
+    return $drev->get($this->pseudo_produit->getHash())->getTotalTotalSuperficie();
+  }
 
 }
