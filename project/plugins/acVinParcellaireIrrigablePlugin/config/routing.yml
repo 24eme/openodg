@@ -1,0 +1,59 @@
+parcellaireirrigable_create:
+  url: /parcellaire-irrigable/creation/:identifiant
+  param: { module: parcellaireIrrigable, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireirrigable_edit:
+  url: /parcellaire-irrigable/edition/:id
+  param: { module: parcellaireIrrigable, action: edit }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get]
+#
+# parcellaire_intention_modification:
+#   url: /parcellaire/modification-parcelle/:id/:appellation/:parcelle
+#   param: { module: parcellaire, action: modificationParcelle }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get, post]
+#
+# parcellaire_validation:
+#   url: /parcellaire/validation/:id
+#   param: { module: parcellaire, action: validation }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get,post]
+#
+# parcellaire_export_pdf:
+#   url: /parcellaire/pdf/:id
+#   param: { module: parcellaire, action: PDF }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get]
+#
+# parcellaire_visualisation:
+#   url: /parcellaire/visualisation/:id
+#   param: { module: parcellaire, action: visualisation }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get]
