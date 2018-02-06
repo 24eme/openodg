@@ -3,6 +3,9 @@
 <div class="page-header no-border">
     <h2>Registre VCI <?php echo $registre->campagne; ?> <small class="pull-right"></small></h2>
 </div>
+<?php if (!$registre->getDRev()): ?>
+  <div class="alert alert-danger" role="alert">Pas de DRev <?php echo $registre->campagne; ?></div>
+<?php endif; ?>
 <div class="row">
     <div class="col-xs-12">
         <h3>Résumé du registre VCI</h3>
@@ -17,14 +20,15 @@
             <th class="text-center col-md-1">Stock</th>
         </tr></thead>
 <?php foreach ($registre->getProduitsWithPseudoAppelations() as $p) :
-  $strongbegin = ''; $strongend = '';
+  $strongbegin = ''; $strongend = ''; $superficie = '';
   if ($p->isPseudoAppellation()) {
     $strongbegin = '<strong>';
-    $strongend = '</strong>';
+    $strongend = '</strong><small class="text-mutted">';
+    $superficie = ' ('.$p->getSuperficieFromDrev().' hl)</small>';
   }
   ?>
       <tr>
-          <td><?php echo $strongbegin.$p->libelle.$strongend; ?> (<?php echo $p->getSuperficieFromDrev(); ?> hl)</td>
+          <td><?php echo $strongbegin.$p->libelle.$strongend.$superficie; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->constitue).$strongend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->rafraichi).$strongend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->complement).$strongend; ?></td>

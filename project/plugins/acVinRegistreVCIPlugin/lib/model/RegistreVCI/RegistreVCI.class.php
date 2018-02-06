@@ -132,7 +132,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
             }
             $oldappellation = $p->getAppellation()->getLibelle();
             $appellationproduit = RegistreVCIProduit::freeInstance($this);
-            $appellationproduit->setIsPseudoAppellation($p->getAppellation());
+            $appellationproduit->setIsPseudoAppellation($this, $p->getAppellation());
           }
           $appellationproduit->freeIncr('constitue', $p->constitue);
           $appellationproduit->freeIncr('rafraichi', $p->rafraichi);
@@ -146,6 +146,9 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         return $produits;
       }
 
-
+      public function getDRev() {
+        $drev = DRevClient::getInstance()->find('DREV-'.$this->identifiant.'-'.$this->campagne);
+        return $drev;
+      }
 
 }
