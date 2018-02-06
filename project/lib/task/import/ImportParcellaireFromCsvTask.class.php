@@ -6,6 +6,7 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     protected $file_path = null;
     protected $configuration = null;
     protected $configurationProduits = array();
+    protected $modes_savoirfaire = array();
 
     const CSV_ID_SECTION = 0;
     const CSV_CODE_COMMUNE_RECH = 1;
@@ -85,7 +86,7 @@ EOF;
         error_reporting(E_ERROR | E_PARSE);
         $this->configuration = ConfigurationClient::getInstance()->getConfiguration();
         $this->configurationProduits = $this->configuration->getProduits();
-
+        $this->modes_savoirfaire = array_flip(ParcellaireClient::$modes_savoirfaire);
         foreach(file($this->file_path) as $line) {
             $line = str_replace("\n", "", $line);
             if(preg_match("/^\"ISection\";/", $line)) {
@@ -168,8 +169,23 @@ EOF;
               if(($dateDebut->format('Ymd') <= $date2018) && ($date2018 <= $dateFin)){
                 $parcelle->active = true;
               }
+              $mode_savoirfaire = null;
+              if(array_key_exists(trim($data[self::CSV_LIBELLE_MODE_SAVOIRFAIRE]),$this->modes_savoirfaire)){
+
+                $mode_savoirfaire = $this->modes_savoirfaire[trim($data[self::CSV_LIBELLE_MODE_SAVOIRFAIRE])];
+              }
+              if($mode_savoirfaire){
+                $parcelle->add('mode_savoirfaire',$mode_savoirfaire);
+              }
+              if(trim($data[self::CSV_CODE_PORTEGREFFE])){
+                $parcelle->add('porte_greffe',trim($data[self::CSV_CODE_PORTEGREFFE]));
+              }
               echo "Import de la parcelle $section $numero_parcelle !\n";
             }
+            $parcellaire->etape='validation';
+            $parcellaire->validation = date('Y-m-d');
+            $parcellaire->validation_odg = date('Y-m-d');
+
             $parcellaire->save();
       }
 }

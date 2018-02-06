@@ -4,6 +4,7 @@ class importEntitesFromCSVTask extends sfBaseTask
 {
 
     protected $file_path = null;
+    protected $chaisAttributsInImport = array();
 
     const CSV_OLDID = 0;
     const CSV_TITRE = 1;
@@ -39,15 +40,7 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_CAVE_APPORTEURID = 23;
     const CSV_CAVE_COOP = 24;
 
-/*
-    public static $chaisAttributsTrad = array("Eleveur de DGC" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
-                                              "Conditionneur" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
-                                              "Détenteur de vin en vrac" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
-                                              "Vinificateur" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
-                                              "Producteur de moût" => EtablissementClient::CHAI_PRODUCTEUR_DE_MOUT,
-                                              "Producteur de raisins" =>  EtablissementClient::CHAI_PRODUCTEUR_DE_RAISIN);
 
-*/
 
     protected function configure()
     {
@@ -88,6 +81,7 @@ EOF;
 
       }
       error_reporting(E_ERROR | E_PARSE);
+      $this->chaisAttributsInImport = EtablissementClient::$chaisAttributsInImport;
 
       foreach(file($this->file_path) as $line) {
           $line = str_replace("\n", "", $line);
@@ -200,7 +194,7 @@ EOF;
             if(!array_key_exists(trim($activite),self::$chaisAttributsTrad)){
               var_dump($activite); exit;
             }
-            $activiteKey = self::$chaisAttributsTrad[trim($activite)];
+            $activiteKey = $this->chaisAttributsInImport[trim($activite)];
             $newChai->getOrAdd('attributs')->add($activiteKey,EtablissementClient::$chaisAttributsLibelles[$activiteKey]);
           }
           $etb->save();

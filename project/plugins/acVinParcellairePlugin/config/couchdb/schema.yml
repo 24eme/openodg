@@ -102,6 +102,8 @@ Parcellaire:
                               ecart_rang: { required: false }
                               ecart_pieds: { required: false }
                               campagne_plantation: { required: false }
+                              mode_savoirfaire: { required: false }
+                              porte_greffe: { required: false }
       pieces:
         type: array_collection
         definition:
