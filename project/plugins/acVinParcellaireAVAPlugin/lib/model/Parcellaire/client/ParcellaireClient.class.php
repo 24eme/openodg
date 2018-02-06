@@ -30,6 +30,8 @@ class ParcellaireClient extends acCouchdbClient {
         self::DESTINATION_NEGOCIANT => "Vendeur de raisin",
     );
 
+    public static $modes_savoirfaire = array();
+
     public static function getInstance() {
         return acCouchdbManager::getClient("Parcellaire");
     }

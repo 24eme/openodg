@@ -82,6 +82,13 @@ class EtablissementClient extends acCouchdbClient {
                                                   self::CHAI_PRODUCTEUR_DE_MOUT => 'Producteur de moûts',
                                                   self::CHAI_DETENTEUR_VRAC => 'Détenteur de vin en vrac');
 
+    public static $chaisAttributsInImport = array("Eleveur de DGC" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
+                                              "Conditionneur" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
+                                              "Détenteur de vin en vrac" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                              "Vinificateur" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                              "Producteur de moût" => EtablissementClient::CHAI_PRODUCTEUR_DE_MOUT,
+                                              "Producteur de raisins" =>  EtablissementClient::CHAI_PRODUCTEUR_DE_RAISIN);
+
     public static function getInstance() {
         return acCouchdbManager::getClient("Etablissement");
     }

@@ -16,6 +16,10 @@ class ParcellaireClient extends acCouchdbClient {
     const APPELLATION_LIEUDIT = 'LIEUDIT';
     const APPELLATION_CREMANT = 'CREMANT';
 
+    const MODE_SAVOIRFAIRE_FERMIER = 'FERMIER';
+    const MODE_SAVOIRFAIRE_PROPRIETAIRE = 'PROPRIETAIRE';
+    const MODE_SAVOIRFAIRE_METAYER = 'METAYER';
+
     public static $appellations_libelles = array(
             self::APPELLATION_ALSACEBLANC => 'Alsace Blanc',
             self::APPELLATION_GRDCRU => 'Grand Cru',
@@ -28,6 +32,12 @@ class ParcellaireClient extends acCouchdbClient {
         self::DESTINATION_SUR_PLACE => "Viticulteur - Récoltant",
         self::DESTINATION_CAVE_COOPERATIVE => "Adhérent Cave Coopérative",
         self::DESTINATION_NEGOCIANT => "Vendeur de raisin",
+    );
+
+    public static $modes_savoirfaire = array(
+        self::MODE_SAVOIRFAIRE_FERMIER => "Fermier",
+        self::MODE_SAVOIRFAIRE_PROPRIETAIRE => "Propriétaire",
+        self::MODE_SAVOIRFAIRE_METAYER => "Métayer",
     );
 
     public static function getInstance() {
@@ -90,7 +100,7 @@ class ParcellaireClient extends acCouchdbClient {
     public function getAppellationsAndVtSgnKeys($type = self::TYPE_COUCHDB) {
 
         return array();
-        
+
         if ($type == self::TYPE_COUCHDB) {
 	        return array_merge(array(
 	            self::APPELLATION_GRDCRU => 'Grand Cru',
