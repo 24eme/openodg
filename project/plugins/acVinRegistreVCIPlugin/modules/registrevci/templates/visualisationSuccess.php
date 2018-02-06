@@ -20,15 +20,16 @@
             <th class="text-center col-md-1">Stock</th>
         </tr></thead>
 <?php foreach ($registre->getProduitsWithPseudoAppelations() as $p) :
-  $strongbegin = ''; $strongend = ''; $superficie = '';
+  $strongbegin = ''; $strongend = ''; $superficiebegin = ''; $superficieend = '';
   if ($p->isPseudoAppellation()) {
     $strongbegin = '<strong>';
-    $strongend = '</strong><small class="text-mutted">';
-    $superficie = ' ('.$p->getSuperficieFromDrev().' hl)</small>';
+    $strongend = '</strong>';
+    $superficiebegin = '<small class="text-mutted">';
+    $superficieend = ' ('.$p->getSuperficieFromDrev().' hl)</small>';
   }
   ?>
       <tr>
-          <td><?php echo $strongbegin.$p->libelle.$strongend.$superficie; ?></td>
+          <td><?php echo $strongbegin.$p->libelle.$strongend.$superficiebegin.$superficieend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->constitue).$strongend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->rafraichi).$strongend; ?></td>
           <td class="text-right"><?php echo $strongbegin.formatFloat($p->complement).$strongend; ?></td>
@@ -62,5 +63,10 @@
       </tr>
 <?php endforeach; ?>
       </table>
+    </div>
+</div>
+<div class="row row-margin row-button">
+    <div class="col-xs-5">
+        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $registre->identifiant, 'campagne' => $registre->campagne)); ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
 </div>
