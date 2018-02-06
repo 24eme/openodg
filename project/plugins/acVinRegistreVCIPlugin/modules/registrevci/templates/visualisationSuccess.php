@@ -1,7 +1,5 @@
 <?php use_helper('Date'); use_helper('Float');
-
  include_partial('registrevci/breadcrumb', array('registre' => $registre )); ?>
-
 <div class="page-header no-border">
     <h2>Registre VCI <?php echo $registre->campagne; ?> <small class="pull-right"></small></h2>
 </div>
@@ -18,15 +16,21 @@
             <th class="text-center col-md-1">Destruction</th>
             <th class="text-center col-md-1">Stock</th>
         </tr></thead>
-<?php foreach ($registre->declaration as $ph => $p) : ?>
+<?php foreach ($registre->getProduitsWithPseudoAppelations() as $p) :
+  $strongbegin = ''; $strongend = '';
+  if ($p->isPseudoAppellation()) {
+    $strongbegin = '<strong>';
+    $strongend = '</strong>';
+  }
+  ?>
       <tr>
-          <td><?php echo $p->libelle; ?></td>
-          <td class="text-right"><?php echo echoFloat($p->constitue); ?></td>
-          <td class="text-right"><?php echo echoFloat($p->rafraichi); ?></td>
-          <td class="text-right"><?php echo echoFloat($p->complement); ?></td>
-          <td class="text-right"><?php echo echoFloat($p->substitution); ?></td>
-          <td class="text-right"><?php echo echoFloat($p->destruction); ?></td>
-          <td class="text-right"><?php echo echoFloat($p->stock_final); ?></td>
+          <td><?php echo $strongbegin.$p->libelle.$strongend; ?> (<?php echo $p->getSuperficieFromDrev(); ?> hl)</td>
+          <td class="text-right"><?php echo $strongbegin.formatFloat($p->constitue).$strongend; ?></td>
+          <td class="text-right"><?php echo $strongbegin.formatFloat($p->rafraichi).$strongend; ?></td>
+          <td class="text-right"><?php echo $strongbegin.formatFloat($p->complement).$strongend; ?></td>
+          <td class="text-right"><?php echo $strongbegin.formatFloat($p->substitution).$strongend; ?></td>
+          <td class="text-right"><?php echo $strongbegin.formatFloat($p->destruction).$strongend; ?></td>
+          <td class="text-right"><?php echo $strongbegin.formatFloat($p->stock_final).$strongend; ?></td>
       </tr>
 <?php endforeach; ?>
 </table>
@@ -46,7 +50,7 @@
 <?php foreach ($registre->mouvements as $i => $d): ?>
       <tr>
           <td><?php echo $d->produit_libelle; ?></td>
-          <td><?php echo $d->date; ?></td>
+          <td><?php echo format_date($d->date); ?></td>
           <td><?php echo $d->detail_libelle; ?></td>
           <td><?php echo RegistreVCIClient::MOUVEMENT_LIBELLE($d->mouvement_type); ?></td>
           <td class="text-right"><?php echo echoFloat($d->volume); ?></td>

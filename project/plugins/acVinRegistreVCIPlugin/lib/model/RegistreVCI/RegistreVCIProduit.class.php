@@ -6,6 +6,27 @@
 
 class RegistreVCIProduit extends BaseRegistreVCIProduit {
 
+  private $pseudo_appellation = null;
+  private $pseudo_produit = null;
+
+  public function isPseudoAppellation() {
+    return (isset($this->pseudo_appellation) && $this->pseudo_appellation);
+  }
+
+  public function getPseudoAppellation() {
+    if (!$this->pseudo_produit) {
+      throw new sfException("Should be a pseudo appellation");
+    }
+    return $this->pseudo_produit;
+  }
+
+  public function setIsPseudoAppellation($produit) {
+      $this->pseudo_appellation = 1;
+      $this->pseudo_produit = $produit;
+      $this->libelle = $this->pseudo_produit->getLibelle();
+
+  }
+
   public function getConfig()
   {
     return $this->getCouchdbDocument()->getConfiguration()->get($this->getProduitHash());
@@ -34,7 +55,7 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
   public function addMouvement($mouvement_type, float $volume, $lieu_id) {
     if (!$this->details->exist($lieu_id)) {
       $detail = $this->add('details')->add($lieu_id);
-      if ($lieu_id == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
+      if (!$lieu_id || $lieu_id == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
         $detail->stockage_libelle = "Cave particulière";
       }else{
         $e = EtablissementClient::getInstance()->findByIdentifiant($lieu_id);
@@ -74,6 +95,12 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
     throw new sfException('Not collable, use addMouvement');
   }
 
+  public function getAppellation() {
+    return $this->getConfig()->getAppellation();
+  }
 
+  public function freeIncr($mvt, $v) {
+    $this->_set($mvt, $this->get($mvt) + $v);
+  }
 
 }

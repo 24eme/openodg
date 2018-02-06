@@ -123,4 +123,29 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
       	return false;
       }
 
+      public function getProduitsWithPseudoAppelations() {
+        $produits = array();
+        foreach ($this->declaration as $i => $p) {
+          if (!isset($oldappellation) || $oldappellation != $p->getAppellation()->getLibelle()) {
+            if (isset($oldappellation) && $oldappellation != $p->getAppellation()->getLibelle()) {
+                $produits[] = $appellationproduit;
+            }
+            $oldappellation = $p->getAppellation()->getLibelle();
+            $appellationproduit = RegistreVCIProduit::freeInstance($this);
+            $appellationproduit->setIsPseudoAppellation($p->getAppellation());
+          }
+          $appellationproduit->freeIncr('constitue', $p->constitue);
+          $appellationproduit->freeIncr('rafraichi', $p->rafraichi);
+          $appellationproduit->freeIncr('complement', $p->complement);
+          $appellationproduit->freeIncr('substitution', $p->substitution);
+          $appellationproduit->freeIncr('destruction', $p->destruction);
+          $appellationproduit->freeIncr('stock_final', $p->stock_final);
+          $produits[] = $p;
+        }
+        $produits[] = $appellationproduit;
+        return $produits;
+      }
+
+
+
 }

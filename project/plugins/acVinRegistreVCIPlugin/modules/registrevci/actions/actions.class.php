@@ -6,5 +6,4 @@ class registreVCIActions extends sfActions {
     $this->registre = $this->getRoute()->getRegistreVCI();
     $this->forward404Unless($this->registre);
   }
-
 }
