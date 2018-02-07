@@ -84,11 +84,12 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
   }
 
   public function getParcellaireCurrent() {
-      $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne, ParcellaireClient::TYPE_COUCHDB);
+      $campagnePrec = $this->campagne - 1;
+      $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
       $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
 
       if (!$parcellaire) {
-          $campagnePrec = $this->campagne - 1;
+          $campagnePrec = $this->campagne - 2;
           $parcellaire = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
           $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
       }
@@ -96,19 +97,15 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return $parcellaire;
   }
 
-  private function importProduitsFromLastParcellaire() {
+  public function getParcellesFromLastParcellaire() {
       $parcellaireCurrent = $this->getParcellaireCurrent();
       if (!$parcellaireCurrent) {
           return;
       }
 
-      foreach ($parcellaireCurrent->declaration as $keyProduit => $node) {
-        $ParcellaireIrrigableProduit = $this->declaration->add($keyProduit);
-        $ParcellaireIrrigableProduit->libelle = $node->libelle;
-        $ParcellaireIrrigableProduit->detail = $node->detail;
-      }
-
+      return $parcellaireCurrent->declaration;
   }
+
 
   public function addParcelle($hashProduit, $cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
       $config = $this->getConfiguration()->get($hashProduit);

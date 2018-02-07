@@ -1,10 +1,10 @@
 <?php
 class ParcellaireIrrigableRoute extends EtablissementRoute implements InterfaceDeclarationRoute {
 
-    protected $parcellaireIrrigableIrrigable = null;
+    protected $parcellaireIrrigable = null;
 
     protected function getObjectForParameters($parameters = null) {
-        $this->parcellaireIrrigable = ParcellaireIrrigable::getInstance()->find($parameters['id']);
+        $this->parcellaireIrrigable = ParcellaireIrrigableClient::getInstance()->find($parameters['id']);
         if (!$this->parcellaireIrrigable) {
 
             throw new sfError404Exception(sprintf('No ParcellaireIrrigable found with the id "%s".', $parameters['id']));
