@@ -35,6 +35,9 @@ all:
     parcellaire:
       debut: "YYYY-mm-dd"
       fin: "YYYY-mm-dd"
+    parcellaire_irrigable:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
     parcellaire_cremant:
       debut: "YYYY-mm-dd"
       fin: "YYYY-mm-dd"

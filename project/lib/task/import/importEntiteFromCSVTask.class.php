@@ -191,7 +191,7 @@ EOF;
           $newChai->code_postal = $data[self::CSV_CHAIS_CP];
           $activites = explode(';',$data[self::CSV_ACTIVITES]);
           foreach ($activites as $activite) {
-            if(!array_key_exists(trim($activite),self::$chaisAttributsTrad)){
+            if(!array_key_exists(trim($activite),$this->chaisAttributsInImport)){
               var_dump($activite); exit;
             }
             $activiteKey = $this->chaisAttributsInImport[trim($activite)];
