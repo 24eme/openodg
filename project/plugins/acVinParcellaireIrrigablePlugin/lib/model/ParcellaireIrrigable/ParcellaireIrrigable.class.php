@@ -84,12 +84,12 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
   }
 
   public function getParcellaireCurrent() {
-      $campagnePrec = $this->campagne - 1;
+      $campagnePrec = $this->campagne;
       $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
       $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
 
       if (!$parcellaire) {
-          $campagnePrec = $this->campagne - 2;
+          $campagnePrec = $this->campagne - 1;
           $parcellaire = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
           $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
       }
@@ -105,7 +105,51 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
       return $parcellaireCurrent->declaration;
   }
-
+  
+  public function addParcellesFromParcellaire(array $hashes) {
+  	$parcellaire = $this->getParcellesFromLastParcellaire();
+  	$remove = array();
+  	foreach ($this->declaration as $key => $value) {
+  		foreach ($value->detail as $subkey => $subvalue) {
+  			if (!in_array($subvalue->getHash(), $hashes)) {
+  				$remove[] = $subvalue->getHash();
+  			}
+  		}
+  	}
+  	foreach ($remove as $r) {
+  		$this->declaration->remove(str_replace('/declaration/', '', $r));
+  	}
+  	foreach ($hashes as $hash) {
+  		$hash = str_replace('/declaration/', '', $hash);
+	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
+	  		$detail = $parcellaire->get($hash);
+	  		$produit = $detail->getProduit();
+	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
+	  		$item->libelle = $produit->libelle;
+	  		$subitem = $item->detail->add($detail->getKey());
+	  		
+	  		$subitem->superficie = $detail->superficie;
+	  		$subitem->commune = $detail->commune;
+	  		$subitem->code_postal = $detail->code_postal;
+	  		$subitem->section = $detail->section;
+	  		$subitem->numero_parcelle = $detail->numero_parcelle;
+	  		$subitem->lieu = $detail->lieu;
+	  		$subitem->cepage = $detail->cepage;
+	  		$subitem->departement = $detail->departement;
+	  		$subitem->active = 1;
+	  		$subitem->vtsgn = (int)$detail->vtsgn;
+	  	}
+  	}
+  	$remove = array();
+  	foreach ($this->declaration as $key => $value) {
+  		if (!count($value->detail)) {
+  			$remove[] = $key;
+  		}
+  	}
+  	foreach ($remove as $r) {
+  		$this->declaration->remove($r);
+  	}
+  }
 
   public function addParcelle($hashProduit, $cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
       $config = $this->getConfiguration()->get($hashProduit);
@@ -120,8 +164,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       if (is_null($date)) {
           $date = date('Y-m-d');
       }
-
-      $this->declaration->cleanNode();
       $this->validation = $date;
       $this->validateOdg();
   }
