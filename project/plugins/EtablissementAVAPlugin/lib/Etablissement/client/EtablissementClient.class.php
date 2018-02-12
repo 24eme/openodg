@@ -16,6 +16,8 @@ class EtablissementClient extends acCouchdbClient {
 
     const STATUT_INSCRIT = 'INSCRIT';
 
+    public static $chaisAttributsInImport = array(); //Bouchon pour les taches d'imports
+
     public static function getInstance()
     {
         return acCouchdbManager::getClient(self::TYPE_MODEL);

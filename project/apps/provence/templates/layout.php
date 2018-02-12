@@ -11,9 +11,9 @@
         <?php include_metas() ?>
         <?php include_title() ?>
 
-        <link rel="shortcut icon" type="image/x-icon" href="/favico_rhone.ico" />
-        <link rel="icon" type="image/x-icon" href="/favico_rhone.ico" />
-        <link rel="icon" type="image/png" href="/favico_rhone.png" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favico_provence.ico" />
+        <link rel="icon" type="image/x-icon" href="/favico_provence.ico" />
+        <link rel="icon" type="image/png" href="/favico_provence.png" />
 
         <?php include_stylesheets() ?>
 

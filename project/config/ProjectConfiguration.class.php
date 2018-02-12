@@ -33,14 +33,16 @@ class ProjectConfiguration extends sfProjectConfiguration
             $this->enablePlugins('acVinDRevMarcPlugin');
             $this->enablePlugins('acVinTravauxMarcPlugin');
             $this->enablePlugins('acVinDegustationPlugin');
-            $this->enablePlugins('acVinParcellairePlugin');
             $this->enablePlugins('acVinTourneePlugin');
             $this->enablePlugins('acVinConstatsVTSGNPlugin');
-
+            $this->enablePlugins('acVinRegistreVCIPlugin');
+            $this->enablePlugins('acVinParcellaireAVAPlugin');
             return;
         }
 
         $this->enablePlugins('AppPlugin');
+        $this->enablePlugins('acVinParcellairePlugin');
+        $this->enablePlugins('acVinParcellaireIrrigablePlugin');
         $this->enablePlugins('acVinDRevPlugin');
         $this->enablePlugins('acVinConfigurationPlugin');
         $this->enablePlugins('acVinHabilitationPlugin');
