@@ -140,7 +140,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     public function addProduit($hash) {
         $hashToAdd = preg_replace("|/declaration/|", '', $hash);
         $exist = $this->exist('declaration/'.$hashToAdd);
-      
+
         $produit = $this->add('declaration')->add($hashToAdd);
 
         if(!$exist) {
@@ -187,7 +187,7 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
         $produit->getLibelle();
 
-        return $produit->addParcelle($cepage, $commune, $section, $numero_parcelle, $lieu, $cepage, $dpt);
+        return $produit->addParcelle($cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
     }
 
     public function addAcheteur($type, $cvi) {
