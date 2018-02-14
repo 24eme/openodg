@@ -185,7 +185,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $donnee->complement;
     			$p[] = $donnee->categorie;
     			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
-    			$p[] = $this->formatFloat($donnee->valeur);
+    			$p[] = str_replace(".", ",", $donnee->valeur);
     			if ($donnee->tiers && $t = $etablissementClient->find($donnee->tiers)) {
     				$p[] = $t->cvi;
     				$p[] = $t->raison_sociale;
@@ -206,8 +206,4 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         return $csv;
     }
 
-    protected function formatFloat($value) {
-
-        return str_replace(".", ",", $value);
-    }
 }
