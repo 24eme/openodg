@@ -33,11 +33,9 @@ EOF;
         $i = 0;
         foreach($comptes as $row) {
             $compte = CompteClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
-
-            if(!$compte->mot_de_passe) {
+            if(!$compte->mot_de_passe && !$compte->etablissement_informations->cvi) {
                 continue;
             }
-
             $login = preg_replace("/^([0-9]{6})([0-9]+)$/", '\1', $compte->identifiant);
 
             if(isset($compte->login) && $compte->login) {
