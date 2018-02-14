@@ -7,7 +7,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
 
     public static function getHeaderCsv() {
 
-        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de déclaration;Date d'envoi à l'OI\n";
+        return "Campagne;Identifiant;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de ligne;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Superficie revendiqué;Volume revendiqué issu de la récolte;Volume revendiqué issu du vci;Volume revendiqué net total;VCI Stock précédent;VCI Destruction;VCI Complément;VCI Substitution;VCI Rafraichi;VCI Constitué;VCI Stock final;Type de declaration;Date d'envoi à l'OI\n";
     }
 
     public function __construct($drev, $header = true) {
@@ -54,7 +54,7 @@ class ExportDRevCSV implements InterfaceDeclarationExportCsv {
             $inao = $configProduit->getCodeDouane();
 
             $libelle_complet = $produit->getLibelleComplet();
-            $csv .= sprintf("%s;Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s", $ligne_base,
+            $csv .= sprintf("%s;Revendication;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s", $ligne_base,
              $certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,
              trim($libelle_complet), $this->formatFloat($produit->superficie_revendique), $this->formatFloat($produit->volume_revendique_issu_recolte),  $this->formatFloat($produit->volume_revendique_issu_vci), $this->formatFloat($produit->volume_revendique_total),  $this->formatFloat($produit->vci->stock_precedent), $this->formatFloat($produit->vci->destruction), $this->formatFloat($produit->vci->complement), $this->formatFloat($produit->vci->substitution), $this->formatFloat($produit->vci->rafraichi), $this->formatFloat($produit->vci->constitue), $this->formatFloat($produit->vci->stock_final), $mode);
             $csv .= sprintf(";%s\n",$date_envoi_oi);
