@@ -14,6 +14,13 @@
                 </div>
             </div>
 
+            <div class="form-group <?php if($form["search"]->hasError()): ?>has-error<?php endif; ?>">
+                <?php echo $form["search"]->renderError() ?>
+                <div class="col-xs-12">
+                <?php echo $form["search"]->render(array("class" => "form-control input-lg","placeholder" => "Ajouter une recherche pour l'export")); ?>
+                </div>
+            </div>
+
             <div class="form-group text-right">
                 <div class="col-xs-6 col-xs-offset-6">
                     <button class="btn btn-default btn-lg btn-block btn-upper" type="submit">Générer l'export</button>

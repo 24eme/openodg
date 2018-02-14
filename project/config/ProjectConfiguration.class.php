@@ -33,21 +33,25 @@ class ProjectConfiguration extends sfProjectConfiguration
             $this->enablePlugins('acVinDRevMarcPlugin');
             $this->enablePlugins('acVinTravauxMarcPlugin');
             $this->enablePlugins('acVinDegustationPlugin');
-            $this->enablePlugins('acVinParcellairePlugin');
             $this->enablePlugins('acVinTourneePlugin');
             $this->enablePlugins('acVinConstatsVTSGNPlugin');
-        } else {
-            $this->enablePlugins('AppPlugin');
-            $this->enablePlugins('acVinDRevPlugin');
-            $this->enablePlugins('acVinConfigurationPlugin');
-            $this->enablePlugins('acVinHabilitationPlugin');
-            $this->enablePlugins('acVinComptePlugin');
-            $this->enablePlugins('acVinSocietePlugin');
-            $this->enablePlugins('acVinEtablissementPlugin');
-            $this->enablePlugins('DRPlugin');
-            $this->enablePlugins('SV11Plugin');
-            $this->enablePlugins('SV12Plugin');
+            $this->enablePlugins('acVinRegistreVCIPlugin');
+            $this->enablePlugins('acVinParcellaireAVAPlugin');
+            return;
         }
+
+        $this->enablePlugins('AppPlugin');
+        $this->enablePlugins('acVinParcellairePlugin');
+        $this->enablePlugins('acVinParcellaireIrrigablePlugin');
+        $this->enablePlugins('acVinDRevPlugin');
+        $this->enablePlugins('acVinConfigurationPlugin');
+        $this->enablePlugins('acVinHabilitationPlugin');
+        $this->enablePlugins('acVinComptePlugin');
+        $this->enablePlugins('acVinSocietePlugin');
+        $this->enablePlugins('acVinEtablissementPlugin');
+        $this->enablePlugins('DRPlugin');
+        $this->enablePlugins('SV11Plugin');
+        $this->enablePlugins('SV12Plugin');
     }
 
     public function setRootDir($rootDir)

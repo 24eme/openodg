@@ -31,7 +31,7 @@ class parcellaireActions extends sfActions {
 
         $this->secureEtablissement(EtablissementSecurity::DECLARANT_PARCELLAIRE, $etablissement);
 
-        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->cvi, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
+        $this->parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $request->getParameter('campagne', ConfigurationClient::getInstance()->getCampagneManager()->getCurrentNext()));
         $this->parcellaire->initProduitFromLastParcellaire();
         $this->parcellaire->save();
 
@@ -161,10 +161,10 @@ class parcellaireActions extends sfActions {
 
         $this->appellation = $request->getParameter('appellation');
 
-        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire, $this->appellation);
+        $this->ajoutForm = new ParcellaireAjoutParcelleForm($this->parcellaire);
 
-        $this->appellationNode = $this->parcellaire->getAppellationNodeFromAppellationKey($this->appellation, true);
-        
+        $this->appellationNode = null;
+
         $this->recapParcellaire = null;
         if ($this->parcellaire->isIntentionCremant()) {
         	$this->recapParcellaire = ParcellaireClient::getInstance()->find(ParcellaireClient::getInstance()->buildId($this->parcellaire->identifiant, $this->parcellaire->campagne, ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT));
@@ -176,9 +176,12 @@ class parcellaireActions extends sfActions {
         $this->parcelles = array();
         if ($this->appellationNode == ParcellaireClient::APPELLATION_VTSGN) {
            $this->parcelles =  $this->parcellaire->getDeclaration()->getProduitsCepageDetails(true, true);
-        } else {
+        } elseif($this->appellationNode) {
             $this->parcelles = $this->appellationNode->getDetailsSortedByParcelle(false);
+        } else {
+            $this->parcelles = $this->parcellaire->getParcelles();
         }
+
 
         $this->erreur = $request->getParameter('erreur', false);
         $this->attention = $request->getParameter('attention', false);
@@ -200,7 +203,7 @@ class parcellaireActions extends sfActions {
 
                     return $this->redirect('parcellaire_validation', $this->parcellaire);
                 }
-                if ($this->appellationNode != ParcellaireClient::APPELLATION_VTSGN &&
+                if ($this->appellationNode && $this->appellationNode != ParcellaireClient::APPELLATION_VTSGN &&
                     ($next_appellation = $next_appellation = $this->appellationNode->getNextAppellationKey()))
                 {
                     return $this->redirect('parcellaire_parcelles', array('id' => $this->parcellaire->_id, 'appellation' => $next_appellation));

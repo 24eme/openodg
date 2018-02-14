@@ -10,7 +10,7 @@ class ParcellaireDestinationForm extends acCouchdbForm {
     }
 
     public function configure() {
-        
+
         foreach(ParcellaireClient::$destinations_libelles as $destination_key => $destination_libelle) {
             $form = new BaseForm();
             $form->setWidget('declarant', new sfWidgetFormInputCheckbox());
@@ -32,7 +32,7 @@ class ParcellaireDestinationForm extends acCouchdbForm {
 
     public function getDefaultsAcheteurs() {
         $default_acheteurs = array();
-        
+
         foreach($this->getDocument()->acheteurs as $type => $acheteurs) {
             $default_acheteurs[$type]['declarant'] = true;
             foreach($acheteurs as $acheteur) {
@@ -66,7 +66,7 @@ class ParcellaireDestinationForm extends acCouchdbForm {
             return;
         }
 
-        if($type == ParcellaireClient::DESTINATION_SUR_PLACE) { 
+        if($type == ParcellaireClient::DESTINATION_SUR_PLACE) {
             $values["acheteurs"] = array($this->getDocument()->identifiant);
         }
 
@@ -92,15 +92,17 @@ class ParcellaireDestinationForm extends acCouchdbForm {
         foreach($values["acheteurs"] as $cvi) {
             $this->getDocument()->getDocument()->addAcheteur($type, $cvi);
         }
-        
+
     }
 
     public function getTypesProprietaire() {
-        
+
         return ParcellaireClient::$type_proprietaire_libelles;
     }
 
     public function getAcheteurs($type) {
+
+        return array();
         $types_acheteurs = array($type);
 
         $query = "statut:ACTIF AND (";

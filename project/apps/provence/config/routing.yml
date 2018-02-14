@@ -1,0 +1,24 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/10-Routing
+
+setflash:
+  url: /afficher_message
+  param: { module: global, action: setFlash }
+
+
+mon_compte:
+  url: /mon-compte
+  param: { module: compte_teledeclarant, action: modification }
+
+redirect_to_mon_compte_civa:
+  url: /mon-compte-civa
+  param: { module: compte_teledeclarant, action: redirectToMonCompteCiva }
+
+#Défaut
+
+default_index:
+  url:   /:module
+  param: { action: index }
+
+default:
+  url:   /:module/:action/*

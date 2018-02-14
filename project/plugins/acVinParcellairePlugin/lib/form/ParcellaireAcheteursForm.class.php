@@ -8,7 +8,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
     }
 
     public function configure() {
-        
+
         $produits = $this->getDocument()->declaration->getProduitsWithLieuEditable();
         ksort($produits);
 
@@ -28,9 +28,9 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
             	continue;
             }
             $this->setWidget($hash, new sfWidgetFormChoice(array('choices' => $this->getAcheteurs(), 'multiple' => true, 'expanded' => true)));
-            $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));   
+            $this->setValidator($hash, new sfValidatorChoice(array('choices' => array_keys($this->getAcheteurs()), 'multiple' => true, 'required' => false)));
             $this->getWidget($hash)->setLabel(
-                sprintf("%s - %s - %s", 
+                sprintf("%s - %s - %s",
                     ParcellaireClient::getAppellationLibelle($cepage->getCouleur()->getLieu()->getAppellation()->getKey()),
                     $lieu_libelle,
                     $cepage->libelle
@@ -82,7 +82,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
     }
 
     public function getAcheteurs() {
-        
+
         return $this->getDocument()->getAcheteursByHash();
     }
 
@@ -98,7 +98,7 @@ class ParcellaireAcheteursForm extends acCouchdbForm {
             if(!is_array($hash_acheteurs)) {
                 continue;
             }
-            
+
             foreach($hash_acheteurs as $hash_acheteur) {
                 $hash_produit = $produits[$hash_produit_value]->getHash();
                 $produit = $this->getDocument()->get($hash_produit);

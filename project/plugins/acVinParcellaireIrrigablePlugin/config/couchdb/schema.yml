@@ -1,0 +1,62 @@
+#PARCELLAIREIRRIGABLE
+ParcellaireIrrigable:
+  definition:
+    fields:
+      _id: { }
+      _rev: { }
+      type: { }
+      campagne: { }
+      identifiant: { }
+      etape: { }
+      validation: { }
+      validation_odg: { }
+      papier: { required: false, type: integer }
+      declarant:
+        type: collection
+        definition:
+          fields:
+            nom: { }
+            raison_sociale: { }
+            cvi: { }
+            ppm: { }
+            siret: { }
+            adresse: { }
+            commune: { }
+            code_postal: { }
+            telephone: { }
+            fax: { }
+            email: { }
+      declaration:
+        type: collection
+        class: ParcellaireIrrigableDeclaration
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: ParcellaireIrrigableProduit
+              definition:
+                fields:
+                  libelle: { }
+                  detail:
+                    type: collection
+                    definition:
+                      fields:
+                        '*':
+                          type: collection
+                          class: ParcellaireIrrigableProduitDetail
+                          definition:
+                            fields:
+                              superficie: { type: float }
+                              commune: { }
+                              code_postal: { }
+                              section: { }
+                              numero_parcelle: { }
+                              lieu: {  }
+                              cepage: {  }
+                              departement: {  }
+                              active: { type: integer }
+                              vtsgn: { type: integer }
+                              annee_plantation: {  }
+                              materiel: {  }
+                              ressource: {  }
+                              observations: {  }
