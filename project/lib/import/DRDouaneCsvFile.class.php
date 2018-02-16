@@ -164,7 +164,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         }
         return $csv;
     }
-    
+
     public static function convertByDonnees($dr) {
     	if (!$dr->exist('donnees') || count($dr->donnees) < 1) {
     		return null;
@@ -185,7 +185,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	$drInfos[] = $etablissement->raison_sociale;
     	$drInfos[] = null;
     	$drInfos[] = $etablissement->siege->commune;
-    	
+
     	foreach ($dr->donnees as $donnee) {
     		if ($produit = $configuration->declaration->get($donnee->produit)) {
     			$p = array();
@@ -228,4 +228,5 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	}
         return $csv;
     }
+
 }
