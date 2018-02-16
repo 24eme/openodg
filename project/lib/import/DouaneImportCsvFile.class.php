@@ -3,12 +3,14 @@
 class DouaneImportCsvFile {
 
     protected $filePath = null;
+    protected $doc = null;
     protected $campagne = null;
     protected $configuration = null;
 
-    public function __construct($filePath, $campagne = null) {
+    public function __construct($filePath, $doc = null) {
         $this->filePath = $filePath;
-        $this->campagne = ($campagne)? $campagne : date('Y');
+        $this->doc = $doc;
+        $this->campagne = ($doc)? $doc->campagne : date('Y');
         $this->configuration = ConfigurationClient::getConfiguration();
     }
 
