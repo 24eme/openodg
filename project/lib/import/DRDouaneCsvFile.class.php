@@ -181,6 +181,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	$produits = array();
     	$drInfos[] = DRCsvFile::CSV_TYPE_DR;
     	$drInfos[] = $dr->campagne;
+    	$drInfos[] = $etablissement->identifiant;
     	$drInfos[] = $etablissement->cvi;
     	$drInfos[] = $etablissement->raison_sociale;
     	$drInfos[] = null;
