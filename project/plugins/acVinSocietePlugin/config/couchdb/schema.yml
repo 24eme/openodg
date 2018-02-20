@@ -5,14 +5,18 @@ Societe:
       _id: { }
       _rev: { }
       type: { }
+
       identifiant: { }
+      mot_de_passe: { }
+
       type_societe: { }
       raison_sociale: { }
       raison_sociale_abregee: { }
       statut: { }
+
       code_comptable_client: { }
       code_comptable_fournisseur: { }
-      teledeclaration_email: { required: false }
+
       paiement_douane_moyen: { required: false }
       paiement_douane_frequence: { required: false }
       type_fournisseur:
@@ -21,15 +25,26 @@ Societe:
         definition:
           fields:
             '*': { }
+
       code_naf: { }
       siret: { }
+      no_tva_intracommunautaire: { }
+      insee:  { },
+
       interpro: { }
       date_modification: { required: false }
       date_creation: { required: false}
-      no_tva_intracommunautaire: { }
+
+      teledeclaration_email: { required: false }
       email: {  }
-      telephone: {  }
-      fax: {  }
+      telephone_perso: { }
+      telephone_bureau: { }
+      telephone_mobile: { }
+      fax: { }
+      site_internet: { }
+      lat: { }
+      lon: { }
+
       commentaire: { }
       siege:
         type: collection
@@ -50,7 +65,7 @@ Societe:
               definition:
                 fields:
                   label: { }
-      compte_societe: { }
+
       contacts:
         type: collection
         definition:
@@ -59,8 +74,8 @@ Societe:
               type: collection
               definition:
                 fields:
-                  nom: {}
-                  ordre: {}
+                  nom: { }
+                  ordre: { } # champs à virer
       etablissements :
         type: collection
         definition:
@@ -70,5 +85,9 @@ Societe:
               definition:
                 fields:
                   nom: {}
-                  ordre: {}
-
+                  cvi: {}
+                  ppm: {}
+                  ordre: { } # champs à virer
+      # champs à virer après le merge
+      telephone: {  } # champs à virer
+      compte_societe: { } # champs à virer

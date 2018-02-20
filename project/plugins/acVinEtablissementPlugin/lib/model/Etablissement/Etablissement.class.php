@@ -74,17 +74,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
       return $this->_set('compte', $c);
     }
 
-    public function getMasterCompte() {
-        if ($this->compte) {
-            return $this->getSociete()->getCompte($this->compte);
-        }
-        return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
-    }
-
-    public function getContact() {
-
-        return $this->getMasterCompte();
-    }
 
     public function getSociete() {
       if (!$this->societe) {
@@ -107,18 +96,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return $this->isSameContactThan($this->getSociete()->getMasterCompte());
     }
 
-    public function isSameCompteThanSociete() {
-
-        return ($this->compte == $this->getSociete()->compte_societe);
-    }
-
-    public function getNumCompteEtablissement() {
-        if (!$this->compte)
-            return null;
-        if ($this->compte != $this->getSociete()->compte_societe)
-            return $this->compte;
-        return null;
-    }
 
     public function getNoTvaIntraCommunautaire() {
         $societe = $this->getSociete();
@@ -255,42 +232,6 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
     public function save() {
         $societe = $this->getSociete();
-
-        if(!$this->getCompte()){
-            $this->compte = $societe->getMasterCompte()->_id;
-        }
-
-
-        if(!$this->isSameAdresseThanSociete() || !$this->isSameContactThanSociete()){
-            if ($this->isSameCompteThanSociete()) {
-                $compte = $societe->createCompteFromEtablissement($this);
-                $compte->addOrigine($this->_id);
-            } else {
-                $compte = $this->getMasterCompte();
-            }
-
-            $this->pushContactAndAdresseTo($compte);
-
-            $compte->id_societe = $this->getSociete()->_id;
-            $compte->nom = $this->nom;
-
-            $this->compte = $compte->_id;
-        } else if(!$this->isSameCompteThanSociete()){
-            $compteEtablissement = $this->getMasterCompte();
-            $compteSociete = $this->getSociete()->getMasterCompte();
-
-            $this->compte = $compteSociete->_id;
-            $this->getSociete()->removeContact($compteEtablissement->_id);
-            $compteEtablissement = $this->compte;
-        }
-
-        if($this->isSameAdresseThanSociete()) {
-            $this->pullAdresseFrom($this->getSociete()->getMasterCompte());
-        }
-        if($this->isSameContactThanSociete()) {
-            $this->pullContactFrom($this->getSociete()->getMasterCompte());
-        }
-        $this->initFamille();
         $this->raison_sociale = $societe->raison_sociale;
         $this->interpro = "INTERPRO-declaration";
         if(class_exists("VracConfiguration") && VracConfiguration::getInstance()->getRegionDepartement() !== false) {
@@ -300,19 +241,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         if($this->isNew()) {
             $societe->addEtablissement($this);
         }
-
         parent::save();
-
-        if($this->getMasterCompte()->_id == $societe->getMasterCompte()->_id){
-          $societe->setStatut($this->getStatut());
-          $this->getMasterCompte()->setStatut($this->getStatut());
-        }
-
-        $societe->save();
-
-        if(!$this->isSameCompteThanSociete()) {
-            $compte->save();
-        }
     }
 
     public function delete() {
@@ -445,12 +374,32 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         return $this->famille == $famille;
     }
-    
+
     public function getSiret() {
     	if (!$this->_get('siret')) {
     		$this->siret = $this->getSociete()->getSiret();
     	}
     	return $this->_get('siret');
     }
+
+
+    /**** FONCTIONS A RETIRER APRES LE MERGE ****/
+        public function getMasterCompte() {
+            if ($this->compte) {
+                return $this->getSociete()->getCompte($this->compte);
+            }
+            return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
+        }
+
+        public function getContact() {
+
+            return $this->getMasterCompte();
+        }
+
+      public function isSameCompteThanSociete() {
+
+        return ($this->compte == $this->getSociete()->compte_societe);
+    }
+
 
 }

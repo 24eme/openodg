@@ -15,7 +15,6 @@ interface InterfaceCompteGenerique
     public function getAdresseComplementaire();
 
     public function setEmail($email);
-    public function setTelephone($phone);
     public function setTelephonePerso($s);
     public function setTelephoneMobile($s);
     public function setTelephoneBureau($tel);
@@ -23,7 +22,6 @@ interface InterfaceCompteGenerique
     public function setFax($fax);
 
     public function getEmail();
-    public function getTelephone();
     public function getTelephoneBureau();
     public function getTelephonePerso();
     public function getTelephoneMobile();

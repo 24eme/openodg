@@ -109,22 +109,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $regions;
     }
 
-    public function getEtablissementsObj($withSuspendu = true) {
-        $etablissements = array();
-        foreach ($this->etablissements as $id => $obj) {
-            $etb = EtablissementClient::getInstance()->find($id);
-            if (!$withSuspendu) {
-                if (!$etb->isActif()) {
-                    continue;
-                }
-            }
-            $etablissements[$id] = new stdClass();
-            $etablissements[$id]->etablissement = $etb;
-            $etablissements[$id]->ordre = $obj->ordre;
-        }
-        return $etablissements;
-    }
-
     public function getEtablissementsObject($withSuspendu = true) {
         $etablissements = array();
         foreach ($this->etablissements as $id => $obj) {
@@ -140,19 +124,14 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
     }
 
     public function getEtablissementPrincipal() {
-        $etablissements = $this->getEtablissementsObj();
+        $etablissements = $this->getEtablissementsObject();
         if (!count($etablissements)) {
             return null;
         }
         foreach ($etablissements as $id => $etbObj) {
-            $etablissement = $etbObj->etablissement;
-            $compte = $this->getCompte($etablissement->compte);
-            if ($compte->compte_type == CompteClient::TYPE_COMPTE_SOCIETE) {
-                return $etablissement;
-            }
+            return $etbObj;
         }
-        $etbObj = array_shift($etablissements);
-        return $etbObj->etablissement;
+        return null;
     }
 
     public function getContactsObj() {
@@ -178,17 +157,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       unset($this->comptes[$compte->_id]);
     }
 
-    public function getComptesAndEtablissements() {
-        $contacts = array();
-        foreach ($this->getEtablissementsObj() as $id => $obj) {
-          $contacts[$id] = EtablissementClient::getInstance()->find($id);
-        }
-        foreach ($this->getContactsObj() as $id => $obj) {
-            $contacts[$id] = $obj;
-        }
-
-        return $contacts;
-    }
 
     public function getCompte($id) {
         $this->getContactsObj();
@@ -199,18 +167,13 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $this->comptes[$id];
     }
 
-    public function addEtablissement($e, $ordre = null) {
+    public function addEtablissement($e) {
         if (!$this->etablissements->exist($e->_id)) {
-            $this->etablissements->add($e->_id, array('nom' => $e->nom, 'ordre' => $ordre));
+            $this->etablissements->add($e->_id, array('nom' => $e->nom, 'cvi' => $e->cvi, 'ppm' => $e->ppm));
         } else {
             $this->etablissements->add($e->_id)->nom = $e->nom;
-            if ($ordre !== null) {
-                $ordre = 0;
-            }
-            $this->etablissements->add($e->_id)->ordre = $ordre;
-        }
-        if ($e->compte) {
-            $this->addCompte($e->getMasterCompte(), $ordre);
+            $this->etablissements->add($e->_id)->cvi = $e->cvi;
+            $this->etablissements->add($e->_id)->ppm = $e->ppm;
         }
     }
 
@@ -335,6 +298,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $a;
     }
 
+// A VIRER
     protected function createCompteSociete() {
         if ($this->compte_societe) {
             return $this->getCompte($this->compte_societe);
@@ -373,10 +337,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
 
     public function save() {
         $this->interpro = "INTERPRO-declaration";
-        $compteMaster = $this->getMasterCompte();
-        if (!$compteMaster) {
-            $compteMaster = $this->createCompteSociete();
-        }
 
         if(count($this->etablissements)){
           $this->type_societe = SocieteClient::TYPE_OPERATEUR;
@@ -384,51 +344,8 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
           $this->type_societe = SocieteClient::TYPE_AUTRE;
         }
         parent::save();
-
-        SocieteClient::getInstance()->setSingleton($this);
-
-        $compteMasterOrigin = clone $compteMaster;
-        $this->pushToCompteOrEtablissementAndSave($compteMaster, $compteMaster);
-
-        foreach ($this->etablissements as $id => $obj) {
-            $this->pushToCompteOrEtablissementAndSave($compteMaster, EtablissementClient::getInstance()->find($id), $compteMasterOrigin);
-        }
-
-        foreach ($this->getContactsObj() as $id => $compte) {
-            $this->pushToCompteOrEtablissementAndSave($compteMaster, $compte, $compteMasterOrigin);
-        }
-
     }
 
-    public function pushToCompteOrEtablissementAndSave($compteMaster, $compteOrEtablissement, $compteMasterOrigin = null) {
-        $needSave = false;
-        if(is_null($compteMasterOrigin)) {
-            $compteMasterOrigin = $compteMaster;
-        }
-        if (!$compteMaster) {
-          throw new sfException("compteMaster should not be NULL");
-        }
-        if (!$compteOrEtablissement) {
-          throw new sfException("compteOrEtablissement should not be NULL");
-        }
-        if ($compteMaster->_id == $compteOrEtablissement->_id) {
-            if ($compteOrEtablissement->nom != $this->raison_sociale) {
-              $compteOrEtablissement->nom = $this->raison_sociale;
-            }
-            $needSave = true;
-        }
-        if (CompteGenerique::isSameAdresseComptes($compteOrEtablissement, $compteMasterOrigin)) {
-            $ret = $this->pushAdresseTo($compteOrEtablissement);
-            $needSave = $needSave || $ret;
-        }
-        if (CompteGenerique::isSameContactComptes($compteOrEtablissement, $compteMasterOrigin)) {
-            $ret = $this->pushContactTo($compteOrEtablissement);
-            $needSave = $needSave || $ret;
-        }
-        if ($needSave) {
-            $compteOrEtablissement->save();
-        }
-    }
 
     public function isPresse() {
         return $this->exist('type_societe') && ($this->type_societe == SocieteClient::TYPE_PRESSE);
@@ -510,7 +427,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
           $etablissement->famille = $famille;
       }
       $etablissement->constructId();
-      $societeSingleton->pushContactAndAdresseTo($etablissement);
       return $etablissement;
     }
 
@@ -542,5 +458,125 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       $this->setStatut($newStatus);
       $this->save();
     }
+
+
+    /*** IMPLEMENTATION InterfaceCompteGenerique ***/
+
+    public function setAdresse($adresse){
+      $this->getOrAdd('siege')->adresse = $adresse;
+    }
+
+    public function setCommune($commune){
+      $this->getOrAdd('siege')->commune = $commune;
+    }
+    public function setCodePostal($code_postal){
+      $this->getOrAdd('siege')->code_postal = $code_postal;
+    }
+    public function setPays($pays){
+      $this->getOrAdd('siege')->pays = $pays;
+    }
+    public function setAdresseComplementaire($adresse_complementaire){
+      $this->getOrAdd('siege')->adresse_complementaire = $adresse_complementaire;
+    }
+
+    public function getAdresse(){
+      if(!$this->siege){
+        return null;
+      }
+      return $this->siege->adresse;
+    }
+
+    public function getCommune(){
+      if(!$this->siege){
+        return null;
+      }
+      return $this->siege->commune;
+    }
+
+    public function getCodePostal(){
+        if(!$this->siege){
+        return null;
+      }
+      return $this->siege->code_postal;
+    }
+
+    public function getPays(){
+      if(!$this->siege){
+        return null;
+      }
+      return $this->siege->pays;
+    }
+
+    public function getAdresseComplementaire(){
+      if(!$this->siege){
+        return null;
+      }
+      return $this->siege->adresse_complementaire;
+    }
+
+    public function setEmail($email){
+      $this->email = $email;
+    }
+
+    public function setTelephonePerso($telephone_perso){
+      $this->telephone_perso = $telephone_perso;
+    }
+
+    public function setTelephoneMobile($telephone_mobile){
+      $this->telephone_mobile = $telephone_mobile;
+    }
+
+    public function setTelephoneBureau($telephone_bureau){
+      $this->telephone_bureau = $telephone_bureau;
+    }
+
+    public function setSiteInternet($site_internet){
+      $this->site_internet = $site_internet;
+    }
+
+    public function setFax($fax){
+      $this->fax = $fax;
+    }
+
+    public function getEmail(){
+      return ($this->exist("email"))? $this->_get("email") : ""; //TODO : a supprimer après le merge
+      return $this->email;
+    }
+    public function getTelephoneBureau(){
+      return $this->telephone_bureau;
+    }
+    public function getTelephonePerso(){
+      return $this->telephone_perso;
+    }
+    public function getTelephoneMobile(){
+      return $this->telephone_mobile;
+    }
+    public function getSiteInternet(){
+      return $this->site_internet;
+    }
+    public function getFax(){
+      return ($this->exist("fax"))? $this->_get("fax") : ""; //TODO : a supprimer après le merge
+      return $this->fax;
+    }
+
+    /*** FIN IMPLEMENTATION InterfaceCompteGenerique ***/
+
+    /*** TODO : Fonctions à retirer après le merge ****/
+    public function getEtablissementsObj($withSuspendu = true) {
+        $etablissements = array();
+        foreach ($this->etablissements as $id => $obj) {
+            $etb = EtablissementClient::getInstance()->find($id);
+            if (!$withSuspendu) {
+                if (!$etb->isActif()) {
+                    continue;
+                }
+            }
+            $etablissements[$id] = new stdClass();
+            $etablissements[$id]->etablissement = $etb;
+            $etablissements[$id]->ordre = $obj->ordre;
+        }
+        return $etablissements;
+    }
+
 
 }

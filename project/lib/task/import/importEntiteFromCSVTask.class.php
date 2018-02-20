@@ -5,6 +5,7 @@ class importEntitesFromCSVTask extends sfBaseTask
 
     protected $file_path = null;
     protected $chaisAttributsInImport = array();
+    protected $isSuspendu = false;
 
     const CSV_OLDID = 0;
     const CSV_TITRE = 1;
@@ -98,10 +99,13 @@ EOF;
             $oldId = $data[self::CSV_OLDID];
             $identifiant = sprintf("%06d",intval(preg_replace("/CDP/","",$oldId)));
 
+            $this->isSuspendu = ($data[self::CSV_ETAT] == "Archivé");
+
             $soc = SocieteClient::getInstance()->find($identifiant);
             if(!$soc){
                 $soc = $this->importSociete($data,$identifiant);
                 $etb = $this->importEtablissement($soc,$data,$identifiant);
+                $etb = EtablissementClient::getInstance()->find($etb->_id);
                 $this->addChaiForEtablissement($etb,$data);
             }else{
               $etb = $soc->getEtablissementPrincipal();
@@ -139,16 +143,15 @@ EOF;
               $societe->siege->pays = ($data[self::CSV_ADRESSE_3])? $data[self::CSV_ADRESSE_3] : 'Autre Pays';
             }
 
-            $societe->telephone = $data[self::CSV_TELEPHONE];
+            $societe->telephone_bureau = $data[self::CSV_TELEPHONE];
             $societe->fax = $data[self::CSV_FAX];
             $societe->email = $data[self::CSV_EMAIL];
 
-            if($data[self::CSV_ETAT] == "Archivé"){
+            if($this->isSuspendu){
               $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
             }else{
               $societe->setStatut(SocieteClient::STATUT_ACTIF);
             }
-
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
             return $societe;
@@ -164,19 +167,40 @@ EOF;
           $etablissement->cvi = $cvi;
           $etablissement->nom = $this->buildRaisonSociete($data);
           $etablissement->save();
+          if($this->isSuspendu){
+            $etablissement->setStatut(SocieteClient::STATUT_SUSPENDU);
+          }else{
+            $etablissement->setStatut(SocieteClient::STATUT_ACTIF);
+          }
 
-          $compte = $societe->getMasterCompte();
-          $compte->nom = $this->buildRaisonSociete($data);
-          $compte->updateNomAAfficher();
-          $compte->email = $societeCommunication[self::CSV_EMAIL];
-          $compte->telephone = $societeCommunication[self::CSV_TELEPHONE];
-          $compte->telephone_mobile = $societeCommunication[self::CSV_PORTABLE];
 
-          $compte->fonction = "";
-          $compte->num_interne = $identifiant;
-          $compte->save();
+          // $compte->nom = $this->buildRaisonSociete($data);
+          // $compte->updateNomAAfficher();
+          // $compte->email = $societeCommunication[self::CSV_EMAIL];
+          // $compte->telephone = $societeCommunication[self::CSV_TELEPHONE];
+          // $compte->telephone_mobile = $societeCommunication[self::CSV_PORTABLE];
+          //
+          // $compte->fonction = "";
+          // $compte->num_interne = $identifiant;
+          //
+          // $compte->save();
+          //
+          // $compte = CompteClient::getInstance()->find($compte->_id);
+          //
+          // if($this->isSuspendu){
+          //   $compte->setStatut(SocieteClient::STATUT_SUSPENDU);
+          // }else{
+          //   $compte->setStatut(SocieteClient::STATUT_ACTIF);
+          // }
+          // $compte->save();
 
-          echo "L'entité $identifiant CVI (".$cvi.")  Compte =>  $compte->_id \n";
+          echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id";
+          echo ($this->isSuspendu)? " SUSPENDU \n" : " ACTIF \n";
+          $etablissement->save();
+          $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
+
+          $societe->addEtablissement($etablissement);
+          $societe->save();
           return $etablissement;
 
         }

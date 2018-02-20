@@ -25,3 +25,11 @@ bash bin/delete_from_view.sh http://127.0.0.1:5984/odgprovence/_design/declarati
 php symfony import:parcellaire-from-csv /tmp/20170105_modele_extraction_CVI.csv --application="provence"
 #fichier sur le cloud en csv
 # pathCloud/(... path donnees provence)/20170105_modele_extraction_CVI.csv
+
+sudo service logstash stop
+sudo pkill -9 -u logstash
+
+ps aux | grep logsta
+
+sudo rm /var/lib/logstash/odgprovence_couchdb_seq
+sudo service logstash start
