@@ -43,12 +43,16 @@ body {
 }
 
 .page-header {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 h2, h3{
     color: #c50069;
+}
+
+.panel-body > h2  {
+    margin-top: 5px;
 }
 
 h3 {
@@ -110,4 +114,12 @@ h3 {
 
 .nav-step ul.navbar-nav li:first-child {
     border-left: 1px solid #dbd3c8;
+}
+
+.list-group-item.active-bordered {
+    border-left: 6px solid #c50069 !important;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #c50069;
 }
