@@ -443,6 +443,9 @@
 
     $.initModal = function () {
         $('.modal.modal-page').modal({keyboard: false, backdrop: 'static'});
+        if($('.modal').find('.has-error').length !== 0) {
+        	$('.modal').modal('show');
+        }
     }
 
     $.initCheckboxBtnGroup = function() {
