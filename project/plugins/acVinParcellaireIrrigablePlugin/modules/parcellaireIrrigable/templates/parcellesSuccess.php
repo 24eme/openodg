@@ -2,7 +2,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'parcelles', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables <small>Merci de selectionner vos parcelles irrigables</small></h2>
+    <h2>Parcelles irrigables sur votre exploitation <small>Merci de selectionner vos parcelles irrigables</small></h2>
 </div>
 
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
