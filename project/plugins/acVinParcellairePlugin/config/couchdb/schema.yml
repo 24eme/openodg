@@ -93,15 +93,15 @@ Parcellaire:
                               code_postal: { }
                               section: { }
                               numero_parcelle: { }
-                              lieu: {  }
-                              cepage: {  }
-                              departement: {  }
+                              lieu: { }
+                              cepage: { }
+                              campagne_plantation: { }
+                              departement: { }
                               active: { type: integer }
                               vtsgn: { type: integer }
                               code_insee: { required: false }
                               ecart_rang: { required: false }
                               ecart_pieds: { required: false }
-                              campagne_plantation: { required: false }
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
       pieces:
