@@ -295,8 +295,8 @@
 
         $('tr td').click(function (event) {
             if (!$(this).hasClass('edit')) {
-                var value = ($(this).parent().find('td.bootstrap-switch-off .bsswitch').val() == 'on');
-                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', value, false);
+                var value = $(this).parent().find('.bsswitch').is(':checked');
+                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
             }
         });
     }

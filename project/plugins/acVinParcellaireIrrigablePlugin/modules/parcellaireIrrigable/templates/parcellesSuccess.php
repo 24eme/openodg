@@ -22,7 +22,7 @@
 		</thead>
 		<tbody>
 		<?php foreach ($parcellesProduit->detail as $parcelleKey => $detail): ?>
-			<tr >
+			<tr style="cursor: pointer;">
 				<td class="col-xs-3"><?php echo $detail->commune; ?></td>
 				<td class="col-xs-1 text-right"><?php echo $detail->section;  ?></td>
 				<td class="col-xs-1 text-right"><?php echo $detail->numero_parcelle;  ?></td>
