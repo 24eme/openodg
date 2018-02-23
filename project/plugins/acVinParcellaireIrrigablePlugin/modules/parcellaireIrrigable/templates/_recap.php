@@ -22,7 +22,7 @@
             	<td class="col-xs-2"><?php echo $subvalue->section; ?> / <?php echo $subvalue->numero_parcelle; ?></td>
             	<td class="col-xs-2"><?php echo $subvalue->cepage;  ?></td>
             	<td class="col-xs-1"> <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $subvalue->superficie); ?></td>
-            	<td class="col-xs-1"><?php echo $subvalue->annee_plantation; ?></td>
+            	<td class="col-xs-1"><?php echo $subvalue->campagne_plantation; ?></td>
             	<td class="col-xs-1"><?php echo $subvalue->materiel; ?></td>
             	<td class="col-xs-1"><?php echo $subvalue->ressource; ?></td>
             	<td class="col-xs-2"><?php echo $subvalue->observations; ?></td>

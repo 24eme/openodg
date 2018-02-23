@@ -57,7 +57,7 @@ ParcellaireIrrigable:
                               departement: {  }
                               active: { type: integer }
                               vtsgn: { type: integer }
-                              annee_plantation: {  }
+                              campagne_plantation: {  }
                               materiel: {  }
                               ressource: {  }
                               observations: {  }
