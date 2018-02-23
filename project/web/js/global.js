@@ -299,6 +299,12 @@
                 $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
             }
         });
+        
+        $('.bootstrap-switch-activeall').click(function (event) {
+        	$($(this).data('target')).find('.bsswitch').each(function () {
+        		$(this).bootstrapSwitch('state', true, false);
+        	});
+        });
     }
 
     /**

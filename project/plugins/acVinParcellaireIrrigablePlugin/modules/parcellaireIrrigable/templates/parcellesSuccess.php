@@ -9,7 +9,8 @@
 
 <?php foreach ($parcellaireIrrigable->getParcellesFromLastParcellaire() as $produitKey => $parcellesProduit): ?>
 	<h3><?php echo $parcellesProduit->libelle; ?></h3>
-    <table class="table table-bordered table-condensed table-striped">
+	<p class="text-right"><small><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#<?php echo str_replace('/', '-', $produitKey); ?>"><span class='glyphicon glyphicon-ok-sign'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a></small></p>
+    <table id="<?php echo str_replace('/', '-', $produitKey); ?>" class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
                 <th class="col-xs-3">Commune</th>
