@@ -59,8 +59,8 @@ $etablissement->save();
 $t->is($societe->raison_sociale, $nomSociete, "La raison sociale de la société est toujours :  \"".$nomSociete."\"");
 $t->is($societe->getMasterCompte()->nom, $societe->raison_sociale, "Le nom du compte et de la société sont identiques");
 $t->is($societe->getMasterCompte()->nom, $societe->getMasterCompte()->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte sont identiques");
-$t->is($societe->getMasterCompte()->_id, $etablissement->getMasterCompte()->_id, "La société et l'établissement ont le même id");
-$t->ok(in_array("etablissement", CompteClient::getInstance()->find($societe->getMasterCompte()->_id)->tags->automatique->toArray(true, false)), "Le compte de la société possède le tag \"etablissement\"");
+$t->isnt($societe->getMasterCompte()->_id, $etablissement->getMasterCompte()->_id, "La société et l'établissement ont le même id");
+$t->ok(!in_array("etablissement", CompteClient::getInstance()->find($societe->getMasterCompte()->_id)->tags->automatique->toArray(true, false)), "Le compte de la société ne possède pas le tag \"etablissement\"");
 
 $t->comment("Test synchro des suspension");
 
@@ -69,8 +69,9 @@ $etablissement->statut = CompteClient::STATUT_SUSPENDU;
 $etablissement->save();
 
 $etbCompte = $etablissement->getMasterCompte();
-$t->is($etablissement->getSociete()->statut, CompteClient::STATUT_SUSPENDU, "La société de l'établissement est suspendu");
+$t->is($etablissement->getSociete()->statut, CompteClient::STATUT_ACTIF, "La société de l'établissement n'est pas suspendu");
 $t->is($etablissement->statut, CompteClient::STATUT_SUSPENDU, "L'établissement est suspendu");
+
 $t->is($etbCompte->statut, CompteClient::STATUT_SUSPENDU, "Le compte est suspendu");
 
 
@@ -91,7 +92,7 @@ $societe->save();
 $t->is($societe->raison_sociale, $nomModifieSociete, "La raison sociale de la société est :  \"".$nomModifieSociete."\"");
 $t->is($societe->getMasterCompte()->nom, $societe->raison_sociale, "Le nom du compte et de la société sont identiques");
 $t->is($societe->getMasterCompte()->nom, $societe->getMasterCompte()->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte sont identiques");
-$t->is($societe->getMasterCompte()->_id, $etablissement->getMasterCompte()->_id, "La société et l'établissement ont toujours le même id");
+$t->isnt($societe->getMasterCompte()->_id, $etablissement->getMasterCompte()->_id, "La société et l'établissement ont des comptes bien séparés");
 
 $t->comment("Dissociation du compte d'établissement et de la société");
 
