@@ -127,14 +127,8 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
 
     public function getEtablissementsObject($withSuspendu = true) {
         $etablissements = array();
-        foreach ($this->etablissements as $id => $obj) {
-            $etb = EtablissementClient::getInstance()->find($id);
-            if (!$withSuspendu) {
-                if (!$etb->isActif()) {
-                    continue;
-                }
-            }
-            $etablissements[$id] = $etb;
+        foreach ($this->getEtablissementsObj($withSuspendu) as $id => $obj) {
+            $etablissements[$id] = $obj->etablissement;
         }
         return $etablissements;
     }
@@ -155,7 +149,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $etbObj->etablissement;
     }
 
-    public function getContactsObj() {
+    public function getAllCompteObj() {
       if (!$this->comptes && !count($this->comptes)) {
         foreach ($this->contacts as $id => $obj) {
           $compteToAdd = CompteClient::getInstance()->find($id);
@@ -177,7 +171,7 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
       $this->comptes[$compte->_id] = $compte;
     }
     private function removeFromComptes($compte) {
-      $this->getContactsObj();
+      $this->getAllCompteObj();
       unset($this->comptes[$compte->_id]);
     }
 
@@ -186,15 +180,26 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         foreach ($this->getEtablissementsObj() as $id => $obj) {
           $contacts[$id] = EtablissementClient::getInstance()->find($id);
         }
-        foreach ($this->getContactsObj() as $id => $obj) {
+        foreach ($this->getAllCompteObj() as $id => $obj) {
             $contacts[$id] = $obj;
         }
 
         return $contacts;
     }
 
+    public function getComptesInterlocuteurs() {
+        $Interlocuteurs = array();
+        foreach ($this->getAllCompteObj() as $id => $compte) {
+          if($compte->compte_type != CompteClient::TYPE_COMPTE_INTERLOCUTEUR) {
+              continue;
+          }
+          $Interlocuteurs[$id] = $compte;
+        }
+        return $Interlocuteurs;
+    }
+
     public function getCompte($id) {
-        $this->getContactsObj();
+        $this->getAllCompteObj();
         if (!isset($this->comptes[$id]) || !$this->comptes[$id]) {
           $this->comptes[$id] = CompteClient::getInstance()->findByIdentifiant($this->identifiant);
             //throw new sfException("Pas de compte ".$id);
@@ -388,12 +393,8 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
             $this->pushToCompteOrEtablissementAndSave($compteMaster, EtablissementClient::getInstance()->find($id), $compteMasterOrigin);
         }
 
-        foreach ($this->getContactsObj() as $id => $compte) {
-          if($compte->compte_type != CompteClient::TYPE_COMPTE_INTERLOCUTEUR) {
-              continue;
-          }
-
-          $this->pushToCompteOrEtablissementAndSave($compteMaster, $compte, $compteMasterOrigin);
+        foreach ($this->getComptesInterlocuteurs() as $id => $compte) {
+            $this->pushToCompteOrEtablissementAndSave($compteMaster, $compte, $compteMasterOrigin);
         }
     }
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * BaseSociete
- * 
+ *
  * Base model for Societe
  *
  * @property string $_id
@@ -113,13 +113,13 @@
  * @method acCouchdbJson setContacts()
  * @method acCouchdbJson getEtablissements()
  * @method acCouchdbJson setEtablissements()
- 
+
  */
- 
-abstract class BaseSociete extends acCouchdbDocument {
+
+abstract class BaseSociete extends CompteGenerique {
 
     public function getDocumentDefinitionModel() {
         return 'Societe';
     }
-    
+
 }
