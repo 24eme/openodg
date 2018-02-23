@@ -116,11 +116,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $commune, $section , $numero_parcelle, $lieu = null, $dpt = null) {
-        $cepage = KeyInflector::slugify($cepage);
-        $commune = KeyInflector::slugify($commune);
-        $section = KeyInflector::slugify($section);
-        $numero_parcelle = KeyInflector::slugify($numero_parcelle);
+    public function addParcelle($cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
         $key = KeyInflector::slugify($cepage.'-'.$commune . '-' . $section . '-' . $numero_parcelle);
 
         if ($lieu) {
@@ -132,6 +128,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         }
 
         $detail = $this->detail->add($key);
+        $detail->cepage = $cepage;
         $detail->commune = $commune;
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
