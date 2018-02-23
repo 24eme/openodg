@@ -222,6 +222,7 @@
         if ($('.select2permissifNoAjax').length) {
         	$('.select2permissifNoAjax').each(function() {
         	    var element = $(this);
+        	    var complement = (element.attr('data-new'))? element.attr('data-new') : 'nouveau';
         	    element.select2({
 	                data: JSON.parse(element.attr('data-choices')),
 	                multiple: false,
@@ -231,7 +232,7 @@
 	                    if ($(data).filter(function () {
 	                        return this.text.localeCompare(this.text) === 0;
 	                    }).length === 0) {
-	                        return {id: term, text: term + ' (nouveau)'};
+	                        return {id: term, text: term + ' ('+complement+')'};
 	                    }
 	                }
 	            });

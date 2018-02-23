@@ -14,10 +14,10 @@
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-                <th class="col-xs-6">Parcelle</th>
+                <th class="col-xs-4">Parcelle</th>
                 <th class="col-xs-1">Année de plantation</th>
-                <th class="col-xs-1">Type de matériel</th>
-                <th class="col-xs-1">Type de ressource</th>
+                <th class="col-xs-2">Type de matériel</th>
+                <th class="col-xs-2">Type de ressource</th>
                 <th class="col-xs-3">Observations</th>
             </tr>
 		</thead>
@@ -27,21 +27,21 @@
 			if (isset($form[$key][$subkey])):
 		?>
 			<tr >
-				<td class="col-xs-6"><?php echo $subvalue->commune; ?> - <?php echo $subvalue->section;  ?> / <?php echo $subvalue->numero_parcelle;  ?> - <?php echo $subvalue->cepage;  ?> <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $subvalue->superficie); ?></td>
+				<td class="col-xs-4"><?php echo $subvalue->commune; ?> - <?php echo $subvalue->section;  ?> / <?php echo $subvalue->numero_parcelle;  ?> - <?php echo $subvalue->cepage;  ?> <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $subvalue->superficie); ?></td>
             	<td class="col-xs-1"><?php echo $subvalue->campagne_plantation; ?></td>
-            	<td class="col-xs-1">
+            	<td class="col-xs-2">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key][$subkey]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$key][$subkey]['materiel']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$key][$subkey]['materiel']->render(array('class' => 'form-control')) ?>
+                        	<?php echo $form[$key][$subkey]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter un matériel", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$key][$subkey]['materiel']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
-            	<td class="col-xs-1">
+            	<td class="col-xs-2">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key][$subkey]['ressource']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$key][$subkey]['ressource']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$key][$subkey]['ressource']->render(array('class' => 'form-control')) ?>
+                        	<?php echo $form[$key][$subkey]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter une ressource", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$key][$subkey]['ressource']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
