@@ -21,13 +21,33 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function getId($identifiant) {
-        return 'COMPTE-' . sprintf('%08d', $identifiant);
+        return 'COMPTE-' . sprintf('%s', $identifiant);
     }
 
-    public function getNextIdentifiantForSociete($societe) {
+    public function getNextIdentifiantForEtablissementInSociete($societe) {
         $societe_id = $societe->identifiant;
         $comptes = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 0;
+        foreach ($comptes as $id) {
+            if (!preg_match('/COMPTE-[0-9]{6}([0-9]{2})/', $id, $matches)) {
+                continue;
+            }
+
+            $num = $matches[1];
+            if($num > 9){
+              continue;
+            }
+            if ($num > $last_num) {
+                $last_num = $num;
+            }
+        }
+        return sprintf("%06d%02d", $societe_id, $last_num + 1);
+    }
+
+    public function getNextIdentifiantInterlocuteurForSociete($societe) {
+        $societe_id = $societe->identifiant;
+        $comptes = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+        $last_num = 9;
         foreach ($comptes as $id) {
             if (!preg_match('/COMPTE-[0-9]{6}([0-9]{2})/', $id, $matches)) {
                 continue;
@@ -38,7 +58,6 @@ class CompteClient extends acCouchdbClient {
                 $last_num = $num;
             }
         }
-
         return sprintf("%s%02d", $societe_id, $last_num + 1);
     }
 
@@ -112,7 +131,7 @@ class CompteClient extends acCouchdbClient {
            $entrie->text = $grpName;
            $found = false;
           foreach ($groupesActuels as $grpActKey => $grp) {
-             if(Compte::transformTag(sfOutputEscaper::unescape($grp->nom)) == Compte::transformTag(sfOutputEscaper::unescape($grpName))){              
+             if(Compte::transformTag(sfOutputEscaper::unescape($grp->nom)) == Compte::transformTag(sfOutputEscaper::unescape($grpName))){
               $found = true;
              }
           }
@@ -173,13 +192,38 @@ class CompteClient extends acCouchdbClient {
         return $compte;
     }
 
-    public function createCompteFromSociete($societe) {
+    public function createCompteFromSociete($societe,$import = false) {
+      $compte = new Compte();
+      $compte->id_societe = $societe->_id;
+      if($import || !$societe->isNew()) {
+      $societe->pushContactAndAdresseTo($compte);
+      }
+      $compte->identifiant = $societe->identifiant;
+      $compte->constructId();
+      $compte->interpro = 'INTERPRO-declaration';
+      $compte->setStatut(CompteClient::STATUT_ACTIF);
+
+      return $compte;
+    }
+
+    public function createCompteForEtablissementFromSociete($etablissement,$import = false) {
+      $compte = new Compte();
+      $compte->id_societe = $etablissement->getSociete()->_id;
+      if(!$etablissement->isNew()) {
+      $etablissement->pushContactAndAdresseTo($compte);
+      }
+      $compte->identifiant = $etablissement->identifiant;
+      $compte->constructId();
+      $compte->interpro = 'INTERPRO-declaration';
+      $compte->setStatut(CompteClient::STATUT_ACTIF);
+
+      return $compte;
+    }
+
+    public function createCompteInterlocuteurFromSociete($societe) {
         $compte = new Compte();
         $compte->id_societe = $societe->_id;
-        if(!$societe->isNew()) {
-        $societe->pushContactAndAdresseTo($compte);
-        }
-        $compte->identifiant = $this->getNextIdentifiantForSociete($societe);
+        $compte->identifiant = $this->getNextIdentifiantInterlocuteurForSociete($societe);
         $compte->constructId();
         $compte->interpro = 'INTERPRO-declaration';
         $compte->setStatut(CompteClient::STATUT_ACTIF);

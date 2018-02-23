@@ -74,6 +74,21 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
       return $this->_set('compte', $c);
     }
 
+    public function getMasterCompte() {
+      if ($this->compte) {
+          $c = CompteClient::getInstance()->find($this->compte);
+          if($c){
+            return $c;
+          }
+          return $this->getSociete()->getCompte($this->compte);
+      }
+      return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
+    }
+
+    public function getContact() {
+
+        return $this->getMasterCompte();
+    }
 
     public function getSociete() {
       if (!$this->societe) {
@@ -87,12 +102,10 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function isSameAdresseThanSociete() {
-
         return $this->isSameAdresseThan($this->getSociete()->getMasterCompte());
     }
 
     public function isSameContactThanSociete() {
-
         return $this->isSameContactThan($this->getSociete()->getMasterCompte());
     }
 
@@ -231,17 +244,47 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
     public function save() {
+
         $societe = $this->getSociete();
+
+        $compte = $societe->findOrCreateCompteFromEtablissement($this);
+
+        $compte->addOrigine($this->_id);
+
+        $this->pushContactAndAdresseTo($compte);
+
+        $compte->id_societe = $this->getSociete()->_id;
+        $compte->nom = $this->nom;
+        $compte->statut = $this->statut;
+
+        $this->compte = $compte->_id;        
+
+        if($this->isSameAdresseThanSociete()) {
+            $this->pullAdresseFrom($this->getSociete()->getMasterCompte());
+        }
+        if($this->isSameContactThanSociete()) {
+            $this->pullContactFrom($this->getSociete()->getMasterCompte());
+        }
+        $this->initFamille();
         $this->raison_sociale = $societe->raison_sociale;
         $this->interpro = "INTERPRO-declaration";
         if(class_exists("VracConfiguration") && VracConfiguration::getInstance()->getRegionDepartement() !== false) {
             $this->region = EtablissementClient::getInstance()->calculRegion($this);
         }
 
+        $needSocieteSave = false;
         if($this->isNew()) {
-            $societe->addEtablissement($this);
+          $needSocieteSave = true;
+          $societe->addEtablissement($this);
         }
         parent::save();
+
+        $this->getMasterCompte()->setStatut($this->getStatut());
+
+        if($needSocieteSave) {
+            $societe->save();
+        }
+        $compte->save();
     }
 
     public function delete() {
@@ -384,17 +427,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
 
     /**** FONCTIONS A RETIRER APRES LE MERGE ****/
-        public function getMasterCompte() {
-            if ($this->compte) {
-                return $this->getSociete()->getCompte($this->compte);
-            }
-            return $this->getSociete()->getCompte($this->getSociete()->compte_societe);
-        }
 
-        public function getContact() {
-
-            return $this->getMasterCompte();
-        }
 
       public function isSameCompteThanSociete() {
 
