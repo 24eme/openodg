@@ -97,68 +97,68 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return $parcellaire;
   }
 
-  public function getParcellesFromLastParcellaire() {
-      $parcellaireCurrent = $this->getParcellaireCurrent();
-      if (!$parcellaireCurrent) {
+    public function getParcellesFromLastParcellaire() {
+        $parcellaireCurrent = $this->getParcellaireCurrent();
+        if (!$parcellaireCurrent) {
           return;
-      }
+        }
 
-      return $parcellaireCurrent->declaration;
-  }
-  
-  public function addParcellesFromParcellaire(array $hashes) {
-  	$parcellaire = $this->getParcellesFromLastParcellaire();
-  	$remove = array();
-  	foreach ($this->declaration as $key => $value) {
-  		foreach ($value->detail as $subkey => $subvalue) {
-  			if (!in_array($subvalue->getHash(), $hashes)) {
-  				$remove[] = $subvalue->getHash();
-  			}
-  		}
-  	}
-  	foreach ($remove as $r) {
-  		$this->declaration->remove(str_replace('/declaration/', '', $r));
-  	}
-  	foreach ($hashes as $hash) {
-  		$hash = str_replace('/declaration/', '', $hash);
-	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
-	  		$detail = $parcellaire->get($hash);
-	  		$produit = $detail->getProduit();
-	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
-	  		$item->libelle = $produit->libelle;
-	  		$subitem = $item->detail->add($detail->getKey());
-	  		
-	  		$subitem->superficie = $detail->superficie;
-	  		$subitem->commune = $detail->commune;
-	  		$subitem->code_postal = $detail->code_postal;
-	  		$subitem->section = $detail->section;
-	  		$subitem->numero_parcelle = $detail->numero_parcelle;
-	  		$subitem->lieu = $detail->lieu;
-	  		$subitem->cepage = $detail->cepage;
-	  		$subitem->departement = $detail->departement;
-	  		$subitem->active = 1;
-	  		$subitem->vtsgn = (int)$detail->vtsgn;
-	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
-	  	}
-  	}
-  	$remove = array();
-  	foreach ($this->declaration as $key => $value) {
-  		if (!count($value->detail)) {
-  			$remove[] = $key;
-  		}
-  	}
-  	foreach ($remove as $r) {
-  		$this->declaration->remove($r);
-  	}
-  }
+        return $parcellaireCurrent->declaration;
+    }
 
-  public function addParcelle($hashProduit, $cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-      $config = $this->getConfiguration()->get($hashProduit);
-      $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
-      $produit->getLibelle();
+    public function addParcellesFromParcellaire(array $hashes) {
+      	$parcellaire = $this->getParcellesFromLastParcellaire();
+      	$remove = array();
+      	foreach ($this->declaration as $key => $value) {
+      		foreach ($value->detail as $subkey => $subvalue) {
+      			if (!in_array($subvalue->getHash(), $hashes)) {
+      				$remove[] = $subvalue->getHash();
+      			}
+      		}
+      	}
+      	foreach ($remove as $r) {
+      		$this->declaration->remove(str_replace('/declaration/', '', $r));
+      	}
+      	foreach ($hashes as $hash) {
+      		$hash = str_replace('/declaration/', '', $hash);
+    	  	if ($parcellaire->exist($hash) && !$this->declaration->exist($hash)) {
+    	  		$detail = $parcellaire->get($hash);
+    	  		$produit = $detail->getProduit();
+    	  		$item = $this->declaration->add(str_replace('/declaration/', null, $produit->getHash()));
+    	  		$item->libelle = $produit->libelle;
+    	  		$subitem = $item->detail->add($detail->getKey());
 
-      return $produit->addParcelle($cepage, $commune, $section, $numero_parcelle, $lieu, $cepage, $dpt);
-  }
+    	  		$subitem->superficie = $detail->superficie;
+    	  		$subitem->commune = $detail->commune;
+    	  		$subitem->code_postal = $detail->code_postal;
+    	  		$subitem->section = $detail->section;
+    	  		$subitem->numero_parcelle = $detail->numero_parcelle;
+    	  		$subitem->lieu = $detail->lieu;
+    	  		$subitem->cepage = $detail->cepage;
+    	  		$subitem->departement = $detail->departement;
+    	  		$subitem->active = 1;
+    	  		$subitem->vtsgn = (int)$detail->vtsgn;
+    	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
+    	  	}
+      	}
+      	$remove = array();
+      	foreach ($this->declaration as $key => $value) {
+      		if (!count($value->detail)) {
+      			$remove[] = $key;
+      		}
+      	}
+      	foreach ($remove as $r) {
+      		$this->declaration->remove($r);
+      	}
+    }
+
+    public function addParcelle($hashProduit, $cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
+        $config = $this->getConfiguration()->get($hashProduit);
+        $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
+        $produit->getLibelle();
+
+        return $produit->addParcelle($cepage, $commune, $section, $numero_parcelle, $lieu, $cepage, $dpt);
+    }
 
 
   public function validate($date = null) {

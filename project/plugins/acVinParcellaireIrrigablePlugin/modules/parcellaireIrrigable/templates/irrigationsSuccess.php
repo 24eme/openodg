@@ -8,48 +8,49 @@
 <form action="<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
 	<?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
-    
-    <?php foreach ($parcellaireIrrigable->declaration as $key => $value): ?>
-	<h3><?php echo $value->libelle; ?></h3>
+
+    <?php foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
+	<h3><?php echo $commune; ?></h3>
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-                <th class="col-xs-4">Parcelle</th>
+                <th class="col-xs-5">Parcelle</th>
                 <th class="col-xs-1">Année de plantation</th>
                 <th class="col-xs-2">Type de matériel</th>
                 <th class="col-xs-2">Type de ressource</th>
-                <th class="col-xs-3">Observations</th>
+                <th class="col-xs-2">Observations</th>
             </tr>
 		</thead>
 		<tbody>
-		<?php 
-			foreach ($value->detail as $subkey => $subvalue): 
-			if (isset($form[$key][$subkey])):
+		<?php
+			foreach ($parcelles as $parcelle):
+                $produitKey = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
+			if (isset($form[$produitKey][$parcelle->getKey()])):
 		?>
-			<tr >
-				<td class="col-xs-4"><?php echo $subvalue->commune; ?> - <?php echo $subvalue->section;  ?> / <?php echo $subvalue->numero_parcelle;  ?> - <?php echo $subvalue->cepage;  ?> <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $subvalue->superficie); ?></td>
-            	<td class="col-xs-1"><?php echo $subvalue->campagne_plantation; ?></td>
-            	<td class="col-xs-2">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key][$subkey]['materiel']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$key][$subkey]['materiel']->renderError() ?>
+			<tr class="vertical-center">
+				<td><?php echo $parcelle->getProduitLibelle(); ?> - <?php echo $parcelle->commune; ?> - <?php echo $parcelle->section;  ?> / <?php echo $parcelle->numero_parcelle;  ?> - <?php echo $parcelle->cepage;  ?> <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $parcelle->superficie); ?></td>
+            	<td><?php echo $parcelle->campagne_plantation; ?></td>
+            	<td>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$key][$subkey]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter un matériel", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$key][$subkey]['materiel']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter un matériel", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$produitKey][$parcelle->getKey()]['materiel']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
-            	<td class="col-xs-2">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key][$subkey]['ressource']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$key][$subkey]['ressource']->renderError() ?>
+            	<td>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['ressource']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$key][$subkey]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter une ressource", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$key][$subkey]['ressource']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter une ressource", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$produitKey][$parcelle->getKey()]['ressource']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
-            	<td class="col-xs-3">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key][$subkey]['observations']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$key][$subkey]['observations']->renderError() ?>
+            	<td>
+                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['observations']->hasError()): ?>has-error<?php endif; ?>">
+                    	<?php echo $form[$produitKey][$parcelle->getKey()]['observations']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$key][$subkey]['observations']->render(array('class' => 'form-control')) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['observations']->render(array('class' => 'form-control')) ?>
                         </div>
                     </div>
             	</td>
