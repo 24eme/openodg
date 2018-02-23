@@ -138,6 +138,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 	  		$subitem->departement = $detail->departement;
 	  		$subitem->active = 1;
 	  		$subitem->vtsgn = (int)$detail->vtsgn;
+	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
 	  	}
   	}
   	$remove = array();

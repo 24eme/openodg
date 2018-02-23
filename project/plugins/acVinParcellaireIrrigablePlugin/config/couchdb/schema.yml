@@ -10,6 +10,7 @@ ParcellaireIrrigable:
       etape: { }
       validation: { }
       validation_odg: { }
+      signataire: { }
       papier: { required: false, type: integer }
       declarant:
         type: collection
@@ -56,7 +57,7 @@ ParcellaireIrrigable:
                               departement: {  }
                               active: { type: integer }
                               vtsgn: { type: integer }
-                              annee_plantation: {  }
+                              campagne_plantation: {  }
                               materiel: {  }
                               ressource: {  }
                               observations: {  }

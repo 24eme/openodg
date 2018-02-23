@@ -3,6 +3,7 @@
 
 # default values
 all:
+  document_validation_signataire: 1
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4

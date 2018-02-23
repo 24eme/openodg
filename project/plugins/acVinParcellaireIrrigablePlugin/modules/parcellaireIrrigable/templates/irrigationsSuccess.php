@@ -2,7 +2,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'irrigations', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables <small>Merci de déclarer vos parcelles irrigables</small></h2>
+    <h2>Parcelles irrigables sur votre exploitation <small>Merci de déclarer vos parcelles irrigables</small></h2>
 </div>
 
 <form action="<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
@@ -28,14 +28,7 @@
 		?>
 			<tr >
 				<td class="col-xs-6"><?php echo $subvalue->commune; ?> - <?php echo $subvalue->section;  ?> / <?php echo $subvalue->numero_parcelle;  ?> - <?php echo $subvalue->cepage;  ?> <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $subvalue->superficie); ?></td>
-            	<td class="col-xs-1">
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key][$subkey]['annee_plantation']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$key][$subkey]['annee_plantation']->renderError() ?>
-                        <div class="col-xs-12">
-                        	<?php echo $form[$key][$subkey]['annee_plantation']->render(array('class' => 'form-control')) ?>
-                        </div>
-                    </div>
-                </td>
+            	<td class="col-xs-1"><?php echo $subvalue->campagne_plantation; ?></td>
             	<td class="col-xs-1">
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$key][$subkey]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$key][$subkey]['materiel']->renderError() ?>

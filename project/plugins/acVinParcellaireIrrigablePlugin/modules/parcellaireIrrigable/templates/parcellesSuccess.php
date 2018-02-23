@@ -2,14 +2,15 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'parcelles', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables <small>Merci de selectionner vos parcelles irrigables</small></h2>
+    <h2>Parcelles irrigables sur votre exploitation <small>Merci de selectionner vos parcelles irrigables</small></h2>
 </div>
 
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
 
 <?php foreach ($parcellaireIrrigable->getParcellesFromLastParcellaire() as $produitKey => $parcellesProduit): ?>
 	<h3><?php echo $parcellesProduit->libelle; ?></h3>
-    <table class="table table-bordered table-condensed table-striped">
+	<p class="text-right"><small><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#<?php echo str_replace('/', '-', $produitKey); ?>"><span class='glyphicon glyphicon-ok-sign'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a></small></p>
+    <table id="<?php echo str_replace('/', '-', $produitKey); ?>" class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
                 <th class="col-xs-3">Commune</th>
@@ -22,7 +23,7 @@
 		</thead>
 		<tbody>
 		<?php foreach ($parcellesProduit->detail as $parcelleKey => $detail): ?>
-			<tr >
+			<tr style="cursor: pointer;">
 				<td class="col-xs-3"><?php echo $detail->commune; ?></td>
 				<td class="col-xs-1 text-right"><?php echo $detail->section;  ?></td>
 				<td class="col-xs-1 text-right"><?php echo $detail->numero_parcelle;  ?></td>

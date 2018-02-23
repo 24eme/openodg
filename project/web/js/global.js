@@ -295,9 +295,15 @@
 
         $('tr td').click(function (event) {
             if (!$(this).hasClass('edit')) {
-                var value = ($(this).parent().find('td.bootstrap-switch-off .bsswitch').val() == 'on');
-                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', value, false);
+                var value = $(this).parent().find('.bsswitch').is(':checked');
+                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
             }
+        });
+        
+        $('.bootstrap-switch-activeall').click(function (event) {
+        	$($(this).data('target')).find('.bsswitch').each(function () {
+        		$(this).bootstrapSwitch('state', true, false);
+        	});
         });
     }
 
@@ -443,6 +449,9 @@
 
     $.initModal = function () {
         $('.modal.modal-page').modal({keyboard: false, backdrop: 'static'});
+        if($('.modal').find('.has-error').length !== 0) {
+        	$('.modal').modal('show');
+        }
     }
 
     $.initCheckboxBtnGroup = function() {
