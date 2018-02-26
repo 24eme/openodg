@@ -112,7 +112,7 @@ class CompteClient extends acCouchdbClient {
            $entrie->text = $grpName;
            $found = false;
           foreach ($groupesActuels as $grpActKey => $grp) {
-             if(Compte::transformTag(sfOutputEscaper::unescape($grp->nom)) == Compte::transformTag(sfOutputEscaper::unescape($grpName))){              
+             if(Compte::transformTag(sfOutputEscaper::unescape($grp->nom)) == Compte::transformTag(sfOutputEscaper::unescape($grpName))){
               $found = true;
              }
           }
@@ -121,6 +121,8 @@ class CompteClient extends acCouchdbClient {
           }
         }
       }
+      uasort($all_grps, "CompteClient::sortGroupes");
+      $all_grps = array_values($all_grps);
       return $all_grps;
     }
 
@@ -217,4 +219,10 @@ class CompteClient extends acCouchdbClient {
         return $compte;
     }
 
+    public static function sortGroupes($a, $b) {
+      if(is_array($a) && is_array($b)){
+        return strcmp($a['nom'], $b['nom']);
+      }
+      return strcmp($a->id, $b->id);
+    }
 }
