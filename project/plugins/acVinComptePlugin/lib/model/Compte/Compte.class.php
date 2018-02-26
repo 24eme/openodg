@@ -96,6 +96,12 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     }
 
+    public function getGroupesSortedNom(){
+      $gs = $this->groupes->toArray(1,0);
+      uasort($gs, "CompteClient::sortGroupes");
+      return $gs;
+    }
+
     public function addTag($type, $tag) {
         $tags = $this->add('tags')->add($type)->toArray(true, false);
         $tags[] = Compte::transformTag($tag);
