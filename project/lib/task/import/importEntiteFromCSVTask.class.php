@@ -95,8 +95,10 @@ EOF;
 
     protected function importEntite($line){
             $data = str_getcsv($line, ';');
-            $oldId = $data[self::CSV_OLDID];
-            $identifiant = sprintf("%06d",intval(preg_replace("/CDP/","",$oldId)));
+            if(!preg_match('/^'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'$/', $data[self::CSV_OLDID])) {
+                throw new Exception("Mauvais identifiant ". $data[self::CSV_OLDID]);
+            }
+            $identifiant = $data[self::CSV_OLDID];
 
             $soc = SocieteClient::getInstance()->find($identifiant);
             if(!$soc){
