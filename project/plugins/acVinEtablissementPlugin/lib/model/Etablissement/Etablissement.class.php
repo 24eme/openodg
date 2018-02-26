@@ -445,12 +445,17 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
         return $this->famille == $famille;
     }
-    
+
     public function getSiret() {
     	if (!$this->_get('siret')) {
     		$this->siret = $this->getSociete()->getSiret();
     	}
     	return $this->_get('siret');
+    }
+
+    public function getNumeroCourt() {
+
+        return str_replace(str_replace('SOCIETE-', '', $this->id_societe), '', $this->identifiant);
     }
 
 }
