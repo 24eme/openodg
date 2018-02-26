@@ -43,5 +43,10 @@
             <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
+	<?php include_partial('parcellaireIrrigable/popupConfirmationValidation', array('form' => $form)); ?>
 </form>
-<?php include_partial('parcellaireIrrigable/popupConfirmationValidation'); ?>
+<?php if($form["signataire"]->hasError()): ?>
+<script type="text/javascript">
+$('#parcellaireirrigable-confirmation-validation').modal('show')
+</script>
+<?php endif; ?>
