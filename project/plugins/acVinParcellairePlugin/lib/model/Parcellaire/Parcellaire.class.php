@@ -182,12 +182,12 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         return $parcellesByAppellations;
     }
 
-    public function addParcelle($hashProduit, $cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
+    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
         $config = $this->getConfiguration()->get($hashProduit);
         $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
         $produit->getLibelle();
 
-        return $produit->addParcelle($cepage, $commune, $section, $numero_parcelle, $lieu, $dpt);
+        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $dpt);
     }
 
     public function addAcheteur($type, $cvi) {

@@ -15,7 +15,7 @@
         </div>
         <?php elseif ($parcellaireIrrigable):  ?>
             <div class="panel-body">
-                <p>Vous avez débuté votre déclaration d'intention de parcelles irrigables pour cette année sans la valider.</p>
+                <p>Vous avez débuté votre déclaration d'intention de parcelles irrigables sans la valider.</p>
                 <div style="margin-top: 50px;">
                     <a class="btn btn-block btn-primary" href="<?php echo url_for('parcellaireirrigable_edit', $parcellaireIrrigable) ?>"><?php if($parcellaireIrrigable->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer la saisie papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireirrigable_delete', $parcellaireIrrigable) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>

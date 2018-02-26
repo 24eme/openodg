@@ -1,5 +1,6 @@
 <?php
 $csv = "# id société ; nom complet ; type ; id compte ; numéro interne ; civilité ; nom ; prénom ; adresse ; adresse complémentaire 1 ; adresse complémentaire 2 ; code postal ; commune ; pays ; téléphone bureau ; téléphone mobile ; téléphone perso ; fax ; email ; commentaire ; nom groupe ; fonction ; type société ; société raison sociale ; société adresse ; société adresse complémentaire 1; société adresse complémentaire 2; société code postal ; société commune ; société téléphone ; société fax ; société email; code de création \n";
+
 $groupe = null;
 if(isset($selected_typetags) && (count($selected_typetags->getRawValue()) == 1)){
   $tags = $selected_typetags->getRawValue();

@@ -75,4 +75,33 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
           }
           return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
       }
+
+      public function getRessources($value = null) 
+      {
+      	return $this->getFromConfig('ressources', $value);
+      }
+
+      public function getMateriels($value = null) 
+      {
+      	return $this->getFromConfig('materiels', $value);
+      }
+      
+      private function getFromConfig($type, $value = null)
+      {
+      	$items = sfConfig::get('app_parcellaire_irrigable_'.$type);
+      	$entries = array();
+      	foreach ($items as $item) {
+      		$entry = new stdClass();
+      		$entry->id = $item;
+      		$entry->text = $item;
+      		$entries[] = $entry;
+      	}
+      	if ($value) {
+      		$entry = new stdClass();
+      		$entry->id = $value;
+      		$entry->text = $value;
+      		$entries[] = $entry;
+      	}
+      	return $entries;      	
+      }
 }

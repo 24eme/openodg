@@ -102,11 +102,11 @@ class EtablissementClient extends acCouchdbClient {
         $etbs = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 0;
         foreach ($etbs as $id) {
-            if (!preg_match('/ETABLISSEMENT-[0-9]{6}([0-9]{2})/', $id, $matches)) {
+            if (!preg_match('/ETABLISSEMENT-'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'([0-9]{2})/', $id, $matches)) {
                 continue;
             }
 
-            $num = $matches[1];
+            $num = $matches[3];
             if ($num > $last_num) {
                 $last_num = $num;
             }
