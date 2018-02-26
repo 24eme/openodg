@@ -89,6 +89,7 @@ Parcellaire:
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_cadastrale: { type: float }
                               commune: { }
                               code_postal: { }
                               section: { }

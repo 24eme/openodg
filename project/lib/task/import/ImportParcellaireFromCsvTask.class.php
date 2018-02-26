@@ -155,8 +155,8 @@ EOF;
                 }
               }
               $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section , $numero_parcelle, $lieuDit,$dpt);
-              $superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
-              $parcelle->superficie = $superficie;
+              $parcelle->superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
+              $parcelle->superficie_cadastrale = floatval(str_replace(',','.',trim($data[self::CSV_CONTENANCE_CADASTRALE])));
               $parcelle->code_postal = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
               $parcelle->cepage = $cepage;
               if($lieuDit){
