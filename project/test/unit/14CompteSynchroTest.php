@@ -105,7 +105,7 @@ $t->is($etablissement->nom, $nomEtablissement, "Le nom de l'établissement est :
 $t->is($etablissement->getMasterCompte()->nom, $etablissement->nom, "Le nom du compte et de l'établissement sont identiques");
 $t->is($etablissement->getMasterCompte()->nom, $etablissement->getMasterCompte()->nom_a_afficher, "Le \"nom\" et le \"nom à afficher\" du compte de l'établissement sont identiques");
 $t->ok(!in_array("etablissement", $societe->getMasterCompte()->tags->automatique->toArray(true, false)), "Le compte de la société ne possède plus le tag \"etablissement\"");
-$t->ok(in_array("etablissement", CompteClient::getInstance()->find($etablissement->getMasterCompte()->_id)->tags->automatique->toArray(true, false)), "Le compte de l'établissement possède le tag \"etablissement\"");
+$t->ok(in_array("etablissement", CompteClient::getInstance()->find($etablissement->getMasterCompte()->_id)->tags->automatique->toArray(true, false)), "Le compte ".$etablissement->getMasterCompte()->_id." de l'établissement possède le tag \"etablissement\"");
 
 $t->comment("Modification du nom de l'établissement");
 

@@ -1,4 +1,4 @@
-<header id="header">
+<header>
     <!--<div class="container" style="position: relative; background-color: #002b6f; text-align: center;">
     	<a href="<?php echo url_for('accueil') ?>">
         	<img style="height: 80px; border-left: 2px solid #fff;" class="pull-right" src="/images/logo_odgrhone.png" />

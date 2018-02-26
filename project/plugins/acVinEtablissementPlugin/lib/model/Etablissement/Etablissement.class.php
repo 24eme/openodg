@@ -427,6 +427,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     }
 
 
+
     /**** FONCTIONS A RETIRER APRES LE MERGE ****/
 
 
@@ -435,5 +436,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return ($this->compte == $this->getSociete()->compte_societe);
     }
 
+    /**** FIN FONCTIONS A RETIRER APRES LE MERGE ****/
+
+    public function getNumeroCourt() {
+
+        return str_replace(str_replace('SOCIETE-', '', $this->id_societe), '', $this->identifiant);
+    }
 
 }

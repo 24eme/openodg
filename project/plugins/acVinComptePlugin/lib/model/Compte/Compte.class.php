@@ -96,6 +96,12 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     }
 
+    public function getGroupesSortedNom(){
+      $gs = $this->groupes->toArray(1,0);
+      uasort($gs, "CompteClient::sortGroupes");
+      return $gs;
+    }
+
     public function addTag($type, $tag) {
         $tags = $this->add('tags')->add($type)->toArray(true, false);
         $tags[] = Compte::transformTag($tag);
@@ -198,7 +204,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->societe_informations->code_postal = $societe->siege->code_postal;
         $this->societe_informations->commune = $societe->siege->commune;
         $this->societe_informations->email = $societe->email;
-        
+
         $this->societe_informations->fax = $societe->fax;
 
         $new = $this->isNew();
@@ -283,7 +289,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function getEtablissementOrigine() {
         foreach ($this->origines as $origine) {
-            if (preg_match('/^ETABLISSEMENT[-]{1}[0-9]*$/', $origine)) {
+            if (preg_match('/^ETABLISSEMENT/', $origine)) {
                 return $origine;
             }
         }

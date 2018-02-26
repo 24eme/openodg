@@ -23,7 +23,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(10);
+$t = new lime_test(11);
 $t->comment('création des différentes établissements');
 
 $etablissementviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getSociete();
@@ -46,7 +46,13 @@ $etablissementviti->commune = "cummune etb";
 $etablissementviti->pays = "FR";
 $etablissementviti->insee = "98475";
 
+
 $etablissementviti->save();
+
+$societeviti = $etablissementviti->getSociete();
+
+$t->is($etablissementviti->identifiant, $societeviti->identifiant."01", "L'identifiant de l'établissement respecte celui de la société : ".$etablissementviti->identifiant);
+
 $id = $etablissementviti->getSociete()->getidentifiant();
 $compteviti = CompteClient::getInstance()->findByIdentifiant($id."01");
 $compteviti->addTag('test', 'test');

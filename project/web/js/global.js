@@ -222,6 +222,7 @@
         if ($('.select2permissifNoAjax').length) {
         	$('.select2permissifNoAjax').each(function() {
         	    var element = $(this);
+        	    var complement = (element.attr('data-new'))? element.attr('data-new') : 'nouveau';
         	    element.select2({
 	                data: JSON.parse(element.attr('data-choices')),
 	                multiple: false,
@@ -231,7 +232,7 @@
 	                    if ($(data).filter(function () {
 	                        return this.text.localeCompare(this.text) === 0;
 	                    }).length === 0) {
-	                        return {id: term, text: term + ' (nouveau)'};
+	                        return {id: term, text: term + ' ('+complement+')'};
 	                    }
 	                }
 	            });
@@ -295,9 +296,15 @@
 
         $('tr td').click(function (event) {
             if (!$(this).hasClass('edit')) {
-                var value = ($(this).parent().find('td.bootstrap-switch-off .bsswitch').val() == 'on');
-                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', value, false);
+                var value = $(this).parent().find('.bsswitch').is(':checked');
+                $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
             }
+        });
+        
+        $('.bootstrap-switch-activeall').click(function (event) {
+        	$($(this).data('target')).find('.bsswitch').each(function () {
+        		$(this).bootstrapSwitch('state', true, false);
+        	});
         });
     }
 
@@ -443,6 +450,9 @@
 
     $.initModal = function () {
         $('.modal.modal-page').modal({keyboard: false, backdrop: 'static'});
+        if($('.modal').find('.has-error').length !== 0) {
+        	$('.modal').modal('show');
+        }
     }
 
     $.initCheckboxBtnGroup = function() {

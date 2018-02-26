@@ -108,6 +108,10 @@ h3 {
     border-left: 6px solid #9f0038 !important;
 }
 
+.panel-primary-bordered-right {
+    border-right: 6px solid #9f0038;
+}
+
 .list-group-item.active a {
     color: inherit;
 }
@@ -152,7 +156,6 @@ h3 {
 .nav-step ul.navbar-nav li a, .nav-step ul.navbar-nav li a:hover {
     color: inherit;
 }
-
 
 .nav-step ul.navbar-nav li.active a, .nav-step ul.navbar-nav li.active a:hover {
     background: #fff;

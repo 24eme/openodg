@@ -163,7 +163,11 @@ class parcellaireIrrigableActions extends sfActions {
     	if($this->parcellaireIrrigable->storeEtape($this->getEtape($this->parcellaireIrrigable, ParcellaireIrrigableEtapes::ETAPE_VALIDATION))) {
     		$this->parcellaireIrrigable->save();
     	}
-    	    
+    	
+		if($this->getUser()->isAdmin()) {
+	       	$this->parcellaireIrrigable->validateOdg();
+	    }
+    	
     	$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable);
     
     	if (!$request->isMethod(sfWebRequest::POST)) {
@@ -178,17 +182,7 @@ class parcellaireIrrigableActions extends sfActions {
     		return sfView::SUCCESS;
     	}
     
-    	if($this->parcellaireIrrigable->isPapier()) {
-    		$this->parcellaireIrrigable->validate($this->form->getValue("date"));
-    	} else {
-    		$this->parcellaireIrrigable->validate();
-    	}
-    
-    	if($this->getUser()->isAdmin()) {
-    		$this->parcellaireIrrigable->validateOdg();
-    	}
-    
-    	$this->parcellaireIrrigable->save();
+    	$this->form->save();
     	
     	$this->getUser()->setFlash("notice", "La déclaration a bien été validée");
     	return $this->redirect('parcellaireirrigable_visualisation', $this->parcellaireIrrigable);

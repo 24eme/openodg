@@ -21,7 +21,8 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function getId($identifiant) {
-        return 'COMPTE-' . sprintf('%s', $identifiant);
+
+        return 'COMPTE-'.$identifiant;
     }
 
     public function getNextIdentifiantForEtablissementInSociete($societe) {
@@ -29,11 +30,10 @@ class CompteClient extends acCouchdbClient {
         $comptes = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 0;
         foreach ($comptes as $id) {
-            if (!preg_match('/COMPTE-[0-9]{6}([0-9]{2})/', $id, $matches)) {
+            if (!preg_match('/COMPTE-'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'([0-9]{2})/', $id, $matches)) {
                 continue;
             }
-
-            $num = $matches[1];
+            $num = $matches[3];
             if($num > 9){
               continue;
             }
@@ -66,6 +66,7 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function findByIdentifiant($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+
         return $this->find($this->getId($identifiant), $hydrate);
     }
 
@@ -140,6 +141,8 @@ class CompteClient extends acCouchdbClient {
           }
         }
       }
+      uasort($all_grps, "CompteClient::sortGroupes");
+      $all_grps = array_values($all_grps);
       return $all_grps;
     }
 
@@ -261,4 +264,10 @@ class CompteClient extends acCouchdbClient {
         return $compte;
     }
 
+    public static function sortGroupes($a, $b) {
+      if(is_array($a) && is_array($b)){
+        return strcmp($a['nom'], $b['nom']);
+      }
+      return strcmp($a->id, $b->id);
+    }
 }

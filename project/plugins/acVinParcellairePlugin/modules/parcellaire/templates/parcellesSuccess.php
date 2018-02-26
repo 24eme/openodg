@@ -51,7 +51,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                 <th class="col-xs-2">Commune</th>
                                 <th class="col-xs-1">Section</th>
                                 <th class="col-xs-1">Numéro</th>
-                                <th class="col-xs-3"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
+                                <th class="col-xs-2"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
+								<th class="col-xs-1">Année de plantation</th>
                                 <th class="col-xs-1">Superficie</th>
                             </tr>
                         </thead>
@@ -87,6 +88,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                         echo $parcelle->getCepageLibelle();
                                         ?>
                                     </td>
+									<td><?php echo $parcelle->campagne_plantation; ?></td>
                                     <td class="edit">
                                         <div class="row">
                                             <div class="col-xs-6 text-right">
@@ -118,24 +120,22 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
             </div>
         </div>
     </div>
-    <div class="row row-margin row-button">
+    <div class="row row-margin row-button" style="margin-top: 20px;">
         <div class="col-xs-6">
             <?php if ($isVtSgn) : ?>
-                <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => "GRDCRU")); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
+                <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => "GRDCRU")); ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
             <?php elseif ($appellationNode && $appellationNode->getPreviousAppellationKey()) : ?>
-                <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationNode->getPreviousAppellationKey())); ?>" class="btn btn-primary btn-lg btn-upper btn-primary-step"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
+                <a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationNode->getPreviousAppellationKey())); ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
             <?php else : ?>
-                <a href="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
+                <a href="<?php echo url_for("parcellaire_propriete", $parcellaire) ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
             <?php endif; ?>
         </div>
         <div class="col-xs-6 text-right">
             <?php if ($parcellaire->exist('etape') && $parcellaire->etape == ParcellaireEtapes::ETAPE_VALIDATION): ?>
                 <button id="btn-validation" type="submit" class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Retourner <small>à la validation</small></button>
-            <?php elseif ($appellationNode && !$isVtSgn && $appellationNode->getNextAppellationKey()): ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper btn-default-step">Continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
             <?php else: ?>
-                <button type="submit" class="btn btn-default btn-lg btn-upper btn-default">Continuer&nbsp;&nbsp;<span class="eleganticon arrow_carrot-right"></span></button>
-                <?php endif; ?>
+				<button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <?php endif; ?>
         </div>
     </div>
 </form>
