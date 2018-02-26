@@ -54,9 +54,26 @@ Etablissement:
        carte_pro: {  }
        famille: {  }
        sous_famille: {  }
+
+       #adresse copié du compte
+       adresse: { }
+       adresse_complementaire: { }
+       code_postal: { }
+       commune: { }
+       pays: {  }
+       insee: { }
+       compte_type: { }
+       cedex: { required: false } #A supprimer
+
+       #contact
        email: {  }
-       telephone: {  }
+       telephone_perso: {  }
+       telephone_bureau: {  }
+       telephone_mobile: {  }
        fax: {  }
+       site_internet: { }
+       telephone: { required: false } #A supprimer
+
        commentaire: {  }
        crd_regime: { }
        adresse_compta: { }
@@ -91,7 +108,8 @@ Etablissement:
                adresse_complementaire: {  }
                code_postal: {  }
                commune: {  }
-               pays: {}
+               pays: { }
+               insee: { }
        comptabilite:
            type: collection
            definition:

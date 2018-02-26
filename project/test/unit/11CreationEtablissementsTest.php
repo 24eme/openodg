@@ -26,10 +26,26 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 $t = new lime_test(10);
 $t->comment('création des différentes établissements');
 
-$societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getSociete();
-$etablissementviti = $societeviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
+$etablissementviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getSociete();
+$etablissementviti = $etablissementviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
 $etablissementviti->region = EtablissementClient::REGION_CVO;
 $etablissementviti->nom = "Etablissement viticulteur";
+
+$etablissementviti->email = "email@etb.com";
+$etablissementviti->site_internet = "www.etb.fr";
+$etablissementviti->telephone_perso = "44 44 44 44 44";
+$etablissementviti->telephone_bureau = "55 55 55 55 55";
+$etablissementviti->telephone_mobile = "66 66 66 66 66";
+$etablissementviti->fax = "77 77 77 77 77";
+
+
+$etablissementviti->adresse = "etb Adresse 1 ";
+$etablissementviti->adresse_complementaire = "etb Adresse 2 ";
+$etablissementviti->code_postal = '00000';
+$etablissementviti->commune = "cummune etb";
+$etablissementviti->pays = "FR";
+$etablissementviti->insee = "98475";
+
 $etablissementviti->save();
 $id = $etablissementviti->getSociete()->getidentifiant();
 $compteviti = CompteClient::getInstance()->findByIdentifiant($id."01");
@@ -37,6 +53,22 @@ $compteviti->addTag('test', 'test');
 $compteviti->save();
 $t->is($compteviti->tags->automatique->toArray(true, false), array('etablissement','producteur'), "Création d'un etablissement viti met à jour le compte $compteviti->_id");
 $t->is($etablissementviti->region, EtablissementClient::REGION_CVO, "L'établissement est en région CVO après le save");
+
+$t->is($compteviti->_get('email'), $etablissementviti->_get('email'), "L'établissement a le même email que le compte");
+$t->is($compteviti->_get('site_internet'), $etablissementviti->_get('site_internet'), "L'établissement a le même site_internet que le compte");
+$t->is($compteviti->_get('telephone_perso'), $etablissementviti->_get('telephone_perso'), "L'établissement a le même telephone_perso que le compte");
+$t->is($compteviti->_get('telephone_bureau'), $etablissementviti->_get('telephone_bureau'), "L'établissement a le même telephone bureau que le compte");
+$t->is($compteviti->_get('telephone_mobile'), $etablissementviti->_get('telephone_mobile'), "L'établissement a le même telephone_mobile que le compte");
+$t->is($compteviti->_get('fax'), $etablissementviti->_get('fax'), "L'établissement a le même fax que le compte");
+
+
+$t->is($compteviti->_get('adresse'), $etablissementviti->_get('adresse'), "L'établissement a la même adresse que le compte");
+$t->is($compteviti->_get('adresse_complementaire'), $etablissementviti->_get('adresse_complementaire'), "L'établissement a la même adresse_complementaire que le compte");
+$t->is($compteviti->_get('code_postal'), $etablissementviti->_get('code_postal'), "L'établissement a le même code_postal que le compte");
+$t->is($compteviti->_get('commune'), $etablissementviti->_get('commune'), "L'établissement a la même commune que le compte");
+$t->is($compteviti->_get('pays'), $etablissementviti->_get('pays'), "L'établissement a le même pays que le compte");
+$t->is($compteviti->_get('insee'), $etablissementviti->_get('insee'), "L'établissement a le même insee que le compte");
+
 
 $societenego = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_nego_region')->getSociete();
 $etablissementnego = $societenego->createEtablissement(EtablissementFamilles::FAMILLE_NEGOCIANT);

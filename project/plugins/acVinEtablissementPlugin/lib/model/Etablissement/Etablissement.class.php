@@ -257,7 +257,8 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $compte->nom = $this->nom;
         $compte->statut = $this->statut;
 
-        $this->compte = $compte->_id;        
+        $this->compte = $compte->_id;
+
 
         if($this->isSameAdresseThanSociete()) {
             $this->pullAdresseFrom($this->getSociete()->getMasterCompte());

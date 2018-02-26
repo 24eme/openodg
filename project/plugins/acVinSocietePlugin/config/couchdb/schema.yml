@@ -27,9 +27,17 @@ Societe:
       date_modification: { required: false }
       date_creation: { required: false}
       no_tva_intracommunautaire: { }
+
+      # champs copié de compte
       email: {  }
-      telephone: {  }
+      telephone_perso: {  }
+      telephone_bureau: {  }
+      telephone_mobile: {  }
       fax: {  }
+      telephone: { required: false }
+      site_internet: { }
+
+
       commentaire: { }
       siege:
         type: collection
@@ -40,6 +48,7 @@ Societe:
             code_postal: {  }
             commune: {  }
             pays: {  }
+            insee: { }
       cooperative: { }
       enseignes:
         type: array_collection

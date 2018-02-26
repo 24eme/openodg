@@ -428,7 +428,6 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         $needSave = $needSave || $ret;
     }
     if ($needSave) {
-       if($compteOrEtablissement->_id == "COMPTE-00000801") echo "Dans la soc : ".$compteOrEtablissement->_id." ". $this->_rev." ".CompteClient::getInstance()->find($compteOrEtablissement->_id)->_rev."\n";
         $compteOrEtablissement->save();
     }
 }

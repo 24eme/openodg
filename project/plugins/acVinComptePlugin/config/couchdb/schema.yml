@@ -10,7 +10,7 @@ Compte:
       civilite: { }
       prenom: { }
       nom: { }
-      nom_a_afficher: {}
+      nom_a_afficher: { }
       fonction: { }
       commentaire: { }
       mot_de_passe: { }
@@ -22,22 +22,28 @@ Compte:
           fields:
              '*': { }
       id_societe: { }
-      adresse_societe: {  }
+      compte_type: { }
+      adresse_societe: { required: false } # A virer de toute évidence
+
+      #champs qui seront copiés dans les sociétés et établissements
+      #adresse
       adresse: { }
       adresse_complementaire: { }
       code_postal: { }
       commune: { }
-      insee: { }
-      compte_type: { }
-      cedex: { require: false } #A supprimer
       pays: {  }
+      insee: { }
+      cedex: { required: false } #A supprimer
+
+      #contact
       email: {  }
       telephone_perso: {  }
       telephone_bureau: {  }
       telephone_mobile: {  }
       fax: {  }
       site_internet: { }
-      nom_a_afficher: {  }
+
+
       raison_sociale_societe: { required: false }
       type_societe: { required: false }
       teledeclaration_active: { required: false }
@@ -55,7 +61,7 @@ Compte:
             code_postal: {  }
             commune: {  }
             email: {  }
-            telephone: {  }
+            telephone: { required: false }
             fax: {  }
       etablissement_informations:
         type: collection

@@ -198,7 +198,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->societe_informations->code_postal = $societe->siege->code_postal;
         $this->societe_informations->commune = $societe->siege->commune;
         $this->societe_informations->email = $societe->email;
-        $this->societe_informations->telephone = $societe->telephone;
+        
         $this->societe_informations->fax = $societe->fax;
 
         $new = $this->isNew();
