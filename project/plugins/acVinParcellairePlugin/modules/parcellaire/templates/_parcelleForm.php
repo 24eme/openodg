@@ -22,6 +22,17 @@
         </div>
     </div>
 <?php endif; ?>
+<?php if (isset($form['campagne_plantation'])): ?>
+    <span class="error"><?php echo $form['campagne_plantation']->renderError() ?></span>
+    <div class="form-group row">
+        <div class="col-xs-4">
+            <?php echo $form['campagne_plantation']->renderLabel(); ?>
+        </div>
+        <div class="col-xs-6">
+            <?php echo $form['campagne_plantation']->render(array("placeholder" => "Saisissez l'année de plantation", "class" => "form-control", "required" => true)) ?>
+        </div>
+    </div>
+<?php endif; ?>
 <?php if (isset($form['lieudit'])): ?>
     <span class="error"><?php echo $form['lieudit']->renderError() ?></span>
     <div class="form-group row">

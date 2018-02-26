@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-body" style="border-right: 6px solid #9f0038;">
+            <div class="panel-body panel-primary-bordered-right">
                 <h2>
                 	<?php echo $compte->nom_a_afficher; ?>
                 	<?php if ($compte->isSuspendu()): ?>

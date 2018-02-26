@@ -21,7 +21,8 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function getId($identifiant) {
-        return 'COMPTE-' . sprintf('%08d', $identifiant);
+
+        return 'COMPTE-'.$identifiant;
     }
 
     public function getNextIdentifiantForSociete($societe) {
@@ -29,11 +30,11 @@ class CompteClient extends acCouchdbClient {
         $comptes = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 0;
         foreach ($comptes as $id) {
-            if (!preg_match('/COMPTE-[0-9]{6}([0-9]{2})/', $id, $matches)) {
+            if (!preg_match('/COMPTE-'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'([0-9]{2})/', $id, $matches)) {
                 continue;
             }
 
-            $num = $matches[1];
+            $num = $matches[3];
             if ($num > $last_num) {
                 $last_num = $num;
             }
@@ -47,6 +48,7 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function findByIdentifiant($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+
         return $this->find($this->getId($identifiant), $hydrate);
     }
 

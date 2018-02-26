@@ -13,8 +13,8 @@
                     <?php include_partial('parcellaire/parcelleForm', array('form' => $form)); ?>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>
-                    <button type="submit" class="btn btn-default btn pull-right">Ajouter la parcelle</button>
+                    <a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
+                    <button type="submit" class="btn btn-primary btn pull-right">Ajouter la parcelle</button>
                 </div>
             </form>
         </div>

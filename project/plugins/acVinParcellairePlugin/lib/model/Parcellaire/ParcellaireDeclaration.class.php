@@ -34,6 +34,23 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return $appellationOrdered;
     }
 
+    public function getParcellesByCommune() {
+        $parcelles = array();
+
+        foreach($this as $produit) {
+            foreach ($produit->detail as $parcelle) {
+                if(!isset($parcelles[$parcelle->commune])) {
+                    $parcelles[$parcelle->commune] = array();
+                }
+                $parcelles[$parcelle->commune][$parcelle->getHash()] = $parcelle;
+            }
+        }
+
+        ksort($parcelles);
+
+        return $parcelles;
+    }
+
     public function getProduits($onlyActive = false) {
         $produits = array();
         foreach ($this as $key => $produit) {
