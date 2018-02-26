@@ -51,7 +51,8 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                 <th class="col-xs-2">Commune</th>
                                 <th class="col-xs-1">Section</th>
                                 <th class="col-xs-1">Numéro</th>
-                                <th class="col-xs-3"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
+                                <th class="col-xs-2"><?php if ($appellation == ParcellaireClient::APPELLATION_VTSGN): ?>Lieu-dit / <?php endif; ?>Cépage</th>
+								<th class="col-xs-1">Année de plantation</th>
                                 <th class="col-xs-1">Superficie</th>
                             </tr>
                         </thead>
@@ -87,6 +88,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                                         echo $parcelle->getCepageLibelle();
                                         ?>
                                     </td>
+									<td><?php echo $parcelle->campagne_plantation; ?></td>
                                     <td class="edit">
                                         <div class="row">
                                             <div class="col-xs-6 text-right">

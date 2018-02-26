@@ -19,11 +19,12 @@
     <table id="<?php echo str_replace('/', '-', $produitKey); ?>" class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-                <th class="col-xs-3">Produit</th>
+                <th class="col-xs-2">Produit</th>
                 <th class="col-xs-2">Commune</th>
                 <th class="col-xs-1">Section</th>
                 <th class="col-xs-1">Parcelle</th>
                 <th class="col-xs-2">Cépage</th>
+                <th class="col-xs-1">Année de plantation</th>
                 <th class="col-xs-1">Surface</th>
                 <th class="col-xs-1"></th>
             </tr>
@@ -36,6 +37,7 @@
 				<td class="text-right"><?php echo $parcelle->section;  ?></td>
 				<td class="text-right"><?php echo $parcelle->numero_parcelle;  ?></td>
 				<td><?php echo $parcelle->getCepageLibelle();  ?></td>
+                <td><?php echo $parcelle->campagne_plantation;  ?></td>
 				<td class="text-right"><?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $parcelle->superficie); ?></td>
 				<td class="text-center"><input <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='mini' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
