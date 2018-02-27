@@ -27,7 +27,8 @@
 			if (isset($form[$produitKey][$parcelle->getKey()])):
 		?>
 			<tr class="vertical-center">
-				<td><?php echo $parcelle->getProduitLibelle(); ?> - <?php echo $parcelle->commune; ?> - <?php echo $parcelle->section;  ?> / <?php echo $parcelle->numero_parcelle;  ?> - <?php echo $parcelle->cepage;  ?> - <?php echo $parcelle->campagne_plantation;  ?> - <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $parcelle->superficie); ?></td>
+				<td><?php echo $parcelle->getIdentificationParcelleLibelle(ESC_RAW); ?></td>
+				<td><?php echo $parcelle->getIdentificationCepageLibelle(ESC_RAW); ?></td>
             	<td>
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>
