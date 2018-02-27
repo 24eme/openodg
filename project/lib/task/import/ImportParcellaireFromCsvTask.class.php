@@ -88,33 +88,49 @@ EOF;
         $this->configuration = ConfigurationClient::getInstance()->getConfiguration();
         $this->configurationProduits = $this->configuration->getProduits();
         $this->modes_savoirfaire = array_flip(ParcellaireClient::$modes_savoirfaire);
+
+        $parcellaire = null;
         foreach(file($this->file_path) as $line) {
             $line = str_replace("\n", "", $line);
             if(preg_match("/^\"ISection\";/", $line)) {
                 continue;
             }
-            $this->importLineParcellaire($line);
-          }
-    }
 
-    protected function importLineParcellaire($line){
             $data = str_getcsv($line, ';');
             $cvi = $data[self::CSV_EVV];
             if(!$cvi){
               throw new sfException("le cvi n'existe pas pour la ligne ".implode(',',$line));
             }
 
-            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
-            if(!$etablissement){
-              echo "L'établissement de cvi ".$cvi." n'existe pas dans la base\n";
-              return;
+            if(!$parcellaire || $parcellaire->declarant->cvi != $cvi) {
+                if($parcellaire) {
+                    $this->saveParcellaire($parcellaire);
+                    $parcellaire = null;
+                }
+
+                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
+                if(!$etablissement){
+                  echo "L'établissement de cvi ".$cvi." n'existe pas dans la base\n";
+
+                  continue;
+                }
+                $parcellaire = ParcellaireClient::getInstance()->findOrCreateFromEtablissement($etablissement, "2018");
             }
 
+            $this->importLineParcellaire($line, $parcellaire);
+          }
+
+          if($parcellaire) {
+              $this->saveParcellaire($parcellaire);
+              $parcellaire = null;
+          }
+    }
+
+    protected function importLineParcellaire($line, $parcellaire){
+            $data = str_getcsv($line, ';');
+
             $ref_cadastrale = $data[self::CSV_REF_CADASTRALE];
-
-            $parcellaire = ParcellaireClient::getInstance()->findOrCreateFromEtablissement($etablissement,"2018");
-
-            $parcellaire->addAcheteur(ParcellaireClient::DESTINATION_SUR_PLACE,$etablissement->getIdentifiant());
+            $parcellaire->addAcheteur(ParcellaireClient::DESTINATION_SUR_PLACE,$parcellaire->identifiant);
 
             foreach ($this->configurationProduits as $key => $p) {
               if($p->getCodeDouane() != trim($data[self::CSV_CODE_PRODUIT])){
@@ -141,7 +157,7 @@ EOF;
               $lieuDit = (trim($data[self::CSV_LIEUDIT_COMMUNE]))? trim($data[self::CSV_LIEUDIT_COMMUNE]) : null;
 
               $section = trim($data[self::CSV_ID_SECTION]);
-              $numero_parcelle = trim($data[self::CSV_INUMPCV]);
+              $numero_parcelle = preg_replace('/^[0]+/', '', trim($data[self::CSV_INUMPCV]));
               $dpt = trim($data[self::CSV_CODE_DEPARTEMENT]);
 
               $campagnePlantation = trim($data[self::CSV_CAMPAGNE_PLANTATION]);
@@ -162,8 +178,8 @@ EOF;
               if($lieuDit){
                 $parcelle->lieu = strtoupper($lieuDit);
               }
-              $parcelle->add('ecart_rang',trim($data[self::CSV_ECART_RANG]));
-              $parcelle->add('ecart_pieds',trim($data[self::CSV_ECART_PIED]));
+              $parcelle->add('ecart_rang', trim($data[self::CSV_ECART_RANG]) * 1);
+              $parcelle->add('ecart_pieds', trim($data[self::CSV_ECART_PIED]) * 1);
               $parcelle->add('campagne_plantation',trim($data[self::CSV_CAMPAGNE_PLANTATION]));
               $parcelle->active = true;
 
@@ -197,7 +213,7 @@ EOF;
                 $parcelle->add('mode_savoirfaire',$mode_savoirfaire);
               }
               if(trim($data[self::CSV_CODE_PORTEGREFFE])){
-                $parcelle->add('porte_greffe',trim($data[self::CSV_CODE_PORTEGREFFE]));
+                $parcelle->add('porte_greffe', trim($data[self::CSV_CODE_PORTEGREFFE]));
               }
 
               if($parcelle->idu != $data[self::CSV_IDU]) {
@@ -206,11 +222,15 @@ EOF;
 
               echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
             }
-            $parcellaire->etape='validation';
-            $parcellaire->add('source', 'INAO');
-            $parcellaire->validation = date('Y-m-d');
-            $parcellaire->validation_odg = date('Y-m-d');
+    }
 
-            $parcellaire->save();
-      }
+    protected function saveParcellaire($parcellaire) {
+        $parcellaire->etape='validation';
+        $parcellaire->add('source', 'INAO');
+        $parcellaire->validation = date('Y-m-d');
+        $parcellaire->validation_odg = date('Y-m-d');
+
+        $parcellaire->save();
+        echo "Parcellaire $parcellaire->_id sauvegardé\n";
+    }
 }

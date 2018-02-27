@@ -104,8 +104,8 @@ Parcellaire:
                               active: { type: integer }
                               vtsgn: { type: integer }
                               code_insee: { required: false }
-                              ecart_rang: { required: false }
-                              ecart_pieds: { required: false }
+                              ecart_rang: { type: float }
+                              ecart_pieds: { type: float }
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
       pieces:
