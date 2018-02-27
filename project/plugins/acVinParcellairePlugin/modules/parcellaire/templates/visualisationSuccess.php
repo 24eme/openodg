@@ -23,9 +23,7 @@
         <a href="<?php if(isset($service)): ?><?php echo $service ?><?php else: ?><?php echo url_for("declaration_etablissement", $parcellaire->getEtablissementObject()) ?><?php endif; ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
     </div>
     <div class="col-xs-4 text-center">
-            <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>" class="btn btn-warning btn-lg">
-                <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Visualiser
-            </a>
+
     </div>
     <?php if(!$parcellaire->validation): ?>
     <div class="col-xs-4 text-right">

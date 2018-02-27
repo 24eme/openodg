@@ -51,14 +51,15 @@ ParcellaireIrrigable:
                             fields:
                               superficie: { type: float }
                               commune: { }
-                              code_postal: { }
+                              code_commune: { }
                               section: { }
                               numero_parcelle: { }
+                              idu: { }
                               lieu: {  }
                               cepage: {  }
-                              departement: {  }
+                              departement: { required: false }
                               active: { type: integer }
-                              vtsgn: { type: integer }
+                              vtsgn: { type: integer, required: alse }
                               campagne_plantation: {  }
                               materiel: {  }
                               ressource: {  }
