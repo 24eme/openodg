@@ -201,12 +201,13 @@ EOF;
               }
 
               if($parcelle->idu != $data[self::CSV_IDU]) {
-              echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
-                }
+                  echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
+              }
 
               echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
             }
             $parcellaire->etape='validation';
+            $parcellaire->add('source', 'INAO');
             $parcellaire->validation = date('Y-m-d');
             $parcellaire->validation_odg = date('Y-m-d');
 

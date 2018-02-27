@@ -131,6 +131,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $detail->cepage = $cepage;
         $detail->campagne_plantation = $campagne_plantation;
         $detail->commune = $commune;
+        $detail->code_commune = CommunesConfiguration::getInstance()->findCodeCommune($detail->commune);
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
         if($lieu){
