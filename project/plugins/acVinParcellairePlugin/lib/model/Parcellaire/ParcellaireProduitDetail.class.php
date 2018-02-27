@@ -95,6 +95,14 @@ class ParcellaireProduitDetail extends BaseParcellaireProduitDetail {
 
         return $this->getProduit()->getConfig()->getLieu();
     }
+    
+    public function getIdentificationParcelleLibelle() {
+    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
+    }
+    
+    public function getIdentificationCepageLibelle() {
+    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
+    }
 
     public function cleanNode() {
 

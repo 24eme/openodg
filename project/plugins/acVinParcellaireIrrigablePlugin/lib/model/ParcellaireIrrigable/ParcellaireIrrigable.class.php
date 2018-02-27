@@ -30,6 +30,15 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
   }
 
+    public function getTypeParcellaire() {
+    	if ($this->_id) {
+    		if (preg_match('/^([A-Z]*)-([0-9]*)-([0-9]{4})/', $this->_id, $result)) {
+    			return $result[1];
+    		}
+    	}
+    	throw new sfException("Impossible de determiner le type de parcellaire");
+    }
+
   public function initDoc($identifiant, $campagne, $type = ParcellaireClient::TYPE_COUCHDB) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;

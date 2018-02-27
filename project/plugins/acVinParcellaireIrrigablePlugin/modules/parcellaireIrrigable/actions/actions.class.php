@@ -188,6 +188,25 @@ class parcellaireIrrigableActions extends sfActions {
     	return $this->redirect('parcellaireirrigable_visualisation', $this->parcellaireIrrigable);
     }
 
+    public function executePDF(sfWebRequest $request) {
+    	set_time_limit(180);
+    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+    	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigable);
+    
+    	$this->document = new ExportParcellaireIrrigablePDF($this->parcellaireIrrigable, $this->getRequestParameter('output', 'pdf'), false);
+    	$this->document->setPartialFunction(array($this, 'getPartial'));
+    
+    	if ($request->getParameter('force')) {
+    		$this->document->removeCache();
+    	}
+    
+    	$this->document->generate();
+    
+    	$this->document->addHeaders($this->getResponse());
+    
+    	return $this->renderText($this->document->output());
+    }
+
 
     public function executeVisualisation(sfWebRequest $request) {
     	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();

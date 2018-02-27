@@ -35,7 +35,7 @@
         	<a href="<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>
         </div>
         <div class="col-xs-4 text-center">
-            <a href="#" class="btn btn-primary">
+            <a href="<?php echo url_for('parcellaireirrigable_export_pdf', $parcellaireIrrigable) ?>" class="btn btn-primary">
                 <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
             </a>
         </div>
