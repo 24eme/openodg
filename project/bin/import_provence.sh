@@ -43,9 +43,11 @@ curl -X POST -d @data/configuration/provence/current.json -H "content-type: appl
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
 
-php symfony import:entite-from-csv $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv --application="provence" #fichier sur le cloud en csv
+php symfony import:entite-from-csv $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv --application="provence"
 
 #bash bin/delete_from_view.sh http://127.0.0.1:5984/odgprovence/_design/declaration/_view/tous?reduce=false
 
 
 php symfony import:parcellaire-from-csv $DATA_DIR/20180208_parcellaire_aoc_operateurs_identifies.csv.utf8$TEST.csv --application="provence"
+
+php symfony import:habilitation-from-csv $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv --application="provence"

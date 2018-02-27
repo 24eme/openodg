@@ -30,7 +30,6 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
           return null;
         }
         $compte = CompteClient::getInstance()->find($etablissement->getCompte());
-
         $declarant = new stdClass();
         $declarant->nom = $etablissement->nom;
         $declarant->raison_sociale = $etablissement->raison_sociale;
