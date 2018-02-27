@@ -102,7 +102,7 @@ Parcellaire:
                               campagne_plantation: { }
                               departement: { required: false }
                               active: { type: integer }
-                              vtsgn: { type: integer }
+                              vtsgn: { type: integer, required: false }
                               code_insee: { required: false }
                               ecart_rang: { type: float }
                               ecart_pieds: { type: float }
