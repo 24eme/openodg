@@ -176,33 +176,10 @@ EOF;
           }
 
 
-          // $compte->nom = $this->buildRaisonSociete($data);
-          // $compte->updateNomAAfficher();
-          // $compte->email = $societeCommunication[self::CSV_EMAIL];
-          // $compte->telephone = $societeCommunication[self::CSV_TELEPHONE];
-          // $compte->telephone_mobile = $societeCommunication[self::CSV_PORTABLE];
-          //
-          // $compte->fonction = "";
-          // $compte->num_interne = $identifiant;
-          //
-          // $compte->save();
-          //
-          // $compte = CompteClient::getInstance()->find($compte->_id);
-          //
-          // if($this->isSuspendu){
-          //   $compte->setStatut(SocieteClient::STATUT_SUSPENDU);
-          // }else{
-          //   $compte->setStatut(SocieteClient::STATUT_ACTIF);
-          // }
-          // $compte->save();
-
           echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id";
           echo ($this->isSuspendu)? " SUSPENDU \n" : " ACTIF \n";
           $etablissement->save();
-          $etablissement = EtablissementClient::getInstance()->find($etablissement->_id);
 
-          $societe->addEtablissement($etablissement);
-          $societe->save();
           return $etablissement;
 
         }

@@ -80,20 +80,30 @@ if ($last) {
                                     $classparcelle="";
                                 }
                             }
+                            $classecart = '';
+                            $classcepage = '';
+                            if ($detail->hasProblemExpirationCepage()) {
+                              $classline .=  ' warning';
+                              $classcepage .= ' text-warning';
+                            }
+                            if ($detail->hasProblemEcartPieds()) {
+                              $classline .=  ' danger';
+                              $classecart .= ' text-danger';
+                            }
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
                                 <td class="col-xs-3" style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getParcelleIdentifiant(); ?>
                                 </td>
-                                <td class="col-xs-2" style="<?php echo $styleproduit; ?>">
+                                <td class="col-xs-2 <?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>">
                                     <?php echo $detail->getCepageLibelle();  ?>
                                 </td>
                                 <td class="col-xs-1 <?php echo $classsuperficie ?>" style="text-align: right; <?php echo $stylesuperficie; ?>">
                                   <?php printf("%0.2f&nbsp;ares", $detail->superficie); ?>
                                 </td>
                                 <td class="col-xs-2" style="text-align: center;"><?php echo ($detail->exist('campagne_plantation'))? $detail->get('campagne_plantation') : '&nbsp;'; ?> </td>
-                                <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?> </td>
-                                <td class="col-xs-1" style="text-align: center;"><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?> </td>
+                                <td class="col-xs-1 <?php echo $classecart; ?>" style="text-align: center;"><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?> </td>
+                                <td class="col-xs-1 <?php echo $classecart; ?>" style="text-align: center;"><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?> </td>
                                 <td class="col-xs-2 <?php echo $classparcelle ?>" style="text-align: right; <?php echo $styleparcelle; ?>"><?php echo ($detail->exist('mode_savoirfaire') && array_key_exists($detail->get('mode_savoirfaire'),ParcellaireClient::$modes_savoirfaire))? ParcellaireClient::$modes_savoirfaire[$detail->get('mode_savoirfaire')] : '&nbsp;'; ?></td>
                             </tr>
                             <?php
