@@ -76,7 +76,10 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
                $communes[strtoupper($communeName)] = $communeName;
            }
        }
-       return array_merge(array('Avignon' => 'Avignon'), $communes);
+
+       $communes = CommunesConfiguration::getInstance()->getByCodeCommune();
+
+       return array_merge(array('' => ''), $communes);
     }
 
     public function getAppellationNode() {
@@ -85,7 +88,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
     }
 
     protected function doUpdateObject($values) {
-
+        $communes = $this->getCommunes();
         if ((!isset($values['commune']) || empty($values['commune'])) ||
                 (!isset($values['section']) || empty($values['section'])) ||
                 (!isset($values['numero_parcelle']) || empty($values['numero_parcelle']))
@@ -94,7 +97,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
         }
 
         $config = $this->getObject()->getDocument()->getConfiguration();
-        $commune = $values['commune'];
+        $commune = $communes[$values['commune']];
         $section = preg_replace('/^0*/','',$values['section']);
         $numero_parcelle = preg_replace('/^0*/','',$values['numero_parcelle']);
         $lieu = null;
