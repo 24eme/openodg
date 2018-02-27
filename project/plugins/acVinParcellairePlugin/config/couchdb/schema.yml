@@ -91,9 +91,11 @@ Parcellaire:
                               superficie: { type: float }
                               superficie_cadastrale: { type: float }
                               commune: { }
-                              code_postal: { }
+                              code_postal: { required: false }
+                              code_commune: { }
                               section: { }
                               numero_parcelle: { }
+                              idu: { }
                               lieu: { }
                               cepage: { }
                               campagne_plantation: { }

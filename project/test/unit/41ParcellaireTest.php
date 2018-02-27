@@ -4,8 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(8);
-
+$t = new lime_test(9);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $campagne = date('Y');
 
@@ -36,3 +35,4 @@ $t->is($detail->getKey(), "SIRAH-N-2005-AVIGNON-10-52", "La clé de la parcelle 
 $t->is($detail->campagne_plantation, "2005", "La campagne de plantation a été enregistré");
 $t->is($detail->cepage, "Sirah N", "Le cépage a été enregistré");
 $t->is($detail->commune, "Avignon", "La commune a été enregistré");
+$t->is($detail->idu, "000100052" , "Le code IDU est 000100052");

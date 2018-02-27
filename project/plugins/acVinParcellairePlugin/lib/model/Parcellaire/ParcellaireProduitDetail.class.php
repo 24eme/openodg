@@ -40,7 +40,36 @@ class ParcellaireProduitDetail extends BaseParcellaireProduitDetail {
     }
 
     public function getLibelleComplet() {
+
         return $this->getAppellation()->getLibelleComplet().' '.$this->getLieuLibelle().' '.$this->getCepageLibelle();
+    }
+
+    public function updateIDU() {
+        $this->idu = sprintf('%05s%03s%02s%04s', $this->code_commune, "", $this->section, $this->numero_parcelle);
+    }
+
+    public function setCodeCommune($code_commune) {
+        $this->_set('code_commune', $code_commune);
+
+        $this->updateIDU();
+
+        return $this;
+    }
+
+    public function setSection($section) {
+        $this->_set('section', $section);
+
+        $this->updateIDU();
+
+        return $this;
+    }
+
+    public function setNumeroParcelle($numero_parcelle) {
+        $this->_set('numero_parcelle', $numero_parcelle);
+
+        $this->updateIDU();
+
+        return $this;
     }
 
     public function getLieuLibelle() {

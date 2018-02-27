@@ -49,6 +49,7 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     const CSV_ECART_PIED = 35;
     const CSV_DATE_DEBUT_GESTION = 36;
     const CSV_DATE_FIN_GESTION = 37;
+    const CSV_IDU = 38;
 
 
     protected function configure()
@@ -111,7 +112,6 @@ EOF;
 
             $ref_cadastrale = $data[self::CSV_REF_CADASTRALE];
 
-
             $parcellaire = ParcellaireClient::getInstance()->findOrCreateFromEtablissement($etablissement,"2018");
 
             $parcellaire->addAcheteur(ParcellaireClient::DESTINATION_SUR_PLACE,$etablissement->getIdentifiant());
@@ -140,8 +140,8 @@ EOF;
               $commune = trim($data[self::CSV_LIBELLE_COMMUNE]);
               $lieuDit = (trim($data[self::CSV_LIEUDIT_COMMUNE]))? trim($data[self::CSV_LIEUDIT_COMMUNE]) : null;
 
-              $section = trim($m[1]);
-              $numero_parcelle = trim($m[3]);
+              $section = trim($data[self::CSV_ID_SECTION]);
+              $numero_parcelle = trim($data[self::CSV_INUMPCV]);
               $dpt = trim($data[self::CSV_CODE_DEPARTEMENT]);
 
               $campagnePlantation = trim($data[self::CSV_CAMPAGNE_PLANTATION]);
@@ -157,12 +157,11 @@ EOF;
               $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section , $numero_parcelle, $lieuDit,$dpt);
               $parcelle->superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
               $parcelle->superficie_cadastrale = floatval(str_replace(',','.',trim($data[self::CSV_CONTENANCE_CADASTRALE])));
-              $parcelle->code_postal = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
+              $parcelle->code_commune = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
               $parcelle->cepage = $cepage;
               if($lieuDit){
                 $parcelle->lieu = strtoupper($lieuDit);
               }
-              $parcelle->add('code_insee',trim($data[self::CSV_CODE_INSEE_COMMUNE]));
               $parcelle->add('ecart_rang',trim($data[self::CSV_ECART_RANG]));
               $parcelle->add('ecart_pieds',trim($data[self::CSV_ECART_PIED]));
               $parcelle->add('campagne_plantation',trim($data[self::CSV_CAMPAGNE_PLANTATION]));
@@ -200,6 +199,11 @@ EOF;
               if(trim($data[self::CSV_CODE_PORTEGREFFE])){
                 $parcelle->add('porte_greffe',trim($data[self::CSV_CODE_PORTEGREFFE]));
               }
+
+              if($parcelle->idu != $data[self::CSV_IDU]) {
+              echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
+                }
+
               echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
             }
             $parcellaire->etape='validation';
