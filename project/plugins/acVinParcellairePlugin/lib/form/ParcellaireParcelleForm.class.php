@@ -111,8 +111,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
             $lieu = $values['lieuDit'];
         }
 
-        $parcelle = $this->getObject()->getDocument()->addParcelle($values['produit'], $values['cepage'], $values['campagne_plantation'], $commune, $section, $numero_parcelle);
-
+        $parcelle = $this->getObject()->getDocument()->addParcelle($values['produit'], $values['cepage'], $values['campagne_plantation'], $commune, $section, $numero_parcelle, $lieu);
         $parcelle->superficie = $values['superficie'];
 
         $parcelle->active = 1;

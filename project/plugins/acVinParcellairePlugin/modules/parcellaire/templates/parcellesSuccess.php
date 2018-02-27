@@ -13,6 +13,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
     <h2>Saisie des <?php if ($parcellaire->isIntentionCremant()): ?>intentions de production<?php else: ?>parcelles<?php endif; ?><?php echo ($parcellaire->isParcellaireCremant()) ? ' de Crémant' : ''; ?></h2>
 </div>
 
+<?php if(count($parcellaireAppellations)): ?>
 <ul class="nav nav-tabs">
     <?php
     $selectedAppellationName = "";
@@ -25,6 +26,7 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
         <li role="presentation" class="<?php echo ($isSelectedAppellation) ? 'active' : '' ?>"><a href="<?php echo url_for('parcellaire_parcelles', array('id' => $parcellaire->_id, 'appellation' => $appellationKey)) ?>" class="ajax"><?php echo $appellationName; ?></a></li>
     <?php endforeach; ?>
 </ul>
+<?php endif; ?>
 
 <?php if ($sf_user->hasFlash('warning')): ?>
     <div class="alert alert-warning" role="alert"><?php echo $sf_user->getFlash('warning') ?></div>
@@ -111,10 +113,10 @@ $isVtSgn = is_string($appellationNode) && ($appellationNode == ParcellaireClient
                             ?>
                         </tbody>
                     </table>
-                </div>
             <?php else : ?>
                 <p class="text-muted">Vous n'avez affecté aucune <?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>parcelle<?php endif; ?> pour cette appellation.</p><br/>
             <?php endif; ?>
+			</div>
             <div class="text-left">
                 <button class="btn btn-sm btn-warning ajax" data-toggle="modal" data-target="#popupForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter une parcelle</button>
             </div>

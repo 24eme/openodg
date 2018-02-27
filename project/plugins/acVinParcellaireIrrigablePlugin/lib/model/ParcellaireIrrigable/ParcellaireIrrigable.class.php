@@ -144,7 +144,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     	  		$subitem->numero_parcelle = $detail->numero_parcelle;
     	  		$subitem->lieu = $detail->lieu;
     	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->departement = $detail->departement;
     	  		$subitem->active = 1;
     	  		$subitem->vtsgn = (int)$detail->vtsgn;
     	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
@@ -160,15 +159,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       		$this->declaration->remove($r);
       	}
     }
-
-    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-        $config = $this->getConfiguration()->get($hashProduit);
-        $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
-        $produit->getLibelle();
-
-        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $cepage, $dpt);
-    }
-
 
   public function validate($date = null) {
       if (is_null($date)) {

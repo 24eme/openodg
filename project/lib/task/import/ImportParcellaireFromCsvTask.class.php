@@ -158,7 +158,6 @@ EOF;
 
               $section = trim($data[self::CSV_ID_SECTION]);
               $numero_parcelle = preg_replace('/^[0]+/', '', trim($data[self::CSV_INUMPCV]));
-              $dpt = trim($data[self::CSV_CODE_DEPARTEMENT]);
 
               $campagnePlantation = trim($data[self::CSV_CAMPAGNE_PLANTATION]);
 
@@ -170,17 +169,15 @@ EOF;
                   continue;
                 }
               }
-              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section , $numero_parcelle, $lieuDit,$dpt);
+              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit);
               $parcelle->superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
               $parcelle->superficie_cadastrale = floatval(str_replace(',','.',trim($data[self::CSV_CONTENANCE_CADASTRALE])));
               $parcelle->code_commune = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
               $parcelle->cepage = $cepage;
-              if($lieuDit){
-                $parcelle->lieu = strtoupper($lieuDit);
-              }
+
               $parcelle->add('ecart_rang', trim($data[self::CSV_ECART_RANG]) * 1);
               $parcelle->add('ecart_pieds', trim($data[self::CSV_ECART_PIED]) * 1);
-              $parcelle->add('campagne_plantation',trim($data[self::CSV_CAMPAGNE_PLANTATION]));
+
               $parcelle->active = true;
 
               $date2018 = "20180101";
