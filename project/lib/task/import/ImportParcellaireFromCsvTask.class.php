@@ -207,6 +207,7 @@ EOF;
               echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
             }
             $parcellaire->etape='validation';
+            $parcellaire->add('source', 'INAO');
             $parcellaire->validation = date('Y-m-d');
             $parcellaire->validation_odg = date('Y-m-d');
 

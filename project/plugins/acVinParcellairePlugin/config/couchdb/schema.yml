@@ -12,6 +12,7 @@ Parcellaire:
       validation_odg: { }
       autorisation_acheteur: { }
       papier: { required: false, type: integer }
+      source: { required: false }
       type_proprietaire:
         type: collection
         required: false
