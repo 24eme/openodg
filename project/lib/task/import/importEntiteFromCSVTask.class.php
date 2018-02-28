@@ -199,6 +199,9 @@ EOF;
           $etablissement->constructId();
           $etablissement->cvi = $cvi;
           $etablissement->nom = $this->buildRaisonSociete($data);
+          if($data[self::CSV_ZONE]){
+              $etablissement->region = $data[self::CSV_ZONE];
+          }
           $etablissement->save();
           if($this->isSuspendu){
             $etablissement->setStatut(SocieteClient::STATUT_SUSPENDU);

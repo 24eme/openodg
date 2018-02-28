@@ -43,11 +43,11 @@ curl -X POST -d @data/configuration/provence/current.json -H "content-type: appl
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
 
-cat $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;$/;"/' | sed 's/^"//' | sed -r 's/;([0-9]+)$/;"\1/g'  | awk -F '";"' '{ print  "\""$24"\";" $25 }' | grep CDP | sort | uniq | sed 's|;1$|;"COOPERATIVE"|' | sed 's|;0$|;"NEGOCIANT"|' > $DATA_DIR/20180215_liste_cavecoop_nego.utf8$TEST.csv
+cat $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;$/;"/' | sed 's/^"//' | sed -r 's/;([0-9]+)$/;"\1/g'  | awk -F '";"' '{ print  "\""$24"\";" $25 }' | grep CDP | sort | uniq | sed 's|;1$|;"COOPERATIVE"|' | sed 's|;0$|;"NEGOCIANT"|' > $DATA_DIR/20180228_liste_cavecoop_nego.utf8$TEST.csv
 
-cat $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv | sort | uniq > $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv.sorted
+cat $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv | sort | uniq > $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv.sorted
 
-join -t ";" -1 1 -2 1 -a 1 $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv.sorted $DATA_DIR/20180215_liste_cavecoop_nego.utf8$TEST.csv > $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv
+join -t ";" -1 1 -2 1 -a 1 $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv.sorted $DATA_DIR/20180228_liste_cavecoop_nego.utf8$TEST.csv > $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv
 
 php symfony import:entite-from-csv $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv --application="provence"
 
@@ -57,4 +57,4 @@ php symfony import:entite-from-csv $DATA_DIR/20180228_liste_operateur.utf8$TEST.
 
 php symfony import:parcellaire-from-csv $DATA_DIR/20180208_parcellaire_aoc_operateurs_identifies.csv.utf8$TEST.csv --application="provence"
 
-php symfony import:habilitation-from-csv $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv --application="provence"
+php symfony import:habilitation-from-csv $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv --application="provence"
