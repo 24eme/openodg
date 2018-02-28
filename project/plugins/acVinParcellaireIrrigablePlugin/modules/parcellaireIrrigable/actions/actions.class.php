@@ -171,7 +171,7 @@ class parcellaireIrrigableActions extends sfActions {
     	$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable);
     
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    
+    		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
     		return sfView::SUCCESS;
     	}
     
