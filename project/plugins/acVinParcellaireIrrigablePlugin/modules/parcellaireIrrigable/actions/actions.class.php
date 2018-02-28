@@ -171,7 +171,7 @@ class parcellaireIrrigableActions extends sfActions {
     	$this->form = new ParcellaireIrrigableValidationForm($this->parcellaireIrrigable);
     
     	if (!$request->isMethod(sfWebRequest::POST)) {
-    
+    		$this->validation = new ParcellaireIrrigableValidation($this->parcellaireIrrigable);
     		return sfView::SUCCESS;
     	}
     
@@ -186,6 +186,25 @@ class parcellaireIrrigableActions extends sfActions {
     	
     	$this->getUser()->setFlash("notice", "La déclaration a bien été validée");
     	return $this->redirect('parcellaireirrigable_visualisation', $this->parcellaireIrrigable);
+    }
+
+    public function executePDF(sfWebRequest $request) {
+    	set_time_limit(180);
+    	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
+    	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigable);
+    
+    	$this->document = new ExportParcellaireIrrigablePDF($this->parcellaireIrrigable, $this->getRequestParameter('output', 'pdf'), false);
+    	$this->document->setPartialFunction(array($this, 'getPartial'));
+    
+    	if ($request->getParameter('force')) {
+    		$this->document->removeCache();
+    	}
+    
+    	$this->document->generate();
+    
+    	$this->document->addHeaders($this->getResponse());
+    
+    	return $this->renderText($this->document->output());
     }
 
 

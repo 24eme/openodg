@@ -132,7 +132,7 @@ function styleConstat() {
 function styleParcellaire() {
     return "
     .table {
-        border: 1px solid #1A8A3C;
+        border: 1px solid #c50069;
     }
 
     .tableAlt {
@@ -140,31 +140,27 @@ function styleParcellaire() {
     }
 
     .th {
-        font-weight: normal; border: 1px solid #1A8A3C; background-color: #D0FAB6; color: #1A8A3C;
+        font-weight: normal; border: 1px solid #790040; background-color: #c50069; color: white;
     }
 
     .td {
-        border: 1px solid #1A8A3C; height:22px; text-align: left;
-    }
-
-    .tdAlt {
-        border: 1px solid #1A8A3C; height:22px; text-align: left; background-color: #D0FAB6;
+        border: 1px solid #790040; height:22px; text-align: left;
     }
 
     .h2 {
-        text-align: left; font-size: 12pt; color: #1A8A3C;
+        text-align: left; font-size: 12pt; background-color: #790040; color: white;
     }
 
     .tdH2 {
-       border-bottom: 1px solid #1A8A3C; 
+       border-bottom: 1px solid #790040; background-color: #790040; color: white;
     }
 
     .h3 {
-        background-color: #1A8A3C; color: white; font-weight: bold;
+        background-color: #790040; color: white; font-weight: bold;
     }
 
     .h3Alt {
-        background-color: #88DC89; color: #1F6320; font-weight: bold;   
+        background-color: #790040; color: #white; font-weight: bold;   
     }
 ";
 }

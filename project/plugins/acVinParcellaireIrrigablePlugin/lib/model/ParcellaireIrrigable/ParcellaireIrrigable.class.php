@@ -30,6 +30,15 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
   }
 
+    public function getTypeParcellaire() {
+    	if ($this->_id) {
+    		if (preg_match('/^([A-Z]*)-([0-9]*)-([0-9]{4})/', $this->_id, $result)) {
+    			return $result[1];
+    		}
+    	}
+    	throw new sfException("Impossible de determiner le type de parcellaire");
+    }
+
   public function initDoc($identifiant, $campagne, $type = ParcellaireClient::TYPE_COUCHDB) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;
@@ -130,14 +139,18 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
     	  		$subitem->superficie = $detail->superficie;
     	  		$subitem->commune = $detail->commune;
-    	  		$subitem->code_postal = $detail->code_postal;
+                $subitem->code_commune = $detail->code_commune;
     	  		$subitem->section = $detail->section;
     	  		$subitem->numero_parcelle = $detail->numero_parcelle;
+                $subitem->idu = $detail->idu;
     	  		$subitem->lieu = $detail->lieu;
     	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->departement = $detail->departement;
     	  		$subitem->active = 1;
-    	  		$subitem->vtsgn = (int)$detail->vtsgn;
+
+                $subitem->remove('vtsgn');
+                if($detail->exist('vtsgn')) {
+                    $subitem->add('vtsgn', (int)$detail->vtsgn);
+                }
     	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
     	  	}
       	}
@@ -151,15 +164,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       		$this->declaration->remove($r);
       	}
     }
-
-    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-        $config = $this->getConfiguration()->get($hashProduit);
-        $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
-        $produit->getLibelle();
-
-        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $cepage, $dpt);
-    }
-
 
   public function validate($date = null) {
       if (is_null($date)) {

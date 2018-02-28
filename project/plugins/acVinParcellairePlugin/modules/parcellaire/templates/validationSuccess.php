@@ -6,7 +6,6 @@
 
 <div class="row col-xs-12">
     <h3>Merci de vérifier votre déclaration d'<?php if ($parcellaire->isIntentionCremant()): ?>intention de production<?php else: ?>affectation parcellaire<?php endif; ?><?php if($parcellaire->isParcellaireCremant()): ?><?php if($parcellaire->isIntentionCremant()): ?> AOC Crémant d'Alsace<?php else: ?> Crémant<?php endif; ?><?php endif; ?>&nbsp;<?php echo $parcellaire->campagne; ?></h3>
-    <p class="text-muted">Une version PDF est téléchargeable en bas de cet écran.</p>
 </div>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>
@@ -37,9 +36,7 @@
             <a href="<?php echo url_for("parcellaire_acheteurs", $parcellaire); ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Précédent</a>
         </div>
         <div class="col-xs-4 text-center">
-        <a href="<?php echo url_for("parcellaire_export_pdf", $parcellaire) ?>" class="btn btn-warning btn-lg">
-            <span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;Prévisualiser
-        </a>
+
         </div>
         <div class="col-xs-4 text-right">
             <button id="btn-validation-document-parcellaire" type="button" data-toggle="modal" data-target="#parcellaire-confirmation-validation" <?php if ($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-default btn-lg btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>

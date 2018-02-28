@@ -116,12 +116,14 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-        $key = KeyInflector::slugify($cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle);
+    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null) {
+        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle;
 
         if ($lieu) {
-            $key.='-' . KeyInflector::slugify($lieu);
+            $key.= '-' . $lieu;
         }
+
+        $key = KeyInflector::slugify($key);
 
         if($this->detail->exist($key)) {
            return $this->detail->get($key);
@@ -131,13 +133,13 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $detail->cepage = $cepage;
         $detail->campagne_plantation = $campagne_plantation;
         $detail->commune = $commune;
+        $detail->code_commune = CommunesConfiguration::getInstance()->findCodeCommune($detail->commune);
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
         if($lieu){
             $lieu = strtoupper($lieu);
         }
         $detail->lieu = $lieu;
-        $detail->departement = $dpt;
 
         return $detail;
     }

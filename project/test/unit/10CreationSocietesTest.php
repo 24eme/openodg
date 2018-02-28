@@ -20,7 +20,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(12);
+$t = new lime_test(24);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -74,7 +74,7 @@ $t->is($compteSociete->_get('insee'), $societeviti->siege->insee, "La societe a 
 
 
 $compteSociete->addTag('test', 'test');
-$compteSociete->addTag('test', 'test_viti');
+$compteSociete->addTag('test', 'test_viti_societe');
 $compteSociete->save();
 $t->is($compteSociete->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société viti crée un compte du même type");
 
@@ -86,7 +86,7 @@ $societenegocvo->save();
 $id = $societenegocvo->getidentifiant();
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test');
-$compte->addTag('test', 'test_nego_region');
+$compte->addTag('test', 'test_nego_region_societe');
 $compte->save();
 $t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société négo crée un compte du même type");
 
@@ -98,7 +98,7 @@ $societenegocvo->save();
 $id = $societenegocvo->getidentifiant();
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test');
-$compte->addTag('test', 'test_nego_region_2');
+$compte->addTag('test', 'test_nego_region_2_societe');
 $compte->save();
 $t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société négo 2 crée un compte du même type");
 
@@ -110,7 +110,7 @@ $societenegohors->save();
 $id = $societenegohors->getidentifiant();
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
 $compte->addTag('test', 'test');
-$compte->addTag('test', 'test_nego_horsregion');
+$compte->addTag('test', 'test_nego_horsregion_societe');
 $compte->save();
 $t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société négo hors région crée un compte du même type");
 
@@ -121,7 +121,7 @@ $societecourtier->commune = "Neuilly sur seine";
 $societecourtier->save();
 $id = $societecourtier->getidentifiant();
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
-$compte->addTag('test', 'test_courtier');
+$compte->addTag('test', 'test_courtier_societe');
 $compte->addTag('test', 'test');
 $compte->save();
 $t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société courtier crée un compte du même type");
@@ -133,7 +133,7 @@ $societeintermediaire->commune = "Neuilly sur seine";
 $societeintermediaire->save();
 $id = $societeintermediaire->getidentifiant();
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
-$compte->addTag('test', 'test_intermediaire');
+$compte->addTag('test', 'test_intermediaire_societe');
 $compte->addTag('test', 'test');
 $compte->save();
 $t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société intermédiaire crée un compte du même type");
@@ -145,7 +145,7 @@ $societeintermediaire->commune = "Neuilly sur seine";
 $societeintermediaire->save();
 $id = $societeintermediaire->getidentifiant();
 $compte = CompteClient::getInstance()->findByIdentifiant($id);
-$compte->addTag('test', 'test_cooperative');
+$compte->addTag('test', 'test_cooperative_societe');
 $compte->addTag('test', 'test');
 $compte->save();
 $t->is($compte->tags->automatique->toArray(true, false), array('societe', 'autre'), "Création de société intermédiaire crée un compte du même type");

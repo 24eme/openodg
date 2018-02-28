@@ -14,16 +14,34 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         /*
          * Warning
          */
-        // $this->addControle(self::TYPE_WARNING, 'parcellaire_complantation', 'Attention');
-        // $this->addControle(self::TYPE_ERROR, 'surface_vide', 'Superficie nulle (0 are)');
+        $this->addControle(self::TYPE_WARNING, 'parcellaireirrigable_no_parcelles', 'Vous ne déclarez aucune parcelle irrigable');
 
         /*
          * Error
          */
-//        $this->addControle(self::TYPE_ERROR, 'parcellaire_invalidproduct', "Ce cépage non autorisé");
+    	$this->addControle(self::TYPE_ERROR, 'parcellaireirrigable_materiel_ressource_required', "Vous devez renseigner le matériel et la ressource de toutes vos parcelles");
     }
 
     public function controle() {
-        
+        if (count($this->document->declaration) < 1) {
+        	$this->addPoint(self::TYPE_WARNING, 
+        					'parcellaireirrigable_no_parcelles', 
+        					'<a href="' . $this->generateUrl('parcellaireirrigable_parcelles', array('id' => $this->document->_id)) . "\" class='alert-link' >Séléctionner vos parcelles irrigables.</a>", 
+        					'');
+        }
+        $missed = false;
+        foreach ($this->document->declaration->getParcellesByCommune() as $commune => $parcelles) {
+        	foreach ($parcelles as $parcelle) {
+        		if (!$parcelle->materiel || !$parcelle->ressource) {
+        			$missed = true;
+        		}
+        	}
+        }
+        if ($missed) {
+        	$this->addPoint(self::TYPE_ERROR, 
+        					'parcellaireirrigable_materiel_ressource_required', 
+        					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Modifier la déclaration.</a>", 
+        					'');
+        }
     }
 }

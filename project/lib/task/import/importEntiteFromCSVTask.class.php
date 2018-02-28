@@ -40,6 +40,7 @@ class importEntitesFromCSVTask extends sfBaseTask
 
     const CSV_CAVE_APPORTEURID = 23;
     const CSV_CAVE_COOP = 24;
+    const CSV_SOCIETE_TYPE = 25;
 
 
 
@@ -91,6 +92,14 @@ EOF;
           }
           $this->importEntite($line);
         }
+        echo "\n ** AJOUT DES LIAISONS CAVECOOP ET NEGOCE  **\n";
+        foreach(file($this->file_path) as $line) {
+            $line = str_replace("\n", "", $line);
+            if(preg_match("/^\"tbl_CDPOps.IdOP/", $line)) {
+                continue;
+            }
+            $this->importLiaisons($line);
+          }
     }
 
 
@@ -147,7 +156,9 @@ EOF;
 
             $societe->telephone_bureau = $data[self::CSV_TELEPHONE];
             $societe->fax = $data[self::CSV_FAX];
-            $societe->email = $data[self::CSV_EMAIL];
+            $emails = (explode(";",$data[self::CSV_EMAIL]));
+
+            $societe->email = trim($emails[0]);
 
             if($this->isSuspendu){
               $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
@@ -156,6 +167,19 @@ EOF;
             }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
+            if(count($emails) > 1){
+                foreach ($emails as $key => $email) {
+                    if(!$key){
+                        continue;
+                    }
+                    $compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
+                    $compte->nom = "Autre Contact";
+                    $compte->email = trim($email);
+                    echo "L'entité $societe->_id a un interlocuteur $compte->_id ".$compte->nom." (".$compte->email.")\n";
+                    $compte->save();
+                    $societe = SocieteClient::getInstance()->find($societe->_id);
+                }
+            }
             return $societe;
           }
 
@@ -163,7 +187,9 @@ EOF;
           $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
 
           $cvi = $data[self::CSV_EVV];
-
+          if($data[self::CSV_SOCIETE_TYPE]){
+              $type_etablissement = $data[self::CSV_SOCIETE_TYPE];
+          }
           $etablissement = $societe->createEtablissement($type_etablissement);
           $etablissement->constructId();
           $etablissement->cvi = $cvi;
@@ -210,6 +236,35 @@ EOF;
         return $data[self::CSV_NOM].' ('.$data[self::CSV_TITRE].')';
       }
       return $data[self::CSV_TITRE].' '.$data[self::CSV_NOM];
+    }
+
+    protected function importLiaisons($line){
+        $data = str_getcsv($line, ';');
+        if($data[self::CSV_CAVE_APPORTEURID]){
+            $viti = EtablissementClient::getInstance()->findByIdentifiant($data[self::CSV_OLDID]."01");
+            $coopOrNego = EtablissementClient::getInstance()->findByIdentifiant($data[self::CSV_CAVE_APPORTEURID]."01");
+            if(!$viti){
+                echo "/!\ viti non trouvé : ".$data[self::CSV_OLDID]."\n";
+                return false;
+            }
+            if(!$coopOrNego){
+                echo "/!\ cave coop ou négo non trouvé : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
+                return false;
+            }
+            if($coopOrNego->_id == $viti->_id){
+                echo "/!\ Liaison sur lui même trouvée : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
+                return false;
+            }
+            if($coopOrNego->isNegociant()){
+                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true);
+            }
+            if($coopOrNego->isCooperative()){
+                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true);
+            }
+            $viti->save();
+            echo $viti->_id." ".$coopOrNego->_id." isNEgo : ".$coopOrNego->isNegociant()."\n";
+
+        }
     }
 
 }
