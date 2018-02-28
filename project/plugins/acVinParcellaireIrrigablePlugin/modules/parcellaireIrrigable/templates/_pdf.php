@@ -33,16 +33,16 @@
                 </tr>
             </table>
         </td></tr></table>
-<br /> 
+<br />
 
 <div><span class="h3">&nbsp;<?php echo $titre; ?>&nbsp;</span></div>
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: center; width: 240px;">Parcelle</th>        
-        <th class="th" style="text-align: center; width: 260px;">Cépages</th>       
+        <th class="th" style="text-align: center; width: 240px;">Parcelle</th>
+        <th class="th" style="text-align: center; width: 260px;">Cépages</th>
         <th class="th" style="text-align: center; width: 110px;">Matériel</th>
-        <th class="th" style="text-align: center; width: 110px;">Ressource</th> 
+        <th class="th" style="text-align: center; width: 110px;">Ressource</th>
         <th class="th" style="text-align: center; width: 225px;">Observations</th>
     </tr>
     <?php foreach ($parcellesForDetail as $parcelle): ?>

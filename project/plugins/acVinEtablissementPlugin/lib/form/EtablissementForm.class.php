@@ -17,7 +17,8 @@ class EtablissementForm extends acCouchdbObjectForm
             "adresse" => new sfWidgetFormInput(array("label" => "Adresse")),
             "commune" => new sfWidgetFormInput(array("label" => "Commune")),
             "code_postal" => new sfWidgetFormInput(array("label" => "Code Postal")),
-            "telephone" => new sfWidgetFormInput(array("label" => "Tél. Bureau")),
+            "telephone_bureau" => new sfWidgetFormInput(array("label" => "Tél. Bureau")),
+			"telephone_mobile" => new sfWidgetFormInput(array("label" => "Tél. Mobile")),
             "fax" => new sfWidgetFormInput(array("label" => "Fax")),
             "email" => new sfWidgetFormInput(array("label" => "Email")),
         ));
@@ -36,7 +37,8 @@ class EtablissementForm extends acCouchdbObjectForm
             'adresse' => new sfValidatorString(array("required" => false)),
             'commune' => new sfValidatorString(array("required" => false)),
             'code_postal' => new sfValidatorString(array("required" => false)),
-            'telephone' => new sfValidatorString(array("required" => false)),
+            'telephone_bureau' => new sfValidatorString(array("required" => false)),
+			'telephone_mobile' => new sfValidatorString(array("required" => false)),
             'fax' => new sfValidatorString(array("required" => false)),
        	    'email' => new sfValidatorEmailStrict(array("required" => false)),
         ));
@@ -62,20 +64,12 @@ class EtablissementForm extends acCouchdbObjectForm
 	public function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
         $this->getCoordonneesEtablissement();
-        /*$this->setDefault('adresse', $this->coordonneesEtablissement->adresse);
-        $this->setDefault('code_postal', $this->coordonneesEtablissement->code_postal);
-        $this->setDefault('commune', $this->coordonneesEtablissement->commune);
-        $this->setDefault('email', $this->coordonneesEtablissement->email);
-        $this->setDefault('siret', $this->coordonneesEtablissement->siret);
-        $this->setDefault('telephone', $this->coordonneesEtablissement->telephone);
-        $this->setDefault('fax', $this->coordonneesEtablissement->fax);*/
 
     }
 
     public function save($con = null) {
 
         parent::save($con);
-        //$this->getObject()->updateCompte();
     }
 
     public function doUpdateObject($values) {
@@ -87,16 +81,7 @@ class EtablissementForm extends acCouchdbObjectForm
     		}
     	}
         parent::doUpdateObject($values);
-		/*$this->getObject()->setAdresse($values['adresse']);
-		$this->getObject()->setCodePostal($values['code_postal']);
-		$this->getObject()->setCommune($values['commune']);
-		$this->getObject()->setEmail($values['email']);
-		$this->getObject()->setSiret($values['siret']);
-		$this->getObject()->setTelephonePerso($values['telephone_prive']);
-		$this->getObject()->setTelephoneBureau($values['telephone_bureau']);
-		$this->getObject()->setTelephoneMobile($values['telephone_mobile']);
-		$this->getObject()->setFax($values['fax']);*/
-    }
+	}
 
     public function getUpdatedValues()
     {

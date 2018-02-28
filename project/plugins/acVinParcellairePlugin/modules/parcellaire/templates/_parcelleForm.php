@@ -43,7 +43,7 @@
             <?php
             echo $form['lieudit']->render(array("placeholder" => "Saisissez un lieu dit", "class" => "form-control select2 select2-offscreen select2permissifNoAjax",
                 "data-choices" => json_encode($form->getLieuDetailForAutocomplete()),
-                "required" => true))
+                "required" => false))
             ?>
         </div>
     </div>

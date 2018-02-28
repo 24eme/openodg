@@ -12,6 +12,9 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_CONDITIONNEUR = "CONDITIONNEUR";
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
 
+    const ACTIVITE_PRODUCTEUR_MOUTS = "PRODUCTEUR_MOUTS";
+    const ACTIVITE_ELEVEUR_DGC = "ELEVEUR_DGC";
+
 
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
     const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
@@ -21,12 +24,17 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_RETRAIT = "RETRAIT";
     const STATUT_ANNULE = "ANNULÉ";
 
+
+    const STATUT_ARCHIVE = "ARCHIVE";
+
     public static $activites_libelles = array( self::ACTIVITE_PRODUCTEUR => "Producteur",
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
                                                   self::ACTIVITE_VRAC => "Vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
                                                   self::ACTIVITE_ELABORATEUR => "Élaborateur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse"
+                                                  ,self::ACTIVITE_PRODUCTEUR_MOUTS => "Producteur de moût"
+                                                  ,self::ACTIVITE_ELEVEUR_DGC => "Eleveur de DGC"
                                                 );
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
@@ -34,7 +42,9 @@ class HabilitationClient extends acCouchdbClient {
                                              self::STATUT_SUSPENDU => "Suspendu",
                                              self::STATUT_REFUS => "Refus",
                                              self::STATUT_ANNULE => "Annulé",
-                                             self::STATUT_RETRAIT => "Retrait");
+                                             self::STATUT_RETRAIT => "Retrait",
+
+                                            self::STATUT_ARCHIVE => "Archivé");
 
     public static function getInstance()
     {
