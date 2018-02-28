@@ -40,6 +40,7 @@ class importEntitesFromCSVTask extends sfBaseTask
 
     const CSV_CAVE_APPORTEURID = 23;
     const CSV_CAVE_COOP = 24;
+    const CSV_SOCIETE_TYPE = 25;
 
 
 
@@ -178,7 +179,9 @@ EOF;
           $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
 
           $cvi = $data[self::CSV_EVV];
-
+          if($data[self::CSV_SOCIETE_TYPE]){
+              $type_etablissement = $data[self::CSV_SOCIETE_TYPE];
+          }
           $etablissement = $societe->createEtablissement($type_etablissement);
           $etablissement->constructId();
           $etablissement->cvi = $cvi;
