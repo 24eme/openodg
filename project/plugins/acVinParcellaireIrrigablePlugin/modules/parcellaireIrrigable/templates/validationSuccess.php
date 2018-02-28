@@ -5,6 +5,10 @@
     <h2>Validation de votre déclaration</h2>
 </div>
 
+<?php if (isset($validation) && $validation->hasPoints()): ?>
+    <?php include_partial('parcellaireIrrigable/pointsAttentions', array('parcellaireIrrigable' => $parcellaireIrrigable, 'validation' => $validation)); ?>
+<?php endif; ?>
+
 <form role="form" action="<?php echo url_for('parcellaireirrigable_validation', $parcellaireIrrigable) ?>" method="post" id="validation-form">
     <?php echo $form->renderHiddenFields(); ?>
     <?php echo $form->renderGlobalErrors(); ?>
@@ -40,10 +44,12 @@
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" <?php if ($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
         </div>
     </div>
+    <?php if (!$validation->hasErreurs()): ?>
 	<?php include_partial('parcellaireIrrigable/popupConfirmationValidation', array('form' => $form)); ?>
+	<?php endif; ?>
 </form>
 <?php if($form["signataire"]->hasError()): ?>
 <script type="text/javascript">

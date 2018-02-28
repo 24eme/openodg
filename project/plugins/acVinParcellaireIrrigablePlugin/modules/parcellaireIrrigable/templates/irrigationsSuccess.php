@@ -14,7 +14,8 @@
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-                <th class="col-xs-6">Parcelle</th>
+                <th class="col-xs-3">Parcelle</th>
+                <th class="col-xs-3">Cépage</th>
                 <th class="col-xs-2">Type de matériel</th>
                 <th class="col-xs-2">Type de ressource</th>
                 <th class="col-xs-2">Observations</th>
