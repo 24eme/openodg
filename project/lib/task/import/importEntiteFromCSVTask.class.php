@@ -90,7 +90,7 @@ EOF;
 
       foreach(file($this->file_path) as $line) {
           $line = str_replace("\n", "", $line);
-          if(preg_match("/^\"tbl_CDPOps.IdOP/", $line)) {
+          if(preg_match("/tbl_CDPOps.IdOP/", $line)) {
               continue;
           }
           $this->importEntite($line);
@@ -98,7 +98,7 @@ EOF;
         echo "\n ** AJOUT DES LIAISONS CAVECOOP ET NEGOCE  **\n";
         foreach(file($this->file_path) as $line) {
             $line = str_replace("\n", "", $line);
-            if(preg_match("/^\"tbl_CDPOps.IdOP/", $line)) {
+            if(preg_match("/tbl_CDPOps.IdOP/", $line)) {
                 continue;
             }
             $this->importLiaisons($line);

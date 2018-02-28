@@ -43,7 +43,7 @@ curl -X POST -d @data/configuration/provence/current.json -H "content-type: appl
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
 
-cat $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;$/;"/' | sed 's/^"//' | sed -r 's/;([0-9]+)$/;"\1/g'  | awk -F '";"' '{ print  "\""$24"\";" $25 }' | grep CDP | sort | uniq | sed 's|;1$|;"COOPERATIVE"|' | sed 's|;0$|;"NEGOCIANT"|' > $DATA_DIR/20180228_liste_cavecoop_nego.utf8$TEST.csv
+cat $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;$/;"/' | sed 's/^"//' | sed -r 's/;([0-9]+)$/;"\1/g'  | awk -F '";"' '{ print  "\""$27"\";" $28 }' | grep CDP | sort | uniq | sed 's|;1$|;"COOPERATIVE"|' | sed 's|;0$|;"NEGOCIANT"|' > $DATA_DIR/20180228_liste_cavecoop_nego.utf8$TEST.csv
 
 cat $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv | sort | uniq > $DATA_DIR/20180228_liste_operateur.utf8$TEST.csv.sorted
 
