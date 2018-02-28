@@ -14,7 +14,10 @@ class EtablissementClient extends acCouchdbClient {
     const TYPE_LIAISON_BAILLEUR = 'BAILLEUR';
     const TYPE_LIAISON_METAYER = 'METAYER';
     const TYPE_LIAISON_FERMIER = 'FERMIER';
+    const TYPE_LIAISON_COOPERATIVE = 'COOPERATIVE';
     const TYPE_LIAISON_ADHERENT = 'ADHERENT'; //pour les cooperateurs
+    const TYPE_LIAISON_NEGOCIANT = 'NEGOCIANT'; //pour les negociants
+    const TYPE_LIAISON_VENDEUR = 'VENDEUR';
     const TYPE_LIAISON_CONTRAT_INTERNE = 'CONTRAT_INTERNE';
     const STATUT_ACTIF = 'ACTIF'; #'actif';
     const STATUT_SUSPENDU = 'SUSPENDU'; #'suspendu';
@@ -284,6 +287,9 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_METAYER => 'A pour métayer',
             self::TYPE_LIAISON_FERMIER => 'A pour fermier',
             self::TYPE_LIAISON_ADHERENT => 'Adhérent de (coop.)',
+            self::TYPE_LIAISON_COOPERATIVE => 'A pour coopérative',
+            self::TYPE_LIAISON_NEGOCIANT => 'A pour négociant',
+            self::TYPE_LIAISON_VENDEUR => 'A pour vendeur',
             self::TYPE_LIAISON_CONTRAT_INTERNE => 'Contrat interne');
     }
 

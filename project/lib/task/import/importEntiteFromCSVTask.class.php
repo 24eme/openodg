@@ -92,6 +92,14 @@ EOF;
           }
           $this->importEntite($line);
         }
+        echo "\n ** AJOUT DES LIAISONS CAVECOOP ET NEGOCE  **\n";
+        foreach(file($this->file_path) as $line) {
+            $line = str_replace("\n", "", $line);
+            if(preg_match("/^\"tbl_CDPOps.IdOP/", $line)) {
+                continue;
+            }
+            $this->importLiaisons($line);
+          }
     }
 
 
@@ -228,6 +236,35 @@ EOF;
         return $data[self::CSV_NOM].' ('.$data[self::CSV_TITRE].')';
       }
       return $data[self::CSV_TITRE].' '.$data[self::CSV_NOM];
+    }
+
+    protected function importLiaisons($line){
+        $data = str_getcsv($line, ';');
+        if($data[self::CSV_CAVE_APPORTEURID]){
+            $viti = EtablissementClient::getInstance()->findByIdentifiant($data[self::CSV_OLDID]."01");
+            $coopOrNego = EtablissementClient::getInstance()->findByIdentifiant($data[self::CSV_CAVE_APPORTEURID]."01");
+            if(!$viti){
+                echo "/!\ viti non trouvé : ".$data[self::CSV_OLDID]."\n";
+                return false;
+            }
+            if(!$coopOrNego){
+                echo "/!\ cave coop ou négo non trouvé : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
+                return false;
+            }
+            if($coopOrNego->_id == $viti->_id){
+                echo "/!\ Liaison sur lui même trouvée : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
+                return false;
+            }
+            if($coopOrNego->isNegociant()){
+                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true);
+            }
+            if($coopOrNego->isCooperative()){
+                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true);
+            }
+            $viti->save();
+            echo $viti->_id." ".$coopOrNego->_id." isNEgo : ".$coopOrNego->isNegociant()."\n";
+
+        }
     }
 
 }

@@ -155,6 +155,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR,$this,false);
           $etablissement->save();
         }
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_VENDEUR,$this,false);
+          $etablissement->save();
+        }
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_ADHERENT,$this,false);
+          $etablissement->save();
+        }
         return $liaison;
     }
 
@@ -186,6 +194,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
     public function isNegociant() {
         return ($this->famille == EtablissementFamilles::FAMILLE_NEGOCIANT);
+    }
+    public function isCooperative() {
+        return ($this->famille == EtablissementFamilles::FAMILLE_COOPERATIVE);
     }
 
     public function isViticulteur() {
