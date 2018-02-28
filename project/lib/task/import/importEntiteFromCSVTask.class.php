@@ -27,20 +27,23 @@ class importEntitesFromCSVTask extends sfBaseTask
 
     const CSV_ACTIVITES = 14;
     const CSV_ETAT = 15;
-    const CSV_TYPE = 16;
-    const CSV_CHAIS_ACTIVITES = 17;
+    const CSV_ORDRE = 16;
+    const CSV_ZONE = 17;
+    const CSV_ID_TIERS = 18;
+    const CSV_TYPE = 19;
+    const CSV_CHAIS_ACTIVITES = 20;
 
 
-    const CSV_CHAIS_ADRESSE_1 = 18;
-    const CSV_CHAIS_ADRESSE_2 = 19;
-    const CSV_CHAIS_ADRESSE_3 = 20;
-    const CSV_CHAIS_CP = 21;
-    const CSV_CHAIS_VILLE = 22;
+    const CSV_CHAIS_ADRESSE_1 = 21;
+    const CSV_CHAIS_ADRESSE_2 = 22;
+    const CSV_CHAIS_ADRESSE_3 = 23;
+    const CSV_CHAIS_CP = 24;
+    const CSV_CHAIS_VILLE = 25;
 
 
-    const CSV_CAVE_APPORTEURID = 23;
-    const CSV_CAVE_COOP = 24;
-    const CSV_SOCIETE_TYPE = 25;
+    const CSV_CAVE_APPORTEURID = 26;
+    const CSV_CAVE_COOP = 27;
+    const CSV_SOCIETE_TYPE = 28;
 
 
 
@@ -134,6 +137,8 @@ EOF;
             $societe->constructId();
             $societe->raison_sociale = $this->buildRaisonSociete($data);
             $societe->add('date_creation', date("Y-m-d"));
+
+
 
             $societe->code_comptable_client = $societe->identifiant;
             $siege = $societe->getOrAdd('siege');
