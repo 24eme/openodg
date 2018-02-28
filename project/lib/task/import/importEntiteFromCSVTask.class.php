@@ -138,9 +138,7 @@ EOF;
             $societe->raison_sociale = $this->buildRaisonSociete($data);
             $societe->add('date_creation', date("Y-m-d"));
 
-
-
-            $societe->code_comptable_client = $societe->identifiant;
+            $societe->code_comptable_client = ($data[self::CSV_ID_TIERS]) ? $data[self::CSV_ID_TIERS] : $societe->identifiant;
             $siege = $societe->getOrAdd('siege');
 
             $societe->siret = ($data[self::CSV_SIRET])? $data[self::CSV_SIRET] : null;
