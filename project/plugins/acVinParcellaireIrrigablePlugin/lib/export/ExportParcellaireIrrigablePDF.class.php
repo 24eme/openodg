@@ -27,14 +27,14 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
     }
 
     public function create() {
-    	
+
        $this->parcellesIrrigableForDetails = $this->parcellaireIrrigable->declaration->getParcellesByCommune();
-       
+
        if(count($this->parcellesIrrigableForDetails) == 0) {
        		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdfVide', array('parcellaireIrrigable' => $this->parcellaireIrrigable)));
        		return;
        }
-       
+
        foreach ($this->parcellesIrrigableForDetails as $commune => $parcellesForDetail) {
        		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' => $this->parcellaireIrrigable, 'parcellesForDetail' => $parcellesForDetail, 'titre' => $commune)));
        }

@@ -24,7 +24,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>&nbsp;Tel / Fax : <i><?php echo $parcellaireIrrigable->declarant->telephone ?> / <?php echo $parcellaireIrrigable->declarant->fax ?></i></td>
+                    <td>&nbsp;Tel / Fax : <i><?php echo $parcellaireIrrigable->declarant->telephone_bureau ?> / <?php echo $parcellaireIrrigable->declarant->fax ?></i></td>
                     <td></td>
                 </tr>
                 <tr>

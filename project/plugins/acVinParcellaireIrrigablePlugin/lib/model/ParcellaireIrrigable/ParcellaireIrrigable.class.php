@@ -32,7 +32,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
     public function getTypeParcellaire() {
     	if ($this->_id) {
-    		if (preg_match('/^([A-Z]*)-([0-9]*)-([0-9]{4})/', $this->_id, $result)) {
+    		if (preg_match('/^([A-Z]*)-([A-Z0-9]*)-([0-9]{4})/', $this->_id, $result)) {
     			return $result[1];
     		}
     	}
