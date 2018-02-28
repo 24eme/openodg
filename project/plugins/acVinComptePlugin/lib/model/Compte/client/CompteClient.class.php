@@ -49,11 +49,11 @@ class CompteClient extends acCouchdbClient {
         $comptes = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 9;
         foreach ($comptes as $id) {
-            if (!preg_match('/COMPTE-[0-9]{6}([0-9]{2})/', $id, $matches)) {
+            if (!preg_match('/COMPTE-'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'([0-9]{2})/', $id, $matches)) {
                 continue;
             }
 
-            $num = $matches[1];
+            $num = $matches[3];
             if ($num > $last_num) {
                 $last_num = $num;
             }

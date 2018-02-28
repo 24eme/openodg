@@ -147,7 +147,9 @@ EOF;
 
             $societe->telephone_bureau = $data[self::CSV_TELEPHONE];
             $societe->fax = $data[self::CSV_FAX];
-            $societe->email = $data[self::CSV_EMAIL];
+            $emails = (explode(";",$data[self::CSV_EMAIL]));
+
+            $societe->email = trim($emails[0]);
 
             if($this->isSuspendu){
               $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
@@ -156,6 +158,19 @@ EOF;
             }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
+            if(count($emails) > 1){
+                foreach ($emails as $key => $email) {
+                    if(!$key){
+                        continue;
+                    }
+                    $compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
+                    $compte->nom = "Autre Contact";
+                    $compte->email = trim($email);
+                    echo "L'entité $societe->_id a un interlocuteur $compte->_id ".$compte->nom." (".$compte->email.")\n";
+                    $compte->save();
+                    $societe = SocieteClient::getInstance()->find($societe->_id);
+                }
+            }
             return $societe;
           }
 
