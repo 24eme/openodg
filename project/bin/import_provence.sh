@@ -51,8 +51,7 @@ join -t ";" -1 1 -2 1 -a 1 $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv.sort
 
 php symfony import:entite-from-csv $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv --application="provence"
 
-echo $DATA_DIR/20180215_liste_operateur.utf8$TEST.csv
-exit;
+
 #bash bin/delete_from_view.sh http://127.0.0.1:5984/odgprovence/_design/declaration/_view/tous?reduce=false
 
 
