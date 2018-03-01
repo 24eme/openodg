@@ -51,7 +51,8 @@ class Roles
         );
 
     protected static $hierarchy = array(
-        self::ADMIN => array(self::CONTACT, self::HABILITATION),
+        self::ADMIN => array(self::CONTACT),
+        self::HABILITATION => array(),
         self::OPERATEUR => array(),
         self::TRANSACTION => array(self::CONTRAT,
                                    self::DRM,

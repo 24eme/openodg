@@ -41,7 +41,6 @@ class habilitationActions extends sfActions {
   }
 
     public function executeDeclarant(sfWebRequest $request) {
-        $this->habilitateurMode = ($this->getUser()->isAdmin()) ? false : true;
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
@@ -76,7 +75,15 @@ class habilitationActions extends sfActions {
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
 
-        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+        $values = $request->getParameter($this->ajoutForm->getName());
+
+        if(!$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && !preg_match('/^DEMANDE_/', $values['statut'])) {
+            $this->getUser()->setFlash("erreur", "Vous n'êtes pas autorisé à ajouter une habilitation avec le statut : ".$values['statut']);
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
+
+        $this->ajoutForm->bind($values);
 
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
@@ -103,7 +110,19 @@ class habilitationActions extends sfActions {
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
 
-        $this->editForm->bind($request->getParameter($this->editForm->getName()));
+        $values = $request->getParameter($this->editForm->getName());
+
+        if(!$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+            foreach($values as $key => $value) {
+                if(preg_match('/^statut_/', $key) && !preg_match('/^DEMANDE_/', $value)) {
+                    $this->getUser()->setFlash("erreur", "Vous n'êtes pas autorisé à modifier une habilitation avec le statut : ".$value);
+
+                    return $this->redirect('habilitation_declarant', $this->etablissement);
+                }
+            }
+        }
+
+        $this->editForm->bind($values);
 
         if (!$this->editForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');

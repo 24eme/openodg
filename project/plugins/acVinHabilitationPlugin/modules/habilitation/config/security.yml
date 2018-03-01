@@ -1,5 +1,5 @@
 all:
-  credentials: habilitation
+  credentials: [[ADMIN, habilitation]]
 
 ajout:
   credentials: ADMIN
