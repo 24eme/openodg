@@ -19,25 +19,17 @@
     <table id="<?php echo str_replace('/', '-', $produitKey); ?>" class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-                <th class="col-xs-3">Produit</th>
-                <th class="col-xs-2">Commune</th>
-                <th class="col-xs-1">Section</th>
-                <th class="col-xs-1">Parcelle</th>
-                <th class="col-xs-2">Cépage</th>
-                <th class="col-xs-1">Surface</th>
-                <th class="col-xs-1"></th>
+                <th class="col-xs-5">Parcelle</th>
+                <th class="col-xs-5">Cépage</th>
+                <th class="col-xs-2 text-center">Irrigable ?</th>
             </tr>
 		</thead>
 		<tbody>
 		<?php foreach ($parcelles as $parcelle): ?>
 			<tr style="cursor: pointer;">
-				<td><?php echo $parcelle->getProduitLibelle(); ?></td>
-				<td><?php echo $parcelle->commune; ?></td>
-				<td class="text-right"><?php echo $parcelle->section;  ?></td>
-				<td class="text-right"><?php echo $parcelle->numero_parcelle;  ?></td>
-				<td><?php echo $parcelle->getCepageLibelle();  ?></td>
-				<td class="text-right"><?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $parcelle->superficie); ?></td>
-				<td class="text-center"><input <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='mini' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+				<td><?php echo $parcelle->getIdentificationParcelleLibelle(ESC_RAW); ?></td>
+				<td><?php echo $parcelle->getIdentificationCepageLibelle(ESC_RAW); ?></td>
+				<td class="text-center"><input <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>
         </tbody>

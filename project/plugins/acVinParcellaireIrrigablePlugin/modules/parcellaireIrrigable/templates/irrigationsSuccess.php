@@ -14,10 +14,10 @@
     <table class="table table-bordered table-condensed table-striped">
 		<thead>
         	<tr>
-                <th class="col-xs-5">Parcelle</th>
-                <th class="col-xs-1">Année de plantation</th>
-                <th class="col-xs-2">Type de matériel</th>
-                <th class="col-xs-2">Type de ressource</th>
+                <th class="col-xs-3">Parcelle</th>
+                <th class="col-xs-3">Cépage</th>
+                <th class="col-xs-2">Matériel</th>
+                <th class="col-xs-2">Ressource</th>
                 <th class="col-xs-2">Observations</th>
             </tr>
 		</thead>
@@ -28,8 +28,8 @@
 			if (isset($form[$produitKey][$parcelle->getKey()])):
 		?>
 			<tr class="vertical-center">
-				<td><?php echo $parcelle->getProduitLibelle(); ?> - <?php echo $parcelle->commune; ?> - <?php echo $parcelle->section;  ?> / <?php echo $parcelle->numero_parcelle;  ?> - <?php echo $parcelle->cepage;  ?> <?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $parcelle->superficie); ?></td>
-            	<td><?php echo $parcelle->campagne_plantation; ?></td>
+				<td><?php echo $parcelle->getIdentificationParcelleLibelle(ESC_RAW); ?></td>
+				<td><?php echo $parcelle->getIdentificationCepageLibelle(ESC_RAW); ?></td>
             	<td>
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>

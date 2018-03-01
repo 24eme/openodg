@@ -16,6 +16,7 @@ class Roles
     const ALERTE = 'alerte';
     const RELANCE = 'relance';
     const CONTACT = 'contacts';
+    const HABILITATION = 'habilitation';
     const STATS = 'stats';
 
     const COMPTA = 'compta';
@@ -50,7 +51,7 @@ class Roles
         );
 
     protected static $hierarchy = array(
-        self::ADMIN => array(self::CONTACT),
+        self::ADMIN => array(self::CONTACT, self::HABILITATION),
         self::OPERATEUR => array(),
         self::TRANSACTION => array(self::CONTRAT,
                                    self::DRM,

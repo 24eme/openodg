@@ -41,6 +41,7 @@ class habilitationActions extends sfActions {
   }
 
     public function executeDeclarant(sfWebRequest $request) {
+        $this->habilitateurMode = ($this->getUser()->isAdmin()) ? false : true;
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
@@ -48,7 +49,7 @@ class habilitationActions extends sfActions {
 
         $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
         $this->editForm = new HabilitationEditionForm($this->habilitation);
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
 
         $this->setTemplate('habilitation');
     }
@@ -59,15 +60,6 @@ class habilitationActions extends sfActions {
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
         $this->setTemplate('habilitation');
-    }
-
-    public function executeCreate(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-
-        $habilitation = HabilitationClient::getInstance()->createDoc($etablissement->identifiant,date('Y-m-d'));
-        $habilitation->save();
-
-        return $this->redirect('habilitation_edition', $habilitation);
     }
 
     public function executeAjout(sfWebRequest $request) {
