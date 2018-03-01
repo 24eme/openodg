@@ -1,0 +1,5 @@
+all:
+  credentials: habilitation
+
+ajout:
+  credentials: ADMIN
