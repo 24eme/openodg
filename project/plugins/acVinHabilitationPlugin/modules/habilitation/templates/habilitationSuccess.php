@@ -103,7 +103,7 @@
         </tbody>
     </table>
 
-    <?php if (isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
+    <?php if ($sf_user->isAdmin() && isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
         <div class="row">
             <div class="col-xs-12">
                 <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#popupAjoutProduitForm" type="button"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Ajouter un produit</button>
