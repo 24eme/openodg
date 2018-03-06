@@ -120,7 +120,7 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function hasTeledeclaration() {
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin();
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION);
     }
 
 }
