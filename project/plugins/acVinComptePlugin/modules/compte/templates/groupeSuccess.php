@@ -3,7 +3,7 @@
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
     <li><a href="<?php echo url_for('compte_groupes'); ?>">Groupes</a></li>
-    <li class="active"><a href="<?php echo url_for('compte_groupe', array("groupeName" => sfOutputEscaper::unescape($groupeName))); ?>"><?php echo str_replace('_',' ',$groupeName); ?></a></li>
+    <li class="active"><a href="<?php echo url_for('compte_groupe', array("groupeName" => str_replace('.','!',sfOutputEscaper::unescape($groupeName)))); ?>"><?php echo str_replace('_',' ',$groupeName); ?></a></li>
 </ol>
 <div class="row">
   <div class="col-xs-12">
@@ -26,7 +26,7 @@
                       $rawValue = $data['doc']['groupes']->getRawValue();
                       $fct = "";
                       foreach ($rawValue as $grp) {
-                        if($grp["nom"] == sfOutputEscaper::unescape($groupeName)){
+                        if(str_replace(".",'',$grp["nom"]) == sfOutputEscaper::unescape($groupeName)){
                           $fct = $grp["fonction"];
                           break;
                         }
@@ -66,7 +66,7 @@
             <div class="panel-body">
               <div class="list-group" id="list-item">
                 <h3>Sélection d'un opérateur</h3>
-                <form method="post" class="form-horizontal" action="<?php echo url_for('compte_groupe',array('groupeName' => sfOutputEscaper::unescape($groupeName))); ?>">
+                <form method="post" class="form-horizontal" action="<?php echo url_for('compte_groupe',array('groupeName' => str_replace('.','!',sfOutputEscaper::unescape($groupeName)))); ?>">
                     <?php echo $form->renderHiddenFields() ?>
                     <?php echo $form->renderGlobalErrors() ?>
                     <div class="col-xs-7" style="margin-right: 10px;">
