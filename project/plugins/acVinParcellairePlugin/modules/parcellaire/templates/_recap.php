@@ -15,11 +15,14 @@ if ($last) {
                 <table class="table table-bordered table-condensed table-striped">
                   <thead>
 		        	<tr>
-		                <th class="col-xs-4">Parcelle</th>
-		                <th class="col-xs-4">Cépage</th>
+		                <th class="col-xs-3">Lieu-dit</th>
+                        <th class="col-xs-1" style="text-align: right;">Sect°</th>
+		                <th class="col-xs-1">N° parcelle</th>
+                        <th class="col-xs-3">Cépage</th>
+                        <th class="col-xs-1">Année plantat°</th>
+                        <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(hl)</span></th>
                         <th class="col-xs-1">Écart Pieds</th>
                         <th class="col-xs-1">Écart Rang</th>
-                        <th class="col-xs-2" >Faire-valoir</th>
 		            </tr>
                   </thead>
                     <tbody>
@@ -74,15 +77,16 @@ if ($last) {
                             }
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
-                                <td style="<?php echo $styleproduit; ?>">
-                                    <?php echo $detail->getIdentificationParcelleLibelle(ESC_RAW); ?>
-                                </td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>">
-                                    <?php echo $detail->getIdentificationCepageLibelle(ESC_RAW);  ?>
-                                </td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;"><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?> </td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;"><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?> </td>
-                                <td class="<?php echo $classparcelle ?>" style="<?php echo $styleparcelle; ?>"><?php echo ($detail->exist('mode_savoirfaire') && array_key_exists($detail->get('mode_savoirfaire'),ParcellaireClient::$modes_savoirfaire))? ParcellaireClient::$modes_savoirfaire[$detail->get('mode_savoirfaire')] : '&nbsp;'; ?></td>
+
+                                <td style="<?php echo $styleproduit; ?>"><?php echo $detail->lieu; ?></td>
+                                <td class="" style="text-align: right;"><?php echo $detail->section; ?></td>
+                                <td class=""><?php echo $detail->numero_parcelle; ?></td>
+                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><?php echo $detail->cepage; ?></td>
+                                <td class=""><?php echo $detail->campagne_plantation; ?></td>
+                                <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
+                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
+
                             </tr>
                             <?php
                         endforeach;
