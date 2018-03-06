@@ -26,7 +26,7 @@
                       $rawValue = $data['doc']['groupes']->getRawValue();
                       $fct = "";
                       foreach ($rawValue as $grp) {
-                        if(str_replace(".",'',$grp["nom"]) == sfOutputEscaper::unescape($groupeName)){
+                        if($grp["nom"] == sfOutputEscaper::unescape($groupeName)){
                           $fct = $grp["fonction"];
                           break;
                         }
@@ -45,7 +45,7 @@
                                <small class="text-muted label label-primary"><?php  echo $fct; ?></small>
                           </div>
                           <div class="col-xs-2 text-right">
-                                <a class="btn btn-default" href="<?php echo url_for('compte_removegroupe', array('identifiant' => $data['doc']['identifiant'], 'groupeName' => sfOutputEscaper::unescape($groupeName))); ?>"><span class="glyphicon glyphicon-trash"></span></a>
+                                <a class="btn btn-default" href="<?php echo url_for('compte_removegroupe', array('identifiant' => $data['doc']['identifiant'], 'groupeName' => str_replace(".",'!',sfOutputEscaper::unescape($groupeName)))); ?>"><span class="glyphicon glyphicon-trash"></span></a>
                            </div>
                         </div>
                       </div>
