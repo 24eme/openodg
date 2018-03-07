@@ -300,10 +300,38 @@
                 $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
             }
         });
-        
+        $('tr').click(function (event) {
+            $.trBsSwitchHighlight($(this));
+        });
+
         $('.bootstrap-switch-activeall').click(function (event) {
         	$($(this).data('target')).find('.bsswitch').each(function () {
         		$(this).bootstrapSwitch('state', true, false);
+        	});
+            $($(this).data('target')).find('tr').each(function () {
+                $.trBsSwitchHighlight($(this));
+            });
+        });
+    }
+
+    $.trBsSwitchHighlight = function (tr)
+    {
+        if ($(tr).hasClass('switch-to-higlight')) {
+            var value = $(tr).find('.bsswitch').is(':checked');
+            if(value){
+                $(tr).addClass("success");
+            }else{
+                $(tr).removeClass("success");
+            }
+        }
+    }
+
+
+    $.initDuplicateChoicesTable = function ()
+    {
+        $('.duplicateChoicesTable').click(function (event) {
+        	$(this).find('.toDuplicate').each(function () {
+        		console.log($(this).find('input').val());
         	});
         });
     }

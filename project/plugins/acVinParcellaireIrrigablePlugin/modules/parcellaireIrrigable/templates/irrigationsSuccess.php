@@ -11,14 +11,18 @@
 
     <?php foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
 	<h3><?php echo $commune; ?></h3>
-    <table class="table table-bordered table-condensed table-striped">
+    <table class="table table-bordered table-condensed table-striped duplicateChoicesTable">
 		<thead>
         	<tr>
-                <th class="col-xs-3">Parcelle</th>
-                <th class="col-xs-3">Cépage</th>
+                <th class="col-xs-2">Lieu-dit</th>
+                <th class="col-xs-1" style="text-align: right;">Sect°</th>
+                <th class="col-xs-1">N° parcelle</th>
+                <th class="col-xs-1">Cépage</th>
+                <th class="col-xs-1">Année plantat°</th>
+                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(hl)</span></th>
                 <th class="col-xs-2">Type de matériel</th>
                 <th class="col-xs-2">Type de ressource</th>
-                <th class="col-xs-2">Observations</th>
+                <th class="col-xs-1"></th>
             </tr>
 		</thead>
 		<tbody>
@@ -28,8 +32,12 @@
 			if (isset($form[$produitKey][$parcelle->getKey()])):
 		?>
 			<tr class="vertical-center">
-				<td><?php echo $parcelle->getIdentificationParcelleLibelle(ESC_RAW); ?></td>
-				<td><?php echo $parcelle->getIdentificationCepageLibelle(ESC_RAW); ?></td>
+                <td><?php echo $parcelle->lieu; ?></td>
+                <td style="text-align: right;"><?php echo $parcelle->section; ?></td>
+                <td><?php echo $parcelle->numero_parcelle; ?></td>
+                <td><?php echo $parcelle->cepage; ?></td>
+                <td><?php echo $parcelle->campagne_plantation; ?></td>
+                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
             	<td>
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>
@@ -46,11 +54,10 @@
                         </div>
                     </div>
             	</td>
-            	<td>
-                	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['observations']->hasError()): ?>has-error<?php endif; ?>">
-                    	<?php echo $form[$produitKey][$parcelle->getKey()]['observations']->renderError() ?>
+            	<td class="text-center">
+                	<div style="margin-bottom: 0;" class="form-group">
                         <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['observations']->render(array('class' => 'form-control')) ?>
+                        	<a class="btn btn-default" href="#" ><span class="glyphicon glyphicon-duplicate"></span></a>
                         </div>
                     </div>
             	</td>
