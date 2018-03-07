@@ -1,3 +1,18 @@
+parcellaire:
+  url: /parcellaire
+  param: { module: parcellaire, action: index }
+  class: ParcellaireGeneralRoute
+
+parcellaire_declarant:
+  url: /parcellaire/declarant/:identifiant
+  param: { module: parcellaire, action: declarant }
+  class: ParcellaireDeclarantRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
 parcellaire_delete:
   url: /parcellaire/supprimer/:id
   param: { module: parcellaire, action: delete }
@@ -7,7 +22,6 @@ parcellaire_delete:
     type:     object
   requirements:
     sf_method: [get]
-
 
 parcellaire_devalidation:
   url: /parcellaire/devalidation/:id
