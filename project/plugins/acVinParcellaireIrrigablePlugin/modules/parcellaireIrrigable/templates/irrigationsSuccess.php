@@ -31,7 +31,7 @@
                 $produitKey = str_replace('/declaration/', '', $parcelle->getProduit()->getHash());
 			if (isset($form[$produitKey][$parcelle->getKey()])):
 		?>
-			<tr class="vertical-center">
+			<tr class="vertical-center" id="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>">
                 <td><?php echo $parcelle->lieu; ?></td>
                 <td style="text-align: right;"><?php echo $parcelle->section; ?></td>
                 <td><?php echo $parcelle->numero_parcelle; ?></td>
@@ -42,7 +42,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter un matériel", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$produitKey][$parcelle->getKey()]['materiel']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Ajouter un matériel", "data-new" => "ajouter", "data-duplicate" => "materiel", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$produitKey][$parcelle->getKey()]['materiel']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
@@ -50,14 +50,14 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['ressource']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax', "placeholder" => "Ajouter une ressource", "data-new" => "ajouter", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$produitKey][$parcelle->getKey()]['ressource']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Ajouter une ressource", "data-new" => "ajouter", "data-duplicate" => "ressources", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$produitKey][$parcelle->getKey()]['ressource']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group">
                         <div class="col-xs-12">
-                        	<a class="btn btn-default" href="#" ><span class="glyphicon glyphicon-duplicate"></span></a>
+                        	<a <?php if(!$parcelle->materiel || !$parcelle->ressource): ?> disabled="disabled" <?php endif; ?> data-confirm="Voulez-vous dupliquer ces choix pour toutes les lignes de <?php echo $commune; ?> ?" class="btn btn-sm btn-default duplicateBtn" data-target="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>" ><span class="glyphicon glyphicon-duplicate"></span></a>
                         </div>
                     </div>
             	</td>
