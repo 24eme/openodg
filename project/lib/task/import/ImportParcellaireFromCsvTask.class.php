@@ -55,7 +55,8 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Donnees au format CSV")
+            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Donnees au format CSV"),
+            new sfCommandArgument('date', sfCommandArgument::REQUIRED, "Date des données du parcellaire"),
         ));
 
         $this->addOptions(array(
@@ -114,7 +115,7 @@ EOF;
 
                   continue;
                 }
-                $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, "2018-01-01", "INAO");
+                $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
             }
 
             $this->importLineParcellaire($line, $parcellaire);
