@@ -136,6 +136,7 @@ class habilitationActions extends sfActions {
     }
 
     public function executeExport(sfWebRequest $request) {
+        set_time_limit(-1);
         $this->buildSearch($request, array(HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE));
 
         $this->setLayout(false);
