@@ -33,7 +33,7 @@ $detail = $parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005"
 $parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", "PEYNIER", "18", "42", null);
 $parcellaire->save();
 
-$t->is(count($parcellaire->getProduits()), 1, "Le parcellaire a un produit");
+$t->is(count($parcellaire->declaration), 1, "Le parcellaire a un produit");
 $t->is(count($parcellaire->getParcelles()), 2, "Le parcellaire  une parcelle");
 $t->is($detail->getProduit()->getLibelle(), $configProduit->getLibelleComplet(), "Le libellé du produit est ". $configProduit->getLibelleComplet());
 $t->is($detail->getKey(), "SIRAH-N-2005-".$commune."-10-52-LA-HAUT", "La clé de la parcelle est bien construite");
