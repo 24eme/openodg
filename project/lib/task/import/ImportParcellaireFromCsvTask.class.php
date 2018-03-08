@@ -114,7 +114,7 @@ EOF;
 
                   continue;
                 }
-                $parcellaire = ParcellaireClient::getInstance()->findOrCreateFromEtablissement($etablissement, "2018");
+                $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, "2018-01-01", "INAO");
             }
 
             $this->importLineParcellaire($line, $parcellaire);
@@ -130,7 +130,6 @@ EOF;
             $data = str_getcsv($line, ';');
 
             $ref_cadastrale = $data[self::CSV_REF_CADASTRALE];
-            $parcellaire->addAcheteur(ParcellaireClient::DESTINATION_SUR_PLACE,$parcellaire->identifiant);
 
             foreach ($this->configurationProduits as $key => $p) {
               if($p->getCodeDouane() != trim($data[self::CSV_CODE_PRODUIT])){
@@ -178,8 +177,6 @@ EOF;
               $parcelle->add('ecart_rang', trim($data[self::CSV_ECART_RANG]) * 1);
               $parcelle->add('ecart_pieds', trim($data[self::CSV_ECART_PIED]) * 1);
 
-              $parcelle->active = true;
-
               $date2018 = "20180101";
               if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
                 echo "La date de début de gestion  de la ligne $ligne est mal formattée\n";
@@ -222,11 +219,6 @@ EOF;
     }
 
     protected function saveParcellaire($parcellaire) {
-        $parcellaire->etape='validation';
-        $parcellaire->add('source', 'INAO');
-        $parcellaire->validation = date('Y-m-d');
-        $parcellaire->validation_odg = date('Y-m-d');
-
         $parcellaire->save();
         echo "Parcellaire $parcellaire->_id sauvegardé\n";
     }

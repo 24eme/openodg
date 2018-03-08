@@ -35,7 +35,7 @@
 
  */
 
-abstract class BaseParcellaireProduitDetail extends acCouchdbDocumentTree {
+abstract class BaseParcellaireParcelle extends acCouchdbDocumentTree {
 
     public function configureTree() {
        $this->_root_class_name = 'Parcellaire';

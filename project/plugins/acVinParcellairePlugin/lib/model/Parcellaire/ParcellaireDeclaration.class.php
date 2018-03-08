@@ -6,33 +6,10 @@
  */
 class ParcellaireDeclaration extends BaseParcellaireDeclaration {
 
-    public function getAppellations() {
-
-        return null;
-    }
-
     public function getConfig()
   	{
   		return $this->getCouchdbDocument()->getConfiguration()->get($this->getHash());
   	}
-
-    public function getAppellationsOrderParcellaire() {
-        $appellations = $this->getAppellations();
-
-        $appellationOrdered = array();
-
-        if(!$appellations) {
-            return $appellationOrdered;
-        }
-
-        foreach (ParcellaireClient::getInstance()->getAppellationsKeys($this->getDocument()->getTypeParcellaire()) as $app_key => $app_name) {
-           if(array_key_exists('appellation_'.$app_key, $appellations->toArray(1,0))){
-               $appellationOrdered['appellation_'.$app_key] = $appellations['appellation_'.$app_key];
-           }
-        }
-
-        return $appellationOrdered;
-    }
 
     public function getParcellesByCommune() {
         $parcelles = array();
@@ -60,12 +37,6 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
             }
             $produits[$produit->getHash()] = $produit;
         }
-
-        return $produits;
-    }
-
-    public function getProduitsCepageDetails($onlyVtSgn = false, $active = false) {
-        $produits = array();
 
         return $produits;
     }
@@ -141,20 +112,6 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return $parcelles;
     }
 
-    public function getAcheteursNode($lieu = null, $cviFilter = null) {
-        $acheteurs = array();
-        foreach($this->getProduits() as $produit) {
-            $acheteursParcelle = $produit->getAcheteursNode($lieu, $cviFilter);
-            if(count($acheteursParcelle) == 0) {
-                continue;
-            }
-
-            $acheteurs = array_merge_recursive($acheteurs, $acheteursParcelle);
-        }
-
-        return $acheteurs;
-    }
-
     public function cleanNode() {
         $hash_to_delete = array();
         foreach ($this->getProduits() as $produit) {
@@ -199,16 +156,6 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
   			$this->add($hashProduit, $children[$hashProduit]);
   		}
   	}
-
-    public function getPreviousAppellationKey() {
-
-        return null;
-    }
-
-    public function getNextAppellationKey() {
-
-        return null;
-    }
 
     static function sortParcellesByFullKey($detail0, $detail1) {
         return strcmp($detail0->getLibelleComplet().' '.$detail0->getParcelleIdentifiant(),
