@@ -21,8 +21,7 @@
 <?php endif; ?>
 
 
-<nav id="menu_navigation" class="navbar navbar-default">
-    <div class="container">
+<nav id="menu_navigation" class="navbar navbar-default container">
         <div class="navbar-header hidden-lg hidden-md">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
@@ -71,5 +70,4 @@
                 <?php endif; ?>
             </ul>
         </div>
-    </div>
 </nav>

@@ -1,9 +1,10 @@
-<header>
-    <!--<div class="container" style="position: relative; background-color: #002b6f; text-align: center;">
-    	<a href="<?php echo url_for('accueil') ?>">
-        	<img style="height: 80px; border-left: 2px solid #fff;" class="pull-right" src="/images/logo_odgrhone.png" />
-        	<img style="height: 80px;" class="pull-left" src="/images/bg/bg_rhone_site.jpg" />
-        	<span style="color: #fff; font-size: 20px; padding-right: 130px; padding-top: 7px; display: inline-block;"><span style="color: #fff; font-size: 17px;">Espace professionnel<br /></span><span style="color: #fff">syndicat-cotesdurhone<strong style="color: #9f0038;">.</strong><span style="color: #9b9b9b">com</span></span></span>
-    	</a>
-    </div>-->
+<header class="container" role="banner">
+      <div id="logo">
+          <a href="http://www.syndicat-cotesdeprovence.com/" title="Syndicat des Cotes de Provence | Retour à la page d'accueil">
+              <img src="/images/logo_provence.png" alt="Syndicat des Cotes de Provence">
+          </a>
+      </div>
+      <div id="titre"><h1>
+        <img height="35" width="207" src="/images/provence_espace_personnel.png" alt="Espace personnel"/><img height="35" width="23" src="/images/provence_tiret.png" alt=" - "/><img height="35" width="435" src="/images/provence_syndicat_des_cotes_de_provence.png" alt="Syndicat des Côtes de Provence"/>
+      </h1></div>
 </header>
