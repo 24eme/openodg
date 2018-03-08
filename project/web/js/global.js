@@ -329,10 +329,46 @@
 
     $.initDuplicateChoicesTable = function ()
     {
-        $('.duplicateChoicesTable').click(function (event) {
-        	$(this).find('.toDuplicate').each(function () {
-        		console.log($(this).find('input').val());
-        	});
+        var table = $('.duplicateChoicesTable');
+        table.each(function(){
+            var allFields = $(this).find('.toDuplicate');
+            $(this).find('.duplicateBtn').click(function (event) {
+                var confirmtxt = $(this).data('confirm');
+                if (confirm(confirmtxt)) {
+                    var fieldsToDuplicate = {};
+                	$("#" + $(this).data('target')).find('.toDuplicate').each(function () {
+                        if($(this).data("duplicate")){
+                            fieldsToDuplicate[$(this).data("duplicate")] = $(this).select2('data');
+                        }
+                	});
+
+                    for (var f in fieldsToDuplicate) {
+                        allFields.parent().find("[data-duplicate='"+f+"']").each(function(){
+                            $(this).val(fieldsToDuplicate[f].id);
+                            $(this).change();
+                        });
+                    }
+                }
+            });
+            $(this).find('tr').each(function(){
+                var tr = $(this);
+                $(this).find('.toDuplicate').change(function(){
+                        tr.each(function(){
+                            var disabled = false;
+                            $(this).find('.toDuplicate').each(function(){
+                                if($(this).data("duplicate")){
+                                    if(!$(this).select2('data')){
+                                        tr.find('.duplicateBtn').attr("disabled","disabled");
+                                        disabled = true;
+                                    }
+                                }
+                            });
+                            if(!disabled){
+                                tr.find('.duplicateBtn').removeAttr("disabled");
+                            }
+                    });
+                });
+            });
         });
     }
 
@@ -840,6 +876,7 @@
         $.initEqualHeight();
         $.initCheckboxBtnGroup();
         $.initHabilitation();
+        $.initDuplicateChoicesTable();
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
     });
 })(jQuery);
