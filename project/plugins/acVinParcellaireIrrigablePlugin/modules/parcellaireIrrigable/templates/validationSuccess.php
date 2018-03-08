@@ -31,9 +31,24 @@
         </div>
     </div>
     <?php endif; ?>
-    
+
     <?php include_partial('parcellaireIrrigable/recap', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
 
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="form-group <?php if ($form["observations"]->hasError()): ?>has-error<?php endif; ?>">
+                    <div class="col-xs-3">
+                        <h3>Observations :</h3>
+                    </div>
+                     <div class="col-xs-9">
+                        <?php echo $form['observations']->renderError(); ?>
+                        <?php echo $form['observations']->render(); ?>
+                     </div>
+                 </div>
+             </div>
+        </div>
+   </div>
     <div style="padding-top: 10px;" class="row row-margin row-button">
         <div class="col-xs-4">
         	<a href="<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a>

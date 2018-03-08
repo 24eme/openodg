@@ -1,7 +1,7 @@
 <?php if ($validation->hasErreurs()): ?>
     <h3>Points bloquants</h3>
     <div class="alert alert-danger" role="alert">
-        <ul>
+        <ul class="list-unstyled">
             <?php foreach ($validation->getPoints(DrevValidation::TYPE_ERROR) as $controle): ?>
                 <li>
                     <strong><?php echo $controle->getRawValue()->getMessage(); ?>&nbsp;:</strong>
@@ -9,7 +9,7 @@
                                 <a class="alert-link" href="<?php echo $controle->getRawValue()->getLien() ?>">
                     <?php endif;?>
                     <?php echo $controle->getRawValue()->getInfo() ?>
-                    <?php if ($controle->getRawValue()->getLien()) echo '</a>'; ?> 
+                    <?php if ($controle->getRawValue()->getLien()) echo '</a>'; ?>
                 </li>
             <?php endforeach; ?>
         </ul>
@@ -26,7 +26,7 @@
                                 <a class="alert-link" href="<?php echo $controle->getRawValue()->getLien() ?>">
                     <?php endif;?>
                     <?php echo $controle->getRawValue()->getInfo() ?>
-                    <?php if ($controle->getRawValue()->getLien()) echo '</a>'; ?> 
+                    <?php if ($controle->getRawValue()->getLien()) echo '</a>'; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>

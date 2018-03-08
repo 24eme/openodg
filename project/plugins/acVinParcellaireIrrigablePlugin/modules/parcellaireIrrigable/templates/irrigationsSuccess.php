@@ -65,8 +65,7 @@
         <?php  endif; endforeach; ?>
         </tbody>
 	</table>
-<?php  endforeach; ?>
-
+    <?php  endforeach; ?>
 	<div class="row row-margin row-button">
         <div class="col-xs-6"><a href="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
         <div class="col-xs-6 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
