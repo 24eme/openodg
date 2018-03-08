@@ -28,6 +28,11 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
         return $parcelles;
     }
 
+    public function getParcelles($onlyVtSgn = false, $active = false) {
+
+        return $this->getProduitsDetails($onlyVtSgn, $active);
+    }
+
     public function getProduits($onlyActive = false) {
         $produits = array();
         foreach ($this as $key => $produit) {

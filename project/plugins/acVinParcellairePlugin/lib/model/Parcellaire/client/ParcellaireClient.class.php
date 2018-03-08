@@ -34,8 +34,25 @@ class ParcellaireClient extends acCouchdbClient {
         $parcellaire = new Parcellaire();
         $parcellaire->initDoc($identifiant, $date);
         $parcellaire->source = $source;
-        return $parcellaire;
 
+        return $parcellaire;
+    }
+
+    public function findPreviousByIdentifiantAndDate($identifiant, $date, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
+        $h = $this->getHistory($identifiant, $date, $hydrate);
+        if (!count($h)) {
+        return NULL;
+        }
+        $h = $h->getDocs();
+        end($h);
+        $doc = $h[key($h)];
+        return $doc;
+    }
+
+    public function getLast($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
+        $history = $this->getHistory($identifiant, $hydrate);
+
+        return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
     }
 
     public function getHistory($identifiant, $date = '9999-99-99', $hydrate = acCouchdbClient::HYDRATE_DOCUMENT, $dateDebut = "0000-00-00") {

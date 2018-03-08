@@ -39,10 +39,10 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     	throw new sfException("Impossible de determiner le type de parcellaire");
     }
 
-  public function initDoc($identifiant, $campagne, $type = ParcellaireClient::TYPE_COUCHDB) {
+  public function initDoc($identifiant, $campagne) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;
-      $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne, $type));
+      $this->set('_id', ParcellaireIrrigableClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne);
       $this->storeDeclarant();
   }
 
@@ -93,18 +93,14 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
   }
 
   public function getParcellaireCurrent() {
-      $campagnePrec = $this->campagne;
-      $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
-      $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
 
-      if (!$parcellaire) {
-          $campagnePrec = $this->campagne - 1;
-          $parcellaire = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
-          $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
-      }
-
-      return $parcellaire;
+      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
   }
+
+    public function getParcelles() {
+
+        return $this->declaration->getParcelles();
+    }
 
     public function getParcellesFromLastParcellaire() {
         $parcellaireCurrent = $this->getParcellaireCurrent();

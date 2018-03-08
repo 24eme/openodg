@@ -61,19 +61,9 @@ class Parcellaire extends BaseParcellaire {
         return $this->getConfiguration()->declaration->getProduits();
     }
 
-    public function getProduits($onlyActive = false) {
-
-        return $this->declaration->getProduits($onlyActive = false);
-    }
-
-    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
-
-        return $this->declaration->getProduitsDetails($onlyVtSgn, $active);
-    }
-
     public function getParcelles($onlyVtSgn = false, $active = false) {
 
-        return $this->getProduitsDetails($onlyVtSgn, $active);
+        return $this->declaration->getParcelles($onlyVtSgn, $active);
     }
 
     public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null) {
