@@ -43,7 +43,16 @@ class importEntitesFromCSVTask extends sfBaseTask
 
     const CSV_CAVE_APPORTEURID = 26;
     const CSV_CAVE_COOP = 27;
-    const CSV_SOCIETE_TYPE = 28;
+
+
+    const CSV_DATE_RECEPTION_ODG = 28;
+    const CSV_DATE_ENREGISTREMENT_ODG = 29;
+    const CSV_DATE_TRANSMISSION_AVPI = 30;
+    const CSV_DATE_HABILITATION = 31;
+    const CSV_DATE_ARCHIVAGE = 32;
+
+    const CSV_COMMENTAIRE = 33;
+    const CSV_SOCIETE_TYPE = 34;
 
 
 
@@ -95,14 +104,6 @@ EOF;
           }
           $this->importEntite($line);
         }
-        echo "\n ** AJOUT DES LIAISONS CAVECOOP ET NEGOCE  **\n";
-        foreach(file($this->file_path) as $line) {
-            $line = str_replace("\n", "", $line);
-            if(preg_match("/tbl_CDPOps.IdOP/", $line)) {
-                continue;
-            }
-            $this->importLiaisons($line);
-          }
     }
 
 
@@ -120,11 +121,23 @@ EOF;
                 $soc = $this->importSociete($data,$identifiant);
                 $etb = $this->importEtablissement($soc,$data,$identifiant);
                 $etb = EtablissementClient::getInstance()->find($etb->_id);
+                $activitesChais = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
+                if(count($activitesChais) == 1 && $activitesChais[0] == "Apport"){
+                    $this->importLiaisons($etb,$line);
+                }
                 $this->addChaiForEtablissement($etb,$data);
+
+                echo "\n";
             }else{
               $etb = $soc->getEtablissementPrincipal();
-              echo "La société : ".$identifiant." est déjà dans la base => on va alimenter les chais\n";
+              echo "La société : ".$identifiant." est déjà dans la base => on va alimenter les chais  ";
+              $activitesChais = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
+              if(count($activitesChais) == 1 && $activitesChais[0] == "Apport"){
+                  $this->importLiaisons($etb,$line);
+              }
               $this->addChaiForEtablissement($etb,$data);
+
+              echo "\n";
             }
       }
 
@@ -157,8 +170,10 @@ EOF;
               $societe->siege->pays = ($data[self::CSV_ADRESSE_3])? $data[self::CSV_ADRESSE_3] : 'Autre Pays';
             }
 
-            $societe->telephone_bureau = $data[self::CSV_TELEPHONE];
-            $societe->fax = $data[self::CSV_FAX];
+
+            $societe->telephone_bureau = $this->formatTel($data[self::CSV_TELEPHONE]);
+            $societe->telephone_mobile = $this->formatTel($data[self::CSV_PORTABLE]);
+            $societe->fax = $this->formatTel($data[self::CSV_FAX]);
             $emails = (explode(";",$data[self::CSV_EMAIL]));
 
             $societe->email = trim($emails[0]);
@@ -178,7 +193,7 @@ EOF;
                     $compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
                     $compte->nom = "Autre Contact";
                     $compte->email = trim($email);
-                    echo "L'entité $societe->_id a un interlocuteur $compte->_id ".$compte->nom." (".$compte->email.")\n";
+                    echo "L'entité $societe->_id a un interlocuteur $compte->_id ".$compte->nom." (".$compte->email.") \n";
                     $compte->save();
                     $societe = SocieteClient::getInstance()->find($societe->_id);
                 }
@@ -208,8 +223,8 @@ EOF;
           }
 
 
-          echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id";
-          echo ($this->isSuspendu)? " SUSPENDU \n" : " ACTIF \n";
+          echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id  ";
+          echo ($this->isSuspendu)? " SUSPENDU   " : " ACTIF ";
           $etablissement->save();
 
           return $etablissement;
@@ -224,7 +239,7 @@ EOF;
           if($data[self::CSV_CHAIS_ADRESSE_3]) $newChai->adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
           $newChai->commune = $data[self::CSV_CHAIS_VILLE];
           $newChai->code_postal = $data[self::CSV_CHAIS_CP];
-          $activites = explode(';',$data[self::CSV_ACTIVITES]);
+          $activites = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
           foreach ($activites as $activite) {
             if(!array_key_exists(trim($activite),$this->chaisAttributsInImport)){
               var_dump($activite); exit;
@@ -232,6 +247,7 @@ EOF;
             $activiteKey = $this->chaisAttributsInImport[trim($activite)];
             $newChai->getOrAdd('attributs')->add($activiteKey,EtablissementClient::$chaisAttributsLibelles[$activiteKey]);
           }
+          echo " LE CHAI ".$newChai->nom." ".$newChai->adresse."...  a été crée   ";
           $etb->save();
           return $etb;
         }
@@ -244,10 +260,9 @@ EOF;
       return $data[self::CSV_TITRE].' '.$data[self::CSV_NOM];
     }
 
-    protected function importLiaisons($line){
+    protected function importLiaisons($viti,$line){
         $data = str_getcsv($line, ';');
         if($data[self::CSV_CAVE_APPORTEURID]){
-            $viti = EtablissementClient::getInstance()->findByIdentifiant($data[self::CSV_OLDID]."01");
             $coopOrNego = EtablissementClient::getInstance()->findByIdentifiant($data[self::CSV_CAVE_APPORTEURID]."01");
             if(!$viti){
                 echo "/!\ viti non trouvé : ".$data[self::CSV_OLDID]."\n";
@@ -262,15 +277,50 @@ EOF;
                 return false;
             }
             if($coopOrNego->isNegociant()){
-                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true);
+                $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
+                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true,$chaiAssocie);
             }
             if($coopOrNego->isCooperative()){
-                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true);
+                $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
+                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_APPORTEUR,$coopOrNego,true,$chaiAssocie);
             }
             $viti->save();
-            echo $viti->_id." ".$coopOrNego->_id." isNEgo : ".$coopOrNego->isNegociant()."\n";
+            $type = ($coopOrNego->isNegociant())? ' (négociant) ' : ' (coopérative)';
+            echo " LA LIAISON ".$viti->_id." ".$coopOrNego->_id." ".$type.' a été créée   ';
 
         }
+    }
+
+    protected function getChaiAssocie($data,$coopOrNego){
+        $chais = $coopOrNego->getChais();
+        if(count($chais) == 1){
+            foreach ($chais as $chai) {
+                return $chai;
+            }
+        }
+        foreach ($coopOrNego->getChais() as $key => $chai) {
+            $adresse = str_replace('BOULEVARD','BD',$data[self::CSV_CHAIS_ADRESSE_2]);
+            if($data[self::CSV_CHAIS_ADRESSE_3]){
+            $adresse .= " - ".str_replace('BOULEVARD','BD',$data[self::CSV_CHAIS_ADRESSE_3]);
+            }
+            if($adresse == str_replace('BOULEVARD','BD',$chai->adresse)
+            && ($data[self::CSV_CHAIS_VILLE] == $chai->commune)
+            && ($data[self::CSV_CHAIS_CP] == $chai->code_postal)){
+                return $chai;
+            }
+        }
+        echo "\n/!\ ".$data[self::CSV_OLDID]." : on ne trouve pas le chai ".$data[self::CSV_CHAIS_ADRESSE_1] ." ".$data[self::CSV_CHAIS_ADRESSE_2]." ".$data[self::CSV_CHAIS_ADRESSE_3]." ".$data[self::CSV_CHAIS_VILLE]." ".$data[self::CSV_CHAIS_CP]. " dans ".$coopOrNego->_id."\n";
+
+        return null;
+    }
+
+    protected function formatTel($tel){
+        if(!$tel){
+            return null;
+        }
+        $t = str_replace(array(' ','.'),array('',''),$tel);
+        $tk = sprintf("%010d",$t);
+        return substr($tk, 0,2)." ".substr($tk,2,2)." ".substr($tk,4,2)." ".substr($tk,6,2)." ".substr($tk,8,2);
     }
 
 }

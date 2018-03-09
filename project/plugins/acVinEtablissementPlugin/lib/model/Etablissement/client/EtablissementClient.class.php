@@ -14,7 +14,7 @@ class EtablissementClient extends acCouchdbClient {
     const TYPE_LIAISON_BAILLEUR = 'BAILLEUR';
     const TYPE_LIAISON_METAYER = 'METAYER';
     const TYPE_LIAISON_FERMIER = 'FERMIER';
-    const TYPE_LIAISON_COOPERATIVE = 'COOPERATIVE';
+    const TYPE_LIAISON_APPORTEUR = 'APPORTEUR';
     const TYPE_LIAISON_ADHERENT = 'ADHERENT'; //pour les cooperateurs
     const TYPE_LIAISON_NEGOCIANT = 'NEGOCIANT'; //pour les negociants
     const TYPE_LIAISON_VENDEUR = 'VENDEUR';
@@ -45,12 +45,14 @@ class EtablissementClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_VINIFICATION = "VINIFICATION";
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
     const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
+    const CHAI_ATTRIBUT_STOCKAGE_VRAC = "STOCKAGE_VRAC";
+    const CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE = "STOCKAGE_VIN_CONDITIONNE";
+    const CHAI_ATTRIBUT_DGC = "DGC";
+    const CHAI_ATTRIBUT_APPORT = "APPORT";
+
     const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
     const CHAI_ATTRIBUT_PRESTATAIRE = 'PRESTATAIRE';
     const CHAI_ATTRIBUT_ELEVAGE = 'ELEVAGE';
-    const CHAI_PRODUCTEUR_DE_RAISIN = 'PRODUCTEURRAISINS';
-    const CHAI_PRODUCTEUR_DE_MOUT = 'PRODUCTEURMOUTS';
-    const CHAI_DETENTEUR_VRAC = 'DETENTEURVRAC';
 
     public static $statuts = array(self::STATUT_ACTIF => 'ACTIF',
         self::STATUT_SUSPENDU => 'SUSPENDU');
@@ -77,20 +79,21 @@ class EtablissementClient extends acCouchdbClient {
         self::CAUTION_CAUTION => 'Caution');
 
     public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
-                                                  self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
-                                                  self::CHAI_ATTRIBUT_STOCKAGE => 'Lieu de stockage',
-                                                  self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
-                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement',
-                                                  self::CHAI_PRODUCTEUR_DE_RAISIN => 'Producteur de raisins',
-                                                  self::CHAI_PRODUCTEUR_DE_MOUT => 'Producteur de moûts',
-                                                  self::CHAI_DETENTEUR_VRAC => 'Détenteur de vin en vrac');
+                                                  self::CHAI_ATTRIBUT_STOCKAGE_VRAC => 'Stockage Vin en Vrac',
+                                                  self::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE => 'Stockage Vin Conditionné',
+                                                  self::CHAI_ATTRIBUT_DGC => 'Désignation Géographique complémentaire',
+                                                  self::CHAI_ATTRIBUT_APPORT => 'Apport',
 
-    public static $chaisAttributsInImport = array("Eleveur de DGC" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
-                                              "Conditionneur" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
-                                              "Détenteur de vin en vrac" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
-                                              "Vinificateur" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
-                                              "Producteur de moût" => EtablissementClient::CHAI_PRODUCTEUR_DE_MOUT,
-                                              "Producteur de raisins" =>  EtablissementClient::CHAI_PRODUCTEUR_DE_RAISIN);
+                                                  self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
+                                                  self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
+                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement');
+
+    public static $chaisAttributsInImport = array("Vinification" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                                  "VV Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VRAC,
+                                                  "VC Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE,
+                                                  "DGC" => EtablissementClient::CHAI_ATTRIBUT_DGC,
+                                                  "Apport" => EtablissementClient::CHAI_ATTRIBUT_APPORT
+                                                    );
 
     public static function getInstance() {
         return acCouchdbManager::getClient("Etablissement");
@@ -287,7 +290,7 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_METAYER => 'A pour métayer',
             self::TYPE_LIAISON_FERMIER => 'A pour fermier',
             self::TYPE_LIAISON_ADHERENT => 'Adhérent de (coop.)',
-            self::TYPE_LIAISON_COOPERATIVE => 'A pour coopérative',
+            self::TYPE_LIAISON_APPORTEUR => 'Apporteur',
             self::TYPE_LIAISON_NEGOCIANT => 'A pour négociant',
             self::TYPE_LIAISON_VENDEUR => 'A pour vendeur',
             self::TYPE_LIAISON_CONTRAT_INTERNE => 'Contrat interne');
