@@ -41,7 +41,7 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration d'intention de parcelles irrigables %s", $this->parcellaireIrrigable->campagne);
+        return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne);
     }
 
     protected function getHeaderSubtitle() {

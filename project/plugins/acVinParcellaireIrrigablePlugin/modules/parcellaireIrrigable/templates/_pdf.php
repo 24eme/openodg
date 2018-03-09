@@ -39,19 +39,25 @@
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
-        <th class="th" style="text-align: center; width: 240px;">Parcelle</th>
-        <th class="th" style="text-align: center; width: 260px;">Cépages</th>
-        <th class="th" style="text-align: center; width: 110px;">Matériel</th>
-        <th class="th" style="text-align: center; width: 110px;">Ressource</th>
-        <th class="th" style="text-align: center; width: 225px;">Observations</th>
+        <th class="th" style="text-align: center; width: 200px;">Lieu-dit</th>
+        <th class="th" style="text-align: center; width: 70px;">Section</th>
+        <th class="th" style="text-align: center; width: 70px;">N° parcelle</th>
+        <th class="th" style="text-align: center; width: 180px;">Cépage</th>
+        <th class="th" style="text-align: center; width: 80px;">Année de plantation</th>
+        <th class="th" style="text-align: center; width: 80px;">Surface</th>
+        <th class="th" style="text-align: center; width: 125px;">Type de matériel</th>
+        <th class="th" style="text-align: center; width: 140px;">Type de ressource</th>
     </tr>
     <?php foreach ($parcellesForDetail as $parcelle): ?>
     	<tr>
-			<td class="td" style="text-align: left;"><?php echo $parcelle->getIdentificationParcelleLibelle(ESC_RAW); ?></td>
-			<td class="td" style="text-align: left;"><?php echo $parcelle->getIdentificationCepageLibelle(ESC_RAW); ?></td>
-            <td class="td" style="text-align: left;"><?php echo $parcelle->materiel; ?></td>
-            <td class="td" style="text-align: left;"><?php echo $parcelle->ressource; ?></td>
-            <td class="td" style="text-align: left;"><?php echo $parcelle->observations; ?></td>
+			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->lieu; ?>&nbsp;</td>
+			<td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section; ?>&nbsp;</td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->numero_parcelle; ?>&nbsp;</td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->cepage; ?>&nbsp;</td>
+            <td class="td" style="text-align: center;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->campagne_plantation; ?>&nbsp;</td>
+            <td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php printf("%0.4f", $parcelle->superficie); ?>&nbsp;<small>ha</small>&nbsp;</td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->materiel; ?>&nbsp;</td>
+            <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
     	</tr>
     <?php endforeach; ?>
 
