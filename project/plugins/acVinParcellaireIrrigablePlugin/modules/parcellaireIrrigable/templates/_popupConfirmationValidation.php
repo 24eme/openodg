@@ -13,9 +13,9 @@
 				            <?php if ($form["signataire"]->hasError()): ?>
 				                <div class="alert alert-danger" role="alert"><?php echo $form["signataire"]->getError(); ?></div>
 				            <?php endif; ?>
-				            <?php echo $form["signataire"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-				            <div class="col-xs-6">
-				            	<?php echo $form["signataire"]->render(array("class" => "form-control")); ?>
+				            <?php echo $form["signataire"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
+				            <div class="col-xs-7">
+								<?php echo $form["signataire"]->render(array("class" => "form-control", "placeholder" => "Votre prénom et votre nom")); ?>
 				            </div>
 				        </div>
 				    </div>
