@@ -1,3 +1,4 @@
+<?php use_helper('Compte'); ?>
 <?php $compte = $etablissement->getMasterCompte(); ?>
 
 <div class="panel panel-default">

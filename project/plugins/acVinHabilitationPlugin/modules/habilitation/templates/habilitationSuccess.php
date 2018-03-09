@@ -1,5 +1,4 @@
 <?php use_helper('Date'); ?>
-<?php use_helper('Compte'); ?>
 <?php include_partial('habilitation/breadcrumb', array('habilitation' => $habilitation ));
   $etablissement = $habilitation->getEtablissementObject();
   $compte = $habilitation->getEtablissementObject()->getMasterCompte();
