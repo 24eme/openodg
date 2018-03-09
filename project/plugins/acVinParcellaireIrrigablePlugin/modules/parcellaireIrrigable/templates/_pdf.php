@@ -9,33 +9,43 @@
 
 <div><span class="h3">&nbsp;Exploitation&nbsp;</span></div>
 <table class="table"><tr><td>
-            <table border="0">
-                <tr>
-                    <td style="width: 420px;">&nbsp;Nom : <i><?php echo $parcellaireIrrigable->declarant->raison_sociale ?></i></td>
+    <table border="0">
+        <tr>
+            <td style="width: 420px;">&nbsp;Nom : <i><?php echo $parcellaireIrrigable->declarant->raison_sociale ?></i></td>
 
-                    <td><?php if ($parcellaireIrrigable->declarant->cvi): ?>N° CVI : <i><?php echo $parcellaireIrrigable->declarant->cvi ?></i><?php else: ?>&nbsp;<?php endif; ?></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;Adresse : <i><?php echo $parcellaireIrrigable->declarant->adresse ?></i></td>
-                    <td>N° SIRET : <i><?php echo formatSIRET($parcellaireIrrigable->declarant->siret); ?></i></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;Commune : <i><?php echo $parcellaireIrrigable->declarant->code_postal ?>, <?php echo $parcellaireIrrigable->declarant->commune ?></i></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;Tel / Fax : <i><?php echo $parcellaireIrrigable->declarant->telephone_bureau ?> / <?php echo $parcellaireIrrigable->declarant->fax ?></i></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>&nbsp;Email : <i><?php echo $parcellaireIrrigable->declarant->email ?></i></td>
-                    <td></td>
-                </tr>
-            </table>
-        </td></tr></table>
+            <td><?php if ($parcellaireIrrigable->declarant->cvi): ?>N° CVI : <i><?php echo $parcellaireIrrigable->declarant->cvi ?></i><?php else: ?>&nbsp;<?php endif; ?></td>
+            </tr>
+            <tr>
+                <td>&nbsp;Adresse : <i><?php echo $parcellaireIrrigable->declarant->adresse ?></i></td>
+                <td>N° SIRET : <i><?php echo formatSIRET($parcellaireIrrigable->declarant->siret); ?></i></td>
+            </tr>
+            <tr>
+                <td>&nbsp;Commune : <i><?php echo $parcellaireIrrigable->declarant->code_postal ?>, <?php echo $parcellaireIrrigable->declarant->commune ?></i></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>&nbsp;Tel / Fax : <i><?php echo $parcellaireIrrigable->declarant->telephone_bureau ?> / <?php echo $parcellaireIrrigable->declarant->fax ?></i></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>&nbsp;Email : <i><?php echo $parcellaireIrrigable->declarant->email ?></i></td>
+                <td></td>
+            </tr>
+        </table>
+</td></tr></table>
+
+<?php if($parcellesByCommune === false): ?>
+    <br />
+    <br />
+    <i>Aucune parcelle irrigable n'a été déclarée pour cette année en Côtes de Provence.</i>
+    <br />
+    <br />
+    <?php return; ?>
+<?php endif; ?>
+
+<?php foreach($parcellesByCommune as $commune => $parcelles): ?>
 <br />
-
-<div><span class="h3">&nbsp;<?php echo $titre; ?>&nbsp;</span></div>
+<div><span class="h3">&nbsp;<?php echo $commune; ?>&nbsp;</span></div>
 
 <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
     <tr>
@@ -48,7 +58,7 @@
         <th class="th" style="text-align: center; width: 125px;">Type de matériel</th>
         <th class="th" style="text-align: center; width: 140px;">Type de ressource</th>
     </tr>
-    <?php foreach ($parcellesForDetail as $parcelle): ?>
+    <?php foreach ($parcelles as $parcelle): ?>
     	<tr>
 			<td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->lieu; ?>&nbsp;</td>
 			<td class="td" style="text-align: right;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->section; ?>&nbsp;</td>
@@ -60,8 +70,5 @@
             <td class="td" style="text-align: left;"><?php echo tdStart() ?>&nbsp;<?php echo $parcelle->ressource; ?>&nbsp;</td>
     	</tr>
     <?php endforeach; ?>
-
 </table>
-
-<br />
-<br />
+<?php endforeach; ?>

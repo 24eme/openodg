@@ -28,16 +28,52 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
 
     public function create() {
 
-       $this->parcellesIrrigableForDetails = $this->parcellaireIrrigable->declaration->getParcellesByCommune();
+       $parcellesByCommune = $this->parcellaireIrrigable->declaration->getParcellesByCommune();
 
-       if(count($this->parcellesIrrigableForDetails) == 0) {
-       		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdfVide', array('parcellaireIrrigable' => $this->parcellaireIrrigable)));
-       		return;
+       if(count($parcellesByCommune) == 0) {
+           $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' =>    $this->parcellaireIrrigable, 'parcellesByCommune' => false)));
+
+           return;
        }
 
-       foreach ($this->parcellesIrrigableForDetails as $commune => $parcellesForDetail) {
-       		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' => $this->parcellaireIrrigable, 'parcellesForDetail' => $parcellesForDetail, 'titre' => $commune)));
-       }
+       $unite = 0;
+       $uniteParPage = 23;
+       $uniteTableau = 3;
+       $uniteLigne = 1;
+       $parcellesByPage = array();
+       $page = 0;
+
+        $currentPage = array();
+        foreach ($parcellesByCommune as $commune => $parcelles) {
+            $libelleTableau = $commune;
+            if(($unite + $uniteTableau + $uniteLigne) > $uniteParPage) {
+                $parcellesByPage[] = $currentPage;
+                $currentPage = array();
+                $unite = 0;
+            }
+            $currentPage[$libelleTableau] = array();
+            $unite += $uniteTableau;
+            foreach($parcelles as $parcelle) {
+               if(($unite + $uniteLigne) > $uniteParPage) {
+                   $parcellesByPage[] = $currentPage;
+                   $currentPage = array();
+                   $unite = 0;
+                   $libelleTableau = $commune . " (suite)";
+                   $currentPage[$libelleTableau] = array();
+                   $unite += $uniteTableau;
+               }
+               $unite += $uniteLigne;
+               $currentPage[$libelleTableau][] = $parcelle;
+           }
+        }
+
+        if($unite > 0) {
+            $parcellesByPage[] = $currentPage;
+        }
+
+        foreach($parcellesByPage as $parcelles) {
+            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' =>    $this->parcellaireIrrigable, 'parcellesByCommune' => $parcelles)));
+        }
     }
 
     protected function getHeaderTitle() {
