@@ -32,20 +32,20 @@ class parcellaireActions extends sfActions {
         return $this->redirect('parcellaire_declarant', $form->getEtablissement());
     }
 
-      public function executeDeclarant(sfWebRequest $request) {
+    public function executeDeclarant(sfWebRequest $request) {
           $this->etablissement = $this->getRoute()->getEtablissement();
           $this->parcellaire = ParcellaireClient::getInstance()->getLast($this->etablissement->identifiant);
 
           $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
           $this->setTemplate('parcellaire');
-      }
+    }
 
-      public function executeVisualisation(sfWebRequest $request) {
-          $this->habilitation = $this->getRoute()->getParcellaire();
-          $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
-          $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+    public function executeVisualisation(sfWebRequest $request) {
+        $this->habilitation = $this->getRoute()->getParcellaire();
+        $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
-          $this->setTemplate('habilitation');
-      }
+        $this->setTemplate('parcellaire');
+    }
 }
