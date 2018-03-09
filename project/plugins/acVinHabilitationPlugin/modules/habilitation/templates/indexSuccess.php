@@ -2,7 +2,7 @@
 <?php $query = ($query) ? $query->getRawValue() : $query ?>
 
 <ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('facturation'); ?>">Habilitations</a></li>
+  <li class="active"><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>
 </ol>
 
 <div class="row row-margin">
