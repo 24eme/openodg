@@ -94,7 +94,7 @@ class declarationActions extends sfActions {
         $form->bind($request->getParameter($form->getName()));
         if (!$form->isValid()) {
 
-            return $this->redirect('drm');
+            return $this->redirect('declaration');
         }
 
         return $this->redirect('declaration_etablissement', $form->getEtablissement());
