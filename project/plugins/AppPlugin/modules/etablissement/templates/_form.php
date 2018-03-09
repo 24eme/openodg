@@ -28,7 +28,7 @@
                 </span>
             </div>
             <?php endif; ?>
-            <?php if(isset($form['ppm'])): ?>
+            <?php if(isset($form['ppm']) && $form->getObject()->exist("ppm") && $form->getObject()->ppm): ?>
             <div class="form-group<?php if($form["ppm"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["ppm"]->renderError(); ?>
                 <?php echo $form["ppm"]->renderLabel("N°&nbsp;PPM", array("class" => "col-xs-3 control-label")); ?>
@@ -128,12 +128,14 @@
                    <?php echo formatSIRET($form->getObject()->siret); ?>
                 </span>
             </div>
+            <?php if($form->getObject()->ppm): ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;PPM</strong>
                 <span class="col-xs-9">
                    <?php echo ($form->getObject()->ppm)? $form->getObject()->ppm : " (non communiqué)"; ?>
                 </span>
             </div>
+        <?php endif; ?> 
 <?php if(isset($extra)): ?>
 <?php foreach($extra as $label => $value): ?>
             <div class="form-group">

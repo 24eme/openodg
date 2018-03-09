@@ -166,7 +166,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
           if($chai){
             $liaison->aliases->add("chai",$chai->nom);
           }
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_ADHERENT,$this,false);
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_APPORTEUR,$this,false);
           $etablissement->save();
         }
         return $liaison;
