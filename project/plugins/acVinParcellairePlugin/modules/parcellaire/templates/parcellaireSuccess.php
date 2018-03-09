@@ -1,11 +1,27 @@
-<?php
-use_helper("Date");
-$last = $parcellaire->getParcellaireLastCampagne();
-$lastParcellesKeysByAppellations = null;
-if ($last) {
-    $lastParcellesKeysByAppellations = $last->getAllParcellesKeysByAppellations()->getRawValue();
-}
-?>
+<?php use_helper("Date"); ?>
+<?php $last = null; ?>
+
+<ol class="breadcrumb">
+  <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
+  <li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li>
+</ol>
+
+<div class="page-header no-border">
+    <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?></h2>
+</div>
+
+<div class="row row-margin">
+    <div class="col-xs-12">
+        <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'),  'noautofocus' => true)); ?>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
+    </div>
+</div>
+
 <?php if (count($parcellaire->declaration) > 0): ?>
     <div class="row">
         <div class="col-xs-12">
