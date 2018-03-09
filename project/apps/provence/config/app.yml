@@ -5,7 +5,7 @@
 all:
   document_validation_signataire: 1
   parcellaire_irrigable:
-    ressources: ["Canal de Provence", "Forage", "Etang", "Retenue collinaire"]
+    ressources: ["Canal de Provence", "Forage", "Etang", "Retenue collinaire","Réseau urbain"]
     materiels: ["Goutte à goutte", "Canon"]
   float:
     default_decimal_format: 2
