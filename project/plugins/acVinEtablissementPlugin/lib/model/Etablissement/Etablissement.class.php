@@ -126,7 +126,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return ($this->nom) ? $this->nom : $this->raison_sociale;
     }
 
-    public function addLiaison($type, $etablissement,$saveOther = true) {
+    public function addLiaison($type, $etablissement,$saveOther = true, $chai = null) {
 
         if(!$etablissement instanceof Etablissement) {
             $etablissement = EtablissementClient::getInstance()->find($etablissement);
@@ -156,10 +156,16 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
           $etablissement->save();
         }
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT)){
+          if($chai){
+            $liaison->aliases->add("chai",$chai->nom);
+          }
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_VENDEUR,$this,false);
           $etablissement->save();
         }
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE)){
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_APPORTEUR)){
+          if($chai){
+            $liaison->aliases->add("chai",$chai->nom);
+          }
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_ADHERENT,$this,false);
           $etablissement->save();
         }
@@ -190,6 +196,15 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $compte->save();
         $this->liaisons_operateurs->remove($key);
 
+    }
+
+    public function hasLiaisonsChai(){
+        foreach ($this->liaisons_operateurs as $liaison) {
+            if($liaison->getChai()){
+                return true;
+            }
+        }
+        return false;
     }
 
     public function isNegociant() {
@@ -279,6 +294,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         }
         $this->initFamille();
         $this->raison_sociale = $societe->raison_sociale;
+        $this->siret = $societe->siret;
         $this->interpro = "INTERPRO-declaration";
         if(class_exists("VracConfiguration") && VracConfiguration::getInstance()->getRegionDepartement() !== false) {
             $this->region = EtablissementClient::getInstance()->calculRegion($this);

@@ -26,8 +26,11 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 $t = new lime_test(23);
 $t->comment('création des différentes établissements');
 
-$etablissementviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
-$etablissementviti = $etablissementviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
+$societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
+$societeviti->siret = "00112244557788";
+$societeviti->save();
+
+$etablissementviti = $societeviti->createEtablissement(EtablissementFamilles::FAMILLE_PRODUCTEUR);
 $etablissementviti->region = EtablissementClient::REGION_CVO;
 $etablissementviti->nom = "Etablissement viticulteur";
 
@@ -75,6 +78,8 @@ $t->is($compteviti->_get('code_postal'), $etablissementviti->_get('code_postal')
 $t->is($compteviti->_get('commune'), $etablissementviti->_get('commune'), "L'établissement a la même commune que le compte");
 $t->is($compteviti->_get('pays'), $etablissementviti->_get('pays'), "L'établissement a le même pays que le compte");
 $t->is($compteviti->_get('insee'), $etablissementviti->_get('insee'), "L'établissement a le même insee que le compte");
+
+$t->is($societeviti->siret, $etablissementviti->_get('siret'), "L'établissement a le siret de la société");
 
 
 $societenego = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_nego_region_societe')->getSociete();

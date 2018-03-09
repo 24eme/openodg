@@ -1,4 +1,6 @@
-<?php use_helper('Compte') ?>
+<?php use_helper('Compte');
+$types_liaisons = EtablissementClient::getTypesLiaisons();
+?>
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
     <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?> (<?php echo $societe->identifiant ?>)</a></li>
@@ -92,7 +94,7 @@
                 <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Chais</strong></h5>
-                <?php if($etablissement->exist('chais')  && count($etablissement->chais)): ?>
+                <?php if(($etablissement->exist('chais')  && count($etablissement->chais)) || $etablissement->hasLiaisonsChai()): ?>
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
@@ -103,14 +105,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($etablissement->chais as $num => $chai): ?>
+                        <?php
+                        if($etablissement->exist('chais')):
+                            foreach($etablissement->chais as $num => $chai): ?>
+                                <tr>
+                                    <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
+                                    <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
+                                    <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
+                                    <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
+                                    <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
+                            <?php if($chai = $liaison->getChai()): ?>
                             <tr>
                                 <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                 <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
-                                <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
-                                <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
+                                <td colspan="2"><?php echo $chai->getDocument()->nom ?></td>
                             </tr>
+                        <?php endif; ?>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -140,8 +155,8 @@
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
                             <tr>
                                 <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
-                                <td><?php echo $liaison->type_liaison ?></td>
-                                <td><?php echo ($liaison->cvi)? 'CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
+                                <td><?php echo $types_liaisons[$liaison->type_liaison] ?></td>
+                                <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
                                 <td class="text-center"><a onclick="return confirm('Étes vous sûr de vouloir supprimer la relations ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
                             </tr>
                         <?php endforeach; ?>
