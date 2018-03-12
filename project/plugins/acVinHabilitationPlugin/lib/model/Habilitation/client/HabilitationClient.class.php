@@ -121,7 +121,7 @@ class HabilitationClient extends acCouchdbClient {
         public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
             $history = $this->getHistory($identifiant, $hydrate);
 
-            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
+            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99', $hydrate);
         }
 
         public function getLastHabilitationOrCreate($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
