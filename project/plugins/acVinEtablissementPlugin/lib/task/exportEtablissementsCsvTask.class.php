@@ -28,6 +28,8 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
+        echo "Identifiant;Famille;Raison sociale;Adresse;Adresse complémentaire;Code postal;Commune;CVI;SIRET;Téléphone bureau;Téléphone mobile;Téléphone perso;Fax;Email;Habilitation Activités;Habilitation Statut;Ordre;Région;Code comptable;Statut;Commentaire;\n";
+
         foreach($results->rows as $row) {
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             $societe = SocieteClient::getInstance()->find($etablissement->id_societe, acCouchdbClient::HYDRATE_JSON);
@@ -65,10 +67,9 @@ EOF;
             echo
             $societe->identifiant.";".
             $etablissement->famille.";".
-            "".";". // INTITULE
             $etablissement->raison_sociale.";".
-            "\"".$etablissement->adresse."\";".
-            "\"".$etablissement->adresse_complementaire."\";".
+            str_replace('"', '', $etablissement->adresse).";".
+            $etablissement->adresse_complementaire.";".
             $etablissement->code_postal.";".
             $etablissement->commune.";".
             $etablissement->cvi.";".
