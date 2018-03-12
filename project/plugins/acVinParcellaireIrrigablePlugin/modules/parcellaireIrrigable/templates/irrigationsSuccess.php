@@ -42,7 +42,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Ajouter un matériel", "data-new" => "ajouter", "data-duplicate" => "materiel", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$produitKey][$parcelle->getKey()]['materiel']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Saisir un matériel", "data-new" => "ajouter", "data-duplicate" => "materiel", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$produitKey][$parcelle->getKey()]['materiel']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
@@ -50,7 +50,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['ressource']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Ajouter une ressource", "data-new" => "ajouter", "data-duplicate" => "ressources", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$produitKey][$parcelle->getKey()]['ressource']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Saisir une ressource", "data-new" => "ajouter", "data-duplicate" => "ressources", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$produitKey][$parcelle->getKey()]['ressource']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
