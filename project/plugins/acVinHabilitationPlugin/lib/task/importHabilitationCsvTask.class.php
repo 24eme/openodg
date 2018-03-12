@@ -36,6 +36,7 @@ EOF;
         $this->convert_statut["En attente d'habilitation"] = HabilitationClient::STATUT_DEMANDE_HABILITATION;
         $this->convert_statut["Archivé"] = HabilitationClient::STATUT_ARCHIVE;
         $this->convert_statut['Habilité'] = HabilitationClient::STATUT_HABILITE;
+        $this->convert_statut['habilité'] = HabilitationClient::STATUT_HABILITE;
         $this->convert_statut['Refus'] = HabilitationClient::STATUT_REFUS;
         $this->convert_statut["Retrait d'habilitation"] = HabilitationClient::STATUT_RETRAIT;
         $this->convert_statut["Suspension d'habilitation"] = HabilitationClient::STATUT_SUSPENDU;
