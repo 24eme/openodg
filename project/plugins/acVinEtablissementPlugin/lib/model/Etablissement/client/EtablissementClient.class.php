@@ -94,7 +94,10 @@ class EtablissementClient extends acCouchdbClient {
                                                   "DGC" => EtablissementClient::CHAI_ATTRIBUT_DGC,
                                                   "Apport" => EtablissementClient::CHAI_ATTRIBUT_APPORT
                                                     );
-
+    public static $chaisAttributByLiaisonType = array(
+                                                    self::TYPE_LIAISON_APPORTEUR => 'Apport',
+                                                    self::TYPE_LIAISON_NEGOCIANT => 'Apport',
+                                                );
     public static function getInstance() {
         return acCouchdbManager::getClient("Etablissement");
     }

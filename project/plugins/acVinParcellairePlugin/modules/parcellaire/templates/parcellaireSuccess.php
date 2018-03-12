@@ -3,13 +3,13 @@
 
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
-  <li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li>
+  <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
 </ol>
-
+<?php if($parcellaire): ?>
 <div class="page-header no-border">
     <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?></h2>
 </div>
-
+<?php endif;?>
 <div class="row row-margin">
     <div class="col-xs-12">
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'),  'noautofocus' => true)); ?>
@@ -18,11 +18,15 @@
 
 <div class="row">
     <div class="col-xs-12">
-        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
+        <?php if($parcellaire): ?>
+            <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
+        <?php else: ?>
+            <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
+        <?php endif; ?>
     </div>
 </div>
 
-<?php if (count($parcellaire->declaration) > 0): ?>
+<?php if ($parcellaire && count($parcellaire->declaration) > 0): ?>
     <div class="row">
         <div class="col-xs-12">
             <?php foreach ($parcellaire->declaration->getParcellesByCommune() as $commune => $parcelles): ?>

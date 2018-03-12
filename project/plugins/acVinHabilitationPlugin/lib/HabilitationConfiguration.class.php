@@ -25,4 +25,8 @@ class HabilitationConfiguration {
         return boolval($this->configuration['prelevements']);
     }
 
+    public function getActivites(){
+        return sfConfig::get('habilitation_configuration_activites', array());
+    }
+
 }
