@@ -1,5 +1,6 @@
+<?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel  <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>panel-success<?php elseif($parcellaireIrrigable): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel  <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>panel-success<?php else : ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
             <h3 class="panel-title">Intention&nbsp;de&nbsp;parcelles&nbsp;irrigables&nbsp;<?php echo $campagne; ?></h3>
         </div>
