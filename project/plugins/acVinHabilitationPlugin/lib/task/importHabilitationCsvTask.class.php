@@ -7,9 +7,16 @@ class importHabilitationCsvTask extends sfBaseTask
 
   const CSV_ACTIVITES = 14;
   const CSV_STATUT = 15;
+  const CSV_DATE_DEMANDE_HABILITATION = 30;
+  const CSV_DATE_HABILITATION = 31;
+  const CSV_DATE_ARCHIVAGE = 32;
+  const CSV_COMMENTAIRE = 33;
 
 
     protected $types_ignore = array();
+    protected $dateHabilitation = null;
+    protected $dateArchivage = null;
+    protected $dateDemande = null;
 
     protected function configure()
     {
@@ -30,7 +37,8 @@ class importHabilitationCsvTask extends sfBaseTask
 EOF;
 
         $this->produitKey = 'certifications/AOP/genres/TRANQ/appellations/CDR';
-        $this->defaultDateHabilitation = '2016-08-01';
+        $this->dateHabilitation = '2016-08-01';
+        $this->dateArchivage = null;
 
         $this->convert_statut = array();
         $this->convert_statut["En attente d'habilitation"] = HabilitationClient::STATUT_DEMANDE_HABILITATION;
@@ -80,18 +88,51 @@ EOF;
               continue;
             }
 
-            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $this->defaultDateHabilitation);
+
+            $dateHabilitation = DateTime::createFromFormat("d/m/Y",$data[self::CSV_DATE_HABILITATION]);
+            $this->dateHabilitation = ($dateHabilitation)? $dateHabilitation->format("Y-m-d") : null;
+
+            $dateDemande = DateTime::createFromFormat("d/m/Y",$data[self::CSV_DATE_DEMANDE_HABILITATION]);
+            $this->dateDemande = ($dateDemande)? $dateDemande->format("Y-m-d") : $this->dateHabilitation;
+
+            $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $this->dateDemande);
             $hab_activites = $habilitation->addProduit($this->produitKey)->add('activites');
+
+
+            $dateArchivageHabilitation = DateTime::createFromFormat("d/m/Y",$data[self::CSV_DATE_ARCHIVAGE]);
+            $this->dateArchivage = ($dateArchivageHabilitation)? $dateArchivageHabilitation->format("Y-m-d") : null;
+
+
 
             $statut = $this->convert_statut[$data[self::CSV_STATUT]];
 
-            foreach (explode(";",$data[self::CSV_ACTIVITES]) as $act) {
-                if ($activite = $this->convert_activites[trim($act)]) {
-                  $hab_activites->add($activite)->updateHabilitation($statut, '', $this->defaultDateHabilitation);
-                }
+            //demande
+            if($statut == HabilitationClient::STATUT_DEMANDE_HABILITATION){
+                $this->updateHabilitationStatut($hab_activites,$data,HabilitationClient::STATUT_DEMANDE_HABILITATION,$this->dateDemande);
+            }
+
+            //statut habilite
+            if($statut == HabilitationClient::STATUT_HABILITE){
+                $this->updateHabilitationStatut($hab_activites,$data,$statut,$this->dateHabilitation);
+            }
+            //statut archive
+            if($statut == HabilitationClient::STATUT_ARCHIVE){
+                $this->updateHabilitationStatut($hab_activites,$data,$statut,$this->dateArchivage);
+            }
+            if(($statut == HabilitationClient::STATUT_RETRAIT) || ($statut == HabilitationClient::STATUT_SUSPENDU)){
+                $this->updateHabilitationStatut($hab_activites,$data,$statut,$this->dateHabilitation);
             }
             $habilitation->save(true);
             echo $habilitation->_id."\n";
+        }
+    }
+
+    protected function updateHabilitationStatut($hab_activites,$data,$statut,$date){
+        foreach (explode(";",$data[self::CSV_ACTIVITES]) as $act) {
+            if ($activite = $this->convert_activites[trim($act)]) {
+                $commentaire = ($data[self::CSV_COMMENTAIRE])? "Import : ".str_replace("#","\n",$data[self::CSV_COMMENTAIRE]) : '';
+                $hab_activites->add($activite)->updateHabilitation($statut, $commentaire, $date);
+            }
         }
     }
 }
