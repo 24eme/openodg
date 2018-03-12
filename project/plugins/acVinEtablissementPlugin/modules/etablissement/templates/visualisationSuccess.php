@@ -122,7 +122,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <tr>
                                 <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
-                                <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
+                                <td><?php echo EtablissementClient::$chaisAttributByLiaisonType[$liaison->type_liaison] ?></td>
                                 <td colspan="2"><?php echo $chai->getDocument()->nom ?></td>
                             </tr>
                         <?php endif; ?>
