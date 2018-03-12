@@ -283,11 +283,13 @@
                 $(this).parent().parent().parent().addClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().parent().addClass("bootstrap-switch-on");
+                $(this).parent().parent().parent().parent().addClass('success');
             } else {
                 $(this).parent().parent().parent().addClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().addClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
+                $(this).parent().parent().parent().parent().removeClass('success');
             }
         };
         $('.bsswitch').on('switchChange.bootstrapSwitch', $.fn.onoff);

@@ -2,7 +2,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'validation', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header no-border">
-    <h2>Validation de votre déclaration</h2>
+    <h2>Validation de vos parcelles irrigables sur votre exploitation</h2>
 </div>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>
@@ -59,7 +59,7 @@
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" <?php if ($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider la déclaration</button>
+            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" <?php if ($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider vos parcelles irrigables</button>
         </div>
     </div>
     <?php if (!$validation->hasErreurs()): ?>

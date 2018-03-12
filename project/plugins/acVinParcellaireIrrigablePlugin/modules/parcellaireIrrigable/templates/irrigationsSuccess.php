@@ -2,7 +2,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'irrigations', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables sur votre exploitation <small>Merci de déclarer vos parcelles irrigables</small></h2>
+    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci de compléter vos parcelles irrigables</small></h2>
 </div>
 
 <form action="<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
@@ -19,7 +19,7 @@
                 <th class="col-xs-1">N° parcelle</th>
                 <th class="col-xs-1">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
-                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(hl)</span></th>
+                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
                 <th class="col-xs-2">Type de matériel</th>
                 <th class="col-xs-2">Type de ressource</th>
                 <th class="col-xs-1"></th>
@@ -42,7 +42,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['materiel']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Ajouter un matériel", "data-new" => "ajouter", "data-duplicate" => "materiel", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$produitKey][$parcelle->getKey()]['materiel']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['materiel']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Saisir un matériel", "data-new" => "ajouter", "data-duplicate" => "materiel", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getMateriels($form[$produitKey][$parcelle->getKey()]['materiel']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
@@ -50,7 +50,7 @@
                 	<div style="margin-bottom: 0;" class="form-group <?php if($form[$produitKey][$parcelle->getKey()]['ressource']->hasError()): ?>has-error<?php endif; ?>">
                     	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->renderError() ?>
                         <div class="col-xs-12">
-                        	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Ajouter une ressource", "data-new" => "ajouter", "data-duplicate" => "ressources", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$produitKey][$parcelle->getKey()]['ressource']->getValue())))) ?>
+                        	<?php echo $form[$produitKey][$parcelle->getKey()]['ressource']->render(array('class' => 'form-control select2 select2-offscreen select2permissifNoAjax toDuplicate', "placeholder" => "Saisir une ressource", "data-new" => "ajouter", "data-duplicate" => "ressources", "data-choices" => json_encode(ParcellaireIrrigableClient::getInstance()->getRessources($form[$produitKey][$parcelle->getKey()]['ressource']->getValue())))) ?>
                         </div>
                     </div>
             	</td>
@@ -67,7 +67,10 @@
 	</table>
     <?php  endforeach; ?>
 	<div class="row row-margin row-button">
-        <div class="col-xs-6"><a href="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
-        <div class="col-xs-6 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
+        <div class="col-xs-4 text-center">
+            <button type="submit" name="saveandquit" value="1" class="btn btn-default">Enregistrer en brouillon</button>
+        </div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
 </form>

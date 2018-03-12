@@ -57,7 +57,7 @@
 
     <div class="col-xs-2 text-right">
         <?php if ($parcellaireIrrigable->validation && ParcellaireSecurity::getInstance($sf_user, $parcellaireIrrigable->getRawValue())->isAuthorized(ParcellaireSecurity::DEVALIDATION)): ?>
-                    <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('parcellaireirrigable_devalidation', $parcellaireIrrigable) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider cette Déclaration ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
+                    <a class="btn btn-xs btn-default pull-right" href="<?php echo url_for('parcellaireirrigable_devalidation', $parcellaireIrrigable) ?>" onclick="return confirm('Êtes-vous sûr de vouloir dévalider votre parcellaire irrigable ?');"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider</a>
         <?php endif; ?>
     </div>
     <div class="col-xs-3 text-right">

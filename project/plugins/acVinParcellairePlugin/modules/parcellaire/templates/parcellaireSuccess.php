@@ -36,7 +36,7 @@
 		                <th class="col-xs-1">N° parcelle</th>
                         <th class="col-xs-3">Cépage</th>
                         <th class="col-xs-1">Année plantat°</th>
-                        <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(hl)</span></th>
+                        <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
                         <th class="col-xs-1">Écart Pieds</th>
                         <th class="col-xs-1">Écart Rang</th>
 		            </tr>
