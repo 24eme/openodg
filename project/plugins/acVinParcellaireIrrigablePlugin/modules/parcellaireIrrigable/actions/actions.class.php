@@ -123,6 +123,11 @@ class parcellaireIrrigableActions extends sfActions {
 
     	$this->parcellaireIrrigable->save();
 
+        if($request->getParameter('saveandquit')) {
+
+            return $this->redirect('declaration_etablissement', $this->parcellaireIrrigable->getEtablissementObject());
+        }
+
     	return $this->redirect('parcellaireirrigable_irrigations', $this->parcellaireIrrigable);
     }
 
@@ -151,6 +156,11 @@ class parcellaireIrrigableActions extends sfActions {
     	}
 
     	$this->form->save();
+
+        if($request->getParameter('saveandquit')) {
+
+            return $this->redirect('declaration_etablissement', $this->parcellaireIrrigable->getEtablissementObject());
+        }
 
     	return $this->redirect('parcellaireirrigable_validation', $this->parcellaireIrrigable);
     }
