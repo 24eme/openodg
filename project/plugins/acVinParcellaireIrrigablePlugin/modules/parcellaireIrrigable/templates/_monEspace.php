@@ -7,7 +7,7 @@
         <div class="panel-body">
             <p>Vous avez déjà validé votre déclaration d'intention de parcelles irrigables pour cette année.</p>
             <div style="margin-top: 50px;">
-                <a class="btn btn-block btn-primary" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Visualiser</a>
+                <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Visualiser</a>
            		<?php if($sf_user->isAdmin()): ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir dévalider cette déclaration ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('parcellaireirrigable_devalidation', $parcellaireIrrigable) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
             	<?php endif; ?>

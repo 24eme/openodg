@@ -72,3 +72,18 @@
     <?php endforeach; ?>
 </table>
 <?php endforeach; ?>
+
+<?php if($lastPage && $parcellaireIrrigable->observations): ?>
+    <br />
+    <div><span class="h3">&nbsp;Observations&nbsp;</span></div>
+    <table class="table" border="1" cellspacing=0 cellpadding=0 style="text-align: right;">
+        <tr>
+            <td class="td"><?php echo tdStart() ?><?php echo nl2br($parcellaireIrrigable->observations); ?></td>
+        </tr>
+    </table>
+<?php endif; ?>
+
+<?php if ($lastPage): ?>
+    <small><br /></small>
+    <i>Pour toute modification, contacter l'ODG.</i>
+<?php endif; ?>
