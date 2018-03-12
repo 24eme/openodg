@@ -225,6 +225,7 @@ EOF;
 
           echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id  ";
           echo ($this->isSuspendu)? " SUSPENDU   " : " ACTIF ";
+          $etablissement->setCommentaire(str_replace("#","\n",$data[self::CSV_COMMENTAIRE]));
           $etablissement->save();
 
           return $etablissement;

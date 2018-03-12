@@ -137,7 +137,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 </div>
                 <?php if ($etablissement->commentaire) : ?>
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <pre><?php echo html_entity_decode($etablissement->commentaire); ?></pre>
+                <p><?php echo nl2br(html_entity_decode($etablissement->commentaire)); ?></p>
                 <?php endif; ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Relations</strong></h5>
