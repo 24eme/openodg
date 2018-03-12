@@ -141,6 +141,11 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $compte = $this->getMasterCompte();
         $compte->addTag('manuel',$type);
         $compte->save();
+
+        if($chai && (($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_APPORTEUR))){
+            $liaison->aliases->add("chai",$chai->nom);
+        }
+
         if($etablissement->exist('ppm') && $etablissement->ppm){
           $liaison->ppm = $etablissement->ppm;
         }
@@ -155,17 +160,20 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR,$this,false);
           $etablissement->save();
         }
+
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT)){
-          if($chai){
-            $liaison->aliases->add("chai",$chai->nom);
-          }
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_VENDEUR,$this,false);
           $etablissement->save();
         }
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_APPORTEUR)){
-          if($chai){
-            $liaison->aliases->add("chai",$chai->nom);
-          }
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR,$this,false);
+          $etablissement->save();
+        }
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_VENDEUR)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$this,false);
+          $etablissement->save();
+        }
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_COOPERATEUR)){
           $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_APPORTEUR,$this,false);
           $etablissement->save();
         }

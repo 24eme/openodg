@@ -179,19 +179,35 @@ EOF;
               $parcelle->add('ecart_pieds', trim($data[self::CSV_ECART_PIED]) * 1);
 
               $date2018 = "20180101";
-              if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
-                echo "La date de début de gestion  de la ligne $ligne est mal formattée\n";
-                return;
+              if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION])) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
+                    echo "$etablissement->_id : La date de début de gestion  de la ligne $ligne est mal formattée\n";
+                    return;
               }
               $dateFinGestionCsv = (trim($data[self::CSV_DATE_FIN_GESTION]))? trim($data[self::CSV_DATE_FIN_GESTION]) : null;
-              if($dateFinGestionCsv && !preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$dateFinGestionCsv)){
-                echo "La date de fin de gestion  de la ligne $ligne est mal formattée\n";
+              if($dateFinGestionCsv && !preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$dateFinGestionCsv) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_FIN_GESTION]))){
+                echo "$etablissement->_id : La date de fin de gestion  de la ligne $ligne est mal formattée\n";
                 return;
               }
 
-              $dateDebut =  new DateTime(trim($data[self::CSV_DATE_DEBUT_GESTION]));
+
+              if(preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
+                  $dateExcel = trim($data[self::CSV_DATE_DEBUT_GESTION]);
+                  $date19000101 = new DateTime("1900-01-01");
+                  echo "$etablissement->_id : conversion de la date $dateExcel \n";
+                  $dateDebut = $date19000101->modify("+".$dateExcel." days");
+              }else{
+                  $dateDebut = new DateTime(trim($data[self::CSV_DATE_DEBUT_GESTION]));
+              }
+
               if($dateFinGestionCsv){
-                $dateFin =  new DateTime($dateFinGestionCsv);
+                if(preg_match('/[0-9]{5}/',$dateFinGestionCsv)){
+                  $dateFin19000101 = new DateTime("1900-01-01");
+                  echo "$etablissement->_id : conversion de la date $dateFinGestionCsv \n";
+                  $dateFin = $dateFin19000101->modify("+".$dateFinGestionCsv." days");
+                }else{
+                  $dateFin =  new DateTime($dateFinGestionCsv);
+                  }
+
               }
               if($dateDebut->format('Ymd') > $date2018){
                 $parcelle->active = false;
