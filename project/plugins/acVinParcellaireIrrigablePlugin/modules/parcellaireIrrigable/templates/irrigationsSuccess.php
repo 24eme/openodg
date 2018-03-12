@@ -19,7 +19,7 @@
                 <th class="col-xs-1">N° parcelle</th>
                 <th class="col-xs-1">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
-                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(hl)</span></th>
+                <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
                 <th class="col-xs-2">Type de matériel</th>
                 <th class="col-xs-2">Type de ressource</th>
                 <th class="col-xs-1"></th>
