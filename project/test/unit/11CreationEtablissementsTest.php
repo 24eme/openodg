@@ -23,7 +23,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(23);
+$t = new lime_test(26);
 $t->comment('création des différentes établissements');
 
 $societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
@@ -93,6 +93,15 @@ $comptenego->addTag('test', 'test');
 $comptenego->save();
 $t->is($comptenego->tags->automatique->toArray(true, false), array('etablissement','negociant'), "Création d'un etablissement nego met à jour le compte");
 $t->is($etablissementnego->region, EtablissementClient::REGION_CVO, "L'établissement est en région CVO après le save");
+
+$etablissementnego = EtablissementClient::getInstance()->find($etablissementnego->_id);
+$etablissementviti = EtablissementClient::getInstance()->find($etablissementviti->_id);
+$etablissementnego->addLiaison('COOPERATEUR', $etablissementviti->_id, true);
+$etablissementnego->save();
+$l_array = $etablissementnego->liaisons_operateurs->toArray(1,0);
+$liaisons = array_shift($l_array);
+$t->is($liaisons['type_liaison'], "COOPERATEUR", "L'établissement a une liaison Coopérateur");
+$t->is($liaisons['id_etablissement'], $etablissementviti->_id, "La liaison est vers l''établissement $etablissementviti->_id");
 
 $societenego = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_nego_region_2_societe')->getSociete();
 $etablissementnego = $societenego->createEtablissement(EtablissementFamilles::FAMILLE_NEGOCIANT);
