@@ -40,6 +40,9 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
        $uniteParPage = 23;
        $uniteTableau = 3;
        $uniteLigne = 1;
+       $uniteTableauCommentaire = 2;
+       $uniteTableauLigne = 0.75;
+       $uniteMentionBasDePage = 1;
        $parcellesByPage = array();
        $page = 0;
 
@@ -71,8 +74,24 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
             $parcellesByPage[] = $currentPage;
         }
 
-        foreach($parcellesByPage as $parcelles) {
-            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' =>    $this->parcellaireIrrigable, 'parcellesByCommune' => $parcelles)));
+        if($this->parcellaireIrrigable->observations) {
+            $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireIrrigable->observations));
+        }
+
+        foreach($parcellesByPage as $nbPage => $parcelles) {
+            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array(
+                'parcellaireIrrigable' => $this->parcellaireIrrigable,
+                'parcellesByCommune' => $parcelles,
+                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->parcellaireIrrigable->observations && $unite <= $uniteParPage) || !$this->parcellaireIrrigable->observations)),
+            )));
+        }
+
+        if ($this->parcellaireIrrigable->observations && $unite > $uniteParPage) {
+            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array(
+                'parcellaireIrrigable' => $this->parcellaireIrrigable,
+                'parcellesByCommune' => array(),
+                'lastPage' => true,
+            )));
         }
     }
 
