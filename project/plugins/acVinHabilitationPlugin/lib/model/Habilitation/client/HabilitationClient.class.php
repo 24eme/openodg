@@ -136,8 +136,8 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-          $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-00000000-00000000")
-                      ->endkey(self::TYPE_COUCHDB."-99999999-99999999")->execute($hydrate);
+          $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-")
+                      ->endkey(self::TYPE_COUCHDB."-ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")->execute($hydrate);
           $etbIds = array();
           foreach ($allHabilitations as $habilitation) {
             $etbIds[$habilitation->getIdentifiant()] = $habilitation->getIdentifiant();
