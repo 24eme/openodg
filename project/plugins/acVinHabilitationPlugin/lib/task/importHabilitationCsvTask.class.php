@@ -106,8 +106,8 @@ EOF;
             $statut = $this->convert_statut[$data[self::CSV_STATUT]];
 
             //demande
-            if($statut == HabilitationClient::STATUT_DEMANDE_HABILITATION){
-                $this->updateHabilitationStatut($hab_activites,$data,HabilitationClient::STATUT_DEMANDE_HABILITATION,$this->dateDemande);
+            if($statut == HabilitationClient::STATUT_ATTENTE_HABILITATION){
+                $this->updateHabilitationStatut($hab_activites,$data,HabilitationClient::STATUT_ATTENTE_HABILITATION,$this->dateDemande);
             }
 
             //statut habilite
