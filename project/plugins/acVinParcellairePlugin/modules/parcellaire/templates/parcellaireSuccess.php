@@ -95,6 +95,10 @@
                               $classline .=  ' danger';
                               $classecart .= ' text-danger';
                             }
+                            if ($detail->hasProblemCepageAutorise()) {
+                              $classline .= ' danger';
+                              $classcepage .= ' text-danger';
+                            }
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
 

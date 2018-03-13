@@ -11,6 +11,10 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return $this->getParent()->getParent();
     }
 
+    public function getConfig() {
+      return $this->getProduit()->getConfig();
+    }
+
     public function addAcheteur($acheteur) {
 
         return $this->getCepage()->addAcheteurFromNode($acheteur, $this->lieu);
@@ -166,8 +170,8 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return 'appellation_'.$appellation == $this->getAppellation()->getKey();
     }
 
-    public function hasProblemExpirationCepage() {
 
+    public function hasProblemExpirationCepage() {
       $expirations = sfConfig::get('app_parcellaire_expiration_cepage', null);
       if (is_null($expirations)) {
         return false;
@@ -184,5 +188,9 @@ class ParcellaireParcelle extends BaseParcellaireParcelle {
         return (($this->ecart_rang * $this->ecart_pieds) > 25000);
       }
       return false;
+    }
+
+    public function hasProblemCepageAutorise() {
+      return !($this->getConfig()->isCepageAutorise($this->getCepageLibelle()));
     }
 }
