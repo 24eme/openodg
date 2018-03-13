@@ -35,14 +35,14 @@
                 <table class="table table-bordered table-condensed table-striped">
                   <thead>
 		        	<tr>
-		                <th class="col-xs-3">Lieu-dit</th>
-                        <th class="col-xs-1" style="text-align: right;">Sect°</th>
-		                <th class="col-xs-1">N° parcelle</th>
-                        <th class="col-xs-3">Cépage</th>
-                        <th class="col-xs-1">Année plantat°</th>
-                        <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
-                        <th class="col-xs-1">Écart Pieds</th>
-                        <th class="col-xs-1">Écart Rang</th>
+		                <th class="col-xs-2">Lieu-dit</th>
+                    <th class="col-xs-1" style="text-align: right;">Sect°</th>
+                    <th class="col-xs-1">N° parcelle</th>
+                    <th class="col-xs-4">Cépage</th>
+                    <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
+                    <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
+                    <th class="col-xs-1">Écart Pieds</th>
+                    <th class="col-xs-1">Écart Rang</th>
 		            </tr>
                   </thead>
                     <tbody>
@@ -105,8 +105,8 @@
                                 <td style="<?php echo $styleproduit; ?>"><?php echo $detail->lieu; ?></td>
                                 <td class="" style="text-align: right;"><?php echo $detail->section; ?></td>
                                 <td class=""><?php echo $detail->numero_parcelle; ?></td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><?php echo $detail->cepage; ?></td>
-                                <td class=""><?php echo $detail->campagne_plantation; ?></td>
+                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><span class="text-muted"><?php echo $detail->produit->getLibelle(); ?></span> <?php echo $detail->cepage; ?></td>
+                                <td class="" style="text-align: center;"><?php echo $detail->campagne_plantation; ?></td>
                                 <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
                                 <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
