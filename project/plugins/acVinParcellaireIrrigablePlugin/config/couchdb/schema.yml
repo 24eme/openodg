@@ -64,3 +64,24 @@ ParcellaireIrrigable:
                               materiel: {  }
                               ressource: {  }
       observations: {  }
+      pieces:
+        type: array_collection
+        definition:
+          fields:
+            '*':
+              class: ParcellaireIrrigablePiece
+              inheritance: Piece
+              type: collection
+              definition:
+                fields:
+                  identifiant: { }
+                  date_depot: { }
+                  libelle: { }
+                  mime: { }
+                  visibilite: { type: integer }
+                  source: { }
+                  fichiers:
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': { }

@@ -20,7 +20,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(24);
+$t = new lime_test(25);
 $t->comment('création des différentes sociétés');
 
 $codePostalRegion = "92100";
@@ -53,6 +53,8 @@ $societeviti->save();
 $t->ok(preg_match('/^'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'$/', $societeviti->identifiant), "L'identifiant ".$societeviti->identifiant." respecte le format ".SocieteClient::getInstance()->getSocieteFormatIdentifiant());
 $t->is($societeviti->date_modification, date('Y-m-d'), "La date de modification de la société à la date du jour");
 $id = $societeviti->getidentifiant();
+$t->is($societeviti->code_comptable_client, $societeviti->identifiant, "Le code comptable a bien été créé");
+
 $compteSociete = CompteClient::getInstance()->findByIdentifiant($id);
 
 $t->is($compteSociete->identifiant, $societeviti->identifiant, "La societe a un compte séparé");

@@ -42,10 +42,22 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->habilitation = $this->getRoute()->getParcellaire();
-        $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
-
+        $this->parcellaire = $this->getRoute()->getParcellaire();
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->secureEtablissement($this->etablissement);
         $this->setTemplate('parcellaire');
+    }
+
+    protected function secureEtablissement($etablissement) {
+        if (!EtablissementSecurity::getInstance($this->getUser(), $etablissement)->isAuthorized(array())) {
+
+            return $this->forwardSecure();
+        }
+    }
+
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
     }
 }

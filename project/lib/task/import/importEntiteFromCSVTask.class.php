@@ -106,7 +106,6 @@ EOF;
         }
     }
 
-
     protected function importEntite($line){
             $data = str_getcsv($line, ';');
             if(!preg_match('/^'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'$/', $data[self::CSV_OLDID])) {
@@ -282,10 +281,9 @@ EOF;
     protected function buildRaisonSociete($data){
       $civilites = array("MR","MME", "MM", "M");
       if(in_array($data[self::CSV_TITRE],$civilites)){
-        return $data[self::CSV_NOM].' ('.$data[self::CSV_TITRE].')';
+        return trim($data[self::CSV_NOM].' ('.$data[self::CSV_TITRE].')');
       }
-      $raison_soc = ($data[self::CSV_TITRE])? $data[self::CSV_TITRE].' ' : '';
-      return $raison_soc.$data[self::CSV_NOM];
+      return trim($data[self::CSV_TITRE].' '.$data[self::CSV_NOM]);
     }
 
     protected function importLiaisons($viti,$line){

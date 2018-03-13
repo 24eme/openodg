@@ -339,6 +339,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
      */
 
     public function getLogin() {
+
         if($this->exist('login')) {
             return $this->_get('login');
         }
@@ -347,7 +348,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return null;
         }
 
-        return preg_replace("/^([0-9]{6})([0-9]+)$/", '\1', $this->identifiant);
+        return preg_replace("/^(.*)([0-9][0-9])$/", '\1', $this->identifiant);
     }
 
     public function setMotDePasseSSHA($mot_de_passe) {

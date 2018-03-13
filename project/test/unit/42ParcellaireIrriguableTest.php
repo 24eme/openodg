@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(4);
+$t = new lime_test(5);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $campagne = date('Y');
 
@@ -27,3 +27,8 @@ $parcellaireIrrigable->addParcellesFromParcellaire(array_keys($parcellaireIrriga
 $parcellaireIrrigable->save();
 
 $t->is(count($parcellaireIrrigable->declaration->getParcellesByCommune()), count($parcellaire->getParcelles()), "Le parcellaire irrigable a 2 parcelles");
+
+$parcellaireIrrigable->validate();
+$parcellaireIrrigable->save();
+
+$t->is($parcellaireIrrigable->pieces[0]->libelle, "Intention de parcelles irrigables ".$parcellaireIrrigable->campagne."-".($parcellaireIrrigable->campagne + 1)." (Télédéclaration)", "La déclaration a bien généré un document (une pièce)");

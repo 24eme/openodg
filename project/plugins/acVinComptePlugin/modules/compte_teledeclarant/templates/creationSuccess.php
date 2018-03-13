@@ -146,6 +146,38 @@
                         </div>
                         <br/>
                     </div>
+                    <div class="col-xs-12">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <?php echo $form['telephone_bureau']->renderError() ?>
+                          </div>
+                        </div>
+                          <div class="row">
+                          <div class="col-xs-4 text-right">
+                            <?php echo $form['telephone_bureau']->renderLabel() ?>
+                          </div>
+                          <div class="col-xs-4 col-xs-offset-2 text-left">
+                            <?php echo $form['telephone_bureau']->render(array('class' => "form-control")) ?>
+                          </div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <?php echo $form['telephone_mobile']->renderError() ?>
+                          </div>
+                        </div>
+                          <div class="row">
+                          <div class="col-xs-4 text-right">
+                            <?php echo $form['telephone_mobile']->renderLabel() ?>
+                          </div>
+                          <div class="col-xs-4 col-xs-offset-2 text-left">
+                            <?php echo $form['telephone_mobile']->render(array('class' => "form-control")) ?>
+                          </div>
+                        </div>
+                        <br/>
+                    </div>
                 <?php endif; ?>
           <div class="col-xs-12 text-right">
             <button class="btn btn-success" type="submit">Valider</button>

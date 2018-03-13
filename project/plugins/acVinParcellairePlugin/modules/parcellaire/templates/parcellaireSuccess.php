@@ -1,20 +1,31 @@
 <?php use_helper("Date"); ?>
 <?php $last = null; ?>
 
+<?php if($sf_user->hasTeledeclaration()): ?>
+    <ol class="breadcrumb">
+      <li><a href="<?php echo url_for('accueil'); ?>">Déclarations</a></li>
+      <li><a href="<?php echo url_for('declaration_etablissement', array('identifiant' => $parcellaire->identifiant)); ?>"><?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>)</a></li>
+      <li class="active"><a href="">Parcellaire au <?php echo $parcellaire->getDateFr(); ?></a></li>
+    </ol>
+<?php else: ?>
 <ol class="breadcrumb">
   <li><a href="<?php echo url_for('parcellaire'); ?>">Parcellaire</a></li>
   <?php if($parcellaire): ?><li><a href="<?php echo url_for('parcellaire_declarant', $parcellaire->getEtablissementObject()); ?>">Parcellaire de <?php echo $parcellaire->getEtablissementObject()->getNom() ?> (<?php echo $parcellaire->getEtablissementObject()->identifiant ?>) </a></li><?php endif;?>
 </ol>
+<?php endif; ?>
 <?php if($parcellaire): ?>
 <div class="page-header no-border">
     <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?></h2>
 </div>
 <?php endif;?>
+
+<?php if(isset($form)): ?>
 <div class="row row-margin">
     <div class="col-xs-12">
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'),  'noautofocus' => true)); ?>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="row">
     <div class="col-xs-12">
@@ -121,12 +132,12 @@
     <?php endforeach; ?>
         </div>
     </div>
-<?php else: ?>
-    <div class="row">
-        <div class="col-xs-12">
-            <p class="text-muted">
-                Aucune parcelle n'a été déclarée pour cette année en Côtes de Provence.
-            </p>
-        </div>
+<?php endif; ?>
+
+<?php if($sf_user->hasTeledeclaration()): ?>
+<div class="row row-margin row-button">
+    <div class="col-xs-4">
+        <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $parcellaire->identifiant)); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retour</a>
     </div>
+</div>
 <?php endif; ?>

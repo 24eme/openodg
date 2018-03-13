@@ -27,9 +27,9 @@ class HabilitationClient extends acCouchdbClient {
 
     const STATUT_ARCHIVE = "ARCHIVE";
 
-    public static $activites_libelles = array( self::ACTIVITE_PRODUCTEUR => "Producteur",
+    public static $activites_libelles = array( self::ACTIVITE_PRODUCTEUR => "Producteur de raisins",
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
-                                                  self::ACTIVITE_VRAC => "Vrac",
+                                                  self::ACTIVITE_VRAC => "Détenteur de vin en vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
                                                   self::ACTIVITE_ELABORATEUR => "Élaborateur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse"
