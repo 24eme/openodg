@@ -51,6 +51,26 @@ class HabilitationClient extends acCouchdbClient {
       return acCouchdbManager::getClient("Habilitation");
     }
 
+    public function getLibelleActivite($key) {
+
+        if(!isset(self::$activites_libelles[$key])) {
+
+            return $key;
+        }
+
+        return self::$activites_libelles[$key];
+    }
+
+    public function getLibelleStatut($key) {
+
+        if(!isset(self::$statuts_libelles[$key])) {
+
+            return $key;
+        }
+
+        return self::$statuts_libelles[$key];
+    }
+
         public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
             $doc = parent::find($id, $hydrate, $force_return_ls);
 
