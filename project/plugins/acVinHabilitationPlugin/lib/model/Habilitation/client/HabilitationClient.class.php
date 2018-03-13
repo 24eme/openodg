@@ -28,7 +28,11 @@ class HabilitationClient extends acCouchdbClient {
 
     const STATUT_ARCHIVE = "ARCHIVE";
 
-    public static $activites_libelles = array( self::ACTIVITE_PRODUCTEUR => "Producteur de raisins",
+    public static $activites_libelles = array(
+      /*
+       self::ACTIVITE_PRODUCTEUR => "Producteur de raisins",
+       */
+                                                  self::ACTIVITE_PRODUCTEUR => "Producteur",
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
                                                   self::ACTIVITE_VRAC => "Détenteur de vin en vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
@@ -37,7 +41,7 @@ class HabilitationClient extends acCouchdbClient {
                                                   ,self::ACTIVITE_PRODUCTEUR_MOUTS => "Producteur de moût"
                                                   ,self::ACTIVITE_ELEVEUR_DGC => "Eleveur de DGC"
                                                 );
-    public static $activites_libelles_to_be_sorted = array( self::ACTIVITE_PRODUCTEUR => "01_Producteur",
+    public static $activites_libelles_to_be_sorted = array( self::ACTIVITE_PRODUCTEUR => "01_Producteur de raisins",
                                                   self::ACTIVITE_VINIFICATEUR => "03_Vinificateur",
                                                   self::ACTIVITE_VRAC => "05_Détenteur de vins en vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "06_Conditionneur",
