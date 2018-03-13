@@ -30,7 +30,7 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_ORDRE = 16;
     const CSV_ZONE = 17;
     const CSV_ID_TIERS = 18;
-    const CSV_TYPE = 19;
+    const CSV_CHAIS_TYPE = 19;
     const CSV_CHAIS_ACTIVITES = 20;
 
 
@@ -121,20 +121,28 @@ EOF;
                 $etb = $this->importEtablissement($soc,$data,$identifiant);
                 $etb = EtablissementClient::getInstance()->find($etb->_id);
                 $activitesChais = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
-                if(count($activitesChais) == 1 && $activitesChais[0] == "Apport"){
-                    $this->importLiaisons($etb,$line);
+
+                $chaiApport = false;
+                if(count($activitesChais) > 0){
+                      $this->importLiaisons($etb,$line);
+                      if($data[self::CSV_CHAIS_TYPE] != "Apporteur"){
+                          $this->addChaiForEtablissement($etb,$data);
+                      }
                 }
-                $this->addChaiForEtablissement($etb,$data);
 
                 echo "\n";
             }else{
               $etb = $soc->getEtablissementPrincipal();
               echo "La société : ".$identifiant." est déjà dans la base => on va alimenter les chais  ";
               $activitesChais = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
-              if(count($activitesChais) == 1 && $activitesChais[0] == "Apport"){
-                  $this->importLiaisons($etb,$line);
+
+              if(count($activitesChais) > 0){
+                    $this->importLiaisons($etb,$line);
+                    if($data[self::CSV_CHAIS_TYPE] != "Apporteur"){
+                        $this->addChaiForEtablissement($etb,$data);
+                    }
               }
-              $this->addChaiForEtablissement($etb,$data);
+
 
               echo "\n";
             }
@@ -161,6 +169,7 @@ EOF;
             if($data[self::CSV_ADRESSE_3]){
               $societe->siege->adresse_complementaire .= " − ".$data[self::CSV_ADRESSE_3];
             }
+
             $societe->siege->code_postal = $data[self::CSV_CP];
             $societe->siege->commune = $data[self::CSV_VILLE];
             if($data[self::CSV_CP]){
@@ -173,9 +182,9 @@ EOF;
             $societe->telephone_bureau = $this->formatTel($data[self::CSV_TELEPHONE]);
             $societe->telephone_mobile = $this->formatTel($data[self::CSV_PORTABLE]);
             $societe->fax = $this->formatTel($data[self::CSV_FAX]);
-            $emails = (explode(";",$data[self::CSV_EMAIL]));
+            //$emails = (explode(";",$data[self::CSV_EMAIL]));
 
-            $societe->email = trim($emails[0]);
+            $societe->email = trim($data[self::CSV_EMAIL]);
 
             if($this->isSuspendu){
               $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
@@ -184,7 +193,7 @@ EOF;
             }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
-            if(count($emails) > 1){
+            /*if(count($emails) > 1){
                 foreach ($emails as $key => $email) {
                     if(!$key){
                         continue;
@@ -196,17 +205,32 @@ EOF;
                     $compte->save();
                     $societe = SocieteClient::getInstance()->find($societe->_id);
                 }
-            }
+            }*/
             return $societe;
           }
 
     protected function importEtablissement($societe,$data,$identifiant){
           $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
+        //   if($data[self::CSV_SOCIETE_TYPE]){
+        //       $type_etablissement = $data[self::CSV_SOCIETE_TYPE];
+        //   }else{
+        //   }
+          if($data[self::CSV_ORDRE]){
+              if(($data[self::CSV_ORDRE] == "N83") || ($data[self::CSV_ORDRE] == "N13")){
+                  $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
+              }
+              if(($data[self::CSV_ORDRE] == "CC 83") || ($data[self::CSV_ORDRE] == "CC 13")){
+                  $type_etablissement = EtablissementFamilles::FAMILLE_COOPERATIVE;
+              }
+              if(($data[self::CSV_ORDRE] == "CP 83") || ($data[self::CSV_ORDRE] == "CP 13")){
+                  $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR;
+              }
+          }
+          if($data[self::CSV_SOCIETE_TYPE] == "NEGOCIANT"){
+              $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT;
+          }
 
           $cvi = $data[self::CSV_EVV];
-          if($data[self::CSV_SOCIETE_TYPE]){
-              $type_etablissement = $data[self::CSV_SOCIETE_TYPE];
-          }
           $etablissement = $societe->createEtablissement($type_etablissement);
           $etablissement->constructId();
           $etablissement->cvi = $cvi;
@@ -225,7 +249,7 @@ EOF;
           echo "L'entité $identifiant CVI (".$cvi.")  etablissement =>  $etablissement->_id  ";
           echo ($this->isSuspendu)? " SUSPENDU   " : " ACTIF ";
           if(trim($data[self::CSV_COMMENTAIRE])){
-              $etablissement->setCommentaire("Import : ".str_replace("#","\n",$data[self::CSV_COMMENTAIRE]));
+              $etablissement->setCommentaire(str_replace("#","\n",$data[self::CSV_COMMENTAIRE]));
           }
           $etablissement->save();
 
@@ -267,25 +291,35 @@ EOF;
         if($data[self::CSV_CAVE_APPORTEURID]){
             $coopOrNego = EtablissementClient::getInstance()->findByIdentifiant($data[self::CSV_CAVE_APPORTEURID]."01");
             if(!$viti){
-                echo "/!\ viti non trouvé : ".$data[self::CSV_OLDID]."\n";
+                echo "\n/!\ viti non trouvé : ".$data[self::CSV_OLDID]."\n";
                 return false;
             }
             if(!$coopOrNego){
-                echo "/!\ cave coop ou négo non trouvé : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
+                echo "\n/!\ cave coop ou négo non trouvé : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
                 return false;
             }
             if($coopOrNego->_id == $viti->_id){
-                echo "/!\ Liaison sur lui même trouvée : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
+                echo "\n/!\ Liaison sur lui même trouvée : ".$data[self::CSV_CAVE_APPORTEURID]."\n";
                 return false;
             }
-            if($coopOrNego->isNegociant()){
+
+            if($data[self::CSV_CHAIS_TYPE] == "Apporteur"){
+                if($coopOrNego->isCooperative()){
+                    $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true,$chaiAssocie);
+                }elseif($coopOrNego->isNegociant()) {
+                    $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true,$chaiAssocie);
+                }elseif($coopOrNego->isNegociantVinificateur()) {
+                    $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,$coopOrNego,true,$chaiAssocie);
+                }
+            }else{
                 $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true,$chaiAssocie);
+                $attributs_chai = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
+                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS,$coopOrNego,true,$chaiAssocie,$attributs_chai);
             }
-            if($coopOrNego->isCooperative()){
-                $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                $viti->addLiaison(EtablissementClient::TYPE_LIAISON_APPORTEUR,$coopOrNego,true,$chaiAssocie);
-            }
+
             $viti->save();
             $type = ($coopOrNego->isNegociant())? ' (négociant) ' : ' (coopérative)';
             echo " LA LIAISON ".$viti->_id." ".$coopOrNego->_id." ".$type.' a été créée   ';
@@ -294,6 +328,7 @@ EOF;
     }
 
     protected function getChaiAssocie($data,$coopOrNego){
+        echo $coopOrNego->_id;
         $chais = $coopOrNego->getChais();
         if(count($chais) == 1){
             foreach ($chais as $chai) {
@@ -307,6 +342,10 @@ EOF;
             }
             if($adresse == str_replace('BOULEVARD','BD',$chai->adresse)
             && ($data[self::CSV_CHAIS_VILLE] == $chai->commune)
+            && ($data[self::CSV_CHAIS_CP] == $chai->code_postal)){
+                return $chai;
+            }
+            if(($data[self::CSV_CHAIS_VILLE] == $chai->commune)
             && ($data[self::CSV_CHAIS_CP] == $chai->code_postal)){
                 return $chai;
             }
