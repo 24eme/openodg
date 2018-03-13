@@ -223,7 +223,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
         return (!$this->getValidation())? array() : array(array(
             'identifiant' => $this->getIdentifiant(),
             'date_depot' => $this->getValidation(),
-            'libelle' => 'Intention de parcelles irrigables '.$this->campagne.' '.$complement,
+            'libelle' => 'Intention de parcelles irrigables '.$this->campagne.'-'.($this->campagne + 1).' '.$complement,
             'mime' => Piece::MIME_PDF,
             'visibilite' => 1,
             'source' => null
