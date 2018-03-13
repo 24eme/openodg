@@ -42,9 +42,7 @@ class parcellaireActions extends sfActions {
     }
 
     public function executeVisualisation(sfWebRequest $request) {
-        $this->habilitation = $this->getRoute()->getParcellaire();
-        $this->secure(HabilitationSecurity::VISUALISATION, $this->habilitation);
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $this->parcellaire = $this->getRoute()->getParcellaire();
 
         $this->setTemplate('parcellaire');
     }
