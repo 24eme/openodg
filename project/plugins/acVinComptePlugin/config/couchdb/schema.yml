@@ -102,3 +102,9 @@ Compte:
         definition:
           fields:
             '*': { }
+      alternative_logins:
+        type: array_collection
+        required: false
+        definition:
+          fields:
+            '*': { }

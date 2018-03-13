@@ -11,7 +11,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_teledeclaration
 
 SocieteClient::getInstance()->clearSingleton();
 
-$t = new lime_test(52);
+$t = new lime_test(54);
 
 $t->comment("Création de la société");
 
@@ -198,3 +198,12 @@ $t->ok(($compte->mot_de_passe != $motDePasse), "Le mot de passe du compte a chan
 $t->is($etablissement->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
 $t->is($etablissement2->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
 $t->is($etablissement3->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
+
+$t->comment("récupération du login et des logins alternatifs");
+$comptelogin = CompteClient::getInstance()->findByLogin($compte->identifiant);
+$t->is($compte->_id, $comptelogin->_id, "Le login permet de récupérer le bon compte");
+$login_alternatif = 'monloginalternatif';
+$compte->add('alternative_logins', array($login_alternatif));
+$compte->save();
+$comptelogin = CompteClient::getInstance()->findByLogin($login_alternatif);
+$t->is($compte->_id, $comptelogin->_id, "Le login alternatif permet de récupérer le bon compte");

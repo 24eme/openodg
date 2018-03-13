@@ -1,3 +1,5 @@
 index:
-  is_secure: true
+  credentials: admin
+
+declarant:
   credentials: admin
