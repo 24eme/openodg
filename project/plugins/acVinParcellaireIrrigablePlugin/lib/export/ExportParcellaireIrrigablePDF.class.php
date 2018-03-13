@@ -96,7 +96,7 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne);
+        return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne."-".($this->parcellaireIrrigable->campagne + 1));
     }
 
     protected function getHeaderSubtitle() {

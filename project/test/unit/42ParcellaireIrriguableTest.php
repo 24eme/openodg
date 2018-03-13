@@ -31,4 +31,4 @@ $t->is(count($parcellaireIrrigable->declaration->getParcellesByCommune()), count
 $parcellaireIrrigable->validate();
 $parcellaireIrrigable->save();
 
-$t->is($parcellaireIrrigable->pieces[0]->libelle, "Intention de parcelles irrigables ".$parcellaireIrrigable->campagne." (Télédéclaration)", "La déclaration a bien généré un document (une pièce)");
+$t->is($parcellaireIrrigable->pieces[0]->libelle, "Intention de parcelles irrigables ".$parcellaireIrrigable->campagne."-".($parcellaireIrrigable->campagne + 1)." (Télédéclaration)", "La déclaration a bien généré un document (une pièce)");
