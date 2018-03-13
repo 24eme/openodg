@@ -71,7 +71,7 @@ class etablissementActions extends sfCredentialActions {
       $this->etablissement = $this->getRoute()->getEtablissement();
       $this->societe = $this->etablissement->getSociete();
       $this->num = $request->getParameter('num');
-      $this->chai = $this->etablissement->get('chais')->get($this->num);
+      $this->chai = $this->etablissement->get('chais')->getOrAdd($this->num);
       $this->form = new EtablissementChaiModificationForm($this->chai);
       if ($request->isMethod(sfWebRequest::POST)) {
           $this->form->bind($request->getParameter($this->form->getName()));
@@ -91,10 +91,11 @@ class etablissementActions extends sfCredentialActions {
 
     public function executeChaiAjout(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $newChai = $this->etablissement->getOrAdd('chais')->add();
-        $this->etablissement->save();
-
-        return $this->redirect('etablissement_edition_chai', array('identifiant' => $this->etablissement->identifiant, 'num' => $newChai->getKey()));
+        $this->chai = $this->etablissement->getOrAdd('chais')->add();
+        $this->num = count($this->etablissement->chais) -1;
+        $this->societe = $this->etablissement->getSociete();
+        $this->form = new EtablissementChaiModificationForm($this->chai);
+        $this->setTemplate('chaiModification');
     }
 
     public function executeRelationAjout(sfWebRequest $request) {

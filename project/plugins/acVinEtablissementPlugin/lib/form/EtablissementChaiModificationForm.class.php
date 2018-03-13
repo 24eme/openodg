@@ -15,6 +15,7 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
 
     public function __construct($chai, $options = array(), $CSRFSecret = null) {
         $this->chai = $chai;
+        $this->chai->disableAutocalcule();
         parent::__construct($this->chai, $options, $CSRFSecret);
     }
 
