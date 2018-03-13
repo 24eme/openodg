@@ -1,5 +1,5 @@
 index:
-  credentials: admin
+  credentials: ADMIN
 
 declarant:
-  credentials: admin
+  credentials: ADMIN
