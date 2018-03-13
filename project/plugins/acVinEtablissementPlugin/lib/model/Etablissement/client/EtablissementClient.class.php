@@ -304,7 +304,7 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_COOPERATIVE => 'A pour coopérative',
             self::TYPE_LIAISON_COOPERATEUR => 'A pour coopérateur',
 
-            self::TYPE_LIAISON_NEGOCIANT => 'A pour négociant',
+            self::TYPE_LIAISON_NEGOCIANT => 'A pour négociant (vin en vrac)',
             self::TYPE_LIAISON_VENDEUR_VRAC => 'A pour vendeur de vin en vrac',
 
             self::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR => 'A pour négociant vinificateur',
