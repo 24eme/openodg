@@ -264,7 +264,7 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public static function getRegions() {
-        return array_merge(self::getRegionsWithoutHorsInterLoire(), array(self::REGION_HORS_CVO => self::REGION_HORS_CVO));
+    	return sfConfig::get('app_donnees_viticoles_regions');
     }
 
     public static function getNaturesInao() {
