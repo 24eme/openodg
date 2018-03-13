@@ -104,7 +104,7 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             ';'. //Transmission AVPI
             ';'. //Date Habilitation
             ';'. //date archivage
-            str_replace("\n", '\n', $etablissement->commentaire).';'.
+            '"'.str_replace('"', "''", str_replace(';', ' / ', str_replace("\n", '\n', $etablissement->commentaire))).'";'.
             $habilitationStatut.";". // Etat
             $ordre.";". // Ordre
             $etablissement->region.";".

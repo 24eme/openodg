@@ -139,6 +139,7 @@ Etablissement:
          definition:
            fields:
              '*':
+               class: EtablissementChais
                type: collection
                definition:
                  fields:
