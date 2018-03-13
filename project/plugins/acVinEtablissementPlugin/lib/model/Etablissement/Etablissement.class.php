@@ -126,7 +126,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return ($this->nom) ? $this->nom : $this->raison_sociale;
     }
 
-    public function addLiaison($type, $etablissement,$saveOther = true, $chai = null) {
+    public function addLiaison($type, $etablissement,$saveOther = true, $chai = null, $attributs_chai = array()) {
 
         if(!$etablissement instanceof Etablissement) {
             $etablissement = EtablissementClient::getInstance()->find($etablissement);
@@ -138,11 +138,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->type_liaison = $type;
         $liaison->id_etablissement = $etablissement->_id;
         $liaison->libelle_etablissement = $etablissement->nom;
+        if($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS){
+          $liaison->add("attributs_chai",$attributs_chai);
+        }
         $compte = $this->getMasterCompte();
         $compte->addTag('manuel',$type);
         $compte->save();
 
-        if($chai && (($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_APPORTEUR))){
+        if($chai && (($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE))){
             $liaison->aliases->add("chai",$chai->nom);
         }
 
@@ -161,20 +164,41 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
           $etablissement->save();
         }
 
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_VENDEUR,$this,false);
-          $etablissement->save();
-        }
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_APPORTEUR)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR,$this,false);
-          $etablissement->save();
-        }
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_VENDEUR)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$this,false);
-          $etablissement->save();
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE)){
+            $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR,$this,false);
+            $etablissement->save();
         }
         if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_COOPERATEUR)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_APPORTEUR,$this,false);
+            $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$this,false);
+            $etablissement->save();
+        }
+
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_VENDEUR_VRAC,$this,false);
+          $etablissement->save();
+        }
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_VENDEUR_VRAC)){
+            $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$this,false);
+            $etablissement->save();
+        }
+
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN,$this,false);
+          $etablissement->save();
+        }
+
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,$this,false);
+          $etablissement->save();
+        }
+
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_HEBERGE,$this,false);
+          $etablissement->save();
+        }
+
+        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_HEBERGE)){
+          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS,$this,false);
           $etablissement->save();
         }
         return $liaison;
@@ -224,6 +248,10 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
 
     public function isViticulteur() {
         return ($this->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR);
+    }
+
+    public function isNegociantVinificateur() {
+        return ($this->famille == EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR);
     }
 
     public function isCourtier() {

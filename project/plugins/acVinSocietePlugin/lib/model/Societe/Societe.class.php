@@ -445,6 +445,10 @@ class Societe extends BaseSociete implements InterfaceCompteGenerique {
         return $this->exist('type_societe') && ($this->type_societe == SocieteClient::SUB_TYPE_SYNDICAT);
     }
 
+    public function getEmails(){
+        return explode(';',$this->email);
+    }
+
     public function getEmailTeledeclaration() {
         if ($this->exist('teledeclaration_email') && $this->teledeclaration_email) {
             return $this->teledeclaration_email;

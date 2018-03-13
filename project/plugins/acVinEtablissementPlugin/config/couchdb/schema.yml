@@ -38,6 +38,11 @@ Etablissement:
                      type_liaison: { }
                      cvi: { }
                      ppm: { }
+                     attributs_chai:
+                       type: collection
+                       definition:
+                         fields:
+                           '*': { }
                      aliases:
                        type: collection
                        definition:

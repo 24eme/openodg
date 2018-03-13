@@ -13,11 +13,14 @@
 <?php if ($compte->email) : ?>
     <div class="row">
         <div style="margin-bottom: 5px;" class="col-xs-3 text-muted">
-            Email :
+            Email<?php if(count($compte->getEmails()) > 1 ): ?>s<?php endif; ?> :
         </div>
-        <div style="margin-bottom: 5px" class="col-xs-9">
-            <a href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
-        </div>
+
+            <div style="margin-bottom: 5px" class="col-xs-9">
+                <?php foreach ($compte->getEmails() as $email): ?>
+                    <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a><br/>
+                <?php endforeach; ?>
+            </div>
     </div>
 <?php endif; ?>
 <?php if ($compte->telephone_perso) : ?>

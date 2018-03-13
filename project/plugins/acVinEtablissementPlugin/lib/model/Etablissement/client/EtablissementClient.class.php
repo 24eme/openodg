@@ -14,11 +14,19 @@ class EtablissementClient extends acCouchdbClient {
     const TYPE_LIAISON_BAILLEUR = 'BAILLEUR';
     const TYPE_LIAISON_METAYER = 'METAYER';
     const TYPE_LIAISON_FERMIER = 'FERMIER';
-    const TYPE_LIAISON_APPORTEUR = 'APPORTEUR';
-    const TYPE_LIAISON_COOPERATEUR = 'COOPERATEUR'; //pour les cooperatives
-    const TYPE_LIAISON_NEGOCIANT = 'NEGOCIANT'; //pour les negociants
-    const TYPE_LIAISON_VENDEUR = 'VENDEUR';
-    const TYPE_LIAISON_CONTRAT_INTERNE = 'CONTRAT_INTERNE';
+
+    const TYPE_LIAISON_COOPERATIVE = 'COOPERATIVE'; // a pour coopérative
+    const TYPE_LIAISON_COOPERATEUR = 'COOPERATEUR'; // a pour coopérateur
+
+    const TYPE_LIAISON_NEGOCIANT = 'NEGOCIANT'; //à pour les negociants
+    const TYPE_LIAISON_VENDEUR_VRAC = 'VENDEUR_VRAC';//à pour les vendeur de vin en vrac
+
+    const TYPE_LIAISON_NEGOCIANT_VINIFICATEUR = 'NEGOCIANT_VINIFICATEUR'; //à pour les négociant vinificateur
+    const TYPE_LIAISON_APPORTEUR_RAISIN = 'APPORTEUR_RAISIN'; //à pour apporteur de raisins
+
+    const TYPE_LIAISON_HEBERGE_TIERS = 'HEBERGE_TIERS'; //Hébergé chez un tiers
+    const TYPE_LIAISON_HEBERGE = 'HEBERGE'; //Heberge
+
     const STATUT_ACTIF = 'ACTIF'; #'actif';
     const STATUT_SUSPENDU = 'SUSPENDU'; #'suspendu';
     const OUI = 'OUI';
@@ -83,7 +91,6 @@ class EtablissementClient extends acCouchdbClient {
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE => 'Stockage Vin Conditionné',
                                                   self::CHAI_ATTRIBUT_DGC => 'Désignation Géographique complémentaire',
                                                   self::CHAI_ATTRIBUT_APPORT => 'Apport',
-
                                                   self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
                                                   self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
                                                   self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement');
@@ -94,8 +101,9 @@ class EtablissementClient extends acCouchdbClient {
                                                   "DGC" => EtablissementClient::CHAI_ATTRIBUT_DGC,
                                                   "Apport" => EtablissementClient::CHAI_ATTRIBUT_APPORT
                                                     );
+
     public static $chaisAttributByLiaisonType = array(
-                                                    self::TYPE_LIAISON_APPORTEUR => 'Apport',
+                                                    self::TYPE_LIAISON_COOPERATIVE => 'Apport',
                                                     self::TYPE_LIAISON_NEGOCIANT => 'Apport',
                                                 );
     public static function getInstance() {
@@ -292,11 +300,20 @@ class EtablissementClient extends acCouchdbClient {
         return array(self::TYPE_LIAISON_BAILLEUR => 'A pour bailleur',
             self::TYPE_LIAISON_METAYER => 'A pour métayer',
             self::TYPE_LIAISON_FERMIER => 'A pour fermier',
-            self::TYPE_LIAISON_COOPERATEUR => 'Coopérateur',
-            self::TYPE_LIAISON_APPORTEUR => 'Apporteur',
+
+            self::TYPE_LIAISON_COOPERATIVE => 'A pour coopérative',
+            self::TYPE_LIAISON_COOPERATEUR => 'A pour coopérateur',
+
             self::TYPE_LIAISON_NEGOCIANT => 'A pour négociant',
-            self::TYPE_LIAISON_VENDEUR => 'A pour vendeur',
-            self::TYPE_LIAISON_CONTRAT_INTERNE => 'Contrat interne');
+            self::TYPE_LIAISON_VENDEUR_VRAC => 'A pour vendeur de vin en vrac',
+
+            self::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR => 'A pour négociant vinificateur',
+            self::TYPE_LIAISON_APPORTEUR_RAISIN => 'A pour apporteur de raisins',
+
+            self::TYPE_LIAISON_HEBERGE_TIERS => 'Hébergé chez un tiers',
+            self::TYPE_LIAISON_HEBERGE => 'Héberge',
+
+            );
     }
 
     public static function getPrefixForRegion($region) {

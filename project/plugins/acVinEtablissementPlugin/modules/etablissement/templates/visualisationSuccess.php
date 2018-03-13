@@ -122,7 +122,15 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <tr>
                                 <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
-                                <td><?php echo EtablissementClient::$chaisAttributByLiaisonType[$liaison->type_liaison] ?></td>
+                                <td>
+                                    <?php if($liaison->type_liaison == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS):
+                                        foreach ($liaison->attributs_chai as $attribut_chai) :
+                                            echo $attribut_chai.'<br/>';
+                                        endforeach;
+                                         else: ?>
+                                        <?php echo EtablissementClient::$chaisAttributByLiaisonType[$liaison->type_liaison] ?>
+                                    <?php endif; ?>
+                                </td>
                                 <td colspan="2"><?php echo $chai->getDocument()->nom ?></td>
                             </tr>
                         <?php endif; ?>

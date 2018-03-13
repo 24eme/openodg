@@ -535,6 +535,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
     public function getEmail() {
         return $this->_get('email');
     }
+    public function getEmails(){
+        return explode(';',$this->email);
+    }
 
     public function getTelephoneBureau() {
         return $this->_get('telephone_bureau');

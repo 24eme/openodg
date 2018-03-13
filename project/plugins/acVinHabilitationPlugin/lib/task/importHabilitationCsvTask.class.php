@@ -130,7 +130,7 @@ EOF;
     protected function updateHabilitationStatut($hab_activites,$data,$statut,$date){
         foreach (explode(";",$data[self::CSV_ACTIVITES]) as $act) {
             if ($activite = $this->convert_activites[trim($act)]) {
-                $commentaire = ($data[self::CSV_COMMENTAIRE])? "Import : ".str_replace("#","\n",$data[self::CSV_COMMENTAIRE]) : '';
+                $commentaire = ($data[self::CSV_COMMENTAIRE])? str_replace("#","\n",$data[self::CSV_COMMENTAIRE]) : '';
                 $hab_activites->add($activite)->updateHabilitation($statut, $commentaire, $date);
             }
         }
