@@ -1,13 +1,10 @@
 <?php
 
 class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
-
     private $typeCompte;
-    protected $updatedValues;
 
     public function __construct($doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
         $this->typeCompte = $doc->getSociete()->type_societe;
-        $this->updatedValues = array();
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
         $defaults['cvi'] = $doc->getSociete()->getEtablissementPrincipal()->cvi;
@@ -157,16 +154,6 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
     public function getTypeCompte() {
 
         return $this->typeCompte;
-    }
-
-    public function getUpdatedValues()
-    {
-        return $this->updatedValues;
-    }
-
-    public function hasUpdatedValues()
-    {
-        return (count($this->updatedValues) > 0);
     }
 
 }

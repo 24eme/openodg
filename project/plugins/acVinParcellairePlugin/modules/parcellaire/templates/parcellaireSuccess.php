@@ -10,11 +10,14 @@
     <h2>Parcellaire au <?php echo Date::francizeDate($parcellaire->date); ?></h2>
 </div>
 <?php endif;?>
+
+<?php if(isset($form)): ?>
 <div class="row row-margin">
     <div class="col-xs-12">
         <?php include_partial('etablissement/formChoice', array('form' => $form, 'action' => url_for('parcellaire_etablissement_selection'),  'noautofocus' => true)); ?>
     </div>
 </div>
+<?php endif; ?>
 
 <div class="row">
     <div class="col-xs-12">

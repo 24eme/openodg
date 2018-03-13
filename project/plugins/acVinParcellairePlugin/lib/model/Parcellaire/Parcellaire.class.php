@@ -7,6 +7,7 @@
 class Parcellaire extends BaseParcellaire {
 
     protected $declarant_document = null;
+    protected $piece_document = null;
 
     public function __construct() {
         parent::__construct();
@@ -20,6 +21,7 @@ class Parcellaire extends BaseParcellaire {
 
     protected function initDocuments() {
         $this->declarant_document = new DeclarantDocument($this);
+        $this->piece_document = new PieceDocument($this);
     }
 
     public function storeDeclarant() {
@@ -73,5 +75,58 @@ class Parcellaire extends BaseParcellaire {
 
         return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu);
     }
+
+    public function getDateFr() {
+
+        $date = new DateTime($this->date);
+
+        return $date->format('d/m/Y');
+    }
+
+    protected function doSave() {
+        $this->piece_document->generatePieces();
+    }
+
+    /*** PIECE DOCUMENT ***/
+
+    public function getAllPieces() {
+
+        return array(
+            array(
+            'identifiant' => $this->getIdentifiant(),
+            'date_depot' => $this->date,
+            'libelle' => 'Parcellaire au '.$this->getDateFr(),
+            'mime' => null,
+            'visibilite' => 1,
+            'source' => $this->source,
+            )
+        );
+    }
+
+    public function generatePieces() {
+        return $this->piece_document->generatePieces();
+    }
+
+    public function generateUrlPiece($source = null) {
+        return sfContext::getInstance()->getRouting()->generate('parcellaire_visualisation', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+        return sfContext::getInstance()->getRouting()->generate('parcellaire_visualisation', array('id' => $id));
+    }
+
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+        return null;
+    }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+        return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+        return false;
+    }
+
+    /*** FIN PIECE DOCUMENT ***/
 
 }
