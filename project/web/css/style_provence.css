@@ -63,16 +63,29 @@ h3 {
     margin-bottom: 10px;
 }
 
-.select2-container .select2-choices .select2-search-field input, .select2-container .select2-choice, .select2-container .select2-choices {
-    border-radius: 0;
+.select2-container.form-control {
+    padding: 0;
+    margin: 0;
+}
+
+.select2-container .select2-choices .select2-search-field input, .select2-container .select2-choice {
+    border-radius: 0 !important;
 }
 
 .select2-container .select2-choice {
     height: 38px;
 }
 
+.input-group-sm .select2-container .select2-choice {
+    height: 32px;
+}
+
 .select2-container .select2-choice .select2-arrow b, .select2-container .select2-choice div b {
     background-position: 0 5px;
+}
+
+.input-group-sm .select2-container .select2-choice .select2-arrow b, .select2-container .select2-choice div b {
+    background-position: 0 3px;
 }
 
 .select2-search input {
