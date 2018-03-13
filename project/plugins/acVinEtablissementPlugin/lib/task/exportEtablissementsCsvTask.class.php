@@ -28,7 +28,7 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "Identifiant;Famille;Inititule;Raison sociale;Adresse;Adresse complémentaire;Code postal;Commune;CVI;SIRET;Téléphone bureau;Téléphone mobile;Téléphone perso;Fax;Email;Habilitation Activités;Habilitation Statut;Ordre;Région;Code comptable;Statut;Date de dernière modification;Commentaire;\n";
+        echo "IdOp;Famille;IdTitre;Raison sociale;Adresse;Adresse 2;Adresse 3;Code postal;Commune;CVI;SIRET;Téléphone bureau;Téléphone mobile;Fax;Email;Activité;Réception ODG;Enresgistrement ODG;Transmission AVPI;Date Habilitation;Date Archivage;Observation;Etat;Ordre;Zone;Code comptable;Famille;Date de dernière modification;Statut;\n";
 
         foreach($results->rows as $row) {
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
@@ -44,7 +44,7 @@ EOF;
                         if(!$activite->statut) {
                             continue;
                         }
-                        $activites[] = HabilitationClient::getInstance()->getLibelleActivite($activiteKey);
+                        $activites[] = HabilitationClient::getInstance()->getLibelleActiviteToBeSorted($activiteKey);
                         $habilitationStatut = HabilitationClient::getInstance()->getLibelleStatut($activite->statut);
                     }
                 }
@@ -80,31 +80,38 @@ EOF;
                 $intitule = $matches[1];
                 $raisonSociale = preg_replace("/ \((".$intitule.")\)$/", "", $raisonSociale);
             }
-
+$adresses_complementaires = explode(' − ', str_replace('"', '', $etablissement->adresse_complementaire));
+$adresse_complementaire = array_shift($adresses_complementaires);
             echo
             $societe->identifiant.";".
             $etablissement->famille.";".
             $intitule.";".
             $raisonSociale.";".
             str_replace('"', '', $etablissement->adresse).";".
-            $etablissement->adresse_complementaire.";".
+            $adresse_complementaire.";".
+            implode(' − ', $adresses_complementaires).";".
             $etablissement->code_postal.";".
             $etablissement->commune.";".
             $etablissement->cvi.";".
-            $etablissement->siret.";".
+            '"'.$etablissement->siret.'";'.
             $etablissement->telephone_bureau.";".
             $etablissement->telephone_mobile.";".
-            $etablissement->telephone_perso.";".
             $etablissement->fax.";".
             $etablissement->email.";".
-            implode("|", $activites).";". // Activité habilitation
-            $habilitationStatut.";". // Statut habilitation
+            preg_replace('/[0-9][0-9]_/', '', implode("|", $activites)).";". // Activité habilitation
+            ';'. //Reception ODG
+            ';'. //Enregistrement ODG
+            ';'. //Transmission AVPI
+            ';'. //Date Habilitation
+            ';'. //date archivage
+            str_replace("\n", '\n', $etablissement->commentaire).';'.
+            $habilitationStatut.";". // Etat
             $ordre.";". // Ordre
             $etablissement->region.";".
             $societe->code_comptable_client.";".
-            $etablissement->statut.";".
+            $etablissement->famille.";".
             $compte->date_modification.";".
-            str_replace("\n", '\n', $etablissement->commentaire).
+            $etablissement->statut.";".
             "\n";
 
         }
