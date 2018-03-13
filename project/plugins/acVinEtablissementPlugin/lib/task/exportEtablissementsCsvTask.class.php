@@ -28,11 +28,12 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "Identifiant;Famille;Raison sociale;Adresse;Adresse complémentaire;Code postal;Commune;CVI;SIRET;Téléphone bureau;Téléphone mobile;Téléphone perso;Fax;Email;Habilitation Activités;Habilitation Statut;Ordre;Région;Code comptable;Statut;Commentaire;\n";
+        echo "Identifiant;Famille;Inititule;Raison sociale;Adresse;Adresse complémentaire;Code postal;Commune;CVI;SIRET;Téléphone bureau;Téléphone mobile;Téléphone perso;Fax;Email;Habilitation Activités;Habilitation Statut;Ordre;Région;Code comptable;Statut;Date de dernière modification;Commentaire;\n";
 
         foreach($results->rows as $row) {
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
             $societe = SocieteClient::getInstance()->find($etablissement->id_societe, acCouchdbClient::HYDRATE_JSON);
+            $compte = CompteClient::getInstance()->find($etablissement->compte, acCouchdbClient::HYDRATE_JSON);
             $habilitation = HabilitationClient::getInstance()->getLastHabilitation($etablissement->identifiant, acCouchdbClient::HYDRATE_JSON);
 
             $habilitationStatut = null;
@@ -49,6 +50,8 @@ EOF;
                 }
             }
 
+            sort($activites);
+
             $ordre = null;
 
             if($etablissement->region && $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
@@ -64,10 +67,25 @@ EOF;
                 $ordre .= substr($etablissement->code_postal, 0, 2);
             }
 
+            $intitules = "EARL|EI|ETS|EURL|GAEC|GFA|HOIRIE|IND|M|MM|Mme|MME|MR|SA|SARL|SAS|SASU|SC|SCA|SCE|SCEA|SCEV|SCI|SCV|SFF|SICA|SNC|SPH|STE|STEF";
+            $intitule = null;
+            $raisonSociale = $etablissement->raison_sociale;
+
+            if(preg_match("/^(".$intitules.") /", $raisonSociale, $matches)) {
+                $intitule = $matches[1];
+                $raisonSociale = preg_replace("/^".$intitule." /", "", $raisonSociale);
+            }
+
+            if(preg_match("/ \((".$intitules.")\)$/", $raisonSociale, $matches)) {
+                $intitule = $matches[1];
+                $raisonSociale = preg_replace("/ \((".$intitule.")\)$/", "", $raisonSociale);
+            }
+
             echo
             $societe->identifiant.";".
             $etablissement->famille.";".
-            $etablissement->raison_sociale.";".
+            $intitule.";".
+            $raisonSociale.";".
             str_replace('"', '', $etablissement->adresse).";".
             $etablissement->adresse_complementaire.";".
             $etablissement->code_postal.";".
@@ -85,6 +103,7 @@ EOF;
             $etablissement->region.";".
             $societe->code_comptable_client.";".
             $etablissement->statut.";".
+            $compte->date_modification.";".
             str_replace("\n", '\n', $etablissement->commentaire).
             "\n";
 
