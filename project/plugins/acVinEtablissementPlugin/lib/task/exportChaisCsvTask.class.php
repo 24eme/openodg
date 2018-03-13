@@ -1,6 +1,6 @@
 <?php
 
-class exportEtablissementsCsvTask extends sfBaseTask
+class exportChaisCsvTask extends sfBaseTask
 {
 
     protected function configure()

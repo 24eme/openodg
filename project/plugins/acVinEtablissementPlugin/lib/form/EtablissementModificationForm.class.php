@@ -77,6 +77,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
+        if (!$this->getObject()->nom) {
+        	$this->setDefault('nom', $this->getObject()->getSociete()->getRaisonSociale());
+        }
     }
 
     public function getFamilles()

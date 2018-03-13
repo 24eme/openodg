@@ -235,7 +235,7 @@ class sfFormField
 
   /**
    * Returns the name attribute of the widget.
-   * 
+   *
    * @return string The name attribute of the widget
    */
   public function renderName()
@@ -320,6 +320,6 @@ class sfFormField
    */
   public function hasError()
   {
-    return null !== $this->error && count($this->error);
+    return !$this->error && is_array($this->error) && count($this->error);
   }
 }
