@@ -43,8 +43,8 @@ EOF;
                         if(!$activite->statut) {
                             continue;
                         }
-                        $activites[] = $activiteKey;
-                        $habilitationStatut = $activite->statut;
+                        $activites[] = HabilitationClient::getInstance()->getLibelleActivite($activiteKey);
+                        $habilitationStatut = HabilitationClient::getInstance()->getLibelleStatut($activite->statut);
                     }
                 }
             }
@@ -85,7 +85,7 @@ EOF;
             $etablissement->region.";".
             $societe->code_comptable_client.";".
             $etablissement->statut.";".
-            str_replace("\n", '\n', $etablissement->commentaire).";".
+            str_replace("\n", '\n', $etablissement->commentaire).
             "\n";
 
         }
