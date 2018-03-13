@@ -32,7 +32,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
 
         $this->widgetSchema->setLabel('famille', 'Famille *');
         $this->widgetSchema->setLabel('nom', "Nom de l'établissement *");
-        $this->widgetSchema->setLabel('nature_inao', 'Nature INAO *');
+        $this->widgetSchema->setLabel('nature_inao', 'Nature INAO');
         $this->widgetSchema->setLabel('region', 'Région viticole *');
         $this->widgetSchema->setLabel('no_accises', "N° d'Accise");
         $this->widgetSchema->setLabel('commentaire', 'Commentaire');
