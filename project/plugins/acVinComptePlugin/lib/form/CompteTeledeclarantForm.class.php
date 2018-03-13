@@ -1,8 +1,11 @@
 <?php
 
 class CompteTeledeclarantForm extends acCouchdbForm {
+    protected $defaultEmail;
+    protected $updatedValues;
 
     public function __construct($doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+        $this->updatedValues = array();
         $societe = $doc->getSociete();
 
         $defaultEmail = null;
@@ -16,6 +19,7 @@ class CompteTeledeclarantForm extends acCouchdbForm {
         }
 
         $defaults['email'] = $defaultEmail;
+        $this->defaultEmail = $defaultEmail;
         
         if ($doc->telephone_mobile) {
         	$defaults['telephone_mobile'] = $doc->telephone_mobile;
@@ -26,6 +30,16 @@ class CompteTeledeclarantForm extends acCouchdbForm {
         }
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
+    }
+
+    public function getUpdatedValues()
+    {
+        return $this->updatedValues;
+    }
+
+    public function hasUpdatedValues()
+    {
+        return (count($this->updatedValues) > 0);
     }
 
     public function configure() {
@@ -74,10 +88,12 @@ class CompteTeledeclarantForm extends acCouchdbForm {
         }
 
         if ($tel = $this->getValue('telephone_bureau')) {
+        	$this->updatedValues['telephone_bureau'] = array($this->getDocument()->telephone_bureau, $tel);
             $this->getDocument()->telephone_bureau = $tel;
         }
 
         if ($mobile = $this->getValue('telephone_mobile')) {
+        	$this->updatedValues['telephone_mobile'] = array($this->getDocument()->telephone_mobile, $mobile);
             $this->getDocument()->telephone_mobile = $mobile;
         }
 
@@ -85,6 +101,10 @@ class CompteTeledeclarantForm extends acCouchdbForm {
         $this->getDocument()->save();
 
         $email = $this->getValue('email');
+        
+        if ($this->defaultEmail != $email) {
+        	$this->updatedValues['email'] = array($this->defaultEmail, $email);
+        }
 
         if(!$email) {
             return;
