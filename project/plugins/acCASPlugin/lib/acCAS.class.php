@@ -19,9 +19,7 @@ class acCAS extends phpCAS {
         phpCAS::setDebug('/tmp/cas.log');
         @acCAS::client(CAS_VERSION_2_0, $_SESSION['app_cas_domain'], $_SESSION['app_cas_port'], $_SESSION['app_cas_path'], false);
         @acCAS::setNoCasServerValidation();
-        var_dump($_SESSION);
         @acCAS::forceAuthentication();
-        exit;
     }
 
     public static function processLogout($url) {
