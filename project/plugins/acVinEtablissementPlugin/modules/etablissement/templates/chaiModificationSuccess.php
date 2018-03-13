@@ -31,7 +31,7 @@
                     <h4 class="panel-title">Adresse du chais<?php if ($chai->isSameAdresseThanEtablissement()): ?> &nbsp; <span class="text-muted">Même adresse que l'établissement</span><?php endif; ?></h4>
                     <span class="pull-right clickable pointer" style="margin-top: -20px; font-size: 15px;"><span class="label-edit">Edition</span>&nbsp;<i class="glyphicon <?php if ($chai->isSameAdresseThanEtablissement()) { echo "glyphicon-chevron-down"; } else {echo "glyphicon-chevron-up"; } ?>"></i></span>
                   </div>
-                  <div id="chaisadresse" class="panel-body panel-collapse collapse <?php if (!$chai->isSameAdresseThanEtablissement()) { echo "collapse";} ?>">
+                  <div id="chaisadresse" class="panel-body panel-collapse collapse <?php if (!$chai->isSameAdresseThanEtablissement()) { echo "in";} ?>">
                     <div class="row" style="padding-top:10px;">
                       <div class="form-group">
                         <?php echo $form['nom']->renderError(); ?>

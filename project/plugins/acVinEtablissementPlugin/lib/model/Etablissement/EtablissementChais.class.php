@@ -15,25 +15,25 @@ class EtablissementChais extends BaseEtablissementChais {
     }
 
     public function getNom() {
-      if (!$this->autocalcule || $this->isSameAdresseThanEtablissement()) {
+      if (!$this->autocalcule || !$this->isSameAdresseThanEtablissement()) {
         return $this->_get('nom');
       }
       return $this->getDocument()->nom;
     }
     public function getAdresse() {
-      if (!$this->autocalcule|| $this->isSameAdresseThanEtablissement()) {
+      if (!$this->autocalcule|| !$this->isSameAdresseThanEtablissement()) {
         return $this->_get('adresse');
       }
       return $this->getDocument()->adresse;
     }
     public function getCommune() {
-      if (!$this->autocalcule|| $this->isSameAdresseThanEtablissement()) {
+      if (!$this->autocalcule|| !$this->isSameAdresseThanEtablissement()) {
         return $this->_get('commune');
       }
       return $this->getDocument()->commune;
     }
     public function getCodePostal() {
-      if (!$this->autocalcule || $this->isSameAdresseThanEtablissement()) {
+      if (!$this->autocalcule || !$this->isSameAdresseThanEtablissement()) {
         return $this->_get('code_postal');
       }
       return $this->getDocument()->code_postal;
