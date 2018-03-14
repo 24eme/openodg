@@ -61,4 +61,13 @@ class ParcellaireClient extends acCouchdbClient {
                     ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, str_replace('-', '', $date)))->execute($hydrate);
     }
 
+    public function findAll($hydrate = self::HYDRATE_DOCUMENT) {
+
+        $query = $this->startkey("PARCELLAIRE-")
+                    ->endkey("PARCELLAIRE-ZZZZZZZZZZZZZZZ");
+
+        return $query->execute(acCouchdbClient::HYDRATE_ARRAY);
+    }
+
+
 }
