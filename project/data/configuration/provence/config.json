@@ -262,6 +262,11 @@
                                                                            ]
                                                                        }
                                                                    }
+                                                               },
+                                                               "attributs": {
+                                                                   "rendement": null,
+                                                                   "rendement_vci": 5,
+                                                                   "rendement_vci_total": 8
                                                                }
                                                            }
                                                        }
@@ -337,8 +342,8 @@
                                                },
                                                "attributs": {
                                                    "rendement": null,
-                                                   "rendement_vci": 5,
-                                                   "rendement_vci_total": 8
+                                                   "rendement_vci": null,
+                                                   "rendement_vci_total": null
                                                }
                                            },
                                            "PIE": {
