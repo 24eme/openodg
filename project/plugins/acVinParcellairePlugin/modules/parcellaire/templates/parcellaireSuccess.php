@@ -47,7 +47,7 @@
                   <thead>
 		        	<tr>
 		                <th class="col-xs-2">Lieu-dit</th>
-                    <th class="col-xs-1" style="text-align: right;">Sect°</th>
+                    <th class="col-xs-1" style="text-align: right;">Section</th>
                     <th class="col-xs-1">N° parcelle</th>
                     <th class="col-xs-4">Cépage</th>
                     <th class="col-xs-1" style="text-align: center;">Année plantat°</th>
@@ -100,15 +100,15 @@
                             $classcepage = '';
                             if ($detail->hasProblemExpirationCepage()) {
                               $classline .=  ' warning';
-                              $classcepage .= ' text-warning';
+                              $classcepage .= ' text-warning strong';
                             }
                             if ($detail->hasProblemEcartPieds()) {
                               $classline .=  ' danger';
-                              $classecart .= ' text-danger';
+                              $classecart .= ' text-danger strong';
                             }
                             if ($detail->hasProblemCepageAutorise()) {
                               $classline .= ' danger';
-                              $classcepage .= ' text-danger';
+                              $classcepage .= ' text-danger strong';
                             }
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">

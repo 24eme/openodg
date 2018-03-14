@@ -15,7 +15,7 @@
 		<thead>
         	<tr>
                 <th class="col-xs-2">Lieu-dit</th>
-                <th class="col-xs-1" style="text-align: right;">Sect°</th>
+                <th class="col-xs-1" style="text-align: right;">Section</th>
                 <th class="col-xs-1">N° parcelle</th>
                 <th class="col-xs-1">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>

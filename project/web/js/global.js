@@ -380,7 +380,7 @@
                 	});
 
                     for (var f in fieldsToDuplicate) {
-                        allFields.parent().find("[data-duplicate='"+f+"']").each(function(){
+                        $(this).closest('tr').nextAll().find("[data-duplicate='"+f+"']").each(function(){
                             $(this).val(fieldsToDuplicate[f].id);
                             $(this).change();
                         });
