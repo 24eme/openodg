@@ -277,6 +277,15 @@
     }
     $.initBsSwitchCheckbox = function ()
     {
+    	
+    	if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
+        	$('.bootstrap-switch-activeall').hide();
+        	$('.bootstrap-switch-removeall').show();
+        } else {
+        	$('.bootstrap-switch-removeall').hide();
+        	$('.bootstrap-switch-activeall').show();
+        }
+    	
         $.fn.onoff = function (event, state) {
             if (state) {
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-off");
@@ -291,10 +300,23 @@
                 $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().removeClass('success');
             }
+            if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
+            	$('.bootstrap-switch-activeall').hide();
+            	$('.bootstrap-switch-removeall').show();
+            } else {
+            	$('.bootstrap-switch-removeall').hide();
+            	$('.bootstrap-switch-activeall').show();
+            }
         };
         $('.bsswitch').on('switchChange.bootstrapSwitch', $.fn.onoff);
         $('.bsswitch').on('init.bootstrapSwitch', $.fn.onoff);
-        $('.bsswitch').bootstrapSwitch();
+        $('.bsswitch').bootstrapSwitch();       
+        
+        
+        if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
+        	$('.bootstrap-switch-activeall').hide();
+        	$('.bootstrap-switch-removeall').show();
+        }
 
         $('tr td').click(function (event) {
             if (!$(this).hasClass('edit')) {
@@ -313,6 +335,19 @@
             $($(this).data('target')).find('tr').each(function () {
                 $.trBsSwitchHighlight($(this));
             });
+            $('.bootstrap-switch-activeall').hide();
+            $('.bootstrap-switch-removeall').show();
+        });
+        
+        $('.bootstrap-switch-removeall').click(function (event) {
+        	$($(this).data('target')).find('.bsswitch').each(function () {
+        		$(this).bootstrapSwitch('state', false, false);
+        	});
+            $($(this).data('target')).find('tr').each(function () {
+                $.trBsSwitchHighlight($(this));
+            });
+            $('.bootstrap-switch-removeall').hide();
+            $('.bootstrap-switch-activeall').show();
         });
     }
 
