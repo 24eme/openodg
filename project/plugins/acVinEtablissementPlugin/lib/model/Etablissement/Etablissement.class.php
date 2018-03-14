@@ -146,7 +146,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $compte->save();
 
         if($chai && (($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE))){
-            $liaison->aliases->add("chai",$chai->nom);
+            $liaison->hash_chai = $chai->getHash();
         }
 
         if($etablissement->exist('ppm') && $etablissement->ppm){
