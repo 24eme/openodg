@@ -74,6 +74,11 @@ class DeclarationClient
             return 'ExportHabilitationCSV';
         }
 
+        if(class_exists("ParcellaireIrrigableClient") && $type == ParcellaireIrrigableClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireIrrigableCSV';
+        }
+
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
     }
 
