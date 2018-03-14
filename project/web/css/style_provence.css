@@ -141,3 +141,5 @@ h3 {
 #header header #titre {margin: 10px 160px 0 70px;}
 #header header h1 { margin-left: 155px; color: #fff; font-size: 25px; text-align: center;margin: 20px 0 0 0; padding: 0;}
 #header header #logo{float:left;}
+
+.strong {font-weight: bold;}
