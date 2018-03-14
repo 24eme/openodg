@@ -125,7 +125,7 @@ EOF;
                 $chaiApport = false;
                 if(count($activitesChais) > 0){
                       $this->importLiaisons($etb,$line);
-                      if($data[self::CSV_CHAIS_TYPE] != "Apporteur"){
+                      if($data[self::CSV_CHAIS_TYPE] != "Apporteur" || !$data[self::CSV_CAVE_APPORTEURID]){
                           $this->addChaiForEtablissement($etb,$data);
                       }
                 }
@@ -138,7 +138,7 @@ EOF;
 
               if(count($activitesChais) > 0){
                     $this->importLiaisons($etb,$line);
-                    if($data[self::CSV_CHAIS_TYPE] != "Apporteur"){
+                    if($data[self::CSV_CHAIS_TYPE] != "Apporteur" || !$data[self::CSV_CAVE_APPORTEURID]){
                         $this->addChaiForEtablissement($etb,$data);
                     }
               }
@@ -328,7 +328,9 @@ EOF;
     }
 
     protected function getChaiAssocie($data,$coopOrNego){
-
+        if(!$coopOrNego->exist('chais') || !$coopOrNego->chais){
+            return null;
+        }
         $chais = $coopOrNego->getChais();
         if(count($chais) == 1){
             foreach ($chais as $chai) {

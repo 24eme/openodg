@@ -55,7 +55,9 @@
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group">
                         <div class="col-xs-12">
-                        	<a <?php if(!$parcelle->materiel || !$parcelle->ressource): ?> disabled="disabled" <?php endif; ?> data-confirm="Voulez-vous dupliquer ces choix pour toutes les lignes de <?php echo $commune; ?> ?" class="btn btn-sm btn-default duplicateBtn" data-target="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>" ><span class="glyphicon glyphicon-duplicate"></span></a>
+                        	<a <?php if(!$parcelle->materiel || !$parcelle->ressource): ?> style="opacity:0.6;" <?php endif; ?>
+                                data-confirm="Voulez-vous appliquer le type de materiel MATERIEL et de ressource RESSOURCE pour toutes les parcelles qui suivent de cette commune?" data-alert="Veuillez selectionner un type de materiel et un type de ressource#Ce bouton permet de dupliquer le type de materiel et de ressources pour toutes les parcelles qui suivent de cette commune."
+                                class="btn btn-sm btn-default duplicateBtn <?php if(!$parcelle->materiel || !$parcelle->ressource): ?> inactif<?php endif; ?>" data-target="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>" ><span class="glyphicon glyphicon-arrow-down"></span></a>
                         </div>
                     </div>
             	</td>
