@@ -100,15 +100,15 @@
                             $classcepage = '';
                             if ($detail->hasProblemExpirationCepage()) {
                               $classline .=  ' warning';
-                              $classcepage .= ' text-warning';
+                              $classcepage .= ' text-warning strong';
                             }
                             if ($detail->hasProblemEcartPieds()) {
                               $classline .=  ' danger';
-                              $classecart .= ' text-danger';
+                              $classecart .= ' text-danger strong';
                             }
                             if ($detail->hasProblemCepageAutorise()) {
                               $classline .= ' danger';
-                              $classcepage .= ' text-danger';
+                              $classcepage .= ' text-danger strong';
                             }
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
