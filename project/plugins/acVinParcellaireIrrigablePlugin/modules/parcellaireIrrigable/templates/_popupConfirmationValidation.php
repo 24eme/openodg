@@ -6,7 +6,7 @@
 					<h4 class="modal-title" id="myModalLabel">Validation de votre parcellaire irrigable</h4>
 				</div>
 				<div class="modal-body">
-					<p>Pour confirmer la validation, merci de nous indiquer votre nom et prénom</p>
+					<p>Pour confirmer la validation, merci de nous indiquer vos nom et prénom.</p>
 					<?php if(isset($form["signataire"])): ?>
 				    <div class="row">
 				        <div class="form-group <?php if ($form["signataire"]->hasError()): ?>has-error<?php endif; ?>">

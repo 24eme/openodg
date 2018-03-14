@@ -18,7 +18,7 @@
            <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
        </div>
     </div>
-    <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped">
+    <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped tableParcellaire">
 		<thead>
         	<tr>
                 <th class="col-xs-3">Lieu-dit</th>

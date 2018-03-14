@@ -40,7 +40,7 @@ class ParcellaireIrrigableValidation extends DocumentValidation {
         if ($missed) {
         	$this->addPoint(self::TYPE_ERROR, 
         					'parcellaireirrigable_materiel_ressource_required', 
-        					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Modifier la déclaration.</a>", 
+        					'<a href="' . $this->generateUrl('parcellaireirrigable_irrigations', array('id' => $this->document->_id)) . "\" class='alert-link' >Cliquer ici pour modifier la déclaration.</a>", 
         					'');
         }
     }
