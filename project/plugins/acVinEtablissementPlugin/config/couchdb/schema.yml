@@ -38,6 +38,7 @@ Etablissement:
                      type_liaison: { }
                      cvi: { }
                      ppm: { }
+                     hash_chai: { }
                      attributs_chai:
                        type: collection
                        definition:

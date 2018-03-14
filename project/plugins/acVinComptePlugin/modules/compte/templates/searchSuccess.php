@@ -85,8 +85,10 @@
                         <?php if($data['doc']['telephone_perso']): ?>
                         <li>Perso : <a href="callto:<?php echo $data['doc']['telephone_perso'] ?>"><?php echo $data['doc']['telephone_perso'] ?></a></li>
                         <?php endif; ?>
-                        <?php if($data['doc']['email']): ?>
-                            <li><a href="mailto:<?php echo $data['doc']['email']; ?>"><?php echo $data['doc']['email']; ?></a></li>
+                        <?php if($data['doc']['email']):
+                            foreach (explode(';',$data['doc']['email']) as $email): ?>
+                            <li><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
+                        <?php endforeach; ?>
                         <?php endif; ?>
                     </ul>
                 </div>

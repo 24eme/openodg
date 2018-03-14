@@ -328,7 +328,7 @@ EOF;
     }
 
     protected function getChaiAssocie($data,$coopOrNego){
-        echo $coopOrNego->_id;
+
         $chais = $coopOrNego->getChais();
         if(count($chais) == 1){
             foreach ($chais as $chai) {
@@ -338,16 +338,12 @@ EOF;
         foreach ($coopOrNego->getChais() as $key => $chai) {
             $adresse = str_replace('BOULEVARD','BD',$data[self::CSV_CHAIS_ADRESSE_2]);
             if($data[self::CSV_CHAIS_ADRESSE_3]){
-            $adresse .= " - ".str_replace('BOULEVARD','BD',$data[self::CSV_CHAIS_ADRESSE_3]);
+                $adresse .= " - ".str_replace('BOULEVARD','BD',$data[self::CSV_CHAIS_ADRESSE_3]);
             }
             if($adresse == str_replace('BOULEVARD','BD',$chai->adresse)
-            && ($data[self::CSV_CHAIS_VILLE] == $chai->commune)
-            && ($data[self::CSV_CHAIS_CP] == $chai->code_postal)){
-                return $chai;
-            }
-            if(($data[self::CSV_CHAIS_VILLE] == $chai->commune)
-            && ($data[self::CSV_CHAIS_CP] == $chai->code_postal)){
-                return $chai;
+                && ($data[self::CSV_CHAIS_VILLE] == $chai->commune)
+                && ($data[self::CSV_CHAIS_CP] == $chai->code_postal)){
+                    return $chai;
             }
         }
         echo "\n/!\ ".$data[self::CSV_OLDID]." : on ne trouve pas le chai ".$data[self::CSV_CHAIS_ADRESSE_1] ." ".$data[self::CSV_CHAIS_ADRESSE_2]." ".$data[self::CSV_CHAIS_ADRESSE_3]." ".$data[self::CSV_CHAIS_VILLE]." ".$data[self::CSV_CHAIS_CP]. " dans ".$coopOrNego->_id."\n";

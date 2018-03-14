@@ -90,6 +90,11 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Télédéclaration</strong></h5>
                 <?php include_partial('compte/visualisationLogin', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
+                <?php if ($etablissement->commentaire) : ?>
+                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
+                <p><?php echo nl2br(html_entity_decode($etablissement->commentaire)); ?></p>
+                <hr />
+                <?php endif; ?>
                 <h5 style="margin-bottom: 15px; margin-top: 15px;" class="text-muted"><strong>Informations complémentaires</strong></h5>
                 <?php include_partial('compte/visualisationTags', array('compte' => $etablissement->getMasterCompte())); ?>
                 <hr />
@@ -143,10 +148,6 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <div class="text-right">
                   <a href="<?php echo url_for("etablissement_ajout_chai", array('identifiant' => $etablissement->identifiant)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Ajouter un chai</a>
                 </div>
-                <?php if ($etablissement->commentaire) : ?>
-                <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Commentaire</strong></h5>
-                <p><?php echo nl2br(html_entity_decode($etablissement->commentaire)); ?></p>
-                <?php endif; ?>
                 <hr />
                 <h5 class="text-muted" style="margin-bottom: 15px; margin-top: 0px;"><strong>Relations</strong></h5>
                 <?php if($etablissement->exist('liaisons_operateurs')  && count($etablissement->liaisons_operateurs)): ?>
