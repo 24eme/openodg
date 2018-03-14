@@ -7,26 +7,23 @@
 </ol>
 
 <div class="row">
-    <form action="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)) ?>" method="post" class="form-horizontal">
-        <?php echo $form->renderHiddenFields(); ?>
-        <?php echo $form->renderGlobalErrors(); ?>
         <div class="col-xs-8">
+            <form action="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)) ?>" method="post" class="form-horizontal">
+                <?php echo $form->renderHiddenFields(); ?>
+                <?php echo $form->renderGlobalErrors(); ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-9">
-                            <h4>Ajouter une relation</h4>
-                        </div>
-                        <div class="col-xs-3 text-muted text-right">
-                            <div class="btn-group">
-
-                            </div>
-                        </div>
-                    </div>
+                        <h4>Ajout d'une relation</h4>
                 </div>
                 <div class="panel-body" style="border-right: 6px solid #9f0038;">
                     <h2><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span>  <?php echo $etablissement->nom; ?></h2>
-                    <hr/>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>1. Choix de la relation</h4>
+                </div>
+                <div class="panel-body">
                     <div class="row" style="padding-top:10px;">
                         <div class="form-group">
                             <?php echo $form['type_liaison']->renderError(); ?>
@@ -55,10 +52,15 @@
                         </div>
                         <div class="col-xs-4 text-right">
                             <button id="btn_valider" type="submit" class="btn btn-success">
-                                Ajouter la relation
+                                Continuer
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>2. Choix du chai</h4>
                 </div>
             </div>
         </div>

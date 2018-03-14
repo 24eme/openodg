@@ -18,7 +18,7 @@ class EtablissementLiaisonsOperateurs extends BaseEtablissementLiaisonsOperateur
         //     }
         // }
         if($this->hash_chai && $this->id_etablissement){
-            $etblie = EtablissementClient::getInstance()->find($this->id_etablissement);
+            $etblie = $this->getEtablissement();
             $chaihash = $this->hash_chai;
             if($etblie && $etblie->$chaihash){
                 return $etblie->$chaihash;
@@ -26,5 +26,10 @@ class EtablissementLiaisonsOperateurs extends BaseEtablissementLiaisonsOperateur
         }
 
         return null;
+    }
+
+    public function getEtablissement() {
+
+        return EtablissementClient::getInstance()->find($this->id_etablissement);
     }
 }

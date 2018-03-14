@@ -1,6 +1,6 @@
 <?php
 
-class EtablissementRelationForm extends acCouchdbForm {
+class EtablissementRelationForm extends BaseForm {
 
     public function configure() {
         parent::configure();
@@ -15,11 +15,6 @@ class EtablissementRelationForm extends acCouchdbForm {
         $this->validatorSchema['id_etablissement']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
 
         $this->widgetSchema->setNameFormat('etablissement_relation[%s]');
-    }
-
-    public function save() {
-        $this->getDocument()->addLiaison($this->getValue('type_liaison'), $this->getValue('id_etablissement'), true);
-        $this->getDocument()->save();
     }
 
     public function getLiaisonsChoice() {
