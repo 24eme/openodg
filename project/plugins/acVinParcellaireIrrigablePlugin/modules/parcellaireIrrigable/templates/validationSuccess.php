@@ -2,7 +2,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'validation', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header no-border">
-    <h2>Validation de vos parcelles irrigables sur votre exploitation</h2>
+    <h2>Validation des parcelles irrigables sur l'exploitation</h2>
 </div>
 
 <?php if (isset($validation) && $validation->hasPoints()): ?>

@@ -1,6 +1,6 @@
 <?php foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
 	<h3><?php echo $commune; ?></h3>
-    <table class="table table-bordered table-condensed table-striped">
+    <table class="table table-bordered table-condensed table-striped tableParcellaire">
 		<thead>
         	<tr>
 		        <th class="col-xs-2">Lieu-dit</th>

@@ -143,3 +143,14 @@ h3 {
 #header header #logo{float:left;}
 
 .strong {font-weight: bold;}
+
+.tableParcellaire th {
+	text-align: center !important;
+}
+
+.alert-danger a.alert-link {
+	text-decoration: underline;
+}
+.alert-danger a.alert-link:hover, .alert-danger a.alert-link:focus  {
+	text-decoration: none;
+}
