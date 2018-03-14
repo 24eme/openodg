@@ -59,10 +59,10 @@
             </a>
         </div>
         <div class="col-xs-4 text-right">
-            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" <?php if ($validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider vos parcelles irrigables</button>
+            <button type="button" id="btn-validation-document" data-toggle="modal" data-target="#parcellaireirrigable-confirmation-validation" <?php if (isset($validation) && $validation->hasErreurs()): ?>disabled="disabled"<?php endif; ?> class="btn btn-success btn-upper"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Valider vos parcelles irrigables</button>
         </div>
     </div>
-    <?php if (!$validation->hasErreurs()): ?>
+    <?php if (!isset($validation) || !$validation->hasErreurs()): ?>
 	<?php include_partial('parcellaireIrrigable/popupConfirmationValidation', array('form' => $form)); ?>
 	<?php endif; ?>
 </form>
