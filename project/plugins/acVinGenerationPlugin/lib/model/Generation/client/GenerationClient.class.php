@@ -7,6 +7,7 @@ class GenerationClient extends acCouchdbClient {
     const TYPE_DOCUMENT_RELANCE = 'RELANCE';
     const TYPE_DOCUMENT_EXPORT_CSV = 'EXPORT';
     const TYPE_DOCUMENT_EXPORT_SAGE = 'SAGE';
+    const TYPE_DOCUMENT_EXPORT_PARCELLAIRE = 'PARCELLAIRE';
     const HISTORY_KEYS_TYPE_DOCUMENT = 0;
     const HISTORY_KEYS_TYPE_DATE_EMISSION = 1;
     const HISTORY_KEYS_DOCUMENT_ID = 1;
@@ -111,6 +112,10 @@ class GenerationClient extends acCouchdbClient {
             case GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE:
 
                 return 'GenerationExportSage';
+
+            case GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE:
+
+                return 'GenerationExportParcellaire';
         }
       
         throw new sfException($generation->type_document." n'est pas un type supporté");
