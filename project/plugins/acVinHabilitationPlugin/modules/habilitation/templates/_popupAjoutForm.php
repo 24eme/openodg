@@ -20,7 +20,7 @@
 					</div>
 					<div class="row form-group">
 						<div class="col-xs-4 text-right control-label">
-							Activité :
+							Activités :
 						</div>
 						<div class="col-xs-6">
 							<span class="error"><?php echo $form['activites']->renderError() ?></span>
@@ -37,7 +37,7 @@
 					</div>
 					<div class="row form-group">
 						<div class="col-xs-4 text-right control-label">
-							Activités :
+							Date :
 						</div>
 						<div class="col-xs-6">
 							<span class="error"><?php echo $form['date']->renderError() ?></span>

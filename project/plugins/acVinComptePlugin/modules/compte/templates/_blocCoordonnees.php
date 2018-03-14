@@ -16,13 +16,15 @@
 <?php endif; ?>
 <?php if (!$compte->isSameContactThanSociete() || isset($forceCoordonnee)): ?>
     <div style="margin-top: 10px;" class="col-xs-12">
-        <?php if ($compte->email) : ?>
+        <?php if(count($compte->getEmails())): ?>
             <div class="row">
                 <div class="col-xs-3 text-muted">
                     Email&nbsp;:
                 </div>
                 <div class="col-xs-9">
-                    <a href="mailto:<?php echo $compte->email; ?>"><?php echo $compte->email; ?></a>
+                    <?php foreach ($compte->getEmails() as $email): ?>
+                        <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a>
+                    <?php endforeach; ?>
                 </div>
             </div>
         <?php endif; ?>
