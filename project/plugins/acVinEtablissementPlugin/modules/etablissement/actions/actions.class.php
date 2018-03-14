@@ -71,7 +71,7 @@ class etablissementActions extends sfCredentialActions {
       $this->etablissement = $this->getRoute()->getEtablissement();
       $this->societe = $this->etablissement->getSociete();
       $this->num = $request->getParameter('num');
-      $this->chai = $this->etablissement->get('chais')->getOrAdd($this->num);
+      $this->chai = $this->etablissement->add('chais')->getOrAdd($this->num);
       $this->form = new EtablissementChaiModificationForm($this->chai);
       if ($request->isMethod(sfWebRequest::POST)) {
           $this->form->bind($request->getParameter($this->form->getName()));
@@ -84,6 +84,20 @@ class etablissementActions extends sfCredentialActions {
 
     public function executeChaiSuppression(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
+
+        foreach($this->etablissement->liaisons_operateurs as $liaison) {
+            $etablissementDistant = EtablissementClient::getInstance()->find($liaison->id_etablissement, acCouchdbClient::HYDRATE_JSON);
+            foreach($etablissementDistant->liaisons_operateurs as $liaisonDistante) {
+                if($liaisonDistante->id_etablissement != $this->etablissement->_id || !$liaisonDistante->hash_chai) {
+                    continue;
+                }
+
+                $this->getUser()->setFlash('error', "Il n'est pas possible de supprimer de chai pour cette établissement car ils sont utilisés dans des relations");
+                return $this->redirect('etablissement_edition_chai', array('identifiant' => $this->etablissement->identifiant, 'num' => $request->getParameter('num')));
+            }
+
+        }
+
         $this->etablissement->chais->remove($request->getParameter('num'));
         $this->etablissement->save();
         $this->redirect('etablissement_visualisation', array('identifiant' => $this->etablissement->identifiant));
