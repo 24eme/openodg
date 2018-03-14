@@ -3,7 +3,7 @@
 <?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
 
 <div class="page-header no-border">
-    <h2>Intention de parcelles irrigables <?php echo $parcellaireIrrigable->campagne ?>-<?php echo ($parcellaireIrrigable->campagne + 1) ?>
+    <h2>Identification des parcelles irrigables 
     <?php if($parcellaireIrrigable->isPapier()): ?>
     <small class="pull-right"><span class="glyphicon glyphicon-file"></span> Déclaration papier<?php if($parcellaireIrrigable->validation && $parcellaireIrrigable->validation !== true): ?> reçue le <?php echo format_date($parcellaireIrrigable->validation, "dd/MM/yyyy", "fr_FR"); ?><?php endif; ?>
     <?php elseif($parcellaireIrrigable->validation): ?>
