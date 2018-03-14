@@ -421,6 +421,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         }
         return $a;
     }
+    public function getEmails(){
+        return explode(';',$this->email);
+    }
+    
+    public function getUniqueEmail() {
+    	$emails = $this->getEmails();
+    	return (isset($emails[0]))? $emails[0] : null;
+    }
 
     public function findEmail() {
         $etablissementPrincipal = $this->getSociete()->getEtablissementPrincipal();

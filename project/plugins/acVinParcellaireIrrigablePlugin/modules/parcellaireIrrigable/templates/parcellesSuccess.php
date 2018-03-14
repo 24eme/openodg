@@ -4,7 +4,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'parcelles', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci de lister vos parcelles irrigables</small></h2>
+    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer vos parcelles irrigables en cliquant sur la ligne de la parcelle concernée.</small></h2>
 </div>
 
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
@@ -18,11 +18,11 @@
            <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
        </div>
     </div>
-    <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped">
+    <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped tableParcellaire">
 		<thead>
         	<tr>
                 <th class="col-xs-3">Lieu-dit</th>
-                <th class="col-xs-1" style="text-align: right;">Sect°</th>
+                <th class="col-xs-1" style="text-align: right;">Section</th>
                 <th class="col-xs-1">N° parcelle</th>
                 <th class="col-xs-3">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>

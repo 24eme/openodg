@@ -99,8 +99,9 @@ class DeclarantDocument
             $declarant->add('telephone_mobile', $etablissement->telephone_mobile);
         }
         if ($etablissement->exist("email")) {
-            if($declarant->getDefinition()->exist('email'))
-               $declarant->add('email', $etablissement->email);
+            if($declarant->getDefinition()->exist('email')) {
+               $declarant->add('email', $etablissement->getUniqueEmail());
+            }
         }
         if ($etablissement->exist("fax")) {
              if($declarant->getDefinition()->exist('fax'))

@@ -2,7 +2,7 @@
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'irrigations', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci de compléter vos parcelles irrigables</small></h2>
+    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer le type de matériel et de ressource utilisés sur chaque parcelle irrigable</small></h2>
 </div>
 
 <form action="<?php echo url_for("parcellaireirrigable_irrigations", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
@@ -11,18 +11,17 @@
 
     <?php foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
 	<h3><?php echo $commune; ?></h3>
-    <table class="table table-bordered table-condensed table-striped duplicateChoicesTable">
+    <table class="table table-bordered table-condensed table-striped duplicateChoicesTable tableParcellaire">
 		<thead>
         	<tr>
                 <th class="col-xs-2">Lieu-dit</th>
-                <th class="col-xs-1" style="text-align: right;">Sect°</th>
-                <th class="col-xs-1">N° parcelle</th>
-                <th class="col-xs-1">Cépage</th>
+                <th class="col-xs-1">Section /<br />N° parcelle</th>
+                <th class="col-xs-2">Cépage</th>
                 <th class="col-xs-1">Année plantat°</th>
                 <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
                 <th class="col-xs-2">Type de matériel</th>
                 <th class="col-xs-2">Type de ressource</th>
-                <th class="col-xs-1"></th>
+                <th class="col-xs-1">Dupliquer les types</th>
             </tr>
 		</thead>
 		<tbody>
@@ -33,8 +32,7 @@
 		?>
 			<tr class="vertical-center" id="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>">
                 <td><?php echo $parcelle->lieu; ?></td>
-                <td style="text-align: right;"><?php echo $parcelle->section; ?></td>
-                <td><?php echo $parcelle->numero_parcelle; ?></td>
+                <td style="text-align: center;"><?php echo $parcelle->section; ?> <span class="text-muted">/</span> <?php echo $parcelle->numero_parcelle; ?></td>
                 <td><?php echo $parcelle->cepage; ?></td>
                 <td><?php echo $parcelle->campagne_plantation; ?></td>
                 <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
@@ -57,7 +55,9 @@
             	<td class="text-center">
                 	<div style="margin-bottom: 0;" class="form-group">
                         <div class="col-xs-12">
-                        	<a <?php if(!$parcelle->materiel || !$parcelle->ressource): ?> disabled="disabled" <?php endif; ?> data-confirm="Voulez-vous dupliquer ces choix pour toutes les lignes de <?php echo $commune; ?> ?" class="btn btn-sm btn-default duplicateBtn" data-target="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>" ><span class="glyphicon glyphicon-duplicate"></span></a>
+                        	<a <?php if(!$parcelle->materiel || !$parcelle->ressource): ?> style="opacity:0.6;" <?php endif; ?>
+                                data-confirm="Voulez-vous appliquer le type de materiel MATERIEL et de ressource RESSOURCE pour toutes les parcelles qui suivent de cette commune?" data-alert="Veuillez selectionner un type de materiel et un type de ressource#Ce bouton permet de dupliquer le type de materiel et de ressources pour toutes les parcelles qui suivent de cette commune."
+                                class="btn btn-sm btn-default duplicateBtn <?php if(!$parcelle->materiel || !$parcelle->ressource): ?> inactif<?php endif; ?>" data-target="tr_<?php echo str_replace("/","-",$produitKey)."-".$parcelle->getKey();?>" ><span class="glyphicon glyphicon-arrow-down"></span></a>
                         </div>
                     </div>
             	</td>

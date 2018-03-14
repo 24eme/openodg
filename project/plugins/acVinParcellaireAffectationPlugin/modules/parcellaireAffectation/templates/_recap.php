@@ -16,7 +16,7 @@ if ($last) {
                   <thead>
 		        	<tr>
 		                <th class="col-xs-3">Lieu-dit</th>
-                        <th class="col-xs-1" style="text-align: right;">Sect°</th>
+                        <th class="col-xs-1" style="text-align: right;">Section</th>
 		                <th class="col-xs-1">N° parcelle</th>
                         <th class="col-xs-3">Cépage</th>
                         <th class="col-xs-1">Année plantat°</th>
@@ -65,27 +65,16 @@ if ($last) {
                                     $classparcelle="";
                                 }
                             }
-                            $classecart = '';
-                            $classcepage = '';
-                            if ($detail->hasProblemExpirationCepage()) {
-                              $classline .=  ' warning';
-                              $classcepage .= ' text-warning';
-                            }
-                            if ($detail->hasProblemEcartPieds()) {
-                              $classline .=  ' danger';
-                              $classecart .= ' text-danger';
-                            }
                             ?>
                             <tr class="<?php echo $classline ?>" style="<?php echo $styleline; ?>">
-
                                 <td style="<?php echo $styleproduit; ?>"><?php echo $detail->lieu; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $detail->section; ?></td>
-                                <td class=""><?php echo $detail->numero_parcelle; ?></td>
-                                <td class="<?php echo $classcepage; ?>" style="<?php echo $styleproduit; ?>" ><?php echo $detail->cepage; ?></td>
-                                <td class=""><?php echo $detail->campagne_plantation; ?></td>
-                                <td class="" style="text-align: right;"><?php echo $detail->superficie; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
-                                <td class="<?php echo $classecart; ?>" style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
+                                <td style="text-align: right;"><?php echo $detail->section; ?></td>
+                                <td><?php echo $detail->numero_parcelle; ?></td>
+                                <td style="<?php echo $styleproduit; ?>" ><?php echo $detail->cepage; ?></td>
+                                <td><?php echo $detail->campagne_plantation; ?></td>
+                                <td style="text-align: right;"><?php echo $detail->superficie; ?></td>
+                                <td style="text-align: center;" ><?php echo ($detail->exist('ecart_pieds'))? $detail->get('ecart_pieds') : '&nbsp;'; ?></td>
+                                <td style="text-align: center;" ><?php echo ($detail->exist('ecart_rang'))? $detail->get('ecart_rang') : '&nbsp;'; ?></td>
 
                             </tr>
                             <?php

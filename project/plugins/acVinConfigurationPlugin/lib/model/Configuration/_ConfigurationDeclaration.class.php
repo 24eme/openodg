@@ -694,7 +694,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function hasLabels() {
         return false;
     }
-    
+
     public function hasRendements() {
     	return true;
     }
@@ -718,6 +718,10 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
 
     public function hasCodes() {
         return false;
+    }
+
+    public function hasCepagesAutorises() {
+      return $this->exist('cepages_autorises');
     }
 
     public function getAttribut($name, $default = null) {
@@ -803,7 +807,7 @@ abstract class _ConfigurationDeclaration extends acCouchdbDocumentTree {
     public function getRendementVciTotal() {
         return $this->getRendementByKey('rendement_vci_total');
     }
-    
+
     public function isActif()
     {
     	return ($this->getRendement() == -1 || $this->getRendementVci() == -1 || $this->getRendementVciTotal() == -1)? false : true;

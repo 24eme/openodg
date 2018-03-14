@@ -1,10 +1,10 @@
 <?php foreach ($parcellaireIrrigable->declaration->getParcellesByCommune() as $commune => $parcelles): ?>
 	<h3><?php echo $commune; ?></h3>
-    <table class="table table-bordered table-condensed table-striped">
+    <table class="table table-bordered table-condensed table-striped tableParcellaire">
 		<thead>
         	<tr>
 		        <th class="col-xs-2">Lieu-dit</th>
-		        <th class="col-xs-1" style="text-align: right;">Sect°</th>
+		        <th class="col-xs-1" style="text-align: right;">Section</th>
 		        <th class="col-xs-1">N° parcelle</th>
 		        <th class="col-xs-2">Cépage</th>
 		        <th class="col-xs-1">Année plantat°</th>
