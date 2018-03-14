@@ -138,15 +138,17 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->type_liaison = $type;
         $liaison->id_etablissement = $etablissement->_id;
         $liaison->libelle_etablissement = $etablissement->nom;
-        if($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS){
-          $liaison->add("attributs_chai",$attributs_chai);
-        }
+
         $compte = $this->getMasterCompte();
         $compte->addTag('manuel',$type);
         $compte->save();
 
-        if($chai && (($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE))){
+        if($chai){
             $liaison->hash_chai = $chai->getHash();
+        }
+
+        if($attributs_chai && count($attributs_chai)) {
+            $liaison->add("attributs_chai",$attributs_chai);
         }
 
         if($etablissement->exist('ppm') && $etablissement->ppm){
@@ -418,6 +420,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $a .= ' ; ' . $this->siege->adresse_complementaire;
         }
         return $a;
+    }
+    public function getEmails(){
+        return explode(';',$this->email);
+    }
+    
+    public function getUniqueEmail() {
+    	$emails = $this->getEmails();
+    	return (isset($emails[0]))? $emails[0] : null;
     }
 
     public function findEmail() {
