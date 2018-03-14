@@ -28,7 +28,7 @@ EOF;
 
         $results = EtablissementClient::getInstance()->findAll();
 
-        echo "IdOp;Famille;IdTitre;Raison sociale;Adresse;Adresse 2;Adresse 3;Code postal;Commune;CVI;SIRET;Téléphone bureau;Téléphone mobile;Fax;Email;Activité;Réception ODG;Enresgistrement ODG;Transmission AVPI;Date Habilitation;Date Archivage;Observation;Etat;Ordre;Zone;Code comptable;Famille;Date de dernière modification;Statut;\n";
+        echo "IdOp;IdTitre;Raison sociale;Adresse;Adresse 2;Adresse 3;Code postal;Commune;CVI;SIRET;Téléphone bureau;Téléphone mobile;Fax;Email;Activité;Réception ODG;Enresgistrement ODG;Transmission AVPI;Date Habilitation;Date Archivage;Observation;Etat;Ordre;Zone;Code comptable;Famille;Date de dernière modification;Statut;\n";
 
         foreach($results->rows as $row) {
             $etablissement = EtablissementClient::getInstance()->find($row->id, acCouchdbClient::HYDRATE_JSON);
@@ -84,7 +84,6 @@ $adresses_complementaires = explode(' − ', str_replace('"', '', $etablissement
 $adresse_complementaire = array_shift($adresses_complementaires);
             echo
             $societe->identifiant.";".
-            $etablissement->famille.";".
             $intitule.";".
             $raisonSociale.";".
             str_replace('"', '', $etablissement->adresse).";".
@@ -97,7 +96,7 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             $etablissement->telephone_bureau.";".
             $etablissement->telephone_mobile.";".
             $etablissement->fax.";".
-            $etablissement->email.";".
+            '"'.$etablissement->email.'";'.
             preg_replace('/[0-9][0-9]_/', '', implode("|", $activites)).";". // Activité habilitation
             ';'. //Reception ODG
             ';'. //Enregistrement ODG
