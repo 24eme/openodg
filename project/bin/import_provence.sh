@@ -115,3 +115,8 @@ php symfony import:parcellaire-from-csv $DATA_DIR/20180208_parcellaire_aoc_opera
 
 echo  "IMPORT HABILITATION"
 php symfony import:habilitation-from-csv $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv --application="provence"
+
+echo "IMPORT LOGIN CIVP"
+
+cat $DATA_DIR/20180315_logins_civp.csv | awk -F ';' '{ print "php symfony compte:add-login-alternatif COMPTE-" $1 " " $3 " --application=provence" }' | bash
+cat $DATA_DIR/20180315_logins_civp.csv | awk -F ';' '{ print "php symfony compte:add-login-alternatif COMPTE-" $1 " " $2 " --application=provence" }' | bash

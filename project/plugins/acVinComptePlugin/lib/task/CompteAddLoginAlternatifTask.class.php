@@ -30,6 +30,10 @@ EOF;
 
         $compte = CompteClient::getInstance()->find($arguments['id_compte']);
 
+        if(!$compte) {
+            return;
+        }
+
         $compte->add('alternative_logins');
 
         if(in_array($arguments['login'], $compte->alternative_logins->toArray(true, false))) {
@@ -41,7 +45,7 @@ EOF;
 
         $compte->save();
 
-        echo $compte->_id." login ".$arguments['login']." ajouté\n";
+        echo $compte->_id." login \"".$arguments['login']."\" ajouté\n";
     }
 
 
