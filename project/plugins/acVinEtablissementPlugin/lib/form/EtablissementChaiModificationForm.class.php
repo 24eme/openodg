@@ -67,6 +67,7 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
       }
       $values["attributs"] = $attributs;
       $values['partage'] = (isset($values['partage']) && $values['partage']);
+      $values["archive"] = intval(isset($values['archive']) && $values['archive']=="on"); 
       $toRemoves = array();
       foreach ($this->getObject()->attributs as $key => $attr) {
         if(!in_array($key,array_keys($values["attributs"]))){
