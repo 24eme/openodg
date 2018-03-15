@@ -61,12 +61,16 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->cvi; ?></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->ppm): ?>
-                                    <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">PPM : </div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">PPM :</div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->ppm; ?></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->no_accises): ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">N°&nbsp;d'accise&nbsp;:&nbsp;</div>
                                     <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo $etablissement->no_accises; ?></div>
+                                <?php endif; ?>
+                                <?php if ($etablissement->siret): ?>
+                                    <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">SIRET :</div>
+                                    <div style="margin-bottom: 5px;" class="col-xs-8"><?php echo formatSIRET($etablissement->siret); ?></div>
                                 <?php endif; ?>
                                 <?php if ($etablissement->carte_pro && $etablissement->isCourtier()) : ?>
                                     <div style="margin-bottom: 5px;" class="col-xs-4 text-muted">Carte professionnelle : </div>
@@ -103,10 +107,10 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th class="col-xs-6">Adresse</th>
+                            <th class="col-xs-5">Adresse</th>
                             <th class="col-xs-4">Attributs</th>
-                            <th class="col-xs-1">Partagé</th>
-                            <th class="col-xs-1"></th>
+                            <th class="col-xs-2">Infos</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,7 +121,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                     <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
                                     <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                     <td><?php echo implode("<br />", array_values($chai->getRawValue()->attributs->toArray(true, false))) ?></td>
-                                    <td><?php if($chai->partage): ?>Partagé<?php endif; ?></td>
+                                    <td><?php if($chai->partage): ?>Partagé<br /><?php endif; ?><?php if($chai->archive): ?>Archivé<?php endif; ?></td>
                                     <td class="text-center"><a href="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-pencil"></span></a></td>
                                 </tr>
                             <?php endforeach; ?>

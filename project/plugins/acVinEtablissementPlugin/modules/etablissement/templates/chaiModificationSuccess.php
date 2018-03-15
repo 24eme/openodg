@@ -68,6 +68,12 @@
                         <?php echo $form['partage']->renderLabel(null, array('class' => 'col-xs-4  control-label')); ?>
                         <div class="col-xs-6 text-left checkbox" style="padding-left: 30px;"><?php echo $form['partage']->render(); ?></div> </div>
                     </div>
+                    <div class="row" style="padding-top:10px;">
+                      <div class="form-group">
+                        <?php echo $form['archive']->renderError() ?>
+                        <?php echo $form['archive']->renderLabel(null, array('class' => 'col-xs-4  control-label')); ?>
+                        <div class="col-xs-6 text-left checkbox" style="padding-left: 30px;"><?php echo $form['archive']->render(); ?></div> </div>
+                    </div>
                   </div>
                 </div>
                 <div class="panel panel-default">
