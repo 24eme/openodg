@@ -58,6 +58,12 @@ EOF;
           $line = rtrim($line);
           $csv = explode(';', $line);
 
+          if (($csv[self::DRCIVA_APPELLATION] != 'AOC Alsace blanc') && ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace')) {
+            continue;
+          }
+          if ($csv[self::DRCIVA_LIEU] == 'TOTAL') {
+            $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['SUPERFICIE'] += $csv[self::DRCIVA_SUPERFICIE_TOTALE];
+          }
           if (!$csv[self::DRCIVA_VCI_TOTAL]) {
             continue;
           }
@@ -78,7 +84,19 @@ EOF;
           $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][$csv[self::DRCIVA_LIEU]][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE'][$csv[self::DRCIVA_CEPAGE]]['RECOLTANT_NOM'] =  $csv[self::DRCIVA_NOM_RECOLTANT];
           error_reporting($oldreporting);
         }
+        //On vire les données qui n'ont pas de VCI (et seulement des superficies)
+        $realvci = array();
         foreach ($vci as $recoltant => $vciappellation) {
+            $nb = 0;
+            foreach($vciappellation as $appellation => $vcilieu) {
+                $nb += count($vcilieu['LIEU']);
+            }
+            if ($nb > 2) {
+              $realvci[$recoltant] = $vciappellation;
+            }
+        }
+        //Enregistrement des données
+        foreach ($realvci as $recoltant => $vciappellation) {
           $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."", $arguments['campagne']);
           if (count($registre->mouvements)) {
             $registre->clear();
@@ -89,6 +107,9 @@ EOF;
             $totalappellation = $vcilieu['LIEU']['TOTAL']['']['CEPAGE'][''];
             if (!isset($totalappellation['VOLUME']) || !(sprintf('%0.2f', $totalappellation['VOLUME_TOTAL']) === sprintf('%0.2f', $totalappellation['VOLUME']))) {
               $nonsolvable = 1;
+            }
+            if (isset($totalappellation['SUPERFICIE'])) {
+              $registre->superficies_facturables += $totalappellation['SUPERFICIE'];
             }
             foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
               if ($lieu == 'TOTAL') {

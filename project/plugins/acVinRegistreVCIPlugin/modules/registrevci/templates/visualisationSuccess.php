@@ -65,6 +65,13 @@
       </table>
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Superficies facturables</h3>
+        <ul>
+          <p><strong><?php echo $registre->superficies_facturables; ?> ha</strong> de superficies facturables</p>
+        </ul>
+</div></div>
 <div class="row row-margin row-button">
     <div class="col-xs-5">
         <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $registre->identifiant, 'campagne' => $registre->campagne)); ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>
