@@ -108,6 +108,8 @@ php symfony import:entite-from-csv $DATA_DIR/20180315_liste_evvAutres.utf8$TEST.
 echo  "7/ IMPORT DES APPORTEURS"
 php symfony import:entite-from-csv $DATA_DIR/20180315_liste_evvApporteurs.utf8$TEST.csv --application="provence" --trace
 
+echo  "IMPORT DES INTERLOCUTEUR"
+php symfony import:interlocuteurs-from-csv $DATA_DIR/20180315_contacts_interlocuteurs.utf8.csv --application="provence" --trace
 
 echo  "IMPORT PARCELLAIRE"
 php symfony import:parcellaire-from-csv $DATA_DIR/20180208_parcellaire_aoc_operateurs_identifies.csv.utf8$TEST.csv "2018-02-08" --application="provence"
