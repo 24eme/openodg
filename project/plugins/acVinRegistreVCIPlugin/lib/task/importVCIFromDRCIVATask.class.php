@@ -64,6 +64,7 @@ EOF;
           if ($csv[self::DRCIVA_CVI_ACHETEUR] == $csv[self::DRCIVA_CVI_RECOLTANT]) {
             $csv[self::DRCIVA_CVI_ACHETEUR] = '';
           }
+
           $oldreporting = error_reporting(0);
           if (($csv[self::DRCIVA_LIEU] != 'TOTAL') && ($csv[self::DRCIVA_CEPAGE] != 'TOTAL')) {
             $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] += $csv[self::DRCIVA_VCI_TOTAL];
@@ -104,7 +105,7 @@ EOF;
                     continue;
                   }
                   if ($unvci['VOLUME'] * 1.0 > 0) {
-                    echo "add ".preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT']))." ".$unvci['VOLUME'] ." ";
+                    echo "$recoltant : add ".preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT']))." ".$unvci['VOLUME'] ." ";
                     echo ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_NOM'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE;
                     echo "\n";
                     $registre->addMouvement(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
@@ -113,9 +114,11 @@ EOF;
               }
             }
           }
-          if (count($registre->mouvements)) {
+          if ($registre->exist('mouvements') && count($registre->mouvements)) {
             $registre->save();
             echo $registre->_id." savé\n";
+          }elseif($resgitre->_id){
+            $registre->delete();
           }
         }
     }

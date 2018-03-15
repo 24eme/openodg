@@ -31,6 +31,9 @@ class RegistreVCIProduitDetail extends BaseRegistreVCIProduitDetail {
       throw new sfException('Not collable, use addMouvement');
     }
 
+    public function getLibelleProduit() {
+      return $this->getParent()->getParent()->getLibelleComplet();
+    }
     public function getLibelle() {
       return $this->stockage_libelle;
     }
