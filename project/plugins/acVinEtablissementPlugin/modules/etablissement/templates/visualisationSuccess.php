@@ -127,7 +127,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <?php endforeach; ?>
                         <?php endif; ?>
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
-                            <?php if($chai = $liaison->getChai()): ?>
+                            <?php if(!$liaison->isSelfChai() && $chai = $liaison->getChai()): ?>
                             <tr>
                                 <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
@@ -164,7 +164,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
                             <tr>
                                 <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
-                                <td><?php echo $types_liaisons[$liaison->type_liaison] ?></td>
+                                <td><?php echo $liaison->getTypeLiaisonLibelle() ?></td>
                                 <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
                                 <td class="text-center"><a onclick="return confirm('Étes vous sûr de vouloir supprimer la relations ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
                             </tr>

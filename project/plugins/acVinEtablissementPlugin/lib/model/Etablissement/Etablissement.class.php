@@ -424,7 +424,7 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
     public function getEmails(){
         return explode(';',$this->email);
     }
-    
+
     public function getUniqueEmail() {
     	$emails = $this->getEmails();
     	return (isset($emails[0]))? $emails[0] : null;

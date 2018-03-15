@@ -2,11 +2,13 @@
 
 class EtablissementRelationChaiForm extends acCouchdbForm {
     protected $etablissementRelation = null;
+    protected $etablissementChai = null;
     protected $typeLiaison = null;
 
-    public function __construct(acCouchdbDocument $doc, $typeLiaison, $etablissementRelation, $defaults = array(), $options = array(), $CSRFSecret = null) {
-        $this->etablissementRelation = $etablissementRelation;
+    public function __construct(acCouchdbDocument $doc, $typeLiaison, $etablissementRelation, $etablissementChai, $defaults = array(), $options = array(), $CSRFSecret = null) {
         $this->typeLiaison = $typeLiaison;
+        $this->etablissementRelation = $etablissementRelation;
+        $this->etablissementChai = $etablissementChai;
       parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
@@ -33,8 +35,8 @@ class EtablissementRelationChaiForm extends acCouchdbForm {
 
     public function getChais() {
         $chais = array();
-        if($this->etablissementRelation->exist('chais')) {
-            foreach($this->etablissementRelation->chais as $chai) {
+        if($this->etablissementChai->exist('chais')) {
+            foreach($this->etablissementChai->chais as $chai) {
                 $chais[$chai->getHash()] = $chai->nom." - ".$chai->adresse.", ".$chai->code_postal." ".$chai->commune;
             }
         }
