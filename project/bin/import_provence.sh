@@ -45,73 +45,72 @@ curl -X POST -d @data/configuration/provence/societe.json -H "content-type: appl
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/societe/_view/all
 #bash bin/delete_from_view.sh http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE/_design/compte/_view/all
 
-# ls $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv
-#
-# cat $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;$/;"/' | sed -r 's/;([0-9]+);/;"\1";/g' | sed -r 's/;([0-9]+);/;"\1";/g' | sed -r 's/;([0-9]{2}\/[0-9]{2}\/[0-9]{4});/;"\1";/g' | sed 's/^"//' | sed -r 's/;([0-9]+)$/;"\1/g' | awk -F '";"' '{ print  "\""$27"\";" $28 }' | grep CDP | sort | uniq | sed 's|;1$|;"COOPERATIVE"|' | sed 's|;0$|;"NEGOCIANT"|' > $DATA_DIR/20180306_liste_cavecoop_nego.utf8$TEST.csv
-#
-#
-#
-# cat $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv | sort | uniq > $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv.sorted
-#
-# join -t ";" -1 1 -2 1 -a 1 $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv.sorted $DATA_DIR/20180306_liste_cavecoop_nego.utf8$TEST.csv > $DATA_DIR/20180306_liste_alloperateur.utf8$TEST.csv
 
-cat $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv > $DATA_DIR/20180306_liste_alloperateur.utf8$TEST.csv
 
-ls $DATA_DIR/20180306_liste_alloperateur.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_operateur.utf8$TEST.csv | tr "\n" "#" | sed -r "s/(;[0-9]{1})#/\1\n/g" | sed -r "s/(;\"Archivé\")#/\1\n/g" > $DATA_DIR/20180315_liste_alloperateur.utf8$TEST.csv
 
-cat $DATA_DIR/20180306_liste_alloperateur.utf8$TEST.csv | grep -E '(;"N83";|;"N13";)' > $DATA_DIR/20180306_liste_negociantsvinificateurs.utf8$TEST.csv
-cat $DATA_DIR/20180306_liste_alloperateur.utf8$TEST.csv | grep -vE '(;"N83";|;"N13";)' > $DATA_DIR/20180306_liste_nonnegociantsvinificateurs.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_alloperateur.utf8$TEST.csv | grep -E '(;"N83";|;"N13";)' > $DATA_DIR/20180315_liste_negociantsvinificateurs.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_alloperateur.utf8$TEST.csv | grep -vE '(;"N83";|;"N13";)' > $DATA_DIR/20180315_liste_nonnegociantsvinificateurs.utf8$TEST.csv
 
 
 
-cat $DATA_DIR/20180306_liste_nonnegociantsvinificateurs.utf8$TEST.csv | grep -E '(;"CC 83";|;"CC 13";)' > $DATA_DIR/20180306_liste_cavecooperative.utf8$TEST.csv
-cat $DATA_DIR/20180306_liste_nonnegociantsvinificateurs.utf8$TEST.csv | grep -Ev '(;"CC 83";|;"CC 13";)' > $DATA_DIR/20180306_liste_noncavecooperative.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_nonnegociantsvinificateurs.utf8$TEST.csv | grep -E '(;"CC 83";|;"CC 13";)' > $DATA_DIR/20180315_liste_cavecooperative.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_nonnegociantsvinificateurs.utf8$TEST.csv | grep -Ev '(;"CC 83";|;"CC 13";)' > $DATA_DIR/20180315_liste_noncavecooperative.utf8$TEST.csv
 
 
 
-cat $DATA_DIR/20180306_liste_noncavecooperative.utf8$TEST.csv | grep -E '(;"CP 83";|;"CP 13";)' > $DATA_DIR/20180306_liste_caveparticulieres.utf8$TEST.csv
-cat $DATA_DIR/20180306_liste_noncavecooperative.utf8$TEST.csv | grep -vE '(;"CP 83";|;"CP 13";)' > $DATA_DIR/20180306_liste_noncaveparticulieres.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_noncavecooperative.utf8$TEST.csv | grep -E '(;"CP 83";|;"CP 13";)' > $DATA_DIR/20180315_liste_caveparticulieres.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_noncavecooperative.utf8$TEST.csv | grep -vE '(;"CP 83";|;"CP 13";)' > $DATA_DIR/20180315_liste_noncaveparticulieres.utf8$TEST.csv
 
-cat $DATA_DIR/20180306_liste_noncaveparticulieres.utf8$TEST.csv | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed -r 's/;([0-9]+);/;"\1";/g' | sed -r 's/;([0-9]+);/;"\1";/g' | sed -r 's/;([0-9]{2}\/[0-9]{2}\/[0-9]{4});/;"\1";/g' | sed -r 's/;([0-9]+)$/;"\1/g' > $DATA_DIR/20180306_liste_noncaveparticulieres.quoted.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_noncaveparticulieres.utf8$TEST.csv | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed 's/;;/;"";/g' | sed -r 's/;([0-9]+);/;"\1";/g' | sed -r 's/;([0-9]+);/;"\1";/g' | sed -r 's/;([0-9]{2}\/[0-9]{2}\/[0-9]{4});/;"\1";/g' | sed -r 's/;([0-9]+)$/;"\1"/g' > $DATA_DIR/20180315_liste_noncaveparticulieres.quoted.utf8$TEST.csv
 
-cat $DATA_DIR/20180306_liste_noncaveparticulieres.quoted.utf8$TEST.csv | awk -F '";"' '{ if($9) print $0; }' > $DATA_DIR/20180306_liste_evv.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_noncaveparticulieres.quoted.utf8$TEST.csv | awk -F '";"' '{ if($9) print $0; }' > $DATA_DIR/20180315_liste_evv.utf8$TEST.csv
 
-cat $DATA_DIR/20180306_liste_noncaveparticulieres.quoted.utf8$TEST.csv | awk -F '";"' '{ if(!$9) print $0; }' > $DATA_DIR/20180306_liste_nonevv.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_noncaveparticulieres.quoted.utf8$TEST.csv | awk -F '";"' '{ if(!$9) print $0; }' > $DATA_DIR/20180315_liste_nonevv.utf8$TEST.csv
 
 
 
-cat $DATA_DIR/20180306_liste_nonevv.utf8$TEST.csv | grep -v ';"Producteur de raisins";' | sed -r 's|(.*)|\1;"NEGOCIANT"|' > $DATA_DIR/20180306_liste_negociants.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_nonevv.utf8$TEST.csv | grep -v ';"Producteur de raisins";' | sed -r 's|(.*)|\1;"NEGOCIANT"|' > $DATA_DIR/20180315_liste_negociants.utf8$TEST.csv
 
-cat $DATA_DIR/20180306_liste_nonevv.utf8$TEST.csv | grep ';"Producteur de raisins";' > $DATA_DIR/20180306_liste_bailleurs.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_nonevv.utf8$TEST.csv | grep ';"Producteur de raisins";' > $DATA_DIR/20180315_liste_bailleurs.utf8$TEST.csv
 
-cat $DATA_DIR/20180306_liste_evv.utf8$TEST.csv | grep ';"Autre";' > $DATA_DIR/20180306_liste_evvAutres.utf8$TEST.csv
-cat $DATA_DIR/20180306_liste_evv.utf8$TEST.csv | grep -v ';"Autre";' > $DATA_DIR/20180306_liste_evvApporteurs.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_evv.utf8$TEST.csv | grep ';"Autre";' > $DATA_DIR/20180315_liste_evvAutres.utf8$TEST.csv
+cat $DATA_DIR/20180315_liste_evv.utf8$TEST.csv | grep -v ';"Autre";' > $DATA_DIR/20180315_liste_evvApporteurs.utf8$TEST.csv
+
+echo "Ordre d'import"
+echo "CAVECOOP " `ls $DATA_DIR/20180315_liste_cavecooperative.utf8$TEST.csv`
+echo "NEGOCIANTS VINIFICATEURS " `ls $DATA_DIR/20180315_liste_negociantsvinificateurs.utf8$TEST.csv`
+echo "CAVEPARTICULIERE " `ls $DATA_DIR/20180315_liste_caveparticulieres.utf8$TEST.csv`
+echo "NEGOCIANTS " `ls $DATA_DIR/20180315_liste_negociants.utf8$TEST.csv`
+echo "BAILLEURS " `ls $DATA_DIR/20180315_liste_bailleurs.utf8$TEST.csv`
+echo "AUTRES " `ls $DATA_DIR/20180315_liste_evvAutres.utf8$TEST.csv`
+echo "APPORTEURS " `ls $DATA_DIR/20180315_liste_evvApporteurs.utf8$TEST.csv`
 
 echo  "1/ IMPORT DES CAVECOOP"
-php symfony import:entite-from-csv $DATA_DIR/20180306_liste_cavecooperative.utf8$TEST.csv --application="provence" --trace
+php symfony import:entite-from-csv $DATA_DIR/20180315_liste_cavecooperative.utf8$TEST.csv --application="provence" --trace
 
 echo  "2/ IMPORT DES NEGOCIANTS VINIFICATEURS";
-php symfony import:entite-from-csv $DATA_DIR/20180306_liste_negociantsvinificateurs.utf8$TEST.csv --application="provence" --trace
+php symfony import:entite-from-csv $DATA_DIR/20180315_liste_negociantsvinificateurs.utf8$TEST.csv --application="provence" --trace
 
 
 echo  "3/ IMPORT DES CAVEPARTICULIERE"
-php symfony import:entite-from-csv $DATA_DIR/20180306_liste_caveparticulieres.utf8$TEST.csv --application="provence" --trace
+php symfony import:entite-from-csv $DATA_DIR/20180315_liste_caveparticulieres.utf8$TEST.csv --application="provence" --trace
 
 echo  "4/ IMPORT DES NEGOCIANTS"
-php symfony import:entite-from-csv $DATA_DIR/20180306_liste_negociants.utf8$TEST.csv --application="provence" --trace
+php symfony import:entite-from-csv $DATA_DIR/20180315_liste_negociants.utf8$TEST.csv --application="provence" --trace
 
 echo  "5/ IMPORT DES BAILLEURS"
-php symfony import:entite-from-csv $DATA_DIR/20180306_liste_bailleurs.utf8$TEST.csv --application="provence" --trace
+php symfony import:entite-from-csv $DATA_DIR/20180315_liste_bailleurs.utf8$TEST.csv --application="provence" --trace
 
 echo  "6/ IMPORT DES AUTRES"
-php symfony import:entite-from-csv $DATA_DIR/20180306_liste_evvAutres.utf8$TEST.csv --application="provence" --trace
+php symfony import:entite-from-csv $DATA_DIR/20180315_liste_evvAutres.utf8$TEST.csv --application="provence" --trace
 
 echo  "7/ IMPORT DES APPORTEURS"
-php symfony import:entite-from-csv $DATA_DIR/20180306_liste_evvApporteurs.utf8$TEST.csv --application="provence" --trace
+php symfony import:entite-from-csv $DATA_DIR/20180315_liste_evvApporteurs.utf8$TEST.csv --application="provence" --trace
 
 
 echo  "IMPORT PARCELLAIRE"
 php symfony import:parcellaire-from-csv $DATA_DIR/20180208_parcellaire_aoc_operateurs_identifies.csv.utf8$TEST.csv "2018-02-08" --application="provence"
 
 echo  "IMPORT HABILITATION"
-php symfony import:habilitation-from-csv $DATA_DIR/20180306_liste_operateur.utf8$TEST.csv --application="provence"
+php symfony import:habilitation-from-csv $DATA_DIR/20180315_liste_operateur.utf8$TEST.csv --application="provence"

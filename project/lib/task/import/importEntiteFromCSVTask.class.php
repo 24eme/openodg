@@ -52,7 +52,12 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_DATE_ARCHIVAGE = 32;
 
     const CSV_COMMENTAIRE = 33;
-    const CSV_SOCIETE_TYPE = 34;
+
+    const CSV_CHAI_RESPONSABLE_NOM = 34;
+    const CSV_CHAI_RESPONSABLE_TELEPHONE = 35;
+    const CSV_CHAI_ARCHIVE = 36;
+
+    const CSV_SOCIETE_TYPE = 37;
 
 
 
@@ -73,6 +78,11 @@ class importEntitesFromCSVTask extends sfBaseTask
         $this->briefDescription = "Import d'une entite";
         $this->detailedDescription = <<<EOF
 EOF;
+
+        $this->convert_attributs["Vinification"] = EtablissementClient::CHAI_ATTRIBUT_VINIFICATION;
+        $this->convert_attributs["VV Stockage"] = EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VRAC;
+        $this->convert_attributs['VC Stockage'] = EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE;
+        $this->convert_attributs['DGC'] = EtablissementClient::CHAI_ATTRIBUT_DGC;
     }
 
     protected function execute($arguments = array(), $options = array())
@@ -211,10 +221,7 @@ EOF;
 
     protected function importEtablissement($societe,$data,$identifiant){
           $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-        //   if($data[self::CSV_SOCIETE_TYPE]){
-        //       $type_etablissement = $data[self::CSV_SOCIETE_TYPE];
-        //   }else{
-        //   }
+
           if($data[self::CSV_ORDRE]){
               if(($data[self::CSV_ORDRE] == "N83") || ($data[self::CSV_ORDRE] == "N13")){
                   $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
@@ -304,19 +311,20 @@ EOF;
             }
 
             if($data[self::CSV_CHAIS_TYPE] == "Apporteur"){
+                $attributs_chai = array(EtablissementClient::CHAI_ATTRIBUT_APPORT);
                 if($coopOrNego->isCooperative()){
                     $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true,$chaiAssocie);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true,$chaiAssocie,$attributs_chai);
                 }elseif($coopOrNego->isNegociant()) {
                     $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true,$chaiAssocie);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true,$chaiAssocie,$attributs_chai);
                 }elseif($coopOrNego->isNegociantVinificateur()) {
                     $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,$coopOrNego,true,$chaiAssocie);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,$coopOrNego,true,$chaiAssocie,$attributs_chai);
                 }
             }else{
                 $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                $attributs_chai = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
+                $attributs_chai = $this->convertAttributsChais(explode(';',$data[self::CSV_CHAIS_ACTIVITES]));
                 $viti->addLiaison(EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS,$coopOrNego,true,$chaiAssocie,$attributs_chai);
             }
 
@@ -360,6 +368,14 @@ EOF;
         $t = str_replace(array(' ','.'),array('',''),$tel);
         $tk = sprintf("%010d",$t);
         return substr($tk, 0,2)." ".substr($tk,2,2)." ".substr($tk,4,2)." ".substr($tk,6,2)." ".substr($tk,8,2);
+    }
+
+    protected function convertAttributsChais($chaisAttributsCsv){
+        $attributsConverted = array();
+        foreach ($chaisAttributsCsv as $chaiCsv) {
+            $attributsConverted[] = $this->convert_attributs[trim($chaiCsv)];
+        }
+        return $attributsConverted;
     }
 
 }
