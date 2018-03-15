@@ -296,6 +296,15 @@ class EtablissementClient extends acCouchdbClient {
         return array_keys(self::getTypesLiaisons());
     }
 
+    public function isChaiChezLautre($liaisonType) {
+
+        if(in_array($liaisonType, array(self::TYPE_LIAISON_COOPERATEUR, self::TYPE_LIAISON_APPORTEUR_RAISIN, self::TYPE_LIAISON_APPORTEUR_RAISIN, self::TYPE_LIAISON_HEBERGE))) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function getTypesLiaisons() {
         return array(self::TYPE_LIAISON_BAILLEUR => 'A pour bailleur',
             self::TYPE_LIAISON_METAYER => 'A pour métayer',
