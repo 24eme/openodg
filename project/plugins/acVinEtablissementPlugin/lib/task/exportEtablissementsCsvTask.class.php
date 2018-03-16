@@ -54,7 +54,7 @@ EOF;
 
             $ordre = null;
 
-            if($etablissement->region && $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
+            if($etablissement->region && $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR_VINIFICATEUR) {
                 $ordre = 'CP ';
             }
             if($etablissement->region && $etablissement->famille == EtablissementFamilles::FAMILLE_COOPERATIVE) {
@@ -64,7 +64,7 @@ EOF;
                 $ordre = 'N';
             }
             if($etablissement->region) {
-                $ordre .= substr($etablissement->code_postal, 0, 2);
+                $ordre .= substr($etablissement->region, -2);
             }
 
             $intitules = "EARL|EI|ETS|EURL|GAEC|GFA|HOIRIE|IND|M|MM|Mme|MME|MR|SA|SARL|SAS|SASU|SC|SCA|SCE|SCEA|SCEV|SCI|SCV|SFF|SICA|SNC|SPH|STE|STEF";
@@ -106,7 +106,7 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             '"'.str_replace('"', "''", str_replace(';', ' / ', str_replace("\n", '\n', $etablissement->commentaire))).'";'.
             $habilitationStatut.";". // Etat
             $ordre.";". // Ordre
-            $etablissement->region.";".
+            str_replace("_", " ", preg_replace("/_[0-9]+$/", "", $etablissement->region)).";". // Region
             $societe->code_comptable_client.";".
             $etablissement->famille.";".
             $compte->date_modification.";".
