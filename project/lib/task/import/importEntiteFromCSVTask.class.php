@@ -139,7 +139,7 @@ EOF;
                           $this->addChaiForEtablissement($etb,$data);
                       }
                 }
-
+                $this->addResponsableDeChai($soc,$data);
                 echo "\n";
             }else{
               $etb = $soc->getEtablissementPrincipal();
@@ -152,7 +152,7 @@ EOF;
                         $this->addChaiForEtablissement($etb,$data);
                     }
               }
-
+              $this->addResponsableDeChai($soc,$data);
 
               echo "\n";
             }
@@ -194,7 +194,7 @@ EOF;
             $societe->fax = $this->formatTel($data[self::CSV_FAX]);
             //$emails = (explode(";",$data[self::CSV_EMAIL]));
 
-            $societe->email = trim($data[self::CSV_EMAIL]);
+            $societe->email = str_replace("'","",trim($data[self::CSV_EMAIL]));
 
             if($this->isSuspendu){
               $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
@@ -203,19 +203,6 @@ EOF;
             }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
-            /*if(count($emails) > 1){
-                foreach ($emails as $key => $email) {
-                    if(!$key){
-                        continue;
-                    }
-                    $compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
-                    $compte->nom = "Autre Contact";
-                    $compte->email = trim($email);
-                    echo "L'entité $societe->_id a un interlocuteur $compte->_id ".$compte->nom." (".$compte->email.") \n";
-                    $compte->save();
-                    $societe = SocieteClient::getInstance()->find($societe->_id);
-                }
-            }*/
             return $societe;
           }
 
@@ -267,11 +254,11 @@ EOF;
         protected function addChaiForEtablissement($etb,$data){
           $newChai = $etb->getOrAdd('chais')->add();
           $newChai->nom = $data[self::CSV_CHAIS_VILLE];
-          $newChai->adresse = $data[self::CSV_CHAIS_ADRESSE_1];
-          if($data[self::CSV_CHAIS_ADRESSE_2]) $newChai->adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_2];
-          if($data[self::CSV_CHAIS_ADRESSE_3]) $newChai->adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
+          $newChai->adresse = $this->getChaiAdresseConcat($data);
+
           $newChai->commune = $data[self::CSV_CHAIS_VILLE];
           $newChai->code_postal = $data[self::CSV_CHAIS_CP];
+          $newChai->archive = $data[self::CSV_CHAI_ARCHIVE];
           $activites = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
           foreach ($activites as $activite) {
             if(!array_key_exists(trim($activite),$this->chaisAttributsInImport)){
@@ -376,6 +363,50 @@ EOF;
             $attributsConverted[] = $this->convert_attributs[trim($chaiCsv)];
         }
         return $attributsConverted;
+    }
+
+
+    protected function getChaiAdresseConcat($data){
+        $adresse = $data[self::CSV_CHAIS_ADRESSE_1];
+        if($data[self::CSV_CHAIS_ADRESSE_2]) $adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_2];
+        if($data[self::CSV_CHAIS_ADRESSE_3]) $adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
+        return $adresse;
+    }
+
+
+    protected function addResponsableDeChai($societe,$data){
+        if(!$data[self::CSV_CHAI_RESPONSABLE_NOM] && !$data[self::CSV_CHAI_RESPONSABLE_TELEPHONE]){
+            return;
+        }
+        $nom = trim($data[self::CSV_CHAI_RESPONSABLE_NOM]);
+        $telephone = trim($this->formatTel($data[self::CSV_CHAI_RESPONSABLE_TELEPHONE]));
+
+        if(!$nom){
+            $nom = "AUTRE CONTACT";
+        }
+
+        $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
+        $contact->nom = $nom;
+        $contact->fonction = "Responsable de chais";
+        $contact->adresse = $data[self::CSV_CHAIS_ADRESSE_1];
+
+        $adresse_complementaire = "";
+        if($data[self::CSV_CHAIS_ADRESSE_2]) $adresse_complementaire .= $data[self::CSV_CHAIS_ADRESSE_2];
+        if($data[self::CSV_CHAIS_ADRESSE_3]) $adresse_complementaire .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
+
+        $contact->adresse_complementaire = $adresse_complementaire;
+        $contact->code_postal = $data[self::CSV_CHAIS_CP];
+        $contact->commune = $data[self::CSV_CHAIS_VILLE];
+
+        if(preg_match('/^(06|07)/',$telephone)){
+            $contact->telephone_mobile = $telephone;
+        }else{
+            $contact->telephone_bureau = $telephone;
+        }
+            echo " (+INTERLOCUTEUR $contact->_id ".$contact->nom." (".$contact->telephone_bureau."/".$contact->telephone_mobile.") ";
+
+
+        $contact->save();
     }
 
 }
