@@ -14,17 +14,15 @@
         <div class="col-xs-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                        <h4>Ajout d'une relation</h4>
-                </div>
-                <div class="panel-body" style="border-right: 6px solid #9f0038;">
-                    <h2><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span>  <?php echo $etablissement->nom; ?></h2>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>1. Choix de la relation</h4>
+                    <h4>1. Ajout d'une relation</h4>
                 </div>
                 <div class="panel-body">
+                    <div class="form-group">
+                       <label class="col-sm-4 control-label">Établissement :</label>
+                       <div class="col-sm-7">
+                         <p class="form-control-static"><?php echo $etablissement->nom ?></p>
+                       </div>
+                     </div>
                     <div class="form-group">
                        <label class="col-sm-4 control-label">Relation :</label>
                        <div class="col-sm-7">
@@ -32,7 +30,7 @@
                        </div>
                      </div>
                      <div class="form-group">
-                        <label class="col-sm-4 control-label">Établissement :</label>
+                        <label class="col-sm-4 control-label">Avec l'établissement :</label>
                         <div class="col-sm-7">
                           <p class="form-control-static"><?php echo $etablissementRelation->raison_sociale ?></p>
                         </div>
@@ -41,7 +39,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>2. Choix du chai : <span><?php echo $etablissementChai->raison_sociale ?></span></h4>
+                    <h4>2. Chai de destination <small>(chez <?php echo $etablissementChai->raison_sociale ?>)</small></h4>
                 </div>
                 <div class="panel-body">
                     <div class="form-group">

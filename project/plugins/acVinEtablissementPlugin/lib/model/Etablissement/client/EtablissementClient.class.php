@@ -11,8 +11,10 @@ class EtablissementClient extends acCouchdbClient {
     const RECETTE_LOCALE = 'RECETTE_LOCALE';
     const TYPE_DR_DRM = 'DRM';
     const TYPE_DR_DRA = 'DRA';
+
     const TYPE_LIAISON_BAILLEUR = 'BAILLEUR';
     const TYPE_LIAISON_METAYER = 'METAYER';
+
     const TYPE_LIAISON_FERMIER = 'FERMIER';
 
     const TYPE_LIAISON_COOPERATIVE = 'COOPERATIVE'; // a pour coopérative
@@ -195,8 +197,6 @@ class EtablissementClient extends acCouchdbClient {
       return $this->find($rows[0]->id);
     }
 
-
-
     public function getId($id_or_identifiant) {
         $id = $id_or_identifiant;
         if (strpos($id_or_identifiant, 'ETABLISSEMENT-') === false) {
@@ -292,22 +292,12 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_DR_DRA => self::TYPE_DR_DRA);
     }
 
-    public static function listTypeLiaisons() {
-        return array_keys(self::getTypesLiaisons());
-    }
-
-    public function isChaiChezLautre($liaisonType) {
-
-        if(in_array($liaisonType, array(self::TYPE_LIAISON_COOPERATEUR, self::TYPE_LIAISON_APPORTEUR_RAISIN, self::TYPE_LIAISON_APPORTEUR_RAISIN, self::TYPE_LIAISON_HEBERGE))) {
-            return false;
-        }
-
-        return true;
-    }
-
     public static function getTypesLiaisons() {
-        return array(self::TYPE_LIAISON_BAILLEUR => 'A pour bailleur',
+        return array(
+
+            self::TYPE_LIAISON_BAILLEUR => 'A pour bailleur',
             self::TYPE_LIAISON_METAYER => 'A pour métayer',
+
             self::TYPE_LIAISON_FERMIER => 'A pour fermier',
 
             self::TYPE_LIAISON_COOPERATIVE => 'A pour coopérative',
@@ -322,7 +312,40 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_LIAISON_HEBERGE_TIERS => 'Hébergé chez un tiers',
             self::TYPE_LIAISON_HEBERGE => 'Héberge',
 
-            );
+        );
+    }
+
+    public static function getTypesLiaisonsOrganisation() {
+
+        return array(
+            self::TYPE_LIAISON_BAILLEUR => self::TYPE_LIAISON_METAYER,
+            self::TYPE_LIAISON_COOPERATEUR => self::TYPE_LIAISON_COOPERATIVE,
+            self::TYPE_LIAISON_VENDEUR_VRAC => self::TYPE_LIAISON_NEGOCIANT,
+            self::TYPE_LIAISON_APPORTEUR_RAISIN => self::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,
+            self::TYPE_LIAISON_HEBERGE => self::TYPE_LIAISON_HEBERGE_TIERS
+        );
+    }
+
+    public static function isTypeLiaisonCanHaveChai($typeLiaison) {
+
+        return array_key_exists($typeLiaison, array_flip(self::getTypesLiaisonsOrganisation()));
+    }
+
+    public static function getTypeLiaisonOpposee($typeLiaison) {
+        $typeLiaisonsOrganisation = self::getTypesLiaisonsOrganisation();
+        $typeLiaisonsOrganisationInverse = array_flip($typeLiaisonsOrganisation);
+
+        if (isset($typeLiaisonsOrganisation[$typeLiaison])) {
+
+            return $typeLiaisonsOrganisation[$typeLiaison];
+        }
+
+        if (isset($typeLiaisonsOrganisationInverse[$typeLiaison])) {
+
+            return $typeLiaisonsOrganisationInverse[$typeLiaison];
+        }
+
+        return null;
     }
 
     public static function getPrefixForRegion($region) {
