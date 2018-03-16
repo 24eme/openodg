@@ -105,7 +105,7 @@ EOF;
               throw new sfException("le cvi n'existe pas pour la ligne ".implode(',',$line));
             }
 
-            if(!$parcellaire || $parcellaire->declarant->cvi != $cvi) {
+            if(!$parcellaire || $parcellaire->identifiant != $cdp) {
                 if($parcellaire) {
                     $this->saveParcellaire($parcellaire);
                     $parcellaire = null;
@@ -236,7 +236,7 @@ EOF;
                   echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
               }
 
-              echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
+              echo "Import de la parcelle $section $numero_parcelle pour $parcellaire->identifiant !\n";
             }
     }
 
@@ -244,9 +244,8 @@ EOF;
         try{
             $parcellaire->save();
             echo "Parcellaire $parcellaire->_id sauvegardé\n";
-        }catch(Exception $e){
-            $idEtb = $parcellaire->etablissement->_id;
-            echo "Le parcellaire $parcellaire->identifiant pour l'etb $idEtb n'a pas pu être sauvé \n";
-        }
+         }catch(Exception $e){
+            echo "Le parcellaire $parcellaire->identifiant pour n'a pas pu être sauvé \n";
+         }
     }
 }
