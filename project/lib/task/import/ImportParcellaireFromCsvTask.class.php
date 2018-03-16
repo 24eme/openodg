@@ -50,7 +50,7 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     const CSV_DATE_DEBUT_GESTION = 36;
     const CSV_DATE_FIN_GESTION = 37;
     const CSV_IDU = 38;
-    const CSV_CSP = 39;
+    const CSV_CDP = 39;
 
 
     protected function configure()
@@ -113,10 +113,9 @@ EOF;
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
                 if(!$etablissement){
-                  echo "L'établissement de cvi ".$cvi." n'existe pas dans la base ";
                   $etablissement = EtablissementClient::getInstance()->find($cdp);
                   if(!$etablissement){
-                      echo " pas non plus été trouvé par son CDP  ".$cdp." \n";
+                      echo "/!\ L'établissement de cvi ".$cvi." n'existe pas dans la base pas non plus été trouvé par son CDP  ".$cdp." \n";
                       continue;
                   }
                 }
@@ -154,7 +153,8 @@ EOF;
 
               $cepagesAutorisesConf = $p->getCepagesAutorises()->toArray(0,1);
               if(!in_array(trim($data[self::CSV_LIBELLE_CEPAGE]),$cepagesAutorisesConf)){
-                throw new sfException("le cepage ".trim($data[self::CSV_LIBELLE_CEPAGE])." ne fait pas parti des cépages autorisés");
+                echo "/!\ le cepage ".trim($data[self::CSV_LIBELLE_CEPAGE])." ne fait pas parti des cépages autorisés : pas d'import\n";
+                continue;
               }
               $cepage = trim($data[self::CSV_LIBELLE_CEPAGE]);
 
@@ -241,7 +241,12 @@ EOF;
     }
 
     protected function saveParcellaire($parcellaire) {
-        $parcellaire->save();
-        echo "Parcellaire $parcellaire->_id sauvegardé\n";
+        try{
+            $parcellaire->save();
+            echo "Parcellaire $parcellaire->_id sauvegardé\n";
+        }catch(Exception $e){
+            $idEtb = $parcellaire->etablissement->_id;
+            echo "Le parcellaire $parcellaire->identifiant pour l'etb $idEtb n'a pas pu être sauvé \n";
+        }
     }
 }
