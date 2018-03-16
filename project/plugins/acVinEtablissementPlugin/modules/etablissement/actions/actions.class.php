@@ -131,13 +131,19 @@ class etablissementActions extends sfCredentialActions {
         $this->societe = $this->etablissement->getSociete();
         $this->typeLiaison = $request->getParameter('type_liaison');
         $this->etablissementRelation = EtablissementClient::getInstance()->find($request->getParameter('id_etablissement'));
-        $this->etablissementChai = (EtablissementClient::getInstance()->isChaiChezLautre($this->typeLiaison)) ? $this->etablissementRelation : $this->etablissement;
+        $this->etablissementChai = (EtablissementClient::isTypeLiaisonCanHaveChai($this->typeLiaison)) ? $this->etablissementRelation : $this->etablissement;
 
         if(!$this->etablissementRelation) {
 
             return $this->forward404();
         }
-        $this->form = new EtablissementRelationChaiForm($this->etablissement, $this->typeLiaison, $this->etablissementRelation, $this->etablissementChai);
+        $this->form = new EtablissementRelationChaiForm(
+            $this->etablissement,
+            $this->typeLiaison,
+            $this->etablissementRelation,
+            $this->etablissementChai
+        );
+
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {

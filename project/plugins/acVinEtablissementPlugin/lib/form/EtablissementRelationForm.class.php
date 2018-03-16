@@ -10,7 +10,7 @@ class EtablissementRelationForm extends BaseForm {
         $this->setValidator('type_liaison', new sfValidatorChoice(array('required' => true, 'multiple' => false, 'choices' => array_keys($this->getLiaisonsChoice()))));
 
         $this->setWidget('id_etablissement', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration')));
-        $this->widgetSchema->setLabel('id_etablissement', 'Établissement :');
+        $this->widgetSchema->setLabel('id_etablissement', "Avec l'établissement :");
         $this->setValidator('id_etablissement', new ValidatorEtablissement(array('required' => true)));
         $this->validatorSchema['id_etablissement']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
 

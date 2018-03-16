@@ -12,7 +12,7 @@ class EtablissementLiaisonsOperateurs extends BaseEtablissementLiaisonsOperateur
             return null;
         }
 
-        $etablissement = $this->getEtablissementChai();
+        $etablissement = $this->getEtablissement();
 
         if(!$etablissement || !$etablissement->exist($this->hash_chai)){
 
@@ -25,20 +25,6 @@ class EtablissementLiaisonsOperateurs extends BaseEtablissementLiaisonsOperateur
     public function getEtablissement() {
 
         return EtablissementClient::getInstance()->find($this->id_etablissement);
-    }
-
-    public function isSelfChai() {
-
-        return !EtablissementClient::getInstance()->isChaiChezLautre($this->type_liaison);
-    }
-
-    public function getEtablissementChai() {
-        if($this->isSelfChai()) {
-
-            return $this->getDocument();
-        };
-
-        return $this->getEtablissement();
     }
 
     public function getTypeLiaisonLibelle() {

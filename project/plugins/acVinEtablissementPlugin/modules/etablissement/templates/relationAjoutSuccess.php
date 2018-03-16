@@ -13,17 +13,17 @@
                 <?php echo $form->renderGlobalErrors(); ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                        <h4>Ajout d'une relation</h4>
-                </div>
-                <div class="panel-body" style="border-right: 6px solid #9f0038;">
-                    <h2><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span>  <?php echo $etablissement->nom; ?></h2>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>1. Choix de la relation</h4>
+                    <h4>1. Ajout d'une relation</h4>
                 </div>
                 <div class="panel-body">
+                    <div class="row" style="padding-top:10px;">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Établissement</label>
+                            <div class="col-sm-4">
+                                <p class="form-control-static"><?php echo $etablissement->nom ?></p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row" style="padding-top:10px;">
                         <div class="form-group">
                             <?php echo $form['type_liaison']->renderError(); ?>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="checkbox">
                        <span class="col-xs-offset-4">
-                            <span class="glyphicon glyphicon-check"></span> Créer la relation inverse <small class="text-muted">(Uniquement pour les relations bailleur/métayer)</small>
+                            <span class="glyphicon glyphicon-check"></span> Créer la relation inverse
                        </span>
                      </div>
                     <hr />
@@ -60,7 +60,7 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4>2. Choix du chai</h4>
+                    <h4>2. Chai de destination</h4>
                 </div>
             </div>
         </div>

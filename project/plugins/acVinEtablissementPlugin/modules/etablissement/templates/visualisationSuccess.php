@@ -127,16 +127,17 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                             <?php endforeach; ?>
                         <?php endif; ?>
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
-                            <?php if(!$liaison->isSelfChai() && $chai = $liaison->getChai()): ?>
+                            <?php if($chai = $liaison->getChai()): ?>
                             <tr>
-                                <td><strong><?php echo $chai->nom ?></strong><br /><?php echo $chai->adresse ?><br />
+                                <td><strong><?php echo $chai->nom ?></strong> (<a href="<?php echo url_for('etablissement_visualisation', $chai->getDocument()) ?>"><?php echo $chai->getDocument()->nom ?></a>)<br /><?php echo $chai->adresse ?><br />
                                 <?php echo $chai->code_postal ?> <?php echo $chai->commune ?></td>
                                 <td>
                                     <?php foreach ($liaison->attributs_chai as $attribut_chai): ?>
                                         <?php echo EtablissementClient::$chaisAttributsLibelles[$attribut_chai]; ?><br />
                                     <?php endforeach; ?>
                                 </td>
-                                <td colspan="2"><a href="<?php echo url_for('etablissement_visualisation', $chai->getDocument()) ?>"><?php echo $chai->getDocument()->nom ?></a></td>
+                                <td></td>
+                                <td></td>
                             </tr>
                         <?php endif; ?>
                         <?php endforeach; ?>
@@ -154,8 +155,8 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                 <table class="table table-condensed table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th class="col-xs-5">Nom</th>
                             <th class="col-xs-3">Relation</th>
+                            <th class="col-xs-5">Nom</th>
                             <th class="col-xs-4">Numéro CVI/PPM</th>
                             <th class="col-xs-1"></th>
                         </tr>
@@ -163,8 +164,8 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                     <tbody>
                         <?php foreach($etablissement->liaisons_operateurs as $liaison): ?>
                             <tr>
-                                <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
                                 <td><?php echo $liaison->getTypeLiaisonLibelle() ?></td>
+                                <td><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => str_replace("ETABLISSEMENT-", "", $liaison->id_etablissement))) ?>"><?php echo $liaison->libelle_etablissement?></a></td>
                                 <td><?php echo 'ID : '.str_replace('ETABLISSEMENT-','',$liaison->id_etablissement); echo ($liaison->cvi)? '<br/>CVI : '.$liaison->cvi : ''; ?><?php echo ($liaison->cvi && $liaison->ppm)? "<br/>" : ""; echo ($liaison->ppm)? 'PPM : '.$liaison->ppm : ''; ?></td>
                                 <td class="text-center"><a onclick="return confirm('Étes vous sûr de vouloir supprimer la relations ?')" href="<?php echo url_for("etablissement_suppression_relation", array('identifiant' => $etablissement->identifiant, 'key' => $liaison->getKey())); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-trash"></span></a></td>
                             </tr>

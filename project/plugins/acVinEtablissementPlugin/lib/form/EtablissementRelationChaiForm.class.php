@@ -9,7 +9,9 @@ class EtablissementRelationChaiForm extends acCouchdbForm {
         $this->typeLiaison = $typeLiaison;
         $this->etablissementRelation = $etablissementRelation;
         $this->etablissementChai = $etablissementChai;
-      parent::__construct($doc, $defaults, $options, $CSRFSecret);
+        parent::__construct($doc, $defaults, $options, $CSRFSecret);
+
+        $this->setDefault('attributs_chai', array(EtablissementClient::CHAI_ATTRIBUT_APPORT => EtablissementClient::CHAI_ATTRIBUT_APPORT));
     }
 
     public function configure() {
@@ -27,7 +29,13 @@ class EtablissementRelationChaiForm extends acCouchdbForm {
     }
 
     public function save() {
-        $liaison = $this->getDocument()->addLiaison($this->typeLiaison, $this->etablissementRelation, true, $this->etablissementRelation->get($this->getValue('hash_chai')), $this->getValue('attributs_chai'));
+        $chai = null;
+        $attributsChai = null;
+        if($this->getValue('hash_chai')) {
+            $chai = $this->etablissementChai->get($this->getValue('hash_chai'));
+            $attributsChai = $this->getValue('attributs_chai');
+        }
+        $liaison = $this->getDocument()->addLiaison($this->typeLiaison, $this->etablissementRelation, true, $chai, $attributsChai);
         $this->getDocument()->save();
 
         return $liaison;
@@ -44,7 +52,10 @@ class EtablissementRelationChaiForm extends acCouchdbForm {
     }
 
     public function getAttributs(){
-      return EtablissementClient::$chaisAttributsLibelles;
+       $attributs = EtablissementClient::$chaisAttributsLibelles;
+       asort($attributs);
+
+       return $attributs;
     }
 
 }
