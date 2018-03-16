@@ -139,8 +139,9 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         $liaison->id_etablissement = $etablissement->_id;
         $liaison->libelle_etablissement = $etablissement->nom;
 
+        $libellesTypeRelation = EtablissementClient::getTypesLiaisons();
         $compte = $this->getMasterCompte();
-        $compte->addTag('manuel',$type);
+        $compte->addTag('relations',$libellesTypeRelation[$type]);
         $compte->save();
 
         if($chai){
