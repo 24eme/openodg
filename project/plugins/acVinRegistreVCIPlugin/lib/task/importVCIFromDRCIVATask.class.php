@@ -89,7 +89,13 @@ EOF;
         foreach ($vci as $recoltant => $vciappellation) {
             $nb = 0;
             foreach($vciappellation as $appellation => $vcilieu) {
-                $nb += count($vcilieu['LIEU']);
+              foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
+                foreach($vciacheteur as $cviacheteur => $vcicepage) {
+                  foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
+                    $nb += 1;
+                  }
+                }
+              }
             }
             if ($nb > 2) {
               $realvci[$recoltant] = $vciappellation;
