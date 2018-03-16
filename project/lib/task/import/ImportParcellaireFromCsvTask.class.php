@@ -50,6 +50,7 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     const CSV_DATE_DEBUT_GESTION = 36;
     const CSV_DATE_FIN_GESTION = 37;
     const CSV_IDU = 38;
+    const CSV_CSP = 39;
 
 
     protected function configure()
@@ -99,6 +100,7 @@ EOF;
 
             $data = str_getcsv($line, ';');
             $cvi = $data[self::CSV_EVV];
+            $cdp = $data[self::CSV_CDP]."01";
             if(!$cvi){
               throw new sfException("le cvi n'existe pas pour la ligne ".implode(',',$line));
             }
@@ -111,9 +113,12 @@ EOF;
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
                 if(!$etablissement){
-                  echo "L'établissement de cvi ".$cvi." n'existe pas dans la base\n";
-
-                  continue;
+                  echo "L'établissement de cvi ".$cvi." n'existe pas dans la base ";
+                  $etablissement = EtablissementClient::getInstance()->find($cdp);
+                  if(!$etablissement){
+                      echo " pas non plus été trouvé par son CDP  ".$cdp." \n";
+                      continue;
+                  }
                 }
                 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
             }
