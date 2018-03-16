@@ -229,9 +229,21 @@ EOF;
           $etablissement->constructId();
           $etablissement->cvi = $cvi;
           $etablissement->nom = $this->buildRaisonSociete($data);
-          if($data[self::CSV_ZONE]){
-              $etablissement->region = $data[self::CSV_ZONE];
+
+          $departement = null;
+          if(preg_match("/([0-9]{2})$/", $data[self::CSV_ORDRE], $matches)) {
+              $departement = $matches[1];
+          } else {
+              $departement = substr($data[self::CSV_CP], 0, 2);
           }
+          if($data[self::CSV_ZONE]){
+              $etablissement->region = str_replace(" ", "_", $data[self::CSV_ZONE])."_".$departement;
+          }
+
+          if($data[self::CSV_ZONE] && !array_key_exists($etablissement->region, EtablissementClient::getRegions())) {
+              echo $etablissement->identifiant . " : La région ".$etablissement->region." n'existe pas\n";
+          }
+
           $etablissement->save();
           if($this->isSuspendu){
             $etablissement->setStatut(SocieteClient::STATUT_SUSPENDU);
