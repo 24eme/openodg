@@ -1,22 +1,27 @@
 <?php use_helper('Compte') ?>
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
-    <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?></a></li>
+    <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?> (<?php echo $societe->identifiant ?>)</a></li>
     <li class="active"><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $etablissement->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> <?php echo $etablissement->nom; ?></a></li>
 </ol>
 
 <div class="row">
     <div class="col-xs-8">
+        <div class="panel panel-default" style="margin-bottom: 0; border-bottom: 0;">
+            <div class="panel-heading" style="border-bottom: 0;">
+                <h4><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> Societe n° <?php echo $societe->identifiant; ?></h4>
+            </div>
+        </div>
         <div class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-9">
-                        <h4><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> Établissement n° <?php echo $etablissement->identifiant; ?></h4>
+                        <h4><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> Établissement n° <?php echo $etablissement->getNumeroCourt(); ?></h4>
                     </div>
                     <div class="col-xs-3 text-muted text-right">
                         <div class="btn-group">
                             <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu text-left">
                                 <li<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu()) ? 'javascript:void(0)' : url_for('etablissement_modification', $etablissement); ?>">Editer</a></li>
                                 <li<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu())? 'javascript:void(0)' : url_for('etablissement_switch_statut', array('identifiant' => $etablissement->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($societe->isSuspendu() || $etablissement->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $etablissement->isActif())? 'javascript:void(0)' : url_for('etablissement_switch_statut', array('identifiant' => $etablissement->identifiant)); ?>">Activer</a></li>
@@ -28,8 +33,8 @@
             <div class="panel-body panel-primary-bordered-right">
                 <h2>
                 	<?php echo $etablissement->nom; ?>
-                	<?php if ($etablissement->getMasterCompte()->isSuspendu()): ?>
-					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $etablissement->getMasterCompte()->getStatutLibelle(); ?></small></span>
+                    <?php if ($etablissement->isSuspendu()): ?>
+					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $etablissement->getStatutLibelle(); ?></small></span>
 					<?php endif; ?>
                 </h2>
                 <hr/>

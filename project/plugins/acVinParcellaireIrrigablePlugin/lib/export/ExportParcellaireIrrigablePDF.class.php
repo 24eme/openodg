@@ -14,12 +14,10 @@
 class ExportParcellaireIrrigablePDF extends ExportPDF {
 
     protected $parcellaireIrrigable = null;
-    protected $cviFilter = null;
     protected $nomFilter = null;
 
     public function __construct($parcellaireIrrigable, $type = 'pdf', $use_cache = false, $file_dir = null,  $filename = null) {
         $this->parcellaireIrrigable = $parcellaireIrrigable;
-        $this->cviFilter = null;
         $this->nomFilter = null;
         if(!$filename) {
             $filename = $this->getFileName(true, true);
@@ -28,36 +26,22 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
         parent::__construct($type, $use_cache, $file_dir, $filename);
     }
 
-    public function setCviFilter($cvi, $nom = null) {
-        $this->cviFilter = $cvi;
-        $this->nomFilter = $nom;
-    }
-
     public function create() {
-        if($this->parcellaire->isParcellaireCremant()){
-            $this->parcellesForDetails = $this->parcellaireIrrigable->getParcellesByAppellation($this->cviFilter);
-        }else{
-            $this->parcellesForDetails = $this->parcellaireIrrigable->getParcellesByLieux($this->cviFilter);
-        }
-        $this->parcellesForRecap = $this->parcellaireIrrigable->getParcellesByLieuxCommuneAndCepage($this->cviFilter);
-
-        if(count($this->parcellesForDetails) == 0) {
-            $this->printable_document->addPage($this->getPartial('parcellaire/pdfVide', array('parcellaire' => $this->parcellaire)));
-
-            return;
-        }
-
-        foreach ($this->parcellesForDetails as $pageid => $parcellesForDetail) {
-            $this->printable_document->addPage($this->getPartial('parcellaire/pdf', array('parcellaire' => $this->parcellaire, 'parcellesForDetail' => $parcellesForDetail, 'cviFilter' => $this->cviFilter)));
-        }
-        if ((count($this->parcellesForDetails) == 1) && (count($this->parcellesForDetails[$pageid]->parcelles) < count($this->parcellesForRecap))) {
-            $this->printable_document->addPage($this->getPartial('parcellaire/pdfRecap', array('parcellaire' => $this->parcellaire, 'parcellesForRecap' => $this->parcellesForRecap, 'engagement' => !$this->cviFilter)));
-        }
-
+    	
+       $this->parcellesIrrigableForDetails = $this->parcellaireIrrigable->declaration->getParcellesByCommune();
+       
+       if(count($this->parcellesIrrigableForDetails) == 0) {
+       		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdfVide', array('parcellaireIrrigable' => $this->parcellaireIrrigable)));
+       		return;
+       }
+       
+       foreach ($this->parcellesIrrigableForDetails as $commune => $parcellesForDetail) {
+       		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' => $this->parcellaireIrrigable, 'parcellesForDetail' => $parcellesForDetail, 'titre' => $commune)));
+       }
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration d'intention d'irrigabilité parcellaire %s", $this->parcellaireIrrigable->campagne);
+        return sprintf("Déclaration d'intention de parcelles irrigables %s", $this->parcellaireIrrigable->campagne);
     }
 
     protected function getHeaderSubtitle() {
@@ -65,16 +49,16 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
         $header_subtitle .= "\n\n";
 
         if (!$this->parcellaireIrrigable->isPapier()) {
-            if ($this->parcellaire->validation && $this->parcellaire->campagne >= "2015") {
-                $date = new DateTime($this->parcellaire->validation);
+            if ($this->parcellaireIrrigable->validation) {
+                $date = new DateTime($this->parcellaireIrrigable->validation);
                 $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
             }else{
                 $header_subtitle .= sprintf("Exemplaire brouilllon");
             }
         }
 
-        if ($this->parcellaire->isPapier() && $this->parcellaire->validation && $this->parcellaire->validation !== true) {
-            $date = new DateTime($this->parcellaire->validation);
+        if ($this->parcellaireIrrigable->isPapier() && $this->parcellaireIrrigable->validation && $this->parcellaireIrrigable->validation !== true) {
+            $date = new DateTime($this->parcellaireIrrigable->validation);
             $header_subtitle .= sprintf("Reçue le %s", $date->format('d/m/Y'));
         }
 
@@ -83,20 +67,20 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
 
     protected function getConfig() {
 
-        return new ExportDRevPDFConfig();
+        return new ExportParcellaireIrrigablePDFConfig();
     }
 
     public function getFileName($with_rev = false) {
 
-      return self::buildFileName($this->parcellaire, $with_rev, $this->nomFilter);
+      return self::buildFileName($this->parcellaireIrrigable, $with_rev, $this->nomFilter);
     }
 
-    public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
+    public static function buildFileName($parcellaireIrrigable, $with_rev = false, $nomFilter = null) {
 
-        $prefixName = $parcellaire->getTypeParcellaire()."_%s_%s";
-        $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
+        $prefixName = $parcellaireIrrigable->getTypeParcellaire()."_%s_%s";
+        $filename = sprintf($prefixName, $parcellaireIrrigable->identifiant, $parcellaireIrrigable->campagne);
 
-        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
+        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaireIrrigable->declarant->nom));
         $filename .= '_' . $declarant_nom;
 
         if($nomFilter) {
@@ -104,7 +88,7 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
         }
 
         if ($with_rev) {
-            $filename .= '_' . $parcellaire->_rev;
+            $filename .= '_' . $parcellaireIrrigable->_rev;
         }
 
         return $filename . '.pdf';

@@ -18,6 +18,11 @@ class commonActions extends sfActions {
             return $this->redirect('compte_recherche');
         }
 
+        if ($this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+
+            return $this->redirect('habilitation');
+        }
+
         if(!$this->getUser()->getCompte()->getSociete()->getEtablissementPrincipal()) {
 
             return $this->forwardSecure();
