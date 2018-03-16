@@ -69,7 +69,7 @@
     <div class="col-xs-12">
         <h3>Superficies facturables</h3>
         <ul>
-          <p><strong><?php echo $registre->superficies_facturables; ?> ha</strong> de superficies facturables</p>
+          <p><strong><?php echo $registre->superficies_facturables; ?> are(s)</strong> de superficies facturables</p>
         </ul>
 </div></div>
 <div class="row row-margin row-button">
