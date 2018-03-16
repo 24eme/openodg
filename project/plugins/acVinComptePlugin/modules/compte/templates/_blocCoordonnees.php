@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-xs-9">
                     <?php foreach ($compte->getEmails() as $email): ?>
-                        <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a>
+                        <small><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></small>
                     <?php endforeach; ?>
                 </div>
             </div>

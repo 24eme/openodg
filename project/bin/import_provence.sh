@@ -112,10 +112,10 @@ echo  "IMPORT DES INTERLOCUTEUR"
 php symfony import:interlocuteurs-from-csv $DATA_DIR/20180315_contacts_interlocuteurs.utf8.csv --application="provence" --trace
 
 echo  "IMPORT PARCELLAIRE"
-php symfony import:parcellaire-from-csv $DATA_DIR/20180208_parcellaire_aoc_operateurs_identifies.csv.utf8$TEST.csv "2018-02-08" --application="provence"
+php symfony import:parcellaire-from-csv $DATA_DIR/20180208_parcellaire_aoc_operateurs_identifies.csv.utf8$TEST.csv "2018-02-08" --application="provence"  --trace
 
 echo  "IMPORT HABILITATION"
-php symfony import:habilitation-from-csv $DATA_DIR/20180315_liste_operateur.utf8$TEST.csv --application="provence"
+php symfony import:habilitation-from-csv $DATA_DIR/20180315_liste_operateur.utf8$TEST.csv --application="provence"  --trace
 
 echo "IMPORT LOGIN CIVP"
 cat $DATA_DIR/20180315_login_civp.csv | awk -F ';' '{ print "php symfony compte:add-login-alternatif COMPTE-" $1 " " $3 " --application=provence" }' | bash
