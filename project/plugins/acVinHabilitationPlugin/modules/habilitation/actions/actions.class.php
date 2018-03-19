@@ -114,7 +114,7 @@ class habilitationActions extends sfActions {
 
         if(!$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
             foreach($values as $key => $value) {
-                if(preg_match('/^statut_/', $key) && !preg_match('/^DEMANDE_/', $value)) {
+                if(preg_match('/^statut_/', $key) && !preg_match('/^(DEMANDE_|ANNULÉ)/', $value)) {
                     $this->getUser()->setFlash("erreur", "Vous n'êtes pas autorisé à modifier une habilitation avec le statut : ".$value);
 
                     return $this->redirect('habilitation_declarant', $this->etablissement);
