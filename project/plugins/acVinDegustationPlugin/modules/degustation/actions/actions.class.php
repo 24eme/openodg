@@ -196,6 +196,10 @@ class degustationActions extends sfActions {
 
         $this->operateurs = TourneeClient::getInstance()->getPrelevementsFiltered($this->tournee->appellation, $this->tournee->date_prelevement_debut, $this->tournee->date_prelevement_fin, $this->tournee->getCampagne());
         $this->reportes =  TourneeClient::getInstance()->getReportes($this->tournee->appellation, $this->tournee->getCampagne());
+        $this->nb_force = 0;
+        foreach($this->operateurs as $op) {
+          $this->nb_force += $op->force;
+        }
         $this->nb_reports = count($this->reportes);
 
         $this->form = new TourneeCreationFinForm($this->tournee);
@@ -214,7 +218,7 @@ class degustationActions extends sfActions {
 
         $this->form->save();
 
-        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever') + $this->nb_reports;
+        $nb_a_prelever = $this->form->getValue('nombre_operateurs_a_prelever') + $this->nb_reports + $this->nb_force;
 
         return $this->redirect('degustation_operateurs', array('sf_subject' => $this->tournee, 'nb_a_prelever' => $nb_a_prelever));
     }

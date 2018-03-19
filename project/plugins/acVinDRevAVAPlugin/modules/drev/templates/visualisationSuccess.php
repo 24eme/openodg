@@ -3,7 +3,7 @@
 <?php include_partial('drev/breadcrumb', array('drev' => $drev )); ?>
 
 <?php if (isset($form)): ?>
-    <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
+  <form action="<?php echo url_for('drev_visualisation', $drev) ?>" method="post">
         <?php echo $form->renderHiddenFields(); ?>
         <?php echo $form->renderGlobalErrors(); ?>
 <?php endif; ?>

@@ -205,7 +205,7 @@ td,
 th {
   padding: 0;
 }
-/*@import "../css/lib/bootstrap/less/print.less";*/
+/*@import "../../components/bootstrap/less/print.less";*/
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -636,7 +636,7 @@ address {
   font-style: normal;
   line-height: 1.42857143;
 }
-/*@import "../css/lib/bootstrap/less/code.less";*/
+/*@import "../../components/bootstrap/less/code.less";*/
 .container {
   margin-right: auto;
   margin-left: auto;
@@ -2283,8 +2283,8 @@ input[type="button"].btn-block {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('lib/bootstrap/fonts/glyphicons-halflings-regular.eot');
-  src: url('lib/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('lib/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('lib/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('lib/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('../components/bootstrap/fonts/glyphicons-halflings-regular.eot');
+  src: url('../components/bootstrap/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../components/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .glyphicon {
   position: relative;
@@ -4152,7 +4152,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   border-bottom-right-radius: 3px;
   border-top-right-radius: 3px;
 }
-/*@import "../css/lib/bootstrap/less/pager.less";*/
+/*@import "../../components/bootstrap/less/pager.less";*/
 .label {
   display: inline;
   padding: .2em .6em .3em;
@@ -4259,8 +4259,8 @@ a.list-group-item.active > .badge,
 .nav-pills > li > a > .badge {
   margin-left: 3px;
 }
-/*@import "../css/lib/bootstrap/less/jumbotron.less";*/
-/*@import "../css/lib/bootstrap/less/thumbnails.less";*/
+/*@import "../../components/bootstrap/less/jumbotron.less";*/
+/*@import "../../components/bootstrap/less/thumbnails.less";*/
 .alert {
   padding: 15px;
   margin-bottom: 20px;
@@ -4334,8 +4334,8 @@ a.list-group-item.active > .badge,
 .alert-danger .alert-link {
   color: #943b3b;
 }
-/*@import "../css/lib/bootstrap/less/progress-bars.less";*/
-/*@import "../css/lib/bootstrap/less/media.less";*/
+/*@import "../../components/bootstrap/less/progress-bars.less";*/
+/*@import "../../components/bootstrap/less/media.less";*/
 .list-group {
   margin-bottom: 20px;
   padding-left: 0;
@@ -5031,8 +5031,8 @@ button.close {
   border-width: 0 5px 5px;
   border-bottom-color: #827a69;
 }
-/*@import "../css/lib/bootstrap/less/popovers.less";*/
-/*@import "../css/lib/bootstrap/less/carousel.less";*/
+/*@import "../../components/bootstrap/less/popovers.less";*/
+/*@import "../../components/bootstrap/less/carousel.less";*/
 .clearfix:before,
 .clearfix:after,
 .container:before,

@@ -4,9 +4,9 @@
  *
  */
 
-class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclarantDocument, InterfaceDeclaration {
+class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument, InterfaceDeclaration {
 
-    protected $declarant_document = null;
+
     protected $mouvement_document = null;
     protected $version_document = null;
 
@@ -36,6 +36,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $declarant->raison_sociale = $etablissement->raison_sociale;
         $declarant->cvi = $etablissement->cvi;
         $declarant->siret = $etablissement->getSociete()->siret;
+
         $declarant->adresse = $compte->adresse;
         $declarant->adresse_complementaire = $compte->adresse_complementaire;
         $declarant->commune = $compte->commune;
@@ -44,12 +45,20 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
         $declarant->telephone_mobile = $compte->telephone_mobile;
         $declarant->email = $compte->email ;
 
+        $compteSociete = $etablissement->getSociete()->getMasterCompte();
+        $declarant->adresse_societe = $compteSociete->adresse;
+        $declarant->adresse_complementaire_societe = $compteSociete->adresse_complementaire;
+        $declarant->commune_societe = $compteSociete->commune;
+        $declarant->code_postal_societe = $compteSociete->code_postal;
+        $declarant->telephone_bureau_societe = $compteSociete->telephone_bureau;
+        $declarant->telephone_mobile_societe = $compteSociete->telephone_mobile;
+        $declarant->email_societe = $compteSociete->email ;
+
         return $declarant;
 
     }
 
     protected function initDocuments() {
-        $this->declarant_document = new DeclarantDocument($this);
         $this->historique = array();
     }
 
@@ -124,9 +133,6 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     }
 
 
-    public function storeDeclarant() {
-        $this->declarant_document->storeDeclarant();
-    }
 
     public function storeEtape($etape) {
         $etapeOriginal = ($this->exist('etape')) ? $this->etape : null;

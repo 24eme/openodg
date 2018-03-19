@@ -18,7 +18,9 @@ function(doc) {
         var prelevement = doc.prelevements[key];
         chai = doc.chais['cuve_'];
         if(prelevement.date) {
-            emit([key, prelevement.date, doc.identifiant, doc.declarant.raison_sociale, chai.adresse, chai.code_postal, chai.commune], prelevement.total_lots);
+            force = 0;
+            if (prelevement.force) {force = prelevement.force;}
+            emit([key, prelevement.date, doc.identifiant, doc.declarant.raison_sociale, chai.adresse, chai.code_postal, chai.commune, force], prelevement.total_lots);
         }
     }
 }

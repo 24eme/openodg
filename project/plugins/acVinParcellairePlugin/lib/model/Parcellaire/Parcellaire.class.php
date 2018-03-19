@@ -64,7 +64,8 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     }
 
     public function getConfiguration() {
-        return acCouchdbManager::getClient('Configuration')->retrieveConfiguration($this->campagne);
+
+        return ConfigurationClient::getInstance()->getConfiguration($this->campagne.'-03-01');
     }
 
     public function storeEtape($etape) {
@@ -136,18 +137,37 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         $this->declaration = $parcellairePrev->declaration;
     }
 
-    public function fixSuperficiesHa() {
-        foreach ($this->declaration->getProduitsCepageDetails() as $detail) {
-            if (preg_match("/^[0-9]+\.[0-9]{3,}$/", $detail->superficie) || ($detail->superficie < 2 && $detail->getAppellation()->getKey() == "appellation_GRDCRU")) {
-                $old_superficie = $detail->superficie;
-                $detail->superficie = $detail->superficie * 100;
-                echo "REWRITE SUPERFICIE;" . $this->_id . ";" . $detail->getLibelleComplet() . ";" . $old_superficie . ";" . $detail->superficie . "\n";
-            }
+    public function addProduit($hash) {
+        $hashToAdd = preg_replace("|/declaration/|", '', $hash);
+        $exist = $this->exist('declaration/'.$hashToAdd);
+
+        $produit = $this->add('declaration')->add($hashToAdd);
+
+        if(!$exist) {
+            $this->declaration->reorderByConf();
         }
+
+        return $this->get($produit->getHash());
+    }
+
+    public function getConfigProduits() {
+
+        return $this->getConfiguration()->declaration->getProduits();
     }
 
     public function getProduits($onlyActive = false) {
+
         return $this->declaration->getProduits($onlyActive = false);
+    }
+
+    public function getProduitsDetails($onlyVtSgn = false, $active = false) {
+
+        return $this->declaration->getProduitsDetails($onlyVtSgn, $active);
+    }
+
+    public function getParcelles($onlyVtSgn = false, $active = false) {
+
+        return $this->getProduitsDetails($onlyVtSgn, $active);
     }
 
     public function getAllParcellesKeysByAppellations() {
@@ -162,93 +182,12 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         return $parcellesByAppellations;
     }
 
-    public function getAllParcellesByAppellations() {
-        $appellations = $this->declaration->getAppellations();
-        $parcellesByAppellations = array();
-        foreach ($appellations as $appellation) {
-            $parcellesByAppellations[$appellation->getHash()] = new stdClass();
-            $parcellesByAppellations[$appellation->getHash()]->appellation = $appellation;
-            $parcellesByAppellations[$appellation->getHash()]->parcelles = $appellation->getProduitsCepageDetails();
-        }
-        return $parcellesByAppellations;
-    }
-
-    public function getAllParcellesByAppellation($appellationHash) {
-        $allParcellesByAppellations = $this->getAllParcellesByAppellations();
-        $parcelles = array();
-
-        foreach ($allParcellesByAppellations as $appellation) {
-            $appellationKey = str_replace('appellation_', '', $appellation->appellation->getKey());
-            if ($appellationKey == $appellationHash) {
-                $parcelles = $appellation->parcelles;
-            }
-        }
-        return $parcelles;
-    }
-
-    public function getAppellationNodeFromAppellationKey($appellationKey, $autoAddAppellation = false) {
-        if ($appellationKey == ParcellaireClient::APPELLATION_VTSGN) {
-            return ParcellaireClient::APPELLATION_VTSGN;
-        }
-
-        $appellations = $this->declaration->getAppellations();
-        $appellationNode = null;
-        foreach ($appellations as $key => $appellation) {
-            if ('appellation_' . $appellationKey == $key) {
-                $appellationNode = $appellation;
-                break;
-            }
-        }
-        if (!$appellationNode && $autoAddAppellation) {
-            foreach ($this->getConfiguration()->getDeclaration()->getNoeudAppellations() as $key => $appellation) {
-                if ('appellation_' . $appellationKey == $key) {
-                    $appellationNode = $this->addAppellation($appellation->getHash());
-                    break;
-                }
-            }
-        }
-        return $appellationNode;
-    }
-
-    public function addProduit($hash, $add_appellation = true) {
-        $config = $this->getConfiguration()->get($hash);
-        if ($add_appellation) {
-            $this->addAppellation($config->getAppellation()->getHash());
-        }
-
-        $produit = $this->getOrAdd($config->getHash());
-        $produit->getLieu()->getLibelle();
-        $produit->getCouleur()->getLibelle();
+    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
+        $config = $this->getConfiguration()->get($hashProduit);
+        $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
         $produit->getLibelle();
 
-        return $produit;
-    }
-
-    public function addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-        $produit = $this->getOrAdd($hash);
-        $this->addProduit($produit->getHash());
-
-        return $produit->addDetailNode($parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
-    }
-
-    public function addParcelleForAppellation($appellationKey, $cepage, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-        $hash = str_replace('-', '/', $cepage);
-        $commune = KeyInflector::slugify($commune);
-        $section = KeyInflector::slugify($section);
-        $numero_parcelle = KeyInflector::slugify($numero_parcelle);
-        $parcelleKey = KeyInflector::slugify($commune . '-' . $section . '-' . $numero_parcelle);
-        if ($lieu) {
-            $parcelleKey.='-' . KeyInflector::slugify($lieu);
-        }
-
-        return $this->addProduitParcelle($hash, $parcelleKey, $commune, $section, $numero_parcelle, $lieu, $dpt);
-    }
-
-    public function addAppellation($hash) {
-        $config = $this->getConfiguration()->get($hash);
-        $appellation = $this->getOrAdd($config->hash);
-
-        return $appellation;
+        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $dpt);
     }
 
     public function addAcheteur($type, $cvi) {
@@ -279,21 +218,6 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
         $acheteur->email = $etablissement->email;
 
         return $acheteur;
-    }
-
-    public function hasParcelleForAppellationKey($appellationKey) {
-        $allParcelles = $this->getAllParcellesByAppellations();
-        foreach ($allParcelles as $hash => $appellation) {
-            if ($appellation->appellation->getKey() == 'appellation_' . $appellationKey) {
-                foreach ($appellation->appellation->getMentions() as $mention) {
-                    if (!count($mention->getLieux())) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     public function getParcellesByAppellation($cviFilter = null) {
@@ -422,11 +346,11 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     public function isParcellaireCremant() {
         return in_array($this->getTypeParcellaire(), array(ParcellaireClient::TYPE_COUCHDB_PARCELLAIRE_CREMANT, ParcellaireClient::TYPE_COUCHDB_INTENTION_CREMANT));
     }
-    
+
     public function isIntentionCremant() {
     	return ($this->getTypeParcellaire() == ParcellaireClient::TYPE_COUCHDB_INTENTION_CREMANT);
     }
-    
+
     public function getTypeParcellaire() {
     	if ($this->_id) {
     		if (preg_match('/^([A-Z]*)-([0-9]*)-([0-9]{4})/', $this->_id, $result)) {
@@ -435,11 +359,11 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
     }
-    
+
     protected function doSave() {
     	$this->piece_document->generatePieces();
     }
-    
+
     /**** PIECES ****/
 
     public function getAllPieces() {
@@ -455,11 +379,11 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     		'source' => null
     	));
     }
-    
+
     public function generatePieces() {
     	return $this->piece_document->generatePieces();
     }
-    
+
     public function generateUrlPiece($source = null) {
     	return sfContext::getInstance()->getRouting()->generate('parcellaire_export_pdf', $this);
     }
@@ -468,10 +392,18 @@ class Parcellaire extends BaseParcellaire implements InterfaceDeclaration, Inter
     	return sfContext::getInstance()->getRouting()->generate('parcellaire_visualisation', array('id' => $id));
     }
 
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
     }
-    
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
+    }
+
     /**** FIN DES PIECES ****/
 
 }

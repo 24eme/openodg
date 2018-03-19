@@ -68,7 +68,6 @@ class HabilitationClient extends acCouchdbClient {
             if (!$habilitation_found) {
               $habilitation = new Habilitation();
               $habilitation->initDoc($identifiant,$date);
-              $habilitation->storeDeclarant();
               $etablissement = $habilitation->getEtablissementObject();
             }else{
               $habilitation_found->date = $date;

@@ -1,0 +1,149 @@
+parcellaireirrigable_create:
+  url: /parcellaire-irrigable/creation/:identifiant
+  param: { module: parcellaireIrrigable, action: create }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireirrigable_create_papier:
+  url: /parcellaire-irrigable/creation-papier/:identifiant
+  param: { module: parcellaireIrrigable, action: createPapier }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireirrigable_edit:
+  url: /parcellaire-irrigable/edition/:id
+  param: { module: parcellaireIrrigable, action: edit }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireirrigable_delete:
+  url: /parcellaire-irrigable/suppression/:id
+  param: { module: parcellaireIrrigable, action: delete }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get]
+
+parcellaireirrigable_devalidation:
+  url: /parcellaire-irrigable/devalidation/:id
+  param: { module: parcellaireIrrigable, action: devalidation }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get]
+    
+parcellaireirrigable_exploitation:
+  url: /parcellaire-irrigable/exploitation/:id
+  param: { module: parcellaireIrrigable, action: exploitation }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
+parcellaireirrigable_parcelles:
+  url: /parcellaire-irrigable/parcelles/:id
+  param: { module: parcellaireIrrigable, action: parcelles }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
+parcellaireirrigable_irrigations:
+  url: /parcellaire-irrigable/irrigations/:id
+  param: { module: parcellaireIrrigable, action: irrigations }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireirrigable_validation:
+  url: /parcellaire-irrigable/validation/:id
+  param: { module: parcellaireIrrigable, action: validation }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+parcellaireirrigable_visualisation:
+  url: /parcellaire-irrigable/visualisation/:id
+  param: { module: parcellaireIrrigable, action: visualisation }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get, post]
+    
+parcellaireirrigable_export_pdf:
+  url: /parcellaire-irrigable/pdf/:id
+  param: { module: parcellaireIrrigable, action: PDF }
+  class: ParcellaireIrrigableRoute
+  options:
+    model:    ParcellaireIrrigable
+    type:     object
+  requirements:
+    sf_method: [get]
+#
+# parcellaire_intention_modification:
+#   url: /parcellaire/modification-parcelle/:id/:appellation/:parcelle
+#   param: { module: parcellaire, action: modificationParcelle }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get, post]
+#
+# parcellaire_validation:
+#   url: /parcellaire/validation/:id
+#   param: { module: parcellaire, action: validation }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get,post]
+#
+# parcellaire_export_pdf:
+#   url: /parcellaire/pdf/:id
+#   param: { module: parcellaire, action: PDF }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get]
+#
+# parcellaire_visualisation:
+#   url: /parcellaire/visualisation/:id
+#   param: { module: parcellaire, action: visualisation }
+#   class: ParcellaireRoute
+#   options:
+#     model:    Parcellaire
+#     type:     object
+#   requirements:
+#     sf_method: [get]

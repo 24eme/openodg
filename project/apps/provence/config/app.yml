@@ -1,0 +1,14 @@
+# You can find more information about this file on the symfony website:
+# http://www.symfony-project.org/reference/1_4/en/11-App
+
+# default values
+all:
+  document_validation_signataire: 1
+  parcellaire_irrigable:
+    ressources: ["Canal de Provence", "Forage", "Etang", "Retenue collinaire"]
+    materiels: ["Goutte à goutte", "Canon"]
+  float:
+    default_decimal_format: 2
+    max_decimal_authorized: 4
+  societe:
+    format_identifiant: "CDP%05d"

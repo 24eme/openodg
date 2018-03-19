@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class DRevPrelevementsView extends acCouchdbView
 {
@@ -9,6 +9,7 @@ class DRevPrelevementsView extends acCouchdbView
     const KEY_ADRESSE = 4;
     const KEY_CODE_POSTAL = 5;
     const KEY_COMMUNE = 6;
+    const KEY_FORCE = 7;
 
     public static function getInstance() {
 
@@ -50,6 +51,7 @@ class DRevPrelevementsView extends acCouchdbView
             $item->adresse = $row->key[self::KEY_ADRESSE];
             $item->code_postal = $row->key[self::KEY_CODE_POSTAL];
             $item->commune = $row->key[self::KEY_COMMUNE];
+            $item->force = $row->key[self::KEY_FORCE];
 
             $items[$key] = $item;
         }

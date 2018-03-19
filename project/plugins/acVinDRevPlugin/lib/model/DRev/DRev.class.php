@@ -248,15 +248,22 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	if (!$this->hasDocumentDouanier()) {
     		return null;
     	}
+    	$typeDocumentDouanier = $this->getDocumentDouanierType();
     	$csvFile = $this->getDocumentDouanier('csv');
     	if (!$csvFile) {
-    		return  null;
+    		$docDouanier = $this->getDocumentDouanier();
+    		if ($docDouanier &&  $docDouanier->exist('donnees') && count($docDouanier->donnees) >= 1) {
+    			$className = DeclarationClient::getInstance()->getExportCsvClassName($typeDocumentDouanier);
+    			$csvOrigine = new $className($docDouanier, false);
+    			return $csvOrigine->getCsv();
+    		} else {
+    			return null;
+    		}
     	}
-    	$typeDocumentDouanier = $this->getDocumentDouanierType();
-    	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->campagne);
+    	$csvOrigine = DouaneImportCsvFile::getNewInstanceFromType($typeDocumentDouanier, $csvFile, $this->getDocumentDouanier());
     	$csvContent = $csvOrigine->convert();
     	if (!$csvContent) {
-    		return null;
+    		return null;    		
     	}
     	$path = sfConfig::get('sf_cache_dir').'/dr/';
     	$filename = $typeDocumentDouanier.'-'.$this->identifiant.'-'.$this->campagne.'.csv';
@@ -1132,6 +1139,10 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
     	return sfContext::getInstance()->getRouting()->generate('drev_visualisation', array('id' => $id));
+    }
+
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
     }
 
     public static function isVisualisationMasterUrl($admin = false) {

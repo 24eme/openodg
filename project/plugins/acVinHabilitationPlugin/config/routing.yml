@@ -15,7 +15,7 @@ habilitation_etablissement_selection:
 habilitation_declarant:
   url: /habilitation/declarant/:identifiant
   param: { module: habilitation, action: declarant }
-  class: EtablissementRoute
+  class: HabilitationDeclarantRoute
   options:
     model:    Etablissement
     type:     object

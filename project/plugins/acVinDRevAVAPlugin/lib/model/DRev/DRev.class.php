@@ -758,6 +758,14 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
 
 	protected function doSave() {
 		$this->piece_document->generatePieces();
+  }
+  public function save($con = null) {
+    if ($this->exist('non_conditionneur') && $this->non_conditionneur) {
+      if ($this->prelevements->exist('cuve_ALSACE')) {
+        $this->prelevements->cuve_ALSACE->add('force', 1);
+      }
+    }
+    parent::save($con);
 	}
 
     /*
@@ -948,8 +956,16 @@ class DRev extends BaseDRev implements InterfaceProduitsDocument, InterfaceVersi
     	return sfContext::getInstance()->getRouting()->generate('drev_visualisation', array('id' => $id));
     }
 
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
+    }
+
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/

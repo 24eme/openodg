@@ -20,6 +20,7 @@ class DeclarationTousView extends acCouchdbView
     const STATUT_BROUILLON = "Brouillon";
     const STATUT_A_VALIDER = "À valider";
     const STATUT_VALIDE = "Validé";
+    const STATUT_EN_ATTENTE = "En attente";
 
     public static function getInstance() {
 

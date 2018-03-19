@@ -45,6 +45,9 @@ class EtablissementClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
     const CHAI_ATTRIBUT_PRESTATAIRE = 'PRESTATAIRE';
     const CHAI_ATTRIBUT_ELEVAGE = 'ELEVAGE';
+    const CHAI_PRODUCTEUR_DE_RAISIN = 'PRODUCTEURRAISINS';
+    const CHAI_PRODUCTEUR_DE_MOUT = 'PRODUCTEURMOUTS';
+    const CHAI_DETENTEUR_VRAC = 'DETENTEURVRAC';
 
     public static $statuts = array(self::STATUT_ACTIF => 'ACTIF',
         self::STATUT_SUSPENDU => 'SUSPENDU');
@@ -74,7 +77,17 @@ class EtablissementClient extends acCouchdbClient {
                                                   self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
                                                   self::CHAI_ATTRIBUT_STOCKAGE => 'Lieu de stockage',
                                                   self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
-                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement');
+                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement',
+                                                  self::CHAI_PRODUCTEUR_DE_RAISIN => 'Producteur de raisins',
+                                                  self::CHAI_PRODUCTEUR_DE_MOUT => 'Producteur de moûts',
+                                                  self::CHAI_DETENTEUR_VRAC => 'Détenteur de vin en vrac');
+
+    public static $chaisAttributsInImport = array("Eleveur de DGC" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
+                                              "Conditionneur" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
+                                              "Détenteur de vin en vrac" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                              "Vinificateur" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                              "Producteur de moût" => EtablissementClient::CHAI_PRODUCTEUR_DE_MOUT,
+                                              "Producteur de raisins" =>  EtablissementClient::CHAI_PRODUCTEUR_DE_RAISIN);
 
     public static function getInstance() {
         return acCouchdbManager::getClient("Etablissement");
@@ -89,11 +102,11 @@ class EtablissementClient extends acCouchdbClient {
         $etbs = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 0;
         foreach ($etbs as $id) {
-            if (!preg_match('/ETABLISSEMENT-[0-9]{6}([0-9]{2})/', $id, $matches)) {
+            if (!preg_match('/ETABLISSEMENT-'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'([0-9]{2})/', $id, $matches)) {
                 continue;
             }
 
-            $num = $matches[1];
+            $num = $matches[3];
             if ($num > $last_num) {
                 $last_num = $num;
             }

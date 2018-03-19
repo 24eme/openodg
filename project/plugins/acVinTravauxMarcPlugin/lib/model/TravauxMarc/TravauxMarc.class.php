@@ -117,15 +117,23 @@ class TravauxMarc extends BaseTravauxMarc implements InterfaceDeclarantDocument,
     }
 
     public function generateUrlPiece($source = null) {
-    	return sfContext::getInstance()->getRouting()->generate('drevmarc_export_pdf', $this);
+    	return sfContext::getInstance()->getRouting()->generate('travauxmarc_export_pdf', $this);
     }
 
     public static function getUrlVisualisationPiece($id, $admin = false) {
-    	return sfContext::getInstance()->getRouting()->generate('drevmarc_visualisation', array('id' => $id));
+    	return sfContext::getInstance()->getRouting()->generate('travauxmarc_visualisation', array('id' => $id));
+    }
+
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+    	return null;
     }
 
     public static function isVisualisationMasterUrl($admin = false) {
     	return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+    	return false;
     }
 
     /**** FIN DES PIECES ****/

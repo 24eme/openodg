@@ -6,15 +6,15 @@
                 <?php echo $form->renderGlobalErrors(); ?>
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    
-                    <h2 class="modal-title" id="myModalLabel">Ajouter une parcelle&nbsp;<?php echo ($appellation == ParcellaireClient::APPELLATION_VTSGN)? 'd\'AOC Alsace blanc' : '';  ?></h2>
+
+                    <h2 class="modal-title" id="myModalLabel">Ajouter une parcelle&nbsp;<?php echo (isset($appellation) && $appellation == ParcellaireClient::APPELLATION_VTSGN)? 'd\'AOC Alsace blanc' : '';  ?></h2>
                 </div>
-                <div class="modal-body">                    
-                    <?php include_partial('parcellaire/parcelleForm', array('form' => $form,'appellation' => $appellation)); ?>                                  
+                <div class="modal-body">
+                    <?php include_partial('parcellaire/parcelleForm', array('form' => $form)); ?>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-danger btn pull-left" data-dismiss="modal">Annuler</a>
-                    <button type="submit" class="btn btn-default btn pull-right">Ajouter la parcelle</button>
+                    <a class="btn btn-default btn pull-left" data-dismiss="modal">Annuler</a>
+                    <button type="submit" class="btn btn-primary btn pull-right">Ajouter la parcelle</button>
                 </div>
             </form>
         </div>

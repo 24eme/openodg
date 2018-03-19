@@ -95,7 +95,12 @@
     		</div>
     	</div>
     </div>
-
+	
+		<?php if ($urlCsv = Piece::getUrlGenerationCsvPiece($fichier->_id, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN))): ?>
+		<div class="row row-margin row-button text-center">
+			<a class="btn btn-default" href="<?php echo $urlCsv ?>" style="margin: 0 10px;"><span class="glyphicon glyphicon-file"></span> CSV Généré</a>
+		</div>
+		<?php endif; ?>
     <div class="row row-margin row-button">
         <div class="col-xs-6">
         	<a href="<?php echo url_for('declaration_etablissement', $etablissement) ?>" class="annuler btn btn-default btn-danger">Annuler</a>
