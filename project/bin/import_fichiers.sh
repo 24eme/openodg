@@ -19,8 +19,6 @@ echo "Création des fichiers";
 
 TARGET=$(echo $ODGRHONE_FICHIERS/ | sed 's,/,\\/,g')
 
-DATEIMPORT=$(date +'%Y-%m-%d')
-
 ls $ODGRHONE_FICHIERS/* | while read path ; do
 
 	TYPE=$(echo $path | sed 's/'$TARGET'//g' | cut -d '-' -f 1)
@@ -28,6 +26,6 @@ ls $ODGRHONE_FICHIERS/* | while read path ; do
 	IDENTIFIANT=$(echo $path | sed 's/\.[a-zA-Z0-9]*$//g' | cut -d '-' -f 3)
 	ANNEE=$(echo $path | cut -d '-' -f 2)
 
-	php symfony import:fichier $IDENTIFIANT $path --libelle="$TYPE $ANNEE issue de Prodouane" --papier="1" --date_depot="$ANNEE-12-10" --type="$TYPE" --annee="$ANNEE" --lien_symbolique=true --date_import="$DATEIMPORT" --trace
+	php symfony import:fichier $IDENTIFIANT $path --libelle="$TYPE $ANNEE issue de Prodouane" --papier="1" --type="$TYPE" --annee="$ANNEE" --lien_symbolique=true --trace
 
 done
