@@ -26,6 +26,6 @@ ls $ODGRHONE_FICHIERS/* | while read path ; do
 	IDENTIFIANT=$(echo $path | sed 's/\.[a-zA-Z0-9]*$//g' | cut -d '-' -f 3)
 	ANNEE=$(echo $path | cut -d '-' -f 2)
 
-	php symfony import:fichier $IDENTIFIANT $path --libelle="$TYPE $ANNEE issue de Prodouane" --papier="1" --type="$TYPE" --annee="$ANNEE" --lien_symbolique=true --trace
+	php symfony import:fichier $SYMFONYTASKOPTIONS $IDENTIFIANT $path --libelle="$TYPE $ANNEE issue de Prodouane" --papier="1" --type="$TYPE" --annee="$ANNEE" --lien_symbolique=true --trace
 
 done
