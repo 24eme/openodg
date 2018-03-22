@@ -34,7 +34,6 @@ foreach ($facets as $type => $ftype) {
   <div class="col-xs-12">
   <br/>
   <h2>Ajouter un nouveau groupe</h2>
-    <div class="row">
     <form method="post" class="form-horizontal" action="<?php echo url_for('compte_groupes'); ?>">
       <?php echo $form->renderHiddenFields() ?>
       <?php echo $form->renderGlobalErrors() ?>
@@ -48,6 +47,5 @@ foreach ($facets as $type => $ftype) {
       <button class="btn btn-default btn-md" type="submit" id="btn_rechercher">Nouveau groupe</button>
       </div>
     </form>
-  </div>
   </div>
 </div>

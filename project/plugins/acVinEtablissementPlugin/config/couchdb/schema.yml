@@ -154,6 +154,7 @@ Etablissement:
                    commune: { }
                    code_postal: { }
                    partage: boolean
+                   archive: boolean
                    lat: {  }
                    lon: {  }
                    attributs:

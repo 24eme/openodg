@@ -44,6 +44,10 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
         $this->widgetSchema->setLabel('partage', 'Partagé :');
         $this->setValidator('partage', new sfValidatorString(array('required' => false)));
 
+        $this->setWidget('archive', new bsWidgetFormInputCheckbox());
+        $this->widgetSchema->setLabel('archive', 'Archivé :');
+        $this->setValidator('archive', new sfValidatorString(array('required' => false)));
+
         $this->setWidget('attributs', new sfWidgetFormChoice(array('expanded' => true, 'multiple' => true, 'choices' => $attributs)));
         $this->widgetSchema->setLabel('attributs', 'Attributs :');
         $this->setValidator('attributs', new sfValidatorChoice(array('required' => false, 'multiple' => true, 'choices' => array_keys($attributs))));
@@ -63,6 +67,7 @@ class EtablissementChaiModificationForm extends acCouchdbObjectForm {
       }
       $values["attributs"] = $attributs;
       $values['partage'] = (isset($values['partage']) && $values['partage']);
+      $values["archive"] = intval(isset($values['archive']) && $values['archive']=="on"); 
       $toRemoves = array();
       foreach ($this->getObject()->attributs as $key => $attr) {
         if(!in_array($key,array_keys($values["attributs"]))){

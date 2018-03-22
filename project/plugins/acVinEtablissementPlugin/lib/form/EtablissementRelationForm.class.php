@@ -1,6 +1,6 @@
 <?php
 
-class EtablissementRelationForm extends acCouchdbForm {
+class EtablissementRelationForm extends BaseForm {
 
     public function configure() {
         parent::configure();
@@ -10,16 +10,11 @@ class EtablissementRelationForm extends acCouchdbForm {
         $this->setValidator('type_liaison', new sfValidatorChoice(array('required' => true, 'multiple' => false, 'choices' => array_keys($this->getLiaisonsChoice()))));
 
         $this->setWidget('id_etablissement', new WidgetEtablissement(array('interpro_id' => 'INTERPRO-declaration')));
-        $this->widgetSchema->setLabel('id_etablissement', 'Établissement :');
+        $this->widgetSchema->setLabel('id_etablissement', "Avec l'établissement :");
         $this->setValidator('id_etablissement', new ValidatorEtablissement(array('required' => true)));
         $this->validatorSchema['id_etablissement']->setMessage('required', 'Le choix d\'un etablissement est obligatoire');
 
         $this->widgetSchema->setNameFormat('etablissement_relation[%s]');
-    }
-
-    public function save() {
-        $this->getDocument()->addLiaison($this->getValue('type_liaison'), $this->getValue('id_etablissement'), true);
-        $this->getDocument()->save();
     }
 
     public function getLiaisonsChoice() {

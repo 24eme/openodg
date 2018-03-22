@@ -126,28 +126,26 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return ($this->nom) ? $this->nom : $this->raison_sociale;
     }
 
-    public function addLiaison($type, $etablissement,$saveOther = true, $chai = null, $attributs_chai = array()) {
+    public function addLiaison($type, $etablissement,$saveOther = true, $chai = null, $attributsChai = array()) {
 
         if(!$etablissement instanceof Etablissement) {
             $etablissement = EtablissementClient::getInstance()->find($etablissement);
         }
 
-        if (!in_array($type, EtablissementClient::listTypeLiaisons()))
+        if (!in_array($type, array_keys(EtablissementClient::getTypesLiaisons()))) {
             throw new sfException("liaison type \"$type\" unknown");
+        }
+
         $liaison = $this->liaisons_operateurs->add($type . '_' . $etablissement->_id);
+
         $liaison->type_liaison = $type;
         $liaison->id_etablissement = $etablissement->_id;
         $liaison->libelle_etablissement = $etablissement->nom;
-        if($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS){
-          $liaison->add("attributs_chai",$attributs_chai);
-        }
-        $compte = $this->getMasterCompte();
-        $compte->addTag('manuel',$type);
-        $compte->save();
 
-        if($chai && (($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT) || ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE))){
-            $liaison->hash_chai = $chai->getHash();
-        }
+        $libellesTypeRelation = EtablissementClient::getTypesLiaisons();
+        $compte = $this->getMasterCompte();
+        $compte->addTag('relations',$libellesTypeRelation[$type]);
+        $compte->save();
 
         if($etablissement->exist('ppm') && $etablissement->ppm){
           $liaison->ppm = $etablissement->ppm;
@@ -155,52 +153,27 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         if($etablissement->exist('cvi') && $etablissement->cvi){
           $liaison->cvi = $etablissement->cvi;
         }
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_BAILLEUR)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_METAYER,$this,false);
-          $etablissement->save();
-        }
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_METAYER)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_BAILLEUR,$this,false);
-          $etablissement->save();
+
+        if(EtablissementClient::isTypeLiaisonCanHaveChai($liaison->type_liaison) && $chai) {
+            $liaison->hash_chai = $chai->getHash();
+            $liaison->add("attributs_chai", $attributsChai);
         }
 
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_COOPERATIVE)){
-            $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATEUR,$this,false);
-            $etablissement->save();
-        }
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_COOPERATEUR)){
-            $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$this,false);
-            $etablissement->save();
+        $typeLiaisonOpposee = EtablissementClient::getTypeLiaisonOpposee($liaison->type_liaison);
+
+        $chaiOppose = null;
+        $attributsChaiOpposes = array();
+
+        if(EtablissementClient::isTypeLiaisonCanHaveChai($typeLiaisonOpposee) && $chai) {
+            $chaiOppose = $chai;
+            $attributsChaiOpposes = $attributsChai;
         }
 
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_VENDEUR_VRAC,$this,false);
-          $etablissement->save();
-        }
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_VENDEUR_VRAC)){
-            $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$this,false);
+        if($saveOther && $typeLiaisonOpposee) {
+            $etablissement->addLiaison($typeLiaisonOpposee, $this, false, $chaiOppose, $attributsChaiOpposes);
             $etablissement->save();
         }
 
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN,$this,false);
-          $etablissement->save();
-        }
-
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_APPORTEUR_RAISIN)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,$this,false);
-          $etablissement->save();
-        }
-
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_HEBERGE,$this,false);
-          $etablissement->save();
-        }
-
-        if($saveOther && ($type == EtablissementClient::TYPE_LIAISON_HEBERGE)){
-          $etablissement->addLiaison(EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS,$this,false);
-          $etablissement->save();
-        }
         return $liaison;
     }
 
@@ -418,6 +391,14 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
             $a .= ' ; ' . $this->siege->adresse_complementaire;
         }
         return $a;
+    }
+    public function getEmails(){
+        return explode(';',$this->email);
+    }
+
+    public function getUniqueEmail() {
+    	$emails = $this->getEmails();
+    	return (isset($emails[0]))? $emails[0] : null;
     }
 
     public function findEmail() {

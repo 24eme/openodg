@@ -52,7 +52,12 @@ class importEntitesFromCSVTask extends sfBaseTask
     const CSV_DATE_ARCHIVAGE = 32;
 
     const CSV_COMMENTAIRE = 33;
-    const CSV_SOCIETE_TYPE = 34;
+
+    const CSV_CHAI_RESPONSABLE_NOM = 34;
+    const CSV_CHAI_RESPONSABLE_TELEPHONE = 35;
+    const CSV_CHAI_ARCHIVE = 36;
+
+    const CSV_SOCIETE_TYPE = 37;
 
 
 
@@ -73,6 +78,11 @@ class importEntitesFromCSVTask extends sfBaseTask
         $this->briefDescription = "Import d'une entite";
         $this->detailedDescription = <<<EOF
 EOF;
+
+        $this->convert_attributs["Vinification"] = EtablissementClient::CHAI_ATTRIBUT_VINIFICATION;
+        $this->convert_attributs["VV Stockage"] = EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VRAC;
+        $this->convert_attributs['VC Stockage'] = EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE;
+        $this->convert_attributs['DGC'] = EtablissementClient::CHAI_ATTRIBUT_DGC;
     }
 
     protected function execute($arguments = array(), $options = array())
@@ -125,11 +135,11 @@ EOF;
                 $chaiApport = false;
                 if(count($activitesChais) > 0){
                       $this->importLiaisons($etb,$line);
-                      if($data[self::CSV_CHAIS_TYPE] != "Apporteur"){
+                      if($data[self::CSV_CHAIS_TYPE] != "Apporteur" || !$data[self::CSV_CAVE_APPORTEURID]){
                           $this->addChaiForEtablissement($etb,$data);
                       }
                 }
-
+                $this->addResponsableDeChai($soc,$data);
                 echo "\n";
             }else{
               $etb = $soc->getEtablissementPrincipal();
@@ -138,11 +148,11 @@ EOF;
 
               if(count($activitesChais) > 0){
                     $this->importLiaisons($etb,$line);
-                    if($data[self::CSV_CHAIS_TYPE] != "Apporteur"){
+                    if($data[self::CSV_CHAIS_TYPE] != "Apporteur" || !$data[self::CSV_CAVE_APPORTEURID]){
                         $this->addChaiForEtablissement($etb,$data);
                     }
               }
-
+              $this->addResponsableDeChai($soc,$data);
 
               echo "\n";
             }
@@ -184,7 +194,7 @@ EOF;
             $societe->fax = $this->formatTel($data[self::CSV_FAX]);
             //$emails = (explode(";",$data[self::CSV_EMAIL]));
 
-            $societe->email = trim($data[self::CSV_EMAIL]);
+            $societe->email = str_replace("'","",trim($data[self::CSV_EMAIL]));
 
             if($this->isSuspendu){
               $societe->setStatut(SocieteClient::STATUT_SUSPENDU);
@@ -193,28 +203,12 @@ EOF;
             }
             $societe->save();
             $societe = SocieteClient::getInstance()->find($societe->_id);
-            /*if(count($emails) > 1){
-                foreach ($emails as $key => $email) {
-                    if(!$key){
-                        continue;
-                    }
-                    $compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
-                    $compte->nom = "Autre Contact";
-                    $compte->email = trim($email);
-                    echo "L'entité $societe->_id a un interlocuteur $compte->_id ".$compte->nom." (".$compte->email.") \n";
-                    $compte->save();
-                    $societe = SocieteClient::getInstance()->find($societe->_id);
-                }
-            }*/
             return $societe;
           }
 
     protected function importEtablissement($societe,$data,$identifiant){
           $type_etablissement = EtablissementFamilles::FAMILLE_PRODUCTEUR;
-        //   if($data[self::CSV_SOCIETE_TYPE]){
-        //       $type_etablissement = $data[self::CSV_SOCIETE_TYPE];
-        //   }else{
-        //   }
+
           if($data[self::CSV_ORDRE]){
               if(($data[self::CSV_ORDRE] == "N83") || ($data[self::CSV_ORDRE] == "N13")){
                   $type_etablissement = EtablissementFamilles::FAMILLE_NEGOCIANT_VINIFICATEUR;
@@ -235,9 +229,21 @@ EOF;
           $etablissement->constructId();
           $etablissement->cvi = $cvi;
           $etablissement->nom = $this->buildRaisonSociete($data);
-          if($data[self::CSV_ZONE]){
-              $etablissement->region = $data[self::CSV_ZONE];
+
+          $departement = null;
+          if(preg_match("/([0-9]{2})$/", $data[self::CSV_ORDRE], $matches)) {
+              $departement = $matches[1];
+          } else {
+              $departement = substr($data[self::CSV_CP], 0, 2);
           }
+          if($data[self::CSV_ZONE]){
+              $etablissement->region = str_replace(" ", "_", $data[self::CSV_ZONE])."_".$departement;
+          }
+
+          if($data[self::CSV_ZONE] && !array_key_exists($etablissement->region, EtablissementClient::getRegions())) {
+              echo $etablissement->identifiant . " : La région ".$etablissement->region." n'existe pas\n";
+          }
+
           $etablissement->save();
           if($this->isSuspendu){
             $etablissement->setStatut(SocieteClient::STATUT_SUSPENDU);
@@ -260,11 +266,11 @@ EOF;
         protected function addChaiForEtablissement($etb,$data){
           $newChai = $etb->getOrAdd('chais')->add();
           $newChai->nom = $data[self::CSV_CHAIS_VILLE];
-          $newChai->adresse = $data[self::CSV_CHAIS_ADRESSE_1];
-          if($data[self::CSV_CHAIS_ADRESSE_2]) $newChai->adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_2];
-          if($data[self::CSV_CHAIS_ADRESSE_3]) $newChai->adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
+          $newChai->adresse = $this->getChaiAdresseConcat($data);
+
           $newChai->commune = $data[self::CSV_CHAIS_VILLE];
           $newChai->code_postal = $data[self::CSV_CHAIS_CP];
+          $newChai->archive = $data[self::CSV_CHAI_ARCHIVE];
           $activites = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
           foreach ($activites as $activite) {
             if(!array_key_exists(trim($activite),$this->chaisAttributsInImport)){
@@ -304,19 +310,20 @@ EOF;
             }
 
             if($data[self::CSV_CHAIS_TYPE] == "Apporteur"){
+                $attributs_chai = array(EtablissementClient::CHAI_ATTRIBUT_APPORT);
                 if($coopOrNego->isCooperative()){
                     $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true,$chaiAssocie);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_COOPERATIVE,$coopOrNego,true,$chaiAssocie,$attributs_chai);
                 }elseif($coopOrNego->isNegociant()) {
                     $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true,$chaiAssocie);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT,$coopOrNego,true,$chaiAssocie,$attributs_chai);
                 }elseif($coopOrNego->isNegociantVinificateur()) {
                     $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,$coopOrNego,true,$chaiAssocie);
+                    $viti->addLiaison(EtablissementClient::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,$coopOrNego,true,$chaiAssocie,$attributs_chai);
                 }
             }else{
                 $chaiAssocie = $this->getChaiAssocie($data,$coopOrNego);
-                $attributs_chai = explode(';',$data[self::CSV_CHAIS_ACTIVITES]);
+                $attributs_chai = $this->convertAttributsChais(explode(';',$data[self::CSV_CHAIS_ACTIVITES]));
                 $viti->addLiaison(EtablissementClient::TYPE_LIAISON_HEBERGE_TIERS,$coopOrNego,true,$chaiAssocie,$attributs_chai);
             }
 
@@ -328,7 +335,9 @@ EOF;
     }
 
     protected function getChaiAssocie($data,$coopOrNego){
-
+        if(!$coopOrNego->exist('chais') || !$coopOrNego->chais){
+            return null;
+        }
         $chais = $coopOrNego->getChais();
         if(count($chais) == 1){
             foreach ($chais as $chai) {
@@ -358,6 +367,58 @@ EOF;
         $t = str_replace(array(' ','.'),array('',''),$tel);
         $tk = sprintf("%010d",$t);
         return substr($tk, 0,2)." ".substr($tk,2,2)." ".substr($tk,4,2)." ".substr($tk,6,2)." ".substr($tk,8,2);
+    }
+
+    protected function convertAttributsChais($chaisAttributsCsv){
+        $attributsConverted = array();
+        foreach ($chaisAttributsCsv as $chaiCsv) {
+            $attributsConverted[] = $this->convert_attributs[trim($chaiCsv)];
+        }
+        return $attributsConverted;
+    }
+
+
+    protected function getChaiAdresseConcat($data){
+        $adresse = $data[self::CSV_CHAIS_ADRESSE_1];
+        if($data[self::CSV_CHAIS_ADRESSE_2]) $adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_2];
+        if($data[self::CSV_CHAIS_ADRESSE_3]) $adresse .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
+        return $adresse;
+    }
+
+
+    protected function addResponsableDeChai($societe,$data){
+        if(!$data[self::CSV_CHAI_RESPONSABLE_NOM] && !$data[self::CSV_CHAI_RESPONSABLE_TELEPHONE]){
+            return;
+        }
+        $nom = trim($data[self::CSV_CHAI_RESPONSABLE_NOM]);
+        $telephone = trim($this->formatTel($data[self::CSV_CHAI_RESPONSABLE_TELEPHONE]));
+
+        if(!$nom){
+            $nom = "AUTRE CONTACT";
+        }
+
+        $contact = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($societe);
+        $contact->nom = $nom;
+        $contact->fonction = "Responsable de chais";
+        $contact->adresse = $data[self::CSV_CHAIS_ADRESSE_1];
+
+        $adresse_complementaire = "";
+        if($data[self::CSV_CHAIS_ADRESSE_2]) $adresse_complementaire .= $data[self::CSV_CHAIS_ADRESSE_2];
+        if($data[self::CSV_CHAIS_ADRESSE_3]) $adresse_complementaire .=' - '.$data[self::CSV_CHAIS_ADRESSE_3];
+
+        $contact->adresse_complementaire = $adresse_complementaire;
+        $contact->code_postal = $data[self::CSV_CHAIS_CP];
+        $contact->commune = $data[self::CSV_CHAIS_VILLE];
+
+        if(preg_match('/^(06|07)/',$telephone)){
+            $contact->telephone_mobile = $telephone;
+        }else{
+            $contact->telephone_bureau = $telephone;
+        }
+            echo " (+INTERLOCUTEUR $contact->_id ".$contact->nom." (".$contact->telephone_bureau."/".$contact->telephone_mobile.") ";
+
+
+        $contact->save();
     }
 
 }

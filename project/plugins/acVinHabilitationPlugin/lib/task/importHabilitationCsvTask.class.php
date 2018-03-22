@@ -88,17 +88,18 @@ EOF;
             }
 
 
-            $dateHabilitation = DateTime::createFromFormat("d/m/Y",$data[self::CSV_DATE_HABILITATION]);
+            $dateHabilitation = DateTime::createFromFormat("d/m/Y",$this->convertDate($data[self::CSV_DATE_HABILITATION]));
             $this->dateHabilitation = ($dateHabilitation)? $dateHabilitation->format("Y-m-d") : null;
 
-            $dateDemande = DateTime::createFromFormat("d/m/Y",$data[self::CSV_DATE_DEMANDE_HABILITATION]);
+            $dateDemande = DateTime::createFromFormat("d/m/Y",$this->convertDate($data[self::CSV_DATE_DEMANDE_HABILITATION]));
             $this->dateDemande = ($dateDemande)? $dateDemande->format("Y-m-d") : $this->dateHabilitation;
+            echo "$eta->identifiant $this->dateDemande\n";
 
             $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $this->dateDemande);
             $hab_activites = $habilitation->addProduit($this->produitKey)->add('activites');
 
 
-            $dateArchivageHabilitation = DateTime::createFromFormat("d/m/Y",$data[self::CSV_DATE_ARCHIVAGE]);
+            $dateArchivageHabilitation = DateTime::createFromFormat("d/m/Y",$this->convertDate($data[self::CSV_DATE_ARCHIVAGE]));
             $this->dateArchivage = ($dateArchivageHabilitation)? $dateArchivageHabilitation->format("Y-m-d") : null;
 
 
@@ -132,6 +133,17 @@ EOF;
                 $commentaire = ($data[self::CSV_COMMENTAIRE])? str_replace("#","\n",$data[self::CSV_COMMENTAIRE]) : '';
                 $hab_activites->add($activite)->updateHabilitation($statut, $commentaire, $date);
             }
+        }
+    }
+
+    protected function convertDate($date){
+        if(preg_match('/[0-9]{5}/',trim($date))){
+            $dateExcel = trim($date);
+            $date19000101 = new DateTime("1900-01-01");
+            $d = $date19000101->modify("+".$dateExcel." days");
+            return $d->format('d/m/Y');
+        }else{
+            return $date;
         }
     }
 }

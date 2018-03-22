@@ -38,7 +38,7 @@
                 </div>
             <?php else:  ?>
             <div class="panel-body">
-                <p>Votre Identification des parcelles irrigables n'a pas encore été déclarée.</p>
+                <p>Identifier ou mettre à jour vos parcelles<br />irrigables.</p>
             	<div style="margin-top: 50px;">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_create', array('sf_subject' => $etablissement, 'campagne' => $campagne)) ?>">Démarrer la télédéclaration</a>
                     <?php if ($sf_user->isAdmin()): ?>

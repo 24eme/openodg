@@ -50,6 +50,7 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     const CSV_DATE_DEBUT_GESTION = 36;
     const CSV_DATE_FIN_GESTION = 37;
     const CSV_IDU = 38;
+    const CSV_CDP = 39;
 
 
     protected function configure()
@@ -99,11 +100,12 @@ EOF;
 
             $data = str_getcsv($line, ';');
             $cvi = $data[self::CSV_EVV];
+            $cdp = $data[self::CSV_CDP]."01";
             if(!$cvi){
               throw new sfException("le cvi n'existe pas pour la ligne ".implode(',',$line));
             }
 
-            if(!$parcellaire || $parcellaire->declarant->cvi != $cvi) {
+            if(!$parcellaire || $parcellaire->identifiant != $cdp) {
                 if($parcellaire) {
                     $this->saveParcellaire($parcellaire);
                     $parcellaire = null;
@@ -111,9 +113,11 @@ EOF;
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
                 if(!$etablissement){
-                  echo "L'établissement de cvi ".$cvi." n'existe pas dans la base\n";
-
-                  continue;
+                  $etablissement = EtablissementClient::getInstance()->find($cdp);
+                  if(!$etablissement){
+                      echo "/!\ L'établissement de cvi ".$cvi." n'existe pas dans la base pas non plus été trouvé par son CDP  ".$cdp." \n";
+                      continue;
+                  }
                 }
                 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
             }
@@ -149,7 +153,8 @@ EOF;
 
               $cepagesAutorisesConf = $p->getCepagesAutorises()->toArray(0,1);
               if(!in_array(trim($data[self::CSV_LIBELLE_CEPAGE]),$cepagesAutorisesConf)){
-                throw new sfException("le cepage ".trim($data[self::CSV_LIBELLE_CEPAGE])." ne fait pas parti des cépages autorisés");
+                echo "/!\ le cepage ".trim($data[self::CSV_LIBELLE_CEPAGE])." ne fait pas parti des cépages autorisés : pas d'import\n";
+                continue;
               }
               $cepage = trim($data[self::CSV_LIBELLE_CEPAGE]);
 
@@ -231,12 +236,16 @@ EOF;
                   echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
               }
 
-              echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
+              echo "Import de la parcelle $section $numero_parcelle pour $parcellaire->identifiant !\n";
             }
     }
 
     protected function saveParcellaire($parcellaire) {
-        $parcellaire->save();
-        echo "Parcellaire $parcellaire->_id sauvegardé\n";
+        try{
+            $parcellaire->save();
+            echo "Parcellaire $parcellaire->_id sauvegardé\n";
+         }catch(Exception $e){
+            echo "Le parcellaire $parcellaire->identifiant pour n'a pas pu être sauvé \n";
+         }
     }
 }

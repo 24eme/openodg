@@ -6,6 +6,8 @@
     <li class="active"><a href="<?php echo url_for('etablissement_edition_chai', array('identifiant' => $etablissement->identifiant, 'num' => $num)); ?>"><?php echo "Chai n°".($num+1)." - ".$chai->nom; ?></a></li>
 </ol>
 
+<?php include_partial('global/flash'); ?>
+
 <div class="row">
   <form action="<?php echo url_for("etablissement_edition_chai", array('identifiant' => $etablissement->identifiant, 'num' => $num)) ?>" method="post" class="form-horizontal">
     <?php echo $form->renderHiddenFields(); ?>
@@ -65,6 +67,12 @@
                         <?php echo $form['partage']->renderError() ?>
                         <?php echo $form['partage']->renderLabel(null, array('class' => 'col-xs-4  control-label')); ?>
                         <div class="col-xs-6 text-left checkbox" style="padding-left: 30px;"><?php echo $form['partage']->render(); ?></div> </div>
+                    </div>
+                    <div class="row" style="padding-top:10px;">
+                      <div class="form-group">
+                        <?php echo $form['archive']->renderError() ?>
+                        <?php echo $form['archive']->renderLabel(null, array('class' => 'col-xs-4  control-label')); ?>
+                        <div class="col-xs-6 text-left checkbox" style="padding-left: 30px;"><?php echo $form['archive']->render(); ?></div> </div>
                     </div>
                   </div>
                 </div>

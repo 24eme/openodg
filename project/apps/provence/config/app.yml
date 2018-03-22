@@ -6,7 +6,7 @@ all:
   document_validation_signataire: 1
   parcellaire_irrigable:
     ressources: ["Canal de Provence", "Forage", "Etang", "Retenue collinaire","Réseau urbain"]
-    materiels: ["Goutte à goutte", "Canon"]
+    materiels: ["Goutte à goutte", "Canon", "Système enterré"]
   float:
     default_decimal_format: 2
     max_decimal_authorized: 4
@@ -14,15 +14,18 @@ all:
     format_identifiant: "CDP%05d"
   donnees_viticoles:
     regions:
-      ALPES_MARITIMES: "ALPES MARITIMES"
-      ARGENS_BESSILLON: "ARGENS BESSILLON"
-      BASSIN_DU_BEAUSSET: "BASSIN DU BEAUSSET" 
-      DRACENIE: "DRACENIE"
-      FREJUS: "FREJUS"
-      GOLF_DE_ST_TROPEZ: "GOLF DE ST TROPEZ"
-      LA_LONDE: "LA LONDE"
-      MAURES_INTERIEURS: "MAURES INTERIEURS"
-      NOTRE_DAME_DES_ANGES: "NOTRE DAME DES ANGES"
-      PIERREFEU: "PIERREFEU"
-      PLATEAU_KARSTIQUE: "PLATEAU KARSTIQUE"
-      SAINTE_VICTOIRE: "SAINTE VICTOIRE"
+      ALPES_MARITIMES_83: "ALPES MARITIMES (83)"
+      ARGENS_BESSILLON_83: "ARGENS BESSILLON (83)"
+      BASSIN_DU_BEAUSSET_13: "BASSIN DU BEAUSSET (13)"
+      BASSIN_DU_BEAUSSET_83: "BASSIN DU BEAUSSET (83)"
+      DRACENIE_83: "DRACENIE (83)"
+      FREJUS_83: "FREJUS (83)"
+      GOLF_DE_ST_TROPEZ_83: "GOLF DE ST TROPEZ (83)"
+      LA_LONDE_83: "LA LONDE (83)"
+      MAURES_INTERIEURS_83: "MAURES INTERIEURS (83)"
+      NOTRE_DAME_DES_ANGES_83: "NOTRE DAME DES ANGES (83)"
+      PIERREFEU_13: "PIERREFEU (13)"
+      PIERREFEU_83: "PIERREFEU (83)"
+      PLATEAU_KARSTIQUE_83: "PLATEAU KARSTIQUE (83)"
+      SAINTE_VICTOIRE_13: "SAINTE VICTOIRE (13)"
+      SAINTE_VICTOIRE_83: "SAINTE VICTOIRE (83)"

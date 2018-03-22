@@ -18,7 +18,7 @@
 
             <div style="margin-bottom: 5px" class="col-xs-9">
                 <?php foreach ($compte->getEmails() as $email): ?>
-                    <a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a><br/>
+                    <small><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></small><br/>
                 <?php endforeach; ?>
             </div>
     </div>

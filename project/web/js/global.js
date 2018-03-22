@@ -277,7 +277,7 @@
     }
     $.initBsSwitchCheckbox = function ()
     {
-    	
+
     	if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
         	$('.bootstrap-switch-activeall').hide();
         	$('.bootstrap-switch-removeall').show();
@@ -285,7 +285,7 @@
         	$('.bootstrap-switch-removeall').hide();
         	$('.bootstrap-switch-activeall').show();
         }
-    	
+
         $.fn.onoff = function (event, state) {
             if (state) {
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-off");
@@ -310,9 +310,9 @@
         };
         $('.bsswitch').on('switchChange.bootstrapSwitch', $.fn.onoff);
         $('.bsswitch').on('init.bootstrapSwitch', $.fn.onoff);
-        $('.bsswitch').bootstrapSwitch();       
-        
-        
+        $('.bsswitch').bootstrapSwitch();
+
+
         if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
         	$('.bootstrap-switch-activeall').hide();
         	$('.bootstrap-switch-removeall').show();
@@ -338,7 +338,7 @@
             $('.bootstrap-switch-activeall').hide();
             $('.bootstrap-switch-removeall').show();
         });
-        
+
         $('.bootstrap-switch-removeall').click(function (event) {
         	$($(this).data('target')).find('.bsswitch').each(function () {
         		$(this).bootstrapSwitch('state', false, false);
@@ -370,20 +370,26 @@
         table.each(function(){
             var allFields = $(this).find('.toDuplicate');
             $(this).find('.duplicateBtn').click(function (event) {
+                var alerttxt = ($(this).data('alert')).replace('#','\n');
                 var confirmtxt = $(this).data('confirm');
-                if (confirm(confirmtxt)) {
+                if($(this).hasClass('inactif')){
+                    alert(alerttxt);
+                }else{
                     var fieldsToDuplicate = {};
-                	$("#" + $(this).data('target')).find('.toDuplicate').each(function () {
+                    $("#" + $(this).data('target')).find('.toDuplicate').each(function () {
                         if($(this).data("duplicate")){
                             fieldsToDuplicate[$(this).data("duplicate")] = $(this).select2('data');
                         }
-                	});
+                    });
+                    confirmtxt = confirmtxt.replace('MATERIEL','"'+fieldsToDuplicate.materiel.id+'"').replace('RESSOURCE','"'+fieldsToDuplicate.ressources.id+'"');
+                    if (confirm(confirmtxt)) {
 
-                    for (var f in fieldsToDuplicate) {
-                        $(this).closest('tr').nextAll().find("[data-duplicate='"+f+"']").each(function(){
-                            $(this).val(fieldsToDuplicate[f].id);
-                            $(this).change();
-                        });
+                        for (var f in fieldsToDuplicate) {
+                            $(this).closest('tr').nextAll().find("[data-duplicate='"+f+"']").each(function(){
+                                $(this).val(fieldsToDuplicate[f].id);
+                                $(this).change();
+                            });
+                        }
                     }
                 }
             });
@@ -395,13 +401,13 @@
                             $(this).find('.toDuplicate').each(function(){
                                 if($(this).data("duplicate")){
                                     if(!$(this).select2('data')){
-                                        tr.find('.duplicateBtn').attr("disabled","disabled");
+                                        tr.find('.duplicateBtn').addClass("inactif").css('opacity',0.6);;
                                         disabled = true;
                                     }
                                 }
                             });
                             if(!disabled){
-                                tr.find('.duplicateBtn').removeAttr("disabled");
+                                tr.find('.duplicateBtn').removeClass("inactif").css('opacity',1);
                             }
                     });
                 });
