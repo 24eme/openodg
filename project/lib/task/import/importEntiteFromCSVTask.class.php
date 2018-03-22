@@ -109,7 +109,7 @@ EOF;
 
       foreach(file($this->file_path) as $line) {
           $line = str_replace("\n", "", $line);
-          if(preg_match("/tbl_CDPOps.IdOP/", $line)) {
+          if(preg_match("/tbl_CDPOps/", $line)) {
               continue;
           }
           $this->importEntite($line);
