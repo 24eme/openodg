@@ -55,11 +55,11 @@ class importInterlocuteursFromCSVTask extends sfBaseTask
         $this->briefDescription = "Import des interlocuteurs";
         $this->detailedDescription = <<<EOF
 EOF;
-        $this->fct_directeur = 'Directeur';
-        $this->fct_vignoble = 'Responsable vignoble';
-        $this->fct_cave = 'Responsable cave';
-        $this->fct_commerce = 'Responsable commerce';
-        $this->fct_administrateur = 'Administrateur';
+        $this->fct_directeur = 'Direction';
+        $this->fct_vignoble = 'Vignoble';
+        $this->fct_cave = 'Cave';
+        $this->fct_commerce = 'Commerce';
+        $this->fct_administrateur = 'Administratif';
         $this->civilites = array('MADAME' => "Mme",
                                  'MME' => "Mme",
                                  'MRS' => "Mme",
@@ -114,7 +114,6 @@ EOF;
                 return;
             }
 
-            $this->fct_administrateur = 'Administrateur';
             $societe = $this->importInterlocuteur($societe, $this->fct_directeur,
                                                   $data[self::CSV_DIRECTION_NOM],
                                                   $data[self::CSV_DIRECTION_TEL_BUREAU],
@@ -168,6 +167,7 @@ EOF;
         $contact->email = $e;
         echo "La societe ".$societe->_id." a un interlocuteur ".$fct." : ";
         $this->formatNom($n,$contact);
+        $contact->addTag('manuel',$fct);
         echo $contact->civilite." ".$contact->prenom." ".$contact->nom." ".$contact->telephone_bureau."/".$contact->telephone_mobile."/".$contact->email." \n";
         $contact->save();
         $societe = SocieteClient::getInstance()->find($societe->_id);
