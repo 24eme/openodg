@@ -27,21 +27,76 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
     }
 
     public function create() {
-    	
-       $this->parcellesIrrigableForDetails = $this->parcellaireIrrigable->declaration->getParcellesByCommune();
-       
-       if(count($this->parcellesIrrigableForDetails) == 0) {
-       		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdfVide', array('parcellaireIrrigable' => $this->parcellaireIrrigable)));
-       		return;
+
+       $parcellesByCommune = $this->parcellaireIrrigable->declaration->getParcellesByCommune();
+
+       if(count($parcellesByCommune) == 0) {
+           $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' =>    $this->parcellaireIrrigable, 'parcellesByCommune' => false)));
+
+           return;
        }
-       
-       foreach ($this->parcellesIrrigableForDetails as $commune => $parcellesForDetail) {
-       		$this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array('parcellaireIrrigable' => $this->parcellaireIrrigable, 'parcellesForDetail' => $parcellesForDetail, 'titre' => $commune)));
-       }
+
+       $unite = 0;
+       $uniteParPage = 23;
+       $uniteTableau = 3;
+       $uniteLigne = 1;
+       $uniteTableauCommentaire = 2;
+       $uniteTableauLigne = 0.75;
+       $uniteMentionBasDePage = 1;
+       $parcellesByPage = array();
+       $page = 0;
+
+        $currentPage = array();
+        foreach ($parcellesByCommune as $commune => $parcelles) {
+            $libelleTableau = $commune;
+            if(($unite + $uniteTableau + $uniteLigne) > $uniteParPage) {
+                $parcellesByPage[] = $currentPage;
+                $currentPage = array();
+                $unite = 0;
+            }
+            $currentPage[$libelleTableau] = array();
+            $unite += $uniteTableau;
+            foreach($parcelles as $parcelle) {
+               if(($unite + $uniteLigne) > $uniteParPage) {
+                   $parcellesByPage[] = $currentPage;
+                   $currentPage = array();
+                   $unite = 0;
+                   $libelleTableau = $commune . " (suite)";
+                   $currentPage[$libelleTableau] = array();
+                   $unite += $uniteTableau;
+               }
+               $unite += $uniteLigne;
+               $currentPage[$libelleTableau][] = $parcelle;
+           }
+        }
+
+        if($unite > 0) {
+            $parcellesByPage[] = $currentPage;
+        }
+
+        if($this->parcellaireIrrigable->observations) {
+            $unite += $uniteTableauLigne + count(explode("\n", $this->parcellaireIrrigable->observations));
+        }
+
+        foreach($parcellesByPage as $nbPage => $parcelles) {
+            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array(
+                'parcellaireIrrigable' => $this->parcellaireIrrigable,
+                'parcellesByCommune' => $parcelles,
+                'lastPage' => (($nbPage == count($parcellesByPage) - 1) && (($this->parcellaireIrrigable->observations && $unite <= $uniteParPage) || !$this->parcellaireIrrigable->observations)),
+            )));
+        }
+
+        if ($this->parcellaireIrrigable->observations && $unite > $uniteParPage) {
+            $this->printable_document->addPage($this->getPartial('parcellaireIrrigable/pdf', array(
+                'parcellaireIrrigable' => $this->parcellaireIrrigable,
+                'parcellesByCommune' => array(),
+                'lastPage' => true,
+            )));
+        }
     }
 
     protected function getHeaderTitle() {
-        return sprintf("Déclaration d'intention de parcelles irrigables %s", $this->parcellaireIrrigable->campagne);
+        return sprintf("Parcellaire Irrigable %s", $this->parcellaireIrrigable->campagne."-".($this->parcellaireIrrigable->campagne + 1));
     }
 
     protected function getHeaderSubtitle() {
@@ -51,7 +106,11 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
         if (!$this->parcellaireIrrigable->isPapier()) {
             if ($this->parcellaireIrrigable->validation) {
                 $date = new DateTime($this->parcellaireIrrigable->validation);
-                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'));
+
+                $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireIrrigable->signataire);
+                if($this->parcellaireIrrigable->exist('signataire') && $this->parcellaireIrrigable->signataire) {
+                    $header_subtitle .= " par " . $this->parcellaireIrrigable->signataire;
+                }
             }else{
                 $header_subtitle .= sprintf("Exemplaire brouilllon");
             }

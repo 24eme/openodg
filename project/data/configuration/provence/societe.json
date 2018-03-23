@@ -1,0 +1,44 @@
+{
+   "_id": "SOCIETE-CDP00001",
+   "type": "Societe",
+   "identifiant": "CDP00001",
+   "type_societe": "OPERATEUR",
+   "raison_sociale": "Syndicat CDP",
+   "raison_sociale_abregee": null,
+   "statut": "ACTIF",
+   "code_comptable_client": "CDP00001",
+   "code_comptable_fournisseur": null,
+   "code_naf": null,
+   "siret": "44400000000000",
+   "interpro": "INTERPRO-declaration",
+   "no_tva_intracommunautaire": null,
+   "email": "",
+   "telephone_perso": null,
+   "telephone_bureau": "",
+   "telephone_mobile": null,
+   "fax": null,
+   "site_internet": null,
+   "commentaire": null,
+   "siege": {
+       "adresse": "",
+       "adresse_complementaire": "",
+       "code_postal": "83460",
+       "commune": "LES ARCS SUR ARGENT",
+       "pays": "France",
+       "insee": null
+   },
+   "cooperative": null,
+   "enseignes": [
+   ],
+   "compte_societe": "COMPTE-provence",
+   "contacts": {
+       "COMPTE-provence": {
+           "nom": null,
+           "ordre": -1
+       }
+   },
+   "etablissements": {
+   },
+   "date_creation": "2018-03-13",
+   "date_modification": "2018-03-13"
+}

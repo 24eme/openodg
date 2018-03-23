@@ -1,6 +1,6 @@
 <?php
 /**
- * Model for ParcellairePiece
+ * Model for DRevPiece
  *
  */
 

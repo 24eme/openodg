@@ -5,36 +5,9 @@ Parcellaire:
       _id: { }
       _rev: { }
       type: { }
-      campagne: { }
+      date: { }
       identifiant: { }
-      etape: { }
-      validation: { }
-      validation_odg: { }
-      autorisation_acheteur: { }
-      papier: { required: false, type: integer }
-      type_proprietaire:
-        type: collection
-        required: false
-        definition:
-          fields:
-            '*': { }
-      acheteurs:
-        type: collection
-        definition:
-          fields:
-            '*':
-              type: collection
-              definition:
-                fields:
-                  '*':
-                    type: collection
-                    definition:
-                      fields:
-                        cvi : { }
-                        nom : { }
-                        commune: { }
-                        email_envoye: { }
-                        email: { }
+      source: { }
       declarant:
         type: collection
         definition:
@@ -46,7 +19,9 @@ Parcellaire:
             adresse: { }
             commune: { }
             code_postal: { }
-            telephone: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
             fax: { }
             email: { }
       declaration:
@@ -60,48 +35,32 @@ Parcellaire:
               definition:
                 fields:
                   libelle: { }
-                  acheteurs:
-                    type: collection
-                    definition:
-                      fields:
-                        '*':
-                          type: collection
-                          definition:
-                            fields:
-                              '*':
-                                type: collection
-                                definition:
-                                  fields:
-                                    '*':
-                                      type: collection
-                                      definition:
-                                        fields:
-                                          cvi : { }
-                                          nom : { }
-                                          commune: { }
                   detail:
                     type: collection
                     definition:
                       fields:
                         '*':
                           type: collection
-                          class: ParcellaireProduitDetail
+                          class: ParcellaireParcelle
                           definition:
                             fields:
                               superficie: { type: float }
+                              superficie_cadastrale: { type: float }
                               commune: { }
-                              code_postal: { }
+                              code_postal: { required: false }
+                              code_commune: { }
                               section: { }
                               numero_parcelle: { }
+                              idu: { }
                               lieu: { }
                               cepage: { }
                               campagne_plantation: { }
-                              departement: { }
-                              active: { type: integer }
-                              vtsgn: { type: integer }
+                              departement: { required: false }
+                              active: { type: integer, required: false }
+                              vtsgn: { type: integer, required: false }
                               code_insee: { required: false }
-                              ecart_rang: { required: false }
-                              ecart_pieds: { required: false }
+                              ecart_rang: { type: float }
+                              ecart_pieds: { type: float }
                               mode_savoirfaire: { required: false }
                               porte_greffe: { required: false }
       pieces:

@@ -3,30 +3,27 @@
     <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
     <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?></a></li>
     <li><a href="<?php echo url_for('etablissement_visualisation', array('identifiant' => $etablissement->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span> <?php echo $etablissement->nom; ?></a></li>
-    <li class="active"></li>
+    <li class="active"><a href="">Ajout d'une relation</a></li>
 </ol>
 
 <div class="row">
-    <form action="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)) ?>" method="post" class="form-horizontal">
-        <?php echo $form->renderHiddenFields(); ?>
-        <?php echo $form->renderGlobalErrors(); ?>
         <div class="col-xs-8">
+            <form action="<?php echo url_for("etablissement_ajout_relation", array('identifiant' => $etablissement->identifiant)) ?>" method="post" class="form-horizontal">
+                <?php echo $form->renderHiddenFields(); ?>
+                <?php echo $form->renderGlobalErrors(); ?>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-xs-9">
-                            <h4>Ajouter une relation</h4>
-                        </div>
-                        <div class="col-xs-3 text-muted text-right">
-                            <div class="btn-group">
-
+                    <h4>1. Ajout d'une relation</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="row" style="padding-top:10px;">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Établissement</label>
+                            <div class="col-sm-4">
+                                <p class="form-control-static"><?php echo $etablissement->nom ?></p>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="panel-body" style="border-right: 6px solid #9f0038;">
-                    <h2><span class="<?php echo comptePictoCssClass($etablissement->getRawValue()) ?>"></span>  <?php echo $etablissement->nom; ?></h2>
-                    <hr/>
                     <div class="row" style="padding-top:10px;">
                         <div class="form-group">
                             <?php echo $form['type_liaison']->renderError(); ?>
@@ -43,7 +40,7 @@
                     </div>
                     <div class="checkbox">
                        <span class="col-xs-offset-4">
-                            <span class="glyphicon glyphicon-check"></span> Créer la relation inverse <small class="text-muted">(Uniquement pour les relations bailleur/métayer)</small>
+                            <span class="glyphicon glyphicon-check"></span> Créer la relation inverse
                        </span>
                      </div>
                     <hr />
@@ -55,10 +52,15 @@
                         </div>
                         <div class="col-xs-4 text-right">
                             <button id="btn_valider" type="submit" class="btn btn-success">
-                                Ajouter la relation
+                                Continuer
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>2. Chai de destination</h4>
                 </div>
             </div>
         </div>

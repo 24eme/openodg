@@ -7,7 +7,7 @@
         		<?php echo $editForm->renderGlobalErrors(); ?>
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Editer cette Activité</h4>
+					<h4 class="modal-title" id="myModalLabel">Editer cette activité</h4>
 				</div>
 				<div class="modal-body">
 					<div class="row form-group">
@@ -32,7 +32,7 @@
 							Statut :
 						</div>
 						<div class="col-xs-6">
-							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "select2 select2-offscreen select2autocomplete", "required" => true)); ?>
+							<?php echo $editForm['statut_'.$idKey]->render(array("data-placeholder" => "Séléctionnez un statut", "style" => "width: 100%;", "class" => "select2 select2-offscreen select2autocomplete", "required" => true)); ?>
 						</div>
 					</div>
 					<div class="row form-group" >

@@ -6,7 +6,8 @@ class exportActions extends sfActions {
     {
         $this->generationsList = array_merge(
             GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_CSV, 100),
-            GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE, 100)
+            GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE, 100),
+            GenerationClient::getInstance()->findHistoryWithType(GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE, 100)
         );
 
         uasort($this->generationsList, "GenerationClient::sortHistory");
@@ -27,6 +28,13 @@ class exportActions extends sfActions {
         $generation->arguments = array();
 
         $generations[GenerationClient::TYPE_DOCUMENT_EXPORT_SAGE] = $generation;
+
+        $generation = new Generation();
+        $generation->type_document = GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE;
+        $generation->libelle = sprintf("Export Parcellaire");
+        $generation->arguments = array();
+
+        $generations[GenerationClient::TYPE_DOCUMENT_EXPORT_PARCELLAIRE] = $generation;
 
         krsort($generations);
 

@@ -1,8 +1,11 @@
 <?php
 
 class CompteTeledeclarantForm extends acCouchdbForm {
+    protected $defaultEmail;
+    protected $updatedValues;
 
     public function __construct($doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
+        $this->updatedValues = array();
         $societe = $doc->getSociete();
 
         $defaultEmail = null;
@@ -16,19 +19,42 @@ class CompteTeledeclarantForm extends acCouchdbForm {
         }
 
         $defaults['email'] = $defaultEmail;
+        $this->defaultEmail = $defaultEmail;
+        
+        if ($doc->telephone_mobile) {
+        	$defaults['telephone_mobile'] = $doc->telephone_mobile;
+        }
+        
+        if ($doc->telephone_bureau) {
+        	$defaults['telephone_bureau'] = $doc->telephone_bureau;
+        }
 
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
+    }
+
+    public function getUpdatedValues()
+    {
+        return $this->updatedValues;
+    }
+
+    public function hasUpdatedValues()
+    {
+        return (count($this->updatedValues) > 0);
     }
 
     public function configure() {
         $this->setWidgets(array(
             'email' => new sfWidgetFormInputText(),
+            'telephone_bureau' => new sfWidgetFormInputText(),
+            'telephone_mobile' => new sfWidgetFormInputText(),
             'mdp1' => new sfWidgetFormInputPassword(),
             'mdp2' => new sfWidgetFormInputPassword()
         ));
 
         $this->widgetSchema->setLabels(array(
             'email' => 'Adresse e-mail* : ',
+            'telephone_bureau' => 'Téléphone : ',
+            'telephone_mobile' => 'Mobile : ',
             'mdp1' => 'Mot de passe* : ',
             'mdp2' => 'Vérification du mot de passe* : '
         ));
@@ -44,6 +70,9 @@ class CompteTeledeclarantForm extends acCouchdbForm {
 
         $this->setValidator('mdp1', $mdpValidator);
         $this->setValidator('mdp2', $mdpValidator);
+        
+        $this->setValidator('telephone_bureau', new sfValidatorString(array('required' => false)));
+        $this->setValidator('telephone_mobile', new sfValidatorString(array('required' => false)));
 
         $this->validatorSchema->setPostValidator(new sfValidatorSchemaCompare('mdp1', sfValidatorSchemaCompare::EQUAL, 'mdp2', array(), array('invalid' => 'Les mots de passe doivent être identique.')));
     }
@@ -58,10 +87,24 @@ class CompteTeledeclarantForm extends acCouchdbForm {
             $this->getDocument()->setMotDePasseSSHA($this->getValue('mdp1'));
         }
 
+        if ($tel = $this->getValue('telephone_bureau')) {
+        	$this->updatedValues['telephone_bureau'] = array($this->getDocument()->telephone_bureau, $tel);
+            $this->getDocument()->telephone_bureau = $tel;
+        }
+
+        if ($mobile = $this->getValue('telephone_mobile')) {
+        	$this->updatedValues['telephone_mobile'] = array($this->getDocument()->telephone_mobile, $mobile);
+            $this->getDocument()->telephone_mobile = $mobile;
+        }
+
         $this->getDocument()->add('teledeclaration_active', true);
         $this->getDocument()->save();
 
         $email = $this->getValue('email');
+        
+        if ($this->defaultEmail != $email) {
+        	$this->updatedValues['email'] = array($this->defaultEmail, $email);
+        }
 
         if(!$email) {
             return;

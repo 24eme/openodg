@@ -5,8 +5,6 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
       const TYPE_MODEL = "ParcellaireIrrigable";
       const TYPE_COUCHDB = "PARCELLAIREIRRIGABLE";
 
-
-
       public static function getInstance() {
           return acCouchdbManager::getClient("parcellaireIrrigable");
       }
@@ -31,7 +29,7 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
       public function createDoc($identifiant, $campagne, $papier = false, $type = self::TYPE_COUCHDB) {
           $parcellaireIrrigable = new parcellaireIrrigable();
           $parcellaireIrrigable->initDoc($identifiant, $campagne, $type);
-          
+
           if($papier) {
           	$parcellaireIrrigable->add('papier', 1);
           }
@@ -76,16 +74,16 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
           return $date >= $this->getDateOuvertureDebut($type) && $date <= $this->getDateOuvertureFin($type);
       }
 
-      public function getRessources($value = null) 
+      public function getRessources($value = null)
       {
       	return $this->getFromConfig('ressources', $value);
       }
 
-      public function getMateriels($value = null) 
+      public function getMateriels($value = null)
       {
       	return $this->getFromConfig('materiels', $value);
       }
-      
+
       private function getFromConfig($type, $value = null)
       {
       	$items = sfConfig::get('app_parcellaire_irrigable_'.$type);
@@ -102,6 +100,6 @@ class ParcellaireIrrigableClient extends acCouchdbClient {
       		$entry->text = $value;
       		$entries[] = $entry;
       	}
-      	return $entries;      	
+      	return $entries;
       }
 }

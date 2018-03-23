@@ -49,12 +49,15 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     const CSV_ECART_PIED = 35;
     const CSV_DATE_DEBUT_GESTION = 36;
     const CSV_DATE_FIN_GESTION = 37;
+    const CSV_IDU = 38;
+    const CSV_CDP = 39;
 
 
     protected function configure()
     {
         $this->addArguments(array(
-            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Donnees au format CSV")
+            new sfCommandArgument('csv', sfCommandArgument::REQUIRED, "Donnees au format CSV"),
+            new sfCommandArgument('date', sfCommandArgument::REQUIRED, "Date des données du parcellaire"),
         ));
 
         $this->addOptions(array(
@@ -87,34 +90,51 @@ EOF;
         $this->configuration = ConfigurationClient::getInstance()->getConfiguration();
         $this->configurationProduits = $this->configuration->getProduits();
         $this->modes_savoirfaire = array_flip(ParcellaireClient::$modes_savoirfaire);
+
+        $parcellaire = null;
         foreach(file($this->file_path) as $line) {
             $line = str_replace("\n", "", $line);
             if(preg_match("/^\"ISection\";/", $line)) {
                 continue;
             }
-            $this->importLineParcellaire($line);
-          }
-    }
 
-    protected function importLineParcellaire($line){
             $data = str_getcsv($line, ';');
             $cvi = $data[self::CSV_EVV];
+            $cdp = $data[self::CSV_CDP]."01";
             if(!$cvi){
               throw new sfException("le cvi n'existe pas pour la ligne ".implode(',',$line));
             }
 
-            $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
-            if(!$etablissement){
-              echo "L'établissement de cvi ".$cvi." n'existe pas dans la base\n";
-              return;
+            if(!$parcellaire || $parcellaire->identifiant != $cdp) {
+                if($parcellaire) {
+                    $this->saveParcellaire($parcellaire);
+                    $parcellaire = null;
+                }
+
+                $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
+                if(!$etablissement){
+                  $etablissement = EtablissementClient::getInstance()->find($cdp);
+                  if(!$etablissement){
+                      echo "/!\ L'établissement de cvi ".$cvi." n'existe pas dans la base pas non plus été trouvé par son CDP  ".$cdp." \n";
+                      continue;
+                  }
+                }
+                $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
             }
 
+            $this->importLineParcellaire($line, $parcellaire);
+          }
+
+          if($parcellaire) {
+              $this->saveParcellaire($parcellaire);
+              $parcellaire = null;
+          }
+    }
+
+    protected function importLineParcellaire($line, $parcellaire){
+            $data = str_getcsv($line, ';');
+
             $ref_cadastrale = $data[self::CSV_REF_CADASTRALE];
-
-
-            $parcellaire = ParcellaireClient::getInstance()->findOrCreateFromEtablissement($etablissement,"2018");
-
-            $parcellaire->addAcheteur(ParcellaireClient::DESTINATION_SUR_PLACE,$etablissement->getIdentifiant());
 
             foreach ($this->configurationProduits as $key => $p) {
               if($p->getCodeDouane() != trim($data[self::CSV_CODE_PRODUIT])){
@@ -133,16 +153,16 @@ EOF;
 
               $cepagesAutorisesConf = $p->getCepagesAutorises()->toArray(0,1);
               if(!in_array(trim($data[self::CSV_LIBELLE_CEPAGE]),$cepagesAutorisesConf)){
-                throw new sfException("le cepage ".trim($data[self::CSV_LIBELLE_CEPAGE])." ne fait pas parti des cépages autorisés");
+                echo "/!\ le cepage ".trim($data[self::CSV_LIBELLE_CEPAGE])." ne fait pas parti des cépages autorisés : pas d'import\n";
+                continue;
               }
               $cepage = trim($data[self::CSV_LIBELLE_CEPAGE]);
 
               $commune = trim($data[self::CSV_LIBELLE_COMMUNE]);
               $lieuDit = (trim($data[self::CSV_LIEUDIT_COMMUNE]))? trim($data[self::CSV_LIEUDIT_COMMUNE]) : null;
 
-              $section = trim($m[1]);
-              $numero_parcelle = trim($m[3]);
-              $dpt = trim($data[self::CSV_CODE_DEPARTEMENT]);
+              $section = trim($data[self::CSV_ID_SECTION]);
+              $numero_parcelle = preg_replace('/^[0]+/', '', trim($data[self::CSV_INUMPCV]));
 
               $campagnePlantation = trim($data[self::CSV_CAMPAGNE_PLANTATION]);
 
@@ -154,34 +174,45 @@ EOF;
                   continue;
                 }
               }
-              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section , $numero_parcelle, $lieuDit,$dpt);
-              $superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
-              $parcelle->superficie = $superficie;
-              $parcelle->code_postal = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
+              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit);
+              $parcelle->superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
+              $parcelle->superficie_cadastrale = floatval(str_replace(',','.',trim($data[self::CSV_CONTENANCE_CADASTRALE])));
+              $parcelle->code_commune = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
               $parcelle->cepage = $cepage;
-              if($lieuDit){
-                $parcelle->lieu = strtoupper($lieuDit);
-              }
-              $parcelle->add('code_insee',trim($data[self::CSV_CODE_INSEE_COMMUNE]));
-              $parcelle->add('ecart_rang',trim($data[self::CSV_ECART_RANG]));
-              $parcelle->add('ecart_pieds',trim($data[self::CSV_ECART_PIED]));
-              $parcelle->add('campagne_plantation',trim($data[self::CSV_CAMPAGNE_PLANTATION]));
-              $parcelle->active = true;
+
+              $parcelle->add('ecart_rang', trim($data[self::CSV_ECART_RANG]) * 1);
+              $parcelle->add('ecart_pieds', trim($data[self::CSV_ECART_PIED]) * 1);
 
               $date2018 = "20180101";
-              if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
-                echo "La date de début de gestion  de la ligne $ligne est mal formattée\n";
-                return;
+              if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION])) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
+                    echo "$etablissement->_id : La date de début de gestion  de la ligne $ligne est mal formattée\n";
+                    return;
               }
               $dateFinGestionCsv = (trim($data[self::CSV_DATE_FIN_GESTION]))? trim($data[self::CSV_DATE_FIN_GESTION]) : null;
-              if($dateFinGestionCsv && !preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$dateFinGestionCsv)){
-                echo "La date de fin de gestion  de la ligne $ligne est mal formattée\n";
+              if($dateFinGestionCsv && !preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$dateFinGestionCsv) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_FIN_GESTION]))){
+                echo "$etablissement->_id : La date de fin de gestion  de la ligne $ligne est mal formattée\n";
                 return;
               }
 
-              $dateDebut =  new DateTime(trim($data[self::CSV_DATE_DEBUT_GESTION]));
+
+              if(preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
+                  $dateExcel = trim($data[self::CSV_DATE_DEBUT_GESTION]);
+                  $date19000101 = new DateTime("1900-01-01");
+                  echo "$etablissement->_id : conversion de la date $dateExcel \n";
+                  $dateDebut = $date19000101->modify("+".$dateExcel." days");
+              }else{
+                  $dateDebut = new DateTime(trim($data[self::CSV_DATE_DEBUT_GESTION]));
+              }
+
               if($dateFinGestionCsv){
-                $dateFin =  new DateTime($dateFinGestionCsv);
+                if(preg_match('/[0-9]{5}/',$dateFinGestionCsv)){
+                  $dateFin19000101 = new DateTime("1900-01-01");
+                  echo "$etablissement->_id : conversion de la date $dateFinGestionCsv \n";
+                  $dateFin = $dateFin19000101->modify("+".$dateFinGestionCsv." days");
+                }else{
+                  $dateFin =  new DateTime($dateFinGestionCsv);
+                  }
+
               }
               if($dateDebut->format('Ymd') > $date2018){
                 $parcelle->active = false;
@@ -198,14 +229,23 @@ EOF;
                 $parcelle->add('mode_savoirfaire',$mode_savoirfaire);
               }
               if(trim($data[self::CSV_CODE_PORTEGREFFE])){
-                $parcelle->add('porte_greffe',trim($data[self::CSV_CODE_PORTEGREFFE]));
+                $parcelle->add('porte_greffe', trim($data[self::CSV_CODE_PORTEGREFFE]));
               }
-              echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
-            }
-            $parcellaire->etape='validation';
-            $parcellaire->validation = date('Y-m-d');
-            $parcellaire->validation_odg = date('Y-m-d');
 
+              if($parcelle->idu != $data[self::CSV_IDU]) {
+                  echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
+              }
+
+              echo "Import de la parcelle $section $numero_parcelle pour $parcellaire->identifiant !\n";
+            }
+    }
+
+    protected function saveParcellaire($parcellaire) {
+        try{
             $parcellaire->save();
-      }
+            echo "Parcellaire $parcellaire->_id sauvegardé\n";
+         }catch(Exception $e){
+            echo "Le parcellaire $parcellaire->identifiant pour n'a pas pu être sauvé \n";
+         }
+    }
 }

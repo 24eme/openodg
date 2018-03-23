@@ -10,3 +10,4 @@ data/*
 .~*
 !data/configuration/
 !data/elk
+web/export

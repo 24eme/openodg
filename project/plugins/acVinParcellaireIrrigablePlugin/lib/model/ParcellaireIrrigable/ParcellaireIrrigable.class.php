@@ -6,6 +6,7 @@
 
 class ParcellaireIrrigable extends BaseParcellaireIrrigable implements InterfaceDeclaration {
   protected $declarant_document = null;
+  protected $piece_document = null;
 
   public function __construct() {
       parent::__construct();
@@ -19,6 +20,7 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
   protected function initDocuments() {
       $this->declarant_document = new DeclarantDocument($this);
+      $this->piece_document = new PieceDocument($this);
   }
 
   public function storeDeclarant() {
@@ -32,17 +34,16 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
     public function getTypeParcellaire() {
     	if ($this->_id) {
-    		if (preg_match('/^([A-Z]*)-([0-9]*)-([0-9]{4})/', $this->_id, $result)) {
+    		if (preg_match('/^([A-Z]*)-([A-Z0-9]*)-([0-9]{4})/', $this->_id, $result)) {
     			return $result[1];
     		}
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
     }
-
-  public function initDoc($identifiant, $campagne, $type = ParcellaireClient::TYPE_COUCHDB) {
+  public function initDoc($identifiant, $campagne) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;
-      $this->set('_id', ParcellaireClient::getInstance()->buildId($this->identifiant, $this->campagne, $type));
+      $this->set('_id', ParcellaireIrrigableClient::TYPE_COUCHDB.'-'.$this->identifiant.'-'.$this->campagne);
       $this->storeDeclarant();
   }
 
@@ -93,18 +94,14 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
   }
 
   public function getParcellaireCurrent() {
-      $campagnePrec = $this->campagne;
-      $parcellairePrevId = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
-      $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
 
-      if (!$parcellaire) {
-          $campagnePrec = $this->campagne - 1;
-          $parcellaire = ParcellaireClient::getInstance()->buildId($this->identifiant, $campagnePrec, ParcellaireClient::TYPE_COUCHDB);
-          $parcellaire = ParcellaireClient::getInstance()->find($parcellairePrevId);
-      }
-
-      return $parcellaire;
+      return ParcellaireClient::getInstance()->findPreviousByIdentifiantAndDate($this->identifiant, date('Y-m-d'));
   }
+
+    public function getParcelles() {
+
+        return $this->declaration->getParcelles();
+    }
 
     public function getParcellesFromLastParcellaire() {
         $parcellaireCurrent = $this->getParcellaireCurrent();
@@ -139,14 +136,18 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
     	  		$subitem->superficie = $detail->superficie;
     	  		$subitem->commune = $detail->commune;
-    	  		$subitem->code_postal = $detail->code_postal;
+                $subitem->code_commune = $detail->code_commune;
     	  		$subitem->section = $detail->section;
     	  		$subitem->numero_parcelle = $detail->numero_parcelle;
+                $subitem->idu = $detail->idu;
     	  		$subitem->lieu = $detail->lieu;
     	  		$subitem->cepage = $detail->cepage;
-    	  		$subitem->departement = $detail->departement;
     	  		$subitem->active = 1;
-    	  		$subitem->vtsgn = (int)$detail->vtsgn;
+
+                $subitem->remove('vtsgn');
+                if($detail->exist('vtsgn')) {
+                    $subitem->add('vtsgn', (int)$detail->vtsgn);
+                }
     	  		$subitem->campagne_plantation = ($detail->exist('campagne_plantation'))? $detail->campagne_plantation : null;
     	  	}
       	}
@@ -160,15 +161,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       		$this->declaration->remove($r);
       	}
     }
-
-    public function addParcelle($hashProduit, $cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-        $config = $this->getConfiguration()->get($hashProduit);
-        $produit = $this->declaration->add(str_replace('/declaration/', null, $config->getHash()));
-        $produit->getLibelle();
-
-        return $produit->addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $cepage, $dpt);
-    }
-
 
   public function validate($date = null) {
       if (is_null($date)) {
@@ -187,13 +179,15 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       }
   }
 
-
   public function validateOdg() {
       $this->validation_odg = date('Y-m-d');
   }
 
+    protected function doSave() {
+        $this->piece_document->generatePieces();
+    }
 
-  /*** IDECLARATION DOCUMENT ***/
+  /*** DECLARATION DOCUMENT ***/
 
   public function isPapier() {
 
@@ -219,6 +213,45 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
 
       return $this->_get('validation_odg');
   }
-    /*** FIN IDECLARATION DOCUMENT ***/
+    /*** FIN DECLARATION DOCUMENT ***/
 
+    /*** PIECE DOCUMENT ***/
+
+    public function getAllPieces() {
+        $complement = ($this->isPapier())? '(Papier)' : '(Télédéclaration)';
+        return (!$this->getValidation())? array() : array(array(
+            'identifiant' => $this->getIdentifiant(),
+            'date_depot' => $this->getValidation(),
+            'libelle' => 'Identification des parcelles irrigables '.$complement,
+            'mime' => Piece::MIME_PDF,
+            'visibilite' => 1,
+            'source' => null
+        ));
+    }
+
+    public function generatePieces() {
+        return $this->piece_document->generatePieces();
+    }
+
+    public function generateUrlPiece($source = null) {
+        return sfContext::getInstance()->getRouting()->generate('parcellaireirrigable_export_pdf', $this);
+    }
+
+    public static function getUrlVisualisationPiece($id, $admin = false) {
+        return sfContext::getInstance()->getRouting()->generate('parcellaireirrigable_visualisation', array('id' => $id));
+    }
+
+    public static function getUrlGenerationCsvPiece($id, $admin = false) {
+        return null;
+    }
+
+    public static function isVisualisationMasterUrl($admin = false) {
+        return true;
+    }
+
+    public static function isPieceEditable($admin = false) {
+        return false;
+    }
+
+    /*** FIN PIECE DOCUMENT ***/
 }
