@@ -1,6 +1,6 @@
 <?php
 
-class RegistreVCIClient extends acCouchdbClient {
+class RegistreVCIClient extends acCouchdbClient implements FacturableClient {
     const TYPE_MODEL = "RegistreVCI";
     const TYPE_COUCHDB = "REGISTREVCI";
 
@@ -74,6 +74,12 @@ class RegistreVCIClient extends acCouchdbClient {
         return $this->startkey(sprintf(self::TYPE_COUCHDB."-%s-%s", $identifiant, $campagne_from))
         ->endkey(sprintf(self::TYPE_COUCHDB."-%s-%s_ZZZZZZZZZZZZZZ", $identifiant, $campagne_to))
                     ->execute($hydrate);
+    }
+
+    public function findFacturable($identifiant, $campagne) {
+        $registre = $this->find('REGISTREVCI-'.str_replace("E", "", $identifiant).'-'.$campagne);
+
+        return array($registre->_id => $registre);
     }
 
 }

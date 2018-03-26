@@ -11,6 +11,9 @@ class TemplateFacture extends BaseTemplateFacture
 	{
 		$cotisations = array();
 		foreach ($this->cotisations as $config) {
+			if(!$config->isForType($document->getType())) {
+				continue;
+			}
 			foreach ($config->generateCotisations($document) as $cotisation) {
 				$cotisations[$cotisation->getHash()] = $cotisation;
 			}
