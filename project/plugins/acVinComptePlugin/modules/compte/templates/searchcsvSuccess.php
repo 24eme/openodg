@@ -21,6 +21,8 @@ foreach ($results as $res) {
     $mot_de_passe = compteClient::getInstance()->find("COMPTE-".$id_societe,acCouchdbClient::HYDRATE_JSON)->mot_de_passe;
   }
 
+  $telephone_societe = isset($societe_informations['telephone'])? $societe_informations['telephone'] : '';
+
   $adresses_complementaires = explode('−',$data['doc']['adresse_complementaire']);
   $adresse_complementaire1 = $adresses_complementaires[0];
   $adresse_complementaire2 = "";
@@ -70,7 +72,7 @@ foreach ($results as $res) {
   $csv .= '"'.sfOutputEscaper::unescape($societe_adresse_complementaire2). '";';
   $csv .= '"'.$societe_informations['code_postal']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($societe_informations['commune']). '";';
-  $csv .= '"'.$societe_informations['telephone']. '";';
+  $csv .= '"'.$telephone_societe. '";';
   $csv .= '"'.$societe_informations['fax']. '";';
   $csv .= '"'.$societe_informations['email']. '";';
   $csv .= '"'.(preg_match("/\{TEXT\}/", $data['doc']['mot_de_passe'])) ? str_replace("{TEXT}", "", $mot_de_passe) : null . '"';
