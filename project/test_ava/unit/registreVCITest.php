@@ -141,7 +141,7 @@ $registre->save();
 $t->is(count($registre->mouvements->get($compteIdentifiant)), 1, "Le registre à 1 mouvement");
 $mouvement = $registre->mouvements->get($compteIdentifiant)->getFirst();
 $t->is($mouvement->categorie, "vci", "Le registre à 1 mouvement");
-$t->is($mouvement->type_libelle, "ares (récolte ".$campagne.")", "Libellé du mouvement vci");
+$t->is($mouvement->type_libelle, "hectares (récolte ".$campagne.")", "Libellé du mouvement vci");
 $t->is($mouvement->facturable, 1, "Le mouvement est facturable");
 $t->is($mouvement->facture, 0, "Le mouvement n'est pas facturé");
 

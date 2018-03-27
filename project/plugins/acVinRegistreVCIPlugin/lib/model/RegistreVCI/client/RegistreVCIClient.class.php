@@ -79,6 +79,11 @@ class RegistreVCIClient extends acCouchdbClient implements FacturableClient {
     public function findFacturable($identifiant, $campagne) {
         $registre = $this->find('REGISTREVCI-'.str_replace("E", "", $identifiant).'-'.$campagne);
 
+        if(!$registre) {
+
+            return array();
+        }
+
         return array($registre->_id => $registre);
     }
 

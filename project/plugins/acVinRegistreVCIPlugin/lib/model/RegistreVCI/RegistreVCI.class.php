@@ -153,6 +153,11 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         return $produits;
       }
 
+      public function getSurfaceFacturable() {
+
+          return ($this->superficies_facturables > 0)? round($this->superficies_facturables / 100, 4) : 0;
+      }
+
       public function getDRev() {
         $drev = DRevClient::getInstance()->find('DREV-'.$this->identifiant.'-'.$this->campagne);
         return $drev;
@@ -270,4 +275,5 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
           return false;
       }
+
 }
