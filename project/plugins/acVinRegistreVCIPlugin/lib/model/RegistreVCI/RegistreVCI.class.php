@@ -83,6 +83,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       public function clear() {
         $this->remove('declaration');
+        $this->remove('lignes');
         $this->remove('mouvements');
         $this->superficies_facturables = 0;
       }
