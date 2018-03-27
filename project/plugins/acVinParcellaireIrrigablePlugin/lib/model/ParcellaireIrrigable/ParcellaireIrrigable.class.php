@@ -162,6 +162,17 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       	}
     }
 
+
+    public function getDeclarantSiret(){
+        $siret = "";
+        if($this->declarant->siret){
+            return $this->declarant->siret;
+        }
+        if($siret = $this->getEtablissementObject()->siret){
+            return $siret;
+        }
+    }
+
   public function validate($date = null) {
       if (is_null($date)) {
           $date = date('Y-m-d');
