@@ -9,18 +9,18 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     protected $modes_savoirfaire = array();
 
     const CSV_ID_SECTION = 0;
-    const CSV_CODE_COMMUNE_RECH = 1;
-    const CSV_REF_CADASTRALE = 2;          /* /!\ */
-    const CSV_CONTENANCE_CADASTRALE = 3;   /* /!\ */
-    const CSV_CODE_DEPARTEMENT = 4;
-    const CSV_CODE_INSEE_COMMUNE = 5;
-    const CSV_CODE_COMMUNE = 6;
-    const CSV_LIBELLE_COMMUNE = 7;
-    const CSV_LIEUDIT_COMMUNE = 8;
-    const CSV_CIVILITE_PROPRIETAIRE = 9;
-    const CSV_NOM_PROPRIETAIRE = 10;
-    const CSV_PRENOM_PROPRIETAIRE = 11;
-    const CSV_DATE_DEBUT_VALIDITE = 12;
+    const CSV_INUMPCV = 1; /* ???? correspond à .... */
+    const CSV_CODE_COMMUNE_RECH = 2;
+    const CSV_REF_CADASTRALE = 3;          /* /!\ */
+    const CSV_CONTENANCE_CADASTRALE = 4;   /* /!\ */
+    const CSV_CODE_DEPARTEMENT = 5;
+    const CSV_CODE_INSEE_COMMUNE = 6;
+    const CSV_CODE_COMMUNE = 7;
+    const CSV_LIBELLE_COMMUNE = 8;
+    const CSV_LIEUDIT_COMMUNE = 9;
+    const CSV_CIVILITE_PROPRIETAIRE = 10;
+    const CSV_NOM_PROPRIETAIRE = 11;
+    const CSV_PRENOM_PROPRIETAIRE = 12;
     const CSV_NUMERO_ORDRE = 13;
     const CSV_DATE_MODIFICATION = 14;
     const CSV_EVV = 15;                   /* /!\ */
@@ -105,7 +105,8 @@ EOF;
 
             $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
             if(!$etablissement){
-              throw new sfException("l'établissement de cvi ".$cvi." n'existe pas dans la base");
+              echo "L'établissement de cvi ".$cvi." n'existe pas dans la base\n";
+              return;
             }
 
             $ref_cadastrale = $data[self::CSV_REF_CADASTRALE];
@@ -124,10 +125,10 @@ EOF;
 
               $m = array();
               if(!preg_match('/([0-9]+)(\ +)([A-Za-z0-9]+)/',$ref_cadastrale,$m)){
-                throw new sfException("le format de la référence cadastrale de la ligne ".implode(',',$line)." n'est pas correcte");
+                throw new sfException("le format de la référence cadastrale de la ligne ".$line." n'est pas correcte");
               }
               if(count($m) < 4){
-                throw new sfException("le format de la référence cadastrale de la ligne ".implode(',',$line)." n'est pas correcte");
+                throw new sfException("le format de la référence cadastrale de la ligne ".$line." n'est pas correcte");
               }
 
               $cepagesAutorisesConf = $p->getCepagesAutorises()->toArray(0,1);
@@ -137,6 +138,8 @@ EOF;
               $cepage = trim($data[self::CSV_LIBELLE_CEPAGE]);
 
               $commune = trim($data[self::CSV_LIBELLE_COMMUNE]);
+              $lieuDit = (trim($data[self::CSV_LIEUDIT_COMMUNE]))? trim($data[self::CSV_LIEUDIT_COMMUNE]) : null;
+
               $section = trim($m[1]);
               $numero_parcelle = trim($m[3]);
               $dpt = trim($data[self::CSV_CODE_DEPARTEMENT]);
@@ -151,23 +154,40 @@ EOF;
                   continue;
                 }
               }
-              $parcelle = $produitParcellaire->addParcelle($cepage, $commune, $section , $numero_parcelle, $dpt);
+              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section , $numero_parcelle, $lieuDit,$dpt);
               $superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
               $parcelle->superficie = $superficie;
               $parcelle->code_postal = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
               $parcelle->cepage = $cepage;
-
+              if($lieuDit){
+                $parcelle->lieu = strtoupper($lieuDit);
+              }
               $parcelle->add('code_insee',trim($data[self::CSV_CODE_INSEE_COMMUNE]));
               $parcelle->add('ecart_rang',trim($data[self::CSV_ECART_RANG]));
               $parcelle->add('ecart_pieds',trim($data[self::CSV_ECART_PIED]));
               $parcelle->add('campagne_plantation',trim($data[self::CSV_CAMPAGNE_PLANTATION]));
-              $parcelle->active = false;
+              $parcelle->active = true;
 
               $date2018 = "20180101";
+              if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
+                echo "La date de début de gestion  de la ligne $ligne est mal formattée\n";
+                return;
+              }
+              $dateFinGestionCsv = (trim($data[self::CSV_DATE_FIN_GESTION]))? trim($data[self::CSV_DATE_FIN_GESTION]) : null;
+              if($dateFinGestionCsv && !preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$dateFinGestionCsv)){
+                echo "La date de fin de gestion  de la ligne $ligne est mal formattée\n";
+                return;
+              }
+
               $dateDebut =  new DateTime(trim($data[self::CSV_DATE_DEBUT_GESTION]));
-              $dateFin =  new DateTime(trim($data[self::CSV_DATE_FIN_GESTION]));
-              if(($dateDebut->format('Ymd') <= $date2018) && ($date2018 <= $dateFin)){
-                $parcelle->active = true;
+              if($dateFinGestionCsv){
+                $dateFin =  new DateTime($dateFinGestionCsv);
+              }
+              if($dateDebut->format('Ymd') > $date2018){
+                $parcelle->active = false;
+              }
+              if($dateFin && ($date2018 > $dateFin)){
+                $parcelle->active = false;
               }
               $mode_savoirfaire = null;
               if(array_key_exists(trim($data[self::CSV_LIBELLE_MODE_SAVOIRFAIRE]),$this->modes_savoirfaire)){
@@ -180,7 +200,7 @@ EOF;
               if(trim($data[self::CSV_CODE_PORTEGREFFE])){
                 $parcelle->add('porte_greffe',trim($data[self::CSV_CODE_PORTEGREFFE]));
               }
-              echo "Import de la parcelle $section $numero_parcelle !\n";
+              echo "Import de la parcelle $section $numero_parcelle pour $etablissement->_id !\n";
             }
             $parcellaire->etape='validation';
             $parcellaire->validation = date('Y-m-d');

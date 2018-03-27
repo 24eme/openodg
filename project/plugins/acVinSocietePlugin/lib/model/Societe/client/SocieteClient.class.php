@@ -65,12 +65,23 @@ class SocieteClient extends acCouchdbClient {
                 SocieteAllView::getInstance()->findByInterproAndStatut('INTERPRO-declaration', CompteClient::STATUT_SUSPENDU, array($type), $raison_sociale));
     }
 
+    public function getSocieteFormatIdentifiant() {
+
+        return sfConfig::get('app_societe_format_identifiant', "%06d");
+    }
+
+    public function getSocieteFormatIdentifiantRegexp() {
+
+        return preg_replace('/(.*)%0([0-9]{1})d/', '(\1)([0-9]{\2})', $this->getSocieteFormatIdentifiant());
+    }
+
     public function createSociete($raison_sociale, $type = SocieteClient::TYPE_AUTRE) {
+
         $societe = new Societe();
         $societe->raison_sociale = $raison_sociale;
         $societe->type_societe = $type;
         $societe->interpro = 'INTERPRO-declaration';
-        $societe->identifiant = $this->getNextIdentifiantSociete();
+        $societe->identifiant = sprintf($this->getSocieteFormatIdentifiant(), $this->getNumeroSuivant());
         $societe->statut = SocieteClient::STATUT_ACTIF;
         $societe->cooperative = 0;
         $societe->setPays('FR');
@@ -110,22 +121,22 @@ class SocieteClient extends acCouchdbClient {
       return $this->societes[$id];
     }
 
-    public function getNextIdentifiantSociete() {
+    public function getNumeroSuivant() {
         $id = '';
         $societes = $this->getSocietesIdentifiants(acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 0;
         foreach ($societes as $id) {
-            if (!preg_match('/^SOCIETE-([0-9]{6})$/', $id, $matches)) {
+            if (!preg_match('/^SOCIETE-'.$this->getSocieteFormatIdentifiantRegexp().'$/', $id, $matches)) {
                 continue;
             }
 
-            $num = $matches[1];
+            $num = $matches[2];
             if ($num > $last_num) {
                 $last_num = $num;
             }
         }
 
-        return sprintf("%06d", $last_num + 1);
+        return $last_num + 1;
     }
 
     public function getNextCodeFournisseur() {
@@ -142,7 +153,8 @@ class SocieteClient extends acCouchdbClient {
     }
 
     public function getSocietesIdentifiants($hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        return $this->startkey('SOCIETE-000000')->endkey('SOCIETE-999999')->execute($hydrate);
+        $prefix = sfConfig::get('app_societe_prefix', null);
+        return $this->startkey('SOCIETE-'.sprintf($this->getSocieteFormatIdentifiant(), 0))->endkey('SOCIETE-'.sprintf($this->getSocieteFormatIdentifiant(), 999999999999))->execute($hydrate);
     }
 
     public function findByIdentifiantSociete($identifiant) {

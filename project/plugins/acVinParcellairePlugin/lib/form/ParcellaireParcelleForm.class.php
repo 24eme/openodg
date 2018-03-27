@@ -19,6 +19,7 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 
         $this->setWidget('produit', new sfWidgetFormChoice(array('choices' => $this->getProduits())));
         $this->setValidator('produit', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getProduits())),array('required' => "Aucune appellation saisie.")));
+        $this->widgetSchema->setLabel('produit', 'Produit :');
 
         $this->setWidget('commune', new sfWidgetFormChoice(array('choices' => $this->getCommunes())));
         $this->setValidator('commune', new sfValidatorChoice(array('required' => true,'choices' => array_keys($this->getCommunes())), array('required' => "Aucune commune saisie.")));
@@ -34,6 +35,10 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 
         $this->setWidget('superficie', new sfWidgetFormInputFloat(array('float_format' => '%01.2f')));
         $this->setValidator('superficie', new sfValidatorNumber(array('required' => true, 'min' => '0.01'), array('min' => 'La superficie doit être supérieure à 0')));
+
+        $this->setWidget('campagne_plantation', new sfWidgetFormInput());
+        $this->setValidator('campagne_plantation', new sfValidatorRegex(array("required" => true, "pattern" => "/^[0-9]+$/"), array("invalid" => "La campagne de plantation doit contenir uniquement des nombres")));
+        $this->widgetSchema->setLabel('campagne_plantation', 'Année de plantation :');
 
         $this->setWidget('cepage', new sfWidgetFormChoice(array('choices' => $this->getCepages())));
         $this->setValidator('cepage', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getCepages())), array('required' => "Aucun cépage saisie.")));
@@ -59,7 +64,8 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 
     public function getCepages()
     {
-        return array('' => '');
+
+        return array_merge(array("" => ""), $this->getObject()->getDocument()->getConfiguration()->getCepagesAutorises());
     }
 
     public function getCommunes() {
@@ -71,6 +77,11 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
            }
        }
        return array_merge(array('Avignon' => 'Avignon'), $communes);
+    }
+
+    public function getAppellationNode() {
+
+        return null;
     }
 
     protected function doUpdateObject($values) {
@@ -90,19 +101,19 @@ abstract class ParcellaireParcelleForm extends acCouchdbObjectForm {
 //        $dpt = $config->communes[$commune];
         $dpt = null;
 
-        if (!$this->getAppellationNode()->getConfig()->hasLieuEditable()) {
+        if ($this->getAppellationNode() && !$this->getAppellationNode()->getConfig()->hasLieuEditable()) {
             $cepage = $values['lieuCepage'];
         } else {
             $cepage = $values['cepage'];
             $lieu = $values['lieuDit'];
         }
 
-        $parcelle = $this->getObject()->getDocument()->addProduitParcelle($values['produit'], uniqid(), $commune, $section, $numero_parcelle);
+        $parcelle = $this->getObject()->getDocument()->addParcelle($values['produit'], $values['cepage'], $values['campagne_plantation'], $commune, $section, $numero_parcelle);
 
         $parcelle->superficie = $values['superficie'];
 
         $parcelle->active = 1;
-        if ($this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
+        if ($this->getAppellationNode() && $this->getAppellationNode()->getKey() == 'appellation_'.ParcellaireClient::APPELLATION_ALSACEBLANC) {
         	$parcelle->vtsgn = 1;
         }
 

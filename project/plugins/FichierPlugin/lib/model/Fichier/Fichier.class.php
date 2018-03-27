@@ -127,6 +127,8 @@ class Fichier extends BaseFichier implements InterfacePieceDocument {
 			$csvFile = self::convertXlsFile($file);
 			$this->storeFichier($csvFile);
 		}
+    $this->date_import = date('Y-m-d');
+    return $store4real;
 	}
 
 	public static function convertXlsFile($file) {

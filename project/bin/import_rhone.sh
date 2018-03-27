@@ -18,7 +18,7 @@ curl -X POST -d @data/configuration/rhone/current.json -H "content-type: applica
 curl -X POST -d @data/COMPTE-connexion.json -H "content-type: application/json"   http://$COUCHHOST":"$COUCHDBPORT"/"$COUCHBASE
 
 php symfony cc
-bash bin/import_identites.sh ~/odgrhone_identite_antsys.xml.gz > /tmp/importEntites_$$.log
+bash bin/import_rhone_identites.sh ~/odgrhone_identite_antsys.xml.gz > /tmp/importEntites_$$.log
 
 fi
 

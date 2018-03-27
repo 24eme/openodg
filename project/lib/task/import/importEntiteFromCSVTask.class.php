@@ -95,8 +95,10 @@ EOF;
 
     protected function importEntite($line){
             $data = str_getcsv($line, ';');
-            $oldId = $data[self::CSV_OLDID];
-            $identifiant = sprintf("%06d",intval(preg_replace("/CDP/","",$oldId)));
+            if(!preg_match('/^'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'$/', $data[self::CSV_OLDID])) {
+                throw new Exception("Mauvais identifiant ". $data[self::CSV_OLDID]);
+            }
+            $identifiant = $data[self::CSV_OLDID];
 
             $soc = SocieteClient::getInstance()->find($identifiant);
             if(!$soc){
@@ -191,7 +193,7 @@ EOF;
           $newChai->code_postal = $data[self::CSV_CHAIS_CP];
           $activites = explode(';',$data[self::CSV_ACTIVITES]);
           foreach ($activites as $activite) {
-            if(!array_key_exists(trim($activite),self::$chaisAttributsTrad)){
+            if(!array_key_exists(trim($activite),$this->chaisAttributsInImport)){
               var_dump($activite); exit;
             }
             $activiteKey = $this->chaisAttributsInImport[trim($activite)];

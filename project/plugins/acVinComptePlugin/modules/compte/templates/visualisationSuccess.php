@@ -1,7 +1,7 @@
 <?php use_helper('Compte') ?>
 <ol class="breadcrumb">
     <li><a href="<?php echo url_for('societe') ?>">Contacts</a></li>
-    <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?></a></li>
+    <li><a href="<?php echo url_for('societe_visualisation', array('identifiant' => $societe->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($societe->getRawValue()) ?>"></span> <?php echo $societe->raison_sociale; ?> (<?php echo $societe->identifiant ?>)</a></li>
     <li class="active"><a href="<?php echo url_for('compte_visualisation', array('identifiant' => $compte->identifiant)); ?>"><span class="<?php echo comptePictoCssClass($compte->getRawValue()) ?>"></span> <?php echo $compte->nom_a_afficher; ?></a></li>
 </ol>
 
@@ -15,8 +15,8 @@
                     </div>
                     <div class="col-xs-3 text-muted text-right">
                         <div class="btn-group">
-                            <a class="btn dropdown-toggle " data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
+                            <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
+                            <ul class="dropdown-menu text-left">
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu()) ? 'javascript:void(0)' : url_for('compte_modification', $compte); ?>">Editer</a></li>
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isActif())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Activer</a></li>
@@ -25,7 +25,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel-body" style="border-right: 6px solid #9f0038;">
+            <div class="panel-body panel-primary-bordered-right">
                 <h2>
                 	<?php echo $compte->nom_a_afficher; ?>
                 	<?php if ($compte->isSuspendu()): ?>

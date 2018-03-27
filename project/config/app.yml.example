@@ -35,6 +35,9 @@ all:
     parcellaire:
       debut: "YYYY-mm-dd"
       fin: "YYYY-mm-dd"
+    parcellaire_irrigable:
+      debut: "YYYY-mm-dd"
+      fin: "YYYY-mm-dd"
     parcellaire_cremant:
       debut: "YYYY-mm-dd"
       fin: "YYYY-mm-dd"
@@ -98,3 +101,7 @@ all:
       '18': "18. Volume Substituable Individuel (VSI)"
       '19': "19. Volume complémentaire individuel (VCI)"
       '22': "22. Motif de non récolte"
+  parcellaire:
+    expiration_cepage:
+      'barbaroux-rs': '1994-1995'
+      'calitor-noir-n': '1994-1995'

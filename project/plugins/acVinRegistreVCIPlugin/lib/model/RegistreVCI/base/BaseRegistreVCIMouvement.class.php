@@ -1,42 +1,24 @@
 <?php
 /**
- * BaseRegistreVCIMouvement
- * 
- * Base model for RegistreVCIMouvement
+ * BaseDRevMouvement
+ *
+ * Base model for DRevMouvement
 
- * @property string $date
- * @property string $produit_hash
- * @property string $produit_libelle
- * @property string $detail_hash
- * @property string $detail_libelle
- * @property string $mouvement_type
- * @property string $volume
- * @property string $stock_resultant
+ * @property integer $facture
+ * @property integer $facturable
 
- * @method string getDate()
- * @method string setDate()
- * @method string getProduitHash()
- * @method string setProduitHash()
- * @method string getProduitLibelle()
- * @method string setProduitLibelle()
- * @method string getDetailHash()
- * @method string setDetailHash()
- * @method string getDetailLibelle()
- * @method string setDetailLibelle()
- * @method string getMouvementType()
- * @method string setMouvementType()
- * @method string getVolume()
- * @method string setVolume()
- * @method string getStockResultant()
- * @method string setStockResultant()
- 
+ * @method integer getFacture()
+ * @method integer setFacture()
+ * @method integer getFacturable()
+ * @method integer setFacturable()
+
  */
 
-abstract class BaseRegistreVCIMouvement extends acCouchdbDocumentTree {
-                
+abstract class BaseRegistreVCIMouvement extends Mouvement {
+
     public function configureTree() {
        $this->_root_class_name = 'RegistreVCI';
        $this->_tree_class_name = 'RegistreVCIMouvement';
     }
-                
+
 }

@@ -104,7 +104,7 @@ EOF;
         //Enregistrement des données
         foreach ($realvci as $recoltant => $vciappellation) {
           $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."", $arguments['campagne']);
-          if (count($registre->mouvements)) {
+          if (count($registre->lignes)) {
             $registre->clear();
             $registre->save();
           }
@@ -141,7 +141,7 @@ EOF;
               }
             }
           }
-          if ($registre->exist('mouvements') && count($registre->mouvements)) {
+          if ($registre->exist('lignes') && count($registre->lignes)) {
             $registre->save();
             echo $registre->_id." savé\n";
           }elseif($resgitre->_id){

@@ -1,4 +1,125 @@
-@import '../components/bootstrap/css/bootstrap.min.css';
-@import '../css/lib/select2/select2.css';
-@import '../css/lib/select2/select2-bootstrap.css';
-@import '../css/bootstrap-datetimepicker.min.css';
+body {
+    background: url('../images/bg/bg_provence.jpg') 50% 0 no-repeat fixed;
+    background-size: cover;
+}
+
+#content {
+    background: #fff;
+}
+
+#header {
+    background: transparent;
+}
+
+#content {
+    padding-bottom: 15px;
+    padding-top: 15px;
+    border: 4px solid #e8e3dc;
+    border-top: 4px solid #c50069;
+}
+
+#header {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+#footer {
+    margin-top: 20px;
+}
+
+#footer a {
+    color: #333333;
+}
+
+#menu_navigation {
+    margin-bottom: 0;
+    border-radius: 0;
+    border: none;
+    font-size: 16px;
+}
+
+#menu_navigation .container {
+
+}
+
+.page-header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+h2, h3{
+    color: #c50069;
+}
+
+.panel-body > h2  {
+    margin-top: 5px;
+}
+
+h3 {
+    margin-top: 10px;
+}
+
+.breadcrumb {
+    margin-bottom: 10px;
+}
+
+.select2-container .select2-choices .select2-search-field input, .select2-container .select2-choice, .select2-container .select2-choices {
+    border-radius: 0;
+}
+
+.select2-container .select2-choice {
+    height: 38px;
+}
+
+.select2-container .select2-choice .select2-arrow b, .select2-container .select2-choice div b {
+    background-position: 0 5px;
+}
+
+.select2-search input {
+    border-radius: 0;
+}
+
+.select2-results .select2-no-results, .select2-results .select2-searching, .select2-results .select2-selection-limit {
+    background-color: #f8f3e8;
+}
+
+.select2-results .select2-highlighted {
+    color: white;
+    background-color: #c50069;
+}
+
+.nav-step {
+    counter-reset: steps;
+    font-size: 15px;
+}
+
+.nav-step ul.navbar-nav li a::before {
+    display: inline-block;
+    border: 2px solid;
+    box-sizing: content-box;
+    border-radius: 50%;
+    counter-increment: steps;
+    content: counter(steps);
+    margin-right: 8px;
+    line-height: 20px;
+    height: 20px;
+    width: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.nav-step ul.navbar-nav li {
+    border-right: 1px solid #dbd3c8;
+}
+
+.nav-step ul.navbar-nav li:first-child {
+    border-left: 1px solid #dbd3c8;
+}
+
+.list-group-item.active-bordered {
+    border-left: 6px solid #c50069 !important;
+}
+
+.panel-primary-bordered-right {
+    border-right: 6px solid #c50069;
+}
