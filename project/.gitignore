@@ -11,3 +11,4 @@ data/*
 !data/configuration/
 !data/elk
 web/export
+web/export_data
