@@ -59,7 +59,7 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
             $this->setWidget('telephone_bureau', new sfWidgetFormInputText());
             $this->getWidget('telephone_bureau')->setLabel("Téléphone bureau :");
             $this->setValidator('telephone_bureau', new sfValidatorRegex(array('required' => false,
-                'pattern' => "/^\+?[0-9 ]{10,14}$/",
+                'pattern' => "/^\+?[0-9 \.]{10,14}$/",
                 'min_length' => 10,
                 'max_length' => 14),
                 array(
@@ -70,7 +70,7 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
             $this->setWidget('telephone_mobile', new sfWidgetFormInputText());
             $this->getWidget('telephone_mobile')->setLabel("Téléphone mobile :");
             $this->setValidator('telephone_mobile', new sfValidatorRegex(array('required' => false,
-                'pattern' => "/^\+?[0-9 ]{10,14}$/",
+                'pattern' => "/^\+?[0-9 \.]{10,14}$/",
                 'min_length' => 10,
                 'max_length' => 14),
                 array(
