@@ -187,7 +187,12 @@ EOF;
                   continue;
                 }
               }
-              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre);
+              $strictNumOrdre = true;
+              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre, $strictNumOrdre);
+              if(!$parcelle){
+                  echo "/!\ La parcelle $parcellaire->identifiant  $cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre est en double \n";
+                  continue;
+              }
               $parcelle->superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
               $parcelle->superficie_cadastrale = floatval(str_replace(',','.',trim($data[self::CSV_CONTENANCE_CADASTRALE])));
               $parcelle->code_commune = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));

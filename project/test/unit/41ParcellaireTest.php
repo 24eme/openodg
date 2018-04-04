@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(15);
+$t = new lime_test(16);
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 $date = (date('Y') - 1).date('-m-d');
 
@@ -33,10 +33,11 @@ $numero_ordre_key = "00";
 $parcelle = $parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT");
 $parcellaire->addParcelle($configProduit->getHash(), "Grenache", "2010", "PEYNIER", "AK", "47", null);
 $parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT",25);
+$parcellaire->addParcelle($configProduit->getHash(), "Sirah N", "2005", $commune, "AB", "52", "LA HAUT",25);
 $parcellaire->save();
 
 $t->is(count($parcellaire->declaration), 1, "Le parcellaire a un produit");
-$t->is(count($parcellaire->getParcelles()), 3, "Le parcellaire  3 parcelles");
+$t->is(count($parcellaire->getParcelles()), 4, "Le parcellaire  4 parcelles");
 $t->is($parcelle->getProduit()->getLibelle(), $configProduit->getLibelleComplet(), "Le libellé du produit est ". $configProduit->getLibelleComplet());
 $t->is($parcelle->getKey(), "SIRAH-N-2005-".$commune."-AB-52-".$numero_ordre_key."-LA-HAUT", "La clé de la parcelle est bien construite");
 $t->is($parcelle->code_commune, $code_commune, "Le code commune est : $code_commune");
@@ -52,5 +53,8 @@ array_shift($parcelles);
 array_shift($parcelles);
 $parcelle3 = array_shift($parcelles);
 $t->is($parcelle3->getKey(), "SIRAH-N-2005-".$commune."-AB-52-25-LA-HAUT", "La clé de la parcelle 3 est bien construite");
+
+$parcelle4 = array_shift($parcelles);
+$t->is($parcelle4->getKey(), "SIRAH-N-2005-".$commune."-AB-52-26-LA-HAUT", "La clé de la parcelle 4 est bien construite : elle a pour numéro d'ordre '26'");
 
 $t->is($parcellaire->pieces[0]->libelle, "Parcellaire au ".$parcellaire->getDateFr(), "La déclaration a bien généré un document (une pièce)");
