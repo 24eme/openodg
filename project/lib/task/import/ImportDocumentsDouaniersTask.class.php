@@ -31,45 +31,45 @@ EOF;
 
         $annee = $arguments['annee'];
         $type = ($options['type'])? strtoupper($options['type']) : null;
-        
+
         if (!preg_match('/^[0-9]{4}$/', $annee)) {
         	echo sprintf("ERROR;Année non valide %s\n", $annee);
         	return;
         }
-        
+
         if ($type && !in_array($type, $this->getDocumentDouanierTypes())) {
         	echo sprintf("ERROR;Type non valide %s\n", $type);
         	return;
         }
-        
+
         $items = EtablissementAllView::getInstance()->findByInterproStatutAndFamilleVIEW('INTERPRO-declaration', 'ACTIF', null);
-		$i=0;
-		$nb = count($items);
+		    $i=0;
+		    $nb = count($items);
         foreach ($items as $item) {
-        	
+
 
         	$i++;
         	echo "PROCESSUS;".$i.'/'.$nb.' => '.floor($i / $nb * 100)."\n";
-        	
+
         	if ($etablissement = EtablissementClient::getInstance()->find($item->id)) {
         		$ddType = $this->getDocumentDouanierType($etablissement);
-        		
+
         		if ($type && $ddType != $type) {
         			continue;
         		}
-        		
+
         		if (!$etablissement->cvi || !preg_match('/^[0-9]{10}$/', $etablissement->cvi)) {
         			echo sprintf("ERROR;CVI non valide %s pour %s\n", $etablissement->cvi, $etablissement->_id);
         			continue;
         		}
-        		
+
         		if (!$ddType) {
         			echo sprintf("ERROR;Famille non identifiée %s pour %s\n", $etablissement->famille, $etablissement->_id);
         			continue;
         		}
-        		
+
         		$c = FichierClient::getInstance()->getClientFromType($ddType);
-        		
+
         		if ($f = $c->findByArgs($etablissement->identifiant, $annee)) {
         			echo sprintf("WARNING;Document douanier déjà existant %s\n", $f->_id);
         			continue;
@@ -81,20 +81,20 @@ EOF;
         			echo sprintf("ERROR;%s\n", $e->getMessage());
         			continue;
         		}
-        		
+
         		if (!$result) {
         			echo sprintf("WARNING;Aucun document douanier pour %s (%s)\n", $etablissement->_id, $etablissement->cvi);
         		} else {
         			echo sprintf("SUCCESS;Document douanier importé;%s\n", $result->_id);
         		}
-        		
+
         	} else {
         		echo sprintf("ERROR;Etablissement non trouvé %s\n", $item->id);
         	}
         }
     }
 
-    protected function getDocumentDouanierType($etablissement) 
+    protected function getDocumentDouanierType($etablissement)
     {
         if($etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR) {
             return DRCsvFile::CSV_TYPE_DR;
@@ -109,7 +109,7 @@ EOF;
         }
         return null;
     }
-    
+
     protected function getDocumentDouanierTypes()
     {
     	return array(
