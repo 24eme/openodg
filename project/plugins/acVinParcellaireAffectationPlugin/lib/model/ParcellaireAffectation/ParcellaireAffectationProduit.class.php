@@ -4,7 +4,7 @@
  * Model for ParcellaireCepage
  *
  */
-class ParcellaireProduit extends BaseParcellaireProduit {
+class ParcellaireAffectationProduit extends BaseParcellaireProduit {
 
     public function getConfig() {
 
