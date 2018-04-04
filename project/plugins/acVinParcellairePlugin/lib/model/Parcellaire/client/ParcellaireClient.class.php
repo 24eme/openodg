@@ -71,4 +71,11 @@ class ParcellaireClient extends acCouchdbClient {
     	return $view->execute($hydrate)->getDatas();
     }
 
+    public static function sortParcellesForCommune($a, $b) {
+        $aK = $a->section.sprintf("%04d",$a->numero_parcelle);
+        $bK = $b->section.sprintf("%04d",$b->numero_parcelle);
+        return strcmp($aK,$bK);
+
+    }
+
 }

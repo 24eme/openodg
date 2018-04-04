@@ -17,7 +17,6 @@ class ParcellaireIrrigableDeclaration extends BaseParcellaireIrrigableDeclaratio
         }
 
         ksort($parcelles);
-
         return $parcelles;
     }
 

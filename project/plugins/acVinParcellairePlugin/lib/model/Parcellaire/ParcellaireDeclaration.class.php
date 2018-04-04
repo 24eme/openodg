@@ -22,6 +22,10 @@ class ParcellaireDeclaration extends BaseParcellaireDeclaration {
                 $parcelles[$parcelle->commune][$parcelle->getHash()] = $parcelle;
             }
         }
+        foreach ($parcelles as $key => $parcelleByCommune) {
+            uasort($parcelleByCommune, "ParcellaireClient::sortParcellesForCommune");
+            $parcelles[$key] = $parcelleByCommune;
+        }
 
         ksort($parcelles);
 

@@ -116,9 +116,8 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null) {
-        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle;
-
+    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = 0) {
+        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle.'-'.sprintf('%02d',$numero_ordre);
         if ($lieu) {
             $key.= '-' . $lieu;
         }
@@ -136,6 +135,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $detail->code_commune = CommunesConfiguration::getInstance()->findCodeCommune($detail->commune);
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
+        $detail->add('numero_ordre', $numero_ordre);
         if($lieu){
             $lieu = strtoupper($lieu);
         }
