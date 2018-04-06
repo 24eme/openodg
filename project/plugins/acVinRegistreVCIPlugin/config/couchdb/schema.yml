@@ -11,6 +11,7 @@ RegistreVCI:
       papier: { required: false, type: integer }
       automatique: { required: false, type: integer }
       lecture_seule: { required: false }
+      superficies_facturables: { }
       version: {  }
       declaration:
         type: collection

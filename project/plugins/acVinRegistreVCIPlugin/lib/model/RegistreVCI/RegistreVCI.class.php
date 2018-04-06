@@ -62,10 +62,11 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           }else{
             $hproduit = preg_replace('/\/*declaration\//', '', $produit->getHash());
           }
+          $hproduit = preg_replace('|appellation_CREMANT/mention/lieu/couleur/.*|', 'appellation_CREMANT', $hproduit);
           $nDetail = $this->add('declaration')->add($hproduit)->addMouvement($mouvement_type, $volume, $lieu);
           $mvt = $this->add('mouvements')->add();
           $mvt->produit_hash = $hproduit;
-          $mvt->produit_libelle = $produit->getLibelleComplet();
+          $mvt->produit_libelle = $nDetail->getLibelleProduit();
           $mvt->detail_hash = $nDetail->stockage_identifiant;
           $mvt->detail_libelle = $nDetail->getLibelle();
           $mvt->volume = $volume;
@@ -81,6 +82,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
       public function clear() {
         $this->remove('declaration');
         $this->remove('mouvements');
+        $this->superficies_facturables = 0;
       }
 
       protected function doSave() {
@@ -140,7 +142,9 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
           $appellationproduit->freeIncr('substitution', $p->substitution);
           $appellationproduit->freeIncr('destruction', $p->destruction);
           $appellationproduit->freeIncr('stock_final', $p->stock_final);
-          $produits[] = $p;
+          if ($p->isProduitCepage()) {
+            $produits[] = $p;
+          }
         }
         $produits[] = $appellationproduit;
         return $produits;

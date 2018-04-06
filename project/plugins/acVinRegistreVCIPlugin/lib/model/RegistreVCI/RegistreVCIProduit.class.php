@@ -75,6 +75,9 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
   }
 
   public function getAppellation() {
+    if ($this->isProduitAppellation()) {
+      return $this->getConfig();
+    }
     return $this->getConfig()->getAppellation();
   }
 
@@ -116,6 +119,13 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
       return 'XXX';
     }
     return $drev->get($this->pseudo_produit->getHash())->getTotalTotalSuperficie();
+  }
+
+  public function isProduitCepage() {
+    return (!$this->isProduitAppellation());
+  }
+  public function isProduitAppellation() {
+    return (get_class($this->getConfig()) == 'ConfigurationAppellation');
   }
 
 }

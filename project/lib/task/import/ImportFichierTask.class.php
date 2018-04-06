@@ -18,11 +18,9 @@ class ImportFichierTask extends sfBaseTask
         	new sfCommandOption('libelle', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         	new sfCommandOption('visibilite', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', 1),
         	new sfCommandOption('papier', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', false),
-        	new sfCommandOption('date_depot', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         	new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         	new sfCommandOption('annee', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         	new sfCommandOption('lien_symbolique', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', false),
-        	new sfCommandOption('date_import', null, sfCommandOption::PARAMETER_OPTIONAL, 'Libelle fichier', null),
         ));
 
         $this->namespace = 'import';
@@ -39,7 +37,6 @@ EOF;
 
         $file = $arguments['fichier'];
 
-
         $etablissement = EtablissementClient::getInstance()->findByIdentifiant($arguments['identifiant']);
         if (!$etablissement) {
         	$etablissement = EtablissementClient::getInstance()->findByCvi($arguments['identifiant']);
@@ -49,13 +46,6 @@ EOF;
             echo sprintf("ERROR;Etablissement introuvable %s\n", $arguments['identifiant']);
             return;
         }
-        if ($options['date_depot'] && !preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $options['date_depot'])) {
-          if (!preg_match('/^([0-9]{2})\/([0-9]{2})\/([0-9]{4})/', $options['date_depot'], $match)) {
-        	   echo sprintf("ERROR;Format date (Y-m-d) non valide %s\n", $options['date_depot']);
-        	   return;
-          }
-          $options['date_depot'] = $match[3].'-'.$match[2].'-'.$match[1];
-        }
         if (!file_exists($file) || !is_file($file)) {
           echo sprintf("ERROR;Fichier introuvable ou non valide %s\n", $file);
           return;
@@ -63,10 +53,6 @@ EOF;
         if ($options['lien_symbolique']) {
         	if (!$options['type'] || !$options['annee']) {
         		echo sprintf("ERROR;Type et année obligatoire pour la création du lien symbolique\n");
-        		return;
-        	}
-        	if (!$options['date_import']) {
-        		echo sprintf("ERROR;Date d'import obligatoire pour la création du lien symbolique\n");
         		return;
         	}
           if (!preg_match('/^[0-9]{4}$/', $options['annee'])) {
@@ -79,13 +65,8 @@ EOF;
         		return;
         	}
         	$fichier = $client->findByArgs($etablissement->identifiant,  $options['annee']);
-        	if ($fichier && $fichier->date_import != $options['date_import']) {
-        		$fichier->delete();
-        		$fichier = null;
-        	}
         	if (!$fichier) {
         		$fichier = $client->createDoc($etablissement->identifiant, $options['annee'], $options['papier']);
-        		$fichier->date_import = $options['date_import'];
         	}
 
         } else {
@@ -94,9 +75,6 @@ EOF;
         if ($fichier->isNew() && $options['libelle']) {
         	$fichier->setLibelle($options['libelle']);
         }
-        if ($fichier->isNew() && $options['date_depot']) {
-        	$fichier->setDateDepot($options['date_depot']);
-        }
         if ($fichier->isNew() && $options['visibilite']) {
         	$fichier->setVisibilite($options['visibilite']);
         }
@@ -104,13 +82,16 @@ EOF;
         	if ($fichier->isNew()) {
         		$fichier->save();
         	}
-        	$fichier->storeFichier($file);
-        	$fichier->save();
+        	if ($fichier->storeFichier($file)) {
+        	   $fichier->save();
+             echo sprintf("SUCCESS;Fichier importé;%s\n", $fichier->_id);
+          }else{
+            echo sprintf("INFO;Fichier inchangé;%s\n", $fichier->_id);
+          }
         } catch (Exception $e) {
         	echo sprintf("ERROR;%s\n",$e->getMessage());
         	return;
         }
-        echo sprintf("SUCCESS;Fichier importé;%s\n", $fichier->_id);
     }
 
     public function getClientFromType($type)
