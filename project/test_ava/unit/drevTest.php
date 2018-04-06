@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(56);
+$t = new lime_test(57);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -142,6 +142,8 @@ $dateFacturation = date('Y-m-d');
 $f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
 $f->save();
 
+$t->is(count($f->lignes), count($templateFacture->cotisations), "La facture a le même nombre de lignes que dans le template");
+
 $superficieHaVinifie = 0;
 $superficieAresRevendique = 0;
 $volumeHlRevendique = 0;
@@ -161,6 +163,7 @@ foreach($f->lignes->get('inao')->details as $ligne) {
         $volumeHlRevendique += $ligne->quantite;
     }
 };
+
 
 $t->is($f->lignes->get('odg_ava')->libelle, "Cotisation ODG-AVA", "Le libellé du groupe de ligne odg_ava est Cotisation ODG-AVA");
 $t->is($f->lignes->get('odg_ava')->produit_identifiant_analytique, "706300", "Le code comptable du groupe de ligne odg_ava est 706300");
