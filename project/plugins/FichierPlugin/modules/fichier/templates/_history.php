@@ -2,6 +2,8 @@
 <?php if(count($history) > 0): ?>
 <h2>Derniers documents</h2>
 
+<div class="row">
+<div class="col-xs-12">
 <div class="list-group">
 <?php $i=0; foreach ($history as $document): $i++; if ($i>$limit) { break; } ?>
 <div class="list-group-item col-xs-12">
@@ -63,3 +65,5 @@
 </div>
 <a href="<?php echo url_for('pieces_historique', $etablissement) ?>" style="margin-top: 20px; margin-bottom: 20px;" class="pull-right btn btn-warning btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Plus de document</a>
 <?php endif; ?>
+</div>
+</div>

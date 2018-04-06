@@ -33,6 +33,8 @@
 
 <p>Veuillez trouver ci-dessous l'ensemble de vos éléments déclaratifs</p>
 <div class="row">
+    <div class="col-xs-12">
+        <div class="row">
     <?php include_component('drev', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php if(class_exists("DRevMarc")): ?>
     <?php include_component('drevmarc', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
@@ -56,5 +58,8 @@
     <?php include_component('tirage', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
     <?php endif; ?>
     <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
+        </div>
+    </div>
 </div>
+<br/>
 <?php include_partial('fichier/history', array('etablissement' => $etablissement, 'history' => PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)), 'limit' => Piece::LIMIT_HISTORY)); ?>
