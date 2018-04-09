@@ -142,6 +142,8 @@ $dateFacturation = date('Y-m-d');
 $f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
 $f->save();
 
+$t->ok($f->_rev, "Facture généré ".$f->_id);
+
 $t->is(count($f->lignes), count($templateFacture->cotisations), "La facture a le même nombre de lignes que dans le template");
 
 $superficieHaVinifie = 0;
@@ -173,9 +175,17 @@ $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
 $t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La volume revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalVolumeRevendique()." hl");
 
-$drev = DRevClient::getInstance()->find($drev->_id);
+$t->comment("Envoi de la facture par mail");
+
+$message = FactureEmailManager::getInstance($instance)->compose($f);
+
+@mkdir(sfConfig::get('sf_test_dir')."/output");
+file_put_contents(sfConfig::get('sf_test_dir')."/output/email_facture.eml", $message);
+
+$t->ok($message, "Mail généré : ".sfConfig::get('sf_test_dir')."/output/email_facture.eml");
 
 $t->comment("Génération d'une modificatrice");
+$drev = DRevClient::getInstance()->find($drev->_id);
 
 $drevM1 = $drev->generateModificative();
 $drevM1->save();
