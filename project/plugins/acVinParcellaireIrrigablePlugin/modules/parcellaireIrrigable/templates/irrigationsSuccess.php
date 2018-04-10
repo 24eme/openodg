@@ -22,6 +22,7 @@
                 <th class="col-xs-2">Type de matériel</th>
                 <th class="col-xs-2">Type de ressource</th>
                 <th class="col-xs-1">Dupliquer les types</th>
+
             </tr>
 		</thead>
 		<tbody>

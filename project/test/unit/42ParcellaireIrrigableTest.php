@@ -26,9 +26,9 @@ $t->is(count($parcellaireIrrigable->declaration->getParcelles()), 0, "Le parcell
 $parcellaireIrrigable->addParcellesFromParcellaire(array_keys($parcellaireIrrigable->getParcellaireCurrent()->getParcelles()));
 $parcellaireIrrigable->save();
 
-$t->is(count($parcellaireIrrigable->declaration->getParcellesByCommune()), count($parcellaire->getParcelles()), "Le parcellaire irrigable a 2 parcelles");
+$t->is(count($parcellaireIrrigable->declaration->getParcellesByCommune()), 2, "Le parcellaire irrigable a 2 commune de parcelles");
 
 $parcellaireIrrigable->validate();
 $parcellaireIrrigable->save();
 
-$t->is($parcellaireIrrigable->pieces[0]->libelle, "Intention de parcelles irrigables ".$parcellaireIrrigable->campagne."-".($parcellaireIrrigable->campagne + 1)." (Télédéclaration)", "La déclaration a bien généré un document (une pièce)");
+$t->is($parcellaireIrrigable->pieces[0]->libelle, "Identification des parcelles irrigables (Télédéclaration)", "La déclaration a bien généré un document (une pièce)");

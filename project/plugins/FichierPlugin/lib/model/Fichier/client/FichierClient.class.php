@@ -4,25 +4,25 @@ class FichierClient extends acCouchdbClient {
     public static function getInstance()
     {
       return acCouchdbManager::getClient("Fichier");
-    }  
+    }
 
     public function createDoc($identifiant, $papier = false)
     {
         $fichier = new Fichier();
         $fichier->initDoc($identifiant);
-        
+
         if($papier) {
             $fichier->add('papier', 1);
         }
-        
+
         $fichier->date_import = date('Y-m-d');
 
         return $fichier;
     }
-    
+
     public function scrapeAndSaveFiles($etablissement, $type, $annee)
     {
-    	$this->scrapeFiles($etablissement, $type, $annee);    	
+    	$this->scrapeFiles($etablissement, $type, $annee);
     	if (!$files = $this->getScrapyFiles($etablissement, strtolower($type), $annee)) {
     		return false;
     	}
@@ -32,7 +32,6 @@ class FichierClient extends acCouchdbClient {
     	}
     	if ($fichier->isNew()) {
     		$fichier->setLibelle("$type $annee issue de Prodouane");
-    		$fichier->setDateDepot("$annee-12-15");
     		$fichier->save();
     	}
     	try {
@@ -46,7 +45,7 @@ class FichierClient extends acCouchdbClient {
         }
         return $fichier;
     }
-    
+
     private function scrapeFiles($etablissement, $type, $annee)
     {
     	$types = array(DRCsvFile::CSV_TYPE_DR, SV11CsvFile::CSV_TYPE_SV11, SV12CsvFile::CSV_TYPE_SV12);
@@ -64,7 +63,7 @@ class FichierClient extends acCouchdbClient {
     	$cvi = $etablissement->cvi;
     	exec("bash $scrapyBin $t $annee $cvi > /dev/null 2>&1");
     }
-    
+
     private function getScrapyFiles($etablissement, $type, $annee)
     {
     	$files = array();

@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(47);
+$t = new lime_test(63);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -102,5 +102,26 @@ $t->is($registre->declaration->get($produit_hash)->details->get($registre->ident
 $t->is($registre->declaration->get($produit_hash)->details->get(RegistreVCIClient::LIEU_CAVEPARTICULIERE)->stock_final, -5, "L'ajout du mouvement n'impacte le stock CAVE PARTICULIERE");
 $t->is($registre->declaration->get($produit_hash)->stock_final, 0, "L'ajout de ce mouvement impacte le stock du produit");
 $t->isnt($registre->mouvements[6]->detail_libelle, 'Cave particulière', 'libelle détail pas cave particulière');
+
+
+$t->comment("test configuration pour un produit normal");
+$t->is($registre->declaration->get($produit_hash)->getLibelleComplet(), 'AOC Alsace blanc Chasselas', "Libellé du produit OK");
+$t->is(get_class($registre->declaration->get($produit_hash)->getConfig()), 'ConfigurationCepage', "Pour un produit, on a accès à la configuration");
+$t->is(get_class($registre->declaration->get($produit_hash)->getAppellation()), 'ConfigurationAppellation', "Pour les crémants, on a une vraie class appellation");
+
+
+$t->comment("Ajout d'un crémant");
+$hash_cremant = 'certification/genre/appellation_CREMANT/mention/lieu/couleur/cepage_PB';
+$hash_resultat = 'certification/genre/appellation_CREMANT';
+$registre->addMouvement($hash_cremant, RegistreVCIClient::MOUVEMENT_CONSTITUE, 10, RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+$t->is($registre->declaration->exist($hash_resultat), true, "Ajout d'un mouvement crémant le met au niveau appellation");
+$t->is($registre->declaration->exist($hash_cremant), false, "Ajout d'un mouvement crémant ne le met pas au niveau cepage");
+$t->is($registre->declaration->get($hash_resultat)->getLibelleComplet(), 'AOC Crémant d\'Alsace', "Le libellé complet d'un crément ne rentre pas dans les détails");
+$t->is(get_class($registre->declaration->get($hash_resultat)->getConfig()), 'ConfigurationAppellation', "Pour les crémants, on a accès à la configuration");
+$t->is(get_class($registre->declaration->get($hash_resultat)->getAppellation()), 'ConfigurationAppellation', "Pour les crémants, on a une vraie class appellation");
+$pseudoapp = $registre->getProduitsWithPseudoAppelations();
+$t->is($pseudoapp[2]->getLibelle(), 'AOC Crémant d\'Alsace', "Bon pseudo produit pour le Crémant");
+$t->is(count($pseudoapp), 3, "Pas de double pseudo produit pour le Crémant");
+$t->is($registre->mouvements[7]->produit_libelle, 'AOC Crémant d\'Alsace', 'libelle crémant du mouvement est OK');
 
 $registre->save();

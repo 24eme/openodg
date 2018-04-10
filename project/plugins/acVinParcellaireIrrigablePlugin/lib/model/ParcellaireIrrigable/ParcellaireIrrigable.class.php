@@ -40,7 +40,6 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
     	}
     	throw new sfException("Impossible de determiner le type de parcellaire");
     }
-
   public function initDoc($identifiant, $campagne) {
       $this->identifiant = $identifiant;
       $this->campagne = $campagne;
@@ -161,6 +160,17 @@ class ParcellaireIrrigable extends BaseParcellaireIrrigable implements Interface
       	foreach ($remove as $r) {
       		$this->declaration->remove($r);
       	}
+    }
+
+
+    public function getDeclarantSiret(){
+        $siret = "";
+        if($this->declarant->siret){
+            return $this->declarant->siret;
+        }
+        if($siret = $this->getEtablissementObject()->siret){
+            return $siret;
+        }
     }
 
   public function validate($date = null) {

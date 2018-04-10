@@ -11,6 +11,7 @@
 		        <th class="col-xs-1" style="text-align: right;">Surf. <span class="text-muted small">(ha)</span></th>
 		        <th class="col-xs-2">Type de matériel</th>
 		        <th class="col-xs-2">Type de ressource</th>
+
             </tr>
 		</thead>
 		<tbody>

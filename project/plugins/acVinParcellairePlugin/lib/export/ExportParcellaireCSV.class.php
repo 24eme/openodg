@@ -44,11 +44,11 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
         $mode = 'TELEDECLARATION';
 		$emails = explode(';', $this->doc->declarant->email);
 		$email = isset($emails[0])? trim($emails[0]) : null;
-        $ligne_base = sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->doc->declarant->siret, $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $email);
+        $ligne_base = sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->formatSiret($this->doc->declarant->siret), $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $email);
         foreach ($this->doc->declaration->getParcellesByCommune() as $commune => $parcelles) {
         	foreach ($parcelles as $parcelle) {
             	$configProduit = $parcelle->getProduit()->getConfig();
-            	
+
             	$certification = $configProduit->getCertification()->getKey();
             	$genre = $configProduit->getGenre()->getKey();
             	$appellation = $configProduit->getAppellation()->getKey();
@@ -60,17 +60,17 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
             	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
             	$csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
-            	$certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$libelle_complet, 
-            	$parcelle->idu,
+            	$certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$libelle_complet,
+            	$this->protectStr($parcelle->idu),
             	$parcelle->code_commune,
-            	$this->protectStr($parcelle->commune), 
-            	$this->protectStr($parcelle->lieu), 
+            	$this->protectStr($parcelle->commune),
+            	$this->protectStr($parcelle->lieu),
             	$parcelle->section,
             	$parcelle->numero_parcelle,
-            	$this->protectStr($parcelle->cepage), 
-            	$this->protectStr($parcelle->campagne_plantation), 
+            	$this->protectStr($parcelle->cepage),
+            	$this->protectStr($parcelle->campagne_plantation),
             	$this->formatFloat($parcelle->superficie),
-            	$this->protectStr($parcelle->ecart_pieds), 
+            	$this->protectStr($parcelle->ecart_pieds),
             	$this->protectStr($parcelle->ecart_rang),
             	$mode);
         	}
@@ -83,5 +83,11 @@ class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
         return str_replace(".", ",", $value);
     }
+
+    protected function formatSiret($siret) {
+      //return $siret;
+      return preg_replace('/^(\d\d\d)(\d\d\d)(\d\d\d)/', '\1 \2 \3 ', $siret);
+    }
+
 
 }

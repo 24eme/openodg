@@ -20,7 +20,7 @@ foreach ($facets as $type => $ftype) {
     if(!$cpt){
       echo "<div class='col-sm-3 col-xs-12'>";
     }
-    echo '<a class="list-group-item list-group-item-xs" href="'.url_for('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($f['key']))).'">'.str_replace('_', ' ', $f['key']).'<span class="badge" style="position: absolute; right: 10px;">'.$f['doc_count'].'</span></a>';
+    echo '<a class="list-group-item list-group-item-xs" href="'.url_for('compte_groupe', array('groupeName' => str_replace('.','!',sfOutputEscaper::unescape($f['key'])))).'">'.str_replace('_', ' ', $f['key']).'<span class="badge" style="position: absolute; right: 10px;">'.$f['doc_count'].'</span></a>';
     //echo "<a href=''>".$f['key']."</a>";
     if($cpt > 10){
       echo "</div>";

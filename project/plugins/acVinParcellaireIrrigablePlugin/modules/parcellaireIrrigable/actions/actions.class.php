@@ -203,6 +203,7 @@ class parcellaireIrrigableActions extends sfActions {
     	$this->parcellaireIrrigable = $this->getRoute()->getParcellaireIrrigable();
     	$this->secure(ParcellaireSecurity::VISUALISATION, $this->parcellaireIrrigable);
 
+
     	$this->document = new ExportParcellaireIrrigablePDF($this->parcellaireIrrigable, $this->getRequestParameter('output', 'pdf'), false);
     	$this->document->setPartialFunction(array($this, 'getPartial'));
 

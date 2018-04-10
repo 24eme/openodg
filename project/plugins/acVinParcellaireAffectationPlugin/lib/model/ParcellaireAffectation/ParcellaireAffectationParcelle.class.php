@@ -124,6 +124,14 @@ class ParcellaireAffectationParcelle extends BaseParcellaireProduitDetail {
 
         return $this->getProduit()->getConfig()->getLieu();
     }
+    
+    public function getIdentificationParcelleLibelle() {
+    	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
+    }
+    
+    public function getIdentificationCepageLibelle() {
+    	return $this->getProduitLibelle().'<br />'.$this->getCepageLibelle().' '.$this->campagne_plantation;
+    }
 
     public function getIdentificationParcelleLibelle() {
     	return $this->section.'-'.$this->numero_parcelle.'<br />'.$this->commune.' '.$this->getLieuLibelle().' '.sprintf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $this->superficie);
@@ -164,5 +172,25 @@ class ParcellaireAffectationParcelle extends BaseParcellaireProduitDetail {
 
     public function isFromAppellation($appellation){
         return 'appellation_'.$appellation == $this->getAppellation()->getKey();
+    }
+
+    public function hasProblemExpirationCepage() {
+
+      $expirations = sfConfig::get('app_parcellaire_expiration_cepage', null);
+      if (is_null($expirations)) {
+        return false;
+      }
+      $slug_cepage = strtolower(KeyInflector::slugify(trim($this->getCepageLibelle())));
+      if (isset($expirations[$slug_cepage]) && $expirations[$slug_cepage] < $this->campagne_plantation) {
+        return true;
+      }
+      return false;
+    }
+
+    public function hasProblemEcartPieds() {
+      if ($this->exist('ecart_rang') && $this->exist('ecart_pieds') && $this->ecart_rang && $this->ecart_pieds) {
+        return (($this->ecart_rang * $this->ecart_pieds) > 25000);
+      }
+      return false;
     }
 }

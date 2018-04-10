@@ -58,12 +58,19 @@ EOF;
           $line = rtrim($line);
           $csv = explode(';', $line);
 
+          if (($csv[self::DRCIVA_APPELLATION] != 'AOC Alsace blanc') && ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace')) {
+            continue;
+          }
+          if ($csv[self::DRCIVA_LIEU] == 'TOTAL') {
+            $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['SUPERFICIE'] += $csv[self::DRCIVA_SUPERFICIE_TOTALE];
+          }
           if (!$csv[self::DRCIVA_VCI_TOTAL]) {
             continue;
           }
           if ($csv[self::DRCIVA_CVI_ACHETEUR] == $csv[self::DRCIVA_CVI_RECOLTANT]) {
             $csv[self::DRCIVA_CVI_ACHETEUR] = '';
           }
+
           $oldreporting = error_reporting(0);
           if (($csv[self::DRCIVA_LIEU] != 'TOTAL') && ($csv[self::DRCIVA_CEPAGE] != 'TOTAL')) {
             $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['VOLUME_TOTAL'] += $csv[self::DRCIVA_VCI_TOTAL];
@@ -77,7 +84,25 @@ EOF;
           $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU'][$csv[self::DRCIVA_LIEU]][$csv[self::DRCIVA_CVI_ACHETEUR]]['CEPAGE'][$csv[self::DRCIVA_CEPAGE]]['RECOLTANT_NOM'] =  $csv[self::DRCIVA_NOM_RECOLTANT];
           error_reporting($oldreporting);
         }
+        //On vire les données qui n'ont pas de VCI (et seulement des superficies)
+        $realvci = array();
         foreach ($vci as $recoltant => $vciappellation) {
+            $nb = 0;
+            foreach($vciappellation as $appellation => $vcilieu) {
+              foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
+                foreach($vciacheteur as $cviacheteur => $vcicepage) {
+                  foreach($vcicepage['CEPAGE'] as $cepage => $unvci) {
+                    $nb += 1;
+                  }
+                }
+              }
+            }
+            if ($nb > 2) {
+              $realvci[$recoltant] = $vciappellation;
+            }
+        }
+        //Enregistrement des données
+        foreach ($realvci as $recoltant => $vciappellation) {
           $registre = RegistreVCIClient::getInstance()->findMasterByIdentifiantAndCampagneOrCreate($recoltant."", $arguments['campagne']);
           if (count($registre->mouvements)) {
             $registre->clear();
@@ -88,6 +113,9 @@ EOF;
             $totalappellation = $vcilieu['LIEU']['TOTAL']['']['CEPAGE'][''];
             if (!isset($totalappellation['VOLUME']) || !(sprintf('%0.2f', $totalappellation['VOLUME_TOTAL']) === sprintf('%0.2f', $totalappellation['VOLUME']))) {
               $nonsolvable = 1;
+            }
+            if (isset($totalappellation['SUPERFICIE'])) {
+              $registre->superficies_facturables += $totalappellation['SUPERFICIE'];
             }
             foreach($vcilieu['LIEU'] as $lieu => $vciacheteur) {
               if ($lieu == 'TOTAL') {
@@ -104,7 +132,7 @@ EOF;
                     continue;
                   }
                   if ($unvci['VOLUME'] * 1.0 > 0) {
-                    echo "add ".preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT']))." ".$unvci['VOLUME'] ." ";
+                    echo "$recoltant : add ".preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT']))." ".$unvci['VOLUME'] ." ";
                     echo ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_NOM'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE;
                     echo "\n";
                     $registre->addMouvement(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
@@ -113,9 +141,11 @@ EOF;
               }
             }
           }
-          if (count($registre->mouvements)) {
+          if ($registre->exist('mouvements') && count($registre->mouvements)) {
             $registre->save();
             echo $registre->_id." savé\n";
+          }elseif($resgitre->_id){
+            $registre->delete();
           }
         }
     }

@@ -35,8 +35,8 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
             <div class="panel-body panel-primary-bordered-right">
                 <h2>
                 	<?php echo $etablissement->nom; ?>
-                	<?php if ($etablissement->getMasterCompte()->isSuspendu()): ?>
-					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $etablissement->getMasterCompte()->getStatutLibelle(); ?></small></span>
+                    <?php if ($etablissement->isSuspendu()): ?>
+					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $etablissement->getStatutLibelle(); ?></small></span>
 					<?php endif; ?>
                 </h2>
                 <hr/>

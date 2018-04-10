@@ -106,6 +106,7 @@ class ExportParcellaireIrrigablePDF extends ExportPDF {
         if (!$this->parcellaireIrrigable->isPapier()) {
             if ($this->parcellaireIrrigable->validation) {
                 $date = new DateTime($this->parcellaireIrrigable->validation);
+
                 $header_subtitle .= sprintf("Signé électroniquement via l'application de télédéclaration le %s", $date->format('d/m/Y'), $this->parcellaireIrrigable->signataire);
                 if($this->parcellaireIrrigable->exist('signataire') && $this->parcellaireIrrigable->signataire) {
                     $header_subtitle .= " par " . $this->parcellaireIrrigable->signataire;

@@ -115,6 +115,7 @@ class compteActions extends sfCredentialActions {
       }
       $qs = new acElasticaQueryQueryString($query);
       $q = new acElasticaQuery();
+
       $q->setQuery($qs);
       $this->contacts_all = $request->getParameter('contacts_all');
       $this->q = $request->getParameter('q');
@@ -300,7 +301,7 @@ class compteActions extends sfCredentialActions {
     public function executeGroupe(sfWebRequest $request){
       $request->setParameter('contacts_all',true);
       $index = acElasticaManager::getType('COMPTE');
-      $this->groupeName = $request->getParameter('groupeName');
+      $this->groupeName = str_replace('!','.',$request->getParameter('groupeName'));
       $this->filtre = "groupes:".Compte::transformTag($this->groupeName);
       $request->addRequestParameters(array('tags' => $this->filtre));
       $q = $this->initSearch($request);
@@ -309,6 +310,7 @@ class compteActions extends sfCredentialActions {
 		  $elasticaFacet->setField('doc.tags.groupes');
 		  $elasticaFacet->setSize(250);
 		  $q->addFacet($elasticaFacet);
+
       $resset = $index->search($q);
       $this->results = $resset->getResults();
       $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
@@ -322,13 +324,13 @@ class compteActions extends sfCredentialActions {
               if (!$this->addRemoveGroupe($request, false)) {
                   return ;
               }
-              $this->redirect('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($this->groupeName)));
+              $this->redirect('compte_groupe', array('groupeName' => str_replace('.','!',fOutputEscaper::unescape($this->groupeName))));
           }
       }
     }
 
     public function executeRemovegroupe(sfWebRequest $request) {
-      $groupeName = $request->getParameter('groupeName');
+      $groupeName = str_replace('.','!',$request->getParameter('groupeName'));
       $identifiant = $request->getParameter('identifiant');
       $compte = CompteClient::getInstance()->findByIdentifiant($identifiant);
       $compte->removeGroupes($groupeName);
@@ -337,7 +339,7 @@ class compteActions extends sfCredentialActions {
       if (!$this->addRemoveGroupe($request, true)) {
                 return ;
       }
-      $this->redirect('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($groupeName)));
+      $this->redirect('compte_groupe', array('groupeName' => str_replace('.','!',sfOutputEscaper::unescape($groupeName))));
     }
 
     public function executeTags(sfWebRequest $request) {
@@ -374,7 +376,7 @@ class compteActions extends sfCredentialActions {
           if ($this->form->isValid()) {
             $values = $this->form->getValues();
             $this->groupeName = $values['nom_groupe'];
-            $this->redirect('compte_groupe', array('groupeName' => $this->groupeName));
+            $this->redirect('compte_groupe', array('groupeName' => str_replace('.','!',$this->groupeName)));
           }
       }
     }

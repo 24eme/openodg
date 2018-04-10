@@ -55,6 +55,7 @@ Parcellaire:
                               lieu: { }
                               cepage: { }
                               campagne_plantation: { }
+                              numero_ordre: { required: false }
                               departement: { required: false }
                               active: { type: integer, required: false }
                               vtsgn: { type: integer, required: false }

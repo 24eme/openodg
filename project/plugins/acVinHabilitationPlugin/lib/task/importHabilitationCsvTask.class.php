@@ -36,7 +36,7 @@ class importHabilitationCsvTask extends sfBaseTask
         $this->detailedDescription = <<<EOF
 EOF;
 
-        $this->produitKey = 'certifications/AOP/genres/TRANQ/appellations/CDR';
+        $this->produitKey = 'certifications/AOP/genres/TRANQ/appellations/CDP';
         $this->dateHabilitation = '2016-08-01';
         $this->dateArchivage = null;
 

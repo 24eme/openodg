@@ -12,7 +12,7 @@ class EtablissementForm extends acCouchdbObjectForm
 
      public function configure() {
        $this->setWidgets(array(
-            // "siret" => new sfWidgetFormInput(array("label" => "N° SIRET")),
+         // "siret" => new sfWidgetFormInput(array("label" => "N° SIRET")),
 		    "ppm" => new sfWidgetFormInput(array("label" => "N° PPM")),
             "adresse" => new sfWidgetFormInput(array("label" => "Adresse")),
             "commune" => new sfWidgetFormInput(array("label" => "Commune")),
@@ -25,7 +25,7 @@ class EtablissementForm extends acCouchdbObjectForm
 
 				$ppmMsg = 'Le PPM doit impérativement commencer par une lettre suivie de 8 chiffres';
         $this->setValidators(array(
-            'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
+            //'siret' => new sfValidatorRegex(array("required" => false, "pattern" => "/^[0-9]{14}$/"), array("invalid" => "Le siret doit être un nombre à 14 chiffres")),
 			'ppm' =>  new sfValidatorRegex(array('required' => false,
 											'pattern' => "/^[A-Z]{1}[0-9]{8}$/",
 											'min_length' => 9,
@@ -80,7 +80,8 @@ class EtablissementForm extends acCouchdbObjectForm
     			}
     		}
     	}
-        parent::doUpdateObject($values);
+		parent::doUpdateObject($values);
+
 	}
 
     public function getUpdatedValues()

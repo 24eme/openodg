@@ -487,4 +487,8 @@ class Etablissement extends BaseEtablissement implements InterfaceCompteGeneriqu
         return str_replace(str_replace('SOCIETE-', '', $this->id_societe), '', $this->identifiant);
     }
 
+    public function getStatutLibelle(){
+      return CompteClient::$statutsLibelles[$this->getStatut()];
+    }
+
 }

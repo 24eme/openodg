@@ -13,7 +13,11 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         while (($data = fgetcsv($handler)) !== FALSE) {
             $csv[] = self::clean($data);
         }
-
+		$etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
+		if ($etablissement && !$etablissement->isActif()) {
+			return;
+		}
+		$ppm = ($etablissement)? $etablissement->ppm : null;
         $dr = array();
         $baillage = array();
         $produits = array();
@@ -25,10 +29,11 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		if (preg_match('/dnr/i', $values[0])) {
         			$dr[] = DRCsvFile::CSV_TYPE_DR;
         			$dr[] = $this->campagne;
-        			$dr[] = (isset($values[1]))? $values[1] : null;
-        			$dr[] = (isset($values[2]))? "\"".html_entity_decode(trim(preg_replace('/^(.+)\(.+\)$/', '\1', $values[2])))."\"" : null;
+        			$dr[] = ($etablissement)? $etablissement->identifiant : null;
+        			$dr[] = ($etablissement)? $etablissement->cvi : (isset($values[1]))? $values[1] : null;
+        			$dr[] = ($etablissement)? $etablissement->raison_sociale : (isset($values[2]))? "\"".html_entity_decode(trim(preg_replace('/^(.+)\(.+\)$/', '\1', $values[2])))."\"" : null;
         			$dr[] = null;
-        			$dr[] = (isset($values[2]))? trim(preg_replace('/^.+\((.+)\)$/', '\1', $values[2])) : null;
+        			$dr[] = ($etablissement)? $etablissement->siege->commune : (isset($values[2]))? trim(preg_replace('/^.+\((.+)\)$/', '\1', $values[2])) : null;
         			continue;
         		}
         		if ($values[0] == 1) {
@@ -89,10 +94,11 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		if (preg_match("/[6-8]{1}-[1-9]+/", $values[0])) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
+        					$trt = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace(array("/^Acheteur n.{1,2}(FR[0-9a-zA-Z]{11}) -.*$/i", "/^Acheteur n.{1,2}([0-9a-zA-Z]{10}) -.*$/i"), '\1', $values[1]), "\"".trim(preg_replace(array("/^Acheteur n.{1,2}FR[0-9a-zA-Z]{11} -(.*)$/i", "/^Acheteur n.{1,2}[0-9a-zA-Z]{10} -(.*)$/i"), '\1', $values[1]))."\"", null, null);
         					if ($i%2) {
-        						$exploitant[$i][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^Acheteur n°([0-9a-zA-Z]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^Acheteur n°[0-9a-zA-Z]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
+        						$exploitant[$i][] = $trt;
         					} else {
-        						$bailleur[$i-1][] = array(sprintf('%02d', preg_replace("/^([0-9]{1})-[1-9]+$/i", '\1', $values[0])), $libelleLigne, self::numerizeVal($values[$i]), preg_replace("/^Acheteur n°([0-9a-zA-Z]+) - .+$/i", '\1', $values[1]), "\"".html_entity_decode(preg_replace("/^Acheteur n°[0-9a-zA-Z]+ - (.+)$/i", '\1', $values[1]))."\"", null, null);
+        						$bailleur[$i-1][] = $trt;
         					}
         				}
         			}
@@ -101,10 +107,11 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		if (is_numeric($values[0]) && $values[0] > 8 && $values[0] < 20) {
         			for ($i = 2; $i < count($values); $i++) {
         				if ($values[$i]) {
+        					$trt = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($values[$i]), null, null, null, null);
         					if ($i%2) {
-        						$exploitant[$i][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($values[$i]), null, null, null, null);
+        						$exploitant[$i][] = $trt;
         					} else {
-        						$bailleur[$i-1][] = array(sprintf('%02d', $values[0]), self::cleanStr($values[1]), self::numerizeVal($values[$i]), null, null, null, null);
+        						$bailleur[$i-1][] = $trt;
         					}
         				}
         			}
@@ -130,12 +137,28 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
         		}
         	}
         }
+        $bailleurs = array();
+        foreach ($baillage as $bail) {
+        	if (isset($bail[1])) {
+        		$bailleurs[$bail[1]] = $bail[1];
+        	}
+        }
+        if ($ppm && in_array($ppm, $bailleurs)) {
+        	return;
+        }
+
         $csv = '';
         foreach ($produits as $k => $p) {
 	        foreach ($exploitant[$k] as $sk => $e) {
 	        	$csv .= implode(';', $dr).';;;'.implode(';', $p).';'.implode(';', $e)."\n";
 	        	if (isset($baillage[$k]) && isset($bailleur[$k]) && isset($bailleur[$k][$sk])) {
 	        		$csv .= implode(';', $dr).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $bailleur[$k][$sk])."\n";
+	        		unset($bailleur[$k][$sk]);
+	        	}
+	        }
+	        if (isset($baillage[$k]) && isset($bailleur[$k])) {
+	        	foreach ($bailleur[$k] as $b) {
+	        		$csv .= implode(';', $dr).';'.implode(';', $baillage[$k]).';'.implode(';', $p).';'.implode(';', $b)."\n";
 	        	}
 	        }
         }
@@ -158,6 +181,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     	$produits = array();
     	$drInfos[] = DRCsvFile::CSV_TYPE_DR;
     	$drInfos[] = $dr->campagne;
+    	$drInfos[] = $etablissement->identifiant;
     	$drInfos[] = $etablissement->cvi;
     	$drInfos[] = $etablissement->raison_sociale;
     	$drInfos[] = null;
@@ -185,7 +209,7 @@ class DRDouaneCsvFile extends DouaneImportCsvFile {
     			$p[] = $donnee->complement;
     			$p[] = $donnee->categorie;
     			$p[] = (isset($categories[$donnee->categorie]))? preg_replace('/^[0-9]+\./', '', $categories[$donnee->categorie]) : null;
-    			$p[] = str_replace(".", ",", $donnee->valeur);
+    			$p[] = str_replace('.', ',', $donnee->valeur);
     			if ($donnee->tiers && $t = $etablissementClient->find($donnee->tiers)) {
     				$p[] = $t->cvi;
     				$p[] = $t->raison_sociale;

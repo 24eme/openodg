@@ -17,7 +17,7 @@
             </tr>
             <tr>
                 <td>&nbsp;Adresse : <i><?php echo $parcellaireIrrigable->declarant->adresse ?></i></td>
-                <td>N° SIRET : <i><?php echo formatSIRET($parcellaireIrrigable->declarant->siret); ?></i></td>
+                <td>N° SIRET : <i><?php echo formatSIRET($parcellaireIrrigable->getDeclarantSiret()); ?></i></td>
             </tr>
             <tr>
                 <td>&nbsp;Commune : <i><?php echo $parcellaireIrrigable->declarant->code_postal ?>, <?php echo $parcellaireIrrigable->declarant->commune ?></i></td>
