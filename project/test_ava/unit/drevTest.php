@@ -2,7 +2,7 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(56);
+$t = new lime_test(57);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -142,6 +142,10 @@ $dateFacturation = date('Y-m-d');
 $f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
 $f->save();
 
+$t->ok($f->_rev, "Facture généré ".$f->_id);
+
+$t->is(count($f->lignes), count($templateFacture->cotisations), "La facture a le même nombre de lignes que dans le template");
+
 $superficieHaVinifie = 0;
 $superficieAresRevendique = 0;
 $volumeHlRevendique = 0;
@@ -162,6 +166,7 @@ foreach($f->lignes->get('inao')->details as $ligne) {
     }
 };
 
+
 $t->is($f->lignes->get('odg_ava')->libelle, "Cotisation ODG-AVA", "Le libellé du groupe de ligne odg_ava est Cotisation ODG-AVA");
 $t->is($f->lignes->get('odg_ava')->produit_identifiant_analytique, "706300", "Le code comptable du groupe de ligne odg_ava est 706300");
 $t->ok($f->lignes->get('odg_ava')->origine_mouvements->exist($drev->_id), "Les origines du mouvements sont stockés");
@@ -170,9 +175,17 @@ $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
 $t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La volume revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalVolumeRevendique()." hl");
 
-$drev = DRevClient::getInstance()->find($drev->_id);
+$t->comment("Envoi de la facture par mail");
+
+$message = FactureEmailManager::getInstance($instance)->compose($f);
+
+@mkdir(sfConfig::get('sf_test_dir')."/output");
+file_put_contents(sfConfig::get('sf_test_dir')."/output/email_facture.eml", $message);
+
+$t->ok($message, "Mail généré : ".sfConfig::get('sf_test_dir')."/output/email_facture.eml");
 
 $t->comment("Génération d'une modificatrice");
+$drev = DRevClient::getInstance()->find($drev->_id);
 
 $drevM1 = $drev->generateModificative();
 $drevM1->save();

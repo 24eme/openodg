@@ -1,5 +1,5 @@
 <?php
-class CotisationFactureFixe extends CotisationVariable
+class CotisationCotisationFixe extends CotisationVariable
 {
 	protected function getConfigMinimum() {
 

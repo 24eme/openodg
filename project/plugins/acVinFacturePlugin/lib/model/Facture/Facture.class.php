@@ -149,13 +149,23 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return ($ligne_0->{$champ} > $ligne_1->{$champ}) ? -1 : +1;
     }
 
+    public function addLigne($configCollection) {
+        $ligne = $this->lignes->add($configCollection->getKey());
+        $ligne->libelle = $configCollection->libelle;
+        $ligne->produit_identifiant_analytique = $configCollection->code_comptable;
+
+        return $ligne;
+    }
+
     public function storeLignesByMouvements($mouvements, $template) {
+        foreach($template->cotisations as $configCollection) {
+            $ligne = $this->addLigne($configCollection);
+            $ligne->updateTotaux();
+        }
         foreach ($mouvements as $key => $mouvement) {
             $configCollection = $template->cotisations->get($mouvement["categorie"]);
             $config = $configCollection->details->get($mouvement["type_hash"]);
-            $ligne = $this->lignes->add($mouvement["categorie"]);
-            $ligne->libelle = $configCollection->libelle;
-            $ligne->produit_identifiant_analytique = $configCollection->code_comptable;
+            $ligne = $this->addLigne($configCollection);
             foreach($mouvement["origines"] as $idDoc => $mouvKeys) {
                 foreach($mouvKeys as $mouvKey) {
                     $ligne->origine_mouvements->add($idDoc)->add(null, $mouvKey);
@@ -166,8 +176,6 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
             $d->quantite = $mouvement["quantite"];
             $d->prix_unitaire = $mouvement["taux"];
             $d->taux_tva = $config->tva;
-            /*$d->montant_tva = $detail["tva"];
-            $d->montant_ht = $detail["total"];*/
 
             $ligne->updateTotaux();
         }
