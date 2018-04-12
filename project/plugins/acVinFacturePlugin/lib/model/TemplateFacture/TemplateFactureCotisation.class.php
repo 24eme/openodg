@@ -12,7 +12,7 @@ class TemplateFactureCotisation extends BaseTemplateFactureCotisation {
 		return $cotisationsCollection->getCotisations();
 	}
 
-	protected function getInstanceCotisation($document) {
+	public function getInstanceCotisation($document) {
 		$modele = $this->modele;
 
 		return new $modele($this, $document);
