@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-  <li><a href="<?php echo url_for('facturation'); ?>">Facturation</a></li>
+  <li><a href="<?php if($sf_user->isAdmin()): ?><?php echo url_for('facturation'); ?><?php else: ?><?php echo url_for('facturation_declarant', $compte); ?><?php endif; ?>">Facturation</a></li>
   <li class="active"><a href=""><?php echo $compte->getNomAAfficher() ?> (<?php echo $compte->getIdentifiantAAfficher() ?>)</a></li>
 </ol>
 
@@ -52,7 +52,7 @@
 <?php endif; ?>
 
 <div class="page-header">
-    <h2>Factures</h2>
+    <h2>Espace Facture</h2>
 </div>
 
 <table class="table table-bordered table-striped">

@@ -1,10 +1,18 @@
 Bonjour,
 
-Votre facture <?php echo $facture->getTemplate()->libelle ?> pour l'Association des Viticulteurs d'Alsace est disponible, vous pouvez la télécharger à ce lien : <?php echo url_for('facturation_pdf', array("id" => "COMPTE-".$facture->identifiant), true); ?>
+L'AVA a développé un espace "Facture" sur son portail de dématérialisation afin de vous permettre de télécharger chacune d'entre elles.
 
-Vous trouverez également la note explicative de vos cotisations :
+Vous trouverez ainsi sur cet espace les factures suivantes :
 
-Une nouvelle facture est disponible dans votre espace déclaratif sur le portail de l'Association des Viticulteurs d'Alsace : <?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant), true); ?>
+<?php foreach($factures as $facture): ?>
+- Votre facture "<?php echo $facture->getTemplate()->libelle ?>" : <?php echo url_for('facturation_pdf', $facture, true); ?>
+
+<?php endforeach; ?>
+
+La note explicative de vos cotisations est également disponible pour téléchargement  : https://declaration.ava-aoc.fr/docs/explications_cotisations_2018.pdf
+
+Enfin, l'ensemble de l'historique de vos factures et règlements sont également disponible dans votre espace de facturation : <?php echo url_for('facturation_declarant', array("id" => "COMPTE-".$facture->identifiant), true); ?>
+
 
 Bien cordialement,
 
