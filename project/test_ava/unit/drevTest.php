@@ -191,7 +191,7 @@ $t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La 
 
 $t->comment("Envoi de la facture par mail");
 
-$message = FactureEmailManager::getInstance($instance)->compose($f);
+$message = FactureEmailManager::getInstance($instance)->compose($compte);
 
 @mkdir(sfConfig::get('sf_test_dir')."/output");
 file_put_contents(sfConfig::get('sf_test_dir')."/output/email_facture.eml", $message);

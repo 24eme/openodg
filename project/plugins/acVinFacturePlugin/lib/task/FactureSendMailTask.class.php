@@ -6,7 +6,7 @@ class FactureSendMailTask extends sfBaseTask
   {
     // // add your own arguments here
     $this->addArguments(array(
-			    new sfCommandArgument('doc_id', sfCommandArgument::REQUIRED, 'Document id de la facture'),
+			    new sfCommandArgument('compte_id', sfCommandArgument::REQUIRED, 'Compte to send mail'),
     ));
 
     $this->addOptions(array(
@@ -36,24 +36,25 @@ EOF;
     $databaseManager = new sfDatabaseManager($this->configuration);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
-    $facture = FactureClient::getInstance()->find($arguments['doc_id']);
-    if(!$facture) {
-        echo $arguments['doc_id'].";ERROR;Doc non trouvé\n";
+    $compte = CompteClient::getInstance()->find($arguments['compte_id']);
+
+    if(!$compte) {
+        echo $arguments['compte_id'].";ERROR;Compte non trouvé\n";
         return;
     }
 
     try {
-        $resultat = FactureEmailManager::getInstance()->send($facture);
+        $resultat = FactureEmailManager::getInstance()->send($this->compte);
     } catch(Exception $e) {
-        echo $arguments['doc_id'].";ERROR;".$e->getMessage()."\n";
+        echo $arguments['compte_id'].";ERROR;".$e->getMessage()."\n";
         return;
     }
 
     if(!$resultat) {
-        echo $arguments['doc_id'].";ERROR;Mail non envoyé\n";
+        echo $arguments['compte_id'].";ERROR;Mail non envoyé\n";
         return;
     }
 
-    echo $arguments['doc_id'].";SUCCESS\n";
+    echo $arguments['compte_id'].";SUCCESS\n";
   }
 }

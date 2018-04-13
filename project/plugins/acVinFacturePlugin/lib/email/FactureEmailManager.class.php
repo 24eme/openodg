@@ -16,11 +16,23 @@ class FactureEmailManager extends Email
         return $this->getAction()->getPartial($partial, $vars);
     }
 
-    public function compose($facture) {
+    public function compose($compte) {
+        $factures = FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
+
+        $facturesToSend = array();
+
+        foreach($factures as $facture) {
+            if($facture->isPayee() || $facture->isAvoir()) {
+                continue;
+            }
+
+            $facturesToSend[$facture->_id] = $facture;
+        }
+
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
-        $to = array($facture->getCompte()->email);
-        $subject = "Mise à disposition d'une nouvelle facture";
-        $body = $this->getBodyFromPartial('facturation/email', array('facture' => $facture));
+        $to = array($compte->email);
+        $subject = "Cotisations AVA 2018 : factures disponibles sur votre espace";
+        $body = $this->getBodyFromPartial('facturation/email', array('factures' => $facturesToSend));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
@@ -31,8 +43,8 @@ class FactureEmailManager extends Email
         return $message;
     }
 
-    public function send($facture) {
+    public function send($compte) {
 
-        return $this->getMailer()->send($this->compose($facture));
+        return $this->getMailer()->send($this->compose($compte));
     }
 }
