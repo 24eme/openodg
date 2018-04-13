@@ -44,9 +44,13 @@ EOF;
     }
 
     try {
-        $resultat = FactureEmailManager::getInstance()->send($this->compte);
+        $resultat = FactureEmailManager::getInstance()->send($compte);
     } catch(Exception $e) {
         echo $arguments['compte_id'].";ERROR;".$e->getMessage()."\n";
+        return;
+    }
+
+    if($resultat === false) {
         return;
     }
 
@@ -55,6 +59,6 @@ EOF;
         return;
     }
 
-    echo $arguments['compte_id'].";SUCCESS\n";
+    echo $arguments['compte_id'].";".$compte->email.";SUCCESS\n";
   }
 }

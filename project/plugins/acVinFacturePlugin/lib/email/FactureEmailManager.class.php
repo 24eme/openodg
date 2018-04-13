@@ -29,13 +29,21 @@ class FactureEmailManager extends Email
             $facturesToSend[$facture->_id] = $facture;
         }
 
+        ksort($facturesToSend);
+
+        if(!count($facturesToSend)) {
+            return false;
+        }
+
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($compte->email);
-        $subject = "Cotisations AVA 2018 : factures disponibles sur votre espace";
+        $replyTo = array(sfConfig::get('app_email_plugin_reply_to_facturation_adresse') => sfConfig::get('app_email_plugin_reply_to_facturation_name'));
+        $subject = "Cotisations AVA 2018 : Factures disponibles sur votre espace";
         $body = $this->getBodyFromPartial('facturation/email', array('factures' => $facturesToSend));
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
+                ->setReplyTo()
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
