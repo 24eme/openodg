@@ -66,6 +66,6 @@ EOF;
     echo $arguments['compte_id'].";".$compte->email.";SUCCESS\n";
 
     @mkdir(sfConfig::get('sf_log_dir')."/mails_factures");
-    file_put_contents(sfConfig::get('sf_log_dir')."/mails_factures/".date('Y-m-d')."_".$compte->_id.".eml", $message->toString());
+    file_put_contents(sfConfig::get('sf_log_dir')."/mails_factures/".date('YmdHis')."_".$compte->_id.".eml", $message->toString());
   }
 }
