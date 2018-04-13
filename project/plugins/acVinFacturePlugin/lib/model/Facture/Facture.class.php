@@ -10,6 +10,8 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
     protected $declarant_document = null;
     protected $archivage_document = null;
     protected $piece_document = null;
+    protected $forceFactureMouvements = false;
+
     const MESSAGE_DEFAULT = "ICI le message par défaut : Vous pouvez retrouver nos infos jours après jours sur http://www.vinsvaldeloire.fr";
 
     public function __construct() {
@@ -551,8 +553,13 @@ class Facture extends BaseFacture implements InterfaceArchivageDocument, Interfa
         return null;
     }
 
+    public function forceFactureMouvements() {
+        $this->forceFactureMouvements = true;
+    }
+
     protected function preSave() {
-        if ($this->isNew() && $this->statut != FactureClient::STATUT_REDRESSEE) {
+        if (($this->isNew() || $this->forceFactureMouvements) && $this->statut != FactureClient::STATUT_REDRESSEE) {
+            $this->forceFactureMouvements = false;
             $this->facturerMouvements();
             $this->storeOrigines();
         }

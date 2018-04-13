@@ -6,7 +6,7 @@ $routing = clone ProjectConfiguration::getAppRouting();
 $context = sfContext::createInstance($configuration);
 $context->set('routing', $routing);
 
-$t = new lime_test(60);
+$t = new lime_test(61);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -198,7 +198,23 @@ file_put_contents(sfConfig::get('sf_test_dir')."/output/email_facture.eml", $mes
 
 $t->ok($message, "Mail généré : ".sfConfig::get('sf_test_dir')."/output/email_facture.eml");
 
+$t->comment("Regénération de la facture");
+
+$newF = FactureClient::getInstance()->regenerate($f);
+$newF->save();
+
+$fData = $f->getData();
+$newFData = $f->getData();
+unset($fData->_rev);
+unset($newFData->_rev);
+
+$native_json = new acCouchdbJsonNative($fData);
+$final_json = new acCouchdbJsonNative($newFData);
+
+$t->ok($native_json->equal($final_json), "La facture a été regénérée, et elle est identique à l'original");
+
 $t->comment("Génération d'une modificatrice");
+
 $drev = DRevClient::getInstance()->find($drev->_id);
 
 $drevM1 = $drev->generateModificative();
