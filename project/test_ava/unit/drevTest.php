@@ -2,7 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(57);
+$routing = clone ProjectConfiguration::getAppRouting();
+$context = sfContext::createInstance($configuration);
+$context->set('routing', $routing);
+
+$t = new lime_test(60);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -20,6 +24,10 @@ foreach(FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, 
 $campagne = (date('Y')-1)."";
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
 $societe = $compte;
+
+$compte->infos->syndicats->add('COMPTE-S006234', 'SYND VITI. MITTELBERGHEIM');
+$compte->infos->attributs->add('ADHERENT_SYNDICAT', 'Adhérent au syndicat');
+$compte->save();
 
 $t->comment("Création d'une DRev");
 
@@ -105,13 +113,19 @@ $t->comment("Génération des mouvements");
 $drev->generateMouvements();
 $drev->save();
 
-$t->is(count($drev->mouvements->get($compteIdentifiant)), 6, "La DRev a 6 mouvements");
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
 
 $mouvement = $drev->mouvements->get($compteIdentifiant)->getFirst();
 
 $t->is($mouvement->categorie, "odg_ava", "La catégorie du mouvement est odg_ava");
 $t->ok($mouvement->facture === 0, "Le mouvement est non facture");
 $t->ok($mouvement->facturable === 1, "Le mouvement est facturable");
+
+foreach($drev->mouvements->get($compteIdentifiant) as $mouvement) {
+    if($mouvement->categorie == "syndicat_viticole") {
+        $t->ok($mouvement->taux > 0, "La cotisation du syndicat viticole est supérieur à 0");
+    }
+}
 
 $t->comment("Dévalidation et Revalidation");
 
@@ -133,7 +147,7 @@ $drev->validateOdg();
 $drev->generateMouvements();
 $drev->save();
 
-$t->is(count($drev->mouvements->get($compteIdentifiant)), 6, "La DRev a 6 mouvements");
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
 
 $t->comment("Facturation de la DRev");
 
@@ -315,3 +329,8 @@ $t->ok($f->isAvoir(), "La facture est un avoir");
 $t->ok($f->getTaxe() < 0, "La facture a de la TVA a payé");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M5->volume_revendique - $produit1M4->volume_revendique, "La quantité est sommée");
+
+$compte->infos->syndicats->remove('COMPTE-S006234');
+$compte->infos->attributs->remove('ADHERENT_SYNDICAT');
+
+$compte->save();
