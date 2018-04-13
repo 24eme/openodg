@@ -1,2 +1,8 @@
 all:
   credentials: [ADMIN]
+
+latex:
+  credentials: []
+
+declarant:
+  credentials: []
