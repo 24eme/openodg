@@ -40,7 +40,7 @@ EOF;
     $fRegenere = FactureClient::getInstance()->regenerate($f);
     $fRegenere->save();
 
-    echo "Facture ".$fRegenere->_id."regénéré @".$f->_rev." -> @".$fRegenere->_rev."\n";
+    echo "Facture ".$fRegenere->_id." regénéré @".$f->_rev." -> @".$fRegenere->_rev."\n";
 
   }
 }

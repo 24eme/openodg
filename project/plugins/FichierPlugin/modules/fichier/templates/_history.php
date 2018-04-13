@@ -1,6 +1,6 @@
 <?php echo use_helper("Date"); ?>
 <?php if(count($history) > 0): ?>
-<h2>Derniers documents</h2>
+<h2>Derniers documents <a href="<?php echo url_for('pieces_historique', $etablissement) ?>" class="pull-right btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;Voir tous les document</a></h2>
 
 <div class="list-group">
 <?php $i=0; foreach ($history as $document): $i++; if ($i>$limit) { break; } ?>
@@ -61,5 +61,4 @@
 </div>
 <?php endforeach; ?>
 </div>
-<a href="<?php echo url_for('pieces_historique', $etablissement) ?>" style="margin-top: 20px; margin-bottom: 20px;" class="pull-right btn btn-warning btn-xs"><span class="glyphicon glyphicon-plus"></span>&nbsp;Plus de document</a>
 <?php endif; ?>
