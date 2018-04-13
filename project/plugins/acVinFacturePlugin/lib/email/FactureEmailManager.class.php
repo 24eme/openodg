@@ -35,6 +35,10 @@ class FactureEmailManager extends Email
             return false;
         }
 
+        if(!$compte->email) {
+            return false;
+        }
+
         $from = array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name'));
         $to = array($compte->email);
         $replyTo = array(sfConfig::get('app_email_plugin_reply_to_facturation_adresse') => sfConfig::get('app_email_plugin_reply_to_facturation_name'));
@@ -43,7 +47,7 @@ class FactureEmailManager extends Email
         $message = Swift_Message::newInstance()
                 ->setFrom($from)
                 ->setTo($to)
-                ->setReplyTo()
+                ->setReplyTo($replyTo)
                 ->setSubject($subject)
                 ->setBody($body)
                 ->setContentType('text/plain');
@@ -52,7 +56,20 @@ class FactureEmailManager extends Email
     }
 
     public function send($compte) {
+        $message = $this->compose($compte);
 
-        return $this->getMailer()->send($this->compose($compte));
+        if(!$message) {
+
+            return false;
+        }
+
+        $resultat = $this->getMailer()->send($message);
+
+        if(!$resultat) {
+
+            return 0;
+        }
+
+        return $message;
     }
 }

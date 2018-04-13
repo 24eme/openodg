@@ -43,22 +43,29 @@ EOF;
         return;
     }
 
+    if(!$compte->email) {
+        return;
+    }
+
     try {
-        $resultat = FactureEmailManager::getInstance()->send($compte);
+        $message = FactureEmailManager::getInstance()->send($compte);
     } catch(Exception $e) {
         echo $arguments['compte_id'].";ERROR;".$e->getMessage()."\n";
         return;
     }
 
-    if($resultat === false) {
+    if($message === false) {
         return;
     }
 
-    if(!$resultat) {
+    if(!$message) {
         echo $arguments['compte_id'].";ERROR;Mail non envoyé\n";
         return;
     }
 
     echo $arguments['compte_id'].";".$compte->email.";SUCCESS\n";
+
+    @mkdir(sfConfig::get('sf_log_dir')."/mails_factures");
+    file_put_contents(sfConfig::get('sf_log_dir')."/mails_factures/".date('Y-m-d')."_".$compte->_id.".eml", $message->toString());
   }
 }
