@@ -116,18 +116,22 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null) {
-        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle;
+    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = 0, $strictNumOrdre = false) {
 
-        if ($lieu) {
-            $key.= '-' . $lieu;
+        $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
+
+        if($this->detail->exist($key) && $strictNumOrdre) {
+           return null;
+        }
+        if($this->detail->exist($key) && !$strictNumOrdre) {
+           $maxNumOrdre = 0;
+           foreach ($this->detail as $key => $value) {
+               $maxNumOrdre = max($maxNumOrdre,$value->get('numero_ordre'));
+           }
+           $maxNumOrdre = $maxNumOrdre+1;
+           $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $maxNumOrdre);
         }
 
-        $key = KeyInflector::slugify($key);
-
-        if($this->detail->exist($key)) {
-           return $this->detail->get($key);
-        }
 
         $detail = $this->detail->add($key);
         $detail->cepage = $cepage;
@@ -136,6 +140,7 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $detail->code_commune = CommunesConfiguration::getInstance()->findCodeCommune($detail->commune);
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
+        $detail->add('numero_ordre', $numero_ordre);
         if($lieu){
             $lieu = strtoupper($lieu);
         }
@@ -174,6 +179,14 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $total += $detail->superficie;
       }
       return $total;
+    }
+
+    public function calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre){
+        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle.'-'.sprintf('%02d',$numero_ordre);
+        if ($lieu) {
+            $key.= '-' . $lieu;
+        }
+        return KeyInflector::slugify($key);
     }
 
 }

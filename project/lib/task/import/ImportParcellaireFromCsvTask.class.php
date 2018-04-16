@@ -7,6 +7,7 @@ class ImportParcellaireFromCsvTask extends sfBaseTask
     protected $configuration = null;
     protected $configurationProduits = array();
     protected $modes_savoirfaire = array();
+    protected $lastCvi = null;
 
     const CSV_ID_SECTION = 0;
     const CSV_INUMPCV = 1; /* ???? correspond à .... */
@@ -101,28 +102,39 @@ EOF;
             $data = str_getcsv($line, ';');
             $cvi = $data[self::CSV_EVV];
             $cdp = $data[self::CSV_CDP]."01";
+
             if(!$cvi){
               throw new sfException("le cvi n'existe pas pour la ligne ".implode(',',$line));
             }
 
-            if(!$parcellaire || $parcellaire->identifiant != $cdp) {
+            if(!$parcellaire || $this->lastCvi != $cvi) {
                 if($parcellaire) {
                     $this->saveParcellaire($parcellaire);
                     $parcellaire = null;
+                    $this->lastCvi = null;
                 }
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
                 if(!$etablissement){
-                  $etablissement = EtablissementClient::getInstance()->find($cdp);
+                  $etablissement = EtablissementClient::getInstance()->findByIdentifiant($cdp);
                   if(!$etablissement){
                       echo "/!\ L'établissement de cvi ".$cvi." n'existe pas dans la base pas non plus été trouvé par son CDP  ".$cdp." \n";
                       continue;
                   }
                 }
                 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
+                // if($parcellaire){
+                //     $parcellaireBase = ParcellaireClient::getInstance()->find($parcellaire->_id);
+                //     if($parcellaireBase && !$parcellaireBase->isNew()){
+                //         $parcellaireBase->delete();
+                //         echo "/!\ On supprime le parcellaire ".$parcellaireBase->_id." et on le recréé \n";
+                //         $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
+                //     }
+                // }
             }
 
             $this->importLineParcellaire($line, $parcellaire);
+            $this->lastCvi = $cvi;
           }
 
           if($parcellaire) {
@@ -157,6 +169,7 @@ EOF;
                 continue;
               }
               $cepage = trim($data[self::CSV_LIBELLE_CEPAGE]);
+              $numero_ordre = $data[self::CSV_NUMERO_ORDRE];
 
               $commune = trim($data[self::CSV_LIBELLE_COMMUNE]);
               $lieuDit = (trim($data[self::CSV_LIEUDIT_COMMUNE]))? trim($data[self::CSV_LIEUDIT_COMMUNE]) : null;
@@ -174,7 +187,12 @@ EOF;
                   continue;
                 }
               }
-              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit);
+              $strictNumOrdre = true;
+              $parcelle = $produitParcellaire->addParcelle($cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre, $strictNumOrdre);
+              if(!$parcelle){
+                  echo "/!\ La parcelle $parcellaire->identifiant  $cepage, $campagnePlantation, $commune, $section, $numero_parcelle, $lieuDit, $numero_ordre est en double \n";
+                  continue;
+              }
               $parcelle->superficie = floatval(str_replace(',','.',trim($data[self::CSV_SUPERFICIE])));
               $parcelle->superficie_cadastrale = floatval(str_replace(',','.',trim($data[self::CSV_CONTENANCE_CADASTRALE])));
               $parcelle->code_commune = str_replace("'",'',trim($data[self::CSV_CODE_COMMUNE_RECH]));
@@ -185,12 +203,12 @@ EOF;
 
               $date2018 = "20180101";
               if(!preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',trim($data[self::CSV_DATE_DEBUT_GESTION])) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
-                    echo "$etablissement->_id : La date de début de gestion  de la ligne $ligne est mal formattée\n";
+                    echo "$p->_id : La date de début de gestion  de la ligne $ligne est mal formattée\n";
                     return;
               }
               $dateFinGestionCsv = (trim($data[self::CSV_DATE_FIN_GESTION]))? trim($data[self::CSV_DATE_FIN_GESTION]) : null;
               if($dateFinGestionCsv && !preg_match('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$dateFinGestionCsv) && !preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_FIN_GESTION]))){
-                echo "$etablissement->_id : La date de fin de gestion  de la ligne $ligne est mal formattée\n";
+                echo "$parcellaire->_id : La date de fin de gestion  de la ligne $ligne est mal formattée\n";
                 return;
               }
 
@@ -198,7 +216,7 @@ EOF;
               if(preg_match('/[0-9]{5}/',trim($data[self::CSV_DATE_DEBUT_GESTION]))){
                   $dateExcel = trim($data[self::CSV_DATE_DEBUT_GESTION]);
                   $date19000101 = new DateTime("1900-01-01");
-                  echo "$etablissement->_id : conversion de la date $dateExcel \n";
+                  echo "$parcellaire->_id : conversion de la date $dateExcel \n";
                   $dateDebut = $date19000101->modify("+".$dateExcel." days");
               }else{
                   $dateDebut = new DateTime(trim($data[self::CSV_DATE_DEBUT_GESTION]));
@@ -207,7 +225,7 @@ EOF;
               if($dateFinGestionCsv){
                 if(preg_match('/[0-9]{5}/',$dateFinGestionCsv)){
                   $dateFin19000101 = new DateTime("1900-01-01");
-                  echo "$etablissement->_id : conversion de la date $dateFinGestionCsv \n";
+                  echo "$parcellaire->_id : conversion de la date $dateFinGestionCsv \n";
                   $dateFin = $dateFin19000101->modify("+".$dateFinGestionCsv." days");
                 }else{
                   $dateFin =  new DateTime($dateFinGestionCsv);
@@ -235,17 +253,16 @@ EOF;
               if($parcelle->idu != $data[self::CSV_IDU]) {
                   echo "Le code IDU ". $parcelle->idu."/".$data[self::CSV_IDU]." a été mal formaté (ligne $ligne)\n";
               }
-
               echo "Import de la parcelle $section $numero_parcelle pour $parcellaire->identifiant !\n";
             }
     }
 
     protected function saveParcellaire($parcellaire) {
-        try{
+        //try{
             $parcellaire->save();
             echo "Parcellaire $parcellaire->_id sauvegardé\n";
-         }catch(Exception $e){
-            echo "Le parcellaire $parcellaire->identifiant pour n'a pas pu être sauvé \n";
-         }
+        //  }catch(Exception $e){
+        //     echo "Le parcellaire $parcellaire->identifiant pour n'a pas pu être sauvé \n";
+        //  }
     }
 }

@@ -6,7 +6,7 @@ $interpro = strtoupper(sfConfig::get('app_teledeclaration_interpro'));
 ?>
 Madame, Monsieur,
 
-Votre compte a bien été créé pour l’espace professionnel du Syndicat Général des Côtes du Rhône.
+Votre compte a bien été créé pour l’espace professionnel du Syndicat des Côtes de Provence.
 
 Votre identifiant est : <?php echo $identifiant ?>.
 
@@ -16,7 +16,6 @@ Votre syndicat reste à votre disposition pour plus d'information.
 
 Bonne journée.
 
-Le Syndicat Général des Vignerons réunis des Côtes du Rhône
-Gestiondesdonnees@syndicat-cotesdurhone.com
-04.90.27.24.24
-
+Le Syndicat des Côtes de Provence
+info@syndicat-cotesdeprovence.com
+04 90 27 24 24
