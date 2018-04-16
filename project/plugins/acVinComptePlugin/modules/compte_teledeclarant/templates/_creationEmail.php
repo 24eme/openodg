@@ -17,5 +17,5 @@ Votre syndicat reste à votre disposition pour plus d'information.
 Bonne journée.
 
 Le Syndicat des Côtes de Provence
-info@syndicat-cotesdeprovence.com
+contact@odg-cotesdeprovence.com
 04 90 27 24 24
