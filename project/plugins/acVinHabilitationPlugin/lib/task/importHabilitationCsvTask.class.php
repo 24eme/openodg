@@ -80,12 +80,20 @@ EOF;
              }
 
              $identifiant = sprintf('%s', $data[self::CSV_IDENTIFIANT]);
-             echo "trying $identifiant \n";
+             echo " => import pour  $identifiant \n";
              $eta = EtablissementClient::getInstance()->findByIdentifiant($identifiant."01");
-            if (!$eta) {
-              echo "WARNING: établissement non trouvé ".$identifiant." : pas d'import\n";
-              continue;
-            }
+             if (!$eta) {
+                 echo "WARNING: établissement non trouvé ".$identifiant." : pas d'import\n";
+                 continue;
+             }
+
+             // ON VIRE LES HABILITATIONS DEJA CREER
+             $habs = HabilitationClient::getInstance()->getHistory($eta->identifiant);
+             foreach ($habs as $key => $hab) {
+                echo "/!\ : on vire l'habilitation précédente ".$hab->_id." \n";
+                $hab->delete();
+             }
+
 
 
             $dateHabilitation = DateTime::createFromFormat("d/m/Y",$this->convertDate($data[self::CSV_DATE_HABILITATION]));
@@ -93,7 +101,7 @@ EOF;
 
             $dateDemande = DateTime::createFromFormat("d/m/Y",$this->convertDate($data[self::CSV_DATE_DEMANDE_HABILITATION]));
             $this->dateDemande = ($dateDemande)? $dateDemande->format("Y-m-d") : $this->dateHabilitation;
-            echo "$eta->identifiant $this->dateDemande\n";
+
 
             $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($eta->identifiant, $this->dateDemande);
             $hab_activites = $habilitation->addProduit($this->produitKey)->add('activites');
