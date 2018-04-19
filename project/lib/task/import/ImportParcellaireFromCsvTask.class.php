@@ -109,10 +109,21 @@ EOF;
 
             if(!$parcellaire || $this->lastCvi != $cvi) {
                 if($parcellaire) {
+                    //SUPPRIME l'actuel parcellaire en base
+                    if($parcellaireBase = ParcellaireClient::getInstance()->find($parcellaire->_id)){
+                        $parcellaireBase->delete();
+                        echo "/!\ On supprime le parcellaire ".$parcellaireBase->_id." et on le recréé \n";
+                        $parcellaireBase2 = ParcellaireClient::getInstance()->find($parcellaire->_id);
+                        if($parcellaireBase2){
+                            echo "/!\ Truc de ouf le parcellaire ".$parcellaireBase2->_id." a une autre version! A supprimer \n";
+                            $parcellaireBase2->delete();
+                        }
+                    }
                     $this->saveParcellaire($parcellaire);
                     $parcellaire = null;
                     $this->lastCvi = null;
                 }
+
 
                 $etablissement = EtablissementClient::getInstance()->findByCvi($cvi);
                 if(!$etablissement){
@@ -122,15 +133,8 @@ EOF;
                       continue;
                   }
                 }
+
                 $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
-                // if($parcellaire){
-                //     $parcellaireBase = ParcellaireClient::getInstance()->find($parcellaire->_id);
-                //     if($parcellaireBase && !$parcellaireBase->isNew()){
-                //         $parcellaireBase->delete();
-                //         echo "/!\ On supprime le parcellaire ".$parcellaireBase->_id." et on le recréé \n";
-                //         $parcellaire = ParcellaireClient::getInstance()->findOrCreate($etablissement->identifiant, $arguments['date'], "INAO");
-                //     }
-                // }
             }
 
             $this->importLineParcellaire($line, $parcellaire);
@@ -138,6 +142,16 @@ EOF;
           }
 
           if($parcellaire) {
+              //SUPPRIME l'actuel parcellaire en base
+              if($parcellaireBase = ParcellaireClient::getInstance()->find($parcellaire->_id)){
+                  $parcellaireBase->delete();
+                  echo "/!\ On supprime le parcellaire ".$parcellaireBase->_id." et on le recréé \n";
+                  $parcellaireBase2 = ParcellaireClient::getInstance()->find($parcellaire->_id);
+                  if($parcellaireBase2){
+                      echo "/!\ Truc de ouf le parcellaire ".$parcellaireBase2->_id." a une autre version! A supprimer \n";
+                      $parcellaireBase2->delete();
+                  }
+              }
               $this->saveParcellaire($parcellaire);
               $parcellaire = null;
           }
@@ -259,6 +273,7 @@ EOF;
 
     protected function saveParcellaire($parcellaire) {
         //try{
+            echo "Début sauvegarde de $parcellaire->_id \n";
             $parcellaire->save();
             echo "Parcellaire $parcellaire->_id sauvegardé\n";
         //  }catch(Exception $e){
