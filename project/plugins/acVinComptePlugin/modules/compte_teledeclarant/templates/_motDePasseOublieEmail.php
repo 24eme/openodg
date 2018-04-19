@@ -9,5 +9,5 @@ Pour le redéfinir merci de cliquer sur le lien suivant : <?php echo $lien ?>
 
 
 Le Syndicat des Côtes de Provence
-info@syndicat-cotesdeprovence.com
+contact@odg-cotesdeprovence.com
 04 90 27 24 24
