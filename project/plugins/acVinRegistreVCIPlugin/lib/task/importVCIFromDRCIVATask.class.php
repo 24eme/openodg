@@ -147,10 +147,11 @@ EOF;
               }
             }
           }
+          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
           if ($registre->exist('lignes') && count($registre->lignes)) {
             $registre->save();
             echo $registre->_id." savé\n";
-          }elseif($resgitre->_id){
+            }elseif($registre->_id){
             $registre->delete();
           }
         }
