@@ -58,11 +58,16 @@ EOF;
           $line = rtrim($line);
           $csv = explode(';', $line);
 
+
           if (($csv[self::DRCIVA_APPELLATION] != 'AOC Alsace blanc') && ($csv[self::DRCIVA_APPELLATION] != 'AOC Cremant d\'Alsace')) {
             continue;
           }
+          if ($csv[self::DRCIVA_VTSGN]) {
+            continue;
+          }
+
           if ($csv[self::DRCIVA_LIEU] == 'TOTAL') {
-            $vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['SUPERFICIE'] += $csv[self::DRCIVA_SUPERFICIE_TOTALE];
+            @$vci[$csv[self::DRCIVA_CVI_RECOLTANT]][$csv[self::DRCIVA_APPELLATION]]['LIEU']['TOTAL']['']['CEPAGE']['']['SUPERFICIE'] += $csv[self::DRCIVA_SUPERFICIE_TOTALE];
           }
           if (!$csv[self::DRCIVA_VCI_TOTAL]) {
             continue;
@@ -133,18 +138,20 @@ EOF;
                   }
                   if ($unvci['VOLUME'] * 1.0 > 0) {
                     echo "$recoltant : add ".preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT']))." ".$unvci['VOLUME'] ." ";
-                    echo ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_NOM'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE;
+                    echo ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_NOM'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE;
                     echo "\n";
-                    $registre->addMouvement(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
+
+                    $registre->addLigne(preg_replace('/\/detail\/\d+/', '', str_replace('/recolte/', '/declaration/', $unvci['HASH_PRODUIT'])), RegistreVCIClient::MOUVEMENT_CONSTITUE, $unvci['VOLUME'] * 1.0, ($unvci['ACHETEUR_CVI'] && $unvci['ACHETEUR_CVI'] != $unvci['RECOLTANT_CVI']) ? $unvci['ACHETEUR_CVI'] : RegistreVCIClient::LIEU_CAVEPARTICULIERE);
                   }
                 }
               }
             }
           }
+          echo "Superficie facturable : ".$registre->superficies_facturables."\n";
           if ($registre->exist('lignes') && count($registre->lignes)) {
             $registre->save();
             echo $registre->_id." savé\n";
-          }elseif($resgitre->_id){
+            }elseif($registre->_id){
             $registre->delete();
           }
         }
