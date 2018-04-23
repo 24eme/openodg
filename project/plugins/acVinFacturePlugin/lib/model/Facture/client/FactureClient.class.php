@@ -68,11 +68,16 @@ class FactureClient extends acCouchdbClient {
                 $doc->save();
             }
 
-            if(!$doc->exist('mouvements/'.$compteIdentifiant)) {
+            if(!count($doc->mouvements)) {
+
                 continue;
             }
 
-            $mouvs = $doc->mouvements->get($compteIdentifiant);
+            if(!$doc->exist('mouvements/'.$compteIdentifiant)) {
+                $mouvs = $doc->mouvements->getFirst();
+            } else {
+                $mouvs = $doc->mouvements->get($compteIdentifiant);
+            }
 
             foreach($mouvs as $m) {
                 if((!$m->isFacturable() || $m->facture) && !$force) {
