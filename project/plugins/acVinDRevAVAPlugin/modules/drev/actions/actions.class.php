@@ -657,6 +657,21 @@ class drevActions extends sfActions {
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
+    public function executeGenerateMouvements(sfWebRequest $request) {
+        $this->drev = $this->getRoute()->getDRev();
+        $this->secure(DRevSecurity::VISUALISATION, $this->drev);
+
+        if(count($this->drev->mouvements)) {
+
+            return $this->redirect('drev_visualisation', $this->drev);
+        }
+
+        $this->drev->generateMouvements();
+        $this->drev->save();
+
+        return $this->redirect('drev_visualisation', $this->drev);
+    }
+
     public function executeValidationAdmin(sfWebRequest $request) {
         $this->drev = $this->getRoute()->getDRev();
         $this->secure(DRevSecurity::VALIDATION_ADMIN, $this->drev);
