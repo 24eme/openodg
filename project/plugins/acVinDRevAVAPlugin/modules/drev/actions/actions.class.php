@@ -669,6 +669,8 @@ class drevActions extends sfActions {
         $this->drev->generateMouvements();
         $this->drev->save();
 
+        $this->getUser()->setFlash('notice', 'Les mouvements ont été générés');
+
         return $this->redirect('drev_visualisation', $this->drev);
     }
 
