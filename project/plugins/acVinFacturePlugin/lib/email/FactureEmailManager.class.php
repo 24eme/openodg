@@ -16,13 +16,18 @@ class FactureEmailManager extends Email
         return $this->getAction()->getPartial($partial, $vars);
     }
 
-    public function compose($compte) {
+    public function compose($compte, $campagne = null) {
         $factures = FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
 
         $facturesToSend = array();
 
         foreach($factures as $facture) {
-            if($facture->isPayee() || $facture->isAvoir()) {
+            if($facture->isPayee() || $facture->isAvoir() || $facture->isRedressee()) {
+                continue;
+            }
+
+            if($campagne && $facture->campagne != $campagne) {
+
                 continue;
             }
 
@@ -55,8 +60,8 @@ class FactureEmailManager extends Email
         return $message;
     }
 
-    public function send($compte) {
-        $message = $this->compose($compte);
+    public function send($compte, $campagne = null) {
+        $message = $this->compose($compte, $campagne);
 
         if(!$message) {
 

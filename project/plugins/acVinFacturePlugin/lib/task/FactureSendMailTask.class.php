@@ -7,6 +7,7 @@ class FactureSendMailTask extends sfBaseTask
     // // add your own arguments here
     $this->addArguments(array(
 			    new sfCommandArgument('compte_id', sfCommandArgument::REQUIRED, 'Compte to send mail'),
+			    new sfCommandArgument('campagne', sfCommandArgument::REQUIRED, 'Campagne de facturation'),
     ));
 
     $this->addOptions(array(
@@ -48,7 +49,7 @@ EOF;
     }
 
     try {
-        $message = FactureEmailManager::getInstance()->send($compte);
+        $message = FactureEmailManager::getInstance()->send($compte, $arguments['campagne']);
     } catch(Exception $e) {
         echo $arguments['compte_id'].";ERROR;".$e->getMessage()."\n";
         return;
