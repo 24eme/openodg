@@ -64,6 +64,7 @@ class FactureClient extends acCouchdbClient {
             }
 
             $generated = false;
+            
             if(!count($doc->mouvements)) {
                 $doc->generateMouvements();
                 $doc->save();
@@ -74,6 +75,10 @@ class FactureClient extends acCouchdbClient {
                 $mouvs = $doc->mouvements->getFirst();
                 $doc->mouvements->add($compteIdentifiant, $mouvs->toArray(true, false));
                 $doc->mouvements->remove($mouvs->getKey());
+            }
+
+            if($generated) {
+                $doc->save();
             }
 
             if(!$doc->exist('mouvements/'.$compteIdentifiant)) {
