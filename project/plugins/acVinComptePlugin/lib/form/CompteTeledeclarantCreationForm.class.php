@@ -135,19 +135,15 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
             if ($etbPrincipal->exist('telephone_bureau') && $this->getValue('telephone_bureau') != $etbPrincipal->telephone_bureau) {
                 $this->updatedValues['telephone_bureau'] = array($etbPrincipal->telephone_bureau, $this->getValue('telephone_bureau'));
             }
-            if (!$this->getOption('noSaveChangement', false)) {
-                $etbPrincipal->telephone_bureau = $this->getValue('telephone_bureau');
-                $etbPrincipal->save();
-            }
+            $etbPrincipal->telephone_bureau = $this->getValue('telephone_bureau');
+            $etbPrincipal->save();
         }
         if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('telephone_mobile'))) {
             if ($etbPrincipal->exist('telephone_mobile') && $this->getValue('telephone_mobile') != $etbPrincipal->telephone_mobile) {
                 $this->updatedValues['telephone_mobile'] = array($etbPrincipal->telephone_mobile, $this->getValue('telephone_mobile'));
             }
-            if (!$this->getOption('noSaveChangement', false)) {
-                $etbPrincipal->telephone_mobile = $this->getValue('telephone_mobile');
-                $etbPrincipal->save();
-            }
+            $etbPrincipal->telephone_mobile = $this->getValue('telephone_mobile');
+            $etbPrincipal->save();
         }
     }
 
