@@ -64,7 +64,7 @@ class FactureClient extends acCouchdbClient {
             }
 
             $generated = false;
-            
+
             if(!count($doc->mouvements)) {
                 $doc->generateMouvements();
                 $doc->save();
@@ -174,7 +174,7 @@ class FactureClient extends acCouchdbClient {
             $message_communication = $facture->message_communication;
         }
 
-        $f = FactureClient::getInstance()->createDoc($mouvements, $facture->getCompte(), $facture->date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
+        $f = FactureClient::getInstance()->createDoc($mouvements, $facture->getCompte(), date('Y-m-d'), $message_communication, $template->arguments->toArray(true, false), $template);
 
         $f->_id = $facture->_id;
         $f->_rev = $facture->_rev;
