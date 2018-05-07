@@ -38,6 +38,10 @@ class DRevClient extends acCouchdbClient implements FacturableClient {
         $drevs = array();
         $ids = DeclarationClient::getInstance()->viewByIdentifiantCampagneAndType($identifiant, $campagne, self::TYPE_MODEL);
         ksort($ids);
+        $idBase = "DREV-".$identifiant."-".$campagne;
+        if(!array_key_exists("DREV-".$identifiant."-".$campagne, $ids)) {
+            $ids[$idBase] = $idBase;
+        }
         foreach ($ids as $id => $value) {
             $drev = $this->find($id);
             if(!$drev->validation_odg) {

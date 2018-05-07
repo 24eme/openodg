@@ -32,8 +32,8 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
 
         $this->widgetSchema->setLabel('famille', 'Famille *');
         $this->widgetSchema->setLabel('nom', "Nom de l'établissement *");
-        $this->widgetSchema->setLabel('nature_inao', 'Nature INAO *');
-        $this->widgetSchema->setLabel('region', 'Région viticole *');
+        $this->widgetSchema->setLabel('nature_inao', 'Nature INAO');
+        $this->widgetSchema->setLabel('region', 'Région viticole');
         $this->widgetSchema->setLabel('no_accises', "N° d'Accise");
         $this->widgetSchema->setLabel('commentaire', 'Commentaire');
         $this->widgetSchema->setLabel('site_fiche', 'Site Fiche Publique');
@@ -41,7 +41,7 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
         $this->setValidator('famille', new sfValidatorChoice(array('required' => true, 'choices' => array_keys($this->getFamilles()))));
         $this->setValidator('nom', new sfValidatorString(array('required' => true)));
         $this->setValidator('nature_inao', new sfValidatorChoice(array('required' => false, 'choices' => array_keys(self::getNaturesInao()))));
-        $this->setValidator('region', new sfValidatorChoice(array('required' => true, 'choices' => array_keys(self::getRegions()))));
+        $this->setValidator('region', new sfValidatorChoice(array('required' => false, 'choices' => array_keys(self::getRegions()))));
         $this->setValidator('site_fiche', new sfValidatorString(array('required' => false)));
         $this->setValidator('no_accises', new sfValidatorString(array('required' => false)));
         $this->setValidator('commentaire', new sfValidatorString(array('required' => false)));
@@ -77,6 +77,9 @@ class EtablissementModificationForm extends CompteGeneriqueForm {
 
     protected function updateDefaultsFromObject() {
         parent::updateDefaultsFromObject();
+        if (!$this->getObject()->nom) {
+        	$this->setDefault('nom', $this->getObject()->getSociete()->getRaisonSociale());
+        }
     }
 
     public function getFamilles()

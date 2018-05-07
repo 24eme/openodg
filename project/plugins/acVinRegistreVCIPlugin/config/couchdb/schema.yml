@@ -50,13 +50,13 @@ RegistreVCI:
                               rafraichi: { type: float }
                               constitue: { type: float }
                               stock_final: { type: float }
-      mouvements:
+      lignes:
         type: array_collection
         definition:
           fields:
             '*':
               type: collection
-              class: RegistreVCIMouvement
+              class: RegistreVCILigne
               definition:
                 fields:
                   date: { }
@@ -67,6 +67,31 @@ RegistreVCI:
                   mouvement_type: {}
                   volume: {}
                   stock_resultant: {}
+      mouvements:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    class: RegistreVCIMouvement
+                    inheritance: Mouvement
+                    type: collection
+                    definition:
+                      fields:
+                        categorie: {  }
+                        type_hash: {  }
+                        type_libelle: {  }
+                        quantite: { type: float }
+                        taux: { type: float }
+                        facture: { type: integer }
+                        facturable: { type: integer }
+                        template: { }
+                        date: {  }
+                        date_version: {  }
+                        version: {  }
       pieces:
         type: array_collection
         definition:

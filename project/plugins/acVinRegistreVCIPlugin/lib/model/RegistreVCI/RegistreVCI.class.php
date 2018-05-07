@@ -4,9 +4,10 @@
  *
  */
 
-class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfacePieceDocument {
+class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, InterfaceMouvementDocument, InterfacePieceDocument {
 
       protected $piece_document = null;
+      protected $mouvement_document = null;
 
       public function __construct() {
           parent::__construct();
@@ -33,6 +34,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       protected function initDocuments() {
           $this->piece_document = new PieceDocument($this);
+          $this->mouvement_document = new MouvementDocument($this);
       }
 
       public function initDoc($identifiant, $campagne) {
@@ -55,7 +57,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         return EtablissementClient::getInstance()->findByIdentifiant($this->identifiant);
       }
 
-      public function addMouvement($produit, string $mouvement_type, float $volume, string $lieu) {
+      public function addLigne($produit, $mouvement_type, $volume, $lieu) {
           if (is_string($produit)) {
             $hproduit = preg_replace('/\/*declaration\//', '', $produit);
             $produit = $this->getConfiguration()->declaration->get($hproduit);
@@ -63,8 +65,8 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
             $hproduit = preg_replace('/\/*declaration\//', '', $produit->getHash());
           }
           $hproduit = preg_replace('|appellation_CREMANT/mention/lieu/couleur/.*|', 'appellation_CREMANT', $hproduit);
-          $nDetail = $this->add('declaration')->add($hproduit)->addMouvement($mouvement_type, $volume, $lieu);
-          $mvt = $this->add('mouvements')->add();
+          $nDetail = $this->add('declaration')->add($hproduit)->addLigne($mouvement_type, $volume, $lieu);
+          $mvt = $this->add('lignes')->add();
           $mvt->produit_hash = $hproduit;
           $mvt->produit_libelle = $nDetail->getLibelleProduit();
           $mvt->detail_hash = $nDetail->stockage_identifiant;
@@ -81,6 +83,7 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
 
       public function clear() {
         $this->remove('declaration');
+        $this->remove('lignes');
         $this->remove('mouvements');
         $this->superficies_facturables = 0;
       }
@@ -150,9 +153,127 @@ class RegistreVCI extends BaseRegistreVCI implements InterfaceProduitsDocument, 
         return $produits;
       }
 
+      public function getSurfaceFacturable() {
+
+          return ($this->superficies_facturables > 0)? round($this->superficies_facturables / 100, 4) : 0;
+      }
+
       public function getDRev() {
         $drev = DRevClient::getInstance()->find('DREV-'.$this->identifiant.'-'.$this->campagne);
         return $drev;
+      }
+
+      /**** MOUVEMENTS ****/
+
+      public function getTemplateFacture() {
+
+          return TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$this->getCampagne());
+      }
+
+      public function getMouvements() {
+
+          return $this->_get('mouvements');
+      }
+
+      public function getMouvementsCalcule() {
+          $templateFacture = $this->getTemplateFacture();
+
+          if(!$templateFacture) {
+              return array();
+          }
+
+          $cotisations = $templateFacture->generateCotisations($this);
+
+          if($this->hasVersion()) {
+              $cotisationsPrec = $templateFacture->generateCotisations($this->getMother());
+          }
+
+          $identifiantCompte = "E".$this->getIdentifiant();
+
+          $mouvements = array();
+
+          $rienAFacturer = true;
+
+          foreach($cotisations as $cotisation) {
+              $mouvement = RegistreVCIMouvement::freeInstance($this);
+              $mouvement->categorie = $cotisation->getCollectionKey();
+              $mouvement->type_hash = $cotisation->getDetailKey();
+              $mouvement->type_libelle = $cotisation->getLibelle();
+              $mouvement->quantite = $cotisation->getQuantite();
+              $mouvement->taux = $cotisation->getPrix();
+              $mouvement->facture = 0;
+              $mouvement->facturable = 1;
+              $mouvement->date = $this->getCampagne().'-12-10';
+              $mouvement->date_version = $this->validation;
+              $mouvement->version = $this->version;
+              $mouvement->template = $templateFacture->_id;
+
+              if(isset($cotisationsPrec[$cotisation->getHash()])) {
+                  $mouvement->quantite = $mouvement->quantite - $cotisationsPrec[$cotisation->getHash()]->getQuantite();
+              }
+
+              if($this->hasVersion() && !$mouvement->quantite) {
+                  continue;
+              }
+
+              if($mouvement->quantite) {
+                  $rienAFacturer = false;
+              }
+
+              $mouvements[$mouvement->getMD5Key()] = $mouvement;
+          }
+
+          if($rienAFacturer) {
+              return array($identifiantCompte => array());
+
+          }
+
+          return array($identifiantCompte => $mouvements);
+      }
+
+      public function getMouvementsCalculeByIdentifiant($identifiant) {
+
+          return $this->mouvement_document->getMouvementsCalculeByIdentifiant($identifiant);
+      }
+
+      public function generateMouvements() {
+          if(!$this->getTemplateFacture()) {
+
+              return false;
+          }
+
+          return $this->mouvement_document->generateMouvements();
+      }
+
+      public function findMouvement($cle, $id = null){
+        return $this->mouvement_document->findMouvement($cle, $id);
+      }
+
+      public function facturerMouvements() {
+
+          return $this->mouvement_document->facturerMouvements();
+      }
+
+      public function isFactures() {
+
+          return $this->mouvement_document->isFactures();
+      }
+
+      public function isNonFactures() {
+
+          return $this->mouvement_document->isNonFactures();
+      }
+
+      public function clearMouvements(){
+          $this->remove('mouvements');
+          $this->add('mouvements');
+      }
+
+      /**** FIN DES MOUVEMENTS ****/
+
+      public function hasVersion() {
+
+          return false;
       }
 
 }

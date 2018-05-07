@@ -36,8 +36,8 @@ class EtablissementClient extends acCouchdbClient {
 
     public function getAll($hydrate = self::HYDRATE_DOCUMENT) {
 
-        $query = $this->startkey(sprintf("ETABLISSEMENT-%s", "0000000000"))
-                    ->endkey(sprintf("ETABLISSEMENT-%s", "9999999999"));
+        $query = $this->startkey("ETABLISSEMENT-")
+                    ->endkey("ETABLISSEMENT-ZZZZZZZZZ");
 
         return $query->execute(acCouchdbClient::HYDRATE_ARRAY);
     }

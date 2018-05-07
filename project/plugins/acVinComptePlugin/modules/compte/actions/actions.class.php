@@ -4,7 +4,7 @@ class compteActions extends sfCredentialActions {
 
     public function executeAjout(sfWebRequest $request) {
         $this->societe = $this->getRoute()->getSociete();
-        $this->compte = CompteClient::getInstance()->createCompteFromSociete($this->societe);
+        $this->compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($this->societe);
         $this->applyRights();
         if(!$this->modification && !$this->reduct_rights){
 
@@ -351,7 +351,7 @@ class compteActions extends sfCredentialActions {
     }
 
     private function addTagFacetsToQuerry($q) {
-      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique');
+      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique','relations' => 'doc.tags.relations');
       foreach($facets as $nom => $f) {
         $elasticaFacet 	= new acElasticaFacetTerms($nom);
         $elasticaFacet->setField($f);

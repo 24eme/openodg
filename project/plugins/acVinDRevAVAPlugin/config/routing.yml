@@ -74,6 +74,16 @@ drev_devalidation:
   requirements:
     sf_method: [get]
 
+drev_generatemouvements:
+  url: /drev/generatemouvements/:id
+  param: { module: drev, action: generateMouvements }
+  class: DRevRoute
+  options:
+    model:    DRev
+    type:     object
+  requirements:
+    sf_method: [get]
+
 drev_dr:
   url: /drev/dr/:id
   param: { module: drev, action: dr }

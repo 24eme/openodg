@@ -7,111 +7,87 @@
  */
 
 /**
- * Description of ExportParcellairePdf
+ * Description of ExportParcellaireCSV
  *
  * @author mathurin
  */
 class ExportParcellaireCSV implements InterfaceDeclarationExportCsv {
 
-    protected $parcellaire = null;
+    protected $doc = null;
     protected $header = false;
 
     public static function getHeaderCsv() {
 
-        return "Commune Parcelle;Section Parcelle;Numéro Parcelle;Appellation;Lieu;Cépage;Superficie;Campagne;CVI;Nom;Adresse;Code postal;Commune;Parcelle partagée ou dédiée;Acheteur CVI;Acheteur Nom;Autorisation de transmission;Date de validation / récéption;Type de transmission;VTSGN\n";
+        return "Identifiant Société;Identifiant Opérateur;CVI Opérateur;Siret Opérateur;Nom Opérateur;Adresse Opérateur;Code postal Opérateur;Commune Opérateur;Email;Type de déclaration;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;IDU;Code commune;Commune;Lieu-dit;Section;Numéro parcelle;Cépage;Année de plantation;Surface;Ecart pieds;Ecart rang;Type de declaration\n";
     }
 
-    public function __construct($parcellaire, $header = true) {
-        $this->parcellaire = $parcellaire;
+    public function __construct($doc, $header = true) {
+        $this->doc = $doc;
         $this->header = $header;
     }
 
-    public function getFileName($with_rev = true, $nomFilter = null) {
+    public function getFileName() {
 
-      return self::buildFileName($this->parcellaire, $with_rev, $nomFilter);
+        return $this->doc->_id . '_' . $this->doc->_rev . '.csv';
     }
 
-    public static function buildFileName($parcellaire, $with_rev = false, $nomFilter = null) {
-        
-        $prefixName = $parcellaire->getTypeParcellaire()."_%s_%s";
-        $filename = sprintf($prefixName, $parcellaire->identifiant, $parcellaire->campagne);
-
-        $declarant_nom = strtoupper(KeyInflector::slugify($parcellaire->declarant->nom));
-        $filename .= '_' . $declarant_nom;
-
-        if($nomFilter) {
-            $filename .= '_' . strtoupper(KeyInflector::slugify($nomFilter));
-        }
-
-        if ($with_rev) {
-            $filename .= '_' . $parcellaire->_rev;
-        }
-
-        return $filename . '.csv';
+    public function protectStr($str) {
+    	return str_replace('"', '', $str);
     }
 
-    public function export($cviFilter = null) {
-        $export = "";
-        if($this->header) { 
-            $export = self::getHeaderCsv();
+    public function export() {
+        $csv = "";
+        if($this->header) {
+            $csv .= self::getHeaderCsv();
         }
 
-        if(!$this->parcellaire->validation) {
+        $mode = 'TELEDECLARATION';
+		$emails = explode(';', $this->doc->declarant->email);
+		$email = isset($emails[0])? trim($emails[0]) : null;
+        $ligne_base = sprintf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"", $this->doc->getEtablissementObject()->getSociete()->identifiant, $this->doc->identifiant, $this->doc->declarant->cvi, $this->formatSiret($this->doc->declarant->siret), $this->protectStr($this->doc->declarant->raison_sociale), $this->protectStr($this->doc->declarant->adresse), $this->doc->declarant->code_postal, $this->protectStr($this->doc->declarant->commune), $email);
+        foreach ($this->doc->declaration->getParcellesByCommune() as $commune => $parcelles) {
+        	foreach ($parcelles as $parcelle) {
+            	$configProduit = $parcelle->getProduit()->getConfig();
 
-            return;
-        }
-        
-        $acheteursGlobal = $this->parcellaire->getAcheteursByCVI();
-        
-        foreach ($this->parcellaire->declaration->getProduitsCepageDetails() as $parcelle) {
-            $acheteurs = $parcelle->getAcheteursByCVI();
-            
-            if(!count($acheteurs) && count($acheteursGlobal) > 1) {
-                //echo sprintf("ERROR pas d'acheteur : %s : %s !\n", $this->parcellaire->_id, $parcelle->getHash());
-            }
+            	$certification = $configProduit->getCertification()->getKey();
+            	$genre = $configProduit->getGenre()->getKey();
+            	$appellation = $configProduit->getAppellation()->getKey();
+            	$mention = $configProduit->getMention()->getKey();
+            	$lieu = $configProduit->getLieu()->getKey();
+            	$couleur = $configProduit->getCouleur()->getKey();
+            	$cepage = $configProduit->getCepage()->getKey();
+            	$inao = $configProduit->getCodeDouane();
 
-            if(!count($acheteurs) && count($acheteursGlobal) == 0) {
-                //echo sprintf("ERROR pas d'acheteurs du tout : %s : %s !\n", $this->parcellaire->_id, $parcelle->getHash());
-            }
-
-            if(!count($acheteurs) && count($acheteursGlobal) == 1) {
-                $acheteurs = $acheteursGlobal;
-            }
-
-            foreach($acheteurs as $acheteur) {
-                if($cviFilter && $cviFilter != $acheteur->cvi) {
-                    continue;
-                }
-
-                $export.= $parcelle->commune . ";";
-                $export.= $parcelle->section . ";";
-                $export.= $parcelle->numero_parcelle . ";";
-                $export.= $parcelle->getAppellation()->getLibelle() . ";";
-                $export.= $parcelle->getLieuLibelle() . ";";
-                $export.= $parcelle->getCepageLibelle() . ";";
-                $export.= sprintf("%01.02f", $parcelle->superficie) . ";";
-                $export.= $this->parcellaire->campagne . ";";
-                $export.= $this->parcellaire->declarant->cvi . ";";
-                $export.= $this->parcellaire->declarant->nom . ";";
-                $export.= $this->parcellaire->declarant->adresse . ";";
-                $export.= $this->parcellaire->declarant->code_postal . ";";
-                $export.= $this->parcellaire->declarant->commune . ";";
-                if($acheteur->cvi != $this->parcellaire->identifiant) {
-                    $export.= (count($acheteurs) == 1) ? "DEDIÉE;" : "PARTAGÉE;";
-                    $export.= $acheteur->cvi . ";";
-                    $export.= $acheteur->nom . ";";
-                    $export.= (!$this->parcellaire->isPapier() ? (($this->parcellaire->autorisation_acheteur) ? "AUTORISÉE" : "REFUSÉE") : "").";";
-                } else {
-                    $export.=";;;;";
-                }
-                $export.= $this->parcellaire->validation.";";
-                $export.= ($this->parcellaire->isPapier()) ? "PAPIER" : "TÉLÉDECLARATION";
-                $export.= ";".(($parcelle->vtsgn) ? "VTSGN" : "");
-                $export.="\n";
-            }
+            	$libelle_complet = $this->protectStr(trim($parcelle->getProduit()->getLibelle()));
+            	$csv .= sprintf("%s;Parcellaire;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", $ligne_base,
+            	$certification,$genre,$appellation,$mention,$lieu,$couleur,$cepage,$inao,$libelle_complet,
+            	$this->protectStr($parcelle->idu),
+            	$parcelle->code_commune,
+            	$this->protectStr($parcelle->commune),
+            	$this->protectStr($parcelle->lieu),
+            	$parcelle->section,
+            	$parcelle->numero_parcelle,
+            	$this->protectStr($parcelle->cepage),
+            	$this->protectStr($parcelle->campagne_plantation),
+            	$this->formatFloat($parcelle->superficie),
+            	$this->protectStr($parcelle->ecart_pieds),
+            	$this->protectStr($parcelle->ecart_rang),
+            	$mode);
+        	}
         }
 
-        return $export;
+        return $csv;
     }
+
+    protected function formatFloat($value) {
+
+        return str_replace(".", ",", $value);
+    }
+
+    protected function formatSiret($siret) {
+      //return $siret;
+      return preg_replace('/^(\d\d\d)(\d\d\d)(\d\d\d)/', '\1 \2 \3 ', $siret);
+    }
+
 
 }
