@@ -57,6 +57,7 @@
     <?php endif; ?>
     <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
 </div>
+<?php if(in_array('facturation', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="page-header">
 <h2>Espace Facture</h2>
 </div>
@@ -77,5 +78,6 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php include_partial('fichier/history', array('etablissement' => $etablissement, 'history' => PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)), 'limit' => Piece::LIMIT_HISTORY)); ?>
