@@ -78,16 +78,30 @@ class DeclarantDocument
                  $declarant->add('siret', $etablissement->siret);
         }
         if ($etablissement->exist("telephone_bureau")) {
-            if($declarant->getDefinition()->exist('telephone'))
-                 $declarant->add('telephone', $etablissement->telephone_bureau);
-        } elseif ($etablissement->exist("telephone")) {
-            if($declarant->getDefinition()->exist('telephone'))
-                 $declarant->add('telephone', $etablissement->telephone);
-        }
+            if(!$declarant->getDefinition()->exist('telephone_bureau')){
+                if($declarant->getDefinition()->exist('telephone')){
+                    $declarant->add('telephone', $etablissement->telephone_bureau);
+                }
+            }else{
+                $declarant->add('telephone_bureau', $etablissement->telephone_bureau);
+            }
 
+        } elseif ($etablissement->exist("telephone")) {
+            if(!$declarant->getDefinition()->exist('telephone_bureau')){
+                if($declarant->getDefinition()->exist('telephone')){
+                    $declarant->add('telephone', $etablissement->telephone_bureau);
+                }
+            }else{
+                $declarant->add('telephone_bureau', $etablissement->telephone_bureau);
+            }
+        }
+        if ($etablissement->exist("telephone_mobile") && $declarant->getDefinition()->exist('telephone_mobile')) {
+            $declarant->add('telephone_mobile', $etablissement->telephone_mobile);
+        }
         if ($etablissement->exist("email")) {
-            if($declarant->getDefinition()->exist('email'))
-               $declarant->add('email', $etablissement->email);
+            if($declarant->getDefinition()->exist('email')) {
+               $declarant->add('email', $etablissement->getUniqueEmail());
+            }
         }
         if ($etablissement->exist("fax")) {
              if($declarant->getDefinition()->exist('fax'))

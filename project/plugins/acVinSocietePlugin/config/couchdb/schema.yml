@@ -27,9 +27,17 @@ Societe:
       date_modification: { required: false }
       date_creation: { required: false}
       no_tva_intracommunautaire: { }
+
+      # champs copié de compte
       email: {  }
-      telephone: {  }
+      telephone_perso: {  }
+      telephone_bureau: {  }
+      telephone_mobile: {  }
       fax: {  }
+      telephone: { required: false }
+      site_internet: { }
+
+
       commentaire: { }
       siege:
         type: collection
@@ -40,6 +48,7 @@ Societe:
             code_postal: {  }
             commune: {  }
             pays: {  }
+            insee: { }
       cooperative: { }
       enseignes:
         type: array_collection
@@ -71,4 +80,99 @@ Societe:
                 fields:
                   nom: {}
                   ordre: {}
-
+# TODO : champs à virer après le merge
+      compte_societe_saved:
+        type: collection
+        required: false
+        definition:
+          fields:
+            num_interne: {  }
+            civilite: { }
+            prenom: { }
+            nom: { }
+            nom_a_afficher: {}
+            fonction: { }
+            commentaire: { }
+            mot_de_passe: { }
+            login: { required: false }
+            date_modification: { required: false  }
+            origines:
+              type: array_collection
+              definition:
+                fields:
+                   '*': { }
+            id_societe: { }
+            adresse_societe: {  }
+            adresse: { }
+            adresse_complementaire: { }
+            code_postal: { }
+            commune: { }
+            insee: { }
+            compte_type: { }
+            cedex: { require: false } #A supprimer
+            pays: {  }
+            email: {  }
+            telephone_perso: {  }
+            telephone_bureau: {  }
+            telephone_mobile: {  }
+            fax: {  }
+            site_internet: { }
+            nom_a_afficher: {  }
+            raison_sociale_societe: { required: false }
+            type_societe: { required: false }
+            teledeclaration_active: { required: false }
+            gecos: { required: false }
+            lat: {  }
+            lon: {  }
+            societe_informations:
+              type: collection
+              definition:
+                fields:
+                  type: { }
+                  raison_sociale: { }
+                  adresse: {  }
+                  adresse_complementaire: {  }
+                  code_postal: {  }
+                  commune: {  }
+                  email: {  }
+                  telephone: {  }
+                  fax: {  }
+            etablissement_informations:
+              type: collection
+              definition:
+                fields:
+                  cvi: { }
+                  ppm: { }
+            interpro: {  }
+            statut: {  }
+            groupes:
+              type: array_collection
+              definition:
+                fields:
+                  '*':
+                    type: collection
+                    definition:
+                      fields:
+                        nom: { }
+                        fonction: { }
+            tags:
+              type: collection
+              definition:
+                fields:
+                  '*':
+                    type: array_collection
+                    definition:
+                      fields:
+                        '*': {}
+            droits:
+              type: array_collection
+              required: false
+              definition:
+                fields:
+                  '*': { }
+            delegation:
+              type: array_collection
+              required: false
+              definition:
+                fields:
+                  '*': { }

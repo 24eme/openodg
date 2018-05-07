@@ -12,8 +12,12 @@ class HabilitationClient extends acCouchdbClient {
     const ACTIVITE_CONDITIONNEUR = "CONDITIONNEUR";
     const ACTIVITE_VENTE_A_LA_TIREUSE = "VENTE_A_LA_TIREUSE";
 
+    const ACTIVITE_PRODUCTEUR_MOUTS = "PRODUCTEUR_MOUTS";
+    const ACTIVITE_ELEVEUR_DGC = "ELEVEUR_DGC";
+
 
     const STATUT_DEMANDE_HABILITATION = "DEMANDE_HABILITATION";
+    const STATUT_ATTENTE_HABILITATION = "ATTENTE_HABILITATION";
     const STATUT_DEMANDE_RETRAIT = "DEMANDE_RETRAIT";
     const STATUT_HABILITE = "HABILITE";
     const STATUT_SUSPENDU = "SUSPENDU";
@@ -21,24 +25,76 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_RETRAIT = "RETRAIT";
     const STATUT_ANNULE = "ANNULÉ";
 
-    public static $activites_libelles = array( self::ACTIVITE_PRODUCTEUR => "Producteur",
+
+    const STATUT_ARCHIVE = "ARCHIVE";
+
+    public static $activites_libelles = array(
+      /*
+       self::ACTIVITE_PRODUCTEUR => "Producteur de raisins",
+       */
+                                                  self::ACTIVITE_PRODUCTEUR => "Producteur",
                                                   self::ACTIVITE_VINIFICATEUR => "Vinificateur",
-                                                  self::ACTIVITE_VRAC => "Vrac",
+                                                  self::ACTIVITE_VRAC => "Détenteur de vin en vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "Conditionneur",
                                                   self::ACTIVITE_ELABORATEUR => "Élaborateur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "Vente tireuse"
+                                                  ,self::ACTIVITE_PRODUCTEUR_MOUTS => "Producteur de moût"
+                                                  ,self::ACTIVITE_ELEVEUR_DGC => "Eleveur de DGC"
+                                                );
+    public static $activites_libelles_to_be_sorted = array( self::ACTIVITE_PRODUCTEUR => "01_Producteur de raisins",
+                                                  self::ACTIVITE_VINIFICATEUR => "03_Vinificateur",
+                                                  self::ACTIVITE_VRAC => "05_Détenteur de vins en vrac",
+                                                  self::ACTIVITE_CONDITIONNEUR => "06_Conditionneur",
+                                                  self::ACTIVITE_ELABORATEUR => "99_Élaborateur",
+                                                  self::ACTIVITE_VENTE_A_LA_TIREUSE => "99_Vente tireuse"
+                                                  ,self::ACTIVITE_PRODUCTEUR_MOUTS => "02_Producteur de moût"
+                                                  ,self::ACTIVITE_ELEVEUR_DGC => "04_Eleveur de DGC"
                                                 );
     public static $statuts_libelles = array( self::STATUT_DEMANDE_HABILITATION => "Demande d'habilitation",
+                                             self::STATUT_ATTENTE_HABILITATION => "En attente d'habilitation",
                                              self::STATUT_DEMANDE_RETRAIT => "Demande de retrait",
                                              self::STATUT_HABILITE => "Habilité",
                                              self::STATUT_SUSPENDU => "Suspendu",
                                              self::STATUT_REFUS => "Refus",
                                              self::STATUT_ANNULE => "Annulé",
-                                             self::STATUT_RETRAIT => "Retrait");
+                                             self::STATUT_RETRAIT => "Retrait",
+
+                                            self::STATUT_ARCHIVE => "Archivé");
 
     public static function getInstance()
     {
       return acCouchdbManager::getClient("Habilitation");
+    }
+
+    public function getLibelleActiviteToBeSorted($key) {
+
+        if(!isset(self::$activites_libelles_to_be_sorted[$key])) {
+
+            return $key;
+        }
+
+        return self::$activites_libelles_to_be_sorted[$key];
+    }
+
+
+    public function getLibelleActivite($key) {
+
+        if(!isset(self::$activites_libelles[$key])) {
+
+            return $key;
+        }
+
+        return self::$activites_libelles[$key];
+    }
+
+    public function getLibelleStatut($key) {
+
+        if(!isset(self::$statuts_libelles[$key])) {
+
+            return $key;
+        }
+
+        return self::$statuts_libelles[$key];
     }
 
         public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -111,7 +167,7 @@ class HabilitationClient extends acCouchdbClient {
         public function getLastHabilitation($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
             $history = $this->getHistory($identifiant, $hydrate);
 
-            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99');
+            return $this->findPreviousByIdentifiantAndDate($identifiant, '9999-99-99', $hydrate);
         }
 
         public function getLastHabilitationOrCreate($identifiant, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
@@ -126,8 +182,8 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         public function getAllEtablissementsWithHabilitations($hydrate = acCouchdbClient::HYDRATE_DOCUMENT){
-          $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-00000000-00000000")
-                      ->endkey(self::TYPE_COUCHDB."-99999999-99999999")->execute($hydrate);
+          $allHabilitations = $this->startkey(self::TYPE_COUCHDB."-")
+                      ->endkey(self::TYPE_COUCHDB."-ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ")->execute($hydrate);
           $etbIds = array();
           foreach ($allHabilitations as $habilitation) {
             $etbIds[$habilitation->getIdentifiant()] = $habilitation->getIdentifiant();

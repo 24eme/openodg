@@ -29,6 +29,7 @@ class EtablissementFamilles
         self::FAMILLE_COOPERATIVE => "Coopérative",
     	self::FAMILLE_NEGOCIANT => "Négociant",
     	self::FAMILLE_NEGOCIANT_VINIFICATEUR => "Négociant Vinificateur",
+    	self::FAMILLE_PRODUCTEUR_VINIFICATEUR => "Producteur Vinificateur (Cave Particulière)",
     );
 
     protected static $type_societe_famille = array(

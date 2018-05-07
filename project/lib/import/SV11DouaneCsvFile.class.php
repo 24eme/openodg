@@ -10,7 +10,10 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         while (($data = fgetcsv($handler)) !== FALSE) {
             $csv[] = self::clean($data);
         }
-
+        $etablissement = ($this->doc)? $this->doc->getEtablissementObject() : null;
+		if ($etablissement && !$etablissement->isActif()) {
+			return;
+		}
         $doc = array();
         $cvi = null;
         $rs = null;
@@ -45,7 +48,12 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
         				if (!$values[$v]) {
         					continue;
         				}
-	        			$produit = array(null, null, null, null, null, null, null);
+        				$p = $this->configuration->findProductByCodeDouane($values[6]);
+        				if (!$p) {
+        					$produit = array(null, null, null, null, null, null, null);
+        				} else {
+        					$produit = array($p->getCertification()->getKey(), $p->getGenre()->getKey(), $p->getAppellation()->getKey(), $p->getMention()->getKey(), $p->getLieu()->getKey(), $p->getCouleur()->getKey(), $p->getCepage()->getKey());
+        				}
 	        			$produit[] = $values[6];
 	        			$produit[] = $values[7];
 	        			$produit[] = $values[8];
@@ -68,10 +76,11 @@ class SV11DouaneCsvFile extends DouaneImportCsvFile {
 
         $doc[] = SV11CsvFile::CSV_TYPE_SV11;
         $doc[] = $this->campagne;
-        $doc[] = $cvi;
-        $doc[] = $rs;
+        $doc[] = ($etablissement)? $etablissement->identifiant : null;
+        $doc[] = ($etablissement)? $etablissement->cvi : $cvi;
+        $doc[] = ($etablissement)? $etablissement->raison_sociale : $rs;
         $doc[] = null;
-        $doc[] = $commune;
+        $doc[] = ($etablissement)? $etablissement->siege->commune : $commune;
 
         $csv = '';
         foreach ($produits as $p) {

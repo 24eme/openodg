@@ -1,0 +1,61 @@
+{
+   "_id": "COMPTE-provence",
+   "type": "Compte",
+   "identifiant": "provence",
+   "mot_de_passe": "{TEXT}CECINESTPASUNMDP",
+   "civilite": null,
+   "prenom": "",
+   "nom": "ODG Provence",
+   "nom_a_afficher": "ODG Provence",
+   "fonction": "",
+   "commentaire": "",
+   "origines": [
+   ],
+   "id_societe": "SOCIETE-000001",
+   "adresse_societe": null,
+   "adresse": "RN7",
+   "adresse_complementaire": "",
+   "code_postal": "83460",
+   "commune": "LES ARCS SUR ARGENT",
+   "insee": null,
+   "compte_type": "INTERLOCUTEUR",
+   "cedex": null,
+   "pays": "France",
+   "email": "contact@syndicat-cotesdeprovence.com",
+   "telephone_perso": null,
+   "telephone_bureau": "",
+   "telephone_mobile": "",
+   "fax": "",
+   "site_internet": "http://www.syndicat-cotesdeprovence.com",
+   "lat": "43.403897",
+   "lon": "3.510736",
+   "societe_informations": {
+       "type": "OPERATEUR",
+       "raison_sociale": "SYNDICAT GENERAL DES COTES PROVENCE",
+       "adresse": "",
+       "adresse_complementaire": "",
+       "code_postal": "83460",
+       "commune": "LES ARCS",
+       "email": "contact@syndicat-cotesdeprovence.com",
+       "telephone": "",
+       "fax": ""
+   },
+   "etablissement_informations": {
+       "cvi": null,
+       "ppm": null
+   },
+   "interpro": "INTERPRO-declaration",
+   "statut": "ACTIF",
+   "groupes": {
+   },
+   "tags": {
+       "automatique": [
+           "interlocuteur"
+       ]
+   },
+   "droits": [
+       "ADMIN",
+       "habilitation"
+   ],
+   "teledeclaration_active": true
+}

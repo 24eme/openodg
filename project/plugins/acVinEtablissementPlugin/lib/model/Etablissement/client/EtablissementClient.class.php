@@ -11,11 +11,24 @@ class EtablissementClient extends acCouchdbClient {
     const RECETTE_LOCALE = 'RECETTE_LOCALE';
     const TYPE_DR_DRM = 'DRM';
     const TYPE_DR_DRA = 'DRA';
+
     const TYPE_LIAISON_BAILLEUR = 'BAILLEUR';
     const TYPE_LIAISON_METAYER = 'METAYER';
+
     const TYPE_LIAISON_FERMIER = 'FERMIER';
-    const TYPE_LIAISON_ADHERENT = 'ADHERENT'; //pour les cooperateurs
-    const TYPE_LIAISON_CONTRAT_INTERNE = 'CONTRAT_INTERNE';
+
+    const TYPE_LIAISON_COOPERATIVE = 'COOPERATIVE'; // a pour coopérative
+    const TYPE_LIAISON_COOPERATEUR = 'COOPERATEUR'; // a pour coopérateur
+
+    const TYPE_LIAISON_NEGOCIANT = 'NEGOCIANT'; //à pour les negociants
+    const TYPE_LIAISON_VENDEUR_VRAC = 'VENDEUR_VRAC';//à pour les vendeur de vin en vrac
+
+    const TYPE_LIAISON_NEGOCIANT_VINIFICATEUR = 'NEGOCIANT_VINIFICATEUR'; //à pour les négociant vinificateur
+    const TYPE_LIAISON_APPORTEUR_RAISIN = 'APPORTEUR_RAISIN'; //à pour apporteur de raisins
+
+    const TYPE_LIAISON_HEBERGE_TIERS = 'HEBERGE_TIERS'; //Hébergé chez un tiers
+    const TYPE_LIAISON_HEBERGE = 'HEBERGE'; //Heberge
+
     const STATUT_ACTIF = 'ACTIF'; #'actif';
     const STATUT_SUSPENDU = 'SUSPENDU'; #'suspendu';
     const OUI = 'OUI';
@@ -42,12 +55,14 @@ class EtablissementClient extends acCouchdbClient {
     const CHAI_ATTRIBUT_VINIFICATION = "VINIFICATION";
     const CHAI_ATTRIBUT_CONDITIONNEMENT = "CONDITIONNEMENT";
     const CHAI_ATTRIBUT_STOCKAGE = "STOCKAGE";
+    const CHAI_ATTRIBUT_STOCKAGE_VRAC = "STOCKAGE_VRAC";
+    const CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE = "STOCKAGE_VIN_CONDITIONNE";
+    const CHAI_ATTRIBUT_DGC = "DGC";
+    const CHAI_ATTRIBUT_APPORT = "APPORT";
+
     const CHAI_ATTRIBUT_PRESSURAGE = "PRESSURAGE";
     const CHAI_ATTRIBUT_PRESTATAIRE = 'PRESTATAIRE';
     const CHAI_ATTRIBUT_ELEVAGE = 'ELEVAGE';
-    const CHAI_PRODUCTEUR_DE_RAISIN = 'PRODUCTEURRAISINS';
-    const CHAI_PRODUCTEUR_DE_MOUT = 'PRODUCTEURMOUTS';
-    const CHAI_DETENTEUR_VRAC = 'DETENTEURVRAC';
 
     public static $statuts = array(self::STATUT_ACTIF => 'ACTIF',
         self::STATUT_SUSPENDU => 'SUSPENDU');
@@ -74,21 +89,25 @@ class EtablissementClient extends acCouchdbClient {
         self::CAUTION_CAUTION => 'Caution');
 
     public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
+                                                  self::CHAI_ATTRIBUT_STOCKAGE_VRAC => 'Stockage Vin en Vrac',
+                                                  self::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE => 'Stockage Vin Conditionné',
+                                                  self::CHAI_ATTRIBUT_DGC => 'Désignation Géographique complémentaire',
+                                                  self::CHAI_ATTRIBUT_APPORT => 'Apport',
                                                   self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
-                                                  self::CHAI_ATTRIBUT_STOCKAGE => 'Lieu de stockage',
                                                   self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
-                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement',
-                                                  self::CHAI_PRODUCTEUR_DE_RAISIN => 'Producteur de raisins',
-                                                  self::CHAI_PRODUCTEUR_DE_MOUT => 'Producteur de moûts',
-                                                  self::CHAI_DETENTEUR_VRAC => 'Détenteur de vin en vrac');
+                                                  self::CHAI_ATTRIBUT_ELEVAGE => 'Elevage et vieillissement');
 
-    public static $chaisAttributsInImport = array("Eleveur de DGC" => EtablissementClient::CHAI_ATTRIBUT_ELEVAGE,
-                                              "Conditionneur" => EtablissementClient::CHAI_ATTRIBUT_CONDITIONNEMENT,
-                                              "Détenteur de vin en vrac" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
-                                              "Vinificateur" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
-                                              "Producteur de moût" => EtablissementClient::CHAI_PRODUCTEUR_DE_MOUT,
-                                              "Producteur de raisins" =>  EtablissementClient::CHAI_PRODUCTEUR_DE_RAISIN);
+    public static $chaisAttributsInImport = array("Vinification" => EtablissementClient::CHAI_ATTRIBUT_VINIFICATION,
+                                                  "VV Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VRAC,
+                                                  "VC Stockage" => EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE,
+                                                  "DGC" => EtablissementClient::CHAI_ATTRIBUT_DGC,
+                                                  "Apport" => EtablissementClient::CHAI_ATTRIBUT_APPORT
+                                                    );
 
+    public static $chaisAttributByLiaisonType = array(
+                                                    self::TYPE_LIAISON_COOPERATIVE => 'Apport',
+                                                    self::TYPE_LIAISON_NEGOCIANT => 'Apport',
+                                                );
     public static function getInstance() {
         return acCouchdbManager::getClient("Etablissement");
     }
@@ -178,8 +197,6 @@ class EtablissementClient extends acCouchdbClient {
       return $this->find($rows[0]->id);
     }
 
-
-
     public function getId($id_or_identifiant) {
         $id = $id_or_identifiant;
         if (strpos($id_or_identifiant, 'ETABLISSEMENT-') === false) {
@@ -255,7 +272,7 @@ class EtablissementClient extends acCouchdbClient {
     }
 
     public static function getRegions() {
-        return array_merge(self::getRegionsWithoutHorsInterLoire(), array(self::REGION_HORS_CVO => self::REGION_HORS_CVO));
+    	return sfConfig::get('app_donnees_viticoles_regions');
     }
 
     public static function getNaturesInao() {
@@ -275,16 +292,60 @@ class EtablissementClient extends acCouchdbClient {
             self::TYPE_DR_DRA => self::TYPE_DR_DRA);
     }
 
-    public static function listTypeLiaisons() {
-        return array_keys(self::getTypesLiaisons());
+    public static function getTypesLiaisons() {
+        return array(
+
+            self::TYPE_LIAISON_BAILLEUR => 'A pour bailleur',
+            self::TYPE_LIAISON_METAYER => 'A pour métayer',
+
+            self::TYPE_LIAISON_FERMIER => 'A pour fermier',
+
+            self::TYPE_LIAISON_COOPERATIVE => 'A pour coopérative',
+            self::TYPE_LIAISON_COOPERATEUR => 'A pour coopérateur',
+
+            self::TYPE_LIAISON_NEGOCIANT => 'A pour négociant (vin en vrac)',
+            self::TYPE_LIAISON_VENDEUR_VRAC => 'A pour vendeur de vin en vrac',
+
+            self::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR => 'A pour négociant vinificateur',
+            self::TYPE_LIAISON_APPORTEUR_RAISIN => 'A pour apporteur de raisins',
+
+            self::TYPE_LIAISON_HEBERGE_TIERS => 'Hébergé chez un tiers',
+            self::TYPE_LIAISON_HEBERGE => 'Héberge',
+
+        );
     }
 
-    public static function getTypesLiaisons() {
-        return array(self::TYPE_LIAISON_BAILLEUR => 'A pour bailleur',
-            self::TYPE_LIAISON_METAYER => 'A pour métayer',
-            self::TYPE_LIAISON_FERMIER => 'A pour fermier',
-            self::TYPE_LIAISON_ADHERENT => 'Adhérent de (coop.)',
-            self::TYPE_LIAISON_CONTRAT_INTERNE => 'Contrat interne');
+    public static function getTypesLiaisonsOrganisation() {
+
+        return array(
+            self::TYPE_LIAISON_BAILLEUR => self::TYPE_LIAISON_METAYER,
+            self::TYPE_LIAISON_COOPERATEUR => self::TYPE_LIAISON_COOPERATIVE,
+            self::TYPE_LIAISON_VENDEUR_VRAC => self::TYPE_LIAISON_NEGOCIANT,
+            self::TYPE_LIAISON_APPORTEUR_RAISIN => self::TYPE_LIAISON_NEGOCIANT_VINIFICATEUR,
+            self::TYPE_LIAISON_HEBERGE => self::TYPE_LIAISON_HEBERGE_TIERS
+        );
+    }
+
+    public static function isTypeLiaisonCanHaveChai($typeLiaison) {
+
+        return array_key_exists($typeLiaison, array_flip(self::getTypesLiaisonsOrganisation()));
+    }
+
+    public static function getTypeLiaisonOpposee($typeLiaison) {
+        $typeLiaisonsOrganisation = self::getTypesLiaisonsOrganisation();
+        $typeLiaisonsOrganisationInverse = array_flip($typeLiaisonsOrganisation);
+
+        if (isset($typeLiaisonsOrganisation[$typeLiaison])) {
+
+            return $typeLiaisonsOrganisation[$typeLiaison];
+        }
+
+        if (isset($typeLiaisonsOrganisationInverse[$typeLiaison])) {
+
+            return $typeLiaisonsOrganisationInverse[$typeLiaison];
+        }
+
+        return null;
     }
 
     public static function getPrefixForRegion($region) {

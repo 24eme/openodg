@@ -3,12 +3,14 @@
 class DouaneImportCsvFile {
 
     protected $filePath = null;
+    protected $doc = null;
     protected $campagne = null;
     protected $configuration = null;
 
-    public function __construct($filePath, $campagne = null) {
+    public function __construct($filePath, $doc = null) {
         $this->filePath = $filePath;
-        $this->campagne = ($campagne)? $campagne : date('Y');
+        $this->doc = $doc;
+        $this->campagne = ($doc)? $doc->campagne : date('Y');
         $this->configuration = ConfigurationClient::getConfiguration();
     }
 
@@ -27,14 +29,14 @@ class DouaneImportCsvFile {
     	return str_replace(array("\r", "\r\n", "\n"), ' ', $val);
     }
 
-    public static function getNewInstanceFromType($type, $file, $campagne = null)  {
+    public static function getNewInstanceFromType($type, $file, $doc = null)  {
         switch ($type) {
             case 'DR':
-                return new DRDouaneCsvFile($file, $campagne);
+                return new DRDouaneCsvFile($file, $doc);
             case 'SV11':
-                return new SV11DouaneCsvFile($file, $campagne);
+                return new SV11DouaneCsvFile($file, $doc);
             case 'SV12':
-                return new SV12DouaneCsvFile($file, $campagne);
+                return new SV12DouaneCsvFile($file, $doc);
         }
 
         return null;

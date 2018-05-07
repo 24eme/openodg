@@ -11,3 +11,5 @@ data/*
 !data/configuration/
 !data/elk
 test_ava/output
+web/export
+web/export_data
