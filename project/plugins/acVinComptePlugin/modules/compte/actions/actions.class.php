@@ -89,6 +89,21 @@ class compteActions extends sfCredentialActions {
         return $this->redirect('compte_visualisation', array('identifiant' => $this->compte->identifiant));
     }
 
+    public function executeInterlocuteurDelete(sfWebRequest $request) {
+        $compte = $this->getRoute()->getCompte();
+        if($compte->compte_type != CompteClient::TYPE_COMPTE_INTERLOCUTEUR){
+            throw new sfException("Le compte d'identifiant ".$compte->identifiant." ne peux pas être supprimer ce n'est pas un compte Interlocuteur");
+        }
+        $societe = $compte->getSociete();
+
+        $societe->contacts->remove($compte->_id);
+        $societe->save();
+        $compte->delete();
+        return $this->redirect('societe_visualisation', array('identifiant' => $societe->identifiant));
+    }
+
+
+
     private function initSearch(sfWebRequest $request, $extratag = null, $excludeextratag = false) {
       $query = $request->getParameter('q', '*');
       if($query == ""){

@@ -18,6 +18,7 @@
                             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Modifier <span class="caret"></span></a>
                             <ul class="dropdown-menu text-left">
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu()) ? 'javascript:void(0)' : url_for('compte_modification', $compte); ?>">Editer</a></li>
+                                <li><a onclick='return confirm("Êtes vous sûr de vouloir supprimer cet interlocuteur ?");' href="<?php echo url_for('compte_interlocuteur_delete', array('identifiant' => $compte->identifiant)); ?>">Supprimer</a></li>
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isActif())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Activer</a></li>
                             </ul>
