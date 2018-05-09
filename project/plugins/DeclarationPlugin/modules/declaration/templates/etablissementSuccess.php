@@ -59,4 +59,27 @@
     <?php endif; ?>
     <?php include_component('fichier', 'monEspace', array('etablissement' => $etablissement, 'campagne' => $campagne)); ?>
 </div>
+<?php if(in_array('facturation', sfConfig::get('sf_enabled_modules'))): ?>
+<div class="page-header">
+<h2>Espace Facture</h2>
+</div>
+<div class="row">
+    <div class="col-sm-6 col-md-4 col-xs-12">
+        <div class="block_declaration panel panel-success">
+            <div class="panel-heading">
+                <h3>Vos Factures<br /><br /></h3>
+            </div>
+            <div class="panel-body">
+                <p>Accéder à l'espace de mise à disposition de vos factures en téléchargement<br /><br /><br /><br /><br /><br /></p>
+            </div>
+            <div class="panel-bottom">
+                <p>
+                    <a class="btn btn-lg btn-block btn-primary" href="<?php echo url_for('facturation_declarant', $etablissement->getCompte()); ?>">Voir les factures</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <?php include_partial('fichier/history', array('etablissement' => $etablissement, 'history' => PieceAllView::getInstance()->getPiecesByEtablissement($etablissement->identifiant, $sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)), 'limit' => Piece::LIMIT_HISTORY)); ?>

@@ -5,6 +5,5 @@ require_once dirname(__FILE__).'/../../lib/vendor/symfony/test/bootstrap/unit.ph
 
 $application = 'ava';
 
-$configuration = ProjectConfiguration::getApplicationConfiguration($application, 'dev', true);
-
+$configuration = ProjectConfiguration::getApplicationConfiguration($application, 'test', true);
 $db = new sfDatabaseManager($configuration);

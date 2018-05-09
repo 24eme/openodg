@@ -164,9 +164,14 @@ class facturationActions extends sfActions
     }
 
     public function executeLatex(sfWebRequest $request) {
-
         $this->setLayout(false);
         $this->facture = FactureClient::getInstance()->find($request->getParameter('id'));
+
+        if(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->facture->getCompte()->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
+
+            return $this->forwardSecure();
+        }
+
         if(!$this->facture) {
 
             return $this->forward404(sprintf("La facture %s n'existe pas", $request->getParameter('id')));
@@ -195,6 +200,12 @@ class facturationActions extends sfActions
 
     public function executeDeclarant(sfWebRequest $request) {
         $this->compte = $this->getRoute()->getCompte();
+
+        if(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $this->compte->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
+
+            return $this->forwardSecure();
+        }
+
         $this->factures = FactureClient::getInstance()->getFacturesByCompte($this->compte->identifiant, acCouchdbClient::HYDRATE_DOCUMENT);
         $this->values = array();
         $this->templatesFactures = TemplateFactureClient::getInstance()->findAll();
@@ -238,4 +249,9 @@ class facturationActions extends sfActions
             return "/tmp/";
     }
 
+    protected function forwardSecure() {
+        $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
+
+        throw new sfStopException();
+    }
 }

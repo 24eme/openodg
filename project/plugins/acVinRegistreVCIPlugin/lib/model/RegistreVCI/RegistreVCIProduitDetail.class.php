@@ -5,7 +5,7 @@
  */
 
 class RegistreVCIProduitDetail extends BaseRegistreVCIProduitDetail {
-    public function addMouvement($mouvement_type, float $volume) {
+    public function addLigne($mouvement_type, $volume) {
       $this->_set($mouvement_type,  $this->{$mouvement_type} + $volume);
       $this->_set('stock_final', $this->stock_final + $volume * RegistreVCIClient::MOUVEMENT_SENS($mouvement_type));
       $this->getParent()->getParent()->addVolume($mouvement_type, $volume);

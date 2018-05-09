@@ -31,7 +31,7 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
       return $this->getHash();
   }
 
-  public function addMouvement($mouvement_type, float $volume, $lieu_id) {
+  public function addLigne($mouvement_type, $volume, $lieu_id) {
     if (!$this->details->exist($lieu_id)) {
       $detail = $this->add('details')->add($lieu_id);
       if (!$lieu_id || $lieu_id == RegistreVCIClient::LIEU_CAVEPARTICULIERE) {
@@ -46,11 +46,11 @@ class RegistreVCIProduit extends BaseRegistreVCIProduit {
       $detail->stockage_identifiant = $lieu_id;
     }
     $detail = $this->details->get($lieu_id);
-    $detail->addMouvement($mouvement_type, $volume);
+    $detail->addLigne($mouvement_type, $volume);
     return $detail;
   }
 
-  public function addVolume($mouvement_type, float $volume) {
+  public function addVolume($mouvement_type, $volume) {
     $this->_set($mouvement_type, $this->{$mouvement_type} + $volume);
     $this->_set('stock_final', $this->stock_final + $volume * RegistreVCIClient::MOUVEMENT_SENS($mouvement_type));
   }
