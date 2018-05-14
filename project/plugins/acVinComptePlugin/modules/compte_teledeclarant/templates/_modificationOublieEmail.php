@@ -5,6 +5,5 @@ Madame, Monsieur,
 
 Votre mot de passe sur l'espace professionnel vient d'etre modifié.
 
-Le Syndicat des Côtes de Provence
-contact@odg-cotesdeprovence.com
-04 90 27 24 24
+Le Syndicat Général des Vignerons réunis des Côtes du Rhône
+Gestiondesdonnees@syndicat-cotesdurhone.com
