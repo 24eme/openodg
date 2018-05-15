@@ -6,13 +6,9 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
     public function __construct($doc, $defaults = array(), $options = array(), $CSRFSecret = null) {
         $this->typeCompte = $doc->getSociete()->type_societe;
 
-        parent::__construct($doc, $defaults, $options, $CSRFSecret);
         $defaults['cvi'] = $doc->getSociete()->getEtablissementPrincipal()->cvi;
         $defaults['ppm'] = $doc->getSociete()->getEtablissementPrincipal()->ppm;
         $defaults['siret'] = $doc->getSociete()->siret;
-        $defaults['telephone_bureau'] = $doc->getSociete()->getEtablissementPrincipal()->telephone_bureau;
-        $defaults['telephone_mobile'] = $doc->getSociete()->getEtablissementPrincipal()->telephone_mobile;
-
         parent::__construct($doc, $defaults, $options, $CSRFSecret);
     }
 
@@ -55,28 +51,6 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
                 'invalid' => "Le numéro PPM doit être constitué de 9 caractères alphanumériques",
                 'min_length' => "Le numéro PPM doit être constitué de 9 caractères alphanumériques",
                 'max_length' => "Le numéro PPM doit être constitué de 9 caractères alphanumériques")));
-
-            $this->setWidget('telephone_bureau', new sfWidgetFormInputText());
-            $this->getWidget('telephone_bureau')->setLabel("Téléphone bureau :");
-            $this->setValidator('telephone_bureau', new sfValidatorRegex(array('required' => false,
-                'pattern' => "/^\+?[0-9 \.]{10,14}$/",
-                'min_length' => 10,
-                'max_length' => 14),
-                array(
-                'invalid' => "Le numéro de téléphone doit être de la format 0412345678 ou +33412345678",
-                'min_length' => "Le numéro PPM doit être au moins constitué de 10 caractères numériques",
-                'max_length' => "Le numéro PPM doit être au plus constitué de 10 caractères numériques")));
-
-            $this->setWidget('telephone_mobile', new sfWidgetFormInputText());
-            $this->getWidget('telephone_mobile')->setLabel("Téléphone mobile :");
-            $this->setValidator('telephone_mobile', new sfValidatorRegex(array('required' => false,
-                'pattern' => "/^\+?[0-9 \.]{10,14}$/",
-                'min_length' => 10,
-                'max_length' => 14),
-                array(
-                'invalid' => "Le numéro de téléphone doit être de la format 04 12 34 56 78 ou +33412345678",
-                'min_length' => "Le numéro PPM doit être au moins constitué de 10 caractères numériques",
-                'max_length' => "Le numéro PPM doit être au plus constitué de 10 caractères numériques")));
         }
     }
 
@@ -130,20 +104,6 @@ class CompteTeledeclarantCreationForm extends CompteTeledeclarantForm {
                 $etbPrincipal->ppm = $this->getValue('ppm');
                 $etbPrincipal->save();
             }
-        }
-        if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('telephone_bureau'))) {
-            if ($etbPrincipal->exist('telephone_bureau') && $this->getValue('telephone_bureau') != $etbPrincipal->telephone_bureau) {
-                $this->updatedValues['telephone_bureau'] = array($etbPrincipal->telephone_bureau, $this->getValue('telephone_bureau'));
-            }
-            $etbPrincipal->telephone_bureau = $this->getValue('telephone_bureau');
-            $etbPrincipal->save();
-        }
-        if (($this->typeCompte == SocieteClient::TYPE_OPERATEUR) && ($this->getValue('telephone_mobile'))) {
-            if ($etbPrincipal->exist('telephone_mobile') && $this->getValue('telephone_mobile') != $etbPrincipal->telephone_mobile) {
-                $this->updatedValues['telephone_mobile'] = array($etbPrincipal->telephone_mobile, $this->getValue('telephone_mobile'));
-            }
-            $etbPrincipal->telephone_mobile = $this->getValue('telephone_mobile');
-            $etbPrincipal->save();
         }
     }
 

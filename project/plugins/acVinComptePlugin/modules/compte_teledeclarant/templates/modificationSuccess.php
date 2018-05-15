@@ -45,12 +45,12 @@ if($compte->getSociete()->isTransaction()){
                     </div>
                   </div>
                 </div>
-                
+
                 <div class="col-xs-12">
                 	<h4>Vos informations de contact : </h4>
               	</div>
-              	
-              	
+
+
                 <div class="col-xs-8" >
                   <div class="row">
                     <div class="col-xs-6 text-right">
@@ -65,7 +65,7 @@ if($compte->getSociete()->isTransaction()){
                         <label>Téléphone :</label>
                     </div>
                     <div class="col-xs-6 text-left">
-                        <?php echo $compte->telephone_bureau; ?>
+                        <?php echo ($etablissementPrincipal) ? $etablissementPrincipal->telephone_bureau : $compte->telephone_bureau; ?>
                     </div>
                   </div>
                   <div class="row">
@@ -73,11 +73,11 @@ if($compte->getSociete()->isTransaction()){
                         <label>Mobile :</label>
                     </div>
                     <div class="col-xs-6 text-left">
-                        <?php echo $compte->telephone_mobile; ?>
+                        <?php echo ($etablissementPrincipal) ? $etablissementPrincipal->telephone_mobile : $compte->telephone_mobile; ?>
                     </div>
                   </div>
                 </div>
-              	
+
                 <div class="col-xs-12">&nbsp;<br/><br/></div>
                 <div class="col-xs-12">
                       <a href="<?php echo url_for('common_homepage'); ?>" class=" btn btn-default " alt="Retour" style="cursor: pointer;">Retour</a>
@@ -99,7 +99,7 @@ if($compte->getSociete()->isTransaction()){
                             <label>Login :</label>
                         </div>
                         <div class="col-xs-6 text-left">
-                        	<?php echo $compte->login; ?>
+                    	<?php echo $compte->login; ?>
                         </div>
                       </div>
                       <div class="row">
@@ -121,7 +121,7 @@ if($compte->getSociete()->isTransaction()){
                         </div>
                       </div>
                     </div>
-                    
+
                     <div class="col-xs-12">
 		            	<h4>Modification de vos informations de contact :</h4>
 		            </div>
