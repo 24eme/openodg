@@ -349,6 +349,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return null;
         }
 
+        if($this->isSocieteContact()) {
+
+            return $this->identifiant;
+        }
+
         return preg_replace("/^(.*)([0-9][0-9])$/", '\1', $this->identifiant);
     }
 
