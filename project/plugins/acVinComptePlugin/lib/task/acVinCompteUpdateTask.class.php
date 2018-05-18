@@ -52,13 +52,6 @@ EOF;
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
 
     $compte = CompteClient::getInstance()->find($arguments['doc_id']);
-    $identifiant = $compte->identifiant;
-    $etb = EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$identifiant);
-    if($etb->compte != $compte->_id){
-        throw new sfException("Le compte d'identifiant  $compte->_id n'est pas conforme avec l'identifiant de compte présent dans l'établissement $etb->compte");
-    }
-    $compte->add('origines',array($etb->_id));
-    $compte->compte_type = 'ETABLISSEMENT';
     $compte->save();
     echo "SAVE DU COMPTE $compte->_id\n";
   }
