@@ -23,7 +23,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test') as $k => $v) 
 }
 
 
-$t = new lime_test(26);
+$t = new lime_test(27);
 $t->comment('création des différentes établissements');
 
 $societeviti = CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti_societe')->getSociete();
@@ -48,6 +48,7 @@ $etablissementviti->code_postal = '00000';
 $etablissementviti->commune = "cummune etb";
 $etablissementviti->pays = "FR";
 $etablissementviti->insee = "98475";
+$etablissementviti->ppm = "P123456798";
 
 
 $etablissementviti->save();
@@ -78,6 +79,7 @@ $t->is($compteviti->_get('code_postal'), $etablissementviti->_get('code_postal')
 $t->is($compteviti->_get('commune'), $etablissementviti->_get('commune'), "L'établissement a la même commune que le compte");
 $t->is($compteviti->_get('pays'), $etablissementviti->_get('pays'), "L'établissement a le même pays que le compte");
 $t->is($compteviti->_get('insee'), $etablissementviti->_get('insee'), "L'établissement a le même insee que le compte");
+$t->is($compteviti->_get('etablissement_informations')->_get('ppm'), $etablissementviti->_get('ppm'), "L'établissement a le même ppm que le compte");
 
 $t->is($societeviti->siret, $etablissementviti->_get('siret'), "L'établissement a le siret de la société");
 
