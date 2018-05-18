@@ -266,7 +266,7 @@
     </div>
     <?php endif; ?>
 
-    <?php if(count($abonnements)): ?>
+    <?php if(count($abonnements) || in_array(CompteClient::TAG_ABONNE_REVUE, $compte->infos->manuels->getRawValue()->toArray(true, false))): ?>
     <div class="row">
             <div class="col-xs-12">
                 <div class="panel  panel-primary">
@@ -274,6 +274,11 @@
                         <h3>Abonnement à la revue</h3>
                     </div>
                     <ul class="list-group">
+                        <?php if(!array_key_exists("ABONNEMENT-".$compte->identifiant."-".date('Y')."0101"."-".date('Y')."1231", $abonnements->getRawValue()) && in_array(CompteClient::TAG_ABONNE_REVUE, $compte->infos->manuels->getRawValue()->toArray(true, false))): ?>
+                        <li class="list-group-item text-center">
+                            <a onclick="return confirm('Êtes-vous sûr de vouloir générer un abonnement ?');" class="btn btn-sm btn-default" href="<?php echo url_for('abonnement_generate', array('sf_subject' => $compte, 'annee' => date('Y'))); ?>">Générer un abonnement pour <?php echo date('Y') ?></a>
+                        </li>
+                        <?php endif; ?>
                         <?php foreach($abonnements as $abonnement): ?>
                         <li class="list-group-item text-center">
                             Du <?php echo format_date($abonnement->date_debut, "dd/MM/yyyy", "fr_FR"); ?>
