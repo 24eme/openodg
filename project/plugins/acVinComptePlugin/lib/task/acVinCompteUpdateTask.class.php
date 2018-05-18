@@ -60,6 +60,6 @@ EOF;
     $compte->add('origines',array($etb->_id));
     $compte->compte_type = 'ETABLISSEMENT';
     $compte->save();
-    echo "SAVE DU COMPTE $compte->_id/n"
+    echo "SAVE DU COMPTE $compte->_id/n";
   }
 }
