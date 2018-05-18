@@ -2,7 +2,7 @@
 
 /* This file is part of the acVinComptePlugin package.
  * Copyright (c) 2011 Actualys
- * Authors :	
+ * Authors :
  * Tangui Morlier <tangui@tangui.eu.org>
  * Charlotte De Vichet <c.devichet@gmail.com>
  * Vincent Laurent <vince.laurent@gmail.com>
@@ -12,9 +12,9 @@
  * file that was distributed with this source code.
  */
 
-/**
+ /**
  * acVinComptePlugin task.
- * 
+ *
  * @package    acVinComptePlugin
  * @subpackage lib
  * @author     Tangui Morlier <tangui@tangui.eu.org>
@@ -50,9 +50,16 @@ EOF;
   {
     $databaseManager = new sfDatabaseManager($this->configuration);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-    
+
     $compte = CompteClient::getInstance()->find($arguments['doc_id']);
-    $compte->save(false,false,false);
-        
+    $identifiant = $compte->identifiant;
+    $etb = EtablissementClient::getInstance()->find('ETABLISSEMENT-'.$identifiant);
+    if($etb->compte != $compte->_id){
+        throw new sfException("Le compte d'identifiant  $compte->_id n'est pas conforme avec l'identifiant de compte présent dans l'établissement $etb->compte");
+    }
+    $compte->add('origines',array($etb->_id));
+    $compte->compte_type = 'ETABLISSEMENT';
+    $compte->save();
+    echo "SAVE DU COMPTE $compte->_id/n"
   }
 }
