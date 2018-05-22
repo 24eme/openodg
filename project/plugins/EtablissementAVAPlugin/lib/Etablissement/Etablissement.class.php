@@ -39,6 +39,11 @@ class Etablissement extends BaseEtablissement {
         return $this->_get('siret');
     }
 
+    public function getUniqueEmail() {
+
+        return $this->email;
+    }
+
     public function needEmailConfirmation() {
         return (!$this->exist('date_premiere_connexion') || !$this->get('date_premiere_connexion')) ? true : false;
     }
@@ -70,7 +75,7 @@ class Etablissement extends BaseEtablissement {
             unset($chais[$key]['lat']);
             unset($chais[$key]['lon']);
         }
-        
+
         $this->chais = $chais;
     }
 
