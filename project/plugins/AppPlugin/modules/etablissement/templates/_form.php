@@ -28,7 +28,7 @@
                 </span>
             </div>
             <?php endif; ?>
-            <?php if(isset($form['ppm'])): ?>
+            <?php if(isset($form['ppm']) && $form->getObject()->exist("ppm") && $form->getObject()->ppm): ?>
             <div class="form-group<?php if($form["ppm"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["ppm"]->renderError(); ?>
                 <?php echo $form["ppm"]->renderLabel("N°&nbsp;PPM", array("class" => "col-xs-3 control-label")); ?>
@@ -76,13 +76,24 @@
                     <?php echo $form["code_postal"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
-            <div class="form-group<?php if($form["telephone"]->hasError()): ?> has-error<?php endif; ?>">
-                <?php echo $form["telephone"]->renderError(); ?>
-                <?php echo $form["telephone"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+            <?php if(isset($form['telephone_bureau'])): ?>
+            <div class="form-group<?php if($form["telephone_bureau"]->hasError()): ?> has-error<?php endif; ?>">
+                <?php echo $form["telephone_bureau"]->renderError(); ?>
+                <?php echo $form["telephone_bureau"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
                 <div class="col-xs-8">
-                    <?php echo $form["telephone"]->render(array("class" => "form-control")); ?>
+                    <?php echo $form["telephone_bureau"]->render(array("class" => "form-control")); ?>
                 </div>
             </div>
+            <?php endif; ?>
+            <?php if(isset($form['telephone_mobile'])): ?>
+            <div class="form-group<?php if($form["telephone_mobile"]->hasError()): ?> has-error<?php endif; ?>">
+                <?php echo $form["telephone_mobile"]->renderError(); ?>
+                <?php echo $form["telephone_mobile"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
+                <div class="col-xs-8">
+                    <?php echo $form["telephone_mobile"]->render(array("class" => "form-control")); ?>
+                </div>
+            </div>
+            <?php endif; ?>
             <div class="form-group<?php if($form["fax"]->hasError()): ?> has-error<?php endif; ?>">
                 <?php echo $form["fax"]->renderError(); ?>
                 <?php echo $form["fax"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
@@ -117,12 +128,14 @@
                    <?php echo formatSIRET($form->getObject()->siret); ?>
                 </span>
             </div>
+            <?php if($form->getObject()->ppm): ?>
             <div class="form-group">
                 <strong class="col-xs-3 text-right">N°&nbsp;PPM</strong>
                 <span class="col-xs-9">
                    <?php echo ($form->getObject()->ppm)? $form->getObject()->ppm : " (non communiqué)"; ?>
                 </span>
             </div>
+        <?php endif; ?> 
 <?php if(isset($extra)): ?>
 <?php foreach($extra as $label => $value): ?>
             <div class="form-group">
@@ -160,9 +173,15 @@
                 </span>
             </div>
             <div class="form-group">
-                <strong class="col-xs-4 text-right">Téléphone</strong>
+                <strong class="col-xs-4 text-right">Téléphone Bureau</strong>
                 <span class="col-xs-8">
-                   <?php echo $form->getObject()->telephone; ?>
+                   <?php echo $form->getObject()->telephone_bureau; ?>
+                </span>
+            </div>
+            <div class="form-group">
+                <strong class="col-xs-4 text-right">Téléphone Mobile</strong>
+                <span class="col-xs-8">
+                   <?php echo $form->getObject()->telephone_mobile; ?>
                 </span>
             </div>
             <div class="form-group">

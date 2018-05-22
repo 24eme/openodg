@@ -29,7 +29,7 @@ class ExportDRCSV implements InterfaceDeclarationExportCsv
         if ($this->doc->exist('donnees') && count($this->doc->donnees) >= 1) {
         	$csv .= DRDouaneCsvFile::convertByDonnees($this->doc);
         } elseif ($file = $this->doc->getFichier('csv')) {
-        	$c = new DRDouaneCsvFile($file, $this->doc->campagne);
+        	$c = new DRDouaneCsvFile($file, $this->doc);
         	$csv .= $c->convert();
         }
         return $csv;

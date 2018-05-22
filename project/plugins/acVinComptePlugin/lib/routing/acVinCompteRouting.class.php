@@ -83,12 +83,19 @@ class acVinCompteRouting {
                         array('sf_method' => array('get', 'post')),
                         array('model' => 'Compte',
                             'type' => 'object')));
-          $r->prependRoute('compte_switch_statut', new CompteRoute('/compte/:identifiant/switchStatus',
+        $r->prependRoute('compte_switch_statut', new CompteRoute('/compte/:identifiant/switchStatus',
                         array('module' => 'compte',
                             'action' => 'switchStatus'),
                         array('sf_method' => array('get', 'post')),
                         array('model' => 'Compte',
                             'type' => 'object')));
+
+        $r->prependRoute('compte_interlocuteur_delete', new CompteRoute('/compte/:identifiant/suppression',
+                        array('module' => 'compte',
+                           'action' => 'interlocuteurDelete'),
+                        array('sf_method' => array('get', 'post')),
+                        array('model' => 'Compte',
+                              'type' => 'object')));
         $r->prependRoute('compte_coordonnee_modification', new CompteRoute('/compte-coordonnee/:identifiant/modification',
                         array('module' => 'compte',
                             'action' => 'modificationCoordonnee'),

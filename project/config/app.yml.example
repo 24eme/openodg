@@ -107,3 +107,6 @@ all:
     expiration_cepage:
       'barbaroux-rs': '1994-1995'
       'calitor-noir-n': '1994-1995'
+  donnees_viticoles:
+    regions:
+      "": ""

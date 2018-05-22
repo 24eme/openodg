@@ -387,11 +387,11 @@ class sfValidatorSchema extends sfValidatorBase implements ArrayAccess
     {
       // The 'G' modifier is available since PHP 5.1.0
       case 'g':
-        $value *= 1024;
+        $value = 1024 * (int) $value;
       case 'm':
-        $value *= 1024;
+        $value = 1024 * (int) $value;
       case 'k':
-        $value *= 1024;
+        $value = 1024 * (int) $value;
     }
 
     return $value;

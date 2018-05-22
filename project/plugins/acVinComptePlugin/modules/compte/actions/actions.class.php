@@ -4,7 +4,7 @@ class compteActions extends sfCredentialActions {
 
     public function executeAjout(sfWebRequest $request) {
         $this->societe = $this->getRoute()->getSociete();
-        $this->compte = CompteClient::getInstance()->createCompteFromSociete($this->societe);
+        $this->compte = CompteClient::getInstance()->createCompteInterlocuteurFromSociete($this->societe);
         $this->applyRights();
         if(!$this->modification && !$this->reduct_rights){
 
@@ -88,6 +88,21 @@ class compteActions extends sfCredentialActions {
         $this->compte->save();
         return $this->redirect('compte_visualisation', array('identifiant' => $this->compte->identifiant));
     }
+
+    public function executeInterlocuteurDelete(sfWebRequest $request) {
+        $compte = $this->getRoute()->getCompte();
+        if($compte->compte_type != CompteClient::TYPE_COMPTE_INTERLOCUTEUR){
+            throw new sfException("Le compte d'identifiant ".$compte->identifiant." ne peux pas être supprimer ce n'est pas un compte Interlocuteur");
+        }
+        $societe = $compte->getSociete();
+
+        $societe->contacts->remove($compte->_id);
+        $societe->save();
+        $compte->delete();
+        return $this->redirect('societe_visualisation', array('identifiant' => $societe->identifiant));
+    }
+
+
 
     private function initSearch(sfWebRequest $request, $extratag = null, $excludeextratag = false) {
       $query = $request->getParameter('q', '*');
@@ -351,7 +366,7 @@ class compteActions extends sfCredentialActions {
     }
 
     private function addTagFacetsToQuerry($q) {
-      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique');
+      $facets = array('manuel' => 'doc.tags.manuel', 'export' => 'doc.tags.export', 'produit' => 'doc.tags.produit', 'statuts' => 'doc.tags.statuts', 'activite' => 'doc.tags.activite', 'groupes' => 'doc.tags.groupes', 'automatique' => 'doc.tags.automatique','relations' => 'doc.tags.relations');
       foreach($facets as $nom => $f) {
         $elasticaFacet 	= new acElasticaFacetTerms($nom);
         $elasticaFacet->setField($f);

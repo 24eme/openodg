@@ -10,13 +10,14 @@
         </div>
             <div class="panel-body">
                 <p>Espace de téléversement de document pour le déclarant.</p>
-                <div style="margin-top: 50px; margin-bottom: 27px;">
+                <div style="margin-top: 50px;">
                 	<a class="btn btn-block btn-default" href="<?php echo url_for('upload_fichier', $etablissement) ?>">Ajouter un document</a>
+                    <a class="btn btn-xs btn-default btn-block invisible" href="">&nbsp;</a>
                 </div>
             </div>
     </div>
 </div>
-<?php if (class_exists("DRClient") && $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR): ?>
+<?php if (class_exists("DRClient") && $etablissement->famille == EtablissementFamilles::FAMILLE_PRODUCTEUR && in_array('drev', sfConfig::get('sf_enabled_modules'))): ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
     <div class="block_declaration panel panel-info">
         <div class="panel-heading">

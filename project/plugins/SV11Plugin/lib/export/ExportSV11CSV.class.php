@@ -27,7 +27,7 @@ class ExportSV11CSV implements InterfaceDeclarationExportCsv
             $csv .= self::getHeaderCsv();
         }
         if ($file = $this->doc->getFichier('csv')) {
-        	$c = new SV11DouaneCsvFile($file, $this->doc->campagne);
+        	$c = new SV11DouaneCsvFile($file, $this->doc);
         	$csv .= $c->convert();
         }
         return $csv;

@@ -40,7 +40,9 @@ DRev:
             adresse: { }
             commune: { }
             code_postal: { }
-            telephone: { }
+            telephone: { required : false}
+            telephone_bureau: { }
+            telephone_mobile: { }
             fax: { }
             email: { }
             famille: { }

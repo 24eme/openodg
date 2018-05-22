@@ -170,11 +170,6 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
                     $this->addTag('automatique', $type_fournisseur);
                 }
             }
-            if($societe->isOperateur()){
-                foreach ($societe->getEtablissementsObj() as $etablissement) {
-                    $this->addTag('automatique', $etablissement->etablissement->famille);
-                }
-            }
         }
 
         if ($this->exist('teledeclaration_active') && $this->teledeclaration_active) {
@@ -188,6 +183,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->addTag('automatique', $this->getEtablissement()->famille);
             $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
             $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
+        }else{
+            $this->etablissement_informations->cvi = null;
+            $this->etablissement_informations->ppm = null;
         }
         if (!$this->isEtablissementContact() && !$this->isSocieteContact()) {
             $this->addTag('automatique', 'Interlocuteur');
@@ -205,7 +203,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         $this->societe_informations->code_postal = $societe->siege->code_postal;
         $this->societe_informations->commune = $societe->siege->commune;
         $this->societe_informations->email = $societe->email;
-        $this->societe_informations->telephone = $societe->telephone;
+
         $this->societe_informations->fax = $societe->fax;
 
         $new = $this->isNew();
@@ -345,6 +343,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
      */
 
     public function getLogin() {
+
         if($this->exist('login')) {
             return $this->_get('login');
         }
@@ -353,7 +352,12 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             return null;
         }
 
-        return preg_replace("/^([0-9]{6})([0-9]+)$/", '\1', $this->identifiant);
+        if($this->isSocieteContact()) {
+
+            return $this->identifiant;
+        }
+
+        return preg_replace("/^(.*)([0-9][0-9])$/", '\1', $this->identifiant);
     }
 
     public function setMotDePasseSSHA($mot_de_passe) {
@@ -540,6 +544,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
     public function getEmail() {
         return $this->_get('email');
+    }
+    public function getEmails(){
+        return explode(';',$this->email);
     }
 
     public function getTelephoneBureau() {

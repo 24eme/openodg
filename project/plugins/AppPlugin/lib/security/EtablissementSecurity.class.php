@@ -24,8 +24,7 @@ class EtablissementSecurity implements SecurityInterface {
         }
 
         /*** DECLARANT ***/
-
-        if(!$this->user->isAdmin() && preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->etablissement->_id)) {
+        if(!$this->user->isAdmin() && !preg_match("/^".$this->user->getCompte()->getSociete()->identifiant."/", $this->etablissement->identifiant)) {
 
             return false;
         }

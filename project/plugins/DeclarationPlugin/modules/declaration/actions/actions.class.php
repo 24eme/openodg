@@ -34,7 +34,7 @@ class declarationActions extends sfActions {
     public function executeDoc(sfWebRequest $request) {
         $doc_id = $request->getParameter("id");
 
-        if(!preg_match("/^([A-Z]+)-([0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
+        if(!preg_match("/^([A-Z]+)-([A-Z0-9]+)-[0-9]+[0-9\-M]*$/", $doc_id, $matches)) {
 
             return $this->forward404();
         }
@@ -57,9 +57,14 @@ class declarationActions extends sfActions {
             return $this->redirect("drevmarc_visualisation", array("id" => $doc_id));
         }
 
-        if(in_array($doc_type, array("PARCELLAIRE", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
+        if(in_array($doc_type, array("PARCELLAIRE"))) {
 
             return $this->redirect("parcellaire_visualisation", array("id" => $doc_id));
+        }
+
+        if(in_array($doc_type, array("PARCELLAIREAFFECTATION", "PARCELLAIRECREMANT", "INTENTIONCREMANT"))) {
+
+            return $this->redirect("parcellaire_affectation_visualisation", array("id" => $doc_id));
         }
 
         if($doc_type == "TIRAGE") {
@@ -70,6 +75,11 @@ class declarationActions extends sfActions {
         if($doc_type == "TRAVAUXMARC") {
 
             return $this->redirect("travauxmarc_visualisation", array("id" => $doc_id));
+        }
+
+        if($doc_type == "PARCELLAIREIRRIGABLE") {
+
+            return $this->redirect("parcellaireirrigable_visualisation", array("id" => $doc_id));
         }
 
         return $this->forward404();
@@ -89,7 +99,7 @@ class declarationActions extends sfActions {
         $form->bind($request->getParameter($form->getName()));
         if (!$form->isValid()) {
 
-            return $this->redirect('drm');
+            return $this->redirect('declaration');
         }
 
         return $this->redirect('declaration_etablissement', $form->getEtablissement());
