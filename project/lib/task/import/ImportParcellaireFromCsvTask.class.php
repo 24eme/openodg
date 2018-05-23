@@ -116,6 +116,9 @@ EOF;
 
             $parcellaire->addAcheteur(ParcellaireClient::DESTINATION_SUR_PLACE,$etablissement->getIdentifiant());
 
+
+            $ref_cadastrale = $data[self::CSV_REF_CADASTRALE];
+
             foreach ($this->configurationProduits as $key => $p) {
               if($p->getCodeDouane() != trim($data[self::CSV_CODE_PRODUIT])){
                 continue;
