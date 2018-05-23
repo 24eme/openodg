@@ -6,7 +6,7 @@ $t = new lime_test(20);
 
 $viti = EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $vitiCompte = $viti->getCompte();
-$campagne = (date('Y')-1)."";
+$campagne = (date('Y')-2)."";
 $dateFacturation = date('Y-m-d');
 
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-MARC-".$campagne);

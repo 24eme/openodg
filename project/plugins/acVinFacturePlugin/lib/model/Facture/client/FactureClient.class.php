@@ -55,6 +55,52 @@ class FactureClient extends acCouchdbClient {
         return FactureClient::getInstance()->createDoc($mouvements, $compte, $date_facturation, $message_communication, $template->arguments->toArray(true, false), $template);
     }
 
+    public function getMouvementsByDocs($compteIdentifiant, $docs, $regenerate = false) {
+        $mouvements = array();
+        foreach($docs as $doc) {
+            if($regenerate) {
+                $doc->remove('mouvements');
+                $doc->add('mouvements');
+            }
+
+            $generated = false;
+
+            if(!count($doc->mouvements)) {
+                $doc->generateMouvements();
+                $doc->save();
+                $generated = true;
+            }
+
+            if($generated && count($doc->mouvements) && !$doc->exist('mouvements/'.$compteIdentifiant)) {
+                $mouvs = $doc->mouvements->getFirst();
+                $doc->mouvements->add($compteIdentifiant, $mouvs->toArray(true, false));
+                $doc->mouvements->remove($mouvs->getKey());
+            }
+
+            if($generated) {
+                $doc->save();
+            }
+
+            if(!$doc->exist('mouvements/'.$compteIdentifiant)) {
+
+                continue;
+            }
+
+            $mouvs = $doc->mouvements->get($compteIdentifiant);
+
+            foreach($mouvs as $m) {
+                if((!$m->isFacturable() || $m->facture) && !$force) {
+
+                    continue;
+                }
+
+                $mouvements[] = $m;
+            }
+        }
+
+        return $mouvements;
+    }
+
     public function aggregateMouvements($mouvements) {
         $mouvementsAggreges = array();
 
@@ -102,11 +148,10 @@ class FactureClient extends acCouchdbClient {
     }
 
     public function regenerate($facture_or_id) {
-        throw new sfException("Pas encore adapté");
         $facture = $facture_or_id;
 
         if(is_string($facture)) {
-          $facture = $this->find($facture_or_id);
+            $facture = $this->find($facture_or_id);
         }
 
         if($facture->isPayee()) {
@@ -114,27 +159,30 @@ class FactureClient extends acCouchdbClient {
             throw new sfException(sprintf("La factures %s a déjà été payée", $facture->_id));
         }
 
-        $cotisations = array();
+        $docs = array();
 
-        $template = null;
-
-        foreach($facture->getTemplates() as $template_id) {
-          $template = TemplateFactureClient::getInstance()->find($template_id);
-          $cotisations = $cotisations + $template->generateCotisations($facture->identifiant, $template->campagne, true);
+        foreach($facture->origines as $id) {
+            $docs[$id] = $this->getDocumentOrigine($id);
         }
 
-        if(!$template) {
+        $mouvements = $this->getMouvementsByDocs($facture->identifiant, $docs, true);
+        $mouvements = $this->aggregateMouvements($mouvements);
 
-            throw new sfException("Pas de template pour cette facture");
+        $template = $facture->getTemplate();
+        $message_communication = null;
+        if($facture->exist('message_communication')) {
+            $message_communication = $facture->message_communication;
         }
 
-        $f = $this->createDoc($cotisations, $facture->getCompte(), date('Y-m-d'), null, $template->arguments->toArray(true, false));
+        $f = FactureClient::getInstance()->createDoc($mouvements, $facture->getCompte(), date('Y-m-d'), $message_communication, $template->arguments->toArray(true, false), $template);
 
         $f->_id = $facture->_id;
         $f->_rev = $facture->_rev;
         $f->numero_facture = $facture->numero_facture;
         $f->numero_ava = $facture->numero_ava;
         $f->numero_archive = $facture->numero_archive;
+
+        $f->forceFactureMouvements();
 
         return $f;
     }

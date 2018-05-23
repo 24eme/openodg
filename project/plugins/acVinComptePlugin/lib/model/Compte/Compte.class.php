@@ -183,6 +183,9 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
             $this->addTag('automatique', $this->getEtablissement()->famille);
             $this->etablissement_informations->cvi = $this->getEtablissement()->cvi;
             $this->etablissement_informations->ppm = $this->getEtablissement()->ppm;
+        }else{
+            $this->etablissement_informations->cvi = null;
+            $this->etablissement_informations->ppm = null;
         }
         if (!$this->isEtablissementContact() && !$this->isSocieteContact()) {
             $this->addTag('automatique', 'Interlocuteur');
@@ -347,6 +350,11 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
 
         if(!$this->mot_de_passe && !$this->getSociete()->getContact()->mot_de_passe) {
             return null;
+        }
+
+        if($this->isSocieteContact()) {
+
+            return $this->identifiant;
         }
 
         return preg_replace("/^(.*)([0-9][0-9])$/", '\1', $this->identifiant);

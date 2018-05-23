@@ -18,6 +18,8 @@ all:
     from_name: "From name"
     reply_to_adresse: "email@email.fr"
     reply_to_name: "Reply to name"
+    reply_to_facturation_adresse: "email@email.fr"
+    reply_to_facturation_name: "Reply to name"
     to_notification: ["email@email.fr"]
   url:
     civa: "https://url_civa"

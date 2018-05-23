@@ -104,6 +104,11 @@ class compte_teledeclarantActions extends sfActions {
      */
     public function executeModification(sfWebRequest $request) {
         $this->compte = $this->getUser()->getCompte();
+        $this->etablissementPrincipal = null;
+        $societe = $this->compte->getSociete();
+        if($societe->isTransaction()){
+            $this->etablissementPrincipal = $societe->getEtablissementPrincipal();
+        }
 
         $this->form = new CompteTeledeclarantForm($this->compte);
 
