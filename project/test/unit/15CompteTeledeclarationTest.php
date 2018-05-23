@@ -11,7 +11,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_teledeclaration
 
 SocieteClient::getInstance()->clearSingleton();
 
-$t = new lime_test(51);
+$t = new lime_test(54);
 
 $t->comment("Création de la société");
 
@@ -75,7 +75,8 @@ $t->is($societe->email, "email@email.fr", "La société a l'email email@email.fr
 $t->ok(!$societe->exist('teledeclaration_email'), "La société n'a pas d'email de télédéclaration");
 $t->is($societe->siret, "12345678912345", "Le siret a bien été enregistré dans la société");
 
-$t->is($etablissement->compte, $compte->_id, "L'établissement a le même compte que la société");
+$t->isnt($etablissement->compte, $compte->_id, "L'établissement n'a jamais le même compte que la société");
+$t->is($etablissement->compte, $compte->_id."01", "L'établissement a pour compte $compte->_id 01");
 $t->is($etablissement->email, "email@email.fr", "L'établissement a l'email email@email.fr");
 $t->is($etablissement->teledeclaration_email, "email@email.fr", "L'établissement a l'email de télédéclaration email@email.fr");
 $t->is($etablissement->cvi, "1234567890", "Le CVI a bien été enregistré dans l'établissement");
@@ -118,7 +119,7 @@ $t->is($compte->email, "email@email.fr", "L'email du compte n'a pas bougé");
 $t->is($societe->email, "email@email.fr", "L'email de la société n'a pas bougé");
 $t->ok(!$societe->exist('teledeclaration_email'), "La société n'a pas d'email de télédéclaration");
 
-$t->is($etablissement->compte, $compte->_id, "L'établissement a le même compte que la société");
+$t->isnt($etablissement->compte, $compte->_id, "L'établissement n'a jamais le même compte que la société");
 $t->is($etablissement->email, "email@email.fr", "L'email de l'établissement n'a pas bougé");
 $t->is($etablissement->cvi, "1234567890", "Le CVI de l'établissement n'a pas bougé");
 $t->is($etablissement->teledeclaration_email, "courriel@courriel.fr", "L'établissement a l'email de télédéclaration courriel@courriel.fr");
@@ -197,3 +198,12 @@ $t->ok(($compte->mot_de_passe != $motDePasse), "Le mot de passe du compte a chan
 $t->is($etablissement->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
 $t->is($etablissement2->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
 $t->is($etablissement3->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
+
+$t->comment("récupération du login et des logins alternatifs");
+$comptelogin = CompteClient::getInstance()->findByLogin($compte->identifiant);
+$t->is($compte->_id, $comptelogin->_id, "Le login permet de récupérer le bon compte");
+$login_alternatif = 'monloginalternatif';
+$compte->add('alternative_logins', array($login_alternatif));
+$compte->save();
+$comptelogin = CompteClient::getInstance()->findByLogin($login_alternatif);
+$t->is($compte->_id, $comptelogin->_id, "Le login alternatif permet de récupérer le bon compte");

@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        
+
         <?php if ($form->getObject()->hasRendements()): ?>
         <div class="col-sm-12">
                 <div class="panel panel-default">
@@ -105,7 +105,7 @@
                 </div>
 
             </div>
-        <?php endif; ?> 
+        <?php endif; ?>
         <?php if ($form->getObject()->hasDroit(ConfigurationDroits::DROIT_DOUANE)): ?>
             <div class="col-sm-12">
                 <div class="panel panel-default">
@@ -177,6 +177,26 @@
                                         <br />
                                     <?php endforeach; ?>
                                 <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+        <?php if ($form->getObject()->hasCepagesAutorises()): ?>
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><label>Cépages Autorisés&nbsp;&nbsp;</label></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div id="formsDetails">
+                              <ul>
+                                <?php foreach ($form->getObject()->cepages_autorises as $cepage): ?>
+                                  <li class="label label-default"><?php echo $cepage; ?></li>
+                                <?php endforeach; ?>
+                              </ul>
                             </div>
                         </div>
                     </div>

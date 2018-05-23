@@ -133,7 +133,7 @@ class drevActions extends sfActions {
         if(!$fichier) {
             $fichier = $client->createDoc($this->drev->identifiant, $this->drev->campagne);
         }
-
+        $fichier->libelle = 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne;
         $this->form = new DRevUploadDrForm($fichier, array('libelle' => 'Données de Récolte importées depuis la saisie de la DRev '.$this->drev->campagne), array("papier" => $this->drev->isPapier()));
 
         if (!$request->isMethod(sfWebRequest::POST)) {

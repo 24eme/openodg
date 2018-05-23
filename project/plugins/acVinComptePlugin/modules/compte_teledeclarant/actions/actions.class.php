@@ -104,6 +104,11 @@ class compte_teledeclarantActions extends sfActions {
      */
     public function executeModification(sfWebRequest $request) {
         $this->compte = $this->getUser()->getCompte();
+        $this->etablissementPrincipal = null;
+        $societe = $this->compte->getSociete();
+        if($societe->isTransaction()){
+            $this->etablissementPrincipal = $societe->getEtablissementPrincipal();
+        }
 
         $this->form = new CompteTeledeclarantForm($this->compte);
 
@@ -111,6 +116,10 @@ class compte_teledeclarantActions extends sfActions {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {
                 $this->form->save();
+
+                if ($this->form->hasUpdatedValues()) {
+                	Email::getInstance()->sendNotificationModificationsExploitation($this->compte->getSociete()->getEtablissementPrincipal(), $this->form->getUpdatedValues());
+                }
 
                 $this->getUser()->setFlash('maj', 'Vos identifiants ont bien été mis à jour.');
                 $this->redirect('compte_teledeclarant_modification');

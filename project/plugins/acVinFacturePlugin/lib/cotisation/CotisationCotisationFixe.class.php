@@ -1,5 +1,5 @@
 <?php
-class CotisationFactureFixe extends CotisationVariable
+class CotisationCotisationFixe extends CotisationVariable
 {
 	protected function getConfigMinimum() {
 
@@ -26,11 +26,12 @@ class CotisationFactureFixe extends CotisationVariable
 
 	public function getCallbackValue()
 	{
-		$hash = $this->callback;
+		$hash = $this->getConfig()->callback;
 		$value = 0;
 		if ($this->getConfigDocument()->exist($hash)) {
 			$value = $this->getConfigDocument()->get($hash)->getInstanceCotisation($this->getDoc())->getTotal();
 		}
+
 
 		return round($value, self::PRECISION);
 	}

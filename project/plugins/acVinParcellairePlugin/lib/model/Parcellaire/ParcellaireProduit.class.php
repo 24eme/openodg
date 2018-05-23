@@ -116,28 +116,35 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         return $this->addAcheteur($acheteur->getParent()->getKey(), $acheteur->getKey(), $lieu);
     }
 
-    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $dpt = null) {
-        $key = KeyInflector::slugify($cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle);
+    public function addParcelle($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu = null, $numero_ordre = 0, $strictNumOrdre = false) {
 
-        if ($lieu) {
-            $key.='-' . KeyInflector::slugify($lieu);
+        $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre);
+
+        if($this->detail->exist($key) && $strictNumOrdre) {
+           return null;
+        }
+        if($this->detail->exist($key) && !$strictNumOrdre) {
+           $maxNumOrdre = 0;
+           foreach ($this->detail as $key => $value) {
+               $maxNumOrdre = max($maxNumOrdre,$value->get('numero_ordre'));
+           }
+           $maxNumOrdre = $maxNumOrdre+1;
+           $key = $this->calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $maxNumOrdre);
         }
 
-        if($this->detail->exist($key)) {
-           return $this->detail->get($key);
-        }
 
         $detail = $this->detail->add($key);
         $detail->cepage = $cepage;
         $detail->campagne_plantation = $campagne_plantation;
         $detail->commune = $commune;
+        $detail->code_commune = CommunesConfiguration::getInstance()->findCodeCommune($detail->commune);
         $detail->section = $section;
         $detail->numero_parcelle = $numero_parcelle;
+        $detail->add('numero_ordre', $numero_ordre);
         if($lieu){
             $lieu = strtoupper($lieu);
         }
         $detail->lieu = $lieu;
-        $detail->departement = $dpt;
 
         return $detail;
     }
@@ -172,6 +179,14 @@ class ParcellaireProduit extends BaseParcellaireProduit {
         $total += $detail->superficie;
       }
       return $total;
+    }
+
+    public function calculkey($cepage, $campagne_plantation, $commune, $section, $numero_parcelle, $lieu, $numero_ordre){
+        $key = $cepage.'-'.$campagne_plantation.'-'.$commune . '-' . $section . '-' . $numero_parcelle.'-'.sprintf('%02d',$numero_ordre);
+        if ($lieu) {
+            $key.= '-' . $lieu;
+        }
+        return KeyInflector::slugify($key);
     }
 
 }

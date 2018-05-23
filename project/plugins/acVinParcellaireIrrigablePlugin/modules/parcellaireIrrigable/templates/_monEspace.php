@@ -1,13 +1,14 @@
+<?php use_helper('Date'); ?>
 <div class="col-sm-6 col-md-4 col-xs-12">
-    <div class="block_declaration panel  <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>panel-success<?php elseif($parcellaireIrrigable): ?>panel-primary<?php else : ?>panel-default<?php endif; ?>">
+    <div class="block_declaration panel  <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>panel-success<?php else : ?>panel-primary<?php endif; ?>">
         <div class="panel-heading">
-            <h3 class="panel-title">Intention&nbsp;de&nbsp;parcelles&nbsp;irrigables&nbsp;<?php echo $campagne; ?></h3>
+            <h3 class="panel-title">Identification&nbsp;des&nbsp;parcelles&nbsp;irrigables</h3>
         </div>
         <?php if ($parcellaireIrrigable && $parcellaireIrrigable->validation): ?>
         <div class="panel-body">
-            <p>Vous avez déjà validé votre déclaration d'intention de parcelles irrigables pour cette année.</p>
+            <p>Vous avez déjà validé votre Identification des parcelles irrigables.</p>
             <div style="margin-top: 50px;">
-                <a class="btn btn-block btn-primary" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Visualiser</a>
+                <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_visualisation', $parcellaireIrrigable) ?>">Visualiser</a>
            		<?php if($sf_user->isAdmin()): ?>
                 <a onclick='return confirm("Êtes vous sûr de vouloir dévalider cette déclaration ?");' class="btn btn-block btn-xs btn-default pull-right" href="<?php echo url_for('parcellaireirrigable_devalidation', $parcellaireIrrigable) ?>"><span class="glyphicon glyphicon-remove-sign"></span>&nbsp;&nbsp;Dévalider la déclaration</a>
             	<?php endif; ?>
@@ -15,7 +16,7 @@
         </div>
         <?php elseif ($parcellaireIrrigable):  ?>
             <div class="panel-body">
-                <p>Vous avez débuté votre déclaration d'intention de parcelles irrigables sans la valider.</p>
+                <p>Vous avez débuté votre Identification des parcelles irrigables sans la valider.</p>
                 <div style="margin-top: 50px;">
                     <a class="btn btn-block btn-primary" href="<?php echo url_for('parcellaireirrigable_edit', $parcellaireIrrigable) ?>"><?php if($parcellaireIrrigable->isPapier()): ?><span class="glyphicon glyphicon-file"></span> Continuer la saisie papier<?php else: ?>Continuer la télédéclaration<?php endif; ?></a>
                     <a onclick='return confirm("Êtes vous sûr de vouloir supprimer cette saisie ?");' class="btn btn-xs btn-default btn-block" href="<?php echo url_for('parcellaireirrigable_delete', $parcellaireIrrigable) ?>"><span class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Supprimer le brouillon</a>
@@ -37,7 +38,7 @@
                 </div>
             <?php else:  ?>
             <div class="panel-body">
-                <p>Votre déclaration d'intention de parcelles irrigables pour cette année n'a pas encore été déclarée.</p>
+                <p>Identifier ou mettre à jour vos parcelles<br />irrigables.</p>
             	<div style="margin-top: 50px;">
                     <a class="btn btn-block btn-default" href="<?php echo url_for('parcellaireirrigable_create', array('sf_subject' => $etablissement, 'campagne' => $campagne+1)) ?>">Démarrer la télédéclaration</a>
                     <?php if ($sf_user->isAdmin()): ?>

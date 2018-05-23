@@ -20,7 +20,7 @@ foreach ($facets as $type => $ftype) {
     if(!$cpt){
       echo "<div class='col-sm-3 col-xs-12'>";
     }
-    echo '<a class="list-group-item list-group-item-xs" href="'.url_for('compte_groupe', array('groupeName' => sfOutputEscaper::unescape($f['key']))).'">'.str_replace('_', ' ', $f['key']).'<span class="badge" style="position: absolute; right: 10px;">'.$f['doc_count'].'</span></a>';
+    echo '<a class="list-group-item list-group-item-xs" href="'.url_for('compte_groupe', array('groupeName' => str_replace('.','!',sfOutputEscaper::unescape($f['key'])))).'">'.str_replace('_', ' ', $f['key']).'<span class="badge" style="position: absolute; right: 10px;">'.$f['doc_count'].'</span></a>';
     //echo "<a href=''>".$f['key']."</a>";
     if($cpt > 10){
       echo "</div>";
@@ -34,7 +34,6 @@ foreach ($facets as $type => $ftype) {
   <div class="col-xs-12">
   <br/>
   <h2>Ajouter un nouveau groupe</h2>
-    <div class="row">
     <form method="post" class="form-horizontal" action="<?php echo url_for('compte_groupes'); ?>">
       <?php echo $form->renderHiddenFields() ?>
       <?php echo $form->renderGlobalErrors() ?>
@@ -48,6 +47,5 @@ foreach ($facets as $type => $ftype) {
       <button class="btn btn-default btn-md" type="submit" id="btn_rechercher">Nouveau groupe</button>
       </div>
     </form>
-  </div>
   </div>
 </div>
