@@ -14,3 +14,4 @@ test/output
 test_ava/output
 web/export
 web/export_data
+web/statuts/xml
