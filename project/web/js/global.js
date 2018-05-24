@@ -335,8 +335,8 @@
             $($(this).data('target')).find('tr').each(function () {
                 $.trBsSwitchHighlight($(this));
             });
-            $('.bootstrap-switch-activeall').hide();
-            $('.bootstrap-switch-removeall').show();
+            $(this).hide();
+            $(this).parent().find('.bootstrap-switch-removeall').show();
         });
 
         $('.bootstrap-switch-removeall').click(function (event) {
@@ -346,8 +346,8 @@
             $($(this).data('target')).find('tr').each(function () {
                 $.trBsSwitchHighlight($(this));
             });
-            $('.bootstrap-switch-removeall').hide();
-            $('.bootstrap-switch-activeall').show();
+            $(this).hide();
+            $(this).parent().find('.bootstrap-switch-activeall').show();
         });
     }
 

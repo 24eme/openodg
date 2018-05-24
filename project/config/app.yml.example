@@ -13,6 +13,8 @@ all:
       from_name: "acExceptionNotifierPlugin"
       to: ["email@email.com"]
       subject: "[Nom] Erreur 500 : %title%"
+  organisme:
+    nom: "Nom de l'organisme"
   email_plugin:
     from_adresse: email@email.fr
     from_name: "From name"
@@ -21,6 +23,7 @@ all:
     reply_to_facturation_adresse: "email@email.fr"
     reply_to_facturation_name: "Reply to name"
     to_notification: ["email@email.fr"]
+    signature: "Signature de mail\nSignature de mail"
   url:
     civa: "https://url_civa"
     compte_mot_de_passe: "https://url_compte_civa_pour_modifier_mdp"
