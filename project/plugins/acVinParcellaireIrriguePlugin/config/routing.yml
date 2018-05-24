@@ -1,0 +1,9 @@
+parcellaireirrigue_edit:
+  url: /parcellaire-irrigue/edition/:identifiant
+  param: { module: parcellaireIrrigue, action: irrigation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]

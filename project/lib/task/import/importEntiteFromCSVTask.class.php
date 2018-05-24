@@ -79,10 +79,10 @@ class importEntitesFromCSVTask extends sfBaseTask
         $this->detailedDescription = <<<EOF
 EOF;
 
-        $this->convert_attributs["Vinification"] = EtablissementClient::CHAI_ATTRIBUT_VINIFICATION;
-        $this->convert_attributs["VV Stockage"] = EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VRAC;
-        $this->convert_attributs['VC Stockage'] = EtablissementClient::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE;
-        $this->convert_attributs['DGC'] = EtablissementClient::CHAI_ATTRIBUT_DGC;
+        $this->convert_attributs["Vinification"] = "VINIFICATION";
+        $this->convert_attributs["VV Stockage"] = "STOCKAGE_VRAC";
+        $this->convert_attributs['VC Stockage'] = "STOCKAGE_VIN_CONDITIONNE";
+        $this->convert_attributs['DGC'] = "DGC";
     }
 
     protected function execute($arguments = array(), $options = array())
