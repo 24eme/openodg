@@ -60,7 +60,7 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         $this->setValidator('telephone_bureau', new sfValidatorRegex(array('required' => false, "pattern" => "/^\+?[0-9 \.]{10,14}$/")), array('invalid' => 'Téléphone invalide : 04 12 34 56 78 ou +33412345678 attendus'));
         $this->setValidator('telephone_mobile', new sfValidatorRegex(array('required' => false, "pattern" => "/^\+?[0-9 \.]{10,14}$/")), array('invalid' => 'Téléphone invalide : 04 12 34 56 78 ou +33412345678 attendus'));
         $this->setValidator('fax', new sfValidatorRegex(array('required' => false, "pattern" => "/^\+?[0-9 \.]{10,14}$/")), array('invalid' => 'Fax invalide : 04 12 34 56 78 ou +33412345678 attendus'));
-        $this->setValidator('site_internet', new sfValidatorRegex(array('required' => false, "pattern" => "/^https?:\/\//")), array('invalid' => 'Site invalide : doit commencer par http://'));
+        $this->setValidator('site_internet', new sfValidatorRegex(array('required' => false, "pattern" => "/(^https?:\/\/|^www\.)/")), array('invalid' => 'Site invalide : doit commencer par http://'));
     }
 
     protected function updateDefaultsFromObject() {

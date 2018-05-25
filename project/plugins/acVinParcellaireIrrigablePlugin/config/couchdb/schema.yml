@@ -59,7 +59,7 @@ ParcellaireIrrigable:
                               cepage: {  }
                               departement: { required: false }
                               active: { type: integer }
-                              vtsgn: { type: integer, required: alse }
+                              vtsgn: { type: integer, required: false }
                               campagne_plantation: {  }
                               materiel: {  }
                               ressource: {  }

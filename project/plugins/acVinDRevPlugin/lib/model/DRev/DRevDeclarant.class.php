@@ -9,13 +9,22 @@ class DRevDeclarant extends BaseDRevDeclarant {
 
         return $this->_get('ppm');
     }
-    
+
     public function getSiret() {
         if(!$this->_get('siret')) {
             $this->siret = $this->getDocument()->getEtablissementObject()->siret;
         }
 
         return $this->_get('siret');
+    }
+
+    public function getTelephone() {
+        if($this->exist('telephone') && $this->_get('telephone')) {
+
+            return $this->_get('telephone');
+        }
+
+        return ($this->_get('telephone_bureau')) ? $this->_get('telephone_bureau') : $this->_get('telephone_mobile');
     }
 
 }
