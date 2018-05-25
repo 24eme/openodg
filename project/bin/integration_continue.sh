@@ -41,8 +41,8 @@ then
     exit;
 fi
 
-curl -X DELETE $COUCHTEST
-curl -X PUT $COUCHTEST
+curl -s -X DELETE $COUCHTEST
+curl -s -X PUT $COUCHTEST
 
 cd ..
 make clean
