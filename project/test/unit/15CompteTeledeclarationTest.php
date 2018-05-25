@@ -2,10 +2,10 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$routing = clone ProjectConfiguration::getAppRouting();
-$context = sfContext::createInstance($configuration);
-$context->set('routing', $routing);
-sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+@$routing = clone ProjectConfiguration::getAppRouting();
+@$context = sfContext::createInstance($configuration);
+@$context->set('routing', $routing);
+@sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
 
 foreach (CompteTagsView::getInstance()->listByTags('test', 'test_teledeclaration') as $k => $v) {
     if (preg_match('/SOCIETE-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
