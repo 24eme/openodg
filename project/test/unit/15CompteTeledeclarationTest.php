@@ -2,10 +2,10 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-@$routing = clone ProjectConfiguration::getAppRouting();
-@$context = sfContext::createInstance($configuration);
-@$context->set('routing', $routing);
-@sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+$routing = clone ProjectConfiguration::getAppRouting();
+$context = sfContext::createInstance($configuration);
+$context->set('routing', $routing);
+sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
 
 foreach (CompteTagsView::getInstance()->listByTags('test', 'test_teledeclaration') as $k => $v) {
     if (preg_match('/SOCIETE-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
@@ -138,7 +138,7 @@ $t->is($etablissement3->teledeclaration_email, "courriel@courriel.fr", "L'établ
 
 $t->comment("Mail de confirmation de création");
 
-$message = $this->getMailer()->compose(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $compte->email, "Confirmation de création de votre compte", get_partial('compte_teledeclarant/creationEmail', array('compte' => $compte)));
+$message = sfContext::getInstance()->getMailer()->compose(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $compte->email, "Confirmation de création de votre compte", get_partial('compte_teledeclarant/creationEmail', array('compte' => $compte)));
 
 @mkdir(sfConfig::get('sf_test_dir')."/output");
 file_put_contents(sfConfig::get('sf_test_dir')."/output/email_confirmation_creation.eml", $message);
@@ -215,7 +215,7 @@ $t->is($etablissement3->teledeclaration_email, "courriel2@courriel2.fr", "L'emai
 
 $t->comment("Mail de demande de mot de passe oubilé");
 
-$message = $this->getMailer()->compose(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $compte->email, "Demande de mot de passe oublié", get_partial('compte_teledeclarant/motDePasseOublieEmail', array('compte' => $compte, 'lien' => "http://")));
+$message = sfContext::getInstance()->getMailer()->compose(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $compte->email, "Demande de mot de passe oublié", get_partial('compte_teledeclarant/motDePasseOublieEmail', array('compte' => $compte, 'lien' => "http://")));
 
 @mkdir(sfConfig::get('sf_test_dir')."/output");
 file_put_contents(sfConfig::get('sf_test_dir')."/output/email_demande_mot_de_passe_oublie.eml", $message);
