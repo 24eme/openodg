@@ -38,7 +38,7 @@ foreach($lines as $line) {
 
     $line = explode(";", $line);
     $t->is($line[SV12CsvFile::CSV_TYPE], "SV12", "Le type de la ligne est SV12");
-    $t->is($line[SV12CsvFile::CSV_CAMPAGNE], "2017", "La campagne est 2017");
+    $t->is($line[SV12CsvFile::CSV_CAMPAGNE], date('Y'), "La campagne est 2017");
     $t->is($line[SV12CsvFile::CSV_RECOLTANT_CVI], "7523700100", "Le CVI est 7523700100");
     $t->is($line[SV12CsvFile::CSV_RECOLTANT_LIBELLE], "\"ACTUALYS JEAN\"", "Le nom est ACTUALYS JEAN");
     $t->is($line[SV12CsvFile::CSV_RECOLTANT_COMMUNE], "NEUILLY", "Le commune est NEUILLY");
