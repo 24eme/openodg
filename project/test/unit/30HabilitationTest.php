@@ -15,7 +15,7 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 }
 
 $t->comment("Création d'un doc dans le passé");
-$date = '2000-10-01';
+$date = '2007-10-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
 $habilitation->save();
 

@@ -1,6 +1,6 @@
 <?php require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane.csv');
+$csv = new DRDouaneCsvFile(dirname(__FILE__).'/../data/dr_douane_'.$application.'.csv');
 $csvExploitant = $csv->convert();
 $csvBailleur = $csv->convert();
 $linesExploitant = explode("\n", $csvExploitant);

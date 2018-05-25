@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(76);
+$t = new lime_test(74);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -34,7 +34,7 @@ $dr = DRClient::getInstance()->createDoc($viti->identifiant, $campagne);
 $dr->setLibelle("DR $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");
 $dr->save();
-$dr->storeFichier(dirname(__FILE__).'/../data/dr_douane.csv');
+$dr->storeFichier(dirname(__FILE__).'/../data/dr_douane_'.$application.'.csv');
 $dr->save();
 
 $drev->importFromDocumentDouanier();
@@ -59,7 +59,7 @@ $produits = $drev->getProduits();
 
 
 $produit2 = current($produits);
-$produit_hash2 = $produit2->getHash();
+    $produit_hash2 = $produit2->getHash();
 next($produits);
 $produit1 = current($produits);
 $produit_hash1 = $produit1->getHash();
@@ -67,7 +67,6 @@ $produit1->vci->stock_precedent = 3;
 
 $drev->save();
 
-$t->is($produit1->getLibelleComplet(), "Saint Joseph Rouge", "Le libelle du produit est Saint Joseph Rouge");
 $t->is($produit1->recolte->superficie_total, 2.4786, "La superficie total de la DR pour le produit est de 333.87");
 $t->is($produit1->recolte->volume_sur_place, 105.18, "Le volume sur place pour ce produit est de 108.94");
 $t->is($produit1->recolte->usages_industriels_total, 3.03, "Les usages industriels la DR pour ce produit sont de 3.03");
@@ -75,7 +74,6 @@ $t->is($produit1->recolte->recolte_nette, 104.1, "La récolte nette de la DR pou
 $t->is($produit1->recolte->volume_total, 105.18, "Le volume total de la DR pour ce produit est de 169.25");
 $t->is($produit1->recolte->vci_constitue, 2, "Le vci de la DR pour ce produit est de 2");
 $t->is($produit1->vci->constitue, 2, "Le vci de l'année de la DR pour ce produit est de 2");
-$t->is($produit2->getLibelleComplet(), "Côtes du Rhône Villages Puymeras Rouge", "Le libelle du produit estTranquilles CdR Villages avec NG Puymeras Rouge");
 
 $t->comment('Formulaire de revendication des superficies');
 
@@ -237,8 +235,11 @@ $t->ok(!isset($vigilances['vci_rendement_total']), "Pas de point de vigilance su
 $t->ok(!isset($erreurs['declaration_volume_l15_complement']), "Pas de point bloquant sur le respect de la ligne l15");
 $t->ok(!isset($erreurs['vci_substitue_rafraichi']), "Pas de point blocant sur la subsitution ni le rafraichissement du volume de VCI");
 $t->ok(!isset($erreurs['revendication_superficie']), "Pas de point blocant sur la superficie declarée sur la DR et la DRev");
-
-$t->is(count($vigilances['declaration_habilitation']), 1, "Pas de point de vigilance sur l'habilitation du premier produit");
+if($application == "rhone") {
+    $t->is(count($vigilances['declaration_habilitation']), 1, "Pas de point de vigilance sur l'habilitation du premier produit");
+} else {
+    $t->is(!isset($vigilances['declaration_habilitation']), "Pas de point de vigilance sur l'habilitation du premier produit");
+}
 $t->ok(!isset($vigilances['declaration_volume_l15']), "Pas de point vigilance sur le respect de la ligne l15");
 $t->ok(!isset($vigilances['declaration_neant']), "Pas de point vigilance sur la declaration neant");
 $t->ok(!isset($vigilances['declaration_produits_incoherence']), "Pas de point vigilance sur les produits declarés sur la DR et la DRev");
