@@ -23,7 +23,7 @@ foreach ($results as $res) {
 
   $telephone_societe = isset($societe_informations['telephone'])? $societe_informations['telephone'] : '';
 
-  $adresses_complementaires = explode('−',$data['doc']['adresse_complementaire']);
+  $adresses_complementaires = explode('−',str_replace(';', '−', $data['doc']['adresse_complementaire']));
   $adresse_complementaire1 = $adresses_complementaires[0];
   $adresse_complementaire2 = "";
   $adresse_complementaire3 = "";
@@ -38,7 +38,7 @@ foreach ($results as $res) {
     $adresse_complementaire4 = $adresses_complementaires[3];
   }
 
-  $societe_adresses_complementaires = explode('−',$societe_informations['adresse_complementaire']);
+  $societe_adresses_complementaires = explode('−',str_replace(';', '−', $societe_informations['adresse_complementaire']));
   $societe_adresse_complementaire1 = $societe_adresses_complementaires[0];
   $societe_adresse_complementaire2 = "";
   $societe_adresse_complementaire3 = "";

@@ -90,15 +90,20 @@ class CompteGeneriqueForm extends acCouchdbObjectForm {
         }
         $this->setDefault('droits', $defaultDroits);
     }
+    
+    protected function checkAdresseFormat($adresse)
+    {
+    	return str_replace(';', '−', $adresse);
+    }
 
     public function doUpdateObject($values) {
         parent::doUpdateObject($values);
 
-        $this->getObject()->setAdresse($values['adresse']);
+        $this->getObject()->setAdresse($this->checkAdresseFormat($values['adresse']));
         $this->getObject()->setCommune($values['commune']);
         $this->getObject()->setInsee($values['insee']);
         $this->getObject()->setPays($values['pays']);
-        $this->getObject()->setAdresseComplementaire($values['adresse_complementaire']);
+        $this->getObject()->setAdresseComplementaire($this->checkAdresseFormat($values['adresse_complementaire']));
         $this->getObject()->setCodePostal($values['code_postal']);
 
         $this->getObject()->setEmail($values['email']);
