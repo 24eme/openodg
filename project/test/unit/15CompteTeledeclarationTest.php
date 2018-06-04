@@ -2,6 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
+$routing = clone ProjectConfiguration::getAppRouting();
+$context = sfContext::createInstance($configuration);
+$context->set('routing', $routing);
+sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+
 foreach (CompteTagsView::getInstance()->listByTags('test', 'test_teledeclaration') as $k => $v) {
     if (preg_match('/SOCIETE-([^ ]*)/', implode(' ', array_values($v->value)), $m)) {
       $soc = SocieteClient::getInstance()->findByIdentifiantSociete($m[1]);
@@ -11,7 +16,7 @@ foreach (CompteTagsView::getInstance()->listByTags('test', 'test_teledeclaration
 
 SocieteClient::getInstance()->clearSingleton();
 
-$t = new lime_test(54);
+$t = new lime_test(56);
 
 $t->comment("Création de la société");
 
@@ -131,6 +136,15 @@ $t->is($etablissement2->teledeclaration_email, "courriel@courriel.fr", "L'établ
 $t->is($etablissement3->email, "email@email.fr", "L'email de l'établissement n°3 est email@email.fr");
 $t->is($etablissement3->teledeclaration_email, "courriel@courriel.fr", "L'établissement n°3 a l'email de télédéclaration courriel@courriel.fr");
 
+$t->comment("Mail de confirmation de création");
+
+$message = sfContext::getInstance()->getMailer()->compose(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $compte->email, "Confirmation de création de votre compte", get_partial('compte_teledeclarant/creationEmail', array('compte' => $compte)));
+
+@mkdir(sfConfig::get('sf_test_dir')."/output");
+file_put_contents(sfConfig::get('sf_test_dir')."/output/email_confirmation_creation.eml", $message);
+
+$t->ok($message, "Mail généré : ".sfConfig::get('sf_test_dir')."/output/email_confirmation_creation.eml");
+
 $t->comment("Formulaire de modification d'un compte de télédéclarant modification de l'email");
 
 $compte = CompteClient::getInstance()->find($compte01->_id);
@@ -198,6 +212,15 @@ $t->ok(($compte->mot_de_passe != $motDePasse), "Le mot de passe du compte a chan
 $t->is($etablissement->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
 $t->is($etablissement2->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
 $t->is($etablissement3->teledeclaration_email, "courriel2@courriel2.fr", "L'email n'a pas bougé");
+
+$t->comment("Mail de demande de mot de passe oubilé");
+
+$message = sfContext::getInstance()->getMailer()->compose(array(sfConfig::get('app_email_plugin_from_adresse') => sfConfig::get('app_email_plugin_from_name')), $compte->email, "Demande de mot de passe oublié", get_partial('compte_teledeclarant/motDePasseOublieEmail', array('compte' => $compte, 'lien' => "http://")));
+
+@mkdir(sfConfig::get('sf_test_dir')."/output");
+file_put_contents(sfConfig::get('sf_test_dir')."/output/email_demande_mot_de_passe_oublie.eml", $message);
+
+$t->ok($message, "Mail généré : ".sfConfig::get('sf_test_dir')."/output/email_demande_mot_de_passe_oublie.eml");
 
 $t->comment("récupération du login et des logins alternatifs");
 $comptelogin = CompteClient::getInstance()->findByLogin($compte->identifiant);
