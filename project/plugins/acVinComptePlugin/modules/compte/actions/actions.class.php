@@ -89,6 +89,16 @@ class compteActions extends sfCredentialActions {
         return $this->redirect('compte_visualisation', array('identifiant' => $this->compte->identifiant));
     }
 
+    public function executeSwitchAlerte(sfWebRequest $request) {
+        $this->compte = $this->getRoute()->getCompte();
+        $newStatus = null;
+        $this->compte->add('en_alerte', !($this->compte->exist('en_alerte') && $this->compte->en_alerte));
+        $this->compte->save();
+        return $this->redirect('compte_visualisation', array('identifiant' => $this->compte->identifiant));
+    }
+
+
+
     public function executeInterlocuteurDelete(sfWebRequest $request) {
         $compte = $this->getRoute()->getCompte();
         if($compte->compte_type != CompteClient::TYPE_COMPTE_INTERLOCUTEUR){

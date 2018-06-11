@@ -6,3 +6,6 @@ tournee:
 
 TourneeJson:
   credentials: [[ADMIN, TOURNEE]]
+
+courrierPrelevement:
+  credentials: []
