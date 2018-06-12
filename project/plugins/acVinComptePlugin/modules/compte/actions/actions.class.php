@@ -338,6 +338,7 @@ class compteActions extends sfCredentialActions {
 
       $resset = $index->search($q);
       $this->results = $resset->getResults();
+      uasort($this->results, 'CompteClient::triAlphaCompte');
       $this->form = new CompteGroupeAjoutForm('INTERPRO-declaration');
       if ($request->isMethod(sfWebRequest::POST)) {
           $this->form->bind($request->getParameter($this->form->getName()));
