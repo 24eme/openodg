@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(30);
+$t = new lime_test(31);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -15,7 +15,7 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 }
 
 $t->comment("Création d'un doc dans le passé");
-$date = '2000-10-01';
+$date = '2007-10-01';
 $habilitation = HabilitationClient::getInstance()->createOrGetDocFromIdentifiantAndDate($viti->identifiant, $date);
 $habilitation->save();
 
@@ -40,7 +40,7 @@ $t->is(count($habilitation->declaration), 1, "l'ajout de produit créer bien un 
 $produit = $habilitation->get($produitConfig->getHash());
 $t->ok($produit, "le produit ajouté a bien la hash choisie");
 $t->is($produit->getLibelle(), $produitConfig->getLibelleComplet(), "Le libellé du produit a été enregistré dans le doc");
-$t->is(count($produit->activites), 6, "La liste d'activité a été initialisé à 6");
+$t->is(count($produit->activites), 8, "La liste d'activité a été initialisé à 8");
 $t->is(count($habilitation->historique), 1, "l'ajout du produit a créé un historique");
 
 $activiteKey = HabilitationClient::ACTIVITE_PRODUCTEUR;

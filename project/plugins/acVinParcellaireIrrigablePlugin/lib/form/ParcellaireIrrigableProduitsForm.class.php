@@ -6,6 +6,7 @@ class ParcellaireIrrigableProduitsForm extends acCouchdbObjectForm {
 		foreach ($this->getObject()->declaration as $key => $value) {
 			$this->embedForm($key, new ParcellaireIrrigableProduitIrrigationsForm($value));
 		}
+
         $this->widgetSchema->setNameFormat('parcelles[%s]');
     }
 

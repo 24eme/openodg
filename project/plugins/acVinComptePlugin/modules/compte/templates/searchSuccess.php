@@ -59,12 +59,13 @@
 		<?php foreach($results as $res): ?>
 			<?php $data = $res->getData(); ?>
             <?php $societe_informations = (isset($data['doc']['societe_informations'])) ? $data['doc']['societe_informations'] : null; ?>
-			<div class="list-group-item <?php if ($data['doc']['statut'] != 'ACTIF') echo 'disabled'; ?>">
+			<div class="list-group-item <?php if ($data['doc']['statut'] != 'ACTIF') echo 'disabled'; ?> <?php if (isset($data['doc']['en_alerte']) && $data['doc']['en_alerte']) echo 'en_alerte'; ?>">
                 <div class="row">
                 <div class="col-xs-8">
                     <?php if($data['doc']['compte_type'] == 'INTERLOCUTEUR'): ?><small class="text-muted"><span class="glyphicon glyphicon-calendar"></span> <?php if(isset($societe_informations['raison_sociale'])): echo $societe_informations['raison_sociale']; endif; ?></small><br/><?php endif; ?>
                     <span class="lead"><span class="<?php echo comptePictoCssClass($data['doc']) ?>"></span></span>
                     <a class="lead" href="<?php echo url_for('compte_visualisation', array('identifiant' => $data['doc']['identifiant'])); ?>"><?php echo $data['doc']['nom_a_afficher']; ?></a> <span class="text-muted"><?php echo $data['doc']['identifiant']; ?></span>
+                    <?php if (isset($data['doc']['en_alerte']) && $data['doc']['en_alerte']) echo ' ⛔'; ?>
                     </span>
                </div><div class="col-xs-4 text-right">
 <?php if(isset($societe_informations['type']) && $societe_informations['type']): ?><small class="text-muted label label-primary"><?php echo $societe_informations['type'] ?></small><?php endif; if ($data['doc']['statut'] != 'ACTIF') echo ' &nbsp; <small class="text-muted label label-default">'.CompteClient::$statutsLibelles[$data['doc']['statut']].'</small>'; ?>
@@ -85,8 +86,10 @@
                         <?php if($data['doc']['telephone_perso']): ?>
                         <li>Perso : <a href="callto:<?php echo $data['doc']['telephone_perso'] ?>"><?php echo $data['doc']['telephone_perso'] ?></a></li>
                         <?php endif; ?>
-                        <?php if($data['doc']['email']): ?>
-                            <li><a href="mailto:<?php echo $data['doc']['email']; ?>"><?php echo $data['doc']['email']; ?></a></li>
+                        <?php if($data['doc']['email']):
+                            foreach (explode(';',$data['doc']['email']) as $email): ?>
+                            <li><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></li>
+                        <?php endforeach; ?>
                         <?php endif; ?>
                     </ul>
                 </div>

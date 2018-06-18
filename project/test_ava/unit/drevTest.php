@@ -2,7 +2,11 @@
 
 require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
-$t = new lime_test(56);
+$routing = clone ProjectConfiguration::getAppRouting();
+$context = sfContext::createInstance($configuration);
+$context->set('routing', $routing);
+
+$t = new lime_test(61);
 
 $viti =  EtablissementClient::getInstance()->find('ETABLISSEMENT-7523700100');
 $compte = $viti->getCompte();
@@ -20,6 +24,10 @@ foreach(FactureClient::getInstance()->getFacturesByCompte($compte->identifiant, 
 $campagne = (date('Y')-1)."";
 $templateFacture = TemplateFactureClient::getInstance()->find("TEMPLATE-FACTURE-AOC-".$campagne);
 $societe = $compte;
+
+$compte->infos->syndicats->add('COMPTE-S006234', 'SYND VITI. MITTELBERGHEIM');
+$compte->infos->attributs->add('ADHERENT_SYNDICAT', 'Adhérent au syndicat');
+$compte->save();
 
 $t->comment("Création d'une DRev");
 
@@ -105,13 +113,19 @@ $t->comment("Génération des mouvements");
 $drev->generateMouvements();
 $drev->save();
 
-$t->is(count($drev->mouvements->get($compteIdentifiant)), 6, "La DRev a 6 mouvements");
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
 
 $mouvement = $drev->mouvements->get($compteIdentifiant)->getFirst();
 
 $t->is($mouvement->categorie, "odg_ava", "La catégorie du mouvement est odg_ava");
 $t->ok($mouvement->facture === 0, "Le mouvement est non facture");
 $t->ok($mouvement->facturable === 1, "Le mouvement est facturable");
+
+foreach($drev->mouvements->get($compteIdentifiant) as $mouvement) {
+    if($mouvement->categorie == "syndicat_viticole") {
+        $t->ok($mouvement->taux > 0, "La cotisation du syndicat viticole est supérieur à 0");
+    }
+}
 
 $t->comment("Dévalidation et Revalidation");
 
@@ -133,7 +147,7 @@ $drev->validateOdg();
 $drev->generateMouvements();
 $drev->save();
 
-$t->is(count($drev->mouvements->get($compteIdentifiant)), 6, "La DRev a 6 mouvements");
+$t->is(count($drev->mouvements->get($compteIdentifiant)), 9, "La DRev a 9 mouvements");
 
 $t->comment("Facturation de la DRev");
 
@@ -141,6 +155,10 @@ $dateFacturation = date('Y-m-d');
 
 $f = FactureClient::getInstance()->createFactureByTemplate($templateFacture, $compte, $dateFacturation);
 $f->save();
+
+$t->ok($f->_rev, "Facture généré ".$f->_id);
+
+$t->is(count($f->lignes), count($templateFacture->cotisations), "La facture a le même nombre de lignes que dans le template");
 
 $superficieHaVinifie = 0;
 $superficieAresRevendique = 0;
@@ -162,6 +180,7 @@ foreach($f->lignes->get('inao')->details as $ligne) {
     }
 };
 
+
 $t->is($f->lignes->get('odg_ava')->libelle, "Cotisation ODG-AVA", "Le libellé du groupe de ligne odg_ava est Cotisation ODG-AVA");
 $t->is($f->lignes->get('odg_ava')->produit_identifiant_analytique, "706300", "Le code comptable du groupe de ligne odg_ava est 706300");
 $t->ok($f->lignes->get('odg_ava')->origine_mouvements->exist($drev->_id), "Les origines du mouvements sont stockés");
@@ -170,9 +189,33 @@ $t->is($superficieHaVinifie, $drev->declaration->getTotalSuperficieVinifiee(), "
 $t->is($superficieAresRevendique, $drev->declaration->getTotalTotalSuperficie(), "La superifcie revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalTotalSuperficie()." ares");
 $t->is($volumeHlRevendique, $drev->declaration->getTotalVolumeRevendique(), "La volume revendiqué prise en compte dans la facture est de ".$drev->declaration->getTotalVolumeRevendique()." hl");
 
-$drev = DRevClient::getInstance()->find($drev->_id);
+$t->comment("Envoi de la facture par mail");
+
+$message = FactureEmailManager::getInstance($instance)->compose($compte);
+
+@mkdir(sfConfig::get('sf_test_dir')."/output");
+file_put_contents(sfConfig::get('sf_test_dir')."/output/email_facture.eml", $message);
+
+$t->ok($message, "Mail généré : ".sfConfig::get('sf_test_dir')."/output/email_facture.eml");
+
+$t->comment("Regénération de la facture");
+
+$newF = FactureClient::getInstance()->regenerate($f);
+$newF->save();
+
+$fData = $f->getData();
+$newFData = $f->getData();
+unset($fData->_rev);
+unset($newFData->_rev);
+
+$native_json = new acCouchdbJsonNative($fData);
+$final_json = new acCouchdbJsonNative($newFData);
+
+$t->ok($native_json->equal($final_json), "La facture a été regénérée, et elle est identique à l'original");
 
 $t->comment("Génération d'une modificatrice");
+
+$drev = DRevClient::getInstance()->find($drev->_id);
 
 $drevM1 = $drev->generateModificative();
 $drevM1->save();
@@ -302,3 +345,8 @@ $t->ok($f->isAvoir(), "La facture est un avoir");
 $t->ok($f->getTaxe() < 0, "La facture a de la TVA a payé");
 $t->is(count($f->lignes->inao->details), 1, "Une seul ligne de facture pour la facturation de l'inao basé sur le volume");
 $t->is($f->lignes->inao->details[0]->quantite, $produit1M5->volume_revendique - $produit1M4->volume_revendique, "La quantité est sommée");
+
+$compte->infos->syndicats->remove('COMPTE-S006234');
+$compte->infos->attributs->remove('ADHERENT_SYNDICAT');
+
+$compte->save();

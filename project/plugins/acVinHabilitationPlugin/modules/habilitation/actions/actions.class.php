@@ -8,6 +8,9 @@ class habilitationActions extends sfActions {
       $this->buildSearch($request);
       $nbResultatsParPage = 30;
       $this->nbResultats = count($this->docs);
+      if (!$this->nbResultats && !($request->getParameter('query') === '0')) {
+        return $this->redirect('habilitation/index?query=0');
+      }
       $this->page = $request->getParameter('page', 1);
       $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
       $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);

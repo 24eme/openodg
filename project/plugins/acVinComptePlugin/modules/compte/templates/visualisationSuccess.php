@@ -20,6 +20,8 @@
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu()) ? 'javascript:void(0)' : url_for('compte_modification', $compte); ?>">Editer</a></li>
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isSuspendu())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($compte->getSOciete()->isSuspendu() || $compte->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($compte->getSociete()->isSuspendu() || $compte->isActif())? 'javascript:void(0)' : url_for('compte_switch_statut', array('identifiant' => $compte->identifiant)); ?>">Activer</a></li>
+                                <li><a href="<?php echo url_for('compte_switch_en_alerte', array('identifiant' => $compte->identifiant)); ?>"><?php echo ($compte->exist('en_alerte') && $compte->en_alerte)? 'Retirer alerte' : 'Mettre en alerte' ?></a></li>
+                                <li><a onclick='return confirm("Êtes vous sûr de vouloir supprimer cet interlocuteur ?");' href="<?php echo url_for('compte_interlocuteur_delete', array('identifiant' => $compte->identifiant)); ?>">Supprimer</a></li>
                             </ul>
                         </div>
                     </div>
@@ -31,6 +33,7 @@
                 	<?php if ($compte->isSuspendu()): ?>
 					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $compte->getStatutLibelle(); ?></small></span>
 					<?php endif; ?>
+                    <?php if ($compte->exist('en_alerte') && $compte->en_alerte): ?><span class="pull-right">⛔</span><?php endif; ?>
                 </h2>
                 <hr/>
                 <div class="row">

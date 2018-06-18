@@ -52,7 +52,7 @@
             <th class="col-md-1">Volume</th>
             <th class="col-md-1">Stock résultant</th>
         </tr></thead>
-<?php foreach ($registre->mouvements as $i => $d): ?>
+<?php foreach ($registre->lignes as $i => $d): ?>
       <tr>
           <td><?php echo $d->produit_libelle; ?></td>
           <td><?php echo format_date($d->date); ?></td>

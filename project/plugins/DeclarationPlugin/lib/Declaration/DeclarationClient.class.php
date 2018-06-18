@@ -24,9 +24,9 @@ class DeclarationClient
             return 'ExportDRevCSV';
         }
 
-        if(class_exists("ParcellaireClient") && $type == ParcellaireClient::TYPE_MODEL) {
+        if(class_exists("ParcellaireAffectationClient") && $type == ParcellaireAffectationClient::TYPE_MODEL) {
 
-            return 'ExportParcellaireCSV';
+            return 'ExportParcellaireAffectationCSV';
         }
 
         if(class_exists("TirageClient") && $type == TirageClient::TYPE_MODEL) {
@@ -72,6 +72,11 @@ class DeclarationClient
         if(class_exists("HabilitationClient") && $type == HabilitationClient::TYPE_MODEL) {
 
             return 'ExportHabilitationCSV';
+        }
+
+        if(class_exists("ParcellaireIrrigableClient") && $type == ParcellaireIrrigableClient::TYPE_MODEL) {
+
+            return 'ExportParcellaireIrrigableCSV';
         }
 
         throw new sfException(sprintf("Le type de document %s n'a pas de classe d'export correspondante", $type));
@@ -123,7 +128,7 @@ class DeclarationClient
       foreach ($identifiants_etb as $key => $identifiant) {
         $etablissement = etablissementClient::getInstance()->find('ETABLISSEMENT-'.$identifiant);
         if(!$etablissement){
-          throw new sfException("L'établissement d'identifiant ".$identifiant." n'a pas été trouvé dans la base. ");
+          continue;
         }
         $rows = acCouchdbManager::getClient()
                     ->startkey(array($type, $campagne,$identifiant))

@@ -1,4 +1,4 @@
-<?php use_javascript("degustation.js?201601261522", "last") ?>
+<?php use_javascript("degustation.js?201806081202", "last") ?>
 <?php use_helper("Date") ?>
 
 <?php include_partial('degustation/breadcrumb', array('tournee' => $tournee )); ?>

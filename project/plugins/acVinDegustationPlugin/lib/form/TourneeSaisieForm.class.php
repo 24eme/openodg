@@ -116,14 +116,16 @@ class TourneeSaisieForm extends acCouchdbForm {
                 $vtsgn = $matches[1];
             }
 
+            $configuration = $this->getDocument()->getConfiguration();
+
             $prelevement = $degustation->prelevements->add();
             $prelevement->preleve = 1;
             $prelevement->cuve = null;
             $prelevement->commission = $value["commission"];
             $prelevement->hash_produit = $hashProduit;
             $prelevement->vtsgn = $vtsgn;
-            $prelevement->libelle_produit = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getCouleur()->getLibelleComplet();
-            $prelevement->libelle = ConfigurationClient::getConfiguration()->get($prelevement->hash_produit)->getLibelleLong().(($prelevement->vtsgn) ? " ".$prelevement->vtsgn : null);
+            $prelevement->libelle_produit = $configuration->get($prelevement->hash_produit)->getCouleur()->getLibelleComplet();
+            $prelevement->libelle = $configuration->get($prelevement->hash_produit)->getLibelleLong().(($prelevement->vtsgn) ? " ".$prelevement->vtsgn : null);
             if($prelevement->hash_produit == $this->getDocument()->getProduitConfig()->getHash()) {
                 $prelevement->libelle = null;
             }

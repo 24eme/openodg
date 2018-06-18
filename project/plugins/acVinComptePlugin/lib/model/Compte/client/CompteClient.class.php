@@ -25,10 +25,29 @@ class CompteClient extends acCouchdbClient {
         return 'COMPTE-'.$identifiant;
     }
 
-    public function getNextIdentifiantForSociete($societe) {
+    public function getNextIdentifiantForEtablissementInSociete($societe) {
         $societe_id = $societe->identifiant;
         $comptes = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
         $last_num = 0;
+        foreach ($comptes as $id) {
+            if (!preg_match('/COMPTE-'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'([0-9]{2})/', $id, $matches)) {
+                continue;
+            }
+            $num = $matches[3];
+            if($num > 9){
+              continue;
+            }
+            if ($num > $last_num) {
+                $last_num = $num;
+            }
+        }
+        return sprintf("%06d%02d", $societe_id, $last_num + 1);
+    }
+
+    public function getNextIdentifiantInterlocuteurForSociete($societe) {
+        $societe_id = $societe->identifiant;
+        $comptes = self::getAtSociete($societe_id, acCouchdbClient::HYDRATE_ON_DEMAND)->getIds();
+        $last_num = 9;
         foreach ($comptes as $id) {
             if (!preg_match('/COMPTE-'.SocieteClient::getInstance()->getSocieteFormatIdentifiantRegexp().'([0-9]{2})/', $id, $matches)) {
                 continue;
@@ -39,7 +58,6 @@ class CompteClient extends acCouchdbClient {
                 $last_num = $num;
             }
         }
-
         return sprintf("%s%02d", $societe_id, $last_num + 1);
     }
 
@@ -177,13 +195,38 @@ class CompteClient extends acCouchdbClient {
         return $compte;
     }
 
-    public function createCompteFromSociete($societe) {
+    public function createCompteFromSociete($societe,$import = false) {
+      $compte = new Compte();
+      $compte->id_societe = $societe->_id;
+      if($import || !$societe->isNew()) {
+      $societe->pushContactAndAdresseTo($compte);
+      }
+      $compte->identifiant = $societe->identifiant;
+      $compte->constructId();
+      $compte->interpro = 'INTERPRO-declaration';
+      $compte->setStatut(CompteClient::STATUT_ACTIF);
+
+      return $compte;
+    }
+
+    public function createCompteForEtablissementFromSociete($etablissement,$import = false) {
+      $compte = new Compte();
+      $compte->id_societe = $etablissement->getSociete()->_id;
+      if(!$etablissement->isNew()) {
+      $etablissement->pushContactAndAdresseTo($compte);
+      }
+      $compte->identifiant = $etablissement->identifiant;
+      $compte->constructId();
+      $compte->interpro = 'INTERPRO-declaration';
+      $compte->setStatut(CompteClient::STATUT_ACTIF);
+
+      return $compte;
+    }
+
+    public function createCompteInterlocuteurFromSociete($societe) {
         $compte = new Compte();
         $compte->id_societe = $societe->_id;
-        if(!$societe->isNew()) {
-        $societe->pushContactAndAdresseTo($compte);
-        }
-        $compte->identifiant = $this->getNextIdentifiantForSociete($societe);
+        $compte->identifiant = $this->getNextIdentifiantInterlocuteurForSociete($societe);
         $compte->constructId();
         $compte->interpro = 'INTERPRO-declaration';
         $compte->setStatut(CompteClient::STATUT_ACTIF);
@@ -211,14 +254,16 @@ class CompteClient extends acCouchdbClient {
     }
 
     public function findByLogin($login, $hydrate = acCouchdbClient::HYDRATE_DOCUMENT) {
-        $societe = SocieteClient::getInstance()->findByIdentifiantSociete($login);
+        return CompteLoginView::getInstance()->findOneCompteByLogin($login, $hydrate);
+    }
 
-        if ($societe) {
-            return $societe->getMasterCompte();
-        }
+    public static function triAlphaCompte($a, $b){
+        $a_data = $a->getData();
+        $a_val_cmp = ($a_data['doc']['compte_type'] == 'INTERLOCUTEUR')? $a_data['doc']['nom'].' '.$a_data['doc']['prenom'] : $a_data['doc']['societe_informations']['raison_sociale'];
 
-        $compte = $this->find("COMPTE-".$login);
-        return $compte;
+        $b_data = $b->getData();
+        $b_val_cmp = ($b_data['doc']['compte_type'] == 'INTERLOCUTEUR')? $b_data['doc']['nom'].' '.$b_data['doc']['prenom'] : $b_data['doc']['societe_informations']['raison_sociale'];
+        return strcmp($a_val_cmp,$b_val_cmp);
     }
 
     public static function sortGroupes($a, $b) {
@@ -227,4 +272,5 @@ class CompteClient extends acCouchdbClient {
       }
       return strcmp($a->id, $b->id);
     }
+
 }
