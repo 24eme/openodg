@@ -23,8 +23,8 @@ class etablissement_autocompleteActions extends sfActions
 					       $q,
 					       $limit
 					       );
-	    
- 		return $this->renderText(json_encode($json));	
+
+ 		return $this->renderText(json_encode($json));
   	}
 
     protected function matchEtablissements($etablissements, $term, $limit) {
@@ -32,8 +32,12 @@ class etablissement_autocompleteActions extends sfActions
 
 	  	foreach($etablissements as $key => $etablissement) {
 	      $text = EtablissementAllView::getInstance()->makeLibelle($etablissement);
-	     
+
 	      if (Search::matchTerm($term, $text)) {
+            $compte = CompteClient::getInstance()->find(str_replace("ETABLISSEMENT-", "COMPTE-", $etablissement->id));
+            if($compte->exist('tags') && $compte->tags->exist('manuel') && in_array('exploite_plus', $compte->tags->manuel->toArray(0,1))){
+                $text.=' ⛔';
+            }
 	        $json[EtablissementClient::getInstance()->getId($etablissement->id)] = $text;
 	      }
 

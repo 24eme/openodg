@@ -91,7 +91,7 @@ class EtablissementClient extends acCouchdbClient {
     public static $chaisAttributsLibelles = array(self::CHAI_ATTRIBUT_VINIFICATION => 'Chai de vinification',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VRAC => 'Stockage Vin en Vrac',
                                                   self::CHAI_ATTRIBUT_STOCKAGE_VIN_CONDITIONNE => 'Stockage Vin Conditionné',
-                                                  self::CHAI_ATTRIBUT_DGC => 'Désignation Géographique complémentaire',
+                                                  self::CHAI_ATTRIBUT_DGC => 'Dénomination Géographique complémentaire',
                                                   self::CHAI_ATTRIBUT_APPORT => 'Apport',
                                                   self::CHAI_ATTRIBUT_CONDITIONNEMENT => 'Centre de conditionnement',
                                                   self::CHAI_ATTRIBUT_PRESTATAIRE => 'Prestataire de service',
