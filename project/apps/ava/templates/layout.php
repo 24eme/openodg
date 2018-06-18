@@ -85,7 +85,7 @@
                 <?php endif; ?>
             </header>
 
-            <?php if($sf_user->hasCredential(myUser::CREDENTIAL_ADMIN)): ?>
+            <?php if($sf_user->isAuthenticated() && ($sf_user->isAdmin() || $sf_user->getEtablissement())): ?>
             <div class="container <?php if($sf_params->get('modeMobile')): ?>hidden-xs hidden-sm<?php endif; ?>" style="padding: 0; margin: 0;">
                 <?php include_partial('global/nav'); ?>
             </div>

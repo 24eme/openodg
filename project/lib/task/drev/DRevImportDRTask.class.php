@@ -98,7 +98,7 @@ EOF;
             $csv = new DRCIVACsvFile($arguments['csv']);
 
             //Juste pour contrôler qu'il n'y a pas volume à revendiquer
-            $drev->updateFromCSV(true, false, $csv->getCsv());
+            $drev->updateFromCSV(true, false, $csv->getCsvAcheteur($drev->identifiant));
 
             $drev->add('automatique', 1);
             $drev->add('non_vinificateur', 1);

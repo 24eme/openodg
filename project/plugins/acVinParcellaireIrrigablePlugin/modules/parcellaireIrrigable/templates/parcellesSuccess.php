@@ -1,8 +1,10 @@
+<?php use_helper('Float'); ?>
+
 <?php include_partial('parcellaireIrrigable/breadcrumb', array('parcellaireIrrigable' => $parcellaireIrrigable)); ?>
 
 <?php include_partial('parcellaireIrrigable/step', array('step' => 'parcelles', 'parcellaireIrrigable' => $parcellaireIrrigable)) ?>
 <div class="page-header">
-    <h2>Parcelles irrigables sur votre exploitation <small>Merci de selectionner vos parcelles irrigables</small></h2>
+    <h2>Parcelles irrigables sur votre exploitation <br/><small>Merci d'indiquer vos parcelles irrigables en cliquant sur la ligne de la parcelle concernée.</small></h2>
 </div>
 
 <form action="<?php echo url_for("parcellaireirrigable_parcelles", $parcellaireIrrigable) ?>" method="post" class="form-horizontal">
@@ -13,33 +15,32 @@
             <h3><?php echo $commune; ?></h3>
         </div>
         <div class="col-xs-6">
-           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#<?php echo str_replace('/', '-', $produitKey); ?>"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a></p>
+           <p class="text-right" style="margin-top: 20px;"><a href="javascript:void(0)" class="bootstrap-switch-activeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-check'></span>&nbsp;Toutes les parcelles de cette commune sont irrigables</a><a href="javascript:void(0)" class="bootstrap-switch-removeall" data-target="#parcelles_<?php echo $commune; ?>" style="display: none;"><span class='glyphicon glyphicon-remove'></span>&nbsp;Désélectionner toutes les parcelles de cette commune</a></p>
        </div>
     </div>
-    <table id="<?php echo str_replace('/', '-', $produitKey); ?>" class="table table-bordered table-condensed table-striped">
+    <table id="parcelles_<?php echo $commune; ?>" class="table table-bordered table-condensed table-striped tableParcellaire">
 		<thead>
         	<tr>
-                <th class="col-xs-2">Produit</th>
-                <th class="col-xs-2">Commune</th>
-                <th class="col-xs-1">Section</th>
-                <th class="col-xs-1">Parcelle</th>
-                <th class="col-xs-2">Cépage</th>
-                <th class="col-xs-1">Année de plantation</th>
-                <th class="col-xs-1">Surface</th>
-                <th class="col-xs-1"></th>
+                <th class="col-xs-3">Lieu-dit</th>
+                <th class="col-xs-1" style="text-align: right;">Section</th>
+                <th class="col-xs-1">N° parcelle</th>
+                <th class="col-xs-3">Cépage</th>
+                <th class="col-xs-1">Année plantat°</th>
+                <th class="col-xs-1" style="text-align: right;">Surface <span class="text-muted small">(ha)</span></th>
+
+                <th class="col-xs-2 text-center">Irrigable ?</th>
             </tr>
 		</thead>
 		<tbody>
 		<?php foreach ($parcelles as $parcelle): ?>
-			<tr style="cursor: pointer;">
-				<td><?php echo $parcelle->getProduitLibelle(); ?></td>
-				<td><?php echo $parcelle->commune; ?></td>
-				<td class="text-right"><?php echo $parcelle->section;  ?></td>
-				<td class="text-right"><?php echo $parcelle->numero_parcelle;  ?></td>
-				<td><?php echo $parcelle->getCepageLibelle();  ?></td>
-                <td><?php echo $parcelle->campagne_plantation;  ?></td>
-				<td class="text-right"><?php printf("%0.2f&nbsp;<small class='text-muted'>ha</small>", $parcelle->superficie); ?></td>
-				<td class="text-center"><input <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='mini' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
+			<tr style="cursor: pointer;" class="parcellerow switch-to-higlight <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>success<?php endif; ?>" >
+                <td><?php echo $parcelle->lieu; ?></td>
+                <td style="text-align: right;"><?php echo $parcelle->section; ?></td>
+                <td><?php echo $parcelle->numero_parcelle; ?></td>
+                <td><?php echo $parcelle->cepage; ?></td>
+                <td><?php echo $parcelle->campagne_plantation; ?></td>
+                <td style="text-align: right;"><?php echo $parcelle->superficie; ?></td>
+				<td class="text-center"><input <?php if ($parcellaireIrrigable->exist($parcelle->getHash())): ?>checked="checked"<?php endif; ?> type="checkbox" name="parcelles[]" value="<?php echo $parcelle->getHash() ?>" class="bsswitch" data-size='small' data-on-text="<span class='glyphicon glyphicon-ok-sign'></span>" data-off-text="<span class='glyphicon'></span>" data-on-color="success" /></td>
             </tr>
         <?php  endforeach; ?>
         </tbody>
@@ -47,7 +48,10 @@
 <?php  endforeach; ?>
 
 	<div class="row row-margin row-button">
-        <div class="col-xs-6"><a href="<?php echo url_for("parcellaireirrigable_exploitation", $parcellaireIrrigable); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
-        <div class="col-xs-6 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
+        <div class="col-xs-4"><a href="<?php echo url_for("parcellaireirrigable_exploitation", $parcellaireIrrigable); ?>" class="btn btn-default btn-upper"><span class="glyphicon glyphicon-chevron-left"></span> Retourner à l'étape précédente</a></div>
+        <div class="col-xs-4 text-center">
+            <button type="submit" name="saveandquit" value="1" class="btn btn-default">Enregistrer en brouillon</button>
+        </div>
+        <div class="col-xs-4 text-right"><button type="submit" class="btn btn-primary btn-upper">Valider et continuer <span class="glyphicon glyphicon-chevron-right"></span></button></div>
     </div>
 </form>

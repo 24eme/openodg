@@ -1,8 +1,13 @@
 <?php use_helper('Date'); ?>
-<?php $query = ($query) ? $query->getRawValue() : $query ?>
+<?php $query = ($query) ? $query->getRawValue() : $query;
+$activites_libelles = HabilitationClient::$activites_libelles;
+if(count(HabilitationConfiguration::getInstance()->getActivites())){
+    $activites_libelles = HabilitationConfiguration::getInstance()->getActivites();
+}
+?>
 
 <ol class="breadcrumb">
-  <li class="active"><a href="<?php echo url_for('facturation'); ?>">Habilitations</a></li>
+  <li class="active"><a href="<?php echo url_for('habilitation'); ?>">Habilitations</a></li>
 </ol>
 
 <div class="row row-margin">
@@ -30,10 +35,10 @@
                   $declarant = $habilitation->getDeclarant();
                    ?>
                     <tr>
-                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $declarant->cvi; ?>)</small></a></td>
+                        <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
                         <td><?php echo $doc->key[HabilitationActiviteView::KEY_PRODUIT_LIBELLE]; ?></td>
-                        <td><?php echo $doc->key[HabilitationActiviteView::KEY_ACTIVITE]; ?></td>
-                        <td><a href="<?php echo url_for('habilitation_declarant', array('identifiant' => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])) ?>"><?php echo $doc->key[HabilitationActiviteView::KEY_STATUT]; ?></a></td>
+                        <td><?php echo $activites_libelles[$doc->key[HabilitationActiviteView::KEY_ACTIVITE]]; ?></td>
+                        <td><a href="<?php echo url_for('habilitation_declarant', array('identifiant' => $doc->key[HabilitationActiviteView::KEY_IDENTIFIANT])) ?>"><?php echo HabilitationClient::$statuts_libelles[$doc->key[HabilitationActiviteView::KEY_STATUT]]; ?></a></td>
                         <td class="text-center"><?php echo format_date($doc->key[HabilitationActiviteView::KEY_DATE], "dd/MM/yyyy", "fr_FR"); ?></td>
                     </tr>
                 <?php endforeach; ?>
@@ -66,7 +71,7 @@
                 <?php $active = isset($query[$facetNom]) && $query[$facetNom] == $itemNom; ?>
                 <?php $params = is_array($query) ? $query : array(); if($active): unset($params[$facetNom]); else: $params = array_merge($params, array($facetNom => $itemNom)); endif; ?>
                 <?php if(!count($params)): $params = false; endif; ?>
-                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php echo $itemNom; ?></a>
+                <a href="<?php echo url_for('habilitation', array('query' => $params)) ?>" class="list-group-item <?php if($active): ?>active<?php endif; ?>"><span class="badge"><?php echo $count; ?></span> <?php if($facetNom == "Statut"): ?><?php echo HabilitationClient::$statuts_libelles[$itemNom]; ?><?php elseif($facetNom == "Activité") :?><?php echo $activites_libelles[$itemNom]; ?><?php else :?><?php echo $itemNom; ?><?php endif ?></a>
             <?php endforeach; ?>
         </div>
         <?php endforeach; ?>

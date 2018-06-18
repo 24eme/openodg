@@ -71,7 +71,7 @@ class etablissementActions extends sfCredentialActions {
       $this->etablissement = $this->getRoute()->getEtablissement();
       $this->societe = $this->etablissement->getSociete();
       $this->num = $request->getParameter('num');
-      $this->chai = $this->etablissement->get('chais')->get($this->num);
+      $this->chai = $this->etablissement->getOrAdd('chais')->getOrAdd($this->num);
       $this->form = new EtablissementChaiModificationForm($this->chai);
       if ($request->isMethod(sfWebRequest::POST)) {
           $this->form->bind($request->getParameter($this->form->getName()));
@@ -84,6 +84,20 @@ class etablissementActions extends sfCredentialActions {
 
     public function executeChaiSuppression(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
+
+        foreach($this->etablissement->liaisons_operateurs as $liaison) {
+            $etablissementDistant = EtablissementClient::getInstance()->find($liaison->id_etablissement, acCouchdbClient::HYDRATE_JSON);
+            foreach($etablissementDistant->liaisons_operateurs as $liaisonDistante) {
+                if($liaisonDistante->id_etablissement != $this->etablissement->_id || !$liaisonDistante->hash_chai) {
+                    continue;
+                }
+
+                $this->getUser()->setFlash('error', "Il n'est pas possible de supprimer de chai pour cette établissement car ils sont utilisés dans des relations");
+                return $this->redirect('etablissement_edition_chai', array('identifiant' => $this->etablissement->identifiant, 'num' => $request->getParameter('num')));
+            }
+
+        }
+
         $this->etablissement->chais->remove($request->getParameter('num'));
         $this->etablissement->save();
         $this->redirect('etablissement_visualisation', array('identifiant' => $this->etablissement->identifiant));
@@ -91,17 +105,45 @@ class etablissementActions extends sfCredentialActions {
 
     public function executeChaiAjout(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
-        $newChai = $this->etablissement->getOrAdd('chais')->add();
-        $this->etablissement->save();
-
-        return $this->redirect('etablissement_edition_chai', array('identifiant' => $this->etablissement->identifiant, 'num' => $newChai->getKey()));
+        $this->chai = $this->etablissement->getOrAdd('chais')->add();
+        $this->num = count($this->etablissement->chais) -1;
+        $this->societe = $this->etablissement->getSociete();
+        $this->form = new EtablissementChaiModificationForm($this->chai);
+        $this->setTemplate('chaiModification');
     }
 
     public function executeRelationAjout(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->societe = $this->etablissement->getSociete();
 
-        $this->form = new EtablissementRelationForm($this->etablissement);
+        $this->form = new EtablissementRelationForm();
+        if ($request->isMethod(sfWebRequest::POST)) {
+            $this->form->bind($request->getParameter($this->form->getName()));
+            if ($this->form->isValid()) {
+
+                return $this->redirect('etablissement_ajout_relation_chai', array('identifiant' => $this->etablissement->identifiant, 'id_etablissement' => $this->form->getValue('id_etablissement'), 'type_liaison' => $this->form->getValue('type_liaison')));
+            }
+        }
+    }
+
+    public function executeRelationAjoutChai(sfWebRequest $request) {
+        $this->etablissement = $this->getRoute()->getEtablissement();
+        $this->societe = $this->etablissement->getSociete();
+        $this->typeLiaison = $request->getParameter('type_liaison');
+        $this->etablissementRelation = EtablissementClient::getInstance()->find($request->getParameter('id_etablissement'));
+        $this->etablissementChai = (EtablissementClient::isTypeLiaisonCanHaveChai($this->typeLiaison)) ? $this->etablissementRelation : $this->etablissement;
+
+        if(!$this->etablissementRelation) {
+
+            return $this->forward404();
+        }
+        $this->form = new EtablissementRelationChaiForm(
+            $this->etablissement,
+            $this->typeLiaison,
+            $this->etablissementRelation,
+            $this->etablissementChai
+        );
+
         if ($request->isMethod(sfWebRequest::POST)) {
             $this->form->bind($request->getParameter($this->form->getName()));
             if ($this->form->isValid()) {

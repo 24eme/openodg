@@ -277,22 +277,46 @@
     }
     $.initBsSwitchCheckbox = function ()
     {
+
+    	if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
+        	$('.bootstrap-switch-activeall').hide();
+        	$('.bootstrap-switch-removeall').show();
+        } else {
+        	$('.bootstrap-switch-removeall').hide();
+        	$('.bootstrap-switch-activeall').show();
+        }
+
         $.fn.onoff = function (event, state) {
             if (state) {
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().addClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().parent().addClass("bootstrap-switch-on");
+                $(this).parent().parent().parent().parent().addClass('success');
             } else {
                 $(this).parent().parent().parent().addClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().removeClass("bootstrap-switch-on");
                 $(this).parent().parent().parent().parent().addClass("bootstrap-switch-off");
                 $(this).parent().parent().parent().parent().removeClass("bootstrap-switch-on");
+                $(this).parent().parent().parent().parent().removeClass('success');
+            }
+            if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
+            	$('.bootstrap-switch-activeall').hide();
+            	$('.bootstrap-switch-removeall').show();
+            } else {
+            	$('.bootstrap-switch-removeall').hide();
+            	$('.bootstrap-switch-activeall').show();
             }
         };
         $('.bsswitch').on('switchChange.bootstrapSwitch', $.fn.onoff);
         $('.bsswitch').on('init.bootstrapSwitch', $.fn.onoff);
         $('.bsswitch').bootstrapSwitch();
+
+
+        if ($('.bsswitch').size() == $('.bsswitch:checked').size()) {
+        	$('.bootstrap-switch-activeall').hide();
+        	$('.bootstrap-switch-removeall').show();
+        }
 
         $('tr td').click(function (event) {
             if (!$(this).hasClass('edit')) {
@@ -300,11 +324,94 @@
                 $(this).parent().find('td .bsswitch').bootstrapSwitch('state', !value, false);
             }
         });
-        
+        $('tr').click(function (event) {
+            $.trBsSwitchHighlight($(this));
+        });
+
         $('.bootstrap-switch-activeall').click(function (event) {
         	$($(this).data('target')).find('.bsswitch').each(function () {
         		$(this).bootstrapSwitch('state', true, false);
         	});
+            $($(this).data('target')).find('tr').each(function () {
+                $.trBsSwitchHighlight($(this));
+            });
+            $(this).hide();
+            $(this).parent().find('.bootstrap-switch-removeall').show();
+        });
+
+        $('.bootstrap-switch-removeall').click(function (event) {
+        	$($(this).data('target')).find('.bsswitch').each(function () {
+        		$(this).bootstrapSwitch('state', false, false);
+        	});
+            $($(this).data('target')).find('tr').each(function () {
+                $.trBsSwitchHighlight($(this));
+            });
+            $(this).hide();
+            $(this).parent().find('.bootstrap-switch-activeall').show();
+        });
+    }
+
+    $.trBsSwitchHighlight = function (tr)
+    {
+        if ($(tr).hasClass('switch-to-higlight')) {
+            var value = $(tr).find('.bsswitch').is(':checked');
+            if(value){
+                $(tr).addClass("success");
+            }else{
+                $(tr).removeClass("success");
+            }
+        }
+    }
+
+
+    $.initDuplicateChoicesTable = function ()
+    {
+        var table = $('.duplicateChoicesTable');
+        table.each(function(){
+            var allFields = $(this).find('.toDuplicate');
+            $(this).find('.duplicateBtn').click(function (event) {
+                var alerttxt = ($(this).data('alert')).replace('#','\n');
+                var confirmtxt = $(this).data('confirm');
+                if($(this).hasClass('inactif')){
+                    alert(alerttxt);
+                }else{
+                    var fieldsToDuplicate = {};
+                    $("#" + $(this).data('target')).find('.toDuplicate').each(function () {
+                        if($(this).data("duplicate")){
+                            fieldsToDuplicate[$(this).data("duplicate")] = $(this).select2('data');
+                        }
+                    });
+                    confirmtxt = confirmtxt.replace('MATERIEL','"'+fieldsToDuplicate.materiel.id+'"').replace('RESSOURCE','"'+fieldsToDuplicate.ressources.id+'"');
+                    if (confirm(confirmtxt)) {
+
+                        for (var f in fieldsToDuplicate) {
+                            $(this).closest('tr').nextAll().find("[data-duplicate='"+f+"']").each(function(){
+                                $(this).val(fieldsToDuplicate[f].id);
+                                $(this).change();
+                            });
+                        }
+                    }
+                }
+            });
+            $(this).find('tr').each(function(){
+                var tr = $(this);
+                $(this).find('.toDuplicate').change(function(){
+                        tr.each(function(){
+                            var disabled = false;
+                            $(this).find('.toDuplicate').each(function(){
+                                if($(this).data("duplicate")){
+                                    if(!$(this).select2('data')){
+                                        tr.find('.duplicateBtn').addClass("inactif").css('opacity',0.6);;
+                                        disabled = true;
+                                    }
+                                }
+                            });
+                            if(!disabled){
+                                tr.find('.duplicateBtn').removeClass("inactif").css('opacity',1);
+                            }
+                    });
+                });
+            });
         });
     }
 
@@ -812,6 +919,7 @@
         $.initEqualHeight();
         $.initCheckboxBtnGroup();
         $.initHabilitation();
+        $.initDuplicateChoicesTable();
         $.fn.modal.Constructor.prototype.enforceFocus = function () {};
     });
 })(jQuery);

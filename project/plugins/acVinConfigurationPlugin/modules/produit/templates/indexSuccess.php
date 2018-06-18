@@ -23,12 +23,22 @@
 </table>
 
 <a name="mouvements"></a>
+<?php
+  $confDetailsFiltre = $config->declaration->filter('details');
+  $nb = 0;
+  foreach ($confDetailsFiltre as $configDetails){
+    foreach ($configDetails as $details){
+      $nb++;
+    }
+  }
+  if ($nb) :
+ ?>
 <h2>Configuration des mouvements</h2>
 <table class="table table-condensed table-striped table-bordered table-hover">
     <tbody>
-        <?php foreach ($config->declaration->filter('details') as $configDetails): ?>
-            <?php foreach ($configDetails as $details): ?>
-                <?php foreach($config->declaration->details->getDetailsSorted($details) as $detail): ?>
+        <?php foreach ($confDetailsFiltre as $configDetails):
+              foreach ($configDetails as $details):
+                  foreach($config->declaration->details->getDetailsSorted($details) as $detail): ?>
                 <tr>
                     <td><?php echo $configDetails->getTypeDRMLibelle() ?></td>
                     <td><span class="<?php if($detail->mouvement_coefficient == -1): ?>text-danger<?php endif; ?><?php if($detail->mouvement_coefficient == 1): ?>text-success<?php endif; ?>"><?php echo $detail->getParent()->getKey() ?></span></td>
@@ -46,3 +56,4 @@
         <?php endforeach; ?>
     </tbody>
 </table>
+<?php endif;

@@ -52,7 +52,7 @@
             <th class="col-md-1">Volume</th>
             <th class="col-md-1">Stock résultant</th>
         </tr></thead>
-<?php foreach ($registre->mouvements as $i => $d): ?>
+<?php foreach ($registre->lignes as $i => $d): ?>
       <tr>
           <td><?php echo $d->produit_libelle; ?></td>
           <td><?php echo format_date($d->date); ?></td>
@@ -65,6 +65,13 @@
       </table>
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Superficies facturables</h3>
+        <ul>
+          <p><strong><?php echo $registre->superficies_facturables; ?> are(s)</strong> de superficies facturables</p>
+        </ul>
+</div></div>
 <div class="row row-margin row-button">
     <div class="col-xs-5">
         <a href="<?php echo url_for("declaration_etablissement", array('identifiant' => $registre->identifiant, 'campagne' => $registre->campagne)); ?>" class="btn btn-primary btn-lg btn-upper"><span class="eleganticon arrow_carrot-left"></span>&nbsp;&nbsp;Retour</a>

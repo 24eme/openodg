@@ -25,6 +25,19 @@
         </div>
     <?php endif; ?>
 
+    <div style="margin-top: 30px;" class="form-group <?php if($form["date_facturation"]->hasError()): ?>has-error<?php endif; ?>">
+        <?php echo $form["date_facturation"]->renderError(); ?>
+        <?php echo $form["date_facturation"]->renderLabel("Date de facturation", array("class" => "col-xs-3 control-label")); ?>
+        <div class="col-sm-4 col-xs-4">
+            <div class="input-group date-picker-week">
+                <?php echo $form["date_facturation"]->render(array("class" => "form-control")); ?>
+                <div class="input-group-addon">
+                    <span class="glyphicon-calendar glyphicon"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row row-margin">
         <div class="col-xs-12" style="border-bottom: 1px dotted #d2d2d2;">
             <div class="col-xs-7">

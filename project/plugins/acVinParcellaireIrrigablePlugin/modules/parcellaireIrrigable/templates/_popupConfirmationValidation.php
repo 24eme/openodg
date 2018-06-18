@@ -3,19 +3,19 @@
 		<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="myModalLabel">Validation de votre déclaration</h4>
+					<h4 class="modal-title" id="myModalLabel">Validation de votre parcellaire irrigable</h4>
 				</div>
 				<div class="modal-body">
-					<p>Confirmez-vous la validation de votre Intention de parcelles irrigables ?</p>
+					<p>Pour confirmer la validation, merci de nous indiquer vos nom et prénom.</p>
 					<?php if(isset($form["signataire"])): ?>
 				    <div class="row">
 				        <div class="form-group <?php if ($form["signataire"]->hasError()): ?>has-error<?php endif; ?>">
 				            <?php if ($form["signataire"]->hasError()): ?>
 				                <div class="alert alert-danger" role="alert"><?php echo $form["signataire"]->getError(); ?></div>
 				            <?php endif; ?>
-				            <?php echo $form["signataire"]->renderLabel(null, array("class" => "col-xs-4 control-label")); ?>
-				            <div class="col-xs-6">
-				            	<?php echo $form["signataire"]->render(array("class" => "form-control")); ?>
+				            <?php echo $form["signataire"]->renderLabel(null, array("class" => "col-xs-5 control-label")); ?>
+				            <div class="col-xs-7">
+								<?php echo $form["signataire"]->render(array("class" => "form-control", "placeholder" => "Votre prénom et votre nom")); ?>
 				            </div>
 				        </div>
 				    </div>

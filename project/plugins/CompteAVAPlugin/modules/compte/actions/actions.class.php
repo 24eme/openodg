@@ -78,12 +78,13 @@ class compteActions extends sfActions {
 
         $results = array();
 
-        foreach ($this->facets['manuels']['terms'] as $terms) {
+        foreach ($this->facets['manuels']['buckets'] as $terms) {
             $result = new stdClass();
-            $result->id = $terms['term'];
-            $result->text = $terms['term'];
+            $result->id = $terms['key'];
+            $result->text = $terms['key'];
             $results[] = $result;
         }
+
         return $this->renderText(json_encode($results));
     }
 

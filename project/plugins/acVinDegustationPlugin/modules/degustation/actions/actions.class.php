@@ -1012,6 +1012,11 @@ class degustationActions extends sfActions {
         $prelevement = $this->getRoute()->getPrelevement();
         $degustation = $this->getRoute()->getDegustation();
 
+        if(!$this->getUser()->isAdmin() && $this->getUser()->getEtablissement() && $degustation->getCompte()->_id != $this->getUser()->getEtablissement()->getCompte()->_id) {
+
+            return $this->forwardSecure();
+        }
+
         $this->document = new ExportDegustationPDF($degustation, $prelevement, $this->getRequestParameter('output', 'pdf'), false);
         $this->document->setPartialFunction(array($this, 'getPartial'));
 

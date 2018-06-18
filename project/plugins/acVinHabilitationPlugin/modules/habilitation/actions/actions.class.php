@@ -8,6 +8,9 @@ class habilitationActions extends sfActions {
       $this->buildSearch($request);
       $nbResultatsParPage = 30;
       $this->nbResultats = count($this->docs);
+      if (!$this->nbResultats && !($request->getParameter('query') === '0')) {
+        return $this->redirect('habilitation/index?query=0');
+      }
       $this->page = $request->getParameter('page', 1);
       $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
       $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
@@ -48,7 +51,7 @@ class habilitationActions extends sfActions {
 
         $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
         $this->editForm = new HabilitationEditionForm($this->habilitation);
-        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+        $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
 
         $this->setTemplate('habilitation');
     }
@@ -59,15 +62,6 @@ class habilitationActions extends sfActions {
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
         $this->setTemplate('habilitation');
-    }
-
-    public function executeCreate(sfWebRequest $request) {
-        $etablissement = $this->getRoute()->getEtablissement();
-
-        $habilitation = HabilitationClient::getInstance()->createDoc($etablissement->identifiant,date('Y-m-d'));
-        $habilitation->save();
-
-        return $this->redirect('habilitation_edition', $habilitation);
     }
 
     public function executeAjout(sfWebRequest $request) {
@@ -84,7 +78,15 @@ class habilitationActions extends sfActions {
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
 
-        $this->ajoutForm->bind($request->getParameter($this->ajoutForm->getName()));
+        $values = $request->getParameter($this->ajoutForm->getName());
+
+        if(!$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION) && !preg_match('/^DEMANDE_/', $values['statut'])) {
+            $this->getUser()->setFlash("erreur", "Vous n'êtes pas autorisé à ajouter une habilitation avec le statut : ".$values['statut']);
+
+            return $this->redirect('habilitation_declarant', $this->etablissement);
+        }
+
+        $this->ajoutForm->bind($values);
 
         if (!$this->ajoutForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
@@ -111,7 +113,19 @@ class habilitationActions extends sfActions {
             return $this->redirect('habilitation_declarant', $this->etablissement);
         }
 
-        $this->editForm->bind($request->getParameter($this->editForm->getName()));
+        $values = $request->getParameter($this->editForm->getName());
+
+        if(!$this->getUser()->hasCredential(myUser::CREDENTIAL_HABILITATION)) {
+            foreach($values as $key => $value) {
+                if(preg_match('/^statut_/', $key) && !preg_match('/^(DEMANDE_|ANNULÉ)/', $value)) {
+                    $this->getUser()->setFlash("erreur", "Vous n'êtes pas autorisé à modifier une habilitation avec le statut : ".$value);
+
+                    return $this->redirect('habilitation_declarant', $this->etablissement);
+                }
+            }
+        }
+
+        $this->editForm->bind($values);
 
         if (!$this->editForm->isValid()) {
             $this->getUser()->setFlash("erreur", 'Une erreur est survenue.');
@@ -125,6 +139,8 @@ class habilitationActions extends sfActions {
     }
 
     public function executeExport(sfWebRequest $request) {
+        set_time_limit(-1);
+        ini_set('memory_limit', '2048M');
         $this->buildSearch($request, array(HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE));
 
         $this->setLayout(false);

@@ -113,6 +113,9 @@ class ParcellaireCepageDetail extends BaseParcellaireCepageDetail {
         if (!$this->superficie) {
             return false;
         }
+        if ($this->getDocument()->isParcellaireCremant() && !$this->isFromAppellation('CREMANT')) {
+          return false;
+        }
         if ($v === null) {
             return true;
         }

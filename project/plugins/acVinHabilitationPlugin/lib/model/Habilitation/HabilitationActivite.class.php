@@ -28,7 +28,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
   }
 
   public function isNonhabilite(){
-    return ($this->statut == HabilitationClient::STATUT_DEMANDE_HABILITATION) || ($this->statut == HabilitationClient::STATUT_ANNULE) || !($this->statut);
+    return ($this->statut == HabilitationClient::STATUT_DEMANDE_HABILITATION) || ($this->statut == HabilitationClient::STATUT_ATTENTE_HABILITATION) || ($this->statut == HabilitationClient::STATUT_ANNULE) || !($this->statut);
   }
 
   public function isWrongHabilitation(){

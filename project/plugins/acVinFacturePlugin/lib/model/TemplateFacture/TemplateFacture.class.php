@@ -11,6 +11,9 @@ class TemplateFacture extends BaseTemplateFacture
 	{
 		$cotisations = array();
 		foreach ($this->cotisations as $config) {
+			if(!$config->isForType($document->getType())) {
+				continue;
+			}
 			foreach ($config->generateCotisations($document) as $cotisation) {
 				$cotisations[$cotisation->getHash()] = $cotisation;
 			}
@@ -23,28 +26,7 @@ class TemplateFacture extends BaseTemplateFacture
 		$mouvements = array();
 		foreach ($this->docs as $docModele) {
 			$documents = $this->getDocumentFacturable($docModele, $compteIdentifiant, $this->getCampagne());
-
-			foreach($documents as $doc) {
-				if(!count($doc->mouvements)) {
-					$doc->generateMouvements();
-					$doc->save();
-				}
-
-				if(!$doc->exist('mouvements/'.$compteIdentifiant)) {
-					continue;
-				}
-
-				$mouvs = $doc->mouvements->get($compteIdentifiant);
-
-				foreach($mouvs as $m) {
-					if((!$m->isFacturable() || $m->facture) && !$force) {
-
-						continue;
-					}
-
-					$mouvements[] = $m;
-				}
-			}
+			$mouvements = array_merge($mouvements, FactureClient::getInstance()->getMouvementsByDocs($compteIdentifiant, $documents));
 		}
 
 		return $mouvements;

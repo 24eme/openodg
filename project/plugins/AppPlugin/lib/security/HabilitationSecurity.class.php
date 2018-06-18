@@ -15,7 +15,7 @@ class HabilitationSecurity extends DocumentSecurity implements SecurityInterface
             $droits = array($droits);
         }
 
-        if(!$this->user->isAdmin() && $this->user->getEtablissement()->identifiant != $this->doc->identifiant) {
+        if(!$this->user->isAdmin() && !$this->user->hasCredential(AppUser::CREDENTIAL_HABILITATION) && $this->user->getEtablissement()->identifiant != $this->doc->identifiant) {
 
             $lienSymbolique = DeclarationClient::getInstance()->find(str_replace($this->doc->identifiant, $this->user->getEtablissement()->identifiant, $this->doc->_id), acCouchdbClient::HYDRATE_JSON, true);
 

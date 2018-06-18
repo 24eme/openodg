@@ -4,31 +4,32 @@ class DouaneCsvFile
 {
   const CSV_TYPE = 0;
   const CSV_CAMPAGNE = 1;
-  const CSV_RECOLTANT_CVI = 2;
-  const CSV_RECOLTANT_LIBELLE = 3;
-  const CSV_RECOLTANT_CODE_COMMUNE = 4;
-  const CSV_RECOLTANT_COMMUNE = 5;
-  const CSV_BAILLEUR_NOM = 6;
-  const CSV_BAILLEUR_PPM = 7;
-  const CSV_PRODUIT_CERTIFICATION = 8;
-  const CSV_PRODUIT_GENRE = 9;
-  const CSV_PRODUIT_APPELLATION = 10;
-  const CSV_PRODUIT_MENTION = 11;
-  const CSV_PRODUIT_LIEU = 12;
-  const CSV_PRODUIT_COULEUR = 13;
-  const CSV_PRODUIT_CEPAGE = 14;
-  const CSV_PRODUIT_INAO = 15;
-  const CSV_PRODUIT_LIBELLE = 16;
-  const CSV_PRODUIT_COMPLEMENT = 17;
-  const CSV_LIGNE_CODE = 18;
-  const CSV_LIGNE_LIBELLE = 19;
-  const CSV_VALEUR = 20;
-  const CSV_TIERS_CVI = 21;
-  const CSV_TIERS_LIBELLE = 22;
-  const CSV_TIERS_CODE_COMMUNE = 23;
-  const CSV_TIERS_COMMUNE = 24;
+  const CSV_RECOLTANT_ID = 2;
+  const CSV_RECOLTANT_CVI = 3;
+  const CSV_RECOLTANT_LIBELLE = 4;
+  const CSV_RECOLTANT_CODE_COMMUNE = 5;
+  const CSV_RECOLTANT_COMMUNE = 6;
+  const CSV_BAILLEUR_NOM = 7;
+  const CSV_BAILLEUR_PPM = 8;
+  const CSV_PRODUIT_CERTIFICATION = 9;
+  const CSV_PRODUIT_GENRE = 10;
+  const CSV_PRODUIT_APPELLATION = 11;
+  const CSV_PRODUIT_MENTION = 12;
+  const CSV_PRODUIT_LIEU = 13;
+  const CSV_PRODUIT_COULEUR = 14;
+  const CSV_PRODUIT_CEPAGE = 15;
+  const CSV_PRODUIT_INAO = 16;
+  const CSV_PRODUIT_LIBELLE = 17;
+  const CSV_PRODUIT_COMPLEMENT = 18;
+  const CSV_LIGNE_CODE = 19;
+  const CSV_LIGNE_LIBELLE = 20;
+  const CSV_VALEUR = 21;
+  const CSV_TIERS_CVI = 22;
+  const CSV_TIERS_LIBELLE = 23;
+  const CSV_TIERS_CODE_COMMUNE = 24;
+  const CSV_TIERS_COMMUNE = 25;
 
-  const CSV_ENTETES = '#Type;Campagne;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Raison Sociale Tiers;Code Commune Tiers;Commune Tiers'."\n";
+  const CSV_ENTETES = '#Type;Campagne;Identifiant;CVI;Raison Sociale;Code Commune;Commune;Bailleur Nom;Bailleur PPM;Certification;Genre;Appellation;Mention;Lieu;Couleur;Cepage;INAO;Produit;Complement;Code;Categorie;Valeur;CVI Tiers;Raison Sociale Tiers;Code Commune Tiers;Commune Tiers'."\n";
 
   protected $file = null;
   protected $separator = null;
@@ -54,7 +55,7 @@ class DouaneCsvFile
     if (!$buffer) {
       throw new Exception('invalid_file');
     }
-    if (!preg_match('/("?)[0-9a-zA-Z]{10}("?)([,;\t])/', $buffer, $match)) {
+    if (!preg_match('/("?)[0-9a-zA-Z]{6}("?)([,;\t])/', $buffer, $match)) {
       throw new Exception('invalid_csv_file');
     }
     $this->separator = $match[3];

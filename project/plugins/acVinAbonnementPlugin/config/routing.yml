@@ -1,0 +1,8 @@
+
+abonnement_generate:
+  url: /abonnement/generate/:id/:annee
+  param: { module: abonnement, action: generate }
+  class: ContactsCompteRoute
+  options:
+    model:    Compte
+    type:     object

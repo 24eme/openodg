@@ -2,11 +2,11 @@
 $societe = $compte->getSociete();
 $identifiant = $societe->getIdentifiant();
 $etablissement = $societe->getEtablissementPrincipal();
-$interpro = strtoupper(sfConfig::get('app_teledeclaration_interpro'));
+$organismeNom = sfConfig::get('app_organisme_nom');
 ?>
 Madame, Monsieur,
 
-Votre compte a bien été créé pour l’espace professionnel du Syndicat Général des Côtes du Rhône.
+Votre compte a bien été créé pour l’espace professionnel du <?php echo $organismeNom ?>.
 
 Votre identifiant est : <?php echo $identifiant ?>.
 
@@ -16,7 +16,4 @@ Votre syndicat reste à votre disposition pour plus d'information.
 
 Bonne journée.
 
-Le Syndicat Général des Vignerons réunis des Côtes du Rhône
-Gestiondesdonnees@syndicat-cotesdurhone.com
-04.90.27.24.24
-
+<?php echo sfConfig::get('app_email_plugin_signature'); ?>

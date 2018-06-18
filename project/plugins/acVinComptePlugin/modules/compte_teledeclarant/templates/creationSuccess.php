@@ -16,7 +16,7 @@
         ?>
           <div class="row">
               <div class="col-xs-12">
-                <p class="well"><strong>Conseil :</strong> Utiliser un email connu par vos collaborateurs habilités à télé-déclarer sur vos différents établissements.</p>
+                <p class="well"><strong>Conseil :</strong> Utiliser un <strong>email</strong> connu par vos collaborateurs habilités à télé-déclarer sur vos différents établissements. Concernant le <strong>mot de passe</strong>, vous devez en choisir un de 8 caractères minimum.</p>
               </div>
               <div class="col-xs-12">
                 <p class="titre_section">&nbsp;&nbsp;<?php echo $libelle; ?></p>
@@ -142,6 +142,38 @@
                           </div>
                           <div class="col-xs-4 col-xs-offset-2 text-left">
                             <?php echo $form['ppm']->render(array('class' => "form-control")) ?>
+                          </div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <?php echo $form['telephone_bureau']->renderError() ?>
+                          </div>
+                        </div>
+                          <div class="row">
+                          <div class="col-xs-4 text-right">
+                            <?php echo $form['telephone_bureau']->renderLabel() ?>
+                          </div>
+                          <div class="col-xs-4 col-xs-offset-2 text-left">
+                            <?php echo $form['telephone_bureau']->render(array('class' => "form-control")) ?>
+                          </div>
+                        </div>
+                        <br/>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="row">
+                          <div class="col-xs-12">
+                            <?php echo $form['telephone_mobile']->renderError() ?>
+                          </div>
+                        </div>
+                          <div class="row">
+                          <div class="col-xs-4 text-right">
+                            <?php echo $form['telephone_mobile']->renderLabel() ?>
+                          </div>
+                          <div class="col-xs-4 col-xs-offset-2 text-left">
+                            <?php echo $form['telephone_mobile']->render(array('class' => "form-control")) ?>
                           </div>
                         </div>
                         <br/>

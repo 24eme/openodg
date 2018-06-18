@@ -9,7 +9,8 @@ class AppUser extends sfBasicSecurityUser {
     const NAMESPACE_COMPTE_ORIGIN = "COMPTE_ORIGIN";
     const CREDENTIAL_ADMIN = "ADMIN";
     const CREDENTIAL_TOURNEE = "tournee";
-    const CREDENTIAL_CONTACT = "contact";
+    const CREDENTIAL_CONTACT = "contacts";
+    const CREDENTIAL_HABILITATION = "habilitation";
 
     public function signInOrigin($login_or_compte) {
 
@@ -79,7 +80,7 @@ class AppUser extends sfBasicSecurityUser {
 
     protected function getCompteByNamespace($namespace) {
         $id_or_doc = $this->getAttribute(self::SESSION_COMPTE_DOC, null, $namespace);
-
+        
         if (!$id_or_doc) {
             return null;
         }
@@ -88,8 +89,24 @@ class AppUser extends sfBasicSecurityUser {
 
             return $id_or_doc;
         }
+        
+        if (preg_match('/^COMPTE-'.self::CREDENTIAL_ADMIN.'$/', $id_or_doc)) {
+        	return $this->getAdminFictifCompte();
+        }
 
         return CompteClient::getInstance()->find($id_or_doc);
+    }
+    
+    public function getAdminFictifCompte() {
+    	$compte = new Compte();
+    
+    	$compte->_id = "COMPTE-".self::CREDENTIAL_ADMIN;
+    	$compte->identifiant = self::CREDENTIAL_ADMIN;
+    	$compte->add('login', self::CREDENTIAL_ADMIN);
+    
+    	$compte->add("droits", array(self::CREDENTIAL_ADMIN));
+    
+    	return $compte;
     }
 
     public function usurpationOn($login_or_compte, $url_back) {
@@ -119,7 +136,7 @@ class AppUser extends sfBasicSecurityUser {
     }
 
     public function hasTeledeclaration() {
-        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin();
+        return $this->isAuthenticated() && $this->getCompte() && !$this->isAdmin() && !$this->hasCredential(self::CREDENTIAL_HABILITATION);
     }
 
 }
