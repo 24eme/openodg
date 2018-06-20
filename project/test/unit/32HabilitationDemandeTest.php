@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(23);
+$t = new lime_test(25);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -27,7 +27,7 @@ $demandeStatut = "HABILITATION";
 $t->comment("Création d'une demande");
 $date = (new DateTime("- 6 month"))->format('Y-m-d');
 $statut = "DEPOT";
-$commentaire = "";
+$commentaire = "Envoyé par courrier";
 $auteur = "Syndicat";
 $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR);
 
@@ -47,6 +47,7 @@ $t->is($demande->demande, $demandeStatut, "La demande est ".$demandeStatut);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
+$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation pour le ".$produitConfig->getLibelle()." (Vinificateur, Élaborateur) a été créée au statut Dépôt", "La description de l'action est ok");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
@@ -85,6 +86,7 @@ $t->is($demande->date, $date, "La date du statut est ".$date);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
+$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation pour le ".$produitConfig->getLibelle()." (Vinificateur, Élaborateur) a été mise à jour du statut Dépôt au statut Complet", "La description de l'action est ok");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
