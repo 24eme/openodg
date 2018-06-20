@@ -36,6 +36,8 @@ class HabilitationClient extends acCouchdbClient {
     public static $demande_statut_libelles = array(
         'DEPOT' => "Dépôt",
         'COMPLET' => "Complet",
+        'TRANSMIS' => "Transmis",
+        'VALIDE' => "Validé",
     );
 
     public static $activites_libelles = array(
@@ -300,7 +302,12 @@ class HabilitationClient extends acCouchdbClient {
             $habilitation->save();
 
             while($habilitationSuivante = $this->findNextByIdentifiantAndDate($identifiant, $habilitation->date)) {
-                if(!$habilitationSuivante || $habilitationSuivante->_id <= $habilitation->_id) {
+                if(!$habilitationSuivante) {
+                    break;
+                }
+                $demandeNext = $habilitationSuivante->demandes->get($demande->getKey());
+
+                if($demandeNext->date > $demande->date) {
                     break;
                 }
 
