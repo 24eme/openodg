@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(37);
+$t = new lime_test(42);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -169,6 +169,37 @@ $t->ok($habilitation->demandes->exist($demande->getKey()), "La demande a été c
 $t->is($demande->produit_hash, $values['produit_hash'], "La hash produit a été enregistrée");
 $t->is($demande->activites->toArray(true, false), $values['activites'], "Les activités ont été enregistrées");
 $t->is($demande->demande, $values['demande'], "La demande a été enregistrée");
+$t->is($demande->date, preg_replace("|([0-9]+)/([0-9]+)/([0-9]+)|", '\3-\2-\1', $values['date']), "La date a été enregistrée");
+$t->is($demande->statut, $values['statut'], "Le statut a été enregistrée");
+$t->is($habilitation->historique->get(0)->commentaire, $values['commentaire'], "Le commentaire a été enregistrée");
+
+$t->comment("Modification de la demande par formulaire");
+
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+$demande = $habilitation->demandes->get($demande->getKey());
+
+$form = new HabilitationDemandeEditionForm($demande);
+
+$defaults = $form->getDefaults();
+
+$t->is($defaults, array('_revision' => $habilitation->_rev, 'statut' => $demande->statut, 'date' => (new DateTime())->format('d/m/Y')), "Les valeurs par défaut du formulaire sont diponibles");
+
+$values = array(
+    '_revision' => $habilitation->_rev,
+    'date' => (new DateTime("now - 1 day"))->format('d/m/Y'),
+    'statut' => 'COMPLET',
+    'commentaire' => "Le document n'était pas signé",
+);
+
+$form->bind($values);
+
+$t->ok($form->isValid(), "Le formulaire est valide");
+
+$demande = $form->save();
+
+$habilitation = HabilitationClient::getInstance()->find($demande->getDocument()->_id);
+$demande = $habilitation->demandes->get($demande->getKey());
+
 $t->is($demande->date, preg_replace("|([0-9]+)/([0-9]+)/([0-9]+)|", '\3-\2-\1', $values['date']), "La date a été enregistrée");
 $t->is($demande->statut, $values['statut'], "Le statut a été enregistrée");
 $t->is($habilitation->historique->get(0)->commentaire, $values['commentaire'], "Le commentaire a été enregistrée");
