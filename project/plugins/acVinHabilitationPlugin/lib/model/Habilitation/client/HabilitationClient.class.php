@@ -31,6 +31,7 @@ class HabilitationClient extends acCouchdbClient {
 
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
+        'RETRAIT' => "Retrait",
     );
 
     public static $demande_statut_libelles = array(

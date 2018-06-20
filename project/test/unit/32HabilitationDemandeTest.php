@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(28);
+$t = new lime_test(37);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -136,3 +136,39 @@ $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est "
 
 $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
 $t->is($habilitationLast->demandes->get($demande->getKey())->toArray(true, false), $demande->toArray(true, false), "La changement de la demande a bien été repliquée sur l'habilitation la plus récente");
+
+$t->comment("Création d'une demande par formulaire");
+
+$habilitation = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$form = new HabilitationDemandeCreationForm($habilitation);
+
+$defaults = $form->getDefaults();
+
+$t->is($defaults, array('_revision' => $habilitation->_rev), "Aucune valeur par défaut");
+
+$values = array(
+    '_revision' => $habilitation->_rev,
+    'produit_hash' => $produitConfig->getHash(),
+    'activites' => array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR),
+    'demande' => 'RETRAIT',
+    'date' => (new DateTime("now - 1 week"))->format('d/m/Y'),
+    'statut' => 'DEPOT',
+    'commentaire' => "Est venu directement nous voir",
+);
+
+$form->bind($values);
+
+$t->ok($form->isValid(), "Le formulaire est valide");
+
+$demande = $form->save();
+
+$habilitation = HabilitationClient::getInstance()->find($demande->getDocument()->_id);
+$demande = $habilitation->demandes->get($demande->getKey());
+$t->ok($habilitation->demandes->exist($demande->getKey()), "La demande a été créée");
+$t->is($demande->produit_hash, $values['produit_hash'], "La hash produit a été enregistrée");
+$t->is($demande->activites->toArray(true, false), $values['activites'], "Les activités ont été enregistrées");
+$t->is($demande->demande, $values['demande'], "La demande a été enregistrée");
+$t->is($demande->date, preg_replace("|([0-9]+)/([0-9]+)/([0-9]+)|", '\3-\2-\1', $values['date']), "La date a été enregistrée");
+$t->is($demande->statut, $values['statut'], "Le statut a été enregistrée");
+$t->is($habilitation->historique->get(0)->commentaire, $values['commentaire'], "Le commentaire a été enregistrée");
