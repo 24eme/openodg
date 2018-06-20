@@ -490,10 +490,11 @@
         nb_lot_total = 0;
         $("#listes_operateurs .list-group-item-item .select:visible input:checked").each(function(index, value) {
             var nb_lot = 1;
+            //console.log($(value).parent('label').find('.badge').length);
             if ($(value).parent('label').find('.badge').length) {
                 nb_lot = parseInt($(value).parent('label').find('.badge').html());
             }
-            var item = $('#recap_cepages button[data-cepage="' + $(value).val() + '"] .badge');
+            var item = $('#recap_cepages .btn-default[data-cepage="' + $(value).val() + '"] .badge');
 
             item.html(parseInt(item.html()) + nb_lot);
             nb_lot_total = nb_lot_total + nb_lot;

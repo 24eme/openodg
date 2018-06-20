@@ -215,6 +215,10 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
         if($this->compte_type == CompteClient::TYPE_COMPTE_INTERLOCUTEUR && $this->isSameContactThanSociete()) {
             CompteGenerique::pullContact($this, $societe->getMasterCompte());
         }
+        
+        if($this->exist('en_alerte') && $this->en_alerte){
+            $this->addTag('automatique', 'en_alerte');
+        }
 
         parent::save();
 
