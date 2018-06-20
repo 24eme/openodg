@@ -25,8 +25,18 @@ class HabilitationClient extends acCouchdbClient {
     const STATUT_RETRAIT = "RETRAIT";
     const STATUT_ANNULE = "ANNULÉ";
 
+    const DEMANDE_HABILITATION = "HABILITATION";
 
     const STATUT_ARCHIVE = "ARCHIVE";
+
+    public static $demande_libelles = array(
+        self::DEMANDE_HABILITATION => "Habilitation",
+    );
+
+    public static $demande_statut_libelles = array(
+        'DEPOT' => "Dépôt",
+        'COMPLET' => "Complet",
+    );
 
     public static $activites_libelles = array(
       /*
@@ -255,7 +265,9 @@ class HabilitationClient extends acCouchdbClient {
             $demande->statut = $statut;
             $demande->activites = $activites;
 
-            $habilitation->addHistorique("", $commentaire, $auteur);
+            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." pour ".Orthographe::elision("le", $demande->getProduitLibelle()). " (".implode(", ", $demande->getActivitesLibelle()).") a été créée au statut ".$demande->getStatutLibelle();
+
+            $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur);
 
             $habilitation->save();
 
@@ -277,10 +289,14 @@ class HabilitationClient extends acCouchdbClient {
             $demande = $this->getDemande($identifiant, $keyDemande, $date);
             $habilitation = $demande->getDocument();
 
+            $prevStatutLibelle = $demande->statutLibelle;
+
             $demande->date = $date;
             $demande->statut = $statut;
 
-            $habilitation->addHistorique("", $commentaire, $auteur);
+            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." pour ".Orthographe::elision("le", $demande->getProduitLibelle()). " (".implode(", ", $demande->getActivitesLibelle()).") a été mise à jour du statut ".$prevStatutLibelle." au statut ".$demande->getStatutLibelle();
+
+            $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur);
             $habilitation->save();
 
             while($habilitationSuivante = $this->findNextByIdentifiantAndDate($identifiant, $habilitation->date)) {
