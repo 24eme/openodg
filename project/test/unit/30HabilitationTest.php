@@ -8,10 +8,10 @@ $t = new lime_test(31);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
-//Suppression des DRev précédentes
+//Suppression des habilitations précédentes
 foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k => $v) {
-  $drev = HabilitationClient::getInstance()->find($k);
-  $drev->delete(false);
+  $habilitation = HabilitationClient::getInstance()->find($k);
+  $habilitation->delete(false);
 }
 
 $t->comment("Création d'un doc dans le passé");

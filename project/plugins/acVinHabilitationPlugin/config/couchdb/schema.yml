@@ -52,6 +52,25 @@ Habilitation:
                               date: {  }
                               commentaire: {  }
                               statut: {  }
+      demandes:
+        type: collection
+        definition:
+          fields:
+            '*':
+              type: collection
+              class: HabilitationDemande
+              definition:
+                fields:
+                  produit_hash: { }
+                  produit_libelle: { }
+                  activites:
+                    type: array_collection
+                    definition:
+                      fields:
+                        *: { }
+                  date: { }
+                  demande: { }
+                  statut: { }
       historique:
         type: array_collection
         definition:
