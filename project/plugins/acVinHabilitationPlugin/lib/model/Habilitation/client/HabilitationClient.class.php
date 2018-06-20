@@ -238,4 +238,61 @@ class HabilitationClient extends acCouchdbClient {
                 $dateCourante = $habilitationSuivante->date;
             }
         }
+
+        public function getDemande($identifiant, $keyDemande, $date) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+
+            return $habilitation->demandes->get($keyDemande);
+        }
+
+        public function createDemandeAndSave($identifiant, $produitHash, $activites, $date, $demandeStatut, $statut, $commentaire, $auteur) {
+            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
+            $key = $identifiant."-".str_replace("-", "", $date)."01";
+            $demande = $habilitation->demandes->add($key);
+            $demande->produit_hash = $produitHash;
+            $demande->demande = $demandeStatut;
+            $demande->date = $date;
+            $demande->statut = $statut;
+            $demande->activites = $activites;
+
+            $habilitation->addHistorique("", $commentaire, $auteur);
+
+            $habilitation->save();
+
+            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($identifiant, $habilitation->date)) {
+                if(!$habilitationSuivante || $habilitationSuivante->_id <= $habilitation->_id) {
+                    break;
+                }
+
+                $habilitationSuivante->demandes->add($demande->getKey(), $demande);
+                $habilitationSuivante->save();
+                $habilitation = $habilitationSuivante;
+            }
+
+            return $demande;
+
+        }
+
+        public function updateDemandeAndSave($identifiant, $keyDemande, $date, $statut, $commentaire, $auteur) {
+            $demande = $this->getDemande($identifiant, $keyDemande, $date);
+            $habilitation = $demande->getDocument();
+
+            $demande->date = $date;
+            $demande->statut = $statut;
+
+            $habilitation->addHistorique("", $commentaire, $auteur);
+            $habilitation->save();
+
+            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($identifiant, $habilitation->date)) {
+                if(!$habilitationSuivante || $habilitationSuivante->_id <= $habilitation->_id) {
+                    break;
+                }
+
+                $habilitationSuivante->demandes->add($demande->getKey(), $demande);
+                $habilitationSuivante->save();
+                $habilitation = $habilitationSuivante;
+            }
+
+            return $demande;
+        }
     }
