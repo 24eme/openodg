@@ -77,6 +77,33 @@
         </div>
     <?php endif; ?>
 
+    <h3>Demandes en cours</h3>
+    <table class="table table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>Demande</th>
+                <th>Produit</th>
+                <th>Activités</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th class="col-xs-1"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($habilitation->demandes as $demande): ?>
+            <tr>
+                <td><?php echo $demande->getDemandeLibelle() ?></td>
+                <td><?php echo $demande->getProduitLibelle() ?></td>
+                <td><?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()) ?></td>
+                <td><?php echo Date::francizeDate($demande->date); ?></td>
+                <td><?php echo $demande->getStatutLibelle() ?></td>
+                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="">Modifier</a><?php endif; ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
       <thead>
