@@ -27,6 +27,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                                 <li<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu()) ? 'javascript:void(0)' : url_for('etablissement_modification', $etablissement); ?>">Editer</a></li>
                                 <li<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $etablissement->isSuspendu())? 'javascript:void(0)' : url_for('etablissement_switch_statut', array('identifiant' => $etablissement->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($societe->isSuspendu() || $etablissement->isActif())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu() || $etablissement->isActif())? 'javascript:void(0)' : url_for('etablissement_switch_statut', array('identifiant' => $etablissement->identifiant)); ?>">Activer</a></li>
+                                <li><a href="<?php echo url_for('compte_switch_en_alerte', array('identifiant' => $etablissement->getMasterCompte()->identifiant)); ?>"><?php echo ($etablissement->getMasterCompte()->exist('en_alerte') && $etablissement->getMasterCompte()->en_alerte)? 'Retirer alerte' : 'Mettre en alerte' ?></a></li>
                             </ul>
                         </div>
                     </div>
@@ -38,6 +39,7 @@ $types_liaisons = EtablissementClient::getTypesLiaisons();
                     <?php if ($etablissement->isSuspendu()): ?>
 					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $etablissement->getStatutLibelle(); ?></small></span>
 					<?php endif; ?>
+                    <?php if ($etablissement->getMasterCompte()->exist('en_alerte') && $etablissement->getMasterCompte()->en_alerte): ?><span class="pull-right">⛔</span><?php endif; ?>
                 </h2>
                 <hr/>
                 <div class="row">

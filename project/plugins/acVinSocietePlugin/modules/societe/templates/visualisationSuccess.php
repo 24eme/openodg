@@ -19,6 +19,7 @@
                                 <li<?php echo ($societe->isSuspendu()) ? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu()) ? 'javascript:void(0)' : url_for('societe_modification', $societe); ?>">Editer</a></li>
                                 <li<?php echo ($societe->isSuspendu())? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isSuspendu())? 'javascript:void(0)' : url_for('societe_switch_statut', array('identifiant' => $societe->identifiant)); ?>">Archiver</a></li>
                                 <li<?php echo ($societe->isActif()   )? ' class="disabled"' : ''; ?>><a href="<?php echo ($societe->isActif())? 'javascript:void(0)' : url_for('societe_switch_statut', array('identifiant' => $societe->identifiant)); ?>">Activer</a></li>
+                                <li><a href="<?php echo url_for('compte_switch_en_alerte', array('identifiant' => $societe->getMasterCompte()->identifiant)); ?>"><?php echo ($societe->getMasterCompte()->exist('en_alerte') && $societe->getMasterCompte()->en_alerte)? 'Retirer alerte' : 'Mettre en alerte' ?></a></li>
                             </ul>
                         </div>
                     </div>
@@ -30,6 +31,7 @@
                 	<?php if ($societe->getMasterCompte()->isSuspendu()): ?>
 					    <span class="label label-default pull-right" style="padding-top: 0;"><small style="font-weight: inherit; color: inherit;"><?php echo $societe->getMasterCompte()->getStatutLibelle(); ?></small></span>
 					<?php endif; ?>
+                    <?php if ($societe->getMasterCompte()->exist('en_alerte') && $societe->getMasterCompte()->en_alerte): ?><span class="pull-right">⛔</span><?php endif; ?>
                 </h2>
                 <hr/>
                 <div class="row">

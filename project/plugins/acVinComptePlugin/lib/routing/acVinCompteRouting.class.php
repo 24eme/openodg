@@ -89,6 +89,13 @@ class acVinCompteRouting {
                         array('sf_method' => array('get', 'post')),
                         array('model' => 'Compte',
                             'type' => 'object')));
+        $r->prependRoute('compte_switch_en_alerte', new CompteRoute('/compte/:identifiant/switchEnAlerte',
+                        array('module' => 'compte',
+                                'action' => 'switchAlerte'),
+                            array('sf_method' => array('get', 'post')),
+                            array('model' => 'Compte',
+                                  'type' => 'object')));
+
 
         $r->prependRoute('compte_interlocuteur_delete', new CompteRoute('/compte/:identifiant/suppression',
                         array('module' => 'compte',
