@@ -30,18 +30,10 @@ class HabilitationDemandeCreationForm extends HabilitationDemandeEditionForm
     {
         if (!$this->produits) {
             foreach ($this->getDocument()->getProduitsConfig() as $produit) {
-                if ($this->getDocument()->exist($produit->getHash())) {
-                  continue;
-                }
                 $this->produits[$produit->getHash()] = $produit->getLibelleComplet();
             }
         }
         return array_merge(array('' => ''), $this->produits);
-    }
-
-    public function hasProduits()
-    {
-        return (count($this->getProduits()) > 1);
     }
 
     public function getActivites(){
