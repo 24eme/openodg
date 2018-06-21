@@ -1,0 +1,87 @@
+<div class="modal fade modal-page" aria-labelledby="Créer une demande" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form method="post" action="" role="form" class="form-horizontal" novalidate>
+                <?php echo $form->renderHiddenFields(); ?>
+            	<?php echo $form->renderGlobalErrors(); ?>
+				<div class="modal-header">
+					<a href="<?php echo url_for("habilitation_declarant", $etablissement) ?>" class="close" aria-hidden="true">&times;</a>
+					<h4 class="modal-title" id="myModalLabel">Créer une demande</h4>
+				</div>
+				<div class="modal-body">
+                    <div class="row form-group">
+						<div class="col-xs-4 text-right control-label">
+							Demande :
+						</div>
+						<div class="col-xs-6">
+							<span class="text-danger"><?php echo $form['demande']->renderError() ?></span>
+							<?php echo $form['demande']->render(array("data-placeholder" => "Séléctionnez une demande", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-xs-4 text-right control-label">
+							Produit :
+						</div>
+						<div class="col-xs-6">
+							<span class="text-danger"><?php echo $form['produit_hash']->renderError() ?></span>
+							<?php echo $form['produit_hash']->render(array("data-placeholder" => "Séléctionnez un produit", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-xs-4 text-right control-label">
+							Activités :
+						</div>
+						<div class="col-xs-6">
+							<span class="text-danger"><?php echo $form['activites']->renderError() ?></span>
+							<?php $activitesWidget = $form['activites']; ?>
+								<?php foreach($activitesWidget->getWidget()->getChoices() as $key => $option): ?>
+									<div class="checkbox">
+										<label>
+											<input class="acheteur_checkbox" type="checkbox" id="<?php echo $activitesWidget->renderId() ?>_<?php echo $key ?>" name="<?php echo $activitesWidget->renderName() ?>[]" value="<?php echo $key ?>" <?php if(is_array($activitesWidget->getValue()) && in_array($key, $activitesWidget->getValue())): ?>checked="checked"<?php endif; ?> />&nbsp;&nbsp;<?php echo HabilitationClient::$activites_libelles[$key]; ?>
+										</label>
+								  	</div>
+								<?php endforeach; ?>
+							</ul>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-xs-4 text-right control-label">
+							Date :
+						</div>
+						<div class="col-xs-6">
+							<span class="text-danger"><?php echo $form['date']->renderError() ?></span>
+							<div class="input-group date-picker">
+								<?php echo $form['date']->render(array('placeholder' => "Date", "required" => false ,"class" => "form-control")) ?>
+								<div class="input-group-addon">
+										<span class="glyphicon-calendar glyphicon"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-xs-4 text-right control-label">
+							Statut :
+						</div>
+						<div class="col-xs-6">
+							<span class="text-danger"><?php echo $form['statut']->renderError() ?></span>
+							<?php echo $form['statut']->render(array("data-placeholder" => "Séléctionnez un statut", "class" => "form-control select2 select2-offscreen select2autocomplete", "required" => true)) ?>
+						</div>
+					</div>
+                    <div class="row form-group">
+						<span class="text-danger"><?php echo $form['commentaire']->renderError(); ?></span>
+						<div class="col-xs-4 control-label text-right">
+							Commentaire :
+						</div>
+						<div class="col-xs-6">
+							<?php echo $form['commentaire']->render(array("placeholder" => "Commentaire optionnel", "class" => "form-control", "required" => false)); ?>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a class="btn btn-default btn pull-left" href="<?php echo url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>
+					<button type="submit" class="btn btn-success btn pull-right">Créer la demande</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

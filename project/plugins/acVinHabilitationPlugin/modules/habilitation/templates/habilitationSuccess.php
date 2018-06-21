@@ -103,6 +103,14 @@
         </tbody>
     </table>
 
+    <?php if ($sf_user->isAdmin()): ?>
+        <div class="row">
+            <div class="col-xs-12">
+                <a class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer une demande</a>
+            </div>
+        </div>
+    <?php endif; ?>
+
 
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
@@ -144,4 +152,8 @@
 
 <?php if(isset($ajoutForm)): ?>
 <?php include_partial('habilitation/popupAjoutForm', array('url' => url_for('habilitation_ajout', $etablissement), 'form' => $ajoutForm)); ?>
+<?php endif; ?>
+
+<?php if(isset($formDemandeCreation)): ?>
+<?php include_partial('habilitation/demandeCreationForm', array('form' => $formDemandeCreation, 'etablissement' => $etablissement)); ?>
 <?php endif; ?>
