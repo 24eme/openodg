@@ -47,7 +47,17 @@ habilitation_ajout:
   param: { module: habilitation, action: ajout }
   class: EtablissementRoute
   options:
-    model:    Habilitation
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]
+
+habilitation_demande_creation:
+  url: /habilitation/declarant/:identifiant/demande/creation
+  param: { module: habilitation, action: demandeCreation }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
     type:     object
   requirements:
     sf_method: [get, post]
