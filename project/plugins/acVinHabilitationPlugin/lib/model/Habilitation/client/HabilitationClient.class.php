@@ -43,7 +43,7 @@ class HabilitationClient extends acCouchdbClient {
                                                 );
     public static $activites_libelles_to_be_sorted = array( self::ACTIVITE_PRODUCTEUR => "01_Producteur de raisins",
                                                   self::ACTIVITE_VINIFICATEUR => "03_Vinificateur",
-                                                  self::ACTIVITE_VRAC => "05_Détenteur de vins en vrac",
+                                                  self::ACTIVITE_VRAC => "05_Détenteur de vin en vrac",
                                                   self::ACTIVITE_CONDITIONNEUR => "06_Conditionneur",
                                                   self::ACTIVITE_ELABORATEUR => "99_Élaborateur",
                                                   self::ACTIVITE_VENTE_A_LA_TIREUSE => "99_Vente tireuse"
