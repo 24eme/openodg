@@ -61,3 +61,13 @@ habilitation_demande_creation:
     type:     object
   requirements:
     sf_method: [get, post]
+
+habilitation_demande_edition:
+  url: /habilitation/declarant/:identifiant/demande/edition/:demande
+  param: { module: habilitation, action: demandeEdition }
+  class: EtablissementRoute
+  options:
+    model:    Etablissement
+    type:     object
+  requirements:
+    sf_method: [get, post]

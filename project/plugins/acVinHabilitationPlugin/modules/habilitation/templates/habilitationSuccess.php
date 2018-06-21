@@ -97,7 +97,7 @@
                 <td><?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()) ?></td>
                 <td><?php echo Date::francizeDate($demande->date); ?></td>
                 <td><?php echo $demande->getStatutLibelle() ?></td>
-                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="">Modifier</a><?php endif; ?></td>
+                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $demande->getKey())) ?>">Modifier</a><?php endif; ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
@@ -156,4 +156,8 @@
 
 <?php if(isset($formDemandeCreation)): ?>
 <?php include_partial('habilitation/demandeCreationForm', array('form' => $formDemandeCreation, 'etablissement' => $etablissement)); ?>
+<?php endif; ?>
+
+<?php if(isset($formDemandeEdition)): ?>
+<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande)); ?>
 <?php endif; ?>
