@@ -271,18 +271,10 @@ class HabilitationClient extends acCouchdbClient {
             $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." pour ".Orthographe::elision("le", $demande->getProduitLibelle()). " (".implode(", ", $demande->getActivitesLibelle()).") a été créée au statut ".$demande->getStatutLibelle();
 
             $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur);
-
             $habilitation->save();
 
-            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($identifiant, $habilitation->date)) {
-                if(!$habilitationSuivante || $habilitationSuivante->_id <= $habilitation->_id) {
-                    break;
-                }
-
-                $habilitationSuivante->demandes->add($demande->getKey(), $demande);
-                $habilitationSuivante->save();
-                $habilitation = $habilitationSuivante;
-            }
+            $this->replicateDemandeAndSave($habilitation, $demande);
+            $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
 
             return $demande;
 
@@ -302,13 +294,19 @@ class HabilitationClient extends acCouchdbClient {
             $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur);
             $habilitation->save();
 
-            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($identifiant, $habilitation->date)) {
+            $this->replicateDemandeAndSave($habilitation, $demande);
+            $this->updateAndSaveHabilitationFromDemande($demande, $commentaire);
+
+            return $demande;
+        }
+
+        protected function replicateDemandeAndSave($habilitation, $demande) {
+            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($habilitation->identifiant, $habilitation->date)) {
                 if(!$habilitationSuivante) {
                     break;
                 }
-                $demandeNext = $habilitationSuivante->demandes->get($demande->getKey());
 
-                if($demandeNext->date > $demande->date) {
+                if($habilitationSuivante->demandes->exist($demande->getKey()) && $habilitationSuivante->demandes->get($demande->getKey())->date > $demande->date) {
                     break;
                 }
 
@@ -316,7 +314,11 @@ class HabilitationClient extends acCouchdbClient {
                 $habilitationSuivante->save();
                 $habilitation = $habilitationSuivante;
             }
+        }
 
-            return $demande;
+        protected function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
+            if($demande->statut == "VALIDE") {
+                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit_hash, $demande->date, $demande->activites->toArray(true, false), "HABILITE", $commentaire);
+            }
         }
     }

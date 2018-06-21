@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(42);
+$t = new lime_test(46);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -73,7 +73,7 @@ $t->is($habilitation->historique->get(0)->description, "La demande d'habilitatio
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
-$t->comment("Validation de la 1ère demande ");
+$t->comment("Validation de la 1ère demande");
 
 $date = (new DateTime("now"))->format('Y-m-d');
 $statut = "VALIDE";
@@ -85,6 +85,14 @@ $habilitation = $demande->getDocument();
 
 $idDocHabilitation = 'HABILITATION-'.$viti->identifiant.'-'.str_replace('-', '', $date);
 $t->is($habilitation->_id, $idDocHabilitation, "L'id du doc d'habilitation est ".$idDocHabilitation);
+
+$habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$t->ok($habilitationLast->exist($demande->produit_hash), "Le produit a été créé dans l'habilitation");
+$habilitationProduit = $habilitationLast->get($demande->produit_hash);
+$t->is($habilitationProduit->activites->get($activites[0])->statut, "HABILITE", "La première activité est habilité");
+$t->is($habilitationProduit->activites->get($activites[0])->date, $date, "La première activité est à pour date ".$date);
+$t->is($habilitationProduit->activites->get($activites[0])->commentaire, $commentaire, "La première activité est à pour commentaire ".$commentaire);
 
 $t->comment("Ajout d'un statut antérieur pour la 1ère demande");
 
