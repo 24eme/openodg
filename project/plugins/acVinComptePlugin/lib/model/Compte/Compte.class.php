@@ -16,10 +16,7 @@ class Compte extends BaseCompte implements InterfaceCompteGenerique {
       $this->id_societe = $s->_id;
     }
     public function getSociete() {
-        if (!$this->societe) {
-          $this->societe = SocieteClient::getInstance()->findSingleton($this->id_societe);
-        }
-        return $this->societe;
+        return SocieteClient::getInstance()->findSingleton($this->id_societe);
     }
 
     public function getMasterCompte() {
