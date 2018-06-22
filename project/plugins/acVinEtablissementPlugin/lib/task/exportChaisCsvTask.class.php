@@ -75,7 +75,7 @@ $cpt = 0;
                     trim(str_replace('"', '', $a_comp1)).",".
                     $chai->code_postal.",".
                     $this->protectIso($chai->commune).",".
-                    $etablissement->raison_sociale).",".
+                    $this->protectIso($etablissement->raison_sociale).",".
                     $etablissement->telephone_bureau.",".
                     ",,".$isArchivee.",,,,".$etablissement->siret."\n";
                     }
