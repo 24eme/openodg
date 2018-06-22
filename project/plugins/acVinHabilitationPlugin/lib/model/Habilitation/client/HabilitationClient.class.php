@@ -268,9 +268,10 @@ class HabilitationClient extends acCouchdbClient {
             $demande->statut = $statut;
             $demande->activites = $activites;
 
-            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." pour ".Orthographe::elision("le", $demande->getProduitLibelle()). " (".implode(", ", $demande->getActivitesLibelle()).") a été créée au statut ".$demande->getStatutLibelle();
+            $descriptionHistorique = $demande->getProduitLibelle(). " (".implode(", ", $demande->getActivitesLibelle())."): une demande ".Orthographe::elision("de", $demande->getDemandeLibelle())." a été créée au statut \"".$demande->getStatutLibelle()."\"";
 
-            $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur);
+            $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
+            $historique->iddoc .= ":".$demande->getHash();
             $habilitation->save();
 
             $this->replicateDemandeAndSave($habilitation, $demande);
@@ -289,9 +290,10 @@ class HabilitationClient extends acCouchdbClient {
             $demande->date = $date;
             $demande->statut = $statut;
 
-            $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." pour ".Orthographe::elision("le", $demande->getProduitLibelle()). " (".implode(", ", $demande->getActivitesLibelle()).") a été mise à jour du statut ".$prevStatutLibelle." au statut ".$demande->getStatutLibelle();
+            $descriptionHistorique = $demande->getProduitLibelle(). " (".implode(", ", $demande->getActivitesLibelle())."): la demande ".Orthographe::elision("de", $demande->getDemandeLibelle())." est passée au statut \"".$demande->getStatutLibelle()."\"";
 
-            $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur);
+            $historique = $habilitation->addHistorique($descriptionHistorique, $commentaire, $auteur, $statut);
+            $historique->iddoc .= ":".$demande->getHash();
             $habilitation->save();
 
             $this->replicateDemandeAndSave($habilitation, $demande);

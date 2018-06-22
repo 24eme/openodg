@@ -1,5 +1,7 @@
 <?php echo $form->renderHiddenFields(); ?>
 <?php echo $form->renderGlobalErrors(); ?>
+
+<?php if(!isset($demande)): ?>
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">
         Demande :
@@ -47,6 +49,13 @@
         <?php endif; ?>
     </div>
 </div>
+<?php endif; ?>
+<?php if(isset($demande)): ?>
+    <h4>Changer le statut</h4>
+<?php else: ?>
+    <h4>Statut</h4>
+<?php endif; ?>
+<hr />
 <div class="row form-group">
     <div class="col-xs-4 text-right control-label">
         Date :
