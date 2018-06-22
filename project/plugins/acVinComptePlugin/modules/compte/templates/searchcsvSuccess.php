@@ -20,38 +20,9 @@ foreach ($results as $res) {
   if(!$mot_de_passe){
     $mot_de_passe = compteClient::getInstance()->find("COMPTE-".$id_societe,acCouchdbClient::HYDRATE_JSON)->mot_de_passe;
   }
-
   $telephone_societe = isset($societe_informations['telephone'])? $societe_informations['telephone'] : '';
-
-  $adresses_complementaires = explode('−',str_replace(';', '−', $data['doc']['adresse_complementaire']));
-  $adresse_complementaire1 = $adresses_complementaires[0];
-  $adresse_complementaire2 = "";
-  $adresse_complementaire3 = "";
-  $adresse_complementaire4 = "";
-  if(count($adresses_complementaires) > 1){
-    $adresse_complementaire2 = $adresses_complementaires[1];
-  }
-  if(count($adresses_complementaires) > 2){
-    $adresse_complementaire3 = $adresses_complementaires[2];
-  }
-  if(count($adresses_complementaires) > 3){
-    $adresse_complementaire4 = $adresses_complementaires[3];
-  }
-
-  $societe_adresses_complementaires = explode('−',str_replace(';', '−', $societe_informations['adresse_complementaire']));
-  $societe_adresse_complementaire1 = $societe_adresses_complementaires[0];
-  $societe_adresse_complementaire2 = "";
-  $societe_adresse_complementaire3 = "";
-  $societe_adresse_complementaire4 = "";
-  if(count($societe_adresses_complementaires) > 1){
-    $societe_adresse_complementaire2 = $societe_adresses_complementaires[1];
-  }
-  if(count($societe_adresses_complementaires) > 2){
-    $societe_adresse_complementaire3 = $societe_adresses_complementaires[2];
-  }
-  if(count($societe_adresses_complementaires) > 3){
-    $societe_adresse_complementaire4 = $societe_adresses_complementaires[3];
-  }
+  $adresses = Compte::transformAdressesToPostal($data['doc']['adresse'], $data['doc']['adresse_complementaire']);
+  $societe_adresses = Compte::transformAdressesToPostal($societe_informations['adresse'], $societe_informations['adresse_complementaire']);
 
   $csv .= '"'.$id_societe. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom_a_afficher']). '";';
@@ -61,11 +32,11 @@ foreach ($results as $res) {
   $csv .= '"'.$data['doc']['civilite']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['nom']). '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['prenom']). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($data['doc']['adresse']). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($adresse_complementaire1). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($adresse_complementaire2). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($adresse_complementaire3). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($adresse_complementaire4). '";';
+  $csv .= (isset($adresses[0]))? '"'.$adresses[0]. '";' : '"";';
+  $csv .= (isset($adresses[1]))? '"'.$adresses[1]. '";' : '"";';
+  $csv .= (isset($adresses[2]))? '"'.$adresses[2]. '";' : '"";';
+  $csv .= (isset($adresses[3]))? '"'.$adresses[3]. '";' : '"";';
+  $csv .= (isset($adresses[4]))? '"'.$adresses[4]. '";' : '"";';
   $csv .= '"'.$data['doc']['code_postal']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($data['doc']['commune']). '";';
   $csv .= '"'.$data['doc']['pays']. '";';
@@ -80,16 +51,15 @@ foreach ($results as $res) {
     $csv .= '"'.$groupesAndFonction['fonction']. '";';
   }else{
       $csv .= '"";';
-      $csv .= '"'.$data['doc']['fonction']. '";';;
+      $csv .= '"'.$data['doc']['fonction']. '";';
   }
-
   $csv .= '"'.$societe_informations['type']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($societe_informations['raison_sociale']). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($societe_informations['adresse']). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($societe_adresse_complementaire1). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($societe_adresse_complementaire2). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($societe_adresse_complementaire3). '";';
-  $csv .= '"'.sfOutputEscaper::unescape($societe_adresse_complementaire4). '";';
+  $csv .= (isset($societe_adresses[0]))? '"'.$societe_adresses[0]. '";' : '"";';
+  $csv .= (isset($societe_adresses[1]))? '"'.$societe_adresses[1]. '";' : '"";';
+  $csv .= (isset($societe_adresses[2]))? '"'.$societe_adresses[2]. '";' : '"";';
+  $csv .= (isset($societe_adresses[3]))? '"'.$societe_adresses[3]. '";' : '"";';
+  $csv .= (isset($societe_adresses[4]))? '"'.$societe_adresses[4]. '";' : '"";';
   $csv .= '"'.$societe_informations['code_postal']. '";';
   $csv .= '"'.sfOutputEscaper::unescape($societe_informations['commune']). '";';
   $csv .= '"'.$telephone_societe. '";';
