@@ -180,11 +180,12 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
       $this->addHistorique("Ajout du produit : ".$complement);
   }
 
-  public function addHistorique($description, $commentaire = '', $auteur = '') {
+  public function addHistorique($description, $commentaire = '', $auteur = '', $statut = null) {
     $historiqueRow = $this->get('historique')->add(null);
     $historiqueRow->iddoc = $this->_id;
     $historiqueRow->date = $this->getDate();
     $historiqueRow->auteur = $auteur;
+    $historiqueRow->statut = $statut;
     try {
       if (!$auteur && sfContext::getInstance() && sfContext::getInstance()->getUser() && sfContext::getInstance()->getUser()->getCompte()) {
         $historiqueRow->auteur = (sfContext::getInstance()->getUser()->isAdmin())? 'Admin' : sfContext::getInstance()->getUser()->getCompte()->identifiant;
@@ -193,6 +194,7 @@ class Habilitation extends BaseHabilitation implements InterfaceProduitsDocument
     $historiqueRow->description = $description;
     $historiqueRow->commentaire = $commentaire;
 
+    return $historiqueRow;
   }
 
   public function getFullHistoriqueReverse(){

@@ -90,14 +90,14 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($habilitation->demandes as $demande): ?>
+            <?php foreach ($habilitation->demandes as $d): ?>
             <tr>
-                <td><?php echo $demande->getDemandeLibelle() ?></td>
-                <td><?php echo $demande->getProduitLibelle() ?></td>
-                <td><?php echo implode(", ", $demande->getActivitesLibelle()->getRawValue()) ?></td>
-                <td><?php echo Date::francizeDate($demande->date); ?></td>
-                <td><?php echo $demande->getStatutLibelle() ?></td>
-                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $demande->getKey())) ?>">Modifier</a><?php endif; ?></td>
+                <td><?php echo $d->getDemandeLibelle() ?></td>
+                <td><?php echo $d->getProduitLibelle() ?></td>
+                <td><?php echo implode(", ", $d->getActivitesLibelle()->getRawValue()) ?></td>
+                <td><?php echo Date::francizeDate($d->date); ?></td>
+                <td><?php echo $d->getStatutLibelle() ?></td>
+                <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a><?php endif; ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
@@ -128,7 +128,7 @@
           <tr>
             <td><?php echo Date::francizeDate($historiqueDoc->date); ?></<td>
             <td class="text-right text-muted" style="border-right: none;"><?php echo $historiqueDoc->auteur; ?> </td>
-            <td style="border-left: none;"><?php echo $historiqueDoc->description; ?><?php if($historiqueDoc->commentaire): ?> <span class="text-muted"><?php echo '('.$historiqueDoc->commentaire.')'; ?></span><?php endif ?>
+            <td style="border-left: none;"><?php echo preg_replace("|\"(Élaborateur)\"|", '<code>\1</code>', $historiqueDoc->description); ?><?php if($historiqueDoc->commentaire): ?> <span class="text-muted"><?php echo '('.$historiqueDoc->commentaire.')'; ?></span><?php endif ?>
             </td>
             <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => $historiqueDoc->iddoc)); ?>">Voir</a></tr>
         <?php endforeach; ?>
@@ -159,5 +159,5 @@
 <?php endif; ?>
 
 <?php if(isset($formDemandeEdition)): ?>
-<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande)); ?>
+<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande, 'historique' => $historique)); ?>
 <?php endif; ?>

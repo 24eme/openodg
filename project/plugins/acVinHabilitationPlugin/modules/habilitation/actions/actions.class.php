@@ -164,6 +164,7 @@ class habilitationActions extends sfActions {
     public function executeDemandeEdition(sfWebRequest $request) {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
+        $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
         $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande);
 

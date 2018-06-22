@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(46);
+$t = new lime_test(48);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -47,7 +47,9 @@ $t->is($demande->demande, $demandeStatut, "La demande est ".$demandeStatut);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
-$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation pour le ".$produitConfig->getLibelle()." (Vinificateur, Élaborateur) a été créée au statut Dépôt", "La description de l'action est ok");
+$t->is($habilitation->historique->get(0)->iddoc, $habilitation->_id.":".$demande->getHash(), "L'id du doc contient la hash");
+$t->is($habilitation->historique->get(0)->description, $produitConfig->getLibelle()." (Vinificateur, Élaborateur): une demande d'Habilitation a été créée au statut \"Dépôt\"", "La description de l'action est ok");
+$t->is($habilitation->historique->get(0)->statut, $demande->statut, "Le statut de la demande est dans l'historique");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
@@ -69,7 +71,7 @@ $t->is($demande->date, $date, "La date du statut est ".$date);
 $t->is($demande->statut, $statut, "La statut de la demande est ".$statut);
 
 $t->is(count($habilitation->historique), 1, "L'historique de cette habilitation a 1 élément");
-$t->is($habilitation->historique->get(0)->description, "La demande d'habilitation pour le ".$produitConfig->getLibelle()." (Vinificateur, Élaborateur) a été mise à jour du statut Dépôt au statut Complet", "La description de l'action est ok");
+$t->is($habilitation->historique->get(0)->description, $produitConfig->getLibelle()." (Vinificateur, Élaborateur): la demande d'Habilitation est passée au statut \"Complet\"", "La description de l'action est ok");
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
@@ -190,7 +192,7 @@ $form = new HabilitationDemandeEditionForm($demande);
 
 $defaults = $form->getDefaults();
 
-$t->is($defaults, array('_revision' => $habilitation->_rev, 'statut' => $demande->statut, 'date' => (new DateTime())->format('d/m/Y')), "Les valeurs par défaut du formulaire sont diponibles");
+$t->is($defaults, array('_revision' => $habilitation->_rev), "Les valeurs par défaut du formulaire sont diponibles");
 
 $values = array(
     '_revision' => $habilitation->_rev,
