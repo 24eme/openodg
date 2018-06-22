@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(5);
+$t = new lime_test(4);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -25,7 +25,7 @@ $dr = SV12Client::getInstance()->createDoc($viti->identifiant, $campagne);
 $dr->setLibelle("SV12 $campagne issue de Prodouane (Papier)");
 $dr->setDateDepot("$campagne-12-15");
 $dr->save();
-$dr->storeFichier(dirname(__FILE__).'/../data/sv12_douane.csv');
+$dr->storeFichier(dirname(__FILE__).'/../data/sv12_douane_'.$application.'.csv');
 $dr->save();
 
 $drev = DRevClient::getInstance()->createDoc($viti->identifiant, $campagne);
@@ -44,7 +44,6 @@ next($produits);
 $produit2 = current($produits);
 $produit_hash2 = $produit2->getHash();
 
-$t->is($produit1->getLibelleComplet(), "Condrieu Blanc", "Le libelle du produit est Condrieu Blanc");
 $t->is($produit1->recolte->superficie_total, 0.4579, "La superficie de récolte totale est récupéré sur csv");
 $t->is($produit1->recolte->volume_total, 19.42, "Le volume total est récupéré du csv");
 $t->is($produit1->recolte->recolte_nette, 19.42, "Le volume de récolte net est récupéré du csv");

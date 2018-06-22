@@ -55,7 +55,7 @@ class DouaneCsvFile
     if (!$buffer) {
       throw new Exception('invalid_file');
     }
-    if (!preg_match('/("?)[0-9a-zA-Z]{10}("?)([,;\t])/', $buffer, $match)) {
+    if (!preg_match('/("?)[0-9a-zA-Z]{6}("?)([,;\t])/', $buffer, $match)) {
       throw new Exception('invalid_csv_file');
     }
     $this->separator = $match[3];

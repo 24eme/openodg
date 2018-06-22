@@ -128,7 +128,7 @@ class DeclarationClient
       foreach ($identifiants_etb as $key => $identifiant) {
         $etablissement = etablissementClient::getInstance()->find('ETABLISSEMENT-'.$identifiant);
         if(!$etablissement){
-          throw new sfException("L'établissement d'identifiant ".$identifiant." n'a pas été trouvé dans la base. ");
+          continue;
         }
         $rows = acCouchdbManager::getClient()
                     ->startkey(array($type, $campagne,$identifiant))

@@ -4,10 +4,11 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(1);
+$t = new lime_test(0);
 
 $dr = current(DRClient::getInstance()->findAll(1));
 if ($dr) {
+	$t = new lime_test(1);
 	$etab = EtablissementClient::getInstance()->find($dr->identifiant);
 
 	$societeviti = SocieteClient::getInstance()->createSociete("Société viti test", SocieteClient::TYPE_OPERATEUR);

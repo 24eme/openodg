@@ -43,7 +43,7 @@ Compte:
       fax: {  }
       site_internet: { }
 
-
+      en_alerte: { required: false }
       raison_sociale_societe: { required: false }
       type_societe: { required: false }
       teledeclaration_active: { required: false }
