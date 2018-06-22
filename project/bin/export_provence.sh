@@ -6,7 +6,7 @@ mkdir $EXPORTDIR 2> /dev/null
 
 php symfony export:etablissements-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/etablissements.csv.part
 
-sort $EXPORTDIR/etablissements.csv.part $EXPORTDIR/etablissements.csv.part.sorted
+sort $EXPORTDIR/etablissements.csv.part > $EXPORTDIR/etablissements.csv.part.sorted
 mv $EXPORTDIR/etablissements.csv.part{.sorted,}
 
 php symfony export:chais-csv $SYMFONYTASKOPTIONS > $EXPORTDIR/chais.csv.part

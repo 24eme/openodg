@@ -74,8 +74,8 @@ $cpt = 0;
                     trim(str_replace('"', '', $a_comp)).",".
                     trim(str_replace('"', '', $a_comp1)).",".
                     $chai->code_postal.",".
-                    $chai->commune.",".
-                    $etablissement->raison_sociale.",".
+                    $this->protectIso($chai->commune).",".
+                    $etablissement->raison_sociale).",".
                     $etablissement->telephone_bureau.",".
                     ",,".$isArchivee.",,,,".$etablissement->siret."\n";
                     }
@@ -138,7 +138,7 @@ $cpt = 0;
                         trim(str_replace('"', '', $a_comp)).",".
                         trim(str_replace('"', '', $a_comp1)).",".
                         $chaiDistant->code_postal.",".
-                        $chaiDistant->commune.",".
+                        $this->protectIso($chaiDistant->commune).",".
                         $etablissement->raison_sociale.",".
                         $telephone.",".
                         ",,".$isArchivee.",,,,".$etablissement->siret."\n";
@@ -163,5 +163,9 @@ $cpt = 0;
 
         public static function sortActivite($a,$b){
             return self::$activiteOrdre[$a] > self::$activiteOrdre[$b];
+        }
+
+        public function protectIso($str){
+            return str_replace(array('œ'),array(''),$str);
         }
 }
