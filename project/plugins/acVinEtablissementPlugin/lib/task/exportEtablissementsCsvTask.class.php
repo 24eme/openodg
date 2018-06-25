@@ -103,7 +103,7 @@ $adresse_complementaire = array_shift($adresses_complementaires);
             ','. //Transmission AVPI
             ','. //Date Habilitation
             ','. //date archivage
-            '"'.str_replace('"', "''", str_replace(',', ' / ', str_replace('\n', '', $this->protectIso($etablissement->commentaire)))).'",'.
+            '"'.str_replace('"', "''", str_replace(',', ' / ', $this->protectIso($etablissement->commentaire))).'",'.
             $habilitationStatut.",". // Etat
             "Faux,", //demande AVPI
             $ordre.",". // Ordre
@@ -117,6 +117,6 @@ $adresse_complementaire = array_shift($adresses_complementaires);
     }
 
     public function protectIso($str){
-        return str_replace(array('œ',','),array('',''),$str);
+        return str_replace(array('œ',',',"\n"),array('','',''),$str);
     }
 }
