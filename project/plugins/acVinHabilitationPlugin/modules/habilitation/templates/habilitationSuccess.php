@@ -13,10 +13,11 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-xs-12">
-        <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject())); ?>
-    </div>
+<div class="well">
+    <?php if ($sf_user->isAdmin()): ?>
+<a style="margin-bottom: 30px;" class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_creation', array('sf_subject' => $etablissement, 'type' => 'identification')) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification</a>
+<?php endif; ?>
+<?php include_partial('etablissement/blocDeclaration', array('etablissement' => $habilitation->getEtablissementObject())); ?>
 </div>
 
 <?php if ($sf_user->hasFlash('notice')): ?>
@@ -28,7 +29,8 @@
 <?php if(!$habilitation->isLastOne()): ?>
   <p class="alert alert-warning" role="alert">Ceci n'est pas la dernière version de cette habilitation. <a href="<?php echo url_for('habilitation_declarant', $habilitation->getEtablissementObject()); ?>">Pour accèder à la dernière version cliquez ici.</a></p>
 <?php endif; ?>
-    <table class="table table-condensed table-bordered" id="table-habilitation">
+
+    <table style="margin-top: 30px;" class="table table-condensed table-bordered" id="table-habilitation">
         <thead>
             <tr>
                 <th class="col-xs-2">Produits</th>
@@ -69,6 +71,12 @@
         </tbody>
     </table>
 
+    <?php if ($sf_user->isAdmin()): ?>
+        <div class="text-right">
+        <a class="btn btn-sm btn-default" href="<?php echo url_for('habilitation_demande_creation', array('sf_subject' => $etablissement, 'type' => 'produit')) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;Demande de modification</a>
+        </div>
+    <?php endif; ?>
+
     <?php if ($sf_user->isAdmin() && isset($ajoutForm) && $ajoutForm->hasProduits()): ?>
         <div class="row">
             <div class="col-xs-12">
@@ -77,13 +85,13 @@
         </div>
     <?php endif; ?>
 
+    <hr />
     <h3>Demandes en cours</h3>
     <table class="table table-condensed table-bordered">
         <thead>
             <tr>
+                <th>Type</th>
                 <th>Demande</th>
-                <th>Produit</th>
-                <th>Activités</th>
                 <th>Date</th>
                 <th>Statut</th>
                 <th class="col-xs-1"></th>
@@ -93,8 +101,7 @@
             <?php foreach ($habilitation->demandes as $d): ?>
             <tr>
                 <td><?php echo $d->getDemandeLibelle() ?></td>
-                <td><?php echo $d->getProduitLibelle() ?></td>
-                <td><?php echo implode(", ", $d->getActivitesLibelle()->getRawValue()) ?></td>
+                <td><?php echo $d->getLibelle() ?></td>
                 <td><?php echo Date::francizeDate($d->date); ?></td>
                 <td><?php echo $d->getStatutLibelle() ?></td>
                 <td class="text-center"><?php if($habilitation->isLastOne()): ?><a href="<?php echo url_for('habilitation_demande_edition', array('sf_subject' => $etablissement, 'demande' => $d->getKey())) ?>">Voir&nbsp;/&nbsp;Modifier</a><?php endif; ?></td>
@@ -103,22 +110,15 @@
         </tbody>
     </table>
 
-    <?php if ($sf_user->isAdmin()): ?>
-        <div class="row">
-            <div class="col-xs-12">
-                <a class="btn btn-sm btn-default pull-right" href="<?php echo url_for('habilitation_demande_creation', $etablissement) ?>"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;&nbsp;Créer une demande</a>
-            </div>
-        </div>
-    <?php endif; ?>
-
-
     <h3>Historique</h3>
     <table class="table table-condensed table-bordered" id="table-history">
       <thead>
         <tr>
           <th class="col-xs-1">Date</th>
-          <th class="col-xs-1" style="border-right: none;"></th>
-          <th class="col-xs-9" style="border-left: none;">Description de la modification</th>
+          <th class="col-xs-1">Type</th>
+          <th class="col-xs-1">Auteur</th>
+          <th class="col-xs-7">Description de la modification</th>
+          <th class="col-xs-1">Statut</th>
           <th class="col-xs-1">&nbsp;</th>
         </tr>
       </thead>
@@ -126,10 +126,12 @@
         <?php
         foreach ($habilitation->getFullHistoriqueReverse() as $historiqueDoc): ?>
           <tr>
-            <td><?php echo Date::francizeDate($historiqueDoc->date); ?></<td>
-            <td class="text-right text-muted" style="border-right: none;"><?php echo $historiqueDoc->auteur; ?> </td>
-            <td style="border-left: none;"><?php echo preg_replace("|\"(Élaborateur)\"|", '<code>\1</code>', $historiqueDoc->description); ?><?php if($historiqueDoc->commentaire): ?> <span class="text-muted"><?php echo '('.$historiqueDoc->commentaire.')'; ?></span><?php endif ?>
+            <td><?php echo Date::francizeDate($historiqueDoc->date); ?></td>
+            <td><?php if(preg_match('/demande/', $historiqueDoc->iddoc)): ?>Demande<?php else: ?>Habilitation<?php endif; ?></td>
+            <td><?php echo $historiqueDoc->auteur; ?></td>
+            <td><?php echo preg_replace('/"([^"]+)"/', '<code>\1</code>', $historiqueDoc->getRawValue()->description); ?><?php if($historiqueDoc->commentaire): ?> <small class="text-muted">(<?php echo $historiqueDoc->commentaire; ?>)</small><?php endif ?>
             </td>
+            <td><?php if($historiqueDoc->statut): ?><?php echo HabilitationClient::$demande_statut_libelles[$historiqueDoc->statut]; ?> <?php endif ?></td>
             <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => $historiqueDoc->iddoc)); ?>">Voir</a></tr>
         <?php endforeach; ?>
       </tbody>
