@@ -61,16 +61,23 @@ Habilitation:
               class: HabilitationDemande
               definition:
                 fields:
-                  produit_hash: { }
-                  produit_libelle: { }
-                  activites:
-                    type: array_collection
+                  demande: { }
+                  statut: { }
+                  date: { }
+                  libelle: { }
+                  donnees:
+                    type: collection
+                    class: HabilitationDemandeDonnees
                     definition:
                       fields:
                         *: { }
-                  date: { }
+                        activites:
+                          type: array_collection
+                          required: false
+                          definition:
+                            fields:
+                              *: { }
                   demande: { }
-                  statut: { }
       historique:
         type: array_collection
         definition:

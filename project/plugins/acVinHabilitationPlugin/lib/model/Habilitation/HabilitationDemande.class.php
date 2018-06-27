@@ -19,6 +19,27 @@ class HabilitationDemande extends BaseHabilitationDemande {
         return $this;
     }
 
+    public function getLibelle() {
+        if($this->_get('libelle')) {
+
+            return $this->_get('libelle');
+        }
+
+        $libelles = array();
+        foreach($this->donnees as $key => $value) {
+            if(method_exists($this->donnees, "get".ucfirst($key).'Libelle')) {
+                $libelles[] = $this->donnees->{$key.'Libelle'};
+            } else {
+                $libelles[] = ucfirst(str_replace("_", " ", $key)).": ".$value;
+            }
+        }
+        $libelle = implode(", ", $libelles);
+
+        $this->libelle = $libelle;
+
+        return $this->_get('libelle');
+    }
+
     public function getDemandeLibelle() {
 
         return HabilitationClient::$demande_libelles[$this->demande];

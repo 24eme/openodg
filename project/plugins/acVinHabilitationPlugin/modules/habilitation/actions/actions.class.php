@@ -49,8 +49,8 @@ class habilitationActions extends sfActions {
 
         $this->secure(HabilitationSecurity::EDITION, $this->habilitation);
 
-        $this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
-        $this->editForm = new HabilitationEditionForm($this->habilitation);
+        //$this->ajoutForm = new HabilitationAjoutProduitForm($this->habilitation);
+        //$this->editForm = new HabilitationEditionForm($this->habilitation);
         $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array('identifiant' => $this->etablissement->identifiant), true);
 
         $this->setTemplate('habilitation');
@@ -142,7 +142,13 @@ class habilitationActions extends sfActions {
         $this->etablissement = $this->getRoute()->getEtablissement();
         $this->habilitation = HabilitationClient::getInstance()->getLastHabilitationOrCreate($this->etablissement->identifiant);
 
-        $this->formDemandeCreation = new HabilitationDemandeCreationForm($this->habilitation);
+        if($request->getParameter('type') == 'produit') {
+            $this->formDemandeCreation = new HabilitationDemandeCreationProduitForm($this->habilitation);
+        }
+
+        if($request->getParameter('type') == 'identification') {
+            $this->formDemandeCreation = new HabilitationDemandeCreationIdentificationForm($this->habilitation);
+        }
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 

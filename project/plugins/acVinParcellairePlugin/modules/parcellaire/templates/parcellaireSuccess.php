@@ -30,7 +30,9 @@
 <div class="row">
     <div class="col-xs-12">
         <?php if($parcellaire): ?>
-            <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
+            <div class="well">
+                <?php include_partial('etablissement/blocDeclaration', array('etablissement' => $parcellaire->getEtablissementObject())); ?>
+            </div>
         <?php else: ?>
             <p>Aucun parcellaire n'existe pour <?php echo $etablissement->getNom() ?></p>
         <?php endif; ?>
