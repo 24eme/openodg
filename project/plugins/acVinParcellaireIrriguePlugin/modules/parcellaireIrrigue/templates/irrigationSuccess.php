@@ -58,7 +58,7 @@
                 <th class="col-xs-1">Type de matériel</th>
                 <th class="col-xs-1">Type de ressource</th>
                 <th class="col-xs-1">Irrigation?</th>
-                <th class="col-xs-2">Date de début d'irrigation</th>
+                <th class="col-xs-2">Date de déclaration d'irrigation</th>
 
             </tr>
 		</thead>
