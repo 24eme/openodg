@@ -99,7 +99,7 @@ $t->is($habilitationProduit->activites->get($activites[0])->commentaire, $commen
 $t->comment("Ajout d'un statut antérieur pour la 1ère demande");
 
 $date = (new DateTime("now -2 month"))->format('Y-m-d');
-$statut = "TRANSMIS";
+$statut = "TRANSMIS_OIVR";
 $commentaire = "Transmis à l'OIVR";
 $auteur = "Syndicat";
 
