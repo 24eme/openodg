@@ -310,7 +310,16 @@ class HabilitationClient extends acCouchdbClient {
 
         public function createDemandeAndSave($identifiant, $demandeStatut, $datas, $statut, $date, $commentaire, $auteur) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
-            $key = $identifiant."-".str_replace("-", "", $date)."01";
+            $baseKey = $identifiant."-".str_replace("-", "", $date);
+            $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
+            ksort($demandesKey);
+            $i = 1;
+            foreach($demandesKey as $demandeKey) {
+                if($demandeKey == sprintf($baseKey."%02d", $i)) {
+                    $i++;
+                }
+            }
+            $key = sprintf($baseKey."%02d", $i);
             $demande = $habilitation->demandes->add($key);
             foreach($datas as $key => $value) {
                 $demande->donnees->add($key, $value);

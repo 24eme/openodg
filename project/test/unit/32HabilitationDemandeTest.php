@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(61);
+$t = new lime_test(62);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -33,6 +33,11 @@ $activites = array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient
 
 $demande = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, array('produit' => $produitConfig->getHash(), 'activites' => $activites), $statut, $date, $commentaire,  $auteur);
 $habilitation = $demande->getDocument();
+
+$demande2 = HabilitationClient::getInstance()->createDemandeAndSave($viti->identifiant, $demandeStatut, array('produit' => $produitConfig->getHash(), 'activites' => $activites), $statut, $date, $commentaire,  $auteur);
+
+$key2 = $viti->identifiant."-".str_replace("-", "", $date)."02";
+$t->is($demande2->getKey(), $key2, "La clé de la seconde demande est : ".$key2);
 
 $idDocHabilitation = 'HABILITATION-'.$viti->identifiant.'-'.str_replace('-', '', $date);
 $keyDemande1 = $viti->identifiant."-".str_replace("-", "", $date)."01";
