@@ -48,9 +48,27 @@ class HabilitationClient extends acCouchdbClient {
 
     public static $demande_statut_libelles = array(
         'DEPOT' => "Dépôt",
+        'RELANCE_1' => "Relance n°1",
+        'RELANCE_2' => "Relance n°2",
+        'RELANCE_3' => "Relance n°3",
         'COMPLET' => "Complet",
-        'TRANSMIS' => "Transmis",
+        'TRANSMIS_CI' => "Transmis au Contrôle Interne",
+        'VALIDE_CI' => "Validé par le Contrôle Interne",
+        'REFUSE_CI' => "Refusé par le Contrôle Interne",
+        'TRANSMIS_OIVR' => "Transmis à l'OIVR",
+        'VALIDE_OIVR' => "Validé par l'OIVR",
+        'REFUSE_OIVR' => "Refusé par l'OIVR",
+        'TRANSMIS_CERTIPAQ' => "Transmis à CERTIPAQ",
+        'VALIDE_CERTIPAQ' => "Validé par CERTIPAQ",
+        'REFUSE_CERTIPAQ' => "Refusé par CERTIPAQ",
+        'TRANSMIS_ODG' => "Transmis à l'ODG",
+        'VALIDE_ODG' => "Validé par l'ODG",
+        'REFUSE_ODG' => "Refusé à l'ODG",
+        'TRANSMIS_INAO' => "Transmis à l'INAO",
+        'VALIDE_INAO' => "Validé par l'INAO",
+        'REFUSE_INAO' => "Refusé par l'INAO",
         'VALIDE' => "Validé",
+        'REFUSE' => "Refusé",
     );
 
     public static $activites_libelles = array(
@@ -83,7 +101,6 @@ class HabilitationClient extends acCouchdbClient {
                                              self::STATUT_REFUS => "Refus",
                                              self::STATUT_ANNULE => "Annulé",
                                              self::STATUT_RETRAIT => "Retrait",
-
                                             self::STATUT_ARCHIVE => "Archivé");
 
     public static function getInstance()
