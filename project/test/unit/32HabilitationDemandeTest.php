@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(62);
+$t = new lime_test(66);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -17,9 +17,14 @@ foreach(HabilitationClient::getInstance()->getHistory($viti->identifiant) as $k 
 $config = ConfigurationClient::getCurrent();
 
 $produitConfig = null;
+$produitConfig2 = null;
 foreach($config->getProduitsCahierDesCharges() as $p) {
-    $produitConfig = $p;
-    break;
+    if(!$produitConfig) {
+        $produitConfig = $p;
+    } else {
+        $produitConfig2 = $p;
+        break;
+    }
 }
 
 $demandeStatut = "HABILITATION";
@@ -80,6 +85,14 @@ $t->is($habilitation->historique->get(0)->description, "La demande d'habilitatio
 $t->is($habilitation->historique->get(0)->commentaire, $commentaire, "Le commentaire est ".$commentaire);
 $t->is($habilitation->historique->get(0)->date, $date, "La date est ".$date);
 
+$habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti->identifiant);
+
+$t->ok($habilitationLast->exist($demande->donnees->produit), "Le produit a été créé dans l'habilitation");
+$habilitationProduit = $habilitationLast->get($demande->donnees->produit);
+$t->is($habilitationProduit->activites->get($activites[0])->statut, "DEMANDE_HABILITATION", "La première activité est en attente d'habilitation");
+$t->is($habilitationProduit->activites->get($activites[0])->date, $date, "La première activité à pour date ".$date);
+$t->is($habilitationProduit->activites->get($activites[0])->commentaire, $commentaire, "La première activité est à pour commentaire ".$commentaire);
+
 $t->comment("Validation de la 1ère demande");
 
 $date = (new DateTime("now"))->format('Y-m-d');
@@ -98,7 +111,7 @@ $habilitationLast = HabilitationClient::getInstance()->getLastHabilitation($viti
 $t->ok($habilitationLast->exist($demande->donnees->produit), "Le produit a été créé dans l'habilitation");
 $habilitationProduit = $habilitationLast->get($demande->donnees->produit);
 $t->is($habilitationProduit->activites->get($activites[0])->statut, "HABILITE", "La première activité est habilité");
-$t->is($habilitationProduit->activites->get($activites[0])->date, $date, "La première activité est à pour date ".$date);
+$t->is($habilitationProduit->activites->get($activites[0])->date, $date, "La première activité à pour date ".$date);
 $t->is($habilitationProduit->activites->get($activites[0])->commentaire, $commentaire, "La première activité est à pour commentaire ".$commentaire);
 
 $t->comment("Ajout d'un statut antérieur pour la 1ère demande");
@@ -201,7 +214,7 @@ $t->is($defaults, array('_revision' => $habilitation->_rev, 'donnees' => array()
 $values = array(
     '_revision' => $habilitation->_rev,
     'donnees' => array(
-        'produit' => $produitConfig->getHash(),
+        'produit' => $produitConfig2->getHash(),
         'activites' => array(HabilitationClient::ACTIVITE_VINIFICATEUR, HabilitationClient::ACTIVITE_ELABORATEUR),
     ),
     'demande' => 'RETRAIT',
@@ -256,7 +269,6 @@ $demande = $habilitation->demandes->get($demande->getKey());
 $t->is($demande->date, preg_replace("|([0-9]+)/([0-9]+)/([0-9]+)|", '\3-\2-\1', $values['date']), "La date a été enregistrée");
 $t->is($demande->statut, $values['statut'], "Le statut a été enregistrée");
 $t->is($habilitation->historique->get(0)->commentaire, $values['commentaire'], "Le commentaire a été enregistrée");
-
 
 $t->comment("Création d'une demande de modification d'identification par formulaire");
 

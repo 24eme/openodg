@@ -63,7 +63,7 @@ class HabilitationClient extends acCouchdbClient {
         'REFUSE_CERTIPAQ' => "Refusé par CERTIPAQ",
         'TRANSMIS_ODG' => "Transmis à l'ODG",
         'VALIDE_ODG' => "Validé par l'ODG",
-        'REFUSE_ODG' => "Refusé à l'ODG",
+        'REFUSE_ODG' => "Refusé par l'ODG",
         'TRANSMIS_INAO' => "Transmis à l'INAO",
         'VALIDE_INAO' => "Validé par l'INAO",
         'REFUSE_INAO' => "Refusé par l'INAO",
@@ -131,12 +131,17 @@ class HabilitationClient extends acCouchdbClient {
 
     public function getLibelleStatut($key) {
 
-        if(!isset(self::$statuts_libelles[$key])) {
+        if(isset(self::$statuts_libelles[$key])) {
 
-            return $key;
+            return self::$statuts_libelles[$key];
         }
 
-        return self::$statuts_libelles[$key];
+        if(isset(self::$demande_statut_libelles[$key])) {
+
+            return self::$demande_statut_libelles[$key];
+        }
+
+        return $key;
     }
 
         public function find($id, $hydrate = self::HYDRATE_DOCUMENT, $force_return_ls = false) {
@@ -379,6 +384,9 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         protected function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
+            if($demande->statut == "COMPLET" && in_array($demande->demande, self::$demandes_produit)) {
+                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->donnees->produit, $demande->date, $demande->donnees->activites->toArray(true, false), "DEMANDE_HABILITATION", $commentaire);
+            }
             if($demande->statut == "VALIDE" && in_array($demande->demande, self::$demandes_produit)) {
                 $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->donnees->produit, $demande->date, $demande->donnees->activites->toArray(true, false), "HABILITE", $commentaire);
             }
