@@ -5,7 +5,7 @@ class habilitationActions extends sfActions {
 
   public function executeIndex(sfWebRequest $request)
   {
-      $this->buildSearch($request);
+      $this->buildSearchDemande($request);
       $nbResultatsParPage = 30;
       $this->nbResultats = count($this->docs);
       if (!$this->nbResultats && !($request->getParameter('query') === '0')) {
@@ -14,6 +14,8 @@ class habilitationActions extends sfActions {
       $this->page = $request->getParameter('page', 1);
       $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
       $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
+
+      $this->setTemplate('demande');
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
@@ -173,6 +175,7 @@ class habilitationActions extends sfActions {
         $this->historique = $this->habilitation->getFullHistorique();
         $this->demande = $this->habilitation->demandes->get($request->getParameter('demande'));
         $this->formDemandeEdition = new HabilitationDemandeEditionForm($this->demande);
+        $this->urlRetour = $request->getParameter('retour', false);
 
         if (!$request->isMethod(sfWebRequest::POST)) {
 
@@ -187,6 +190,11 @@ class habilitationActions extends sfActions {
         }
 
         $this->formDemandeEdition->save();
+
+        if($this->urlRetour) {
+
+            return $this->redirect($this->urlRetour);
+        }
 
         return $this->redirect('habilitation_declarant', $this->etablissement);
     }
@@ -219,7 +227,80 @@ class habilitationActions extends sfActions {
         throw new sfStopException();
     }
 
-    protected function buildSearch(sfWebRequest $request, $sortKeys = array(HabilitationActiviteView::KEY_DATE, HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE)) {
+    protected function buildSearchDemande(sfWebRequest $request, $sortKeys = array()) {
+        $rows = acCouchdbManager::getClient()
+                    ->group(true)
+                    ->group_level(2)
+                    ->getView('habilitation', 'demandes')->rows;
+
+        $this->facets = array(
+            "Demande" => array(),
+            "Statut" => array(),
+        );
+
+        $facetToRowKey = array("Demande" => HabilitationDemandeView::KEY_DEMANDE, "Statut" => HabilitationDemandeView::KEY_STATUT);
+
+        $this->query = $request->getParameter('query', array());
+        $this->docs = array();
+
+        if(!$this->query || !count($this->query)) {
+            $this->docs = acCouchdbManager::getClient()
+            ->reduce(false)
+            ->getView('habilitation', 'demandes')->rows;
+        }
+
+        foreach($rows as $row) {
+            $addition = 0;
+            foreach($this->facets as $facetNom => $items) {
+                $find = true;
+                if($this->query) {
+                    foreach($this->query as $queryKey => $queryValue) {
+                        if($queryValue != $row->key[$facetToRowKey[$queryKey]]) {
+                            $find = false;
+                            break;
+                        }
+                    }
+                }
+                if(!$find) {
+                    continue;
+                }
+                $facetKey = $facetToRowKey[$facetNom];
+                if(!array_key_exists($row->key[$facetKey], $this->facets[$facetNom])) {
+                    $this->facets[$facetNom][$row->key[$facetKey]] = 0;
+                }
+                $this->facets[$facetNom][$row->key[$facetKey]] += $row->value;
+                $addition += $row->value;
+
+            }
+            if($addition > 0 && $this->query && count($this->query)) {
+                $keys = array($row->key[HabilitationDemandeView::KEY_DEMANDE], $row->key[HabilitationDemandeView::KEY_STATUT]);
+                $this->docs = array_merge($this->docs, acCouchdbManager::getClient()
+                ->startkey($keys)
+                ->endkey(array_merge($keys, array(array())))
+                ->reduce(false)
+                ->getView('habilitation', 'demandes')->rows);
+            }
+        }
+
+
+        krsort($this->facets["Statut"]);
+        //ksort($this->facets["Activité"]);
+        //ksort($this->facets["Produit"]);
+
+        uasort($this->docs, function($a, $b) use ($sortKeys) {
+            foreach($sortKeys as $sortKey) {
+                if($a->key[$sortKey] < $b->key[$sortKey]) {
+                    return true;
+                }
+                if($a->key[$sortKey] > $b->key[$sortKey]) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
+    protected function buildSearchHabilitation(sfWebRequest $request, $sortKeys = array(HabilitationActiviteView::KEY_DATE, HabilitationActiviteView::KEY_IDENTIFIANT, HabilitationActiviteView::KEY_PRODUIT_LIBELLE, HabilitationActiviteView::KEY_ACTIVITE)) {
         $rows = acCouchdbManager::getClient()
                     ->group(true)
                     ->group_level(3)

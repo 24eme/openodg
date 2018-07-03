@@ -33,7 +33,7 @@
                     <?php include_partial('habilitation/demandeForm', array('form' => $form, 'demande' => $demande)); ?>
     		    </div>
                 <div class="modal-footer">
-                    <a class="btn btn-default btn pull-left" href="<?php echo url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>
+                    <a class="btn btn-default btn pull-left" href="<?php echo (isset($urlRetour) && $urlRetour) ? $urlRetour : url_for("habilitation_declarant", $etablissement) ?>">Annuler</a>
                     <button type="submit" class="btn btn-success btn pull-right">Valider le changement</button>
 				</div>
             </form>
