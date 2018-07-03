@@ -131,7 +131,7 @@
             <td><?php echo $historiqueDoc->auteur; ?></td>
             <td><?php echo preg_replace('/"([^"]+)"/', '<code>\1</code>', $historiqueDoc->getRawValue()->description); ?><?php if($historiqueDoc->commentaire): ?> <small class="text-muted">(<?php echo $historiqueDoc->commentaire; ?>)</small><?php endif ?>
             </td>
-            <td><?php if($historiqueDoc->statut): ?><?php echo HabilitationClient::getInstance()->getLibelleStatut($historiqueDoc->statut); ?> <?php endif ?></td>
+            <td><?php if(isset($historiqueDoc->statut) && $historiqueDoc->statut): ?><?php echo HabilitationClient::getInstance()->getLibelleStatut($historiqueDoc->statut); ?> <?php endif ?></td>
             <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => preg_replace("/:.+/", "", $historiqueDoc->iddoc))); ?>">Voir</a></tr>
         <?php endforeach; ?>
       </tbody>
