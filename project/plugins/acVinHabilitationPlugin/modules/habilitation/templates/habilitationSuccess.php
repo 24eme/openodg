@@ -132,7 +132,7 @@
             <td><?php echo preg_replace('/"([^"]+)"/', '<code>\1</code>', $historiqueDoc->getRawValue()->description); ?><?php if($historiqueDoc->commentaire): ?> <small class="text-muted">(<?php echo $historiqueDoc->commentaire; ?>)</small><?php endif ?>
             </td>
             <td><?php if($historiqueDoc->statut): ?><?php echo HabilitationClient::$demande_statut_libelles[$historiqueDoc->statut]; ?> <?php endif ?></td>
-            <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => $historiqueDoc->iddoc)); ?>">Voir</a></tr>
+            <td class="text-center"><a href="<?php echo url_for('habilitation_visualisation', array('id' => preg_replace("/:.+/", "", $historiqueDoc->iddoc))); ?>">Voir</a></tr>
         <?php endforeach; ?>
       </tbody>
     </table>
@@ -161,5 +161,5 @@
 <?php endif; ?>
 
 <?php if(isset($formDemandeEdition)): ?>
-<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande, 'historique' => $historique)); ?>
+<?php include_partial('habilitation/demandeEditionForm', array('form' => $formDemandeEdition, 'etablissement' => $etablissement, 'demande' => $demande, 'historique' => $historique, 'urlRetour' => $urlRetour)); ?>
 <?php endif; ?>
