@@ -1,4 +1,4 @@
-<?php $route = $sf_request->getAttribute('sf_route')->getRawValue(); ?>
+<?php $route = ($sf_request->getAttribute('sf_route')) ? $sf_request->getAttribute('sf_route')->getRawValue() : null; ?>
 <?php $etablissement = null ?>
 <?php $compte = null ?>
 
