@@ -49,7 +49,7 @@ class HabilitationActivite extends BaseHabilitationActivite {
     }else{
       $description = $produitLibelle." : activité \"".$activite."\", statut changé de \"".HabilitationClient::$statuts_libelles[$old_statut]."\" à \"".HabilitationClient::$statuts_libelles[$statut]."\"";
     }
-    $this->getDocument()->addHistorique($description, $commentaire);
+    $this->getDocument()->addHistorique($description, $commentaire, null, $statut);
   }
 
 }

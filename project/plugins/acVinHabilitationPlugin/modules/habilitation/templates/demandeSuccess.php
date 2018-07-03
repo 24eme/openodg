@@ -39,7 +39,7 @@ if(count(HabilitationConfiguration::getInstance()->getActivites())){
                         <td><a href="<?php echo url_for("habilitation_declarant", array("identifiant" => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT])); ?>"><?php echo $declarant->raison_sociale; ?> <small>(<?php echo $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT]; echo ($declarant->cvi)? "/".$declarant->cvi : ""; ?>)</small></a></td>
                         <td><?php echo HabilitationClient::$demande_libelles[$doc->key[HabilitationDemandeView::KEY_DEMANDE]]; ?></td>
                         <td><?php echo $doc->key[HabilitationDemandeView::KEY_LIBELLE]; ?></td>
-                        <td><a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT], 'demande' => $doc->key[HabilitationDemandeView::KEY_DEMANDE_KEY], 'retour' => $sf_request->getUri())) ?>"><?php echo HabilitationClient::$demande_statut_libelles[$doc->key[HabilitationDemandeView::KEY_STATUT]]; ?></a></td>
+                        <td><a href="<?php echo url_for('habilitation_demande_edition', array('identifiant' => $doc->key[HabilitationDemandeView::KEY_IDENTIFIANT], 'demande' => $doc->key[HabilitationDemandeView::KEY_DEMANDE_KEY], 'retour' => $sf_request->getUri())) ?>"><?php echo HabilitationClient::getInstance()->getLibelleStatut($doc->key[HabilitationDemandeView::KEY_STATUT]) ; ?></a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

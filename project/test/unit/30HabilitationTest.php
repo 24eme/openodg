@@ -4,7 +4,7 @@ require_once(dirname(__FILE__).'/../bootstrap/common.php');
 
 sfContext::createInstance($configuration);
 
-$t = new lime_test(31);
+$t = new lime_test(32);
 
 $viti =  CompteTagsView::getInstance()->findOneCompteByTag('test', 'test_viti')->getEtablissement();
 
@@ -59,6 +59,7 @@ $habProduit->updateHabilitation($activiteKey, HabilitationClient::STATUT_HABILIT
 $habilitation->save();
 $t->is($habProduit->activites[$activiteKey]->statut, HabilitationClient::STATUT_HABILITE, "le statut de l'activité a été changée");
 $t->is(count($habilitation->historique), 3, "la modification de l'activité a été enregistrée dans l'historique");
+$t->is($habilitation->historique[2]->statut, HabilitationClient::STATUT_HABILITE, "Le statut est écrit dans l'historique");
 
 $t->comment('Habilitation à une autre date');
 $date = '2010-10-01';
