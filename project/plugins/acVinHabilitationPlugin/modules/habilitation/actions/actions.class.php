@@ -15,7 +15,33 @@ class habilitationActions extends sfActions {
       $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
       $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
 
-      $this->setTemplate('demande');
+      $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
+
+      if (!$request->isMethod(sfWebRequest::POST)) {
+
+          return sfView::SUCCESS;
+      }
+
+      $this->form->bind($request->getParameter($this->form->getName()));
+
+      if(!$this->form->isValid()) {
+
+          return sfView::SUCCESS;
+      }
+      return $this->redirect('habilitation_declarant', $this->form->getValue('etablissement'));
+  }
+
+  public function executeList(sfWebRequest $request)
+  {
+      $this->buildSearchHabilitation($request);
+      $nbResultatsParPage = 30;
+      $this->nbResultats = count($this->docs);
+      if (!$this->nbResultats && !($request->getParameter('query') === '0')) {
+        return $this->redirect('habilitation/list?query=0');
+      }
+      $this->page = $request->getParameter('page', 1);
+      $this->nbPage = ceil($this->nbResultats / $nbResultatsParPage);
+      $this->docs = array_slice($this->docs, ($this->page - 1) * $nbResultatsParPage, $nbResultatsParPage);
 
       $this->form = new EtablissementChoiceForm('INTERPRO-declaration', array(), true);
 
