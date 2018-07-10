@@ -64,6 +64,7 @@ Habilitation:
                   demande: { }
                   statut: { }
                   date: { }
+                  date_habilitation: { }
                   libelle: { }
                   produit: { }
                   produit_libelle: { }
