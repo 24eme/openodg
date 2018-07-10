@@ -31,19 +31,9 @@ class HabilitationClient extends acCouchdbClient {
 
     const STATUT_ARCHIVE = "ARCHIVE";
 
-    public static $demandes_produit = array(
-        self::DEMANDE_HABILITATION,
-        self::DEMANDE_RETRAIT,
-    );
-
-    public static $demandes_declarant = array(
-        self::DEMANDE_DECLARANT,
-    );
-
     public static $demande_libelles = array(
         self::DEMANDE_HABILITATION => "Habilitation",
-        self::DEMANDE_RETRAIT => "Retrait",
-        self::DEMANDE_DECLARANT => "Changement d'identification",
+        self::DEMANDE_RETRAIT => "Retrait"
     );
 
     public static $demande_statut_libelles = array(
@@ -286,34 +276,13 @@ class HabilitationClient extends acCouchdbClient {
             }
         }
 
-        public function updateDeclarantAndSave($identifiant, $date, $declarantInfos) {
-            $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
-            foreach(array_keys($habilitation->declarant->toArray(true, false)) as $key) {
-                if(isset($declarantInfos[$key])) {
-                    $habilitation->declarant->set($key, $declarantInfos[$key]);
-                }
-            }
-
-            $habilitation->save();
-
-            while($habilitationSuivante = $this->findNextByIdentifiantAndDate($habilitation->identifiant, $habilitation->date)) {
-                if(!$habilitationSuivante) {
-                    break;
-                }
-
-                $habilitationSuivante->declarant->cvi = $declarantInfos['cvi'];
-                $habilitationSuivante->save();
-                $habilitation = $habilitationSuivante;
-            }
-        }
-
         public function getDemande($identifiant, $keyDemande, $date) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
 
             return $habilitation->demandes->get($keyDemande);
         }
 
-        public function createDemandeAndSave($identifiant, $demandeStatut, $datas, $statut, $date, $commentaire, $auteur) {
+        public function createDemandeAndSave($identifiant, $demandeStatut, $produitHash, $activites, $statut, $date, $commentaire, $auteur) {
             $habilitation = $this->createOrGetDocFromIdentifiantAndDate($identifiant, $date);
             $baseKey = $identifiant."-".str_replace("-", "", $date);
             $demandesKey = array_keys($habilitation->demandes->toArray(true, false));
@@ -326,12 +295,13 @@ class HabilitationClient extends acCouchdbClient {
             }
             $key = sprintf($baseKey."%02d", $i);
             $demande = $habilitation->demandes->add($key);
-            foreach($datas as $key => $value) {
-                $demande->donnees->add($key, $value);
-            }
+
+            $demande->produit = $produitHash;
+            $demande->activites = $activites;
             $demande->demande = $demandeStatut;
             $demande->date = $date;
             $demande->statut = $statut;
+            $demande->getLibelle();
             $descriptionHistorique = "La demande ".Orthographe::elision("de", strtolower($demande->getDemandeLibelle()))." \"".$demande->getLibelle()."\" a été créée au statut \"".$demande->getStatutLibelle()."\"";
 
 
@@ -384,14 +354,11 @@ class HabilitationClient extends acCouchdbClient {
         }
 
         protected function updateAndSaveHabilitationFromDemande($demande, $commentaire) {
-            if($demande->statut == "COMPLET" && in_array($demande->demande, self::$demandes_produit)) {
-                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->donnees->produit, $demande->date, $demande->donnees->activites->toArray(true, false), "DEMANDE_HABILITATION", $commentaire);
+            if($demande->statut == "COMPLET") {
+                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), "DEMANDE_HABILITATION", $commentaire);
             }
-            if($demande->statut == "VALIDE" && in_array($demande->demande, self::$demandes_produit)) {
-                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->donnees->produit, $demande->date, $demande->donnees->activites->toArray(true, false), "HABILITE", $commentaire);
-            }
-            if($demande->statut == "VALIDE" && in_array($demande->demande, self::$demandes_declarant)) {
-                $this->updateDeclarantAndSave($demande->getDocument()->identifiant, $demande->date, $demande->donnees->toArray(true, false));
+            if($demande->statut == "VALIDE") {
+                $this->updateAndSaveHabilitation($demande->getDocument()->identifiant, $demande->produit, $demande->date, $demande->activites->toArray(true, false), "HABILITE", $commentaire);
             }
         }
     }

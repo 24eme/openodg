@@ -8,15 +8,13 @@ class HabilitationDemande extends BaseHabilitationDemande {
 
     public function getConfig()
     {
-        return $this->getDocument()->getConfiguration()->get($this->getProduitHash());
+        return $this->getDocument()->getConfiguration()->get($this->getProduit());
     }
 
-    public function setProduitHash($hash) {
-        $this->_set('produit_hash', $hash);
 
+    public function setProduit($hash) {
+        $this->_set('produit', $hash);
         $this->produit_libelle = $this->getConfig()->getLibelleComplet();
-
-        return $this;
     }
 
     public function getLibelle() {
@@ -25,17 +23,7 @@ class HabilitationDemande extends BaseHabilitationDemande {
             return $this->_get('libelle');
         }
 
-        $libelles = array();
-        foreach($this->donnees as $key => $value) {
-            if(method_exists($this->donnees, "get".ucfirst($key).'Libelle')) {
-                $libelles[] = $this->donnees->{$key.'Libelle'};
-            } else {
-                $libelles[] = ucfirst(str_replace("_", " ", $key)).": ".$value;
-            }
-        }
-        $libelle = implode(", ", $libelles);
-
-        $this->libelle = $libelle;
+        $this->libelle = $this->getProduitLibelle().": ".implode(", ", $this->getActivitesLibelle())    ;
 
         return $this->_get('libelle');
     }
